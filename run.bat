@@ -9,7 +9,9 @@ tasklist /nh /fi "imagename eq abmsgs.exe" | find /i "abmsgs.exe" > nul || (star
 tasklist /nh /fi "imagename eq abfile.exe" | find /i "abfile.exe" > nul || (start abfile.exe)
 tasklist /nh /fi "imagename eq ablogin.exe" | find /i "ablogin.exe" > nul || (start ablogin.exe)
 
-start abserv.bat
+tasklist /nh /fi "imagename eq abserv.exe" | find /i "abserv.exe" > nul || (start abserv.bat)
+
+rem start abserv.bat
 rem start abserv.bat -conf abserv2.lua
 rem start abserv.exe -conf abserv3.lua
 
