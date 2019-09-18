@@ -72,13 +72,13 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     Npc();
-    ~Npc() final;
+    ~Npc() override;
     // non-copyable
     Npc(const Npc&) = delete;
     Npc& operator=(const Npc&) = delete;
 
     bool LoadScript(const std::string& fileName);
-    AB::GameProtocol::GameObjectType GetType() const final override
+    AB::GameProtocol::GameObjectType GetType() const override
     {
         return AB::GameProtocol::ObjectTypeNpc;
     }
@@ -95,11 +95,11 @@ public:
     {
         return itemIndex_;
     }
-    AB::Entities::CharacterSex GetSex() const final override
+    AB::Entities::CharacterSex GetSex() const override
     {
         return sex_;
     }
-    uint32_t GetGroupId() const final override
+    uint32_t GetGroupId() const override
     {
         return groupId_;
     }

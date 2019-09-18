@@ -47,13 +47,13 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     AreaOfEffect();
-    ~AreaOfEffect() final;
+    ~AreaOfEffect() override;
     // non-copyable
     AreaOfEffect(const AreaOfEffect&) = delete;
     AreaOfEffect& operator=(const AreaOfEffect&) = delete;
 
     bool LoadScript(const std::string& fileName);
-    AB::GameProtocol::GameObjectType GetType() const final override
+    AB::GameProtocol::GameObjectType GetType() const override
     {
         return AB::GameProtocol::ObjectTypeAreaOfEffect;
     }

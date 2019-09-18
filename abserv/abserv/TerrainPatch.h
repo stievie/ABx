@@ -8,7 +8,7 @@ namespace Game {
 
 class Terrain;
 
-class TerrainPatch : public GameObject
+class TerrainPatch final : public GameObject
 {
 private:
     std::weak_ptr<Terrain> owner_;

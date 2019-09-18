@@ -190,29 +190,25 @@ void DBConcreteItem::Clean(StorageProvider* sp)
     {
         AB::Entities::GameInstance instance;
         instance.uuid = result->GetString("instance_uuid");
-        if (!sp->EntityExists(instance))
-            // This instace isn't running anymore
-            uuids.push_back(result->GetString("uuid"));
+        if (sp->EntityRead(instance) && instance.running)
+            // Still running
+            continue;
+
+        // Not running or not existent, either way, delete it
+        uuids.push_back(result->GetString("uuid"));
     }
-
-    query.str("");
-    query << "DELETE FROM `concrete_items` WHERE storage_place = " << static_cast<int>(AB::Entities::StoragePlaceScene);
-    DBTransaction transaction(db);
-    if (!transaction.Begin())
-        return;
-
-    if (!db->ExecuteQuery(query.str()))
-        return;
-
-    // End transaction
-    if (!transaction.Commit())
-        return;
 
     for (const std::string& i : uuids)
     {
         AB::Entities::ConcreteItem item;
         item.uuid = i;
-        sp->EntityInvalidate(item);
+        if (!sp->EntityRead(item))
+        {
+            // Still must check if the item is really in the scene, because
+            // DB and cache may have different data.
+            if (item.storagePlace == AB::Entities::StoragePlaceScene)
+                sp->EntityDelete(item);
+        }
     }
 
 }

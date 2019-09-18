@@ -69,7 +69,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     explicit Player(std::shared_ptr<Net::ProtocolGame> client);
-    ~Player() final;
+    ~Player() override;
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
@@ -79,33 +79,33 @@ public:
     }
 
     /// We are entering a game
-    void SetGame(std::shared_ptr<Game> game) final override;
-    const std::string& GetName() const final override { return data_.name; }
-    AB::Entities::CharacterSex GetSex() const final override
+    void SetGame(std::shared_ptr<Game> game) override;
+    const std::string& GetName() const override { return data_.name; }
+    AB::Entities::CharacterSex GetSex() const override
     {
         return data_.sex;
     }
-    uint32_t GetItemIndex() const final override
+    uint32_t GetItemIndex() const override
     {
         return data_.modelIndex;
     }
-    uint32_t GetGroupId() const final override
+    uint32_t GetGroupId() const override
     {
         return party_->id_;
     }
-    size_t GetGroupPos() final override;
+    size_t GetGroupPos() override;
 
     bool CanAttack() const override;
     bool CanUseSkill() const override;
-    uint32_t GetLevel() const final override { return data_.level; }
-    void SetLevel(uint32_t value) override final { data_.level = static_cast<uint8_t>(value); }
+    uint32_t GetLevel() const override { return data_.level; }
+    void SetLevel(uint32_t value) override { data_.level = static_cast<uint8_t>(value); }
 
     void AddXp(int value) override;
     uint32_t GetXp() const override { return data_.xp; }
     void AddSkillPoint() override;
     uint32_t GetSkillPoints() const override { return data_.skillPoints; }
     void AdvanceLevel() override;
-    AB::GameProtocol::GameObjectType GetType() const final override
+    AB::GameProtocol::GameObjectType GetType() const override
     {
         return AB::GameProtocol::ObjectTypePlayer;
     }
