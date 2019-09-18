@@ -131,17 +131,17 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypePing:
     {
         const int64_t clientTick = message.Get<int64_t>();
-        AddPlayerTask(&Game::Player::Ping, clientTick);
+        AddPlayerTask(&Game::Player::CRQPing, clientTick);
         break;
     }
     case AB::GameProtocol::PacketTypeLogout:
-        AddPlayerTask(&Game::Player::Logout);
+        AddPlayerTask(&Game::Player::CRQLogout);
         break;
     case AB::GameProtocol::PacketTypeChangeMap:
     {
         // Called by the client when clicking on the map
         const std::string mapUuid = message.GetString();
-        AddPlayerTask(&Game::Player::ChangeMap, mapUuid);
+        AddPlayerTask(&Game::Player::CRQChangeMap, mapUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeSendMail:
@@ -149,87 +149,87 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         const std::string recipient = message.GetString();
         const std::string subject = message.GetString();
         const std::string body = message.GetString();
-        AddPlayerTask(&Game::Player::SendMail, recipient, subject, body);
+        AddPlayerTask(&Game::Player::CRQSendMail, recipient, subject, body);
         break;
     }
     case AB::GameProtocol::PacketTypeGetMailHeaders:
-        AddPlayerTask(&Game::Player::GetMailHeaders);
+        AddPlayerTask(&Game::Player::CRQGetMailHeaders);
         break;
     case AB::GameProtocol::PacketTypeGetMail:
     {
         const std::string mailUuid = message.GetString();
-        AddPlayerTask(&Game::Player::GetMail, mailUuid);
+        AddPlayerTask(&Game::Player::CRQGetMail, mailUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeDeleteMail:
     {
         const std::string mailUuid = message.GetString();
-        AddPlayerTask(&Game::Player::DeleteMail, mailUuid);
+        AddPlayerTask(&Game::Player::CRQDeleteMail, mailUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeGetInventory:
-        AddPlayerTask(&Game::Player::GetInventory);
+        AddPlayerTask(&Game::Player::CRQGetInventory);
         break;
     case AB::GameProtocol::PacketTypeInventoryDestroyItem:
     {
         uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::DestroyInventoryItem, pos);
+        AddPlayerTask(&Game::Player::CRQDestroyInventoryItem, pos);
         break;
     }
     case AB::GameProtocol::PacketTypeInventoryDropItem:
     {
         uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::DropInventoryItem, pos);
+        AddPlayerTask(&Game::Player::CRQDropInventoryItem, pos);
         break;
     }
     case AB::GameProtocol::PacketTypeInventoryStoreInChest:
     {
         uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::StoreInChest, pos);
+        AddPlayerTask(&Game::Player::CRQStoreInChest, pos);
         break;
     }
     case AB::GameProtocol::PacketTypeGetChest:
-        AddPlayerTask(&Game::Player::GetChest);
+        AddPlayerTask(&Game::Player::CRQGetChest);
         break;
     case AB::GameProtocol::PacketTypeChestDestroyItem:
     {
         uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::DestroyChestItem, pos);
+        AddPlayerTask(&Game::Player::CRQDestroyChestItem, pos);
         break;
     }
     case AB::GameProtocol::PacketTypePartyInvitePlayer:
     {
         uint32_t playerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyInvitePlayer, playerId);
+        AddPlayerTask(&Game::Player::CRQPartyInvitePlayer, playerId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyKickPlayer:
     {
         uint32_t playerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyKickPlayer, playerId);
+        AddPlayerTask(&Game::Player::CRQPartyKickPlayer, playerId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyLeave:
     {
-        AddPlayerTask(&Game::Player::PartyLeave);
+        AddPlayerTask(&Game::Player::CRQPartyLeave);
         break;
     }
     case AB::GameProtocol::PacketTypePartyAcceptInvite:
     {
         uint32_t inviterId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyAccept, inviterId);
+        AddPlayerTask(&Game::Player::CRQPartyAccept, inviterId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyRejectInvite:
     {
         uint32_t inviterId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyRejectInvite, inviterId);
+        AddPlayerTask(&Game::Player::CRQPartyRejectInvite, inviterId);
         break;
     }
     case AB::GameProtocol::PacektTypeGetPartyMembers:
     {
         uint32_t partyId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyGetMembers, partyId);
+        AddPlayerTask(&Game::Player::CRQPartyGetMembers, partyId);
         break;
     }
     case AB::GameProtocol::PacketTypeMove:
@@ -321,10 +321,10 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     }
     case AB::GameProtocol::PacketTypeQueue:
-        AddPlayerTask(&Game::Player::QueueForMatch);
+        AddPlayerTask(&Game::Player::CRQQueueForMatch);
         break;
     case AB::GameProtocol::PacketTypeUnqueue:
-        AddPlayerTask(&Game::Player::UnqueueForMatch);
+        AddPlayerTask(&Game::Player::CRQUnqueueForMatch);
         break;
     case AB::GameProtocol::PacketTypeCommand:
     {
@@ -335,29 +335,29 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     }
     case AB::GameProtocol::PacketTypeGetFriendList:
-        AddPlayerTask(&Game::Player::GetFriendList);
+        AddPlayerTask(&Game::Player::CRQGetFriendList);
         break;
     case AB::GameProtocol::PacketTypeAddFriend:
     {
         std::string playerName = message.GetString();
         AB::Entities::FriendRelation rel = static_cast<AB::Entities::FriendRelation>(message.Get<uint8_t>());
-        AddPlayerTask(&Game::Player::AddFriend, playerName, rel);
+        AddPlayerTask(&Game::Player::CRQAddFriend, playerName, rel);
         break;
     }
     case AB::GameProtocol::PacketTypeRemoveFriend:
     {
         std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::RemoveFriend, accountUuid);
+        AddPlayerTask(&Game::Player::CRQRemoveFriend, accountUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeGetFriend:
     {
         std::string nickName = message.GetString();
-        AddPlayerTask(&Game::Player::GetFriend, nickName);
+        AddPlayerTask(&Game::Player::CRQGetFriend, nickName);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildMembers:
-        AddPlayerTask(&Game::Player::GetGuildMembers);
+        AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
     default:
     {

@@ -118,25 +118,13 @@ public:
 
     void Initialize() override;
     void Logout();
-    void Ping(int64_t clientTick);
     void TriggerDialog(uint32_t dialogIndex);
-    void ChangeMap(const std::string mapUuid);
+    void ChangeMap(const std::string& mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
-    void QueueForMatch();
-    void UnqueueForMatch();
     void UpdateMailBox();
-    void GetMailHeaders();
-    void SendMail(const std::string recipient, const std::string subject, const std::string body);
-    void GetMail(const std::string mailUuid);
-    void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
-    void AddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
-    void RemoveFriend(const std::string accountUuid);
-    void GetFriend(const std::string nickName);
 
-    /// Client requested the friend list
-    void GetFriendList();
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
 
@@ -147,34 +135,54 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-    /// Client resutsed guild members
-    void GetGuildMembers();
-    /// Client requests the inventory
-    void GetInventory();
-    bool AddToInventory(uint32_t itemId) override;
-    void DropInventoryItem(uint16_t pos);
-    void DestroyInventoryItem(uint16_t pos);
-    void EquipInventoryItem(uint16_t pos);
-    /// Move an inventory item to the chest
-    void StoreInChest(uint16_t pos);
-    void GetChest();
-    void DestroyChestItem(uint16_t pos);
 
     const std::string& GetPlayerUuid() const override { return data_.uuid; }
     const std::string& GetAccountUuid() const override { return account_.uuid; }
 
-    void PartyInvitePlayer(uint32_t playerId);
-    void PartyKickPlayer(uint32_t playerId);
+    bool AddToInventory(uint32_t itemId) override;
+    void EquipInventoryItem(uint16_t pos);
     /// Leave current party
     void PartyLeave();
-    void PartyAccept(uint32_t inviterId);
-    /// We reject the invite of inviterId
-    void PartyRejectInvite(uint32_t inviterId);
-    void PartyGetMembers(uint32_t partyId);
 
     /// This player ignores player
     bool IsIgnored(const Player& player);
     bool IsFriend(const Player& player);
+
+    //{ Client requests.
+    // These functions should not have references as arguments, because
+    // they are executed by the dispatcher and not directly.
+    void CRQChangeMap(const std::string mapUuid);
+    void CRQLogout();
+    void CRQPing(int64_t clientTick);
+    void CRQGetMailHeaders();
+    void CRQSendMail(const std::string recipient, const std::string subject, const std::string body);
+    void CRQGetMail(const std::string mailUuid);
+    void CRQDeleteMail(const std::string mailUuid);
+    void CRQQueueForMatch();
+    void CRQUnqueueForMatch();
+    void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
+    void CRQRemoveFriend(const std::string accountUuid);
+    void CRQGetFriend(const std::string nickName);
+    /// Client requested the friend list
+    void CRQGetFriendList();
+    /// Client requested guild members
+    void CRQGetGuildMembers();
+    /// Client requests the inventory
+    void CRQGetInventory();
+    void CRQDropInventoryItem(uint16_t pos);
+    void CRQDestroyInventoryItem(uint16_t pos);
+    /// Move an inventory item to the chest
+    void CRQStoreInChest(uint16_t pos);
+    void CRQGetChest();
+    void CRQDestroyChestItem(uint16_t pos);
+    void CRQPartyInvitePlayer(uint32_t playerId);
+    void CRQPartyKickPlayer(uint32_t playerId);
+    void CRQPartyLeave();
+    void CRQPartyAccept(uint32_t inviterId);
+    /// We reject the invite of inviterId
+    void CRQPartyRejectInvite(uint32_t inviterId);
+    void CRQPartyGetMembers(uint32_t partyId);
+    //}
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

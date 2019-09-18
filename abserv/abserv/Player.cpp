@@ -111,13 +111,23 @@ void Player::Logout()
     LOG_DEBUG << "Player logging out " << GetName() << std::endl;
 #endif // DEBUG_GAME
     if (queueing_)
-        UnqueueForMatch();
+        CRQUnqueueForMatch();
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
 }
 
-void Player::Ping(int64_t clientTick)
+void Player::CRQChangeMap(const std::string mapUuid)
+{
+    ChangeMap(mapUuid);
+}
+
+void Player::CRQLogout()
+{
+    Logout();
+}
+
+void Player::CRQPing(int64_t clientTick)
 {
     lastPing_ = Utils::Tick();
     auto msg = Net::NetworkMessage::GetNew();
@@ -143,7 +153,7 @@ void Player::UpdateMailBox()
         mailBox_->Update();
 }
 
-void Player::GetMailHeaders()
+void Player::CRQGetMailHeaders()
 {
     UpdateMailBox();
     if (!mailBox_)
@@ -164,12 +174,12 @@ void Player::GetMailHeaders()
     WriteToOutput(*msg);
 }
 
-void Player::GetGuildMembers()
+void Player::CRQGetGuildMembers()
 {
     // TODO: ...
 }
 
-void Player::GetInventory()
+void Player::CRQGetInventory()
 {
     const size_t count = inventoryComp_->GetInventoryCount();
     if (count == 0)
@@ -192,7 +202,7 @@ void Player::GetInventory()
     WriteToOutput(*msg);
 }
 
-void Player::DestroyInventoryItem(uint16_t pos)
+void Player::CRQDestroyInventoryItem(uint16_t pos)
 {
     if (!inventoryComp_->DestroyInventoryItem(pos))
         return;
@@ -235,7 +245,7 @@ void Player::EquipInventoryItem(uint16_t pos)
     cli->Invalidate(equ);
 }
 
-void Player::StoreInChest(uint16_t pos)
+void Player::CRQStoreInChest(uint16_t pos)
 {
     if (inventoryComp_->IsChestFull())
     {
@@ -257,7 +267,7 @@ void Player::StoreInChest(uint16_t pos)
     WriteToOutput(*msg);
 }
 
-void Player::DropInventoryItem(uint16_t pos)
+void Player::CRQDropInventoryItem(uint16_t pos)
 {
     uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
     auto* cache = GetSubsystem<ItemsCache>();
@@ -284,7 +294,7 @@ void Player::DropInventoryItem(uint16_t pos)
     }
 }
 
-void Player::GetChest()
+void Player::CRQGetChest()
 {
     const size_t count = inventoryComp_->GetChestCount();
     if (count == 0)
@@ -307,7 +317,7 @@ void Player::GetChest()
     WriteToOutput(*msg);
 }
 
-void Player::DestroyChestItem(uint16_t pos)
+void Player::CRQDestroyChestItem(uint16_t pos)
 {
     if (inventoryComp_->DestroyChestItem(pos))
     {
@@ -323,7 +333,7 @@ void Player::DestroyChestItem(uint16_t pos)
     }
 }
 
-void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
+void Player::CRQSendMail(const std::string recipient, const std::string subject, const std::string body)
 {
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
@@ -336,7 +346,7 @@ void Player::SendMail(const std::string recipient, const std::string subject, co
     WriteToOutput(*nmsg);
 }
 
-void Player::GetMail(const std::string mailUuid)
+void Player::CRQGetMail(const std::string mailUuid)
 {
     UpdateMailBox();
     if (!mailBox_)
@@ -359,7 +369,7 @@ void Player::GetMail(const std::string mailUuid)
     }
 }
 
-void Player::DeleteMail(const std::string mailUuid)
+void Player::CRQDeleteMail(const std::string mailUuid)
 {
     // mailUuid must not be a reference!
     UpdateMailBox();
@@ -417,7 +427,7 @@ void Player::NotifyNewMail()
         WriteToOutput(*msg);
 }
 
-void Player::AddFriend(const std::string playerName, AB::Entities::FriendRelation relation)
+void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation)
 {
     auto res = friendList_->AddFriendByName(playerName, relation);
 
@@ -448,7 +458,7 @@ void Player::AddFriend(const std::string playerName, AB::Entities::FriendRelatio
         WriteToOutput(*msg);
 }
 
-void Player::RemoveFriend(const std::string accountUuid)
+void Player::CRQRemoveFriend(const std::string accountUuid)
 {
     auto res = friendList_->Remove(accountUuid);
 
@@ -474,45 +484,42 @@ void Player::RemoveFriend(const std::string accountUuid)
         WriteToOutput(*msg);
 }
 
-void Player::GetFriend(const std::string nickName)
+void Player::CRQGetFriend(const std::string nickName)
 {
     auto msg = Net::NetworkMessage::GetNew();
     AB::Entities::Friend f;
     bool found = friendList_->GetFriendByName(nickName, f);
+    if (!found)
+        // If there is no such friend, we just don't reply to this request
+        return;
 
     msg->AddByte(AB::GameProtocol::FriendSingle);
-    msg->Add<uint8_t>(found ? 1 : 0);
-    if (found)
+    msg->Add<uint8_t>(f.relation);
+    msg->AddString(f.friendUuid);
+    msg->AddString(f.friendName);
+
+    if (f.relation == AB::Entities::FriendRelationFriend)
     {
-        msg->Add<uint8_t>(f.relation);
-        msg->AddString(f.friendUuid);
-        msg->AddString(f.friendName);
-
-        if (f.relation == AB::Entities::FriendRelationFriend)
-        {
-            AB::Entities::Account friendAccount;
-            friendAccount.uuid = f.friendUuid;
-            AB::Entities::Character friendToon;
-            /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
-            // If success == false -> offline, empty toon name
-            msg->Add<uint8_t>(friendAccount.onlineStatus);
-            msg->AddString(friendToon.name);
-            msg->AddString(friendToon.currentMapUuid);
-        }
-        else
-        {
-            // Ignored always offline and no current toon
-            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
-            msg->AddString("");
-            msg->AddString(Utils::Uuid::EMPTY_UUID);
-        }
+        AB::Entities::Account friendAccount;
+        friendAccount.uuid = f.friendUuid;
+        AB::Entities::Character friendToon;
+        /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
+        // If success == false -> offline, empty toon name
+        msg->Add<uint8_t>(friendAccount.onlineStatus);
+        msg->AddString(friendToon.name);
+        msg->AddString(friendToon.currentMapUuid);
     }
-
-    // So if the first byte is 0 (= not in fl) the client must not read further
+    else
+    {
+        // Ignored always offline and no current toon
+        msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
+        msg->AddString("");
+        msg->AddString(Utils::Uuid::EMPTY_UUID);
+    }
     WriteToOutput(*msg);
 }
 
-void Player::GetFriendList()
+void Player::CRQGetFriendList()
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::FriendListAll);
@@ -622,7 +629,7 @@ bool Player::AddToInventory(uint32_t itemId)
     return ret;
 }
 
-void Player::PartyInvitePlayer(uint32_t playerId)
+void Player::CRQPartyInvitePlayer(uint32_t playerId)
 {
     // The leader invited a player
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
@@ -651,7 +658,7 @@ void Player::PartyInvitePlayer(uint32_t playerId)
     }
 }
 
-void Player::PartyKickPlayer(uint32_t playerId)
+void Player::CRQPartyKickPlayer(uint32_t playerId)
 {
     // The leader kicks a player from the party
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
@@ -737,7 +744,12 @@ void Player::PartyLeave()
     }
 }
 
-void Player::PartyAccept(uint32_t playerId)
+void Player::CRQPartyLeave()
+{
+    PartyLeave();
+}
+
+void Player::CRQPartyAccept(uint32_t playerId)
 {
     // Sent by the acceptor to the leader of the party that a player accepted
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
@@ -764,7 +776,7 @@ void Player::PartyAccept(uint32_t playerId)
     }
 }
 
-void Player::PartyRejectInvite(uint32_t inviterId)
+void Player::CRQPartyRejectInvite(uint32_t inviterId)
 {
     // We are the rejector
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
@@ -787,7 +799,7 @@ void Player::PartyRejectInvite(uint32_t inviterId)
     }
 }
 
-void Player::PartyGetMembers(uint32_t partyId)
+void Player::CRQPartyGetMembers(uint32_t partyId)
 {
     std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
     if (party)
@@ -1338,7 +1350,7 @@ void Player::HandleUnknownCommand()
     WriteToOutput(*nmsg);
 }
 
-void Player::ChangeMap(const std::string mapUuid)
+void Player::ChangeMap(const std::string& mapUuid)
 {
     // mapUuid No reference
 
@@ -1369,7 +1381,7 @@ void Player::ChangeServerInstance(const std::string& serverUuid, const std::stri
         LOG_ERROR << "client_ = null" << std::endl;
 }
 
-void Player::QueueForMatch()
+void Player::CRQQueueForMatch()
 {
     assert(GetParty());
     if (!GetParty()->IsLeader(this))
@@ -1391,7 +1403,7 @@ void Player::QueueForMatch()
     queueing_ = true;
 }
 
-void Player::UnqueueForMatch()
+void Player::CRQUnqueueForMatch()
 {
     assert(GetParty());
     if (!GetParty()->IsLeader(this))
