@@ -243,7 +243,7 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<
         result.normal_ = -query.ray_.direction_;
         result.distance_ = distance;
         result.object_ = this;
-        results.push_back(result);
+        results.push_back(std::move(result));
     }
 }
 

@@ -34,14 +34,15 @@ class ChatChannel
 protected:
     uint64_t id_;
 public:
-    ChatChannel(uint64_t id) :
+    explicit ChatChannel(uint64_t id) :
         id_(id)
     {}
     virtual ~ChatChannel();
-    virtual bool Talk(Player*, const std::string&) {
+    virtual bool Talk(Player&, const std::string&)
+    {
         return false;
     }
-    virtual bool TalkNpc(Npc*, const std::string&)
+    virtual bool TalkNpc(Npc&, const std::string&)
     {
         return false;
     }
@@ -52,20 +53,20 @@ class GameChatChannel : public ChatChannel
 private:
     std::weak_ptr<Game> game_;
 public:
-    GameChatChannel(uint64_t id);
-    bool Talk(Player* player, const std::string& text) override;
-    bool TalkNpc(Npc* npc, const std::string& text) override;
+    explicit GameChatChannel(uint64_t id);
+    bool Talk(Player& player, const std::string& text) override;
+    bool TalkNpc(Npc& npc, const std::string& text) override;
 };
 
 class PartyChatChannel : public ChatChannel
 {
 public:
-    PartyChatChannel(uint64_t id) :
+    explicit PartyChatChannel(uint64_t id) :
         ChatChannel(id),
         party_(nullptr)
     { }
-    bool Talk(Player* player, const std::string& text) override;
-    bool TalkNpc(Npc* npc, const std::string& text) override;
+    bool Talk(Player& player, const std::string& text) override;
+    bool TalkNpc(Npc& npc, const std::string& text) override;
     Party* party_;
 };
 
@@ -76,9 +77,9 @@ private:
     std::weak_ptr<Player> player_;
     std::string playerUuid_;
 public:
-    WhisperChatChannel(uint64_t id);
+    explicit WhisperChatChannel(uint64_t id);
     WhisperChatChannel(const std::string& playerUuid);
-    bool Talk(Player* player, const std::string& text) override;
+    bool Talk(Player& player, const std::string& text) override;
     bool Talk(const std::string& playerName, const std::string& text);
 };
 
@@ -86,10 +87,10 @@ public:
 class TradeChatChannel : public ChatChannel
 {
 public:
-    TradeChatChannel() :
+    explicit TradeChatChannel() :
         ChatChannel(0)
     { }
-    bool Talk(Player* player, const std::string& text) override;
+    bool Talk(Player& player, const std::string& text) override;
     void Broadcast(const std::string& playerName, const std::string& text);
 };
 
@@ -98,11 +99,11 @@ class GuildChatChannel : public ChatChannel
 private:
     std::string guildUuid_;
 public:
-    GuildChatChannel(const std::string& guildUuid) :
+    explicit GuildChatChannel(const std::string& guildUuid) :
         ChatChannel(Utils::StringHashRt(guildUuid.c_str())),
         guildUuid_(guildUuid)
     { }
-    bool Talk(Player* player, const std::string& text) override;
+    bool Talk(Player& player, const std::string& text) override;
     void Broadcast(const std::string& playerName, const std::string& text);
 };
 

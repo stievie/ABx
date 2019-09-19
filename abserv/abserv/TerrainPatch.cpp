@@ -99,7 +99,7 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
 {
     if (auto o = owner_.lock())
     {
-        const Math::Matrix4& matrix = o->transformation_.GetMatrix();
+        const Math::Matrix4 matrix = o->transformation_.GetMatrix();
         Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
         float max = Math::Clamp(
             Math::IsInfinite(query.maxDistance_) ? static_cast<float>(o->patchSize_) : query.maxDistance_,
@@ -119,7 +119,7 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
             result.normal_ = normal;
             result.distance_ = distance;
             result.object_ = this;
-            results.push_back(result);
+            results.push_back(std::move(result));
         }
 #ifdef DEBUG_COLLISION
         else

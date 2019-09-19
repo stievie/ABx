@@ -244,14 +244,14 @@ void Npc::Say(ChatType channel, const std::string& message)
     {
         std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
         if (ch)
-            ch->TalkNpc(this, message);
+            ch->TalkNpc(*this, message);
         break;
     }
     case ChatType::Party:
     {
         std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Party, GetGroupId());
         if (ch)
-            ch->TalkNpc(this, message);
+            ch->TalkNpc(*this, message);
         break;
     }
     default:
@@ -264,7 +264,7 @@ std::string Npc::GetQuote(int index)
 {
     if (!HaveFunction(FunctionOnGetQuote))
         return "";
-    const char* q = (const char* )luaState_["onGetQuote"](index);
+    const char* q = (const char*)luaState_["onGetQuote"](index);
     return q;
 }
 

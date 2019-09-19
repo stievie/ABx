@@ -88,6 +88,44 @@ struct RayQueryResult
         distance_(0.0f),
         object_(nullptr)
     {}
+    RayQueryResult(const RayQueryResult& other) :
+        position_(other.position_),
+        normal_(other.normal_),
+        distance_(other.distance_),
+        object_(other.object_)
+    { }
+    RayQueryResult(RayQueryResult&& other) noexcept :
+        position_(std::move(other.position_)),
+        normal_(std::move(other.normal_)),
+        distance_(other.distance_),
+        object_(other.object_)
+    {
+        other.object_ = nullptr;
+    }
+
+    RayQueryResult& operator= (const RayQueryResult& other)
+    {
+        if (this != &other)
+        {
+            position_ = other.position_;
+            normal_ = other.normal_;
+            distance_ = other.distance_;
+            object_ = other.object_;
+        }
+        return *this;
+    }
+    RayQueryResult& operator= (RayQueryResult&& other) noexcept
+    {
+        if (this != &other)
+        {
+            position_ = std::move(other.position_);
+            normal_ = std::move(other.normal_);
+            distance_ = other.distance_;
+            object_ = other.object_;
+            other.object_ = nullptr;
+        }
+        return *this;
+    }
 
     /// Test for inequality, added to prevent GCC from complaining.
     bool operator !=(const RayQueryResult& rhs) const

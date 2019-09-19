@@ -984,7 +984,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, target->id_);
         if (channel)
         {
-            if (channel->Talk(this, msg))
+            if (channel->Talk(*this, msg))
             {
                 std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
                 nmsg->AddByte(AB::GameProtocol::ServerMessage);
@@ -1006,7 +1006,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
     {
         // Is online
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
-        if (channel->Talk(this, msg))
+        if (channel->Talk(*this, msg))
         {
             std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::ServerMessage);
@@ -1031,14 +1031,14 @@ void Player::HandleChatGuildCommand(const std::string& arguments, Net::NetworkMe
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Guild, account_.guildUuid);
     if (channel)
-        channel->Talk(this, arguments);
+        channel->Talk(*this, arguments);
 }
 
 void Player::HandleChatTradeCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
     if (channel)
-        channel->Talk(this, arguments);
+        channel->Talk(*this, arguments);
 }
 
 void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& message)
@@ -1231,14 +1231,14 @@ void Player::HandleGeneralChatCommand(const std::string& arguments, Net::Network
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Map, GetGame()->id_);
     if (channel)
-        channel->Talk(this, arguments);
+        channel->Talk(*this, arguments);
 }
 
 void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->id_);
     if (channel)
-        channel->Talk(this, arguments);
+        channel->Talk(*this, arguments);
 }
 
 void Player::HandleGodModeCommand(const std::string&, Net::NetworkMessage&)
