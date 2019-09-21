@@ -29,7 +29,8 @@ public:
     { }
 };
 
-Client::Client() :
+Client::Client(Receiver& receiver) :
+    receiver_(receiver),
     ioService_(std::make_shared<asio::io_service>()),
     protoLogin_(nullptr),
     protoGame_(nullptr),
@@ -43,7 +44,6 @@ Client::Client() :
     gameHost_(""),
     gamePort_(0),
     state_(ClientState::Disconnected),
-    receiver_(nullptr),
     httpClient_(nullptr)
 {
     // Always create new keys
@@ -111,15 +111,15 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
         ss << fileHost_ << ":" << filePort_;
         httpClient_ = new HttpsClient(ss.str(), false);
     }
-    if (receiver_)
-        receiver_->OnLoggedIn(accountUuid_, authToken_);
+
+    receiver_.OnLoggedIn(accountUuid_, authToken_);
 }
 
 void Client::OnGetCharlist(const AB::Entities::CharList& chars)
 {
     state_ = ClientState::SelectChar;
-    if (receiver_)
-        receiver_->OnGetCharlist(chars);
+
+    receiver_.OnGetCharlist(chars);
 
     // Get list of outposts
     GetOutposts();
@@ -127,62 +127,53 @@ void Client::OnGetCharlist(const AB::Entities::CharList& chars)
 
 void Client::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
 {
-    if (receiver_)
-        receiver_->OnGetOutposts(games);
+
+    receiver_.OnGetOutposts(games);
 }
 
 void Client::OnGetServices(const std::vector<AB::Entities::Service>& services)
 {
-    if (receiver_)
-        receiver_->OnGetServices(services);
+    receiver_.OnGetServices(services);
 }
 
 void Client::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
 {
-    if (receiver_)
-        receiver_->OnGetMailHeaders(updateTick, headers);
+    receiver_.OnGetMailHeaders(updateTick, headers);
 }
 
 void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 {
-    if (receiver_)
-        receiver_->OnGetMail(updateTick, mail);
+    receiver_.OnGetMail(updateTick, mail);
 }
 
 void Client::OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items)
 {
-    if (receiver_)
-        receiver_->OnGetInventory(updateTick, items);
+    receiver_.OnGetInventory(updateTick, items);
 }
 
 void Client::OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item)
 {
-    if (receiver_)
-        receiver_->OnInventoryItemUpdate(updateTick, item);
+    receiver_.OnInventoryItemUpdate(updateTick, item);
 }
 
 void Client::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
 {
-    if (receiver_)
-        receiver_->OnInventoryItemDelete(updateTick, pos);
+    receiver_.OnInventoryItemDelete(updateTick, pos);
 }
 
 void Client::OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items)
 {
-    if (receiver_)
-        receiver_->OnGetChest(updateTick, items);
+    receiver_.OnGetChest(updateTick, items);
 }
 
 void Client::OnChestItemUpdate(int64_t updateTick, const InventoryItem& item)
 {
-    if (receiver_)
-        receiver_->OnChestItemUpdate(updateTick, item);
+    receiver_.OnChestItemUpdate(updateTick, item);
 }
 
 void Client::OnChestItemDelete(int64_t updateTick, uint16_t pos)
 {
-    if (receiver_)
-        receiver_->OnChestItemDelete(updateTick, pos);
+    receiver_.OnChestItemDelete(updateTick, pos);
 }
 
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
@@ -191,255 +182,245 @@ void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
 {
     state_ = ClientState::World;
     mapUuid_ = mapUuid;
-    if (receiver_)
-        receiver_->OnEnterWorld(updateTick, serverId, mapUuid, instanceUuid, playerId, type, partySize);
+
+    receiver_.OnEnterWorld(updateTick, serverId, mapUuid, instanceUuid, playerId, type, partySize);
 }
 
 void Client::OnChangeInstance(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
 {
-    if (receiver_)
-        receiver_->OnChangeInstance(updateTick, serverId, mapUuid, instanceUuid, charUuid);
+    receiver_.OnChangeInstance(updateTick, serverId, mapUuid, instanceUuid, charUuid);
 }
 
 void Client::OnDespawnObject(int64_t updateTick, uint32_t id)
 {
-    if (receiver_)
-        receiver_->OnDespawnObject(updateTick, id);
+    receiver_.OnDespawnObject(updateTick, id);
 }
 
 void Client::OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos)
 {
-    if (receiver_)
-        receiver_->OnObjectPos(updateTick, id, pos);
+    receiver_.OnObjectPos(updateTick, id, pos);
 }
 
 void Client::OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual)
 {
-    if (receiver_)
-        receiver_->OnObjectRot(updateTick, id, rot, manual);
+    receiver_.OnObjectRot(updateTick, id, rot, manual);
 }
 
 void Client::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
 {
-    if (receiver_)
-        receiver_->OnObjectStateChange(updateTick, id, state);
+    receiver_.OnObjectStateChange(updateTick, id, state);
 }
 
 void Client::OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor)
 {
-    if (receiver_)
-        receiver_->OnObjectSpeedChange(updateTick, id, speedFactor);
+    receiver_.OnObjectSpeedChange(updateTick, id, speedFactor);
 }
 
 void Client::OnAccountCreated()
 {
-    if (receiver_)
-        receiver_->OnAccountCreated();
+    receiver_.OnAccountCreated();
 }
 
 void Client::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid)
 {
-    if (receiver_)
-        receiver_->OnPlayerCreated(uuid, mapUuid);
+    receiver_.OnPlayerCreated(uuid, mapUuid);
 }
 
 void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
-    if (receiver_)
-        receiver_->OnObjectSelected(updateTick, sourceId, targetId);
+    receiver_.OnObjectSelected(updateTick, sourceId, targetId);
 }
 
 void Client::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error)
 {
-    if (receiver_)
-        receiver_->OnObjectSkillFailure(updateTick, id, skillIndex, error);
+    receiver_.OnObjectSkillFailure(updateTick, id, skillIndex, error);
 }
 
 void Client::OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error)
 {
-    if (receiver_)
-        receiver_->OnObjectAttackFailure(updateTick, id, error);
+    receiver_.OnObjectAttackFailure(updateTick, id, error);
 }
 
 void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
     uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast, uint16_t hp)
 {
-    if (receiver_)
-        receiver_->OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast, hp);
+    receiver_.OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast, hp);
 }
 
 void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
 {
-    if (receiver_)
-        receiver_->OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
+    receiver_.OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
 }
 
 void Client::OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
 {
-    if (receiver_)
-        receiver_->OnObjectPingTarget(updateTick, id, targetId, type, skillIndex);
+    receiver_.OnObjectPingTarget(updateTick, id, targetId, type, skillIndex);
 }
 
 void Client::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
 {
-    if (receiver_)
-        receiver_->OnObjectEffectAdded(updateTick, id, effectIndex, ticks);
+    receiver_.OnObjectEffectAdded(updateTick, id, effectIndex, ticks);
 }
 
 void Client::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex)
 {
-    if (receiver_)
-        receiver_->OnObjectEffectRemoved(updateTick, id, effectIndex);
+    receiver_.OnObjectEffectRemoved(updateTick, id, effectIndex);
 }
 
 void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value)
 {
-    if (receiver_)
-        receiver_->OnObjectDamaged(updateTick, id, sourceId, index, damageType, value);
+    receiver_.OnObjectDamaged(updateTick, id, sourceId, index, damageType, value);
 }
 
 void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value)
 {
-    if (receiver_)
-        receiver_->OnObjectHealed(updateTick, id, healerId, index, value);
+    receiver_.OnObjectHealed(updateTick, id, healerId, index, value);
 }
 
 void Client::OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value)
 {
-    if (receiver_)
-        receiver_->OnObjectProgress(updateTick, id, type, value);
+    receiver_.OnObjectProgress(updateTick, id, type, value);
 }
 
 void Client::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
     uint32_t itemIndex, uint32_t count, uint16_t value)
 {
-    if (receiver_)
-        receiver_->OnObjectDroppedItem(updateTick, id, targetId, itemId, itemIndex, count, value);
+    receiver_.OnObjectDroppedItem(updateTick, id, targetId, itemId, itemIndex, count, value);
 }
 
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {
-    if (receiver_)
-        receiver_->OnResourceChanged(updateTick, id, resType, value);
+    receiver_.OnResourceChanged(updateTick, id, resType, value);
 }
 
 void Client::OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos)
 {
-    if (receiver_)
-        receiver_->OnObjectSetPosition(updateTick, id, pos);
+    receiver_.OnObjectSetPosition(updateTick, id, pos);
 }
 
 void Client::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {
-    if (receiver_)
-        receiver_->OnServerMessage(updateTick, type, senderName, message);
+    receiver_.OnServerMessage(updateTick, type, senderName, message);
 }
 
 void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
     uint32_t senderId, const std::string& senderName, const std::string& message)
 {
-    if (receiver_)
-        receiver_->OnChatMessage(updateTick, channel, senderId, senderName, message);
+    receiver_.OnChatMessage(updateTick, channel, senderId, senderName, message);
 }
 
 void Client::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error)
 {
-    if (receiver_)
-        receiver_->OnPlayerError(updateTick, error);
+    receiver_.OnPlayerError(updateTick, error);
 }
 
 void Client::OnPlayerAutorun(int64_t updateTick, bool autorun)
 {
-    if (receiver_)
-        receiver_->OnPlayerAutorun(updateTick, autorun);
+    receiver_.OnPlayerAutorun(updateTick, autorun);
 }
 
 void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyInvited(updateTick, sourceId, targetId, partyId);
+    receiver_.OnPartyInvited(updateTick, sourceId, targetId, partyId);
 }
 
 void Client::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyRemoved(updateTick, sourceId, targetId, partyId);
+    receiver_.OnPartyRemoved(updateTick, sourceId, targetId, partyId);
 }
 
 void Client::OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyAdded(updateTick, acceptorId, leaderId, partyId);
+    receiver_.OnPartyAdded(updateTick, acceptorId, leaderId, partyId);
 }
 
 void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
+    receiver_.OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
 }
 
 void Client::OnPartyResigned(int64_t updateTick, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyResigned(updateTick, partyId);
+    receiver_.OnPartyResigned(updateTick, partyId);
 }
 
 void Client::OnPartyDefeated(int64_t updateTick, uint32_t partyId)
 {
-    if (receiver_)
-        receiver_->OnPartyDefeated(updateTick, partyId);
+    receiver_.OnPartyDefeated(updateTick, partyId);
 }
 
 void Client::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
 {
-    if (receiver_)
-        receiver_->OnPartyInfoMembers(partyId, members);
+    receiver_.OnPartyInfoMembers(partyId, members);
 }
 
 void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
 {
-    if (receiver_)
-        receiver_->OnDialogTrigger(updateTick, dialogId);
+    receiver_.OnDialogTrigger(updateTick, dialogId);
 }
 
 void Client::OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player)
 {
-    if (receiver_)
-        receiver_->OnPlayerLoggedIn(updateTick, player);
+    receiver_.OnPlayerLoggedIn(updateTick, player);
 }
 
 void Client::OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player)
 {
-    if (receiver_)
-        receiver_->OnPlayerLoggedOut(updateTick, player);
+    receiver_.OnPlayerLoggedOut(updateTick, player);
+}
+
+void Client::OnPlayerInfo(int64_t updateTick, const RelatedAccount& player)
+{
+    receiver_.OnPlayerInfo(updateTick, player);
+}
+
+void Client::OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>& list)
+{
+    receiver_.OnFriendList(updateTick, list);
+}
+
+void Client::OnFriendInfo(int64_t updateTick, const RelatedAccount& f)
+{
+    receiver_.OnFriendInfo(updateTick, f);
+}
+
+void Client::OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>& list)
+{
+    receiver_.OnGuildMemberList(updateTick, list);
+}
+
+void Client::OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild)
+{
+    receiver_.OnGuildInfo(updateTick, guild);
+}
+
+void Client::OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm)
+{
+    receiver_.OnGuildMemberInfo(updateTick, gm);
 }
 
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
-    if (receiver_)
-        receiver_->OnSpawnObject(updateTick, id, objectSpawn, data, existing);
+    receiver_.OnSpawnObject(updateTick, id, objectSpawn, data, existing);
 }
 
 void Client::OnLog(const std::string& message)
 {
-    if (receiver_)
-        receiver_->OnLog(message);
+    receiver_.OnLog(message);
 }
 
 void Client::OnNetworkError(ConnectionError connectionError, const std::error_code& err)
 {
-    if (receiver_)
-        receiver_->OnNetworkError(connectionError, err);
+    receiver_.OnNetworkError(connectionError, err);
 }
 
 void Client::OnProtocolError(uint8_t err)
 {
-    if (receiver_)
-        receiver_->OnProtocolError(err);
+    receiver_.OnProtocolError(err);
 }
 
 void Client::OnPong(int lastPing)
@@ -452,14 +433,12 @@ void Client::OnPong(int lastPing)
 
 void Client::OnServerJoined(const AB::Entities::Service& service)
 {
-    if (receiver_)
-        receiver_->OnServerJoined(service);
+    receiver_.OnServerJoined(service);
 }
 
 void Client::OnServerLeft(const AB::Entities::Service& service)
 {
-    if (receiver_)
-        receiver_->OnServerLeft(service);
+    receiver_.OnServerLeft(service);
 }
 
 std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
@@ -569,10 +548,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
     // 2. Login to game server
     if (!protoGame_)
-    {
-        protoGame_ = std::make_shared<ProtocolGame>(dhKeys_, *ioService_.get());
-        protoGame_->receiver_ = this;
-    }
+        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_.get());
 
     protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);

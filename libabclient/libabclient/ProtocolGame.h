@@ -16,6 +16,7 @@ public:
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
 private:
+    Receiver& receiver_;
     std::string accountUuid_;
     std::string authToken_;
     std::string charUuid_;
@@ -86,14 +87,16 @@ protected:
     void ParseResourceChanged(InputMessage& message);
     void ParseDialogTrigger(InputMessage& message);
     void ParseFriendListAll(InputMessage& message);
+    void ParseFriendSingle(InputMessage& message);
+    void ParseGuildInfo(InputMessage& message);
     void ParseGuildMembersAll(InputMessage& message);
+    void ParseGuildMember(InputMessage& message);
     void ParsePlayerLoggedIn(InputMessage& message);
     void ParsePlayerLoggedOut(InputMessage& message);
+    void ParsePlayerInfo(InputMessage& message);
 public:
-    ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService);
+    ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);
     ~ProtocolGame() override = default;
-
-    Receiver* receiver_;
 
     void Login(const std::string& accountUuid, const std::string& authToken,
         const std::string& charUuid, const std::string& mapUuid, const std::string& instanceUuid,

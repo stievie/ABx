@@ -30,6 +30,7 @@ public:
         World
     };
 private:
+    Receiver& receiver_;
     std::shared_ptr<asio::io_service> ioService_;
     std::shared_ptr<ProtocolLogin> protoLogin_;
     std::shared_ptr<ProtocolGame> protoGame_;
@@ -44,7 +45,7 @@ private:
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
     void Terminate();
 public:
-    Client();
+    Client(Receiver& receiver);
     virtual ~Client();
 
     void ResetPoll();
@@ -144,6 +145,12 @@ public:
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
     void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) override;
     void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) override;
+    void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) override;
+    void OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>& list) override;
+    void OnFriendInfo(int64_t updateTick, const RelatedAccount& f) override;
+    void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>&) override;
+    void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
+    void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -155,7 +162,6 @@ public:
     std::string gameHost_;
     uint16_t gamePort_;
     ClientState state_;
-    Receiver* receiver_;
     HttpsClient* httpClient_;
     const std::string& GetMapUuid() const
     {

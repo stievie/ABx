@@ -6,8 +6,9 @@
 
 namespace Client {
 
-ProtocolGame::ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService) :
+ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService) :
     Protocol(keys, ioService),
+    receiver_(receiver),
     updateTick_(0),
     loggingOut_(false)
 {
@@ -74,8 +75,8 @@ void ProtocolGame::OnError(ConnectionError connectionError, const asio::error_co
         loggingOut_ = false;
         return;
     }
-    if (receiver_)
-        receiver_->OnNetworkError(connectionError, err);
+
+    receiver_.OnNetworkError(connectionError, err);
 }
 
 void ProtocolGame::ParseMessage(InputMessage& message)
@@ -236,14 +237,26 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         case AB::GameProtocol::FriendListAll:
             ParseFriendListAll(message);
             break;
+        case AB::GameProtocol::FriendSingle:
+            ParseFriendSingle(message);
+            break;
+        case AB::GameProtocol::GuildInfo:
+            ParseGuildMembersAll(message);
+            break;
         case AB::GameProtocol::GuildMembersAll:
             ParseGuildMembersAll(message);
+            break;
+        case AB::GameProtocol::GuildMember:
+            ParseGuildMember(message);
             break;
         case AB::GameProtocol::PlayerLoggedIn:
             ParsePlayerLoggedIn(message);
             break;
         case AB::GameProtocol::PlayerLoggedOut:
             ParsePlayerLoggedOut(message);
+            break;
+        case AB::GameProtocol::PlayerInfo:
+            ParsePlayerInfo(message);
             break;
         case AB::GameProtocol::CodeLast:
             // Padding bytes, i.e. end of message
@@ -272,32 +285,32 @@ void ProtocolGame::ParseObjectRotUpdate(InputMessage& message)
     uint32_t objectId = message.Get<uint32_t>();
     float rot = message.Get<float>();
     bool manual = message.Get<uint8_t>() != 0;
-    if (receiver_)
-        receiver_->OnObjectRot(updateTick_, objectId, rot, manual);
+
+    receiver_.OnObjectRot(updateTick_, objectId, rot, manual);
 }
 
 void ProtocolGame::ParseObjectStateChange(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
-    if (receiver_)
-        receiver_->OnObjectStateChange(updateTick_, objectId, state);
+
+    receiver_.OnObjectStateChange(updateTick_, objectId, state);
 }
 
 void ProtocolGame::ParseObjectSpeedChange(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     float speedFactor = message.Get<float>();
-    if (receiver_)
-        receiver_->OnObjectSpeedChange(updateTick_, objectId, speedFactor);
+
+    receiver_.OnObjectSpeedChange(updateTick_, objectId, speedFactor);
 }
 
 void ProtocolGame::ParseObjectSelected(InputMessage& message)
 {
     uint32_t sourceId = message.Get<uint32_t>();
     uint32_t targetId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnObjectSelected(updateTick_, sourceId, targetId);
+
+    receiver_.OnObjectSelected(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParseObjectSkillFailure(InputMessage& message)
@@ -305,8 +318,8 @@ void ProtocolGame::ParseObjectSkillFailure(InputMessage& message)
     uint32_t objectId = message.Get<uint32_t>();
     int skillIndex = static_cast<int>(message.Get<int8_t>());
     AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message.Get<uint8_t>());
-    if (receiver_)
-        receiver_->OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
+
+    receiver_.OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
 }
 
 void ProtocolGame::ParseObjectUseSkill(InputMessage& message)
@@ -319,8 +332,8 @@ void ProtocolGame::ParseObjectUseSkill(InputMessage& message)
     uint16_t activation = message.Get<uint16_t>();
     uint16_t overcast = message.Get<uint16_t>();
     uint16_t hpScarifies = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast, hpScarifies);
+
+    receiver_.OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast, hpScarifies);
 }
 
 void ProtocolGame::ParseObjectEndUseSkill(InputMessage& message)
@@ -328,16 +341,16 @@ void ProtocolGame::ParseObjectEndUseSkill(InputMessage& message)
     uint32_t objectId = message.Get<uint32_t>();
     int skillIndex = static_cast<int>(message.Get<uint8_t>());
     uint16_t recharge = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
+
+    receiver_.OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
 }
 
 void ProtocolGame::ParseObjectAttackFailure(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message.Get<uint8_t>());
-    if (receiver_)
-        receiver_->OnObjectAttackFailure(updateTick_, objectId, attackError);
+
+    receiver_.OnObjectAttackFailure(updateTick_, objectId, attackError);
 }
 
 void ProtocolGame::ParseObjectPingTarget(InputMessage& message)
@@ -346,8 +359,8 @@ void ProtocolGame::ParseObjectPingTarget(InputMessage& message)
     uint32_t targetId = message.Get<uint32_t>();
     AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(message.Get<uint8_t>());
     int skillIndex = message.Get<int8_t>();
-    if (receiver_)
-        receiver_->OnObjectPingTarget(updateTick_, objectId, targetId, type, skillIndex);
+
+    receiver_.OnObjectPingTarget(updateTick_, objectId, targetId, type, skillIndex);
 }
 
 void ProtocolGame::ParseObjectEffectAdded(InputMessage& message)
@@ -355,16 +368,16 @@ void ProtocolGame::ParseObjectEffectAdded(InputMessage& message)
     uint32_t objectId = message.Get<uint32_t>();
     uint32_t effectIndex = message.Get<uint32_t>();
     uint32_t ticks = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnObjectEffectAdded(updateTick_, objectId, effectIndex, ticks);
+
+    receiver_.OnObjectEffectAdded(updateTick_, objectId, effectIndex, ticks);
 }
 
 void ProtocolGame::ParseObjectEffectRemoved(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     uint32_t effectIndex = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
+
+    receiver_.OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
 }
 
 void ProtocolGame::ParseObjectDamaged(InputMessage& message)
@@ -374,8 +387,8 @@ void ProtocolGame::ParseObjectDamaged(InputMessage& message)
     uint16_t index = message.Get<uint16_t>();
     uint8_t damageType = message.Get<uint8_t>();
     int16_t damageValue = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnObjectDamaged(updateTick_, objectId, sourceId, index, damageType, damageValue);
+
+    receiver_.OnObjectDamaged(updateTick_, objectId, sourceId, index, damageType, damageValue);
 }
 
 void ProtocolGame::ParseObjectHealed(InputMessage& message)
@@ -384,8 +397,8 @@ void ProtocolGame::ParseObjectHealed(InputMessage& message)
     uint32_t healerId = message.Get<uint32_t>();
     uint16_t index = message.Get<uint16_t>();
     int16_t healValue = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
+
+    receiver_.OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
 }
 
 void ProtocolGame::ParseObjectProgress(InputMessage& message)
@@ -393,8 +406,8 @@ void ProtocolGame::ParseObjectProgress(InputMessage& message)
     uint32_t objectId = message.Get<uint32_t>();
     AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(message.Get<uint8_t>());
     int value = static_cast<int>(message.Get<int16_t>());
-    if (receiver_)
-        receiver_->OnObjectProgress(updateTick_, objectId, type, value);
+
+    receiver_.OnObjectProgress(updateTick_, objectId, type, value);
 }
 
 void ProtocolGame::ParseObjectDroppedItem(InputMessage& message)
@@ -405,8 +418,8 @@ void ProtocolGame::ParseObjectDroppedItem(InputMessage& message)
     uint32_t itemIndex = message.Get<uint32_t>();
     uint32_t count = message.Get<uint32_t>();
     uint16_t value = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
+
+    receiver_.OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
 }
 
 void ProtocolGame::ParseObjectSetPosition(InputMessage& message)
@@ -417,8 +430,8 @@ void ProtocolGame::ParseObjectSetPosition(InputMessage& message)
         message.Get<float>(),
         message.Get<float>()
     };
-    if (receiver_)
-        receiver_->OnObjectSetPosition(updateTick_, objectId, pos);
+
+    receiver_.OnObjectSetPosition(updateTick_, objectId, pos);
 }
 
 void ProtocolGame::ParseServerMessage(InputMessage& message)
@@ -427,8 +440,8 @@ void ProtocolGame::ParseServerMessage(InputMessage& message)
         static_cast<AB::GameProtocol::ServerMessageType>(message.Get<uint8_t>());
     std::string sender = message.GetString();
     std::string data = message.GetString();
-    if (receiver_)
-        receiver_->OnServerMessage(updateTick_, type, sender, data);
+
+    receiver_.OnServerMessage(updateTick_, type, sender, data);
 }
 
 void ProtocolGame::ParseChatMessage(InputMessage& message)
@@ -438,8 +451,8 @@ void ProtocolGame::ParseChatMessage(InputMessage& message)
     uint32_t senderId = message.Get<uint32_t>();
     std::string sender = message.GetString();
     std::string data = message.GetString();
-    if (receiver_)
-        receiver_->OnChatMessage(updateTick_, type, senderId, sender, data);
+
+    receiver_.OnChatMessage(updateTick_, type, senderId, sender, data);
 }
 
 void ProtocolGame::ParsePartyPlayerInvited(InputMessage& message)
@@ -447,8 +460,8 @@ void ProtocolGame::ParsePartyPlayerInvited(InputMessage& message)
     uint32_t sourceId = message.Get<uint32_t>();         // Inviter (source)
     uint32_t targetId = message.Get<uint32_t>();         // Invitee (target)
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyInvited(updateTick_, sourceId, targetId, partyId);
+
+    receiver_.OnPartyInvited(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParsePartyPlayerRemoved(InputMessage& message)
@@ -456,8 +469,8 @@ void ProtocolGame::ParsePartyPlayerRemoved(InputMessage& message)
     uint32_t sourceId = message.Get<uint32_t>();
     uint32_t targetId = message.Get<uint32_t>();
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyRemoved(updateTick_, sourceId, targetId, partyId);
+
+    receiver_.OnPartyRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParsePartyPlayerAdded(InputMessage& message)
@@ -465,8 +478,8 @@ void ProtocolGame::ParsePartyPlayerAdded(InputMessage& message)
     uint32_t acceptorId = message.Get<uint32_t>();
     uint32_t leaderId = message.Get<uint32_t>();
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyAdded(updateTick_, acceptorId, leaderId, partyId);
+
+    receiver_.OnPartyAdded(updateTick_, acceptorId, leaderId, partyId);
 }
 
 void ProtocolGame::ParsePartyInviteRemoved(InputMessage& message)
@@ -474,22 +487,22 @@ void ProtocolGame::ParsePartyInviteRemoved(InputMessage& message)
     uint32_t sourceId = message.Get<uint32_t>();
     uint32_t targetId = message.Get<uint32_t>();
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
+
+    receiver_.OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParsePartyResigned(InputMessage& message)
 {
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyResigned(updateTick_, partyId);
+
+    receiver_.OnPartyResigned(updateTick_, partyId);
 }
 
 void ProtocolGame::ParsePartyDefeated(InputMessage& message)
 {
     uint32_t partyId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnPartyDefeated(updateTick_, partyId);
+
+    receiver_.OnPartyDefeated(updateTick_, partyId);
 }
 
 void ProtocolGame::ParsePartyInfoMembers(InputMessage& message)
@@ -502,8 +515,8 @@ void ProtocolGame::ParsePartyInfoMembers(InputMessage& message)
     {
         members[i] = message.Get<uint32_t>();
     }
-    if (receiver_)
-        receiver_->OnPartyInfoMembers(partyId, members);
+
+    receiver_.OnPartyInfoMembers(partyId, members);
 }
 
 void ProtocolGame::ParseResourceChanged(InputMessage& message)
@@ -520,16 +533,16 @@ void ProtocolGame::ParseResourceChanged(InputMessage& message)
     case AB::GameProtocol::ResourceTypeMaxEnergy:
     {
         int16_t value = message.Get<int16_t>();
-        if (receiver_)
-            receiver_->OnResourceChanged(updateTick_, objectId, resType, value);
+
+        receiver_.OnResourceChanged(updateTick_, objectId, resType, value);
         break;
     }
     case AB::GameProtocol::ResourceTypeHealthRegen:
     case AB::GameProtocol::ResourceTypeEnergyRegen:
     {
         int8_t value = message.Get<int8_t>();
-        if (receiver_)
-            receiver_->OnResourceChanged(updateTick_, objectId, resType, static_cast<int16_t>(value));
+
+        receiver_.OnResourceChanged(updateTick_, objectId, resType, static_cast<int16_t>(value));
         break;
     }
     }
@@ -538,8 +551,8 @@ void ProtocolGame::ParseResourceChanged(InputMessage& message)
 void ProtocolGame::ParseDialogTrigger(InputMessage& message)
 {
     uint32_t dialogId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnDialogTrigger(updateTick_, dialogId);
+
+    receiver_.OnDialogTrigger(updateTick_, dialogId);
 }
 
 void ProtocolGame::ParseFriendListAll(InputMessage& message)
@@ -558,14 +571,66 @@ void ProtocolGame::ParseFriendListAll(InputMessage& message)
             message.GetString()                          // Current map
         });
     }
-    // TODO:
-    (void)friends;
+
+    receiver_.OnFriendList(updateTick_, friends);
+}
+
+void ProtocolGame::ParseFriendSingle(InputMessage& message)
+{
+    RelatedAccount frnd;
+    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    frnd.accountUuid = message.GetString();
+    frnd.name = message.GetString();
+    frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
+    frnd.currentName = message.GetString();
+    frnd.currentMap = message.GetString();
+
+    receiver_.OnFriendInfo(updateTick_, frnd);
+}
+
+void ProtocolGame::ParseGuildInfo(InputMessage& message)
+{
+    AB::Entities::Guild guild;
+    guild.uuid = message.GetString();
+    guild.name = message.GetString();
+    guild.tag = message.GetString();
+    guild.creation = message.Get<int64_t>();
+    guild.creatorAccountUuid = message.GetString();
+
+    receiver_.OnGuildInfo(updateTick_, guild);
 }
 
 void ProtocolGame::ParseGuildMembersAll(InputMessage& message)
 {
-    // TODO:
-    (void)message;
+    std::vector<AB::Entities::GuildMember> members;
+    size_t count = message.Get<uint16_t>();
+    members.reserve(count);
+    for (size_t i = 0; i < count; ++i)
+    {
+        members.push_back({
+            message.GetString(),
+            message.GetString(),
+            static_cast<AB::Entities::GuildRole>(message.Get<uint8_t>()),
+            message.Get<int64_t>(),
+            message.Get<int64_t>(),
+            message.Get<int64_t>()
+        });
+    }
+
+    receiver_.OnGuildMemberList(updateTick_, members);
+}
+
+void ProtocolGame::ParseGuildMember(InputMessage& message)
+{
+    AB::Entities::GuildMember member;
+    member.role = static_cast<AB::Entities::GuildRole>(message.Get<uint8_t>());
+    member.accountUuid = message.GetString();
+    member.inviteName = message.GetString();
+    member.joined = message.Get<int64_t>();
+    member.invited = message.Get<int64_t>();
+    member.expires = message.Get<int64_t>();
+
+    receiver_.OnGuildMemberInfo(updateTick_, member);
 }
 
 void ProtocolGame::ParsePlayerLoggedIn(InputMessage& message)
@@ -581,8 +646,8 @@ void ProtocolGame::ParsePlayerLoggedIn(InputMessage& message)
     player.currentName = message.GetString();
     player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
     player.currentMap = message.GetString();
-    if (receiver_)
-        receiver_->OnPlayerLoggedIn(updateTick_, player);
+
+    receiver_.OnPlayerLoggedIn(updateTick_, player);
 }
 
 void ProtocolGame::ParsePlayerLoggedOut(InputMessage& message)
@@ -596,8 +661,21 @@ void ProtocolGame::ParsePlayerLoggedOut(InputMessage& message)
     player.accountUuid = message.GetString();
     player.currentName = message.GetString();
     player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-    if (receiver_)
-        receiver_->OnPlayerLoggedOut(updateTick_, player);
+
+    receiver_.OnPlayerLoggedOut(updateTick_, player);
+}
+
+void ProtocolGame::ParsePlayerInfo(InputMessage& message)
+{
+    RelatedAccount frnd;
+    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    frnd.accountUuid = message.GetString();
+    frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
+    frnd.currentName = message.GetString();
+    frnd.currentMap = message.GetString();
+    frnd.name = frnd.currentName;
+
+    receiver_.OnPlayerInfo(updateTick_, frnd);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(InputMessage& message)
@@ -609,15 +687,15 @@ void ProtocolGame::ParseObjectPosUpdate(InputMessage& message)
         message.Get<float>(),
         message.Get<float>()
     };
-    if (receiver_)
-        receiver_->OnObjectPos(updateTick_, objectId, newPos);
+
+    receiver_.OnObjectPos(updateTick_, objectId, newPos);
 }
 
 void ProtocolGame::ParseLeaveObject(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
-    if (receiver_)
-        receiver_->OnDespawnObject(updateTick_, objectId);
+
+    receiver_.OnDespawnObject(updateTick_, objectId);
 }
 
 void ProtocolGame::ParseSpawnObject(bool existing, InputMessage& message)
@@ -645,8 +723,8 @@ void ProtocolGame::ParseSpawnObject(bool existing, InputMessage& message)
     std::string data = message.GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
-    if (receiver_)
-        receiver_->OnSpawnObject(updateTick_, objectId, os, stream, existing);
+
+    receiver_.OnSpawnObject(updateTick_, objectId, os, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(InputMessage& message)
@@ -661,22 +739,22 @@ void ProtocolGame::ParsePong(InputMessage& message)
     clockDiff_ = static_cast<int64_t>(diff);
     // Round trip time
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
-    if (receiver_)
-        receiver_->OnPong(lastPing_);
+
+    receiver_.OnPong(lastPing_);
 }
 
 void ProtocolGame::ParseGameError(InputMessage& message)
 {
     AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message.Get<uint8_t>());
-    if (receiver_)
-        receiver_->OnPlayerError(updateTick_, error);
+
+    receiver_.OnPlayerError(updateTick_, error);
 }
 
 void ProtocolGame::ParsePlayerAutoRun(InputMessage& message)
 {
     bool autorun = message.Get<uint8_t>() == 1;
-    if (receiver_)
-        receiver_->OnPlayerAutorun(updateTick_, autorun);
+
+    receiver_.OnPlayerAutorun(updateTick_, autorun);
 }
 
 void ProtocolGame::ParseServerJoined(InputMessage& message)
@@ -688,8 +766,8 @@ void ProtocolGame::ParseServerJoined(InputMessage& message)
     s.port = message.Get<uint16_t>();
     s.location = message.GetString();
     s.name = message.GetString();
-    if (receiver_)
-        receiver_->OnServerJoined(s);
+
+    receiver_.OnServerJoined(s);
 }
 
 void ProtocolGame::ParseServerLeft(InputMessage& message)
@@ -701,8 +779,8 @@ void ProtocolGame::ParseServerLeft(InputMessage& message)
     s.port = message.Get<uint16_t>();
     s.location = message.GetString();
     s.name = message.GetString();
-    if (receiver_)
-        receiver_->OnServerLeft(s);
+
+    receiver_.OnServerLeft(s);
 }
 
 void ProtocolGame::ParseError(InputMessage& message)
@@ -720,8 +798,8 @@ void ProtocolGame::ParseEnterWorld(InputMessage& message)
     uint32_t playerId = message.Get<uint32_t>();
     AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
     uint8_t partySize = message.Get<uint8_t>();
-    if (receiver_)
-        receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId, type, partySize);
+
+    receiver_.OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId, type, partySize);
 }
 
 void ProtocolGame::ParseChangeInstance(InputMessage& message)
@@ -732,8 +810,8 @@ void ProtocolGame::ParseChangeInstance(InputMessage& message)
     std::string mapUuid = message.GetString();
     std::string instanceUuid = message.GetString();
     std::string charUuid = message.GetString();
-    if (receiver_)
-        receiver_->OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
+
+    receiver_.OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
 }
 
 void ProtocolGame::ParseMailHeaders(InputMessage& message)
@@ -755,8 +833,8 @@ void ProtocolGame::ParseMailHeaders(InputMessage& message)
     {
         return lhs.created - rhs.created;
     });
-    if (receiver_)
-        receiver_->OnGetMailHeaders(updateTick_, mailHeaders);
+
+    receiver_.OnGetMailHeaders(updateTick_, mailHeaders);
 }
 
 void ProtocolGame::ParseMailComplete(InputMessage& message)
@@ -769,8 +847,8 @@ void ProtocolGame::ParseMailComplete(InputMessage& message)
     mail.message = message.GetString();
     mail.created = message.Get<int64_t>();
     mail.isRead = message.Get<uint8_t>() != 0;
-    if (receiver_)
-        receiver_->OnGetMail(updateTick_, mail);
+
+    receiver_.OnGetMail(updateTick_, mail);
 }
 
 void ProtocolGame::ParseInventoryContent(InputMessage& message)
@@ -789,8 +867,8 @@ void ProtocolGame::ParseInventoryContent(InputMessage& message)
             message.Get<uint16_t>()
         });
     }
-    if (receiver_)
-        receiver_->OnGetInventory(updateTick_, items);
+
+    receiver_.OnGetInventory(updateTick_, items);
 }
 
 void ProtocolGame::ParseInventoryItemUpdate(InputMessage& message)
@@ -802,15 +880,14 @@ void ProtocolGame::ParseInventoryItemUpdate(InputMessage& message)
     item.pos = message.Get<uint16_t>();
     item.count = message.Get<uint32_t>();
     item.value = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnInventoryItemUpdate(updateTick_, item);
+
+    receiver_.OnInventoryItemUpdate(updateTick_, item);
 }
 
 void ProtocolGame::ParseInventoryItemDelete(InputMessage& message)
 {
     uint16_t pos = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnInventoryItemDelete(updateTick_, pos);
+    receiver_.OnInventoryItemDelete(updateTick_, pos);
 }
 
 void ProtocolGame::ParseChestContent(InputMessage& message)
@@ -829,8 +906,8 @@ void ProtocolGame::ParseChestContent(InputMessage& message)
             message.Get<uint16_t>()
         });
     }
-    if (receiver_)
-        receiver_->OnGetChest(updateTick_, items);
+
+    receiver_.OnGetChest(updateTick_, items);
 }
 
 void ProtocolGame::ParseChestItemUpdate(InputMessage& message)
@@ -842,21 +919,19 @@ void ProtocolGame::ParseChestItemUpdate(InputMessage& message)
     item.pos = message.Get<uint16_t>();
     item.count = message.Get<uint32_t>();
     item.value = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnChestItemUpdate(updateTick_, item);
+
+    receiver_.OnChestItemUpdate(updateTick_, item);
 }
 
 void ProtocolGame::ParseChestItemDelete(InputMessage& message)
 {
     uint16_t pos = message.Get<uint16_t>();
-    if (receiver_)
-        receiver_->OnChestItemDelete(updateTick_, pos);
+    receiver_.OnChestItemDelete(updateTick_, pos);
 }
 
 void ProtocolGame::LogMessage(const std::string& message)
 {
-    if (receiver_)
-        receiver_->OnLog(message);
+    receiver_.OnLog(message);
 }
 
 void ProtocolGame::SendLoginPacket()

@@ -345,6 +345,12 @@
     <ClInclude Include="ItemsCache.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GuildManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Guild.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -594,6 +600,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ItemsCache.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GuildManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Guild.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

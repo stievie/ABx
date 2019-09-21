@@ -22,6 +22,8 @@
 #include "IOAccount.h"
 #include "Scheduler.h"
 #include "IOGame.h"
+#include "Guild.h"
+#include "GuildManager.h"
 
 namespace Game {
 
@@ -172,11 +174,6 @@ void Player::CRQGetMailHeaders()
         msg->AddByte(mail.isRead ? 1 : 0);
     }
     WriteToOutput(*msg);
-}
-
-void Player::CRQGetGuildMembers()
-{
-    // TODO: ...
 }
 
 void Player::CRQGetInventory()
@@ -484,15 +481,15 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
         WriteToOutput(*msg);
 }
 
-void Player::CRQGetFriend(const std::string nickName)
+void Player::CRQGetFriend(const std::string accountUuid)
 {
-    auto msg = Net::NetworkMessage::GetNew();
     AB::Entities::Friend f;
-    bool found = friendList_->GetFriendByName(nickName, f);
+    bool found = friendList_->GetFriendByAccount(accountUuid, f);
     if (!found)
         // If there is no such friend, we just don't reply to this request
         return;
 
+    auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::FriendSingle);
     msg->Add<uint8_t>(f.relation);
     msg->AddString(f.friendUuid);
@@ -516,6 +513,106 @@ void Player::CRQGetFriend(const std::string nickName)
         msg->AddString("");
         msg->AddString(Utils::Uuid::EMPTY_UUID);
     }
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetGuildMembers()
+{
+    auto* gm = GetSubsystem<GuildManager>();
+    auto guild = gm->Get(account_.guildUuid);
+    if (!guild)
+        return;
+
+    AB::Entities::GuildMembers members;
+    if (!guild->GetMembers(members))
+        return;
+    if (members.members.size() == 0)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::GuildMembersAll);
+    msg->Add<uint16_t>(static_cast<uint16_t>(members.members.size()));
+
+    for (const AB::Entities::GuildMember& member : members.members)
+    {
+        msg->AddString(member.accountUuid);
+        msg->AddString(member.inviteName);
+        msg->Add<uint8_t>(member.role);
+        msg->Add<int64_t>(member.invited);
+        msg->Add<int64_t>(member.joined);
+        msg->Add<int64_t>(member.expires);
+    };
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetGuildMember(const std::string accountUuid)
+{
+    auto* gm = GetSubsystem<GuildManager>();
+    auto guild = gm->Get(account_.guildUuid);
+    if (!guild)
+        return;
+    AB::Entities::GuildMember member;
+    if (!guild->GetMember(accountUuid, member))
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::GuildMember);
+    msg->Add<uint8_t>(member.role);
+    msg->AddString(member.accountUuid);
+    msg->AddString(member.inviteName);
+    msg->Add<int64_t>(member.joined);
+    msg->Add<int64_t>(member.invited);
+    msg->Add<int64_t>(member.expires);
+
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetPlayerInfo(const std::string accountUuid)
+{
+    AB::Entities::Friend f;
+    // Just to see if the player is ignored
+    /* bool found = */ friendList_->GetFriendByAccount(accountUuid, f);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::PlayerInfo);
+    msg->Add<uint8_t>(f.relation);
+    msg->AddString(accountUuid);
+
+    if (f.relation != AB::Entities::FriendRelationIgnore)
+    {
+        AB::Entities::Account playerAccount;
+        playerAccount.uuid = accountUuid;
+        AB::Entities::Character playerToon;
+        /* const bool success = */ IO::IOAccount::GetAccountInfo(playerAccount, playerToon);
+        // If success == false -> offline, empty toon name
+        msg->Add<uint8_t>(playerAccount.onlineStatus);
+        msg->AddString(playerToon.name);
+        msg->AddString(playerToon.currentMapUuid);
+    }
+    else
+    {
+        // Ignored always offline and no current toon
+        msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
+        msg->AddString("");
+        msg->AddString(Utils::Uuid::EMPTY_UUID);
+    }
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetGuildInfo()
+{
+    auto* gm = GetSubsystem<GuildManager>();
+    auto guild = gm->Get(account_.guildUuid);
+    if (!guild)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::GuildInfo);
+    msg->AddString(guild->data_.uuid);
+    msg->AddString(guild->data_.name);
+    msg->AddString(guild->data_.tag);
+    msg->Add<int64_t>(guild->data_.creation);
+    msg->AddString(guild->data_.creatorAccountUuid);
     WriteToOutput(*msg);
 }
 

@@ -379,6 +379,14 @@ URHO3D_EVENT(E_PLAYER_LOGGEDOUT, PlayerLoggedOut)
     URHO3D_PARAM(P_STATUS, Status);
 }
 
+URHO3D_EVENT(E_GOT_FRIENDLIST, GotFriendList)
+{
+}
+
+URHO3D_EVENT(E_GOT_GUILDMEMBERS, GotGuildMembers)
+{
+}
+
 // Shortcuts
 URHO3D_EVENT(E_SC_TOGGLEMAP, ToggleMap)
 {

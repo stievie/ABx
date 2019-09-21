@@ -33,6 +33,7 @@
 #include <sa/ConditionSleep.h>
 #include "ItemsCache.h"
 #include "UuidUtils.h"
+#include "GuildManager.h"
 
 Application* Application::Instance = nullptr;
 
@@ -61,6 +62,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::GameManager>();
     Subsystems::Instance.CreateSubsystem<Game::PlayerManager>();
     Subsystems::Instance.CreateSubsystem<Game::PartyManager>();
+    Subsystems::Instance.CreateSubsystem<Game::GuildManager>();
 
     Subsystems::Instance.CreateSubsystem<Game::EffectManager>();
     Subsystems::Instance.CreateSubsystem<Game::Chat>();

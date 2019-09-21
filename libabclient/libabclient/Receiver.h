@@ -13,6 +13,8 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
+#include <AB/Entities/GuildMembers.h>
+#include <AB/Entities/Guild.h>
 #include "Errors.h"
 
 namespace Client {
@@ -137,6 +139,12 @@ public:
     virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
     virtual void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) = 0;
+    virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
+    virtual void OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>&) = 0;
+    virtual void OnFriendInfo(int64_t updateTick, const RelatedAccount&) = 0;
+    virtual void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>&) = 0;
+    virtual void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild&) = 0;
+    virtual void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember&) = 0;
 };
 
 }

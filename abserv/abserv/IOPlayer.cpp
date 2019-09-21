@@ -129,7 +129,7 @@ size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vecto
         return 0;
 
     accounts.clear();
-    std::vector<std::string> ignored;
+    std::unordered_set<std::string> ignored;
 
     AB::Entities::FriendList fl;
     for (const auto& f : fl.friends)
@@ -137,15 +137,12 @@ size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vecto
         if (f.relation == AB::Entities::FriendRelationFriend)
             accounts.push_back(f.friendUuid);
         else if (f.relation == AB::Entities::FriendRelationIgnore)
-            ignored.push_back(f.friendUuid);
+            ignored.emplace(f.friendUuid);
     }
 
     auto isIgnored = [&ignored](const std::string& uuid)
     {
-        const auto it = std::find_if(ignored.begin(), ignored.end(), [&uuid](const std::string& current)
-        {
-            return Utils::Uuid::IsEqual(current, uuid);
-        });
+        const auto it = ignored.find(uuid);
         return it != ignored.end();
     };
 

@@ -37,8 +37,8 @@ FriendListWindow::FriendListWindow(Context* context) :
     Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
     caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends", true));
 
-//    memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
-//    partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));
+    friendContainer_ = dynamic_cast<UIElement*>(GetChild("FriendsContainer", true));
+    ignoreContainer_ = dynamic_cast<UIElement*>(GetChild("IgnoredContainer", true));
 
     SetSize(272, 128);
     auto* graphics = GetSubsystem<Graphics>();
@@ -59,6 +59,22 @@ void FriendListWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleCloseClicked));
+
+    SubscribeToEvent(AbEvents::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
+    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedOut));
+    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedIn));
+}
+
+void FriendListWindow::HandleGotFriendList(StringHash, VariantMap&)
+{
+}
+
+void FriendListWindow::HandlePlayerLoggedOut(StringHash eventType, VariantMap& eventData)
+{
+}
+
+void FriendListWindow::HandlePlayerLoggedIn(StringHash eventType, VariantMap& eventData)
+{
 }
 
 void FriendListWindow::HandleCloseClicked(StringHash, VariantMap&)

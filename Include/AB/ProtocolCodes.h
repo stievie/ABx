@@ -261,11 +261,14 @@ enum GameProtocolCodes : uint8_t
     FriendListAll,
     FriendSingle,             // Returns a single friend
     // Guild
+    GuildInfo,
     GuildMembersAll,
+    GuildMember,             // Info for single guild member
 
     DialogTrigger,                // Show a dialog
     PlayerLoggedIn,                    // Notification sent to friends/guild members when a player logged in
     PlayerLoggedOut,                   // Notification sent to friends/guild members when a player logged out
+    PlayerInfo,
 
     CodeLast = 0xFF
 };
@@ -350,6 +353,8 @@ enum GamePacketTypes : uint8_t
     PacketTypeLogout,
     PacketTypeChangeMap,
 
+    PacketTypeGetPlayerInfo,
+
     // Mail
     PacketTypeSendMail,
     PacketTypeGetMailHeaders,
@@ -400,7 +405,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeRemoveFriend,
     PacketTypeGetFriend,
     // Guild
+    PacketTypeGetGuildInfo,
     PacketTypeGetGuildMembers,
+    PacketTypeGetGuildMember,
 };
 
 enum CommandTypes : uint8_t

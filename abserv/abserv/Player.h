@@ -162,7 +162,10 @@ public:
     void CRQUnqueueForMatch();
     void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
     void CRQRemoveFriend(const std::string accountUuid);
-    void CRQGetFriend(const std::string nickName);
+    void CRQGetFriend(const std::string accountUuid);
+    void CRQGetGuildMember(const std::string accountUuid);
+    void CRQGetPlayerInfo(const std::string accountUuid);
+    void CRQGetGuildInfo();
     /// Client requested the friend list
     void CRQGetFriendList();
     /// Client requested guild members

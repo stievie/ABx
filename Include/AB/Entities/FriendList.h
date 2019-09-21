@@ -20,8 +20,9 @@ static constexpr auto KEY_FRIENDLIST = "friend_list";
 
 enum FriendRelation : uint8_t
 {
-    FriendRelationFriend = 0,
-    FriendRelationIgnore = 1
+    FriendRelationUnknown = 0,
+    FriendRelationFriend,
+    FriendRelationIgnore
 };
 
 struct Friend
@@ -30,7 +31,7 @@ struct Friend
     std::string friendUuid;
     /// Character or nick name of the friend
     std::string friendName;
-    FriendRelation relation;
+    FriendRelation relation{ FriendRelationUnknown };
     timestamp_t creation;
 };
 

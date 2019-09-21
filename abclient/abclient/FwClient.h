@@ -36,6 +36,8 @@ private:
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::vector<Client::InventoryItem> inventory_;
     std::vector<Client::InventoryItem> chest_;
+    std::vector<Client::RelatedAccount> friendList_;
+    std::vector<AB::Entities::GuildMember> guildMembers_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -199,6 +201,12 @@ public:
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
     void OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player) override;
     void OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player) override;
+    void OnPlayerInfo(int64_t updateTick, const Client::RelatedAccount& player) override;
+    void OnFriendList(int64_t updateTick, const std::vector<Client::RelatedAccount>& list) override;
+    void OnFriendInfo(int64_t updateTick, const Client::RelatedAccount& f) override;
+    void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>& list) override;
+    void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
+    void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm) override;
 
     void SetState(Client::Client::ClientState state)
     {
@@ -275,6 +283,16 @@ public:
 
         return (*it);
     }
+
+    const std::vector<Client::RelatedAccount>& GetFriendList() const
+    {
+        return friendList_;
+    }
+    const std::vector<AB::Entities::GuildMember>& GetGuildMembers() const
+    {
+        return guildMembers_;
+    }
+
     int GetAvgPing() const
     {
         return client_.GetAvgPing();

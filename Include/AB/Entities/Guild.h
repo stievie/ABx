@@ -27,14 +27,12 @@ struct Guild : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.value4b(id);
         s.text1b(name, Limits::MAX_GUILD_NAME);
         s.text1b(tag, Limits::MAX_GUILD_TAG);
         s.text1b(creatorAccountUuid, Limits::MAX_UUID);
         s.value8b(creation);
     }
 
-    uint32_t id;
     std::string name;
     std::string tag;
     std::string creatorAccountUuid = EMPTY_GUID;

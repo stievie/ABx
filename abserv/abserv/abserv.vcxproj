@@ -230,6 +230,8 @@
     <ClInclude Include="filters\AiSelectAttackers.h" />
     <ClInclude Include="filters\AiSelectDeadAllies.h" />
     <ClInclude Include="filters\AiSelectLowHealth.h" />
+    <ClInclude Include="Guild.h" />
+    <ClInclude Include="GuildManager.h" />
     <ClInclude Include="InventoryComp.h" />
     <ClInclude Include="filters\AiSelectAggro.h" />
     <ClInclude Include="filters\AiSelectVisible.h" />
@@ -318,6 +320,8 @@
     <ClCompile Include="filters\AiSelectAttackers.cpp" />
     <ClCompile Include="filters\AiSelectDeadAllies.cpp" />
     <ClCompile Include="filters\AiSelectLowHealth.cpp" />
+    <ClCompile Include="Guild.cpp" />
+    <ClCompile Include="GuildManager.cpp" />
     <ClCompile Include="InventoryComp.cpp" />
     <ClCompile Include="filters\AiSelectAggro.cpp" />
     <ClCompile Include="filters\AiSelectVisible.cpp" />

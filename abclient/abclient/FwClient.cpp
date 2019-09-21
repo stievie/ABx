@@ -138,12 +138,12 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
 }
 
 FwClient::FwClient(Context* context) :
-    Object(context)
+    Object(context),
+    client_(*this)
 {
     Options* o = context->GetSubsystem<Options>();
     client_.loginHost_ = std::string(o->loginHost_.CString());
     client_.loginPort_ = o->loginPort_;
-    client_.receiver_ = this;
     lastState_ = client_.state_;
     SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
     SubscribeUpdate();
@@ -152,7 +152,6 @@ FwClient::FwClient(Context* context) :
 
 FwClient::~FwClient()
 {
-    client_.receiver_ = nullptr;
     UnsubscribeFromAllEvents();
 }
 
@@ -1558,4 +1557,44 @@ void FwClient::OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccoun
     eData[P_NAME] = String(player.currentName.c_str());
     eData[P_STATUS] = static_cast<uint8_t>(player.status);
     QueueEvent(AbEvents::E_PLAYER_LOGGEDOUT, eData);
+}
+
+void FwClient::OnPlayerInfo(int64_t, const Client::RelatedAccount& player)
+{
+    // TODO:
+    (void)player;
+}
+
+void FwClient::OnFriendList(int64_t, const std::vector<Client::RelatedAccount>& list)
+{
+    friendList_ = list;
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::GotFriendList;
+    QueueEvent(AbEvents::E_GOT_FRIENDLIST, eData);
+}
+
+void FwClient::OnFriendInfo(int64_t, const Client::RelatedAccount& f)
+{
+    (void)f;
+    // TODO:
+}
+
+void FwClient::OnGuildMemberList(int64_t, const std::vector<AB::Entities::GuildMember>& list)
+{
+    guildMembers_ = list;
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::GotGuildMembers;
+    QueueEvent(AbEvents::E_GOT_GUILDMEMBERS, eData);
+}
+
+void FwClient::OnGuildInfo(int64_t, const AB::Entities::Guild& guild)
+{
+    // TODO:
+    (void)guild;
+}
+
+void FwClient::OnGuildMemberInfo(int64_t, const AB::Entities::GuildMember& gm)
+{
+    // TODO:
+    (void)gm;
 }

@@ -352,13 +352,28 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeGetFriend:
     {
-        std::string nickName = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetFriend, nickName);
+        std::string accountUuid = message.GetString();
+        AddPlayerTask(&Game::Player::CRQGetFriend, accountUuid);
         break;
     }
+    case AB::GameProtocol::PacketTypeGetGuildInfo:
+        AddPlayerTask(&Game::Player::CRQGetGuildInfo);
+        break;
     case AB::GameProtocol::PacketTypeGetGuildMembers:
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
+    case AB::GameProtocol::PacketTypeGetGuildMember:
+    {
+        std::string accountUuid = message.GetString();
+        AddPlayerTask(&Game::Player::CRQGetGuildMember, accountUuid);
+        break;
+    }
+    case AB::GameProtocol::PacketTypeGetPlayerInfo:
+    {
+        std::string accountUuid = message.GetString();
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfo, accountUuid);
+        break;
+    }
     default:
     {
         auto player = GetPlayer();

@@ -19,19 +19,19 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
     // Does not collide
     collisionMask_ = 0;
 
-    float originX = static_cast<float>(owner->numPatches_.x_ * size.x_) / 2.0f;
-    float originY = static_cast<float>(owner->numPatches_.y_ * size.y_) / 2.0f;
+    const float originX = static_cast<float>(owner->numPatches_.x_ * size.x_) * 0.5f;
+    const float originY = static_cast<float>(owner->numPatches_.y_ * size.y_) * 0.5f;
 
-    float halfSizeX = static_cast<float>(size.x_) / 2.0f;
-    float offsetSizeX = static_cast<float>(offset.x_) * static_cast<float>(size.x_);
-    float halfSizeY = static_cast<float>(size.y_) / 2.0f;
-    float offsetSizeY = static_cast<float>(offset.y_) * static_cast<float>(size.y_);
+    const float halfSizeX = static_cast<float>(size.x_) * 0.5f;
+    const float offsetSizeX = static_cast<float>(offset.x_) * static_cast<float>(size.x_);
+    const float halfSizeY = static_cast<float>(size.y_) * 0.5f;
+    const float offsetSizeY = static_cast<float>(offset.y_) * static_cast<float>(size.y_);
 
-    float _x = (halfSizeX + offsetSizeX) - originX;
-    float _y = (halfSizeY + offsetSizeY) - originY;
+    const float _x = (halfSizeX + offsetSizeX) - originX;
+    const float _y = (halfSizeY + offsetSizeY) - originY;
 
-    int rawX = static_cast<int>(_x + originX);
-    int rawY = static_cast<int>(_y + originY);
+    const int rawX = static_cast<int>(_x + originX);
+    const int rawY = static_cast<int>(_y + originY);
 
     transformation_.position_.x_ = _x;
     transformation_.position_.z_ = _y;
@@ -100,14 +100,14 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     if (auto o = owner_.lock())
     {
         const Math::Matrix4 matrix = o->transformation_.GetMatrix();
-        Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
-        float max = Math::Clamp(
+        const Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
+        const float max = Math::Clamp(
             Math::IsInfinite(query.maxDistance_) ? static_cast<float>(o->patchSize_) : query.maxDistance_,
             0.0f,
             static_cast<float>(o->patchSize_));
 
-        float distance = CastRay(localRay.origin_, localRay.direction_, max);
-        Math::Vector3 normal = -query.ray_.direction_;
+        const float distance = CastRay(localRay.origin_, localRay.direction_, max);
+        const Math::Vector3 normal = -query.ray_.direction_;
 
         if (!Math::IsInfinite(distance) && (distance < query.maxDistance_))
         {

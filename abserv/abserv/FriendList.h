@@ -27,6 +27,8 @@ public:
         friendList_{}
     { }
     ~FriendList() = default;
+    FriendList(const FriendList&) = delete;
+    FriendList& operator=(const FriendList&) = delete;
 
     void Load();
     FriendList::Error AddFriendByName(const std::string& playerName, AB::Entities::FriendRelation relation);

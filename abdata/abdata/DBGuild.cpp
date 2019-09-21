@@ -49,7 +49,7 @@ bool DBGuild::Load(AB::Entities::Guild& g)
     if (!Utils::Uuid::IsEmpty(g.uuid))
         query << "`uuid` = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
-        query << "`name` = " << db->EscapeString(g.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(g.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -132,7 +132,7 @@ bool DBGuild::Exists(const AB::Entities::Guild& g)
     if (!Utils::Uuid::IsEmpty(g.uuid))
         query << "`uuid` = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
-        query << "`name` = " << db->EscapeString(g.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(g.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
