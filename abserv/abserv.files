@@ -49,6 +49,10 @@ abserv/GameObject.cpp
 abserv/GameObject.h
 abserv/GameStream.cpp
 abserv/GameStream.h
+abserv/Guild.cpp
+abserv/Guild.h
+abserv/GuildManager.cpp
+abserv/GuildManager.h
 abserv/HealComp.cpp
 abserv/HealComp.h
 abserv/IOAccount.cpp

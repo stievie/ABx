@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Guild.h"
+#include <unordered_map>
+#include <memory>
 
 namespace Game {
 
