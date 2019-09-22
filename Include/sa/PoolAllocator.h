@@ -7,9 +7,10 @@
 namespace sa {
 
 /// Size must be a multiple of ChunkSize
-template <class T, size_t Size, size_t ChunkSize>
+template <typename T, size_t Size, size_t ChunkSize>
 class PoolAllocator
 {
+    static_assert(Size % ChunkSize == 0, "Size must be a multiple of ChunkSize");
 private:
     struct FreeHeader { };
     using Node = typename LinkedList<FreeHeader>::Node;

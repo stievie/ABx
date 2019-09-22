@@ -156,9 +156,27 @@ public:
 }
 
 namespace std {
+
+/// All unique_ptr<NetworkMessage> are deleted from the pool
 template <>
 struct default_delete<Net::NetworkMessage> {
     default_delete() = default;
     void operator()(Net::NetworkMessage* p) const noexcept { Net::NetworkMessage::Delete(p); }
 };
+
+/// This means make_unique<NetworkMessage> must also create them from the pool.
+/// This also means make_unique<NetworkMessage>(new NetworkMessage()) is not allowed.
+template <>
+inline unique_ptr<Net::NetworkMessage> make_unique<Net::NetworkMessage>()
+{
+    return Net::NetworkMessage::GetNew();
+}
+
+template <>
+inline shared_ptr<Net::NetworkMessage> make_shared<Net::NetworkMessage>()
+{
+    // Wouldn't be a big deal to make it working, but it's nowhere used.
+    throw std::runtime_error("NetworkMessage can not be used with a shared_ptr");
+}
+
 }
