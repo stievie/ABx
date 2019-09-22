@@ -18,7 +18,7 @@ Connection::~Connection()
     CloseSocket();
 }
 
-bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
+bool Connection::Send(std::shared_ptr<OutputMessage> message)
 {
 
     if (state_ != State::Open)
@@ -35,7 +35,7 @@ bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 
 void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
 {
-    protocol_->OnSendMessage(message);
+    protocol_->OnSendMessage(*message);
     try
     {
         writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
@@ -114,7 +114,7 @@ void Connection::Accept()
 
         // Read size of packet
         asio::async_read(socket_,
-            asio::buffer(msg_.GetBuffer(), NetworkMessage::HeaderLength),
+            asio::buffer(msg_->GetBuffer(), NetworkMessage::HeaderLength),
             std::bind(&Connection::ParseHeader, shared_from_this(), std::placeholders::_1));
     }
     catch (asio::system_error& e)
@@ -164,7 +164,7 @@ void Connection::ParseHeader(const asio::error_code& error)
         packetsSent_ = 0;
     }
 
-    int32_t size = msg_.GetHeaderSize();
+    int32_t size = msg_->GetHeaderSize();
     if (size == 0 || size >= static_cast<int32_t>(NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE) - 16)
     {
 #ifdef DEBUG_NET
@@ -181,9 +181,9 @@ void Connection::ParseHeader(const asio::error_code& error)
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read content
-        msg_.SetSize(size + NetworkMessage::HeaderLength);
+        msg_->SetSize(size + NetworkMessage::HeaderLength);
         asio::async_read(socket_,
-            asio::buffer(msg_.GetBodyBuffer(), size),
+            asio::buffer(msg_->GetBodyBuffer(), size),
             std::bind(&Connection::ParsePacket, shared_from_this(), std::placeholders::_1));
 
     }
@@ -215,16 +215,16 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
 
     uint32_t checksum;
-    int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - NetworkMessage::ChecksumLength;
+    int32_t len = msg_->GetMessageLength() - msg_->GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
-        checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() +
+        checksum = Utils::AdlerChecksum((uint8_t*)(msg_->GetBuffer() + msg_->GetReadPos() +
             NetworkMessage::ChecksumLength), len);
     else
         checksum = 0;
-    uint32_t recvChecksum = msg_.Get<uint32_t>();
+    uint32_t recvChecksum = msg_->Get<uint32_t>();
     if (recvChecksum != checksum)
         // it might not have been the checksum, step back
-        msg_.Skip(-NetworkMessage::ChecksumLength);
+        msg_->Skip(-NetworkMessage::ChecksumLength);
 
     if (!receivedFirst_)
     {
@@ -234,7 +234,7 @@ void Connection::ParsePacket(const asio::error_code& error)
         if (!protocol_)
         {
             // Game protocol has already been created at this point
-            protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, msg_, shared_from_this());
+            protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, *msg_, shared_from_this());
             if (!protocol_)
             {
                 Close(true);
@@ -244,13 +244,13 @@ void Connection::ParsePacket(const asio::error_code& error)
         }
         else
             // Skip protocol ID
-            msg_.Skip(1);
+            msg_->Skip(1);
 
-        protocol_->OnRecvFirstMessage(msg_);
+        protocol_->OnRecvFirstMessage(*msg_);
     }
     else
         // Send the packet to the current protocol
-        protocol_->OnRecvMessage(msg_);
+        protocol_->OnRecvMessage(*msg_);
 
     try
     {
@@ -260,7 +260,7 @@ void Connection::ParsePacket(const asio::error_code& error)
 
         // Wait for the next packet
         asio::async_read(socket_,
-            asio::buffer(msg_.GetBuffer(), NetworkMessage::HeaderLength),
+            asio::buffer(msg_->GetBuffer(), NetworkMessage::HeaderLength),
             std::bind(&Connection::ParseHeader, shared_from_this(), std::placeholders::_1));
     }
     catch (asio::system_error& e)

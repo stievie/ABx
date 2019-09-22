@@ -63,16 +63,22 @@ public:
 
     pointer allocate(size_type n, const void*)
     {
-        T* result = static_cast<T*>(Allocate(sizeof(T)));
+        void* resultMem = Allocate(sizeof(T));
+        T* t = new(resultMem)T;
         for (size_type i = 1; i < n; ++i)
-            Allocate(sizeof(T));
-        return result;
+        {
+            void* oMem = Allocate(sizeof(T));
+            new(oMem)T;
+        }
+        return t;
     }
     void deallocate(pointer p, size_t n)
     {
         for (size_t i = 0; i < n; ++i)
         {
-            Free(p + (ChunkSize * i));
+            T* o = reinterpret_cast<T*>(p + (ChunkSize * i));
+            o->~T();
+            Free(o);
         }
     }
 };

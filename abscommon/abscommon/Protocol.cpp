@@ -32,20 +32,20 @@ bool Protocol::XTEADecrypt(NetworkMessage& msg) const
     return true;
 }
 
-void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) const
+void Protocol::OnSendMessage(OutputMessage& message) const
 {
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Sending message" << std::endl;
 #endif
     if (encryptionEnabled_)
     {
-        XTEAEncrypt(*message);
+        XTEAEncrypt(message);
     }
     if (compressionEnabled_)
-        message->Compress();
+        message.Compress();
     if (encryptionEnabled_ || checksumEnabled_)
     {
-        message->AddCryptoHeader(checksumEnabled_);
+        message.AddCryptoHeader(checksumEnabled_);
     }
 }
 

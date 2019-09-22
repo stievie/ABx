@@ -46,7 +46,7 @@ public:
         memcpy(&encKey_, key, sizeof(encKey_));
     }
 
-    virtual void OnSendMessage(const std::shared_ptr<OutputMessage>& message) const;
+    virtual void OnSendMessage(OutputMessage& message) const;
     void OnRecvMessage(NetworkMessage& message);
 
     virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;

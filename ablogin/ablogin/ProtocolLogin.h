@@ -23,7 +23,7 @@ public:
         SetEncKey(AB::ENC_KEY);
     }
 
-    void OnRecvFirstMessage(NetworkMessage& message) final;
+    void OnRecvFirstMessage(NetworkMessage& message) override;
 private:
     void DisconnectClient(uint8_t error);
     void AuthenticateSendCharacterList(const std::string& accountName, const std::string& password);

@@ -13,7 +13,7 @@ class NetworkMessage;
 /// Size of the NetworkMessage class (4kB), the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
 constexpr size_t NETWORKMESSAGE_MAXSIZE = 4096;
 /// Size of the pool in Byte (4MB)
-constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 1000;
+constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 1024;
 
 using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_POOLSIZE, NETWORKMESSAGE_MAXSIZE>;
 static MessagePool gNetworkMessagePool;
@@ -24,6 +24,8 @@ public:
     static void Delete(NetworkMessage* p);
     /// Pre allocated network messages
     static std::unique_ptr<NetworkMessage> GetNew();
+public:
+    NetworkMessage() = default;
 public:
     using MsgSize_t = uint16_t;
 protected:
@@ -62,7 +64,6 @@ protected:
         return true;
     }
 public:
-    NetworkMessage() = default;
     void Reset()
     {
         info_ = {};

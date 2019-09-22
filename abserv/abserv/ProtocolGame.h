@@ -72,9 +72,9 @@ private:
     {
         return std::static_pointer_cast<ProtocolGame>(shared_from_this());
     }
-    void ParsePacket(NetworkMessage& message) final;
-    void OnRecvFirstMessage(NetworkMessage& msg) final;
-    void OnConnect() final;
+    void ParsePacket(NetworkMessage& message) override;
+    void OnRecvFirstMessage(NetworkMessage& msg) override;
+    void OnConnect() override;
 
     void DisconnectClient(uint8_t error);
     void Connect();

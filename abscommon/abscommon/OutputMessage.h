@@ -61,17 +61,6 @@ public:
         info_.length += static_cast<MsgSize_t>(msgLen);
         info_.position += static_cast<MsgSize_t>(msgLen);
     }
-    void Append(const std::shared_ptr<OutputMessage>& msg)
-    {
-        int32_t msgLen = msg->GetSize();
-#ifdef _MSC_VER
-        memcpy_s(buffer_ + info_.position, NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE, (msg->GetBuffer() + 8), msgLen);
-#else
-        memcpy(buffer_ + info_.position, (msg->GetBuffer() + 8), msgLen);
-#endif
-        info_.length += static_cast<MsgSize_t>(msgLen);
-        info_.position += static_cast<MsgSize_t>(msgLen);
-    }
 };
 
 class OutputMessagePool

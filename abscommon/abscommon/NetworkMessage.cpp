@@ -15,7 +15,7 @@ void NetworkMessage::Delete(NetworkMessage* p)
 
 std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 {
-    auto ptr = gNetworkMessagePool.allocate(1, nullptr);
+    auto* ptr = gNetworkMessagePool.allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return std::unique_ptr<NetworkMessage>(ptr);

@@ -48,7 +48,8 @@ public:
         socket_(ioService),
         servicePort_(servicPort),
         readTimer_(asio::steady_timer(ioService)),
-        writeTimer_(asio::steady_timer(ioService))
+        writeTimer_(asio::steady_timer(ioService)),
+        msg_(NetworkMessage::GetNew())
     {
         state_ = State::Open;
         receivedFirst_ = false;
@@ -58,7 +59,7 @@ public:
     ~Connection();
 
     /// Send the message
-    bool Send(const std::shared_ptr<OutputMessage>& message);
+    bool Send(std::shared_ptr<OutputMessage> message);
     /// Close the connection
     void Close(bool force = false);
     /// Used by protocols that require server to send first
@@ -91,7 +92,7 @@ private:
     bool receivedFirst_;
     asio::steady_timer readTimer_;
     asio::steady_timer writeTimer_;
-    NetworkMessage msg_;
+    std::unique_ptr<NetworkMessage> msg_;
     std::list<std::shared_ptr<OutputMessage>> messageQueue_;
     time_t timeConnected_;
     uint32_t packetsSent_;
