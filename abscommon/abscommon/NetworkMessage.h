@@ -34,7 +34,6 @@ protected:
         MsgSize_t position = INITIAL_BUFFER_POSITION;
     };
 public:
-    using MsgSize_t = uint16_t;
     // Headers:
     // 2 bytes for unencrypted message size
     // 4 bytes for checksum
@@ -156,10 +155,10 @@ public:
 
 }
 
+namespace std {
 template <>
-struct ::std::default_delete<Net::NetworkMessage> {
+struct default_delete<Net::NetworkMessage> {
     default_delete() = default;
-    template <class U, class = std::enable_if_t<std::is_convertible<U*, Net::NetworkMessage*>()>>
-    constexpr default_delete(default_delete<U>) noexcept {}
     void operator()(Net::NetworkMessage* p) const noexcept { Net::NetworkMessage::Delete(p); }
 };
+}
