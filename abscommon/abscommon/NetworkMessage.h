@@ -153,6 +153,8 @@ public:
     bool Uncompress();
 };
 
+static_assert(NETWORKMESSAGE_MAXSIZE == sizeof(NetworkMessage));
+
 }
 
 namespace std {
