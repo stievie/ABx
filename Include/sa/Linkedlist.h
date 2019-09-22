@@ -2,7 +2,7 @@
 
 namespace sa {
 
-template <class T>
+template <typename T>
 class LinkedList
 {
 public:
