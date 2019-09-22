@@ -195,6 +195,7 @@ enum ChatMessageChannel : uint8_t
     ChatChannelWhisper,
 };
 
+/// Packets sent by the server
 enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
@@ -346,6 +347,7 @@ enum GameObjectType : uint8_t
     ObjectTypeItemDrop,
 };
 
+/// Pacekts sent by the client
 enum GamePacketTypes : uint8_t
 {
     PacketTypePing = 0x01,

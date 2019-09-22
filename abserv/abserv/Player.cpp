@@ -773,7 +773,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
 
     bool removedMember = false;
     {
-        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        auto nmsg = Net::NetworkMessage::GetNew();
         if (party_->IsMember(player.get()))
         {
             if (!party_->Remove(player.get()))
@@ -803,7 +803,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
     {
         // The kicked player needs a new party
         player->SetParty(std::shared_ptr<Party>());
-        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(player->id_);                           // Acceptor
         nmsg->Add<uint32_t>(player->id_);                           // Leader
@@ -819,7 +819,7 @@ void Player::PartyLeave()
         return;
 
     {
-        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
         auto leader = party_->GetLeader();
         nmsg->Add<uint32_t>(leader ? leader->id_ : 0);
@@ -832,7 +832,7 @@ void Player::PartyLeave()
     {
         // We need a new party
         SetParty(std::shared_ptr<Party>());
-        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(id_);                           // Acceptor
         nmsg->Add<uint32_t>(id_);                           // Leader
@@ -1083,7 +1083,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         {
             if (channel->Talk(*this, msg))
             {
-                std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+                auto nmsg = Net::NetworkMessage::GetNew();
                 nmsg->AddByte(AB::GameProtocol::ServerMessage);
                 nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
                 nmsg->AddString(name);
@@ -1105,7 +1105,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
         if (channel->Talk(*this, msg))
         {
-            std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+            auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::ServerMessage);
             nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
             nmsg->AddString(name);
@@ -1116,7 +1116,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
     }
 
     // Send not online message
-    std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+    auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
     nmsg->AddString(GetName());
@@ -1206,7 +1206,7 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
         return;
     }
 
-    std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+    auto nmsg = Net::NetworkMessage::GetNew();
     std::stringstream ss;
     ss << transformation_.position_.x_ << "," <<
         transformation_.position_.y_ << "," <<

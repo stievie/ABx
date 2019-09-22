@@ -4,25 +4,35 @@
 #include <stdlib.h>
 #include <memory>
 #include <vector>
-
-/// Size of the buffer (16kB)
-#define NETWORKMESSAGE_MAXSIZE 16384
+#include <sa/PoolAllocator.h>
 
 namespace Net {
 
+class NetworkMessage;
+
+/// Size of the NetworkMessage class (16kB), the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
+constexpr size_t NETWORKMESSAGE_MAXSIZE = 16 * 1024;
 /// Size of the pool in Byte (4MB)
-static constexpr size_t NETWORKMESSAGE_POOLSIZE = 4096 * 1000;
-/// Number of messages to preallocate
-static constexpr size_t NETWORKMESSAGE_POOLCOUNT = NETWORKMESSAGE_POOLSIZE / NETWORKMESSAGE_MAXSIZE;
+constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 250;
+
+using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_POOLSIZE, NETWORKMESSAGE_MAXSIZE>;
+static MessagePool gNetworkMessagePool;
 
 class NetworkMessage
 {
-private:
-    static std::vector<std::unique_ptr<NetworkMessage>> pool_;
-    static void AllocateNetworkMessages();
+public:
+    static void Delete(NetworkMessage* p);
 public:
     /// Pre allocated network messages
     static std::unique_ptr<NetworkMessage> GetNew();
+public:
+    using MsgSize_t = uint16_t;
+protected:
+    struct NetworkMessageInfo
+    {
+        MsgSize_t length = 0;
+        MsgSize_t position = INITIAL_BUFFER_POSITION;
+    };
 public:
     using MsgSize_t = uint16_t;
     // Headers:
@@ -30,21 +40,16 @@ public:
     // 4 bytes for checksum
     // 2 bytes for encrypted message size
     static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
+    static constexpr size_t NETWORKMESSAGE_BUFFER_SIZE = NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo);
     enum { HeaderLength = 2 };
     enum { ChecksumLength = 4 };
     enum { XteaMultiple = 8 };
-    enum { MaxBodyLength = NETWORKMESSAGE_MAXSIZE - HeaderLength - ChecksumLength - XteaMultiple };
+    enum { MaxBodyLength = NETWORKMESSAGE_BUFFER_SIZE - HeaderLength - ChecksumLength - XteaMultiple };
     enum { MaxProtocolBodyLength = MaxBodyLength - 10 };
 protected:
-    struct NetworkMessageInfo
-    {
-        MsgSize_t length = 0;
-        MsgSize_t position = INITIAL_BUFFER_POSITION;
-    };
-
     NetworkMessageInfo info_;
 
-    uint8_t buffer_[NETWORKMESSAGE_MAXSIZE];
+    uint8_t buffer_[NETWORKMESSAGE_BUFFER_SIZE];
     bool CanAdd(uint32_t size) const
     {
         return (size + info_.position < MaxBodyLength);
@@ -52,7 +57,7 @@ protected:
     bool CanRead(size_t size)
     {
         if ((info_.position + static_cast<uint16_t>(size)) > (info_.length + 8) ||
-            static_cast<uint16_t>(size) >= (NETWORKMESSAGE_MAXSIZE - info_.position))
+            static_cast<uint16_t>(size) >= (NETWORKMESSAGE_BUFFER_SIZE - info_.position))
         {
             return false;
         }
@@ -150,3 +155,11 @@ public:
 };
 
 }
+
+template <>
+struct ::std::default_delete<Net::NetworkMessage> {
+    default_delete() = default;
+    template <class U, class = std::enable_if_t<std::is_convertible<U*, Net::NetworkMessage*>()>>
+    constexpr default_delete(default_delete<U>) noexcept {}
+    void operator()(Net::NetworkMessage* p) const noexcept { Net::NetworkMessage::Delete(p); }
+};

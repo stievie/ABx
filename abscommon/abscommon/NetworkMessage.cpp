@@ -8,33 +8,17 @@
 
 namespace Net {
 
-std::vector<std::unique_ptr<NetworkMessage>> NetworkMessage::pool_;
-
-void NetworkMessage::AllocateNetworkMessages()
+void NetworkMessage::Delete(NetworkMessage* p)
 {
-    // 16kB * 200 = 3.2MB
-    // Reallocation ~ 5 secs with no activity
-    const size_t count = pool_.size();
-    for (size_t i = count; i < NETWORKMESSAGE_POOLCOUNT; ++i)
-        pool_.push_back(std::make_unique<NetworkMessage>());
+    gNetworkMessagePool.deallocate(p, 1);
 }
 
 std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 {
-    if (pool_.size() < NETWORKMESSAGE_POOLCOUNT / 10)
-    {
-        // Allocate new if we are low
-        GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(&NetworkMessage::AllocateNetworkMessages))
-        );
-    }
-    if (pool_.size() == 0)
-        // There is no pool yet.
-        return std::make_unique<NetworkMessage>();
-
-    auto msg = std::move(pool_.back());
-    pool_.pop_back();
-    return msg;
+    auto ptr = gNetworkMessagePool.allocate(1, nullptr);
+    assert(ptr);
+    ptr->Reset();
+    return std::unique_ptr<NetworkMessage>(ptr);
 }
 
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
@@ -42,7 +26,7 @@ std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
     if (len == 0)
     {
         len = Get<uint16_t>();
-        if (len >= (NETWORKMESSAGE_MAXSIZE - info_.position))
+        if (len >= (NETWORKMESSAGE_BUFFER_SIZE - info_.position))
             return std::string();
     }
     if (!CanRead(len))
@@ -89,7 +73,7 @@ void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
         return;
 
 #ifdef _MSC_VER
-    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, bytes, size);
+    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_BUFFER_SIZE, bytes, size);
 #else
     memcpy(buffer_ + info_.position, bytes, size);
 #endif
@@ -105,7 +89,7 @@ void NetworkMessage::AddString(const std::string& value)
     Add<uint16_t>(len);
     // Allows also \0
 #ifdef _MSC_VER
-    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value.data(), len);
+    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_BUFFER_SIZE, value.data(), len);
 #else
     memcpy(buffer_ + info_.position, value.data(), len);
 #endif
@@ -121,7 +105,7 @@ void NetworkMessage::AddString(const char* value)
 
     Add<uint16_t>(len);
 #ifdef _MSC_VER
-    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value, len);
+    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_BUFFER_SIZE, value, len);
 #else
     memcpy(buffer_ + info_.position, value, len);
 #endif
@@ -164,14 +148,14 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
 bool NetworkMessage::Compress()
 {
 #if 0
-    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
+    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_BUFFER_SIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
-    int size = LZ4_compress_default(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
+    int size = LZ4_compress_default(src, buff.get(), GetSize(), NETWORKMESSAGE_BUFFER_SIZE);
     if (size > 0)
     {
 /*
 #ifdef _MSC_VER
-        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_MAXSIZE, buff, size);
+        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_BUFFER_SIZE, buff, size);
 #else
         memcpy(buffer_ + HeaderLength, buff, size);
 #endif
@@ -187,14 +171,14 @@ bool NetworkMessage::Compress()
 bool NetworkMessage::Uncompress()
 {
 #if 0
-    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
+    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_BUFFER_SIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
-    int size = LZ4_decompress_safe(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
+    int size = LZ4_decompress_safe(src, buff.get(), GetSize(), NETWORKMESSAGE_BUFFER_SIZE);
     if (size > 0)
     {
         /*
 #ifdef _MSC_VER
-        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_MAXSIZE, buff, size);
+        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_BUFFER_SIZE, buff, size);
 #else
         memcpy(buffer_ + HeaderLength, buff, size);
 #endif
