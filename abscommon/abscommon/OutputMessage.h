@@ -54,7 +54,7 @@ public:
     {
         int32_t msgLen = msg.GetSize();
 #ifdef _MSC_VER
-        memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg.GetBuffer() + 8), msgLen);
+        memcpy_s(buffer_ + info_.position, NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE, (msg.GetBuffer() + 8), msgLen);
 #else
         memcpy(buffer_ + info_.position, (msg.GetBuffer() + 8), msgLen);
 #endif
@@ -65,7 +65,7 @@ public:
     {
         int32_t msgLen = msg->GetSize();
 #ifdef _MSC_VER
-        memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg->GetBuffer() + 8), msgLen);
+        memcpy_s(buffer_ + info_.position, NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE, (msg->GetBuffer() + 8), msgLen);
 #else
         memcpy(buffer_ + info_.position, (msg->GetBuffer() + 8), msgLen);
 #endif

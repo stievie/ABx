@@ -165,7 +165,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     }
 
     int32_t size = msg_.GetHeaderSize();
-    if (size == 0 || size >= NETWORKMESSAGE_MAXSIZE - 16)
+    if (size == 0 || size >= NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE - 16)
     {
 #ifdef DEBUG_NET
         LOG_WARNING << "Invalid message size " << size << std::endl;
