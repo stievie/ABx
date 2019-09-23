@@ -444,7 +444,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::KeyExchange);
     auto keys = GetSubsystem<Crypto::DHKeys>();
     output->AddBytes((const char*)&keys->GetPublickKey(), DH_KEY_LENGTH);
@@ -453,7 +453,7 @@ void ProtocolGame::OnConnect()
 
 void ProtocolGame::DisconnectClient(uint8_t error)
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::Error);
     output->AddByte(error);
     Send(output);
@@ -525,7 +525,7 @@ void ProtocolGame::EnterGame()
 
     if (success)
     {
-        std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+        std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
         output->AddString(ProtocolGame::serverId_);
         output->AddString(player->data_.currentMapUuid);
@@ -552,7 +552,7 @@ void ProtocolGame::ChangeServerInstance(const std::string& serverUuid, const std
     LOG_DEBUG << "Player changing instance to " << mapUuid << std::endl;
 #endif
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
     output->AddString(serverUuid);               // Server UUID
     output->AddString(mapUuid);                  // Map UUID

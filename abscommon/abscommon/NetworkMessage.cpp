@@ -8,14 +8,16 @@
 
 namespace Net {
 
+NetworkMessage::MessagePool NetworkMessage::sNetworkMessagePool;
+
 void NetworkMessage::Delete(NetworkMessage* p)
 {
-    gNetworkMessagePool.deallocate(p, 1);
+    sNetworkMessagePool.deallocate(p, 1);
 }
 
 std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 {
-    auto* ptr = gNetworkMessagePool.allocate(1, nullptr);
+    auto* ptr = sNetworkMessagePool.allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return std::unique_ptr<NetworkMessage>(ptr);

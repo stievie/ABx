@@ -15,11 +15,11 @@ constexpr size_t NETWORKMESSAGE_MAXSIZE = 4096;
 /// Size of the pool in Byte (4MB)
 constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 1024;
 
-using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_POOLSIZE, NETWORKMESSAGE_MAXSIZE>;
-static MessagePool gNetworkMessagePool;
-
 class NetworkMessage
 {
+private:
+    using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_POOLSIZE, NETWORKMESSAGE_MAXSIZE>;
+    static MessagePool sNetworkMessagePool;
 public:
     static void Delete(NetworkMessage* p);
     /// Pre allocated network messages
@@ -177,7 +177,7 @@ inline unique_ptr<Net::NetworkMessage> make_unique<Net::NetworkMessage>()
 template <>
 inline shared_ptr<Net::NetworkMessage> make_shared<Net::NetworkMessage>()
 {
-    // Wouldn't be a big deal to make it working, but it's nowhere used.
+    // This doesnt work with shared_ptr's! Can not customize the deleter of shared_ptr's.
     throw std::runtime_error("NetworkMessage can not be used with a shared_ptr");
 }
 

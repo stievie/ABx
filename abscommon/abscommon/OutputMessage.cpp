@@ -36,6 +36,7 @@ void OutputMessagePool::ScheduleSendAll()
 
 std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {
+    // TODO: Check if a pool should be used
     return std::make_shared<OutputMessage>();
 }
 

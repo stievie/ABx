@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <sa/Linkedlist.h>
 #include <cassert>
+#include <type_traits>
 
 namespace sa {
 
@@ -18,7 +19,7 @@ private:
     LinkedList<FreeHeader> freeList_;
 
     void* startPtr_{ nullptr };
-    void* Allocate(const size_t size)
+    void* Alloc(const size_t size)
     {
         (void)size;
         // site must be ChunkSize
@@ -65,21 +66,22 @@ public:
 
     pointer allocate(size_type n, const void*)
     {
-        void* resultMem = Allocate(sizeof(T));
+        void* resultMem = Alloc(sizeof(T));
         T* t = new(resultMem)T;
         for (size_type i = 1; i < n; ++i)
         {
-            void* oMem = Allocate(sizeof(T));
+            void* oMem = Alloc(sizeof(T));
             new(oMem)T;
         }
         return t;
     }
-    void deallocate(pointer p, size_t n)
+    void deallocate(pointer p, size_type n)
     {
-        for (size_t i = 0; i < n; ++i)
+        for (size_type i = 0; i < n; ++i)
         {
             T* o = reinterpret_cast<T*>(p + (ChunkSize * i));
-            o->~T();
+            if constexpr (std::is_trivially_destructible<T>::value)
+                o->~T();
             Free(o);
         }
     }

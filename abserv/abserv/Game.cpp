@@ -12,7 +12,6 @@
 #include "Skill.h"
 #include "Npc.h"
 #include "DataProvider.h"
-#include "OutputMessage.h"
 #include <AB/ProtocolCodes.h>
 #include "ProtocolGame.h"
 #include "PropStream.h"

@@ -68,6 +68,8 @@ class OutputMessagePool
 private:
     OutputMessagePool() = default;
 public:
+    static std::shared_ptr<OutputMessage> GetOutputMessage();
+
     OutputMessagePool(const OutputMessagePool&) = delete;
     OutputMessagePool& operator=(const OutputMessagePool&) = delete;
 
@@ -79,7 +81,6 @@ public:
 
     void SendAll();
     void ScheduleSendAll();
-    static std::shared_ptr<OutputMessage> GetOutputMessage();
     void AddToAutoSend(std::shared_ptr<Protocol> protocol);
     void RemoveFromAutoSend(const std::shared_ptr<Protocol>& protocol);
 private:
