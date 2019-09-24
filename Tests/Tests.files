@@ -14,4 +14,5 @@ Tests/Utils.Events.cpp
 Tests/Utils.Transaction.cpp
 Tests/Utils.WeightedSelector.cpp
 Tests/main.cpp
+Tests/sa.PoolAllocator.cpp
 Tests/stdafx.h

@@ -52,6 +52,8 @@ private:
 
     void Free(void* ptr)
     {
+        // Check if this pointer is ours
+        assert((size_t)ptr >= (size_t)startPtr_ && (size_t)ptr <= (size_t)startPtr_ + (Size - ChunkSize));
 #ifdef DEBUG_POOLALLOCATOR
         ++frees_;
 #endif
@@ -60,6 +62,11 @@ private:
 
     void Reset()
     {
+#ifdef DEBUG_POOLALLOCATOR
+        allocs_ = 0;
+        frees_ = 0;
+#endif
+
         // Create a linked-list with all free positions
         const size_t nChunks = Size / ChunkSize;
         for (size_t i = 0; i < nChunks; ++i)
