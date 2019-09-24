@@ -14,6 +14,7 @@
 #include "Dispatcher.h"
 #include "Subsystems.h"
 #include "ThreadPool.h"
+#include "NetworkMessage.h"
 
 void Maintenance::CleanCacheTask()
 {
@@ -65,6 +66,13 @@ void Maintenance::UpdateServerLoadTask()
 {
     if (status_ != MaintenanceStatus::Runnig)
         return;
+
+#ifdef DEBUG_POOLALLOCATOR
+    // Print some stats
+    sa::PoolInfo info = Net::NetworkMessage::GetPoolInfo();
+    LOG_DEBUG << "NetworkMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
+        ", used: " << info.used << ", avail: " << info.avail << std::endl;
+#endif
 
     AB::Entities::Service serv;
     serv.uuid = Application::Instance->GetServerId();
