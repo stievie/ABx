@@ -40,7 +40,7 @@ private:
     void* Alloc(const size_t size)
     {
         (void)size;
-        // site must be ChunkSize
+        // size must be ChunkSize
         assert(size == ChunkSize);
         Node* freePosition = freeList_.pop();
         assert(freePosition != nullptr);
