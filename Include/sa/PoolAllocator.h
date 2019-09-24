@@ -19,7 +19,7 @@ struct PoolInfo
     size_t used;
     size_t avail;
 };
-#endif;
+#endif
 
 /// Size must be a multiple of ChunkSize
 template <typename T, size_t Size, size_t ChunkSize>
