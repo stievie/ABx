@@ -135,9 +135,8 @@ void AutoRunComp::SetAutoRun(bool value)
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
             nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
-            Player* player = dynamic_cast<Player*>(&owner_);
-            if (player)
-                player->WriteToOutput(*nmsg);
+            Player* player = static_cast<Player*>(&owner_);
+            player->WriteToOutput(*nmsg);
         }
     }
 }

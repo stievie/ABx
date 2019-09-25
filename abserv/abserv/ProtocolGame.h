@@ -34,8 +34,8 @@ private:
     {
         return player_.lock();
     }
-    void AddPlayerInput(Game::InputType type, const Utils::VariantMap& data);
-    void AddPlayerInput(Game::InputType type);
+    inline void AddPlayerInput(Game::InputType type, Utils::VariantMap&& data);
+    inline void AddPlayerInput(Game::InputType type);
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)

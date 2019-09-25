@@ -76,8 +76,11 @@ AI_TASK(HealOther)
     auto target = npc.GetGame()->GetObjectById(selection[0]);
     if (!target)
         return ai::FAILED;
-    Game::Actor* actor = dynamic_cast<Game::Actor*>(target.get());
-    if (!actor || actor->IsDead())
+    if (!target->IsActorType())
+        return ai::FAILED;
+
+    Game::Actor* actor = static_cast<Game::Actor*>(target.get());
+    if (actor->IsDead())
         return ai::FAILED;
 
     auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetTarget, true);

@@ -430,9 +430,8 @@ std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)
     {
-        const AB::GameProtocol::GameObjectType t = o.GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
-            result.push_back(dynamic_cast<Actor*>(&o));
+        if (o.IsPlayerOrNpcType())
+            result.push_back(static_cast<Actor*>(&o));
         return Iteration::Continue;
     });
     return result;
@@ -445,10 +444,9 @@ Actor* GameObject::GetClosestActor(const std::function<bool(const Actor& actor)>
     {
         VisitInRange(static_cast<Ranges>(r), [&](GameObject& o)
         {
-            const AB::GameProtocol::GameObjectType t = o.GetType();
-            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            if (o.IsPlayerOrNpcType())
             {
-                result = dynamic_cast<Actor*>(&o);
+                result = static_cast<Actor*>(&o);
                 if (!callback(*result))
                 {
                     result = nullptr;
@@ -484,14 +482,14 @@ Actor* GameObject::_LuaAsActor()
 Npc* GameObject::_LuaAsNpc()
 {
     if (GetType() == AB::GameProtocol::ObjectTypeNpc)
-        return dynamic_cast<Npc*>(this);
+        return static_cast<Npc*>(this);
     return nullptr;
 }
 
 Player* GameObject::_LuaAsPlayer()
 {
     if (GetType() == AB::GameProtocol::ObjectTypePlayer)
-        return dynamic_cast<Player*>(this);
+        return static_cast<Player*>(this);
     return nullptr;
 }
 

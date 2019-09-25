@@ -97,11 +97,10 @@ public:
     {
         VisitInRange(range, [&](const GameObject& o)
         {
-            const AB::GameProtocol::GameObjectType t = o.GetType();
-            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = dynamic_cast<const Actor*>(&o);
-                if (actor && actor->IsEnemy(this))
+                const auto* actor = static_cast<const Actor*>(&o);
+                if (actor->IsEnemy(this))
                     func(actor);
             }
             return Iteration::Continue;
@@ -115,11 +114,10 @@ public:
     {
         VisitInRange(range, [&](const GameObject& o)
         {
-            const AB::GameProtocol::GameObjectType t = o.GetType();
-            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = dynamic_cast<const Actor*>(&o);
-                if (actor && actor->IsAlly(this))
+                const auto* actor = static_cast<const Actor*>(&o);
+                if (actor->IsAlly(this))
                     func(actor);
             }
             return Iteration::Continue;
@@ -233,11 +231,11 @@ public:
     bool IsAlly(const Actor* other) const;
     void AddFriendFoe(uint32_t frnd, uint32_t foe);
     void RemoveFriendFoe(uint32_t frnd, uint32_t foe);
-    inline void AddInput(InputType type, const Utils::VariantMap& data)
+    void AddInput(InputType type, Utils::VariantMap&& data)
     {
-        inputComp_->Add(type, data);
+        inputComp_->Add(type, std::move(data));
     }
-    inline void AddInput(InputType type)
+    void AddInput(InputType type)
     {
         inputComp_->Add(type);
     }

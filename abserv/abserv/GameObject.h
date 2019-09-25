@@ -240,7 +240,12 @@ public:
     {
         return AB::GameProtocol::ObjectTypeStatic;
     }
-
+    bool IsActorType() const { return GetType() >= AB::GameProtocol::ObjectTypeProjectile; }
+    bool IsPlayerOrNpcType() const
+    {
+        const auto t = GetType();
+        return t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer;
+    }
     const Math::Vector3& GetPosition() const
     {
         return transformation_.position_;

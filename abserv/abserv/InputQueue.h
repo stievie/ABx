@@ -55,7 +55,7 @@ public:
 
     void Add(InputType type, const Utils::VariantMap& data)
     {
-        // Network Threat
+        // Network and Dispatcher Threat
         std::lock_guard<std::mutex> lockClass(lock_);
         queue_.push({ type, data });
     }

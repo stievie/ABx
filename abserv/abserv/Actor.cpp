@@ -176,7 +176,7 @@ void Actor::SetSelectedObjectById(uint32_t id)
     Utils::VariantMap data;
     data[InputDataObjectId] = GetId();    // Source
     data[InputDataObjectId2] = id;   // Target
-    inputComp_->Add(InputType::Select, data);
+    inputComp_->Add(InputType::Select, std::move(data));
 }
 
 void Actor::GotoPosition(const Math::Vector3& pos)
@@ -185,7 +185,7 @@ void Actor::GotoPosition(const Math::Vector3& pos)
     data[InputDataVertexX] = pos.x_;
     data[InputDataVertexY] = pos.y_;
     data[InputDataVertexZ] = pos.z_;
-    inputComp_->Add(InputType::Goto, data);
+    inputComp_->Add(InputType::Goto, std::move(data));
 }
 
 void Actor::FollowObject(std::shared_ptr<GameObject> object)
@@ -200,7 +200,7 @@ void Actor::FollowObject(uint32_t objectId)
 {
     Utils::VariantMap data;
     data[InputDataObjectId] = objectId;
-    inputComp_->Add(InputType::Follow, data);
+    inputComp_->Add(InputType::Follow, std::move(data));
 }
 
 void Actor::Attack(Actor* target)
@@ -217,7 +217,7 @@ void Actor::Attack(Actor* target)
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
         data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_->Add(InputType::Select, data);
+        inputComp_->Add(InputType::Select, std::move(data));
     }
     // Then attack
     inputComp_->Add(InputType::Attack);
@@ -243,7 +243,7 @@ bool Actor::AttackById(uint32_t targetId)
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
         data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_->Add(InputType::Select, data);
+        inputComp_->Add(InputType::Select, std::move(data));
     }
     // Then attack
     inputComp_->Add(InputType::Attack);
@@ -263,7 +263,7 @@ void Actor::UseSkill(uint32_t index)
 {
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
-    inputComp_->Add(InputType::UseSkill, data);
+    inputComp_->Add(InputType::UseSkill, std::move(data));
 }
 
 void Actor::CancelAction()
@@ -315,7 +315,7 @@ void Actor::SetState(AB::GameProtocol::CreatureState state)
 {
     Utils::VariantMap data;
     data[InputDataState] = static_cast<uint8_t>(state);
-    inputComp_->Add(InputType::SetState, data);
+    inputComp_->Add(InputType::SetState, std::move(data));
 }
 
 void Actor::_LuaSetHomePos(const Math::STLVector3& pos)
@@ -389,7 +389,7 @@ void Actor::_LuaSetSelectedObject(GameObject* object)
         data[InputDataObjectId2] = object->GetId();   // Target
     else
         data[InputDataObjectId2] = 0;   // Target
-    inputComp_->Add(InputType::Select, data);
+    inputComp_->Add(InputType::Select, std::move(data));
 }
 
 std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
@@ -397,11 +397,10 @@ std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)
     {
-        const AB::GameProtocol::GameObjectType t = o.GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        if (o.IsPlayerOrNpcType())
         {
-            auto* actor = dynamic_cast<Actor*>(&o);
-            if (actor && actor->IsEnemy(this))
+            auto* actor = static_cast<Actor*>(&o);
+            if (actor->IsEnemy(this))
                 result.push_back(actor);
         }
         return Iteration::Continue;
@@ -414,11 +413,10 @@ size_t Actor::GetEnemyCountInRange(Ranges range)
     size_t result = 0;
     VisitInRange(range, [&](const GameObject& o)
     {
-        const AB::GameProtocol::GameObjectType t = o.GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = dynamic_cast<const Actor*>(&o);
-            if (actor && actor->IsEnemy(this))
+            const auto* actor = static_cast<const Actor*>(&o);
+            if (actor->IsEnemy(this))
                 ++result;
         }
         return Iteration::Continue;
@@ -431,11 +429,10 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)
     {
-        const AB::GameProtocol::GameObjectType t = o.GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        if (o.IsPlayerOrNpcType())
         {
-            auto* actor = dynamic_cast<Actor*>(&o);
-            if (actor && actor->IsAlly(this))
+            auto* actor = static_cast<Actor*>(&o);
+            if (actor->IsAlly(this))
                 result.push_back(actor);
         }
         return Iteration::Continue;
@@ -445,15 +442,14 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
 
 size_t Actor::GetAllyCountInRange(Ranges range)
 {
-    // At least 1 ally and the we
+    // At least 1 ally that's we
     size_t result = 1;
     VisitInRange(range, [&](const GameObject& o)
     {
-        const AB::GameProtocol::GameObjectType t = o.GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = dynamic_cast<const Actor*>(&o);
-            if (actor && actor->IsAlly(this))
+            const auto* actor = static_cast<const Actor*>(&o);
+            if (actor->IsAlly(this))
                 ++result;
         }
         return Iteration::Continue;

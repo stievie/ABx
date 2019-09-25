@@ -36,8 +36,11 @@ AI_TASK(AttackSelection)
         auto target = npc.GetGame()->GetObjectById(id);
         if (!target)
             continue;
-        Game::Actor* actor = dynamic_cast<Game::Actor*>(target.get());
-        if (!actor || actor->IsDead())
+        if (!target->IsActorType())
+            continue;
+
+        Game::Actor* actor = static_cast<Game::Actor*>(target.get());
+        if (actor->IsDead())
             continue;
 
         if (npc.AttackById(id))

@@ -336,15 +336,16 @@ enum PlayerErrorValue : uint8_t
 enum GameObjectType : uint8_t
 {
     ObjectTypeUnknown = 0,
-    ObjectTypeStatic,
-    ObjectTypeTerrainPatch,
+    ObjectTypeStatic,                // GameObject
+    ObjectTypeTerrainPatch,          // GameObject
     // -- Bellow all objects are sent to player when they spawn ----------------
     ObjectTypeSentToPlayer,          // Not an actual object type, all bellow is sent to the player
+    ObjectTypeItemDrop,              // GameObject
+    ObjectTypeAreaOfEffect,          // GameObject: Area that affects actors in it, e.g. a well
+    // Bellow are Actors
+    ObjectTypeProjectile,            // Actor
     ObjectTypeNpc,
     ObjectTypePlayer,                // Human player
-    ObjectTypeProjectile,
-    ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
-    ObjectTypeItemDrop,
 };
 
 /// Pacekts sent by the client

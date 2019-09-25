@@ -31,11 +31,11 @@ public:
     InputComp& operator=(const InputComp&) = delete;
     ~InputComp() = default;
 
-    inline void Add(InputType type, const Utils::VariantMap& data)
+    void Add(InputType type, Utils::VariantMap&& data)
     {
-        inputs_.Add(type, data);
+        inputs_.Add(type, std::move(data));
     }
-    inline void Add(InputType type)
+    void Add(InputType type)
     {
         inputs_.Add(type, Utils::VariantMapEmpty);
     }
