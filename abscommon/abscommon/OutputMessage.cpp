@@ -5,11 +5,11 @@
 #include "Scheduler.h"
 #include "Subsystems.h"
 #include "Protocol.h"
+#include "Connection.h"
 
 namespace Net {
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
-OutputMessagePool::MessagePool OutputMessagePool::sOutputMessagePool;
 
 void OutputMessagePool::SendAll()
 {
@@ -38,7 +38,7 @@ void OutputMessagePool::ScheduleSendAll()
 
 sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {
-    auto* ptr = sOutputMessagePool.allocate(1, nullptr);
+    auto* ptr = gOutputMessagePool.allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return sa::SharedPtr<OutputMessage>(ptr);
@@ -46,7 +46,7 @@ sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 
 void OutputMessagePool::DeleteOutputMessage(OutputMessage* p)
 {
-    sOutputMessagePool.deallocate(p, 1);
+    gOutputMessagePool.deallocate(p, 1);
 }
 
 void OutputMessagePool::AddToAutoSend(std::shared_ptr<Protocol> protocol)

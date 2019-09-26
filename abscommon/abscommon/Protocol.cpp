@@ -5,8 +5,36 @@
 #include "Scheduler.h"
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
+#include "Connection.h"
+#include "OutputMessage.h"
 
 namespace Net {
+
+void Protocol::Disconnect() const
+{
+    if (auto conn = GetConnection())
+        conn->Close();
+}
+
+uint32_t Protocol::GetIP()
+{
+    if (auto c = GetConnection())
+        return c->GetIP();
+    return 0;
+}
+
+void Protocol::Send(sa::SharedPtr<OutputMessage> message)
+{
+    if (auto conn = GetConnection())
+    {
+        conn->Send(message);
+    }
+}
+
+sa::SharedPtr<OutputMessage>& Protocol::GetCurrentBuffer()
+{
+    return outputBuffer_;
+}
 
 void Protocol::XTEAEncrypt(OutputMessage& msg) const
 {

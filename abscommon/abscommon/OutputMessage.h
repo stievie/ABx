@@ -1,11 +1,11 @@
 #pragma once
 
 #include "NetworkMessage.h"
-#include "Connection.h"
 #include "Utils.h"
 #include "Logger.h"
 #include <sa/PoolAllocator.h>
 #include <sa/SharedPtr.h>
+#include <cstring>
 
 namespace Net {
 
@@ -67,12 +67,29 @@ public:
 constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
 constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 1024;
 
+using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
+static MessagePool gOutputMessagePool;
+
+}
+
+namespace sa {
+template <>
+struct DefaultDelete<::Net::OutputMessage>
+{
+    DefaultDelete() = default;
+    void operator()(::Net::OutputMessage* p) const noexcept
+    {
+        Net::gOutputMessagePool.deallocate(p, 1);
+    }
+};
+}
+
+namespace Net {
+
 class OutputMessagePool
 {
 private:
     OutputMessagePool() = default;
-    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
-    static MessagePool sOutputMessagePool;
 public:
 #ifdef DEBUG_POOLALLOCATOR
     static sa::PoolInfo GetPoolInfo();
@@ -102,16 +119,6 @@ private:
 }
 
 namespace sa {
-
-template <>
-struct DefaultDelete<::Net::OutputMessage>
-{
-    DefaultDelete() = default;
-    void operator()(::Net::OutputMessage* p) const noexcept
-    {
-        ::Net::OutputMessagePool::DeleteOutputMessage(p);
-    }
-};
 
 template <>
 inline SharedPtr<::Net::OutputMessage> MakeShared()

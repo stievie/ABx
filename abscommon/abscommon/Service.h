@@ -3,6 +3,9 @@
 #include "Protocol.h"
 #include "Logger.h"
 #include <map>
+#include <list>
+#include <functional>
+#include <asio.hpp>
 
 namespace Net {
 

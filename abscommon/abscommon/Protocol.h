@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Connection.h"
 #include "Logger.h"
 #include <abcrypto.hpp>
-#include <sa/SharedPtr.h>
+#include <cstring>
 #include "OutputMessage.h"
 
 namespace Net {
+
+class Connection;
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
@@ -20,11 +21,7 @@ protected:
     void XTEAEncrypt(OutputMessage& msg) const;
     bool XTEADecrypt(NetworkMessage& msg) const;
 
-    void Disconnect() const
-    {
-        if (auto conn = GetConnection())
-            conn->Close();
-    }
+    void Disconnect() const;
     virtual void Release() {}
 
     friend class Connection;
@@ -59,24 +56,10 @@ public:
 
     sa::SharedPtr<OutputMessage> GetOutputBuffer(int32_t size);
     void ResetOutputBuffer();
-    uint32_t GetIP()
-    {
-        if (auto c = GetConnection())
-            return c->GetIP();
-        return 0;
-    }
-    sa::SharedPtr<OutputMessage>& GetCurrentBuffer()
-    {
-        return outputBuffer_;
-    }
+    uint32_t GetIP();
+    sa::SharedPtr<OutputMessage>& GetCurrentBuffer();
 
-    void Send(sa::SharedPtr<OutputMessage> message)
-    {
-        if (auto conn = GetConnection())
-        {
-            conn->Send(message);
-        }
-    }
+    void Send(sa::SharedPtr<OutputMessage> message);
 };
 
 }
