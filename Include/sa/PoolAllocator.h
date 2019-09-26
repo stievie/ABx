@@ -16,6 +16,7 @@ struct PoolInfo
     size_t allocs;
     size_t frees;
     size_t current;
+    size_t peek;
     size_t used;
     size_t avail;
 };
@@ -34,6 +35,7 @@ private:
 #ifdef DEBUG_POOLALLOCATOR
     size_t allocs_{ 0 };
     size_t frees_{ 0 };
+    size_t peek_{ 0 };
 #endif
 
     void* startPtr_{ nullptr };
@@ -46,6 +48,8 @@ private:
         assert(freePosition != nullptr);
 #ifdef DEBUG_POOLALLOCATOR
         ++allocs_;
+        if (allocs_ > peek_)
+            peek_ = allocs_;
 #endif
         return (void*)freePosition;
     }
@@ -65,6 +69,7 @@ private:
 #ifdef DEBUG_POOLALLOCATOR
         allocs_ = 0;
         frees_ = 0;
+        peek_ = 0;
 #endif
 
         // Create a linked-list with all free positions
@@ -98,6 +103,7 @@ public:
 #ifdef DEBUG_POOLALLOCATOR
     size_t GetAllocs() const { return allocs_; }
     size_t GetFrees() const { return frees_; }
+    size_t GetPeek() const { return peek_; }
     size_t GetCurrentAllocations() const { return allocs_ - frees_; }
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
     size_t GetAvailMem() const { return Size - GetUsedMem(); }
@@ -107,6 +113,7 @@ public:
             GetAllocs(),
             GetFrees(),
             GetCurrentAllocations(),
+            GetPeek(),
             GetUsedMem(),
             GetAvailMem()
         };

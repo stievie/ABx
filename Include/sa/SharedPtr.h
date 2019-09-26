@@ -5,17 +5,7 @@
 
 namespace sa {
 
-/// Default deleter
-template <typename T>
-struct DefaultDelete
-{
-    DefaultDelete() = default;
-    void operator()(T* p) const noexcept
-    {
-        delete p;
-    }
-};
-
+/// Loose implementation of a SharedPtr. Unintrusive and unflexible.
 template <typename T>
 class SharedPtr
 {
@@ -206,5 +196,16 @@ inline SharedPtr<T> MakeShared(ArgTypes&& ... Arguments)
 {
     return SharedPtr<T>(new T(std::forward<ArgTypes>(Arguments)...));
 }
+
+/// Default deleter
+template <typename T>
+struct DefaultDelete
+{
+    DefaultDelete() = default;
+    void operator()(T* p) const noexcept
+    {
+        delete p;
+    }
+};
 
 }

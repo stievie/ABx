@@ -18,7 +18,7 @@ Connection::~Connection()
     CloseSocket();
 }
 
-bool Connection::Send(std::shared_ptr<OutputMessage> message)
+bool Connection::Send(sa::SharedPtr<OutputMessage> message)
 {
 
     if (state_ != State::Open)
@@ -28,14 +28,14 @@ bool Connection::Send(std::shared_ptr<OutputMessage> message)
     std::lock_guard<std::mutex> lockClass(lock_);
     messageQueue_.emplace_back(message);
     if (noPendingWrite)
-        InternalSend(message);
+        InternalSend(*message);
 
     return true;
 }
 
-void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
+void Connection::InternalSend(OutputMessage& message)
 {
-    protocol_->OnSendMessage(*message);
+    protocol_->OnSendMessage(message);
     try
     {
         writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
@@ -43,7 +43,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         asio::async_write(socket_,
-            asio::buffer(message->GetOutputBuffer(), message->GetMessageLength()),
+            asio::buffer(message.GetOutputBuffer(), message.GetMessageLength()),
             std::bind(&Connection::OnWriteOperation, shared_from_this(), std::placeholders::_1));
     }
     catch (asio::system_error& e)
@@ -66,7 +66,7 @@ void Connection::OnWriteOperation(const asio::error_code& error)
     }
 
     if (!messageQueue_.empty())
-        InternalSend(messageQueue_.front());
+        InternalSend(*messageQueue_.front());
     else if (state_ == State::Closed)
         CloseSocket();
 }

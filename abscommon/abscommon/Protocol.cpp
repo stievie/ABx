@@ -70,7 +70,7 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
     ParsePacket(message);
 }
 
-std::shared_ptr<OutputMessage> Protocol::GetOutputBuffer(int32_t size)
+sa::SharedPtr<OutputMessage> Protocol::GetOutputBuffer(int32_t size)
 {
     // Dispatcher Thread
     if (!outputBuffer_)

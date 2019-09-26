@@ -3,16 +3,16 @@
 #include "Connection.h"
 #include "Logger.h"
 #include <abcrypto.hpp>
+#include <sa/SharedPtr.h>
+#include "OutputMessage.h"
 
 namespace Net {
-
-class OutputMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 protected:
     std::weak_ptr<Connection> connection_;
-    std::shared_ptr<OutputMessage> outputBuffer_;
+    sa::SharedPtr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
     bool compressionEnabled_;
     bool encryptionEnabled_;
@@ -57,7 +57,7 @@ public:
     bool IsConnectionExpired() const { return connection_.expired(); }
     std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }
 
-    std::shared_ptr<OutputMessage> GetOutputBuffer(int32_t size);
+    sa::SharedPtr<OutputMessage> GetOutputBuffer(int32_t size);
     void ResetOutputBuffer();
     uint32_t GetIP()
     {
@@ -65,12 +65,12 @@ public:
             return c->GetIP();
         return 0;
     }
-    std::shared_ptr<OutputMessage>& GetCurrentBuffer()
+    sa::SharedPtr<OutputMessage>& GetCurrentBuffer()
     {
         return outputBuffer_;
     }
 
-    void Send(std::shared_ptr<OutputMessage> message)
+    void Send(sa::SharedPtr<OutputMessage> message)
     {
         if (auto conn = GetConnection())
         {

@@ -378,7 +378,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(const std::string& accountName
 
     LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
 
@@ -428,7 +428,7 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
         return;
     }
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::LoginProtocol::OutpostList);
     const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList(AB::Entities::GameType::GameTypeOutpost);
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
@@ -460,7 +460,7 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
         return;
     }
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::LoginProtocol::ServerList);
 
     std::vector<AB::Entities::Service> services;
@@ -486,7 +486,7 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 {
     IO::IOAccount::CreateAccountResult res = IO::IOAccount::CreateAccount(accountName, password, email, accKey);
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
 
     if (res == IO::IOAccount::CreateAccountResult::OK)
     {
@@ -538,7 +538,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
         account.uuid, name, prof, modelIndex, sex, isPvp, uuid
     );
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
 
     if (res == IO::IOAccount::CreatePlayerResult::OK)
     {
@@ -589,7 +589,7 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     }
 
     IO::IOAccount::CreateAccountResult res = IO::IOAccount::AddAccountKey(account, accKey);
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
 
     if (res == IO::IOAccount::CreateAccountResult::OK)
     {
@@ -635,7 +635,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
         account.uuid, playerUuid
     );
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
+    auto output = OutputMessagePool::GetOutputMessage();
 
     if (res)
     {
@@ -656,13 +656,10 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
 
 void ProtocolLogin::DisconnectClient(uint8_t error)
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::GetOutputMessage();
-    if (output)
-    {
-        output->AddByte(AB::LoginProtocol::LoginError);
-        output->AddByte(error);
-        Send(output);
-    }
+    auto output = OutputMessagePool::GetOutputMessage();
+    output->AddByte(AB::LoginProtocol::LoginError);
+    output->AddByte(error);
+    Send(output);
     Disconnect();
 }
 

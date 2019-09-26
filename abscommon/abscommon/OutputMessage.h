@@ -2,13 +2,14 @@
 
 #include "NetworkMessage.h"
 #include "Connection.h"
-#include "Protocol.h"
 #include "Utils.h"
 #include "Logger.h"
-
-#define OUTPUT_POOL_SIZE 100
+#include <sa/PoolAllocator.h>
+#include <sa/SharedPtr.h>
 
 namespace Net {
+
+class Protocol;
 
 class OutputMessage : public NetworkMessage
 {
@@ -63,12 +64,21 @@ public:
     }
 };
 
+constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
+constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 1024;
+
 class OutputMessagePool
 {
 private:
     OutputMessagePool() = default;
+    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
+    static MessagePool sOutputMessagePool;
 public:
-    static std::shared_ptr<OutputMessage> GetOutputMessage();
+#ifdef DEBUG_POOLALLOCATOR
+    static sa::PoolInfo GetPoolInfo();
+#endif
+    static sa::SharedPtr<OutputMessage> GetOutputMessage();
+    static void DeleteOutputMessage(OutputMessage* p);
 
     OutputMessagePool(const OutputMessagePool&) = delete;
     OutputMessagePool& operator=(const OutputMessagePool&) = delete;
@@ -88,5 +98,25 @@ private:
     //and relatively rarely modified (only when a client connects/disconnects)
     std::vector<std::shared_ptr<Protocol>> bufferedProtocols_;
 };
+
+}
+
+namespace sa {
+
+template <>
+struct DefaultDelete<::Net::OutputMessage>
+{
+    DefaultDelete() = default;
+    void operator()(::Net::OutputMessage* p) const noexcept
+    {
+        ::Net::OutputMessagePool::DeleteOutputMessage(p);
+    }
+};
+
+template <>
+inline SharedPtr<::Net::OutputMessage> MakeShared()
+{
+    return ::Net::OutputMessagePool::GetOutputMessage();
+}
 
 }

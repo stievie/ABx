@@ -5,6 +5,7 @@
 #include <list>
 #include <memory>
 #include <asio.hpp>
+#include <sa/SharedPtr.h>
 
 namespace Net {
 
@@ -59,7 +60,7 @@ public:
     ~Connection();
 
     /// Send the message
-    bool Send(std::shared_ptr<OutputMessage> message);
+    bool Send(sa::SharedPtr<OutputMessage> message);
     /// Close the connection
     void Close(bool force = false);
     /// Used by protocols that require server to send first
@@ -80,7 +81,7 @@ private:
     void ParsePacket(const asio::error_code& error);
     void CloseSocket();
     void OnWriteOperation(const asio::error_code& error);
-    void InternalSend(std::shared_ptr<OutputMessage> message);
+    void InternalSend(OutputMessage& message);
 
 #ifdef DEBUG_NET
     int64_t lastReadHeader_;
@@ -93,7 +94,7 @@ private:
     asio::steady_timer readTimer_;
     asio::steady_timer writeTimer_;
     std::unique_ptr<NetworkMessage> msg_;
-    std::list<std::shared_ptr<OutputMessage>> messageQueue_;
+    std::list<sa::SharedPtr<OutputMessage>> messageQueue_;
     time_t timeConnected_;
     uint32_t packetsSent_;
 

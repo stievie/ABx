@@ -4,10 +4,12 @@
 #include "Dispatcher.h"
 #include "Scheduler.h"
 #include "Subsystems.h"
+#include "Protocol.h"
 
 namespace Net {
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
+OutputMessagePool::MessagePool OutputMessagePool::sOutputMessagePool;
 
 void OutputMessagePool::SendAll()
 {
@@ -34,10 +36,17 @@ void OutputMessagePool::ScheduleSendAll()
     );
 }
 
-std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage()
+sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {
-    // TODO: Check if a pool should be used
-    return std::make_shared<OutputMessage>();
+    auto* ptr = sOutputMessagePool.allocate(1, nullptr);
+    assert(ptr);
+    ptr->Reset();
+    return sa::SharedPtr<OutputMessage>(ptr);
+}
+
+void OutputMessagePool::DeleteOutputMessage(OutputMessage* p)
+{
+    sOutputMessagePool.deallocate(p, 1);
 }
 
 void OutputMessagePool::AddToAutoSend(std::shared_ptr<Protocol> protocol)

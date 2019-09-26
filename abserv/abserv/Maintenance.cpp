@@ -71,6 +71,7 @@ void Maintenance::UpdateServerLoadTask()
     // Print some stats
     sa::PoolInfo info = Net::NetworkMessage::GetPoolInfo();
     LOG_DEBUG << "NetworkMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
+        ", peek: " << info.peek <<
         ", used: " << info.used << ", avail: " << info.avail << std::endl;
 #endif
 
