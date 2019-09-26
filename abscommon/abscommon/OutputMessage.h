@@ -73,6 +73,7 @@ static MessagePool gOutputMessagePool;
 }
 
 namespace sa {
+
 template <>
 struct DefaultDelete<::Net::OutputMessage>
 {
@@ -82,6 +83,16 @@ struct DefaultDelete<::Net::OutputMessage>
         Net::gOutputMessagePool.deallocate(p, 1);
     }
 };
+
+template <>
+inline SharedPtr<::Net::OutputMessage> MakeShared()
+{
+    auto* ptr = Net::gOutputMessagePool.allocate(1, nullptr);
+    assert(ptr);
+    ptr->Reset();
+    return sa::SharedPtr<::Net::OutputMessage>(ptr);
+}
+
 }
 
 namespace Net {
@@ -95,7 +106,6 @@ public:
     static sa::PoolInfo GetPoolInfo();
 #endif
     static sa::SharedPtr<OutputMessage> GetOutputMessage();
-    static void DeleteOutputMessage(OutputMessage* p);
 
     OutputMessagePool(const OutputMessagePool&) = delete;
     OutputMessagePool& operator=(const OutputMessagePool&) = delete;
@@ -115,15 +125,5 @@ private:
     //and relatively rarely modified (only when a client connects/disconnects)
     std::vector<std::shared_ptr<Protocol>> bufferedProtocols_;
 };
-
-}
-
-namespace sa {
-
-template <>
-inline SharedPtr<::Net::OutputMessage> MakeShared()
-{
-    return ::Net::OutputMessagePool::GetOutputMessage();
-}
 
 }

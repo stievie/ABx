@@ -36,17 +36,16 @@ void OutputMessagePool::ScheduleSendAll()
     );
 }
 
+#ifdef DEBUG_POOLALLOCATOR
+sa::PoolInfo OutputMessagePool::GetPoolInfo()
+{
+    return gOutputMessagePool.GetInfo();
+}
+#endif
+
 sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {
-    auto* ptr = gOutputMessagePool.allocate(1, nullptr);
-    assert(ptr);
-    ptr->Reset();
-    return sa::SharedPtr<OutputMessage>(ptr);
-}
-
-void OutputMessagePool::DeleteOutputMessage(OutputMessage* p)
-{
-    gOutputMessagePool.deallocate(p, 1);
+    return sa::MakeShared<OutputMessage>();
 }
 
 void OutputMessagePool::AddToAutoSend(std::shared_ptr<Protocol> protocol)
