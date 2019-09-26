@@ -10,9 +10,9 @@ namespace Net {
 
 class NetworkMessage;
 
-/// Size of the NetworkMessage class (4kB), the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
+/// Size of the NetworkMessage class, the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
 constexpr size_t NETWORKMESSAGE_MAXSIZE = 2048;
-/// Size of the pool in Byte (4MB)
+/// Size of the pool in Byte
 constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 1024;
 
 class NetworkMessage
