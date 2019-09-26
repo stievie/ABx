@@ -37,7 +37,7 @@ public:
     }
     void Add(InputType type)
     {
-        inputs_.Add(type, Utils::VariantMapEmpty);
+        inputs_.Add(type);
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 };

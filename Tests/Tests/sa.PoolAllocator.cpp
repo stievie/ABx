@@ -42,22 +42,22 @@ TEST_CASE("PoolAllocator")
     SECTION("Alloc/Free unique_ptr")
     {
 
-        for (unsigned i = 0; i < 1000; ++i)
+        for (unsigned i = 0; i < 100; ++i)
         {
             auto a = std::make_unique<A>();
             REQUIRE(a);
             REQUIRE(sizeof(*a) == sizeof(A));
         }
         auto info = gAllocator.GetInfo();
-        REQUIRE(info.allocs == 1000);
-        REQUIRE(info.frees == 1000);
+        REQUIRE(info.allocs == 100);
+        REQUIRE(info.frees == 100);
         // Obviously must be zero because it's calculated
         REQUIRE(info.current == 0);
     }
     SECTION("make_unique unique_ptr")
     {
 
-        for (unsigned i = 0; i < 1000; ++i)
+        for (unsigned i = 0; i < 100; ++i)
         {
             auto b = std::make_unique<B>();
             REQUIRE(b);

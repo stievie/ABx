@@ -53,11 +53,17 @@ public:
     InputQueue() = default;
     ~InputQueue() = default;
 
-    void Add(InputType type, const Utils::VariantMap& data)
+    void Add(InputType type, Utils::VariantMap&& data)
     {
         // Network and Dispatcher Threat
         std::lock_guard<std::mutex> lockClass(lock_);
-        queue_.push({ type, data });
+        queue_.push({ type, std::move(data) });
+    }
+    void Add(InputType type)
+    {
+        // Network and Dispatcher Threat
+        std::lock_guard<std::mutex> lockClass(lock_);
+        queue_.push({ type, Utils::VariantMapEmpty });
     }
     bool Get(InputItem& item)
     {
