@@ -11,6 +11,8 @@ namespace Net {
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
 
+PoolWrapper::MessagePool PoolWrapper::sOutputMessagePool;
+
 void OutputMessagePool::SendAll()
 {
     // Dispatcher Thread
@@ -39,7 +41,7 @@ void OutputMessagePool::ScheduleSendAll()
 #ifdef DEBUG_POOLALLOCATOR
 sa::PoolInfo OutputMessagePool::GetPoolInfo()
 {
-    return gOutputMessagePool.GetInfo();
+    return PoolWrapper::sOutputMessagePool.GetInfo();
 }
 #endif
 

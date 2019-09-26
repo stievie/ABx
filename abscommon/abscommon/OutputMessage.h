@@ -67,8 +67,12 @@ public:
 constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
 constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 1024;
 
-using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
-static MessagePool gOutputMessagePool;
+struct PoolWrapper
+{
+    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE* OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
+    // Must be instantiated in one single cpp file
+    static MessagePool sOutputMessagePool;
+};
 
 }
 
@@ -80,14 +84,14 @@ struct DefaultDelete<::Net::OutputMessage>
     DefaultDelete() = default;
     void operator()(::Net::OutputMessage* p) const noexcept
     {
-        Net::gOutputMessagePool.deallocate(p, 1);
+        Net::PoolWrapper::sOutputMessagePool.deallocate(p, 1);
     }
 };
 
 template <>
 inline SharedPtr<::Net::OutputMessage> MakeShared()
 {
-    auto* ptr = Net::gOutputMessagePool.allocate(1, nullptr);
+    auto* ptr = Net::PoolWrapper::sOutputMessagePool.allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return sa::SharedPtr<::Net::OutputMessage>(ptr);

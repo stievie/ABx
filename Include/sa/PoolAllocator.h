@@ -48,8 +48,9 @@ private:
         assert(freePosition != nullptr);
 #ifdef DEBUG_POOLALLOCATOR
         ++allocs_;
-        if (allocs_ > peek_)
-            peek_ = allocs_;
+        size_t curr = GetCurrentAllocations();
+        if (curr > peek_)
+            peek_ = curr;
 #endif
         return (void*)freePosition;
     }
