@@ -17,7 +17,8 @@ struct DefaultDelete
 };
 
 
-/// Loose implementation of a SharedPtr. Unintrusive and unflexible.
+/// Loose implementation of a SharedPtr. Unintrusive and unflexible. No WeakPtr,
+/// no pointer cast.
 template <typename T>
 class SharedPtr
 {
@@ -131,23 +132,9 @@ public:
         Swap(tmp);
         return *this;
     }
-    template<typename U>
-    SharedPtr& operator=(SharedPtr<U>&& other)
-    {
-        SharedPtr tmp = std::move(other);
-        Swap(tmp);
-        return *this;
-    }
 
     /// Copy assignment
     SharedPtr& operator=(const SharedPtr& other)
-    {
-        SharedPtr tmp = other;
-        Swap(tmp);
-        return *this;
-    }
-    template<typename U>
-    SharedPtr& operator=(const SharedPtr<U>& other)
     {
         SharedPtr tmp = other;
         Swap(tmp);
