@@ -123,24 +123,24 @@ void Application::UpdateBytesSent(size_t bytes)
     bytesSent_ += bytes;
 
     // Calculate load
-    if ((Utils::Tick() - lastLoadCalc_) > 1000 || loads_.empty())
+    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.empty())
     {
         lastLoadCalc_ = Utils::Tick();
 
-        uint8_t load = 0;
+        unsigned load = 0;
         if (maxThroughput_ != 0)
         {
             int64_t mesTime = Utils::TimeElapsed(statusMeasureTime_);
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
-            load = static_cast<uint8_t>(ld);
+            load = static_cast<unsigned>(ld);
             if (load > 100)
                 load = 100;
         }
 
         while (loads_.size() > 9)
             loads_.erase(loads_.begin());
-        loads_.push_back(static_cast<int>(load));
+        loads_.push_back(load);
     }
 }
 
@@ -153,7 +153,7 @@ void Application::HeartBeatTask()
         serv.uuid = serverId_;
         if (dataClient->Read(serv))
         {
-            serv.load = GetAvgLoad();
+            serv.load = static_cast<uint8_t>(GetAvgLoad());
             serv.heartbeat = Utils::Tick();
             if (!dataClient->Update(serv))
                 LOG_ERROR << "Error updating service " << serverId_ << std::endl;

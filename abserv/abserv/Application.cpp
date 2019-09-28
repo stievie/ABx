@@ -622,6 +622,7 @@ unsigned Application::GetLoad()
             load = l;
 
         {
+            // Get memory pool usage
             std::lock_guard<std::mutex> lock(lock_);
             const auto ompi = Net::OutputMessagePool::GetPoolInfo();
             if (ompi.usage > load)

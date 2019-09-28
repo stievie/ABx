@@ -40,7 +40,7 @@ private:
         float loads = 0.0f;
         for (unsigned p : loads_)
             loads += static_cast<float>(p);
-        return static_cast<unsigned>(loads / loads_.size());
+        return static_cast<unsigned>(loads / static_cast<float>(loads_.size()));
     }
 protected:
     bool ParseCommandLine() override;

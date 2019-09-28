@@ -55,7 +55,7 @@ private:
     uint16_t dataPort_;
     /// Byte/sec
     uint64_t maxThroughput_;
-    std::vector<int> loads_;
+    std::vector<unsigned> loads_;
     std::mutex mutex_;
     void HandleMessage(const Net::MessageMsg& msg);
     void ShowHelp();
@@ -87,15 +87,15 @@ private:
         const SimpleWeb::error_code& ec);
     bool HandleOnAccept(const asio::ip::tcp::endpoint& endpoint);
 
-    uint8_t GetAvgLoad() const
+    unsigned GetAvgLoad() const
     {
         if (loads_.empty())
             return 0;
 
         float loads = 0.0f;
-        for (int p : loads_)
+        for (unsigned p : loads_)
             loads += static_cast<float>(p);
-        return static_cast<uint8_t>(loads / loads_.size());
+        return static_cast<uint8_t>(loads / static_cast<float>(loads_.size()));
     }
 protected:
     bool ParseCommandLine() override;

@@ -4,6 +4,7 @@
 
 class A
 {
+public:
     char data[2048];
 };
 

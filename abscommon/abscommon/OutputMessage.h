@@ -6,6 +6,7 @@
 #include <sa/PoolAllocator.h>
 #include <sa/SharedPtr.h>
 #include <cstring>
+#include <mutex>
 
 namespace Net {
 

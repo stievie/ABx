@@ -5,6 +5,7 @@
 #include <sa/Linkedlist.h>
 #include <cassert>
 #include <type_traits>
+#include <stdint.h>
 
 //#define DEBUG_POOLALLOCATOR
 
@@ -43,7 +44,7 @@ private:
         assert(size == ChunkSize);
         Node* freePosition = freeList_.pop();
         assert(freePosition != nullptr);
-        assert((((size_t)freePosition - (size_t)startPtr_) % ChunkSize) == 0);
+        assert((((uintptr_t)freePosition - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++allocs_;
         size_t curr = GetCurrentAllocations();
         if (curr > peak_)
@@ -54,8 +55,8 @@ private:
     void Free(void* ptr)
     {
         // Check if this pointer is ours
-        assert((size_t)ptr >= (size_t)startPtr_ && (size_t)ptr <= (size_t)startPtr_ + (Size - ChunkSize));
-        assert((((size_t)ptr - (size_t)startPtr_) % ChunkSize) == 0);
+        assert((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (Size - ChunkSize));
+        assert((((uintptr_t)ptr - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++frees_;
         freeList_.push((Node*)ptr);
     }
@@ -67,10 +68,10 @@ private:
         peak_ = 0;
 
         // Create a linked-list with all free positions
-        const size_t nChunks = Size / ChunkSize;
+        static constexpr size_t nChunks = Size / ChunkSize;
         for (size_t i = 0; i < nChunks; ++i)
         {
-            size_t address = (size_t)startPtr_ + i * ChunkSize;
+            uintptr_t address = (uintptr_t)startPtr_ + i * ChunkSize;
             freeList_.push((Node*)address);
         }
     }
@@ -101,7 +102,10 @@ public:
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
     size_t GetAvailMem() const { return Size - GetUsedMem(); }
     /// Usage, value between 0..100
-    unsigned GetUsage() const { return static_cast<unsigned>(((float)GetUsedMem() / (float)GetAvailMem()) * 100.0f); }
+    unsigned GetUsage() const {
+        static constexpr size_t nChunks = Size / ChunkSize;
+        return static_cast<unsigned>((static_cast<float>(GetCurrentAllocations()) / static_cast<float>(nChunks)) * 100.0f);
+    }
     PoolInfo GetInfo() const
     {
         return {
