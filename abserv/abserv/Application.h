@@ -14,7 +14,7 @@ class Application : public ServerApp
 {
 private:
     asio::io_service ioService_;
-    std::mutex loaderLock_;
+    std::mutex lock_;
     std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;

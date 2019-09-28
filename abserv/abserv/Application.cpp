@@ -621,12 +621,16 @@ unsigned Application::GetLoad()
             // Use the higher value
             load = l;
 
-        const auto ompi = Net::OutputMessagePool::GetPoolInfo();
-        if (ompi.usage > load)
-            load = l;
-        const auto nwpi = Net::NetworkMessage::GetPoolInfo();
-        if (nwpi.usage > load)
-            load = l;
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            const auto ompi = Net::OutputMessagePool::GetPoolInfo();
+            if (ompi.usage > load)
+                load = l;
+
+            const auto nwpi = Net::NetworkMessage::GetPoolInfo();
+            if (nwpi.usage > load)
+                load = l;
+        }
 
         if (load > 100)
             load = 100;
