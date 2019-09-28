@@ -15,6 +15,7 @@
 #include "Subsystems.h"
 #include "ThreadPool.h"
 #include "NetworkMessage.h"
+#include "OutputMessage.h"
 
 void Maintenance::CleanCacheTask()
 {
@@ -69,10 +70,14 @@ void Maintenance::UpdateServerLoadTask()
 
 #ifdef DEBUG_POOLALLOCATOR
     // Print some stats
-    sa::PoolInfo info = Net::NetworkMessage::GetPoolInfo();
-    LOG_DEBUG << "NetworkMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
-        ", peek: " << info.peek <<
-        ", used: " << info.used << ", avail: " << info.avail << std::endl;
+    sa::PoolInfo ninfo = Net::NetworkMessage::GetPoolInfo();
+    LOG_DEBUG << "NetworkMessage Pool:  allocs: " << ninfo.allocs << ", frees: " << ninfo.frees << ", current: " << ninfo.current <<
+        ", peak: " << ninfo.peak <<
+        ", used: " << ninfo.used << ", avail: " << ninfo.avail << std::endl;
+    sa::PoolInfo oinfo = Net::OutputMessagePool::GetPoolInfo();
+    LOG_DEBUG << "OutputMessage Pool:  allocs: " << oinfo.allocs << ", frees: " << oinfo.frees << ", current: " << oinfo.current <<
+        ", peak: " << oinfo.peak <<
+        ", used: " << oinfo.used << ", avail: " << oinfo.avail << std::endl;
 #endif
 
     AB::Entities::Service serv;

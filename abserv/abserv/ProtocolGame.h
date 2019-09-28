@@ -27,8 +27,6 @@ public:
     static std::string serverId_;
 private:
     std::weak_ptr<Game::Player> player_;
-    uint32_t challengeTimestamp_ = 0;
-    uint8_t challengeRandom_ = 0;
     DH_KEY clientKey_;
     std::shared_ptr<Game::Player> GetPlayer()
     {
@@ -79,7 +77,7 @@ private:
     void DisconnectClient(uint8_t error);
     void Connect();
 
-    bool acceptPackets_ = false;
+    bool acceptPackets_{ false };
 };
 
 }

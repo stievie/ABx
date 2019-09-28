@@ -6,7 +6,7 @@
 #include <cassert>
 #include <type_traits>
 
-//#define DEBUG_POOLALLOCATOR
+#define DEBUG_POOLALLOCATOR
 
 namespace sa {
 
@@ -16,7 +16,7 @@ struct PoolInfo
     size_t allocs;
     size_t frees;
     size_t current;
-    size_t peek;
+    size_t peak;
     size_t used;
     size_t avail;
 };
@@ -35,7 +35,7 @@ private:
 #ifdef DEBUG_POOLALLOCATOR
     size_t allocs_{ 0 };
     size_t frees_{ 0 };
-    size_t peek_{ 0 };
+    size_t peak_{ 0 };
 #endif
 
     void* startPtr_{ nullptr };
@@ -49,8 +49,8 @@ private:
 #ifdef DEBUG_POOLALLOCATOR
         ++allocs_;
         size_t curr = GetCurrentAllocations();
-        if (curr > peek_)
-            peek_ = curr;
+        if (curr > peak_)
+            peak_ = curr;
 #endif
         return (void*)freePosition;
     }
@@ -70,7 +70,7 @@ private:
 #ifdef DEBUG_POOLALLOCATOR
         allocs_ = 0;
         frees_ = 0;
-        peek_ = 0;
+        peak_ = 0;
 #endif
 
         // Create a linked-list with all free positions
@@ -104,7 +104,7 @@ public:
 #ifdef DEBUG_POOLALLOCATOR
     size_t GetAllocs() const { return allocs_; }
     size_t GetFrees() const { return frees_; }
-    size_t GetPeek() const { return peek_; }
+    size_t GetPeak() const { return peak_; }
     size_t GetCurrentAllocations() const { return allocs_ - frees_; }
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
     size_t GetAvailMem() const { return Size - GetUsedMem(); }
@@ -114,7 +114,7 @@ public:
             GetAllocs(),
             GetFrees(),
             GetCurrentAllocations(),
-            GetPeek(),
+            GetPeak(),
             GetUsedMem(),
             GetAvailMem()
         };

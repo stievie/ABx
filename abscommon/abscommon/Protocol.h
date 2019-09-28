@@ -31,8 +31,7 @@ public:
         checksumEnabled_(false),
         compressionEnabled_(false),
         encryptionEnabled_(false)
-    {
-    }
+    { }
     virtual ~Protocol() = default;
 
     Protocol(const Protocol&) = delete;

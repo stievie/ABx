@@ -13,6 +13,19 @@ namespace Net {
 
 uint32_t ConnectionManager::maxPacketsPerSec = 0;
 
+Connection::Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
+    socket_(ioService),
+    servicePort_(servicPort),
+    readTimer_(asio::steady_timer(ioService)),
+    writeTimer_(asio::steady_timer(ioService)),
+    msg_(NetworkMessage::GetNew())
+{
+    state_ = State::Open;
+    receivedFirst_ = false;
+    packetsSent_ = 0;
+    timeConnected_ = time(nullptr);
+}
+
 Connection::~Connection()
 {
     CloseSocket();

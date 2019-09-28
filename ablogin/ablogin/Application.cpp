@@ -15,9 +15,7 @@
 #include "FileUtils.h"
 #include "DataClient.h"
 #include "UuidUtils.h"
-#ifdef DEBUG_POOLALLOCATOR
 #include "OutputMessage.h"
-#endif
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -182,7 +180,7 @@ void Application::HeartBeatTask()
     // Print some stats
     sa::PoolInfo info = Net::OutputMessagePool::GetPoolInfo();
     LOG_DEBUG << "NetworkMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
-        ", peek: " << info.peek <<
+        ", peak: " << info.peak <<
         ", used: " << info.used << ", avail: " << info.avail << std::endl;
 #endif
 

@@ -78,6 +78,7 @@ struct PoolWrapper
 
 namespace sa {
 
+/*
 template <>
 struct DefaultDelete<::Net::OutputMessage>
 {
@@ -96,6 +97,7 @@ inline SharedPtr<::Net::OutputMessage> MakeShared()
     ptr->Reset();
     return sa::SharedPtr<::Net::OutputMessage>(ptr);
 }
+*/
 
 }
 

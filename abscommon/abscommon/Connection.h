@@ -1,11 +1,11 @@
 #pragma once
 
-#include "NetworkMessage.h"
 #include <unordered_set>
 #include <list>
 #include <memory>
 #include <asio.hpp>
 #include <sa/SharedPtr.h>
+#include "NetworkMessage.h"
 
 namespace Net {
 
@@ -45,20 +45,10 @@ public:
     Connection(const Connection&) = delete;
     Connection& operator=(const Connection&) = delete;
 
-    Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
-        socket_(ioService),
-        servicePort_(servicPort),
-        readTimer_(asio::steady_timer(ioService)),
-        writeTimer_(asio::steady_timer(ioService)),
-        msg_(NetworkMessage::GetNew())
-    {
-        state_ = State::Open;
-        receivedFirst_ = false;
-        packetsSent_ = 0;
-        timeConnected_ = time(nullptr);
-    }
+    Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort);
     ~Connection();
 
+    asio::ip::tcp::socket socket_;
     /// Send the message
     bool Send(sa::SharedPtr<OutputMessage> message);
     /// Close the connection
@@ -69,8 +59,6 @@ public:
     asio::ip::tcp::socket& GetSocket() { return socket_; }
     uint32_t GetIP() const;
     uint16_t GetPort() const;
-protected:
-    asio::ip::tcp::socket socket_;
 private:
     friend class ConnectionManager;
 
@@ -84,8 +72,8 @@ private:
     void InternalSend(OutputMessage& message);
 
 #ifdef DEBUG_NET
-    int64_t lastReadHeader_;
-    int64_t lastReadBody_;
+    int64_t lastReadHeader_{ 0 };
+    int64_t lastReadBody_{ 0 };
 #endif
     std::shared_ptr<ServicePort> servicePort_;
     std::shared_ptr<Protocol> protocol_;
@@ -93,7 +81,9 @@ private:
     bool receivedFirst_;
     asio::steady_timer readTimer_;
     asio::steady_timer writeTimer_;
+    /// Message read from the client
     std::unique_ptr<NetworkMessage> msg_;
+    /// Messages will be sent to the client
     std::list<sa::SharedPtr<OutputMessage>> messageQueue_;
     time_t timeConnected_;
     uint32_t packetsSent_;
