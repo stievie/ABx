@@ -179,7 +179,7 @@ void Application::HeartBeatTask()
 #ifdef DEBUG_POOLALLOCATOR
     // Print some stats
     sa::PoolInfo info = Net::OutputMessagePool::GetPoolInfo();
-    LOG_DEBUG << "NetworkMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
+    LOG_DEBUG << "OutputMessage Pool:  allocs: " << info.allocs << ", frees: " << info.frees << ", current: " << info.current <<
         ", peak: " << info.peak <<
         ", used: " << info.used << ", avail: " << info.avail << std::endl;
 #endif

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <catch.hpp>
-
 #include <sa/SharedPtr.h>
 
 class A
@@ -13,26 +12,6 @@ class B
 public:
     char data{ '\0' };
 };
-
-namespace sa {
-
-template <>
-struct DefaultDelete<B>
-{
-    DefaultDelete() = default;
-    void operator()(B* p) const noexcept
-    {
-        delete p;
-    }
-};
-
-template <>
-inline SharedPtr<B> MakeShared()
-{
-    return SharedPtr<B>(new B());
-}
-
-}
 
 TEST_CASE("SharedPtr")
 {

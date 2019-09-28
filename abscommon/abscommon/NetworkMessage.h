@@ -12,7 +12,7 @@ class NetworkMessage;
 
 /// Size of the NetworkMessage class, the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
 constexpr size_t NETWORKMESSAGE_MAXSIZE = 2048;
-/// Size of the pool in Byte
+/// Size of the pool in Byte. Need around 2 messages per player
 constexpr size_t NETWORKMESSAGE_POOLSIZE = NETWORKMESSAGE_MAXSIZE * 1024;
 
 class NetworkMessage

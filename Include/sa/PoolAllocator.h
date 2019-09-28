@@ -6,7 +6,7 @@
 #include <cassert>
 #include <type_traits>
 
-#define DEBUG_POOLALLOCATOR
+//#define DEBUG_POOLALLOCATOR
 
 namespace sa {
 
@@ -46,6 +46,7 @@ private:
         assert(size == ChunkSize);
         Node* freePosition = freeList_.pop();
         assert(freePosition != nullptr);
+        assert((((size_t)freePosition - (size_t)startPtr_) % ChunkSize) == 0);
 #ifdef DEBUG_POOLALLOCATOR
         ++allocs_;
         size_t curr = GetCurrentAllocations();
@@ -59,6 +60,7 @@ private:
     {
         // Check if this pointer is ours
         assert((size_t)ptr >= (size_t)startPtr_ && (size_t)ptr <= (size_t)startPtr_ + (Size - ChunkSize));
+        assert((((size_t)ptr - (size_t)startPtr_) % ChunkSize) == 0);
 #ifdef DEBUG_POOLALLOCATOR
         ++frees_;
 #endif
@@ -126,7 +128,7 @@ public:
         void* resultMem = Alloc(sizeof(T));
         T* t = nullptr;
         if constexpr (std::is_default_constructible<T>::value)
-            t = new(resultMem)T;
+            t = new(resultMem)T();
         else
             t = reinterpret_cast<T*>(resultMem);
 
@@ -134,7 +136,7 @@ public:
         {
             void* oMem = Alloc(sizeof(T));
             if constexpr (std::is_default_constructible<T>::value)
-                new(oMem)T;
+                new(oMem)T();
         }
         return t;
     }
@@ -142,10 +144,13 @@ public:
     {
         for (size_type i = 0; i < n; ++i)
         {
-            T* o = reinterpret_cast<T*>(p + (ChunkSize * i));
+            void* ptr = p + (ChunkSize * i);
             if constexpr (std::is_destructible<T>::value)
+            {
+                T* o = reinterpret_cast<T*>(ptr);
                 o->~T();
-            Free(o);
+            }
+            Free(ptr);
         }
     }
 };

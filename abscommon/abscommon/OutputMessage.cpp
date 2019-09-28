@@ -12,6 +12,7 @@ namespace Net {
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
 
 PoolWrapper::MessagePool PoolWrapper::sOutputMessagePool;
+std::mutex PoolWrapper::lock_;
 
 void OutputMessagePool::SendAll()
 {

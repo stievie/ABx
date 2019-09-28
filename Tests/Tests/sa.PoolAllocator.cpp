@@ -3,9 +3,16 @@
 #define DEBUG_POOLALLOCATOR
 #include <sa/PoolAllocator.h>
 #include <memory>
+#include <vector>
+#include <sa/SharedPtr.h>
 
+class _A
+{
+public:
+    int x;
+};
 
-class A
+class A : public _A
 {
 public:
     uint8_t buff[4096];
@@ -17,8 +24,8 @@ public:
     uint8_t buff[4096];
 };
 
-using Allocator = sa::PoolAllocator<A, sizeof(A) * 1024, sizeof(A)>;
-static Allocator gAllocator;
+using AAllocator = sa::PoolAllocator<A, sizeof(A) * 1024, sizeof(A)>;
+static AAllocator gAllocator;
 
 namespace std {
 
@@ -33,6 +40,27 @@ inline unique_ptr<A> make_unique<A>()
 {
     auto* ptr = gAllocator.allocate(1, nullptr);
     return std::unique_ptr<A>(ptr);
+}
+
+}
+
+namespace sa {
+
+template <>
+struct DefaultDelete<A>
+{
+    DefaultDelete() = default;
+    void operator()(A* p) const noexcept
+    {
+        gAllocator.deallocate(p, 1);
+    }
+};
+
+template <>
+inline SharedPtr<A> MakeShared()
+{
+    auto* ptr = gAllocator.allocate(1, nullptr);
+    return sa::SharedPtr<A>(ptr);
 }
 
 }
@@ -64,4 +92,23 @@ TEST_CASE("PoolAllocator")
             REQUIRE(sizeof(*b) == sizeof(B));
         }
     }
+}
+
+TEST_CASE("SharedPtr PoolAllocator")
+{
+    auto previnfo = gAllocator.GetInfo();
+    {
+        std::vector<sa::SharedPtr<A>> bs;
+        {
+            for (int i = 0; i < 100; ++i)
+            {
+                bs.push_back(sa::MakeShared<A>());
+            }
+        }
+        auto currinfo = gAllocator.GetInfo();
+        REQUIRE(currinfo.allocs == previnfo.allocs + 100);
+        REQUIRE(currinfo.frees == previnfo.frees);
+    }
+    auto currinfo = gAllocator.GetInfo();
+    REQUIRE(currinfo.current == 0);
 }

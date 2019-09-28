@@ -65,26 +65,30 @@ public:
 };
 
 constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
+// Around ~2 per player
 constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 1024;
 
 struct PoolWrapper
 {
-    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE* OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
+    static std::mutex lock_;
+    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
     // Must be instantiated in one single cpp file
     static MessagePool sOutputMessagePool;
 };
 
 }
 
+// OutputMessages are more frequently (~2x) allocated/deallocated than NetworkMessages, so
+// it would be nice if it works for this.
 namespace sa {
 
-/*
 template <>
 struct DefaultDelete<::Net::OutputMessage>
 {
     DefaultDelete() = default;
     void operator()(::Net::OutputMessage* p) const noexcept
     {
+        std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
         Net::PoolWrapper::sOutputMessagePool.deallocate(p, 1);
     }
 };
@@ -92,12 +96,12 @@ struct DefaultDelete<::Net::OutputMessage>
 template <>
 inline SharedPtr<::Net::OutputMessage> MakeShared()
 {
+    std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
     auto* ptr = Net::PoolWrapper::sOutputMessagePool.allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return sa::SharedPtr<::Net::OutputMessage>(ptr);
 }
-*/
 
 }
 
