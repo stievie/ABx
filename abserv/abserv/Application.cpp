@@ -34,6 +34,8 @@
 #include "ItemsCache.h"
 #include "UuidUtils.h"
 #include "GuildManager.h"
+#include "OutputMessage.h"
+#include "NetworkMessage.h"
 
 Application* Application::Instance = nullptr;
 
@@ -609,13 +611,23 @@ unsigned Application::GetLoad()
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = (static_cast<float>(playerCount) / static_cast<float>(SERVER_MAX_CONNECTIONS)) * 100.0f;
         unsigned load = static_cast<uint8_t>(ld);
+
         unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
             load = utilization;
+
         unsigned l = static_cast<unsigned>(usage.GetUsage());
         if (l > load)
             // Use the higher value
             load = l;
+
+        const auto ompi = Net::OutputMessagePool::GetPoolInfo();
+        if (ompi.usage > load)
+            load = l;
+        const auto nwpi = Net::NetworkMessage::GetPoolInfo();
+        if (nwpi.usage > load)
+            load = l;
+
         if (load > 100)
             load = 100;
 

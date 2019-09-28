@@ -39,12 +39,10 @@ void OutputMessagePool::ScheduleSendAll()
     );
 }
 
-#ifdef DEBUG_POOLALLOCATOR
 sa::PoolInfo OutputMessagePool::GetPoolInfo()
 {
     return PoolWrapper::sOutputMessagePool.GetInfo();
 }
-#endif
 
 sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {

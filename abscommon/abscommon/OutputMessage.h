@@ -112,9 +112,7 @@ class OutputMessagePool
 private:
     OutputMessagePool() = default;
 public:
-#ifdef DEBUG_POOLALLOCATOR
     static sa::PoolInfo GetPoolInfo();
-#endif
     static sa::SharedPtr<OutputMessage> GetOutputMessage();
 
     OutputMessagePool(const OutputMessagePool&) = delete;

@@ -10,7 +10,6 @@
 
 namespace sa {
 
-#ifdef DEBUG_POOLALLOCATOR
 struct PoolInfo
 {
     size_t allocs;
@@ -19,8 +18,8 @@ struct PoolInfo
     size_t peak;
     size_t used;
     size_t avail;
+    unsigned usage;
 };
-#endif
 
 /// Size must be a multiple of ChunkSize
 template <typename T, size_t Size, size_t ChunkSize>
@@ -32,11 +31,9 @@ private:
     struct FreeHeader { };
     using Node = typename LinkedList<FreeHeader>::Node;
     LinkedList<FreeHeader> freeList_;
-#ifdef DEBUG_POOLALLOCATOR
     size_t allocs_{ 0 };
     size_t frees_{ 0 };
     size_t peak_{ 0 };
-#endif
 
     void* startPtr_{ nullptr };
     void* Alloc(const size_t size)
@@ -47,12 +44,10 @@ private:
         Node* freePosition = freeList_.pop();
         assert(freePosition != nullptr);
         assert((((size_t)freePosition - (size_t)startPtr_) % ChunkSize) == 0);
-#ifdef DEBUG_POOLALLOCATOR
         ++allocs_;
         size_t curr = GetCurrentAllocations();
         if (curr > peak_)
             peak_ = curr;
-#endif
         return (void*)freePosition;
     }
 
@@ -61,19 +56,15 @@ private:
         // Check if this pointer is ours
         assert((size_t)ptr >= (size_t)startPtr_ && (size_t)ptr <= (size_t)startPtr_ + (Size - ChunkSize));
         assert((((size_t)ptr - (size_t)startPtr_) % ChunkSize) == 0);
-#ifdef DEBUG_POOLALLOCATOR
         ++frees_;
-#endif
         freeList_.push((Node*)ptr);
     }
 
     void Reset()
     {
-#ifdef DEBUG_POOLALLOCATOR
         allocs_ = 0;
         frees_ = 0;
         peak_ = 0;
-#endif
 
         // Create a linked-list with all free positions
         const size_t nChunks = Size / ChunkSize;
@@ -103,13 +94,14 @@ public:
         free(startPtr_);
     }
 
-#ifdef DEBUG_POOLALLOCATOR
     size_t GetAllocs() const { return allocs_; }
     size_t GetFrees() const { return frees_; }
     size_t GetPeak() const { return peak_; }
     size_t GetCurrentAllocations() const { return allocs_ - frees_; }
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
     size_t GetAvailMem() const { return Size - GetUsedMem(); }
+    /// Usage, value between 0..100
+    unsigned GetUsage() const { return static_cast<unsigned>(((float)GetUsedMem() / (float)GetAvailMem()) * 100.0f); }
     PoolInfo GetInfo() const
     {
         return {
@@ -118,10 +110,10 @@ public:
             GetCurrentAllocations(),
             GetPeak(),
             GetUsedMem(),
-            GetAvailMem()
+            GetAvailMem(),
+            GetUsage()
         };
     }
-#endif
 
     pointer allocate(size_type n, const void*)
     {

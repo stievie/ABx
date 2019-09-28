@@ -24,9 +24,7 @@ public:
     static void Delete(NetworkMessage* p);
     /// Pre allocated network messages
     static std::unique_ptr<NetworkMessage> GetNew();
-#ifdef DEBUG_POOLALLOCATOR
     static sa::PoolInfo GetPoolInfo();
-#endif
 public:
     NetworkMessage() = default;
 public:

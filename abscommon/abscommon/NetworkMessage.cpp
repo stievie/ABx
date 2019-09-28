@@ -23,12 +23,10 @@ std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
     return std::unique_ptr<NetworkMessage>(ptr);
 }
 
-#ifdef DEBUG_POOLALLOCATOR
 sa::PoolInfo NetworkMessage::GetPoolInfo()
 {
     return sNetworkMessagePool.GetInfo();
 }
-#endif
 
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 {
