@@ -12,9 +12,6 @@ namespace Net {
 
 class Protocol;
 
-// Around ~2 per player
-constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 4096;
-
 class OutputMessage : public NetworkMessage
 {
 private:
@@ -73,7 +70,7 @@ constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
 struct PoolWrapper
 {
     static std::mutex lock_;
-    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
+    using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE>;
     // Must be instantiated in one single cpp file
     static MessagePool* GetOutputMessagePool();
 };

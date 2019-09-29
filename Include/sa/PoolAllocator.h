@@ -23,20 +23,21 @@ struct PoolInfo
 };
 
 /// Size must be a multiple of ChunkSize
-template <typename T, size_t Size, size_t ChunkSize>
+template <typename T, size_t ChunkSize>
 class PoolAllocator
 {
-    static_assert(Size % ChunkSize == 0, "Size must be a multiple of ChunkSize");
     static_assert(!std::is_constructible<T>::value || std::is_default_constructible<T>::value, "T can only have a default constructor");
 private:
     struct FreeHeader { };
     using Node = typename LinkedList<FreeHeader>::Node;
     LinkedList<FreeHeader> freeList_;
+    size_t size_;
+    void* startPtr_;
+
     size_t allocs_{ 0 };
     size_t frees_{ 0 };
     size_t peak_{ 0 };
 
-    void* startPtr_{ nullptr };
     void* Alloc(const size_t size)
     {
         (void)size;
@@ -55,7 +56,7 @@ private:
     void Free(void* ptr)
     {
         // Check if this pointer is ours
-        assert((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (Size - ChunkSize));
+        assert((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (size_ - ChunkSize));
         assert((((uintptr_t)ptr - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++frees_;
         freeList_.push((Node*)ptr);
@@ -68,7 +69,7 @@ private:
         peak_ = 0;
 
         // Create a linked-list with all free positions
-        static constexpr size_t nChunks = Size / ChunkSize;
+        const size_t nChunks = size_ / ChunkSize;
         for (size_t i = 0; i < nChunks; ++i)
         {
             uintptr_t address = (uintptr_t)startPtr_ + i * ChunkSize;
@@ -84,10 +85,12 @@ public:
     typedef const T& const_reference;
     typedef T value_type;
 
-    PoolAllocator() :
-        freeList_{}
+    PoolAllocator(size_t size) :
+        freeList_{},
+        size_(size),
+        startPtr_(malloc(size_))
     {
-        startPtr_ = malloc(Size);
+        assert(size_ % ChunkSize == 0);
         Reset();
     }
     ~PoolAllocator()
@@ -100,10 +103,10 @@ public:
     size_t GetPeak() const { return peak_; }
     size_t GetCurrentAllocations() const { return allocs_ - frees_; }
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
-    size_t GetAvailMem() const { return Size - GetUsedMem(); }
+    size_t GetAvailMem() const { return size_ - GetUsedMem(); }
     /// Usage, value between 0..100
     unsigned GetUsage() const {
-        static constexpr size_t nChunks = Size / ChunkSize;
+        const size_t nChunks = size_ / ChunkSize;
         return static_cast<unsigned>((static_cast<float>(GetCurrentAllocations()) / static_cast<float>(nChunks)) * 100.0f);
     }
     PoolInfo GetInfo() const

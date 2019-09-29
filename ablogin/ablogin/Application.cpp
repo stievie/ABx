@@ -17,16 +17,23 @@
 #include "UuidUtils.h"
 #include "OutputMessage.h"
 
+
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
 {
     serverType_ = AB::Entities::ServiceTypeLoginServer;
 
+    static constexpr size_t EXPECTED_CONNECTIONS = 128;
+    static constexpr size_t NETWORKMESSAGE_POOLCOUNT = EXPECTED_CONNECTIONS * 2;
+    static constexpr size_t NETWORKMESSAGE_POOLSIZE = Net::NETWORKMESSAGE_MAXSIZE * NETWORKMESSAGE_POOLCOUNT;
+    static constexpr size_t OUTPUTMESSAGE_POOLCOUNT = EXPECTED_CONNECTIONS * 2;
+    static constexpr size_t OUTPUTMESSAGE_POOLSIZE = Net::OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOLCOUNT;
+
     // Need for the Connection object
-    Subsystems::Instance.CreateSubsystem<Net::NetworkMessage::MessagePool>();
+    Subsystems::Instance.CreateSubsystem<Net::NetworkMessage::MessagePool>(NETWORKMESSAGE_POOLSIZE);
     // OutputMessage pool
-    Subsystems::Instance.CreateSubsystem<Net::PoolWrapper::MessagePool>();
+    Subsystems::Instance.CreateSubsystem<Net::PoolWrapper::MessagePool>(OUTPUTMESSAGE_POOLSIZE);
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();
