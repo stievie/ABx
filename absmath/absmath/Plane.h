@@ -7,10 +7,10 @@ namespace Math {
 class Plane
 {
 public:
-    Plane() :
+    constexpr Plane() noexcept :
         d_(0.0f)
-    {}
-    Plane(const Vector3& normal, float distance) :
+    { }
+    constexpr Plane(const Vector3& normal, float distance) noexcept :
         normal_(normal),
         d_(distance)
     { }

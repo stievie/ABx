@@ -13,13 +13,13 @@ class Vector4;
 class Vector3
 {
 public:
-    Vector3() noexcept :
+    constexpr Vector3() noexcept :
         x_(0.0f),
         y_(0.0f),
         z_(0.0f)
     { }
 
-    Vector3(const Vector3& vector) noexcept :
+    constexpr Vector3(const Vector3& vector) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_)
@@ -27,12 +27,12 @@ public:
     /// Create from Vector4, drop w_
     Vector3(const Vector4& vector) noexcept;
 
-    Vector3(float x, float y, float z) noexcept :
+    constexpr Vector3(float x, float y, float z) noexcept :
         x_(x),
         y_(y),
         z_(z)
     { }
-    Vector3(const std::array<float, 3>& values) noexcept :
+    constexpr Vector3(const std::array<float, 3>& values) noexcept :
         x_(values[0]),
         y_(values[1]),
         z_(values[2])

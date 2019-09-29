@@ -13,17 +13,17 @@ class Matrix4;
 class Sphere
 {
 public:
-    Sphere() noexcept :
+    constexpr Sphere() noexcept :
         center_(Vector3::Zero),
         radius_(-Math::M_INFINITE)
     {}
     /// Copy-construct from another sphere.
-    Sphere(const Sphere& sphere) noexcept :
+    constexpr Sphere(const Sphere& sphere) noexcept :
         center_(sphere.center_),
         radius_(sphere.radius_)
     {}
     /// Construct from center and radius.
-    Sphere(const Vector3& center, float radius) noexcept :
+    constexpr Sphere(const Vector3& center, float radius) noexcept :
         center_(center),
         radius_(radius)
     {}

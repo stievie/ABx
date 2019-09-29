@@ -7,8 +7,8 @@ namespace Math {
 class Line
 {
 public:
-    Line() = default;
-    inline Line(const Vector3& s, const Vector3& e) :
+    constexpr Line() noexcept = default;
+    constexpr  Line(const Vector3& s, const Vector3& e) noexcept :
         start_(s),
         end_(e)
     { }

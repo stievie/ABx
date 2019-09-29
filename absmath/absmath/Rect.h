@@ -8,14 +8,14 @@ template<typename T>
 class Rect
 {
 public:
-    Rect() {}
-    Rect(T left, T top, T right, T bottom) :
+    constexpr Rect() noexcept {}
+    constexpr Rect(T left, T top, T right, T bottom) noexcept :
         left_(left),
         top_(top),
         right_(right),
         bottom_(bottom)
     { }
-    Rect(const Rect<T>& rect) :
+    constexpr Rect(const Rect<T>& rect) noexcept :
         left_(rect.left_),
         top_(rect.top_),
         right_(rect.right_),

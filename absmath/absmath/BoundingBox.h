@@ -52,14 +52,14 @@ public:
         orientation_(Quaternion::Identity)
     { }
     BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
-        min_(Vector3(minX, minY, minZ)),
-        max_(Vector3(maxX, maxY, maxZ)),
+        min_(minX, minY, minZ),
+        max_(maxX, maxY, maxZ),
         orientation_(Quaternion::Identity)
     { }
     /// Construct from minimum and maximum floats (all dimensions same.)
     BoundingBox(float min, float max) noexcept :
-        min_(Vector3(min, min, min)),
-        max_(Vector3(max, max, max)),
+        min_(min, min, min),
+        max_(max, max, max),
         orientation_(Quaternion::Identity)
     { }
     ~BoundingBox() = default;

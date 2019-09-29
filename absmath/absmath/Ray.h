@@ -12,17 +12,17 @@ class Matrix4;
 class Ray
 {
 public:
-    Ray() {}
+    constexpr Ray() noexcept {}
+    constexpr Ray(const Ray& other) noexcept :
+        origin_(other.origin_),
+        direction_(other.direction_)
+    {}
     /// Construct from origin and direction.
     /// Hint: To get a Ray from one point to another use (target - origin) as direction
     Ray(const Vector3& origin, const Vector3& direction)
     {
         Define(origin, direction);
     }
-    Ray(const Ray& other) :
-        origin_(other.origin_),
-        direction_(other.direction_)
-    {}
 
     /// Assign from another ray.
     Ray& operator =(const Ray& rhs)

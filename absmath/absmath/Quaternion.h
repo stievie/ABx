@@ -11,19 +11,19 @@ class Matrix4;
 class Quaternion
 {
 public:
-    Quaternion() noexcept :
+    constexpr Quaternion() noexcept :
         w_(1.0f),
         x_(0.0f),
         y_(0.0f),
         z_(0.0f)
     {}
-    Quaternion(float w, float x, float y, float z) noexcept :
+    constexpr Quaternion(float w, float x, float y, float z) noexcept :
         w_(w),
         x_(x),
         y_(y),
         z_(z)
     {}
-    Quaternion(const std::array<float, 4>& values) noexcept :
+    constexpr Quaternion(const std::array<float, 4>& values) noexcept :
         w_(values[0]),
         x_(values[1]),
         y_(values[2]),

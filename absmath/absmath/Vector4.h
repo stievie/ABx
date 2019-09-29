@@ -7,35 +7,35 @@ namespace Math {
 class Vector4
 {
 public:
-    Vector4() noexcept :
+    constexpr Vector4() noexcept :
         x_(0.0f),
         y_(0.0f),
         z_(0.0f),
         w_(0.0f)
     { }
 
-    Vector4(const Vector4& vector) noexcept :
+    constexpr Vector4(const Vector4& vector) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_),
         w_(vector.w_)
     { }
 
-    Vector4(float x, float y, float z, float w) noexcept :
+    constexpr Vector4(float x, float y, float z, float w) noexcept :
         x_(x),
         y_(y),
         z_(z),
         w_(w)
     { }
 
-    Vector4(const Vector3& vector, float w = 1.0f) noexcept :
+    constexpr Vector4(const Vector3& vector, float w = 1.0f) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_),
         w_(w)
     { }
 
-    Vector4(const std::array<float, 4>& values) noexcept :
+    constexpr Vector4(const std::array<float, 4>& values) noexcept :
         x_(values[0]),
         y_(values[1]),
         z_(values[2]),

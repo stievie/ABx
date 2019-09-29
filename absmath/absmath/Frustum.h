@@ -27,7 +27,7 @@ public:
 private:
     void UpdatePlanes();
 public:
-    Frustum() noexcept
+    constexpr Frustum() noexcept
     { }
     Frustum(const Frustum& other) noexcept;
 

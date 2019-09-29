@@ -6,12 +6,12 @@ template<typename T>
 class Point
 {
 public:
-    Point() {};
+    constexpr Point() noexcept { }
     Point(T x, T y) :
         x_(x),
         y_(y)
     { }
-    Point(const Point<T>& point) :
+    constexpr Point(const Point<T>& point) noexcept :
         x_(point.x_),
         y_(point.x_)
     { }

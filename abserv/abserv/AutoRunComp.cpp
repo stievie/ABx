@@ -35,7 +35,7 @@ bool AutoRunComp::Goto(const Math::Vector3& dest)
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
     destination_ = dest;
-    static const Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
+    static constexpr Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
 
     const Math::Vector3& pos = owner_.transformation_.position_;
     if (pos.Distance(dest) < maxDist_)
