@@ -23,7 +23,9 @@ Application::Application() :
 {
     serverType_ = AB::Entities::ServiceTypeLoginServer;
 
+    // Need for the Connection object
     Subsystems::Instance.CreateSubsystem<Net::NetworkMessage::MessagePool>();
+    // OutputMessage pool
     Subsystems::Instance.CreateSubsystem<Net::PoolWrapper::MessagePool>();
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
