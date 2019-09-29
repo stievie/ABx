@@ -23,6 +23,8 @@ Application::Application() :
 {
     serverType_ = AB::Entities::ServiceTypeLoginServer;
 
+    Subsystems::Instance.CreateSubsystem<Net::NetworkMessage::MessagePool>();
+    Subsystems::Instance.CreateSubsystem<Net::PoolWrapper::MessagePool>();
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();

@@ -12,6 +12,9 @@ namespace Net {
 
 class Protocol;
 
+// Around ~2 per player
+constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 4096;
+
 class OutputMessage : public NetworkMessage
 {
 private:
@@ -66,15 +69,13 @@ public:
 };
 
 constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
-// Around ~2 per player
-constexpr size_t OUTPUTMESSAGE_POOL_COUNT = 1024;
 
 struct PoolWrapper
 {
     static std::mutex lock_;
     using MessagePool = sa::PoolAllocator<OutputMessage, OUTPUTMESSAGE_SIZE * OUTPUTMESSAGE_POOL_COUNT, OUTPUTMESSAGE_SIZE>;
     // Must be instantiated in one single cpp file
-    static MessagePool sOutputMessagePool;
+    static MessagePool* GetOutputMessagePool();
 };
 
 }
@@ -90,7 +91,10 @@ struct DefaultDelete<::Net::OutputMessage>
     void operator()(::Net::OutputMessage* p) const noexcept
     {
         std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
-        Net::PoolWrapper::sOutputMessagePool.deallocate(p, 1);
+        auto* pool = Net::PoolWrapper::GetOutputMessagePool();
+        if (!pool)
+            return;
+        pool->deallocate(p, 1);
     }
 };
 
@@ -98,7 +102,10 @@ template <>
 inline SharedPtr<::Net::OutputMessage> MakeShared()
 {
     std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
-    auto* ptr = Net::PoolWrapper::sOutputMessagePool.allocate(1, nullptr);
+    auto* pool = Net::PoolWrapper::GetOutputMessagePool();
+    if (!pool)
+        return sa::SharedPtr<::Net::OutputMessage>();
+    auto* ptr = pool->allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return sa::SharedPtr<::Net::OutputMessage>(ptr);

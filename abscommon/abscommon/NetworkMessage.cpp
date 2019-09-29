@@ -5,19 +5,31 @@
 #include <lz4.h>
 #include "Subsystems.h"
 #include "Dispatcher.h"
+#include "Subsystems.h"
+#include "Logger.h"
 
 namespace Net {
 
-NetworkMessage::MessagePool NetworkMessage::sNetworkMessagePool;
-
 void NetworkMessage::Delete(NetworkMessage* p)
 {
-    sNetworkMessagePool.deallocate(p, 1);
+    auto* pool = GetSubsystem<NetworkMessage::MessagePool>();
+    if (!pool)
+    {
+        LOG_ERROR << "No NetworkMessage::MessagePool" << std::endl;
+        return;
+    }
+    pool->deallocate(p, 1);
 }
 
 std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 {
-    auto* ptr = sNetworkMessagePool.allocate(1, nullptr);
+    auto* pool = GetSubsystem<NetworkMessage::MessagePool>();
+    if (!pool)
+    {
+        LOG_ERROR << "No NetworkMessage::MessagePool" << std::endl;
+        return std::unique_ptr<NetworkMessage>();
+    }
+    auto* ptr = pool->allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
     return std::unique_ptr<NetworkMessage>(ptr);
@@ -25,7 +37,13 @@ std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 
 sa::PoolInfo NetworkMessage::GetPoolInfo()
 {
-    return sNetworkMessagePool.GetInfo();
+    auto* pool = GetSubsystem<NetworkMessage::MessagePool>();
+    if (!pool)
+    {
+        LOG_ERROR << "No NetworkMessage::MessagePool" << std::endl;
+        return { };
+    }
+    return pool->GetInfo();
 }
 
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)

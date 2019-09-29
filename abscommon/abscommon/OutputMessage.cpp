@@ -6,12 +6,12 @@
 #include "Subsystems.h"
 #include "Protocol.h"
 #include "Connection.h"
+#include "Subsystems.h"
 
 namespace Net {
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
 
-PoolWrapper::MessagePool PoolWrapper::sOutputMessagePool;
 std::mutex PoolWrapper::lock_;
 
 void OutputMessagePool::SendAll()
@@ -41,7 +41,9 @@ void OutputMessagePool::ScheduleSendAll()
 
 sa::PoolInfo OutputMessagePool::GetPoolInfo()
 {
-    return PoolWrapper::sOutputMessagePool.GetInfo();
+    if (PoolWrapper::MessagePool* pool = PoolWrapper::GetOutputMessagePool())
+        return pool->GetInfo();
+    return { };
 }
 
 sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
@@ -68,6 +70,17 @@ void OutputMessagePool::RemoveFromAutoSend(const std::shared_ptr<Protocol>& prot
         std::swap(*it, bufferedProtocols_.back());
         bufferedProtocols_.pop_back();
     }
+}
+
+PoolWrapper::MessagePool* PoolWrapper::GetOutputMessagePool()
+{
+    auto* pool = GetSubsystem<PoolWrapper::MessagePool>();
+    if (!pool)
+    {
+        LOG_ERROR << "No PoolWrapper::MessagePool" << std::endl;
+        return nullptr;
+    }
+    return pool;
 }
 
 }

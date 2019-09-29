@@ -48,6 +48,8 @@ Application::Application() :
 
     serverType_ = AB::Entities::ServiceTypeGameServer;
 
+    Subsystems::Instance.CreateSubsystem<Net::NetworkMessage::MessagePool>();
+    Subsystems::Instance.CreateSubsystem<Net::PoolWrapper::MessagePool>();
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>();
@@ -610,7 +612,7 @@ unsigned Application::GetLoad()
         lastLoadCalc_ = Utils::Tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = (static_cast<float>(playerCount) / static_cast<float>(SERVER_MAX_CONNECTIONS)) * 100.0f;
-        unsigned load = static_cast<uint8_t>(ld);
+        unsigned load = static_cast<unsigned>(ld);
 
         unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
