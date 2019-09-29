@@ -41,8 +41,7 @@ private:
             return;
         --(*refs_);
     }
-    template <typename U>
-    void Swap(SharedPtr<U>& other)
+    void Swap(SharedPtr& other)
     {
        std::swap(ptr_, other.ptr_);
        // Pinch the counter of the other guy
@@ -50,8 +49,8 @@ private:
     }
 public:
     /// You'll get an empty pointer
-    SharedPtr() = default;
-    SharedPtr(std::nullptr_t) { }
+    constexpr SharedPtr() noexcept = default;
+    constexpr SharedPtr(std::nullptr_t) noexcept { }
     /// Construct from raw pointer
     SharedPtr(const T* ptr) :
         ptr_(const_cast<T*>(ptr))
