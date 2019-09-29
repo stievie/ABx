@@ -24,8 +24,8 @@ public:
     uint8_t buff[4096];
 };
 
-using AAllocator = sa::PoolAllocator<A, sizeof(A) * 1024, sizeof(A)>;
-static AAllocator gAllocator;
+using AAllocator = sa::PoolAllocator<A, sizeof(A)>;
+static AAllocator gAllocator(sizeof(A) * 1024);
 
 namespace std {
 
