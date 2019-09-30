@@ -4,7 +4,7 @@
 #include <list>
 #include <memory>
 #include <asio.hpp>
-#include <sa/SharedPtr.h>
+#include <sa/SmartPtr.h>
 #include "NetworkMessage.h"
 
 namespace Net {

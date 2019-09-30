@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <catch.hpp>
-#include <sa/SharedPtr.h>
+#include <sa/SmartPtr.h>
 
 class A
 {

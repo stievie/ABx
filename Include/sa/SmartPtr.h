@@ -189,10 +189,114 @@ public:
     bool operator!=(T* other) { return ptr_ != other; }
 };
 
+template <typename T>
+class UniquePtr
+{
+private:
+    T* ptr_{ nullptr };
+public:
+    /// You'll get an empty pointer
+    constexpr UniquePtr() noexcept = default;
+    constexpr UniquePtr(std::nullptr_t) noexcept { }
+    /// Construct from raw pointer
+    UniquePtr(const T* ptr) :
+        ptr_(const_cast<T*>(ptr))
+    { }
+    /// Copy constructor
+    UniquePtr(const UniquePtr& other) = delete;
+    /// Move constructor
+    UniquePtr(UniquePtr&& other) noexcept
+    {
+        // We get the pointer
+        std::swap(ptr_, other.ptr_);
+    }
+
+    ~UniquePtr()
+    {
+        if (ptr_)
+            DefaultDelete<T>()(ptr_);
+    }
+
+    void Reset()
+    {
+        if (ptr_)
+        {
+            DefaultDelete<T>()(ptr_);
+            ptr_ = nullptr;
+        }
+    }
+    /// Check if it contains a pointer
+    bool Empty() const { return !ptr_; }
+
+    /// Copy assignment
+    UniquePtr& operator=(const UniquePtr& other) = delete;
+    /// Move assignment
+    UniquePtr& operator=(UniquePtr&& other)
+    {
+        UniquePtr tmp = std::move(other);
+        std::swap(ptr_, tmp.ptr_);
+        return *this;
+    }
+
+    /// Get raw pointer
+    T* Ptr()
+    {
+        assert(ptr_);
+        return ptr_;
+    }
+    const T* Ptr() const
+    {
+        assert(ptr_);
+        return ptr_;
+    }
+    T* operator->()
+    {
+        assert(ptr_);
+        return ptr_;
+    }
+    const T* operator->() const
+    {
+        assert(ptr_);
+        return ptr_;
+    }
+    T& operator *()
+    {
+        assert(ptr_);
+        return *ptr_;
+    }
+    const T& operator *() const
+    {
+        assert(ptr_);
+        return *ptr_;
+    }
+
+    operator bool() { return !!ptr_; }
+    bool operator!() const { return !ptr_; }
+    bool operator==(std::nullptr_t) const { return !ptr_; }
+    bool operator!=(std::nullptr_t) const { return ptr_; }
+    bool operator==(const UniquePtr& other) const { return ptr_ == other.ptr_; }
+    bool operator!=(const UniquePtr& other) const { return ptr_ != other.ptr_; }
+
+    bool operator==(UniquePtr& other) { return ptr_ == other.ptr_; }
+    bool operator!=(UniquePtr& other) { return ptr_ != other.ptr_; }
+
+    bool operator==(const T* other) const { return ptr_ == other; }
+    bool operator!=(const T* other) const { return ptr_ != other; }
+
+    bool operator==(T* other) { return ptr_ == other; }
+    bool operator!=(T* other) { return ptr_ != other; }
+};
+
 template <typename T, typename... ArgTypes>
 inline SharedPtr<T> MakeShared(ArgTypes&& ... Arguments)
 {
     return SharedPtr<T>(new T(std::forward<ArgTypes>(Arguments)...));
+}
+
+template <typename T, typename... ArgTypes>
+inline UniquePtr<T> MakeUnique(ArgTypes&& ... Arguments)
+{
+    return UniquePtr<T>(new T(std::forward<ArgTypes>(Arguments)...));
 }
 
 }

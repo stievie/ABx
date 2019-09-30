@@ -4,7 +4,7 @@
 #include <sa/PoolAllocator.h>
 #include <memory>
 #include <vector>
-#include <sa/SharedPtr.h>
+#include <sa/SmartPtr.h>
 
 class _A
 {

@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "Logger.h"
 #include <sa/PoolAllocator.h>
-#include <sa/SharedPtr.h>
+#include <sa/SmartPtr.h>
 #include <cstring>
 #include <mutex>
 
@@ -87,10 +87,10 @@ struct DefaultDelete<::Net::OutputMessage>
     DefaultDelete() = default;
     void operator()(::Net::OutputMessage* p) const noexcept
     {
-        std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
         auto* pool = Net::PoolWrapper::GetOutputMessagePool();
         if (!pool)
             return;
+        std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
         pool->deallocate(p, 1);
     }
 };
@@ -98,10 +98,10 @@ struct DefaultDelete<::Net::OutputMessage>
 template <>
 inline SharedPtr<::Net::OutputMessage> MakeShared()
 {
-    std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
     auto* pool = Net::PoolWrapper::GetOutputMessagePool();
     if (!pool)
         return sa::SharedPtr<::Net::OutputMessage>();
+    std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
     auto* ptr = pool->allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();
