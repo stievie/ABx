@@ -63,6 +63,13 @@ inline SharedPtr<A> MakeShared()
     return sa::SharedPtr<A>(ptr);
 }
 
+template <>
+inline UniquePtr<A> MakeUnique()
+{
+    auto* ptr = gAllocator.allocate(1, nullptr);
+    return sa::UniquePtr<A>(ptr);
+}
+
 }
 
 TEST_CASE("PoolAllocator")
@@ -103,6 +110,25 @@ TEST_CASE("SharedPtr PoolAllocator")
             for (int i = 0; i < 100; ++i)
             {
                 bs.push_back(sa::MakeShared<A>());
+            }
+        }
+        auto currinfo = gAllocator.GetInfo();
+        REQUIRE(currinfo.allocs == previnfo.allocs + 100);
+        REQUIRE(currinfo.frees == previnfo.frees);
+    }
+    auto currinfo = gAllocator.GetInfo();
+    REQUIRE(currinfo.current == 0);
+}
+
+TEST_CASE("UniquePtr PoolAllocator")
+{
+    auto previnfo = gAllocator.GetInfo();
+    {
+        std::vector<sa::UniquePtr<A>> bs;
+        {
+            for (int i = 0; i < 100; ++i)
+            {
+                bs.push_back(sa::MakeUnique<A>());
             }
         }
         auto currinfo = gAllocator.GetInfo();

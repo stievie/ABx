@@ -34,13 +34,9 @@ private:
     void HandleCreateInstanceMessage(const Net::MessageMsg& msg);
     unsigned GetAvgLoad() const
     {
-        if (loads_.empty())
+        if (loads_.size() == 0)
             return 0;
-
-        float loads = 0.0f;
-        for (unsigned p : loads_)
-            loads += static_cast<float>(p);
-        return static_cast<unsigned>(loads / static_cast<float>(loads_.size()));
+        return std::accumulate(loads_.begin(), loads_.end(), 0u) / loads_.size();
     }
 protected:
     bool ParseCommandLine() override;
