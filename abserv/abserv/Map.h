@@ -48,7 +48,6 @@ inline bool SpawnPoint::Empty() const
 class Map
 {
 private:
-    std::mutex lock_;
     std::weak_ptr<Game> game_;
     ai::Zone zone_;
     ai::ReadWriteLock aiLock_;
@@ -76,14 +75,17 @@ public:
             return terrain_->GetHeight(world);
         return 0.0f;
     }
-    inline const ai::Zone& GetZone() const
+    const ai::Zone& GetZone() const
     {
         return zone_;
     }
-
-    inline ai::Zone& GetZone()
+    ai::Zone& GetZone()
     {
         return zone_;
+    }
+    std::shared_ptr<Game> GetGame()
+    {
+        return game_.lock();
     }
 
     inline void SetEntityGroupId(const ai::AIPtr& entity, uint32_t oldGroupId, uint32_t groupId)
@@ -126,7 +128,6 @@ public:
         return true;
     }
 
-    void LoadSceneNode(const pugi::xml_node& node);
     void AddGameObject(std::shared_ptr<GameObject> object);
     void UpdateAi(uint32_t delta);
     void UpdateOctree(uint32_t delta);
