@@ -14,7 +14,7 @@
 
 namespace IO {
 
-static void IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
+static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 {
     auto* dataProvider = GetSubsystem<IO::DataProvider>();
     // Game load thread
@@ -70,8 +70,9 @@ static void IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 #ifdef DEBUG_GAME
             //            LOG_DEBUG << "Spawn point: " << group << "; Pos: " << pos.ToString() << std::endl;
 #endif
+            // This node is a spawn point. No need to do anything more.
             map.spawnPoints_.push_back({ pos, rot, group });
-            return;
+            return true;
         }
 
         std::shared_ptr<Game::Model> model;
@@ -270,7 +271,10 @@ static void IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             }
             }
         }
+        return true;
     }
+    LOG_ERROR << "The map does not have a game object" << std::endl;
+    return false;
 }
 
 static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
@@ -295,7 +299,12 @@ static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
     {
         if (strcmp((*it).name(), "node") == 0)
         {
-            IOMap_LoadSceneNode(map, *it);
+            if (!IOMap_LoadSceneNode(map, *it))
+            {
+                LOG_ERROR << "Error loading scene node" << std::endl;
+                // Can't continue
+                return false;
+            }
         }
     }
 
