@@ -19,7 +19,77 @@
 
 namespace IO {
 
-bool IOPlayer::LoadPlayer(Game::Player& player)
+static bool IOPlayer_LoadPlayerInventory(Game::Player& player)
+{
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+
+    // Equipment
+    AB::Entities::EquippedItems equipmenet;
+    equipmenet.uuid = player.data_.uuid;
+    if (client->Read(equipmenet))
+    {
+        for (const auto& e : equipmenet.itemUuids)
+            player.SetEquipment(e);
+    }
+
+    // Inventory
+    AB::Entities::InventoryItems inventory;
+    inventory.uuid = player.data_.uuid;
+    if (client->Read(inventory))
+    {
+        for (const auto& e : inventory.itemUuids)
+            player.SetInventory(e);
+    }
+
+    // Chest
+    AB::Entities::ChestItems chest;
+    chest.uuid = player.account_.uuid;
+    if (client->Read(chest))
+    {
+        for (const auto& e : chest.itemUuids)
+            player.SetChest(e);
+    }
+
+    return true;
+}
+
+static bool IOPlayer_SavePlayerInventory(Game::Player& player)
+{
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    // Equipment
+    player.inventoryComp_->VisitEquipement([client](Game::Item& item)
+    {
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
+    });
+
+    // Inventory
+    player.inventoryComp_->VisitInventory([client](Game::Item& item)
+    {
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
+    });
+    AB::Entities::InventoryItems inventory;
+    inventory.uuid = player.data_.uuid;
+    client->Invalidate(inventory);
+
+    // Chest
+    player.inventoryComp_->VisitChest([client](Game::Item& item)
+    {
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
+    });
+
+    AB::Entities::ChestItems chest;
+    chest.uuid = player.account_.uuid;
+    client->Invalidate(chest);
+    return true;
+}
+
+static bool IOPlayer_LoadPlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -76,12 +146,12 @@ bool IOPlayer::LoadPlayer(Game::Player& player)
 
     player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
-    if (!LoadPlayerInventory(player))
+    if (!IOPlayer_LoadPlayerInventory(player))
         return false;
     return true;
 }
 
-bool IOPlayer::LoadCharacter(AB::Entities::Character& ch)
+bool IOPlayer_LoadCharacter(AB::Entities::Character& ch)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -93,19 +163,19 @@ bool IOPlayer::LoadCharacter(AB::Entities::Character& ch)
     return true;
 }
 
-bool IOPlayer::LoadPlayerByName(Game::Player& player, const std::string& name)
+bool IOPlayer_LoadPlayerByName(Game::Player& player, const std::string& name)
 {
     player.data_.name = name;
-    return LoadPlayer(player);
+    return IOPlayer_LoadPlayer(player);
 }
 
-bool IOPlayer::LoadPlayerByUuid(Game::Player& player, const std::string& uuid)
+bool IOPlayer_LoadPlayerByUuid(Game::Player& player, const std::string& uuid)
 {
     player.data_.uuid = uuid;
-    return LoadPlayer(player);
+    return IOPlayer_LoadPlayer(player);
 }
 
-bool IOPlayer::SavePlayer(Game::Player& player)
+bool IOPlayer_SavePlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -117,10 +187,10 @@ bool IOPlayer::SavePlayer(Game::Player& player)
     player.data_.onlineTime += static_cast<int64_t>((player.logoutTime_ - player.loginTime_) / 1000);
     if (!client->Update(player.data_))
         return false;
-    return SavePlayerInventory(player);
+    return IOPlayer_SavePlayerInventory(player);
 }
 
-size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)
+size_t IOPlayer_GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
@@ -164,76 +234,6 @@ size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vecto
     std::sort(accounts.begin(), accounts.end());
     accounts.erase(std::unique(accounts.begin(), accounts.end()), accounts.end());
     return accounts.size();
-}
-
-bool IOPlayer::LoadPlayerInventory(Game::Player& player)
-{
-    IO::DataClient* client = GetSubsystem<IO::DataClient>();
-
-    // Equipment
-    AB::Entities::EquippedItems equipmenet;
-    equipmenet.uuid = player.data_.uuid;
-    if (client->Read(equipmenet))
-    {
-        for (const auto& e : equipmenet.itemUuids)
-            player.SetEquipment(e);
-    }
-
-    // Inventory
-    AB::Entities::InventoryItems inventory;
-    inventory.uuid = player.data_.uuid;
-    if (client->Read(inventory))
-    {
-        for (const auto& e : inventory.itemUuids)
-            player.SetInventory(e);
-    }
-
-    // Chest
-    AB::Entities::ChestItems chest;
-    chest.uuid = player.account_.uuid;
-    if (client->Read(chest))
-    {
-        for (const auto& e : chest.itemUuids)
-            player.SetChest(e);
-    }
-
-    return true;
-}
-
-bool IOPlayer::SavePlayerInventory(Game::Player& player)
-{
-    IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    // Equipment
-    player.inventoryComp_->VisitEquipement([client](Game::Item& item)
-    {
-        client->Update(item.concreteItem_);
-        client->Invalidate(item.concreteItem_);
-        return Iteration::Continue;
-    });
-
-    // Inventory
-    player.inventoryComp_->VisitInventory([client](Game::Item& item)
-    {
-        client->Update(item.concreteItem_);
-        client->Invalidate(item.concreteItem_);
-        return Iteration::Continue;
-    });
-    AB::Entities::InventoryItems inventory;
-    inventory.uuid = player.data_.uuid;
-    client->Invalidate(inventory);
-
-    // Chest
-    player.inventoryComp_->VisitChest([client](Game::Item& item)
-    {
-        client->Update(item.concreteItem_);
-        client->Invalidate(item.concreteItem_);
-        return Iteration::Continue;
-    });
-
-    AB::Entities::ChestItems chest;
-    chest.uuid = player.account_.uuid;
-    client->Invalidate(chest);
-    return true;
 }
 
 }

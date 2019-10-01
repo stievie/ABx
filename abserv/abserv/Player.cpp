@@ -334,7 +334,7 @@ void Player::CRQSendMail(const std::string recipient, const std::string subject,
 {
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    if (IO::IOMail::SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
+    if (IO::IOMail_SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
     else
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
@@ -500,7 +500,7 @@ void Player::CRQGetFriend(const std::string accountUuid)
         AB::Entities::Account friendAccount;
         friendAccount.uuid = f.friendUuid;
         AB::Entities::Character friendToon;
-        /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
+        /* const bool success = */ IO::IOAccount_GetAccountInfo(friendAccount, friendToon);
         // If success == false -> offline, empty toon name
         msg->Add<uint8_t>(friendAccount.onlineStatus);
         msg->AddString(friendToon.name);
@@ -583,7 +583,7 @@ void Player::CRQGetPlayerInfo(const std::string accountUuid)
         AB::Entities::Account playerAccount;
         playerAccount.uuid = accountUuid;
         AB::Entities::Character playerToon;
-        /* const bool success = */ IO::IOAccount::GetAccountInfo(playerAccount, playerToon);
+        /* const bool success = */ IO::IOAccount_GetAccountInfo(playerAccount, playerToon);
         // If success == false -> offline, empty toon name
         msg->Add<uint8_t>(playerAccount.onlineStatus);
         msg->AddString(playerToon.name);
@@ -632,7 +632,7 @@ void Player::CRQGetFriendList()
             AB::Entities::Account friendAccount;
             friendAccount.uuid = current.friendUuid;
             AB::Entities::Character friendToon;
-            /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
+            /* const bool success = */ IO::IOAccount_GetAccountInfo(friendAccount, friendToon);
             // If success == false -> offline, empty toon name
             msg->Add<uint8_t>(friendAccount.onlineStatus);
             msg->AddString(friendToon.name);
@@ -1382,7 +1382,7 @@ void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessa
         return;
     }
 
-    std::string uuid = IO::IOGame::GetGameUuidFromName(mapName);
+    std::string uuid = IO::IOGame_GetGameUuidFromName(mapName);
     if (Utils::Uuid::IsEmpty(uuid))
         return;
     ChangeMap(uuid);

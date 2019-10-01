@@ -11,7 +11,7 @@
 
 namespace IO {
 
-bool IOMap::LoadScene(Game::Map& map, const std::string& name)
+static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
 {
     // Game load thread
     std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(map.data_.directory + "/" + name);
@@ -43,7 +43,7 @@ bool IOMap::LoadScene(Game::Map& map, const std::string& name)
     return true;
 }
 
-bool IOMap::Load(Game::Map& map)
+bool IOMap_Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
@@ -112,7 +112,7 @@ bool IOMap::Load(Game::Map& map)
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;
         return false;
     }
-    if (!LoadScene(map, sceneFile))
+    if (!IOMap_LoadScene(map, sceneFile))
     {
         LOG_ERROR << "Error loading scene " << navMeshFile << std::endl;
         return false;

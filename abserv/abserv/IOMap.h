@@ -52,14 +52,6 @@ static constexpr size_t AttrCollisionMask = Utils::StringHash("Collision Mask");
 #endif
 }
 
-class IOMap
-{
-private:
-    /// Load objects from Urho3D scene file
-    static bool LoadScene(Game::Map& map, const std::string& name);
-public:
-    IOMap() = delete;
-    static bool Load(Game::Map& map);
-};
+bool IOMap_Load(Game::Map& map);
 
 }

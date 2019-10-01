@@ -6,14 +6,14 @@
 
 namespace IO {
 
-bool IOMail::LoadMailList(AB::Entities::MailList& ml, const std::string& accountUuid)
+bool IOMail_LoadMailList(AB::Entities::MailList& ml, const std::string& accountUuid)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     ml.uuid = accountUuid;
     return client->Read(ml);
 }
 
-bool IOMail::SendMailToPlayer(const std::string& playerName, const std::string& fromAcc,
+bool IOMail_SendMailToPlayer(const std::string& playerName, const std::string& fromAcc,
     const std::string& fromName,
     const std::string& subject, const std::string& message)
 {
@@ -21,14 +21,14 @@ bool IOMail::SendMailToPlayer(const std::string& playerName, const std::string& 
     ch.name = playerName;
 
     // Get recipient account
-    bool ret = IOPlayer::LoadCharacter(ch);
+    bool ret = IOPlayer_LoadCharacter(ch);
     if (!ret)
         return false;
 
-    return SendMailToAccount(ch.accountUuid, fromAcc, fromName, playerName, subject, message);
+    return IOMail_SendMailToAccount(ch.accountUuid, fromAcc, fromName, playerName, subject, message);
 }
 
-bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string& fromAcc,
+bool IOMail_SendMailToAccount(const std::string& accountUuid, const std::string& fromAcc,
     const std::string& fromName, const std::string& toName,
     const std::string& subject, const std::string& message)
 {
@@ -76,7 +76,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     return ret;
 }
 
-bool IOMail::ReadMail(AB::Entities::Mail& mail)
+bool IOMail_ReadMail(AB::Entities::Mail& mail)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     bool ret = client->Read(mail);
@@ -103,7 +103,7 @@ bool IOMail::ReadMail(AB::Entities::Mail& mail)
     return ret;
 }
 
-bool IOMail::DeleteMail(AB::Entities::Mail& mail)
+bool IOMail_DeleteMail(AB::Entities::Mail& mail)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(mail))

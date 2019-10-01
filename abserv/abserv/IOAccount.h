@@ -5,14 +5,9 @@
 
 namespace IO {
 
-class IOAccount
-{
-public:
-    IOAccount() = delete;
-    static bool GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
-        const std::string& charUuid);
-    static bool AccountLogout(const std::string& uuid);
-    static bool GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character);
-};
+bool IOAccount_GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
+    const std::string& charUuid);
+bool IOAccount_AccountLogout(const std::string& uuid);
+bool IOAccount_GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character);
 
 }

@@ -10,7 +10,7 @@
 
 namespace IO {
 
-bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
+bool IOAccount_GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
     const std::string& charUuid)
 {
     AB_PROFILE;
@@ -50,7 +50,7 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
     return true;
 }
 
-bool IOAccount::AccountLogout(const std::string& uuid)
+bool IOAccount_AccountLogout(const std::string& uuid)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -65,7 +65,7 @@ bool IOAccount::AccountLogout(const std::string& uuid)
     return client->Update(acc);
 }
 
-bool IOAccount::GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character)
+bool IOAccount_GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))

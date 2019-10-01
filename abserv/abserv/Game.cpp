@@ -527,7 +527,7 @@ void Game::InternalLoad()
 {
     // Game::Load() Thread
 
-    if (!IO::IOMap::Load(*map_))
+    if (!IO::IOMap_Load(*map_))
     {
         LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
         return;
@@ -542,7 +542,7 @@ void Game::Load(const std::string& mapUuid)
     state_ = ExecutionState::Startup;
     AB_PROFILE;
     // Dispatcher Thread
-    if (!IO::IOGame::LoadGameByUuid(*this, mapUuid))
+    if (!IO::IOGame_LoadGameByUuid(*this, mapUuid))
     {
         LOG_ERROR << "Error loading game " << mapUuid << std::endl;
         return;

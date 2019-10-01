@@ -112,12 +112,12 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
         return;
 
     std::vector<std::string> accounts;
-    IO::IOPlayer::GetInterestedParties(accUuid, accounts);
+    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
 
     AB::Entities::Account account;
     AB::Entities::Character character;
     account.uuid = accUuid;
-    IO::IOAccount::GetAccountInfo(account, character);
+    IO::IOAccount_GetAccountInfo(account, character);
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::PlayerLoggedIn);
@@ -157,7 +157,7 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
         return;
 
     std::vector<std::string> accounts;
-    IO::IOPlayer::GetInterestedParties(accUuid, accounts);
+    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
 
     AB::Entities::Account account;
     account.uuid = accUuid;
