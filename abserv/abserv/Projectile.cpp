@@ -35,7 +35,7 @@ Projectile::~Projectile() = default;
 
 void Projectile::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
     luaInitialized_ = true;
 }
@@ -48,11 +48,11 @@ bool Projectile::LoadScript(const std::string& fileName)
     if (!script_->Execute(luaState_))
         return false;
 
-    if (ScriptManager::IsFunction(luaState_, "onCollide"))
+    if (Lua::IsFunction(luaState_, "onCollide"))
         functions_ |= FunctionOnCollide;
-    if (ScriptManager::IsFunction(luaState_, "onHitTarget"))
+    if (Lua::IsFunction(luaState_, "onHitTarget"))
         functions_ |= FunctionOnHitTarget;
-    if (ScriptManager::IsFunction(luaState_, "onStart"))
+    if (Lua::IsFunction(luaState_, "onStart"))
         functions_ |= FunctionOnStart;
 
     bool ret = luaState_["onInit"]();
@@ -243,7 +243,7 @@ uint32_t Projectile::GetLevel() const
 void Projectile::OnCollide(GameObject* other)
 {
     if (HaveFunction(FunctionOnCollide))
-        ScriptManager::CallFunction(luaState_, "onCollide", other);
+        Lua::CallFunction(luaState_, "onCollide", other);
 
     if (other)
     {
@@ -252,7 +252,7 @@ void Projectile::OnCollide(GameObject* other)
             if (other->id_ == spt->id_)
             {
                 if (HaveFunction(FunctionOnHitTarget))
-                    ScriptManager::CallFunction(luaState_, "onHitTarget", other);
+                    Lua::CallFunction(luaState_, "onHitTarget", other);
             }
         }
     }

@@ -25,7 +25,7 @@ void Item::RegisterLua(kaguya::State& state)
 
 void Item::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 
@@ -62,24 +62,24 @@ bool Item::LoadScript(const std::string& fileName)
     if (!script_->Execute(luaState_))
         return false;
 
-    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+    if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
-    if (ScriptManager::IsFunction(luaState_, "getDamage"))
+    if (Lua::IsFunction(luaState_, "getDamage"))
         functions_ |= FunctionGetDamage;
-    if (ScriptManager::IsFunction(luaState_, "getDamageType"))
+    if (Lua::IsFunction(luaState_, "getDamageType"))
         functions_ |= FunctionGetDamageType;
-    if (ScriptManager::IsFunction(luaState_, "onEquip"))
+    if (Lua::IsFunction(luaState_, "onEquip"))
         functions_ |= FunctionOnEquip;
-    if (ScriptManager::IsFunction(luaState_, "onUnequip"))
+    if (Lua::IsFunction(luaState_, "onUnequip"))
         functions_ |= FunctionOnUnequip;
-    if (ScriptManager::IsFunction(luaState_, "getSkillCost"))
+    if (Lua::IsFunction(luaState_, "getSkillCost"))
         functions_ |= FunctionGetSkillCost;
     return true;
 }
 
 void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
 {
-    if (ScriptManager::IsFunction(luaState_, "getHealthStats"))
+    if (Lua::IsFunction(luaState_, "getHealthStats"))
     {
         int32_t health = luaState_["getHealthStats"](level, maxStats);
         stats_.SetValue(Stat::Health, health);
@@ -88,7 +88,7 @@ void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
 
 void Item::CreateWeaponStats(uint32_t level, bool maxStats)
 {
-    if (ScriptManager::IsFunction(luaState_, "getDamageStats"))
+    if (Lua::IsFunction(luaState_, "getDamageStats"))
     {
         int32_t minDamage = 0;
         int32_t maxDamage = 0;
@@ -100,7 +100,7 @@ void Item::CreateWeaponStats(uint32_t level, bool maxStats)
 
 void Item::CreateFocusStats(uint32_t level, bool maxStats)
 {
-    if (ScriptManager::IsFunction(luaState_, "getEnergyStats"))
+    if (Lua::IsFunction(luaState_, "getEnergyStats"))
     {
         int32_t energy = luaState_["getEnergyStats"](level, maxStats);
         stats_.SetValue(Stat::Energy, energy);
@@ -109,7 +109,7 @@ void Item::CreateFocusStats(uint32_t level, bool maxStats)
 
 void Item::CreateShieldStats(uint32_t level, bool maxStats)
 {
-    if (ScriptManager::IsFunction(luaState_, "getArmorStats"))
+    if (Lua::IsFunction(luaState_, "getArmorStats"))
     {
         int32_t armor = luaState_["getArmorStats"](level, maxStats);
         stats_.SetValue(Stat::Armor, armor);

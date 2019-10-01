@@ -24,11 +24,7 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     const std::string& name,
     AB::Entities::FriendRelation relation)
 {
-    const auto it = std::find_if(friendList_.friends.begin(), friendList_.friends.end(), [&](const AB::Entities::Friend& current)
-    {
-        return Utils::Uuid::IsEqual(accountUuid, current.friendUuid);
-    });
-    if (it != friendList_.friends.end())
+    if (Exists(accountUuid))
         return FriendList::Error::AlreadyFriend;
 
     sa::Transaction transaction(friendList_);
@@ -95,6 +91,15 @@ FriendList::Error FriendList::ChangeNickname(const std::string& currentName, con
         return FriendList::Error::InternalError;
     transaction.Commit();
     return FriendList::Error::Success;
+}
+
+bool FriendList::Exists(const std::string& accountUuid)
+{
+    auto it = std::find_if(friendList_.friends.begin(), friendList_.friends.end(), [&](const AB::Entities::Friend& current)
+    {
+        return Utils::Uuid::IsEqual(accountUuid, current.friendUuid);
+    });
+    return (it != friendList_.friends.end());
 }
 
 bool FriendList::IsFriend(const std::string& accountUuid)

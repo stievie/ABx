@@ -144,7 +144,7 @@ void Game::RegisterLua(kaguya::State& state)
 
 void Game::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 
@@ -203,7 +203,7 @@ void Game::Update()
         if (lastUpdate_ == 0)
         {
             noplayerTime_ = 0;
-            ScriptManager::CallFunction(luaState_, "onStart");
+            Lua::CallFunction(luaState_, "onStart");
             // Add start tick at the beginning
             gameStatus_->AddByte(AB::GameProtocol::GameStart);
             gameStatus_->Add<int64_t>(startTime_);
@@ -238,7 +238,7 @@ void Game::Update()
         map_->UpdateOctree(delta);
 
         // Then call Lua Update function
-        ScriptManager::CallFunction(luaState_, "onUpdate", delta);
+        Lua::CallFunction(luaState_, "onUpdate", delta);
 
         // Send game status to players
         SendStatus();
@@ -263,7 +263,7 @@ void Game::Update()
             LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << " no players for " << noplayerTime_ << std::endl;
             ShutdownNpcs();
             SetState(ExecutionState::Terminated);
-            ScriptManager::CallFunction(luaState_, "onStop");
+            Lua::CallFunction(luaState_, "onStop");
         }
 
         // Schedule next update
@@ -290,7 +290,7 @@ void Game::Update()
         // Do nothing
         break;
     }
-    ScriptManager::CollectGarbage(luaState_);
+    Lua::CollectGarbage(luaState_);
 }
 
 void Game::SendStatus()
@@ -342,7 +342,7 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 void Game::AddObject(std::shared_ptr<GameObject> object)
 {
     AddObjectInternal(object);
-    ScriptManager::CallFunction(luaState_, "onAddObject", object.get());
+    Lua::CallFunction(luaState_, "onAddObject", object.get());
 }
 
 void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
@@ -356,7 +356,7 @@ void Game::InternalRemoveObject(GameObject* object)
     auto it = objects_.find(object->id_);
     if (it == objects_.end())
         return;
-    ScriptManager::CallFunction(luaState_, "onRemoveObject", object);
+    Lua::CallFunction(luaState_, "onRemoveObject", object);
     map_->RemoveEntity(object->id_);
     object->SetGame(std::shared_ptr<Game>());
     if (it != objects_.end())
@@ -513,7 +513,7 @@ std::vector<Party*> Game::GetParties() const
 
 void Game::CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data)
 {
-    if (ScriptManager::IsFunction(luaState_, name))
+    if (Lua::IsFunction(luaState_, name))
         luaState_[name](sender, data);
 }
 
@@ -645,7 +645,7 @@ void Game::PlayerJoin(uint32_t playerId)
         }
         UpdateEntity(player->data_);
 
-        ScriptManager::CallFunction(luaState_, "onPlayerJoin", player.get());
+        Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
         SendSpawnAll(playerId);
 
         if (GetState() == ExecutionState::Running)
@@ -690,7 +690,7 @@ void Game::PlayerLeave(uint32_t playerId)
         auto it = players_.find(playerId);
         if (it != players_.end())
         {
-            ScriptManager::CallFunction(luaState_, "onPlayerLeave", player);
+            Lua::CallFunction(luaState_, "onPlayerLeave", player);
             players_.erase(it);
         }
         player->data_.instanceUuid = "";

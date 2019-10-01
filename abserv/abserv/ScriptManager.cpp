@@ -16,15 +16,16 @@
 #include "Projectile.h"
 
 namespace Game {
+namespace Lua {
 
 static const char* MAIN_SCRIPT = "/scripts/main.lua";
 
-void ScriptManager::LuaErrorHandler(int errCode, const char* message)
+static void LuaErrorHandler(int errCode, const char* message)
 {
     LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
 }
 
-void ScriptManager::RegisterLuaAll(kaguya::State& state)
+void RegisterLuaAll(kaguya::State& state)
 {
     state.setErrorHandler(LuaErrorHandler);
 
@@ -85,9 +86,10 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
         mainS->Execute(state);
 }
 
-void ScriptManager::CollectGarbage(kaguya::State& state)
+void CollectGarbage(kaguya::State& state)
 {
     state.gc().step();
 }
 
+}
 }

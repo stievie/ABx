@@ -33,7 +33,7 @@ void Skill::RegisterLua(kaguya::State& state)
 
 void Skill::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 
@@ -50,17 +50,17 @@ bool Skill::LoadScript(const std::string& fileName)
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
-    if (ScriptManager::IsNumber(luaState_, "hp"))
+    if (Lua::IsNumber(luaState_, "hp"))
         hp_ = luaState_["hp"];
 
-    if (ScriptManager::IsNumber(luaState_, "range"))
+    if (Lua::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
-    if (ScriptManager::IsNumber(luaState_, "effect"))
+    if (Lua::IsNumber(luaState_, "effect"))
         skillEffect_ = static_cast<uint32_t>(luaState_["effect"]);
-    if (ScriptManager::IsNumber(luaState_, "effectTarget"))
+    if (Lua::IsNumber(luaState_, "effectTarget"))
         effectTarget_ = static_cast<uint32_t>(luaState_["effectTarget"]);
-    haveOnCancelled_ = ScriptManager::IsFunction(luaState_, "onCancelled");
-    haveOnInterrupted_ = ScriptManager::IsFunction(luaState_, "onInterrupted");
+    haveOnCancelled_ = Lua::IsFunction(luaState_, "onCancelled");
+    haveOnInterrupted_ = Lua::IsFunction(luaState_, "onInterrupted");
 
     return true;
 }
@@ -192,7 +192,7 @@ void Skill::CancelUse()
     if (haveOnCancelled_)
     {
         auto target = target_.lock();
-        ScriptManager::CallFunction(luaState_, "onCancelled",
+        Lua::CallFunction(luaState_, "onCancelled",
             source.get(), target.get());
     }
     if (source)
@@ -213,7 +213,7 @@ bool Skill::Interrupt()
     if (haveOnInterrupted_)
     {
         auto target = target_.lock();
-        ScriptManager::CallFunction(luaState_, "onInterrupted",
+        Lua::CallFunction(luaState_, "onInterrupted",
             source.get(), target.get());
     }
     if (source)

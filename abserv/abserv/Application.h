@@ -9,13 +9,13 @@
 #if defined(SCENE_VIEWER)
 #include "SceneViewer.h"
 #endif
+#include <numeric>
 
 class Application : public ServerApp
 {
 private:
     asio::io_service ioService_;
     std::mutex lock_;
-    std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::vector<unsigned> loads_;
@@ -36,7 +36,7 @@ private:
     {
         if (loads_.size() == 0)
             return 0;
-        return std::accumulate(loads_.begin(), loads_.end(), 0u) / loads_.size();
+        return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.size());
     }
 protected:
     bool ParseCommandLine() override;

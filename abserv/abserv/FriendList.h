@@ -35,6 +35,7 @@ public:
     FriendList::Error ChangeNickname(const std::string& currentName, const std::string& newName);
     FriendList::Error Remove(const std::string& accountUuid);
 
+    bool Exists(const std::string& accountUuid);
     bool IsFriend(const std::string& accountUuid);
     bool IsIgnored(const std::string& accountUuid);
     bool GetFriendByName(const std::string& name, AB::Entities::Friend& f);

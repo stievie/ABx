@@ -21,7 +21,7 @@ void Effect::RegisterLua(kaguya::State& state)
 
 void Effect::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 
@@ -34,48 +34,48 @@ bool Effect::LoadScript(const std::string& fileName)
         return false;
 
     persistent_ = luaState_["isPersistent"];
-    if (ScriptManager::IsBool(luaState_, "internal"))
+    if (Lua::IsBool(luaState_, "internal"))
         internal_ = luaState_["internal"];
 
-    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+    if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
-    if (ScriptManager::IsFunction(luaState_, "getSkillCost"))
+    if (Lua::IsFunction(luaState_, "getSkillCost"))
         functions_ |= FunctionGetSkillCost;
-    if (ScriptManager::IsFunction(luaState_, "getDamage"))
+    if (Lua::IsFunction(luaState_, "getDamage"))
         functions_ |= FunctionGetDamage;
-    if (ScriptManager::IsFunction(luaState_, "getAttackSpeed"))
+    if (Lua::IsFunction(luaState_, "getAttackSpeed"))
         functions_ |= FunctionGetAttackSpeed;
-    if (ScriptManager::IsFunction(luaState_, "getAttackDamageType"))
+    if (Lua::IsFunction(luaState_, "getAttackDamageType"))
         functions_ |= FunctionGetAttackDamageType;
-    if (ScriptManager::IsFunction(luaState_, "getAttackDamage"))
+    if (Lua::IsFunction(luaState_, "getAttackDamage"))
         functions_ |= FunctionGetAttackDamage;
-    if (ScriptManager::IsFunction(luaState_, "onAttack"))
+    if (Lua::IsFunction(luaState_, "onAttack"))
         functions_ |= FunctionOnAttack;
-    if (ScriptManager::IsFunction(luaState_, "onGettingAttacked"))
+    if (Lua::IsFunction(luaState_, "onGettingAttacked"))
         functions_ |= FunctionOnGettingAttacked;
-    if (ScriptManager::IsFunction(luaState_, "onUseSkill"))
+    if (Lua::IsFunction(luaState_, "onUseSkill"))
         functions_ |= FunctionOnUseSkill;
-    if (ScriptManager::IsFunction(luaState_, "onSkillTargeted"))
+    if (Lua::IsFunction(luaState_, "onSkillTargeted"))
         functions_ |= FunctionOnSkillTargeted;
-    if (ScriptManager::IsFunction(luaState_, "onAttacked"))
+    if (Lua::IsFunction(luaState_, "onAttacked"))
         functions_ |= FunctionOnAttacked;
-    if (ScriptManager::IsFunction(luaState_, "onInterruptingAttack"))
+    if (Lua::IsFunction(luaState_, "onInterruptingAttack"))
         functions_ |= FunctionOnInterruptingAttack;
-    if (ScriptManager::IsFunction(luaState_, "onInterruptingSkill"))
+    if (Lua::IsFunction(luaState_, "onInterruptingSkill"))
         functions_ |= FunctionOnInterruptingSkill;
-    if (ScriptManager::IsFunction(luaState_, "onKnockingDown"))
+    if (Lua::IsFunction(luaState_, "onKnockingDown"))
         functions_ |= FunctionOnKnockingDown;
-    if (ScriptManager::IsFunction(luaState_, "onHealing"))
+    if (Lua::IsFunction(luaState_, "onHealing"))
         functions_ |= FunctionOnHealing;
-    if (ScriptManager::IsFunction(luaState_, "onGetCriticalHit"))
+    if (Lua::IsFunction(luaState_, "onGetCriticalHit"))
         functions_ |= FunctionOnGetCriticalHit;
-    if (ScriptManager::IsFunction(luaState_, "getArmor"))
+    if (Lua::IsFunction(luaState_, "getArmor"))
         functions_ |= FunctionGetArmor;
-    if (ScriptManager::IsFunction(luaState_, "getArmorPenetration"))
+    if (Lua::IsFunction(luaState_, "getArmorPenetration"))
         functions_ |= FunctionGetArmorPenetration;
-    if (ScriptManager::IsFunction(luaState_, "getAttributeValue"))
+    if (Lua::IsFunction(luaState_, "getAttributeValue"))
         functions_ |= FunctionGetAttributeValue;
-    if (ScriptManager::IsFunction(luaState_, "getResources"))
+    if (Lua::IsFunction(luaState_, "getResources"))
         functions_ |= FunctionGetResources;
     return true;
 }
@@ -118,7 +118,7 @@ void Effect::Remove()
     {
         auto source = source_.lock();
         auto target = target_.lock();
-        ScriptManager::CallFunction(luaState_, "onRemove", source.get(), target.get());
+        Lua::CallFunction(luaState_, "onRemove", source.get(), target.get());
     }
     cancelled_ = true;
 }

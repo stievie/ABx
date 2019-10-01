@@ -53,7 +53,7 @@ AreaOfEffect::~AreaOfEffect() = default;
 
 void AreaOfEffect::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
     luaInitialized_ = true;
 }
@@ -83,20 +83,20 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         return false;
 
     itemIndex_ = luaState_["itemIndex"];
-    if (ScriptManager::IsNumber(luaState_, "creatureState"))
+    if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
     else
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
 
-    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+    if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
-    if (ScriptManager::IsFunction(luaState_, "onEnded"))
+    if (Lua::IsFunction(luaState_, "onEnded"))
         functions_ |= FunctionEnded;
-    if (ScriptManager::IsFunction(luaState_, "onCollide"))
+    if (Lua::IsFunction(luaState_, "onCollide"))
         functions_ |= FunctionOnCollide;
-    if (ScriptManager::IsFunction(luaState_, "onTrigger"))
+    if (Lua::IsFunction(luaState_, "onTrigger"))
         functions_ |= FunctionOnTrigger;
-    if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
+    if (Lua::IsFunction(luaState_, "onLeftArea"))
         functions_ |= FunctionOnLeftArea;
 
     bool ret = luaState_["onInit"]();
@@ -112,11 +112,11 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     stateComp_.Write(message);
 
     if (HaveFunction(FunctionUpdate))
-        ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
+        Lua::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (Utils::TimeElapsed(startTime_) > lifetime_)
     {
         if (HaveFunction(FunctionEnded))
-            ScriptManager::CallFunction(luaState_, "onEnded");
+            Lua::CallFunction(luaState_, "onEnded");
         Remove();
     }
 }
@@ -126,21 +126,21 @@ void AreaOfEffect::OnCollide(GameObject* other)
     // Called from collisionComp_ of the moving object
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnCollide))
-        ScriptManager::CallFunction(luaState_, "onCollide", other);
+        Lua::CallFunction(luaState_, "onCollide", other);
 }
 
 void AreaOfEffect::OnTrigger(GameObject* other)
 {
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnTrigger))
-        ScriptManager::CallFunction(luaState_, "onTrigger", other);
+        Lua::CallFunction(luaState_, "onTrigger", other);
 }
 
 void AreaOfEffect::OnLeftArea(GameObject* other)
 {
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnLeftArea))
-        ScriptManager::CallFunction(luaState_, "onLeftArea", other);
+        Lua::CallFunction(luaState_, "onLeftArea", other);
 }
 
 Math::ShapeType AreaOfEffect::GetShapeType() const

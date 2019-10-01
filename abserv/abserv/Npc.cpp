@@ -14,7 +14,7 @@ namespace Game {
 
 void Npc::InitializeLua()
 {
-    ScriptManager::RegisterLuaAll(luaState_);
+    Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
     luaInitialized_ = true;
 }
@@ -87,19 +87,19 @@ bool Npc::LoadScript(const std::string& fileName)
     name_ = (const char*)luaState_["name"];
     level_ = luaState_["level"];
     itemIndex_ = luaState_["itemIndex"];
-    if (ScriptManager::IsNumber(luaState_, "sex"))
+    if (Lua::IsNumber(luaState_, "sex"))
         sex_ = luaState_["sex"];
-    if (ScriptManager::IsNumber(luaState_, "group_id"))
+    if (Lua::IsNumber(luaState_, "group_id"))
         groupId_ = luaState_["group_id"];
 
-    if (ScriptManager::IsNumber(luaState_, "creatureState"))
+    if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
     else
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
-    if (ScriptManager::IsNumber(luaState_, "prof1Index"))
+    if (Lua::IsNumber(luaState_, "prof1Index"))
     {
         skills_->prof1_.index = luaState_["prof1Index"];
         if (skills_->prof1_.index != 0)
@@ -110,7 +110,7 @@ bool Npc::LoadScript(const std::string& fileName)
             }
         }
     }
-    if (ScriptManager::IsNumber(luaState_, "prof2Index"))
+    if (Lua::IsNumber(luaState_, "prof2Index"))
     {
         skills_->prof2_.index = luaState_["prof2Index"];
         if (skills_->prof2_.index != 0)
@@ -122,15 +122,15 @@ bool Npc::LoadScript(const std::string& fileName)
         }
     }
 
-    if (ScriptManager::IsString(luaState_, "behavior"))
+    if (Lua::IsString(luaState_, "behavior"))
         behaviorTree_ = (const char*)luaState_["behavior"];
-    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+    if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
-    if (ScriptManager::IsFunction(luaState_, "onTrigger"))
+    if (Lua::IsFunction(luaState_, "onTrigger"))
         functions_ |= FunctionOnTrigger;
-    if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
+    if (Lua::IsFunction(luaState_, "onLeftArea"))
         functions_ |= FunctionOnLeftArea;
-    if (ScriptManager::IsFunction(luaState_, "onGetQuote"))
+    if (Lua::IsFunction(luaState_, "onGetQuote"))
         functions_ |= FunctionOnGetQuote;
 
     GetSkillBar()->InitAttributes();
@@ -184,7 +184,7 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         const Math::Vector3& pos = transformation_.position_;
         aiCharacter_->setPosition({ pos.x_, pos.y_, pos.z_ });
     }
-    ScriptManager::CollectGarbage(luaState_);
+    Lua::CollectGarbage(luaState_);
 }
 
 void Npc::SetGroupId(uint32_t value)
@@ -296,61 +296,61 @@ void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 void Npc::OnSelected(Actor* selector)
 {
     if (luaInitialized_ && selector)
-        ScriptManager::CallFunction(luaState_, "onSelected", selector);
+        Lua::CallFunction(luaState_, "onSelected", selector);
 }
 
 void Npc::OnClicked(Actor* selector)
 {
     if (luaInitialized_ && selector)
-        ScriptManager::CallFunction(luaState_, "onClicked", selector);
+        Lua::CallFunction(luaState_, "onClicked", selector);
 }
 
 void Npc::OnArrived()
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onArrived");
+        Lua::CallFunction(luaState_, "onArrived");
 }
 
 void Npc::OnCollide(GameObject* other)
 {
     if (luaInitialized_ && other)
-        ScriptManager::CallFunction(luaState_, "onCollide", other);
+        Lua::CallFunction(luaState_, "onCollide", other);
 }
 
 void Npc::OnTrigger(GameObject* other)
 {
     if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
-        ScriptManager::CallFunction(luaState_, "onTrigger", other);
+        Lua::CallFunction(luaState_, "onTrigger", other);
 }
 
 void Npc::OnLeftArea(GameObject* other)
 {
     if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
-        ScriptManager::CallFunction(luaState_, "onLeftArea", other);
+        Lua::CallFunction(luaState_, "onLeftArea", other);
 }
 
 void Npc::OnEndUseSkill(Skill* skill)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onEndUseSkill", skill);
+        Lua::CallFunction(luaState_, "onEndUseSkill", skill);
 }
 
 void Npc::OnStartUseSkill(Skill* skill)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onStartUseSkill", skill);
+        Lua::CallFunction(luaState_, "onStartUseSkill", skill);
 }
 
 void Npc::OnAttack(Actor* target, bool& canAttack)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onAttack", target, canAttack);
+        Lua::CallFunction(luaState_, "onAttack", target, canAttack);
 }
 
 void Npc::OnAttacked(Actor* source, DamageType type, int32_t damage, bool& canGetAttacked)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onAttacked", source, type, damage, canGetAttacked);
+        Lua::CallFunction(luaState_, "onAttacked", source, type, damage, canGetAttacked);
     if (canGetAttacked)
     {
         if (aiCharacter_)
@@ -364,67 +364,67 @@ void Npc::OnAttacked(Actor* source, DamageType type, int32_t damage, bool& canGe
 void Npc::OnGettingAttacked(Actor* source, bool& canGetAttacked)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onGettingAttacked", source, canGetAttacked);
+        Lua::CallFunction(luaState_, "onGettingAttacked", source, canGetAttacked);
 }
 
 void Npc::OnUseSkill(Actor* target, Skill* skill, bool& success)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onUseSkill", target, skill, success);
+        Lua::CallFunction(luaState_, "onUseSkill", target, skill, success);
 }
 
 void Npc::OnSkillTargeted(Actor* source, Skill* skill, bool& success)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onSkillTargeted", source, skill, success);
+        Lua::CallFunction(luaState_, "onSkillTargeted", source, skill, success);
 }
 
 void Npc::OnInterruptingAttack(bool& success)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptingAttack", success);
+        Lua::CallFunction(luaState_, "onInterruptingAttack", success);
 }
 
 void Npc::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& success)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptingSkill", type, skill, success);
+        Lua::CallFunction(luaState_, "onInterruptingSkill", type, skill, success);
 }
 
 void Npc::OnInterruptedAttack()
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptedAttack");
+        Lua::CallFunction(luaState_, "onInterruptedAttack");
 }
 
 void Npc::OnInterruptedSkill(Skill* skill)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptedSkill", skill);
+        Lua::CallFunction(luaState_, "onInterruptedSkill", skill);
 }
 
 void Npc::OnKnockedDown(uint32_t time)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onKnockedDown", time);
+        Lua::CallFunction(luaState_, "onKnockedDown", time);
 }
 
 void Npc::OnHealed(int hp)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onHealed", hp);
+        Lua::CallFunction(luaState_, "onHealed", hp);
 }
 
 void Npc::OnDied()
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onDied");
+        Lua::CallFunction(luaState_, "onDied");
 }
 
 void Npc::OnResurrected(int, int)
 {
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onResurrected");
+        Lua::CallFunction(luaState_, "onResurrected");
 }
 
 }

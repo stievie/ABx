@@ -13,6 +13,7 @@
 #endif
 #include "MessageClient.h"
 #include "Servers.h"
+#include <numeric>
 
 #if __cplusplus < 201703L
 // C++14
@@ -91,7 +92,7 @@ private:
     {
         if (loads_.size() == 0)
             return 0;
-        return std::accumulate(loads_.begin(), loads_.end(), 0u) / loads_.size();
+        return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.size());
     }
 protected:
     bool ParseCommandLine() override;
