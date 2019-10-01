@@ -315,14 +315,20 @@ bool IOMap_Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
-    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(map.data_.directory + "/index.xml");
+    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.data_.directory) + "index.xml");
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
+    {
+        LOG_ERROR << "Error loading file " << file << ": " << result.description() << std::endl;
         return false;
+    }
     const pugi::xml_node& index_node = doc.child("index");
     if (!index_node)
+    {
+        LOG_ERROR << "File " << file << " does not have an index node" << std::endl;
         return false;
+    }
 
     auto dataProv = GetSubsystem<IO::DataProvider>();
     std::string sceneFile;
@@ -367,14 +373,14 @@ bool IOMap_Load(Game::Map& map)
     }
 
     // Before scene
-    map.terrain_ = dataProv->GetAsset<Game::Terrain>(map.data_.directory + "/" + terrainFile);
+    map.terrain_ = dataProv->GetAsset<Game::Terrain>(Utils::AddSlash(map.data_.directory) + terrainFile);
     if (!map.terrain_)
     {
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
 
-    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
+    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(Utils::AddSlash(map.data_.directory) + navMeshFile);
     if (!map.navMesh_)
     {
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;
