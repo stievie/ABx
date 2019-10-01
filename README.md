@@ -91,6 +91,8 @@ It'll lookup running Login Servers and bridge client connections to one of them.
 
 A Web interface.
 
+On Linux this server must be run as root, because it binds the ports 80 and 443.
+
 ### Client
 
 Uses a single TCP stream for the game protocol.
