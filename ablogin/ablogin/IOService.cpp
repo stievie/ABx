@@ -16,6 +16,8 @@ bool IOService::GetService(AB::Entities::ServiceType type,
     DataClient* dc = GetSubsystem<IO::DataClient>();
 
     AB::Entities::ServiceList sl;
+    // Don't cache service list
+    dc->Invalidate(sl);
     if (!dc->Read(sl))
     {
         LOG_ERROR << "Error reading service list" << std::endl;
@@ -77,6 +79,8 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
     DataClient* dc = GetSubsystem<IO::DataClient>();
 
     AB::Entities::ServiceList sl;
+    // Don't cache service list
+    dc->Invalidate(sl);
     if (!dc->Read(sl))
     {
         LOG_ERROR << "Error reading service list" << std::endl;
