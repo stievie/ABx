@@ -18,13 +18,13 @@ public:
     };
 private:
     std::string accountUuid_;
-    AB::Entities::FriendList friendList_;
+    AB::Entities::FriendList data_;
     FriendList::Error AddFriendAccount(const std::string& accountUuid, const std::string& name,
         AB::Entities::FriendRelation relation);
 public:
     FriendList(const std::string accountUuid) :
         accountUuid_(accountUuid),
-        friendList_{}
+        data_{}
     { }
     ~FriendList() = default;
     FriendList(const FriendList&) = delete;
@@ -43,11 +43,11 @@ public:
     template <typename Callback>
     void VisitAll(const Callback& callback)
     {
-        for (auto& f : friendList_.friends)
+        for (auto& f : data_.friends)
             if (callback(f) != Iteration::Continue)
                 break;
     }
-    size_t Count() const { return friendList_.friends.size(); }
+    size_t Count() const { return data_.friends.size(); }
 };
 
 }

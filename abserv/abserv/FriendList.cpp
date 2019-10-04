@@ -12,9 +12,9 @@ namespace Game {
 void FriendList::Load()
 {
     auto* client = GetSubsystem<IO::DataClient>();
-    friendList_.uuid = accountUuid_;
-    friendList_.friends.clear();
-    if (!client->Read(friendList_))
+    data_.uuid = accountUuid_;
+    data_.friends.clear();
+    if (!client->Read(data_))
     {
         LOG_WARNING << "Error reading Friendlist for account " << accountUuid_ << std::endl;
     }
@@ -27,15 +27,15 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     if (Exists(accountUuid))
         return FriendList::Error::AlreadyFriend;
 
-    sa::Transaction transaction(friendList_);
-    friendList_.friends.push_back({
+    sa::Transaction transaction(data_);
+    data_.friends.push_back({
         accountUuid,
         name,
         relation,
         Utils::Tick()
     });
     auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(friendList_))
+    if (!client->Update(data_))
         return FriendList::Error::InternalError;
     transaction.Commit();
     return FriendList::Error::Success;
@@ -59,16 +59,16 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
         // Can not add self as friend
         return FriendList::Error::PlayerNotFound;
 
-    auto it = std::find_if(friendList_.friends.begin(), friendList_.friends.end(), [&](const AB::Entities::Friend& current)
+    auto it = std::find_if(data_.friends.begin(), data_.friends.end(), [&](const AB::Entities::Friend& current)
     {
         return Utils::Uuid::IsEqual(accountUuid, current.friendUuid);
     });
-    if (it == friendList_.friends.end())
+    if (it == data_.friends.end())
         return FriendList::Error::NoFriend;
-    sa::Transaction transaction(friendList_);
-    friendList_.friends.erase(it);
+    sa::Transaction transaction(data_);
+    data_.friends.erase(it);
     auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(friendList_))
+    if (!client->Update(data_))
         return FriendList::Error::InternalError;
     transaction.Commit();
     return FriendList::Error::Success;
@@ -76,18 +76,18 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
 
 FriendList::Error FriendList::ChangeNickname(const std::string& currentName, const std::string& newName)
 {
-    auto it = std::find_if(friendList_.friends.begin(), friendList_.friends.end(), [&](const AB::Entities::Friend& current)
+    auto it = std::find_if(data_.friends.begin(), data_.friends.end(), [&](const AB::Entities::Friend& current)
     {
         return Utils::StringEquals(currentName, current.friendName);
     });
-    if (it == friendList_.friends.end())
+    if (it == data_.friends.end())
         return FriendList::Error::PlayerNotFound;
 
-    sa::Transaction transaction(friendList_);
+    sa::Transaction transaction(data_);
     (*it).friendName = newName;
 
     auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(friendList_))
+    if (!client->Update(data_))
         return FriendList::Error::InternalError;
     transaction.Commit();
     return FriendList::Error::Success;
@@ -95,11 +95,11 @@ FriendList::Error FriendList::ChangeNickname(const std::string& currentName, con
 
 bool FriendList::Exists(const std::string& accountUuid)
 {
-    auto it = std::find_if(friendList_.friends.begin(), friendList_.friends.end(), [&](const AB::Entities::Friend& current)
+    auto it = std::find_if(data_.friends.begin(), data_.friends.end(), [&](const AB::Entities::Friend& current)
     {
         return Utils::Uuid::IsEqual(accountUuid, current.friendUuid);
     });
-    return (it != friendList_.friends.end());
+    return (it != data_.friends.end());
 }
 
 bool FriendList::IsFriend(const std::string& accountUuid)
