@@ -21,9 +21,15 @@ private:
     Actor& owner_;
     int currentSkillIndex_{ -1 };
     int _LuaAddSkill(uint32_t skillIndex);
-    std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const { return GetSkillsWithEffect(static_cast<SkillEffect>(effect)); }
-    std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const { return GetSkillsWithTarget(static_cast<SkillTarget>(target)); }
-    std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const { return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target)); }
+    std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const {
+        return GetSkillsWithEffect(static_cast<SkillEffect>(effect));
+    }
+    std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const {
+        return GetSkillsWithTarget(static_cast<SkillTarget>(target));
+    }
+    std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const {
+        return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target));
+    }
     Skill* _LuaGetSkill(uint32_t index);
     void SetAttributes(const AB::Attributes& attributes);
     void ResetAttributes();

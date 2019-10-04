@@ -58,7 +58,7 @@ void Player::SetGame(std::shared_ptr<Game> game)
     if (game)
     {
         party_->gameId_ = game->id_;
-        if (party_->IsLeader(this))
+        if (party_->IsLeader(*this))
             party_->SetPartySize(game->data_.partySize);
     }
 }
@@ -683,7 +683,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
     {
         if (party && (party_->id_ == party->id_))
             return;
-        party_->Remove(this, false);
+        party_->Remove(*this, false);
     }
 
     if (party)
@@ -708,7 +708,7 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     questComp_->Update(timeElapsed);
     questComp_->Write(message);
     auto party = GetParty();
-    if (party->IsLeader(this))
+    if (party->IsLeader(*this))
         party->Update(timeElapsed, message);
 }
 
@@ -733,7 +733,7 @@ void Player::CRQPartyInvitePlayer(uint32_t playerId)
         return;
     if (id_ == playerId)
         return;
-    if (!party_->IsLeader(this))
+    if (!party_->IsLeader(*this))
         return;
     if (party_->IsFull())
         return;
@@ -763,7 +763,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
     if (id_ == playerId)
         // Can not kick myself
         return;
-    if (!party_->IsLeader(this))
+    if (!party_->IsLeader(*this))
         // Only leader can kick
         return;
 
@@ -774,14 +774,14 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
     bool removedMember = false;
     {
         auto nmsg = Net::NetworkMessage::GetNew();
-        if (party_->IsMember(player.get()))
+        if (party_->IsMember(*player))
         {
-            if (!party_->Remove(player.get()))
+            if (!party_->Remove(*player))
                 return;
             nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
             removedMember = true;
         }
-        else if (party_->IsInvited(player.get()))
+        else if (party_->IsInvited(*player))
         {
             if (!party_->RemoveInvite(player))
                 return;
@@ -814,7 +814,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
 
 void Player::PartyLeave()
 {
-    if (party_->IsLeader(this) && party_->GetMemberCount() == 1)
+    if (party_->IsLeader(*this) && party_->GetMemberCount() == 1)
         // Just we
         return;
 
@@ -826,7 +826,7 @@ void Player::PartyLeave()
         nmsg->Add<uint32_t>(id_);
         nmsg->Add<uint32_t>(party_->id_);
         party_->WriteToMembers(*nmsg);
-        party_->Remove(this);
+        party_->Remove(*this);
     }
 
     {
@@ -1464,7 +1464,7 @@ void Player::ChangeMap(const std::string& mapUuid)
         PartyLeave();
         party = GetParty();
     }
-    if (party->IsLeader(this))
+    if (party->IsLeader(*this))
         // If we are the leader tell all members to change the instance.
         party->ChangeInstance(mapUuid);
 }
@@ -1481,7 +1481,7 @@ void Player::ChangeServerInstance(const std::string& serverUuid, const std::stri
 void Player::CRQQueueForMatch()
 {
     assert(GetParty());
-    if (!GetParty()->IsLeader(this))
+    if (!GetParty()->IsLeader(*this))
         return;
 
     auto game = GetGame();
@@ -1503,7 +1503,7 @@ void Player::CRQQueueForMatch()
 void Player::CRQUnqueueForMatch()
 {
     assert(GetParty());
-    if (!GetParty()->IsLeader(this))
+    if (!GetParty()->IsLeader(*this))
         return;
 
     auto* client = GetSubsystem<Net::MessageClient>();

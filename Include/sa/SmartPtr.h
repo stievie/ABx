@@ -16,9 +16,13 @@ struct DefaultDelete
     }
 };
 
-
-/// Loose implementation of a SharedPtr. Unintrusive and unflexible. No WeakPtr,
-/// no pointer cast.
+/// Loose implementation of a SharedPtr. Unintrusive and unflexible.
+/// Limitations:
+/// * No WeakPtr,
+/// * no pointer cast,
+/// * _not_ thread safe.
+/// * You can not create more SharedPtr's from the same pointer. You can't do that with a std::shared_ptr either.
+/// Anyway, sometimes you don't need all these features, which can make stuff complicated.
 template <typename T>
 class SharedPtr
 {
@@ -35,13 +39,13 @@ private:
         }
         ++(*refs_);
     }
-    void DecRef()
+    void Release()
     {
         if (!refs_)
             return;
         --(*refs_);
     }
-    void Swap(SharedPtr& other)
+    void Swap(SharedPtr& other) noexcept
     {
        std::swap(ptr_, other.ptr_);
        // Pinch the counter of the other guy
@@ -84,7 +88,7 @@ public:
             // the pointer
             return;
 
-        DecRef();
+        Release();
         if (*refs_ == 0)
         {
             if (ptr_)
@@ -105,7 +109,7 @@ public:
             return;
         }
 
-        DecRef();
+        Release();
         if (*refs_ == 0)
         {
             if (ptr_)
@@ -120,73 +124,79 @@ public:
         }
     }
     /// Check if it contains a pointer
-    bool Empty() const { return !ptr_; }
+    bool Empty() const noexcept { return !ptr_; }
     /// Get number of references
-    int Refs() const { return refs_ ? *refs_ : 0; }
+    int Refs() const noexcept { return refs_ ? *refs_ : 0; }
 
     /// Move assignment
-    SharedPtr& operator=(SharedPtr&& other)
+    SharedPtr& operator=(SharedPtr&& other) noexcept
     {
-        SharedPtr tmp = std::move(other);
-        Swap(tmp);
+        if (&other != this)
+        {
+            SharedPtr tmp = std::move(other);
+            Swap(tmp);
+        }
         return *this;
     }
 
     /// Copy assignment
-    SharedPtr& operator=(const SharedPtr& other)
+    SharedPtr& operator=(const SharedPtr& other) noexcept
     {
-        SharedPtr tmp = other;
-        Swap(tmp);
+        if (&other != this)
+        {
+            SharedPtr tmp = other;
+            Swap(tmp);
+        }
         return *this;
     }
 
     /// Get raw pointer
-    T* Ptr()
+    T* Ptr() noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    const T* Ptr() const
+    const T* Ptr() const noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    T* operator->()
+    T* operator->() noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    const T* operator->() const
+    const T* operator->() const noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    T& operator *()
+    T& operator *() noexcept
     {
         assert(ptr_);
         return *ptr_;
     }
-    const T& operator *() const
+    const T& operator *() const noexcept
     {
         assert(ptr_);
         return *ptr_;
     }
 
-    operator bool() { return !!ptr_; }
-    bool operator!() const { return !ptr_; }
-    bool operator==(std::nullptr_t) const { return !ptr_; }
-    bool operator!=(std::nullptr_t) const { return ptr_; }
-    bool operator==(const SharedPtr& other) const { return ptr_ == other.ptr_; }
-    bool operator!=(const SharedPtr& other) const { return ptr_ != other.ptr_; }
+    operator bool() noexcept { return !!ptr_; }
+    bool operator!() const noexcept { return !ptr_; }
+    bool operator==(std::nullptr_t) const noexcept { return !ptr_; }
+    bool operator!=(std::nullptr_t) const noexcept { return ptr_; }
+    bool operator==(const SharedPtr& other) const noexcept { return ptr_ == other.ptr_; }
+    bool operator!=(const SharedPtr& other) const noexcept { return ptr_ != other.ptr_; }
 
-    bool operator==(SharedPtr& other) { return ptr_ == other.ptr_; }
-    bool operator!=(SharedPtr& other) { return ptr_ != other.ptr_; }
+    bool operator==(SharedPtr& other) noexcept { return ptr_ == other.ptr_; }
+    bool operator!=(SharedPtr& other) noexcept { return ptr_ != other.ptr_; }
 
-    bool operator==(const T* other) const { return ptr_ == other; }
-    bool operator!=(const T* other) const { return ptr_ != other; }
+    bool operator==(const T* other) const noexcept { return ptr_ == other; }
+    bool operator!=(const T* other) const noexcept { return ptr_ != other; }
 
-    bool operator==(T* other) { return ptr_ == other; }
-    bool operator!=(T* other) { return ptr_ != other; }
+    bool operator==(T* other) noexcept { return ptr_ == other; }
+    bool operator!=(T* other) noexcept { return ptr_ != other; }
 };
 
 template <typename T>
@@ -226,65 +236,68 @@ public:
         }
     }
     /// Check if it contains a pointer
-    bool Empty() const { return !ptr_; }
+    bool Empty() const noexcept { return !ptr_; }
 
     /// Copy assignment
     UniquePtr& operator=(const UniquePtr& other) = delete;
     /// Move assignment
-    UniquePtr& operator=(UniquePtr&& other)
+    UniquePtr& operator=(UniquePtr&& other) noexcept
     {
-        UniquePtr tmp = std::move(other);
-        std::swap(ptr_, tmp.ptr_);
+        if (&other != this)
+        {
+            UniquePtr tmp = std::move(other);
+            std::swap(ptr_, tmp.ptr_);
+        }
         return *this;
     }
 
     /// Get raw pointer
-    T* Ptr()
+    T* Ptr() noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    const T* Ptr() const
+    const T* Ptr() const noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    T* operator->()
+    T* operator->() noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    const T* operator->() const
+    const T* operator->() const noexcept
     {
         assert(ptr_);
         return ptr_;
     }
-    T& operator *()
+    T& operator *() noexcept
     {
         assert(ptr_);
         return *ptr_;
     }
-    const T& operator *() const
+    const T& operator *() const noexcept
     {
         assert(ptr_);
         return *ptr_;
     }
 
-    operator bool() { return !!ptr_; }
-    bool operator!() const { return !ptr_; }
-    bool operator==(std::nullptr_t) const { return !ptr_; }
-    bool operator!=(std::nullptr_t) const { return ptr_; }
-    bool operator==(const UniquePtr& other) const { return ptr_ == other.ptr_; }
-    bool operator!=(const UniquePtr& other) const { return ptr_ != other.ptr_; }
+    operator bool() noexcept { return !!ptr_; }
+    bool operator!() const noexcept { return !ptr_; }
+    bool operator==(std::nullptr_t) const noexcept { return !ptr_; }
+    bool operator!=(std::nullptr_t) const noexcept { return ptr_; }
+    bool operator==(const UniquePtr& other) const noexcept { return ptr_ == other.ptr_; }
+    bool operator!=(const UniquePtr& other) const noexcept { return ptr_ != other.ptr_; }
 
-    bool operator==(UniquePtr& other) { return ptr_ == other.ptr_; }
-    bool operator!=(UniquePtr& other) { return ptr_ != other.ptr_; }
+    bool operator==(UniquePtr& other) noexcept { return ptr_ == other.ptr_; }
+    bool operator!=(UniquePtr& other) noexcept { return ptr_ != other.ptr_; }
 
-    bool operator==(const T* other) const { return ptr_ == other; }
-    bool operator!=(const T* other) const { return ptr_ != other; }
+    bool operator==(const T* other) const noexcept { return ptr_ == other; }
+    bool operator!=(const T* other) const noexcept { return ptr_ != other; }
 
-    bool operator==(T* other) { return ptr_ == other; }
-    bool operator!=(T* other) { return ptr_ != other; }
+    bool operator==(T* other) noexcept { return ptr_ == other; }
+    bool operator!=(T* other) noexcept { return ptr_ != other; }
 };
 
 template <typename T, typename... ArgTypes>

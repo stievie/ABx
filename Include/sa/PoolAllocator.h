@@ -22,7 +22,8 @@ struct PoolInfo
     unsigned usage;
 };
 
-/// Size must be a multiple of ChunkSize
+/// Size must be a multiple of ChunkSize. There is no way to get aligned memory.
+/// You'd better make sure that T is properly aligned.
 template <typename T, size_t ChunkSize>
 class PoolAllocator
 {
@@ -57,6 +58,7 @@ private:
     {
         // Check if this pointer is ours
         assert((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (size_ - ChunkSize));
+        // Check if aligned to ChunkSize. If not something is wrong.
         assert((((uintptr_t)ptr - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++frees_;
         freeList_.push((Node*)ptr);
@@ -90,6 +92,7 @@ public:
         size_(size),
         startPtr_(malloc(size_))
     {
+        // Check if ChunkSize is a multiple of size_.
         assert(size_ % ChunkSize == 0);
         Reset();
     }

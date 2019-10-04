@@ -35,7 +35,7 @@ private:
         return cli->Update(e);
     }
     /// 1-base position
-    size_t GetDataPos(Player* player);
+    size_t GetDataPos(const Player& player);
     Player* _LuaGetLeader();
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);
@@ -61,7 +61,7 @@ public:
     bool Add(std::shared_ptr<Player> player);
     /// Insert at the position in data_
     bool Set(std::shared_ptr<Player> player);
-    bool Remove(Player* player, bool newParty = true);
+    bool Remove(Player& player, bool newParty = true);
     bool Invite(std::shared_ptr<Player> player);
     bool RemoveInvite(std::shared_ptr<Player> player);
     /// Clear all invites
@@ -89,9 +89,9 @@ public:
         }
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
-    bool IsMember(const Player* player) const;
-    bool IsInvited(const Player* player) const;
-    bool IsLeader(const Player* player) const;
+    bool IsMember(const Player& player) const;
+    bool IsInvited(const Player& player) const;
+    bool IsLeader(const Player& player) const;
     std::shared_ptr<Player> GetLeader() const
     {
         if (members_.size() == 0)

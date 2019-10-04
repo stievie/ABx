@@ -24,12 +24,12 @@ bool AttackComp::CheckRange()
     return owner_.IsInRange(Ranges::Touch, target.get());
 }
 
-void AttackComp::StartHit(Actor* target)
+void AttackComp::StartHit(Actor& target)
 {
     // New attack
     attackSpeed_ = owner_.GetAttackSpeed();
     interrupted_ = false;
-    owner_.FaceObject(target);
+    owner_.FaceObject(&target);
     if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_ / 2)
     {
         lastAttackTime_ = Utils::Tick();
@@ -39,7 +39,7 @@ void AttackComp::StartHit(Actor* target)
     }
 }
 
-void AttackComp::Hit(Actor* target)
+void AttackComp::Hit(Actor& target)
 {
     // Done attack -> apply damage
     hitting_ = false;
@@ -50,52 +50,41 @@ void AttackComp::Hit(Actor* target)
     }
     else
     {
-        const float criticalChance = owner_.GetCriticalChance(target);
+        const float criticalChance = owner_.GetCriticalChance(&target);
         auto rnd = GetSubsystem<Crypto::Random>();
         bool critical = criticalChance >= rnd->GetFloat();
         // Critical hit -> always weapons max damage
         int32_t damage = owner_.GetAttackDamage(critical);
         // Source effects may modify the damage
         owner_.effectsComp_->GetDamage(damageType_, damage, critical);
-        if (target)
+        bool canGettingAttacked = true;
+        target.CallEvent<void(Actor*, DamageType, int32_t, bool&)>(EVENT_ON_ATTACKED,
+            &owner_, damageType_, damage, canGettingAttacked);
+        if (canGettingAttacked)
         {
-            bool canGettingAttacked = true;
-            target->CallEvent<void(Actor*, DamageType, int32_t, bool&)>(EVENT_ON_ATTACKED,
-                &owner_, damageType_, damage, canGettingAttacked);
-            if (canGettingAttacked)
-            {
-                // Some effects may prevent attacks, e.g. blocking
-                if (critical)
-                    // Some effect may prevent critical hits
-                    target->CallEvent<void(Actor*,bool&)>(EVENT_ON_GET_CRITICAL_HIT, &owner_, critical);
-                if (critical)
-                    damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
-                target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
-            }
-            else
-            {
-                lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
-            }
+            // Some effects may prevent attacks, e.g. blocking
+            if (critical)
+                // Some effect may prevent critical hits
+                target.CallEvent<void(Actor*,bool&)>(EVENT_ON_GET_CRITICAL_HIT, &owner_, critical);
+            if (critical)
+                damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
+            target.ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
         }
         else
         {
-            lastError_ = AB::GameProtocol::AttackErrorNoTarget;
+            lastError_ = AB::GameProtocol::AttackErrorInterrupted;
             owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
         }
     }
 }
 
-void AttackComp::FireWeapon(Actor* target)
+void AttackComp::FireWeapon(Actor& target)
 {
-    if (!target)
-        return;
-
     auto* weapon = owner_.GetWeapon();
     if (!weapon || !weapon->IsWeaponProjectile())
         return;
     owner_.GetGame()->AddProjectile(weapon->data_.spawnItemUuid,
-        owner_.GetThis<Actor>(), target->GetThis<Actor>());
+        owner_.GetThis<Actor>(), target.GetThis<Actor>());
     if (!owner_.IsObjectInSight(target))
     {
         lastError_ = AB::GameProtocol::AttackErrorTargetObstructed;
@@ -113,6 +102,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
         if (target->IsDead())
         {
             // We can stop hitting to this target now :(
+            // Poor target!
             attacking_ = false;
             SetAttackState(false);
             return;
@@ -138,7 +128,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
             }
             else
             {
-                // No way to get to target
+                // No way to get to the target
                 attacking_ = false;
                 SetAttackState(false);
             }
@@ -156,13 +146,13 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     {
         if (!hitting_)
         {
-            StartHit(target.get());
+            StartHit(*target);
         }
         else
         {
             // Now we are really attacking. This can be interrupted.
             if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_)
-                Hit(target.get());
+                Hit(*target);
         }
     }
 }
@@ -220,6 +210,8 @@ bool AttackComp::IsAttackingTarget(Actor* target) const
 {
     if (!IsAttackState())
         return false;
+    if (!target)
+        return false;
     if (auto t = target_.lock())
         return t->id_ == target->id_;
     return false;
@@ -258,6 +250,8 @@ void AttackComp::Pause(bool value)
 
 bool AttackComp::IsTarget(const Actor* target) const
 {
+    if (!target)
+        return false;
     if (const auto t = target_.lock())
         return t->id_ == target->id_;
     return false;

@@ -53,13 +53,13 @@ private:
     bool haveOnInterrupted_{ false };
     AB::GameProtocol::SkillError lastError_{ AB::GameProtocol::SkillErrorNone };
 
-    bool CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target);
+    bool CanUseSkill(Actor& source, Actor* target);
     void InitializeLua();
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
     std::string _LuaGetName() const { return data_.name; }
-    int32_t GetActivation(const std::shared_ptr<Actor>& source, int32_t activation);
+    int32_t GetActivation(Actor& source, int32_t activation);
 public:
     static void RegisterLua(kaguya::State& state);
 

@@ -60,7 +60,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetClosestActor",  &GameObject::_LuaGetClosestActor)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsCloserThan",     &GameObject::IsCloserThan)
-        .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
+        .addFunction("IsObjectInSight",  &GameObject::_LuaIsObjectInSight)
         .addFunction("GetObjectsInside", &GameObject::_LuaGetObjectsInside)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
         .addFunction("Remove",           &GameObject::Remove)
@@ -294,11 +294,10 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
     return true;
 }
 
-bool GameObject::IsObjectInSight(const GameObject* object) const
+bool GameObject::IsObjectInSight(const GameObject& object) const
 {
-    assert(object);
     std::vector<GameObject*> result;
-    const bool res = Raycast(result, object->transformation_.position_ + BodyOffset);
+    const bool res = Raycast(result, object.transformation_.position_ + BodyOffset);
     if (res)
     {
         for (const auto* o : result)
@@ -310,16 +309,15 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
                 continue;
 
             // result is sorted by distance
-            if (o->id_ != object->id_)
+            if (o->id_ != object.id_)
             {
 #ifdef DEBUG_COLLISION
                 LOG_DEBUG << "Obstructed by " << o->GetName() << std::endl;
 #endif
                 return false;
             }
-            else if (o->id_ == object->id_)
-                // Can stop here it doesn't matter whats behind the target.
-                return true;
+            // Can stop here it doesn't matter whats behind the target.
+            return true;
         }
         // Actually shouldn't get here
         return true;
@@ -330,8 +328,7 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
 
 void GameObject::Remove()
 {
-    auto game = GetGame();
-    if (game)
+    if (auto game = GetGame())
         game->RemoveObject(this);
 }
 
@@ -365,8 +362,7 @@ std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 
 void GameObject::_LuaCallGameEvent(const std::string& name, GameObject* data)
 {
-    auto game = GetGame();
-    if (game)
+    if (auto game = GetGame())
         game->CallLuaEvent(name, this, data);
 }
 
@@ -389,6 +385,13 @@ std::vector<GameObject*> GameObject::_LuaGetObjectsInside()
         return Iteration::Continue;
     });
     return result;
+}
+
+bool GameObject::_LuaIsObjectInSight(const GameObject* object) const
+{
+    if (!object)
+        return false;
+    return IsObjectInSight(*object);
 }
 
 std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& direction)

@@ -113,6 +113,7 @@ private:
     Actor* _LuaGetClosestActor(bool undestroyable, bool unselectable);
     /// Returns all object inside the collision shape. This object must be a Trigger, i.e. it returns only objects when SetTrigger(true) was called before.
     std::vector<GameObject*> _LuaGetObjectsInside();
+    bool _LuaIsObjectInSight(const GameObject* object) const;
 protected:
     std::mutex lock_;
     std::string name_;
@@ -253,7 +254,7 @@ public:
 
     const Utils::Variant& GetVar(const std::string& name) const;
     void SetVar(const std::string& name, const Utils::Variant& val);
-    /// Process octree raycast. May be called from a worker thread.
+    /// Process octree raycast.
     virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results);
     void SetSortValue(float value) { sortValue_ = value; }
     float GetSortValue() const { return sortValue_; }
@@ -271,7 +272,7 @@ public:
 
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool IsObjectInSight(const GameObject* object) const;
+    bool IsObjectInSight(const GameObject& object) const;
     /// Remove this object from scene
     void Remove();
     /// Remove this object in time ms

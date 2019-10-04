@@ -44,14 +44,12 @@ Party::~Party()
     GetSubsystem<Chat>()->Remove(ChatType::Party, id_);
 }
 
-size_t Party::GetDataPos(Player* player)
+size_t Party::GetDataPos(const Player& player)
 {
-    if (!player)
-        return 0;
     std::vector<std::string>::iterator iter = std::find_if(data_.members.begin(),
-        data_.members.end(), [player](const std::string& current)
+        data_.members.end(), [&player](const std::string& current)
     {
-        return Utils::Uuid::IsEqual(player->data_.uuid, current);
+        return Utils::Uuid::IsEqual(player.data_.uuid, current);
     });
     const size_t index = std::distance(data_.members.begin(), iter);
     if (index == data_.members.size())
@@ -95,7 +93,7 @@ bool Party::Add(std::shared_ptr<Player> player)
 
     if (IsFull())
         return false;
-    if (IsMember(player.get()))
+    if (IsMember(*player))
         return false;
 
     members_.push_back(player);
@@ -112,7 +110,7 @@ bool Party::Set(std::shared_ptr<Player> player)
     if (!player)
         return false;
     // 1-based
-    const size_t pos = GetDataPos(player.get());
+    const size_t pos = GetDataPos(*player);
     if (pos == 0)
     {
         // Not in data_ -> append it
@@ -127,19 +125,16 @@ bool Party::Set(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::Remove(Player* player, bool newParty /* = true */)
+bool Party::Remove(Player& player, bool newParty /* = true */)
 {
-    if (!player)
-        return false;
-
-    members_.erase(std::remove_if(members_.begin(), members_.end(), [player](std::weak_ptr<Player>& current)
+    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Player>& current)
     {
         if (auto p = current.lock())
-            return (p->id_ == player->id_);
+            return (p->id_ == player.id_);
         return false;
     }), members_.end());
 
-    auto dataIt = std::find(data_.members.begin(), data_.members.end(), player->data_.uuid);
+    auto dataIt = std::find(data_.members.begin(), data_.members.end(), player.data_.uuid);
     if (dataIt != data_.members.end())
         data_.members.erase(dataIt);
     UpdateEntity(data_);
@@ -147,7 +142,7 @@ bool Party::Remove(Player* player, bool newParty /* = true */)
     if (newParty)
     {
         // Lastly, this may call the destructor
-        player->SetParty(std::shared_ptr<Party>());
+        player.SetParty(std::shared_ptr<Party>());
     }
     return true;
 }
@@ -157,7 +152,7 @@ bool Party::Invite(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    if (IsMember(player.get()) || IsInvited(player.get()))
+    if (IsMember(*player) || IsInvited(*player))
         return false;
 
     invited_.push_back(player);
@@ -253,38 +248,38 @@ inline size_t Party::GetValidMemberCount() const
     return result;
 }
 
-bool Party::IsMember(const Player* player) const
+bool Party::IsMember(const Player& player) const
 {
-    auto it = std::find_if(members_.begin(), members_.end(), [player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
-            return c->id_ == player->id_;
+            return c->id_ == player.id_;
         }
         return false;
     });
     return it != members_.end();
 }
 
-bool Party::IsInvited(const Player* player) const
+bool Party::IsInvited(const Player& player) const
 {
-    auto it = std::find_if(invited_.begin(), invited_.end(), [player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(invited_.begin(), invited_.end(), [&player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
-            return c->id_ == player->id_;
+            return c->id_ == player.id_;
         }
         return false;
     });
     return it != invited_.end();
 }
 
-bool Party::IsLeader(const Player* player) const
+bool Party::IsLeader(const Player& player) const
 {
     if (members_.size() == 0)
         return false;
     if (auto p = members_[0].lock())
-        return p->id_ == player->id_;
+        return p->id_ == player.id_;
     return false;
 }
 
