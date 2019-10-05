@@ -41,12 +41,7 @@ public:
 
     bool Follow(std::shared_ptr<GameObject> object, bool ping);
     bool Goto(const Math::Vector3& dest);
-    void Reset()
-    {
-        wayPoints_.clear();
-        SetAutoRun(false);
-        following_.reset();
-    }
+    void Reset();
     bool HasWaypoints() const
     {
         return wayPoints_.size() != 0;

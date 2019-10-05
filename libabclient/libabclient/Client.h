@@ -2,6 +2,7 @@
 
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
+#include <AB/Entities/FriendList.h>
 #include "Receiver.h"
 #include "PropStream.h"
 #include "Structs.h"
@@ -216,6 +217,9 @@ public:
     void PartyLeave();
     void QueueMatch();
     void UnqueueMatch();
+    void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
+    void RemoveFriend(const std::string& accountUuid);
+    void UpdateFriendList();
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
 };

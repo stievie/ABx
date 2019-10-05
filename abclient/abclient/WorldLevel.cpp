@@ -848,7 +848,9 @@ void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
     wnd->SetVisible(!wnd->IsVisible());
     if (wnd->IsVisible())
+    {
         wnd->BringToFront();
+    }
 }
 
 void WorldLevel::HandleShowCredits(StringHash, VariantMap&)

@@ -6,6 +6,8 @@
 #include "UuidUtils.h"
 #include "StringUtils.h"
 #include <sa/Transaction.h>
+#include "IOPlayer.h"
+#include "Dispatcher.h"
 
 namespace Game {
 
@@ -20,6 +22,14 @@ void FriendList::Load()
     }
 }
 
+void FriendList::Save()
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    client->Invalidate(data_);
+    if (!client->Update(data_))
+        LOG_ERROR << "Error saving friendlist for account " << data_.uuid << std::endl;
+}
+
 FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     const std::string& name,
     AB::Entities::FriendRelation relation)
@@ -27,17 +37,13 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     if (Exists(accountUuid))
         return FriendList::Error::AlreadyFriend;
 
-    sa::Transaction transaction(data_);
     data_.friends.push_back({
         accountUuid,
         name,
         relation,
         Utils::Tick()
     });
-    auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(data_))
-        return FriendList::Error::InternalError;
-    transaction.Commit();
+    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
@@ -47,9 +53,7 @@ FriendList::Error FriendList::AddFriendByName(const std::string& playerName, AB:
     AB::Entities::Character ch;
     ch.name = playerName;
     if (!client->Read(ch))
-    {
         return FriendList::Error::PlayerNotFound;
-    }
     return AddFriendAccount(ch.accountUuid, playerName, relation);
 }
 
@@ -65,12 +69,8 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
     });
     if (it == data_.friends.end())
         return FriendList::Error::NoFriend;
-    sa::Transaction transaction(data_);
     data_.friends.erase(it);
-    auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(data_))
-        return FriendList::Error::InternalError;
-    transaction.Commit();
+    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
@@ -83,13 +83,9 @@ FriendList::Error FriendList::ChangeNickname(const std::string& currentName, con
     if (it == data_.friends.end())
         return FriendList::Error::PlayerNotFound;
 
-    sa::Transaction transaction(data_);
     (*it).friendName = newName;
 
-    auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(data_))
-        return FriendList::Error::InternalError;
-    transaction.Commit();
+    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 

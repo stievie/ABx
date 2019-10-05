@@ -18,6 +18,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
     maxDist_ = RANGE_TOUCH;
     if (auto f = following_.lock())
     {
+        wayPoints_.clear();
         bool succ = FindPath(f->transformation_.position_);
         if (succ && ping)
             owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
@@ -30,6 +31,13 @@ bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     maxDist_ = 0.2f;
     return FindPath(dest);
+}
+
+void AutoRunComp::Reset()
+{
+    wayPoints_.clear();
+    SetAutoRun(false);
+    following_.reset();
 }
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
@@ -135,8 +143,8 @@ void AutoRunComp::SetAutoRun(bool value)
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
             nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
-            Player* player = static_cast<Player*>(&owner_);
-            player->WriteToOutput(*nmsg);
+            Player& player = static_cast<Player&>(owner_);
+            player.WriteToOutput(*nmsg);
         }
     }
 }

@@ -481,16 +481,10 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
         WriteToOutput(*msg);
 }
 
-void Player::CRQGetFriend(const std::string accountUuid)
+void Player::SendFriendInfo(AB::GameProtocol::GameProtocolCodes code, const AB::Entities::Friend& f)
 {
-    AB::Entities::Friend f;
-    bool found = friendList_->GetFriendByAccount(accountUuid, f);
-    if (!found)
-        // If there is no such friend, we just don't reply to this request
-        return;
-
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::FriendSingle);
+    msg->AddByte(code);
     msg->Add<uint8_t>(f.relation);
     msg->AddString(f.friendUuid);
     msg->AddString(f.friendName);
@@ -514,6 +508,26 @@ void Player::CRQGetFriend(const std::string accountUuid)
         msg->AddString(Utils::Uuid::EMPTY_UUID);
     }
     WriteToOutput(*msg);
+}
+
+void Player::CRQGetFriendByAccount(const std::string accountUuid)
+{
+    AB::Entities::Friend f;
+    bool found = friendList_->GetFriendByAccount(accountUuid, f);
+    if (!found)
+        // If there is no such friend, we just don't reply to this request
+        return;
+    SendFriendInfo(AB::GameProtocol::FriendSingle, f);
+}
+
+void Player::CRQGetFriendByName(const std::string name)
+{
+    AB::Entities::Friend f;
+    bool found = friendList_->GetFriendByName(name, f);
+    if (!found)
+        // If there is no such friend, we just don't reply to this request
+        return;
+    SendFriendInfo(AB::GameProtocol::FriendSingle, f);
 }
 
 void Player::CRQGetGuildMembers()

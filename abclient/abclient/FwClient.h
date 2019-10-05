@@ -9,6 +9,7 @@
 #include <AB/Entities/Skill.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Music.h>
+#include <AB/Entities/FriendList.h>
 #include <map>
 #include "Options.h"
 
@@ -118,6 +119,9 @@ public:
     void UseSkill(uint32_t index);
     void Attack();
     void Cancel();
+    void AddFriend(const String& name, AB::Entities::FriendRelation relation);
+    void RemoveFriend(const String& accountUuid);
+    void UpdateFriendList();
     void PartyInvitePlayer(uint32_t objectId);
     /// Remove as party member or remove invitation
     void PartyKickPlayer(uint32_t objectId);

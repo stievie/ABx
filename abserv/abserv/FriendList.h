@@ -18,7 +18,6 @@ public:
     };
 private:
     std::string accountUuid_;
-    AB::Entities::FriendList data_;
     FriendList::Error AddFriendAccount(const std::string& accountUuid, const std::string& name,
         AB::Entities::FriendRelation relation);
 public:
@@ -31,6 +30,7 @@ public:
     FriendList& operator=(const FriendList&) = delete;
 
     void Load();
+    void Save();
     FriendList::Error AddFriendByName(const std::string& playerName, AB::Entities::FriendRelation relation);
     FriendList::Error ChangeNickname(const std::string& currentName, const std::string& newName);
     FriendList::Error Remove(const std::string& accountUuid);
@@ -48,6 +48,8 @@ public:
                 break;
     }
     size_t Count() const { return data_.friends.size(); }
+
+    AB::Entities::FriendList data_;
 };
 
 }

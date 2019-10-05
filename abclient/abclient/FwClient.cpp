@@ -14,6 +14,7 @@
 #include "TimeUtils.h"
 #include "AudioManager.h"
 #include "SkillManager.h"
+#include "Shortcuts.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -778,8 +779,8 @@ void FwClient::FollowObject(uint32_t objectId)
 {
     if (loggedIn_)
     {
-        Input* input = GetSubsystem<Input>();
-        client_.FollowObject(objectId, input->GetKeyDown(KEY_LCTRL));
+        auto* sc = GetSubsystem<Shortcuts>();
+        client_.FollowObject(objectId, sc->Test(AbEvents::E_SC_PINGTARGET));
     }
 }
 
@@ -793,8 +794,8 @@ void FwClient::UseSkill(uint32_t index)
 {
     if (loggedIn_)
     {
-        Input* input = GetSubsystem<Input>();
-        client_.UseSkill(index, input->GetKeyDown(KEY_LCTRL));
+        auto* sc = GetSubsystem<Shortcuts>();
+        client_.UseSkill(index, sc->Test(AbEvents::E_SC_PINGTARGET));
     }
 }
 
@@ -802,8 +803,8 @@ void FwClient::Attack()
 {
     if (loggedIn_)
     {
-        Input* input = GetSubsystem<Input>();
-        client_.Attack(input->GetKeyDown(KEY_LCTRL));
+        auto* sc = GetSubsystem<Shortcuts>();
+        client_.Attack(sc->Test(AbEvents::E_SC_PINGTARGET));
     }
 }
 
@@ -811,6 +812,24 @@ void FwClient::Cancel()
 {
     if (loggedIn_)
         client_.Cancel();
+}
+
+void FwClient::AddFriend(const String& name, AB::Entities::FriendRelation relation)
+{
+    if (loggedIn_)
+        client_.AddFriend(std::string(name.CString(), name.Length()), relation);
+}
+
+void FwClient::RemoveFriend(const String& accountUuid)
+{
+    if (loggedIn_)
+        client_.RemoveFriend(std::string(accountUuid.CString(), accountUuid.Length()));
+}
+
+void FwClient::UpdateFriendList()
+{
+    if (loggedIn_)
+        client_.UpdateFriendList();
 }
 
 void FwClient::PartyInvitePlayer(uint32_t objectId)

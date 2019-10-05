@@ -87,6 +87,13 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
     }
 }
 
+void InputComp::CancelAll()
+{
+    owner_.skillsComp_->Cancel();
+    owner_.autorunComp_->Reset();
+    owner_.stateComp_.Reset();
+}
+
 void InputComp::Update(uint32_t, Net::NetworkMessage& message)
 {
     InputItem input;
@@ -232,11 +239,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Cancel:
-            // Cancel all
-            owner_.skillsComp_->Cancel();
-            owner_.attackComp_->Cancel();
-            owner_.autorunComp_->Reset();
-            owner_.stateComp_.Reset();
+            CancelAll();
             break;
         case InputType::Command:
         {

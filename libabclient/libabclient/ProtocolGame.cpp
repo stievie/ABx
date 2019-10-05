@@ -1218,4 +1218,28 @@ void ProtocolGame::UnqueueMatch()
     Send(std::move(msg));
 }
 
+void ProtocolGame::AddFriend(const std::string& name, AB::Entities::FriendRelation relation)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAddFriend);
+    msg->AddString(name);
+    msg->Add<uint8_t>(static_cast<uint8_t>(relation));
+    Send(std::move(msg));
+}
+
+void ProtocolGame::RemoveFriend(const std::string& accountUuid)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeRemoveFriend);
+    msg->AddString(accountUuid);
+    Send(std::move(msg));
+}
+
+void ProtocolGame::UpdateFriendList()
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetFriendList);
+    Send(std::move(msg));
+}
+
 }

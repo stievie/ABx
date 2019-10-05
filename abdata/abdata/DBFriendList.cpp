@@ -75,7 +75,7 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
             query.str("");
             query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `friend_name`, `relation`, `creation`) VALUES (";
             query << db->EscapeString(fl.uuid) << ", ";
-            query << db->EscapeString(f.friendName) << ", ";
+            query << db->EscapeString(f.friendUuid) << ", ";
             query << db->EscapeString(f.friendName) << ", ";
             query << static_cast<int>(f.relation) << ", ";
             query << f.creation;

@@ -4,6 +4,7 @@
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
+#include <AB/Entities/FriendList.h>
 #include "Receiver.h"
 
 namespace Client {
@@ -136,6 +137,9 @@ public:
     void PartyGetMembers(uint32_t partyId);
     void QueueMatch();
     void UnqueueMatch();
+    void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
+    void RemoveFriend(const std::string& accountUuid);
+    void UpdateFriendList();
 
     int64_t GetUpdateTick() const
     {

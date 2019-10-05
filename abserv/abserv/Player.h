@@ -65,6 +65,7 @@ private:
     void HandleGotoPlayerCommand(const std::string&, Net::NetworkMessage&);
     // Send command unknown message to the client
     void HandleUnknownCommand();
+    void SendFriendInfo(AB::GameProtocol::GameProtocolCodes code, const AB::Entities::Friend& f);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -133,6 +134,12 @@ public:
     {
         return party_;
     }
+    FriendList* GetFriendList()
+    {
+        if (friendList_)
+            return friendList_.get();
+        return nullptr;
+    }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
@@ -162,7 +169,8 @@ public:
     void CRQUnqueueForMatch();
     void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
     void CRQRemoveFriend(const std::string accountUuid);
-    void CRQGetFriend(const std::string accountUuid);
+    void CRQGetFriendByAccount(const std::string accountUuid);
+    void CRQGetFriendByName(const std::string name);
     void CRQGetGuildMember(const std::string accountUuid);
     void CRQGetPlayerInfo(const std::string accountUuid);
     void CRQGetGuildInfo();
@@ -191,7 +199,7 @@ public:
     AB::Entities::Account account_;
     time_t loginTime_;
     time_t logoutTime_;
-    int64_t lastPing_ = 0;
+    int64_t lastPing_{ 0 };
     std::unique_ptr<Components::QuestComp> questComp_;
 };
 

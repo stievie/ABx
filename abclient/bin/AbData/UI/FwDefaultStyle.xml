@@ -365,6 +365,14 @@
         <attribute name="Color" value="0.8 0.1 0.1" />
     </element>
 
+    <element type="FriendListItem" style="Text" auto="false">
+        <attribute name="Font Size" value="9" />
+        <attribute name="Color" value="0.65 0.65 0.65" />
+    </element>
+    <element type="FriendListItemOnline" style="Text" auto="false">
+        <attribute name="Color" value="0.95 0.95 0.95" />
+    </element>
+
     <!-- Chat -->
     <element type="ChatLogText" style="Text" auto="false">
         <attribute name="Font Size" value="10" />

@@ -16,6 +16,7 @@
 #include "SkillBarWindow.h"
 #include "EffectsWindow.h"
 #include "InventoryWindow.h"
+#include "FriendListWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...

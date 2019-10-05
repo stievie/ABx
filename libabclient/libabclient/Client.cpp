@@ -805,6 +805,24 @@ void Client::UnqueueMatch()
         protoGame_->UnqueueMatch();
 }
 
+void Client::AddFriend(const std::string& name, AB::Entities::FriendRelation relation)
+{
+    if (state_ == ClientState::World)
+        protoGame_->AddFriend(name, relation);
+}
+
+void Client::RemoveFriend(const std::string& accountUuid)
+{
+    if (state_ == ClientState::World)
+        protoGame_->RemoveFriend(accountUuid);
+}
+
+void Client::UpdateFriendList()
+{
+    if (state_ == ClientState::World)
+        protoGame_->UpdateFriendList();
+}
+
 void Client::Cancel()
 {
     if (state_ == ClientState::World)

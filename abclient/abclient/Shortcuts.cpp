@@ -64,6 +64,7 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_HIGHLIGHTOBJECTS] = ShortcutEvent(AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_PINGTARGET] = ShortcutEvent(AbEvents::E_SC_PINGTARGET, "Call target", Trigger::None);
 
     // Skill
     shortcuts_[AbEvents::E_SC_USESKILL1] = ShortcutEvent(AbEvents::E_SC_USESKILL1, "Use Skill 1", Trigger::Down);
@@ -134,6 +135,7 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_KEEPRUNNING, { KEY_R });
     Add(AbEvents::E_SC_REVERSECAMERA, { KEY_Y });
     Add(AbEvents::E_SC_HIGHLIGHTOBJECTS, { KEY_LCTRL });
+    Add(AbEvents::E_SC_PINGTARGET, { KEY_LCTRL });
 
     Add(AbEvents::E_SC_DEFAULTACTION, { KEY_SPACE });
     Add(AbEvents::E_SC_TOGGLEMAP, { KEY_M });

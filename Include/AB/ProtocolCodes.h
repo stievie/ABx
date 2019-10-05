@@ -406,7 +406,8 @@ enum GamePacketTypes : uint8_t
     PacketTypeGetFriendList,
     PacketTypeAddFriend,
     PacketTypeRemoveFriend,
-    PacketTypeGetFriend,
+    PacketTypeGetFriendByAccount,
+    PacketTypeGetFriendByName,
     // Guild
     PacketTypeGetGuildInfo,
     PacketTypeGetGuildMembers,

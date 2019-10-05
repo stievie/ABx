@@ -39,6 +39,7 @@ public:
     {
         inputs_.Add(type);
     }
+    void CancelAll();
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 };
 

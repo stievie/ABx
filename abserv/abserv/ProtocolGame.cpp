@@ -250,6 +250,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
+        data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
         AddPlayerInput(Game::InputType::Direction, std::move(data));
         break;
     }
@@ -350,10 +351,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQRemoveFriend, accountUuid);
         break;
     }
-    case AB::GameProtocol::PacketTypeGetFriend:
+    case AB::GameProtocol::PacketTypeGetFriendByAccount:
     {
         std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetFriend, accountUuid);
+        AddPlayerTask(&Game::Player::CRQGetFriendByAccount, accountUuid);
+        break;
+    }
+    case AB::GameProtocol::PacketTypeGetFriendByName:
+    {
+        std::string name = message.GetString();
+        AddPlayerTask(&Game::Player::CRQGetFriendByName, name);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:
