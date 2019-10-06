@@ -37,6 +37,8 @@ abdata/DBEffectList.cpp
 abdata/DBEffectList.h
 abdata/DBFriendList.cpp
 abdata/DBFriendList.h
+abdata/DBFriendedMe.cpp
+abdata/DBFriendedMe.h
 abdata/DBGame.cpp
 abdata/DBGame.h
 abdata/DBGameList.cpp
