@@ -147,11 +147,11 @@ public:
     void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) override;
     void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) override;
     void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) override;
-    void OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>& list) override;
-    void OnFriendInfo(int64_t updateTick, const RelatedAccount& f) override;
-    void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>&) override;
+    void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
+    void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation) override;
+    void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation) override;
+    void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) override;
     void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
-    void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -198,6 +198,8 @@ public:
     void ChestDestroyItem(uint16_t pos);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
+    void GetPlayerInfoByName(const std::string& name);
+    void GetPlayerInfoByAccount(const std::string& accountUuid);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

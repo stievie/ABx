@@ -165,6 +165,9 @@
     <ClInclude Include="DBInstance.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBFriendedMe.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -309,6 +312,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBInstance.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBFriendedMe.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,6 +10,7 @@
 #include "UuidUtils.h"
 #include <AB/Entities/FriendList.h>
 #include <AB/Entities/GuildMembers.h>
+#include <AB/Entities/FriendedMe.h>
 #include "UuidUtils.h"
 
 MessageParticipant::~MessageParticipant() = default;
@@ -225,13 +226,40 @@ void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
         return;
 
     std::vector<std::string> interested;
+    std::unordered_set<std::string> ignored;
 
+    // I friended those
     AB::Entities::FriendList fl;
-    for (const auto& f : fl.friends)
+    fl.uuid = account;
+    if (client->Read(fl))
     {
-        if (f.relation == AB::Entities::FriendRelationFriend)
-            interested.push_back(f.friendUuid);
+        for (const auto& f : fl.friends)
+        {
+            if (f.relation == AB::Entities::FriendRelationFriend)
+                interested.push_back(f.friendUuid);
+            else if (f.relation == AB::Entities::FriendRelationIgnore)
+                ignored.emplace(f.friendUuid);
+        }
     }
+    // Those friended me
+    AB::Entities::FriendedMe fme;
+    fme.uuid = account;
+    if (client->Read(fme))
+    {
+        for (const auto& f : fme.friends)
+        {
+            if (f.relation == AB::Entities::FriendRelationFriend)
+                interested.push_back(f.accountUuid);
+            else if (f.relation == AB::Entities::FriendRelationIgnore)
+                ignored.emplace(f.accountUuid);
+        }
+    }
+
+    auto isIgnored = [&ignored](const std::string& uuid)
+    {
+        const auto it = ignored.find(uuid);
+        return it != ignored.end();
+    };
 
     if (!Utils::Uuid::IsEmpty(acc.guildUuid))
     {
@@ -242,7 +270,9 @@ void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
         {
             for (const auto& gm : gms.members)
             {
-                interested.push_back(gm.accountUuid);
+                if (!Utils::Uuid::IsEqual(account, gm.accountUuid) && !isIgnored(gm.accountUuid))
+                    // Don't add self and ignored
+                    interested.push_back(gm.accountUuid);
             }
         }
     }

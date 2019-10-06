@@ -24,6 +24,7 @@
 #include "IOGame.h"
 #include "Guild.h"
 #include "GuildManager.h"
+#include "IOPlayer.h"
 
 namespace Game {
 
@@ -432,11 +433,14 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
     switch (res)
     {
     case FriendList::Error::Success:
-        msg->AddByte(AB::GameProtocol::ServerMessage);
-        msg->AddByte(AB::GameProtocol::ServerMessageTypeFriendAdded);
-        msg->AddString(GetName());
-        msg->AddString(playerName);
+    {
+        AB::Entities::Friend f;
+        friendList_->GetFriendByName(playerName, f);
+        msg->AddByte(AB::GameProtocol::FriendAdded);
+        msg->AddString(f.friendUuid);
+        msg->Add<uint8_t>(f.relation);
         break;
+    }
     case FriendList::Error::NoFriend:
         // N/A
     case FriendList::Error::AlreadyFriend:
@@ -457,16 +461,20 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
 
 void Player::CRQRemoveFriend(const std::string accountUuid)
 {
+    AB::Entities::Friend f;
+
+    if (!friendList_->GetFriendByAccount(accountUuid, f))
+        return;
+
     auto res = friendList_->Remove(accountUuid);
 
     auto msg = Net::NetworkMessage::GetNew();
     switch (res)
     {
     case FriendList::Error::Success:
-        msg->AddByte(AB::GameProtocol::ServerMessage);
-        msg->AddByte(AB::GameProtocol::ServerMessageTypeFriendRemoved);
-        msg->AddString(GetName());
+        msg->AddByte(AB::GameProtocol::FriendRemoved);
         msg->AddString(accountUuid);
+        msg->Add<uint8_t>(f.relation);
         break;
     case FriendList::Error::AlreadyFriend:
         // N/A
@@ -481,24 +489,29 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
         WriteToOutput(*msg);
 }
 
-void Player::SendFriendInfo(AB::GameProtocol::GameProtocolCodes code, const AB::Entities::Friend& f)
+void Player::SendPlayerInfo(const AB::Entities::Character& ch)
 {
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(code);
+    msg->AddByte(AB::GameProtocol::PlayerInfo);
+    msg->AddString(ch.accountUuid);
+    AB::Entities::Friend f;
+    bool isFriend = friendList_->GetFriendByAccount(ch.accountUuid, f);
+    if (isFriend)
+        msg->AddString(f.friendName);
+    else
+        msg->AddString(ch.name);
     msg->Add<uint8_t>(f.relation);
-    msg->AddString(f.friendUuid);
-    msg->AddString(f.friendName);
 
-    if (f.relation == AB::Entities::FriendRelationFriend)
+    AB::Entities::Account account;
+    account.uuid = ch.accountUuid;
+    AB::Entities::Character currentToon;
+    IO::IOAccount_GetAccountInfo(account, currentToon);
+    if (f.relation != AB::Entities::FriendRelationIgnore)
     {
-        AB::Entities::Account friendAccount;
-        friendAccount.uuid = f.friendUuid;
-        AB::Entities::Character friendToon;
-        /* const bool success = */ IO::IOAccount_GetAccountInfo(friendAccount, friendToon);
         // If success == false -> offline, empty toon name
-        msg->Add<uint8_t>(friendAccount.onlineStatus);
-        msg->AddString(friendToon.name);
-        msg->AddString(friendToon.currentMapUuid);
+        msg->Add<uint8_t>(account.onlineStatus);
+        msg->AddString(currentToon.name);
+        msg->AddString(currentToon.currentMapUuid);
     }
     else
     {
@@ -507,27 +520,36 @@ void Player::SendFriendInfo(AB::GameProtocol::GameProtocolCodes code, const AB::
         msg->AddString("");
         msg->AddString(Utils::Uuid::EMPTY_UUID);
     }
+    AB::Entities::GuildMember gm;
+    IO::IOAccount_GetGuildMemberInfo(account, gm);
+    msg->AddString(account.guildUuid);
+    msg->Add<uint8_t>(gm.role);
+    msg->AddString(gm.inviteName);
+    msg->Add<int64_t>(gm.invited);
+    msg->Add<int64_t>(gm.joined);
+    msg->Add<int64_t>(gm.expires);
+
     WriteToOutput(*msg);
 }
 
-void Player::CRQGetFriendByAccount(const std::string accountUuid)
+void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid)
 {
-    AB::Entities::Friend f;
-    bool found = friendList_->GetFriendByAccount(accountUuid, f);
+    AB::Entities::Character ch;
+    bool found = IO::IOPlayer_GetPlayerInfoByAccount(accountUuid, ch);
     if (!found)
-        // If there is no such friend, we just don't reply to this request
+        // If there is no such thing, we just don't reply to this request
         return;
-    SendFriendInfo(AB::GameProtocol::FriendSingle, f);
+    SendPlayerInfo(ch);
 }
 
-void Player::CRQGetFriendByName(const std::string name)
+void Player::CRQGetPlayerInfoByName(const std::string name)
 {
-    AB::Entities::Friend f;
-    bool found = friendList_->GetFriendByName(name, f);
+    AB::Entities::Character ch;
+    bool found = IO::IOPlayer_GetPlayerInfoByName(name, ch);
     if (!found)
-        // If there is no such friend, we just don't reply to this request
+        // If there is no such thing, we just don't reply to this request
         return;
-    SendFriendInfo(AB::GameProtocol::FriendSingle, f);
+    SendPlayerInfo(ch);
 }
 
 void Player::CRQGetGuildMembers()
@@ -544,72 +566,13 @@ void Player::CRQGetGuildMembers()
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::GuildMembersAll);
+    msg->AddByte(AB::GameProtocol::GuildMemberList);
     msg->Add<uint16_t>(static_cast<uint16_t>(members.members.size()));
 
     for (const AB::Entities::GuildMember& member : members.members)
     {
         msg->AddString(member.accountUuid);
-        msg->AddString(member.inviteName);
-        msg->Add<uint8_t>(member.role);
-        msg->Add<int64_t>(member.invited);
-        msg->Add<int64_t>(member.joined);
-        msg->Add<int64_t>(member.expires);
     };
-    WriteToOutput(*msg);
-}
-
-void Player::CRQGetGuildMember(const std::string accountUuid)
-{
-    auto* gm = GetSubsystem<GuildManager>();
-    auto guild = gm->Get(account_.guildUuid);
-    if (!guild)
-        return;
-    AB::Entities::GuildMember member;
-    if (!guild->GetMember(accountUuid, member))
-        return;
-
-    auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::GuildMember);
-    msg->Add<uint8_t>(member.role);
-    msg->AddString(member.accountUuid);
-    msg->AddString(member.inviteName);
-    msg->Add<int64_t>(member.joined);
-    msg->Add<int64_t>(member.invited);
-    msg->Add<int64_t>(member.expires);
-
-    WriteToOutput(*msg);
-}
-
-void Player::CRQGetPlayerInfo(const std::string accountUuid)
-{
-    AB::Entities::Friend f;
-    // Just to see if the player is ignored
-    /* bool found = */ friendList_->GetFriendByAccount(accountUuid, f);
-
-    auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::PlayerInfo);
-    msg->Add<uint8_t>(f.relation);
-    msg->AddString(accountUuid);
-
-    if (f.relation != AB::Entities::FriendRelationIgnore)
-    {
-        AB::Entities::Account playerAccount;
-        playerAccount.uuid = accountUuid;
-        AB::Entities::Character playerToon;
-        /* const bool success = */ IO::IOAccount_GetAccountInfo(playerAccount, playerToon);
-        // If success == false -> offline, empty toon name
-        msg->Add<uint8_t>(playerAccount.onlineStatus);
-        msg->AddString(playerToon.name);
-        msg->AddString(playerToon.currentMapUuid);
-    }
-    else
-    {
-        // Ignored always offline and no current toon
-        msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
-        msg->AddString("");
-        msg->AddString(Utils::Uuid::EMPTY_UUID);
-    }
     WriteToOutput(*msg);
 }
 
@@ -633,32 +596,12 @@ void Player::CRQGetGuildInfo()
 void Player::CRQGetFriendList()
 {
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::FriendListAll);
+    msg->AddByte(AB::GameProtocol::FriendList);
     msg->Add<uint16_t>(static_cast<uint16_t>(friendList_->Count()));
     friendList_->VisitAll([&msg](const AB::Entities::Friend& current)
     {
-        msg->Add<uint8_t>(current.relation);
         msg->AddString(current.friendUuid);
-        msg->AddString(current.friendName);
 
-        if (current.relation == AB::Entities::FriendRelationFriend)
-        {
-            AB::Entities::Account friendAccount;
-            friendAccount.uuid = current.friendUuid;
-            AB::Entities::Character friendToon;
-            /* const bool success = */ IO::IOAccount_GetAccountInfo(friendAccount, friendToon);
-            // If success == false -> offline, empty toon name
-            msg->Add<uint8_t>(friendAccount.onlineStatus);
-            msg->AddString(friendToon.name);
-            msg->AddString(friendToon.currentMapUuid);
-        }
-        else
-        {
-            // Ignored always offline and no current toon
-            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
-            msg->AddString("");
-            msg->AddString(Utils::Uuid::EMPTY_UUID);
-        }
         return Iteration::Continue;
     });
     WriteToOutput(*msg);

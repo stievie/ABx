@@ -697,6 +697,25 @@ void FwClient::SendMail(const std::string& recipient, const std::string& subject
         client_.SendMail(recipient, subject, body);
 }
 
+void FwClient::GetPlayerInfoByName(const std::string& name)
+{
+    if (loggedIn_)
+        client_.GetPlayerInfoByName(name);
+}
+
+void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid)
+{
+    if (!loggedIn_)
+        return;
+    const auto it = relatedAccounts_.find(accountUuid);
+    if (it != relatedAccounts_.end())
+    {
+        OnPlayerInfo(0, (*it).second);
+        return;
+    }
+    client_.GetPlayerInfoByAccount(accountUuid);
+}
+
 void FwClient::UpdateInventory()
 {
     if (loggedIn_)
@@ -1559,9 +1578,19 @@ void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
 
 void FwClient::OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player)
 {
+    auto it = relatedAccounts_.find(player.accountUuid);
+    if (it == relatedAccounts_.end())
+        relatedAccounts_.emplace(player.accountUuid, player);
+    else
+    {
+        (*it).second.currentName = player.currentName;
+        (*it).second.status = player.status;
+        (*it).second.currentMap = player.currentMap;
+    }
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PlayerLoggedIn;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
     eData[P_NAME] = String(player.currentName.c_str());
     eData[P_STATUS] = static_cast<uint8_t>(player.status);
     eData[P_MAP] = String(player.currentMap.c_str());
@@ -1570,9 +1599,17 @@ void FwClient::OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount
 
 void FwClient::OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player)
 {
+    auto it = relatedAccounts_.find(player.accountUuid);
+    if (it == relatedAccounts_.end())
+        relatedAccounts_.emplace(player.accountUuid, player);
+    else
+    {
+        (*it).second.status = player.status;
+    }
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PlayerLoggedOut;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
     eData[P_NAME] = String(player.currentName.c_str());
     eData[P_STATUS] = static_cast<uint8_t>(player.status);
     QueueEvent(AbEvents::E_PLAYER_LOGGEDOUT, eData);
@@ -1580,11 +1617,14 @@ void FwClient::OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccoun
 
 void FwClient::OnPlayerInfo(int64_t, const Client::RelatedAccount& player)
 {
-    // TODO:
-    (void)player;
+    relatedAccounts_.emplace(player.accountUuid, player);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::GotPlayerInfo;
+    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
+    QueueEvent(AbEvents::E_GOT_PLAYERINFO, eData);
 }
 
-void FwClient::OnFriendList(int64_t, const std::vector<Client::RelatedAccount>& list)
+void FwClient::OnFriendList(int64_t, const std::vector<std::string>& list)
 {
     friendList_ = list;
     VariantMap& eData = GetEventDataMap();
@@ -1592,13 +1632,25 @@ void FwClient::OnFriendList(int64_t, const std::vector<Client::RelatedAccount>& 
     QueueEvent(AbEvents::E_GOT_FRIENDLIST, eData);
 }
 
-void FwClient::OnFriendInfo(int64_t, const Client::RelatedAccount& f)
+void FwClient::OnFriendAdded(int64_t, const std::string& accountUuid, Client::RelatedAccount::Releation relation)
 {
-    (void)f;
-    // TODO:
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::FriendAdded;
+    eData[P_ACCOUNTUUID] = String(accountUuid.c_str());
+    eData[P_RELATION] = static_cast<unsigned>(relation);
+    QueueEvent(AbEvents::E_FRIENDADDED, eData);
 }
 
-void FwClient::OnGuildMemberList(int64_t, const std::vector<AB::Entities::GuildMember>& list)
+void FwClient::OnFriendRemoved(int64_t, const std::string& accountUuid, Client::RelatedAccount::Releation relation)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::FriendRemoved;
+    eData[P_ACCOUNTUUID] = String(accountUuid.c_str());
+    eData[P_RELATION] = static_cast<unsigned>(relation);
+    QueueEvent(AbEvents::E_FRIENDREMOVED, eData);
+}
+
+void FwClient::OnGuildMemberList(int64_t, const std::vector<std::string>& list)
 {
     guildMembers_ = list;
     VariantMap& eData = GetEventDataMap();
@@ -1612,8 +1664,10 @@ void FwClient::OnGuildInfo(int64_t, const AB::Entities::Guild& guild)
     (void)guild;
 }
 
-void FwClient::OnGuildMemberInfo(int64_t, const AB::Entities::GuildMember& gm)
+const Client::RelatedAccount* FwClient::GetRelatedAccount(const String& accountUuid) const
 {
-    // TODO:
-    (void)gm;
+    const auto it = relatedAccounts_.find(std::string(accountUuid.CString()));
+    if (it == relatedAccounts_.end())
+        return nullptr;
+    return &(*it).second;
 }

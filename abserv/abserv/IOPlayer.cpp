@@ -11,6 +11,7 @@
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/FriendList.h>
 #include <AB/Entities/GuildMembers.h>
+#include <AB/Entities/FriendedMe.h>
 #include "Logger.h"
 #include <uuid.h>
 #include "Subsystems.h"
@@ -201,13 +202,31 @@ size_t IOPlayer_GetInterestedParties(const std::string& accountUuid, std::vector
     accounts.clear();
     std::unordered_set<std::string> ignored;
 
+    // I friended those
     AB::Entities::FriendList fl;
-    for (const auto& f : fl.friends)
+    fl.uuid = accountUuid;
+    if (client->Read(fl))
     {
-        if (f.relation == AB::Entities::FriendRelationFriend)
-            accounts.push_back(f.friendUuid);
-        else if (f.relation == AB::Entities::FriendRelationIgnore)
-            ignored.emplace(f.friendUuid);
+        for (const auto& f : fl.friends)
+        {
+            if (f.relation == AB::Entities::FriendRelationFriend)
+                accounts.push_back(f.friendUuid);
+            else if (f.relation == AB::Entities::FriendRelationIgnore)
+                ignored.emplace(f.friendUuid);
+        }
+    }
+    // Those friended me
+    AB::Entities::FriendedMe fme;
+    fme.uuid = accountUuid;
+    if (client->Read(fme))
+    {
+        for (const auto& f : fme.friends)
+        {
+            if (f.relation == AB::Entities::FriendRelationFriend)
+                accounts.push_back(f.accountUuid);
+            else if (f.relation == AB::Entities::FriendRelationIgnore)
+                ignored.emplace(f.accountUuid);
+        }
     }
 
     auto isIgnored = [&ignored](const std::string& uuid)
@@ -234,6 +253,29 @@ size_t IOPlayer_GetInterestedParties(const std::string& accountUuid, std::vector
     std::sort(accounts.begin(), accounts.end());
     accounts.erase(std::unique(accounts.begin(), accounts.end()), accounts.end());
     return accounts.size();
+}
+
+bool IOPlayer_GetPlayerInfoByName(const std::string& name, AB::Entities::Character& player)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    player.name = name;
+    return client->Read(player);
+}
+
+bool IOPlayer_GetPlayerInfoByAccount(const std::string& accountUuid, AB::Entities::Character& player)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Account acc;
+    acc.uuid = accountUuid;
+    if (!client->Read(acc))
+        return false;
+    if (!Utils::Uuid::IsEmpty(acc.currentCharacterUuid))
+        player.uuid = acc.currentCharacterUuid;
+    else if (acc.characterUuids.size() != 0)
+        player.uuid = acc.characterUuids[0];
+    else
+        return false;
+    return client->Read(player);
 }
 
 }

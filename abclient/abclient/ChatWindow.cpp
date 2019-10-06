@@ -312,12 +312,6 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageTypeGMInfo:
         HandleServerMessageGMInfo(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeFriendAdded:
-        HandleServerMessageFriendAdded(eventData);
-        break;
-    case AB::GameProtocol::ServerMessageTypeFriendRemoved:
-        HandleServerMessageFriendRemoved(eventData);
-        break;
     case AB::GameProtocol::ServerMessageTypePlayerNotFound:
         HandleServerMessagePlayerNotFound(eventData);
         break;
@@ -655,22 +649,6 @@ void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
     const String& sender = eventData[P_SENDER].GetString();
     const String& message = eventData[P_DATA].GetString();
     AddLine(sender, message, "ChatLogServerInfoText");
-}
-
-void ChatWindow::HandleServerMessageFriendAdded(VariantMap& eventData)
-{
-    using namespace AbEvents::ServerMessage;
-    const String& player = eventData[P_DATA].GetString();
-    AddLine("Player " + player + " added.", "ChatLogServerInfoText");
-    // TODO:
-}
-
-void ChatWindow::HandleServerMessageFriendRemoved(VariantMap& eventData)
-{
-    using namespace AbEvents::ServerMessage;
-    const String& playerAccountUuid = eventData[P_DATA].GetString();
-    AddLine("Player " + playerAccountUuid + " removed.", "ChatLogServerInfoText");
-    // TODO:
 }
 
 void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)

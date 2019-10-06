@@ -31,7 +31,7 @@ enum GuildRole : uint8_t
 
 struct GuildMember
 {
-    std::string accountUuid;
+    std::string accountUuid = EMPTY_GUID;
     std::string inviteName;
     GuildRole role = GuildRoleUnknown;
     /// Time invited

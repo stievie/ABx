@@ -19,7 +19,10 @@ private:
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleAddFriendClicked(StringHash eventType, VariantMap& eventData);
     void HandleAddIgnoreClicked(StringHash eventType, VariantMap& eventData);
-    void AddItem(ListView* lv, const Client::RelatedAccount& f);
+    void HandleGotPlayerInfo(StringHash eventType, VariantMap& eventData);
+    void HandleFriendAdded(StringHash eventType, VariantMap& eventData);
+    void HandleFriendRemoved(StringHash eventType, VariantMap& eventData);
+    void UpdateItem(ListView* lv, const Client::RelatedAccount& f);
     void UpdateAll();
 public:
     static void RegisterObject(Context* context);

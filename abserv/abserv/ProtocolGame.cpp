@@ -250,7 +250,6 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
-        data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
         AddPlayerInput(Game::InputType::Direction, std::move(data));
         break;
     }
@@ -351,16 +350,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQRemoveFriend, accountUuid);
         break;
     }
-    case AB::GameProtocol::PacketTypeGetFriendByAccount:
+    case AB::GameProtocol::PacketTypeGetPlayerInfoByAccount:
     {
         std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetFriendByAccount, accountUuid);
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByAccount, accountUuid);
         break;
     }
-    case AB::GameProtocol::PacketTypeGetFriendByName:
+    case AB::GameProtocol::PacketTypeGetPlayerInfoByName:
     {
         std::string name = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetFriendByName, name);
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByName, name);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:
@@ -369,18 +368,6 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeGetGuildMembers:
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
-    case AB::GameProtocol::PacketTypeGetGuildMember:
-    {
-        std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetGuildMember, accountUuid);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeGetPlayerInfo:
-    {
-        std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetPlayerInfo, accountUuid);
-        break;
-    }
     default:
     {
         auto player = GetPlayer();

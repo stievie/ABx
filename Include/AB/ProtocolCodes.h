@@ -177,8 +177,6 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeInstances,
     ServerMessageTypeGMInfo,
 
-    ServerMessageTypeFriendAdded,
-    ServerMessageTypeFriendRemoved,
     ServerMessageTypePlayerNotFound,
 
     ServerMessageTypeUnknownCommand = 0xff
@@ -259,17 +257,17 @@ enum GameProtocolCodes : uint8_t
     ChestItemUpdate,
     ChestItemDelete,
     // Friend list
-    FriendListAll,
-    FriendSingle,             // Returns a single friend
+    FriendList,
+    FriendAdded,
+    FriendRemoved,
     // Guild
     GuildInfo,
-    GuildMembersAll,
-    GuildMember,             // Info for single guild member
+    GuildMemberList,
 
     DialogTrigger,                // Show a dialog
     PlayerLoggedIn,                    // Notification sent to friends/guild members when a player logged in
     PlayerLoggedOut,                   // Notification sent to friends/guild members when a player logged out
-    PlayerInfo,
+    PlayerInfo,                   // Get info of related player (e.g. friend, guild member)
 
     CodeLast = 0xFF
 };
@@ -356,7 +354,8 @@ enum GamePacketTypes : uint8_t
     PacketTypeLogout,
     PacketTypeChangeMap,
 
-    PacketTypeGetPlayerInfo,
+    PacketTypeGetPlayerInfoByAccount,
+    PacketTypeGetPlayerInfoByName,
 
     // Mail
     PacketTypeSendMail,
@@ -406,12 +405,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeGetFriendList,
     PacketTypeAddFriend,
     PacketTypeRemoveFriend,
-    PacketTypeGetFriendByAccount,
-    PacketTypeGetFriendByName,
     // Guild
     PacketTypeGetGuildInfo,
-    PacketTypeGetGuildMembers,
-    PacketTypeGetGuildMember,
+    PacketTypeGetGuildMembers
 };
 
 enum CommandTypes : uint8_t

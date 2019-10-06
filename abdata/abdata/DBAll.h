@@ -40,3 +40,4 @@
 #include "DBItemChanceList.h"
 #include "DBTypedItemList.h"
 #include "DBInstance.h"
+#include "DBFriendedMe.h"

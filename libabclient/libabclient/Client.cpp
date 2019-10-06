@@ -377,17 +377,22 @@ void Client::OnPlayerInfo(int64_t updateTick, const RelatedAccount& player)
     receiver_.OnPlayerInfo(updateTick, player);
 }
 
-void Client::OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>& list)
+void Client::OnFriendList(int64_t updateTick, const std::vector<std::string>& list)
 {
     receiver_.OnFriendList(updateTick, list);
 }
 
-void Client::OnFriendInfo(int64_t updateTick, const RelatedAccount& f)
+void Client::OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation)
 {
-    receiver_.OnFriendInfo(updateTick, f);
+    receiver_.OnFriendAdded(updateTick, accountUuid, relation);
 }
 
-void Client::OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>& list)
+void Client::OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation)
+{
+    receiver_.OnFriendRemoved(updateTick, accountUuid, relation);
+}
+
+void Client::OnGuildMemberList(int64_t updateTick, const std::vector<std::string>& list)
 {
     receiver_.OnGuildMemberList(updateTick, list);
 }
@@ -395,11 +400,6 @@ void Client::OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entitie
 void Client::OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild)
 {
     receiver_.OnGuildInfo(updateTick, guild);
-}
-
-void Client::OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm)
-{
-    receiver_.OnGuildMemberInfo(updateTick, gm);
 }
 
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
@@ -695,6 +695,18 @@ void Client::SendMail(const std::string& recipient, const std::string& subject, 
 {
     if (state_ == ClientState::World)
         protoGame_->SendMail(recipient, subject, body);
+}
+
+void Client::GetPlayerInfoByName(const std::string& name)
+{
+    if (state_ == ClientState::World)
+        protoGame_->GetPlayerInfoByName(name);
+}
+
+void Client::GetPlayerInfoByAccount(const std::string& accountUuid)
+{
+    if (state_ == ClientState::World)
+        protoGame_->GetPlayerInfoByAccount(accountUuid);
 }
 
 void Client::Move(uint8_t direction)

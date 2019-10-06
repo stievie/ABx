@@ -87,11 +87,11 @@ protected:
     void ParsePartyInfoMembers(InputMessage& message);
     void ParseResourceChanged(InputMessage& message);
     void ParseDialogTrigger(InputMessage& message);
-    void ParseFriendListAll(InputMessage& message);
-    void ParseFriendSingle(InputMessage& message);
+    void ParseFriendList(InputMessage& message);
+    void ParseFriendAdded(InputMessage& message);
+    void ParseFriendRemoved(InputMessage& message);
     void ParseGuildInfo(InputMessage& message);
-    void ParseGuildMembersAll(InputMessage& message);
-    void ParseGuildMember(InputMessage& message);
+    void ParseGuildMemberList(InputMessage& message);
     void ParsePlayerLoggedIn(InputMessage& message);
     void ParsePlayerLoggedOut(InputMessage& message);
     void ParsePlayerInfo(InputMessage& message);
@@ -116,6 +116,8 @@ public:
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
+    void GetPlayerInfoByName(const std::string& name);
+    void GetPlayerInfoByAccount(const std::string& accountUuid);
 
     void Move(uint8_t direction);
     void Turn(uint8_t direction);

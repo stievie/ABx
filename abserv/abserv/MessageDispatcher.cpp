@@ -96,20 +96,32 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
 {
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
+    {
+        LOG_ERROR << "Unable to get property stream" << std::endl;
         return;
+    }
     std::string accUuid;
     if (!stream.ReadString(accUuid))
+    {
+        LOG_ERROR << "Error reading account from property stream" << std::endl;
         return;
+    }
     std::string charUuid;
     if (!stream.ReadString(charUuid))
+    {
+        LOG_ERROR << "Error reading character from property stream" << std::endl;
         return;
+    }
 
     // Read players name
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Character ch;
     ch.uuid = charUuid;
     if (!client->Read(ch))
+    {
+        LOG_ERROR << "Error reading character " << charUuid << std::endl;
         return;
+    }
 
     std::vector<std::string> accounts;
     IO::IOPlayer_GetInterestedParties(accUuid, accounts);

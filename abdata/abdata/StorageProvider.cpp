@@ -135,6 +135,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>();
     AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>();
     AddEntityClass<DB::DBInstance, AB::Entities::GameInstance>();
+    AddEntityClass<DB::DBFriendedMe, AB::Entities::FriendedMe>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)

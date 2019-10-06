@@ -369,7 +369,7 @@
         <attribute name="Font Size" value="9" />
         <attribute name="Color" value="0.65 0.65 0.65" />
     </element>
-    <element type="FriendListItemOnline" style="Text" auto="false">
+    <element type="FriendListItemOnline" style="FriendListItem" auto="false">
         <attribute name="Color" value="0.95 0.95 0.95" />
     </element>
 

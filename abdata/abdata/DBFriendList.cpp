@@ -30,21 +30,21 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
     std::ostringstream query;
     query << "SELECT * FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        // Maybe no friends
-        return true;
-
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    if (result)
     {
-        fl.friends.push_back({
-            result->GetString("friend_uuid"),
-            result->GetString("friend_name"),
-            static_cast<AB::Entities::FriendRelation>(result->GetUInt("relation")),
-            result->GetLong("creation")
-        });
+        for (result = db->StoreQuery(query.str()); result; result = result->Next())
+        {
+            fl.friends.push_back({
+                result->GetString("friend_uuid"),
+                result->GetString("friend_name"),
+                static_cast<AB::Entities::FriendRelation>(result->GetUInt("relation")),
+                result->GetLong("creation")
+            });
+        }
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 bool DBFriendList::Save(const AB::Entities::FriendList& fl)

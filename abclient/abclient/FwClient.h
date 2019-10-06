@@ -37,8 +37,9 @@ private:
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::vector<Client::InventoryItem> inventory_;
     std::vector<Client::InventoryItem> chest_;
-    std::vector<Client::RelatedAccount> friendList_;
-    std::vector<AB::Entities::GuildMember> guildMembers_;
+    std::vector<std::string> friendList_;
+    std::vector<std::string> guildMembers_;
+    std::map<std::string, Client::RelatedAccount> relatedAccounts_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -101,6 +102,8 @@ public:
     void ReadMail(const std::string& uuid);
     void DeleteMail(const std::string& uuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
+    void GetPlayerInfoByName(const std::string& name);
+    void GetPlayerInfoByAccount(const std::string& accountUuid);
     void UpdateInventory();
     void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
@@ -206,11 +209,11 @@ public:
     void OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player) override;
     void OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player) override;
     void OnPlayerInfo(int64_t updateTick, const Client::RelatedAccount& player) override;
-    void OnFriendList(int64_t updateTick, const std::vector<Client::RelatedAccount>& list) override;
-    void OnFriendInfo(int64_t updateTick, const Client::RelatedAccount& f) override;
-    void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>& list) override;
+    void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
+    void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, Client::RelatedAccount::Releation relation) override;
+    void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, Client::RelatedAccount::Releation relation) override;
+    void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>& list) override;
     void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
-    void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember& gm) override;
 
     void SetState(Client::Client::ClientState state)
     {
@@ -288,14 +291,15 @@ public:
         return (*it);
     }
 
-    const std::vector<Client::RelatedAccount>& GetFriendList() const
+    const std::vector<std::string>& GetFriendList() const
     {
         return friendList_;
     }
-    const std::vector<AB::Entities::GuildMember>& GetGuildMembers() const
+    const std::vector<std::string>& GetGuildMembers() const
     {
         return guildMembers_;
     }
+    const Client::RelatedAccount* GetRelatedAccount(const String& accountUuid) const;
 
     int GetAvgPing() const
     {

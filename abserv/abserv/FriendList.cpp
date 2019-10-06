@@ -8,6 +8,7 @@
 #include <sa/Transaction.h>
 #include "IOPlayer.h"
 #include "Dispatcher.h"
+#include <AB/Entities/FriendedMe.h>
 
 namespace Game {
 
@@ -16,10 +17,8 @@ void FriendList::Load()
     auto* client = GetSubsystem<IO::DataClient>();
     data_.uuid = accountUuid_;
     data_.friends.clear();
-    if (!client->Read(data_))
-    {
-        LOG_WARNING << "Error reading Friendlist for account " << accountUuid_ << std::endl;
-    }
+    client->Read(data_);
+    // If se can't read it this guy has no friends :/
 }
 
 void FriendList::Save()
@@ -43,6 +42,12 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
         relation,
         Utils::Tick()
     });
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::FriendedMe f;
+    f.uuid = accountUuid;
+    client->Invalidate(f);
+
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }

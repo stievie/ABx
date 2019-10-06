@@ -44,11 +44,6 @@ struct InventoryItem
 
 struct RelatedAccount
 {
-    enum Releation
-    {
-        FriendRelationFriend = 0,
-        FriendRelationIgnore = 1
-    };
     enum Status
     {
         OnlineStatusOffline = 0,
@@ -57,12 +52,35 @@ struct RelatedAccount
         OnlineStatusOnline,
         OnlineStatusInvisible              // Like offline for other users
     };
-    Releation relation;
+    enum Releation
+    {
+        FriendRelationUnknown = 0,
+        FriendRelationFriend = 1,
+        FriendRelationIgnore = 2
+    };
+    enum GuildRole
+    {
+        GuildRoleUnknown = 0,
+        GuildRoleGuest,
+        GuildRoleInvited,
+        GuildRoleMember,
+        GuildRoleOfficer,
+        GuildRoleLeader
+    };
     std::string accountUuid;
     std::string name;
-    Status status;
     std::string currentName;
     std::string currentMap;
+    Status status;
+    // Friend
+    Releation relation{ FriendRelationUnknown };
+    // Guild member
+    std::string guildUuid;
+    GuildRole guildRole{ GuildRoleUnknown };
+    std::string guildInviteName;
+    int64_t invited = 0;
+    int64_t joined = 0;
+    int64_t expires = 0;
 };
 
 class Receiver
@@ -140,11 +158,11 @@ public:
     virtual void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
-    virtual void OnFriendList(int64_t updateTick, const std::vector<RelatedAccount>&) = 0;
-    virtual void OnFriendInfo(int64_t updateTick, const RelatedAccount&) = 0;
-    virtual void OnGuildMemberList(int64_t updateTick, const std::vector<AB::Entities::GuildMember>&) = 0;
+    virtual void OnFriendList(int64_t updateTick, const std::vector<std::string>&) = 0;
+    virtual void OnFriendAdded(int64_t updateTick, const std::string&, RelatedAccount::Releation relation) = 0;
+    virtual void OnFriendRemoved(int64_t updateTick, const std::string&, RelatedAccount::Releation relation) = 0;
+    virtual void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) = 0;
     virtual void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild&) = 0;
-    virtual void OnGuildMemberInfo(int64_t updateTick, const AB::Entities::GuildMember&) = 0;
 };
 
 }

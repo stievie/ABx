@@ -43,7 +43,7 @@ static constexpr int MAX_GAME_INSTANCE_NAME = 500;
 // Guild
 static constexpr int MAX_GUILD_NAME = 32;
 static constexpr int MAX_GUILD_TAG = 4;
-static constexpr int MAX_GUILD_MEMBERS = 500;
+static constexpr int MAX_GUILD_MEMBERS = 100;
 
 // Ban
 static constexpr int MAX_BAN_COMMENT = 255;
@@ -55,7 +55,8 @@ static constexpr int MAX_VERSIONS = 256;
 static constexpr int MAX_RESERVED_NAME = 40;
 
 // Friendlist
-static constexpr int MAX_FRIENDS = 1000;
+static constexpr int MAX_FRIENDS = 100;
+static constexpr int MAX_FRIENDED_ME = std::numeric_limits<int>::max();
 
 // Party
 static constexpr int MAX_PARTY_MEMBERS = 12;

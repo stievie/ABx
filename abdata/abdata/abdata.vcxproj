@@ -200,6 +200,7 @@
     <ClInclude Include="DBConcreteItem.h" />
     <ClInclude Include="DBEffect.h" />
     <ClInclude Include="DBEffectList.h" />
+    <ClInclude Include="DBFriendedMe.h" />
     <ClInclude Include="DBFriendList.h" />
     <ClInclude Include="DBGame.h" />
     <ClInclude Include="DBGameList.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="DBConcreteItem.cpp" />
     <ClCompile Include="DBEffect.cpp" />
     <ClCompile Include="DBEffectList.cpp" />
+    <ClCompile Include="DBFriendedMe.cpp" />
     <ClCompile Include="DBFriendList.cpp" />
     <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="DBGameList.cpp" />

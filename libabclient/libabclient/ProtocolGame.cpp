@@ -234,20 +234,20 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         case AB::GameProtocol::DialogTrigger:
             ParseDialogTrigger(message);
             break;
-        case AB::GameProtocol::FriendListAll:
-            ParseFriendListAll(message);
+        case AB::GameProtocol::FriendList:
+            ParseFriendList(message);
             break;
-        case AB::GameProtocol::FriendSingle:
-            ParseFriendSingle(message);
+        case AB::GameProtocol::FriendAdded:
+            ParseFriendAdded(message);
+            break;
+        case AB::GameProtocol::FriendRemoved:
+            ParseFriendRemoved(message);
             break;
         case AB::GameProtocol::GuildInfo:
-            ParseGuildMembersAll(message);
+            ParseGuildInfo(message);
             break;
-        case AB::GameProtocol::GuildMembersAll:
-            ParseGuildMembersAll(message);
-            break;
-        case AB::GameProtocol::GuildMember:
-            ParseGuildMember(message);
+        case AB::GameProtocol::GuildMemberList:
+            ParseGuildMemberList(message);
             break;
         case AB::GameProtocol::PlayerLoggedIn:
             ParsePlayerLoggedIn(message);
@@ -555,37 +555,31 @@ void ProtocolGame::ParseDialogTrigger(InputMessage& message)
     receiver_.OnDialogTrigger(updateTick_, dialogId);
 }
 
-void ProtocolGame::ParseFriendListAll(InputMessage& message)
+void ProtocolGame::ParseFriendList(InputMessage& message)
 {
-    std::vector<RelatedAccount> friends;
+    std::vector<std::string> friends;
     size_t count = message.Get<uint16_t>();
     friends.reserve(count);
     for (size_t i = 0; i < count; ++i)
     {
-        friends.push_back({
-            static_cast<RelatedAccount::Releation>(message.Get<uint8_t>()),
-            message.GetString(),                         // Account UUID
-            message.GetString(),                         // Name
-            static_cast<RelatedAccount::Status>(message.Get<uint8_t>()),
-            message.GetString(),                         // Current name
-            message.GetString()                          // Current map
-        });
+        friends.push_back(message.GetString());
     }
 
     receiver_.OnFriendList(updateTick_, friends);
 }
 
-void ProtocolGame::ParseFriendSingle(InputMessage& message)
+void ProtocolGame::ParseFriendAdded(InputMessage& message)
 {
-    RelatedAccount frnd;
-    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
-    frnd.accountUuid = message.GetString();
-    frnd.name = message.GetString();
-    frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-    frnd.currentName = message.GetString();
-    frnd.currentMap = message.GetString();
+    std::string accountUuid = message.GetString();
+    RelatedAccount::Releation rel = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    receiver_.OnFriendAdded(updateTick_, accountUuid, rel);
+}
 
-    receiver_.OnFriendInfo(updateTick_, frnd);
+void ProtocolGame::ParseFriendRemoved(InputMessage& message)
+{
+    std::string accountUuid = message.GetString();
+    RelatedAccount::Releation rel = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    receiver_.OnFriendRemoved(updateTick_, accountUuid, rel);
 }
 
 void ProtocolGame::ParseGuildInfo(InputMessage& message)
@@ -600,37 +594,17 @@ void ProtocolGame::ParseGuildInfo(InputMessage& message)
     receiver_.OnGuildInfo(updateTick_, guild);
 }
 
-void ProtocolGame::ParseGuildMembersAll(InputMessage& message)
+void ProtocolGame::ParseGuildMemberList(InputMessage& message)
 {
-    std::vector<AB::Entities::GuildMember> members;
+    std::vector<std::string> members;
     size_t count = message.Get<uint16_t>();
     members.reserve(count);
     for (size_t i = 0; i < count; ++i)
     {
-        members.push_back({
-            message.GetString(),
-            message.GetString(),
-            static_cast<AB::Entities::GuildRole>(message.Get<uint8_t>()),
-            message.Get<int64_t>(),
-            message.Get<int64_t>(),
-            message.Get<int64_t>()
-        });
+        members.push_back(message.GetString());
     }
 
     receiver_.OnGuildMemberList(updateTick_, members);
-}
-
-void ProtocolGame::ParseGuildMember(InputMessage& message)
-{
-    AB::Entities::GuildMember member;
-    member.role = static_cast<AB::Entities::GuildRole>(message.Get<uint8_t>());
-    member.accountUuid = message.GetString();
-    member.inviteName = message.GetString();
-    member.joined = message.Get<int64_t>();
-    member.invited = message.Get<int64_t>();
-    member.expires = message.Get<int64_t>();
-
-    receiver_.OnGuildMemberInfo(updateTick_, member);
 }
 
 void ProtocolGame::ParsePlayerLoggedIn(InputMessage& message)
@@ -668,12 +642,19 @@ void ProtocolGame::ParsePlayerLoggedOut(InputMessage& message)
 void ProtocolGame::ParsePlayerInfo(InputMessage& message)
 {
     RelatedAccount frnd;
-    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
     frnd.accountUuid = message.GetString();
+    frnd.name = message.GetString();
+    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
     frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
     frnd.currentName = message.GetString();
     frnd.currentMap = message.GetString();
     frnd.name = frnd.currentName;
+    frnd.guildUuid = message.GetString();
+    frnd.guildRole = static_cast<RelatedAccount::GuildRole>(message.Get<uint8_t>());
+    frnd.guildInviteName = message.GetString();
+    frnd.invited = message.Get<int64_t>();
+    frnd.joined = message.Get<int64_t>();
+    frnd.expires = message.Get<int64_t>();
 
     receiver_.OnPlayerInfo(updateTick_, frnd);
 }
@@ -1052,6 +1033,22 @@ void ProtocolGame::SendMail(const std::string& recipient, const std::string& sub
     msg->AddString(recipient);
     msg->AddString(subject);
     msg->AddString(body);
+    Send(std::move(msg));
+}
+
+void ProtocolGame::GetPlayerInfoByName(const std::string& name)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByName);
+    msg->AddString(name);
+    Send(std::move(msg));
+}
+
+void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByAccount);
+    msg->AddString(accountUuid);
     Send(std::move(msg));
 }
 

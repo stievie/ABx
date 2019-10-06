@@ -78,4 +78,22 @@ bool IOAccount_GetAccountInfo(AB::Entities::Account& account, AB::Entities::Char
     return true;
 }
 
+bool IOAccount_GetGuildMemberInfo(const AB::Entities::Account& account, AB::Entities::GuildMember& g)
+{
+    if (Utils::Uuid::IsEmpty(account.guildUuid))
+        return false;
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::GuildMembers gms;
+    gms.uuid = account.guildUuid;
+    if (!client->Read(gms))
+        return false;
+    const auto it = std::find_if(gms.members.begin(), gms.members.end(), [&](const AB::Entities::GuildMember& current) {
+        return Utils::Uuid::IsEqual(account.uuid, current.accountUuid);
+    });
+    if (it == gms.members.end())
+        return false;
+    g = (*it);
+    return true;
+}
+
 }

@@ -11,7 +11,9 @@ namespace Net {
 class NetworkMessage;
 
 /// Size of the NetworkMessage class, the buffer size is then NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo)
-constexpr size_t NETWORKMESSAGE_MAXSIZE = 2048;
+/// OutputMessage should be exactly 4096 bytes, because then 100 friends and 100 Guild members fit in one
+/// message.
+constexpr size_t NETWORKMESSAGE_MAXSIZE = 4096 - sizeof(uint32_t);
 
 class NetworkMessage
 {
