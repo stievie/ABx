@@ -10,7 +10,7 @@
 #include <bitsery/ext/inheritance.h>
 #include <bitsery/traits/vector.h>
 #include <AB/Entities/Limits.h>
-#include <AB/Entities/Friendlist.h>
+#include <AB/Entities/FriendList.h>
 
 using bitsery::ext::BaseClass;
 
