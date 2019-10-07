@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AccountChestDialog.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 
 AccountChestDialog::AccountChestDialog(Context* context) :
@@ -49,9 +48,9 @@ void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
 void AccountChestDialog::SubscribeEvents()
 {
     DialogWindow::SubscribeEvents();
-    SubscribeToEvent(AbEvents::E_CHEST, URHO3D_HANDLER(AccountChestDialog, HandleChest));
-    SubscribeToEvent(AbEvents::E_CHESTITEMUPDATE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemUpdate));
-    SubscribeToEvent(AbEvents::E_CHESTITEMDELETE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemRemove));
+    SubscribeToEvent(Events::E_CHEST, URHO3D_HANDLER(AccountChestDialog, HandleChest));
+    SubscribeToEvent(Events::E_CHESTITEMUPDATE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemUpdate));
+    SubscribeToEvent(Events::E_CHESTITEMDELETE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemRemove));
 }
 
 void AccountChestDialog::Initialize()

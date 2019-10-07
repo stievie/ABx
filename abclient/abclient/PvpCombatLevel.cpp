@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PvpCombatLevel.h"
 #include "FwClient.h"
-#include "AbEvents.h"
 #include "LevelManager.h"
 #include "WindowManager.h"
 
@@ -26,9 +25,9 @@ PvpCombatLevel::PvpCombatLevel(Context* context) :
     SubscribeToEvents();
 
     VariantMap& eData = GetEventDataMap();
-    using namespace AbEvents::LevelReady;
+    using namespace Events::LevelReady;
     eData[P_NAME] = "PvpCombatLevel";
-    SendEvent(AbEvents::E_LEVELREADY, eData);
+    SendEvent(Events::E_LEVELREADY, eData);
 
     chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
 }

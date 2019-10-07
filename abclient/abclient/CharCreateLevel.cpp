@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CharCreateLevel.h"
-#include "AbEvents.h"
 #include "Structs.h"
 #include "FwClient.h"
 #include <AB/Entities/Character.h>
@@ -166,9 +165,9 @@ void CharCreateLevel::DoCreateCharacter()
 void CharCreateLevel::DoCancel()
 {
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "CharSelectLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void CharCreateLevel::CreateScene()
@@ -178,10 +177,10 @@ void CharCreateLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateCharacter.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    using namespace AbEvents::AudioPlayMapMusic;
+    using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = "CreateCharacter";
-    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
+    SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CharCreateLevel::HandleUpdate(StringHash, VariantMap& eventData)

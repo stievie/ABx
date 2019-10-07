@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NewMailWindow.h"
 #include "Shortcuts.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #include <AB/Entities/Limits.h>
 
@@ -38,7 +37,7 @@ NewMailWindow::NewMailWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLENEWMAILWINDOW, "New Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();

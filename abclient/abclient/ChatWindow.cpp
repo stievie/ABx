@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ChatWindow.h"
 #include "FwClient.h"
-#include "AbEvents.h"
 #include "Utils.h"
 #include <TimeUtils.h>
 #if defined(__clang__)
@@ -124,22 +123,22 @@ ChatWindow::ChatWindow(Context* context) :
 
     chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
 
-    SubscribeToEvent(AbEvents::E_SCREENSHOTTAKEN, URHO3D_HANDLER(ChatWindow, HandleScreenshotTaken));
-    SubscribeToEvent(AbEvents::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
-    SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
-    SubscribeToEvent(AbEvents::E_SC_CHATGENERAL, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGeneral));
-    SubscribeToEvent(AbEvents::E_SC_CHATGUILD, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGuild));
-    SubscribeToEvent(AbEvents::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
-    SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
-    SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
-    SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
-    SubscribeToEvent(AbEvents::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
-    SubscribeToEvent(AbEvents::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
-    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
-    SubscribeToEvent(AbEvents::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
-    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedIn));
-    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedOut));
-    SubscribeToEvent(AbEvents::E_WHISPERTO, URHO3D_HANDLER(ChatWindow, HandleWhisperTo));
+    SubscribeToEvent(Events::E_SCREENSHOTTAKEN, URHO3D_HANDLER(ChatWindow, HandleScreenshotTaken));
+    SubscribeToEvent(Events::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
+    SubscribeToEvent(Events::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
+    SubscribeToEvent(Events::E_SC_CHATGENERAL, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGeneral));
+    SubscribeToEvent(Events::E_SC_CHATGUILD, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGuild));
+    SubscribeToEvent(Events::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
+    SubscribeToEvent(Events::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
+    SubscribeToEvent(Events::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
+    SubscribeToEvent(Events::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
+    SubscribeToEvent(Events::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
+    SubscribeToEvent(Events::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
+    SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
+    SubscribeToEvent(Events::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
+    SubscribeToEvent(Events::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedIn));
+    SubscribeToEvent(Events::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedOut));
+    SubscribeToEvent(Events::E_WHISPERTO, URHO3D_HANDLER(ChatWindow, HandleWhisperTo));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -164,19 +163,19 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     switch (channel)
     {
     case AB::GameProtocol::ChatChannelGeneral:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General", true));
+        tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATGENERAL, "General", true));
         break;
     case AB::GameProtocol::ChatChannelParty:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party", true));
+        tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATPARTY, "Party", true));
         break;
     case AB::GameProtocol::ChatChannelGuild:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild", true));
+        tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATGUILD, "Guild", true));
         break;
     case AB::GameProtocol::ChatChannelTrade:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade", true));
+        tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATTRADE, "Trade", true));
         break;
     case AB::GameProtocol::ChatChannelWhisper:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper", true));
+        tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATWHISPER, "Whisper", true));
         tabIndexWhisper_ = tabs->GetTabCount() - 1;
         break;
     default:
@@ -254,7 +253,7 @@ void ChatWindow::RegisterObject(Context* context)
 
 void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     AB::GameProtocol::ServerMessageType type =
         static_cast<AB::GameProtocol::ServerMessageType>(eventData[P_MESSAGETYPE].GetInt());
     switch (type)
@@ -323,7 +322,7 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectProgress;
+    using namespace Events::ObjectProgress;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(eventData[P_TYPE].GetUInt());
     switch (type)
@@ -366,14 +365,14 @@ void ChatWindow::HandleServerMessageUnknownCommand(VariantMap&)
 
 void ChatWindow::HandleServerMessageInfo(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     AddLine(message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     const String& sender = eventData[P_SENDER].GetString();
     unsigned p = message.Find(":");
@@ -390,7 +389,7 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     unsigned p = message.Find(":");
     String age = message.Substring(0, p);
@@ -420,7 +419,7 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "Health {{currHp}}/{{maxHp}}, Energy {{currE}}/{{maxE}}" };
     kainjow::mustache::data data;
@@ -447,7 +446,7 @@ void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "XP {{xp}}, Skill points {{sp}}" };
     kainjow::mustache::data data;
@@ -463,35 +462,35 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessagePos(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
     AddLine(message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& data = eventData[P_DATA].GetString();
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandlePlayerLoggedIn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerLoggedIn;
+    using namespace Events::PlayerLoggedIn;
     const String& sender = eventData[P_NAME].GetString();
     AddLine(sender, sender + " logged in.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerLoggedOut;
+    using namespace Events::PlayerLoggedOut;
     const String& sender = eventData[P_NAME].GetString();
     AddLine(sender, sender + " logged out.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
     const String& data = eventData[P_DATA].GetString();
     AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
@@ -499,7 +498,7 @@ void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "You got a new mail, total {{count}} mail(s)." };
     kainjow::mustache::data data;
@@ -508,14 +507,14 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 
     VariantMap& eData = GetEventDataMap();
-    using namespace AbEvents::NewMail;
+    using namespace Events::NewMail;
     eData[P_COUNT] = atoi(count.CString());
-    SendEvent(AbEvents::E_NEWMAIL, eData);
+    SendEvent(Events::E_NEWMAIL, eData);
 }
 
 void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
     kainjow::mustache::data data;
@@ -526,7 +525,7 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
     kainjow::mustache::data data;
@@ -537,7 +536,7 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
     kainjow::mustache::data data;
@@ -553,7 +552,7 @@ void ChatWindow::HandleServerMessageMailDeleted(VariantMap&)
 
 void ChatWindow::HandleChatMessage(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ChatMessage;
+    using namespace Events::ChatMessage;
     AB::GameProtocol::ChatMessageChannel channel =
         static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
     const String& message = eventData[P_DATA].GetString();
@@ -585,15 +584,15 @@ void ChatWindow::HandleNameClicked(StringHash, VariantMap& eventData)
     using namespace Click;
     Text* text = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
     const String& name = text->GetVar("Name").GetString();
-    using namespace AbEvents::WhisperTo;
+    using namespace Events::WhisperTo;
     VariantMap& e = GetEventDataMap();
     e[P_NAME] = name;
-    SendEvent(AbEvents::E_WHISPERTO, e);
+    SendEvent(Events::E_WHISPERTO, e);
 }
 
 void ChatWindow::HandleWhisperTo(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::WhisperTo;
+    using namespace Events::WhisperTo;
     const String& name = eventData[P_NAME].GetString();
     if (!name.Empty())
     {
@@ -617,14 +616,14 @@ void ChatWindow::HandleShortcutChatGuild(StringHash, VariantMap&)
 
 void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& id = eventData[P_DATA].GetString();
     AddLine(id, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& resigner = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "{{name}} has resigned" };
     kainjow::mustache::data data;
@@ -635,7 +634,7 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& instances = eventData[P_DATA].GetString();
     auto instVec = instances.Split(';');
     kainjow::mustache::mustache tpl{ "{{instance}}: {{name}} ({{game}})" };
@@ -656,7 +655,7 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();
     const String& message = eventData[P_DATA].GetString();
     AddLine(sender, message, "ChatLogServerInfoText");
@@ -664,7 +663,7 @@ void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
+    using namespace Events::ServerMessage;
     const String& data = eventData[P_DATA].GetString();
     AddLine("A Player with name " + data + " does not exist.", "ChatLogServerInfoText");
 }
@@ -689,7 +688,7 @@ void ChatWindow::HandleShortcutChatWhisper(StringHash, VariantMap&)
 
 void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyResigned;
+    using namespace Events::PartyResigned;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
     kainjow::mustache::mustache tpl{ "Party {{id}} has resigned" };
@@ -701,7 +700,7 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyDefeated;
+    using namespace Events::PartyDefeated;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
     kainjow::mustache::mustache tpl{ "Party {{id}} was defeated" };
@@ -713,7 +712,7 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectPingTarget;
+    using namespace Events::ObjectPingTarget;
     /*
     URHO3D_PARAM(P_OBJECTID, ObjectId);
     URHO3D_PARAM(P_TARGETID, TargetId);
@@ -758,7 +757,7 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectItemDropped;
+    using namespace Events::ObjectItemDropped;
     uint32_t dropperId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     uint32_t itemIndex = eventData[P_ITEMINDEX].GetUInt();
@@ -895,7 +894,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     case AB::GameProtocol::CommandTypeQuit:
     {
         VariantMap& e = GetEventDataMap();
-        SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
+        SendEvent(Events::E_SC_EXITPROGRAM, e);
         break;
     }
     case AB::GameProtocol::CommandTypeUnknown:
@@ -982,7 +981,7 @@ void ChatWindow::HandleFilterClick(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ScreenshotTaken;
+    using namespace Events::ScreenshotTaken;
     const String& file = eventData[P_FILENAME].GetString();
 
     kainjow::mustache::mustache tpl{ "Screenshot saved to {{file}}" };

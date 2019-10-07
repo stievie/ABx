@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "InventoryWindow.h"
 #include "Shortcuts.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #include "ItemsCache.h"
 #include "Item.h"
@@ -40,7 +39,7 @@ InventoryWindow::InventoryWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", true));
 
     Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
     moneyText->SetText("0 Drachma");
@@ -153,9 +152,9 @@ void InventoryWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(InventoryWindow, HandleCloseClicked));
-    SubscribeToEvent(AbEvents::E_INVENTORY, URHO3D_HANDLER(InventoryWindow, HandleInventory));
-    SubscribeToEvent(AbEvents::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemUpdate));
-    SubscribeToEvent(AbEvents::E_INVENTORYITEMDELETE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemRemove));
+    SubscribeToEvent(Events::E_INVENTORY, URHO3D_HANDLER(InventoryWindow, HandleInventory));
+    SubscribeToEvent(Events::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemUpdate));
+    SubscribeToEvent(Events::E_INVENTORYITEMDELETE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemRemove));
 }
 
 void InventoryWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -252,7 +251,7 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
 
 void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::InventoryItemUpdate;
+    using namespace Events::InventoryItemUpdate;
 
     FwClient* net = context_->GetSubsystem<FwClient>();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();
@@ -277,7 +276,7 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
 
 void InventoryWindow::HandleInventoryItemRemove(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::InventoryItemDelete;
+    using namespace Events::InventoryItemDelete;
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
     Client::InventoryItem item;
     item.type = AB::Entities::ItemTypeUnknown;

@@ -2,7 +2,6 @@
 
 // Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 
-#include "AbEvents.h"
 #include <AB/Entities/Game.h>
 
 using namespace Urho3D;

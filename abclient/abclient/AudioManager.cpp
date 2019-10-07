@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AudioManager.h"
-#include "AbEvents.h"
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 #include <AB/Entities/Music.h>
 
@@ -157,16 +156,16 @@ void AudioManager::PlaySound(const String& filename, const String& type)
 
 void AudioManager::SubscribeToEvents()
 {
-    SubscribeToEvent(AbEvents::E_AUDIOPLAY, URHO3D_HANDLER(AudioManager, HandleAudioPlay));
-    SubscribeToEvent(AbEvents::E_AUDIOSTOP, URHO3D_HANDLER(AudioManager, HandleAudioStop));
-    SubscribeToEvent(AbEvents::E_AUDIOSTOPALL, URHO3D_HANDLER(AudioManager, HandleAudioStopAll));
-    SubscribeToEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, URHO3D_HANDLER(AudioManager, HandlePlayMapMusic));
-    SubscribeToEvent(AbEvents::E_AUDIOPLAYMUSICSTYLE, URHO3D_HANDLER(AudioManager, HandlePlayMusicStyle));
+    SubscribeToEvent(Events::E_AUDIOPLAY, URHO3D_HANDLER(AudioManager, HandleAudioPlay));
+    SubscribeToEvent(Events::E_AUDIOSTOP, URHO3D_HANDLER(AudioManager, HandleAudioStop));
+    SubscribeToEvent(Events::E_AUDIOSTOPALL, URHO3D_HANDLER(AudioManager, HandleAudioStopAll));
+    SubscribeToEvent(Events::E_AUDIOPLAYMAPMUSIC, URHO3D_HANDLER(AudioManager, HandlePlayMapMusic));
+    SubscribeToEvent(Events::E_AUDIOPLAYMUSICSTYLE, URHO3D_HANDLER(AudioManager, HandlePlayMusicStyle));
 }
 
 void AudioManager::HandleAudioPlay(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::AudioPlay;
+    using namespace Events::AudioPlay;
     const String& name = eventData[P_NAME].GetString();
     const String& type = eventData[P_TYPE].GetString();
     PlaySound(name, type);
@@ -174,7 +173,7 @@ void AudioManager::HandleAudioPlay(StringHash, VariantMap& eventData)
 
 void AudioManager::HandleAudioStop(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::AudioStop;
+    using namespace Events::AudioStop;
     const String& name = eventData[P_NAME].GetString();
     const String& type = eventData[P_TYPE].GetString();
 
@@ -217,7 +216,7 @@ void AudioManager::HandleAudioStopAll(StringHash, VariantMap&)
 
 void AudioManager::HandlePlayMapMusic(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::AudioPlayMapMusic;
+    using namespace Events::AudioPlayMapMusic;
     const String& uuid = eventData[P_MAPUUID].GetString();
     SetMapPlayList(uuid);
     StartMusic();
@@ -225,7 +224,7 @@ void AudioManager::HandlePlayMapMusic(StringHash, VariantMap& eventData)
 
 void AudioManager::HandlePlayMusicStyle(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::AudioPlayMusicStyle;
+    using namespace Events::AudioPlayMusicStyle;
     AB::Entities::MusicStyle style = static_cast<AB::Entities::MusicStyle>(eventData[P_STYLE].GetUInt());
     if (style == AB::Entities::MusicStyleUnknown)
         return;

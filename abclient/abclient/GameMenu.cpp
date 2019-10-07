@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GameMenu.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #include "Shortcuts.h"
 
@@ -17,7 +16,7 @@ GameMenu::GameMenu(Context* context) :
     SetName("GameMenu");
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     CreateMenuBar();
-    SubscribeToEvent(AbEvents::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));
+    SubscribeToEvent(Events::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));
     SetAlignment(HA_LEFT, VA_TOP);
 }
 
@@ -40,41 +39,41 @@ void GameMenu::CreateMenuBar()
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_EXITPROGRAM, "Exit"),
-        scs->GetShortcutName(AbEvents::E_SC_EXITPROGRAM),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_EXITPROGRAM, "Exit"),
+        scs->GetShortcutName(Events::E_SC_EXITPROGRAM),
         URHO3D_HANDLER(GameMenu, HandleExitUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SHOWCREDITS, "Credits"),
-        scs->GetShortcutName(AbEvents::E_SC_SHOWCREDITS),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_SHOWCREDITS, "Credits"),
+        scs->GetShortcutName(Events::E_SC_SHOWCREDITS),
         URHO3D_HANDLER(GameMenu, HandleCreditsUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_LOGOUT, "Logout"),
-        scs->GetShortcutName(AbEvents::E_SC_LOGOUT),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_LOGOUT, "Logout"),
+        scs->GetShortcutName(Events::E_SC_LOGOUT),
         URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SELECTCHARACTER, "Select character"),
-        scs->GetShortcutName(AbEvents::E_SC_SELECTCHARACTER),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_SELECTCHARACTER, "Select character"),
+        scs->GetShortcutName(Events::E_SC_SELECTCHARACTER),
         URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
     serversMenu_ = CreateMenu(popup, "Server", ">");
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEOPTIONS),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEOPTIONS, "Options"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEOPTIONS),
         URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
     CreateSeparator(popup);
 
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAILWINDOW),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEMAILWINDOW, "Mail"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEMAILWINDOW),
         URHO3D_HANDLER(GameMenu, HandleMailUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEFRIENDLISTWINDOW),
         URHO3D_HANDLER(GameMenu, HandleFriendsUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEPARTYWINDOW),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEPARTYWINDOW, "Party"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEPARTYWINDOW),
         URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEMISSIONMAPWINDOW),
         URHO3D_HANDLER(GameMenu, HandleMissionMapUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAP, "Map"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAP),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEMAP, "Map"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEMAP),
         URHO3D_HANDLER(GameMenu, HandleMapUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, "Inventory"),
-        scs->GetShortcutName(AbEvents::E_SC_TOGGLEINVENTORYWINDOW),
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEINVENTORYWINDOW),
         URHO3D_HANDLER(GameMenu, HandleInventoryWindowUsed));
 
     popup->SetWidth(40);
@@ -138,14 +137,14 @@ void GameMenu::HandleExitUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
+    SendEvent(Events::E_SC_EXITPROGRAM, e);
 }
 
 void GameMenu::HandleCreditsUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_SHOWCREDITS, e);
+    SendEvent(Events::E_SC_SHOWCREDITS, e);
 }
 
 void GameMenu::HandleServerUsed(StringHash, VariantMap& eventData)
@@ -166,56 +165,56 @@ void GameMenu::HandleLogoutUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_LOGOUT, e);
+    SendEvent(Events::E_SC_LOGOUT, e);
 }
 
 void GameMenu::HandleSelectCharUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_SELECTCHARACTER, e);
+    SendEvent(Events::E_SC_SELECTCHARACTER, e);
 }
 
 void GameMenu::HandleOptionsUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEOPTIONS, e);
+    SendEvent(Events::E_SC_TOGGLEOPTIONS, e);
 }
 
 void GameMenu::HandleMailUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLEMAILWINDOW, e);
 }
 
 void GameMenu::HandlePartyWindowUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW , e);
+    SendEvent(Events::E_SC_TOGGLEPARTYWINDOW , e);
 }
 
 void GameMenu::HandleInventoryWindowUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, e);
 }
 
 void GameMenu::HandleMapUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEMAP, e);
+    SendEvent(Events::E_SC_TOGGLEMAP, e);
 }
 
 void GameMenu::HandleMissionMapUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLEMISSIONMAPWINDOW, e);
 }
 
 void GameMenu::HandleGotServices(StringHash, VariantMap&)
@@ -227,7 +226,7 @@ void GameMenu::HandleFriendsUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, e);
 }
 
 void GameMenu::UpdateServers()

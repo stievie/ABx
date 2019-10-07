@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MailWindow.h"
 #include "Shortcuts.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -48,7 +47,7 @@ MailWindow::MailWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEMAILWINDOW, "Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();
@@ -87,8 +86,8 @@ void MailWindow::SubscribeToEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleCloseClicked));
-    SubscribeToEvent(AbEvents::E_MAILINBOX, URHO3D_HANDLER(MailWindow, HandleMailInboxMessage));
-    SubscribeToEvent(AbEvents::E_MAILREAD, URHO3D_HANDLER(MailWindow, HandleMailReadMessage));
+    SubscribeToEvent(Events::E_MAILINBOX, URHO3D_HANDLER(MailWindow, HandleMailInboxMessage));
+    SubscribeToEvent(Events::E_MAILREAD, URHO3D_HANDLER(MailWindow, HandleMailReadMessage));
     Button* newButton = dynamic_cast<Button*>(GetChild("NewMailButton", true));
     SubscribeToEvent(newButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleNewClicked));
     Button* deleteButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
@@ -97,7 +96,7 @@ void MailWindow::SubscribeToEvents()
     SubscribeToEvent(replyButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleReplyClicked));
     SubscribeToEvent(mailList_, E_ITEMSELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
     SubscribeToEvent(mailList_, E_ITEMDESELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
-    SubscribeToEvent(AbEvents::E_NEWMAIL, URHO3D_HANDLER(MailWindow, HandleNewMail));
+    SubscribeToEvent(Events::E_NEWMAIL, URHO3D_HANDLER(MailWindow, HandleNewMail));
 }
 
 void MailWindow::AddItem(const String& text, const String& style, const AB::Entities::MailHeader& header)
@@ -151,7 +150,7 @@ void MailWindow::HandleMailReadMessage(StringHash, VariantMap&)
 void MailWindow::HandleNewClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
-    SendEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLENEWMAILWINDOW, e);
 }
 
 void MailWindow::HandleReplyClicked(StringHash, VariantMap&)
@@ -161,11 +160,11 @@ void MailWindow::HandleReplyClicked(StringHash, VariantMap&)
     {
         String from = sel->GetVar("From Name").GetString();
         String subject = sel->GetVar("Subject").GetString();
-        using namespace AbEvents::ReplyMail;
+        using namespace Events::ReplyMail;
         VariantMap& e = GetEventDataMap();
         e[P_RECIPIENT] = from;
         e[P_SUBJECT] = subject;
-        SendEvent(AbEvents::E_SC_REPLYMAIL, e);
+        SendEvent(Events::E_SC_REPLYMAIL, e);
     }
 }
 

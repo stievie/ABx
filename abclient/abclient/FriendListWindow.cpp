@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "FriendListWindow.h"
 #include "Shortcuts.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 
 void FriendListWindow::RegisterObject(Context* context)
@@ -36,7 +35,7 @@ FriendListWindow::FriendListWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends", true));
 
     friendList_ = dynamic_cast<ListView*>(GetChild("FriendListView", true));
     ignoreList_ = dynamic_cast<ListView*>(GetChild("IgnoreListView", true));
@@ -134,12 +133,12 @@ void FriendListWindow::SubscribeEvents()
     Button* addIgnoreButton = dynamic_cast<Button*>(GetChild("AddIgnoredButton", true));
     SubscribeToEvent(addIgnoreButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddIgnoreClicked));
 
-    SubscribeToEvent(AbEvents::E_GOT_PLAYERINFO, URHO3D_HANDLER(FriendListWindow, HandleGotPlayerInfo));
-    SubscribeToEvent(AbEvents::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
-    SubscribeToEvent(AbEvents::E_FRIENDADDED, URHO3D_HANDLER(FriendListWindow, HandleFriendAdded));
-    SubscribeToEvent(AbEvents::E_FRIENDREMOVED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoved));
-    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedOut));
-    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedIn));
+    SubscribeToEvent(Events::E_GOT_PLAYERINFO, URHO3D_HANDLER(FriendListWindow, HandleGotPlayerInfo));
+    SubscribeToEvent(Events::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
+    SubscribeToEvent(Events::E_FRIENDADDED, URHO3D_HANDLER(FriendListWindow, HandleFriendAdded));
+    SubscribeToEvent(Events::E_FRIENDREMOVED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoved));
+    SubscribeToEvent(Events::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedOut));
+    SubscribeToEvent(Events::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedIn));
 }
 
 void FriendListWindow::HandleGotFriendList(StringHash, VariantMap&)
@@ -162,7 +161,7 @@ void FriendListWindow::UpdateAll()
 
 void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::FriendAdded;
+    using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     Client::RelatedAccount::Releation rel = static_cast<Client::RelatedAccount::Releation>(eventData[P_RELATION].GetUInt());
     const String name = "ListViewItem_" + uuid;
@@ -201,10 +200,10 @@ void FriendListWindow::HandleFriendWhisperClicked(StringHash, VariantMap& eventD
         return;
     const String& name = friendPopup_->GetVar("CharacterName").GetString();
 
-    using namespace AbEvents::WhisperTo;
+    using namespace Events::WhisperTo;
     VariantMap& e = GetEventDataMap();
     e[P_NAME] = name;
-    SendEvent(AbEvents::E_WHISPERTO, e);
+    SendEvent(Events::E_WHISPERTO, e);
 }
 
 void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData)
@@ -228,7 +227,7 @@ void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData
 void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
 {
     addFriendEdit_->SetText("");
-    using namespace AbEvents::FriendAdded;
+    using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     auto* client = GetSubsystem<FwClient>();
     client->GetPlayerInfoByAccount(std::string(uuid.CString()));
@@ -264,7 +263,7 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
 
 void FriendListWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerLoggedOut;
+    using namespace Events::PlayerLoggedOut;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     auto* client = GetSubsystem<FwClient>();
     auto* acc = client->GetRelatedAccount(uuid);
@@ -279,7 +278,7 @@ void FriendListWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
 
 void FriendListWindow::HandlePlayerLoggedIn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerLoggedIn;
+    using namespace Events::PlayerLoggedIn;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     auto* client = GetSubsystem<FwClient>();
     auto* acc = client->GetRelatedAccount(uuid);
@@ -317,7 +316,7 @@ void FriendListWindow::HandleAddIgnoreClicked(StringHash, VariantMap&)
 
 void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::GotPlayerInfo;
+    using namespace Events::GotPlayerInfo;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
         auto* client = GetSubsystem<FwClient>();
     auto* acc = client->GetRelatedAccount(uuid);

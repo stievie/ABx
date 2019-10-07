@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "OptionsWindow.h"
-#include "AbEvents.h"
 #include "Options.h"
 #include "HotkeyEdit.h"
 #include "LevelManager.h"
@@ -22,7 +21,7 @@ OptionsWindow::OptionsWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* titleText = dynamic_cast<Text*>(GetChild("TitleText", true));
-    titleText->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options", true));
+    titleText->SetText(scs->GetCaption(Events::E_SC_TOGGLEOPTIONS, "Options", true));
     SetBringToFront(true);
     SetBringToBack(true);
 

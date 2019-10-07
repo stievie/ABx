@@ -15,7 +15,7 @@ LevelManager::LevelManager(Context* context) :
     fadeWindow_(nullptr)
 {
     // Listen to set level event
-    SubscribeToEvent(AbEvents::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
+    SubscribeToEvent(Events::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
 }
 
 LevelManager::~LevelManager()
@@ -105,7 +105,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         // Create new level
         lastLevelName_ = levelName_;
         VariantMap& levelData = levelQueue_.Front();
-        using namespace AbEvents::SetLevel;
+        using namespace Events::SetLevel;
         levelName_ = levelData[P_NAME].GetString();
         mapUuid_ = levelData[P_MAPUUID].GetString();
         const String& instanceUuid = levelData[P_INSTANCEUUID].GetString();

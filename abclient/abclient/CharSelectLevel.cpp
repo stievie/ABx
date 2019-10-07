@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
-#include "AbEvents.h"
 #include "AudioManager.h"
 
 //#include <Urho3D/DebugNew.h>
@@ -142,10 +141,10 @@ void CharSelectLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    using namespace AbEvents::AudioPlayMapMusic;
+    using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = "SelectCharacter";
-    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
+    SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
@@ -161,17 +160,17 @@ void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
 void CharSelectLevel::HandleCreateCharClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "CharCreateLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void CharSelectLevel::HandleBackClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "LoginLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)

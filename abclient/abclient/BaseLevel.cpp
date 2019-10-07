@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BaseLevel.h"
-#include "AbEvents.h"
 #include "LevelManager.h"
 #include <Urho3D/UI/MessageBox.h>
 #include "FwClient.h"
@@ -119,9 +118,9 @@ void BaseLevel::OnProtocolError(uint8_t err)
     {
         // Expired/invalid token -> re-login
         VariantMap& e = GetEventDataMap();
-        using namespace AbEvents::SetLevel;
+        using namespace Events::SetLevel;
         e[P_NAME] = "LoginLevel";
-        SendEvent(AbEvents::E_SETLEVEL, e);
+        SendEvent(Events::E_SETLEVEL, e);
         return;
     }
 

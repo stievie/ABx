@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "ClientApp.h"
-#include "AbEvents.h"
 #include "LoginLevel.h"
 #include "OutpostLevel.h"
 #include "PvpCombatLevel.h"
@@ -178,13 +177,13 @@ ClientApp::ClientApp(Context* context) :
     InventoryWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLECONSOLE, URHO3D_HANDLER(ClientApp, HandleToggleConsole));
+    SubscribeToEvent(Events::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));
+    SubscribeToEvent(Events::E_SC_TOGGLECONSOLE, URHO3D_HANDLER(ClientApp, HandleToggleConsole));
 #endif
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
-    SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
-    SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMUTEAUDIO, URHO3D_HANDLER(ClientApp, HandleToggleMuteAudio));
+    SubscribeToEvent(Events::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
+    SubscribeToEvent(Events::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
+    SubscribeToEvent(Events::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
+    SubscribeToEvent(Events::E_SC_TOGGLEMUTEAUDIO, URHO3D_HANDLER(ClientApp, HandleToggleMuteAudio));
 }
 
 /**
@@ -365,9 +364,9 @@ void ClientApp::SwitchScene(const String& sceneName)
 {
     // Switch level
     VariantMap& eventData = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     eventData[P_NAME] = sceneName;
-    SendEvent(AbEvents::E_SETLEVEL, eventData);
+    SendEvent(Events::E_SETLEVEL, eventData);
 }
 
 #ifdef DEBUG_HUD
@@ -421,10 +420,10 @@ void ClientApp::HandleTakeScreenshot(StringHash, VariantMap&)
     String file = path + "fw" + String(chr) + ".png";
     image.SavePNG(file);
 
-    using namespace AbEvents::ScreenshotTaken;
+    using namespace Events::ScreenshotTaken;
     VariantMap& e = GetEventDataMap();
     e[P_FILENAME] = file;
-    SendEvent(AbEvents::E_SCREENSHOTTAKEN, e);
+    SendEvent(Events::E_SCREENSHOTTAKEN, e);
 }
 
 void ClientApp::HandleExitProgram(StringHash, VariantMap&)

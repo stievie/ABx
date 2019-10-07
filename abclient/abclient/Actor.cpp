@@ -31,13 +31,13 @@ Actor::Actor(Context* context) :
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_UPDATE);
-    SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
-    SubscribeToEvent(AbEvents::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
-    SubscribeToEvent(AbEvents::E_OBJECTENDUSESKILL, URHO3D_HANDLER(Actor, HandleEndSkillUse));
-    SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
-    SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(Actor, HandlePartyAdded));
-    SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
-    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
+    SubscribeToEvent(Events::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
+    SubscribeToEvent(Events::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
+    SubscribeToEvent(Events::E_OBJECTENDUSESKILL, URHO3D_HANDLER(Actor, HandleEndSkillUse));
+    SubscribeToEvent(Events::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
+    SubscribeToEvent(Events::E_PARTYADDED, URHO3D_HANDLER(Actor, HandlePartyAdded));
+    SubscribeToEvent(Events::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
+    SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
 }
 
 Actor::~Actor()
@@ -333,7 +333,7 @@ void Actor::Update(float timeStep)
     IntVector2 screenPos = WorldToScreenPoint(pos);
     IntVector2 hpTop = WorldToScreenPoint(headPos);
 
-    bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
+    bool highlight = sc->Test(Events::E_SC_HIGHLIGHTOBJECTS);
     if (hovered_ || playerSelected_ || highlight || IsSpeechBubbleVisible())
     {
         float sizeFac = 1.0f;
@@ -638,9 +638,9 @@ void Actor::HandleNameClicked(StringHash, VariantMap&)
     if (nameLabel_->IsVisible())
     {
         VariantMap& eData = GetEventDataMap();
-        using namespace AbEvents::ActorNameClicked;
+        using namespace Events::ActorNameClicked;
         eData[P_SOURCEID] = id_;
-        SendEvent(AbEvents::E_ACTORNAMECLICKED, eData);
+        SendEvent(Events::E_ACTORNAMECLICKED, eData);
     }
 }
 
@@ -691,7 +691,7 @@ void Actor::HideSpeechBubble()
 
 void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ChatMessage;
+    using namespace Events::ChatMessage;
     uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
     if (senderId != id_)
         return;
@@ -708,7 +708,7 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
 
 void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectUseSkill;
+    using namespace Events::ObjectUseSkill;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
     if (id != id_)
         return;
@@ -730,7 +730,7 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
 
 void Actor::HandleEndSkillUse(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectEndUseSkill;
+    using namespace Events::ObjectEndUseSkill;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
     if (id != id_)
         return;
@@ -748,7 +748,7 @@ void Actor::HandleEndSkillUse(StringHash, VariantMap& eventData)
 
 void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectEffectAdded;
+    using namespace Events::ObjectEffectAdded;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
     if (id != id_)
         return;
@@ -768,7 +768,7 @@ void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
 
 void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectItemDropped;
+    using namespace Events::ObjectItemDropped;
     uint32_t itemId = eventData[P_ITEMID].GetUInt();
     if (itemId == id_)
     {
@@ -1126,7 +1126,7 @@ String Actor::GetClassLevelName() const
 
 void Actor::HandlePartyAdded(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyAdded;
+    using namespace Events::PartyAdded;
     uint32_t targetId = eventData[P_PLAYERID].GetUInt(); // Actor
     if (targetId == id_)
     {
@@ -1136,7 +1136,7 @@ void Actor::HandlePartyAdded(StringHash, VariantMap& eventData)
 
 void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyRemoved;
+    using namespace Events::PartyRemoved;
     uint32_t targetId = eventData[P_TARGETID].GetUInt(); // Actor
     if (targetId == id_)
     {

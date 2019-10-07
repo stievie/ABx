@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MissionMapWindow.h"
 #include "Shortcuts.h"
-#include "AbEvents.h"
 #include "LevelManager.h"
 #include "Player.h"
 
@@ -38,7 +37,7 @@ MissionMapWindow::MissionMapWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", true));
 
     SetSize(300, 300);
     auto* graphics = GetSubsystem<Graphics>();

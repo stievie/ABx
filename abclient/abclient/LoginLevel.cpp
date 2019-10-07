@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LoginLevel.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #include "Options.h"
 #include <AB/Entities/Limits.h>
@@ -208,9 +207,9 @@ void LoginLevel::HandleLoginClicked(StringHash, VariantMap&)
 void LoginLevel::HandleCreateAccountClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "CreateAccountLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void LoginLevel::SubscribeToEvents()

@@ -21,9 +21,6 @@
     <ClInclude Include="LevelManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AbEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -187,6 +184,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FormatText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShortcutEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InternalEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

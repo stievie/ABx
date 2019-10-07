@@ -327,7 +327,7 @@
     <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
-    <ClInclude Include="AbEvents.h" />
+    <ClInclude Include="InternalEvents.h" />
     <ClInclude Include="BaseLevel.h" />
     <ClInclude Include="ClientPrediction.h" />
     <ClInclude Include="Config.h" />
@@ -368,6 +368,8 @@
     <ClInclude Include="PostProcessController.h" />
     <ClInclude Include="PvpCombatLevel.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ServerEvents.h" />
+    <ClInclude Include="ShortcutEvents.h" />
     <ClInclude Include="Shortcuts.h" />
     <ClInclude Include="SkillBarWindow.h" />
     <ClInclude Include="SkillManager.h" />

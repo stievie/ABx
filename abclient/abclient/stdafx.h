@@ -63,3 +63,7 @@
 #elif defined(__GCC__)
 #pragma GCC diagnostic pop
 #endif
+
+#include "InternalEvents.h"
+#include "ShortcutEvents.h"
+#include "ServerEvents.h"

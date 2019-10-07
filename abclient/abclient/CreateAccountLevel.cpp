@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CreateAccountLevel.h"
-#include "AbEvents.h"
 #include "FwClient.h"
 #include <AB/Entities/Limits.h>
 #include "AudioManager.h"
@@ -93,9 +92,9 @@ void CreateAccountLevel::DoCreateAccount()
 void CreateAccountLevel::DoCancel()
 {
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "LoginLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void CreateAccountLevel::CreateScene()
@@ -105,10 +104,10 @@ void CreateAccountLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateAccount.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    using namespace AbEvents::AudioPlayMapMusic;
+    using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = "CreateAccount";
-    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
+    SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CreateAccountLevel::CreateCamera()

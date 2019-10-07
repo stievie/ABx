@@ -3,7 +3,6 @@
 #include "FwClient.h"
 #include "MathUtils.h"
 #include "Options.h"
-#include "AbEvents.h"
 #include "Shortcuts.h"
 #include "WindowManager.h"
 #include "SkillBarWindow.h"
@@ -19,8 +18,8 @@ Player::Player(Context* context) :
     Actor(context)
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
-    SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
-    SubscribeToEvent(AbEvents::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
+    SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
+    SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     FwClient* cli = GetSubsystem<FwClient>();
     cli->UnsubscribeUpdate();
 }
@@ -271,7 +270,7 @@ void Player::PostUpdate(float timeStep)
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
     float yaw = controls_.yaw_;
-    if (scs->Test(AbEvents::E_SC_REVERSECAMERA))
+    if (scs->Test(Events::E_SC_REVERSECAMERA))
         yaw += 180.0f;
     // Get camera look at dir from character yaw + pitch
     Quaternion rot = Quaternion(yaw, Vector3::UP);
@@ -327,7 +326,7 @@ void Player::PostUpdate(float timeStep)
 
 void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ActorNameClicked;
+    using namespace Events::ActorNameClicked;
     uint32_t id = eventData[P_SOURCEID].GetUInt();
     if (id != id_)
     {

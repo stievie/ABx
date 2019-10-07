@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "PartyWindow.h"
-#include "AbEvents.h"
 #include "WorldLevel.h"
 #include "LevelManager.h"
 #include "FwClient.h"
@@ -420,7 +419,7 @@ void PartyWindow::HandleLeaveButtonClicked(StringHash, VariantMap&)
 void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
 {
     // An object was selected in the world
-    using namespace AbEvents::ObjectSelected;
+    using namespace Events::ObjectSelected;
     uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
     if (auto p = player_.Lock())
     {
@@ -460,7 +459,7 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
     // The leader invited someone
     if (mode_ != PartyWindowMode::ModeOutpost)
         return;
-    using namespace AbEvents::PartyInvited;
+    using namespace Events::PartyInvited;
     uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
@@ -491,7 +490,7 @@ URHO3D_PARAM(P_LEADERID, LeaderId);     // unit32_t
 URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 */
     // A player accepted
-    using namespace AbEvents::PartyAdded;
+    using namespace Events::PartyAdded;
     uint32_t actorId = eventData[P_PLAYERID].GetUInt();
     uint32_t leaderId = eventData[P_LEADERID].GetUInt();
     if (leaderId != 0)
@@ -523,7 +522,7 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 
 void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyInviteRemoved;
+    using namespace Events::PartyInviteRemoved;
 /*
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
@@ -551,7 +550,7 @@ void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
 void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
     // Party member was removed
-    using namespace AbEvents::PartyRemoved;
+    using namespace Events::PartyRemoved;
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
     GameObject* o = lm->GetObjectById(targetId);
@@ -593,7 +592,7 @@ void PartyWindow::HandleActorDoubleClicked(StringHash, VariantMap& eventData)
     {
         // Should be selected in Click
         VariantMap& e = GetEventDataMap();
-        SendEvent(AbEvents::E_SC_DEFAULTACTION, e);
+        SendEvent(Events::E_SC_DEFAULTACTION, e);
     }
 }
 
@@ -638,14 +637,14 @@ void PartyWindow::HandleKickClicked(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandleObjectDespawn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectDespawn;
+    using namespace Events::ObjectDespawn;
     uint32_t objectId = eventData[P_OBJECTID].GetInt();
     RemoveActor(objectId);
 }
 
 void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PartyInfoMembers;
+    using namespace Events::PartyInfoMembers;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
     VariantVector members = eventData[P_MEMBERS].GetVariantVector();
     if (members_.Size() != 0)
@@ -685,7 +684,7 @@ void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
 
 void PartyWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectPingTarget;
+    using namespace Events::ObjectPingTarget;
 //    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
 //    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
@@ -709,23 +708,23 @@ void PartyWindow::SubscribeEvents()
     Button* leaveButton = dynamic_cast<Button*>(GetChild("LeaveButton", true));
     SubscribeToEvent(leaveButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleLeaveButtonClicked));
 
-    SubscribeToEvent(AbEvents::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
-    SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
-    SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
-    SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(PartyWindow, HandlePartyAdded));
-    SubscribeToEvent(AbEvents::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
-    SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
-    SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
-    SubscribeToEvent(AbEvents::E_PARTYINFOMEMBERS, URHO3D_HANDLER(PartyWindow, HandlePartyInfoMembers));
-    SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(PartyWindow, HandleTargetPinged));
-    SubscribeToEvent(AbEvents::E_SC_SELECTTARGET, URHO3D_HANDLER(PartyWindow, HandleSelectTarget));
+    SubscribeToEvent(Events::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
+    SubscribeToEvent(Events::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
+    SubscribeToEvent(Events::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
+    SubscribeToEvent(Events::E_PARTYADDED, URHO3D_HANDLER(PartyWindow, HandlePartyAdded));
+    SubscribeToEvent(Events::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
+    SubscribeToEvent(Events::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
+    SubscribeToEvent(Events::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
+    SubscribeToEvent(Events::E_PARTYINFOMEMBERS, URHO3D_HANDLER(PartyWindow, HandlePartyInfoMembers));
+    SubscribeToEvent(Events::E_OBJECTPINGTARGET, URHO3D_HANDLER(PartyWindow, HandleTargetPinged));
+    SubscribeToEvent(Events::E_SC_SELECTTARGET, URHO3D_HANDLER(PartyWindow, HandleSelectTarget));
 }
 
 void PartyWindow::UpdateCaption()
 {
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
-    String s(scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", true));
+    String s(scs->GetCaption(Events::E_SC_TOGGLEPARTYWINDOW, "Party", true));
     if (mode_ == PartyWindowMode::ModeOutpost)
         s += "  " + String(members_.Size()) + "/" + String(static_cast<int>(partySize_));
     caption->SetText(s);

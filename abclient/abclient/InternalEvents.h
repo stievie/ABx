@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config.h"
-
 using namespace Urho3D;
 
 /// Client internal events

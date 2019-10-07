@@ -2,7 +2,8 @@
 #include "WorldLevel.h"
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
-#include "AbEvents.h"
+#include "InternalEvents.h"
+#include "ServerEvents.h"
 #include "FwClient.h"
 #include "LevelManager.h"
 #include "MathUtils.h"
@@ -14,6 +15,7 @@
 #include "GameMessagesWindow.h"
 #include "AudioManager.h"
 #include "CreditsWindow.h"
+#include "ShortcutEvents.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -34,58 +36,58 @@ void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
 
-    SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(WorldLevel, HandleLevelReady));
+    SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(WorldLevel, HandleLevelReady));
 
-    SubscribeToEvent(AbEvents::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
-    SubscribeToEvent(AbEvents::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
-    SubscribeToEvent(AbEvents::E_OBJECTSPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
-    SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
-    SubscribeToEvent(AbEvents::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECTSETPOSITION, URHO3D_HANDLER(WorldLevel, HandleObjectSetPosition));
-    SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
-    SubscribeToEvent(AbEvents::E_OBJECTSPEEDUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectSpeedUpdate));
-    SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
-    SubscribeToEvent(AbEvents::E_ATTACKFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectAttackFailure));
-    SubscribeToEvent(AbEvents::E_PLAYERERROR, URHO3D_HANDLER(WorldLevel, HandlePlayerError));
-    SubscribeToEvent(AbEvents::E_PLAYERAUTORUN, URHO3D_HANDLER(WorldLevel, HandlePlayerAutorun));
-    SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
-    SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
-    SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
-    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
-    SubscribeToEvent(AbEvents::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
+    SubscribeToEvent(Events::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
+    SubscribeToEvent(Events::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
+    SubscribeToEvent(Events::E_OBJECTSPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
+    SubscribeToEvent(Events::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
+    SubscribeToEvent(Events::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
+    SubscribeToEvent(Events::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
+    SubscribeToEvent(Events::E_OBJECTSETPOSITION, URHO3D_HANDLER(WorldLevel, HandleObjectSetPosition));
+    SubscribeToEvent(Events::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
+    SubscribeToEvent(Events::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(Events::E_OBJECTSPEEDUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectSpeedUpdate));
+    SubscribeToEvent(Events::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
+    SubscribeToEvent(Events::E_ATTACKFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectAttackFailure));
+    SubscribeToEvent(Events::E_PLAYERERROR, URHO3D_HANDLER(WorldLevel, HandlePlayerError));
+    SubscribeToEvent(Events::E_PLAYERAUTORUN, URHO3D_HANDLER(WorldLevel, HandlePlayerAutorun));
+    SubscribeToEvent(Events::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
+    SubscribeToEvent(Events::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
+    SubscribeToEvent(Events::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
+    SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
+    SubscribeToEvent(Events::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
 
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
-    SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
-    SubscribeToEvent(AbEvents::E_SC_HIDEUI, URHO3D_HANDLER(WorldLevel, HandleHideUI));
-    SubscribeToEvent(AbEvents::E_SC_KEEPRUNNING, URHO3D_HANDLER(WorldLevel, HandleKeepRunning));
-    SubscribeToEvent(AbEvents::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
-    SubscribeToEvent(AbEvents::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
-    SubscribeToEvent(AbEvents::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
-    SubscribeToEvent(AbEvents::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
+    SubscribeToEvent(Events::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
+    SubscribeToEvent(Events::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
+    SubscribeToEvent(Events::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
+    SubscribeToEvent(Events::E_SC_HIDEUI, URHO3D_HANDLER(WorldLevel, HandleHideUI));
+    SubscribeToEvent(Events::E_SC_KEEPRUNNING, URHO3D_HANDLER(WorldLevel, HandleKeepRunning));
+    SubscribeToEvent(Events::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
+    SubscribeToEvent(Events::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
+    SubscribeToEvent(Events::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
+    SubscribeToEvent(Events::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
+    SubscribeToEvent(Events::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
+    SubscribeToEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
+    SubscribeToEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
+    SubscribeToEvent(Events::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
     SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
 
-    SubscribeToEvent(AbEvents::E_SC_USESKILL1, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL2, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL3, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL4, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL5, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL6, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL7, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
-    SubscribeToEvent(AbEvents::E_SC_USESKILL8, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL1, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL2, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL3, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL4, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL5, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL6, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL7, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(Events::E_SC_USESKILL8, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
 
-    SubscribeToEvent(AbEvents::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
+    SubscribeToEvent(Events::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
 }
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
@@ -146,7 +148,7 @@ void WorldLevel::HandleServerJoinedLeft(StringHash, VariantMap&)
 {
     // Tell GameMenu to update servers
     VariantMap& eData = GetEventDataMap();
-    SendEvent(AbEvents::E_GOTSERVICES, eData);
+    SendEvent(Events::E_GOTSERVICES, eData);
 }
 
 void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
@@ -282,27 +284,27 @@ void WorldLevel::Update(StringHash, VariantMap&)
         CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
 
     // Update controls using keys
-    if (sc->Test(AbEvents::E_SC_MOVEFORWARD))
+    if (sc->Test(Events::E_SC_MOVEFORWARD))
     {
         player_->controls_.Set(CTRL_MOVE_FORWARD, true);
-        if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+        if (!sc->Test(Events::E_SC_KEEPRUNNING))
             player_->controls_.Set(CTRL_MOVE_LOCK, false);
     }
-    if (sc->Test(AbEvents::E_SC_MOVEBACKWARD))
+    if (sc->Test(Events::E_SC_MOVEBACKWARD))
     {
         player_->controls_.Set(CTRL_MOVE_BACK, true);
-        if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+        if (!sc->Test(Events::E_SC_KEEPRUNNING))
             player_->controls_.Set(CTRL_MOVE_LOCK, false);
     }
-    player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(AbEvents::E_SC_MOVELEFT));
-    player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(AbEvents::E_SC_MOVERIGHT));
+    player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(Events::E_SC_MOVELEFT));
+    player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(Events::E_SC_MOVERIGHT));
 
-    if (sc->Test(AbEvents::E_SC_MOUSELOOK))
+    if (sc->Test(Events::E_SC_MOUSELOOK))
     {
         player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
-            sc->Test(AbEvents::E_SC_TURNLEFT));
+            sc->Test(Events::E_SC_TURNLEFT));
         player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
-            sc->Test(AbEvents::E_SC_TURNRIGHT));
+            sc->Test(Events::E_SC_TURNRIGHT));
 
         Input* input = GetSubsystem<Input>();
         player_->controls_.yaw_ += (float)input->GetMouseMoveX() * op->mouseSensitivity_;
@@ -310,8 +312,8 @@ void WorldLevel::Update(StringHash, VariantMap&)
     }
     else
     {
-        player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(AbEvents::E_SC_TURNLEFT));
-        player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(AbEvents::E_SC_TURNRIGHT));
+        player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(Events::E_SC_TURNLEFT));
+        player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(Events::E_SC_TURNRIGHT));
     }
 
     // Limit pitch
@@ -338,10 +340,10 @@ void WorldLevel::CreateScene()
     if (navMesh)
         navMesh->Build();
 
-    using namespace AbEvents::AudioPlayMapMusic;
+    using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = mapUuid_;
-    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
+    SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
@@ -351,7 +353,7 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 
 void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectSpawn;
+    using namespace Events::ObjectSpawn;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     if (objects_.Contains(objectId))
         return;
@@ -459,7 +461,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
 
 void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectDespawn;
+    using namespace Events::ObjectDespawn;
     uint32_t objectId = eventData[P_OBJECTID].GetInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -485,7 +487,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectPosUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectPosUpdate;
+    using namespace Events::ObjectPosUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -498,7 +500,7 @@ void WorldLevel::HandleObjectPosUpdate(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectRotUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectRotUpdate;
+    using namespace Events::ObjectRotUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -514,7 +516,7 @@ void WorldLevel::HandleObjectRotUpdate(StringHash, VariantMap& eventData)
 void WorldLevel::HandleObjectSetPosition(StringHash, VariantMap& eventData)
 {
     // Force update position
-    using namespace AbEvents::ObjectSetPosition;
+    using namespace Events::ObjectSetPosition;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -527,7 +529,7 @@ void WorldLevel::HandleObjectSetPosition(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectStateUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectStateUpdate;
+    using namespace Events::ObjectStateUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -540,7 +542,7 @@ void WorldLevel::HandleObjectStateUpdate(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectSpeedUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectSpeedUpdate;
+    using namespace Events::ObjectSpeedUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -552,7 +554,7 @@ void WorldLevel::HandleObjectSpeedUpdate(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectSelected;
+    using namespace Events::ObjectSelected;
     uint32_t objectId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     GameObject* object = objects_[objectId];
@@ -590,7 +592,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::SkillFailure;
+    using namespace Events::SkillFailure;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -612,7 +614,7 @@ void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectAttackFailure(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::AttackFailure;
+    using namespace Events::AttackFailure;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -634,7 +636,7 @@ void WorldLevel::HandleObjectAttackFailure(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandlePlayerError(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerError;
+    using namespace Events::PlayerError;
     AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(eventData[P_ERROR].GetUInt());
     if (error == AB::GameProtocol::PlayerErrorNone)
         return;
@@ -649,7 +651,7 @@ void WorldLevel::HandlePlayerError(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandlePlayerAutorun(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::PlayerAutorun;
+    using namespace Events::PlayerAutorun;
     bool autorun = eventData[P_AUTORUN].GetBool();
     if (player_)
         player_->autoRun_ = autorun;
@@ -657,7 +659,7 @@ void WorldLevel::HandlePlayerAutorun(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectEffectAdded(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectEffectAdded;
+    using namespace Events::ObjectEffectAdded;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -677,7 +679,7 @@ void WorldLevel::HandleObjectEffectAdded(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectEffectRemoved(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectEffectRemoved;
+    using namespace Events::ObjectEffectRemoved;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
@@ -695,7 +697,7 @@ void WorldLevel::HandleObjectEffectRemoved(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectResourceChanged;
+    using namespace Events::ObjectResourceChanged;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(eventData[P_RESTYPE].GetUInt());
     int32_t value = eventData[P_VALUE].GetUInt();
@@ -720,9 +722,9 @@ void WorldLevel::HandleLogout(StringHash, VariantMap&)
     net->PartyLeave();
     net->Logout();
     VariantMap& e = GetEventDataMap();
-    using namespace AbEvents::SetLevel;
+    using namespace Events::SetLevel;
     e[P_NAME] = "LoginLevel";
-    SendEvent(AbEvents::E_SETLEVEL, e);
+    SendEvent(Events::E_SETLEVEL, e);
 }
 
 void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
@@ -822,7 +824,7 @@ void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
-    using namespace AbEvents::ReplyMail;
+    using namespace Events::ReplyMail;
     wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
     const String& subj = eventData[P_SUBJECT].GetString();
     if (!subj.StartsWith("Re: "))
@@ -869,21 +871,21 @@ void WorldLevel::HandleUseSkill(StringHash eventType, VariantMap&)
 {
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t index = 0;
-    if (eventType == AbEvents::E_SC_USESKILL1)
+    if (eventType == Events::E_SC_USESKILL1)
         index = 1;
-    else if (eventType == AbEvents::E_SC_USESKILL2)
+    else if (eventType == Events::E_SC_USESKILL2)
         index = 2;
-    else if (eventType == AbEvents::E_SC_USESKILL3)
+    else if (eventType == Events::E_SC_USESKILL3)
         index = 3;
-    else if (eventType == AbEvents::E_SC_USESKILL4)
+    else if (eventType == Events::E_SC_USESKILL4)
         index = 4;
-    else if (eventType == AbEvents::E_SC_USESKILL5)
+    else if (eventType == Events::E_SC_USESKILL5)
         index = 5;
-    else if (eventType == AbEvents::E_SC_USESKILL6)
+    else if (eventType == Events::E_SC_USESKILL6)
         index = 6;
-    else if (eventType == AbEvents::E_SC_USESKILL7)
+    else if (eventType == Events::E_SC_USESKILL7)
         index = 7;
-    else if (eventType == AbEvents::E_SC_USESKILL8)
+    else if (eventType == Events::E_SC_USESKILL8)
         index = 8;
     else
         return;
@@ -898,7 +900,7 @@ void WorldLevel::HandleCancel(StringHash, VariantMap&)
 
 void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ObjectItemDropped;
+    using namespace Events::ObjectItemDropped;
     uint32_t itemId = eventData[P_ITEMID].GetUInt();
     uint32_t count = eventData[P_COUNT].GetUInt();
     uint32_t value = eventData[P_VALUE].GetUInt();
@@ -912,7 +914,7 @@ void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::DialogTrigger;
+    using namespace Events::DialogTrigger;
     AB::Dialogs dialog = static_cast<AB::Dialogs>(eventData[P_DIALOGID].GetUInt());
     WindowManager* wm = GetSubsystem<WindowManager>();
     DialogWindow* wnd = wm->GetDialog(dialog);
