@@ -10,6 +10,8 @@ private:
     SharedPtr<ListView> ignoreList_;
     SharedPtr<LineEdit> addFriendEdit_;
     SharedPtr<LineEdit> addIgnoreEdit_;
+    SharedPtr<Menu> friendPopup_;
+    SharedPtr<Menu> ignorePopup_;
     bool initialized_{ false };
 
     void SubscribeEvents();
@@ -22,6 +24,9 @@ private:
     void HandleGotPlayerInfo(StringHash eventType, VariantMap& eventData);
     void HandleFriendAdded(StringHash eventType, VariantMap& eventData);
     void HandleFriendRemoved(StringHash eventType, VariantMap& eventData);
+    void HandleFriendRemoveClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFriendWhisperClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFriendItemClicked(StringHash eventType, VariantMap& eventData);
     void UpdateItem(ListView* lv, const Client::RelatedAccount& f);
     void UpdateAll();
 public:

@@ -836,7 +836,11 @@ void FwClient::Cancel()
 void FwClient::AddFriend(const String& name, AB::Entities::FriendRelation relation)
 {
     if (loggedIn_)
-        client_.AddFriend(std::string(name.CString(), name.Length()), relation);
+    {
+        std::string n(name.Trimmed().CString());
+        if (!n.empty())
+            client_.AddFriend(n, relation);
+    }
 }
 
 void FwClient::RemoveFriend(const String& accountUuid)

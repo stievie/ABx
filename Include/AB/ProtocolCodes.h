@@ -260,6 +260,7 @@ enum GameProtocolCodes : uint8_t
     FriendList,
     FriendAdded,
     FriendRemoved,
+    FriendRenamed,
     // Guild
     GuildInfo,
     GuildMemberList,
@@ -405,6 +406,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeGetFriendList,
     PacketTypeAddFriend,
     PacketTypeRemoveFriend,
+    PacketTypeRenameFriend,
     // Guild
     PacketTypeGetGuildInfo,
     PacketTypeGetGuildMembers

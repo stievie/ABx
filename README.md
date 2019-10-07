@@ -23,10 +23,16 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Encrypted Game and Login Protocol.
 * Lag compensation: Entity interpolation, client prediction.
 * Spawn any number of server which may have heavy load (game, file server) even on different hardware.
-* Local (map), Guild chat and whisper is currently working, even across different game server.
+* Local (map), Guild, Team, Trade chat and whisper is currently working, even across different game server.
+* Friend/ignore list
+* Mail
 * Static objects are directly loaded from Urho3D's scene files.
 * Navigation using Recast/Detour
 * Server runs on Windows and Linux
+
+## Screenshot
+
+![Architecture](/Doc/screenshot.jpg?raw=true)
 
 ## Architecture
 

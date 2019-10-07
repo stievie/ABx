@@ -169,6 +169,7 @@ public:
     void CRQUnqueueForMatch();
     void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
     void CRQRemoveFriend(const std::string accountUuid);
+    void CRQChangeFriendNick(const std::string accountUuid, const std::string newName);
     void CRQGetPlayerInfoByAccount(const std::string accountUuid);
     void CRQGetPlayerInfoByName(const std::string name);
     void CRQGetGuildInfo();

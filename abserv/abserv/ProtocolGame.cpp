@@ -350,6 +350,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQRemoveFriend, accountUuid);
         break;
     }
+    case AB::GameProtocol::PacketTypeRenameFriend:
+    {
+        std::string accountUuid = message.GetString();
+        std::string newName = message.GetString();
+        AddPlayerTask(&Game::Player::CRQChangeFriendNick, accountUuid, newName);
+        break;
+    }
     case AB::GameProtocol::PacketTypeGetPlayerInfoByAccount:
     {
         std::string accountUuid = message.GetString();

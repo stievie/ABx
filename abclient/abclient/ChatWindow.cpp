@@ -139,6 +139,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
     SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedIn));
     SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedOut));
+    SubscribeToEvent(AbEvents::E_WHISPERTO, URHO3D_HANDLER(ChatWindow, HandleWhisperTo));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -584,6 +585,16 @@ void ChatWindow::HandleNameClicked(StringHash, VariantMap& eventData)
     using namespace Click;
     Text* text = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
     const String& name = text->GetVar("Name").GetString();
+    using namespace AbEvents::WhisperTo;
+    VariantMap& e = GetEventDataMap();
+    e[P_NAME] = name;
+    SendEvent(AbEvents::E_WHISPERTO, e);
+}
+
+void ChatWindow::HandleWhisperTo(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::WhisperTo;
+    const String& name = eventData[P_NAME].GetString();
     if (!name.Empty())
     {
         LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));

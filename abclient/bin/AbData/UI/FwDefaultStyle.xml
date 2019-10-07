@@ -368,6 +368,8 @@
     <element type="FriendListItem" style="Text" auto="false">
         <attribute name="Font Size" value="9" />
         <attribute name="Color" value="0.65 0.65 0.65" />
+        <attribute name="Selection Color" value="0.23 0.3 0.27 1" />
+        <attribute name="Hover Color" value="0.3 0.4 0.32 1" />
     </element>
     <element type="FriendListItemOnline" style="FriendListItem" auto="false">
         <attribute name="Color" value="0.95 0.95 0.95" />

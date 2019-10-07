@@ -12,27 +12,37 @@
 
 namespace Game {
 
+void FriendList::InvalidateList(const std::string& uuid)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::FriendedMe f;
+    f.uuid = uuid;
+    client->Invalidate(f);
+}
+
 void FriendList::Load()
 {
     auto* client = GetSubsystem<IO::DataClient>();
     data_.uuid = accountUuid_;
     data_.friends.clear();
     client->Read(data_);
-    // If se can't read it this guy has no friends :/
+    // If we can't read it this guy has no friends :/
 }
 
 void FriendList::Save()
 {
     auto* client = GetSubsystem<IO::DataClient>();
-    client->Invalidate(data_);
     if (!client->Update(data_))
-        LOG_ERROR << "Error saving friendlist for account " << data_.uuid << std::endl;
+        LOG_ERROR << "Error saving friend list for account " << data_.uuid << std::endl;
 }
 
 FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     const std::string& name,
     AB::Entities::FriendRelation relation)
 {
+    if (Utils::Uuid::IsEqual(accountUuid_, accountUuid))
+        // Can not add self as friend
+        return FriendList::Error::PlayerNotFound;
     if (Exists(accountUuid))
         return FriendList::Error::AlreadyFriend;
 
@@ -43,10 +53,7 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
         Utils::Tick()
     });
 
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::FriendedMe f;
-    f.uuid = accountUuid;
-    client->Invalidate(f);
+    InvalidateList(accountUuid);
 
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
@@ -75,15 +82,18 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
     if (it == data_.friends.end())
         return FriendList::Error::NoFriend;
     data_.friends.erase(it);
+
+    InvalidateList(accountUuid);
+
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
-FriendList::Error FriendList::ChangeNickname(const std::string& currentName, const std::string& newName)
+FriendList::Error FriendList::ChangeNickname(const std::string& accountUuid, const std::string& newName)
 {
     auto it = std::find_if(data_.friends.begin(), data_.friends.end(), [&](const AB::Entities::Friend& current)
     {
-        return Utils::StringEquals(currentName, current.friendName);
+        return Utils::Uuid::IsEqual(accountUuid, current.friendUuid);
     });
     if (it == data_.friends.end())
         return FriendList::Error::PlayerNotFound;

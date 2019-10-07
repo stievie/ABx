@@ -20,6 +20,7 @@ private:
     std::string accountUuid_;
     FriendList::Error AddFriendAccount(const std::string& accountUuid, const std::string& name,
         AB::Entities::FriendRelation relation);
+    static void InvalidateList(const std::string& uuid);
 public:
     FriendList(const std::string accountUuid) :
         accountUuid_(accountUuid),
@@ -32,7 +33,7 @@ public:
     void Load();
     void Save();
     FriendList::Error AddFriendByName(const std::string& playerName, AB::Entities::FriendRelation relation);
-    FriendList::Error ChangeNickname(const std::string& currentName, const std::string& newName);
+    FriendList::Error ChangeNickname(const std::string& accountUuid, const std::string& newName);
     FriendList::Error Remove(const std::string& accountUuid);
 
     bool Exists(const std::string& accountUuid);

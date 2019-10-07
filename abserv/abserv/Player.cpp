@@ -489,6 +489,43 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
         WriteToOutput(*msg);
 }
 
+void Player::CRQChangeFriendNick(const std::string accountUuid, const std::string newName)
+{
+    AB::Entities::Friend f;
+
+    if (!friendList_->GetFriendByAccount(accountUuid, f))
+        return;
+
+    auto res = friendList_->ChangeNickname(accountUuid, newName);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    switch (res)
+    {
+    case FriendList::Error::Success:
+        msg->AddByte(AB::GameProtocol::FriendRenamed);
+        msg->AddString(accountUuid);
+        msg->Add<uint8_t>(f.relation);
+        msg->AddString(newName);
+        break;
+    case FriendList::Error::PlayerNotFound:
+        // Do nothing
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypePlayerNotFound);
+        msg->AddString(GetName());
+        msg->AddString(accountUuid);
+        break;
+    case FriendList::Error::AlreadyFriend:
+        // N/A
+    case FriendList::Error::NoFriend:
+    case FriendList::Error::InternalError:
+        // Do nothing
+        break;
+    }
+
+    if (msg->GetSize() != 0)
+        WriteToOutput(*msg);
+}
+
 void Player::SendPlayerInfo(const AB::Entities::Character& ch)
 {
     auto msg = Net::NetworkMessage::GetNew();
