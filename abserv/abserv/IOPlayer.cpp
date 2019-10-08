@@ -278,4 +278,28 @@ bool IOPlayer_GetPlayerInfoByAccount(const std::string& accountUuid, AB::Entitie
     return client->Read(player);
 }
 
+bool IOPlayer_IsIgnoringMe(const std::string& meUuid, const std::string& uuid)
+{
+    // Check if `uuid` is ignoring `meUuid`
+    auto* client = GetSubsystem<IO::DataClient>();
+
+    // Those friended me
+    AB::Entities::FriendedMe fme;
+    fme.uuid = meUuid;
+    if (client->Read(fme))
+    {
+        for (const auto& f : fme.friends)
+        {
+            if (Utils::Uuid::IsEqual(uuid, f.accountUuid))
+            {
+                if (f.relation == AB::Entities::FriendRelationIgnore)
+                    return true;
+            }
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
 }

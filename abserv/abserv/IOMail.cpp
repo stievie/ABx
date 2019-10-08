@@ -3,6 +3,7 @@
 #include "IOPlayer.h"
 #include "Subsystems.h"
 #include "UuidUtils.h"
+#include "IOPlayer.h"
 
 namespace IO {
 
@@ -32,6 +33,10 @@ bool IOMail_SendMailToAccount(const std::string& accountUuid, const std::string&
     const std::string& fromName, const std::string& toName,
     const std::string& subject, const std::string& message)
 {
+    // Can not send mail to players that ignore me
+    if (IOPlayer_IsIgnoringMe(fromAcc, accountUuid))
+        return false;
+
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::MailList ml;
     ml.uuid = accountUuid;
