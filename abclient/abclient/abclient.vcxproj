@@ -283,6 +283,7 @@
     <ClCompile Include="GameMenu.cpp" />
     <ClCompile Include="GameMessagesWindow.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GuildWindow.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="HealthBarPlain.cpp" />
     <ClCompile Include="HotkeyEdit.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
+    <ClInclude Include="GuildWindow.h" />
     <ClInclude Include="InternalEvents.h" />
     <ClInclude Include="BaseLevel.h" />
     <ClInclude Include="ClientPrediction.h" />

@@ -72,6 +72,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
     SubscribeToEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLEGUILDWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleGuildWindow));
     SubscribeToEvent(Events::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
@@ -135,6 +136,17 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
         }
     }
     return false;
+}
+
+void WorldLevel::RemoveUIWindows()
+{
+    gameMenu_->RemoveAllChildren();
+    uiRoot_->RemoveChild(gameMenu_);
+    inventoryWindow_->Clear();
+    uiRoot_->RemoveChild(inventoryWindow_);
+    friendsWindow_->Clear();
+    uiRoot_->RemoveChild(friendsWindow_);
+    uiRoot_->RemoveChild(guildWindow_);
 }
 
 void WorldLevel::HandleLevelReady(StringHash, VariantMap&)
@@ -714,10 +726,7 @@ void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleLogout(StringHash, VariantMap&)
 {
-    gameMenu_->RemoveAllChildren();
-    uiRoot_->RemoveChild(gameMenu_);
-    inventoryWindow_->Clear();
-    uiRoot_->RemoveChild(inventoryWindow_);
+    RemoveUIWindows();
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
@@ -729,10 +738,7 @@ void WorldLevel::HandleLogout(StringHash, VariantMap&)
 
 void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
 {
-    gameMenu_->RemoveAllChildren();
-    uiRoot_->RemoveChild(gameMenu_);
-    inventoryWindow_->Clear();
-    uiRoot_->RemoveChild(inventoryWindow_);
+    RemoveUIWindows();
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
@@ -846,12 +852,21 @@ void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
 
 void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
 {
-    WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
-    wnd->SetVisible(!wnd->IsVisible());
-    if (wnd->IsVisible())
+    friendsWindow_->SetVisible(!friendsWindow_->IsVisible());
+    if (friendsWindow_->IsVisible())
     {
-        wnd->BringToFront();
+        friendsWindow_->BringToFront();
+        friendsWindow_->GetList();
+    }
+}
+
+void WorldLevel::HandleToggleGuildWindow(StringHash, VariantMap&)
+{
+    guildWindow_->SetVisible(!guildWindow_->IsVisible());
+    if (guildWindow_->IsVisible())
+    {
+        guildWindow_->BringToFront();
+        guildWindow_->UpdateAll();
     }
 }
 
@@ -1038,4 +1053,14 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(inventoryWindow_);
     if (inventoryWindow_->IsVisible())
         inventoryWindow_->GetInventory();
+
+    friendsWindow_.DynamicCast(wm->GetWindow(WINDOW_FRIENDLIST));
+    uiRoot_->AddChild(friendsWindow_);
+    if (friendsWindow_->IsVisible())
+        friendsWindow_->GetList();
+
+    guildWindow_.DynamicCast(wm->GetWindow(WINDOW_GUILD));
+    uiRoot_->AddChild(guildWindow_);
+    if (guildWindow_->IsVisible())
+        guildWindow_->UpdateAll();
 }

@@ -17,6 +17,7 @@
 #include "EffectsWindow.h"
 #include "InventoryWindow.h"
 #include "FriendListWindow.h"
+#include "GuildWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -54,6 +55,8 @@ protected:
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
+    SharedPtr<FriendListWindow> friendsWindow_;
+    SharedPtr<GuildWindow> guildWindow_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
     String mapUuid_;
     String mapName_;
@@ -91,6 +94,7 @@ private:
     }
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
+    void RemoveUIWindows();
 
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
@@ -128,6 +132,7 @@ private:
     void HandleReplyMail(StringHash eventType, VariantMap& eventData);
     void HandleToggleNewMail(StringHash eventType, VariantMap& eventData);
     void HandleToggleFriendList(StringHash eventType, VariantMap& eventData);
+    void HandleToggleGuildWindow(StringHash eventType, VariantMap& eventData);
     void HandleShowCredits(StringHash eventType, VariantMap& eventData);
     void HandleUseSkill(StringHash eventType, VariantMap& eventData);
     void HandleCancel(StringHash eventType, VariantMap& eventData);

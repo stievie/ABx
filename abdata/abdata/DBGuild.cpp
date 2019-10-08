@@ -15,14 +15,17 @@ bool DBGuild::Create(AB::Entities::Guild& g)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`";
+    query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`, `guild_hall_uuid`, `creator_name`, `creator_player_uuid`";
     query << ") VALUES (";
 
     query << db->EscapeString(g.uuid) << ", ";
     query << db->EscapeString(g.name) << ", ";
     query << db->EscapeString(g.tag) << ", ";
     query << db->EscapeString(g.creatorAccountUuid) << ", ";
-    query << g.creation;
+    query << g.creation << ", ";
+    query << db->EscapeString(g.guildHall) << ", ";
+    query << db->EscapeString(g.creatorName) << ", ";
+    query << db->EscapeString(g.creatorPlayerUuid);
 
     query << ")";
 
@@ -65,6 +68,9 @@ bool DBGuild::Load(AB::Entities::Guild& g)
     g.tag = result->GetString("tag");
     g.creatorAccountUuid = result->GetString("creator_account_uuid");
     g.creation = result->GetLong("creation");
+    g.guildHall = result->GetString("guild_hall_uuid");
+    g.creatorName = result->GetString("creator_name");
+    g.creatorPlayerUuid = result->GetString("creator_player_uuid");
 
     return true;
 }
@@ -86,7 +92,10 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
     query << " `name` = " << db->EscapeString(g.name) << ", ";
     query << " `tag` = " << db->EscapeString(g.tag) << ", ";
     query << " `creator_account_uuid` = " << db->EscapeString(g.creatorAccountUuid) << ", ";
-    query << " `creation` = " << g.creation;
+    query << " `creation` = " << g.creation << ", ";
+    query << " `guild_hall_uuid` = " << db->EscapeString(g.guildHall) << ", ";
+    query << " `creator_name` = " << db->EscapeString(g.creatorName) << ", ";
+    query << " `creator_player_uuid` = " << db->EscapeString(g.creatorPlayerUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
 

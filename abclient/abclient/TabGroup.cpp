@@ -59,6 +59,7 @@ TabGroup::TabGroup(Context *context) :
 
     // tab body
     bodyElement_ = CreateChild<UIElement>();
+    bodyElement_->SetLayoutMode(LM_VERTICAL);
 }
 
 TabGroup::~TabGroup()

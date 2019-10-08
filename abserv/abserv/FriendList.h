@@ -39,6 +39,7 @@ public:
     bool Exists(const std::string& accountUuid);
     bool IsFriend(const std::string& accountUuid);
     bool IsIgnored(const std::string& accountUuid);
+    bool IsIgnoredByName(const std::string& name);
     bool GetFriendByName(const std::string& name, AB::Entities::Friend& f);
     bool GetFriendByAccount(const std::string& accountUuid, AB::Entities::Friend& f);
     template <typename Callback>

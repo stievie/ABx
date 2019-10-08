@@ -543,7 +543,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch)
     account.uuid = ch.accountUuid;
     AB::Entities::Character currentToon;
     IO::IOAccount_GetAccountInfo(account, currentToon);
-    if (f.relation != AB::Entities::FriendRelationIgnore)
+    if (f.relation != AB::Entities::FriendRelationIgnore && account.onlineStatus != AB::Entities::OnlineStatusInvisible)
     {
         // If success == false -> offline, empty toon name
         msg->Add<uint8_t>(account.onlineStatus);
@@ -926,6 +926,11 @@ bool Player::IsIgnored(const Player& player)
     return friendList_->IsIgnored(player.account_.uuid);
 }
 
+bool Player::IsIgnored(const std::string& name)
+{
+    return friendList_->IsIgnoredByName(name);
+}
+
 bool Player::IsFriend(const Player& player)
 {
     return friendList_->IsFriend(player.account_.uuid);
@@ -1083,9 +1088,9 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
                 nmsg->AddString(name);
                 nmsg->AddString(msg);
                 WriteToOutput(*nmsg);
+                return;
             }
         }
-        return;
     }
 
     // No player found with the name, pass the message to the message server

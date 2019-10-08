@@ -153,6 +153,7 @@ public:
 
     /// This player ignores player
     bool IsIgnored(const Player& player);
+    bool IsIgnored(const std::string& name);
     bool IsFriend(const Player& player);
 
     //{ Client requests.

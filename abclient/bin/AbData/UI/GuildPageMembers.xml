@@ -1,0 +1,439 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="GuildPageMembers" />
+	<attribute name="Position" value="500 300" />
+	<attribute name="Size" value="300 300" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Opacity" value="0.9" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Spacing" value="4" />
+	<attribute name="Layout Border" value="2 2 2 2" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
+	<element>
+		<attribute name="Name" value="GuildMembersContainer" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Members" />
+		</element>
+		<element type="ListView">
+			<attribute name="Name" value="GuildMembersList" />
+			<attribute name="Pivot" value="0 0" />
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="296 16" />
+				<attribute name="Min Anchor" value="0 1" />
+				<attribute name="Max Anchor" value="0 1" />
+				<attribute name="Pivot" value="0 1" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="16 0" />
+					<attribute name="Size" value="264 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="280 0" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="16 84" />
+				<attribute name="Min Anchor" value="1 0" />
+				<attribute name="Max Anchor" value="1 0" />
+				<attribute name="Pivot" value="1 0" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="0 16" />
+					<attribute name="Size" value="16 52" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="0 68" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Clip Border" value="2 2 2 2" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="16 16" />
+				<element internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Name" value="GuildInvitesContainer" />
+		<attribute name="Max Size" value="2147483647 100" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Invited" />
+		</element>
+		<element type="ListView">
+			<attribute name="Name" value="GuildInvitesList" />
+			<attribute name="Pivot" value="0 0" />
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="296 16" />
+				<attribute name="Min Anchor" value="0 1" />
+				<attribute name="Max Anchor" value="0 1" />
+				<attribute name="Pivot" value="0 1" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="16 0" />
+					<attribute name="Size" value="264 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="280 0" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="16 60" />
+				<attribute name="Min Anchor" value="1 0" />
+				<attribute name="Max Anchor" value="1 0" />
+				<attribute name="Pivot" value="1 0" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="0 16" />
+					<attribute name="Size" value="16 28" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="0 44" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Clip Border" value="2 2 2 2" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="16 16" />
+				<element internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+		</element>
+		<element>
+			<attribute name="Min Size" value="0 24" />
+			<attribute name="Max Size" value="2147483647 24" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<attribute name="Layout Border" value="2 2 2 2" />
+			<element type="LineEdit">
+				<attribute name="Name" value="AddInviteText" />
+				<attribute name="Min Size" value="0 22" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="64 0 80 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Min Anchor" value="0 0.5" />
+					<attribute name="Max Anchor" value="0 0.5" />
+					<attribute name="Pivot" value="0 0.5" />
+					<attribute name="Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Selection Color" value="0.3 0.4 0.32 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+					<attribute name="Min Anchor" value="0 0.5" />
+					<attribute name="Max Anchor" value="0 0.5" />
+					<attribute name="Pivot" value="0 0.5" />
+					<attribute name="Image Rect" value="12 0 16 16" />
+				</element>
+			</element>
+			<element type="Button">
+				<attribute name="Name" value="AddInviteButton" />
+				<attribute name="Min Size" value="22 22" />
+				<attribute name="Max Size" value="22 2147483647" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+				<attribute name="Image Rect" value="64 0 80 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+				<attribute name="Pressed Image Offset" value="16 0" />
+				<attribute name="Pressed Child Offset" value="-1 1" />
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Name" value="GuildGuestContainer" />
+		<attribute name="Max Size" value="2147483647 100" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Guests" />
+		</element>
+		<element type="ListView">
+			<attribute name="Name" value="GuildGuestList" />
+			<attribute name="Pivot" value="0 0" />
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="296 16" />
+				<attribute name="Min Anchor" value="0 1" />
+				<attribute name="Max Anchor" value="0 1" />
+				<attribute name="Pivot" value="0 1" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="16 0" />
+					<attribute name="Size" value="264 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="280 0" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="ScrollBar" internal="true" style="none">
+				<attribute name="Size" value="16 60" />
+				<attribute name="Min Anchor" value="1 0" />
+				<attribute name="Max Anchor" value="1 0" />
+				<attribute name="Pivot" value="1 0" />
+				<attribute name="Color" value="0 0 0 0" />
+				<attribute name="Top Left Color" value="0 0 0 0" />
+				<attribute name="Top Right Color" value="0 0 0 0" />
+				<attribute name="Bottom Left Color" value="0 0 0 0" />
+				<attribute name="Bottom Right Color" value="0 0 0 0" />
+				<element type="Button" internal="true" style="none">
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+				<element type="Slider" internal="true" style="none">
+					<attribute name="Position" value="0 16" />
+					<attribute name="Size" value="16 28" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Image Rect" value="16 0 32 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="0 16" />
+					</element>
+				</element>
+				<element type="Button" internal="true" style="none">
+					<attribute name="Position" value="0 44" />
+					<attribute name="Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Pressed Image Offset" value="64 0" />
+					<attribute name="Pressed Child Offset" value="-1 1" />
+				</element>
+			</element>
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Clip Border" value="2 2 2 2" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="16 16" />
+				<element internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+		</element>
+		<element>
+			<attribute name="Min Size" value="0 24" />
+			<attribute name="Max Size" value="2147483647 24" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<attribute name="Layout Border" value="2 2 2 2" />
+			<element type="LineEdit">
+				<attribute name="Name" value="AddGuestText" />
+				<attribute name="Min Size" value="0 22" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="64 0 80 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Min Anchor" value="0 0.5" />
+					<attribute name="Max Anchor" value="0 0.5" />
+					<attribute name="Pivot" value="0 0.5" />
+					<attribute name="Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Selection Color" value="0.3 0.4 0.32 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+					<attribute name="Min Anchor" value="0 0.5" />
+					<attribute name="Max Anchor" value="0 0.5" />
+					<attribute name="Pivot" value="0 0.5" />
+					<attribute name="Image Rect" value="12 0 16 16" />
+				</element>
+			</element>
+			<element type="Button">
+				<attribute name="Name" value="AddGuestButton" />
+				<attribute name="Min Size" value="22 22" />
+				<attribute name="Max Size" value="22 2147483647" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+				<attribute name="Image Rect" value="64 0 80 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+				<attribute name="Pressed Image Offset" value="16 0" />
+				<attribute name="Pressed Child Offset" value="-1 1" />
+			</element>
+		</element>
+	</element>
+</element>

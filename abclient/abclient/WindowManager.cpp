@@ -17,6 +17,7 @@
 #include "EffectsWindow.h"
 #include "InventoryWindow.h"
 #include "AccountChestDialog.h"
+#include "GuildWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -80,6 +81,15 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             windows_[hash] = wnd;
             if (wnd->IsVisible())
                 wnd->GetList();
+        }
+        else if (hash == WINDOW_GUILD)
+        {
+            SharedPtr<GuildWindow> wnd = SharedPtr<GuildWindow>(new GuildWindow(context_));
+            wnd->SetVisible(true);
+            opts->LoadWindow(wnd);
+            windows_[hash] = wnd;
+            if (wnd->IsVisible())
+                wnd->UpdateAll();
         }
         else if (hash == WINDOW_PINGDOT)
         {

@@ -95,6 +95,10 @@ ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
 
 void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 {
+    if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
+        player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
+        return;
+
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedIn;
@@ -108,6 +112,10 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 
 void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
 {
+    if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
+        player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
+        return;
+
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedOut;

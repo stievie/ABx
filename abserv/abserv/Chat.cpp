@@ -203,6 +203,9 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
 {
     if (auto p = player_.lock())
     {
+        if (p->IsIgnored(playerName))
+            return false;
+
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
@@ -252,6 +255,8 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
         if (!player)
             // This player not on this server.
             continue;
+        if (player->IsIgnored(playerName))
+            continue;
 
         player->WriteToOutput(*msg);
     }
@@ -278,7 +283,9 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     msg->Add<uint32_t>(0);
     msg->AddString(playerName);
     msg->AddString(text);
-    playerMngr->VisitPlayers([&msg](Player& player) {
+    playerMngr->VisitPlayers([&playerName, &msg](Player& player) {
+        if (player.IsIgnored(playerName))
+            return Iteration::Continue;
         player.WriteToOutput(*msg);
         return Iteration::Continue;
     });
@@ -294,8 +301,10 @@ bool PartyChatChannel::Talk(Player& player, const std::string& text)
         msg->Add<uint32_t>(player.id_);
         msg->AddString(player.GetName());
         msg->AddString(text);
-        party_->VisitMembers([&msg](auto& player) {
-            player.WriteToOutput(*msg);
+        party_->VisitMembers([&player, &msg](Player& _player) {
+            if (_player.IsIgnored(player))
+                return Iteration::Continue;
+            _player.WriteToOutput(*msg);
             return Iteration::Continue;
         });
         return true;

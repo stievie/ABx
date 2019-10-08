@@ -66,6 +66,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEPARTYWINDOW, "Party"),
         scs->GetShortcutName(Events::E_SC_TOGGLEPARTYWINDOW),
         URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEGUILDWINDOW, "Guild"),
+        scs->GetShortcutName(Events::E_SC_TOGGLEGUILDWINDOW),
+        URHO3D_HANDLER(GameMenu, HandleGuildWindowUsed));
     CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map"),
         scs->GetShortcutName(Events::E_SC_TOGGLEMISSIONMAPWINDOW),
         URHO3D_HANDLER(GameMenu, HandleMissionMapUsed));
@@ -227,6 +230,13 @@ void GameMenu::HandleFriendsUsed(StringHash, VariantMap&)
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, e);
+}
+
+void GameMenu::HandleGuildWindowUsed(StringHash, VariantMap&)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(Events::E_SC_TOGGLEGUILDWINDOW, e);
 }
 
 void GameMenu::UpdateServers()

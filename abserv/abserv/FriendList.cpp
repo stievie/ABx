@@ -143,6 +143,16 @@ bool FriendList::IsIgnored(const std::string& accountUuid)
     return result;
 }
 
+bool FriendList::IsIgnoredByName(const std::string& name)
+{
+    AB::Entities::Character ch;
+    ch.name = name;
+    auto* client = GetSubsystem<IO::DataClient>();
+    if (!client->Read(ch))
+        return false;
+    return IsIgnored(ch.accountUuid);
+}
+
 bool FriendList::GetFriendByName(const std::string& name, AB::Entities::Friend& f)
 {
     bool result = false;

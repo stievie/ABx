@@ -102,6 +102,7 @@ void Shortcuts::Init()
     shortcuts_[Events::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(Events::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down, "Show New Mail window");
     shortcuts_[Events::E_SC_TOGGLEOPTIONS] = ShortcutEvent(Events::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down, "Show Options window");
     shortcuts_[Events::E_SC_TOGGLEINVENTORYWINDOW] = ShortcutEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", Trigger::Down, "Toggle Inventory window");
+    shortcuts_[Events::E_SC_TOGGLEGUILDWINDOW] = ShortcutEvent(Events::E_SC_TOGGLEGUILDWINDOW, "Guild", Trigger::Down, "Toggle Guild window");
     // Chat
     shortcuts_[Events::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(Events::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down, "Toggle Chat window");
     shortcuts_[Events::E_SC_CHATGENERAL] = ShortcutEvent(Events::E_SC_CHATGENERAL, "General", Trigger::Up, "General chat");
@@ -142,6 +143,7 @@ void Shortcuts::AddDefault()
     Add(Events::E_SC_TOGGLEPARTYWINDOW, { KEY_P });
     Add(Events::E_SC_TOGGLEFRIENDLISTWINDOW, { KEY_N });
     Add(Events::E_SC_TOGGLEINVENTORYWINDOW, { KEY_I });
+    Add(Events::E_SC_TOGGLEGUILDWINDOW, { KEY_G });
     Add(Events::E_SC_TAKESCREENSHOT, { KEY_PRINTSCREEN });
 
     Add(Events::E_SC_TOGGLEOPTIONS, { KEY_F11 });

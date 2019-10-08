@@ -25,7 +25,7 @@ public:
     static void RegisterObject(Context* context);
 
     InventoryWindow(Context* context);
-    ~InventoryWindow();
+    ~InventoryWindow() override;
 
     void GetInventory();
     void Clear();

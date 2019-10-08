@@ -113,7 +113,7 @@ void FriendListWindow::GetList()
     {
         auto* client = GetSubsystem<FwClient>();
         client->UpdateFriendList();
-//        initialized_ = true;
+        initialized_ = true;
     }
 }
 
