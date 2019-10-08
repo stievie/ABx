@@ -3,6 +3,7 @@
 	<attribute name="Name" value="OptionPageGraphics" />
 	<attribute name="Position" value="500 300" />
 	<attribute name="Size" value="350 280" />
+	<attribute name="Max Size" value="2147483647 300" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Layout Mode" value="Vertical" />

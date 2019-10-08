@@ -133,7 +133,7 @@ TabElement* OptionsWindow::CreateTab(TabGroup* tabs, const String& page)
     tabElement->tabBody_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
 
     tabElement->tabBody_->SetImageRect(IntRect(48, 0, 64, 16));
-    tabElement->tabBody_->SetLayoutMode(LM_FREE);
+    tabElement->tabBody_->SetLayoutMode(LM_VERTICAL);
     tabElement->tabBody_->SetPivot(0, 0);
     tabElement->tabBody_->SetPosition(0, 0);
     tabElement->tabBody_->SetStyleAuto();
@@ -834,8 +834,6 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     Window* wnd = page->CreateChild<Window>();
     LoadWindow(wnd, "UI/OptionPageInput.xml");
     wnd->SetPosition(0, 0);
-    wnd->SetWidth(390);
-    wnd->SetHeight(page->GetHeight());
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     UIElement* hkContainer = dynamic_cast<UIElement*>(GetChild("HotkeyEditContainer", true));
@@ -926,7 +924,5 @@ void OptionsWindow::CreatePageInterface(TabElement* tabElement)
     Window* wnd = page->CreateChild<Window>();
     LoadWindow(wnd, "UI/OptionPageInterface.xml");
     wnd->SetPosition(0, 0);
-    wnd->SetWidth(390);
-    wnd->SetHeight(page->GetHeight());
     wnd->UpdateLayout();
 }
