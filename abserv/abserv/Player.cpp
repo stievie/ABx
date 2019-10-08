@@ -335,7 +335,8 @@ void Player::CRQSendMail(const std::string recipient, const std::string subject,
 {
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    if (IO::IOMail_SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
+    // Can not send mails to players I ignore
+    if (!IsIgnored(recipient) && IO::IOMail_SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
     else
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
