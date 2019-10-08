@@ -26,6 +26,7 @@ private:
     void HandleFriendRemoved(StringHash eventType, VariantMap& eventData);
     void HandleFriendRemoveClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendWhisperClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFriendSendMailClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendItemClicked(StringHash eventType, VariantMap& eventData);
     void UpdateItem(ListView* lv, const Client::RelatedAccount& f);
     void UpdateAll();

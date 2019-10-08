@@ -84,6 +84,23 @@ FriendListWindow::FriendListWindow(Context* context) :
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
         Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Send Mail");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendSendMailClicked));
+    }
+    {
+        // Remove
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
         menuText->SetText("Remove");
         menuText->SetStyle("EditorMenuText");
         item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
@@ -204,6 +221,21 @@ void FriendListWindow::HandleFriendWhisperClicked(StringHash, VariantMap& eventD
     VariantMap& e = GetEventDataMap();
     e[P_NAME] = name;
     SendEvent(Events::E_WHISPERTO, e);
+}
+
+void FriendListWindow::HandleFriendSendMailClicked(StringHash, VariantMap& eventData)
+{
+    friendPopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& name = friendPopup_->GetVar("CharacterName").GetString();
+
+    using namespace Events::SendMailTo;
+    VariantMap& e = GetEventDataMap();
+    e[P_NAME] = name;
+    SendEvent(Events::E_SENDMAILTO, e);
 }
 
 void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData)

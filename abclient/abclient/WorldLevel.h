@@ -130,6 +130,7 @@ private:
     void HandleToggleChatWindow(StringHash eventType, VariantMap& eventData);
     void HandleToggleMail(StringHash eventType, VariantMap& eventData);
     void HandleReplyMail(StringHash eventType, VariantMap& eventData);
+    void HandleSendMailTo(StringHash eventType, VariantMap& eventData);
     void HandleToggleNewMail(StringHash eventType, VariantMap& eventData);
     void HandleToggleFriendList(StringHash eventType, VariantMap& eventData);
     void HandleToggleGuildWindow(StringHash eventType, VariantMap& eventData);

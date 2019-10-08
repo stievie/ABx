@@ -57,6 +57,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
     SubscribeToEvent(Events::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
+    SubscribeToEvent(Events::E_SENDMAILTO, URHO3D_HANDLER(WorldLevel, HandleSendMailTo));
 
     SubscribeToEvent(Events::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -837,6 +838,16 @@ void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
         wnd->SetSubject("Re: " + subj);
     else
         wnd->SetSubject(subj);
+    wnd->SetVisible(true);
+    wnd->BringToFront();
+}
+
+void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
+    using namespace Events::SendMailTo;
+    wnd->SetRecipient(eventData[P_NAME].GetString());
     wnd->SetVisible(true);
     wnd->BringToFront();
 }
