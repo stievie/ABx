@@ -65,8 +65,6 @@ public:
         info_ = {};
     }
 
-    int32_t GetMessageLength() const { return info_.length; }
-
     /// Read functions
     uint8_t GetByte()
     {
@@ -144,6 +142,7 @@ public:
     int32_t GetSize() const { return static_cast<int32_t>(info_.length); }
     void SetSize(int32_t size) { info_.length = static_cast<MsgSize_t>(size); }
     int32_t GetReadPos() const { return static_cast<int32_t>(info_.position); }
+    int32_t GetSpace() const { return MaxBodyLength - info_.length; }
 
     bool Compress();
     bool Uncompress();

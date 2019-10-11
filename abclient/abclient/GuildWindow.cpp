@@ -51,8 +51,12 @@ GuildWindow::GuildWindow(Context* context) :
         CreatePageMembers(elem);
     }
     {
-        TabElement* elem = CreateTab(tabgroup_, "State");
+        TabElement* elem = CreateTab(tabgroup_, "Status");
         CreatePageState(elem);
+    }
+    {
+        TabElement* elem = CreateTab(tabgroup_, "Guest");
+        CreatePageGuest(elem);
     }
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(GuildWindow, HandleTabSelected));
@@ -140,5 +144,14 @@ void GuildWindow::CreatePageState(TabElement* tabElement)
 
     Window* wnd = page->CreateChild<Window>();
     LoadWindow(wnd, "UI/GuildPageState.xml");
+    page->UpdateLayout();
+}
+
+void GuildWindow::CreatePageGuest(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/GuildPageGuest.xml");
     page->UpdateLayout();
 }

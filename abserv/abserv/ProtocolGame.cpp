@@ -502,7 +502,7 @@ void ProtocolGame::EnterGame()
         DisconnectClient(AB::Errors::CannotEnterGame);
         return;
     }
-    auto gameMan = GetSubsystem<Game::GameManager>();
+    auto* gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
     std::shared_ptr<Game::Game> instance;
     if (!Utils::Uuid::IsEmpty(player->data_.instanceUuid))

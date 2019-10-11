@@ -85,6 +85,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
     // One such message contains a variable number of packets and then some padding bytes.
     while (!message.Eof())
     {
+        AB::GameProtocol::GameProtocolCodes prevCode = opCode;
         opCode = static_cast<AB::GameProtocol::GameProtocolCodes>(message.Get<uint8_t>());
 
         switch (opCode)
@@ -103,6 +104,9 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             break;
         case AB::GameProtocol::ChangeInstance:
             ParseChangeInstance(message);
+            break;
+        case AB::GameProtocol::GameStart:
+            ParseGameStart(message);
             break;
         case AB::GameProtocol::GameEnter:
             ParseEnterWorld(message);
@@ -265,6 +269,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         {
             std::stringstream ss2;
             ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) <<
+                " last code " << static_cast<int>(prevCode) <<
                 " unread size " << message.GetUnreadSize();
             LogMessage(ss2.str());
             // Unknown packet, discard whole message
@@ -769,6 +774,12 @@ void ProtocolGame::ParseError(InputMessage& message)
     uint8_t error = message.Get<uint8_t>();
     if (error != 0)
         ProtocolError(error);
+}
+
+void ProtocolGame::ParseGameStart(InputMessage& message)
+{
+    // We must read it
+    /* int64_t startTick = */ message.Get<int64_t>();
 }
 
 void ProtocolGame::ParseEnterWorld(InputMessage& message)

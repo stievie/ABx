@@ -14,6 +14,7 @@ private:
     TabElement* CreateTab(TabGroup* tabs, const String& page);
     void CreatePageMembers(TabElement* tabElement);
     void CreatePageState(TabElement* tabElement);
+    void CreatePageGuest(TabElement* tabElement);
 public:
     static void RegisterObject(Context* context);
 

@@ -1071,6 +1071,7 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     switch (game.type)
     {
     case AB::Entities::GameType::GameTypeOutpost:
+    case AB::Entities::GameType::GameTypeTown:
         currentLevel_ = "OutpostLevel";
         break;
     case AB::Entities::GameType::GameTypePvPCombat:

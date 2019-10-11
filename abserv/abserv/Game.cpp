@@ -186,7 +186,7 @@ void Game::Start()
             auto it = queuedObjects_.begin();
             while (it != queuedObjects_.end())
             {
-                QueueSpawnObject((*it));
+                SendSpawnObject((*it));
                 it = queuedObjects_.erase(it);
             }
         }
@@ -394,7 +394,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+        Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnObject,
             shared_from_this(), result))
     );
 
@@ -418,7 +418,7 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+        Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnObject,
             shared_from_this(), result))
     );
 
@@ -438,7 +438,7 @@ void Game::AddProjectile(const std::string& itemUuid,
         return;
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+        Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnObject,
             shared_from_this(), result))
     );
 }
@@ -492,7 +492,7 @@ void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
 {
     item->SetGame(shared_from_this());
     // Also adds it to the objects array
-    QueueSpawnObject(item);
+    SendSpawnObject(item);
 
     gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
     gameStatus_->Add<uint32_t>(item->GetSourceId());
@@ -577,7 +577,7 @@ void Game::Load(const std::string& mapUuid)
     thPool->Enqueue(&ItemFactory::LoadDropChances, factory, mapUuid);
 }
 
-void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
+void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
 {
     AB::GameProtocol::GameObjectType objectType = object->GetType();
     if (objectType < AB::GameProtocol::ObjectTypeSentToPlayer)
@@ -598,45 +598,56 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     AddObject(object);
 }
 
-void Game::QueueLeaveObject(uint32_t objectId)
+void Game::SendLeaveObject(uint32_t objectId)
 {
     gameStatus_->AddByte(AB::GameProtocol::GameLeaveObject);
     gameStatus_->Add<uint32_t>(objectId);
 }
 
-void Game::SendSpawnAll(uint32_t playerId)
+void Game::SendInitStateToPlayer(Player& player)
 {
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (!player)
-        return;
-
     // Send all already existing objects to the player, excluding the player itself.
-    // This is sent to all players.
+    // This is sent to all players when they enter a game.
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
-    auto msg = Net::NetworkMessage::GetNew();
-    const auto write = [&msg, &player](const std::shared_ptr<GameObject>& o)
+    const auto write = [&player](Net::NetworkMessage& msg, const std::shared_ptr<GameObject>& o)
     {
         if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
             // No need to send terrain patch to client
             return;
-        if (o.get() == player.get())
+        if (o->id_ == player.id_)
             // Don't send spawn of our self
             return;
 
-        msg->AddByte(AB::GameProtocol::GameSpawnObjectExisting);
-        o->WriteSpawnData(*msg);
+        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
+        o->WriteSpawnData(msg);
     };
 
+    auto msg = Net::NetworkMessage::GetNew();
     for (const auto& o : objects_)
-        write(o.second);
+    {
+        write(*msg, o.second);
+        // When there are many objects this may exceed the buffer size.
+        if (msg->GetSpace() < 512)
+        {
+            player.WriteToOutput(*msg);
+            msg = Net::NetworkMessage::GetNew();
+        }
+    }
 
     // Also send queued objects
     for (const auto& o : queuedObjects_)
-        write(o);
+    {
+        write(*msg, o);
+        if (msg->GetSpace() < 512)
+        {
+            player.WriteToOutput(*msg);
+            msg = Net::NetworkMessage::GetNew();
+        }
+    }
 
     if (msg->GetSize() != 0)
-        player->WriteToOutput(*msg);
+        player.WriteToOutput(*msg);
 }
 
 void Game::PlayerJoin(uint32_t playerId)
@@ -654,13 +665,13 @@ void Game::PlayerJoin(uint32_t playerId)
         UpdateEntity(player->data_);
 
         Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
-        SendSpawnAll(playerId);
+        SendInitStateToPlayer(*player);
 
         if (GetState() == ExecutionState::Running)
         {
             // In worst case (i.e. the game data is still loading): will be sent as
             // soon as the game runs and entered the Update loop.
-            QueueSpawnObject(player);
+            SendSpawnObject(player);
         }
         else
             queuedObjects_.push_back(player);
@@ -683,7 +694,7 @@ void Game::RemoveObject(GameObject* object)
         return;
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), object->id_))
+        Asynch::CreateScheduledTask(std::bind(&Game::SendLeaveObject, shared_from_this(), object->id_))
     );
     InternalRemoveObject(object);
 }
@@ -706,7 +717,7 @@ void Game::PlayerLeave(uint32_t playerId)
 
         auto* sched = GetSubsystem<Asynch::Scheduler>();
         sched->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
+            Asynch::CreateScheduledTask(std::bind(&Game::SendLeaveObject, shared_from_this(), playerId))
         );
         // Notify other servers that a player left, e.g. for friend list
         sched->Add(

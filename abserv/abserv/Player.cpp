@@ -558,6 +558,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch)
         msg->AddString("");
         msg->AddString(Utils::Uuid::EMPTY_UUID);
     }
+    // Guild info
     AB::Entities::GuildMember gm;
     IO::IOAccount_GetGuildMemberInfo(account, gm);
     msg->AddString(account.guildUuid);

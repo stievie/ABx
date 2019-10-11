@@ -56,7 +56,7 @@ void Connection::InternalSend(OutputMessage& message)
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         asio::async_write(socket_,
-            asio::buffer(message.GetOutputBuffer(), message.GetMessageLength()),
+            asio::buffer(message.GetOutputBuffer(), message.GetSize()),
             std::bind(&Connection::OnWriteOperation, shared_from_this(), std::placeholders::_1));
     }
     catch (asio::system_error& e)
@@ -228,7 +228,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
 
     uint32_t checksum;
-    int32_t len = msg_->GetMessageLength() - msg_->GetReadPos() - NetworkMessage::ChecksumLength;
+    int32_t len = msg_->GetSize() - msg_->GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
         checksum = Utils::AdlerChecksum((uint8_t*)(msg_->GetBuffer() + msg_->GetReadPos() +
             NetworkMessage::ChecksumLength), len);

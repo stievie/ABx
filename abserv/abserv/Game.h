@@ -103,6 +103,10 @@ private:
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
     void InternalRemoveObject(GameObject* object);
     void ShutdownNpcs();
+    void SendSpawnObject(std::shared_ptr<GameObject> object);
+    void SendLeaveObject(uint32_t objectId);
+    /// Send spawn message for all existing objects
+    void SendInitStateToPlayer(Player& player);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -157,10 +161,6 @@ public:
     void CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data);
     void SetState(ExecutionState state);
     void Load(const std::string& mapUuid);
-    /// Send spawn message for all existing objects
-    void SendSpawnAll(uint32_t playerId);
-    void QueueSpawnObject(std::shared_ptr<GameObject> object);
-    void QueueLeaveObject(uint32_t objectId);
 
     void RemoveObject(GameObject* object);
 

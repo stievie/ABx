@@ -21,10 +21,22 @@ enum GameType : uint8_t
 {
     GameTypeUnknown = 0,
     GameTypeOutpost = 1,
-    // Above this games are exclusive and always created new
+    GameTypeTown,
+    GameTypeGuildHall,
+    // Bellow this games are exclusive and always created new
     GameTypePvPCombat,
     GameTypeExploreable,
     GameTypeMission,
+};
+
+enum GameModeFlags : uint32_t
+{
+    GameModeFlagNone = 0,
+};
+
+enum GameMode : uint32_t
+{
+    GameModeUnknown = 0,
 };
 
 struct Game : Entity
@@ -42,6 +54,7 @@ struct Game : Entity
         s.text1b(script, Limits::MAX_FILENAME);
         s.text1b(queueMapUuid, Limits::MAX_UUID);
         s.value1b(type);
+        s.value4b(mode);
         s.value1b(landing);
         s.value1b(partySize);
         s.value1b(partyCount);
@@ -59,6 +72,7 @@ struct Game : Entity
     std::string script;
     std::string queueMapUuid;
     GameType type = GameTypeUnknown;
+    GameMode mode = GameModeUnknown;
     bool landing = false;
     uint8_t partySize = 0;
     uint8_t partyCount = 0;

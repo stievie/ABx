@@ -15,7 +15,8 @@ bool DBGuild::Create(AB::Entities::Guild& g)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`, `guild_hall_uuid`, `creator_name`, `creator_player_uuid`";
+    query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`, `guild_hall_uuid`, `creator_name`, `creator_player_uuid`, ";
+    query << "`guild_hall_instance_uuid`, `guild_hall_server_uuid`";
     query << ") VALUES (";
 
     query << db->EscapeString(g.uuid) << ", ";
@@ -25,7 +26,9 @@ bool DBGuild::Create(AB::Entities::Guild& g)
     query << g.creation << ", ";
     query << db->EscapeString(g.guildHall) << ", ";
     query << db->EscapeString(g.creatorName) << ", ";
-    query << db->EscapeString(g.creatorPlayerUuid);
+    query << db->EscapeString(g.creatorPlayerUuid) << ", ";
+    query << db->EscapeString(g.guildHallInstanceUuid) << ", ";
+    query << db->EscapeString(g.guildHallServerUuid);
 
     query << ")";
 
@@ -71,6 +74,8 @@ bool DBGuild::Load(AB::Entities::Guild& g)
     g.guildHall = result->GetString("guild_hall_uuid");
     g.creatorName = result->GetString("creator_name");
     g.creatorPlayerUuid = result->GetString("creator_player_uuid");
+    g.guildHallInstanceUuid = result->GetString("guild_hall_instance_uuid");
+    g.guildHallServerUuid = result->GetString("guild_hall_server_uuid");
 
     return true;
 }
@@ -95,7 +100,9 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
     query << " `creation` = " << g.creation << ", ";
     query << " `guild_hall_uuid` = " << db->EscapeString(g.guildHall) << ", ";
     query << " `creator_name` = " << db->EscapeString(g.creatorName) << ", ";
-    query << " `creator_player_uuid` = " << db->EscapeString(g.creatorPlayerUuid);
+    query << " `creator_player_uuid` = " << db->EscapeString(g.creatorPlayerUuid) << ", ";
+    query << " `guild_hall_instance_uuid` = " << db->EscapeString(g.guildHallInstanceUuid) << ", ";
+    query << " `guild_hall_server_uuid` = " << db->EscapeString(g.guildHallServerUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
 

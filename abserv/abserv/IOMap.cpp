@@ -253,7 +253,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             }
             case IO::Map::AttrTerrain:
             {
-                assert(terrain_);
+                assert(map.terrain_);
                 map.terrain_->transformation_ = Math::Transformation(pos, scale, rot);
                 map.terrain_->GetHeightMap()->matrix_ = map.terrain_->transformation_.GetMatrix();
                 for (const auto& attr : comp.children())

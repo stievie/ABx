@@ -33,7 +33,8 @@ bool DBGame::Load(AB::Entities::Game& game)
 
     game.uuid = result->GetString("uuid");
     game.name = result->GetString("name");
-    game.type = static_cast<AB::Entities::GameType>(result->GetInt("type"));
+    game.type = static_cast<AB::Entities::GameType>(result->GetUInt("type"));
+    game.mode = static_cast<AB::Entities::GameMode>(result->GetUInt("game_mode"));
     game.directory = result->GetString("directory");
     game.script = result->GetString("script_file");
     game.queueMapUuid = result->GetString("queue_map_uuid");

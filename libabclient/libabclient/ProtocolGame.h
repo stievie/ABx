@@ -43,6 +43,7 @@ protected:
     void ParseServerJoined(InputMessage& message);
     void ParseServerLeft(InputMessage& message);
     void ParseError(InputMessage& message);
+    void ParseGameStart(InputMessage& message);
     void ParseEnterWorld(InputMessage& message);
     void ParseChangeInstance(InputMessage& message);
     void ParseMailHeaders(InputMessage& message);

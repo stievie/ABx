@@ -30,19 +30,23 @@ struct Guild : Entity
         s.text1b(name, Limits::MAX_GUILD_NAME);
         s.text1b(tag, Limits::MAX_GUILD_TAG);
         s.text1b(creatorAccountUuid, Limits::MAX_UUID);
-        s.value8b(creation);
-        s.text1b(guildHall, Limits::MAX_UUID);
         s.text1b(creatorName, Limits::MAX_CHARACTER_NAME);
         s.text1b(creatorPlayerUuid, Limits::MAX_UUID);
+        s.value8b(creation);
+        s.text1b(guildHall, Limits::MAX_UUID);
+        s.text1b(guildHallInstanceUuid, Limits::MAX_UUID);
+        s.text1b(guildHallServerUuid, Limits::MAX_UUID);
     }
 
     std::string name;
     std::string tag;
     std::string creatorAccountUuid = EMPTY_GUID;
-    timestamp_t creation;
-    std::string guildHall = EMPTY_GUID;
     std::string creatorName;
     std::string creatorPlayerUuid = EMPTY_GUID;
+    timestamp_t creation;
+    std::string guildHall = EMPTY_GUID;
+    std::string guildHallInstanceUuid = EMPTY_GUID;
+    std::string guildHallServerUuid = EMPTY_GUID;
 };
 
 }
