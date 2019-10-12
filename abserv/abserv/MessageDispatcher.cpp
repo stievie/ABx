@@ -92,7 +92,7 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
     player->NotifyNewMail();
 }
 
-void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
+void MessageDispatcher::DispatchPlayerChanged(const Net::MessageMsg& msg)
 {
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
@@ -100,94 +100,51 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
         LOG_ERROR << "Unable to get property stream" << std::endl;
         return;
     }
+    uint32_t fields{ 0 };
+    if (!stream.Read<uint32_t>(fields))
+    {
+        LOG_ERROR << "Unable read to fields" << std::endl;
+        return;
+    }
+    if (fields == 0)
+    {
+        LOG_ERROR << "fields == 0" << std::endl;
+        return;
+    }
+
     std::string accUuid;
     if (!stream.ReadString(accUuid))
     {
-        LOG_ERROR << "Error reading account from property stream" << std::endl;
-        return;
-    }
-    std::string charUuid;
-    if (!stream.ReadString(charUuid))
-    {
-        LOG_ERROR << "Error reading character from property stream" << std::endl;
+        LOG_ERROR << "Unable to read account UUID" << std::endl;
         return;
     }
 
-    // Read players name
     auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch;
-    ch.uuid = charUuid;
-    if (!client->Read(ch))
-    {
-        LOG_ERROR << "Error reading character " << charUuid << std::endl;
-        return;
-    }
-
-    std::vector<std::string> accounts;
-    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
-
-    AB::Entities::Account account;
-    AB::Entities::Character character;
-    account.uuid = accUuid;
-    IO::IOAccount_GetAccountInfo(account, character);
-
-    auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::PlayerLoggedIn);
-    nmsg->AddString(accUuid);
-    nmsg->AddString(ch.name);
-    nmsg->Add<uint8_t>(account.onlineStatus);
-    nmsg->AddString(ch.currentMapUuid);
-
-    auto* playerMan = GetSubsystem<Game::PlayerManager>();
-    for (const auto& acc : accounts)
-    {
-        auto player = playerMan->GetPlayerByAccountUuid(acc);
-        if (player)
-        {
-            player->WriteToOutput(*nmsg);
-        }
-    }
-}
-
-void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
-{
-    IO::PropReadStream stream;
-    if (!msg.GetPropStream(stream))
-        return;
-    std::string accUuid;
-    if (!stream.ReadString(accUuid))
-        return;
-    std::string charUuid;
-    if (!stream.ReadString(charUuid))
-        return;
-
-    // Read players name
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch;
-    ch.uuid = charUuid;
-    if (!client->Read(ch))
-        return;
-
-    std::vector<std::string> accounts;
-    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
-
     AB::Entities::Account account;
     account.uuid = accUuid;
     if (!client->Read(account))
+    {
+        LOG_ERROR << "Unable to read account with UUID " << accUuid << std::endl;
         return;
+    }
 
-    auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::PlayerLoggedOut);
-    nmsg->AddString(accUuid);
-    nmsg->AddString(ch.name);
-    nmsg->Add<uint8_t>(account.onlineStatus);
+    AB::Entities::Character ch;
+    ch.uuid = account.currentCharacterUuid;
+    if (!client->Read(ch))
+    {
+        LOG_ERROR << "Unable to character with UUID " << ch.uuid << std::endl;
+        return;
+    }
+
+    std::vector<std::string> accounts;
+    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
 
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
     for (const auto& acc : accounts)
     {
         auto player = playerMan->GetPlayerByAccountUuid(acc);
         if (player)
-            player->WriteToOutput(*nmsg);
+            player->SendPlayerInfo(ch, fields);
     }
 }
 
@@ -343,11 +300,8 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
     case Net::MessageType::ServerLeft:
         DispatchServerChange(msg);
         break;
-    case Net::MessageType::PlayerLoggedIn:
-        DispatchPlayerLoggedIn(msg);
-        break;
-    case Net::MessageType::PlayerLoggedOut:
-        DispatchPlayerLoggedOut(msg);
+    case Net::MessageType::PlayerChanged:
+        DispatchPlayerChanged(msg);
         break;
     case Net::MessageType::TeamsEnterMatch:
         // Is called when the game was started and the players should enter it

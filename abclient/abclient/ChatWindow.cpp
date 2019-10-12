@@ -136,8 +136,6 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(Events::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
     SubscribeToEvent(Events::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
-    SubscribeToEvent(Events::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedIn));
-    SubscribeToEvent(Events::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedOut));
     SubscribeToEvent(Events::E_WHISPERTO, URHO3D_HANDLER(ChatWindow, HandleWhisperTo));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
@@ -472,20 +470,6 @@ void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
     using namespace Events::ServerMessage;
     const String& data = eventData[P_DATA].GetString();
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
-}
-
-void ChatWindow::HandlePlayerLoggedIn(StringHash, VariantMap& eventData)
-{
-    using namespace Events::PlayerLoggedIn;
-    const String& sender = eventData[P_NAME].GetString();
-    AddLine(sender, sender + " logged in.", "ChatLogServerInfoText");
-}
-
-void ChatWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
-{
-    using namespace Events::PlayerLoggedOut;
-    const String& sender = eventData[P_NAME].GetString();
-    AddLine(sender, sender + " logged out.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)

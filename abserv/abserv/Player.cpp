@@ -527,18 +527,23 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
         WriteToOutput(*msg);
 }
 
-void Player::SendPlayerInfo(const AB::Entities::Character& ch)
+void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::PlayerInfo);
+    msg->Add<uint32_t>(fields);
     msg->AddString(ch.accountUuid);
     AB::Entities::Friend f;
     bool isFriend = friendList_->GetFriendByAccount(ch.accountUuid, f);
-    if (isFriend)
-        msg->AddString(f.friendName);
-    else
-        msg->AddString(ch.name);
-    msg->Add<uint8_t>(f.relation);
+    if (fields & AB::GameProtocol::PlayerInfoFieldName)
+    {
+        if (isFriend)
+            msg->AddString(f.friendName);
+        else
+            msg->AddString(ch.name);
+    }
+    if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
+        msg->Add<uint8_t>(f.relation);
 
     AB::Entities::Account account;
     account.uuid = ch.accountUuid;
@@ -547,48 +552,60 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch)
     if (f.relation != AB::Entities::FriendRelationIgnore && account.onlineStatus != AB::Entities::OnlineStatusInvisible)
     {
         // If success == false -> offline, empty toon name
-        msg->Add<uint8_t>(account.onlineStatus);
-        msg->AddString(currentToon.name);
-        msg->AddString(currentToon.currentMapUuid);
+        if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+            msg->Add<uint8_t>(account.onlineStatus);
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+            msg->AddString(currentToon.name);
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+            msg->AddString(currentToon.currentMapUuid);
     }
     else
     {
         // Ignored always offline and no current toon
-        msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
-        msg->AddString("");
-        msg->AddString(Utils::Uuid::EMPTY_UUID);
+        if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+            msg->AddString("");
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+            msg->AddString(Utils::Uuid::EMPTY_UUID);
     }
     // Guild info
     AB::Entities::GuildMember gm;
     IO::IOAccount_GetGuildMemberInfo(account, gm);
-    msg->AddString(account.guildUuid);
-    msg->Add<uint8_t>(gm.role);
-    msg->AddString(gm.inviteName);
-    msg->Add<int64_t>(gm.invited);
-    msg->Add<int64_t>(gm.joined);
-    msg->Add<int64_t>(gm.expires);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
+        msg->AddString(account.guildUuid);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
+        msg->Add<uint8_t>(gm.role);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
+        msg->AddString(gm.inviteName);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
+        msg->Add<int64_t>(gm.invited);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
+        msg->Add<int64_t>(gm.joined);
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
+        msg->Add<int64_t>(gm.expires);
 
     WriteToOutput(*msg);
 }
 
-void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid)
+void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields)
 {
     AB::Entities::Character ch;
     bool found = IO::IOPlayer_GetPlayerInfoByAccount(accountUuid, ch);
     if (!found)
         // If there is no such thing, we just don't reply to this request
         return;
-    SendPlayerInfo(ch);
+    SendPlayerInfo(ch, fields);
 }
 
-void Player::CRQGetPlayerInfoByName(const std::string name)
+void Player::CRQGetPlayerInfoByName(const std::string name, uint32_t fields)
 {
     AB::Entities::Character ch;
     bool found = IO::IOPlayer_GetPlayerInfoByName(name, ch);
     if (!found)
         // If there is no such thing, we just don't reply to this request
         return;
-    SendPlayerInfo(ch);
+    SendPlayerInfo(ch, fields);
 }
 
 void Player::CRQGetGuildMembers()

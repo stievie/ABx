@@ -253,12 +253,6 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         case AB::GameProtocol::GuildMemberList:
             ParseGuildMemberList(message);
             break;
-        case AB::GameProtocol::PlayerLoggedIn:
-            ParsePlayerLoggedIn(message);
-            break;
-        case AB::GameProtocol::PlayerLoggedOut:
-            ParsePlayerLoggedOut(message);
-            break;
         case AB::GameProtocol::PlayerInfo:
             ParsePlayerInfo(message);
             break;
@@ -612,54 +606,34 @@ void ProtocolGame::ParseGuildMemberList(InputMessage& message)
     receiver_.OnGuildMemberList(updateTick_, members);
 }
 
-void ProtocolGame::ParsePlayerLoggedIn(InputMessage& message)
-{
-    /*
-    nmsg->AddString(accUuid);
-    nmsg->AddString(ch.name);
-    nmsg->Add<uint8_t>(account.onlineStatus);
-    nmsg->AddString(ch.currentMapUuid);
-    */
-    RelatedAccount player;
-    player.accountUuid = message.GetString();
-    player.currentName = message.GetString();
-    player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-    player.currentMap = message.GetString();
-
-    receiver_.OnPlayerLoggedIn(updateTick_, player);
-}
-
-void ProtocolGame::ParsePlayerLoggedOut(InputMessage& message)
-{
-/*
-    nmsg->AddString(accUuid);
-    nmsg->AddString(ch.name);
-    nmsg->Add<uint8_t>(account.onlineStatus);
-*/
-    RelatedAccount player;
-    player.accountUuid = message.GetString();
-    player.currentName = message.GetString();
-    player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-
-    receiver_.OnPlayerLoggedOut(updateTick_, player);
-}
-
 void ProtocolGame::ParsePlayerInfo(InputMessage& message)
 {
+    uint32_t fields = message.Get<uint32_t>();
     RelatedAccount frnd;
+    frnd.fields = fields;
     frnd.accountUuid = message.GetString();
-    frnd.name = message.GetString();
-    frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
-    frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-    frnd.currentName = message.GetString();
-    frnd.currentMap = message.GetString();
-    frnd.name = frnd.currentName;
-    frnd.guildUuid = message.GetString();
-    frnd.guildRole = static_cast<RelatedAccount::GuildRole>(message.Get<uint8_t>());
-    frnd.guildInviteName = message.GetString();
-    frnd.invited = message.Get<int64_t>();
-    frnd.joined = message.Get<int64_t>();
-    frnd.expires = message.Get<int64_t>();
+    if (fields & AB::GameProtocol::PlayerInfoFieldName)
+        frnd.nickName = message.GetString();
+    if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
+        frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+        frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
+    if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+        frnd.currentName = message.GetString();
+    if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+        frnd.currentMap = message.GetString();
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
+        frnd.guildUuid = message.GetString();
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
+        frnd.guildRole = static_cast<RelatedAccount::GuildRole>(message.Get<uint8_t>());
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
+        frnd.guildInviteName = message.GetString();
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
+        frnd.invited = message.Get<int64_t>();
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
+        frnd.joined = message.Get<int64_t>();
+    if (fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
+        frnd.expires = message.Get<int64_t>();
 
     receiver_.OnPlayerInfo(updateTick_, frnd);
 }
@@ -1047,19 +1021,21 @@ void ProtocolGame::SendMail(const std::string& recipient, const std::string& sub
     Send(std::move(msg));
 }
 
-void ProtocolGame::GetPlayerInfoByName(const std::string& name)
+void ProtocolGame::GetPlayerInfoByName(const std::string& name, uint32_t fields)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByName);
     msg->AddString(name);
+    msg->Add<uint32_t>(fields);
     Send(std::move(msg));
 }
 
-void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid)
+void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByAccount);
     msg->AddString(accountUuid);
+    msg->Add<uint32_t>(fields);
     Send(std::move(msg));
 }
 

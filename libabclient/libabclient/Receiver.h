@@ -67,8 +67,10 @@ struct RelatedAccount
         GuildRoleOfficer,
         GuildRoleLeader
     };
+    uint32_t fields{ 0 };
     std::string accountUuid;
-    std::string name;
+    // Friend nick name
+    std::string nickName;
     std::string currentName;
     std::string currentMap;
     Status status;
@@ -155,8 +157,6 @@ public:
     virtual void OnPartyDefeated(int64_t updateTick, uint32_t partyId) = 0;
     virtual void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) = 0;
     virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
-    virtual void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) = 0;
-    virtual void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnFriendList(int64_t updateTick, const std::vector<std::string>&) = 0;
     virtual void OnFriendAdded(int64_t updateTick, const std::string&, RelatedAccount::Releation relation) = 0;

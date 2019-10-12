@@ -696,23 +696,27 @@ void FwClient::SendMail(const std::string& recipient, const std::string& subject
         client_.SendMail(recipient, subject, body);
 }
 
-void FwClient::GetPlayerInfoByName(const std::string& name)
+void FwClient::GetPlayerInfoByName(const std::string& name, uint32_t fields)
 {
     if (loggedIn_)
-        client_.GetPlayerInfoByName(name);
+        client_.GetPlayerInfoByName(name, fields);
 }
 
-void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid)
+void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
 {
     if (!loggedIn_)
         return;
     const auto it = relatedAccounts_.find(accountUuid);
+
     if (it != relatedAccounts_.end())
     {
-        OnPlayerInfo(0, (*it).second);
-        return;
+        if (((*it).second.fields & fields) == fields)
+        {
+            OnPlayerInfo(0, (*it).second);
+            return;
+        }
     }
-    client_.GetPlayerInfoByAccount(accountUuid);
+    client_.GetPlayerInfoByAccount(accountUuid, fields);
 }
 
 void FwClient::UpdateInventory()
@@ -1580,48 +1584,76 @@ void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
     QueueEvent(Events::E_DIALOGGTRIGGER, eData);
 }
 
-void FwClient::OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player)
+void FwClient::UpdatePlayer(const Client::RelatedAccount& player)
 {
     auto it = relatedAccounts_.find(player.accountUuid);
     if (it == relatedAccounts_.end())
-        relatedAccounts_.emplace(player.accountUuid, player);
-    else
     {
-        (*it).second.currentName = player.currentName;
-        (*it).second.status = player.status;
-        (*it).second.currentMap = player.currentMap;
+        relatedAccounts_.emplace(player.accountUuid, player);
+        return;
     }
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PlayerLoggedIn;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
-    eData[P_NAME] = String(player.currentName.c_str());
-    eData[P_STATUS] = static_cast<uint8_t>(player.status);
-    eData[P_MAP] = String(player.currentMap.c_str());
-    QueueEvent(Events::E_PLAYER_LOGGEDIN, eData);
-}
 
-void FwClient::OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player)
-{
-    auto it = relatedAccounts_.find(player.accountUuid);
-    if (it == relatedAccounts_.end())
-        relatedAccounts_.emplace(player.accountUuid, player);
-    else
+    Client::RelatedAccount& relAcc = (*it).second;
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldName)
     {
-        (*it).second.status = player.status;
+        relAcc.nickName = player.nickName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldName;
     }
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PlayerLoggedOut;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
-    eData[P_NAME] = String(player.currentName.c_str());
-    eData[P_STATUS] = static_cast<uint8_t>(player.status);
-    QueueEvent(Events::E_PLAYER_LOGGEDOUT, eData);
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+    {
+        relAcc.currentName = player.currentName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentName;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+    {
+        relAcc.currentMap = player.currentMap;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentMap;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+    {
+        relAcc.status = player.status;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldOnlineStatus;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldRelation)
+    {
+        relAcc.relation = player.relation;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldRelation;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
+    {
+        relAcc.guildUuid = player.guildUuid;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildGuid;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
+    {
+        relAcc.guildRole = player.guildRole;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildRole;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
+    {
+        relAcc.guildInviteName = player.guildInviteName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInviteName;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
+    {
+        relAcc.invited = player.invited;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInvited;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
+    {
+        relAcc.joined = player.joined;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildJoined;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
+    {
+        relAcc.expires = player.expires;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildExpires;
+    }
 }
 
 void FwClient::OnPlayerInfo(int64_t, const Client::RelatedAccount& player)
 {
-    relatedAccounts_.emplace(player.accountUuid, player);
+    UpdatePlayer(player);
     VariantMap& eData = GetEventDataMap();
     using namespace Events::GotPlayerInfo;
     eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
@@ -1666,6 +1698,11 @@ void FwClient::OnGuildInfo(int64_t, const AB::Entities::Guild& guild)
 {
     // TODO:
     (void)guild;
+}
+
+const std::string & FwClient::GetAccountUuid() const
+{
+    return client_.accountUuid_;
 }
 
 const Client::RelatedAccount* FwClient::GetRelatedAccount(const String& accountUuid) const

@@ -362,16 +362,6 @@ void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
     receiver_.OnDialogTrigger(updateTick, dialogId);
 }
 
-void Client::OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player)
-{
-    receiver_.OnPlayerLoggedIn(updateTick, player);
-}
-
-void Client::OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player)
-{
-    receiver_.OnPlayerLoggedOut(updateTick, player);
-}
-
 void Client::OnPlayerInfo(int64_t updateTick, const RelatedAccount& player)
 {
     receiver_.OnPlayerInfo(updateTick, player);
@@ -697,16 +687,16 @@ void Client::SendMail(const std::string& recipient, const std::string& subject, 
         protoGame_->SendMail(recipient, subject, body);
 }
 
-void Client::GetPlayerInfoByName(const std::string& name)
+void Client::GetPlayerInfoByName(const std::string& name, uint32_t fields)
 {
     if (state_ == ClientState::World)
-        protoGame_->GetPlayerInfoByName(name);
+        protoGame_->GetPlayerInfoByName(name, fields);
 }
 
-void Client::GetPlayerInfoByAccount(const std::string& accountUuid)
+void Client::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
 {
     if (state_ == ClientState::World)
-        protoGame_->GetPlayerInfoByAccount(accountUuid);
+        protoGame_->GetPlayerInfoByAccount(accountUuid, fields);
 }
 
 void Client::Move(uint8_t direction)

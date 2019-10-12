@@ -120,9 +120,8 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::NewMail:
         HandleNewMailMessage(msg);
         break;
-    case Net::MessageType::PlayerLoggedIn:
-    case Net::MessageType::PlayerLoggedOut:
-        HandlePlayerOnlineMessage(msg);
+    case Net::MessageType::PlayerChanged:
+        HandlePlayerChangedMessage(msg);
         break;
     case Net::MessageType::QueueAdd:
     case Net::MessageType::QueueRemove:
@@ -210,27 +209,47 @@ void MessageSession::HandleQueueMessage(const Net::MessageMsg& msg)
         LOG_WARNING << "Match making server not running" << std::endl;
 }
 
-void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
+void MessageSession::HandlePlayerChangedMessage(const Net::MessageMsg& msg)
 {
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
+    {
+        LOG_ERROR << "Unable to get property stream" << std::endl;
         return;
-    std::string account;
-    if (!stream.ReadString(account))
+    }
+    uint32_t fields{ 0 };
+    if (!stream.Read<uint32_t>(fields))
+    {
+        LOG_ERROR << "Unable to fields" << std::endl;
         return;
+    }
+    if (fields == 0)
+    {
+        LOG_ERROR << "fields == 0" << std::endl;
+        return;
+    }
+    std::string accountUuid;
+    if (!stream.ReadString(accountUuid))
+    {
+        LOG_ERROR << "Unable to read accountt UUID" << std::endl;
+        return;
+    }
 
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
-    acc.uuid = account;
+    acc.uuid = accountUuid;
     if (!client->Read(acc))
+    {
+        LOG_ERROR << "Unable to read account with UUID " << acc.uuid << std::endl;
         return;
+    }
 
     std::vector<std::string> interested;
     std::unordered_set<std::string> ignored;
 
     // I friended those
     AB::Entities::FriendList fl;
-    fl.uuid = account;
+    fl.uuid = accountUuid;
     if (client->Read(fl))
     {
         for (const auto& f : fl.friends)
@@ -243,7 +262,7 @@ void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
     }
     // Those friended me
     AB::Entities::FriendedMe fme;
-    fme.uuid = account;
+    fme.uuid = accountUuid;
     if (client->Read(fme))
     {
         for (const auto& f : fme.friends)
@@ -270,7 +289,7 @@ void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
         {
             for (const auto& gm : gms.members)
             {
-                if (!Utils::Uuid::IsEqual(account, gm.accountUuid) && !isIgnored(gm.accountUuid))
+                if (!Utils::Uuid::IsEqual(accountUuid, gm.accountUuid) && !isIgnored(gm.accountUuid))
                     // Don't add self and ignored
                     interested.push_back(gm.accountUuid);
             }

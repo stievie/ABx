@@ -59,6 +59,7 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);
+    void UpdatePlayer(const Client::RelatedAccount& player);
 public:
     static String GetProtocolErrorMessage(uint8_t err);
     static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
@@ -102,8 +103,8 @@ public:
     void ReadMail(const std::string& uuid);
     void DeleteMail(const std::string& uuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
-    void GetPlayerInfoByName(const std::string& name);
-    void GetPlayerInfoByAccount(const std::string& accountUuid);
+    void GetPlayerInfoByName(const std::string& name, uint32_t fields);
+    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields);
     void UpdateInventory();
     void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
@@ -206,8 +207,6 @@ public:
     void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
     void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
-    void OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player) override;
-    void OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player) override;
     void OnPlayerInfo(int64_t updateTick, const Client::RelatedAccount& player) override;
     void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
     void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, Client::RelatedAccount::Releation relation) override;
@@ -237,6 +236,7 @@ public:
     {
         return characters_;
     }
+    const std::string& GetAccountUuid() const;
     const AB::Entities::Game* GetGame(const String& uuid) const
     {
         auto it = games_.find(std::string(uuid.CString()));

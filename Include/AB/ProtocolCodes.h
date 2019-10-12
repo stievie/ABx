@@ -266,8 +266,6 @@ enum GameProtocolCodes : uint8_t
     GuildMemberList,
 
     DialogTrigger,                // Show a dialog
-    PlayerLoggedIn,                    // Notification sent to friends/guild members when a player logged in
-    PlayerLoggedOut,                   // Notification sent to friends/guild members when a player logged out
     PlayerInfo,                   // Get info of related player (e.g. friend, guild member)
 
     CodeLast = 0xFF
@@ -346,6 +344,23 @@ enum GameObjectType : uint8_t
     ObjectTypeNpc,
     ObjectTypePlayer,                // Human player
 };
+
+enum PlayerInfoFields : uint32_t
+{
+    PlayerInfoFieldName = 1,
+    PlayerInfoFieldCurrentName = 1 << 1,
+    PlayerInfoFieldCurrentMap = 1 << 2,
+    PlayerInfoFieldOnlineStatus = 1 << 3,
+    PlayerInfoFieldRelation = 1 << 4,
+    PlayerInfoFieldGuildGuid = 1 << 5,
+    PlayerInfoFieldGuildRole = 1 << 6,
+    PlayerInfoFieldGuildInviteName = 1 << 7,
+    PlayerInfoFieldGuildInvited = 1 << 8,
+    PlayerInfoFieldGuildJoined = 1 << 9,
+    PlayerInfoFieldGuildExpires = 1 << 10
+};
+
+constexpr uint32_t PlayerInfoFieldsAll = 0xFFFFFFFF;
 
 /// Pacekts sent by the client
 enum GamePacketTypes : uint8_t

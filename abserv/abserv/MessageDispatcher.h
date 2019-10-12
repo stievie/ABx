@@ -11,8 +11,7 @@ private:
     void DispatchTradeChat(const Net::MessageMsg& msg);
     void DispatchWhipserChat(const Net::MessageMsg& msg);
     void DispatchNewMail(const Net::MessageMsg& msg);
-    void DispatchPlayerLoggedIn(const Net::MessageMsg& msg);
-    void DispatchPlayerLoggedOut(const Net::MessageMsg& msg);
+    void DispatchPlayerChanged(const Net::MessageMsg& msg);
     void DispatchServerChange(const Net::MessageMsg& msg);
     void DispatchTeamsEnterMatch(const Net::MessageMsg& msg);
     void DispatchQueueAdded(const Net::MessageMsg& msg);

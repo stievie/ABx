@@ -2,6 +2,7 @@
 #include "FriendListWindow.h"
 #include "Shortcuts.h"
 #include "FwClient.h"
+#include "Player.h"
 
 void FriendListWindow::RegisterObject(Context* context)
 {
@@ -41,6 +42,20 @@ FriendListWindow::FriendListWindow(Context* context) :
     ignoreList_ = dynamic_cast<ListView*>(GetChild("IgnoreListView", true));
     addFriendEdit_ = dynamic_cast<LineEdit*>(GetChild("AddFriendEdit", true));
     addIgnoreEdit_ = dynamic_cast<LineEdit*>(GetChild("AddIgnoredEdit", true));
+    statusDropdown_ = dynamic_cast<DropDownList*>(GetChild("StatusDropdown", true));
+
+    auto createStatusDropdownItem = [this](const String& text, Client::RelatedAccount::Status status) -> Text*
+    {
+        Text* result = new Text(context_);
+        result->SetText(text);
+        result->SetVar("Value", static_cast<int>(status));
+        result->SetStyle("DropDownItemEnumText");
+        return result;
+    };
+    statusDropdown_->AddItem(createStatusDropdownItem("Offline", Client::RelatedAccount::Status::OnlineStatusInvisible));
+    statusDropdown_->AddItem(createStatusDropdownItem("Online", Client::RelatedAccount::Status::OnlineStatusOnline));
+    statusDropdown_->AddItem(createStatusDropdownItem("Away", Client::RelatedAccount::Status::OnlineStatusAway));
+    statusDropdown_->AddItem(createStatusDropdownItem("Do not disturb", Client::RelatedAccount::Status::OnlineStatusDoNotDisturb));
 
     SetSize(272, 128);
     auto* graphics = GetSubsystem<Graphics>();
@@ -149,13 +164,26 @@ void FriendListWindow::SubscribeEvents()
     SubscribeToEvent(addFriendButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddFriendClicked));
     Button* addIgnoreButton = dynamic_cast<Button*>(GetChild("AddIgnoredButton", true));
     SubscribeToEvent(addIgnoreButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddIgnoreClicked));
+    SubscribeToEvent(statusDropdown_, E_ITEMSELECTED, URHO3D_HANDLER(FriendListWindow, HandleStatusDropdownSelected));
 
     SubscribeToEvent(Events::E_GOT_PLAYERINFO, URHO3D_HANDLER(FriendListWindow, HandleGotPlayerInfo));
     SubscribeToEvent(Events::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
     SubscribeToEvent(Events::E_FRIENDADDED, URHO3D_HANDLER(FriendListWindow, HandleFriendAdded));
     SubscribeToEvent(Events::E_FRIENDREMOVED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoved));
-    SubscribeToEvent(Events::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedOut));
-    SubscribeToEvent(Events::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(FriendListWindow, HandlePlayerLoggedIn));
+}
+
+void FriendListWindow::HandleStatusDropdownSelected(StringHash, VariantMap& eventData)
+{
+    using namespace ItemSelected;
+    unsigned sel = eventData[P_SELECTION].GetUInt();
+    DropDownList* list = dynamic_cast<DropDownList*>(eventData[P_ELEMENT].GetPtr());
+    UIElement* elem = list->GetItem(sel);
+    if (elem)
+    {
+        Client::RelatedAccount::Status status = static_cast<Client::RelatedAccount::Status>(elem->GetVar("Value").GetUInt());
+        // TODO:
+        (void)status;
+    }
 }
 
 void FriendListWindow::HandleGotFriendList(StringHash, VariantMap&)
@@ -169,10 +197,27 @@ void FriendListWindow::UpdateAll()
     const auto& fl = client->GetFriendList();
     friendList_->RemoveAllItems();
     ignoreList_->RemoveAllItems();
+    client->GetPlayerInfoByAccount(client->GetAccountUuid(), AB::GameProtocol::PlayerInfoFieldOnlineStatus);
     for (const auto& f : fl)
     {
         // Should trigger GotPlayerInfo where we add the item
-        client->GetPlayerInfoByAccount(f);
+        client->GetPlayerInfoByAccount(f, AB::GameProtocol::PlayerInfoFieldsAll);
+    }
+}
+
+void FriendListWindow::UpdateSelf(const Client::RelatedAccount& acc)
+{
+    if (acc.fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+    {
+        for (unsigned i = 0; i < statusDropdown_->GetNumItems(); ++i)
+        {
+            auto* item = statusDropdown_->GetItem(i);
+            if (item->GetVar("Value").GetUInt() == static_cast<unsigned>(acc.status))
+            {
+                statusDropdown_->SetSelection(i);
+                break;
+            }
+        }
     }
 }
 
@@ -262,7 +307,7 @@ void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
     using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     auto* client = GetSubsystem<FwClient>();
-    client->GetPlayerInfoByAccount(std::string(uuid.CString()));
+    client->GetPlayerInfoByAccount(std::string(uuid.CString()), AB::GameProtocol::PlayerInfoFieldsAll);
 }
 
 void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
@@ -275,8 +320,8 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
         txt->SetName(name);
         SubscribeToEvent(txt, E_CLICKEND, URHO3D_HANDLER(FriendListWindow, HandleFriendItemClicked));
     }
-    String text(f.name.c_str());
-    if (f.name.compare(f.currentName) != 0 && f.status == Client::RelatedAccount::OnlineStatusOnline)
+    String text(f.nickName.c_str());
+    if (f.nickName.compare(f.currentName) != 0 && f.status == Client::RelatedAccount::OnlineStatusOnline)
         text.AppendWithFormat(" (%s)", f.currentName.c_str());
 
     txt->SetText(text);
@@ -291,36 +336,6 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
     lv->AddItem(txt);
     lv->EnableLayoutUpdate();
     lv->UpdateLayout();
-}
-
-void FriendListWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
-{
-    using namespace Events::PlayerLoggedOut;
-    const String& uuid = eventData[P_ACCOUNTUUID].GetString();
-    auto* client = GetSubsystem<FwClient>();
-    auto* acc = client->GetRelatedAccount(uuid);
-    if (acc == nullptr)
-        return;
-
-    if (acc->relation == AB::Entities::FriendRelationFriend)
-        UpdateItem(friendList_, *acc);
-    else if (acc->relation == AB::Entities::FriendRelationIgnore)
-        UpdateItem(ignoreList_, *acc);
-}
-
-void FriendListWindow::HandlePlayerLoggedIn(StringHash, VariantMap& eventData)
-{
-    using namespace Events::PlayerLoggedIn;
-    const String& uuid = eventData[P_ACCOUNTUUID].GetString();
-    auto* client = GetSubsystem<FwClient>();
-    auto* acc = client->GetRelatedAccount(uuid);
-    if (acc == nullptr)
-        return;
-
-    if (acc->relation == AB::Entities::FriendRelationFriend)
-        UpdateItem(friendList_, *acc);
-    else if (acc->relation == AB::Entities::FriendRelationIgnore)
-        UpdateItem(ignoreList_, *acc);
 }
 
 void FriendListWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -355,7 +370,9 @@ void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)
     if (acc == nullptr)
         return;
 
-    if (acc->relation == AB::Entities::FriendRelationFriend)
+    if (acc->accountUuid.compare(client->GetAccountUuid()) == 0)
+        UpdateSelf(*acc);
+    else if (acc->relation == AB::Entities::FriendRelationFriend)
         UpdateItem(friendList_, *acc);
     else if (acc->relation == AB::Entities::FriendRelationIgnore)
         UpdateItem(ignoreList_, *acc);

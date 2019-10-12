@@ -65,7 +65,6 @@ private:
     void HandleGotoPlayerCommand(const std::string&, Net::NetworkMessage&);
     // Send command unknown message to the client
     void HandleUnknownCommand();
-    void SendPlayerInfo(const AB::Entities::Character& ch);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -125,6 +124,7 @@ public:
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();
     void NotifyNewMail();
+    void SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields);
 
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
@@ -171,8 +171,8 @@ public:
     void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
     void CRQRemoveFriend(const std::string accountUuid);
     void CRQChangeFriendNick(const std::string accountUuid, const std::string newName);
-    void CRQGetPlayerInfoByAccount(const std::string accountUuid);
-    void CRQGetPlayerInfoByName(const std::string name);
+    void CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields);
+    void CRQGetPlayerInfoByName(const std::string name, uint32_t fields);
     void CRQGetGuildInfo();
     /// Client requested the friend list
     void CRQGetFriendList();

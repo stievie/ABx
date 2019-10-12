@@ -360,13 +360,15 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeGetPlayerInfoByAccount:
     {
         std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByAccount, accountUuid);
+        uint32_t fields = message.Get<uint32_t>();
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByAccount, accountUuid, fields);
         break;
     }
     case AB::GameProtocol::PacketTypeGetPlayerInfoByName:
     {
         std::string name = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByName, name);
+        uint32_t fields = message.Get<uint32_t>();
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByName, name, fields);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:

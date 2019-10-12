@@ -93,8 +93,6 @@ protected:
     void ParseFriendRemoved(InputMessage& message);
     void ParseGuildInfo(InputMessage& message);
     void ParseGuildMemberList(InputMessage& message);
-    void ParsePlayerLoggedIn(InputMessage& message);
-    void ParsePlayerLoggedOut(InputMessage& message);
     void ParsePlayerInfo(InputMessage& message);
 public:
     ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);
@@ -117,8 +115,8 @@ public:
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
-    void GetPlayerInfoByName(const std::string& name);
-    void GetPlayerInfoByAccount(const std::string& accountUuid);
+    void GetPlayerInfoByName(const std::string& name, uint32_t fields);
+    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields);
 
     void Move(uint8_t direction);
     void Turn(uint8_t direction);

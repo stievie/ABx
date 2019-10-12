@@ -40,7 +40,7 @@ private:
     void HandleWhisperMessage(const Net::MessageMsg& msg);
     void HandleNewMailMessage(const Net::MessageMsg& msg);
     void HandleQueueMessage(const Net::MessageMsg& msg);
-    void HandlePlayerOnlineMessage(const Net::MessageMsg& msg);
+    void HandlePlayerChangedMessage(const Net::MessageMsg& msg);
     void HandleQueuePlayerMessage(const Net::MessageMsg& msg);
     void HandleQueueTeamEnterMessage(const Net::MessageMsg& msg);
     void SendPlayerMessage(const std::string& playerUuid, const Net::MessageMsg& msg);

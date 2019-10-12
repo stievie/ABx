@@ -101,6 +101,7 @@ private:
     int _LuaGetType() const { return data_.type; }
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
+    void BroadcastPlayerChanged(std::shared_ptr<Player> player, uint32_t fields);
     void InternalRemoveObject(GameObject* object);
     void ShutdownNpcs();
     void SendSpawnObject(std::shared_ptr<GameObject> object);

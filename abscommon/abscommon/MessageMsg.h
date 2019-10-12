@@ -24,8 +24,7 @@ enum class MessageType : uint8_t
     TradeChat,
     Whipser,
     NewMail,
-    PlayerLoggedIn,
-    PlayerLoggedOut,
+    PlayerChanged,
 
     // Queues
     QueueAdd,
