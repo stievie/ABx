@@ -36,26 +36,11 @@ OptionsWindow::OptionsWindow(Context* context) :
     tabgroup_->SetColor(Color(0, 0, 0, 0));
     tabgroup_->SetStyleAuto();
 
-    {
-        TabElement* elem = CreateTab(tabgroup_, "General");
-        CreatePageGeneral(elem);
-    }
-    {
-        TabElement* elem = CreateTab(tabgroup_, "Graphics");
-        CreatePageGraphics(elem);
-    }
-    {
-        TabElement* elem = CreateTab(tabgroup_, "Audio");
-        CreatePageAudio(elem);
-    }
-    {
-        TabElement* elem = CreateTab(tabgroup_, "Input");
-        CreatePageInput(elem);
-    }
-    {
-        TabElement* elem = CreateTab(tabgroup_, "Interface");
-        CreatePageInterface(elem);
-    }
+    CreatePageGeneral(CreateTab(tabgroup_, "General"));
+    CreatePageGraphics(CreateTab(tabgroup_, "Graphics"));
+    CreatePageAudio(CreateTab(tabgroup_, "Audio"));
+    CreatePageInput(CreateTab(tabgroup_, "Input"));
+    CreatePageInterface(CreateTab(tabgroup_, "Interface"));
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
@@ -152,28 +137,19 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
 
     Options* opts = GetSubsystem<Options>();
 
+    auto getWindowModeItem = [this](const String& text, WindowMode mode) -> Text*
+    {
+        Text* result = new Text(context_);
+        result->SetText(text);
+        result->SetStyle("DropDownItemEnumText");
+        result->SetVar("Mode", static_cast<int>(mode));
+        return result;
+    };
+
     DropDownList* windowDropdown = dynamic_cast<DropDownList*>(wnd->GetChild("WindowDropdown", true));
-    {
-        Text* result = new Text(context_);
-        result->SetText("Windowed");
-        result->SetStyle("DropDownItemEnumText");
-        result->SetVar("Mode", static_cast<int>(WindowMode::Windowed));
-        windowDropdown->AddItem(result);
-    }
-    {
-        Text* result = new Text(context_);
-        result->SetText("Fullscreen");
-        result->SetStyle("DropDownItemEnumText");
-        result->SetVar("Mode", static_cast<int>(WindowMode::Fullcreeen));
-        windowDropdown->AddItem(result);
-    }
-    {
-        Text* result = new Text(context_);
-        result->SetText("Borderless");
-        result->SetStyle("DropDownItemEnumText");
-        result->SetVar("Mode", static_cast<unsigned>(WindowMode::Borderless));
-        windowDropdown->AddItem(result);
-    }
+    windowDropdown->AddItem(getWindowModeItem("Windowed", WindowMode::Windowed));
+    windowDropdown->AddItem(getWindowModeItem("Fullscreen", WindowMode::Fullcreen));
+    windowDropdown->AddItem(getWindowModeItem("Borderless", WindowMode::Borderless));
     if (opts->GetWindowMode() == WindowMode::Maximized)
         windowDropdown->SetSelection(0u);
     else
@@ -257,49 +233,22 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     Options* opts = GetSubsystem<Options>();
 
     {
+
         DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("ShadowQualityDropdown", true));
+        auto getItem = [this](const String& text, ShadowQuality qual) -> Text*
         {
             Text* result = new Text(context_);
-            result->SetText("Simple 16Bit");
+            result->SetText(text);
             result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_SIMPLE_16BIT));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Simple 24Bit");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_SIMPLE_24BIT));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("PCF 16Bit");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_PCF_16BIT));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("PCF 24Bit");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_PCF_24BIT));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("VSM");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_VSM));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Blur VSM");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(SHADOWQUALITY_BLUR_VSM));
-            dropdown->AddItem(result);
-        }
+            result->SetVar("Mode", static_cast<unsigned>(qual));
+            return result;
+        };
+        dropdown->AddItem(getItem("Simple 16Bit", SHADOWQUALITY_SIMPLE_16BIT));
+        dropdown->AddItem(getItem("Simple 24Bit", SHADOWQUALITY_SIMPLE_24BIT));
+        dropdown->AddItem(getItem("PCF 16Bit", SHADOWQUALITY_PCF_16BIT));
+        dropdown->AddItem(getItem("PCF 24Bit", SHADOWQUALITY_PCF_24BIT));
+        dropdown->AddItem(getItem("VSM", SHADOWQUALITY_VSM));
+        dropdown->AddItem(getItem("Blur VSM", SHADOWQUALITY_BLUR_VSM));
         dropdown->SetSelection(static_cast<unsigned>(opts->GetShadowQuality()));
         SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
@@ -317,45 +266,37 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaterialQualityDropdown", true));
+        DropDownList* materialDropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaterialQualityDropdown", true));
+        auto getQualityItem = [this](const String& text, MaterialQuality mode) -> Text*
         {
             Text* result = new Text(context_);
-            result->SetText("Low");
+            result->SetText(text);
             result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_LOW));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_LOW)
-                dropdown->SetSelection(0);
-        }
+            result->SetVar("Mode", static_cast<unsigned>(mode));
+            return result;
+        };
+        materialDropdown->AddItem(getQualityItem("Low", QUALITY_LOW));
+        materialDropdown->AddItem(getQualityItem("Medium", QUALITY_MEDIUM));
+        materialDropdown->AddItem(getQualityItem("High", QUALITY_HIGH));
+        materialDropdown->AddItem(getQualityItem("Max", QUALITY_MAX));
+        switch (opts->GetMaterialQuality())
         {
-            Text* result = new Text(context_);
-            result->SetText("Medium");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_MEDIUM));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_MEDIUM)
-                dropdown->SetSelection(1);
+        case QUALITY_LOW:
+            materialDropdown->SetSelection(0);
+            break;
+        case QUALITY_MEDIUM:
+            materialDropdown->SetSelection(1);
+            break;
+        case QUALITY_HIGH:
+            materialDropdown->SetSelection(2);
+            break;
+        case QUALITY_MAX:
+            materialDropdown->SetSelection(3);
+            break;
+        default:
+            assert(false);
         }
-        {
-            Text* result = new Text(context_);
-            result->SetText("High");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_HIGH));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_HIGH)
-                dropdown->SetSelection(2);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Max");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_MAX));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_MAX)
-                dropdown->SetSelection(3);
-        }
-
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
+        SubscribeToEvent(materialDropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -368,48 +309,30 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
                 opt->SetMaterialQuality(mode);
             }
         });
-    }
 
-    {
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("TextureQualityDropdown", true));
+        DropDownList* textureQropdown = dynamic_cast<DropDownList*>(wnd->GetChild("TextureQualityDropdown", true));
+        textureQropdown->AddItem(getQualityItem("Low", QUALITY_LOW));
+        textureQropdown->AddItem(getQualityItem("Medium", QUALITY_MEDIUM));
+        textureQropdown->AddItem(getQualityItem("High", QUALITY_HIGH));
+        textureQropdown->AddItem(getQualityItem("Max", QUALITY_MAX));
+        switch (opts->GetTextureQuality())
         {
-            Text* result = new Text(context_);
-            result->SetText("Low");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_LOW));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_LOW)
-                dropdown->SetSelection(0);
+        case QUALITY_LOW:
+            textureQropdown->SetSelection(0);
+            break;
+        case QUALITY_MEDIUM:
+            textureQropdown->SetSelection(1);
+            break;
+        case QUALITY_HIGH:
+            textureQropdown->SetSelection(2);
+            break;
+        case QUALITY_MAX:
+            textureQropdown->SetSelection(3);
+            break;
+        default:
+            assert(false);
         }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Medium");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_MEDIUM));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_MEDIUM)
-                dropdown->SetSelection(1);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("High");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_HIGH));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_HIGH)
-                dropdown->SetSelection(2);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Max");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(QUALITY_MAX));
-            dropdown->AddItem(result);
-            if (opts->GetMaterialQuality() == QUALITY_MAX)
-                dropdown->SetSelection(3);
-        }
-
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(textureQropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -426,48 +349,20 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
 
     {
         DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("TextureFilterDropdown", true));
+        auto getItem = [this](const String& text, TextureFilterMode mode) -> Text*
         {
             Text* result = new Text(context_);
-            result->SetText("Nearest");
+            result->SetText(text);
             result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_NEAREST));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Bilinear");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_BILINEAR));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Trilinear");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_TRILINEAR));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Anisotropic");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_ANISOTROPIC));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Nearest Anisotropic");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_NEAREST_ANISOTROPIC));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("Default");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(FILTER_DEFAULT));
-            dropdown->AddItem(result);
-        }
+            result->SetVar("Mode", static_cast<unsigned>(mode));
+            return result;
+        };
+        dropdown->AddItem(getItem("Nearest", FILTER_NEAREST));
+        dropdown->AddItem(getItem("Bilinear", FILTER_BILINEAR));
+        dropdown->AddItem(getItem("Trilinear", FILTER_TRILINEAR));
+        dropdown->AddItem(getItem("Anisotropic", FILTER_ANISOTROPIC));
+        dropdown->AddItem(getItem("Nearest Anisotropic", FILTER_NEAREST_ANISOTROPIC));
+        dropdown->AddItem(getItem("Default", FILTER_DEFAULT));
         dropdown->SetSelection(static_cast<unsigned>(opts->GetTextureFilterMode()));
 
         SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
@@ -509,72 +404,49 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        unsigned selection = 0;
         DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaxFPSDropdown", true));
+        auto getItem = [this](const String& text, int value) -> Text*
         {
             Text* result = new Text(context_);
-            result->SetText("Unlimited");
+            result->SetText(text);
             result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 200);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 200 || GetSubsystem<Options>()->GetMaxFps() == 0)
-                selection = 0;
-        }
+            result->SetVar("Value", value);
+            return result;
+        };
+        dropdown->AddItem(getItem("Unlimited", 200));
+        dropdown->AddItem(getItem("30", 30));
+        dropdown->AddItem(getItem("40", 40));
+        dropdown->AddItem(getItem("60", 60));
+        dropdown->AddItem(getItem("120", 120));
+        dropdown->AddItem(getItem("140", 140));
+        dropdown->AddItem(getItem("144", 144));
+        switch (GetSubsystem<Options>()->GetMaxFps())
         {
-            Text* result = new Text(context_);
-            result->SetText("30");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 30);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 30)
-                selection = 1;
+        case 200:
+        case 0:
+            dropdown->SetSelection(0);
+            break;
+        case 30:
+            dropdown->SetSelection(1);
+            break;
+        case 40:
+            dropdown->SetSelection(2);
+            break;
+        case 600:
+            dropdown->SetSelection(3);
+            break;
+        case 120:
+            dropdown->SetSelection(4);
+            break;
+        case 140:
+            dropdown->SetSelection(5);
+            break;
+        case 144:
+            dropdown->SetSelection(6);
+            break;
+        default:
+            assert(false);
         }
-        {
-            Text* result = new Text(context_);
-            result->SetText("40");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 40);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 40)
-                selection = 2;
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("60");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 60);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 60)
-                selection = 3;
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("120");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 120);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 120)
-                selection = 4;
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("140");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 140);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 140)
-                selection = 5;
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("144");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Value", 144);
-            dropdown->AddItem(result);
-            if (GetSubsystem<Options>()->GetMaxFps() == 144)
-                selection = 6;
-        }
-        dropdown->SetSelection(selection);
         SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
@@ -627,48 +499,20 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
 
     {
         DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("AntiAliasingDropdown", true));
+        auto getItem = [this](const String& text, AntiAliasingMode mode)
         {
             Text* result = new Text(context_);
-            result->SetText("None");
+            result->SetText(text);
             result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::None));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("FXAA3");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::FXAA3));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("MSAA x 2");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx2));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("MSAA x 4");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx4));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("MSAA x 8");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx8));
-            dropdown->AddItem(result);
-        }
-        {
-            Text* result = new Text(context_);
-            result->SetText("MSAA x 16");
-            result->SetStyle("DropDownItemEnumText");
-            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx16));
-            dropdown->AddItem(result);
-        }
+            result->SetVar("Mode", static_cast<unsigned>(mode));
+            return result;
+        };
+        dropdown->AddItem(getItem("Node", AntiAliasingMode::None));
+        dropdown->AddItem(getItem("FXAA3", AntiAliasingMode::FXAA3));
+        dropdown->AddItem(getItem("MSAA x 2", AntiAliasingMode::MSAAx2));
+        dropdown->AddItem(getItem("MSAA x 4", AntiAliasingMode::MSAAx4));
+        dropdown->AddItem(getItem("MSAA x 8", AntiAliasingMode::MSAAx8));
+        dropdown->AddItem(getItem("MSAA x 16", AntiAliasingMode::MSAAx16));
         dropdown->SetSelection(static_cast<unsigned>(opts->GetAntiAliasingMode()));
 
         SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)

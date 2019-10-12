@@ -3,7 +3,7 @@
 enum class WindowMode
 {
     Windowed,
-    Fullcreeen,
+    Fullcreen,
     Borderless,
     Maximized
 };

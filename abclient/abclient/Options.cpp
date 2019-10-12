@@ -95,7 +95,7 @@ void Options::Save()
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "Fullscreen");
         param.SetString("type", "bool");
-        param.SetBool("value", windowMode == WindowMode::Fullcreeen);
+        param.SetBool("value", windowMode == WindowMode::Fullcreen);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -411,7 +411,7 @@ void Options::SetSelectedEnvironment(const String& name)
 WindowMode Options::GetWindowMode() const
 {
     if (fullscreen_)
-        return WindowMode::Fullcreeen;
+        return WindowMode::Fullcreen;
     if (borderless_)
         return WindowMode::Borderless;
     if (internalMaximized_ || maximized_)
@@ -423,7 +423,7 @@ void Options::SetWindowMode(WindowMode mode)
 {
     if (mode != GetWindowMode())
     {
-        if (mode == WindowMode::Fullcreeen)
+        if (mode == WindowMode::Fullcreen)
             SetFullscreen(true);
         else if (mode == WindowMode::Borderless)
             SetBorderless(true);
