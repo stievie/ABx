@@ -656,7 +656,7 @@ void Game::PlayerJoin(uint32_t playerId)
         {
             std::lock_guard<std::mutex> lockClass(lock_);
             players_[player->id_] = player.get();
-            if (data_.type == AB::Entities::GameTypeOutpost)
+            if (AB::Entities::IsOutpost(data_.type))
                 player->data_.lastOutpostUuid = data_.uuid;
             player->data_.instanceUuid = instanceData_.uuid;
         }

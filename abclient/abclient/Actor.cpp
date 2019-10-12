@@ -468,7 +468,7 @@ void Actor::AddActorUI()
     if (HasHealthBar())
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
-        if (lm->GetMapType() != AB::Entities::GameTypeOutpost)
+        if (!AB::Entities::IsOutpost(lm->GetMapType()))
         {
             // No HP bar in outposts
             hpBar_ = uiRoot->CreateChild<HealthBarPlain>();

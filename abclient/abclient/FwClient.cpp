@@ -1093,6 +1093,8 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
         URHO3D_LOGERRORF("Unknown game type %d, %s", game.type, mapUuid.c_str());
         return;
     }
+    URHO3D_LOGINFOF("Switching to level %s", currentLevel_.CString());
+
     currentMapUuid_ = String(mapUuid.c_str());
     {
         using namespace Events::SetLevel;

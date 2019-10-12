@@ -29,6 +29,11 @@ enum GameType : uint8_t
     GameTypeMission,
 };
 
+inline bool IsOutpost(GameType type)
+{
+    return type >= GameTypeOutpost && type <= GameTypeGuildHall;
+}
+
 enum GameModeFlags : uint32_t
 {
     GameModeFlagNone = 0,

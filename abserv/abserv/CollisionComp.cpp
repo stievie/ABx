@@ -11,7 +11,7 @@ void CollisionComp::ResolveCollisions()
 {
     // Players don't collide with other players in outposts
     const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
-        owner_.GetGame()->data_.type > AB::Entities::GameTypeOutpost;
+        !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
     std::vector<GameObject*> c;
     Math::BoundingBox box = owner_.GetWorldBoundingBox();

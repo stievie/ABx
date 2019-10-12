@@ -49,7 +49,7 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
         return true;
 
     LevelManager* lMan = GetSubsystem<LevelManager>();
-    const bool isCollidingWithPlayers = lMan->GetMapType() > AB::Entities::GameTypeOutpost;
+    const bool isCollidingWithPlayers = !AB::Entities::IsOutpost(lMan->GetMapType());
 
     // Actors always have AABB
     const BoundingBox bb = collShape->GetWorldBoundingBox();

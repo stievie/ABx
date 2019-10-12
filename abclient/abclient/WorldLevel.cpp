@@ -153,7 +153,7 @@ void WorldLevel::RemoveUIWindows()
 void WorldLevel::HandleLevelReady(StringHash, VariantMap&)
 {
     partyWindow_->SetPartySize(partySize_);
-    partyWindow_->SetMode(mapType_ == AB::Entities::GameTypeOutpost ?
+    partyWindow_->SetMode(AB::Entities::IsOutpost(mapType_) ?
         PartyWindowMode::ModeOutpost : PartyWindowMode::ModeGame);
 }
 
@@ -799,7 +799,7 @@ void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
     Actor* a = dynamic_cast<Actor*>(sel.Get());
     if (!a)
         return;
-    if (mapType_ != AB::Entities::GameTypeOutpost && player_->IsEnemy(a))
+    if (!AB::Entities::IsOutpost(mapType_) && player_->IsEnemy(a))
         player_->Attack();
     else
         player_->FollowSelected();

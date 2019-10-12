@@ -48,7 +48,7 @@ AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)
     return g.type;
 }
 
-std::vector<AB::Entities::Game> IOGame::GetGameList(std::set<AB::Entities::GameType> types)
+std::vector<AB::Entities::Game> IOGame::GetGameList(const std::set<AB::Entities::GameType>& types)
 {
     std::vector<AB::Entities::Game> result;
 

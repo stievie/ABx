@@ -71,13 +71,13 @@ size_t Player::GetGroupPos()
 
 bool Player::CanAttack() const
 {
-    return GetGame()->data_.type != AB::Entities::GameTypeOutpost ||
+    return !AB::Entities::IsOutpost(GetGame()->data_.type) ||
         account_.type >= AB::Entities::AccountTypeGamemaster;
 }
 
 bool Player::CanUseSkill() const
 {
-    return GetGame()->data_.type != AB::Entities::GameTypeOutpost ||
+    return !AB::Entities::IsOutpost(GetGame()->data_.type) ||
         account_.type >= AB::Entities::AccountTypeGamemaster;
 }
 
@@ -742,7 +742,7 @@ bool Player::AddToInventory(uint32_t itemId)
 void Player::CRQPartyInvitePlayer(uint32_t playerId)
 {
     // The leader invited a player
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+    if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     if (id_ == playerId)
         return;
@@ -771,7 +771,7 @@ void Player::CRQPartyInvitePlayer(uint32_t playerId)
 void Player::CRQPartyKickPlayer(uint32_t playerId)
 {
     // The leader kicks a player from the party
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+    if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     if (id_ == playerId)
         // Can not kick myself
@@ -862,7 +862,7 @@ void Player::CRQPartyLeave()
 void Player::CRQPartyAccept(uint32_t playerId)
 {
     // Sent by the acceptor to the leader of the party that a player accepted
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+    if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
 
     std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
@@ -889,7 +889,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
 void Player::CRQPartyRejectInvite(uint32_t inviterId)
 {
     // We are the rejector
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+    if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
     if (leader)
@@ -1158,7 +1158,7 @@ void Player::HandleChatTradeCommand(const std::string& arguments, Net::NetworkMe
 
 void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& message)
 {
-    if (GetGame()->data_.type <= AB::Entities::GameTypeOutpost)
+    if (AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     message.AddByte(AB::GameProtocol::ServerMessage);
     message.AddByte(AB::GameProtocol::ServerMessageTypePlayerResigned);
@@ -1476,7 +1476,7 @@ void Player::ChangeMap(const std::string& mapUuid)
         return;
 
     auto game = GetGame();
-    if (game && game->data_.type != AB::Entities::GameTypeOutpost)
+    if (game && !AB::Entities::IsOutpost(game->data_.type))
     {
         // The player leaves the party and changes the instance
         PartyLeave();
