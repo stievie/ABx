@@ -430,19 +430,19 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
 
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::LoginProtocol::OutpostList);
-    const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList(AB::Entities::GameType::GameTypeOutpost);
+    const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList({
+        AB::Entities::GameType::GameTypeOutpost,
+        AB::Entities::GameType::GameTypeTown });
+
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
     for (const AB::Entities::Game& game : games)
     {
-        if (game.type == AB::Entities::GameType::GameTypeOutpost)
-        {
-            output->AddStringEncrypted(game.uuid);
-            output->AddStringEncrypted(game.name);
-            output->AddByte(static_cast<uint8_t>(game.type));
-            output->AddByte(game.partySize);
-            output->Add<int32_t>(game.mapCoordX);
-            output->Add<int32_t>(game.mapCoordY);
-        }
+        output->AddStringEncrypted(game.uuid);
+        output->AddStringEncrypted(game.name);
+        output->AddByte(static_cast<uint8_t>(game.type));
+        output->AddByte(game.partySize);
+        output->Add<int32_t>(game.mapCoordX);
+        output->Add<int32_t>(game.mapCoordY);
     }
 
     Send(output);
