@@ -324,6 +324,14 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
     if (f.nickName.compare(f.currentName) != 0 && f.status == Client::RelatedAccount::OnlineStatusOnline)
         text.AppendWithFormat(" (%s)", f.currentName.c_str());
 
+    auto* client = GetSubsystem<FwClient>();
+    if (f.status == Client::RelatedAccount::OnlineStatusOnline)
+    {
+        const AB::Entities::Game* game = client->GetGame(String(f.currentMap.c_str()));
+        if (game)
+            text.AppendWithFormat(" [%s]", game->name.c_str());
+    }
+
     txt->SetText(text);
     if (f.status != Client::RelatedAccount::OnlineStatusOnline)
         txt->SetStyle("FriendListItem");
