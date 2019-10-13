@@ -99,7 +99,7 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
         return;
 
-    BroadcastPlayerChanged(player, AB::GameProtocol::PlayerInfoFieldOnlineStatus |
+    BroadcastPlayerChanged(*player, AB::GameProtocol::PlayerInfoFieldOnlineStatus |
         AB::GameProtocol::PlayerInfoFieldCurrentName | AB::GameProtocol::PlayerInfoFieldCurrentMap);
 }
 
@@ -109,10 +109,10 @@ void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
         return;
 
-    BroadcastPlayerChanged(player, AB::GameProtocol::PlayerInfoFieldOnlineStatus);
+    BroadcastPlayerChanged(*player, AB::GameProtocol::PlayerInfoFieldOnlineStatus);
 }
 
-void Game::BroadcastPlayerChanged(std::shared_ptr<Player> player, uint32_t fields)
+void Game::BroadcastPlayerChanged(const Player& player, uint32_t fields)
 {
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
@@ -120,7 +120,7 @@ void Game::BroadcastPlayerChanged(std::shared_ptr<Player> player, uint32_t field
 
     IO::PropWriteStream stream;
     stream.Write<uint32_t>(fields);              // What has changed
-    stream.WriteString(player->account_.uuid);   // Account
+    stream.WriteString(player.account_.uuid);    // Account
     msg.SetPropStream(stream);
     client->Write(msg);
 }

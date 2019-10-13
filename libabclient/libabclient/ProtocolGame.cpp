@@ -1226,4 +1226,12 @@ void ProtocolGame::UpdateFriendList()
     Send(std::move(msg));
 }
 
+void ProtocolGame::SetOnlineStatus(RelatedAccount::Status status)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetOnlineStatus);
+    msg->Add<uint8_t>(static_cast<uint8_t>(status));
+    Send(std::move(msg));
+}
+
 }

@@ -858,6 +858,12 @@ void FwClient::UpdateFriendList()
         client_.UpdateFriendList();
 }
 
+void FwClient::SetOnlineStatus(Client::RelatedAccount::Status status)
+{
+    if (loggedIn_)
+        client_.SetOnlineStatus(status);
+}
+
 void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)

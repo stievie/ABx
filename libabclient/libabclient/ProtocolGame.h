@@ -141,6 +141,7 @@ public:
     void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const std::string& accountUuid);
     void UpdateFriendList();
+    void SetOnlineStatus(RelatedAccount::Status status);
 
     int64_t GetUpdateTick() const
     {

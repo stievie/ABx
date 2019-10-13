@@ -370,6 +370,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeLogout,
     PacketTypeChangeMap,
 
+    PacketTypeSetOnlineStatus,
     PacketTypeGetPlayerInfoByAccount,
     PacketTypeGetPlayerInfoByName,
 

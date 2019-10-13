@@ -193,6 +193,7 @@ public:
     /// We reject the invite of inviterId
     void CRQPartyRejectInvite(uint32_t inviterId);
     void CRQPartyGetMembers(uint32_t partyId);
+    void CRQSetOnlineStatus(AB::Entities::OnlineStatus status);
     //}
 
     AB::Entities::Character data_;

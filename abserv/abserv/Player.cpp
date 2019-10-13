@@ -16,6 +16,7 @@
 #include "Item.h"
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Entities/AccountItemList.h>
+#include <AB/ProtocolCodes.h>
 #include "ItemDrop.h"
 #include "ItemsCache.h"
 #include "UuidUtils.h"
@@ -938,6 +939,18 @@ void Player::CRQPartyGetMembers(uint32_t partyId)
     else
         LOG_DEBUG << "Party not found: " << partyId << std::endl;
 #endif
+}
+
+void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
+{
+    if (status == AB::Entities::OnlineStatusOffline || status == account_.onlineStatus)
+        // This can not be set by the user
+        return;
+
+    account_.onlineStatus = status;
+    auto* client = GetSubsystem<IO::DataClient>();
+    client->Update(account_);
+    GetGame()->BroadcastPlayerChanged(*this, AB::GameProtocol::PlayerInfoFieldOnlineStatus);
 }
 
 bool Player::IsIgnored(const Player& player)

@@ -181,8 +181,8 @@ void FriendListWindow::HandleStatusDropdownSelected(StringHash, VariantMap& even
     if (elem)
     {
         Client::RelatedAccount::Status status = static_cast<Client::RelatedAccount::Status>(elem->GetVar("Value").GetUInt());
-        // TODO:
-        (void)status;
+        auto* client = GetSubsystem<FwClient>();
+        client->SetOnlineStatus(status);
     }
 }
 
@@ -321,22 +321,35 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
         SubscribeToEvent(txt, E_CLICKEND, URHO3D_HANDLER(FriendListWindow, HandleFriendItemClicked));
     }
     String text(f.nickName.c_str());
-    if (f.nickName.compare(f.currentName) != 0 && f.status == Client::RelatedAccount::OnlineStatusOnline)
+    if (f.nickName.compare(f.currentName) != 0 && !Client::IsOffline(f.status))
         text.AppendWithFormat(" (%s)", f.currentName.c_str());
 
     auto* client = GetSubsystem<FwClient>();
-    if (f.status == Client::RelatedAccount::OnlineStatusOnline)
+    if (!Client::IsOffline(f.status))
     {
         const AB::Entities::Game* game = client->GetGame(String(f.currentMap.c_str()));
         if (game)
             text.AppendWithFormat(" [%s]", game->name.c_str());
     }
 
+    switch (f.status)
+    {
+    case Client::RelatedAccount::OnlineStatusAway:
+        text.Append(" (AFK)");
+        break;
+    case Client::RelatedAccount::OnlineStatusDoNotDisturb:
+        text.Append(" (DND)");
+        break;
+    default:
+        break;
+    }
+
     txt->SetText(text);
-    if (f.status != Client::RelatedAccount::OnlineStatusOnline)
+    if (Client::IsOffline(f.status))
         txt->SetStyle("FriendListItem");
     else
         txt->SetStyle("FriendListItemOnline");
+
     txt->SetVar("AccountUuid", String(f.accountUuid.c_str()));
     txt->SetVar("CharacterName", String(f.currentName.c_str()));
     txt->EnableLayoutUpdate();

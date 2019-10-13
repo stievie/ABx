@@ -85,6 +85,11 @@ struct RelatedAccount
     int64_t expires = 0;
 };
 
+inline bool IsOffline(RelatedAccount::Status status)
+{
+    return (status == RelatedAccount::OnlineStatusOffline) || (status == RelatedAccount::OnlineStatusInvisible);
+}
+
 class Receiver
 {
 public:

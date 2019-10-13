@@ -837,4 +837,10 @@ void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
         protoGame_->SetPlayerState(newState);
 }
 
+void Client::SetOnlineStatus(RelatedAccount::Status status)
+{
+    if (state_ == ClientState::World)
+        protoGame_->SetOnlineStatus(status);
+}
+
 }

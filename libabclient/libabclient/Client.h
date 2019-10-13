@@ -222,6 +222,7 @@ public:
     void UpdateFriendList();
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
+    void SetOnlineStatus(RelatedAccount::Status status);
 };
 
 }

@@ -126,6 +126,7 @@ public:
     void AddFriend(const String& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const String& accountUuid);
     void UpdateFriendList();
+    void SetOnlineStatus(Client::RelatedAccount::Status status);
     void PartyInvitePlayer(uint32_t objectId);
     /// Remove as party member or remove invitation
     void PartyKickPlayer(uint32_t objectId);

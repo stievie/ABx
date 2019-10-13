@@ -377,6 +377,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeGetGuildMembers:
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
+    case AB::GameProtocol::PacketTypeSetOnlineStatus:
+    {
+        AB::Entities::OnlineStatus status = static_cast<AB::Entities::OnlineStatus>(message.Get<uint8_t>());
+        AddPlayerTask(&Game::Player::CRQSetOnlineStatus, status);
+        break;
+    }
     default:
     {
         auto player = GetPlayer();
