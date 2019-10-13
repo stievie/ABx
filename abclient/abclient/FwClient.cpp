@@ -1676,7 +1676,7 @@ void FwClient::OnFriendList(int64_t, const std::vector<std::string>& list)
     QueueEvent(Events::E_GOT_FRIENDLIST, eData);
 }
 
-void FwClient::OnFriendAdded(int64_t, const std::string& accountUuid, Client::RelatedAccount::Releation relation)
+void FwClient::OnFriendAdded(int64_t, const std::string& accountUuid, Client::RelatedAccount::Relation relation)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace Events::FriendAdded;
@@ -1685,7 +1685,7 @@ void FwClient::OnFriendAdded(int64_t, const std::string& accountUuid, Client::Re
     QueueEvent(Events::E_FRIENDADDED, eData);
 }
 
-void FwClient::OnFriendRemoved(int64_t, const std::string& accountUuid, Client::RelatedAccount::Releation relation)
+void FwClient::OnFriendRemoved(int64_t, const std::string& accountUuid, Client::RelatedAccount::Relation relation)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace Events::FriendRemoved;

@@ -225,7 +225,7 @@ void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
 {
     using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
-    Client::RelatedAccount::Releation rel = static_cast<Client::RelatedAccount::Releation>(eventData[P_RELATION].GetUInt());
+    Client::RelatedAccount::Relation rel = static_cast<Client::RelatedAccount::Relation>(eventData[P_RELATION].GetUInt());
     const String name = "ListViewItem_" + uuid;
     if (rel == Client::RelatedAccount::FriendRelationFriend)
     {
@@ -393,8 +393,8 @@ void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)
 
     if (acc->accountUuid.compare(client->GetAccountUuid()) == 0)
         UpdateSelf(*acc);
-    else if (acc->relation == AB::Entities::FriendRelationFriend)
+    else if (acc->relation == Client::RelatedAccount::FriendRelationFriend)
         UpdateItem(friendList_, *acc);
-    else if (acc->relation == AB::Entities::FriendRelationIgnore)
+    else if (acc->relation == Client::RelatedAccount::FriendRelationIgnore)
         UpdateItem(ignoreList_, *acc);
 }

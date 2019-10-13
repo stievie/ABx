@@ -313,6 +313,10 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageTypePlayerNotFound:
         HandleServerMessagePlayerNotFound(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypePlayerQueued:
+    case AB::GameProtocol::ServerMessageTypePlayerUnqueued:
+        // TODO:
+        break;
     case AB::GameProtocol::ServerMessageTypeUnknown:
         break;
     }
@@ -353,6 +357,12 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         }
         break;
     }
+    case AB::GameProtocol::ObjectProgressXPIncreased:
+        // Do nothing
+        break;
+    case AB::GameProtocol::ObjectProgressLevelAdvance:
+        // TODO:
+        break;
     }
 }
 

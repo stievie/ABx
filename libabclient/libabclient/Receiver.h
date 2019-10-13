@@ -52,7 +52,7 @@ struct RelatedAccount
         OnlineStatusOnline,
         OnlineStatusInvisible              // Like offline for other users
     };
-    enum Releation
+    enum Relation
     {
         FriendRelationUnknown = 0,
         FriendRelationFriend = 1,
@@ -75,7 +75,7 @@ struct RelatedAccount
     std::string currentMap;
     Status status;
     // Friend
-    Releation relation{ FriendRelationUnknown };
+    Relation relation{ FriendRelationUnknown };
     // Guild member
     std::string guildUuid;
     GuildRole guildRole{ GuildRoleUnknown };
@@ -164,8 +164,8 @@ public:
     virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
     virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnFriendList(int64_t updateTick, const std::vector<std::string>&) = 0;
-    virtual void OnFriendAdded(int64_t updateTick, const std::string&, RelatedAccount::Releation relation) = 0;
-    virtual void OnFriendRemoved(int64_t updateTick, const std::string&, RelatedAccount::Releation relation) = 0;
+    virtual void OnFriendAdded(int64_t updateTick, const std::string&, RelatedAccount::Relation relation) = 0;
+    virtual void OnFriendRemoved(int64_t updateTick, const std::string&, RelatedAccount::Relation relation) = 0;
     virtual void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) = 0;
     virtual void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild&) = 0;
 };

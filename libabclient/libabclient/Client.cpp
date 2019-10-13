@@ -372,12 +372,12 @@ void Client::OnFriendList(int64_t updateTick, const std::vector<std::string>& li
     receiver_.OnFriendList(updateTick, list);
 }
 
-void Client::OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation)
+void Client::OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation)
 {
     receiver_.OnFriendAdded(updateTick, accountUuid, relation);
 }
 
-void Client::OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation)
+void Client::OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation)
 {
     receiver_.OnFriendRemoved(updateTick, accountUuid, relation);
 }

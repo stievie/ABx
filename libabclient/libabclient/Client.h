@@ -146,8 +146,8 @@ public:
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
     void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) override;
     void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
-    void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation) override;
-    void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Releation relation) override;
+    void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation) override;
+    void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation) override;
     void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) override;
     void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
 

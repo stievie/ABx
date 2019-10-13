@@ -570,14 +570,14 @@ void ProtocolGame::ParseFriendList(InputMessage& message)
 void ProtocolGame::ParseFriendAdded(InputMessage& message)
 {
     std::string accountUuid = message.GetString();
-    RelatedAccount::Releation rel = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     receiver_.OnFriendAdded(updateTick_, accountUuid, rel);
 }
 
 void ProtocolGame::ParseFriendRemoved(InputMessage& message)
 {
     std::string accountUuid = message.GetString();
-    RelatedAccount::Releation rel = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+    RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     receiver_.OnFriendRemoved(updateTick_, accountUuid, rel);
 }
 
@@ -615,7 +615,7 @@ void ProtocolGame::ParsePlayerInfo(InputMessage& message)
     if (fields & AB::GameProtocol::PlayerInfoFieldName)
         frnd.nickName = message.GetString();
     if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
-        frnd.relation = static_cast<RelatedAccount::Releation>(message.Get<uint8_t>());
+        frnd.relation = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
         frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
     if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
