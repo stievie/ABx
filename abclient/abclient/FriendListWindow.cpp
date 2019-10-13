@@ -52,10 +52,10 @@ FriendListWindow::FriendListWindow(Context* context) :
         result->SetStyle("DropDownItemEnumText");
         return result;
     };
-    statusDropdown_->AddItem(createStatusDropdownItem("Offline", Client::RelatedAccount::Status::OnlineStatusInvisible));
     statusDropdown_->AddItem(createStatusDropdownItem("Online", Client::RelatedAccount::Status::OnlineStatusOnline));
     statusDropdown_->AddItem(createStatusDropdownItem("Away", Client::RelatedAccount::Status::OnlineStatusAway));
     statusDropdown_->AddItem(createStatusDropdownItem("Do not disturb", Client::RelatedAccount::Status::OnlineStatusDoNotDisturb));
+    statusDropdown_->AddItem(createStatusDropdownItem("Offline", Client::RelatedAccount::Status::OnlineStatusInvisible));
 
     SetSize(272, 128);
     auto* graphics = GetSubsystem<Graphics>();
