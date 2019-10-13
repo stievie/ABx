@@ -175,6 +175,8 @@ bool WhisperChatChannel::Talk(Player& player, const std::string& text)
     {
         if (p->IsIgnored(player))
             return false;
+        if (!p->IsOnline())
+            return false;
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
@@ -204,6 +206,8 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
     if (auto p = player_.lock())
     {
         if (p->IsIgnored(playerName))
+            return false;
+        if (!p->IsOnline())
             return false;
 
         auto msg = Net::NetworkMessage::GetNew();

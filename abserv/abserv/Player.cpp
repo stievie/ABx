@@ -968,6 +968,11 @@ bool Player::IsFriend(const Player& player)
     return friendList_->IsFriend(player.account_.uuid);
 }
 
+bool Player::IsOnline()
+{
+    return AB::Entities::IsOnline(account_.onlineStatus);
+}
+
 Party* Player::_LuaGetParty()
 {
     auto party = GetParty();
@@ -1133,16 +1138,22 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
     if (cli->Read(character) && (character.lastLogin > character.lastLogout))
     {
         // Is online
-        std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
-        if (channel->Talk(*this, msg))
+        AB::Entities::Account account;
+        account.uuid = character.accountUuid;
+        if (cli->Read(account) && AB::Entities::IsOnline(account.onlineStatus))
         {
-            auto nmsg = Net::NetworkMessage::GetNew();
-            nmsg->AddByte(AB::GameProtocol::ServerMessage);
-            nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
-            nmsg->AddString(name);
-            nmsg->AddString(msg);
-            WriteToOutput(*nmsg);
-            return;
+            // The player may set his sttatus to offline.
+            std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
+            if (channel->Talk(*this, msg))
+            {
+                auto nmsg = Net::NetworkMessage::GetNew();
+                nmsg->AddByte(AB::GameProtocol::ServerMessage);
+                nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
+                nmsg->AddString(name);
+                nmsg->AddString(msg);
+                WriteToOutput(*nmsg);
+                return;
+            }
         }
     }
 

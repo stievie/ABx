@@ -39,6 +39,11 @@ enum OnlineStatus : uint8_t
     OnlineStatusInvisible              // Like offline for other users
 };
 
+inline bool IsOnline(OnlineStatus status)
+{
+    return status != OnlineStatusOffline && status != OnlineStatusInvisible;
+}
+
 struct Account : Entity
 {
     static constexpr const char* KEY()

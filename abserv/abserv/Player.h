@@ -155,6 +155,7 @@ public:
     bool IsIgnored(const Player& player);
     bool IsIgnored(const std::string& name);
     bool IsFriend(const Player& player);
+    bool IsOnline();
 
     //{ Client requests.
     // These functions should not have references as arguments, because
