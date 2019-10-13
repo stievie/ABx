@@ -231,8 +231,8 @@ void Game::Update()
         // First Update all objects
         {
             // FIXME: Why is this iterator becoming invalid when spawning an object (e.g. a Projectile) at the wrong time?
-            auto lobj = objects_;
-            for (const auto& o : lobj)
+            const auto localObjs = objects_;
+            for (const auto& o : localObjs)
             {
                 if (!o.second)
                     return;

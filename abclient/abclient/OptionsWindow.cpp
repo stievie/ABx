@@ -432,7 +432,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         case 40:
             dropdown->SetSelection(2);
             break;
-        case 600:
+        case 60:
             dropdown->SetSelection(3);
             break;
         case 120:
