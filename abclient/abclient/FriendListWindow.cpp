@@ -64,6 +64,13 @@ FriendListWindow::FriendListWindow(Context* context) :
 
     SetStyleAuto();
 
+    CreateMenus();
+
+    SubscribeEvents();
+}
+
+void FriendListWindow::CreateMenus()
+{
     friendPopup_ = new Menu(context_);
     friendPopup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     friendPopup_->SetStyleAuto();
@@ -130,8 +137,6 @@ FriendListWindow::FriendListWindow(Context* context) :
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());
     friendPopup_->SetSize(popup->GetSize());
-
-    SubscribeEvents();
 }
 
 FriendListWindow::~FriendListWindow()
@@ -295,9 +300,9 @@ void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData
         int x = eventData[P_X].GetInt();
         int y = eventData[P_Y].GetInt();
         friendPopup_->SetPosition(x, y);
-        friendPopup_->ShowPopup(true);
         friendPopup_->SetVar("AccountUuid", elem->GetVar("AccountUuid").GetString());
         friendPopup_->SetVar("CharacterName", elem->GetVar("CharacterName").GetString());
+        friendPopup_->ShowPopup(true);
     }
 }
 

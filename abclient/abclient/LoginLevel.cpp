@@ -55,6 +55,48 @@ void LoginLevel::ShowError(const String& message, const String& title)
     loggingIn_ = false;
 }
 
+void LoginLevel::CreateEnvironmentsList()
+{
+    Options* opts = GetSubsystem<Options>();
+    const auto& envs = opts->environments_;
+    if (envs.Size() != 0)
+    {
+        environmentsList_ = uiRoot_->CreateChild<DropDownList>("Environments");
+        environmentsList_->SetStyleAuto();
+        environmentsList_->SetAlignment(HA_LEFT, VA_BOTTOM);
+        environmentsList_->SetPosition(8, -8);
+        // Make the popup same width as the control
+        environmentsList_->SetResizePopup(true);
+
+        Environment* selEnv = opts->GetSelectedEnvironment();
+        int width = 0; int height = 0;
+        int selIndex = 0;
+        int i = 0;;
+        for (const auto& env : envs)
+        {
+            Text* txt = CreateDropdownItem(env.name, env.name);
+            environmentsList_->AddItem(txt);
+            if (width < txt->GetWidth())
+                width = txt->GetWidth();
+            if (height < txt->GetHeight())
+                height = txt->GetHeight();
+            if (selEnv != nullptr)
+            {
+                if (selEnv->name.Compare(env.name) == 0)
+                {
+                    selIndex = i;
+                }
+            }
+            ++i;
+        }
+        environmentsList_->SetMinWidth(width + 50);
+        environmentsList_->SetWidth(width + 50);
+        environmentsList_->SetMinHeight(height + 4);
+        environmentsList_->SetHeight(height + 4);
+        environmentsList_->SetSelection(selIndex);
+    }
+}
+
 void LoginLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
@@ -96,43 +138,7 @@ void LoginLevel::CreateUI()
     }
     button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
 
-    Options* opts = GetSubsystem<Options>();
-    const auto& envs = opts->environments_;
-    if (envs.Size() != 0)
-    {
-        environmentsList_ = uiRoot_->CreateChild<DropDownList>("Environments");
-        environmentsList_->SetStyleAuto();
-        environmentsList_->SetAlignment(HA_LEFT, VA_BOTTOM);
-        environmentsList_->SetPosition(8, -8);
-
-        Environment* selEnv = opts->GetSelectedEnvironment();
-        int width = 0; int height = 0;
-        int selIndex = 0;
-        int i = 0;;
-        for (const auto& env : envs)
-        {
-            Text* txt = CreateDropdownItem(env.name, env.name);
-            environmentsList_->AddItem(txt);
-            if (width < txt->GetWidth())
-                width = txt->GetWidth();
-            if (height < txt->GetHeight())
-                height = txt->GetHeight();
-            if (selEnv != nullptr)
-            {
-                if (selEnv->name.Compare(env.name) == 0)
-                {
-                    selIndex = i;
-                }
-            }
-            ++i;
-        }
-        environmentsList_->SetMinWidth(width + 50);
-        environmentsList_->SetWidth(width + 50);
-        environmentsList_->SetMinHeight(height + 4);
-        environmentsList_->SetHeight(height + 4);
-        environmentsList_->GetPopup()->SetWidth(environmentsList_->GetWidth() + 4);
-        environmentsList_->SetSelection(selIndex);
-    }
+    CreateEnvironmentsList();
 }
 
 Text* LoginLevel::CreateDropdownItem(const String& text, const String& value)

@@ -17,6 +17,7 @@ private:
     SharedPtr<DropDownList> statusDropdown_;
     bool initialized_{ false };
 
+    void CreateMenus();
     void SubscribeEvents();
     void HandleStatusDropdownSelected(StringHash eventType, VariantMap& eventData);
     void HandleGotFriendList(StringHash eventType, VariantMap& eventData);

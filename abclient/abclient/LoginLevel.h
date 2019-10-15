@@ -9,6 +9,7 @@ public:
     /// Construct.
     LoginLevel(Context* context);
     void CreateCamera();
+    void CreateEnvironmentsList();
     void ShowError(const String& message, const String& title = "Error") override;
 protected:
     void SubscribeToEvents() override;
