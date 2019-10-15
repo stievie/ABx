@@ -157,7 +157,7 @@ void Player::FixedUpdate(float timeStep)
 
     if (lastMoveDir_ != moveDir)
     {
-        if (creatureState_ == AB::GameProtocol::CreatureStateIdle && lastYaw_ != controls_.yaw_)
+        if (creatureState_ == AB::GameProtocol::CreatureStateIdle && !Equals(lastYaw_, controls_.yaw_))
         {
             // Set initial move dir when start moving to camera rotation
             client->SetDirection(DegToRad(controls_.yaw_));

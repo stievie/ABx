@@ -432,6 +432,12 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         object = CreateActor(id, position, scale, rot, state, data);
         object->objectType_ = ObjectTypeProjectile;
         break;
+    case AB::GameProtocol::ObjectTypeUnknown:
+    case AB::GameProtocol::ObjectTypeTerrainPatch:
+    case AB::GameProtocol::ObjectTypeStatic:
+    case AB::GameProtocol::ObjectTypeSentToPlayer:
+        // Not for us
+        break;
     }
     if (object)
     {
@@ -472,7 +478,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
 void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectDespawn;
-    uint32_t objectId = eventData[P_OBJECTID].GetInt();
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
     {
@@ -710,7 +716,7 @@ void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
     using namespace Events::ObjectResourceChanged;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(eventData[P_RESTYPE].GetUInt());
-    int32_t value = eventData[P_VALUE].GetUInt();
+    int32_t value = eventData[P_VALUE].GetInt();
     GameObject* object = objects_[objectId];
     if (object)
     {

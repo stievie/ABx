@@ -716,7 +716,7 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
-    int skillIndex = eventData[P_SKILLINDEX].GetUInt();
+    int skillIndex = eventData[P_SKILLINDEX].GetInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
     Actor* pinger = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
     Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
@@ -741,6 +741,7 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
         message += " using " + String(skill->name.c_str());
         if (target)
             message += " on " + target->name_;
+        break;
     }
     default:
         break;
