@@ -80,4 +80,10 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 
+template <>
+inline bool Is<AreaOfEffect>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypeAreaOfEffect;
+}
+
 }

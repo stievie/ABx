@@ -118,4 +118,10 @@ public:
     void ShootAt(const std::string& itemUuid, Actor* target);
 };
 
+template <>
+inline bool Is<Npc>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypeNpc;
+}
+
 }

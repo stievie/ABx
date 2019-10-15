@@ -37,4 +37,10 @@ public:
     Math::Point<int> size_;
 };
 
+template <>
+inline bool Is<TerrainPatch>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypeTerrainPatch;
+}
+
 }

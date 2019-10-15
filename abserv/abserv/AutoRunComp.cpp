@@ -11,7 +11,7 @@ namespace Components {
 
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
 {
-    auto actor = object->GetThisDynamic<Actor>();
+    auto actor = object->GetThis<Actor>();
     if (!actor)
         return false;
     following_ = actor;

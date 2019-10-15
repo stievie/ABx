@@ -479,21 +479,17 @@ Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
 
 Actor* GameObject::_LuaAsActor()
 {
-    return dynamic_cast<Actor*>(this);
+    return To<Actor>(this);
 }
 
 Npc* GameObject::_LuaAsNpc()
 {
-    if (GetType() == AB::GameProtocol::ObjectTypeNpc)
-        return static_cast<Npc*>(this);
-    return nullptr;
+    return To<Npc>(this);
 }
 
 Player* GameObject::_LuaAsPlayer()
 {
-    if (GetType() == AB::GameProtocol::ObjectTypePlayer)
-        return static_cast<Player*>(this);
-    return nullptr;
+    return To<Player>(this);
 }
 
 void GameObject::_LuaSetPosition(const Math::STLVector3& pos)

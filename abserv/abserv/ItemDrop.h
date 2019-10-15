@@ -48,4 +48,10 @@ public:
     uint32_t actorId_{ 0 };
 };
 
+template <>
+inline bool Is<ItemDrop>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypeItemDrop;
+}
+
 }

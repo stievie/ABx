@@ -339,7 +339,7 @@ enum GameObjectType : uint8_t
     ObjectTypeSentToPlayer,          // Not an actual object type, all bellow is sent to the player
     ObjectTypeItemDrop,              // GameObject
     ObjectTypeAreaOfEffect,          // GameObject: Area that affects actors in it, e.g. a well
-    // Bellow are Actors
+    // Bellow are all Actors
     ObjectTypeProjectile,            // Actor
     ObjectTypeNpc,
     ObjectTypePlayer,                // Human player

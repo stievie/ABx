@@ -293,4 +293,10 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 
+template <>
+inline bool Is<Actor>(const GameObject& obj)
+{
+    return obj.GetType() >= AB::GameProtocol::ObjectTypeProjectile;
+}
+
 }

@@ -205,4 +205,10 @@ public:
     std::unique_ptr<Components::QuestComp> questComp_;
 };
 
+template <>
+inline bool Is<Player>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypePlayer;
+}
+
 }

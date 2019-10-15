@@ -75,4 +75,10 @@ public:
     uint32_t GetLevel() const override;
 };
 
+template <>
+inline bool Is<Projectile>(const GameObject& obj)
+{
+    return obj.GetType() == AB::GameProtocol::ObjectTypeProjectile;
+}
+
 }
