@@ -194,7 +194,7 @@ enum ChatMessageChannel : uint8_t
 };
 
 /// Packets sent by the server
-enum GameProtocolCodes : uint8_t
+enum ServerPacketType : uint8_t
 {
     NoError = 0x00,
     Error = 0x01,
@@ -387,7 +387,7 @@ enum ObjectSpawnDataFields : uint32_t
 };
 
 /// Pacekts sent by the client
-enum GamePacketTypes : uint8_t
+enum ClientPacketTypes : uint8_t
 {
     PacketTypePing = 0x01,
 

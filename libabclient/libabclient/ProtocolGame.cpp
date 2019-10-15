@@ -81,182 +81,184 @@ void ProtocolGame::OnError(ConnectionError connectionError, const asio::error_co
 
 void ProtocolGame::ParseMessage(InputMessage& message)
 {
-    AB::GameProtocol::GameProtocolCodes opCode = AB::GameProtocol::NoError;
+    using namespace AB::GameProtocol;
+
+    ServerPacketType opCode = NoError;
     // One such message contains a variable number of packets and then some padding bytes.
     while (!message.Eof())
     {
-        AB::GameProtocol::GameProtocolCodes prevCode = opCode;
-        opCode = static_cast<AB::GameProtocol::GameProtocolCodes>(message.Get<uint8_t>());
+        ServerPacketType prevCode = opCode;
+        opCode = static_cast<ServerPacketType>(message.Get<uint8_t>());
 
         switch (opCode)
         {
-        case AB::GameProtocol::KeyExchange:
+        case KeyExchange:
             ParseKeyExchange(message);
             break;
-        case AB::GameProtocol::ServerJoined:
+        case ServerJoined:
             ParseServerJoined(message);
             break;
-        case AB::GameProtocol::ServerLeft:
+        case ServerLeft:
             ParseServerLeft(message);
             break;
-        case AB::GameProtocol::Error:
+        case Error:
             ParseError(message);
             break;
-        case AB::GameProtocol::ChangeInstance:
+        case ChangeInstance:
             ParseChangeInstance(message);
             break;
-        case AB::GameProtocol::GameStart:
+        case GameStart:
             ParseGameStart(message);
             break;
-        case AB::GameProtocol::GameEnter:
+        case GameEnter:
             ParseEnterWorld(message);
             break;
-        case AB::GameProtocol::GamePong:
+        case GamePong:
             ParsePong(message);
             break;
-        case AB::GameProtocol::PlayerError:
+        case PlayerError:
             ParseGameError(message);
             break;
-        case AB::GameProtocol::PlayerAutoRun:
+        case PlayerAutoRun:
             ParsePlayerAutoRun(message);
             break;
-        case AB::GameProtocol::MailHeaders:
+        case MailHeaders:
             ParseMailHeaders(message);
             break;
-        case AB::GameProtocol::MailComplete:
+        case MailComplete:
             ParseMailComplete(message);
             break;
-        case AB::GameProtocol::InventoryContent:
+        case InventoryContent:
             ParseInventoryContent(message);
             break;
-        case AB::GameProtocol::InventoryItemUpdate:
+        case InventoryItemUpdate:
             ParseInventoryItemUpdate(message);
             break;
-        case AB::GameProtocol::InventoryItemDelete:
+        case InventoryItemDelete:
             ParseInventoryItemDelete(message);
             break;
-        case AB::GameProtocol::ChestContent:
+        case ChestContent:
             ParseChestContent(message);
             break;
-        case AB::GameProtocol::ChestItemUpdate:
+        case ChestItemUpdate:
             ParseChestItemUpdate(message);
             break;
-        case AB::GameProtocol::ChestItemDelete:
+        case ChestItemDelete:
             ParseChestItemDelete(message);
             break;
-        case AB::GameProtocol::GameUpdate:
+        case GameUpdate:
             ParseUpdate(message);
             break;
-        case AB::GameProtocol::GameSpawnObjectExisting:
-        case AB::GameProtocol::GameSpawnObject:
-            ParseObjectSpawn(opCode == AB::GameProtocol::GameSpawnObjectExisting, message);
+        case GameSpawnObjectExisting:
+        case GameSpawnObject:
+            ParseObjectSpawn(opCode == GameSpawnObjectExisting, message);
             break;
-        case AB::GameProtocol::GameLeaveObject:
+        case GameLeaveObject:
             ParseLeaveObject(message);
             break;
-        case AB::GameProtocol::GameObjectPositionChange:
+        case GameObjectPositionChange:
             ParseObjectPosUpdate(message);
             break;
-        case AB::GameProtocol::GameObjectRotationChange:
+        case GameObjectRotationChange:
             ParseObjectRotUpdate(message);
             break;
-        case AB::GameProtocol::GameObjectStateChange:
+        case GameObjectStateChange:
             ParseObjectStateChange(message);
             break;
-        case AB::GameProtocol::GameObjectMoveSpeedChange:
+        case GameObjectMoveSpeedChange:
             ParseObjectSpeedChange(message);
             break;
-        case AB::GameProtocol::GameObjectSelectTarget:
+        case GameObjectSelectTarget:
             ParseObjectSelected(message);
             break;
-        case AB::GameProtocol::GameObjectSkillFailure:
+        case GameObjectSkillFailure:
             ParseObjectSkillFailure(message);
             break;
-        case AB::GameProtocol::GameObjectUseSkill:
+        case GameObjectUseSkill:
             ParseObjectUseSkill(message);
             break;
-        case AB::GameProtocol::GameObjectEndUseSkill:
+        case GameObjectEndUseSkill:
             ParseObjectEndUseSkill(message);
             break;
-        case AB::GameProtocol::GameObjectAttackFailure:
+        case GameObjectAttackFailure:
             ParseObjectAttackFailure(message);
             break;
-        case AB::GameProtocol::GameObjectPingTarget:
+        case GameObjectPingTarget:
             ParseObjectPingTarget(message);
             break;
-        case AB::GameProtocol::GameObjectEffectAdded:
+        case GameObjectEffectAdded:
             ParseObjectEffectAdded(message);
             break;
-        case AB::GameProtocol::GameObjectEffectRemoved:
+        case GameObjectEffectRemoved:
             ParseObjectEffectRemoved(message);
             break;
-        case AB::GameProtocol::GameObjectDamaged:
+        case GameObjectDamaged:
             ParseObjectDamaged(message);
             break;
-        case AB::GameProtocol::GameObjectHealed:
+        case GameObjectHealed:
             ParseObjectHealed(message);
             break;
-        case AB::GameProtocol::GameObjectProgress:
+        case GameObjectProgress:
             ParseObjectProgress(message);
             break;
-        case AB::GameProtocol::GameObjectDropItem:
+        case GameObjectDropItem:
             ParseObjectDroppedItem(message);
             break;
-        case AB::GameProtocol::GameObjectSetPosition:
+        case GameObjectSetPosition:
             ParseObjectSetPosition(message);
             break;
-        case AB::GameProtocol::ServerMessage:
+        case ServerMessage:
             ParseServerMessage(message);
             break;
-        case AB::GameProtocol::ChatMessage:
+        case ChatMessage:
             ParseChatMessage(message);
             break;
-        case AB::GameProtocol::PartyPlayerInvited:
+        case PartyPlayerInvited:
             ParsePartyPlayerInvited(message);
             break;
-        case AB::GameProtocol::PartyPlayerRemoved:
+        case PartyPlayerRemoved:
             ParsePartyPlayerRemoved(message);
             break;
-        case AB::GameProtocol::PartyPlayerAdded:
+        case PartyPlayerAdded:
             ParsePartyPlayerAdded(message);
             break;
-        case AB::GameProtocol::PartyInviteRemoved:
+        case PartyInviteRemoved:
             ParsePartyInviteRemoved(message);
             break;
-        case AB::GameProtocol::PartyResigned:
+        case PartyResigned:
             ParsePartyResigned(message);
             break;
-        case AB::GameProtocol::PartyDefeated:
+        case PartyDefeated:
             ParsePartyDefeated(message);
             break;
-        case AB::GameProtocol::PartyInfoMembers:
+        case PartyInfoMembers:
             ParsePartyInfoMembers(message);
             break;
-        case AB::GameProtocol::GameObjectResourceChange:
+        case GameObjectResourceChange:
             ParseResourceChanged(message);
             break;
-        case AB::GameProtocol::DialogTrigger:
+        case DialogTrigger:
             ParseDialogTrigger(message);
             break;
-        case AB::GameProtocol::FriendList:
+        case FriendList:
             ParseFriendList(message);
             break;
-        case AB::GameProtocol::FriendAdded:
+        case FriendAdded:
             ParseFriendAdded(message);
             break;
-        case AB::GameProtocol::FriendRemoved:
+        case FriendRemoved:
             ParseFriendRemoved(message);
             break;
-        case AB::GameProtocol::GuildInfo:
+        case GuildInfo:
             ParseGuildInfo(message);
             break;
-        case AB::GameProtocol::GuildMemberList:
+        case GuildMemberList:
             ParseGuildMemberList(message);
             break;
-        case AB::GameProtocol::PlayerInfo:
+        case PlayerInfo:
             ParsePlayerInfo(message);
             break;
-        case AB::GameProtocol::CodeLast:
+        case CodeLast:
             // Padding bytes, i.e. end of message
             return;
         default:
