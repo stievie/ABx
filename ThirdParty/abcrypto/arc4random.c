@@ -35,7 +35,8 @@
 #include <Windows.h>
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-#include <sys/sysctl.h>
+// This header is deprecated, but it doesn't seem to be used
+//#include <sys/sysctl.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/time.h>
