@@ -1201,14 +1201,16 @@ void FwClient::OnServerLeft(const AB::Entities::Service& service)
     QueueEvent(Events::E_SERVERLEFT, eData);
 }
 
-void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Client::ObjectSpawn& objectSpawn,
+void FwClient::OnObjectSpawn(int64_t updateTick, const Client::ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
     using namespace Events::ObjectSpawn;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_EXISTING] = existing;
-    eData[P_OBJECTID] = id;
+    eData[P_OBJECTID] = objectSpawn.id;
+    eData[P_OBJECTTYPE] = static_cast<unsigned>(objectSpawn.type);
+    eData[P_VALIDFIELDS] = objectSpawn.validFields;
     eData[P_POSITION] = Vector3(objectSpawn.pos.x, objectSpawn.pos.y, objectSpawn.pos.z);
     eData[P_ROTATION] = objectSpawn.rot;
     eData[P_UNDESTROYABLE] = objectSpawn.undestroyable;

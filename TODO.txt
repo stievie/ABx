@@ -1,6 +1,3 @@
 ! AI Server: Crash when deleting a game. No proper shutdown or something.
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
 The client says "Unknown packet code..." Maybe some messages out of order.
-~ Revisit GameObject::Serialize and GameObject::WriteSpawnData. A lot useless
-stuff is sent. Also the object type should be written in WriteSpawnData(),
-like the id_.

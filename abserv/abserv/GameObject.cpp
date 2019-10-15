@@ -656,9 +656,14 @@ void GameObject::RemoveFromOctree()
     }
 }
 
+void GameObject::WriteSpawnData(Net::NetworkMessage& msg)
+{
+    msg.Add<uint32_t>(id_);
+    msg.Add<uint8_t>(static_cast<uint8_t>(GetType()));
+}
+
 bool GameObject::Serialize(IO::PropWriteStream& stream)
 {
-    stream.Write<uint8_t>(GetType());
     stream.WriteString(GetName());
     return true;
 }

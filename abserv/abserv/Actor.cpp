@@ -487,6 +487,12 @@ Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
 {
+    using namespace AB::GameProtocol;
+    static constexpr uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldLevel |
+        ObjectSpawnDataFieldSex | ObjectSpawnDataFieldProf | ObjectSpawnDataFieldModelIndex |
+        ObjectSpawnDataFieldSkills;
+    stream.Write<uint32_t>(validFields);
+
     if (!GameObject::Serialize(stream))
         return false;
     stream.Write<uint32_t>(GetLevel());
@@ -501,7 +507,14 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
 
 void Actor::WriteSpawnData(Net::NetworkMessage& msg)
 {
-    msg.Add<uint32_t>(id_);
+    GameObject::WriteSpawnData(msg);
+
+    using namespace AB::GameProtocol;
+    const uint32_t validFields = ObjectSpawnFieldPos | ObjectSpawnFieldRot | ObjectSpawnFieldScale |
+        ObjectSpawnFieldUndestroyable | ObjectSpawnFieldSelectable | ObjectSpawnFieldState |
+        ObjectSpawnFieldSpeed | ObjectSpawnFieldGroupId | ObjectSpawnFieldGroupPos;
+    msg.Add<uint32_t>(validFields);
+
     msg.Add<float>(transformation_.position_.x_);
     msg.Add<float>(transformation_.position_.y_);
     msg.Add<float>(transformation_.position_.z_);

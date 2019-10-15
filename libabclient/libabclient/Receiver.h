@@ -21,6 +21,9 @@ namespace Client {
 
 struct ObjectSpawn
 {
+    uint32_t id;
+    AB::GameProtocol::GameObjectType type;
+    uint32_t validFields;
     Vec3 pos;
     Vec3 scale;
     float rot;
@@ -120,7 +123,7 @@ public:
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) = 0;
-    virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
+    virtual void OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(int64_t updateTick, uint32_t id) = 0;
     virtual void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) = 0;

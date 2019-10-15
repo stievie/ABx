@@ -357,7 +357,7 @@ public:
         triggerComp_->trigger_ = value;
     }
 
-    virtual void WriteSpawnData(Net::NetworkMessage&) { }
+    virtual void WriteSpawnData(Net::NetworkMessage& msg);
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

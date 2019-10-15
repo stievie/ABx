@@ -149,7 +149,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             break;
         case AB::GameProtocol::GameSpawnObjectExisting:
         case AB::GameProtocol::GameSpawnObject:
-            ParseSpawnObject(opCode == AB::GameProtocol::GameSpawnObjectExisting, message);
+            ParseObjectSpawn(opCode == AB::GameProtocol::GameSpawnObjectExisting, message);
             break;
         case AB::GameProtocol::GameLeaveObject:
             ParseLeaveObject(message);
@@ -658,33 +658,51 @@ void ProtocolGame::ParseLeaveObject(InputMessage& message)
     receiver_.OnDespawnObject(updateTick_, objectId);
 }
 
-void ProtocolGame::ParseSpawnObject(bool existing, InputMessage& message)
+void ProtocolGame::ParseObjectSpawn(bool existing, InputMessage& message)
 {
-    uint32_t objectId = message.Get<uint32_t>();
-    ObjectSpawn os;
-    os.pos = {
-        message.Get<float>(),
-        message.Get<float>(),
-        message.Get<float>()
-    };
-    os.rot = message.Get<float>();
-    os.scale = {
-        message.Get<float>(),
-        message.Get<float>(),
-        message.Get<float>()
-    };
-    os.undestroyable = message.Get<uint8_t>() != 0;
-    os.selectable = message.Get<uint8_t>() != 0;
-    os.state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
-    os.speed = message.Get<float>();
-    os.groupId = message.Get<uint32_t>();
-    os.groupPos = message.Get<uint8_t>();
+    using namespace AB::GameProtocol;
+
+    ObjectSpawn os{ };
+    os.id = message.Get<uint32_t>();
+    os.type = static_cast<AB::GameProtocol::GameObjectType>(message.Get<uint8_t>());
+    os.validFields = message.Get<uint32_t>();
+
+    if (os.validFields & ObjectSpawnFieldPos)
+    {
+        os.pos = {
+            message.Get<float>(),
+            message.Get<float>(),
+            message.Get<float>()
+        };
+    }
+    if (os.validFields & ObjectSpawnFieldRot)
+        os.rot = message.Get<float>();
+    if (os.validFields & ObjectSpawnFieldScale)
+    {
+        os.scale = {
+            message.Get<float>(),
+            message.Get<float>(),
+            message.Get<float>()
+        };
+    }
+    if (os.validFields & ObjectSpawnFieldUndestroyable)
+        os.undestroyable = message.Get<uint8_t>() != 0;
+    if (os.validFields & ObjectSpawnFieldSelectable)
+        os.selectable = message.Get<uint8_t>() != 0;
+    if (os.validFields & ObjectSpawnFieldState)
+        os.state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
+    if (os.validFields & ObjectSpawnFieldSpeed)
+        os.speed = message.Get<float>();
+    if (os.validFields & ObjectSpawnFieldGroupId)
+        os.groupId = message.Get<uint32_t>();
+    if (os.validFields & ObjectSpawnFieldGroupPos)
+        os.groupPos = message.Get<uint8_t>();
 
     std::string data = message.GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
 
-    receiver_.OnSpawnObject(updateTick_, objectId, os, stream, existing);
+    receiver_.OnObjectSpawn(updateTick_, os, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(InputMessage& message)

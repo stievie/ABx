@@ -102,7 +102,7 @@ public:
         AB::Entities::GameType type, uint8_t partySize) override;
     void OnChangeInstance(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)override;
-    void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
+    void OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
     void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) override;

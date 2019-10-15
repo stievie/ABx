@@ -392,10 +392,10 @@ void Client::OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild)
     receiver_.OnGuildInfo(updateTick, guild);
 }
 
-void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
+void Client::OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
-    receiver_.OnSpawnObject(updateTick, id, objectSpawn, data, existing);
+    receiver_.OnObjectSpawn(updateTick, objectSpawn, data, existing);
 }
 
 void Client::OnLog(const std::string& message)

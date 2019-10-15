@@ -242,19 +242,26 @@ uint32_t AreaOfEffect::GetItemIndex() const
 
 bool AreaOfEffect::Serialize(IO::PropWriteStream& stream)
 {
+    using namespace AB::GameProtocol;
+    static constexpr uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldModelIndex;
+    stream.Write<uint32_t>(validFields);
+
     if (!GameObject::Serialize(stream))
         return false;
-    stream.Write<uint32_t>(0);                                   // Level
-    stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
-    stream.Write<uint32_t>(0);                                   // Prof 1
-    stream.Write<uint32_t>(0);                                   // Prof 2
     stream.Write<uint32_t>(GetItemIndex());   // Model/Item index
     return true;
 }
 
 void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
 {
-    msg.Add<uint32_t>(id_);
+    GameObject::WriteSpawnData(msg);
+
+    using namespace AB::GameProtocol;
+    static constexpr uint32_t validFields = ObjectSpawnFieldPos | ObjectSpawnFieldRot | ObjectSpawnFieldScale |
+        ObjectSpawnFieldUndestroyable | ObjectSpawnFieldSelectable | ObjectSpawnFieldState |
+        ObjectSpawnFieldGroupId;
+    msg.Add<uint32_t>(validFields);
+
     msg.Add<float>(transformation_.position_.x_);
     msg.Add<float>(transformation_.position_.y_);
     msg.Add<float>(transformation_.position_.z_);
@@ -265,9 +272,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<uint8_t>(1);                                  // not destroyable
     msg.Add<uint8_t>(selectable_ ? 1 : 0);
     msg.Add<uint8_t>(stateComp_.GetState());
-    msg.Add<float>(0.0f);                                 // speed
     msg.Add<uint32_t>(GetGroupId());                      // Group id
-    msg.Add<uint8_t>(0);                                  // Group pos
     IO::PropWriteStream data;
     size_t dataSize;
     Serialize(data);

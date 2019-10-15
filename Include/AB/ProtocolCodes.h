@@ -359,8 +359,32 @@ enum PlayerInfoFields : uint32_t
     PlayerInfoFieldGuildJoined = 1 << 9,
     PlayerInfoFieldGuildExpires = 1 << 10
 };
-
 constexpr uint32_t PlayerInfoFieldsAll = 0xFFFFFFFF;
+
+/// What fields are sent with GameSpawnObjectExisting and GameSpawnObject the message
+enum ObjectSpawnFields : uint32_t
+{
+    ObjectSpawnFieldPos = 1,
+    ObjectSpawnFieldRot = 1 << 1,
+    ObjectSpawnFieldScale = 1 << 2,
+    ObjectSpawnFieldUndestroyable = 1 << 3,
+    ObjectSpawnFieldSelectable = 1 << 4,
+    ObjectSpawnFieldState = 1 << 5,
+    ObjectSpawnFieldSpeed = 1 << 6,
+    ObjectSpawnFieldGroupId = 1 << 7,
+    ObjectSpawnFieldGroupPos = 1 << 8,
+};
+
+/// What fields contains the data PropStream
+enum ObjectSpawnDataFields : uint32_t
+{
+    ObjectSpawnDataFieldName = 1,
+    ObjectSpawnDataFieldLevel = 1 << 1,
+    ObjectSpawnDataFieldSex = 1 << 2,
+    ObjectSpawnDataFieldProf = 1 << 3,
+    ObjectSpawnDataFieldModelIndex = 1 << 4,
+    ObjectSpawnDataFieldSkills = 1 << 5,
+};
 
 /// Pacekts sent by the client
 enum GamePacketTypes : uint8_t

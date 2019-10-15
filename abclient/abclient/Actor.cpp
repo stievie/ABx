@@ -619,6 +619,9 @@ String Actor::GetSoundEffect(const StringHash& hash)
         return result + "footsteps_run1.wav";
     }
 
+    if (!profession_ || profession_->abbr.empty())
+        return String::EMPTY;
+
     result += "Characters/";
     result += String(profession_->abbr.c_str()) + "/";
     if (sex_ == AB::Entities::CharacterSexFemale)
@@ -1003,29 +1006,52 @@ void Actor::SetSpeedFactor(int64_t time, float value)
 
 void Actor::Unserialize(PropReadStream& data)
 {
-    GameObject::Unserialize(data);
-    std::string str;
-    if (data.ReadString(str))
-        name_ = String(str.data(), static_cast<unsigned>(str.length()));
-    uint8_t s;
-    SkillManager* sm = GetSubsystem<SkillManager>();
-    data.Read(level_);
-    if (data.Read(s))
-        sex_ = static_cast<AB::Entities::CharacterSex>(s);
+    using namespace AB::GameProtocol;
+
+    uint32_t validFields;
+    if (!data.Read<uint32_t>(validFields))
+        return;
+
+    if (validFields & ObjectSpawnDataFieldName)
     {
-        uint32_t p;
-        data.Read(p);
-        profession_ = sm->GetProfessionByIndex(p);
+        std::string str;
+        if (data.ReadString(str))
+            name_ = String(str.data(), static_cast<unsigned>(str.length()));
     }
+
+    if (validFields & ObjectSpawnDataFieldLevel)
+        data.Read(level_);
+
+    if (validFields & ObjectSpawnDataFieldSex)
     {
-        uint32_t p;
-        data.Read(p);
-        profession2_ = sm->GetProfessionByIndex(p);
+        uint8_t s;
+        if (data.Read(s))
+            sex_ = static_cast<AB::Entities::CharacterSex>(s);
     }
-    data.Read(itemIndex_);
-    std::string skills;
-    data.ReadString(skills);
-    LoadSkillTemplate(skills);
+
+    if (validFields & ObjectSpawnDataFieldProf)
+    {
+        SkillManager* sm = GetSubsystem<SkillManager>();
+        {
+            uint32_t p;
+            data.Read(p);
+            profession_ = sm->GetProfessionByIndex(p);
+        }
+        {
+            uint32_t p;
+            data.Read(p);
+            profession2_ = sm->GetProfessionByIndex(p);
+        }
+    }
+    if (validFields & ObjectSpawnDataFieldModelIndex)
+        data.Read(itemIndex_);
+
+    if (validFields & ObjectSpawnDataFieldSkills)
+    {
+        std::string skills;
+        data.ReadString(skills);
+        LoadSkillTemplate(skills);
+    }
 }
 
 void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop /* = false */)

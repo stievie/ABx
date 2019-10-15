@@ -36,6 +36,8 @@ URHO3D_EVENT(E_OBJECTSPAWN, ObjectSpawn)
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
     URHO3D_PARAM(P_EXISTING, Existing);      // bool
     URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_OBJECTTYPE, ObjectType);
+    URHO3D_PARAM(P_VALIDFIELDS, ValidFields);
     URHO3D_PARAM(P_POSITION, Position);
     URHO3D_PARAM(P_ROTATION, Rotation);
     URHO3D_PARAM(P_UNDESTROYABLE, Undestroyable);  // bool

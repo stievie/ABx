@@ -370,6 +370,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     if (objects_.Contains(objectId))
         return;
+    AB::GameProtocol::GameObjectType type = static_cast<AB::GameProtocol::GameObjectType>(eventData[P_OBJECTTYPE].GetUInt());
     int64_t tick = eventData[P_UPDATETICK].GetInt64();
     const Vector3& pos = eventData[P_POSITION].GetVector3();
     float rot = eventData[P_ROTATION].GetFloat();
@@ -386,21 +387,17 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
     bool selectable = eventData[P_SELECTABLE].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction,
+    SpawnObject(tick, objectId, type, existing, pos, scale, direction,
         undestroyable, selectable,
         state, speed, groupId, groupPos, data);
 }
 
-void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
+void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::GameObjectType objectType, bool existing,
     const Vector3& position, const Vector3& scale, const Quaternion& rot,
     bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
     uint32_t groupId, uint8_t groupPos,
     PropReadStream& data)
 {
-    uint8_t objectType;
-    if (!data.Read<uint8_t>(objectType))
-        return;
-
     FwClient* client = context_->GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
     GameObject* object = nullptr;
@@ -447,7 +444,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         Actor* actor = dynamic_cast<Actor*>(object);
         actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
-        object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
+        object->GetNode()->SetName(actor->name_);
         object->undestroyable_ = undestroyable;
         object->selectable_ = selectable;
         object->SetSpeedFactor(updateTick, speed);

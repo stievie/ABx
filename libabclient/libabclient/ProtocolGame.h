@@ -58,7 +58,7 @@ protected:
     void ParseGameError(InputMessage& message);
     void ParsePlayerAutoRun(InputMessage& message);
     void ParseUpdate(InputMessage& message);
-    void ParseSpawnObject(bool existing, InputMessage& message);
+    void ParseObjectSpawn(bool existing, InputMessage& message);
     void ParseLeaveObject(InputMessage& message);
     void ParseObjectPosUpdate(InputMessage& message);
     void ParseObjectRotUpdate(InputMessage& message);
