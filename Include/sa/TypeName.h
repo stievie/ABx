@@ -1,0 +1,30 @@
+#pragma once
+
+#include <cassert>
+
+namespace sa {
+
+constexpr int char_pos(const char* str, const char n)
+{
+    return (*str && *str != n) ? 1 + char_pos(str + 1, n) : 0;
+}
+
+template<typename T>
+struct TypeName
+{
+    static constexpr auto Get()
+    {
+#if defined __GNUC__
+        constexpr const char name[] = __PRETTY_FUNCTION__;
+#elif defined _MSC_VER
+        constexpr const char* name = __FUNCTION__;
+#endif
+        constexpr int begin = char_pos(name, '<') + 1;
+        constexpr int end = char_pos(name, '>');
+        constexpr int length = end - begin;
+        constexpr const char* ptr = &name[begin];
+        return std::string_view(ptr, length);
+    }
+};
+
+}
