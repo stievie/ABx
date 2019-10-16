@@ -144,12 +144,7 @@ public:
     virtual ~GameObject();
 
     template <typename T>
-    std::shared_ptr<T> GetThis()
-    {
-        if (Is<T>(*this))
-            return std::static_pointer_cast<T>(shared_from_this());
-        return std::shared_ptr<T>();
-    }
+    std::shared_ptr<T> GetThis();
 
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 

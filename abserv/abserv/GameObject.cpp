@@ -664,4 +664,12 @@ bool GameObject::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
+template <typename T>
+inline std::shared_ptr<T> GameObject::GetThis()
+{
+    if (Is<T>(*this))
+        return std::static_pointer_cast<T>(shared_from_this());
+    return std::shared_ptr<T>();
+}
+
 }
