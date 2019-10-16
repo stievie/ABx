@@ -28,12 +28,11 @@ private:
     }
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
+    void OnCollide(GameObject* other);
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
     AutoRunComp() = delete;
-    explicit AutoRunComp(Actor& owner) :
-        owner_(owner)
-    { }
+    explicit AutoRunComp(Actor& owner);
     // non-copyable
     AutoRunComp(const AutoRunComp&) = delete;
     AutoRunComp& operator=(const AutoRunComp&) = delete;

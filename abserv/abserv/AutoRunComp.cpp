@@ -9,6 +9,12 @@
 namespace Game {
 namespace Components {
 
+AutoRunComp::AutoRunComp(Actor& owner) :
+    owner_(owner)
+{
+    owner_.SubscribeEvent<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AutoRunComp::OnCollide, this, std::placeholders::_1));
+}
+
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
 {
     auto actor = object->GetThis<Actor>();
@@ -67,6 +73,15 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     }
     lastCalc_ = 0;
     return false;
+}
+
+void AutoRunComp::OnCollide(GameObject* other)
+{
+    if (auto fo = following_.lock())
+    {
+        if (other->id_ == fo->id_)
+            Reset();
+    }
 }
 
 void AutoRunComp::Pop()
