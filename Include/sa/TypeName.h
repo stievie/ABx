@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cassert>
+#include <string_view>
 
 namespace sa {
 
@@ -23,6 +23,7 @@ struct TypeName
         constexpr int begin = char_pos(name, '<') + 1;
         constexpr int end = char_pos(name, '>');
 #endif
+        static_assert(end > begin);
         constexpr int length = end - begin;
         constexpr const char* ptr = &name[begin];
         return std::string_view(ptr, length);
