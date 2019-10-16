@@ -15,12 +15,14 @@ struct TypeName
     static constexpr auto Get()
     {
 #if defined __GNUC__
-        constexpr const char name[] = __PRETTY_FUNCTION__;
+        constexpr const char* name = __PRETTY_FUNCTION__;
+        constexpr int begin = char_pos(name, '=') + 2;
+        constexpr int end = char_pos(name, ']');
 #elif defined _MSC_VER
         constexpr const char* name = __FUNCTION__;
-#endif
         constexpr int begin = char_pos(name, '<') + 1;
         constexpr int end = char_pos(name, '>');
+#endif
         constexpr int length = end - begin;
         constexpr const char* ptr = &name[begin];
         return std::string_view(ptr, length);
