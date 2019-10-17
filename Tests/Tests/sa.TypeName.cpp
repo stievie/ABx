@@ -2,6 +2,7 @@
 #include <catch.hpp>
 
 #include <sa/TypeName.h>
+#include "StringHash.h"
 
 class Baz
 {
@@ -39,4 +40,19 @@ TEST_CASE("TypeName NS")
 #else
     REQUIRE(res.compare("class Foo::Bar") == 0);
 #endif
+}
+
+TEST_CASE("TypeName Hash")
+{
+    constexpr auto res = sa::TypeName<Foo::Bar>::Get();
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4307)
+#endif
+    constexpr size_t hash = Utils::StringHash(res);
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+    INFO(hash);
+    REQUIRE(hash == Utils::StringHashRt(res.data(), res.size()));
 }

@@ -8,7 +8,7 @@
 #include "ContentTypes.h"
 #include "Profiler.h"
 #include "Version.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include "StringUtils.h"
 #include <AB/Entities/Account.h>
 #include "Xml.h"
@@ -20,14 +20,14 @@ bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects
     assert(Application::Instance);
     objects["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
     objects["copy_year"] = SERVER_YEAR;
-    auto it = session_->values_.find(Utils::StringHashRt("username"));
+    auto it = session_->values_.find(sa::StringHashRt("username"));
     if (it != session_->values_.end())
     {
         objects["user"] = Utils::XML::Escape((*it).second.GetString());
     }
     else
         objects["user"] = "";
-    auto accIt = session_->values_.find(Utils::StringHashRt("account_type"));
+    auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
     AB::Entities::AccountType accType = AB::Entities::AccountTypeUnknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());

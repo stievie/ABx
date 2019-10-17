@@ -2,7 +2,8 @@
 
 #include <map>
 
-#include "StringHash.h"
+#include <sa/TypeName.h>
+#include <sa/StringHash.h>
 
 class Subsystems
 {
@@ -39,7 +40,7 @@ public:
     template<typename T, typename... _CArgs>
     bool CreateSubsystem(_CArgs&&... _Args)
     {
-        static const size_t key = Utils::StringHashRt(typeid(T).name());
+        static constexpr size_t key = sa::StringHash(sa::TypeName<T>::Get());
         const auto i = systems_.find(key);
         if (i != systems_.end())
             return false;
@@ -58,7 +59,7 @@ public:
     template<typename T>
     bool RegisterSubsystem(T* system)
     {
-        static const size_t key = Utils::StringHashRt(typeid(T).name());
+        static constexpr size_t key = sa::StringHash(sa::TypeName<T>::Get());
         const auto i = systems_.find(key);
         if (i == systems_.end())
         {
@@ -71,7 +72,7 @@ public:
     template<typename T>
     void RemoveSubsystem()
     {
-        static const size_t key = Utils::StringHashRt(typeid(T).name());
+        static constexpr size_t key = sa::StringHash(sa::TypeName<T>::Get());
         const auto i = systems_.find(key);
         if (i != systems_.end())
             systems_.erase(i);
@@ -80,7 +81,7 @@ public:
     template<typename T>
     T* GetSubsystem()
     {
-        static const size_t key = Utils::StringHashRt(typeid(T).name());
+        static constexpr size_t key = sa::StringHash(sa::TypeName<T>::Get());
         const auto i = systems_.find(key);
         if (i != systems_.end())
         {

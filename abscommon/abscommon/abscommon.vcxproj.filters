@@ -54,9 +54,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="StringHash.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Connection.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

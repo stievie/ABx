@@ -9,6 +9,7 @@
 #include <AB/Entities/Account.h>
 #include <abcrypto.hpp>
 #include "BanManager.h"
+#include <sa/StringHash.h>
 
 namespace Resources {
 
@@ -38,10 +39,10 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
     }
     banMan->AddLoginAttempt(ip, true);
 
-    session_->values_[Utils::StringHashRt("logged_in")] = true;
-    session_->values_[Utils::StringHashRt("username")] = user;
-    session_->values_[Utils::StringHashRt("account_uuid")] = account.uuid;
-    session_->values_[Utils::StringHashRt("account_type")] = static_cast<int>(account.type);
+    session_->values_[sa::StringHashRt("logged_in")] = true;
+    session_->values_[sa::StringHashRt("username")] = user;
+    session_->values_[sa::StringHashRt("account_uuid")] = account.uuid;
+    session_->values_[sa::StringHashRt("account_type")] = static_cast<int>(account.type);
 
     return true;
 }

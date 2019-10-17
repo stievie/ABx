@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "FileUtils.h"
 #include "Variant.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include "Version.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/AccountList.h>
@@ -18,7 +18,7 @@ bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
     if (!TemplateResource::GetObjects(objects))
         return false;
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
+    bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (!loggedIn)
         return true;
 
@@ -39,7 +39,7 @@ bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
 IndexResource::IndexResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
+    bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (loggedIn)
         template_ = "../templates/dashboard.html";
     else

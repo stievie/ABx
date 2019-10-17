@@ -9,10 +9,12 @@
 #include "FileUtils.h"
 #include <unordered_map>
 #include "StringUtils.h"
+#include <sa/TypeName.h>
+#include <sa/StringHash.h>
 
 namespace IO {
 
-typedef std::pair<const char*, std::string> CacheKey;
+typedef std::pair<size_t, std::string> CacheKey;
 
 struct KeyHasher
 {
@@ -22,7 +24,7 @@ struct KeyHasher
         // Compute individual hash values for first and second
         // http://stackoverflow.com/a/1646913/126995
         size_t res = 17;
-        res = res * 31 + std::hash<std::string>()(s.first);
+        res = res * 31 + s.first;
         res = res * 31 + std::hash<std::string>()(s.second);
         return res;
     }
@@ -31,7 +33,7 @@ struct KeyHasher
 class DataProvider
 {
 private:
-    std::map<const char*, std::unique_ptr<IOAsset>> importers_;
+    std::map<size_t, std::unique_ptr<IOAsset>> importers_;
     std::unordered_map<CacheKey, std::shared_ptr<Asset>, KeyHasher> cache_;
 public:
     DataProvider();
@@ -47,7 +49,8 @@ public:
     bool Exists(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
@@ -57,7 +60,8 @@ public:
     bool IsCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         return (it != cache_.end());
     }
@@ -67,7 +71,8 @@ public:
     bool AddToCache(std::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
@@ -78,7 +83,8 @@ public:
     bool RemoveFromCache(std::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end() && (*it).second.get() == asset.get())
         {
@@ -91,7 +97,8 @@ public:
     std::shared_ptr<T> GetCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
@@ -112,13 +119,15 @@ public:
     template<class T, class I>
     void AddImporter()
     {
-        importers_[typeid(T).name()] = std::make_unique<I>();
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        importers_[hash] = std::make_unique<I>();
     }
     /// Get an importer instance
     template<class T>
     IOAsset* GetImporter()
     {
-        auto it = importers_.find(typeid(T).name());
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        auto it = importers_.find(hash);
         if (it != importers_.end())
         {
             return (*it).second.get();
@@ -149,7 +158,8 @@ public:
     std::shared_ptr<T> GetAsset(const std::string& name, bool cacheAble = true)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = std::make_pair(hash, normal_name);
         // Lookup in cache
         if (cacheAble)
         {

@@ -4,7 +4,7 @@
 #include "Application.h"
 #include "ContentTypes.h"
 #include "StringUtils.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 
 namespace Resources {
 
@@ -25,7 +25,7 @@ void LogoutResource::Render(std::shared_ptr<HttpsServer::Response> response)
     std::stringstream ss;
     ss << request_->content.rdbuf();
 
-    session_->values_[Utils::StringHashRt("logged_in")] = false;
+    session_->values_[sa::StringHashRt("logged_in")] = false;
 
     json::JSON obj;
     obj["status"] = "OK";

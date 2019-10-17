@@ -9,7 +9,7 @@
 
 #if defined(_MSC_VER)
 // Decorated name length exceeded
-#pragma warning(disable: 4503)
+#pragma warning(disable: 4503 4307)
 #endif
 
 #include "targetver.h"

@@ -9,6 +9,8 @@ constexpr int char_pos(const char* str, const char n)
     return (*str && *str != n) ? 1 + char_pos(str + 1, n) : 0;
 }
 
+/// Compile time typeid(T).name()
+/// constexpr auto res = sa::TypeName<Foo::Bar>::Get();
 template<typename T>
 struct TypeName
 {

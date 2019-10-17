@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FriendsResource.h"
-#include "StringHash.h"
 #include <AB/Entities/Account.h>
 
 namespace Resources {

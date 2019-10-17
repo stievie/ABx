@@ -3,7 +3,7 @@
 #include <uuid.h>
 #include "Subsystems.h"
 #include "Application.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include "UuidUtils.h"
 
 namespace Resources {
@@ -18,12 +18,12 @@ void Resource::Redirect(std::shared_ptr<HttpsServer::Response> response, const s
 
 bool Resource::IsAllowed(AB::Entities::AccountType minType)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
+    bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (!loggedIn)
     {
         return minType == AB::Entities::AccountTypeUnknown;
     }
-    auto accIt = session_->values_.find(Utils::StringHashRt("account_type"));
+    auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
     AB::Entities::AccountType accType = AB::Entities::AccountTypeUnknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());

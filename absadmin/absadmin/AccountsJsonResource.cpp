@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AccountsJsonResource.h"
-#include "StringHash.h"
 #include "Subsystems.h"
 #include "DataClient.h"
 #include "Subsystems.h"

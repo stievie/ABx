@@ -21,35 +21,28 @@
 
 namespace Game {
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4307)
-#endif
-static constexpr sa::event_t EVENT_ON_ARRIVED = Utils::StringHash("OnArrived");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = Utils::StringHash("OnInterruptedAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = Utils::StringHash("OnInterruptedSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = Utils::StringHash("OnKnockedDown");
-static constexpr sa::event_t EVENT_ON_HEALED = Utils::StringHash("OnHealed");
-static constexpr sa::event_t EVENT_ON_DIED = Utils::StringHash("OnDied");
-static constexpr sa::event_t EVENT_ON_RESURRECTED = Utils::StringHash("OnResurrected");
-static constexpr sa::event_t EVENT_ON_PINGOBJECT = Utils::StringHash("OnPingObject");
-static constexpr sa::event_t EVENT_ON_INVENTORYFULL = Utils::StringHash("OnInventoryFull");
-static constexpr sa::event_t EVENT_ON_ATTACK = Utils::StringHash("OnAttack");
-static constexpr sa::event_t EVENT_ON_ATTACKED = Utils::StringHash("OnAttacked");
-static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = Utils::StringHash("OnGettingAttacked");
-static constexpr sa::event_t EVENT_ON_USESKILL = Utils::StringHash("OnUseSkill");
-static constexpr sa::event_t EVENT_ON_SKILLTARGETED = Utils::StringHash("OnSkillTargeted");
-static constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = Utils::StringHash("OnGetCriticalHit");
-static constexpr sa::event_t EVENT_ON_ENDUSESKILL = Utils::StringHash("OnEndUseSkill");
-static constexpr sa::event_t EVENT_ON_STARTUSESKILL = Utils::StringHash("OnStartUseSkill");
-static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = Utils::StringHash("OnHandleCommand");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = Utils::StringHash("OnInterruptingAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = Utils::StringHash("OnInterruptingSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = Utils::StringHash("OnKnockingDown");
-static constexpr sa::event_t EVENT_ON_HEALING = Utils::StringHash("OnHealing");
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+static constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
+static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
+static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
+static constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = sa::StringHash("OnKnockedDown");
+static constexpr sa::event_t EVENT_ON_HEALED = sa::StringHash("OnHealed");
+static constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");
+static constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
+static constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
+static constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
+static constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
+static constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
+static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
+static constexpr sa::event_t EVENT_ON_USESKILL = sa::StringHash("OnUseSkill");
+static constexpr sa::event_t EVENT_ON_SKILLTARGETED = sa::StringHash("OnSkillTargeted");
+static constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = sa::StringHash("OnGetCriticalHit");
+static constexpr sa::event_t EVENT_ON_ENDUSESKILL = sa::StringHash("OnEndUseSkill");
+static constexpr sa::event_t EVENT_ON_STARTUSESKILL = sa::StringHash("OnStartUseSkill");
+static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = sa::StringHash("OnHandleCommand");
+static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnInterruptingAttack");
+static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
+static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
+static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
 
 /// Player, NPC, Monster some such
 class Actor : public GameObject

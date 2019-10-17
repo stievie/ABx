@@ -12,62 +12,55 @@
 #include "ThreadPool.h"
 #include "Database.h"
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4307)
-#endif
-static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::Account::KEY());
-static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Character::KEY());
-static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
-static constexpr size_t KEY_GAMELIST_HASH = Utils::StringHash(AB::Entities::GameList::KEY());
-static constexpr size_t KEY_IPBANS_HASH = Utils::StringHash(AB::Entities::IpBan::KEY());
-static constexpr size_t KEY_ACCOUNTBANS_HASH = Utils::StringHash(AB::Entities::AccountBan::KEY());
-static constexpr size_t KEY_BANS_HASH = Utils::StringHash(AB::Entities::Ban::KEY());
-static constexpr size_t KEY_FRIENDLIST_HASH = Utils::StringHash(AB::Entities::FriendList::KEY());
-static constexpr size_t KEY_ACCOUNTKEYS_HASH = Utils::StringHash(AB::Entities::AccountKey::KEY());
-static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = Utils::StringHash(AB::Entities::AccountKeyAccounts::KEY());
-static constexpr size_t KEY_MAIL_HASH = Utils::StringHash(AB::Entities::Mail::KEY());
-static constexpr size_t KEY_MAILLIST_HASH = Utils::StringHash(AB::Entities::MailList::KEY());
-static constexpr size_t KEY_PROFESSIONS_HASH = Utils::StringHash(AB::Entities::Profession::KEY());
-static constexpr size_t KEY_SKILLS_HASH = Utils::StringHash(AB::Entities::Skill::KEY());
-static constexpr size_t KEY_EFFECTS_HASH = Utils::StringHash(AB::Entities::Effect::KEY());
-static constexpr size_t KEY_ATTRIBUTES_HASH = Utils::StringHash(AB::Entities::Attribute::KEY());
-static constexpr size_t KEY_SKILLLIST_HASH = Utils::StringHash(AB::Entities::SkillList::KEY());
-static constexpr size_t KEY_EFFECTLIST_HASH = Utils::StringHash(AB::Entities::EffectList::KEY());
-static constexpr size_t KEY_PROFESSIONLIST_HASH = Utils::StringHash(AB::Entities::ProfessionList::KEY());
-static constexpr size_t KEY_VERSIONS_HASH = Utils::StringHash(AB::Entities::Version::KEY());
-static constexpr size_t KEY_ATTRIBUTELIST_HASH = Utils::StringHash(AB::Entities::AttributeList::KEY());
-static constexpr size_t KEY_SERVICE_HASH = Utils::StringHash(AB::Entities::Service::KEY());
-static constexpr size_t KEY_SERVICELIST_HASH = Utils::StringHash(AB::Entities::ServiceList::KEY());
-static constexpr size_t KEY_GUILD_HASH = Utils::StringHash(AB::Entities::Guild::KEY());
-static constexpr size_t KEY_GUILDMEMBERS_HASH = Utils::StringHash(AB::Entities::GuildMembers::KEY());
-static constexpr size_t KEY_RESERVEDNAME_HASH = Utils::StringHash(AB::Entities::ReservedName::KEY());
-static constexpr size_t KEY_GAMEINSTANCES_HASH = Utils::StringHash(AB::Entities::GameInstance::KEY());
-static constexpr size_t KEY_ITEMS_HASH = Utils::StringHash(AB::Entities::Item::KEY());
-static constexpr size_t KEY_ITEMLIST_HASH = Utils::StringHash(AB::Entities::ItemList::KEY());
-static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::VersionList::KEY());
-static constexpr size_t KEY_ACCOUNTLIST_HASH = Utils::StringHash(AB::Entities::AccountList::KEY());
-static constexpr size_t KEY_CHARACTERLIST_HASH = Utils::StringHash(AB::Entities::CharacterList::KEY());
-static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = Utils::StringHash(AB::Entities::AccountKeyList::KEY());
-static constexpr size_t KEY_MUSIC_HASH = Utils::StringHash(AB::Entities::Music::KEY());
-static constexpr size_t KEY_MUSICLIST_HASH = Utils::StringHash(AB::Entities::MusicList::KEY());
-static constexpr size_t KEY_PARTIES_HASH = Utils::StringHash(AB::Entities::Party::KEY());
-static constexpr size_t KEY_CONCRETEITEMS_HASH = Utils::StringHash(AB::Entities::ConcreteItem::KEY());
-static constexpr size_t KEY_ACCOUNTITEMLIST_HASH = Utils::StringHash(AB::Entities::AccountItemList::KEY());
-static constexpr size_t KEY_CHESTITEMLIST_HASH = Utils::StringHash(AB::Entities::ChestItems::KEY());
-static constexpr size_t KEY_PLAYERITEMLIST_HASH = Utils::StringHash(AB::Entities::PlayerItemList::KEY());
-static constexpr size_t KEY_INVENTORYITEMLIST_HASH = Utils::StringHash(AB::Entities::InventoryItems::KEY());
-static constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = Utils::StringHash(AB::Entities::EquippedItems::KEY());
-static constexpr size_t KEY_ITEMCHANCELIST_HASH = Utils::StringHash(AB::Entities::ItemChanceList::KEY());
-static constexpr size_t KEY_TYPEDITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemList::KEY());
-static constexpr size_t KEY_INSIGNIAITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsInsignia::KEY());
-static constexpr size_t KEY_RUNEITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsRunes::KEY());
-static constexpr size_t KEY_WEAPONPREFIXITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponPrefix::KEY());
-static constexpr size_t KEY_WEAPONSUFFIXITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponSuffix::KEY());
-static constexpr size_t KEY_WEAPONINSCRIPTIONITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponInscription::KEY());
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+static constexpr size_t KEY_ACCOUNTS_HASH = sa::StringHash(AB::Entities::Account::KEY());
+static constexpr size_t KEY_CHARACTERS_HASH = sa::StringHash(AB::Entities::Character::KEY());
+static constexpr size_t KEY_GAMES_HASH = sa::StringHash(AB::Entities::Game::KEY());
+static constexpr size_t KEY_GAMELIST_HASH = sa::StringHash(AB::Entities::GameList::KEY());
+static constexpr size_t KEY_IPBANS_HASH = sa::StringHash(AB::Entities::IpBan::KEY());
+static constexpr size_t KEY_ACCOUNTBANS_HASH = sa::StringHash(AB::Entities::AccountBan::KEY());
+static constexpr size_t KEY_BANS_HASH = sa::StringHash(AB::Entities::Ban::KEY());
+static constexpr size_t KEY_FRIENDLIST_HASH = sa::StringHash(AB::Entities::FriendList::KEY());
+static constexpr size_t KEY_ACCOUNTKEYS_HASH = sa::StringHash(AB::Entities::AccountKey::KEY());
+static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = sa::StringHash(AB::Entities::AccountKeyAccounts::KEY());
+static constexpr size_t KEY_MAIL_HASH = sa::StringHash(AB::Entities::Mail::KEY());
+static constexpr size_t KEY_MAILLIST_HASH = sa::StringHash(AB::Entities::MailList::KEY());
+static constexpr size_t KEY_PROFESSIONS_HASH = sa::StringHash(AB::Entities::Profession::KEY());
+static constexpr size_t KEY_SKILLS_HASH = sa::StringHash(AB::Entities::Skill::KEY());
+static constexpr size_t KEY_EFFECTS_HASH = sa::StringHash(AB::Entities::Effect::KEY());
+static constexpr size_t KEY_ATTRIBUTES_HASH = sa::StringHash(AB::Entities::Attribute::KEY());
+static constexpr size_t KEY_SKILLLIST_HASH = sa::StringHash(AB::Entities::SkillList::KEY());
+static constexpr size_t KEY_EFFECTLIST_HASH = sa::StringHash(AB::Entities::EffectList::KEY());
+static constexpr size_t KEY_PROFESSIONLIST_HASH = sa::StringHash(AB::Entities::ProfessionList::KEY());
+static constexpr size_t KEY_VERSIONS_HASH = sa::StringHash(AB::Entities::Version::KEY());
+static constexpr size_t KEY_ATTRIBUTELIST_HASH = sa::StringHash(AB::Entities::AttributeList::KEY());
+static constexpr size_t KEY_SERVICE_HASH = sa::StringHash(AB::Entities::Service::KEY());
+static constexpr size_t KEY_SERVICELIST_HASH = sa::StringHash(AB::Entities::ServiceList::KEY());
+static constexpr size_t KEY_GUILD_HASH = sa::StringHash(AB::Entities::Guild::KEY());
+static constexpr size_t KEY_GUILDMEMBERS_HASH = sa::StringHash(AB::Entities::GuildMembers::KEY());
+static constexpr size_t KEY_RESERVEDNAME_HASH = sa::StringHash(AB::Entities::ReservedName::KEY());
+static constexpr size_t KEY_GAMEINSTANCES_HASH = sa::StringHash(AB::Entities::GameInstance::KEY());
+static constexpr size_t KEY_ITEMS_HASH = sa::StringHash(AB::Entities::Item::KEY());
+static constexpr size_t KEY_ITEMLIST_HASH = sa::StringHash(AB::Entities::ItemList::KEY());
+static constexpr size_t KEY_VERSIONLIST_HASH = sa::StringHash(AB::Entities::VersionList::KEY());
+static constexpr size_t KEY_ACCOUNTLIST_HASH = sa::StringHash(AB::Entities::AccountList::KEY());
+static constexpr size_t KEY_CHARACTERLIST_HASH = sa::StringHash(AB::Entities::CharacterList::KEY());
+static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = sa::StringHash(AB::Entities::AccountKeyList::KEY());
+static constexpr size_t KEY_MUSIC_HASH = sa::StringHash(AB::Entities::Music::KEY());
+static constexpr size_t KEY_MUSICLIST_HASH = sa::StringHash(AB::Entities::MusicList::KEY());
+static constexpr size_t KEY_PARTIES_HASH = sa::StringHash(AB::Entities::Party::KEY());
+static constexpr size_t KEY_CONCRETEITEMS_HASH = sa::StringHash(AB::Entities::ConcreteItem::KEY());
+static constexpr size_t KEY_ACCOUNTITEMLIST_HASH = sa::StringHash(AB::Entities::AccountItemList::KEY());
+static constexpr size_t KEY_CHESTITEMLIST_HASH = sa::StringHash(AB::Entities::ChestItems::KEY());
+static constexpr size_t KEY_PLAYERITEMLIST_HASH = sa::StringHash(AB::Entities::PlayerItemList::KEY());
+static constexpr size_t KEY_INVENTORYITEMLIST_HASH = sa::StringHash(AB::Entities::InventoryItems::KEY());
+static constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = sa::StringHash(AB::Entities::EquippedItems::KEY());
+static constexpr size_t KEY_ITEMCHANCELIST_HASH = sa::StringHash(AB::Entities::ItemChanceList::KEY());
+static constexpr size_t KEY_TYPEDITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemList::KEY());
+static constexpr size_t KEY_INSIGNIAITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsInsignia::KEY());
+static constexpr size_t KEY_RUNEITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsRunes::KEY());
+static constexpr size_t KEY_WEAPONPREFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponPrefix::KEY());
+static constexpr size_t KEY_WEAPONSUFFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponSuffix::KEY());
+static constexpr size_t KEY_WEAPONINSCRIPTIONITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponInscription::KEY());
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     flushInterval_(FLUSH_CACHE_MS),
@@ -233,7 +226,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     cache_[key] = { { created, modified, false }, data };
 
     // Special case for player names
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     if (tableHash == KEY_CHARACTERS_HASH)
     {
         AB::Entities::Character ch;
@@ -266,7 +259,7 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
 
     // Maybe in player names cache
     // Special case for player names
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     if (tableHash == KEY_CHARACTERS_HASH)
     {
         AB::Entities::Character ch;
@@ -402,7 +395,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
         uuids::uuid id;
         if (!key.decode(table, id))
             continue;
-        size_t tableHash = Utils::StringHashRt(table.data());
+        size_t tableHash = sa::StringHashRt(table.data());
         if (tableHash == KEY_GAMEINSTANCES_HASH || tableHash == KEY_SERVICE_HASH || tableHash == KEY_PARTIES_HASH)
             // Can not delete these
             continue;
@@ -598,7 +591,7 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return false;
     }
 
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     switch (tableHash)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
@@ -649,7 +642,7 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         return false;
     }
 
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     bool succ = false;
 
     switch (tableHash)
@@ -694,7 +687,7 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     if (!key.decode(table, id))
         return false;
 
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     switch (tableHash)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
@@ -723,7 +716,7 @@ void StorageProvider::RemovePlayerFromCache(const IO::DataKey& key)
     if (!key.decode(table, playerUuid))
         return;
 
-    size_t tableHash = Utils::StringHashRt(table.data());
+    size_t tableHash = sa::StringHashRt(table.data());
     if (tableHash == KEY_CHARACTERS_HASH)
     {
         auto _data = cache_.find(key);

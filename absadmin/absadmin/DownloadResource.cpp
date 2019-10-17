@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DownloadResource.h"
-#include "StringHash.h"
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include "Subsystems.h"

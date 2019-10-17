@@ -1,8 +1,9 @@
 #pragma once
 
 #include <stdlib.h>
+#include <string_view>
 
-namespace Utils {
+namespace sa {
 
 /// Compile time string hash
 /// https://github.com/elanthis/constexpr-hash-demo/blob/master/test.cpp
@@ -28,6 +29,17 @@ constexpr size_t StringHashOne(char c, const char* remain, size_t value)
 constexpr size_t StringHash(const char* str)
 {
     return StringHashOne(str[0], str + 1, OFFSET);
+}
+
+constexpr size_t StringHash(std::string_view str)
+{
+    size_t hash = OFFSET;
+    for (auto c : str)
+    {
+        hash ^= static_cast<size_t>(c);
+        hash *= PRIME;
+    }
+    return hash;
 }
 
 // run-time hash

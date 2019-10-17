@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ServicesJsonResource.h"
-#include "StringHash.h"
 #include "Subsystems.h"
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Service.h>

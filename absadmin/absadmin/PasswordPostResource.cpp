@@ -7,6 +7,7 @@
 #include "DataClient.h"
 #include "Subsystems.h"
 #include <abcrypto.hpp>
+#include <sa/StringHash.h>
 
 namespace Resources {
 
@@ -18,7 +19,7 @@ bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultim
     if (oldPwIt == form.end() || newPwIt == form.end() || new2PwIt == form.end())
         return false;
 
-    std::string uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
+    std::string uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
     AB::Entities::Account account;
     account.uuid = uuid;
     auto dataClient = GetSubsystem<IO::DataClient>();

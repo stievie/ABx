@@ -32,7 +32,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         {
             const pugi::xml_attribute& name_attr = attr.attribute("name");
             const pugi::xml_attribute& value_attr = attr.attribute("value");
-            const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+            const size_t name_hash = sa::StringHashRt(name_attr.as_string());
             switch (name_hash)
             {
             case IO::Map::AttrPosition:
@@ -85,7 +85,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
-            const size_t type_hash = Utils::StringHashRt(type_attr.as_string());
+            const size_t type_hash = sa::StringHashRt(type_attr.as_string());
             // StaticModel must be first component
             switch (type_hash)
             {
@@ -102,7 +102,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
@@ -140,9 +140,9 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     for (const auto& attr : comp.children())
                     {
                         const pugi::xml_attribute& name_attr = attr.attribute("name");
-                        const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                        const size_t name_hash = sa::StringHashRt(name_attr.as_string());
                         const pugi::xml_attribute& value_attr = attr.attribute("value");
-                        const size_t value_hash = Utils::StringHashRt(value_attr.as_string());
+                        const size_t value_hash = sa::StringHashRt(value_attr.as_string());
                         switch (name_hash)
                         {
                         case IO::Map::AttrSize:
@@ -238,7 +238,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
@@ -259,7 +259,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
@@ -347,7 +347,7 @@ bool IOMap_Load(Game::Map& map)
     for (const auto& file_node : index_node.children("file"))
     {
         const pugi::xml_attribute& type_attr = file_node.attribute("type");
-        const size_t type_hash = Utils::StringHashRt(type_attr.as_string());
+        const size_t type_hash = sa::StringHashRt(type_attr.as_string());
         const pugi::xml_attribute& src_attr = file_node.attribute("src");
         switch (type_hash)
         {

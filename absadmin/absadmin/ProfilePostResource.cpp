@@ -6,6 +6,7 @@
 #include "StringUtils.h"
 #include "DataClient.h"
 #include "Subsystems.h"
+#include <sa/StringHash.h>
 
 namespace Resources {
 
@@ -36,7 +37,7 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
     }
     else
     {
-        std::string uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
+        std::string uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
         AB::Entities::Account account;
         account.uuid = uuid;
         auto dataClient = GetSubsystem<IO::DataClient>();

@@ -222,7 +222,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
 
 const Utils::Variant& GameObject::GetVar(const std::string& name) const
 {
-    auto it = variables_.find(Utils::StringHashRt(name.c_str()));
+    auto it = variables_.find(sa::StringHashRt(name.c_str()));
     if (it != variables_.end())
         return (*it).second;
     return Utils::Variant::Empty;
@@ -230,7 +230,7 @@ const Utils::Variant& GameObject::GetVar(const std::string& name) const
 
 void GameObject::SetVar(const std::string& name, const Utils::Variant& val)
 {
-    variables_[Utils::StringHashRt(name.c_str())] = val;
+    variables_[sa::StringHashRt(name.c_str())] = val;
 }
 
 void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results)

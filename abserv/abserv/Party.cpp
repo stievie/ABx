@@ -389,7 +389,7 @@ void Party::NotifyPlayersUnqueued()
 
 const Utils::Variant& Party::GetVar(const std::string& name) const
 {
-    auto it = variables_.find(Utils::StringHashRt(name.c_str()));
+    auto it = variables_.find(sa::StringHashRt(name.c_str()));
     if (it != variables_.end())
         return (*it).second;
     return Utils::Variant::Empty;
@@ -397,7 +397,7 @@ const Utils::Variant& Party::GetVar(const std::string& name) const
 
 void Party::SetVar(const std::string& name, const Utils::Variant& val)
 {
-    variables_[Utils::StringHashRt(name.c_str())] = val;
+    variables_[sa::StringHashRt(name.c_str())] = val;
 }
 
 void Party::ChangeInstance(const std::string& mapUuid)

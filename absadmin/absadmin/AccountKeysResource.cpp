@@ -2,7 +2,6 @@
 #include "AccountKeysResource.h"
 #include <AB/Entities/AccountKeyList.h>
 #include <AB/Entities/AccountKey.h>
-#include "StringHash.h"
 #include "Application.h"
 #include "Version.h"
 #include "Subsystems.h"

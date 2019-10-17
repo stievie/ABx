@@ -26,7 +26,7 @@
 #include <kaguya/kaguya.hpp>
 #include <sa/Events.h>
 #include "Damage.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 
 namespace Game {
 
@@ -44,18 +44,11 @@ class Npc;
 class Player;
 class Skill;
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4307)
-#endif
-static constexpr sa::event_t EVENT_ON_CLICKED = Utils::StringHash("OnClicked");
-static constexpr sa::event_t EVENT_ON_COLLIDE = Utils::StringHash("OnCollide");
-static constexpr sa::event_t EVENT_ON_LEFTAREA = Utils::StringHash("OnLeftArea");
-static constexpr sa::event_t EVENT_ON_SELECTED = Utils::StringHash("OnSelected");
-static constexpr sa::event_t EVENT_ON_TRIGGER = Utils::StringHash("OnTrigger");
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+static constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
+static constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
+static constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
+static constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
+static constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
 
 using GameObjectEvents = sa::Events<
     void(void),

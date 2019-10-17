@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <map>
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include <AB/ProtocolCodes.h>
 
 namespace Game {
@@ -100,7 +100,7 @@ private:
     std::string guildUuid_;
 public:
     explicit GuildChatChannel(const std::string& guildUuid) :
-        ChatChannel(Utils::StringHashRt(guildUuid.c_str())),
+        ChatChannel(sa::StringHashRt(guildUuid.c_str())),
         guildUuid_(guildUuid)
     { }
     bool Talk(Player& player, const std::string& text) override;

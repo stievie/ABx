@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ProfileResource.h"
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include "Subsystems.h"
@@ -19,7 +19,7 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
     if (!TemplateResource::GetObjects(objects))
         return false;
 
-    const std::string& uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
+    const std::string& uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
     AB::Entities::Account account;
     account.uuid = uuid;
     auto dataClient = GetSubsystem<IO::DataClient>();

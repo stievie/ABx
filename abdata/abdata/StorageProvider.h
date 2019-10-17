@@ -29,10 +29,9 @@
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-#include "StringHash.h"
+#include <sa/StringHash.h>
 #include "DataKey.h"
 #include <sa/CallableTable.h>
-#include "StringHash.h"
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
@@ -139,14 +138,7 @@ private:
     template<typename D, typename E>
     void AddEntityClass()
     {
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4307)
-#endif
-        constexpr size_t hash = Utils::StringHash(E::KEY());
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+        constexpr size_t hash = sa::StringHash(E::KEY());
         // For each Entity there are 3 methods that we need:
         // 1. Does the Entity exist
         // 2. Write (also delete) the entity to the DB

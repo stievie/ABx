@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ServicesResource.h"
-#include "StringHash.h"
 #include "Application.h"
 #include "Version.h"
 #include "Subsystems.h"

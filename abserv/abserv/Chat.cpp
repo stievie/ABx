@@ -65,7 +65,7 @@ std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
     if (Utils::Uuid::IsEmpty(uuid) || type == ChatType::None)
         return std::shared_ptr<ChatChannel>();
 
-    const std::pair<ChatType, uint64_t> channelId = { type, Utils::StringHashRt(uuid.c_str()) };
+    const std::pair<ChatType, uint64_t> channelId = { type, sa::StringHashRt(uuid.c_str()) };
     const auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
@@ -164,7 +164,7 @@ WhisperChatChannel::WhisperChatChannel(uint64_t id) :
 }
 
 WhisperChatChannel::WhisperChatChannel(const std::string& playerUuid) :
-    ChatChannel(Utils::StringHashRt(playerUuid.c_str())),
+    ChatChannel(sa::StringHashRt(playerUuid.c_str())),
     playerUuid_(playerUuid)
 {
 }

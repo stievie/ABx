@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ServiceResource.h"
-#include "StringHash.h"
 #include "Application.h"
 #include "Subsystems.h"
 #include <AB/Entities/ServiceList.h>
