@@ -2,7 +2,7 @@
 #include <catch.hpp>
 
 #include <sa/TypeName.h>
-#include "StringHash.h"
+#include <sa/StringHash.h>
 
 class Baz
 {
@@ -49,10 +49,10 @@ TEST_CASE("TypeName Hash")
 #pragma warning(push)
 #pragma warning(disable: 4307)
 #endif
-    constexpr size_t hash = Utils::StringHash(res);
+    constexpr size_t hash = sa::StringHash(res);
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
     INFO(hash);
-    REQUIRE(hash == Utils::StringHashRt(res.data(), res.size()));
+    REQUIRE(hash == sa::StringHashRt(res.data(), res.size()));
 }
