@@ -12,7 +12,7 @@ SRC_FILES = \
 	$(SOURDEDIR)/DatabasePgsql.cpp \
 	$(SOURDEDIR)/DatabaseSqlite.cpp
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
+CXXFLAGS += -Werror -fno-rtti
 DEFINES += -DUSE_PGSQL
 # End changes
 
