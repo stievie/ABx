@@ -80,6 +80,14 @@ void AutoRunComp::OnCollide(GameObject* other)
     if (auto fo = following_.lock())
     {
         if (other->id_ == fo->id_)
+        {
+            // If at dest reset
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            SetAutoRun(false);
+            owner_.CallEvent<void(void)>(EVENT_ON_ARRIVED);
+        }
+        else
+            // If that's not the target just stop
             Reset();
     }
 }
@@ -158,7 +166,7 @@ void AutoRunComp::SetAutoRun(bool value)
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
             nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
-            Player& player = static_cast<Player&>(owner_);
+            Player& player = To<Player>(owner_);
             player.WriteToOutput(*nmsg);
         }
     }

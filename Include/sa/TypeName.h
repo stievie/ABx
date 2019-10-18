@@ -14,13 +14,18 @@ constexpr int char_pos(const char* str, const char n)
 template<typename T>
 struct TypeName
 {
+    /// GCC will return "Foo::Bar", MSVC "class Foo::Bar"
     static constexpr auto Get()
     {
-#if defined __GNUC__
+#if defined(__GNUC__)
+        // GCC will set __PRETTY_FUNCTION__ to something like:
+        // sa::TypeName<T>::Get() [with T = Foo::Bar]
         constexpr const char* name = __PRETTY_FUNCTION__;
         constexpr int begin = char_pos(name, '=') + 2;
         constexpr int end = char_pos(name, ']');
-#elif defined _MSC_VER
+#elif defined(_MSC_VER)
+        // MSVC:
+        // sa::TypeName<class Foo::Bar>::Get()
         constexpr const char* name = __FUNCTION__;
         constexpr int begin = char_pos(name, '<') + 1;
         constexpr int end = char_pos(name, '>');

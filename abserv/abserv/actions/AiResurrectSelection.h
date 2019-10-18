@@ -46,7 +46,7 @@ AI_TASK(ResurrectSelection)
     if (!target->IsActorType())
         return ai::FAILED;
 
-    Game::Actor* actor = static_cast<Game::Actor*>(target.get());
+    Game::Actor* actor = Game::To<Game::Actor>(target.get());
     if (!actor->IsDead())
         return ai::FAILED;
 

@@ -434,7 +434,7 @@ std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
     VisitInRange(range, [&](GameObject& o)
     {
         if (o.IsPlayerOrNpcType())
-            result.push_back(static_cast<Actor*>(&o));
+            result.push_back(To<Actor>(&o));
         return Iteration::Continue;
     });
     return result;
@@ -449,7 +449,7 @@ Actor* GameObject::GetClosestActor(const std::function<bool(const Actor& actor)>
         {
             if (o.IsPlayerOrNpcType())
             {
-                result = static_cast<Actor*>(&o);
+                result = To<Actor>(&o);
                 if (!callback(*result))
                 {
                     result = nullptr;

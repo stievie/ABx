@@ -39,7 +39,7 @@ AI_TASK(AttackSelection)
         if (!target->IsActorType())
             continue;
 
-        Game::Actor* actor = static_cast<Game::Actor*>(target.get());
+        Game::Actor* actor = Game::To<Game::Actor>(target.get());
         if (actor->IsDead())
             continue;
 

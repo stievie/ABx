@@ -19,8 +19,6 @@ class Bar
 TEST_CASE("TypeName no NS")
 {
     constexpr auto res = sa::TypeName<Baz>::Get();
-    // Hm, interesting it fails...
-//    static_assert(res.compare("class Baz") == 0);
     INFO(res);
 #if defined __GNUC__
     // no class or whatever
@@ -45,14 +43,7 @@ TEST_CASE("TypeName NS")
 TEST_CASE("TypeName Hash")
 {
     constexpr auto res = sa::TypeName<Foo::Bar>::Get();
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4307)
-#endif
     constexpr size_t hash = sa::StringHash(res);
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
     INFO(hash);
     REQUIRE(hash == sa::StringHashRt(res.data(), res.size()));
 }

@@ -375,7 +375,7 @@ void Game::ShutdownNpcs()
     {
         if (obj.second->GetType() == AB::GameProtocol::ObjectTypeNpc)
         {
-            auto* npc = static_cast<Npc*>(obj.second.get());
+            auto* npc = To<Npc>(obj.second.get());
             map_->RemoveEntity(npc->id_);
             npc->Shutdown();
         }
@@ -449,7 +449,7 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
     if (target->GetType() != AB::GameProtocol::ObjectTypePlayer)
         return std::shared_ptr<ItemDrop>();
 
-    Player* targetPlayer = static_cast<Player*>(target);
+    Player* targetPlayer = To<Player>(target);
     auto* factory = GetSubsystem<ItemFactory>();
     auto* rng = GetSubsystem<Crypto::Random>();
     uint32_t itemId = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), targetPlayer);

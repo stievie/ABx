@@ -92,7 +92,7 @@ public:
         {
             if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = static_cast<const Actor*>(&o);
+                const auto* actor = To<Actor>(&o);
                 if (actor->IsEnemy(this))
                     func(actor);
             }
@@ -109,7 +109,7 @@ public:
         {
             if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = static_cast<const Actor*>(&o);
+                const auto* actor = To<Actor>(&o);
                 if (actor->IsAlly(this))
                     func(actor);
             }

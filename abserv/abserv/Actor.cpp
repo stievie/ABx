@@ -399,7 +399,7 @@ std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
     {
         if (o.IsPlayerOrNpcType())
         {
-            auto* actor = static_cast<Actor*>(&o);
+            auto* actor = To<Actor>(&o);
             if (actor->IsEnemy(this))
                 result.push_back(actor);
         }
@@ -431,7 +431,7 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
     {
         if (o.IsPlayerOrNpcType())
         {
-            auto* actor = static_cast<Actor*>(&o);
+            auto* actor = To<Actor>(&o);
             if (actor->IsAlly(this))
                 result.push_back(actor);
         }
