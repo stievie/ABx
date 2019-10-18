@@ -22,13 +22,13 @@ enum class ShapeType
     None = 99
 };
 
-class CollisionShape
+class AbstractCollisionShape
 {
 public:
-    CollisionShape(ShapeType type) :
+    AbstractCollisionShape(ShapeType type) :
         shapeType_(type)
     {}
-    virtual ~CollisionShape() = default;
+    virtual ~AbstractCollisionShape() = default;
 
     /// AABB
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
@@ -45,20 +45,20 @@ public:
 };
 
 template <typename T>
-class CollisionShapeImpl : public CollisionShape
+class CollisionShape : public AbstractCollisionShape
 {
 private:
     std::shared_ptr<T> object_;
 public:
     /// Ctor. Create new shape
     template<typename... _CArgs>
-    explicit CollisionShapeImpl(ShapeType type, _CArgs&&... _Args) :
-        CollisionShape(type),
+    explicit CollisionShape(ShapeType type, _CArgs&&... _Args) :
+        AbstractCollisionShape(type),
         object_(std::make_shared<T>(std::forward<_CArgs>(_Args)...))
     { }
     /// Ctor. Assign existing shape
-    explicit CollisionShapeImpl(ShapeType type, std::shared_ptr<T> ptr) :
-        CollisionShape(type),
+    explicit CollisionShape(ShapeType type, std::shared_ptr<T> ptr) :
+        AbstractCollisionShape(type),
         object_(ptr)
     { }
 
@@ -98,6 +98,7 @@ public:
 
     Shape GetShape() const override
     {
+        assert(object_);
         return object_->GetShape();
     }
 };

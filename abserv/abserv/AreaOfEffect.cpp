@@ -37,7 +37,7 @@ AreaOfEffect::AreaOfEffect() :
     events_.Subscribe<void(GameObject*)>(EVENT_ON_LEFTAREA, std::bind(&AreaOfEffect::OnLeftArea, this, std::placeholders::_1));
     // By default AOE has a sphere shape with the range as radius
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
+        std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
     );
     // AOE can not hide other objects
@@ -160,19 +160,19 @@ void AreaOfEffect::SetShapeType(Math::ShapeType shape)
         const float rangeSize = RangeDistances[static_cast<int>(range_)] * 0.5f;
         const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
         SetCollisionShape(
-            std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
+            std::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
                 -halfSize, halfSize)
         );
         break;
     }
     case Math::ShapeType::Sphere:
         SetCollisionShape(
-            std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
+            std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
                 Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
         );
         break;
     case Math::ShapeType::None:
-        SetCollisionShape(std::unique_ptr<Math::CollisionShape>());
+        SetCollisionShape(std::unique_ptr<Math::AbstractCollisionShape>());
         break;
     default:
         LOG_ERROR << "Invalid shape type for AOE " << static_cast<int>(shape) << std::endl;
@@ -199,7 +199,7 @@ void AreaOfEffect::SetRange(Ranges range)
     {
         const float rangeSize = RangeDistances[static_cast<int>(range_)] * 0.5f;
         const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
-        using BoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        using BoxShape = Math::CollisionShape<Math::BoundingBox>;
         BoxShape* shape = static_cast<BoxShape*>(cs);
         shape->Object()->min_ = -halfSize;
         shape->Object()->max_ = halfSize;
@@ -207,7 +207,7 @@ void AreaOfEffect::SetRange(Ranges range)
     }
     case Math::ShapeType::Sphere:
     {
-        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(cs);
         shape->Object()->radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
         break;

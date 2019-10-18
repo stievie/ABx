@@ -13,9 +13,6 @@
 namespace Game {
 
 sa::IdGenerator<uint32_t> GameObject::objectIds_;
-// Let's make the head 1.7m above the ground
-constexpr Math::Vector3 GameObject::HeadOffset(0.0f, 1.7f, 0.0f);
-constexpr Math::Vector3 GameObject::BodyOffset(0.0f, 1.0f, 0.0f);
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
@@ -147,7 +144,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         return false;
     case Math::ShapeType::BoundingBox:
     {
-        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
         const Math::BoundingBox bbox = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
@@ -168,7 +165,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     }
     case Math::ShapeType::Sphere:
     {
-        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
         const Math::Sphere sphere = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
@@ -185,7 +182,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     }
     case Math::ShapeType::ConvexHull:
     {
-        using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
+        using HullShape = Math::CollisionShape<Math::ConvexHull>;
         HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
         const Math::ConvexHull hull = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
@@ -202,7 +199,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     }
     case Math::ShapeType::HeightMap:
     {
-        using HeightShape = Math::CollisionShapeImpl<Math::HeightMap>;
+        using HeightShape = Math::CollisionShape<Math::HeightMap>;
         HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
@@ -518,7 +515,7 @@ void GameObject::_LuaSetScaleSimple(float value)
 
 Math::STLVector3 GameObject::_LuaGetPosition() const
 {
-    return (Math::STLVector3)transformation_.position_;
+    return static_cast<Math::STLVector3>(transformation_.position_);
 }
 
 float GameObject::_LuaGetRotation() const
@@ -528,7 +525,7 @@ float GameObject::_LuaGetRotation() const
 
 Math::STLVector3 GameObject::_LuaGetScale() const
 {
-    return (Math::STLVector3)transformation_.scale_;
+    return static_cast<Math::STLVector3>(transformation_.scale_);
 }
 
 void GameObject::_LuaSetBoundingBox(const Math::STLVector3& min, const Math::STLVector3& max)
@@ -537,7 +534,7 @@ void GameObject::_LuaSetBoundingBox(const Math::STLVector3& min, const Math::STL
         return;
     if (collisionShape_->shapeType_ == Math::ShapeType::BoundingBox)
     {
-        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
         auto* obj = shape->Object();
         obj->min_ = min;
@@ -554,7 +551,7 @@ void GameObject::SetBoundingSize(const Math::Vector3& size)
     case Math::ShapeType::BoundingBox:
     {
         const Math::Vector3 halfSize = (size * 0.5f);
-        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
         auto* obj = shape->Object();
         obj->min_ = -halfSize;
@@ -563,7 +560,7 @@ void GameObject::SetBoundingSize(const Math::Vector3& size)
     }
     case Math::ShapeType::Sphere:
     {
-        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
         auto* obj = shape->Object();
         obj->radius_ = size.x_ * 0.5f;

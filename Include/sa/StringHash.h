@@ -19,18 +19,20 @@ static const size_t OFFSET = 2166136261U;
 static const size_t PRIME = 16777619U;
 #endif
 
-// compile-time hash helper function
+/// Compile-time hash helper function
 constexpr size_t StringHashOne(char c, const char* remain, size_t value)
 {
     return c == 0 ? value : StringHashOne(remain[0], remain + 1, (value ^ static_cast<size_t>(c)) * PRIME);
 }
 
-// compile-time hash
+/// Compile-time hash
 constexpr size_t StringHash(const char* str)
 {
     return StringHashOne(str[0], str + 1, OFFSET);
 }
 
+#if __cplusplus >= 201703L
+/// Compile time string hash of string_view. Requires C++17
 constexpr size_t StringHash(std::string_view str)
 {
     size_t hash = OFFSET;
@@ -41,8 +43,9 @@ constexpr size_t StringHash(std::string_view str)
     }
     return hash;
 }
+#endif
 
-// run-time hash
+/// Run-time hash
 inline size_t StringHashRt(const char* str)
 {
     size_t hash = OFFSET;
@@ -54,6 +57,7 @@ inline size_t StringHashRt(const char* str)
     return hash;
 }
 
+/// Run time string hash, supports \0 inside
 inline size_t StringHashRt(const char* str, size_t size)
 {
     size_t hash = OFFSET;

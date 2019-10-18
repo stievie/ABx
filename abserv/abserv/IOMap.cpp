@@ -173,7 +173,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
 #endif
                                 object->SetCollisionShape(
-                                    std::make_unique<Math::CollisionShapeImpl<Math::ConvexHull>>(
+                                    std::make_unique<Math::CollisionShape<Math::ConvexHull>>(
                                         Math::ShapeType::ConvexHull, model->shape_->vertexData_)
                                 );
                             }
@@ -193,7 +193,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 ", size +/- " << halfSize.ToString() << ", orientation " << bb.orientation_.ToString() << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                std::make_unique<Math::CollisionShape<Math::BoundingBox>>(
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }
@@ -209,7 +209,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 ", Radius " << radius << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(
+                                std::make_unique<Math::CollisionShape<Math::Sphere>>(
                                     Math::ShapeType::Sphere, sphere)
                             );
                         }
@@ -225,7 +225,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 " to model BB " << model->GetBoundingBox().ToString() << " orientation " << bb.orientation_.ToString() << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                std::make_unique<Math::CollisionShape<Math::BoundingBox>>(
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }

@@ -26,10 +26,9 @@ void CollisionComp::ResolveCollisions()
                     continue;
 
                 // Actor always has a MoveComp
-                MoveComp* mc = owner_.moveComp_.get();
-                assert(mc);
+                MoveComp& mc = *owner_.moveComp_;
                 Math::Vector3 move;
-                if (owner_.Collides(ci, mc->velocity_, move))
+                if (owner_.Collides(ci, mc.velocity_, move))
                 {
                     if ((ci->collisionMask_ != 0) && (owner_.collisionMask_ != 0))
                     {
@@ -41,8 +40,8 @@ void CollisionComp::ResolveCollisions()
                             owner_.transformation_.position_ += move;
                         else
                         {
-                            owner_.transformation_.position_ = mc->GetOldPosition();
-                            mc->moved_ = false;
+                            owner_.transformation_.position_ = mc.GetOldPosition();
+                            mc.moved_ = false;
                         }
                     }
 

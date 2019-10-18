@@ -77,7 +77,7 @@ public:
     static sa::IdGenerator<uint32_t> objectIds_;
 private:
     int64_t removeAt_{ 0 };
-    std::unique_ptr<Math::CollisionShape> collisionShape_{ nullptr };
+    std::unique_ptr<Math::AbstractCollisionShape> collisionShape_{ nullptr };
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(const Math::STLVector3& direction);
     /// Raycast to destination point
@@ -126,9 +126,10 @@ protected:
     void RemoveFromOctree();
 public:
     static void RegisterLua(kaguya::State& state);
-    /// The head is not on the ground.
-    static const Math::Vector3 HeadOffset;
-    static const Math::Vector3 BodyOffset;
+    /// Let's make the head 1.7m above the ground
+    static constexpr Math::Vector3 HeadOffset{ 0.0f, 1.7f, 0.0f };
+    /// Center of body
+    static constexpr Math::Vector3 BodyOffset{ 0.0f, 1.0f, 0.0f };
 
     GameObject();
     // non-copyable
@@ -142,7 +143,7 @@ public:
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 
     void SetBoundingSize(const Math::Vector3& size);
-    void SetCollisionShape(std::unique_ptr<Math::CollisionShape> shape)
+    void SetCollisionShape(std::unique_ptr<Math::AbstractCollisionShape> shape)
     {
         collisionShape_ = std::move(shape);
     }
@@ -165,7 +166,7 @@ public:
         collisionMask_ = mask;
     }
     uint32_t GetCollisionMask() const { return collisionMask_; }
-    Math::CollisionShape* GetCollisionShape() const
+    Math::AbstractCollisionShape* GetCollisionShape() const
     {
         if (!collisionShape_)
             return nullptr;

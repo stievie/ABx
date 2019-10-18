@@ -19,7 +19,7 @@ Projectile::Projectile(const std::string& itemUuid) :
 {
     events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&Projectile::OnCollide, this, std::placeholders::_1));
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
+        std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, PROJECTILE_SIZE)
     );
     // Projectile can not hide other objects
