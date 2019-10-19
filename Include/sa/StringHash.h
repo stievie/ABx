@@ -31,8 +31,9 @@ constexpr size_t StringHash(const char* str)
     return StringHashOne(str[0], str + 1, OFFSET);
 }
 
+// MSVC requires /Zc:__cplusplus option, see https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201703L
-/// Compile time string hash of string_view. Requires C++17
+/// Compile time string hash of string_view. Requires C++17.
 constexpr size_t StringHash(std::string_view str)
 {
     size_t hash = OFFSET;

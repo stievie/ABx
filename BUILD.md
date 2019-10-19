@@ -2,6 +2,8 @@
 
 ## Supported Platforms/Tools
 
+The server needs a C++17 compiler.
+
 The Server is  known to compile on the following platforms with the following
 tools chains:
 
