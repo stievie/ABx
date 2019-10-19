@@ -5,7 +5,7 @@
 
 namespace IO {
 
-namespace Map {
+namespace IOMap {
 static constexpr size_t FileTypeScene = sa::StringHash("Scene");
 static constexpr size_t FileTypeNavmesh = sa::StringHash("NavMesh");
 static constexpr size_t FileTypeTerrain = sa::StringHash("Terrain");
@@ -43,8 +43,8 @@ static constexpr size_t AttrVertexSpacing = sa::StringHash("Vertex Spacing");
 static constexpr size_t AttrIsOccluder = sa::StringHash("Is Occluder");
 static constexpr size_t AttrIsOccludee = sa::StringHash("Can Be Occluded");
 static constexpr size_t AttrCollisionMask = sa::StringHash("Collision Mask");
+
+bool Load(Game::Map& map);
+
 }
-
-bool IOMap_Load(Game::Map& map);
-
 }

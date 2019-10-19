@@ -45,7 +45,7 @@ public:
 };
 
 template <typename T>
-class CollisionShape : public AbstractCollisionShape
+class CollisionShape final : public AbstractCollisionShape
 {
 private:
     std::shared_ptr<T> object_;
@@ -64,36 +64,46 @@ public:
 
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override
     {
+        assert(object_);
         return object_->GetBoundingBox().Transformed(transform);
     }
 
     BoundingBox GetBoundingBox() const override
     {
+        assert(object_);
         return object_->GetBoundingBox();
     }
 
     bool Collides(const Matrix4& transformation, const BoundingBox& other, const Vector3& velocity, Vector3& move) const override
     {
+        assert(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
     }
     bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const override
     {
+        assert(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
     }
     bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const override
     {
+        assert(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
     }
     bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const override
     {
+        assert(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
     }
 
-    T* Object() const
+    const T& Object() const
     {
-        if (object_)
-            return object_.get();
-        return nullptr;
+        assert(object_);
+        return *object_;
+    }
+    T& Object()
+    {
+        assert(object_);
+        return *object_;
     }
 
     Shape GetShape() const override

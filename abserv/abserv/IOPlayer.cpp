@@ -19,8 +19,9 @@
 #include "UuidUtils.h"
 
 namespace IO {
+namespace IOPlayer {
 
-static bool IOPlayer_LoadPlayerInventory(Game::Player& player)
+static bool LoadPlayerInventory(Game::Player& player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
@@ -54,7 +55,7 @@ static bool IOPlayer_LoadPlayerInventory(Game::Player& player)
     return true;
 }
 
-static bool IOPlayer_SavePlayerInventory(Game::Player& player)
+static bool SavePlayerInventory(Game::Player& player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Equipment
@@ -90,7 +91,7 @@ static bool IOPlayer_SavePlayerInventory(Game::Player& player)
     return true;
 }
 
-static bool IOPlayer_LoadPlayer(Game::Player& player)
+static bool LoadPlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -147,12 +148,12 @@ static bool IOPlayer_LoadPlayer(Game::Player& player)
 
     player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
-    if (!IOPlayer_LoadPlayerInventory(player))
+    if (!LoadPlayerInventory(player))
         return false;
     return true;
 }
 
-bool IOPlayer_LoadCharacter(AB::Entities::Character& ch)
+bool LoadCharacter(AB::Entities::Character& ch)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -164,19 +165,19 @@ bool IOPlayer_LoadCharacter(AB::Entities::Character& ch)
     return true;
 }
 
-bool IOPlayer_LoadPlayerByName(Game::Player& player, const std::string& name)
+bool LoadPlayerByName(Game::Player& player, const std::string& name)
 {
     player.data_.name = name;
-    return IOPlayer_LoadPlayer(player);
+    return LoadPlayer(player);
 }
 
-bool IOPlayer_LoadPlayerByUuid(Game::Player& player, const std::string& uuid)
+bool LoadPlayerByUuid(Game::Player& player, const std::string& uuid)
 {
     player.data_.uuid = uuid;
-    return IOPlayer_LoadPlayer(player);
+    return LoadPlayer(player);
 }
 
-bool IOPlayer_SavePlayer(Game::Player& player)
+bool SavePlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -188,10 +189,10 @@ bool IOPlayer_SavePlayer(Game::Player& player)
     player.data_.onlineTime += static_cast<int64_t>((player.logoutTime_ - player.loginTime_) / 1000);
     if (!client->Update(player.data_))
         return false;
-    return IOPlayer_SavePlayerInventory(player);
+    return SavePlayerInventory(player);
 }
 
-size_t IOPlayer_GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)
+size_t GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
@@ -255,14 +256,14 @@ size_t IOPlayer_GetInterestedParties(const std::string& accountUuid, std::vector
     return accounts.size();
 }
 
-bool IOPlayer_GetPlayerInfoByName(const std::string& name, AB::Entities::Character& player)
+bool GetPlayerInfoByName(const std::string& name, AB::Entities::Character& player)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     player.name = name;
     return client->Read(player);
 }
 
-bool IOPlayer_GetPlayerInfoByAccount(const std::string& accountUuid, AB::Entities::Character& player)
+bool GetPlayerInfoByAccount(const std::string& accountUuid, AB::Entities::Character& player)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
@@ -278,12 +279,22 @@ bool IOPlayer_GetPlayerInfoByAccount(const std::string& accountUuid, AB::Entitie
     return client->Read(player);
 }
 
-bool IOPlayer_IsIgnoringMe(const std::string& meUuid, const std::string& uuid)
+bool IsIgnoringMe(const std::string& meUuid, const std::string& uuid)
 {
-    // Check if `uuid` is ignoring `meUuid`
+    return GetRelationToMe(meUuid, uuid) == AB::Entities::FriendRelationIgnore;
+}
+
+bool HasFriendedMe(const std::string& meUuid, const std::string& uuid)
+{
+    return GetRelationToMe(meUuid, uuid) == AB::Entities::FriendRelationFriend;
+}
+
+AB::Entities::FriendRelation GetRelationToMe(const std::string& meUuid, const std::string& uuid)
+{
+    // Get realtion of `uuid` to `meUuid`
     auto* client = GetSubsystem<IO::DataClient>();
 
-    // Those friended me
+    // Those have me in their friendlist, be it friended or ignored
     AB::Entities::FriendedMe fme;
     fme.uuid = meUuid;
     if (client->Read(fme))
@@ -291,15 +302,11 @@ bool IOPlayer_IsIgnoringMe(const std::string& meUuid, const std::string& uuid)
         for (const auto& f : fme.friends)
         {
             if (Utils::Uuid::IsEqual(uuid, f.accountUuid))
-            {
-                if (f.relation == AB::Entities::FriendRelationIgnore)
-                    return true;
-            }
-            else
-                return false;
+                return f.relation;
         }
     }
-    return false;
+    return AB::Entities::FriendRelationUnknown;
 }
 
+}
 }

@@ -2,7 +2,6 @@
 #include "FriendList.h"
 #include "Subsystems.h"
 #include "DataClient.h"
-#include <AB/Entities/Character.h>
 #include "UuidUtils.h"
 #include "StringUtils.h"
 #include <sa/Transaction.h>
@@ -36,24 +35,24 @@ void FriendList::Save()
         LOG_ERROR << "Error saving friend list for account " << data_.uuid << std::endl;
 }
 
-FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
-    const std::string& name,
+FriendList::Error FriendList::AddFriendAccount(const AB::Entities::Character& ch,
     AB::Entities::FriendRelation relation)
 {
-    if (Utils::Uuid::IsEqual(accountUuid_, accountUuid))
+    if (Utils::Uuid::IsEqual(accountUuid_, ch.accountUuid))
         // Can not add self as friend
         return FriendList::Error::PlayerNotFound;
-    if (Exists(accountUuid))
+    if (Exists(ch.accountUuid))
         return FriendList::Error::AlreadyFriend;
 
     data_.friends.push_back({
-        accountUuid,
-        name,
+        ch.accountUuid,
+        ch.name,
         relation,
         Utils::Tick()
     });
 
-    InvalidateList(accountUuid);
+    InvalidateList(accountUuid_);
+    InvalidateList(ch.accountUuid);
 
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
@@ -66,7 +65,7 @@ FriendList::Error FriendList::AddFriendByName(const std::string& playerName, AB:
     ch.name = playerName;
     if (!client->Read(ch))
         return FriendList::Error::PlayerNotFound;
-    return AddFriendAccount(ch.accountUuid, playerName, relation);
+    return AddFriendAccount(ch, relation);
 }
 
 FriendList::Error FriendList::Remove(const std::string& accountUuid)
@@ -83,6 +82,7 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
         return FriendList::Error::NoFriend;
     data_.friends.erase(it);
 
+    InvalidateList(accountUuid_);
     InvalidateList(accountUuid);
 
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));

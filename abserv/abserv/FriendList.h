@@ -2,6 +2,7 @@
 
 #include <AB/Entities/FriendList.h>
 #include <sa/Iteration.h>
+#include <AB/Entities/Character.h>
 
 namespace Game {
 
@@ -18,7 +19,7 @@ public:
     };
 private:
     std::string accountUuid_;
-    FriendList::Error AddFriendAccount(const std::string& accountUuid, const std::string& name,
+    FriendList::Error AddFriendAccount(const AB::Entities::Character& ch,
         AB::Entities::FriendRelation relation);
     static void InvalidateList(const std::string& uuid);
 public:

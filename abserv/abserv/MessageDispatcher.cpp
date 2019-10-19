@@ -137,7 +137,7 @@ void MessageDispatcher::DispatchPlayerChanged(const Net::MessageMsg& msg)
     }
 
     std::vector<std::string> accounts;
-    IO::IOPlayer_GetInterestedParties(accUuid, accounts);
+    IO::IOPlayer::GetInterestedParties(accUuid, accounts);
 
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
     for (const auto& acc : accounts)

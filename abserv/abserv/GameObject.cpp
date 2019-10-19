@@ -146,7 +146,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     {
         using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
-        const Math::BoundingBox bbox = shape->Object()->Transformed(other->transformation_.GetMatrix());
+        const Math::BoundingBox bbox = shape->Object().Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
@@ -167,7 +167,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     {
         using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
-        const Math::Sphere sphere = shape->Object()->Transformed(other->transformation_.GetMatrix());
+        const Math::Sphere sphere = shape->Object().Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity, move);
@@ -184,7 +184,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     {
         using HullShape = Math::CollisionShape<Math::ConvexHull>;
         HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
-        const Math::ConvexHull hull = shape->Object()->Transformed(other->transformation_.GetMatrix());
+        const Math::ConvexHull hull = shape->Object().Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
@@ -203,14 +203,14 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), velocity, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), shape->Object(), velocity, move);
         if (ret)
         {
             LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), velocity, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), shape->Object(), velocity, move);
 #endif
     }
     }
@@ -536,9 +536,9 @@ void GameObject::_LuaSetBoundingBox(const Math::STLVector3& min, const Math::STL
     {
         using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
-        auto* obj = shape->Object();
-        obj->min_ = min;
-        obj->max_ = max;
+        auto& obj = shape->Object();
+        obj.min_ = min;
+        obj.max_ = max;
     }
 }
 
@@ -553,17 +553,17 @@ void GameObject::SetBoundingSize(const Math::Vector3& size)
         const Math::Vector3 halfSize = (size * 0.5f);
         using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
-        auto* obj = shape->Object();
-        obj->min_ = -halfSize;
-        obj->max_ = halfSize;
+        auto& obj = shape->Object();
+        obj.min_ = -halfSize;
+        obj.max_ = halfSize;
         break;
     }
     case Math::ShapeType::Sphere:
     {
         using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
-        auto* obj = shape->Object();
-        obj->radius_ = size.x_ * 0.5f;
+        auto& obj = shape->Object();
+        obj.radius_ = size.x_ * 0.5f;
         break;
     }
     default:

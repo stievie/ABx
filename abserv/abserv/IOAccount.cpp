@@ -9,8 +9,9 @@
 #include "UuidUtils.h"
 
 namespace IO {
+namespace IOAccount {
 
-bool IOAccount_GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
+bool GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
     const std::string& charUuid)
 {
     AB_PROFILE;
@@ -50,7 +51,7 @@ bool IOAccount_GameWorldAuth(const std::string& accountUuid, const std::string& 
     return true;
 }
 
-bool IOAccount_AccountLogout(const std::string& uuid)
+bool AccountLogout(const std::string& uuid)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -65,7 +66,7 @@ bool IOAccount_AccountLogout(const std::string& uuid)
     return client->Update(acc);
 }
 
-bool IOAccount_GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character)
+bool GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
@@ -78,7 +79,7 @@ bool IOAccount_GetAccountInfo(AB::Entities::Account& account, AB::Entities::Char
     return true;
 }
 
-bool IOAccount_GetGuildMemberInfo(const AB::Entities::Account& account, AB::Entities::GuildMember& g)
+bool GetGuildMemberInfo(const AB::Entities::Account& account, AB::Entities::GuildMember& g)
 {
     if (Utils::Uuid::IsEmpty(account.guildUuid))
         return false;
@@ -87,7 +88,8 @@ bool IOAccount_GetGuildMemberInfo(const AB::Entities::Account& account, AB::Enti
     gms.uuid = account.guildUuid;
     if (!client->Read(gms))
         return false;
-    const auto it = std::find_if(gms.members.begin(), gms.members.end(), [&](const AB::Entities::GuildMember& current) {
+    const auto it = std::find_if(gms.members.begin(), gms.members.end(), [&](const AB::Entities::GuildMember& current)
+    {
         return Utils::Uuid::IsEqual(account.uuid, current.accountUuid);
     });
     if (it == gms.members.end())
@@ -96,4 +98,5 @@ bool IOAccount_GetGuildMemberInfo(const AB::Entities::Account& account, AB::Enti
     return true;
 }
 
+}
 }

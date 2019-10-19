@@ -64,7 +64,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     assert(player);
 
     // Load player and account data from DB
-    if (!IO::IOPlayer_LoadPlayerByUuid(*player, playerUuid))
+    if (!IO::IOPlayer::LoadPlayerByUuid(*player, playerUuid))
     {
         LOG_ERROR << "Error loading player " << playerUuid << std::endl;
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
@@ -108,8 +108,8 @@ void ProtocolGame::Logout()
         return;
 
     player->logoutTime_ = Utils::Tick();
-    IO::IOPlayer_SavePlayer(*player);
-    IO::IOAccount_AccountLogout(player->data_.accountUuid);
+    IO::IOPlayer::SavePlayer(*player);
+    IO::IOAccount::AccountLogout(player->data_.accountUuid);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
@@ -438,7 +438,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    if (!IO::IOAccount_GameWorldAuth(accountUuid, authToken, characterUuid))
+    if (!IO::IOAccount::GameWorldAuth(accountUuid, authToken, characterUuid))
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;

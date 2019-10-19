@@ -201,15 +201,15 @@ void AreaOfEffect::SetRange(Ranges range)
         const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
         using BoxShape = Math::CollisionShape<Math::BoundingBox>;
         BoxShape* shape = static_cast<BoxShape*>(cs);
-        shape->Object()->min_ = -halfSize;
-        shape->Object()->max_ = halfSize;
+        shape->Object().min_ = -halfSize;
+        shape->Object().max_ = halfSize;
         break;
     }
     case Math::ShapeType::Sphere:
     {
         using SphereShape = Math::CollisionShape<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(cs);
-        shape->Object()->radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
+        shape->Object().radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
         break;
     }
     default:

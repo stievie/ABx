@@ -13,8 +13,9 @@
 #include "FileUtils.h"
 
 namespace IO {
+namespace IOMap {
 
-static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
+static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 {
     auto* dataProvider = GetSubsystem<IO::DataProvider>();
     // Game load thread
@@ -35,24 +36,24 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             const size_t name_hash = sa::StringHashRt(name_attr.as_string());
             switch (name_hash)
             {
-            case IO::Map::AttrPosition:
+            case AttrPosition:
                 pos = Math::Vector3(value_attr.as_string());
                 break;
-            case IO::Map::AttrRotation:
+            case AttrRotation:
                 rot = Math::Quaternion(value_attr.as_string()).Normal();
                 break;
-            case IO::Map::AttrScale:
+            case AttrScale:
                 scale = Math::Vector3(value_attr.as_string());
                 break;
-            case IO::Map::AttrName:
+            case AttrName:
                 isSpawnPoint = strcmp(value_attr.as_string(), "SpawnPoint") == 0;
                 name = value_attr.as_string();
                 break;
-            case IO::Map::AttrVariables:
+            case AttrVariables:
             {
                 for (const auto& var : attr)
                 {
-                    if (var.attribute("hash").as_ullong() == IO::Map::VarGroup)
+                    if (var.attribute("hash").as_ullong() == VarGroup)
                     {
                         group = var.attribute("value").as_string();
                         break;
@@ -89,7 +90,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             // StaticModel must be first component
             switch (type_hash)
             {
-            case IO::Map::AttrStaticModel:
+            case AttrStaticModel:
             {
                 object = std::make_shared<Game::GameObject>();
                 object->SetName(name);
@@ -106,7 +107,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
-                    case IO::Map::AttrModel:
+                    case AttrModel:
                     {
                         std::string modelValue = value_attr.as_string();
                         std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
@@ -122,19 +123,19 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                         }
                         break;
                     }
-                    case IO::Map::AttrIsOccluder:
+                    case AttrIsOccluder:
                         object->occluder_ = value_attr.as_bool();
                         break;
-                    case IO::Map::AttrIsOccludee:
+                    case AttrIsOccludee:
                         object->occludee_ = value_attr.as_bool();
                         break;
                     }
                 }
                 break;
             }
-            case IO::Map::AttrCollisionShape:
+            case AttrCollisionShape:
             {
-                size_t coll_shape = IO::Map::AttrCollisionShapeTypeBox;
+                size_t coll_shape = AttrCollisionShapeTypeBox;
                 if (object)
                 {
                     for (const auto& attr : comp.children())
@@ -145,16 +146,16 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                         const size_t value_hash = sa::StringHashRt(value_attr.as_string());
                         switch (name_hash)
                         {
-                        case IO::Map::AttrSize:
+                        case AttrSize:
                             size = Math::Vector3(value_attr.as_string());
                             break;
-                        case IO::Map::AttrOffsetPos:
+                        case AttrOffsetPos:
                             offset = Math::Vector3(value_attr.as_string());
                             break;
-                        case IO::Map::AttrOffsetRot:
+                        case AttrOffsetRot:
                             offsetRot = Math::Quaternion(value_attr.as_string()).Normal();
                             break;
-                        case IO::Map::AttrShapeType:
+                        case AttrShapeType:
                         {
                             coll_shape = value_hash;
                         }
@@ -163,9 +164,9 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 
                     if (object && !object->GetCollisionShape())
                     {
-                        if (coll_shape == IO::Map::AttrCollisionShapeTypeTriangleMesh ||
-                            coll_shape == IO::Map::AttrCollisionShapeTypeConvexHull ||
-                            coll_shape == IO::Map::AttrCollisionShapeTypeCapsule)
+                        if (coll_shape == AttrCollisionShapeTypeTriangleMesh ||
+                            coll_shape == AttrCollisionShapeTypeConvexHull ||
+                            coll_shape == AttrCollisionShapeTypeCapsule)
                         {
                             if (model)
                             {
@@ -178,7 +179,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 );
                             }
                         }
-                        else if (coll_shape == IO::Map::AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
+                        else if (coll_shape == AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
                             const Math::Vector3 halfSize = (size * 0.5f);
@@ -197,7 +198,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }
-                        else if ((coll_shape == IO::Map::AttrCollisionShapeTypeSphere || coll_shape == IO::Map::AttrCollisionShapeTypeCylinder) &&
+                        else if ((coll_shape == AttrCollisionShapeTypeSphere || coll_shape == AttrCollisionShapeTypeCylinder) &&
                             size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
@@ -233,7 +234,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 }
                 break;
             }
-            case IO::Map::AttrRigidBody:
+            case AttrRigidBody:
             {
                 for (const auto& attr : comp.children())
                 {
@@ -242,7 +243,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
-                    case IO::Map::AttrCollisionMask:
+                    case AttrCollisionMask:
                         colisionMask = value_attr.as_uint();
                         if (object)
                             object->collisionMask_ = colisionMask;
@@ -251,7 +252,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 }
                 break;
             }
-            case IO::Map::AttrTerrain:
+            case AttrTerrain:
             {
                 assert(map.terrain_);
                 map.terrain_->transformation_ = Math::Transformation(pos, scale, rot);
@@ -263,7 +264,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
-                    case IO::Map::AttrVertexSpacing:
+                    case AttrVertexSpacing:
                         map.terrain_->GetHeightMap()->spacing_ = Math::Vector3(value_attr.as_string());
                         break;
                     }
@@ -277,7 +278,7 @@ static bool IOMap_LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
     return false;
 }
 
-static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
+static bool LoadScene(Game::Map& map, const std::string& name)
 {
     // Game load thread
     const std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.data_.directory) + name);
@@ -299,7 +300,7 @@ static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
     {
         if (strcmp((*it).name(), "node") == 0)
         {
-            if (!IOMap_LoadSceneNode(map, *it))
+            if (!LoadSceneNode(map, *it))
             {
                 LOG_ERROR << "Error loading scene node" << std::endl;
                 // Can't continue
@@ -320,7 +321,7 @@ static bool IOMap_LoadScene(Game::Map& map, const std::string& name)
     return true;
 }
 
-bool IOMap_Load(Game::Map& map)
+bool Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
@@ -351,15 +352,15 @@ bool IOMap_Load(Game::Map& map)
         const pugi::xml_attribute& src_attr = file_node.attribute("src");
         switch (type_hash)
         {
-        case Map::FileTypeScene:
+        case FileTypeScene:
             sceneFile = src_attr.as_string();
             break;
-        case Map::FileTypeNavmesh:
+        case FileTypeNavmesh:
         {
             navMeshFile = src_attr.as_string();
             break;
         }
-        case Map::FileTypeTerrain:
+        case FileTypeTerrain:
             terrainFile = src_attr.as_string();
             break;
         }
@@ -395,7 +396,7 @@ bool IOMap_Load(Game::Map& map)
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;
         return false;
     }
-    if (!IOMap_LoadScene(map, sceneFile))
+    if (!LoadScene(map, sceneFile))
     {
         LOG_ERROR << "Error loading scene " << navMeshFile << std::endl;
         return false;
@@ -414,4 +415,5 @@ bool IOMap_Load(Game::Map& map)
     return true;
 }
 
+}
 }

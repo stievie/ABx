@@ -173,7 +173,7 @@ void GameManager::CleanGames()
 
 AB::Entities::GameType GameManager::GetGameType(const std::string& mapUuid)
 {
-    return IO::IOGame_GetGameType(mapUuid);
+    return IO::IOGame::GetGameType(mapUuid);
 }
 
 }

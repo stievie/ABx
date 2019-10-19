@@ -172,7 +172,9 @@ public:
     void CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
     void CRQRemoveFriend(const std::string accountUuid);
     void CRQChangeFriendNick(const std::string accountUuid, const std::string newName);
+    /// We request info about accountUuid
     void CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields);
+    /// We request infor about player with name
     void CRQGetPlayerInfoByName(const std::string name, uint32_t fields);
     void CRQGetGuildInfo();
     /// Client requested the friend list

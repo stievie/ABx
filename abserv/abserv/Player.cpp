@@ -337,7 +337,7 @@ void Player::CRQSendMail(const std::string recipient, const std::string subject,
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
     // Can not send mails to players I ignore
-    if (!IsIgnored(recipient) && IO::IOMail_SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
+    if (!IsIgnored(recipient) && IO::IOMail::SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
     else
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
@@ -549,7 +549,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
     AB::Entities::Account account;
     account.uuid = ch.accountUuid;
     AB::Entities::Character currentToon;
-    IO::IOAccount_GetAccountInfo(account, currentToon);
+    IO::IOAccount::GetAccountInfo(account, currentToon);
     if (f.relation != AB::Entities::FriendRelationIgnore && account.onlineStatus != AB::Entities::OnlineStatusInvisible)
     {
         // If success == false -> offline, empty toon name
@@ -558,7 +558,13 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
         if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
             msg->AddString(currentToon.name);
         if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-            msg->AddString(currentToon.currentMapUuid);
+        {
+            if (IO::IOPlayer::HasFriendedMe(account_.uuid, account.uuid))
+                // Send only location when I'm in their FL
+                msg->AddString(currentToon.currentMapUuid);
+            else
+                msg->AddString(Utils::Uuid::EMPTY_UUID);
+        }
     }
     else
     {
@@ -572,7 +578,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
     }
     // Guild info
     AB::Entities::GuildMember gm;
-    IO::IOAccount_GetGuildMemberInfo(account, gm);
+    IO::IOAccount::GetGuildMemberInfo(account, gm);
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
         msg->AddString(account.guildUuid);
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
@@ -592,7 +598,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
 void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields)
 {
     AB::Entities::Character ch;
-    bool found = IO::IOPlayer_GetPlayerInfoByAccount(accountUuid, ch);
+    bool found = IO::IOPlayer::GetPlayerInfoByAccount(accountUuid, ch);
     if (!found)
         // If there is no such thing, we just don't reply to this request
         return;
@@ -602,7 +608,7 @@ void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t f
 void Player::CRQGetPlayerInfoByName(const std::string name, uint32_t fields)
 {
     AB::Entities::Character ch;
-    bool found = IO::IOPlayer_GetPlayerInfoByName(name, ch);
+    bool found = IO::IOPlayer::GetPlayerInfoByName(name, ch);
     if (!found)
         // If there is no such thing, we just don't reply to this request
         return;
@@ -1424,7 +1430,7 @@ void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessa
         return;
     }
 
-    std::string uuid = IO::IOGame_GetGameUuidFromName(mapName);
+    std::string uuid = IO::IOGame::GetGameUuidFromName(mapName);
     if (Utils::Uuid::IsEmpty(uuid))
         return;
     ChangeMap(uuid);

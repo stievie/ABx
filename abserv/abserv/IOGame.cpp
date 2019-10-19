@@ -7,26 +7,27 @@
 #include "Subsystems.h"
 
 namespace IO {
+namespace IOGame {
 
-bool IOGame_LoadGame(AB::Entities::Game& game)
+bool LoadGame(AB::Entities::Game& game)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     return client->Read(game);
 }
 
-bool IOGame_LoadGameByName(Game::Game& game, const std::string& name)
+bool LoadGameByName(Game::Game& game, const std::string& name)
 {
     game.data_.name = name;
-    return IOGame_LoadGame(game.data_);
+    return LoadGame(game.data_);
 }
 
-bool IOGame_LoadGameByUuid(Game::Game& game, const std::string& uuid)
+bool LoadGameByUuid(Game::Game& game, const std::string& uuid)
 {
     game.data_.uuid = uuid;
-    return IOGame_LoadGame(game.data_);
+    return LoadGame(game.data_);
 }
 
-std::string IOGame_GetLandingGameUuid()
+std::string GetLandingGameUuid()
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
@@ -52,7 +53,7 @@ std::string IOGame_GetLandingGameUuid()
     return Utils::Uuid::EMPTY_UUID;
 }
 
-AB::Entities::GameType IOGame_GetGameType(const std::string& mapUuid)
+AB::Entities::GameType GetGameType(const std::string& mapUuid)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Game g;
@@ -65,7 +66,7 @@ AB::Entities::GameType IOGame_GetGameType(const std::string& mapUuid)
     return g.type;
 }
 
-std::vector<AB::Entities::Game> IOGame_GetGameList()
+std::vector<AB::Entities::Game> GetGameList()
 {
     std::vector<AB::Entities::Game> result;
 
@@ -91,7 +92,7 @@ std::vector<AB::Entities::Game> IOGame_GetGameList()
     return result;
 }
 
-std::string IOGame_GetGameUuidFromName(const std::string& name)
+std::string GetGameUuidFromName(const std::string& name)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Game g;
@@ -102,4 +103,5 @@ std::string IOGame_GetGameUuidFromName(const std::string& name)
     return Utils::Uuid::EMPTY_UUID;
 }
 
+}
 }
