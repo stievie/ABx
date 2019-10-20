@@ -59,6 +59,7 @@ private:
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
+    std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     /// Get lower 16 bits of the group mask
     uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
     /// Get upper 16 bits of the group mask

@@ -41,6 +41,8 @@ private:
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
+    Actor* _LuaGetMember(int index);
+    int _LuaGetMemberCount();
 public:
     static sa::IdGenerator<uint32_t> partyIds_;
     /// Returns a new Party/Group ID

@@ -88,6 +88,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetAllyCountInRange", &Actor::GetAllyCountInRange)
         .addFunction("GetClosestEnemy", &Actor::GetClosestEnemy)
         .addFunction("GetClosestAlly", &Actor::GetClosestAlly)
+        .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
 
         .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
     );
@@ -390,6 +391,21 @@ void Actor::_LuaSetSelectedObject(GameObject* object)
     else
         data[InputDataObjectId2] = 0;   // Target
     inputComp_->Add(InputType::Select, std::move(data));
+}
+
+std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
+{
+    std::vector<Actor*> result;
+    VisitInRange(range, [&](GameObject& o)
+    {
+        if (o.IsPlayerOrNpcType())
+        {
+            auto* actor = To<Actor>(&o);
+            result.push_back(actor);
+        }
+        return Iteration::Continue;
+    });
+    return result;
 }
 
 std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)

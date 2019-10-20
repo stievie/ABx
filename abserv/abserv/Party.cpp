@@ -23,6 +23,8 @@ void Party::RegisterLua(kaguya::State& state)
         .addFunction("KillAll", &Party::KillAll)
         .addFunction("GetRandomPlayer", &Party::GetRandomPlayer)
         .addFunction("GetRandomPlayerInRange", &Party::GetRandomPlayerInRange)
+        .addFunction("GetMember", &Party::_LuaGetMember)
+        .addFunction("GetMemberCount", &Party::_LuaGetMemberCount)
         .addFunction("GetVarString", &Party::_LuaGetVarString)
         .addFunction("SetVarString", &Party::_LuaSetVarString)
         .addFunction("GetVarNumber", &Party::_LuaGetVarNumber)
@@ -84,6 +86,20 @@ float Party::_LuaGetVarNumber(const std::string& name)
 void Party::_LuaSetVarNumber(const std::string& name, float value)
 {
     SetVar(name, Utils::Variant(value));
+}
+
+Actor* Party::_LuaGetMember(int index)
+{
+    if (index >= members_.size())
+        return nullptr;
+    if (auto m = members_.at(index).lock())
+        return m.get();
+    return nullptr;
+}
+
+int Party::_LuaGetMemberCount()
+{
+    return static_cast<int>(members_.size());
 }
 
 bool Party::Add(std::shared_ptr<Player> player)

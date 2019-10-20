@@ -42,8 +42,7 @@ AI_TASK(HealSelf)
     if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
         return ai::FAILED;
 
-    if (skill->NeedsTarget())
-        npc.SetSelectedObjectById(npc.GetId());
+    npc.SetSelectedObjectById(npc.GetId());
     npc.UseSkill(skillIndex);
     chr.currentSkill_ = skill;
     chr.currentTask_ = this;
