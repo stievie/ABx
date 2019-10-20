@@ -32,28 +32,22 @@ AI_TASK(HealSelf)
         // Some other skill currently using
         return ai::FAILED;
 
-    auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetSelf, true);
-    if (skills.size() == 0)
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetSelf);
+    if (skillIndex == -1)
         return ai::FAILED;
 
-    for (uint32_t i : skills)
-    {
-        // Find skill that can be used
-        auto skill = npc.skills_->GetSkill(i);
-        if (!skill)
-            continue;
-        if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
-            continue;
+    auto skill = npc.skills_->GetSkill(skillIndex);
+    if (!skill)
+        return ai::FAILED;
+    if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
+        return ai::FAILED;
 
+    if (skill->NeedsTarget())
         npc.SetSelectedObjectById(npc.GetId());
-        npc.UseSkill(i);
-        chr.currentSkill_ = skill;
-        chr.currentTask_ = this;
-        return ai::RUNNING;
-    }
-
-    // Nothing found
-    return ai::TreeNodeStatus::FAILED;
+    npc.UseSkill(skillIndex);
+    chr.currentSkill_ = skill;
+    chr.currentTask_ = this;
+    return ai::RUNNING;
 }
 
 }

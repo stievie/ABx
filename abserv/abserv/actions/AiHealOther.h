@@ -38,33 +38,28 @@ AI_TASK(HealOther)
     if (selection.empty())
         return ai::FAILED;
 
-    // Lambda to use one of the given skills on the target
-    const auto useSkill = [&npc, &chr](const std::vector<uint32_t>& skills, uint32_t targetId) -> bool
+    // Lambda to use the given skills on the target
+    const auto useSkill = [&npc, &chr](int skillIndex, uint32_t targetId) -> bool
     {
-        for (uint32_t i : skills)
-        {
-            // Try all skills until success
-            auto skill = npc.skills_->GetSkill(i);
-            if (!skill)
-                continue;
-            if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
-                continue;
-
+        auto skill = npc.skills_->GetSkill(skillIndex);
+        if (!skill)
+            return false;
+        if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
+            return false;
+//        if (skill->NeedsTarget())
             npc.SetSelectedObjectById(targetId);
-            npc.UseSkill(i);
-            chr.currentSkill_ = skill;
-            return true;
-        }
-        return false;
+        npc.UseSkill(skillIndex);
+        chr.currentSkill_ = skill;
+        return true;
     };
 
     if (selection.size() > 4)
     {
         // Many to heal try party healing
-        auto partySkills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetParty, true);
-        if (partySkills.size() != 0)
+        int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetParty);
+        if (skillIndex != -1)
         {
-            if (useSkill(partySkills, selection[0]))
+            if (useSkill(skillIndex, selection[0]))
             {
                 chr.currentTask_ = this;
                 return ai::RUNNING;
@@ -83,11 +78,11 @@ AI_TASK(HealOther)
     if (actor->IsDead())
         return ai::FAILED;
 
-    auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetTarget, true);
-    if (skills.size() == 0)
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget);
+    if (skillIndex == -1)
         return ai::FAILED;
 
-    if (useSkill(skills, selection[0]))
+    if (useSkill(skillIndex, selection[0]))
     {
         chr.currentTask_ = this;
         return ai::RUNNING;

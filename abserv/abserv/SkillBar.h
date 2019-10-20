@@ -77,6 +77,18 @@ public:
     {
         return skills_[index].get();
     }
+    template <typename Callback>
+    void VisitSkills(Callback callback)
+    {
+        int index = 0;
+        for (const auto& skill : skills_)
+        {
+            if (skill)
+                if (callback(index, *skill) != Iteration::Continue)
+                    break;
+            ++index;
+        }
+    }
 
     AB::Entities::Profession prof1_;
     AB::Entities::Profession prof2_;

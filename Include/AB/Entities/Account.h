@@ -41,6 +41,8 @@ enum OnlineStatus : uint8_t
 
 inline bool IsOnline(OnlineStatus status)
 {
+    // OnlineStatusOfflineis used internally. The user can use OnlineStatusInvisible
+    // to appear to others as offline.
     return status != OnlineStatusOffline && status != OnlineStatusInvisible;
 }
 

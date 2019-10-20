@@ -32,8 +32,8 @@ AI_TASK(ResurrectSelection)
         // Some other skill currently using
         return ai::FAILED;
 
-    auto skills = npc.skills_->GetSkillsWithEffect(Game::SkillEffectResurrect, true);
-    if (skills.size() == 0)
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget);
+    if (skillIndex == -1)
         return ai::FAILED;
     // Possible heal targets
     const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
@@ -50,21 +50,17 @@ AI_TASK(ResurrectSelection)
     if (!actor->IsDead())
         return ai::FAILED;
 
-    for (auto i : skills)
-    {
-        auto skill = npc.skills_->GetSkill(i);
-        if (!skill)
-            continue;
-        if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
-            continue;
+    auto skill = npc.skills_->GetSkill(skillIndex);
+    if (!skill)
+        return ai::FAILED;
+    if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
+        return ai::FAILED;
 
-        npc.SetSelectedObjectById(selection[0]);
-        npc.UseSkill(i);
-        chr.currentSkill_ = skill;
-        chr.currentTask_ = this;
-        return ai::RUNNING;
-    }
-    return ai::FAILED;
+    npc.SetSelectedObjectById(selection[0]);
+    npc.UseSkill(skillIndex);
+    chr.currentSkill_ = skill;
+    chr.currentTask_ = this;
+    return ai::RUNNING;
 }
 
 }

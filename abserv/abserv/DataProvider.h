@@ -24,6 +24,7 @@ struct KeyHasher
         // Compute individual hash values for first and second
         // http://stackoverflow.com/a/1646913/126995
         size_t res = 17;
+        // The first is already a hash
         res = res * 31 + s.first;
         res = res * 31 + std::hash<std::string>()(s.second);
         return res;

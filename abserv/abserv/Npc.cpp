@@ -230,6 +230,65 @@ float Npc::GetAggro(const Actor* other)
     return (1.0f / dist) * rval;
 }
 
+int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target)
+{
+    // skill index -> cost (smaller is better)
+    std::map<int, float> sorting;
+    std::vector<int> skillIndices;
+    skills_->VisitSkills([&](int index, auto& current)
+    {
+        if (!current.HasEffect(effect))
+            return Iteration::Continue;
+        if (!current.HasTarget(target))
+            return Iteration::Continue;
+        if (!current.IsRecharged())
+            return Iteration::Continue;
+        if (!resourceComp_->HaveEnoughResources(&current))
+            return Iteration::Continue;
+
+        skillIndices.push_back(index);
+        // Calculate some score, depending on activation time, costs...
+        sorting[index] = current.CalculateCost([this](const Skill& self, CostType type)
+        {
+            switch (type)
+            {
+            case CostType::Activation:
+                return 1.0f;
+            case CostType::Energy:
+            {
+                float er = resourceComp_->GetEnergyRatio();
+                return 1.0f - er;
+            }
+            case CostType::Adrenaline:
+            {
+                int a = resourceComp_->GetAdrenaline();
+                return static_cast<float>(a) / static_cast<float>(self.adrenaline_);
+            }
+            case CostType::HpSacrify:
+            {
+                float hr = resourceComp_->GetHealthRatio();
+                return 1.0f - hr;
+            }
+            default:
+                return 0.0f;
+            }
+        });
+        return Iteration::Continue;
+    });
+
+    if (skillIndices.size() == 0)
+        return -1;
+
+    std::sort(skillIndices.begin(), skillIndices.end(), [&sorting](int i, int j)
+    {
+        float p1 = sorting[i];
+        float p2 = sorting[j];
+        return p1 < p2;
+    });
+
+    return *skillIndices.begin();
+}
+
 void Npc::WriteSpawnData(Net::NetworkMessage& msg)
 {
     if (!serverOnly_)

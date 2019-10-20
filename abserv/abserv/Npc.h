@@ -107,6 +107,7 @@ public:
     bool SetBehaviour(const std::string& name);
     const std::string& GetBehaviour() const { return behaviorTree_; }
     float GetAggro(const Actor* other);
+    int GetBestSkillIndex(SkillEffect effect, SkillTarget target);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
 
