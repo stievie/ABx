@@ -46,8 +46,7 @@ AI_TASK(HealOther)
             return false;
         if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
             return false;
-//        if (skill->NeedsTarget())
-            npc.SetSelectedObjectById(targetId);
+        npc.SetSelectedObjectById(targetId);
         npc.UseSkill(skillIndex);
         chr.currentSkill_ = skill;
         return true;

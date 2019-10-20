@@ -401,7 +401,8 @@ std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
         if (o.IsPlayerOrNpcType())
         {
             auto* actor = To<Actor>(&o);
-            result.push_back(actor);
+            if (actor)
+                result.push_back(actor);
         }
         return Iteration::Continue;
     });

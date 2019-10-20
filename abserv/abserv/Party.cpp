@@ -90,9 +90,9 @@ void Party::_LuaSetVarNumber(const std::string& name, float value)
 
 Actor* Party::_LuaGetMember(int index)
 {
-    if (index >= members_.size())
+    if (index >= static_cast<int>(members_.size()))
         return nullptr;
-    if (auto m = members_.at(index).lock())
+    if (auto m = members_.at(static_cast<size_t>(index)).lock())
         return m.get();
     return nullptr;
 }
