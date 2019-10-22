@@ -12,6 +12,8 @@
 namespace sa {
 namespace arg_parser {
 
+constexpr char NAME_VALUE_DELIM = '=';
+
 enum class option_type
 {
     none,
@@ -95,7 +97,7 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
 
     auto split_name_value = [](const std::string& s) -> std::pair<std::string, std::string>
     {
-        auto pos = s.find('=');
+        auto pos = s.find(NAME_VALUE_DELIM);
         if (pos != std::string::npos)
         {
             return { s.substr(0, pos), s.substr(pos + 1) };
@@ -296,8 +298,17 @@ inline help get_help(const std::string& prog, const cli& arg)
     for (const auto& l : shp)
     {
         std::string f = l.first;
-        f.insert(f.size(), maxLength - f.size(), ' ');
-        result.lines.push_back(f + "   " + l.second);
+        if (maxLength < 32 && l.second.length() < 32)
+        {
+            f.insert(f.size(), maxLength - f.size(), ' ');
+            result.lines.push_back(f + "   " + l.second);
+        }
+        else
+        {
+            // Wrap long lines
+            result.lines.push_back(l.first);
+            result.lines.push_back("        " + l.second);
+        }
     }
     return result;
 }
