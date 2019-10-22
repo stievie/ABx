@@ -93,12 +93,26 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
         return { };
     };
 
+    auto split_name_value = [](const std::string& s) -> std::pair<std::string, std::string>
+    {
+        auto pos = s.find('=');
+        if (pos != std::string::npos)
+        {
+            return { s.substr(0, pos), s.substr(pos + 1) };
+        }
+        return { s, "" };
+    };
+
     int unnamed = 0;
     for (auto it = args.begin(); it != args.end(); ++it)
     {
-        auto o = find_option((*it));
+        // Split -name=value
+        auto name_value = split_name_value(*it);
+        auto o = find_option(name_value.first);
+
         if (!o.has_value())
         {
+            // This option is not defined in the CLI, add is as unnamed.
             std::unique_ptr<value<std::string>> val = std::make_unique<value<std::string>>();
             val->value = (*it);
             result.emplace(std::to_string(unnamed), std::move(val));
@@ -108,44 +122,79 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
 
         if (o->has_argument)
         {
-            ++it;
             switch (o->type)
             {
             case option_type::none:
                 // Argument with type none?
-                --it;
                 success = false;
                 break;
             case option_type::string:
             {
-                if (it != args.end())
+                if (name_value.second.empty())
+                {
+                    ++it;
+                    if (it == args.end())
+                        success = false;
+                }
+                if (success)
                 {
                     std::unique_ptr<value<std::string>> val = std::make_unique<value<std::string>>();
-                    val->value = (*it);
+                    if (name_value.second.empty())
+                        val->value = (*it);
+                    else
+                        val->value = name_value.second;
                     result.emplace(o->name, std::move(val));
                 }
-                else
-                    success = false;
                 break;
             }
             case option_type::integer:
             {
-                if (it != args.end() && is_int(*it))
+                if (name_value.second.empty())
                 {
-                    std::unique_ptr<value<int>> val = std::make_unique<value<int>>();
-                    val->value = std::atoi((*it).c_str());
-                    result.emplace(o->name, std::move(val));
+                    ++it;
+                    if (it == args.end())
+                        success = false;
+                    if (success && !is_int(*it))
+                        success = false;
                 }
                 else
-                    success = false;
+                {
+                    if (!is_int(name_value.second))
+                        success = false;
+                }
+                if (success)
+                {
+                    std::unique_ptr<value<int>> val = std::make_unique<value<int>>();
+                    if (name_value.second.empty())
+                        val->value = std::atoi((*it).c_str());
+                    else
+                        val->value = std::atoi(name_value.second.c_str());
+                    result.emplace(o->name, std::move(val));
+                }
                 break;
             }
             case option_type::number:
             {
-                if (it != args.end() && is_float(*it))
+                if (name_value.second.empty())
+                {
+                    ++it;
+                    if (it == args.end())
+                        success = false;
+                    if (success && !is_float(*it))
+                        success = false;
+                }
+                else
+                {
+                    if (!is_float(name_value.second))
+                        success = false;
+                }
+                if (success)
                 {
                     std::unique_ptr<value<float>> val = std::make_unique<value<float>>();
-                    val->value = static_cast<float>(std::atof((*it).c_str()));
+                    if (name_value.second.empty())
+                        val->value = static_cast<float>(std::atof((*it).c_str()));
+                    else
+                        val->value = static_cast<float>(std::atof(name_value.second.c_str()));
                     result.emplace(o->name, std::move(val));
                 }
                 else

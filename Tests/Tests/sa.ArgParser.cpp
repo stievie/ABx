@@ -89,3 +89,30 @@ TEST_CASE("ArgParser Fail missing arg")
     auto res = sa::arg_parser::parse(args, opts, result);
     REQUIRE(!res);
 }
+
+TEST_CASE("ArgParser name=value")
+{
+    sa::arg_parser::cli opts{ {
+        {"inputfile", { "-i", "--input-file" }, "Input file", true, true, sa::arg_parser::option_type::string},
+        {"outputfile", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string},
+        {"number", { "-n", "--number" }, "A number", true, true, sa::arg_parser::option_type::integer},
+        {"help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none}
+    } };
+    std::vector<std::string> args;
+    args.push_back("-i=input_file");
+    args.push_back("-o=output_file");
+    args.push_back("-n=42");
+
+    sa::arg_parser::values result;
+
+    auto res = sa::arg_parser::parse(args, opts, result);
+    REQUIRE(res);
+    {
+        auto val = sa::arg_parser::get_value<int>(result, "number");
+        REQUIRE(val == 42);
+    }
+    {
+        auto val = sa::arg_parser::get_value<std::string>(result, "inputfile");
+        REQUIRE(val->compare("input_file") == 0);
+    }
+}
