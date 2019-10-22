@@ -84,6 +84,10 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
+
+    cli_.push_back({ "autoterm", { "-autoterm", "--auto-terminate" }, "Automatic stop application", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "temp", { "-temp", "--temporary" }, "Temporary application", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "aiserver", { "-aiserver", "--ai-server" }, "Start AI server", false, false, sa::arg_parser::option_type::none });
 }
 
 Application::~Application()
@@ -100,37 +104,23 @@ bool Application::ParseCommandLine()
     if (!ServerApp::ParseCommandLine())
         return false;
 
-    if (GetCommandLineValue("-autoterm"))
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "autoterm", false))
     {
         // Must be set with command line argument. Can not be set with the config file.
         autoTerminate_ = true;
         // Implies temporary
         temporary_ = true;
     }
-    if (GetCommandLineValue("-temp"))
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "temp", false))
         temporary_ = true;
-    if (GetCommandLineValue("-aiserver"))
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "aiserver", false))
         aiServer_ = true;
     return true;
 }
 
 void Application::ShowHelp()
 {
-    std::cout << "abserv [-<option> [<value>] ...]" << std::endl;
-    std::cout << "option:" << std::endl;
-    std::cout << "  conf <config file>: Use config file" << std::endl;
-    std::cout << "  log <log directory>: Use log directory" << std::endl;
-    std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  machine <name>: Machine the server is running on" << std::endl;
-    std::cout << "  name (<name> | generic): Server name" << std::endl;
-    std::cout << "  loc <location>: Server location" << std::endl;
-    std::cout << "  ip <ip>: Game ip" << std::endl;
-    std::cout << "  host <host>: Game host" << std::endl;
-    std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
-    std::cout << "  autoterm: If set, the server terminates itself when all players left" << std::endl;
-    std::cout << "  temp: If set, the server is temporary" << std::endl;
-    std::cout << "  aiserver: Start AI server for debugging" << std::endl;
-    std::cout << "  h, help: Show help" << std::endl;
+    std::cout << sa::arg_parser::get_help("abserv", cli_);
 }
 
 bool Application::Initialize(const std::vector<std::string>& args)

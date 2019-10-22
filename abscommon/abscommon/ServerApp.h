@@ -4,6 +4,7 @@
 #include <vector>
 #include <AB/Entities/Service.h>
 #include "UuidUtils.h"
+#include <sa/ArgParser.h>
 
 namespace IO {
 class DataClient;
@@ -30,20 +31,14 @@ protected:
     std::string serverHost_;
     std::string serverIp_;
     uint16_t serverPort_;
+    sa::arg_parser::cli cli_;
+    sa::arg_parser::values parsedArgs_;
     /// Get a generic currently unique server name
     std::string GetFreeName(IO::DataClient* client);
     virtual bool ParseCommandLine();
     void UpdateService(AB::Entities::Service& service);
 public:
-    ServerApp() :
-        running_(false),
-        serverType_(AB::Entities::ServiceTypeUnknown),
-        serverId_(Utils::Uuid::EMPTY_UUID),
-        machine_(""),
-        serverName_(""),
-        serverLocation_(""),
-        serverPort_(std::numeric_limits<uint16_t>::max())
-    { }
+    ServerApp();
     virtual ~ServerApp() = default;
     bool InitializeW(int argc, wchar_t** argv);
     bool InitializeA(int argc, char** argv);
@@ -63,8 +58,6 @@ public:
     }
     bool SendServerJoined(Net::MessageClient* client, const AB::Entities::Service& service);
     bool SendServerLeft(Net::MessageClient* client, const AB::Entities::Service& service);
-    bool GetCommandLineValue(const std::string& name, std::string& value);
-    bool GetCommandLineValue(const std::string& name);
     void Spawn(const std::string& additionalArguments);
 
     std::string path_;

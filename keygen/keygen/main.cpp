@@ -17,6 +17,7 @@
 #include <AB/DHKeys.hpp>
 #include "Utils.h"
 #include "Logo.h"
+#include <sa/ArgParser.h>
 
 static bool GenerateKeys(const std::string& outFile)
 {
@@ -43,13 +44,10 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
-static void ShowHelp()
+static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
     std::cout << "This program generates a Diffie Hellman key pair for the server." << std::endl << std::endl;
-    std::cout << "keygen [<options>]" << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  -o <file>: Out file. Default as given in abserv.lua" << std::endl;
-    std::cout << "  -h: Show this help" << std::endl;
+    std::cout << sa::arg_parser::get_help("keygen", _cli);
 }
 
 int main(int argc, char** argv)
@@ -66,14 +64,21 @@ int main(int argc, char** argv)
     exeFile = std::string(buff, (count > 0) ? count : 0);
 #endif
     std::string path = Utils::ExtractFileDir(exeFile);
-    std::vector<std::string> args;
-    for (int i = 1; i < argc; i++)
+
+    sa::arg_parser::cli _cli{ {
+        { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
+        { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string }
+    } };
+    sa::arg_parser::values parsedArgs;
+    if (!sa::arg_parser::parse(argc, argv, _cli, parsedArgs))
     {
-        args.push_back(argv[i]);
+        ShowHelp(_cli);
+        return EXIT_FAILURE;
     }
-    if (Utils::GetCommandLineValue(args, "-h"))
+    auto val = sa::arg_parser::get_value<bool>(parsedArgs, "help");
+    if (val.has_value() && val.value())
     {
-        ShowHelp();
+        ShowHelp(_cli);
         return EXIT_SUCCESS;
     }
 
@@ -87,7 +92,7 @@ int main(int argc, char** argv)
     std::string keyFile = cfg.GetGlobalString("server_keys", "");
     if (keyFile.empty())
         keyFile = Utils::AddSlash(path) + "abserver.dh";
-    Utils::GetCommandLineValue(args, "-o", keyFile);
+    keyFile = sa::arg_parser::get_value<std::string>(parsedArgs, "file", keyFile);
 
     if (!GenerateKeys(keyFile))
     {

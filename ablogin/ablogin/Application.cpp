@@ -56,11 +56,7 @@ Application::~Application()
 
 void Application::ShowHelp()
 {
-    std::cout << "ablogin [-<options> [<value>]]" << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  conf <config file>: Use config file" << std::endl;
-    std::cout << "  log <log directory>: Use log directory" << std::endl;
-    std::cout << "  h, help: Show help" << std::endl;
+    std::cout << sa::arg_parser::get_help("ablogin", cli_);
 }
 
 bool Application::LoadMain()

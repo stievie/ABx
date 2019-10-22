@@ -82,7 +82,4 @@ Iter SelectRandomly(Iter start, Iter end, float rnd)
     return start;
 }
 
-bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name);
-bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name, std::string& value);
-
 }

@@ -53,6 +53,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_);
+    cli_.push_back({ "temp", { "-temp", "--temporary" }, "Temporary application", false, false, sa::arg_parser::option_type::none });
 }
 
 Application::~Application()
@@ -87,28 +88,14 @@ bool Application::ParseCommandLine()
     if (!ServerApp::ParseCommandLine())
         return false;
 
-    if (GetCommandLineValue("-temp"))
-    {
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "temp", false))
         temporary_ = true;
-    }
     return true;
 }
 
 void Application::ShowHelp()
 {
-    std::cout << "abfile [-<option> [<value>]]" << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  conf <config file>: Use config file" << std::endl;
-    std::cout << "  log <log directory>: Use log directory" << std::endl;
-    std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  machine <name>: Machine the server is running on" << std::endl;
-    std::cout << "  name (<name> | generic): Server name" << std::endl;
-    std::cout << "  loc <location>: Server location" << std::endl;
-    std::cout << "  ip <ip>: File IP" << std::endl;
-    std::cout << "  host <host>: File Host" << std::endl;
-    std::cout << "  port <port>: File Port" << std::endl;
-    std::cout << "  temp: If set, the server is temporary" << std::endl;
-    std::cout << "  h, help: Show help" << std::endl;
+    std::cout << sa::arg_parser::get_help("abfile", cli_);
 }
 
 void Application::UpdateBytesSent(size_t bytes)

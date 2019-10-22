@@ -27,6 +27,15 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>(1);
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+
+    cli_.push_back({ "maxsize", { "-maxsize", "--maxsize-cache" }, "Maximum cache size in byte", false, true, sa::arg_parser::option_type::integer });
+    cli_.push_back({ "readonly", { "-readonly", "--readonly-mode" }, "Do not write to DB", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "dbdriver", { "-dbdriver", "--database-driver" }, "Database driver", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbhost", { "-dbhost", "--database-host" }, "Host name of database server", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbport", { "-dbport", "--database-port" }, "Port to connect to", false, true, sa::arg_parser::option_type::integer });
+    cli_.push_back({ "dbname", { "-dbname", "--database-name" }, "Name of database", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbuser", { "-dbuser", "--database-user" }, "User name for database", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database", false, true, sa::arg_parser::option_type::string });
 }
 
 Application::~Application()
@@ -44,28 +53,19 @@ bool Application::ParseCommandLine()
 
     if (!serverIp_.empty())
         listenIp_ = Utils::ConvertStringToIP(serverIp_);
-    std::string value;
-    if (GetCommandLineValue("-maxsize", value))
-    {
-        maxSize_ = static_cast<size_t>(std::atoi(value.c_str()));
-    }
-    if (GetCommandLineValue("-readonly"))
-        readonly_ = true;
-
     if (!logDir_.empty())
         IO::Logger::logDir_ = logDir_;
 
-    GetCommandLineValue("-dbdriver", DB::Database::driver_);
-    GetCommandLineValue("-dbhost", DB::Database::dbHost_);
-    GetCommandLineValue("-dbname", DB::Database::dbName_);
-    GetCommandLineValue("-dbuser", DB::Database::dbUser_);
-    GetCommandLineValue("-dbpass", DB::Database::dbPass_);
-    value.clear();
-    if (GetCommandLineValue("-dbport", value))
-    {
-        if (!value.empty())
-            DB::Database::dbPort_ = static_cast<uint16_t>(std::atoi(value.c_str()));
-    }
+    auto val = sa::arg_parser::get_value<size_t>(parsedArgs_, "maxsize");
+    if (val.has_value())
+        maxSize_ = val.value();
+    readonly_ = sa::arg_parser::get_value<bool>(parsedArgs_, "readonly", false);
+    DB::Database::driver_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::driver_);
+    DB::Database::dbHost_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbHost_);
+    DB::Database::dbName_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbName_);
+    DB::Database::dbUser_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbUser_);
+    DB::Database::dbPass_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbPass_);
+    DB::Database::dbPort_ = sa::arg_parser::get_value<int16_t>(parsedArgs_, "dbport", DB::Database::dbPort_);
 
     return true;
 }
@@ -185,21 +185,7 @@ void Application::PrintServerInfo()
 
 void Application::ShowHelp()
 {
-    std::cout << "abdata [-<options> [<value>]]" << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  port <value>: The port it listens" << std::endl;
-    std::cout << "  ip <value>: The ip it listens" << std::endl;
-    std::cout << "  maxsize <value>: Maximum cache size in byte" << std::endl;
-    std::cout << "  readonly: Readonly mode" << std::endl;
-    std::cout << "  log <value>: Log directory" << std::endl;
-    std::cout << "  conf <value>: Configuration file" << std::endl;
-    std::cout << "  dbdriver <value>: Database driver" << std::endl;
-    std::cout << "  dbhost <value>: Database host" << std::endl;
-    std::cout << "  dbport <value>: Database port" << std::endl;
-    std::cout << "  dbname <value>: Database name" << std::endl;
-    std::cout << "  dbuser <value>: Database user" << std::endl;
-    std::cout << "  dbpass <value>: Database password" << std::endl;
-    std::cout << "  h, help: Show help" << std::endl;
+    std::cout << sa::arg_parser::get_help("abdata", cli_);
 }
 
 bool Application::Initialize(const std::vector<std::string>& args)

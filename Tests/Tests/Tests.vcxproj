@@ -116,6 +116,7 @@
     <ClCompile Include="Math.Utils.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
     <ClCompile Include="Net.MessageMsg.cpp" />
+    <ClCompile Include="sa.ArgParser.cpp" />
     <ClCompile Include="sa.PoolAllocator.cpp" />
     <ClCompile Include="sa.SharedPtr.cpp" />
     <ClCompile Include="sa.TypeName.cpp" />

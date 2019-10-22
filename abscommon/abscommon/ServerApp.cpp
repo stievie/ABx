@@ -14,6 +14,27 @@
 #include "Process.hpp"
 #include <codecvt>
 
+ServerApp::ServerApp() :
+    running_(false),
+    serverType_(AB::Entities::ServiceTypeUnknown),
+    serverId_(Utils::Uuid::EMPTY_UUID),
+    machine_(""),
+    serverName_(""),
+    serverLocation_(""),
+    serverPort_(std::numeric_limits<uint16_t>::max())
+{
+    cli_.push_back({ "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "config", { "-conf", "--config-file" }, "Config file", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "logdir", { "-log", "--log-dir" }, "Log file directory", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "id", { "-id", "--server-id" }, "Server UUID", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "machine", { "-machine", "--machine-name" }, "Machine name", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "ip", { "-ip", "--ip-address" }, "IP Address", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "host", { "-host", "--host-name" }, "Host name", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "port", { "-port", "--port" }, "Port", false, true, sa::arg_parser::option_type::integer });
+    cli_.push_back({ "name", { "-name", "--server-name" }, "Server name", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "loc", { "-loc", "--server-location" }, "Server location", false, true, sa::arg_parser::option_type::string });
+}
+
 std::string ServerApp::GetFreeName(IO::DataClient* client)
 {
     AB::Entities::ServiceList sl;
@@ -132,41 +153,33 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
 
 bool ServerApp::ParseCommandLine()
 {
-    std::string value;
-    if (GetCommandLineValue("-h") || GetCommandLineValue("-help"))
+    if (!sa::arg_parser::parse(arguments_, cli_, parsedArgs_))
+        return false;
+    auto val = sa::arg_parser::get_value<bool>(parsedArgs_, "help");
+    if (val.has_value() && val.value())
         return false;
 
-    GetCommandLineValue("-conf", configFile_);
-    GetCommandLineValue("-log", logDir_);
-    if (GetCommandLineValue("-id", serverId_))
+    configFile_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "conf", configFile_);
+    logDir_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "log", logDir_);
+    auto idval = sa::arg_parser::get_value<std::string>(parsedArgs_, "id");
+    if (idval.has_value())
     {
         // There was an argument
+        serverId_ = idval.value();
         if (uuids::uuid(serverId_).nil())
         {
             serverId_ = Utils::Uuid::New();
             LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
         }
     }
-    GetCommandLineValue("-machine", machine_);
-    GetCommandLineValue("-ip", serverIp_);
-    GetCommandLineValue("-host", serverHost_);
-    if (GetCommandLineValue("-port", value))
-    {
-        serverPort_ = static_cast<uint16_t>(atoi(value.c_str()));
-    }
-    GetCommandLineValue("-name", serverName_);
-    GetCommandLineValue("-loc", serverLocation_);
+    machine_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "machine", machine_);
+    serverIp_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "ip", serverIp_);
+    serverHost_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "host", serverHost_);
+    serverPort_ = sa::arg_parser::get_value<uint16_t>(parsedArgs_, "port", serverPort_);
+    serverName_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "name", serverName_);
+    serverLocation_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "log", serverLocation_);
+
     return true;
-}
-
-bool ServerApp::GetCommandLineValue(const std::string& name, std::string& value)
-{
-    return Utils::GetCommandLineValue(arguments_, name, value);
-}
-
-bool ServerApp::GetCommandLineValue(const std::string& name)
-{
-    return Utils::GetCommandLineValue(arguments_, name);
 }
 
 void ServerApp::Init()

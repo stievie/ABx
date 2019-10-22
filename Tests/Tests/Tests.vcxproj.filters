@@ -72,6 +72,9 @@
     <ClCompile Include="sa.TypeName.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="sa.ArgParser.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
