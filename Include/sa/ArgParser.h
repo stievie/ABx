@@ -63,10 +63,17 @@ inline T get_value(const values& vals, const std::string& name, T def)
 }
 
 typedef std::vector<option> cli;
-
-inline bool parse(const std::vector<std::string>& args, const cli& _cli, values& result)
+struct errors
 {
-    bool success = true;
+    bool success{ false };
+    std::vector<std::string> items;
+    operator bool() noexcept { return success; }
+};
+
+inline errors parse(const std::vector<std::string>& args, const cli& _cli, values& result)
+{
+    errors res;
+    res.success = true;
 
     auto is_int = [](const std::string& s) -> bool
     {
@@ -128,7 +135,7 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
             {
             case option_type::none:
                 // Argument with type none?
-                success = false;
+                res.success = false;
                 break;
             case option_type::string:
             {
@@ -136,9 +143,12 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
                 {
                     ++it;
                     if (it == args.end())
-                        success = false;
+                    {
+                        res.success = false;
+                        res.items.push_back("Missing argument for '" + o->name + "'");
+                    }
                 }
-                if (success)
+                if (res.success)
                 {
                     std::unique_ptr<value<std::string>> val = std::make_unique<value<std::string>>();
                     if (name_value.second.empty())
@@ -155,16 +165,25 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
                 {
                     ++it;
                     if (it == args.end())
-                        success = false;
-                    if (success && !is_int(*it))
-                        success = false;
+                    {
+                        res.success = false;
+                        res.items.push_back("Missing argument for '" + o->name + "'");
+                    }
+                    if (res.success && !is_int(*it))
+                    {
+                        res.success = false;
+                        res.items.push_back("Expected integer type, but got '" + (*it) +  + "' for '" + o->name + "'");
+                    }
                 }
                 else
                 {
                     if (!is_int(name_value.second))
-                        success = false;
+                    {
+                        res.success = false;
+                        res.items.push_back("Expected integer type, but got '" + name_value.second +  + "' for '" + o->name + "'");
+                    }
                 }
-                if (success)
+                if (res.success)
                 {
                     std::unique_ptr<value<int>> val = std::make_unique<value<int>>();
                     if (name_value.second.empty())
@@ -181,16 +200,25 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
                 {
                     ++it;
                     if (it == args.end())
-                        success = false;
-                    if (success && !is_float(*it))
-                        success = false;
+                    {
+                        res.success = false;
+                        res.items.push_back("Missing argument for '" + o->name + "'");
+                    }
+                    if (res.success && !is_float(*it))
+                    {
+                        res.success = false;
+                        res.items.push_back("Expected float type, but got '" + (*it) + "' for '" + o->name + "'");
+                    }
                 }
                 else
                 {
                     if (!is_float(name_value.second))
-                        success = false;
+                    {
+                        res.success = false;
+                        res.items.push_back("Expected float type, but got '" + name_value.second + "' for '" + o->name + "'");
+                    }
                 }
-                if (success)
+                if (res.success)
                 {
                     std::unique_ptr<value<float>> val = std::make_unique<value<float>>();
                     if (name_value.second.empty())
@@ -199,8 +227,6 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
                         val->value = static_cast<float>(std::atof(name_value.second.c_str()));
                     result.emplace(o->name, std::move(val));
                 }
-                else
-                    success = false;
                 break;
             }
             }
@@ -211,11 +237,11 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
             val->value = true;
             result.emplace(o->name, std::move(val));
         }
-        if (!success)
+        if (!res.success)
             break;
     }
 
-    if (success)
+    if (res.success)
     {
         // Check if all mandatory options are given
         for (const auto& o : _cli)
@@ -225,15 +251,16 @@ inline bool parse(const std::vector<std::string>& args, const cli& _cli, values&
 
             if (result.find(o.name) == result.end())
             {
-                success = false;
+                res.items.push_back("Required argument '" + o.name + "' is missing");
+                res.success = false;
                 break;
             }
         }
     }
-    return success;
+    return res;
 }
 
-inline bool parse(int argc, char** argv, const cli& _cli, values& result)
+inline errors parse(int argc, char** argv, const cli& _cli, values& result)
 {
     std::vector<std::string> args;
     for (int i = 1; i < argc; ++i)
@@ -274,6 +301,7 @@ inline help get_help(const std::string& prog, const cli& arg)
     result.lines.push_back("OPTIONS");
     std::vector<std::pair<std::string, std::string>> shp;
     size_t maxLength = 0;
+    size_t maxHelp = 0;
     for (const auto& o : arg)
     {
         std::string switches;
@@ -293,12 +321,16 @@ inline help get_help(const std::string& prog, const cli& arg)
         shp.push_back({ line, o.help });
         if (maxLength < line.size())
             maxLength = line.size();
+        if (maxHelp < o.help.length())
+            maxHelp = o.help.length();
     }
 
+    bool wrap = maxLength + maxHelp > 72;
     for (const auto& l : shp)
     {
         std::string f = l.first;
-        if (maxLength < 32 && l.second.length() < 32)
+
+        if (wrap)
         {
             f.insert(f.size(), maxLength - f.size(), ' ');
             result.lines.push_back(f + "   " + l.second);
@@ -319,6 +351,21 @@ _Stream& operator << (_Stream& os, const help& help)
     for (const auto& line : help.lines)
     {
         os << line;
+        os << '\n';
+    }
+    return os;
+}
+
+template<class _Stream>
+_Stream& operator << (_Stream& os, const errors& res)
+{
+    if (!res.success)
+    {
+        for (const auto& line : res.items)
+        {
+            os << line;
+            os << '\n';
+        }
         os << '\n';
     }
     return os;

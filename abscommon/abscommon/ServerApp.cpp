@@ -153,7 +153,8 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
 
 bool ServerApp::ParseCommandLine()
 {
-    if (!sa::arg_parser::parse(arguments_, cli_, parsedArgs_))
+    cmdErrors_ = sa::arg_parser::parse(arguments_, cli_, parsedArgs_);
+    if (!cmdErrors_)
         return false;
     auto val = sa::arg_parser::get_value<bool>(parsedArgs_, "help");
     if (val.has_value() && val.value())

@@ -194,6 +194,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     if (!ParseCommandLine())
     {
+        std::cout << cmdErrors_;
         ShowHelp();
         return false;
     }

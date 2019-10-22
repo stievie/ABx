@@ -33,6 +33,7 @@ protected:
     uint16_t serverPort_;
     sa::arg_parser::cli cli_;
     sa::arg_parser::values parsedArgs_;
+    sa::arg_parser::errors cmdErrors_;
     /// Get a generic currently unique server name
     std::string GetFreeName(IO::DataClient* client);
     virtual bool ParseCommandLine();

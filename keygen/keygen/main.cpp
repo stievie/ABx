@@ -70,8 +70,10 @@ int main(int argc, char** argv)
         { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string }
     } };
     sa::arg_parser::values parsedArgs;
-    if (!sa::arg_parser::parse(argc, argv, _cli, parsedArgs))
+    sa::arg_parser::errors cmderr = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
+    if (!cmderr)
     {
+        std::cout << cmderr;
         ShowHelp(_cli);
         return EXIT_FAILURE;
     }
