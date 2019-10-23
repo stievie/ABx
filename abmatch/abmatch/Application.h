@@ -12,7 +12,6 @@ class Application : public ServerApp
 private:
     asio::io_service ioService_;
     int64_t lastUpdate_{ 0 };
-    void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();
     void UpdateQueue();

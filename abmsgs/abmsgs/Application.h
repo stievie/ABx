@@ -13,7 +13,6 @@ private:
     std::unique_ptr<MessageServer> server_;
     Net::IpList whiteList_;
     int64_t lastUpdate_{ 0 };
-    void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();
 public:

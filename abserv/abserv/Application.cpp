@@ -118,22 +118,13 @@ bool Application::ParseCommandLine()
     return true;
 }
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("abserv", cli_);
-}
-
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     if (!logDir_.empty())
     {

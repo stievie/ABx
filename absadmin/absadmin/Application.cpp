@@ -87,19 +87,6 @@ void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
     response->write(SimpleWeb::StatusCode::redirection_moved_permanently, "Moved Permanently", header);
 }
 
-void Application::ShowHelp()
-{
-    std::cout << "absadmin [-<option> [<value>]]" << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  conf <config file>: Use config file" << std::endl;
-    std::cout << "  log <log directory>: Use log directory" << std::endl;
-    std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  ip <ip>: Admin IP" << std::endl;
-    std::cout << "  host <host>: Admin Host" << std::endl;
-    std::cout << "  port <port>: Admin Port" << std::endl;
-    std::cout << "  h, help: Show help" << std::endl;
-}
-
 void Application::PrintServerInfo()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
@@ -178,11 +165,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";

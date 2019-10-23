@@ -59,7 +59,6 @@ private:
     std::vector<unsigned> loads_;
     std::mutex mutex_;
     void HandleMessage(const Net::MessageMsg& msg);
-    void ShowHelp();
     void UpdateBytesSent(size_t bytes);
     void HeartBeatTask();
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);

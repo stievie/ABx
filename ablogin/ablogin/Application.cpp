@@ -54,11 +54,6 @@ Application::~Application()
     GetSubsystem<Net::ConnectionManager>()->CloseAll();
 }
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("ablogin", cli_);
-}
-
 bool Application::LoadMain()
 {
     if (configFile_.empty())
@@ -219,11 +214,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     if (!LoadMain())
         return false;

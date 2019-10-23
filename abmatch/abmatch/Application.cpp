@@ -30,11 +30,6 @@ Application::~Application()
     GetSubsystem<Asynch::Dispatcher>()->Stop();
 }
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("abmatch", cli_);
-}
-
 bool Application::LoadMain()
 {
     if (configFile_.empty())
@@ -198,11 +193,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     if (!LoadMain())
         return false;

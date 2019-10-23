@@ -17,6 +17,7 @@ bool SameFilename(const std::string& l, const std::string& r);
 std::string ChangeFileExt(const std::string& fn, const std::string& ext);
 std::string GetFileExt(const std::string& fn);
 std::string ExtractFileDir(const std::string& fn);
+std::string ExtractFileName(const std::string& fn);
 
 template <typename charType>
 std::basic_string<charType> Trim(const std::basic_string<charType>& str,

@@ -93,11 +93,6 @@ bool Application::ParseCommandLine()
     return true;
 }
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("abfile", cli_);
-}
-
 void Application::UpdateBytesSent(size_t bytes)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -162,11 +157,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();

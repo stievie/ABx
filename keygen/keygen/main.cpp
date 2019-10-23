@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     if (!cmderr)
     {
         std::cout << cmderr;
-        ShowHelp(_cli);
+        std::cout << "Type `keygen -h` for help." << std::endl;
         return EXIT_FAILURE;
     }
     auto val = sa::arg_parser::get_value<bool>(parsedArgs, "help");

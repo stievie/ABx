@@ -21,11 +21,6 @@ Application::Application() :
 
 Application::~Application() = default;
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("ablb", cli_);
-}
-
 void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
@@ -226,11 +221,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
 
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
 
     if (!LoadMain())
         return false;

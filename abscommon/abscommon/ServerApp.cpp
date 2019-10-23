@@ -151,14 +151,31 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
     service.type = serverType_;
 }
 
+void ServerApp::ShowHelp()
+{
+    std::cout << sa::arg_parser::get_help(Utils::ExtractFileName(exeFile_), cli_);
+}
+
+void ServerApp::ShowCommandlineError(const sa::arg_parser::errors& err)
+{
+    std::cout << err;
+    std::cout << "Type `" << Utils::ExtractFileName(exeFile_) << " -h` for help." << std::endl;
+}
+
 bool ServerApp::ParseCommandLine()
 {
-    cmdErrors_ = sa::arg_parser::parse(arguments_, cli_, parsedArgs_);
-    if (!cmdErrors_)
+    auto cmderr = sa::arg_parser::parse(arguments_, cli_, parsedArgs_);
+    if (!cmderr)
+    {
+        ShowCommandlineError(cmderr);
         return false;
+    }
     auto val = sa::arg_parser::get_value<bool>(parsedArgs_, "help");
     if (val.has_value() && val.value())
+    {
+        ShowHelp();
         return false;
+    }
 
     configFile_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "conf", configFile_);
     logDir_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "log", logDir_);

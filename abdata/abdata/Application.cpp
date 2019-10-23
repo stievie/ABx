@@ -183,21 +183,13 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
 }
 
-void Application::ShowHelp()
-{
-    std::cout << sa::arg_parser::get_help("abdata", cli_);
-}
-
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
         return false;
     if (!ParseCommandLine())
-    {
-        std::cout << cmdErrors_;
-        ShowHelp();
         return false;
-    }
+
     LOG_INFO << "Reading config file...";
     if (!LoadConfig())
     {

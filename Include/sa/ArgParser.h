@@ -172,7 +172,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                     if (res.success && !is_int(*it))
                     {
                         res.success = false;
-                        res.items.push_back("Expected integer type, but got '" + (*it) +  + "' for '" + o->name + "'");
+                        res.items.push_back("Expected integer type but got '" + (*it) +  + "' for '" + o->name + "'");
                     }
                 }
                 else
@@ -180,7 +180,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                     if (!is_int(name_value.second))
                     {
                         res.success = false;
-                        res.items.push_back("Expected integer type, but got '" + name_value.second +  + "' for '" + o->name + "'");
+                        res.items.push_back("Expected integer type but got '" + name_value.second +  + "' for '" + o->name + "'");
                     }
                 }
                 if (res.success)
@@ -207,7 +207,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                     if (res.success && !is_float(*it))
                     {
                         res.success = false;
-                        res.items.push_back("Expected float type, but got '" + (*it) + "' for '" + o->name + "'");
+                        res.items.push_back("Expected float type but got '" + (*it) + "' for '" + o->name + "'");
                     }
                 }
                 else
@@ -215,7 +215,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                     if (!is_float(name_value.second))
                     {
                         res.success = false;
-                        res.items.push_back("Expected float type, but got '" + name_value.second + "' for '" + o->name + "'");
+                        res.items.push_back("Expected float type but got '" + name_value.second + "' for '" + o->name + "'");
                     }
                 }
                 if (res.success)

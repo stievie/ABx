@@ -35,7 +35,6 @@ private:
         std::shared_ptr<HttpServer::Request> request);
     void InitContentTypes();
     void InitRoutes();
-    void ShowHelp();
     void PrintServerInfo();
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,

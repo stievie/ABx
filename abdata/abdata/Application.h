@@ -17,7 +17,6 @@ private:
     Net::IpList whiteList_;
     bool LoadConfig();
     void PrintServerInfo();
-    void ShowHelp();
 protected:
     bool ParseCommandLine() override;
 public:

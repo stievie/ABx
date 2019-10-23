@@ -14,7 +14,6 @@ private:
     AB::Entities::ServiceType lbType_;
     std::unique_ptr<IO::DataClient> dataClient_;
     std::unique_ptr<Acceptor> acceptor_;
-    void ShowHelp();
     void PrintServerInfo();
     bool LoadMain();
     bool GetServiceCallback(AB::Entities::Service& svc);
