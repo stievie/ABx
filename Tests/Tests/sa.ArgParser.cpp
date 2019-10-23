@@ -22,7 +22,7 @@ TEST_CASE("ArgParser Success")
     sa::arg_parser::values result;
 
     auto res = sa::arg_parser::parse(args, opts, result);
-    REQUIRE(res);
+    REQUIRE(res.success);
     {
         auto val = sa::arg_parser::get_value<int>(result, "number");
         REQUIRE(val == 42);
@@ -48,7 +48,7 @@ TEST_CASE("ArgParser multiple arg")
     sa::arg_parser::values result;
 
     auto res = sa::arg_parser::parse(args, opts, result);
-    REQUIRE(res);
+    REQUIRE(res.success);
     REQUIRE(result.size() == 5);
 }
 
@@ -67,7 +67,7 @@ TEST_CASE("ArgParser Fail")
     sa::arg_parser::values result;
 
     auto res = sa::arg_parser::parse(args, opts, result);
-    REQUIRE(!res);
+    REQUIRE(!res.success);
 }
 
 TEST_CASE("ArgParser Fail missing arg")
@@ -87,7 +87,7 @@ TEST_CASE("ArgParser Fail missing arg")
     sa::arg_parser::values result;
 
     auto res = sa::arg_parser::parse(args, opts, result);
-    REQUIRE(!res);
+    REQUIRE(!res.success);
 }
 
 TEST_CASE("ArgParser name=value")
@@ -106,7 +106,7 @@ TEST_CASE("ArgParser name=value")
     sa::arg_parser::values result;
 
     auto res = sa::arg_parser::parse(args, opts, result);
-    REQUIRE(res);
+    REQUIRE(res.success);
     {
         auto val = sa::arg_parser::get_value<int>(result, "number");
         REQUIRE(val == 42);
