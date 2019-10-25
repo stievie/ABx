@@ -70,10 +70,10 @@ int main(int argc, char** argv)
         { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string }
     } };
     sa::arg_parser::values parsedArgs;
-    sa::arg_parser::errors cmderr = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
-    if (!cmderr)
+    sa::arg_parser::result cmdres = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
+    if (!cmdres)
     {
-        std::cout << cmderr;
+        std::cout << cmdres << std::endl;
         std::cout << "Type `keygen -h` for help." << std::endl;
         return EXIT_FAILURE;
     }

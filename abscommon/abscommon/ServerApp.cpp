@@ -23,16 +23,16 @@ ServerApp::ServerApp() :
     serverLocation_(""),
     serverPort_(std::numeric_limits<uint16_t>::max())
 {
-    cli_.push_back({ "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "help", { "-h", "-help", "-?" }, "Show this help", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "config", { "-conf", "--config-file" }, "Config file", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "logdir", { "-log", "--log-dir" }, "Log file directory", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "logdir", { "-log", "--log-dir" }, "Directory to store log files", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "id", { "-id", "--server-id" }, "Server UUID", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "machine", { "-machine", "--machine-name" }, "Machine name", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "ip", { "-ip", "--ip-address" }, "IP Address", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "ip", { "-ip", "--ip-address" }, "IP Address to listen on. 0.0.0.0 to listen on all.", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "port", { "-port", "--port" }, "Port it listens on. If 0 it uses a random free port.", false, true, sa::arg_parser::option_type::integer });
     cli_.push_back({ "host", { "-host", "--host-name" }, "Host name", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "port", { "-port", "--port" }, "Port", false, true, sa::arg_parser::option_type::integer });
-    cli_.push_back({ "name", { "-name", "--server-name" }, "Server name", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "loc", { "-loc", "--server-location" }, "Server location", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "name", { "-name", "--server-name" }, "Name of the Server. If `generic` it generates a name.", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "loc", { "-loc", "--server-location" }, "Location of the Server.", false, true, sa::arg_parser::option_type::string });
 }
 
 std::string ServerApp::GetFreeName(IO::DataClient* client)
@@ -156,23 +156,24 @@ void ServerApp::ShowHelp()
     std::cout << sa::arg_parser::get_help(Utils::ExtractFileName(exeFile_), cli_);
 }
 
-void ServerApp::ShowCommandlineError(const sa::arg_parser::errors& err)
+void ServerApp::ShowCommandlineError(const sa::arg_parser::result& err)
 {
-    std::cout << err;
+    std::cout << err << std::endl;
     std::cout << "Type `" << Utils::ExtractFileName(exeFile_) << " -h` for help." << std::endl;
 }
 
 bool ServerApp::ParseCommandLine()
 {
-    auto cmderr = sa::arg_parser::parse(arguments_, cli_, parsedArgs_);
-    if (!cmderr)
+    auto cmdres = sa::arg_parser::parse(arguments_, cli_, parsedArgs_);
+    if (!cmdres)
     {
-        ShowCommandlineError(cmderr);
+        ShowCommandlineError(cmdres);
         return false;
     }
     auto val = sa::arg_parser::get_value<bool>(parsedArgs_, "help");
     if (val.has_value() && val.value())
     {
+        // -help was there
         ShowHelp();
         return false;
     }

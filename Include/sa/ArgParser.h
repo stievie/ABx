@@ -45,7 +45,7 @@ typedef std::map<std::string, std::unique_ptr<value_base>> values;
 template <typename T>
 inline std::optional<T> get_value(const values& vals, const std::string& name)
 {
-    auto it = vals.find(name);
+    const auto it = vals.find(name);
     if (it == vals.end())
         return {};
     const auto* v = static_cast<value<T>*>((*it).second.get());
@@ -55,38 +55,45 @@ inline std::optional<T> get_value(const values& vals, const std::string& name)
 template <typename T>
 inline T get_value(const values& vals, const std::string& name, T def)
 {
-    auto it = vals.find(name);
+    const auto it = vals.find(name);
     if (it == vals.end())
         return def;
     const auto* v = static_cast<value<T>*>((*it).second.get());
     return v->value;
 }
 
+// Command line interface
 typedef std::vector<option> cli;
-struct errors
+
+// Parsing result
+struct result
 {
     bool success{ false };
     std::vector<std::string> items;
     operator bool() noexcept { return success; }
 };
 
-inline errors parse(const std::vector<std::string>& args, const cli& _cli, values& result)
+inline result parse(const std::vector<std::string>& args, const cli& _cli, values& vals)
 {
-    errors res;
+    result res;
     res.success = true;
 
     auto is_int = [](const std::string& s) -> bool
     {
+        if (s.empty())
+            return false;
         std::string::const_iterator it = s.begin();
         while (it != s.end() && std::isdigit(*it)) ++it;
-        return !s.empty() && it == s.end();
+        return it == s.end();
     };
     auto is_float = [](const std::string& s) -> bool
     {
+        if (s.empty())
+            return false;
         std::istringstream iss(s);
         float f;
-        iss >> std::skipws >> f;
-        return (f && iss.eof());
+        iss >> std::noskipws >> f;
+        return iss.eof() && !iss.fail();;
     };
 
     auto find_option = [&](const std::string& name) -> std::optional<option>
@@ -106,9 +113,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
     {
         auto pos = s.find(NAME_VALUE_DELIM);
         if (pos != std::string::npos)
-        {
             return { s.substr(0, pos), s.substr(pos + 1) };
-        }
         return { s, "" };
     };
 
@@ -124,7 +129,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
             // This option is not defined in the CLI, add is as unnamed.
             std::unique_ptr<value<std::string>> val = std::make_unique<value<std::string>>();
             val->value = (*it);
-            result.emplace(std::to_string(unnamed), std::move(val));
+            vals.emplace(std::to_string(unnamed), std::move(val));
             ++unnamed;
             continue;
         }
@@ -155,7 +160,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                         val->value = (*it);
                     else
                         val->value = name_value.second;
-                    result.emplace(o->name, std::move(val));
+                    vals.emplace(o->name, std::move(val));
                 }
                 break;
             }
@@ -190,7 +195,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                         val->value = std::atoi((*it).c_str());
                     else
                         val->value = std::atoi(name_value.second.c_str());
-                    result.emplace(o->name, std::move(val));
+                    vals.emplace(o->name, std::move(val));
                 }
                 break;
             }
@@ -225,7 +230,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
                         val->value = static_cast<float>(std::atof((*it).c_str()));
                     else
                         val->value = static_cast<float>(std::atof(name_value.second.c_str()));
-                    result.emplace(o->name, std::move(val));
+                    vals.emplace(o->name, std::move(val));
                 }
                 break;
             }
@@ -235,7 +240,7 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
         {
             std::unique_ptr<value<bool>> val = std::make_unique<value<bool>>();
             val->value = true;
-            result.emplace(o->name, std::move(val));
+            vals.emplace(o->name, std::move(val));
         }
         if (!res.success)
             break;
@@ -249,24 +254,25 @@ inline errors parse(const std::vector<std::string>& args, const cli& _cli, value
             if (!o.mandatory)
                 continue;
 
-            if (result.find(o.name) == result.end())
+            if (vals.find(o.name) == vals.end())
             {
                 res.items.push_back("Required argument '" + o.name + "' is missing");
                 res.success = false;
-                break;
             }
         }
     }
     return res;
 }
 
-inline errors parse(int argc, char** argv, const cli& _cli, values& result)
+// Parse the arguments according the command line interface and put the
+// result in vals
+inline result parse(int argc, char** argv, const cli& _cli, values& vals)
 {
     std::vector<std::string> args;
     for (int i = 1; i < argc; ++i)
         args.push_back(argv[i]);
 
-    return parse(args, _cli, result);
+    return parse(args, _cli, vals);
 }
 
 struct help
@@ -274,8 +280,26 @@ struct help
     std::vector<std::string> lines;
 };
 
+// Generate help for the given command line interface
 inline help get_help(const std::string& prog, const cli& arg)
 {
+    auto get_type_string = [](const option& o) -> std::string
+    {
+        switch (o.type)
+        {
+        case option_type::none:
+            return o.name;
+        case option_type::string:
+            return "string";
+        case option_type::integer:
+            return "integer";
+        case option_type::number:
+            return "number";
+        default:
+            return o.name;
+        }
+    };
+
     help result;
     if (!prog.empty())
     {
@@ -314,7 +338,7 @@ inline help get_help(const std::string& prog, const cli& arg)
             switches += a;
         }
         if (o.has_argument)
-            switches += " <" + o.name + ">";
+            switches += " <" + get_type_string(o) + ">";
         if (!o.mandatory)
             switches += "]";
         std::string line = "    " + switches;
@@ -332,14 +356,14 @@ inline help get_help(const std::string& prog, const cli& arg)
 
         if (wrap)
         {
-            f.insert(f.size(), maxLength - f.size(), ' ');
-            result.lines.push_back(f + "   " + l.second);
-        }
-        else
-        {
             // Wrap long lines
             result.lines.push_back(l.first);
             result.lines.push_back("        " + l.second);
+        }
+        else
+        {
+            f.insert(f.size(), maxLength - f.size(), ' ');
+            result.lines.push_back(f + "   " + l.second);
         }
     }
     return result;
@@ -357,7 +381,7 @@ _Stream& operator << (_Stream& os, const help& help)
 }
 
 template<class _Stream>
-_Stream& operator << (_Stream& os, const errors& res)
+_Stream& operator << (_Stream& os, const result& res)
 {
     if (!res.success)
     {
@@ -366,7 +390,6 @@ _Stream& operator << (_Stream& os, const errors& res)
             os << line;
             os << '\n';
         }
-        os << '\n';
     }
     return os;
 }
