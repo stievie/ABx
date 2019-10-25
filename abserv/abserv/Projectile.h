@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Actor.h"
-#include "Script.h"
-#include "Ray.h"
 
 namespace Game {
 

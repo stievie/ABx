@@ -76,4 +76,10 @@ public:
     Vector3 direction_;
 };
 
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const Ray& value)
+{
+    return os << value.origin_ << " -> " << value.direction_;
+}
+
 }

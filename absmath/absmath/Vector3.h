@@ -179,8 +179,7 @@ inline Vector3 operator *(const Vector3& lhs, const Vector3& rhs)
 template<class _Stream>
 inline _Stream& operator << (_Stream& os, const Vector3& value)
 {
-    os << value.ToString();
-    return os;
+    return os << value.ToString();
 }
 
 }

@@ -3,6 +3,7 @@
 #include "ScriptManager.h"
 #include "DataProvider.h"
 #include "Game.h"
+#include "Script.h"
 
 namespace Game {
 

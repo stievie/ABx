@@ -127,8 +127,7 @@ public:
 template<class _Stream>
 inline _Stream& operator << (_Stream& os, const Vector4& value)
 {
-    os << value.ToString();
-    return os;
+    return os << value.ToString();
 }
 
 }
