@@ -113,7 +113,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
             {
                 obstructed = true;
 #ifdef DEBUG_COLLISION
-                obstructedBy = o;
+                obstructedBy = const_cast<GameObject*>(o);
 #endif
                 break;
             }
