@@ -120,7 +120,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
         }
 #ifdef DEBUG_COLLISION
         if (obstructed)
-            LOG_DEBUG << "Obstructed by " << obstructedBy->GetName() << std::endl;
+            LOG_DEBUG << "Obstructed by " << *obstructedBy << std::endl;
 #endif
     }
 

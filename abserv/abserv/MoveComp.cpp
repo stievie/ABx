@@ -77,7 +77,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
     const Math::Vector3 v = m * a;
     Math::Vector3 oldPos = owner_.transformation_.position_;
     oldPos += v;
-    LOG_INFO << "seepd " << speed << " amount " << amount.ToString() << " v " << v.ToString() << " new pos " << oldPos.ToString() << std::endl;
+    LOG_INFO << "seepd " << speed << " amount " << amount << " v " << v << " new pos " << oldPos << std::endl;
 */
 
     owner_.transformation_.Move(speed, amount);

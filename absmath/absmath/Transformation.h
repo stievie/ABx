@@ -43,4 +43,11 @@ public:
     void Turn(float yAngle);
 };
 
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const Transformation& value)
+{
+    os << " position " << value.position_ << ", scale " << value.scale_ << ", oriention " << value.oriention_;
+    return os;
+}
+
 }

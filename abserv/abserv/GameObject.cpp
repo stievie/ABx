@@ -152,10 +152,10 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
         if (ret)
         {
-            LOG_DEBUG << "ShapeTypeBoundingBox: this(" << GetName() <<
-                ") " << transformation_.position_.ToString() << " " <<
-                "collides with that(" << other->GetName() << ") " <<
-                bbox.ToString() <<
+            LOG_DEBUG << "ShapeTypeBoundingBox: this(" << *this <<
+                ") " << transformation_.position_ << " " <<
+                "collides with that(" << *other << ") " <<
+                bbox <<
                 std::endl;
         }
         return ret;
@@ -173,7 +173,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity, move);
         if (ret)
         {
-            LOG_INFO << "ShapeTypeSphere: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+            LOG_INFO << "ShapeTypeSphere: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
         }
         return ret;
 #else
@@ -190,7 +190,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
         if (ret)
         {
-            LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+            LOG_INFO << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
         }
         return ret;
 #else
@@ -206,7 +206,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
         ret = collisionShape_->Collides(transformation_.GetMatrix(), shape->Object(), velocity, move);
         if (ret)
         {
-            LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+            LOG_INFO << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
         }
         return ret;
 #else
@@ -309,7 +309,7 @@ bool GameObject::IsObjectInSight(const GameObject& object) const
             if (o->id_ != object.id_)
             {
 #ifdef DEBUG_COLLISION
-                LOG_DEBUG << "Obstructed by " << o->GetName() << std::endl;
+                LOG_DEBUG << "Obstructed by " << *o << std::endl;
 #endif
                 return false;
             }
@@ -620,7 +620,7 @@ void GameObject::AddToOctree()
     if (auto g = game_.lock())
     {
 #ifdef DEBUG_OCTREE
-        LOG_DEBUG << "Adding " << GetName() << " to Octree" << std::endl;
+        LOG_DEBUG << "Adding " << *this << " to Octree" << std::endl;
 #endif
         g->map_->octree_->InsertObject(this);
         // Initial update.
@@ -643,7 +643,7 @@ void GameObject::RemoveFromOctree()
     if (octant_)
     {
 #ifdef DEBUG_OCTREE
-        LOG_DEBUG << "Removing " << GetName() << " from Octree" << std::endl;
+        LOG_DEBUG << "Removing " << *this << " from Octree" << std::endl;
 #endif
         octant_->RemoveObject(this);
     }

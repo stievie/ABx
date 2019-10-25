@@ -585,7 +585,7 @@ void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
         // Spawn points are loaded now
         const SpawnPoint p = map_->GetFreeSpawnPoint("Player");
 #ifdef DEBUG_GAME
-//        LOG_DEBUG << "Spawn point: " << p.group << "; Pos: " << p.position.ToString() << std::endl;
+//        LOG_DEBUG << "Spawn point: " << p.group << "; Pos: " << p.position << std::endl;
 #endif
         object->transformation_.position_ = p.position;
         object->transformation_.SetYRotation(p.rotation.EulerAngles().y_);

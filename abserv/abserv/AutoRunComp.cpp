@@ -59,10 +59,9 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     bool succ = owner_.GetGame()->map_->FindPath(wp, pos, dest, EXTENDS);
 #ifdef DEBUG_NAVIGATION
     std::stringstream ss;
-    ss << "Goto from " << pos.ToString() <<
-        " to " << dest.ToString() << " via " << wp.size() << " waypoints:";
+    ss << "Goto from " << pos << " to " << dest << " via " << wp.size() << " waypoints:";
     for (const auto& _wp : wp)
-        ss << " " << _wp.ToString();
+        ss << " " << _wp;
     LOG_DEBUG << ss.str() << std::endl;
 #endif
     if (succ && wp.size() != 0)

@@ -69,7 +69,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         if (isSpawnPoint)
         {
 #ifdef DEBUG_GAME
-            //            LOG_DEBUG << "Spawn point: " << group << "; Pos: " << pos.ToString() << std::endl;
+//            LOG_DEBUG << "Spawn point: " << group << "; Pos: " << pos << std::endl;
 #endif
             // This node is a spawn point. No need to do anything more.
             map.spawnPoints_.push_back({ pos, rot, group });
@@ -118,7 +118,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 model = dataProvider->GetAsset<Game::Model>(modelFile[1]);
 #ifdef DEBUG_COLLISION
                             if (model)
-                                LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox().ToString() << std::endl;
+                                LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox() << std::endl;
 #endif
                         }
                         break;
@@ -171,7 +171,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                             if (model)
                             {
 #ifdef DEBUG_COLLISION
-                                LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
+                                LOG_DEBUG << "Setting ConvexHull collision shape for " << *object << std::endl;
 #endif
                                 object->SetCollisionShape(
                                     std::make_unique<Math::CollisionShape<Math::ConvexHull>>(
@@ -189,9 +189,9 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                             // Object has then no rotation
                             object->transformation_.oriention_ = Math::Quaternion::Identity;
 #ifdef DEBUG_COLLISION
-                            LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " min/max " << bb.ToString() <<
-                                ", size +/- " << halfSize.ToString() << ", orientation " << bb.orientation_.ToString() << std::endl;
+                            LOG_DEBUG << "Setting BB collision shape for " << *object <<
+                                " min/max " << bb <<
+                                ", size +/- " << halfSize << ", orientation " << bb.orientation_ << std::endl;
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShape<Math::BoundingBox>>(
@@ -205,8 +205,8 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                             float radius = size.x_ * 0.5f;
                             Math::Sphere sphere(offset, radius);
 #ifdef DEBUG_COLLISION
-                            LOG_DEBUG << "Setting Sphere collision shape for " << object->GetName() <<
-                                " Center " << offset.ToString() <<
+                            LOG_DEBUG << "Setting Sphere collision shape for " << *object <<
+                                " Center " << offset <<
                                 ", Radius " << radius << std::endl;
 #endif
                             object->SetCollisionShape(
@@ -222,8 +222,8 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                             // Object has then no rotation
                             object->transformation_.oriention_ = Math::Quaternion::Identity;
 #ifdef DEBUG_COLLISION
-                            LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to model BB " << model->GetBoundingBox().ToString() << " orientation " << bb.orientation_.ToString() << std::endl;
+                            LOG_DEBUG << "Setting BB collision shape for " << *object <<
+                                " to model BB " << model->GetBoundingBox() << " orientation " << bb.orientation_ << std::endl;
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShape<Math::BoundingBox>>(

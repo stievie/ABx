@@ -162,8 +162,8 @@ public:
     {
         if (IsOriented() || box.IsOriented())
         {
-            XMath::BoundingOrientedBox me = (XMath::BoundingOrientedBox)(*this);
-            XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
+            XMath::BoundingOrientedBox me = static_cast<XMath::BoundingOrientedBox>(*this);
+            XMath::ContainmentType ct = me.Contains(static_cast<XMath::BoundingOrientedBox>(box));
             return ct == XMath::DISJOINT ? Intersection::Outside : (ct == XMath::INTERSECTS ? Intersection::Intersects : Intersection::Inside);
         }
 
@@ -199,5 +199,12 @@ public:
     float dummyMax_; // This is never used, but exists to pad the max_ value to four floats.
     Quaternion orientation_;
 };
+
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const BoundingBox& value)
+{
+    os << value.ToString();
+    return os;
+}
 
 }

@@ -408,4 +408,11 @@ inline std::shared_ptr<T> GameObject::GetThis()
     return std::shared_ptr<T>();
 }
 
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const GameObject& value)
+{
+    os << "GameObject{" << static_cast<int>(value.GetType()) << "} id " << value.id_ << ": " << value.GetGame();
+    return os;
+}
+
 }

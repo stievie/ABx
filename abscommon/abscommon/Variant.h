@@ -207,6 +207,13 @@ public:
     static const Variant Empty;
 };
 
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const Variant& value)
+{
+    os << value.ToString();
+    return os;
+}
+
 typedef std::map<size_t, Variant> VariantMap;
 /// Empty variant map
 const VariantMap VariantMapEmpty;

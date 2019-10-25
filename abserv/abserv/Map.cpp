@@ -137,8 +137,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
         while (result.size() != 0)
         {
 #ifdef DEBUG_GAME
-//            LOG_DEBUG << "In place " << result.size() << " Object: " << result.front()->GetName() <<
-//                " Type: " << static_cast<int>(result.front()->GetType()) << std::endl;
+//            LOG_DEBUG << "In place " << result.size() << " Object: " << *result.front() << std::endl;
 #endif
             query.sphere_.center_.x_ += 0.2f;
             query.sphere_.center_.z_ += 0.2f;

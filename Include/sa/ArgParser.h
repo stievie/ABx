@@ -93,7 +93,7 @@ inline result parse(const std::vector<std::string>& args, const cli& _cli, value
         std::istringstream iss(s);
         float f;
         iss >> std::noskipws >> f;
-        return iss.eof() && !iss.fail();;
+        return iss.eof() && !iss.fail();
     };
 
     auto find_option = [&](const std::string& name) -> std::optional<option>
@@ -238,6 +238,7 @@ inline result parse(const std::vector<std::string>& args, const cli& _cli, value
         }
         else
         {
+            // No argument -> set this flag to true
             std::unique_ptr<value<bool>> val = std::make_unique<value<bool>>();
             val->value = true;
             vals.emplace(o->name, std::move(val));
@@ -370,7 +371,7 @@ inline help get_help(const std::string& prog, const cli& arg)
 }
 
 template<class _Stream>
-_Stream& operator << (_Stream& os, const help& help)
+inline _Stream& operator << (_Stream& os, const help& help)
 {
     for (const auto& line : help.lines)
     {
@@ -381,7 +382,7 @@ _Stream& operator << (_Stream& os, const help& help)
 }
 
 template<class _Stream>
-_Stream& operator << (_Stream& os, const result& res)
+inline _Stream& operator << (_Stream& os, const result& res)
 {
     if (!res.success)
     {

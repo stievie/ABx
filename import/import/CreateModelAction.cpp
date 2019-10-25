@@ -106,7 +106,7 @@ void CreateModelAction::Execute()
     boundingBox_.Merge(vertexData_.data(), vertexCount_);
 
     std::cout << "Mesh has " << vertexData_.size() << " vertices and " << indexData_.size() << " indices, " <<
-        " BB " << boundingBox_.ToString() <<
+        " BB " << boundingBox_ <<
         std::endl;
     Save();
 }

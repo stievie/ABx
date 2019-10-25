@@ -112,7 +112,7 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
         if (!Math::IsInfinite(distance) && (distance < query.maxDistance_))
         {
 #ifdef DEBUG_COLLISION
-            LOG_DEBUG << "Raycast hit " << name_ << std::endl;
+            LOG_DEBUG << "Raycast hit " << *this << std::endl;
 #endif
             Math::RayQueryResult result;
             result.position_ = query.ray_.origin_ + distance * query.ray_.direction_;
@@ -124,8 +124,8 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
 #ifdef DEBUG_COLLISION
         else
         {
-            LOG_DEBUG << "Raycast no hit with " << name_ << " distance = " << distance <<
-                " BB " << GetWorldBoundingBox().ToString() << std::endl;
+            LOG_DEBUG << "Raycast no hit with " << *this << " distance = " << distance <<
+                " BB " << GetWorldBoundingBox() << std::endl;
             if (!octant_)
                 LOG_WARNING << "Octand = null" << std::endl;
         }

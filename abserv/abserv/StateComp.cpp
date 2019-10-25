@@ -60,7 +60,7 @@ void StateComp::Write(Net::NetworkMessage& message)
     {
         Apply();
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "New state of " << owner_.id_ << ":" << (int)GetState() << std::endl;
+        LOG_DEBUG << "New state of " << owner_ << ": " << (int)GetState() << std::endl;
 #endif
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(owner_.id_);

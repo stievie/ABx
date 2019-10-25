@@ -432,7 +432,7 @@ size_t Actor::GetEnemyCountInRange(Ranges range)
     {
         if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = static_cast<const Actor*>(&o);
+            const auto* actor = To<Actor>(&o);
             if (actor->IsEnemy(this))
                 ++result;
         }
@@ -465,7 +465,7 @@ size_t Actor::GetAllyCountInRange(Ranges range)
     {
         if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = static_cast<const Actor*>(&o);
+            const auto* actor = To<Actor>(&o);
             if (actor->IsAlly(this))
                 ++result;
         }
