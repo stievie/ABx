@@ -189,9 +189,11 @@
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
+    <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="CollisionShape.cpp" />
     <ClCompile Include="ConvexHull.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gjk.cpp" />
@@ -212,6 +214,7 @@
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
+    <ClCompile Include="VectorMath.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

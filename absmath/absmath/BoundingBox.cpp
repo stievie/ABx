@@ -250,12 +250,6 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
         );
 }
 
-bool BoundingBox::ResolveCollision(const BoundingBox& /* b2 */, const Vector3& /* velocity */, Vector3& /* result */) const
-{
-    // TODO: Implement
-    return true;
-}
-
 bool BoundingBox::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
 {
 #if defined(HAVE_DIRECTX_MATH)
@@ -275,10 +269,6 @@ bool BoundingBox::Collides(const BoundingBox& b2, const Vector3& velocity, Vecto
             // Only AABB (this) vs. OBB is possible
             assert(false);
             return false;
-        }
-        if (result)
-        {
-            result = ResolveCollision(b2, velocity, move);
         }
         return result;
     }

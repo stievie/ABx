@@ -86,11 +86,17 @@ public:
 
     Vector3& operator+=(const Vector3& v);
     Vector3& operator-=(const Vector3& v);
+    Vector3& operator*=(const Vector3& v);
+    Vector3& operator/=(const Vector3& v);
+    Vector3& operator*=(float v);
+    Vector3& operator/=(float v);
 
     Vector3 operator+(const Vector3& v) const;
     Vector3 operator-(const Vector3& v) const;
     Vector3 operator+(float v) const;
     Vector3 operator-(float v) const;
+    Vector3 operator*(const Vector3& v) const;
+    Vector3 operator/(const Vector3& v) const;
 
     friend Vector3 operator*(const Vector3& v, float n);
     friend Vector3 operator*(float n, const Vector3& v);
@@ -131,6 +137,7 @@ public:
     float Length() const;
     float Distance(const Vector3& v) const;
     const Vector3 Normal() const;
+    void Normalize();
     /// Absolute
     Vector3 Abs() const
     {

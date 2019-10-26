@@ -54,6 +54,38 @@ Vector3& Vector3::operator-=(const Vector3& v)
     return *this;
 }
 
+Vector3& Vector3::operator*=(const Vector3& v)
+{
+    x_ *= v.x_;
+    y_ *= v.y_;
+    z_ *= v.z_;
+    return *this;
+}
+
+Vector3& Vector3::operator/=(const Vector3& v)
+{
+    x_ /= v.x_;
+    y_ /= v.y_;
+    z_ /= v.z_;
+    return *this;
+}
+
+Vector3& Vector3::operator*=(float v)
+{
+    x_ *= v;
+    y_ *= v;
+    z_ *= v;
+    return *this;
+}
+
+Vector3& Vector3::operator/=(float v)
+{
+    x_ /= v;
+    y_ /= v;
+    z_ /= v;
+    return *this;
+}
+
 Vector3 Vector3::operator+(const Vector3& v) const
 {
     return Vector3(x_ + v.x_, y_ + v.y_, z_ + v.z_);
@@ -72,6 +104,16 @@ Vector3 Vector3::operator+(float v) const
 Vector3 Vector3::operator-(float v) const
 {
     return Vector3(x_ - v, y_ - v, z_ - v);
+}
+
+Vector3 Vector3::operator*(const Vector3& v) const
+{
+    return Vector3(x_ * v.x_, y_ * v.y_, z_ * v.z_);
+}
+
+Vector3 Vector3::operator/(const Vector3& v) const
+{
+    return Vector3(x_ / v.x_, y_ / v.y_, z_ / v.z_);
 }
 
 Vector3 operator*(const Vector3& v, float n)
@@ -126,6 +168,17 @@ const Vector3 Vector3::Normal() const
     if (!Math::Equals(l, 0.0f))
         return *this / l;
     return *this;
+}
+
+void Vector3::Normalize()
+{
+    float l = Length();
+    if (!Math::Equals(l, 0.0f))
+    {
+        x_ /= l;
+        y_ /= l;
+        z_ /= l;
+    }
 }
 
 }

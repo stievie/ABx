@@ -34,7 +34,6 @@ private:
             o |= OrientationsO2;
         return o;
     }
-    bool ResolveCollision(const BoundingBox& b2, const Vector3& velocity, Vector3& result) const;
 public:
     BoundingBox() noexcept :
         min_(Vector3(Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE)),

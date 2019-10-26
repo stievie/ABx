@@ -6,6 +6,11 @@
 #include <cassert>
 #include <type_traits>
 #include <stdint.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <sys/mman.h>
+#endif
 
 //#define DEBUG_POOLALLOCATOR
 
@@ -89,16 +94,26 @@ public:
 
     PoolAllocator(size_t size) :
         freeList_{},
-        size_(size),
-        startPtr_(malloc(size_))
+        size_(size)
     {
         // Check if ChunkSize is a multiple of size_.
         assert(size_ % ChunkSize == 0);
+#ifdef _WIN32
+        startPtr_ = VirtualAlloc(0, size_, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+        assert(startPtr_);
+#else
+        startPtr_ = mmap(0, size_, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, 0, 0);
+        assert(startPtr_ != MAP_FAILED);
+#endif
         Reset();
     }
     ~PoolAllocator()
     {
-        free(startPtr_);
+#ifdef _WIN32
+        VirtualFree(startPtr_, 0, MEM_RELEASE);
+#else
+        munmap(startPtr_, size);
+#endif
     }
 
     size_t GetAllocs() const { return allocs_; }

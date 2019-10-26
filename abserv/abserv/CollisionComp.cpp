@@ -32,8 +32,20 @@ void CollisionComp::ResolveCollisions()
                 {
                     if ((ci->collisionMask_ != 0) && (owner_.collisionMask_ != 0))
                     {
+                        AB_PROFILE;
                         // Don't move the character when the object actually does not collide,
                         // but we may still need the trigger stuff.
+
+                        if (move.Equals(Math::Vector3::Zero))
+                        {
+                            Math::CollisionManifold manifold;
+                            manifold.velocity = mc.velocity_;
+                            manifold.position = owner_.transformation_.position_;
+                            manifold.radius = box.Extends();
+                            owner_.GetCollisionShape()->GetManifold(manifold);
+
+                            LOG_DEBUG << "dist " << manifold.nearestDistance << " p " << manifold.nearestIntersectionPoint << std::endl;
+                        }
 
                         // Doing now client side collisions as well, so only do it for NPCs
                         if (move != Math::Vector3::Zero && owner_.GetType() == AB::GameProtocol::ObjectTypeNpc)

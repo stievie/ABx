@@ -9,6 +9,7 @@
 #include "ConvexHull.h"
 #include "Shape.h"
 #include <memory>
+#include <limits>
 
 namespace Math {
 
@@ -22,13 +23,25 @@ enum class ShapeType
     None = 99
 };
 
+struct CollisionManifold
+{
+    Vector3 position;
+    Vector3 velocity;
+    Vector3 radius;
+
+    Vector3 nearestIntersectionPoint;
+    Vector3 nearestPolygonIntersectionPoint;
+    float nearestDistance{ std::numeric_limits<float>::max() };
+    bool stuck{ false };
+};
+
 class AbstractCollisionShape
 {
 public:
     AbstractCollisionShape(ShapeType type) :
         shapeType_(type)
     {}
-    virtual ~AbstractCollisionShape() = default;
+    virtual ~AbstractCollisionShape();
 
     /// AABB
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
@@ -40,6 +53,7 @@ public:
     virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual Shape GetShape() const = 0;
+    void GetManifold(CollisionManifold&) const;
 
     ShapeType shapeType_;
 };
