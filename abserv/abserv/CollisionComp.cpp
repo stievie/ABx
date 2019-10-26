@@ -46,7 +46,7 @@ void CollisionComp::ResolveCollisions()
                             // Since we collide with `ci` let's get some more information from ci
                             ci->GetCollisionShape()->GetManifold(manifold);
 
-                            LOG_DEBUG << "dist " << manifold.nearestDistance << " p " << manifold.nearestIntersectionPoint << std::endl;
+//                            LOG_DEBUG << "dist " << manifold.nearestDistance << " p " << manifold.nearestIntersectionPoint << std::endl;
                         }
 
                         // Doing now client side collisions as well, so only do it for NPCs
