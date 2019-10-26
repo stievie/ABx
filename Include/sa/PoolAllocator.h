@@ -112,7 +112,7 @@ public:
 #ifdef _WIN32
         VirtualFree(startPtr_, 0, MEM_RELEASE);
 #else
-        munmap(startPtr_, size);
+        munmap(startPtr_, size_);
 #endif
     }
 

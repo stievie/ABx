@@ -1,5 +1,6 @@
 absmath/BoundingBox.cpp
 absmath/BoundingBox.h
+absmath/CollisionShape.cpp
 absmath/CollisionShape.h
 absmath/ConvexHull.cpp
 absmath/ConvexHull.h
@@ -35,6 +36,8 @@ absmath/Vector3.cpp
 absmath/Vector3.h
 absmath/Vector4.cpp
 absmath/Vector4.h
+absmath/VectorMath.cpp
+absmath/VectorMath.h
 absmath/stdafx.cpp
 absmath/stdafx.h
 absmath/targetver.h

@@ -38,11 +38,13 @@ void CollisionComp::ResolveCollisions()
 
                         if (move.Equals(Math::Vector3::Zero))
                         {
+                            // That's us
                             Math::CollisionManifold manifold;
                             manifold.velocity = mc.velocity_;
                             manifold.position = owner_.transformation_.position_;
                             manifold.radius = box.Extends();
-                            owner_.GetCollisionShape()->GetManifold(manifold);
+                            // Since we collide with `ci` let's get some more information from ci
+                            ci->GetCollisionShape()->GetManifold(manifold);
 
                             LOG_DEBUG << "dist " << manifold.nearestDistance << " p " << manifold.nearestIntersectionPoint << std::endl;
                         }

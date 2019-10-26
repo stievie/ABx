@@ -250,7 +250,7 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
         );
 }
 
-bool BoundingBox::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
+bool BoundingBox::Collides(const BoundingBox& b2, const Vector3&, Vector3& move) const
 {
 #if defined(HAVE_DIRECTX_MATH)
     const uint32_t o = GetOrientations(b2);

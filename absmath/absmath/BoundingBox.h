@@ -140,7 +140,7 @@ public:
     bool Collides(const BoundingBox& b2) const;
     /// Returns true if the boxes are colliding (velocities are not used)
     /// move will return the movement the b1 must move to avoid the collision
-    bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const BoundingBox& b2, const Vector3&, Vector3& move) const;
     bool Collides(const Sphere& b2) const;
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
