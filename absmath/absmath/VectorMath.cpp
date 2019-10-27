@@ -31,14 +31,15 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
     return ((in(z) & ~(in(x) | in(y)))) & 0x80000000;
 #undef in
 #else
-    float totalAngles = 0.0f;
     const Vector3 v1 = (point - pa).Normal();
     const Vector3 v2 = (point - pb).Normal();
     const Vector3 v3 = (point - pc).Normal();
 
-    totalAngles += acosf(v1.DotProduct(v2));
-    totalAngles += acosf(v2.DotProduct(v3));
-    totalAngles += acosf(v3.DotProduct(v2));
+    const float totalAngles =
+        acosf(v1.DotProduct(v2)) +
+        acosf(v2.DotProduct(v3)) +
+        acosf(v3.DotProduct(v1));
+
     if (fabsf(totalAngles - M_TWOPI) <= 0.005f)
         return true;
     return false;

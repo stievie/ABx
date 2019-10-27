@@ -70,6 +70,11 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
             planeIntersectionPoint = sphereIntersectionPoint + (distToPlaneIntersection * normalizedVelocity);
         }
 
+        if (!IsPointInTriangle(planeIntersectionPoint, p1, p2, p3))
+        {
+
+        }
+
         if (sphere.IsInside(planeIntersectionPoint) == Intersection::Inside)
             manifold.stuck = true;
 
