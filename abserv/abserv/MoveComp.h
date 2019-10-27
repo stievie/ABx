@@ -41,6 +41,7 @@ public:
     }
     void Update(uint32_t timeElapsed, uint32_t flags);
     bool SetPosition(const Math::Vector3& pos);
+    void StickToGround();
     void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation
     void Move(float speed, const Math::Vector3& amount);

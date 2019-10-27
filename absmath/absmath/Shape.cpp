@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shape.h"
 #include "Vector4.h"
+#include <execution>
 
 namespace Math {
 
@@ -39,6 +40,34 @@ Vector3 Shape::GetFarsetPointInDirection(const Vector3& v) const
         }
     }
     return best;
+}
+
+Shape Shape::Transformed(const Matrix4& transformation) const
+{
+    Shape result;
+    result.vertexCount_ = vertexCount_;
+    result.indexData_ = indexData_;
+    result.indexCount_ = indexCount_;
+    result.vertexData_.reserve(vertexCount_);
+
+#if 0
+    std::for_each(std::execution::par_unseq,
+        vertexData_.begin(), vertexData_.end(),
+        [&](const auto& item)
+    {
+        result.vertexData_.push_back(transformation * item);
+    });
+#endif
+
+    for (const auto& v : vertexData_)
+        result.vertexData_.push_back(transformation * v);
+
+    return result;
+}
+
+Shape Shape::Transformed() const
+{
+    return Transformed(matrix_);
 }
 
 }

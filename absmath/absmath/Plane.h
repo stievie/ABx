@@ -14,6 +14,14 @@ public:
         normal_(normal),
         d_(distance)
     { }
+    Plane(const Vector3& normal, const Vector3& point)
+    {
+        Define(normal, point);
+    }
+    Plane(const Vector3& p1, const Vector3& p2, const Vector3& p3)
+    {
+        Define(p1, p2, p3);
+    }
     ~Plane() = default;
 
     /// Define from 3 vertices.

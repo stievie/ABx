@@ -93,6 +93,8 @@ public:
     size_t VertexDataSize() const { return vertexCount_ * sizeof(float) * 3; }
     /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& v) const;
+    Shape Transformed(const Matrix4& transformation) const;
+    Shape Transformed() const;
 
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;

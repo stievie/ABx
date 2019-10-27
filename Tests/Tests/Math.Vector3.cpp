@@ -56,6 +56,14 @@ TEST_CASE("Vector3 Geometry", "[vector3]")
         Math::Vector3 vec2(1.0f, 0.0f, 0.0f);
         Math::Vector3 cross = vec1.CrossProduct(vec2);
         REQUIRE(cross.Equals(Math::Vector3(0.0f, 1.0f, 0.0f)));
+
+        // Calculated by "hand"
+        Math::Vector3 cp(
+            vec1.y_ * vec2.z_ - vec1.z_ * vec2.y_,
+            vec1.z_ * vec2.x_ - vec1.x_ * vec2.z_,
+            vec1.x_ * vec2.y_ - vec1.y_ * vec2.x_
+        );
+        REQUIRE(cross.Equals(cp));
     }
 
 }

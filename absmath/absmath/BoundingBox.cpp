@@ -209,18 +209,19 @@ Shape BoundingBox::GetShape() const
     | /          | /
 min 0------------4
     */
+    // Clockwise
     // Front
     s.AddTriangle(7, 4, 0);
     s.AddTriangle(0, 3, 7);
     // Left
-    s.AddTriangle(0, 3, 2);
+    s.AddTriangle(3, 0, 2);
     s.AddTriangle(2, 5, 3);
     // Right
     s.AddTriangle(4, 7, 1);
     s.AddTriangle(1, 6, 4);
     // Up
-    s.AddTriangle(7, 1, 5);
-    s.AddTriangle(5, 3, 7);
+    s.AddTriangle(5, 1, 7);
+    s.AddTriangle(7, 3, 5);
     // Down
     s.AddTriangle(2, 6, 4);
     s.AddTriangle(4, 0, 2);

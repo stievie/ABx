@@ -130,18 +130,19 @@ Shape Frustum::GetShape() const
     | /          | /
     2------------1
 */
+    // Clockwise
     // Near
     s.AddTriangle(0, 1, 2);
     s.AddTriangle(2, 3, 0);
     // Left
-    s.AddTriangle(2, 3, 6);
+    s.AddTriangle(3, 2, 6);
     s.AddTriangle(6, 7, 3);
     // Right
     s.AddTriangle(1, 0, 4);
     s.AddTriangle(4, 5, 1);
     // Up
-    s.AddTriangle(0, 4, 7);
-    s.AddTriangle(7, 3, 0);
+    s.AddTriangle(7, 4, 0);
+    s.AddTriangle(0, 3, 7);
     // Down
     s.AddTriangle(6, 5, 1);
     s.AddTriangle(1, 2, 6);

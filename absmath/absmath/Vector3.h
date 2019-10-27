@@ -178,11 +178,6 @@ public:
     static const Vector3 Left;
 };
 
-inline Vector3 operator *(const Vector3& lhs, const Vector3& rhs)
-{
-    return Vector3(lhs.x_ * rhs.x_, lhs.y_ * rhs.y_, lhs.z_ * rhs.z_);
-}
-
 template<class _Stream>
 inline _Stream& operator << (_Stream& os, const Vector3& value)
 {

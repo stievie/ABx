@@ -4,6 +4,7 @@
 #include "BoundingBox.h"
 #include "Sphere.h"
 #include "Matrix4.h"
+#include "Plane.h"
 
 namespace Math {
 
@@ -118,6 +119,7 @@ float Ray::HitDistance(const BoundingBox& box) const
 
 float Ray::HitDistance(const Sphere& sphere) const
 {
+#if 0
     const Vector3 centeredOrigin = origin_ - sphere.center_;
     const float squaredRadius = sphere.radius_ * sphere.radius_;
 
@@ -142,6 +144,25 @@ float Ray::HitDistance(const Sphere& sphere) const
         return dist;
     else
         return (-b + dSqrt) / (2.0f * a);
+#else
+    const Vector3 Q = sphere.center_ - origin_;
+    float c = Q.Length();
+    float v = Q.DotProduct(direction_);
+    float d = sphere.radius_*sphere.radius_ - (c*c - v*v);
+    if (d < 0.0f)
+        return M_INFINITE;
+    return v - sqrtf(d);
+#endif
+}
+
+float Ray::HitDistance(const Plane& plane) const
+{
+    float denom = plane.normal_.DotProduct(direction_);
+    if (Equals(denom, 0.0f))
+        return Math::M_INFINITE;
+
+    float numer = plane.normal_.DotProduct(origin_) + plane.d_;
+    return -(numer / denom);
 }
 
 Ray Ray::Transformed(const Matrix4& transform) const

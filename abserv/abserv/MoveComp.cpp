@@ -40,8 +40,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     if (owner_.GetType() != AB::GameProtocol::ObjectTypeProjectile)
     {
         // Keep on ground
-        const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
-        owner_.transformation_.position_.y_ = y;
+        StickToGround();
     }
     if (owner_.collisionComp_)
         // We need to do it here because this is not called from Update()
@@ -60,6 +59,12 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
         moved_ = true;
 
     return moved;
+}
+
+void MoveComp::StickToGround()
+{
+    const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
+    owner_.transformation_.position_.y_ = y;
 }
 
 void MoveComp::HeadTo(const Math::Vector3& pos)

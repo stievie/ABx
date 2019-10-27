@@ -29,8 +29,8 @@ struct CollisionManifold
     Vector3 velocity;
     Vector3 radius;
 
-    Vector3 nearestIntersectionPoint;
-    Vector3 nearestPolygonIntersectionPoint;
+    Vector3 nearestSphereIntersectionPoint;
+    Vector3 nearestPlaneIntersectionPoint;
     float nearestDistance{ std::numeric_limits<float>::max() };
     bool stuck{ false };
 };
@@ -53,7 +53,7 @@ public:
     virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual Shape GetShape() const = 0;
-    void GetManifold(CollisionManifold&) const;
+    bool GetManifold(CollisionManifold&, const Matrix4& transformation) const;
 
     ShapeType shapeType_;
 };

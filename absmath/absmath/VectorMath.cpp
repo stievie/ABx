@@ -2,31 +2,47 @@
 #include "VectorMath.h"
 #include "MathDefs.h"
 #include "MathUtils.h"
+#include "Sphere.h"
+#include "Ray.h"
+#include "Plane.h"
 
 namespace Math {
 
-bool IsPointInTriangle(const Vector3& point, const Vector3& a, const Vector3& b, const Vector3& c)
+bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc)
 {
-    const Vector3 v1 = (point - a).Normal();
-    const Vector3 v2 = (point - b).Normal();
-    const Vector3 v3 = (point - c).Normal();
+#if 0
+    const Vector3 e10 = pb - pa;
+    const Vector3 e20 = pc - pa;
 
-    float angles = 0.0f;
-    angles += acos(v1.DotProduct(v2));
-    angles += acos(v2.DotProduct(v3));
-    angles += acos(v3.DotProduct(v1));
+    float a = e10.DotProduct(e10);
+    float b = e10.DotProduct(e20);
+    float c = e20.DotProduct(e20);
+    float ac_bb = (a*c) - (b*b);
 
-    if (fabsf(angles - 2 * M_PIF) <= 0.005f)
+    const Vector3 vp(point.x_ - pa.x_, point.y_ - pa.y_, point.z_ - pa.z_);
+
+    float d = vp.DotProduct(e10);
+    float e = vp.DotProduct(e20);
+    float x = (d*c) - (e*b);
+    float y = (e*a) - (d*b);
+    float z = x + y - ac_bb;
+
+#define in(a) ((uint32_t&) a)
+    return ((in(z) & ~(in(x) | in(y)))) & 0x80000000;
+#undef in
+#else
+    float totalAngles = 0.0f;
+    const Vector3 v1 = (point - pa).Normal();
+    const Vector3 v2 = (point - pb).Normal();
+    const Vector3 v3 = (point - pc).Normal();
+
+    totalAngles += acosf(v1.DotProduct(v2));
+    totalAngles += acosf(v2.DotProduct(v3));
+    totalAngles += acosf(v3.DotProduct(v2));
+    if (fabsf(totalAngles - M_TWOPI) <= 0.005f)
         return true;
     return false;
-}
-
-bool IsPointInSphere(const Vector3& point, const Sphere& s)
-{
-    float d = (point - s.center_).Length();
-    if (d <= s.radius_)
-        return true;
-    return false;
+#endif
 }
 
 Vector3 GetClosestPointOnLine(const Vector3& a, const Vector3& b, const Vector3& p)
@@ -69,29 +85,6 @@ Vector3 GetClosestPointOnTriangle(const Vector3& a, const Vector3& b, const Vect
         result = Rca;
 
     return result;
-}
-
-float IntersectsRaySphere(const Ray& ray, const Sphere& sphere)
-{
-    const Vector3 Q = sphere.center_ - ray.origin_;
-    float c = Q.Length();
-    float v = Q.DotProduct(ray.direction_);
-    float d = sphere.radius_*sphere.radius_ - (c*c - v*v);
-    if (d < 0.0f)
-        // No intersection
-        return -1.0f;
-
-    return v - sqrtf(d);
-}
-
-float IntersectsRayPlane(const Ray& ray, const Vector3& planeOrigin, const Vector3& planeNormal)
-{
-    float d = -planeNormal.DotProduct(planeOrigin);
-    float numer = planeNormal.DotProduct(ray.origin_) + d;
-    float denom = planeNormal.DotProduct(ray.direction_);
-    if (Equals(denom, 0.0f))
-        return -1.0f;
-    return -(numer / denom);
 }
 
 PointClass GetPointClass(const Vector3& point, const Vector3& origin, const Vector3& normal)

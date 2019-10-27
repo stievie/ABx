@@ -7,6 +7,7 @@ namespace Math {
 class BoundingBox;
 class Sphere;
 class Matrix4;
+class Plane;
 
 /// Infinite straight line in three-dimensional space.
 class Ray
@@ -65,6 +66,7 @@ public:
     float HitDistance(const BoundingBox& box) const;
     /// Return hit distance to a sphere, or infinity if no hit.
     float HitDistance(const Sphere& sphere) const;
+    float HitDistance(const Plane& plane) const;
 
     /// Return transformed by a 3x4 matrix. This may result in a non-normalized direction.
     Ray Transformed(const Matrix4& transform) const;

@@ -84,7 +84,8 @@ Shape Sphere::GetShape() const
 {
     // http://www.andrewnoske.com/wiki/Generating_a_sphere_as_a_3D_mesh
     Shape s;
-    static const Vector3 v[12] = {
+    static constexpr unsigned VERTEX_COUNT = 12;
+    static constexpr Vector3 V[VERTEX_COUNT] = {
         {  0.000f,  1.000f,  0.000f },  // Top-most point.
         {  0.894f,  0.447f,  0.000f },
         {  0.276f,  0.447f,  0.851f },
@@ -99,13 +100,11 @@ Shape Sphere::GetShape() const
         {  0.000f, -1.000f,  0.000f }   // Bottom-most point.
     };
 
-    for (unsigned i = 0; i < 12; ++i)
+    for (unsigned i = 0; i < VERTEX_COUNT; ++i)
     {
-        s.vertexData_.push_back(Vector3(
-            v[i] * radius_ + center_
-        ));
+        s.vertexData_.push_back({ V[i] * radius_ + center_ });
     }
-    s.vertexCount_ = 12;
+    s.vertexCount_ = VERTEX_COUNT;
     // https://www.csee.umbc.edu/~squire/reference/polyhedra.shtml#icosahedron
     s.AddTriangle(0, 1, 2);
     s.AddTriangle(0, 2, 3);
