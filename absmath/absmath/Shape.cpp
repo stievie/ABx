@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Shape.h"
 #include "Vector4.h"
+#if 0
+// GCC does not find it, anyway: Premature optimisation is the root of all evil!
 #include <execution>
+#endif
 
 namespace Math {
 
