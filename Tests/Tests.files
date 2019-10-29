@@ -8,6 +8,7 @@ Tests/Math.Sphere.cpp
 Tests/Math.Transformation.cpp
 Tests/Math.Utils.cpp
 Tests/Math.Vector3.cpp
+Tests/Math.VectorMath.cpp
 Tests/Net.MessageMsg.cpp
 Tests/Utils.CallableTable.cpp
 Tests/Utils.Events.cpp
