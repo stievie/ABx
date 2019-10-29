@@ -183,7 +183,7 @@ Intersection Sphere::IsInside(const BoundingBox& box) const
     if (box.IsOriented())
     {
         const XMath::BoundingSphere me(center_, radius_);
-        const XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
+        const XMath::ContainmentType ct = me.Contains(static_cast<XMath::BoundingOrientedBox>(box));
         return ct == XMath::DISJOINT ? Intersection::Outside : (ct == XMath::INTERSECTS ? Intersection::Intersects : Intersection::Inside);
     }
 #endif

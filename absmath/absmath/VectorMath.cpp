@@ -2,9 +2,6 @@
 #include "VectorMath.h"
 #include "MathDefs.h"
 #include "MathUtils.h"
-#include "Sphere.h"
-#include "Ray.h"
-#include "Plane.h"
 
 namespace Math {
 

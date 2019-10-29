@@ -4,8 +4,6 @@
 
 namespace Math {
 
-class Sphere;
-
 enum class PointClass
 {
     PlaneFront,

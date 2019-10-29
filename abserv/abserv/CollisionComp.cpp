@@ -12,55 +12,61 @@
 namespace Game {
 namespace Components {
 
+constexpr float UnitScale = 1.0f / 100.0f;
+constexpr float CloseDistance = 0.005f * UnitScale;
+
 void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
 {
     AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
+    const Math::Vector3& oldPos = mc.GetOldPosition();
+
     // That's us
     Math::CollisionManifold manifold;
     manifold.velocity = mc.velocity_;
     // Center of body
-    manifold.position = GetBodyCenter(mc.GetOldPosition());
+    manifold.position = GetBodyCenter(oldPos);
     manifold.radius = myBB.Extends();
     // Since we collide with `other` let's get some more information from `other`
     bool foundSolution = other.GetCollisionShape()->GetManifold(manifold, other.transformation_.GetMatrix());
     if (!foundSolution || manifold.stuck)
     {
-        GotoSafePosition();
 #ifdef DEBUG_COLLISION
         if (!foundSolution)
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
-            LOG_DEBUG << "Stuck!";
-        LOG_DEBUG << std::endl;
+            LOG_DEBUG << "Stuck! ";
+        LOG_DEBUG << "going back to " << oldPos.ToString() << std::endl;
 #endif
+        GotoSafePosition();
         return;
     }
 
-    Math::Vector3 destinationPoint = owner_.transformation_.position_;
-    Math::Vector3 newBasePoint = mc.GetOldPosition();
-    if (manifold.distance >= 0.005f)
+    const Math::Vector3 destinationPoint = owner_.transformation_.position_;
+    const Math::Vector3 newBasePoint = oldPos;
+    if (manifold.distance >= CloseDistance)
     {
         Math::Vector3 V = mc.velocity_;
-        V.SetLength(manifold.distance - 0.005f);
+        V.SetLength(manifold.distance - CloseDistance);
         V.Normalize();
-        manifold.intersectionPoint -= 0.005f * V;
+        manifold.intersectionPoint -= CloseDistance * V;
     }
 
-    Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
-    Math::Vector3 slidingPlaneNormal = (newBasePoint - manifold.intersectionPoint).Normal();
-    Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
+    const Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
+    const Math::Vector3 slidingPlaneNormal = (newBasePoint - manifold.intersectionPoint).Normal();
+    const Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
 
-    Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
-    Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
+    const Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
+    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
 
-    Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, other.transformation_.GetYRotation());
+    const Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, other.transformation_.GetYRotation());
+    // Decrease velocity when sliding (moving slower)
     const Math::Vector3 newPos = owner_.transformation_.position_ + (rot * (newVelocityVector / 2.0f));
 
 #ifdef DEBUG_COLLISION
-    LOG_DEBUG << "Sliding from " << mc.GetOldPosition().ToString() << " to "
+    LOG_DEBUG << "Sliding from " << oldPos.ToString() << " to "
         << newPos.ToString() <<
-        " intersection " << manifold.intersectionPoint.ToString() << std::endl;
+        " intersection at " << manifold.intersectionPoint.ToString() << std::endl;
 #endif
 
     owner_.transformation_.position_ = newPos;

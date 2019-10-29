@@ -34,10 +34,10 @@ public:
     }
 
     /// Check for equality with another ray.
-    bool operator ==(const Ray& rhs) const { return origin_ == rhs.origin_ && direction_ == rhs.direction_; }
+    bool operator ==(const Ray& rhs) const { return origin_.Equals(rhs.origin_) && direction_.Equals(rhs.direction_); }
 
     /// Check for inequality with another ray.
-    bool operator !=(const Ray& rhs) const { return origin_ != rhs.origin_ || direction_ != rhs.direction_; }
+    bool operator !=(const Ray& rhs) const { return !origin_.Equals(rhs.origin_) || !direction_.Equals(rhs.direction_); }
 
     /// Define from origin and direction. The direction will be normalized.
     void Define(const Vector3& origin, const Vector3& direction)

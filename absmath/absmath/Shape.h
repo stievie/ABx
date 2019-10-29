@@ -33,14 +33,14 @@ public:
     }
     explicit Shape(const std::vector<Vector3>& vertices) :
         vertexData_(vertices),
-        vertexCount_((unsigned)vertexData_.size()),
+        vertexCount_(static_cast<unsigned>(vertexData_.size())),
         indexCount_(0)
     { }
     explicit Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
         vertexData_(vertices),
         indexData_(indices),
-        vertexCount_((unsigned)vertexData_.size()),
-        indexCount_((unsigned)indexData_.size())
+        vertexCount_(static_cast<unsigned>(vertexData_.size())),
+        indexCount_(static_cast<unsigned>(indexData_.size()))
     {}
     ~Shape() = default;
 

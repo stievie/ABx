@@ -39,7 +39,7 @@ public:
     { }
 
 #if defined(HAVE_DIRECTX_MATH)
-        Vector3(const XMath::XMVECTOR& vector) noexcept :
+    Vector3(const XMath::XMVECTOR& vector) noexcept :
         x_(XMath::XMVectorGetX(vector)),
         y_(XMath::XMVectorGetY(vector)),
         z_(XMath::XMVectorGetZ(vector))
