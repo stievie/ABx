@@ -70,7 +70,7 @@ public:
 
     /// Return transformed by a 3x4 matrix. This may result in a non-normalized direction.
     Ray Transformed(const Matrix4& transform) const;
-    bool IsDefined() const { return origin_ != Vector3::Zero && direction_ != Vector3::Zero; }
+    bool IsDefined() const { return !origin_.Equals(Vector3::Zero) && !direction_.Equals(Vector3::Zero); }
 
     /// Ray origin.
     Vector3 origin_;

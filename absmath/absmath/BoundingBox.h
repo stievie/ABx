@@ -16,7 +16,7 @@ class Matrix4;
 class Plane;
 class Line;
 
-class BoundingBox
+class alignas(16) BoundingBox
 {
 private:
     enum Orientations : uint32_t
@@ -117,7 +117,7 @@ public:
     }
 
     bool IsDefined() const { return !Math::IsInfinite(min_.x_); }
-    bool IsOriented() const { return orientation_ != Quaternion::Identity; }
+    bool IsOriented() const { return !orientation_.Equals(Quaternion::Identity); }
     std::string ToString() const
     {
         if (!IsDefined())
@@ -193,9 +193,7 @@ public:
     }
 
     Vector3 min_;
-    float dummyMin_; // This is never used, but exists to pad the min_ value to four floats.
     Vector3 max_;
-    float dummyMax_; // This is never used, but exists to pad the max_ value to four floats.
     Quaternion orientation_;
 };
 
