@@ -6,6 +6,7 @@
 #include "Ray.h"
 #include "Sphere.h"
 #include <iostream>
+#include "BoundingBox.h"
 
 namespace Math {
 
@@ -13,7 +14,7 @@ AbstractCollisionShape::~AbstractCollisionShape() = default;
 
 bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matrix4& transformation) const
 {
-    // We knopw we are colliding with this object. this simplifies stuff.
+    // We know we are colliding with this object. this simplifies stuff.
 
     bool result = false;
     // Transform to world coordinates
@@ -21,15 +22,13 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
     // World coordinates
     const Vector3& source = manifold.position;
-    Vector3 normalizedVelocity = manifold.velocity.Normal();
-
-    Vector3 planeIntersectionPoint;
+    manifold.normalizedVelocity = manifold.velocity.Normal();
 
     float distance = manifold.velocity.Length();
-    float distToPlaneIntersection;
 
     // Radius is 1 because the points are in our ellipsoid space
     const Sphere sphere(source, 1.0f);
+    const BoundingBox bb(source - 1.0f, source + 1.0f);
 
     for (unsigned i = 0; i < shape.GetCount(); i += 3)
     {
@@ -54,38 +53,49 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
         Vector3 sphereIntersectionPoint = source - planeNormal;
 
+        float distToIntersection;
+        Vector3 intersectionPoint;
         PointClass pointClass = GetPointClass(sphereIntersectionPoint, planeOrigin, planeNormal);
         if (pointClass == PointClass::PlaneBack)
         {
             const Ray ray(sphereIntersectionPoint, planeNormal);
             const Plane plane(planeNormal, planeOrigin);
-            distToPlaneIntersection = ray.HitDistance(plane);
-            planeIntersectionPoint = sphereIntersectionPoint + (distToPlaneIntersection * planeNormal);
+            distToIntersection = ray.HitDistance(plane);
+            intersectionPoint = sphereIntersectionPoint + (distToIntersection * planeNormal);
         }
         else
         {
-            const Ray ray(sphereIntersectionPoint, normalizedVelocity);
+            const Ray ray(sphereIntersectionPoint, manifold.normalizedVelocity);
             const Plane plane(planeNormal, planeOrigin);
-            distToPlaneIntersection = ray.HitDistance(plane);
-            planeIntersectionPoint = sphereIntersectionPoint + (distToPlaneIntersection * normalizedVelocity);
+            distToIntersection = ray.HitDistance(plane);
+            intersectionPoint = sphereIntersectionPoint + (distToIntersection * manifold.normalizedVelocity);
         }
 
-        if (!IsPointInTriangle(planeIntersectionPoint, p1, p2, p3))
+        if (!IsPointInTriangle(intersectionPoint, p1, p2, p3))
         {
-
+            const Vector3 polyPoint = GetClosestPointOnTriangle(p1, p2, p3, intersectionPoint);
+            // PolyPoint -> colliding object
+            const Ray ray(polyPoint, -manifold.normalizedVelocity);
+            float dist = ray.HitDistance(sphere);
+            if (!IsInfinite(dist))
+            {
+                distToIntersection = dist;
+                intersectionPoint = intersectionPoint + (distToIntersection * -manifold.normalizedVelocity);
+            }
         }
 
-        if (sphere.IsInside(planeIntersectionPoint) == Intersection::Inside)
+        if (sphere.IsInside(intersectionPoint) == Intersection::Inside)
             manifold.stuck = true;
 
         // Update collision data if we hit something
-        if (distToPlaneIntersection <= distance)
+        if (distToIntersection <= distance)
         {
-            if (distToPlaneIntersection < manifold.nearestDistance)
+            if (distToIntersection < manifold.distance)
             {
-                manifold.nearestDistance = distToPlaneIntersection;
+                manifold.distance = distToIntersection;
                 manifold.nearestSphereIntersectionPoint = sphereIntersectionPoint;
-                manifold.nearestPlaneIntersectionPoint = planeIntersectionPoint;
+                manifold.intersectionPoint = intersectionPoint;
+                manifold.normal = planeNormal;
                 result = true;
             }
         }

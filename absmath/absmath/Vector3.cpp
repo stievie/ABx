@@ -136,6 +136,11 @@ Vector3 operator/(float n, const Vector3& v)
     return Vector3(v.x_ / n, v.y_ / n, v.z_ / n);
 }
 
+void Vector3::SetLength(float length)
+{
+    *this = *this * length;
+}
+
 Vector3 Vector3::Orthogonal() const
 {
     float x = fabs(x_);

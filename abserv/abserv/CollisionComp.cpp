@@ -5,12 +5,16 @@
 #include "MoveComp.h"
 #include "BoundingBox.h"
 #include "VectorMath.h"
+#include "Plane.h"
+
+#define DEBUG_COLLISION
 
 namespace Game {
 namespace Components {
 
 void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
 {
+    AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
     // That's us
     Math::CollisionManifold manifold;
@@ -23,15 +27,40 @@ void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
     if (!foundSolution || manifold.stuck)
     {
         GotoSafePosition();
+#ifdef DEBUG_COLLISION
+        if (!foundSolution)
+            LOG_DEBUG << "No solution found ";
+        if (manifold.stuck)
+            LOG_DEBUG << "Stuck!";
+        LOG_DEBUG << std::endl;
+#endif
         return;
     }
 
-    const Math::Vector3 normal = (GetBodyCenter(owner_.transformation_.position_) - manifold.nearestPlaneIntersectionPoint).Normal();
-    const Math::Vector3 newPos = GetBodyCenter(mc.GetOldPosition()) + (normal * (mc.velocity_ / 2.0f));
+    Math::Vector3 destinationPoint = owner_.transformation_.position_;
+    Math::Vector3 newBasePoint = mc.GetOldPosition();
+    if (manifold.distance >= 0.005f)
+    {
+        Math::Vector3 V = mc.velocity_;
+        V.SetLength(manifold.distance - 0.005f);
+        V.Normalize();
+        manifold.intersectionPoint -= 0.005f * V;
+    }
+
+    Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
+    Math::Vector3 slidingPlaneNormal = (newBasePoint - manifold.intersectionPoint).Normal();
+    Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
+
+    Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
+    Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
+
+    Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, other.transformation_.GetYRotation());
+    const Math::Vector3 newPos = owner_.transformation_.position_ + (rot * (newVelocityVector / 2.0f));
+
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Sliding from " << mc.GetOldPosition().ToString() << " to "
         << newPos.ToString() <<
-        " intersection " << manifold.nearestPlaneIntersectionPoint.ToString() << std::endl;
+        " intersection " << manifold.intersectionPoint.ToString() << std::endl;
 #endif
 
     owner_.transformation_.position_ = newPos;
@@ -61,7 +90,6 @@ void CollisionComp::ResolveOne(const Math::BoundingBox& myBB, GameObject& other)
     {
         if ((other.collisionMask_ != 0) && (owner_.collisionMask_ != 0))
         {
-            AB_PROFILE;
             // Don't move the character when the object actually does not collide,
             // but we may still need the trigger stuff.
 

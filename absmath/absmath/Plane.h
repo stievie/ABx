@@ -30,6 +30,7 @@ public:
     void Define(const Vector3& normal, const Vector3& point);
 
     float Distance(const Vector3& point) const { return normal_.DotProduct(point) + d_; }
+    bool IsFrontFacingTo(const Vector3& direction) const { return normal_.DotProduct(direction) <= 0.0f; }
 
     Vector3 normal_;
     float d_;

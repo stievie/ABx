@@ -160,6 +160,7 @@ public:
         ss << x_ << " " << y_ << " " << z_;
         return ss.str();
     }
+    void SetLength(float length);
 
     /// Return integer data.
     const float* Data() const { return &x_; }

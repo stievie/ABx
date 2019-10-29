@@ -266,8 +266,8 @@ Intersection Sphere::IsInsideFast(const BoundingBox& box) const
     const float radiusSquared = radius_ * radius_;
     float distSquared = 0;
     float temp;
-    Vector3 min = box.min_;
-    Vector3 max = box.max_;
+    const Vector3& min = box.min_;
+    const Vector3& max = box.max_;
 
     if (center_.x_ < min.x_)
     {

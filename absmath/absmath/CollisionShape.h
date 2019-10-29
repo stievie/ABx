@@ -25,13 +25,17 @@ enum class ShapeType
 
 struct CollisionManifold
 {
+    // Input
     Vector3 position;
     Vector3 velocity;
     Vector3 radius;
 
+    // Output
+    Vector3 normalizedVelocity;
     Vector3 nearestSphereIntersectionPoint;
-    Vector3 nearestPlaneIntersectionPoint;
-    float nearestDistance{ std::numeric_limits<float>::max() };
+    Vector3 intersectionPoint;
+    Vector3 normal;
+    float distance{ std::numeric_limits<float>::max() };
     bool stuck{ false };
 };
 

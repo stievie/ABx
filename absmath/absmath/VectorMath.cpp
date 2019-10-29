@@ -35,6 +35,9 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
     const Vector3 v2 = (point - pb).Normal();
     const Vector3 v3 = (point - pc).Normal();
 
+    // If the point is in the triangle the sum of the angles can not be
+    // greater than 360 Deg, because the sum the of the angles of a triangle
+    // is 360 Deg
     const float totalAngles =
         acosf(v1.DotProduct(v2)) +
         acosf(v2.DotProduct(v3)) +
