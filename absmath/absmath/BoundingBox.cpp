@@ -70,7 +70,7 @@ std::vector<Line> BoundingBox::GetEdges() const
 {
     // Not transformed (AABB)
     std::vector<Line> result;
-    result.reserve(12);
+    result.resize(12);
     const auto v = GetCorners();
 
     /*
@@ -83,15 +83,13 @@ std::vector<Line> BoundingBox::GetEdges() const
 min 0------2-----4
     */
 
-    static const unsigned index[][2] = {
+    static constexpr unsigned index[][2] = {
         { 0, 3 },{ 0, 4 },{ 3, 7 },{ 4, 7 },{ 0, 2 },{ 4, 6 },
         { 3, 5 },{ 7, 1 },{ 1, 6 },{ 6, 2 },{ 2, 5 },{ 5, 1 }
     };
     for (unsigned j = 0; j < 12; ++j)
     {
-        result.push_back(Line(
-            v[index[j][0]], v[index[j][1]]
-        ));
+        result[j] = { v[index[j][0]], v[index[j][1]] };
     }
     return result;
 }

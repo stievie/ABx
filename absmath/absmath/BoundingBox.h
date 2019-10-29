@@ -16,7 +16,7 @@ class Matrix4;
 class Plane;
 class Line;
 
-class alignas(16) BoundingBox
+class BoundingBox
 {
 private:
     enum Orientations : uint32_t
@@ -193,7 +193,9 @@ public:
     }
 
     Vector3 min_;
+    float dummyMin_;
     Vector3 max_;
+    float dummyMax_;
     Quaternion orientation_;
 };
 
