@@ -6,7 +6,7 @@
 #include "MessageServer.h"
 #include "IpList.h"
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     asio::io_service ioService_;
@@ -15,6 +15,9 @@ private:
     int64_t lastUpdate_{ 0 };
     bool LoadMain();
     void PrintServerInfo();
+    void ShowLogo();
+protected:
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

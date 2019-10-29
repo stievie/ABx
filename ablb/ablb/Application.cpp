@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Application.h"
+#include "Version.h"
+#include "Logo.h"
 #include "Bridge.h"
 #include "SimpleConfigManager.h"
 #include <AB/Entities/ServiceList.h>
@@ -215,6 +217,33 @@ bool Application::ParseServerList(const std::string& fileName)
     return true;
 }
 
+void Application::ShowVersion()
+{
+    std::cout << SERVER_PRODUCT_NAME << " " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << std::endl;
+    std::cout << __DATE__ << " " << __TIME__;
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl;
+}
+
+void Application::ShowLogo()
+{
+    std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
+    std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR <<
+        " (" << __DATE__ << " " << __TIME__ << ")";
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl;
+    std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
+    std::cout << std::endl;
+
+    std::cout << AB_CONSOLE_LOGO << std::endl;
+
+    std::cout << std::endl;
+}
+
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
@@ -222,6 +251,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     if (!ParseCommandLine())
         return false;
+
+    if (!sa::arg_parser::get_value<bool>(parsedArgs_, "nologo", false))
+        ShowLogo();
 
     if (!LoadMain())
         return false;

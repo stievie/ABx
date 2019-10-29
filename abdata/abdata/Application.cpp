@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Application.h"
+#include "Version.h"
+#include "Logo.h"
 #include "Database.h"
 #include "StringUtils.h"
 #include "SimpleConfigManager.h"
@@ -28,14 +30,36 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>(1);
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 
-    cli_.push_back({ "maxsize", { "-maxsize", "--maxsize-cache" }, "Maximum cache size in byte", false, true, sa::arg_parser::option_type::integer });
-    cli_.push_back({ "readonly", { "-readonly", "--readonly-mode" }, "Do not write to DB", false, false, sa::arg_parser::option_type::none });
-    cli_.push_back({ "dbdriver", { "-dbdriver", "--database-driver" }, "Database driver", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "dbhost", { "-dbhost", "--database-host" }, "Host name of database server", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "dbport", { "-dbport", "--database-port" }, "Port to connect to", false, true, sa::arg_parser::option_type::integer });
-    cli_.push_back({ "dbname", { "-dbname", "--database-name" }, "Name of database", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "dbuser", { "-dbuser", "--database-user" }, "User name for database", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database", false, true, sa::arg_parser::option_type::string });
+    std::stringstream dbDrivers;
+#ifdef USE_SQLITE
+    dbDrivers << " sqlite";
+#endif
+#ifdef USE_MYSQL
+    dbDrivers << " mysql";
+#endif
+#ifdef USE_PGSQL
+    dbDrivers << " pgsql";
+#endif
+#ifdef USE_ODBC
+    dbDrivers << " odbc";
+#endif
+
+    cli_.push_back({ "maxsize", { "-maxsize", "--maxsize-cache" }, "Maximum cache size in bytes",
+        false, true, sa::arg_parser::option_type::integer });
+    cli_.push_back({ "readonly", { "-readonly", "--readonly-mode" }, "Read only mode. Do not write to DB",
+        false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "dbdriver", { "-dbdriver", "--database-driver" }, "Database driver, possible value(s):" + dbDrivers.str(),
+        false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbhost", { "-dbhost", "--database-host" }, "Host name of database server",
+        false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbport", { "-dbport", "--database-port" }, "Port to connect to",
+        false, true, sa::arg_parser::option_type::integer });
+    cli_.push_back({ "dbname", { "-dbname", "--database-name" }, "Name of database",
+        false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbuser", { "-dbuser", "--database-user" }, "User name for database",
+        false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database",
+        false, true, sa::arg_parser::option_type::string });
 }
 
 Application::~Application()
@@ -44,6 +68,23 @@ Application::~Application()
         Stop();
     GetSubsystem<Asynch::Scheduler>()->Stop();
     GetSubsystem<Asynch::Dispatcher>()->Stop();
+}
+
+void Application::ShowLogo()
+{
+    std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
+    std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR <<
+        " (" << __DATE__ << " " << __TIME__ << ")";
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl;
+    std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
+    std::cout << std::endl;
+
+    std::cout << AB_CONSOLE_LOGO << std::endl;
+
+    std::cout << std::endl;
 }
 
 bool Application::ParseCommandLine()
@@ -68,6 +109,16 @@ bool Application::ParseCommandLine()
     DB::Database::dbPort_ = sa::arg_parser::get_value<int16_t>(parsedArgs_, "dbport", DB::Database::dbPort_);
 
     return true;
+}
+
+void Application::ShowVersion()
+{
+    std::cout << SERVER_PRODUCT_NAME << " " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << std::endl;
+    std::cout << __DATE__ << " " << __TIME__;
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl;
 }
 
 bool Application::LoadConfig()
@@ -189,6 +240,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     if (!ParseCommandLine())
         return false;
+
+    if (!sa::arg_parser::get_value<bool>(parsedArgs_, "nologo", false))
+        ShowLogo();
 
     LOG_INFO << "Reading config file...";
     if (!LoadConfig())

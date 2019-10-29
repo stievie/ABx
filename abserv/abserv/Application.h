@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Version.h"
 #include "Service.h"
 #include "ServerApp.h"
 #include "MessageClient.h"
@@ -11,7 +12,7 @@
 #endif
 #include <numeric>
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     asio::io_service ioService_;
@@ -28,6 +29,7 @@ private:
     std::shared_ptr<Debug::SceneViewer> sceneViewer_;
 #endif
     bool LoadMain();
+    void ShowLogo();
     void PrintServerInfo();
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleCreateInstanceMessage(const Net::MessageMsg& msg);
@@ -39,6 +41,7 @@ private:
     }
 protected:
     bool ParseCommandLine() override;
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

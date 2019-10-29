@@ -5,7 +5,7 @@
 #include "Acceptor.h"
 #include <AB/Entities/Service.h>
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     typedef std::pair<std::string, uint16_t> ServiceItem;
@@ -19,6 +19,9 @@ private:
     bool GetServiceCallback(AB::Entities::Service& svc);
     bool GetServiceCallbackList(AB::Entities::Service& svc);
     bool ParseServerList(const std::string& fileName);
+    void ShowLogo();
+protected:
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

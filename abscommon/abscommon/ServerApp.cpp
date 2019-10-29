@@ -24,6 +24,8 @@ ServerApp::ServerApp() :
     serverPort_(std::numeric_limits<uint16_t>::max())
 {
     cli_.push_back({ "help", { "-h", "-help", "-?" }, "Show this help", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "version", { "-v", "--version" }, "Show program version", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "nologo", { "--no-logo" }, "Do not show logo at program start", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "config", { "-conf", "--config-file" }, "Config file", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "logdir", { "-log", "--log-dir" }, "Directory to store log files", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "id", { "-id", "--server-id" }, "Server UUID", false, true, sa::arg_parser::option_type::string });
@@ -170,11 +172,16 @@ bool ServerApp::ParseCommandLine()
         ShowCommandlineError(cmdres);
         return false;
     }
-    auto val = sa::arg_parser::get_value<bool>(parsedArgs_, "help");
-    if (val.has_value() && val.value())
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "help", false))
     {
         // -help was there
         ShowHelp();
+        return false;
+    }
+    if (sa::arg_parser::get_value<bool>(parsedArgs_, "version", false))
+    {
+        // -help was there
+        ShowVersion();
         return false;
     }
 

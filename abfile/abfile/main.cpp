@@ -29,23 +29,6 @@ void signal_handler(int signal)
 }
 } // namespace
 
-static void ShowLogo()
-{
-    std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
-    std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR <<
-        " (" << __DATE__ << " " << __TIME__ << ")";
-#ifdef _DEBUG
-    std::cout << " DEBUG";
-#endif
-    std::cout << std::endl;
-    std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
-    std::cout << std::endl;
-
-    std::cout << AB_CONSOLE_LOGO << std::endl;
-
-    std::cout << std::endl;
-}
-
 #ifdef AB_WINDOWS
 static std::mutex gTermLock;
 static std::condition_variable termSignal;
@@ -65,8 +48,6 @@ int main(int argc, char** argv)
 #ifdef AB_WINDOWS
     std::signal(SIGBREAK, signal_handler);            // X clicked
 #endif
-
-    ShowLogo();
 
     {
         std::shared_ptr<Application> app = std::make_shared<Application>();

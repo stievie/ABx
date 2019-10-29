@@ -38,7 +38,7 @@ inline size_t stream_size(T& s)
     return size;
 }
 
-class Application : public ServerApp, public std::enable_shared_from_this<Application>
+class Application final : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
     bool requireAuth_;
@@ -93,8 +93,10 @@ private:
             return 0;
         return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.size());
     }
+    void ShowLogo();
 protected:
     bool ParseCommandLine() override;
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

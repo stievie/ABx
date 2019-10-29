@@ -23,7 +23,7 @@ namespace fs = std::experimental::filesystem;
 namespace fs = std::filesystem;
 #endif
 
-class Application : public ServerApp, public std::enable_shared_from_this<Application>
+class Application final : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
     int64_t startTime_;
@@ -36,6 +36,7 @@ private:
     void InitContentTypes();
     void InitRoutes();
     void PrintServerInfo();
+    void ShowLogo();
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
@@ -60,6 +61,8 @@ private:
             c.Render(response);
         };
     }
+protected:
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

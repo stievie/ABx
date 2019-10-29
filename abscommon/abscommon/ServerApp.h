@@ -37,6 +37,7 @@ protected:
     std::string GetFreeName(IO::DataClient* client);
     virtual bool ParseCommandLine();
     void ShowHelp();
+    virtual void ShowVersion() = 0;
     void ShowCommandlineError(const sa::arg_parser::result& err);
     void UpdateService(AB::Entities::Service& service);
 public:

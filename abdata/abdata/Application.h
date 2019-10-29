@@ -4,7 +4,7 @@
 #include "Server.h"
 #include "IpList.h"
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     uint32_t listenIp_;
@@ -17,8 +17,10 @@ private:
     Net::IpList whiteList_;
     bool LoadConfig();
     void PrintServerInfo();
+    void ShowLogo();
 protected:
     bool ParseCommandLine() override;
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;

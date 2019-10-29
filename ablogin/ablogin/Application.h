@@ -3,7 +3,7 @@
 #include "ServerApp.h"
 #include "Service.h"
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     asio::io_service ioService_;
@@ -11,6 +11,9 @@ private:
     bool LoadMain();
     void PrintServerInfo();
     void HeartBeatTask();
+    void ShowLogo();
+protected:
+    void ShowVersion() override;
 public:
     Application();
     ~Application() override;
