@@ -40,25 +40,22 @@ Vector3 Shape::Center() const
     return result;
 }
 
-Vector3 Shape::GetFarsetPointInDirection(const Vector3& v) const
+Vector3 Shape::GetFarsetPointInDirection(const Vector3& direction) const
 {
-    const Vector3& v0 = GetVertex(0);
-    Vector3 worldVet = v0;
-    Vector3 best(worldVet);
-    float farest = worldVet.DotProduct(v);
+    unsigned best = 0;
+    float farest = GetVertex(0).DotProduct(direction);
 
     const unsigned count = GetCount();
     for (unsigned i = 1; i < count; ++i)
     {
-        worldVet = GetVertex(i);
-        float d = worldVet.DotProduct(v);
+        float d = GetVertex(i).DotProduct(direction);
         if (farest < d)
         {
-            best = worldVet;
+            best = i;
             farest = d;
         }
     }
-    return best;
+    return GetVertex(best);
 }
 
 Shape Shape::Transformed(const Matrix4& transformation) const

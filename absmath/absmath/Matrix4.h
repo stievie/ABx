@@ -30,13 +30,27 @@ public:
         Index33,
     };
 public:
-    Matrix4() noexcept;
-    Matrix4(
+    constexpr Matrix4() noexcept :
+        m_{
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        }
+    { }
+    constexpr Matrix4(
         float v00, float v01, float v02, float v03,                             // Row 1
         float v10, float v11, float v12, float v13,                             // Row 2
         float v20, float v21, float v22, float v23,                             // Row 3
         float v30, float v31, float v32, float v33                              // Row 4
-    ) noexcept;
+    ) noexcept :
+        m_{
+            v00, v10, v20, v30,
+            v01, v11, v21, v31,
+            v02, v12, v22, v32,
+            v03, v13, v23, v33
+        }
+    {};
     Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept;
 #if defined(HAVE_DIRECTX_MATH)
     Matrix4(const XMath::XMMATRIX& matrix) noexcept;

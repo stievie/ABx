@@ -118,7 +118,7 @@ public:
     Vector3 Center() const;
     size_t VertexDataSize() const { return vertexCount_ * sizeof(float) * 3; }
     /// World Coordinates, that's why we need a transformation matrix
-    Vector3 GetFarsetPointInDirection(const Vector3& v) const;
+    Vector3 GetFarsetPointInDirection(const Vector3& direction) const;
     Shape Transformed(const Matrix4& transformation) const;
 
     /// Transformation matrix
