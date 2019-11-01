@@ -50,7 +50,7 @@ public:
             v02, v12, v22, v32,
             v03, v13, v23, v33
         }
-    {};
+    { }
     Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept;
 #if defined(HAVE_DIRECTX_MATH)
     Matrix4(const XMath::XMMATRIX& matrix) noexcept;
