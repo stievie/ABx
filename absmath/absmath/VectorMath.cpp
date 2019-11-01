@@ -7,7 +7,7 @@ namespace Math {
 
 bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc)
 {
-#if 0
+#if 1
     const Vector3 e10 = pb - pa;
     const Vector3 e20 = pc - pa;
 
@@ -98,6 +98,16 @@ PointClass GetPointClass(const Vector3& point, const Vector3& origin, const Vect
         return PointClass::PlaneBack;
 
     return PointClass::OnPlane;
+}
+
+Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p3)
+{
+    return (p1 - p2).CrossProduct(p1 - p3).Normal();
+}
+
+void ReverseOrder(std::array<Vector3, 3>& triangle)
+{
+    std::swap(triangle[0], triangle[2]);
 }
 
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <sa/Iteration.h>
 
 namespace Math {
 class BoundingBox;
@@ -19,8 +20,9 @@ class CollisionComp
 {
 private:
     Actor& owner_;
-    void ResolveOne(const Math::BoundingBox& myBB, GameObject& other);
-    void Slide(const Math::BoundingBox& myBB, GameObject& other);
+    bool isCollidingWithPlayers_;
+    Iteration CollisionCallback(const Math::BoundingBox& myBB, GameObject& other, const Math::Vector3& move, bool& updateTrans);
+    bool Slide(const Math::BoundingBox& myBB, const GameObject& other);
     void GotoSafePosition();
     static Math::Vector3 GetBodyCenter(const Math::Vector3& pos);
 public:

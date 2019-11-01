@@ -137,84 +137,128 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     if (!collisionShape_ || !other || !other->GetCollisionShape())
         return false;
 
-    switch (other->GetCollisionShape()->shapeType_)
+    bool result = false;
+    GameObject* o = const_cast<GameObject*>(other);
+    Collides(&o, 1, velocity, [&](GameObject&, const Math::Vector3& _move, bool&) -> Iteration {
+        result = true;
+        move = _move;
+        return Iteration::Break;
+    });
+    return result;
+}
+
+void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3& velocity,
+    const std::function<Iteration(GameObject& other, const Math::Vector3& move, bool& updateTrans)>& callback) const
+{
+    auto getShape = [this]() -> std::unique_ptr<Math::AbstractCollisionShape>
     {
-    case Math::ShapeType::None:
-        // Shouldn't get here because in that case GetCollisionShape() would return nullptr
-        return false;
-    case Math::ShapeType::BoundingBox:
-    {
-        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
-        BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
-        const Math::BoundingBox bbox = shape->Object().Transformed(other->transformation_.GetMatrix());
-#if defined(DEBUG_COLLISION)
-        bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
-        if (ret)
+        switch (collisionShape_->shapeType_)
         {
-            LOG_DEBUG << "ShapeTypeBoundingBox: this(" << *this <<
-                ") " << transformation_.position_ << " " <<
-                "collides with that(" << *other << ") " <<
-                bbox <<
-                std::endl;
+        case Math::ShapeType::BoundingBox:
+            using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
+            return std::make_unique<BBoxShape>(static_cast<BBoxShape&>(*collisionShape_), transformation_.GetMatrix());
+        case Math::ShapeType::Sphere:
+            using SphereShape = Math::CollisionShape<Math::Sphere>;
+            return std::make_unique<SphereShape>(static_cast<SphereShape&>(*collisionShape_), transformation_.GetMatrix());
+        case Math::ShapeType::ConvexHull:
+            using HullShape = Math::CollisionShape<Math::ConvexHull>;
+            return std::make_unique<HullShape>(static_cast<HullShape&>(*collisionShape_), transformation_.GetMatrix());
+        case Math::ShapeType::HeightMap:
+            using HeightShape = Math::CollisionShape<Math::HeightMap>;
+            return std::make_unique<HeightShape>(static_cast<HeightShape&>(*collisionShape_), transformation_.GetMatrix());
+        default:
+            assert(false);
+            return std::unique_ptr<Math::AbstractCollisionShape>();
         }
-        return ret;
-#else
-        return collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
-#endif
-    }
-    case Math::ShapeType::Sphere:
+    };
+    std::unique_ptr<Math::AbstractCollisionShape> myTransformedShape = getShape();
+    bool transformationUpdated = false;
+
+    for (size_t i = 0; i < count; ++i)
     {
-        using SphereShape = Math::CollisionShape<Math::Sphere>;
-        SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
-        const Math::Sphere sphere = shape->Object().Transformed(other->transformation_.GetMatrix());
-#if defined(DEBUG_COLLISION)
-        bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity, move);
-        if (ret)
+        GameObject* other = *others++;
+
+        if (other == this || !other->collisionShape_)
+            continue;
+
+        if (transformationUpdated)
         {
-            LOG_INFO << "ShapeTypeSphere: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
+            myTransformedShape = getShape();
+            transformationUpdated = false;
         }
-        return ret;
-#else
-        return collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity,  move);
-#endif
-    }
-    case Math::ShapeType::ConvexHull:
-    {
-        using HullShape = Math::CollisionShape<Math::ConvexHull>;
-        HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
-        const Math::ConvexHull hull = shape->Object().Transformed(other->transformation_.GetMatrix());
-#if defined(DEBUG_COLLISION)
-        bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
-        if (ret)
+
+        Math::Vector3 move;
+        switch (other->collisionShape_->shapeType_)
         {
-            LOG_INFO << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
-        }
-        return ret;
-#else
-        return collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
-#endif
-    }
-    case Math::ShapeType::HeightMap:
-    {
-        using HeightShape = Math::CollisionShape<Math::HeightMap>;
-        HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
-#if defined(DEBUG_COLLISION)
-        bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), shape->Object(), velocity, move);
-        if (ret)
+        case Math::ShapeType::BoundingBox:
         {
-            LOG_INFO << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
-        }
-        return ret;
-#else
-        return collisionShape_->Collides(transformation_.GetMatrix(), shape->Object(), velocity, move);
+            using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
+            BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
+            const Math::BoundingBox bbox = shape->Object().Transformed(other->transformation_.GetMatrix());
+            if (myTransformedShape->Collides(bbox, velocity, move))
+            {
+#if defined(DEBUG_COLLISION)
+                LOG_DEBUG << "ShapeTypeBoundingBox: this(" << *this <<
+                    ") " << transformation_.position_.ToString() << " " <<
+                    "collides with that(" << *other << ") " <<
+                    bbox.ToString() <<
+                    std::endl;
 #endif
+                if (callback(*other, move, transformationUpdated) != Iteration::Continue)
+                    goto leave_loop;
+            }
+            break;
+        }
+        case Math::ShapeType::Sphere:
+        {
+            using SphereShape = Math::CollisionShape<Math::Sphere>;
+            SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
+            const Math::Sphere sphere = shape->Object().Transformed(other->transformation_.GetMatrix());
+            if (myTransformedShape->Collides(sphere, velocity, move))
+            {
+#if defined(DEBUG_COLLISION)
+                LOG_DEBUG << "ShapeTypeSphere: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
+#endif
+                if (callback(*other, move, transformationUpdated) != Iteration::Continue)
+                    goto leave_loop;
+            }
+            break;
+        }
+        case Math::ShapeType::ConvexHull:
+        {
+            using HullShape = Math::CollisionShape<Math::ConvexHull>;
+            HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
+            const Math::ConvexHull hull = shape->Object().Transformed(other->transformation_.GetMatrix());
+            if (myTransformedShape->Collides(hull, velocity, move))
+            {
+#if defined(DEBUG_COLLISION)
+                LOG_DEBUG << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
+#endif
+                if (callback(*other, move, transformationUpdated) != Iteration::Continue)
+                    goto leave_loop;
+            }
+            break;
+        }
+        case Math::ShapeType::HeightMap:
+        {
+            using HeightShape = Math::CollisionShape<Math::HeightMap>;
+            HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
+            if (myTransformedShape->Collides(shape->Object(), velocity, move))
+            {
+#if defined(DEBUG_COLLISION)
+                LOG_DEBUG << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
+#endif
+                if (callback(*other, move, transformationUpdated) != Iteration::Continue)
+                    goto leave_loop;
+            }
+            break;
+        }
+        default:
+            assert(false);
+        }
     }
-    }
-    return false;
+
+leave_loop:;
 }
 
 const Utils::Variant& GameObject::GetVar(const std::string& name) const

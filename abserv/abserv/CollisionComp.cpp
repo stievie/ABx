@@ -15,7 +15,7 @@ namespace Components {
 constexpr float UnitScale = 1.0f / 100.0f;
 constexpr float CloseDistance = 0.005f * UnitScale;
 
-void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
+bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other)
 {
     AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
@@ -39,11 +39,10 @@ void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
         LOG_DEBUG << "going back to " << oldPos.ToString() << std::endl;
 #endif
         GotoSafePosition();
-        return;
+        return false;
     }
 
     const Math::Vector3 destinationPoint = owner_.transformation_.position_;
-    const Math::Vector3 newBasePoint = oldPos;
     if (manifold.distance >= CloseDistance)
     {
         Math::Vector3 V = mc.velocity_;
@@ -53,15 +52,13 @@ void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
     }
 
     const Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
-    const Math::Vector3 slidingPlaneNormal = (newBasePoint - manifold.intersectionPoint).Normal();
+    const Math::Vector3 slidingPlaneNormal = (oldPos - manifold.intersectionPoint).Normal();
     const Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
 
     const Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
     const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
 
-    const Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, other.transformation_.GetYRotation());
-    // Decrease velocity when sliding (moving slower)
-    const Math::Vector3 newPos = owner_.transformation_.position_ + (rot * (newVelocityVector / 2.0f));
+    const Math::Vector3 newPos = oldPos + newVelocityVector;
 
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Sliding from " << oldPos.ToString() << " to "
@@ -73,6 +70,7 @@ void CollisionComp::Slide(const Math::BoundingBox& myBB, GameObject& other)
     mc.StickToGround();
     mc.moved_ = true;
     mc.forcePosition_ = true;
+    return true;
 }
 
 void CollisionComp::GotoSafePosition()
@@ -87,54 +85,66 @@ Math::Vector3 CollisionComp::GetBodyCenter(const Math::Vector3& pos)
     return pos + GameObject::BodyOffset;
 }
 
-void CollisionComp::ResolveOne(const Math::BoundingBox& myBB, GameObject& other)
+Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB, GameObject& other, const Math::Vector3& move,
+    bool& updateTrans)
 {
-    // Actor always has a MoveComp
-    MoveComp& mc = *owner_.moveComp_;
-    Math::Vector3 move;
-    if (owner_.Collides(&other, mc.velocity_, move))
+    if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::ObjectTypePlayer))
+        return Iteration::Continue;
+
+    if ((other.collisionMask_ != 0) && (owner_.collisionMask_ != 0))
     {
-        if ((other.collisionMask_ != 0) && (owner_.collisionMask_ != 0))
+        // Don't move the character when the object actually does not collide,
+        // but we may still need the trigger stuff.
+
+        // There was no simple sliding solution, let's try the complicated one
+        if (move.Equals(Math::Vector3::Zero))
+            updateTrans = Slide(myBB, other);
+        else
         {
-            // Don't move the character when the object actually does not collide,
-            // but we may still need the trigger stuff.
-
-            // There was no simple sliding solution, let's try the complicated one
-            if (move.Equals(Math::Vector3::Zero))
-                Slide(myBB, other);
-            else
-                // There was a simple solution, e.g. an AABB can do that
-                owner_.transformation_.position_ += move;
+            // There was a simple solution, e.g. an AABB can do that
+            owner_.transformation_.position_ += move;
+            updateTrans = true;
         }
-
-        // Need to notify both, because we test collisions only for moving objects
-        // Notify ci for colliding with us
-        other.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &owner_);
-        // Notify us for colliding with ci
-        owner_.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &other);
     }
+
+    // Need to notify both, because we test collisions only for moving objects
+    // Notify ci for colliding with us
+    other.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &owner_);
+    // Notify us for colliding with ci
+    owner_.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &other);
+
+    return Iteration::Continue;
 }
 
 void CollisionComp::ResolveCollisions()
 {
     // Players don't collide with other players in outposts
-    const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
+    isCollidingWithPlayers_ = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
+    // Actor always has a MoveComp
+    MoveComp& mc = *owner_.moveComp_;
     std::vector<GameObject*> c;
     const Math::BoundingBox box = owner_.GetWorldBoundingBox();
     if (owner_.QueryObjects(c, box))
     {
-        for (auto& ci : c)
+        if (c.size() == 0)
+            return;
+        if (c.size() == 1)
         {
-            if (ci != &owner_)
+            // Just 1 in range, let's take the shortcut version
+            Math::Vector3 move;
+            if (owner_.Collides(c[0], mc.velocity_, move))
             {
-                if (!isCollidingWithPlayers && (ci->GetType() == AB::GameProtocol::ObjectTypePlayer))
-                    // In outposts players don't collide with players
-                    continue;
-                ResolveOne(box, *ci);
+                bool b = false;
+                CollisionCallback(box, *c[0], move, b);
             }
+            return;
         }
+
+        owner_.Collides(&c[0], c.size(), mc.velocity_,
+            std::bind(&CollisionComp::CollisionCallback, this, box,
+                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 }
 

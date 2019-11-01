@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Shape.h"
 #include "Vector4.h"
-#if 0
-// GCC does not find it, anyway: Premature optimisation is the root of all evil!
-#include <execution>
-#endif
+#include "VectorMath.h"
 
 namespace Math {
 
@@ -24,17 +21,36 @@ void Shape::AddTriangle(unsigned i1, unsigned i2, unsigned i3)
     indexCount_ += 3;
 }
 
+bool Shape::IsFacingOutside(const std::array<Vector3, 3>& triangle) const
+{
+    // We only support convex shapes so calculate the normal and check if
+    // it points outside.
+    const Vector3 normal = GetTriangleNormal(triangle[0], triangle[1], triangle[2]);
+    const Vector3 center = Center();
+    const float r = normal.DotProduct(center);
+    return r < 0.0f;
+}
+
+Vector3 Shape::Center() const
+{
+    Vector3 result;
+    for (unsigned i = 0; i < GetCount(); ++i)
+        result += GetVertex(i);
+    result /= static_cast<float>(GetCount());
+    return result;
+}
+
 Vector3 Shape::GetFarsetPointInDirection(const Vector3& v) const
 {
     const Vector3& v0 = GetVertex(0);
-    Vector3 worldVet = matrix_ * v0;
+    Vector3 worldVet = v0;
     Vector3 best(worldVet);
     float farest = worldVet.DotProduct(v);
 
     const unsigned count = GetCount();
     for (unsigned i = 1; i < count; ++i)
     {
-        worldVet = matrix_ * GetVertex(i);
+        worldVet = GetVertex(i);
         float d = worldVet.DotProduct(v);
         if (farest < d)
         {
@@ -47,30 +63,9 @@ Vector3 Shape::GetFarsetPointInDirection(const Vector3& v) const
 
 Shape Shape::Transformed(const Matrix4& transformation) const
 {
-    Shape result;
-    result.vertexCount_ = vertexCount_;
-    result.indexData_ = indexData_;
-    result.indexCount_ = indexCount_;
-    result.vertexData_.reserve(vertexCount_);
-
-#if 0
-    std::for_each(std::execution::par_unseq,
-        vertexData_.begin(), vertexData_.end(),
-        [&](const auto& item)
-    {
-        result.vertexData_.push_back(transformation * item);
-    });
-#endif
-
-    for (const auto& v : vertexData_)
-        result.vertexData_.push_back(transformation * v);
-
+    Shape result(*this);
+    result.matrix_ = transformation;
     return result;
-}
-
-Shape Shape::Transformed() const
-{
-    return Transformed(matrix_);
 }
 
 }

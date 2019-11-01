@@ -215,14 +215,14 @@ min 0------------4
     s.AddTriangle(3, 0, 2);
     s.AddTriangle(2, 5, 3);
     // Right
-    s.AddTriangle(4, 7, 1);
-    s.AddTriangle(1, 6, 4);
+    s.AddTriangle(1, 7, 4);
+    s.AddTriangle(4, 6, 1);
     // Up
-    s.AddTriangle(5, 1, 7);
-    s.AddTriangle(7, 3, 5);
+    s.AddTriangle(7, 1, 5);
+    s.AddTriangle(5, 3, 7);
     // Down
-    s.AddTriangle(2, 6, 4);
-    s.AddTriangle(4, 0, 2);
+    s.AddTriangle(4, 6, 2);
+    s.AddTriangle(2, 0, 4);
     // Back
     s.AddTriangle(6, 2, 5);
     s.AddTriangle(5, 1, 6);

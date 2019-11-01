@@ -106,16 +106,16 @@ Shape Sphere::GetShape() const
     }
     s.vertexCount_ = VERTEX_COUNT;
     // https://www.csee.umbc.edu/~squire/reference/polyhedra.shtml#icosahedron
-    s.AddTriangle(0, 1, 2);
+    s.AddTriangle(2, 1, 0);
     s.AddTriangle(0, 2, 3);
     s.AddTriangle(0, 3, 4);
-    s.AddTriangle(0, 4, 5);
-    s.AddTriangle(0, 5, 1);
-    s.AddTriangle(11, 6, 7);
-    s.AddTriangle(11, 7, 8);
-    s.AddTriangle(11, 8, 9);
+    s.AddTriangle(5, 4, 0);
+    s.AddTriangle(1, 5, 0);
+    s.AddTriangle(7, 6, 11);
+    s.AddTriangle(8, 7, 11);
+    s.AddTriangle(9, 8, 11);
     s.AddTriangle(11, 9, 10);
-    s.AddTriangle(11, 10, 6);
+    s.AddTriangle(6, 10, 11);
     s.AddTriangle(1, 2, 6);
     s.AddTriangle(2, 3, 7);
     s.AddTriangle(3, 4, 8);

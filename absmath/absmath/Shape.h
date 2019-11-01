@@ -74,11 +74,35 @@ public:
     void Reset();
 
     void AddTriangle(unsigned i1, unsigned i2, unsigned i3);
-    const Vector3& GetVertex(unsigned index) const
+    /// Naive check whether we have triangles or not.
+    bool IsTriangles() const
     {
         if (indexCount_)
-            return vertexData_[indexData_[index]];
-        return vertexData_[index];
+            return ((indexCount_ % 3) == 0);
+        return (vertexCount_ % 3) == 0;
+    }
+    unsigned GetTriangleCount() const
+    {
+        if (IsTriangles())
+            return GetCount() / 3;
+        return 0;
+    }
+    std::array<Vector3, 3> GetTriangle(unsigned i) const
+    {
+        std::array<Vector3, 3> result;
+        result[0] = GetVertex(i * 3);
+        result[1] = GetVertex(i * 3 + 1);
+        result[2] = GetVertex(i * 3 + 2);
+        return result;
+    }
+    /// Check if the triangle face points outside. This only depends on the order of the points.
+    bool IsFacingOutside(const std::array<Vector3, 3>& triangle) const;
+
+    Vector3 GetVertex(unsigned index) const
+    {
+        if (indexCount_)
+            return matrix_ * vertexData_[indexData_[index]];
+        return matrix_ * vertexData_[index];
     }
     unsigned GetCount() const
     {
@@ -90,11 +114,12 @@ public:
     {
         return reinterpret_cast<const float*>(&vertexData_[0]);
     }
+    /// Get center position. Note: Shape must be convex.
+    Vector3 Center() const;
     size_t VertexDataSize() const { return vertexCount_ * sizeof(float) * 3; }
     /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& v) const;
     Shape Transformed(const Matrix4& transformation) const;
-    Shape Transformed() const;
 
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;

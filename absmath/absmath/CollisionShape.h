@@ -35,14 +35,14 @@ struct CollisionManifold
     Vector3 nearestSphereIntersectionPoint;
     Vector3 intersectionPoint;
     Vector3 normal;
-    float distance{ std::numeric_limits<float>::max() };
+    float distance{ M_INFINITE };
     bool stuck{ false };
 };
 
 class AbstractCollisionShape
 {
 public:
-    AbstractCollisionShape(ShapeType type) :
+    explicit AbstractCollisionShape(ShapeType type) :
         shapeType_(type)
     {}
     virtual ~AbstractCollisionShape();
@@ -55,6 +55,11 @@ public:
     virtual bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
+
+    virtual bool Collides(const BoundingBox& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual Shape GetShape() const = 0;
     bool GetManifold(CollisionManifold&, const Matrix4& transformation) const;
@@ -79,6 +84,11 @@ public:
         AbstractCollisionShape(type),
         object_(ptr)
     { }
+    /// Create a transformed version. Requires that T has a copy constructor.
+    explicit CollisionShape(const CollisionShape<T>& other, const Matrix4& transformation) :
+        AbstractCollisionShape(other.shapeType_),
+        object_(std::make_shared<T>(other.Object().Transformed(transformation)))
+    { }
 
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override
     {
@@ -92,6 +102,13 @@ public:
         return object_->GetBoundingBox();
     }
 
+    // TODO: This is inefficient, for each check with another object it must transform the object_
+    // Better make a function that checks for the shape type and takes 2 transformed objects or somthing
+
+    /// @param transformation Our transformation matrix
+    /// @param other The other object transformed to world coordinates
+    /// @param velocity Our velocity
+    /// @param move
     bool Collides(const Matrix4& transformation, const BoundingBox& other, const Vector3& velocity, Vector3& move) const override
     {
         assert(object_);
@@ -111,6 +128,28 @@ public:
     {
         assert(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
+    }
+
+    // Object must be transformed to world coordinates
+    bool Collides(const BoundingBox& other, const Vector3& velocity, Vector3& move) const override
+    {
+        assert(object_);
+        return object_->Collides(other, velocity, move);
+    }
+    bool Collides(const Sphere& other, const Vector3& velocity, Vector3& move) const override
+    {
+        assert(object_);
+        return object_->Collides(other, velocity, move);
+    }
+    bool Collides(const HeightMap& other, const Vector3& velocity, Vector3& move) const override
+    {
+        assert(object_);
+        return object_->Collides(other, velocity, move);
+    }
+    bool Collides(const ConvexHull& other, const Vector3& velocity, Vector3& move) const override
+    {
+        assert(object_);
+        return object_->Collides(other, velocity, move);
     }
 
     const T& Object() const

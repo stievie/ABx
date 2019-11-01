@@ -173,6 +173,8 @@ public:
         return collisionShape_.get();
     }
     bool Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
+    void Collides(GameObject** others, size_t count, const Math::Vector3& velocity,
+        const std::function<Iteration(GameObject& other, const Math::Vector3& move, bool& updateTrans)>& callback) const;
     /// Get the distance to another object
     float GetDistance(const GameObject* other) const
     {

@@ -33,9 +33,9 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
     for (unsigned i = 0; i < shape.GetCount(); i += 3)
     {
         // One face world coordinates
-        const Vector3& A = shape.GetVertex(i);
-        const Vector3& B = shape.GetVertex(i + 1);
-        const Vector3& C = shape.GetVertex(i + 2);
+        const Vector3 A = shape.GetVertex(i);
+        const Vector3 B = shape.GetVertex(i + 1);
+        const Vector3 C = shape.GetVertex(i + 2);
 
         // Scale the triangle to ellipsoid space
         const Vector3 p1 = A / manifold.radius;

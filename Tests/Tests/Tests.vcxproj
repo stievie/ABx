@@ -111,6 +111,7 @@
     <ClCompile Include="Math.Matrix.cpp" />
     <ClCompile Include="Math.Quaternion.cpp" />
     <ClCompile Include="Math.Ray.cpp" />
+    <ClCompile Include="Math.Shape.cpp" />
     <ClCompile Include="Math.Sphere.cpp" />
     <ClCompile Include="Math.Transformation.cpp" />
     <ClCompile Include="Math.Utils.cpp" />
