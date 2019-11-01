@@ -25,7 +25,14 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
     float z = x + y - ac_bb;
 
 #define in(a) ((uint32_t&) a)
+#   if defined(__GNUC__)
+#       pragma GCC diagnostic push
+#       pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#   endif
     return ((in(z) & ~(in(x) | in(y)))) & 0x80000000;
+#   if defined(__GNUC__)
+#       pragma GCC diagnostic pop
+#   endif
 #undef in
 #else
     const Vector3 v1 = (point - pa).Normal();
