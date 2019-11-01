@@ -102,9 +102,7 @@ public:
         return object_->GetBoundingBox();
     }
 
-    // TODO: This is inefficient, for each check with another object it must transform the object_
-    // Better make a function that checks for the shape type and takes 2 transformed objects or somthing
-
+    // Object must be in local space
     /// @param transformation Our transformation matrix
     /// @param other The other object transformed to world coordinates
     /// @param velocity Our velocity
