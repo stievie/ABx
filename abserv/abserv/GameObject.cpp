@@ -89,7 +89,7 @@ void GameObject::UpdateRanges()
         const Math::Vector3& myPos = GetPosition();
         for (const auto& o : res)
         {
-            if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
+            if (o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
             {
                 auto so = o->shared_from_this();
                 const Math::Vector3& objectPos = o->GetPosition();
@@ -294,8 +294,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
         return false;
 
     Math::Sphere sphere(transformation_.position_, radius);
-    Math::SphereOctreeQuery query(result, sphere);
-    query.ignore_ = this;
+    Math::SphereOctreeQuery query(result, sphere, this);
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
@@ -306,8 +305,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     if (!octant_)
         return false;
 
-    Math::BoxOctreeQuery query(result, box);
-    query.ignore_ = this;
+    Math::BoxOctreeQuery query(result, box, this);
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
@@ -329,8 +327,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
 
     std::vector<Math::RayQueryResult> res;
     Math::Ray ray(position, direction);
-    Math::RayOctreeQuery query(res, ray, maxDist);
-    query.ignore_ = const_cast<GameObject*>(this);
+    Math::RayOctreeQuery query(res, ray, maxDist, this);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
     for (const auto& o : query.result_)

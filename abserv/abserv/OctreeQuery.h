@@ -13,8 +13,11 @@ namespace Math {
 
 class OctreeQuery
 {
+protected:
+    const Game::GameObject* ignore_;
 public:
-    explicit OctreeQuery(std::vector<Game::GameObject*>& result) :
+    explicit OctreeQuery(std::vector<Game::GameObject*>& result, const Game::GameObject* ignore) :
+        ignore_(ignore),
         result_(result)
     { }
     virtual ~OctreeQuery();
@@ -26,15 +29,15 @@ public:
     /// Intersection test for objects.
     virtual void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
 
-    Game::GameObject* ignore_{ nullptr };
     std::vector<Game::GameObject*>& result_;
 };
 
 class PointOctreeQuery : public OctreeQuery
 {
 public:
-    PointOctreeQuery(std::vector<Game::GameObject*>& result, const Vector3 point) :
-        OctreeQuery(result),
+    PointOctreeQuery(std::vector<Game::GameObject*>& result,
+        const Vector3 point, const Game::GameObject* ignore = nullptr) :
+        OctreeQuery(result, ignore),
         point_(point)
     { }
 
@@ -50,8 +53,9 @@ class SphereOctreeQuery : public OctreeQuery
 {
 public:
     /// Construct with sphere and query parameters.
-    SphereOctreeQuery(std::vector<Game::GameObject*>& result, const Sphere& sphere) :
-        OctreeQuery(result),
+    SphereOctreeQuery(std::vector<Game::GameObject*>& result,
+        const Sphere& sphere, const Game::GameObject* ignore = nullptr) :
+        OctreeQuery(result, ignore),
         sphere_(sphere)
     {}
 
@@ -68,8 +72,9 @@ class BoxOctreeQuery : public OctreeQuery
 {
 public:
     /// Construct with bounding box and query parameters.
-    BoxOctreeQuery(std::vector<Game::GameObject*>& result, const BoundingBox& box) :
-        OctreeQuery(result),
+    BoxOctreeQuery(std::vector<Game::GameObject*>& result,
+        const BoundingBox& box, const Game::GameObject* ignore = nullptr) :
+        OctreeQuery(result, ignore),
         box_(box)
     {}
 
@@ -152,11 +157,13 @@ class RayOctreeQuery
 public:
     /// Construct with ray and query parameters.
     RayOctreeQuery(std::vector<RayQueryResult>& result, const Ray& ray,
-        float maxDistance = Math::M_INFINITE) :
+        float maxDistance = Math::M_INFINITE,
+        const Game::GameObject* ignore = nullptr) :
         result_(result),
         ray_(ray),
-        maxDistance_(maxDistance)
-    {}
+        maxDistance_(maxDistance),
+        ignore_(ignore)
+    { }
 
     RayOctreeQuery(const RayOctreeQuery& rhs) = delete;
     RayOctreeQuery& operator =(const RayOctreeQuery& rhs) = delete;
@@ -167,7 +174,7 @@ public:
     Ray ray_;
     /// Maximum ray distance.
     float maxDistance_;
-    Game::GameObject* ignore_{ nullptr };
+    const Game::GameObject* ignore_;
 };
 
 }

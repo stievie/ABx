@@ -82,6 +82,9 @@ void Octree::RaycastSingle(RayOctreeQuery& query) const
     {
         if (object->GetSortValue() < std::min(closestHit, query.maxDistance_))
         {
+            if (object == query.ignore_)
+                continue;
+
             size_t oldSize = query.result_.size();
             object->ProcessRayQuery(query, query.result_);
             if (query.result_.size() > oldSize)

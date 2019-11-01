@@ -118,7 +118,8 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB, GameOb
 
 void CollisionComp::ResolveCollisions()
 {
-    // Players don't collide with other players in outposts
+    // Players don't collide with other players in outposts.
+    // GetType() is virtual so call it just once.
     isCollidingWithPlayers_ = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
@@ -130,17 +131,6 @@ void CollisionComp::ResolveCollisions()
     {
         if (c.size() == 0)
             return;
-        if (c.size() == 1)
-        {
-            // Just 1 in range, let's take the shortcut version
-            Math::Vector3 move;
-            if (owner_.Collides(c[0], mc.velocity_, move))
-            {
-                bool b = false;
-                CollisionCallback(box, *c[0], move, b);
-            }
-            return;
-        }
 
         owner_.Collides(&c[0], c.size(), mc.velocity_,
             std::bind(&CollisionComp::CollisionCallback, this, box,
