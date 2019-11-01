@@ -110,7 +110,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
         // The target is also in this list
         for (const auto* o : objects)
         {
-            if (o->id_ != id_ && o->id_ != target->id_)
+            if (o->id_ != target->id_)
             {
                 obstructed = true;
 #ifdef DEBUG_COLLISION

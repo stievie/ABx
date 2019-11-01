@@ -20,6 +20,8 @@ void PointOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** 
     {
         Game::GameObject* object = *start++;
 
+        if (object == ignore_)
+            continue;
         if (inside || object->GetWorldBoundingBox().IsInside(point_) != Intersection::Outside)
             result_.push_back(object);
     }
@@ -39,6 +41,8 @@ void SphereOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject**
     {
         Game::GameObject* object = *start++;
 
+        if (object == ignore_)
+            continue;
         if (inside || sphere_.IsInsideFast(object->GetWorldBoundingBox()) != Intersection::Outside)
             result_.push_back(object);
     }
@@ -57,7 +61,8 @@ void BoxOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** en
     while (start != end)
     {
         Game::GameObject* object = *start++;
-
+        if (object == ignore_)
+            continue;
         if (inside || box_.IsInsideFast(object->GetWorldBoundingBox()) != Intersection::Outside)
             result_.push_back(object);
     }

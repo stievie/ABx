@@ -14,7 +14,7 @@ namespace Math {
 class OctreeQuery
 {
 public:
-    OctreeQuery(std::vector<Game::GameObject*>& result) :
+    explicit OctreeQuery(std::vector<Game::GameObject*>& result) :
         result_(result)
     { }
     virtual ~OctreeQuery();
@@ -26,6 +26,7 @@ public:
     /// Intersection test for objects.
     virtual void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
 
+    Game::GameObject* ignore_{ nullptr };
     std::vector<Game::GameObject*>& result_;
 };
 
@@ -166,6 +167,7 @@ public:
     Ray ray_;
     /// Maximum ray distance.
     float maxDistance_;
+    Game::GameObject* ignore_{ nullptr };
 };
 
 }

@@ -295,6 +295,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
 
     Math::Sphere sphere(transformation_.position_, radius);
     Math::SphereOctreeQuery query(result, sphere);
+    query.ignore_ = this;
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
@@ -306,6 +307,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
         return false;
 
     Math::BoxOctreeQuery query(result, box);
+    query.ignore_ = this;
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
@@ -328,6 +330,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
     std::vector<Math::RayQueryResult> res;
     Math::Ray ray(position, direction);
     Math::RayOctreeQuery query(res, ray, maxDist);
+    query.ignore_ = const_cast<GameObject*>(this);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
     for (const auto& o : query.result_)
@@ -344,9 +347,6 @@ bool GameObject::IsObjectInSight(const GameObject& object) const
         for (const auto* o : result)
         {
             if (!o->occluder_)
-                continue;
-            if (o->id_ == id_)
-                // Oh, thats we
                 continue;
 
             // result is sorted by distance
@@ -389,15 +389,7 @@ std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 {
     std::vector<GameObject*> res;
     if (QueryObjects(res, radius))
-    {
-        std::vector<GameObject*> result;
-        for (const auto& o : res)
-        {
-            if (o != this)
-                result.push_back(o);
-        }
-        return result;
-    }
+        return res;
     return std::vector<GameObject*>();
 }
 
@@ -447,12 +439,12 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& directi
     std::vector<Math::RayQueryResult> res;
     const Math::Ray ray(src, dest);
     Math::RayOctreeQuery query(res, ray, src.Distance(dest));
+    query.ignore_ = this;
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
     for (const auto& o : query.result_)
     {
-        if (o.object_ != this)
-            result.push_back(o.object_);
+        result.push_back(o.object_);
     }
     return result;
 }
