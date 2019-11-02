@@ -5,12 +5,6 @@
 #include <type_traits>
 #include <tuple>
 #include <map>
-#ifdef SA_EVENTS_ASYNC
-#include <future>
-#endif
-
-// Define SA_EVENTS_ASYNC to get the Async... methods. On *NIX you must link against
-// pthread. Handle with care and know what you are doing.
 
 namespace sa {
 
@@ -137,66 +131,6 @@ public:
             return result;
         }
     }
-
-#ifdef SA_EVENTS_ASYNC
-    /// Async calls the first subscriber and returns the result
-    template <typename Signature, typename... ArgTypes>
-    auto AsyncCallOne(event_t id, ArgTypes&& ... Arguments)
-    {
-        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
-        static constexpr auto isVoid = std::is_same_v<ResultType, void>;
-
-        auto& events = GetEventsT<Signature>();
-        const auto it = events.events_.find(id);
-        if (it == events.events_.end() || (*it).second.size() == 0)
-        {
-            // Index not found, return nothing (if void), some default value
-            if constexpr(isVoid)
-                return;
-            else
-                // Should work with primitives and classes with trivial constructor
-                return std::future<ResultType>{};
-            // or even better throw an exception
-        }
-        return std::async(launch_, (*(*it).second.begin()).second, std::forward<ArgTypes>(Arguments)...);
-    }
-
-    /// Async calls all subscribers and returns a std::vector of results or void
-    template <typename Signature, typename... ArgTypes>
-    auto AsyncCallAll(event_t id, ArgTypes&& ... Arguments)
-    {
-        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
-        static constexpr auto isVoid = std::is_same_v<ResultType, void>;
-        auto& events = GetEventsT<Signature>();
-        const auto it = events.events_.find(id);
-        if (it == events.events_.end() || (*it).second.size() == 0)
-        {
-            // Index not found, return nothing (if void), some default value
-            if constexpr(isVoid)
-                return;
-            else
-                // Return an empty std::vector
-                return std::vector<std::future<ResultType>>();
-            // or even better throw an exception
-        }
-
-        if constexpr(isVoid)
-        {
-            for (const auto& fun : (*it).second)
-                std::async(launch_, fun.second, std::forward<ArgTypes>(Arguments)...);
-        }
-        else
-        {
-            std::vector<std::future<ResultType>> result;
-            result.reserve((*it).second.size());
-            for (const auto& fun : (*it).second)
-                result.push_back(std::async(launch_, fun.second, std::forward<ArgTypes>(Arguments)...));
-            return result;
-        }
-    }
-    std::launch launch_{ std::launch::deferred };
-#endif
-
 };
 
 }

@@ -4,9 +4,6 @@
 
 Ancient Greece Multiplayer Online RPG.
 
-* https://devtube.dev-wiki.de/video-channels/trill_channel/videos
-* https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
-
 ## License
 
 The source code is licensed under the MIT License.
