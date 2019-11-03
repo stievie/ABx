@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Cookie.h"
+#include <sa/StringUtils.h>
 #include "StringUtils.h"
 
 namespace HTTP {
@@ -36,7 +37,7 @@ Cookies::Cookies(const HttpsServer::Request& request)
     std::vector<std::string> parts = Utils::Split(cHeader, ";");
     for (const auto& part : parts)
     {
-        std::string trimPart = Utils::Trim(part);
+        std::string trimPart = sa::Trim(part);
         std::vector<std::string> c = Utils::Split(trimPart, "=");
         if (c.size() == 2)
         {
@@ -67,7 +68,7 @@ void Cookies::Write(SimpleWeb::CaseInsensitiveMultimap& header)
     }
     if (cookies.size() != 0)
     {
-        std::string content = Utils::CombineString<char>(cookies, "");
+        std::string content = sa::CombineString<char>(cookies, "");
         header.emplace("Set-Cookie", content);
     }
 }

@@ -5,6 +5,7 @@
 #include "Bridge.h"
 #include "SimpleConfigManager.h"
 #include <AB/Entities/ServiceList.h>
+#include <sa/StringUtils.h>
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "BanManager.h"
@@ -281,7 +282,7 @@ void Application::Run()
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
-    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
+    serv.arguments = sa::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.startTime = Utils::Tick();

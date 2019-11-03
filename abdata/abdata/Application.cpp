@@ -13,6 +13,7 @@
 #include "Subsystems.h"
 #include "ThreadPool.h"
 #include "UuidUtils.h"
+#include <sa/StringUtils.h>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -296,7 +297,7 @@ void Application::Run()
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
-    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
+    serv.arguments = sa::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.startTime = Utils::Tick();

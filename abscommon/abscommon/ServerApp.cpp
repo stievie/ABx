@@ -13,6 +13,7 @@
 #include "UuidUtils.h"
 #include "Process.hpp"
 #include <codecvt>
+#include <sa/StringUtils.h>
 
 ServerApp::ServerApp() :
     running_(false),
@@ -149,7 +150,7 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
     service.name = serverName_;
     service.file = exeFile_;
     service.path = path_;
-    service.arguments = Utils::CombineString(arguments_, std::string(" "));
+    service.arguments = sa::CombineString(arguments_, std::string(" "));
     service.type = serverType_;
 }
 

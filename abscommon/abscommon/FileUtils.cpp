@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileUtils.h"
 #include <fstream>
-#include "StringUtils.h"
+#include <sa/StringUtils.h>
 
 namespace Utils {
 
@@ -20,8 +20,8 @@ bool FileCopy(const std::string& src, const std::string& dst)
 std::string NormalizeFilename(const std::string& filename)
 {
     std::string normal_name(filename);
-    ReplaceSubstring<char>(normal_name, "\\", "/");
-    while (ReplaceSubstring<char>(normal_name, "//", "/"));
+    sa::ReplaceSubstring<char>(normal_name, "\\", "/");
+    while (sa::ReplaceSubstring<char>(normal_name, "//", "/"));
     if (normal_name.size() && normal_name[0] != '/')
         normal_name = "/" + normal_name;
     return normal_name;

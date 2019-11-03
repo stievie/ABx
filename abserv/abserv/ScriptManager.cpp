@@ -4,7 +4,7 @@
 #include "Npc.h"
 #include "DataProvider.h"
 #include "Profiler.h"
-#include "StringUtils.h"
+#include <sa/StringUtils.h>
 #include "Script.h"
 #include "Subsystems.h"
 #include "Item.h"
@@ -53,12 +53,12 @@ void RegisterLuaAll(kaguya::State& state)
         {
             // Make something like an include guard
             std::string ident(file);
-            Utils::MakeIdent(ident);
+            sa::MakeIdent(ident);
             ident = "__included_" + ident + "__";
             if (IsBool(state, ident))
                 return;
-            script->Execute(state);
-            state[ident] = true;
+            if (script->Execute(state))
+                state[ident] = true;
         }
     });
 

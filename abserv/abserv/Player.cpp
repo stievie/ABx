@@ -8,6 +8,7 @@
 #include "PlayerManager.h"
 #include "IOMail.h"
 #include "StringUtils.h"
+#include <sa/StringUtils.h>
 #include "Application.h"
 #include <AB/Entities/Character.h>
 #include "Profiler.h"
@@ -1115,7 +1116,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         return;
 
     const std::string name = arguments.substr(0, p);
-    const std::string msg = Utils::LeftTrim(arguments.substr(p + 1, std::string::npos));
+    const std::string msg = sa::LeftTrim(arguments.substr(p + 1, std::string::npos));
     std::shared_ptr<Player> target = GetSubsystem<PlayerManager>()->GetPlayerByName(name);
     if (target)
     {
