@@ -11,7 +11,7 @@ Node::Node(const NodeFactoryContext& ctx) :
 
 Node::~Node() = default;
 
-bool Node::AddChild(std::shared_ptr<Node> node)
+bool Node::AddChild(std::shared_ptr<Node>)
 {
     return false;
 }

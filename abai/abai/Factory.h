@@ -31,6 +31,7 @@ public:
             return false;
 
         factores_[key] = &factory;
+        return true;
     }
 
     bool UnregisterFactory(const Key& key)
