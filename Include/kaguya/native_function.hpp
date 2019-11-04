@@ -393,11 +393,11 @@ uint8_t compute_function_matching_score(lua_State *state, const Fn &fn) {
     const int minargcount = minArgCount(fn);
     const int maxargcount = maxArgCount(fn);
     if (minargcount <= argcount && maxargcount >= argcount) {
-      return MAX_OVERLOAD_SCORE;
+      return static_cast<uint8_t>(MAX_OVERLOAD_SCORE);
     } else {
       int diff = std::min(std::abs(argcount - minargcount),
                           std::abs(argcount - maxargcount));
-      return std::max(100 - diff, 51);
+      return static_cast<uint8_t>(std::max(100 - diff, 51));
     }
   } else if (checkArgTypes(state, fn)) {
     const int minargcount = minArgCount(fn);
@@ -407,7 +407,7 @@ uint8_t compute_function_matching_score(lua_State *state, const Fn &fn) {
     } else {
       int diff = std::min(std::abs(argcount - minargcount),
                           std::abs(argcount - maxargcount));
-      return std::max(50 - diff, 1);
+      return static_cast<uint8_t>(std::max(50 - diff, 1));
     }
   } else {
     return 0;

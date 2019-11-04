@@ -501,7 +501,6 @@ public:
   UserdataMetatable &addStaticFunction(const char *name, Fun f) {
     if (has_key(name)) {
       throw KaguyaException(std::string(name) + " is already registered.");
-      return *this;
     }
     member_map_[name] = AnyDataPusher(kaguya::function(f));
     return *this;
@@ -515,7 +514,6 @@ public:
   UserdataMetatable &addOverloadedFunctions(const char *name, Funcs... f) {
     if (has_key(name)) {
       throw KaguyaException(std::string(name) + " is already registered.");
-      return *this;
     }
 
     member_map_[name] = AnyDataPusher(overload(f...));
@@ -591,7 +589,6 @@ public:
       throw KaguyaException(std::string(name) + " is already registered. To "
                                                 "overload a function, use "
                                                 "addOverloadedFunctions");
-      return *this;
     }
     member_map_[name] = AnyDataPusher(kaguya::function(f));
     return *this;
@@ -605,7 +602,6 @@ public:
       throw KaguyaException(std::string(name) + " is already registered. To "
                                                 "overload a function, use "
                                                 "addOverloadedFunctions");
-      return *this;
     }
     member_map_[name] = AnyDataPusher(kaguya::function(f));
     return *this;
