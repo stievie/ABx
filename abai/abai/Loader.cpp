@@ -3,66 +3,121 @@
 #include "Root.h"
 #include "Condition.h"
 #include "Filter.h"
+#include <sa/StringUtils.h>
 
 namespace AI {
 
+static void LuaErrorHandler(int errCode, const char* message)
+{
+    std::cout << "Lua Error (" << errCode << "): " << message << std::endl;
+}
+
 Loader::Loader(Registry& reg) :
     registry_(reg)
+{ }
+
+bool Loader::ExecuteScript(kaguya::State& state, const std::string& file)
 {
+    const std::string filename = GetScriptFile(file);
+    if (filename.empty())
+        return false;
+    return state.dofile(filename.c_str());
 }
 
 void Loader::RegisterLua(kaguya::State& state)
 {
+    state.setErrorHandler(LuaErrorHandler);
+
+    state["include"] = kaguya::function([this, &state](const std::string& file)
+    {
+        std::string ident(file);
+        sa::MakeIdent(ident);
+        ident = "__included_" + ident + "__";
+        if (state[ident].type() == LUA_TBOOLEAN)
+            return;
+
+        if (ExecuteScript(state, file))
+            state[ident] = true;
+    });
+
     state["Node"].setClass(kaguya::UserdataMetatable<Node>()
         .addFunction("SetCondition", &Node::SetCondition)
+        .addFunction("AddNode", &Node::AddNode)
+    );
+    state["Root"].setClass(kaguya::UserdataMetatable<Root, Node>()
+    );
+
+    state["Condition"].setClass(kaguya::UserdataMetatable<Condition>()
+        .addFunction("AddCondition", &Condition::AddCondition)
+        .addFunction("SetFilter", &Condition::SetFilter)
+    );
+    state["Filter"].setClass(kaguya::UserdataMetatable<Filter>()
     );
 
     state["Loader"].setClass(kaguya::UserdataMetatable<Loader>()
-        .addFunction("AddNode", &Loader::AddNode)
-        .addFunction("CreateCondition", &Loader::CreateCondition)
-        .addFunction("CreateFilter", &Loader::CreateFilter)
+        .addOverloadedFunctions("CreateNode", &Loader::CreateNode, &Loader::CreateNodeWidthArgs)
+        .addOverloadedFunctions("CreateCondition", &Loader::CreateCondition, &Loader::CreateConditionWidthArgs)
+        .addOverloadedFunctions("CreateFilter", &Loader::CreateFilter, &Loader::CreateFilterWidthArgs)
     );
 }
 
-std::shared_ptr<Node> Loader::AddNode(Node* parent, const std::string& type)
+std::shared_ptr<Node> Loader::CreateNode(const std::string& type)
 {
-    if (!parent)
-        return std::shared_ptr<Node>();
-
-    NodeFactoryContext ctx;
-    auto node = registry_.CreateNode(type, ctx);
-    if (parent->AddChild(node))
-        return node;
-
-    return std::shared_ptr<Node>();
+    return registry_.CreateNode(type, { });
 }
 
 std::shared_ptr<Condition> Loader::CreateCondition(const std::string& type)
 {
-    ConditionFactoryContext ctx;
-    auto cond = registry_.CreateCondition(type, ctx);
-    return cond;
+    return registry_.CreateCondition(type, { });
 }
 
 std::shared_ptr<Filter> Loader::CreateFilter(const std::string& type)
 {
-    FilterFactoryContext ctx;
-    return registry_.CreateFilter(type, ctx);
+    return registry_.CreateFilter(type, { });
 }
 
-std::shared_ptr<Root> Loader::Load(const std::string& fileName)
+std::shared_ptr<Node> Loader::CreateNodeWidthArgs(const std::string& type, const ArgumentsType& arguments)
+{
+    return registry_.CreateNode(type, arguments);
+}
+
+std::shared_ptr<Condition> Loader::CreateConditionWidthArgs(const std::string& type, const ArgumentsType& arguments)
+{
+    return registry_.CreateCondition(type, arguments);
+}
+
+std::shared_ptr<Filter> Loader::CreateFilterWidthArgs(const std::string& type, const ArgumentsType& arguments)
+{
+    return registry_.CreateFilter(type, arguments);
+}
+
+std::shared_ptr<Root> Loader::LoadString(const std::string& value)
 {
     kaguya::State luaState;
-    Loader::RegisterLua(luaState);
+    RegisterLua(luaState);
     luaState["self"] = this;
-    NodeFactoryContext ctx;
-    std::shared_ptr<Root> result = std::make_shared<Root>(ctx);
-    luaState["root"] = result.get();
+    std::shared_ptr<Root> result = std::make_shared<Root>();
 
-    if (!luaState.dofile(fileName.c_str()))
-    {
+    if (!luaState.dostring(value.c_str()))
         return std::shared_ptr<Root>();
-    }
+
+    luaState["init"](result);
+
+    return result;
+}
+
+std::shared_ptr<Root> Loader::LoadFile(const std::string& fileName)
+{
+    kaguya::State luaState;
+    RegisterLua(luaState);
+    luaState["self"] = this;
+    std::shared_ptr<Root> result = std::make_shared<Root>();
+
+    if (!ExecuteScript(luaState, fileName))
+        return std::shared_ptr<Root>();
+
+    // Call the init() function which passes in the root node
+    luaState["init"](result);
 
     return result;
 }

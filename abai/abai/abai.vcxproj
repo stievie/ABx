@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -100,6 +100,7 @@
     <ClInclude Include="Decorator.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Fail.h" />
+    <ClInclude Include="FilterCondition.h" />
     <ClInclude Include="Inverter.h" />
     <ClInclude Include="LastFilter.h" />
     <ClInclude Include="Limit.h" />
@@ -123,10 +124,11 @@
   <ItemGroup>
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Agent.cpp" />
-    <ClInclude Include="Id.h" />
+    <ClInclude Include="AiTypes.h" />
     <ClCompile Include="Composite.cpp" />
     <ClCompile Include="Decorator.cpp" />
     <ClCompile Include="Fail.cpp" />
+    <ClCompile Include="FilterCondition.cpp" />
     <ClCompile Include="Inverter.cpp" />
     <ClCompile Include="LastFilter.cpp" />
     <ClCompile Include="Limit.cpp" />

@@ -3,21 +3,20 @@
 
 namespace AI {
 
-Succeed::Succeed(const NodeFactoryContext& ctx) :
-    Decorator(ctx)
-{
-}
+Succeed::Succeed(const ArgumentsType& arguments) :
+    Decorator(arguments)
+{ }
 
 Node::Status Succeed::Execute(Agent& agent, uint32_t timeElapsed)
 {
-    if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
-        return Node::Status::CanNotExecute;
+    if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
+        return ReturnStatus(Status::CanNotExecute);
 
     auto status = child_->Execute(agent, timeElapsed);
-    if (status == Node::Status::Running)
-        return Node::Status::Running;
+    if (status == Status::Running)
+        return ReturnStatus(Status::Running);
 
-    return Node::Status::Finished;
+    return ReturnStatus(Status::Finished);
 }
 
 }

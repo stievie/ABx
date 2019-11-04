@@ -4,6 +4,10 @@
 namespace AI {
 namespace Filters {
 
+LastFilter::LastFilter(const ArgumentsType& arguments) :
+    Filter(arguments)
+{ }
+
 void LastFilter::Execute(Agent& agent)
 {
     auto& entities = GetFiltered(agent);

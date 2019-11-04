@@ -15,10 +15,10 @@ class Condition;
 class TimedNode : public Node
 {
 protected:
-    uint32_t millis_;
+    uint32_t millis_{ 0 };
     uint32_t timer_{ NOT_STARTED };
 public:
-    TimedNode(const NodeFactoryContext& ctx);
+    explicit TimedNode(const ArgumentsType& arguments);
     ~TimedNode() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
     virtual Node::Status ExecuteStart(Agent& agent, uint32_t timeElapsed);

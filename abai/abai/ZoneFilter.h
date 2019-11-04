@@ -10,6 +10,7 @@ class ZoneFilter : public Filter
 {
 public:
     FILTER_FACTORY(ZoneFilter)
+    explicit ZoneFilter(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };
 

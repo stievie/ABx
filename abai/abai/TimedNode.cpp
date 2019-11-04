@@ -3,10 +3,11 @@
 
 namespace AI {
 
-TimedNode::TimedNode(const NodeFactoryContext& ctx) :
-    Node(ctx),
-    millis_(ctx.millis)
+TimedNode::TimedNode(const ArgumentsType& arguments) :
+    Node(arguments)
 {
+    if (arguments.size() != 0)
+        millis_ = atoi(arguments[0].c_str());
 }
 
 TimedNode::~TimedNode() = default;
@@ -14,7 +15,7 @@ TimedNode::~TimedNode() = default;
 Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return Status::CanNotExecute;
+        return ReturnStatus(Status::CanNotExecute);
 
     if (timer_ == NOT_STARTED)
     {
@@ -22,7 +23,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteStart(agent, timeElapsed);
         if (status == Status::Finished)
             timer_ = NOT_STARTED;
-        return status;
+        return ReturnStatus(status);
     }
 
     if (timer_ - timeElapsed > 0)
@@ -31,26 +32,26 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
             timer_ = NOT_STARTED;
-        return status;
+        return ReturnStatus(status);
     }
 
     timer_ = NOT_STARTED;
-    return ExecuteExpired(agent, timeElapsed);
+    return ReturnStatus(ExecuteExpired(agent, timeElapsed));
 }
 
 Node::Status TimedNode::ExecuteStart(Agent&, uint32_t)
 {
-    return Status::Running;
+    return ReturnStatus(Status::Running);
 }
 
 Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
 {
-    return Status::Running;
+    return ReturnStatus(Status::Running);
 }
 
 Node::Status TimedNode::ExecuteExpired(Agent&, uint32_t)
 {
-    return Status::Finished;
+    return ReturnStatus(Status::Finished);
 }
 
 }

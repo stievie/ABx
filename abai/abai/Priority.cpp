@@ -3,8 +3,8 @@
 
 namespace AI {
 
-Priority::Priority(const NodeFactoryContext& ctx) :
-    Composite(ctx)
+Priority::Priority(const ArgumentsType& arguments) :
+    Composite(arguments)
 { }
 
 Priority::~Priority() = default;
@@ -18,16 +18,16 @@ void Priority::Initialize()
 Node::Status Priority::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return Status::CanNotExecute;
+        return ReturnStatus(Status::CanNotExecute);
 
     while (it_ != children_.end())
     {
         Status status = (*it_)->Execute(agent, timeElapsed);
         if (status != Status::Failed)
-            return status;
-        it_++;
+            return ReturnStatus(status);
+        ++it_;
     }
-    return Status::Failed;
+    return ReturnStatus(Status::Failed);
 }
 
 }

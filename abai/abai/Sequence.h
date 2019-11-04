@@ -14,7 +14,7 @@ private:
     Nodes::iterator it_;
 public:
     NODE_FACTORY(Sequence)
-    explicit Sequence(const NodeFactoryContext& ctx);
+    explicit Sequence(const ArgumentsType& arguments);
     ~Sequence() override;
     void Initialize() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

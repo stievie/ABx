@@ -14,7 +14,7 @@ private:
     Nodes::iterator it_;
 public:
     NODE_FACTORY(Priority)
-    explicit Priority(const NodeFactoryContext& ctx);
+    explicit Priority(const ArgumentsType& arguments);
     ~Priority() override;
     void Initialize() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

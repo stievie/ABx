@@ -3,14 +3,14 @@
 
 namespace AI {
 
-Root::Root(const NodeFactoryContext& ctx) :
-    Decorator(ctx)
+Root::Root() :
+    Decorator(ArgumentsType{})
 {
 }
 
 Node::Status Root::Execute(Agent& agent, uint32_t timeElapsed)
 {
-    return child_->Execute(agent, timeElapsed);
+    return ReturnStatus(child_->Execute(agent, timeElapsed));
 }
 
 }

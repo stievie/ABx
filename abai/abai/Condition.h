@@ -9,35 +9,34 @@ namespace AI {
 
 class Agent;
 class Condition;
+class Filter;
 
-struct ConditionFactoryContext
-{
-    std::vector<std::shared_ptr<Condition>> conditions;
-};
+using ConditionFactory = AbstractFactory<Condition>;
 
-using ConditionFactory = AbstractFactory<Condition, ConditionFactoryContext>;
-
-#define CONDITON_FACTORY(ConditionName) \
-	class Factory : public ConditionFactory                                                  \
+#define CONDITON_FACTORY(ConditionName)                                                      \
+    class Factory : public ConditionFactory                                                  \
     {                                                                                        \
-	public:                                                                                  \
-		std::shared_ptr<Condition> Create(const ConditionFactoryContext& ctx) const override \
+    public:                                                                                  \
+        std::shared_ptr<Condition> Create(const ArgumentsType& arguments) const override     \
         {                                                                                    \
-			return std::make_shared<ConditionName>(ctx);                                     \
-		}                                                                                    \
-	};                                                                                       \
-	static const Factory& GetFactory() {                                                     \
-		static Factory sFactory;                                                             \
-		return sFactory;                                                                     \
-	}
+            return std::make_shared<ConditionName>(arguments);                               \
+        }                                                                                    \
+    };                                                                                       \
+    static const Factory& GetFactory()                                                       \
+    {                                                                                        \
+        static Factory sFactory;                                                             \
+        return sFactory;                                                                     \
+    }
 
 class Condition
 {
 public:
-    Condition();
+    explicit Condition(const ArgumentsType& arguments);
     virtual ~Condition();
 
-    virtual bool Evaluate(const Agent&) = 0;
+    virtual bool AddCondition(std::shared_ptr<Condition>);
+    virtual bool SetFilter(std::shared_ptr<Filter>);
+    virtual bool Evaluate(Agent&) = 0;
 };
 
 }

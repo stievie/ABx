@@ -9,7 +9,7 @@ class Fail : public Decorator
 {
 public:
     NODE_FACTORY(Fail)
-    explicit Fail(const NodeFactoryContext& ctx);
+    explicit Fail(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 

@@ -3,7 +3,7 @@
 
 namespace AI {
 
-Filter::Filter()
+Filter::Filter(const ArgumentsType&)
 { }
 
 Filter::~Filter() = default;

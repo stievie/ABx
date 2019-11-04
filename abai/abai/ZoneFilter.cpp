@@ -6,6 +6,10 @@
 namespace AI {
 namespace Filters {
 
+ZoneFilter::ZoneFilter(const ArgumentsType& arguments) :
+    Filter(arguments)
+{ }
+
 void ZoneFilter::Execute(Agent& agent)
 {
     Zone* zone = agent.GetZone();

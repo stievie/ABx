@@ -10,9 +10,9 @@ namespace AI {
 class Registry
 {
 protected:
-    using NodeFactoryRegistry = FactoryRegistry<std::string, Node, NodeFactoryContext>;
-    using FilterFactoryRegistry = FactoryRegistry<std::string, Filter, FilterFactoryContext>;
-    using ConditionFactoryRegistry = FactoryRegistry<std::string, Condition, ConditionFactoryContext>;
+    using NodeFactoryRegistry = FactoryRegistry<std::string, Node>;
+    using FilterFactoryRegistry = FactoryRegistry<std::string, Filter>;
+    using ConditionFactoryRegistry = FactoryRegistry<std::string, Condition>;
 
     NodeFactoryRegistry nodeFactory_;
     FilterFactoryRegistry filterFactory_;
@@ -28,9 +28,9 @@ public:
     bool RegisterConditionFactory(const std::string& name, const ConditionFactory& factory);
     bool UnregisterConditionFactory(const std::string& name);
 
-    std::shared_ptr<Node> CreateNode(const std::string& nodeType, const NodeFactoryContext& ctx);
-    std::shared_ptr<Filter> CreateFilter(const std::string& filterType, const FilterFactoryContext& ctx);
-    std::shared_ptr<Condition> CreateCondition(const std::string& conditionType, const ConditionFactoryContext& ctx);
+    std::shared_ptr<Node> CreateNode(const std::string& nodeType, const ArgumentsType& arguments);
+    std::shared_ptr<Filter> CreateFilter(const std::string& filterType, const ArgumentsType& arguments);
+    std::shared_ptr<Condition> CreateCondition(const std::string& conditionType, const ArgumentsType& arguments);
 };
 
 }

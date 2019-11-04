@@ -10,9 +10,8 @@ class Decorator : public Node
 protected:
     std::shared_ptr<Node> child_;
 public:
-    explicit Decorator(const NodeFactoryContext& ctx);
-    void Initialize() override;
-    bool AddChild(std::shared_ptr<Node> node) override;
+    explicit Decorator(const ArgumentsType& arguments);
+    bool AddNode(std::shared_ptr<Node> node) override;
 };
 
 }

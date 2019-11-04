@@ -10,8 +10,8 @@ class Composite : public Node
 protected:
     Nodes children_;
 public:
-    explicit Composite(const NodeFactoryContext& ctx);
-    bool AddChild(std::shared_ptr<Node> node) override;
+    explicit Composite(const ArgumentsType& arguments);
+    bool AddNode(std::shared_ptr<Node> node) override;
 };
 
 }

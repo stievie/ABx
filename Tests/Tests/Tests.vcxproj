@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
     </ClCompile>
@@ -66,6 +66,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -85,7 +86,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
     </ClCompile>
@@ -95,6 +96,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(OutDir)$(TargetFileName)</Command>
@@ -104,6 +106,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.Loader.cpp" />
+    <ClCompile Include="AI.Zone.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.BoundingBox.cpp" />
     <ClCompile Include="Math.Collisions.cpp" />
@@ -127,6 +131,12 @@
     <ClCompile Include="Utils.WeightedSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\abai\abai\abai.vcxproj">
+      <Project>{2bda52b4-737d-405b-b59c-af023d7122ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
+      <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
       <Project>{c7a029e7-b69c-43ff-8d8d-ba2a46283558}</Project>
     </ProjectReference>

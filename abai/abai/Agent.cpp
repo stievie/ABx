@@ -16,7 +16,7 @@ void Agent::Update(uint32_t timeElapsed)
     if (pause_)
         return;
     if (behavior_)
-        behavior_->Execute(*this, timeElapsed);
+        currentStatus_ = behavior_->Execute(*this, timeElapsed);
 }
 
 void Agent::SetBehavior(std::shared_ptr<Root> node)

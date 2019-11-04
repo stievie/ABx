@@ -3,16 +3,11 @@
 
 namespace AI {
 
-Decorator::Decorator(const NodeFactoryContext& ctx) :
-    Node(ctx)
+Decorator::Decorator(const ArgumentsType& arguments) :
+    Node(arguments)
 { }
 
-void Decorator::Initialize()
-{
-    child_->Initialize();
-}
-
-bool Decorator::AddChild(std::shared_ptr<Node> node)
+bool Decorator::AddNode(std::shared_ptr<Node> node)
 {
     if (child_)
         return false;

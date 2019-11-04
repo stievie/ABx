@@ -9,7 +9,7 @@ class Succeed : public Decorator
 {
 public:
     NODE_FACTORY(Succeed)
-    Succeed(const NodeFactoryContext& ctx);
+    explicit Succeed(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 

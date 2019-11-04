@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absma
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abai", "..\abai\abai\abai.vcxproj", "{2BDA52B4-737D-405B-B59C-AF023D7122BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelNoProfiling|x64.Build.0 = RelNoProfiling|x64
 		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
 		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Debug|x64.ActiveCfg = Debug|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Debug|x64.Build.0 = Debug|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.Build.0 = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelNoProfiling|x64.Build.0 = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

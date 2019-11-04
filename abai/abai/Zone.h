@@ -4,12 +4,13 @@
 #include <unordered_map>
 #include <memory>
 #include <sa/Iteration.h>
-#include "Id.h"
+#include "AiTypes.h"
 
 namespace AI {
 
 class Agent;
 
+// In ABx we don't use a Zone, the NPC should call Agent::Update()
 class Zone
 {
 private:

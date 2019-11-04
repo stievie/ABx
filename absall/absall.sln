@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abdata", "..\abdata\abdata\abdata.vcxproj", "{F605AEFE-531E-4EEC-AE14-A4E3E4AB8F88}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "keygen", "..\keygen\keygen\keygen.vcxproj", "{70B00A1C-15F7-4480-9531-FEE0B69BCB27}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abmatch", "..\abmatch\abmatch\abmatch.vcxproj", "{25F35F37-5672-4E45-9882-2ED215386C2A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abai", "..\abai\abai\abai.vcxproj", "{2BDA52B4-737D-405B-B59C-AF023D7122BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,14 @@ Global
 		{25F35F37-5672-4E45-9882-2ED215386C2A}.RelNoProfiling|x64.Build.0 = Release|x64
 		{25F35F37-5672-4E45-9882-2ED215386C2A}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{25F35F37-5672-4E45-9882-2ED215386C2A}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Debug|x64.ActiveCfg = Debug|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Debug|x64.Build.0 = Debug|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.Build.0 = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelNoProfiling|x64.Build.0 = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

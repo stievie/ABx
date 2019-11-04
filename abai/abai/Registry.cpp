@@ -17,7 +17,6 @@ namespace AI {
 Registry::Registry()
 {
     // Register default types
-    RegisterNodeFactory("Root", Root::GetFactory());
     RegisterNodeFactory("Priority", Priority::GetFactory());
     RegisterNodeFactory("Parallel", Parallel::GetFactory());
     RegisterNodeFactory("Sequence", Sequence::GetFactory());
@@ -67,19 +66,19 @@ bool Registry::UnregisterConditionFactory(const std::string& name)
     return conditionFactory_.UnregisterFactory(name);
 }
 
-std::shared_ptr<Node> Registry::CreateNode(const std::string& nodeType, const NodeFactoryContext& ctx)
+std::shared_ptr<Node> Registry::CreateNode(const std::string& nodeType, const ArgumentsType& arguments)
 {
-    return nodeFactory_.Create(nodeType, ctx);
+    return nodeFactory_.Create(nodeType, arguments);
 }
 
-std::shared_ptr<Filter> Registry::CreateFilter(const std::string& filterType, const FilterFactoryContext& ctx)
+std::shared_ptr<Filter> Registry::CreateFilter(const std::string& filterType, const ArgumentsType& arguments)
 {
-    return filterFactory_.Create(filterType, ctx);
+    return filterFactory_.Create(filterType, arguments);
 }
 
-std::shared_ptr<Condition> Registry::CreateCondition(const std::string& conditionType, const ConditionFactoryContext& ctx)
+std::shared_ptr<Condition> Registry::CreateCondition(const std::string& conditionType, const ArgumentsType& arguments)
 {
-    return conditionFactory_.Create(conditionType, ctx);
+    return conditionFactory_.Create(conditionType, arguments);
 }
 
 }

@@ -4,14 +4,15 @@
 
 namespace AI {
 
-Node::Node(const NodeFactoryContext& ctx) :
-    condition_(ctx.condition),
+sa::IdGenerator<Id> Node::sIds_;
+
+Node::Node(const ArgumentsType&) :
     id_(sIds_.Next())
 { }
 
 Node::~Node() = default;
 
-bool Node::AddChild(std::shared_ptr<Node>)
+bool Node::AddNode(std::shared_ptr<Node>)
 {
     return false;
 }
@@ -23,9 +24,12 @@ void Node::SetCondition(std::shared_ptr<Condition> condition)
 
 Node::Status Node::Execute(Agent& agent, uint32_t)
 {
+    if (status_ != Status::Running)
+        Initialize();
+
     if (condition_ && !condition_->Evaluate(agent))
-        return Status::CanNotExecute;
-    return Status::Finished;
+        return ReturnStatus(Status::CanNotExecute);
+    return ReturnStatus(Status::Finished);
 }
 
 }

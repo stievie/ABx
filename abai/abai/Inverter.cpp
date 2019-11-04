@@ -3,26 +3,26 @@
 
 namespace AI {
 
-Inverter::Inverter(const NodeFactoryContext& ctx) :
-    Decorator(ctx)
+Inverter::Inverter(const ArgumentsType& arguments) :
+    Decorator(arguments)
 { }
 
 Node::Status Inverter::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Decorator::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return Node::Status::CanNotExecute;
+        return ReturnStatus(Status::CanNotExecute);
 
     auto status = child_->Execute(agent, timeElapsed);
     switch (status)
     {
     case Status::CanNotExecute:
-        return Status::Finished;
+        return ReturnStatus(Status::Finished);
     case Status::Finished:
-        return Status::Failed;
+        return ReturnStatus(Status::Failed);
     case Status::Failed:
-        return Status::Finished;
+        return ReturnStatus(Status::Finished);
     default:
-        return Status::Running;
+        return ReturnStatus(Status::Running);
     }
 }
 

@@ -4,30 +4,38 @@
 namespace AI {
 namespace Conditions {
 
-FalseCondition::FalseCondition(const ConditionFactoryContext&) :
-    Condition()
-{ }
+FalseCondition::FalseCondition(const ArgumentsType& arguments) :
+    Condition(arguments)
+{
+}
 
-bool FalseCondition::Evaluate(const Agent&)
+bool FalseCondition::Evaluate(Agent&)
 {
     return false;
 }
 
-TrueCondition::TrueCondition(const ConditionFactoryContext&) :
-    Condition()
-{ }
+TrueCondition::TrueCondition(const ArgumentsType& arguments) :
+    Condition(arguments)
+{
+}
 
-bool TrueCondition::Evaluate(const Agent&)
+bool TrueCondition::Evaluate(Agent&)
 {
     return true;
 }
 
-AndCondition::AndCondition(const ConditionFactoryContext& ctx) :
-    Condition(),
-    conditions_(ctx.conditions)
-{ }
+AndCondition::AndCondition(const ArgumentsType& arguments) :
+    Condition(arguments)
+{
+}
 
-bool AndCondition::Evaluate(const Agent& agent)
+bool AndCondition::AddCondition(std::shared_ptr<Condition> condition)
+{
+    conditions_.push_back(condition);
+    return true;
+}
+
+bool AndCondition::Evaluate(Agent& agent)
 {
     for (auto& condition : conditions_)
     {
@@ -37,12 +45,18 @@ bool AndCondition::Evaluate(const Agent& agent)
     return true;
 }
 
-OrCondition::OrCondition(const ConditionFactoryContext& ctx) :
-    Condition(),
-    conditions_(ctx.conditions)
-{ }
+OrCondition::OrCondition(const ArgumentsType& arguments) :
+    Condition(arguments)
+{
+}
 
-bool OrCondition::Evaluate(const Agent& agent)
+bool OrCondition::AddCondition(std::shared_ptr<Condition> condition)
+{
+    conditions_.push_back(condition);
+    return true;
+}
+
+bool OrCondition::Evaluate(Agent& agent)
 {
     for (auto& condition : conditions_)
     {
@@ -52,12 +66,20 @@ bool OrCondition::Evaluate(const Agent& agent)
     return false;
 }
 
-NotCondition::NotCondition(const ConditionFactoryContext& ctx) :
-    Condition(),
-    condition_(ctx.conditions.front())
-{ }
+NotCondition::NotCondition(const ArgumentsType& arguments) :
+    Condition(arguments)
+{
+}
 
-bool NotCondition::Evaluate(const Agent& agent)
+bool NotCondition::AddCondition(std::shared_ptr<Condition> condition)
+{
+    if (condition)
+        return false;
+    condition_ = condition;
+    return true;
+}
+
+bool NotCondition::Evaluate(Agent& agent)
 {
     return !condition_->Evaluate(agent);
 }

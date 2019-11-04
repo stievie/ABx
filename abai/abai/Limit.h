@@ -9,11 +9,11 @@ namespace AI {
 class Limit : public Decorator
 {
 private:
-    uint32_t limit_;
+    uint32_t limit_{ 0 };
     uint32_t runs_{ 0 };
 public:
     NODE_FACTORY(Limit)
-    explicit Limit(const NodeFactoryContext& ctx);
+    explicit Limit(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 

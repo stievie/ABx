@@ -9,7 +9,7 @@ class Inverter : public Decorator
 {
 public:
     NODE_FACTORY(Inverter)
-    Inverter(const NodeFactoryContext& ctx);
+    explicit Inverter(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 

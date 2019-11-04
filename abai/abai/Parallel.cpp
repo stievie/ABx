@@ -3,8 +3,8 @@
 
 namespace AI {
 
-Parallel::Parallel(const NodeFactoryContext& ctx) :
-    Composite(ctx)
+Parallel::Parallel(const ArgumentsType& arguments) :
+    Composite(arguments)
 { }
 
 Parallel::~Parallel() = default;
@@ -12,15 +12,15 @@ Parallel::~Parallel() = default;
 Node::Status Parallel::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return Status::CanNotExecute;
+        return ReturnStatus(Status::CanNotExecute);
 
     bool totalRunning = false;
     for (auto& child : children_)
     {
-        const bool isRunning = child->Execute(agent, timeElapsed) == Node::Status::Running;
+        const bool isRunning = child->Execute(agent, timeElapsed) == Status::Running;
         totalRunning |= isRunning;
     }
-    return totalRunning ? Node::Status::Running : Node::Status::Finished;
+    return totalRunning ? ReturnStatus(Status::Running) : ReturnStatus(Status::Finished);
 }
 
 }

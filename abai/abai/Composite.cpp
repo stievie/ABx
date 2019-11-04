@@ -3,11 +3,11 @@
 
 namespace AI {
 
-Composite::Composite(const NodeFactoryContext& ctx) :
-    Node(ctx)
+Composite::Composite(const ArgumentsType& arguments) :
+    Node(arguments)
 { }
 
-bool Composite::AddChild(std::shared_ptr<Node> node)
+bool Composite::AddNode(std::shared_ptr<Node> node)
 {
     children_.push_back(node);
     return true;
