@@ -193,9 +193,9 @@ public:
     }
 
     Vector3 min_;
-    float dummyMin_;
+    float dummyMin_{ 0.0f };
     Vector3 max_;
-    float dummyMax_;
+    float dummyMax_{ 0.0f };
     Quaternion orientation_;
 };
 

@@ -9,14 +9,11 @@
 
 namespace AI {
 
-static void LuaErrorHandler(int errCode, const char* message)
-{
-    std::cout << "Lua Error (" << errCode << "): " << message << std::endl;
-}
-
 Loader::Loader(Registry& reg) :
     registry_(reg)
 { }
+
+Loader::~Loader() = default;
 
 bool Loader::ExecuteScript(kaguya::State& state, const std::string& file)
 {
@@ -28,8 +25,6 @@ bool Loader::ExecuteScript(kaguya::State& state, const std::string& file)
 
 void Loader::RegisterLua(kaguya::State& state)
 {
-    state.setErrorHandler(LuaErrorHandler);
-
     state["include"] = kaguya::function([this, &state](const std::string& file)
     {
         std::string ident(file);

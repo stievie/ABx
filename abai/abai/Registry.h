@@ -19,7 +19,7 @@ protected:
     ConditionFactoryRegistry conditionFactory_;
 public:
     Registry();
-    ~Registry() = default;
+    virtual ~Registry();
     virtual void Initialize();
 
     bool RegisterNodeFactory(const std::string& name, const NodeFactory& factory);

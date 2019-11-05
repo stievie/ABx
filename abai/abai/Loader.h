@@ -40,6 +40,7 @@ protected:
     virtual bool ExecuteScript(kaguya::State& state, const std::string& file);
 public:
     explicit Loader(Registry& reg);
+    virtual ~Loader();
     std::shared_ptr<Root> LoadFile(const std::string& fileName);
     std::shared_ptr<Root> LoadString(const std::string& value);
 };

@@ -1,9 +1,9 @@
 ../Include
 ../Include/recastnavigation
-../Include/ai
 ../Include/DirectXMath
 ../abscommon/abscommon
 ../absmath/absmath
+../abai/abai
 abserv
 abserv/actions
 abserv/conditions

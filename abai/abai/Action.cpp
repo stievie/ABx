@@ -24,6 +24,8 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
         if (agent.currentAction_ == id_)
             agent.currentAction_ = INVALID_ID;
         break;
+    default:
+        break;
     }
     return ReturnStatus(status);
 }

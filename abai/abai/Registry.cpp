@@ -17,6 +17,7 @@
 namespace AI {
 
 Registry::Registry() = default;
+Registry::~Registry() = default;
 
 void Registry::Initialize()
 {

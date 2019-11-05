@@ -2,4 +2,5 @@
 ../Include/DirectXMath
 ../absmath/absmath
 ../abscommon/abscommon
+../abai/abai
 Tests
