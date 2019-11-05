@@ -1,16 +1,22 @@
 #include "stdafx.h"
 #include "AiSelectAttackers.h"
 #include "../Npc.h"
-#include "../AiCharacter.h"
 
 namespace AI {
+namespace Filters {
 
-void SelectAttackers::filter(const ai::AIPtr& entity)
+SelectAttackers::SelectAttackers(const ArgumentsType& arguments) :
+    Filter(arguments)
 {
-    ai::FilteredEntities& entities = getFilteredEntities(entity);
+}
+
+void SelectAttackers::Execute(Agent& agent)
+{
+    auto& entities = agent.filteredAgents_;
+    entities.clear();
 
     std::map<uint32_t, float> sorting;
-    Game::Npc& chr = getNpc(entity);
+    Game::Npc& chr = GetNpc(agent);
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
         if (o->attackComp_->IsTarget(&chr))
@@ -27,4 +33,5 @@ void SelectAttackers::filter(const ai::AIPtr& entity)
     });
 }
 
+}
 }

@@ -225,9 +225,6 @@ void Game::Update()
         gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
         gameStatus_->Add<int64_t>(tick);
 
-        if (state_ == ExecutionState::Running)
-            map_->UpdateAi(delta);
-
         // First Update all objects
         {
             // FIXME: Why is this iterator becoming invalid when spawning an object (e.g. a Projectile) at the wrong time?
@@ -267,7 +264,6 @@ void Game::Update()
             // terminated, it'll be deleted in the next update.
             // Keep empty games for 10 seconds
             LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << " no players for " << noplayerTime_ << std::endl;
-            ShutdownNpcs();
             SetState(ExecutionState::Terminated);
             Lua::CallFunction(luaState_, "onStop");
         }
@@ -363,23 +359,9 @@ void Game::InternalRemoveObject(GameObject* object)
     if (it == objects_.end())
         return;
     Lua::CallFunction(luaState_, "onRemoveObject", object);
-    map_->RemoveEntity(object->id_);
     object->SetGame(std::shared_ptr<Game>());
     if (it != objects_.end())
         objects_.erase(it);
-}
-
-void Game::ShutdownNpcs()
-{
-    for (const auto& obj : objects_)
-    {
-        if (obj.second->GetType() == AB::GameProtocol::ObjectTypeNpc)
-        {
-            auto* npc = To<Npc>(obj.second.get());
-            map_->RemoveEntity(npc->id_);
-            npc->Shutdown();
-        }
-    }
 }
 
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
@@ -388,7 +370,6 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     result->SetGame(shared_from_this());
     if (!result->LoadScript(script))
         return std::shared_ptr<Npc>();
-    map_->AddEntity(result->GetAi(), result->GetGroupId());
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(

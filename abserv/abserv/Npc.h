@@ -4,8 +4,8 @@
 #include "Chat.h"
 #include "Script.h"
 #include "AiLoader.h"
-#include "AiCharacter.h"
 #include "TriggerComp.h"
+#include "AiComp.h"
 
 namespace Game {
 
@@ -23,7 +23,6 @@ private:
         FunctionOnGetQuote = 1 << 3
     };
 
-    friend class AI::AiCharacter;
     /// This NPC exists only on the server, i.e. is not spawned on the client, e.g. a trigger box.
     bool serverOnly_{ false };
     uint32_t level_{ 1 };
@@ -32,10 +31,7 @@ private:
     /// Group is like a party and they need unique IDs.
     /// If this NPC belongs to a party with players this must be the PartyID.
     uint32_t groupId_;
-    std::string behaviorTree_;
     std::shared_ptr<Script> script_;
-    std::shared_ptr<AI::AiCharacter> aiCharacter_;
-    std::shared_ptr<ai::AI> ai_;
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
     {
@@ -84,8 +80,6 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-    std::shared_ptr<ai::AI> GetAi();
-    void Shutdown();
 
     uint32_t GetLevel() const override { return level_; }
     bool CanAttack() const override { return true; }
@@ -104,8 +98,7 @@ public:
         return groupId_;
     }
     void SetGroupId(uint32_t value);
-    bool SetBehaviour(const std::string& name);
-    const std::string& GetBehaviour() const { return behaviorTree_; }
+    bool LoadBehavior(const std::string& file);
     float GetAggro(const Actor* other);
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target);
     bool IsServerOnly() const { return serverOnly_; }
@@ -117,6 +110,8 @@ public:
     bool SayQuote(ChatType channel, int index);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
+
+    std::unique_ptr<Components::AiComp> aiComp_;
 };
 
 template <>

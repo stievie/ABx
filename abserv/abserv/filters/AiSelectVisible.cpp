@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "AiSelectVisible.h"
 #include "../Npc.h"
-#include "../AiCharacter.h"
 
 namespace AI {
+namespace Filters {
 
-void SelectVisible::filter(const ai::AIPtr& entity)
+SelectVisible::SelectVisible(const ArgumentsType& arguments) :
+    Filter(arguments)
 {
-    ai::FilteredEntities& entities = getFilteredEntities(entity);
-    Game::Npc& chr = getNpc(entity);
+}
+
+void SelectVisible::Execute(Agent& agent)
+{
+    auto& entities = agent.filteredAgents_;
+    entities.clear();
+    Game::Npc& chr = GetNpc(agent);
     chr.VisitInRange(Game::Ranges::Compass, [&](const Game::GameObject& o)
     {
         entities.push_back(o.id_);
@@ -16,4 +22,5 @@ void SelectVisible::filter(const ai::AIPtr& entity)
     });
 }
 
+}
 }

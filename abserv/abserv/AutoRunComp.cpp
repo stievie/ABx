@@ -20,6 +20,13 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
     auto actor = object->GetThis<Actor>();
     if (!actor)
         return false;
+    if (auto f = following_.lock())
+    {
+        // Already following this guy
+        if (f->id_ == actor->id_)
+            return true;
+    }
+
     following_ = actor;
     maxDist_ = RANGE_TOUCH;
     if (auto f = following_.lock())

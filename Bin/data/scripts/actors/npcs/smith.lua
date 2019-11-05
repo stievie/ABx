@@ -8,7 +8,7 @@ sex = SEX_MALE     -- Male
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior
 prof2Index = 0     -- None
-behavior = "SMITH"
+behavior = "/scripts/behaviors/smith.lua"
 
 function onInit()
   return true

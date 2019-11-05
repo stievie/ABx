@@ -10,7 +10,7 @@ sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_MONK
 prof2Index = PROFESSIONINDEX_NONE
-behavior = "marianna_gani"
+behavior = "/scripts/behaviors/marianna_gani.lua"
 
 local quotes = {
   "Oh {{selected_name}}, this was close!"

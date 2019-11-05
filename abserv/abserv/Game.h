@@ -102,7 +102,6 @@ private:
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
     void InternalRemoveObject(GameObject* object);
-    void ShutdownNpcs();
     void SendSpawnObject(std::shared_ptr<GameObject> object);
     void SendLeaveObject(uint32_t objectId);
     /// Send spawn message for all existing objects

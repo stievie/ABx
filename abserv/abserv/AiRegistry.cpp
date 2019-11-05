@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "AiRegistry.h"
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4189 4100)
-#endif
 #include "actions/AiAttackSelection.h"
 #include "actions/AiDie.h"
+#include "actions/AiIdle.h"
 #include "actions/AiSay.h"
 #include "actions/AiGoHome.h"
 #include "actions/AiMoveTo.h"
@@ -24,37 +21,41 @@
 #include "filters/AiSelectLowHealth.h"
 #include "filters/AiSelectAttackers.h"
 #include "filters/AiSelectDeadAllies.h"
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 
 namespace AI {
 
+AiRegistry::AiRegistry() :
+    Registry()
+{ }
+
 void AiRegistry::Initialize()
 {
-    // https://github.com/mgerhardy/engine/blob/master/src/modules/backend/entity/ai/AIRegistry.cpp
-    registerNodeFactory("GoHome", GoHome::getFactory());
-    registerNodeFactory("AttackSelection", AttackSelection::getFactory());
-    registerNodeFactory("Die", Die::getFactory());
-    registerNodeFactory("Say", Say::getFactory());
-    registerNodeFactory("MoveTo", MoveTo::getFactory());
-    registerNodeFactory("HealSelf", HealSelf::getFactory());
-    registerNodeFactory("HealOther", HealOther::getFactory());
-    registerNodeFactory("ResurrectSelection", ResurrectSelection::getFactory());
+    Registry::Initialize();
 
-    registerConditionFactory("IsSelectionAlive", IsSelectionAlive::getFactory());
-    registerConditionFactory("IsCloseToSelection", IsCloseToSelection::getFactory());
-    registerConditionFactory("IsSelfHealthLow", IsSelfHealthLow::getFactory());
-    registerConditionFactory("SelfHealthCritical", IsSelfHealthCritical::getFactory());
-    registerConditionFactory("IsAllyHealthLow", IsAllyHealthLow::getFactory());
-    registerConditionFactory("AllyHealthCritical", IsAllyHealthCritical::getFactory());
-    registerConditionFactory("IsAttacked", IsAttacked::getFactory());
+    UnregisterFilterFactory("Zone");
+    RegisterNodeFactory("GoHome", GoHome::GetFactory());
+    RegisterNodeFactory("Die", Die::GetFactory());
+    RegisterNodeFactory("Idle", Idle::GetFactory());
+    RegisterNodeFactory("AttackSelection", AttackSelection::GetFactory());
+    RegisterNodeFactory("HealOther", HealOther::GetFactory());
+    RegisterNodeFactory("HealSelf", HealSelf::GetFactory());
+    RegisterNodeFactory("Say", Say::GetFactory());
+    RegisterNodeFactory("MoveTo", MoveTo::GetFactory());
+    RegisterNodeFactory("ResurrectSelection", ResurrectSelection::GetFactory());
 
-    registerFilterFactory("SelectVisible", SelectVisible::getFactory());
-    registerFilterFactory("SelectAggro", SelectAggro::getFactory());
-    registerFilterFactory("SelectLowHealth", SelectLowHealth::getFactory());
-    registerFilterFactory("SelectAttackers", SelectAttackers::getFactory());
-    registerFilterFactory("SelectDeadAllies", SelectDeadAllies::getFactory());
+    RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
+    RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());
+    RegisterConditionFactory("IsSelfHealthLow", Conditions::IsSelfHealthLow::GetFactory());
+    RegisterConditionFactory("SelfHealthCritical", Conditions::IsSelfHealthCritical::GetFactory());
+    RegisterConditionFactory("IsAllyHealthLow", Conditions::IsAllyHealthLow::GetFactory());
+    RegisterConditionFactory("AllyHealthCritical", Conditions::IsAllyHealthCritical::GetFactory());
+    RegisterConditionFactory("IsAttacked", Conditions::IsAttacked::GetFactory());
+
+    RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
+    RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());
+    RegisterFilterFactory("SelectLowHealth", Filters::SelectLowHealth::GetFactory());
+    RegisterFilterFactory("SelectAttackers", Filters::SelectAttackers::GetFactory());
+    RegisterFilterFactory("SelectDeadAllies", Filters::SelectDeadAllies::GetFactory());
 }
 
 }

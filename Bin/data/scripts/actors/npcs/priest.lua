@@ -10,7 +10,7 @@ sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_MONK
 prof2Index = PROFESSIONINDEX_NONE
-behavior = "PRIEST"
+behavior = "/scripts/behaviors/priest.lua"
 
 function onInit()
   local skillBar = self:GetSkillBar()

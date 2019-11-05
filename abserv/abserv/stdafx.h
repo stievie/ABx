@@ -88,15 +88,6 @@
 #   pragma warning(pop)
 #endif
 
-#if defined(_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4201 4267 4244)
-#endif
-#include <ai/SimpleAI.h>
-#if defined(_MSC_VER)
-#   pragma warning(pop)
-#endif
-
 #include <base64.h>
 #include <uuid.h>
 

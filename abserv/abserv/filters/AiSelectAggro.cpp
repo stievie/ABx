@@ -1,18 +1,23 @@
 #include "stdafx.h"
 #include "AiSelectAggro.h"
 #include "../Npc.h"
-#include "../AiCharacter.h"
 
 namespace AI {
+namespace Filters {
 
-void SelectAggro::filter(const ai::AIPtr& entity)
+SelectAggro::SelectAggro(const ArgumentsType& arguments) :
+    Filter(arguments)
+{ }
+
+void SelectAggro::Execute(Agent& agent)
 {
-    ai::FilteredEntities& entities = getFilteredEntities(entity);
-    Game::Npc& chr = getNpc(entity);
+    auto& entities = agent.filteredAgents_;
+    Game::Npc& chr = GetNpc(agent);
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
         entities.push_back(o->id_);
     });
 }
 
+}
 }

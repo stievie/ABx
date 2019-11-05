@@ -1,73 +1,18 @@
 #pragma once
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4100)
-#endif
-#include <ai/tree/loaders/lua/LUATreeLoader.h>
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 #include "Logger.h"
+#include "Loader.h"
 
 namespace AI {
 
-class AiLoader
+class AiLoader : public Loader
 {
-private:
-    ai::AIRegistry& registry_;
-    // add your own tasks and conditions here
-    ai::LUATreeLoader loader_;
+protected:
+    bool ExecuteScript(kaguya::State& state, const std::string& file) override;
 public:
-    explicit AiLoader(ai::AIRegistry& registry) :
-        registry_(registry),
-        loader_(registry)
+    explicit AiLoader(Registry& reg) :
+        Loader(reg)
     { }
-
-    ai::TreeNodePtr Load(const std::string& name)
-    {
-        return loader_.load(name);
-    }
-
-    operator ai::AIRegistry& ()
-    {
-        return registry_;
-    }
-
-    void GetTrees(std::vector<std::string>& trees) const
-    {
-        loader_.getTrees(trees);
-    }
-
-    bool Init(const std::string& filename)
-    {
-        std::ifstream btStream(filename);
-        if (!btStream)
-        {
-            LOG_ERROR << "could not load " << filename << std::endl;
-            return false;
-        }
-
-        std::stringstream buffer;
-        buffer << btStream.rdbuf();
-        const std::string& str = buffer.str();
-
-        if (!loader_.init(str))
-        {
-            LOG_ERROR << "could not load the tree: " << loader_.getError() << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    inline std::string getError() const
-    {
-        return loader_.getError();
-    }
-    void getTrees(std::vector<std::string>& trees) const
-    {
-        loader_.getTrees(trees);
-    }
 };
 
 }

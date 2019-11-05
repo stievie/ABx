@@ -1,19 +1,17 @@
 #pragma once
 
-#include <filter/IFilter.h>
+#include "Filter.h"
 
 namespace AI {
+namespace Filters {
 
-/**
- * @ingroup AI
- */
-class SelectDeadAllies : public ai::IFilter
+class SelectDeadAllies : public Filter
 {
 public:
     FILTER_FACTORY(SelectDeadAllies)
-    FILTER_CLASS(SelectDeadAllies)
-
-    void filter(const ai::AIPtr& entity) override;
+    explicit SelectDeadAllies(const ArgumentsType& arguments);
+    void Execute(Agent& agent) override;
 };
 
+}
 }

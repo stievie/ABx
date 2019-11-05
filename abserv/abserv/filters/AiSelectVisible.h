@@ -1,19 +1,17 @@
 #pragma once
 
-#include <filter/IFilter.h>
+#include "Filter.h"
 
 namespace AI {
+namespace Filters {
 
-/**
- * @ingroup AI
- */
-class SelectVisible : public ai::IFilter
+class SelectVisible : public Filter
 {
 public:
     FILTER_FACTORY(SelectVisible)
-    FILTER_CLASS(SelectVisible)
-
-    void filter(const ai::AIPtr& entity) override;
+    explicit SelectVisible(const ArgumentsType& arguments);
+    void Execute(Agent& agent) override;
 };
 
+}
 }

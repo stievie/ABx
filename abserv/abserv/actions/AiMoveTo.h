@@ -1,24 +1,19 @@
 #pragma once
 
-#include "../AiTask.h"
-#include "../Npc.h"
+#include "Action.h"
 
 namespace AI {
 
-AI_TASK(MoveTo)
+class MoveTo : public Action
 {
-    (void)deltaMillis;
-    Game::Npc& npc = chr.GetNpc();
-    const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
-    if (selection.empty())
-    {
-        return ai::TreeNodeStatus::FAILED;
-    }
-#ifdef DEBUG_AI
-    LOG_DEBUG << "Moving to " << selection[0] << std::endl;
-#endif
-    npc.FollowObject(selection[0]);
-    return ai::TreeNodeStatus::FINISHED;
-}
+protected:
+    Status DoAction(Agent& agent, uint32_t timeElapsed) override;
+public:
+    NODE_FACTORY(MoveTo)
+    explicit MoveTo(const ArgumentsType& arguments) :
+        Action(arguments)
+    { }
+};
 
 }
+

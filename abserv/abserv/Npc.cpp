@@ -5,10 +5,11 @@
 #include "MathUtils.h"
 #include "DataProvider.h"
 #include "Subsystems.h"
-#include "AiCharacter.h"
 #include "Random.h"
 #include "Party.h"
 #include <Mustache/mustache.hpp>
+#include "AiRegistry.h"
+#include "AiLoader.h"
 
 namespace Game {
 
@@ -26,8 +27,6 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
 
         .addFunction("SetLevel", &Npc::SetLevel)             // Can only be used in onInit(), i.e. before it is sent to the clients
-        .addFunction("SetBehaviour", &Npc::SetBehaviour)
-        .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
         .addFunction("SayQuote", &Npc::SayQuote)
         .addFunction("ShootAt", &Npc::ShootAt)
@@ -38,7 +37,6 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
-    aiCharacter_(nullptr),
     luaInitialized_(false)
 {
     events_.Subscribe<void(Actor*, bool&)>(EVENT_ON_ATTACK, std::bind(&Npc::OnAttack, this, std::placeholders::_1, std::placeholders::_2));
@@ -72,9 +70,7 @@ Npc::Npc() :
 }
 
 Npc::~Npc()
-{
-    Shutdown();
-}
+{ }
 
 bool Npc::LoadScript(const std::string& fileName)
 {
@@ -122,8 +118,9 @@ bool Npc::LoadScript(const std::string& fileName)
         }
     }
 
+    std::string bt;
     if (Lua::IsString(luaState_, "behavior"))
-        behaviorTree_ = (const char*)luaState_["behavior"];
+        bt = (const char*)luaState_["behavior"];
     if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
     if (Lua::IsFunction(luaState_, "onTrigger"))
@@ -137,35 +134,10 @@ bool Npc::LoadScript(const std::string& fileName)
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
     Initialize();
 
-    if (!behaviorTree_.empty())
-        SetBehaviour(behaviorTree_);
+    if (!bt.empty())
+        LoadBehavior(bt);
 
     return luaState_["onInit"]();
-}
-
-std::shared_ptr<ai::AI> Npc::GetAi()
-{
-    if (!ai_)
-        return std::shared_ptr<ai::AI>();
-
-    if (!aiCharacter_)
-    {
-        aiCharacter_ = std::make_shared<AI::AiCharacter>(*this);
-        ai_->setCharacter(aiCharacter_);
-    }
-    return ai_;
-}
-
-void Npc::Shutdown()
-{
-    if (ai_)
-    {
-        ai::Zone* zone = ai_->getZone();
-        if (zone == nullptr)
-            return;
-        zone->destroyAI(static_cast<int>(id_));
-        ai_->setZone(nullptr);
-    }
 }
 
 void Npc::SetLevel(uint32_t value)
@@ -177,13 +149,12 @@ void Npc::SetLevel(uint32_t value)
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
+    if (aiComp_)
+        aiComp_->Update(timeElapsed);
+
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
-    if (aiCharacter_)
-    {
-        const Math::Vector3& pos = transformation_.position_;
-        aiCharacter_->setPosition({ pos.x_, pos.y_, pos.z_ });
-    }
+
     Lua::CollectGarbage(luaState_);
 }
 
@@ -191,31 +162,21 @@ void Npc::SetGroupId(uint32_t value)
 {
     if (groupId_ != value)
     {
-        auto ai = GetAi();
-        if (ai)
-            GetGame()->map_->SetEntityGroupId(ai, groupId_, value);
         groupId_ = value;
     }
 }
 
-bool Npc::SetBehaviour(const std::string& name)
+bool Npc::LoadBehavior(const std::string& file)
 {
-    if (behaviorTree_.compare(name) != 0 || !ai_)
+    auto* loader = GetSubsystem<AI::AiLoader>();
+    auto root = loader->LoadFile(file);
+    if (!root)
     {
-        behaviorTree_ = name;
-        auto* loader = GetSubsystem<AI::AiLoader>();
-        const ai::TreeNodePtr& root = loader->Load(behaviorTree_);
-        if (!root)
-            return false;
-        if (ai_)
-            ai_->setBehaviour(root);
-        else
-        {
-            ai_ = std::make_shared<ai::AI>(root);
-            ai_->getAggroMgr().setReduceByValue(0.1f);
-            GetGame()->map_->AddEntity(GetAi(), groupId_);
-        }
+        aiComp_.reset();
+        return false;
     }
+    aiComp_ = std::make_unique<Components::AiComp>(*this);
+    aiComp_->GetAgent().SetBehavior(root);
     return true;
 }
 
@@ -410,14 +371,6 @@ void Npc::OnAttacked(Actor* source, DamageType type, int32_t damage, bool& canGe
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onAttacked", source, type, damage, canGetAttacked);
-    if (canGetAttacked)
-    {
-        if (aiCharacter_)
-        {
-            aiCharacter_->lastFoeAttack_ = Utils::Tick();
-            aiCharacter_->lastAttacker_ = source->GetThis<Actor>();
-        }
-    }
 }
 
 void Npc::OnGettingAttacked(Actor* source, bool& canGetAttacked)

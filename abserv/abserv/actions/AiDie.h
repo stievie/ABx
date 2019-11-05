@@ -1,18 +1,16 @@
-
 #pragma once
 
-#include "../AiTask.h"
-#include "../Npc.h"
+#include "Action.h"
 
 namespace AI {
 
-AI_TASK(Die)
+class Die : public Action
 {
-    (void)deltaMillis;
-    Game::Npc& npc = chr.GetNpc();
-    if (npc.Die())
-        return ai::TreeNodeStatus::FINISHED;
-    return ai::TreeNodeStatus::FAILED;
-}
+protected:
+    Status DoAction(Agent& agent, uint32_t timeElapsed) override;
+public:
+    NODE_FACTORY(Die)
+    explicit Die(const ArgumentsType& arguments);
+};
 
 }

@@ -22,7 +22,6 @@ private:
     std::vector<unsigned> loads_;
     int64_t lastLoadCalc_{ 0 };
     Maintenance maintenance_;
-    bool aiServer_{ false };
     std::string aiServerIp_;
     uint16_t aiServerPort_{ 0 };
 #if defined(SCENE_VIEWER)

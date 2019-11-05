@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Registry.h"
 #include "LogicConditions.h"
+#include "FilterCondition.h"
 #include "ZoneFilter.h"
+#include "FirstFilter.h"
 #include "LastFilter.h"
 #include "Inverter.h"
 #include "Succeed.h"
@@ -14,7 +16,9 @@
 
 namespace AI {
 
-Registry::Registry()
+Registry::Registry() = default;
+
+void Registry::Initialize()
 {
     // Register default types
     RegisterNodeFactory("Priority", Priority::GetFactory());
@@ -26,14 +30,16 @@ Registry::Registry()
     RegisterNodeFactory("Inverter", Inverter::GetFactory());
     RegisterNodeFactory("Limit", Limit::GetFactory());
 
-    RegisterFilterFactory("Zone", Filters::ZoneFilter::GetFactory());
-    RegisterFilterFactory("Last", Filters::LastFilter::GetFactory());
-
     RegisterConditionFactory("And", Conditions::AndCondition::GetFactory());
     RegisterConditionFactory("False", Conditions::FalseCondition::GetFactory());
     RegisterConditionFactory("Not", Conditions::NotCondition::GetFactory());
     RegisterConditionFactory("Or", Conditions::OrCondition::GetFactory());
     RegisterConditionFactory("True", Conditions::TrueCondition::GetFactory());
+    RegisterConditionFactory("Filter", Conditions::FilterCondition::GetFactory());
+
+    RegisterFilterFactory("Zone", Filters::ZoneFilter::GetFactory());
+    RegisterFilterFactory("First", Filters::FirstFilter::GetFactory());
+    RegisterFilterFactory("Last", Filters::LastFilter::GetFactory());
 }
 
 bool Registry::RegisterNodeFactory(const std::string& name, const NodeFactory& factory)

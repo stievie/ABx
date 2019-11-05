@@ -10,7 +10,7 @@ class FalseCondition : public Condition
 public:
     CONDITON_FACTORY(FalseCondition)
     explicit FalseCondition(const ArgumentsType& arguments);
-    bool Evaluate( Agent&) override;
+    bool Evaluate(Agent&) override;
 };
 
 class TrueCondition : public Condition

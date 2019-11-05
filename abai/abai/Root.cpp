@@ -10,6 +10,8 @@ Root::Root() :
 
 Node::Status Root::Execute(Agent& agent, uint32_t timeElapsed)
 {
+    if (!child_)
+        return ReturnStatus(Status::CanNotExecute);
     return ReturnStatus(child_->Execute(agent, timeElapsed));
 }
 

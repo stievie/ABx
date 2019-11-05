@@ -9,6 +9,8 @@ Composite::Composite(const ArgumentsType& arguments) :
 
 bool Composite::AddNode(std::shared_ptr<Node> node)
 {
+    if (!node)
+        return false;
     children_.push_back(node);
     return true;
 }

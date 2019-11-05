@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Registry.h"
+
 namespace AI {
 
-class AiRegistry : public ai::AIRegistry
+class AiRegistry : public Registry
 {
 public:
-    void Initialize();
+    AiRegistry();
+    void Initialize() override;
 };
 
 }

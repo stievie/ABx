@@ -4,6 +4,8 @@
 #include "Condition.h"
 #include "Filter.h"
 #include <sa/StringUtils.h>
+#include "DebugConfig.h"
+#include "Logger.h"
 
 namespace AI {
 
@@ -63,32 +65,74 @@ void Loader::RegisterLua(kaguya::State& state)
 
 std::shared_ptr<Node> Loader::CreateNode(const std::string& type)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateNode(type, { });
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateNode(type, { });
+#endif
 }
 
 std::shared_ptr<Condition> Loader::CreateCondition(const std::string& type)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateCondition(type, { });
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateCondition(type, { });
+#endif
 }
 
 std::shared_ptr<Filter> Loader::CreateFilter(const std::string& type)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateFilter(type, { });
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateFilter(type, { });
+#endif
 }
 
 std::shared_ptr<Node> Loader::CreateNodeWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateNode(type, arguments);
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateNode(type, arguments);
+#endif
 }
 
 std::shared_ptr<Condition> Loader::CreateConditionWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateCondition(type, arguments);
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateCondition(type, arguments);
+#endif
 }
 
 std::shared_ptr<Filter> Loader::CreateFilterWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
+#ifdef DEBUG_AI
+    auto res = registry_.CreateFilter(type, arguments);
+    if (!res)
+        LOG_ERROR << "type " << type << " not found" << std::endl;
+    return res;
+#else
     return registry_.CreateFilter(type, arguments);
+#endif
 }
 
 std::shared_ptr<Root> Loader::LoadString(const std::string& value)

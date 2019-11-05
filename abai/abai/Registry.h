@@ -20,6 +20,7 @@ protected:
 public:
     Registry();
     ~Registry() = default;
+    virtual void Initialize();
 
     bool RegisterNodeFactory(const std::string& name, const NodeFactory& factory);
     bool UnregisterNodeFactory(const std::string& name);

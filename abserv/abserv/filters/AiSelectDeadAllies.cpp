@@ -1,15 +1,21 @@
 #include "stdafx.h"
 #include "AiSelectDeadAllies.h"
 #include "../Npc.h"
-#include "../AiCharacter.h"
 
 namespace AI {
+namespace Filters {
 
-void SelectDeadAllies::filter(const ai::AIPtr& entity)
+SelectDeadAllies::SelectDeadAllies(const ArgumentsType& arguments) :
+    Filter(arguments)
 {
-    ai::FilteredEntities& entities = getFilteredEntities(entity);
+}
+
+void SelectDeadAllies::Execute(Agent& agent)
+{
+    auto& entities = agent.filteredAgents_;
+    entities.clear();
     std::map<uint32_t, float> sorting;
-    Game::Npc& chr = getNpc(entity);
+    Game::Npc& chr = GetNpc(agent);
     chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
         if (o->IsDead())
@@ -26,4 +32,5 @@ void SelectDeadAllies::filter(const ai::AIPtr& entity)
     });
 }
 
+}
 }

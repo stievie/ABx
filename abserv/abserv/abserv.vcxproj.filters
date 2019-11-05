@@ -25,6 +25,12 @@
     <Filter Include="Headerdateien\Conditions">
       <UniqueIdentifier>{3840a0ad-b5d6-4c79-87a9-2afcc935877a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Actions">
+      <UniqueIdentifier>{b435de08-42c4-49de-bc39-a223c3d6dd9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Conditions">
+      <UniqueIdentifier>{0d22c95d-f454-40a0-bbdb-275b91ce3491}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -195,13 +201,7 @@
     <ClInclude Include="AiLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="AiCharacter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="AiRegistry.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="AiTask.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="actions\AiDie.h">
@@ -350,6 +350,15 @@
     </ClInclude>
     <ClInclude Include="Guild.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AiComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AiAgent.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiIdle.h">
+      <Filter>Quelldateien\Actions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -512,9 +521,6 @@
     <ClCompile Include="IOScript.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="AiCharacter.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="AiRegistry.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -607,6 +613,63 @@
     </ClCompile>
     <ClCompile Include="Guild.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AiLoader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AiComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AiAgent.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiGoHome.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiDie.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiAttackSelection.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiHealOther.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiHealSelf.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiMoveTo.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiSay.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiResurrectSelection.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsAllyHealthLow.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsAttacked.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsSelfHealthLow.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsSelfHealthCritical.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsSelectionAlive.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsCloseToSelection.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiIdle.cpp">
+      <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

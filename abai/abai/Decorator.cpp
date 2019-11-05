@@ -9,6 +9,8 @@ Decorator::Decorator(const ArgumentsType& arguments) :
 
 bool Decorator::AddNode(std::shared_ptr<Node> node)
 {
+    if (!node)
+        return false;
     if (child_)
         return false;
     child_ = node;

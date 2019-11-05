@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "AiSelectLowHealth.h"
 #include "../Npc.h"
-#include "../AiCharacter.h"
 
 namespace AI {
+namespace Filters {
 
-void SelectLowHealth::filter(const ai::AIPtr& entity)
+SelectLowHealth::SelectLowHealth(const ArgumentsType& arguments) :
+    Filter(arguments)
 {
-    ai::FilteredEntities& entities = getFilteredEntities(entity);
-    Game::Npc& chr = getNpc(entity);
+}
+
+void SelectLowHealth::Execute(Agent& agent)
+{
+    auto& entities = agent.filteredAgents_;
+    entities.clear();
+    Game::Npc& chr = GetNpc(agent);
     std::map<uint32_t, std::pair<float, float>> sorting;
 
     chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
@@ -30,4 +36,5 @@ void SelectLowHealth::filter(const ai::AIPtr& entity)
     });
 }
 
+}
 }

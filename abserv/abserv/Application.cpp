@@ -89,7 +89,6 @@ Application::Application() :
 
     cli_.push_back({ "autoterm", { "-autoterm", "--auto-terminate" }, "Automatic stop application", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "temp", { "-temp", "--temporary" }, "Temporary application", false, false, sa::arg_parser::option_type::none });
-    cli_.push_back({ "aiserver", { "-aiserver", "--ai-server" }, "Start AI server", false, false, sa::arg_parser::option_type::none });
 }
 
 Application::~Application()
@@ -125,8 +124,6 @@ bool Application::ParseCommandLine()
     }
     if (sa::arg_parser::get_value<bool>(parsedArgs_, "temp", false))
         temporary_ = true;
-    if (sa::arg_parser::get_value<bool>(parsedArgs_, "aiserver", false))
-        aiServer_ = true;
     return true;
 }
 
@@ -315,7 +312,6 @@ bool Application::LoadMain()
     LOG_INFO << "Initializing RNG...";
     auto* rnd = GetSubsystem<Crypto::Random>();
     rnd->Initialize();
-    ai::randomSeed(rnd->Get<uint32_t>());
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
@@ -338,26 +334,6 @@ bool Application::LoadMain()
     LOG_INFO << "Loading behavior trees...";
     auto* aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
-    const std::string& btFile = (*config)[ConfigManager::Key::Behaviours].GetString();
-    auto* dp = GetSubsystem<IO::DataProvider>();
-    std::string absBtFile = dp->GetDataFile(btFile);
-    auto aiLoader = GetSubsystem<AI::AiLoader>();
-    if (!aiLoader->Init(absBtFile))
-    {
-        LOG_INFO << "[FAIL]" << std::endl;
-        return false;
-    }
-    // AI server
-    if (!aiServer_)
-        aiServer_ = (*config)[ConfigManager::Key::AIServer].GetBool();
-    if (aiServer_)
-    {
-        aiServerIp_ = (*config)[ConfigManager::Key::AIServerIp].GetString();
-        aiServerPort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::AIServerPort].GetInt());
-        ai::Server* server = new ai::Server(*aiReg, static_cast<short>(aiServerPort_), aiServerIp_);
-        Subsystems::Instance.RegisterSubsystem(server);
-    }
-
     LOG_INFO << "[done]" << std::endl;
 
     // Data server
@@ -478,10 +454,6 @@ void Application::PrintServerInfo()
         ports.pop_front();
     }
     LOG_INFO << std::endl;
-    if (aiServer_)
-        LOG_INFO << "  AI Server listening: " << aiServerIp_ << ":" << aiServerPort_ << std::endl;
-    else
-        LOG_INFO << "  AI Server: (not running)" << std::endl;
     LOG_INFO << "  Auto terminate: " << autoTerminate_ << std::endl;
     LOG_INFO << "  Temporary: " << temporary_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -537,11 +509,6 @@ void Application::Run()
     SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
-    if (aiServer_)
-    {
-        ai::Server* aiServ = GetSubsystem<ai::Server>();
-        aiServ->start();
-    }
     serviceManager_->Run();
     ioService_.run();
 }

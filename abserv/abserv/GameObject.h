@@ -108,7 +108,6 @@ private:
     std::vector<GameObject*> _LuaGetObjectsInside();
     bool _LuaIsObjectInSight(const GameObject* object) const;
 protected:
-    std::mutex lock_;
     std::string name_;
     Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
@@ -209,8 +208,6 @@ public:
     template<typename Func>
     void VisitInRange(Ranges range, const Func& func)
     {
-        // May be called from the AI thread so lock it
-        std::lock_guard<std::mutex> lock(lock_);
         for (const auto& o : ranges_[range])
         {
             if (auto so = o.lock())

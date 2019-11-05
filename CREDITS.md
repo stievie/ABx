@@ -26,7 +26,6 @@ Creator: sa 2017-2019
 * ginger Template Engine https://github.com/melpon/ginger
 * https://github.com/nbsdx/SimpleJSON
 * https://github.com/BramvdKroef/clessc
-* https://github.com/mgerhardy/simpleai
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server
 * DirectXMath https://github.com/Microsoft/DirectXMath
 

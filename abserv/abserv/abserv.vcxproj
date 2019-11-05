@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -118,7 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -173,7 +173,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -196,13 +196,14 @@
     <ClInclude Include="actions\AiGoHome.h" />
     <ClInclude Include="actions\AiHealOther.h" />
     <ClInclude Include="actions\AiHealSelf.h" />
+    <ClInclude Include="actions\AiIdle.h" />
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
     <ClInclude Include="actions\AiSay.h" />
-    <ClInclude Include="AiCharacter.h" />
+    <ClInclude Include="AiAgent.h" />
+    <ClInclude Include="AiComp.h" />
     <ClInclude Include="AiLoader.h" />
     <ClInclude Include="AiRegistry.h" />
-    <ClInclude Include="AiTask.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="AreaOfEffect.h" />
     <ClInclude Include="Asset.h" />
@@ -301,7 +302,18 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AiCharacter.cpp" />
+    <ClCompile Include="actions\AiAttackSelection.cpp" />
+    <ClCompile Include="actions\AiDie.cpp" />
+    <ClCompile Include="actions\AiGoHome.cpp" />
+    <ClCompile Include="actions\AiHealOther.cpp" />
+    <ClCompile Include="actions\AiHealSelf.cpp" />
+    <ClCompile Include="actions\AiIdle.cpp" />
+    <ClCompile Include="actions\AiMoveTo.cpp" />
+    <ClCompile Include="actions\AiResurrectSelection.cpp" />
+    <ClCompile Include="actions\AiSay.cpp" />
+    <ClCompile Include="AiAgent.cpp" />
+    <ClCompile Include="AiComp.cpp" />
+    <ClCompile Include="AiLoader.cpp" />
     <ClCompile Include="AiRegistry.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="AreaOfEffect.cpp" />
@@ -310,6 +322,13 @@
     <ClCompile Include="AutoRunComp.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
+    <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp" />
+    <ClCompile Include="conditions\AiIsAllyHealthLow.cpp" />
+    <ClCompile Include="conditions\AiIsAttacked.cpp" />
+    <ClCompile Include="conditions\AiIsCloseToSelection.cpp" />
+    <ClCompile Include="conditions\AiIsSelectionAlive.cpp" />
+    <ClCompile Include="conditions\AiIsSelfHealthCritical.cpp" />
+    <ClCompile Include="conditions\AiIsSelfHealthLow.cpp" />
     <ClCompile Include="CrowdAgent.cpp" />
     <ClCompile Include="CrowdManager.cpp" />
     <ClCompile Include="DamageComp.cpp" />
@@ -393,6 +412,9 @@
     <ClCompile Include="TriggerComp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\abai\abai\abai.vcxproj">
+      <Project>{2bda52b4-737d-405b-b59c-af023d7122ba}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
       <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
     </ProjectReference>
