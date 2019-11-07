@@ -148,9 +148,9 @@ void Npc::SetLevel(uint32_t value)
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    Actor::Update(timeElapsed, message);
     if (aiComp_)
         aiComp_->Update(timeElapsed);
+    Actor::Update(timeElapsed, message);
 
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);

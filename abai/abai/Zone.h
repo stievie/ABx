@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <memory>
 #include <sa/Iteration.h>
-#include "AiTypes.h"
+#include "AiDefines.h"
 
 namespace AI {
 

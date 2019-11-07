@@ -4,8 +4,10 @@
 #include "Condition.h"
 #include "Filter.h"
 #include <sa/StringUtils.h>
-#include "DebugConfig.h"
+
+#ifdef DEBUG_AI
 #include "Logger.h"
+#endif
 
 namespace AI {
 
@@ -40,6 +42,7 @@ void Loader::RegisterLua(kaguya::State& state)
     state["Node"].setClass(kaguya::UserdataMetatable<Node>()
         .addFunction("SetCondition", &Node::SetCondition)
         .addFunction("AddNode", &Node::AddNode)
+        .addFunction("SetName", &Node::SetName)
     );
     state["Root"].setClass(kaguya::UserdataMetatable<Root, Node>()
     );
@@ -47,8 +50,10 @@ void Loader::RegisterLua(kaguya::State& state)
     state["Condition"].setClass(kaguya::UserdataMetatable<Condition>()
         .addFunction("AddCondition", &Condition::AddCondition)
         .addFunction("SetFilter", &Condition::SetFilter)
+        .addFunction("SetName", &Condition::SetName)
     );
     state["Filter"].setClass(kaguya::UserdataMetatable<Filter>()
+        .addFunction("SetName", &Filter::SetName)
     );
 
     state["Loader"].setClass(kaguya::UserdataMetatable<Loader>()

@@ -12,11 +12,12 @@ class Priority : public Composite
 {
 private:
     Nodes::iterator it_;
+protected:
+    void Initialize() override;
 public:
     NODE_FACTORY(Priority)
     explicit Priority(const ArgumentsType& arguments);
     ~Priority() override;
-    void Initialize() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 

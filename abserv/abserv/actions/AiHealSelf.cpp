@@ -5,6 +5,11 @@
 #include "../Game.h"
 
 namespace AI {
+namespace Actions {
+
+HealSelf::HealSelf(const ArgumentsType& arguments) :
+    Action(arguments)
+{ }
 
 Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
 {
@@ -25,10 +30,6 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
     if (currSkill)
         // Some other skill currently using
         return Status::Failed;
-    // Possible heal targets
-    const auto& selection = agent.filteredAgents_;
-    if (selection.empty())
-        return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetSelf);
     if (skillIndex == -1)
@@ -45,9 +46,5 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
     return Status::Running;
 }
 
-HealSelf::HealSelf(const ArgumentsType& arguments) :
-    Action(arguments)
-{
 }
-
 }

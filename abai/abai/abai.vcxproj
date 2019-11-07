@@ -125,7 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Agent.cpp" />
-    <ClInclude Include="AiTypes.h" />
+    <ClInclude Include="AiDefines.h" />
     <ClCompile Include="Composite.cpp" />
     <ClCompile Include="Decorator.cpp" />
     <ClCompile Include="Fail.cpp" />

@@ -15,18 +15,18 @@ void Agent::Update(uint32_t timeElapsed)
 {
     if (pause_)
         return;
-    if (behavior_)
-        currentStatus_ = behavior_->Execute(*this, timeElapsed);
+    if (root_)
+        currentStatus_ = root_->Execute(*this, timeElapsed);
 }
 
 void Agent::SetBehavior(std::shared_ptr<Root> node)
 {
-    behavior_ = node;
+    root_ = node;
 }
 
 std::shared_ptr<Root> Agent::GetBehavior() const
 {
-    return behavior_;
+    return root_;
 }
 
 Zone* Agent::GetZone() const

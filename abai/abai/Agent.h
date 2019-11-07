@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "AiTypes.h"
+#include "AiDefines.h"
 #include "Node.h"
 
 namespace AI {
@@ -22,7 +22,7 @@ private:
     Zone* zone_{ nullptr };
 protected:
     Node::Status currentStatus_{ Node::Status::Unknown };
-    std::shared_ptr<Root> behavior_;
+    std::shared_ptr<Root> root_;
 public:
     Agent(Id id);
     virtual ~Agent();

@@ -131,5 +131,6 @@ namespace AI {
 /// The AI will consider healing if HP is bellow this health/max health ratio
 constexpr float LOW_HP_THRESHOLD = 0.8f;
 constexpr int CRITICAL_HP_THRESHOLD = 50;
+constexpr float LOW_ENERGY_THRESHOLD = 1.0f;
 
 }

@@ -15,7 +15,7 @@
 #       define DEBUG_PROTOCOL
 //#       define DEBUG_OCTREE
 //#       define DEBUG_COLLISION
-//#       define DEBUG_AI
+#       define DEBUG_AI
 #   endif
 #else
 #endif

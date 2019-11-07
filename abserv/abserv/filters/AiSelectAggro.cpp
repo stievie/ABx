@@ -12,6 +12,7 @@ SelectAggro::SelectAggro(const ArgumentsType& arguments) :
 void SelectAggro::Execute(Agent& agent)
 {
     auto& entities = agent.filteredAgents_;
+    entities.clear();
     Game::Npc& chr = GetNpc(agent);
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {

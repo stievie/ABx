@@ -3,6 +3,7 @@
 #include "Action.h"
 
 namespace AI {
+namespace Actions {
 
 class Say : public Action
 {
@@ -15,4 +16,5 @@ public:
     { }
 };
 
+}
 }

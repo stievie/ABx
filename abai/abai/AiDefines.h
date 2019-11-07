@@ -5,6 +5,9 @@
 #include <vector>
 #include <string>
 
+#define ABAI_STRINGIFY_INTERNAL(x) #x
+#define ABAI_STRINGIFY(x) ABAI_STRINGIFY_INTERNAL(x)
+
 namespace AI {
 
 typedef uint32_t Id;

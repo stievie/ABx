@@ -4,6 +4,7 @@
 #include "../AiAgent.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status GoHome::DoAction(Agent& agent, uint32_t)
 {
@@ -21,4 +22,5 @@ GoHome::GoHome(const ArgumentsType& arguments) :
 {
 }
 
+}
 }

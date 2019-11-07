@@ -4,6 +4,7 @@
 #include "../AiAgent.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 {
@@ -39,4 +40,5 @@ AttackSelection::AttackSelection(const ArgumentsType& arguments) :
 {
 }
 
+}
 }

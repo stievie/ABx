@@ -3,6 +3,7 @@
 #include "TimedNode.h"
 
 namespace AI {
+namespace Actions {
 
 class Idle : public TimedNode
 {
@@ -14,4 +15,5 @@ public:
     Node::Status ExecuteStart(Agent& agent, uint32_t timeElapsed) override;
 };
 
+}
 }

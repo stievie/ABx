@@ -333,7 +333,7 @@ void Actor::_LuaHeadTo(const Math::STLVector3& pos)
 
 Math::STLVector3 Actor::_LuaGetHomePos()
 {
-    return (Math::STLVector3)homePos_;
+    return static_cast<Math::STLVector3>(homePos_);
 }
 
 void Actor::_LuaFollowObject(GameObject* object)

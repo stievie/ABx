@@ -3,7 +3,6 @@
 #include "DataProvider.h"
 #include "Subsystems.h"
 #include "Script.h"
-#include "Logger.h"
 
 namespace AI {
 
@@ -14,7 +13,7 @@ static void LuaErrorHandler(int errCode, const char* message)
 
 bool AiLoader::ExecuteScript(kaguya::State& state, const std::string& file)
 {
-    // abai does not set an error handler
+    // The AI library does not set an error handler
     state.setErrorHandler(LuaErrorHandler);
     auto* dp = GetSubsystem<IO::DataProvider>();
     auto script = dp->GetAsset<Game::Script>(file);

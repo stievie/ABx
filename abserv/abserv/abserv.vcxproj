@@ -193,6 +193,7 @@
   <ItemGroup>
     <ClInclude Include="actions\AiAttackSelection.h" />
     <ClInclude Include="actions\AiDie.h" />
+    <ClInclude Include="actions\AiGainEnergy.h" />
     <ClInclude Include="actions\AiGoHome.h" />
     <ClInclude Include="actions\AiHealOther.h" />
     <ClInclude Include="actions\AiHealSelf.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="conditions\AiIsAllyHealthLow.h" />
     <ClInclude Include="conditions\AiIsAttacked.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
+    <ClInclude Include="conditions\AiIsEnergyLow.h" />
     <ClInclude Include="conditions\AiIsSelfHealthCritical.h" />
     <ClInclude Include="conditions\AiIsSelfHealthLow.h" />
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
@@ -231,8 +233,10 @@
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectsComp.h" />
     <ClInclude Include="filters\AiSelectAttackers.h" />
+    <ClInclude Include="filters\AiSelectAttackTarget.h" />
     <ClInclude Include="filters\AiSelectDeadAllies.h" />
     <ClInclude Include="filters\AiSelectLowHealth.h" />
+    <ClInclude Include="filters\AiSelectRandom.h" />
     <ClInclude Include="Guild.h" />
     <ClInclude Include="GuildManager.h" />
     <ClInclude Include="InventoryComp.h" />
@@ -304,6 +308,7 @@
   <ItemGroup>
     <ClCompile Include="actions\AiAttackSelection.cpp" />
     <ClCompile Include="actions\AiDie.cpp" />
+    <ClCompile Include="actions\AiGainEnergy.cpp" />
     <ClCompile Include="actions\AiGoHome.cpp" />
     <ClCompile Include="actions\AiHealOther.cpp" />
     <ClCompile Include="actions\AiHealSelf.cpp" />
@@ -326,6 +331,7 @@
     <ClCompile Include="conditions\AiIsAllyHealthLow.cpp" />
     <ClCompile Include="conditions\AiIsAttacked.cpp" />
     <ClCompile Include="conditions\AiIsCloseToSelection.cpp" />
+    <ClCompile Include="conditions\AiIsEnergyLow.cpp" />
     <ClCompile Include="conditions\AiIsSelectionAlive.cpp" />
     <ClCompile Include="conditions\AiIsSelfHealthCritical.cpp" />
     <ClCompile Include="conditions\AiIsSelfHealthLow.cpp" />
@@ -339,8 +345,10 @@
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EffectsComp.cpp" />
     <ClCompile Include="filters\AiSelectAttackers.cpp" />
+    <ClCompile Include="filters\AiSelectAttackTarget.cpp" />
     <ClCompile Include="filters\AiSelectDeadAllies.cpp" />
     <ClCompile Include="filters\AiSelectLowHealth.cpp" />
+    <ClCompile Include="filters\AiSelectRandom.cpp" />
     <ClCompile Include="Guild.cpp" />
     <ClCompile Include="GuildManager.cpp" />
     <ClCompile Include="InventoryComp.cpp" />

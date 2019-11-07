@@ -360,6 +360,18 @@
     <ClInclude Include="actions\AiIdle.h">
       <Filter>Quelldateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="filters\AiSelectRandom.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsEnergyLow.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiGainEnergy.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectAttackTarget.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -670,6 +682,18 @@
     </ClCompile>
     <ClCompile Include="actions\AiIdle.cpp">
       <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectRandom.cpp">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsEnergyLow.cpp">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiGainEnergy.cpp">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectAttackTarget.cpp">
+      <Filter>Headerdateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

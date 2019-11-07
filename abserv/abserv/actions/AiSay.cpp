@@ -4,6 +4,7 @@
 #include "../AiAgent.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status Say::DoAction(Agent& agent, uint32_t)
 {
@@ -12,4 +13,5 @@ Node::Status Say::DoAction(Agent& agent, uint32_t)
     return Status::Failed;
 }
 
+}
 }

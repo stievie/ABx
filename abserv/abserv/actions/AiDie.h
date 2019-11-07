@@ -3,6 +3,7 @@
 #include "Action.h"
 
 namespace AI {
+namespace Actions {
 
 class Die : public Action
 {
@@ -13,4 +14,5 @@ public:
     explicit Die(const ArgumentsType& arguments);
 };
 
+}
 }

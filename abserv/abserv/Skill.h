@@ -11,13 +11,14 @@ class Actor;
 
 enum SkillEffect : uint32_t
 {
-    SkillEffectNone      = 0,
-    SkillEffectResurrect = 1 << 1,
-    SkillEffectHeal      = 1 << 2,
-    SkillEffectProtect   = 1 << 3,
-    SkillEffectDamage    = 1 << 4,
-    SkillEffectSpeed     = 1 << 5,
-    SkillEffectInterrupt = 1 << 6,
+    SkillEffectNone       = 0,
+    SkillEffectResurrect  = 1 << 1,
+    SkillEffectHeal       = 1 << 2,
+    SkillEffectProtect    = 1 << 3,
+    SkillEffectDamage     = 1 << 4,
+    SkillEffectSpeed      = 1 << 5,
+    SkillEffectInterrupt  = 1 << 6,
+    SkillEffectGainEnergy = 1 << 7,
 };
 
 enum SkillTarget : uint32_t

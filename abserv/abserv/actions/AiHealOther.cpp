@@ -5,6 +5,7 @@
 #include "../Game.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status HealOther::DoAction(Agent& agent, uint32_t)
 {
@@ -83,4 +84,5 @@ HealOther::HealOther(const ArgumentsType& arguments) :
 {
 }
 
+}
 }

@@ -5,6 +5,7 @@
 #include "../Game.h"
 
 namespace AI {
+namespace Actions {
 
 class AttackSelection : public Action
 {
@@ -15,4 +16,5 @@ public:
     explicit AttackSelection(const ArgumentsType& arguments);
 };
 
+}
 }

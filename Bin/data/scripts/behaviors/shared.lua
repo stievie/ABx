@@ -1,6 +1,5 @@
 function idle(time)
-  local idle = self:CreateNode("Idle", time)
-  return idle
+  return self:CreateNode("Idle", time)
 end
 
 function stayAlive()
@@ -12,6 +11,7 @@ function stayAlive()
   -- 1. try to heal
   node:AddNode(self:CreateNode("HealSelf"))
   -- 2. If that failes flee
+  -- TODO: No Flee action yet
 --  node:AddNode(self:CreateNode("Flee"))
   return node
 end
@@ -44,10 +44,9 @@ end
 function attackAggro()
   local node = self:CreateNode("Sequence")
   local haveAggro = self:CreateCondition("Filter")
-  haveAggo:SetFilter(self:CreateFilter("SelectAggro"))
-  node:AddCondition(haveAggro)
+  haveAggro:SetFilter(self:CreateFilter("SelectAggro"))
+  node:SetCondition(haveAggro)
   node:AddNode(self:CreateNode("AttackSelection"))
-  
   return node
 end
 
@@ -56,4 +55,5 @@ function rezzAlly()
   local haveDeadAllies = self:CreateCondition("Filter")
   haveDeadAllies:SetFilter(self:CreateFilter("SelectDeadAllies"))
   node:AddNode(self:CreateNode("ResurrectSelection"))
+  return node
 end

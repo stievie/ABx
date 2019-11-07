@@ -19,3 +19,12 @@
 #include <initializer_list>
 
 #include "MathConfig.h"
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4702 4127)
+#endif
+#include <lua.hpp>
+#include <kaguya/kaguya.hpp>
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif

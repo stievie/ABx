@@ -5,6 +5,7 @@
 #include "../Game.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status MoveTo::DoAction(Agent& agent, uint32_t)
 {
@@ -27,4 +28,5 @@ Node::Status MoveTo::DoAction(Agent& agent, uint32_t)
     return Status::Running;
 }
 
+}
 }

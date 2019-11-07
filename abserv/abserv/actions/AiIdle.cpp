@@ -2,6 +2,7 @@
 #include "AiIdle.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status Idle::ExecuteStart(Agent& agent, uint32_t timeElapsed)
 {
@@ -9,4 +10,5 @@ Node::Status Idle::ExecuteStart(Agent& agent, uint32_t timeElapsed)
     return TimedNode::ExecuteStart(agent, timeElapsed);
 }
 
+}
 }

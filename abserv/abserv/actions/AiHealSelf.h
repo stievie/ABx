@@ -3,6 +3,7 @@
 #include "Action.h"
 
 namespace AI {
+namespace Actions {
 
 class HealSelf : public Action
 {
@@ -13,4 +14,5 @@ public:
     explicit HealSelf(const ArgumentsType& arguments);
 };
 
+}
 }

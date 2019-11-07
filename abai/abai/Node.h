@@ -6,9 +6,12 @@
 #include <string>
 #include "Condition.h"
 #include <limits>
-#include "AiTypes.h"
+#include "AiDefines.h"
 #include "Factory.h"
 #include <sa/IdGenerator.h>
+#ifdef DEBUG_AI
+#include "Logger.h"
+#endif // DEBUG_AI
 
 namespace AI {
 
@@ -23,7 +26,9 @@ using NodeFactory = AbstractFactory<Node>;
     public:                                                                                 \
         std::shared_ptr<Node> Create(const ArgumentsType& arguments) const override         \
         {                                                                                   \
-            return std::make_shared<NodeName>(arguments);                                   \
+            auto res = std::make_shared<NodeName>(arguments);                               \
+            res->SetType(ABAI_STRINGIFY(NodeName));                                         \
+            return res;                                                                     \
         }                                                                                   \
     };                                                                                      \
     static const Factory& GetFactory()                                                      \
@@ -35,7 +40,7 @@ using NodeFactory = AbstractFactory<Node>;
 class Node
 {
 private:
-    static sa::IdGenerator<Id> sIds_;
+    static sa::IdGenerator<Id> sIDs;
 public:
     enum class Status
     {
@@ -49,6 +54,8 @@ public:
     };
 protected:
     Id id_;
+    std::string type_;
+    std::string name_;
     Status status_{ Status::Unknown };
     std::shared_ptr<Condition> condition_;
     Status ReturnStatus(Status status)
@@ -60,9 +67,12 @@ protected:
 public:
     explicit Node(const ArgumentsType& arguments);
     virtual ~Node();
-
     Id GetId() const { return id_; }
 
+    const std::string& GetType() const { return type_; }
+    void SetType(const std::string& value) { type_ = value; }
+    const std::string& GetName() const { return name_; }
+    void SetName(const std::string& value) { name_ = value; }
     virtual bool AddNode(std::shared_ptr<Node> node);
     void SetCondition(std::shared_ptr<Condition> condition);
     virtual Node::Status Execute(Agent& agent, uint32_t timeElapsed);

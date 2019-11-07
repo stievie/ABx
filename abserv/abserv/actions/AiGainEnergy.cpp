@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "AiResurrectSelection.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
+#include "AiGainEnergy.h"
 #include "../Game.h"
 
 namespace AI {
 namespace Actions {
 
-Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
+Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
     if (agent.currentAction_ == id_)
@@ -27,31 +27,16 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget);
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectGainEnergy, Game::SkillTargetSelf);
     if (skillIndex == -1)
-        return Status::Failed;
-    // Possible heal targets
-    const auto& selection = agent.filteredAgents_;
-    if (selection.empty())
-        return Status::Failed;
-
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
-    if (!target)
-        return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
-
-    Game::Actor* actor = Game::To<Game::Actor>(target.get());
-    if (!actor->IsDead())
         return Status::Failed;
 
     auto skill = npc.skills_->GetSkill(skillIndex);
     if (!skill)
         return Status::Failed;
-    if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
+    if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
         return Status::Failed;
 
-    npc.SetSelectedObjectById(selection[0]);
     npc.UseSkill(skillIndex);
     return Status::Running;
 }

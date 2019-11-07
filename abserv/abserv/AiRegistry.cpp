@@ -9,6 +9,7 @@
 #include "actions/AiHealSelf.h"
 #include "actions/AiHealOther.h"
 #include "actions/AiResurrectSelection.h"
+#include "actions/AiGainEnergy.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsSelfHealthLow.h"
@@ -16,11 +17,14 @@
 #include "conditions/AiIsAllyHealthLow.h"
 #include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAttacked.h"
+#include "conditions/AiIsEnergyLow.h"
 #include "filters/AiSelectVisible.h"
 #include "filters/AiSelectAggro.h"
 #include "filters/AiSelectLowHealth.h"
 #include "filters/AiSelectAttackers.h"
 #include "filters/AiSelectDeadAllies.h"
+#include "filters/AiSelectRandom.h"
+#include "filters/AiSelectAttackTarget.h"
 
 namespace AI {
 
@@ -32,16 +36,19 @@ void AiRegistry::Initialize()
 {
     Registry::Initialize();
 
+    // We don't use Zones
     UnregisterFilterFactory("Zone");
-    RegisterNodeFactory("GoHome", GoHome::GetFactory());
-    RegisterNodeFactory("Die", Die::GetFactory());
-    RegisterNodeFactory("Idle", Idle::GetFactory());
-    RegisterNodeFactory("AttackSelection", AttackSelection::GetFactory());
-    RegisterNodeFactory("HealOther", HealOther::GetFactory());
-    RegisterNodeFactory("HealSelf", HealSelf::GetFactory());
-    RegisterNodeFactory("Say", Say::GetFactory());
-    RegisterNodeFactory("MoveTo", MoveTo::GetFactory());
-    RegisterNodeFactory("ResurrectSelection", ResurrectSelection::GetFactory());
+
+    RegisterNodeFactory("GoHome", Actions::GoHome::GetFactory());
+    RegisterNodeFactory("Die", Actions::Die::GetFactory());
+    RegisterNodeFactory("Idle", Actions::Idle::GetFactory());
+    RegisterNodeFactory("AttackSelection", Actions::AttackSelection::GetFactory());
+    RegisterNodeFactory("HealOther", Actions::HealOther::GetFactory());
+    RegisterNodeFactory("HealSelf", Actions::HealSelf::GetFactory());
+    RegisterNodeFactory("Say", Actions::Say::GetFactory());
+    RegisterNodeFactory("MoveTo", Actions::MoveTo::GetFactory());
+    RegisterNodeFactory("ResurrectSelection", Actions::ResurrectSelection::GetFactory());
+    RegisterNodeFactory("GainEnergy", Actions::GainEnergy::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());
@@ -50,12 +57,15 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("IsAllyHealthLow", Conditions::IsAllyHealthLow::GetFactory());
     RegisterConditionFactory("AllyHealthCritical", Conditions::IsAllyHealthCritical::GetFactory());
     RegisterConditionFactory("IsAttacked", Conditions::IsAttacked::GetFactory());
+    RegisterConditionFactory("IsEnergyLow", Conditions::IsEnergyLow::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());
     RegisterFilterFactory("SelectLowHealth", Filters::SelectLowHealth::GetFactory());
     RegisterFilterFactory("SelectAttackers", Filters::SelectAttackers::GetFactory());
     RegisterFilterFactory("SelectDeadAllies", Filters::SelectDeadAllies::GetFactory());
+    RegisterFilterFactory("SelectRandom", Filters::SelectRandom::GetFactory());
+    RegisterFilterFactory("SelectAttackTarget", Filters::SelectAttackTarget::GetFactory());
 }
 
 }

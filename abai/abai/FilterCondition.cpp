@@ -19,6 +19,8 @@ bool FilterCondition::Evaluate(Agent& agent)
 
 bool FilterCondition::SetFilter(std::shared_ptr<AI::Filter> filter)
 {
+    if (!filter)
+        return false;
     filter_ = filter;
     return true;
 }

@@ -4,7 +4,7 @@
 namespace Game {
 namespace Components {
 
-AiComp::AiComp(Npc & owner) :
+AiComp::AiComp(Npc& owner) :
     owner_(owner),
     agent_(owner)
 { }

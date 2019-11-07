@@ -1,3 +1,2 @@
-! AI Server: Crash when deleting a game. No proper shutdown or something.
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
 The client says "Unknown packet code..." Maybe some messages out of order.

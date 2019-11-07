@@ -4,10 +4,10 @@
 
 namespace AI {
 
-sa::IdGenerator<Id> Node::sIds_;
+sa::IdGenerator<Id> Node::sIDs;
 
 Node::Node(const ArgumentsType&) :
-    id_(sIds_.Next())
+    id_(sIDs.Next())
 { }
 
 Node::~Node() = default;
@@ -28,7 +28,12 @@ Node::Status Node::Execute(Agent& agent, uint32_t)
         Initialize();
 
     if (condition_ && !condition_->Evaluate(agent))
+    {
+#ifdef DEBUG_AI
+//        LOG_DEBUG << GetType() << " will return CanNotExecute" << std::endl;
+#endif
         return ReturnStatus(Status::CanNotExecute);
+    }
     return ReturnStatus(Status::Finished);
 }
 

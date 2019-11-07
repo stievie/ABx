@@ -26,6 +26,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Static objects are directly loaded from Urho3D's scene files.
 * Navigation using Recast/Detour
 * Server runs on Windows and Linux
+* Game AI, Behavior Tree
 
 ## Screenshot
 

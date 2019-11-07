@@ -7,8 +7,7 @@ namespace Filters {
 
 SelectLowHealth::SelectLowHealth(const ArgumentsType& arguments) :
     Filter(arguments)
-{
-}
+{ }
 
 void SelectLowHealth::Execute(Agent& agent)
 {

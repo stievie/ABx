@@ -9,6 +9,7 @@
 TEST_CASE("Zone")
 {
     AI::Registry reg;
+    reg.Initialize();
     AI::Loader loader(reg);
     // I thought we call a lua function which adds nodes or whatever to the
     // root node, but I'm not sure...

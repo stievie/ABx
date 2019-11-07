@@ -7,8 +7,7 @@ namespace Filters {
 
 SelectDeadAllies::SelectDeadAllies(const ArgumentsType& arguments) :
     Filter(arguments)
-{
-}
+{ }
 
 void SelectDeadAllies::Execute(Agent& agent)
 {

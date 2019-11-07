@@ -8,3 +8,14 @@
 #endif
 
 #include "targetver.h"
+
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4702 4127)
+#endif
+#include <kaguya/kaguya.hpp>
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+
+#define DEBUG_AI

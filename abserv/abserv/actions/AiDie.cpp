@@ -4,6 +4,7 @@
 #include "../AiAgent.h"
 
 namespace AI {
+namespace Actions {
 
 Node::Status Die::DoAction(Agent& agent, uint32_t)
 {
@@ -18,4 +19,5 @@ Die::Die(const ArgumentsType& arguments) :
 {
 }
 
+}
 }

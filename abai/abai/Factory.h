@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <map>
-#include "AiTypes.h"
+#include "AiDefines.h"
 
 namespace AI {
 
@@ -27,7 +27,7 @@ public:
 
     bool RegisterFactory(const Key& key, const AbstractFactory<T>& factory)
     {
-        auto it = factores_.find(key);
+        const auto it = factores_.find(key);
         if (it != factores_.end())
             return false;
 

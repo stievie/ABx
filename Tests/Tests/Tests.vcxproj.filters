@@ -87,9 +87,18 @@
     <ClCompile Include="AI.Zone.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="AI.Mockup.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.Sequence.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.Mockup.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

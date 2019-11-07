@@ -61,6 +61,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
+      <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,6 +90,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
+      <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +109,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AI.Loader.cpp" />
+    <ClCompile Include="AI.Mockup.cpp" />
+    <ClCompile Include="AI.Sequence.cpp" />
     <ClCompile Include="AI.Zone.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.BoundingBox.cpp" />
@@ -142,6 +146,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.Mockup.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

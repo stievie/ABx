@@ -90,13 +90,13 @@
     <ClInclude Include="Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AiTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FilterCondition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FirstFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AiDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
