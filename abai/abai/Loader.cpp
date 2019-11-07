@@ -5,10 +5,6 @@
 #include "Filter.h"
 #include <sa/StringUtils.h>
 
-#ifdef DEBUG_AI
-#include "Logger.h"
-#endif
-
 namespace AI {
 
 Loader::Loader(Registry& reg) :
@@ -68,7 +64,7 @@ std::shared_ptr<Node> Loader::CreateNode(const std::string& type)
 #ifdef DEBUG_AI
     auto res = registry_.CreateNode(type, { });
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateNode(type, { });
@@ -80,7 +76,7 @@ std::shared_ptr<Condition> Loader::CreateCondition(const std::string& type)
 #ifdef DEBUG_AI
     auto res = registry_.CreateCondition(type, { });
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateCondition(type, { });
@@ -92,7 +88,7 @@ std::shared_ptr<Filter> Loader::CreateFilter(const std::string& type)
 #ifdef DEBUG_AI
     auto res = registry_.CreateFilter(type, { });
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateFilter(type, { });
@@ -104,7 +100,7 @@ std::shared_ptr<Node> Loader::CreateNodeWidthArgs(const std::string& type, const
 #ifdef DEBUG_AI
     auto res = registry_.CreateNode(type, arguments);
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateNode(type, arguments);
@@ -116,7 +112,7 @@ std::shared_ptr<Condition> Loader::CreateConditionWidthArgs(const std::string& t
 #ifdef DEBUG_AI
     auto res = registry_.CreateCondition(type, arguments);
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateCondition(type, arguments);
@@ -128,7 +124,7 @@ std::shared_ptr<Filter> Loader::CreateFilterWidthArgs(const std::string& type, c
 #ifdef DEBUG_AI
     auto res = registry_.CreateFilter(type, arguments);
     if (!res)
-        LOG_ERROR << "type " << type << " not found" << std::endl;
+//        LOG_ERROR << "type " << type << " not found" << std::endl;
     return res;
 #else
     return registry_.CreateFilter(type, arguments);
