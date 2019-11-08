@@ -28,12 +28,7 @@ Node::Status Node::Execute(Agent& agent, uint32_t)
         Initialize();
 
     if (condition_ && !condition_->Evaluate(agent))
-    {
-#ifdef DEBUG_AI
-//        LOG_DEBUG << GetType() << " will return CanNotExecute" << std::endl;
-#endif
         return ReturnStatus(Status::CanNotExecute);
-    }
     return ReturnStatus(Status::Finished);
 }
 

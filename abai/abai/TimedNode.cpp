@@ -28,7 +28,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
 
     if (timer_ - timeElapsed > 0)
     {
-        timer_ += timeElapsed;
+        timer_ -= timeElapsed;
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
             timer_ = NOT_STARTED;

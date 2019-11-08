@@ -11,6 +11,12 @@ Limit::Limit(const ArgumentsType& arguments) :
         limit_ = atoi(arguments[0].c_str());
 }
 
+void Limit::Initialize()
+{
+    Decorator::Initialize();
+    reset_ = true;
+}
+
 Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)

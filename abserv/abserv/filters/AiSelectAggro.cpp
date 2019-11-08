@@ -18,6 +18,7 @@ void SelectAggro::Execute(Agent& agent)
     {
         entities.push_back(o->id_);
     });
+    entities.erase(std::unique(entities.begin(), entities.end()), entities.end());
 }
 
 }

@@ -87,6 +87,10 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         stateComp_.SetState(luaState_["creatureState"], true);
     else
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
+    if (Lua::IsNumber(luaState_, "effect"))
+        skillEffect_ = luaState_["effect"];
+    if (Lua::IsNumber(luaState_, "effectTarget"))
+        effectTarget_ = luaState_["effectTarget"];
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
@@ -233,6 +237,26 @@ uint32_t AreaOfEffect::GetGroupId() const
     if (auto s = source_.lock())
         return s->GetGroupId();
     return 0u;
+}
+
+bool AreaOfEffect::IsEnemy(const Actor* other) const
+{
+    if (auto s = source_.lock())
+        return s->IsEnemy(other);
+    return false;
+}
+
+bool AreaOfEffect::IsAlly(const Actor* other) const
+{
+    if (auto s = source_.lock())
+        return s->IsAlly(other);
+    return false;
+}
+
+bool AreaOfEffect::IsInRange(const Actor* other) const
+{
+    float dist = transformation_.position_.Distance(other->GetPosition());
+    return dist <= RangeDistances[static_cast<int>(range_)];
 }
 
 uint32_t AreaOfEffect::GetItemIndex() const

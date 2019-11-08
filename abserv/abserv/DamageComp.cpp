@@ -8,7 +8,7 @@
 namespace Game {
 namespace Components {
 
-void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
+void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration, bool melee)
 {
     if (owner_.IsDead())
         return;
@@ -22,7 +22,14 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
+    {
         lastDamager_ = source->GetThis<Actor>();
+        if (melee)
+        {
+            lastMeleeDamager_ = source->GetThis<Actor>();
+            lastMeleeDamage_ = lastDamage_;
+        }
+    }
 }
 
 int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
@@ -64,6 +71,11 @@ DamagePos DamageComp::GetDamagePos() const
 uint32_t DamageComp::NoDamageTime() const
 {
     return Utils::TimeElapsed(lastDamage_);
+}
+
+bool DamageComp::IsGettingMeleeDamage() const
+{
+    return Utils::TimeElapsed(lastMeleeDamage_) <= 1000;
 }
 
 void DamageComp::Write(Net::NetworkMessage& message)

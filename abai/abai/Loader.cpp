@@ -96,7 +96,7 @@ std::shared_ptr<Root> Loader::LoadString(const std::string& value)
     luaState["self"] = this;
     std::shared_ptr<Root> result = std::make_shared<Root>();
 
-    if (!luaState.dostring(value.c_str()))
+    if (!luaState.dostring(value))
         return std::shared_ptr<Root>();
 
     luaState["init"](result);

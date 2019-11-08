@@ -42,6 +42,7 @@ class Game;
 class Actor;
 class Npc;
 class Player;
+class AreaOfEffect;
 class Skill;
 
 static constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
@@ -85,6 +86,7 @@ private:
     Actor* _LuaAsActor();
     Npc* _LuaAsNpc();
     Player* _LuaAsPlayer();
+    AreaOfEffect* _LuaAsAOE();
     void _LuaSetPosition(const Math::STLVector3& pos);
     void _LuaSetRotation(float y);
     void _LuaSetScale(const Math::STLVector3& scale);

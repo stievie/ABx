@@ -20,6 +20,7 @@ void SelectVisible::Execute(Agent& agent)
         entities.push_back(o.id_);
         return Iteration::Continue;
     });
+    entities.erase(std::unique(entities.begin(), entities.end()), entities.end());
 }
 
 }

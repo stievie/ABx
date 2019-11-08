@@ -110,6 +110,7 @@
   <ItemGroup>
     <ClCompile Include="AI.Loader.cpp" />
     <ClCompile Include="AI.Mockup.cpp" />
+    <ClCompile Include="AI.Parallel.cpp" />
     <ClCompile Include="AI.Sequence.cpp" />
     <ClCompile Include="AI.Zone.cpp" />
     <ClCompile Include="main.cpp" />

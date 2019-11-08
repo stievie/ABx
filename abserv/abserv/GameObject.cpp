@@ -6,6 +6,7 @@
 #include "Actor.h"
 #include "Npc.h"
 #include "Player.h"
+#include "AreaOfEffect.h"
 #include "MathUtils.h"
 #include "ConfigManager.h"
 #include "Scheduler.h"
@@ -50,6 +51,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsActor",          &GameObject::_LuaAsActor)
         .addFunction("AsNpc",            &GameObject::_LuaAsNpc)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
+        .addFunction("AsAOE",            &GameObject::_LuaAsAOE)
 
         .addFunction("IsSelectable",     &GameObject::IsSelectable)
         .addFunction("SetSelectable",    &GameObject::SetSelectable)
@@ -520,6 +522,11 @@ Npc* GameObject::_LuaAsNpc()
 Player* GameObject::_LuaAsPlayer()
 {
     return To<Player>(this);
+}
+
+AreaOfEffect* GameObject::_LuaAsAOE()
+{
+    return To<AreaOfEffect>(this);
 }
 
 void GameObject::_LuaSetPosition(const Math::STLVector3& pos)

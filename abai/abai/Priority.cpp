@@ -9,23 +9,17 @@ Priority::Priority(const ArgumentsType& arguments) :
 
 Priority::~Priority() = default;
 
-void Priority::Initialize()
-{
-    Composite::Initialize();
-    it_ = children_.begin();
-}
-
 Node::Status Priority::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
         return ReturnStatus(Status::CanNotExecute);
 
-    while (it_ != children_.end())
+    for (auto child : children_)
     {
-        Status status = (*it_)->Execute(agent, timeElapsed);
-        if (status != Status::Failed)
+        Status status = child->Execute(agent, timeElapsed);
+        if (status != Status::Failed && status != Status::CanNotExecute)
             return ReturnStatus(status);
-        ++it_;
+        // If failed try the next
     }
     return ReturnStatus(Status::Failed);
 }

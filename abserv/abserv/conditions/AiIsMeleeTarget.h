@@ -1,0 +1,21 @@
+#pragma once
+
+#include "Condition.h"
+#include "Agent.h"
+
+namespace AI {
+namespace Conditions {
+
+class IsMeleeTarget : public AI::Condition
+{
+public:
+    CONDITON_FACTORY(IsMeleeTarget)
+
+    explicit IsMeleeTarget(const ArgumentsType& arguments) :
+        Condition(arguments)
+    { }
+    bool Evaluate(AI::Agent&) override;
+};
+
+}
+}

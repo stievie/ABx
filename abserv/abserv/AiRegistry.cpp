@@ -10,6 +10,7 @@
 #include "actions/AiHealOther.h"
 #include "actions/AiResurrectSelection.h"
 #include "actions/AiGainEnergy.h"
+#include "actions/AiFlee.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsSelfHealthLow.h"
@@ -18,6 +19,9 @@
 #include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAttacked.h"
 #include "conditions/AiIsEnergyLow.h"
+#include "conditions/AiRandomCondition.h"
+#include "conditions/AiIsInAOE.h"
+#include "conditions/AiIsMeleeTarget.h"
 #include "filters/AiSelectVisible.h"
 #include "filters/AiSelectAggro.h"
 #include "filters/AiSelectLowHealth.h"
@@ -49,6 +53,7 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("MoveTo", Actions::MoveTo::GetFactory());
     RegisterNodeFactory("ResurrectSelection", Actions::ResurrectSelection::GetFactory());
     RegisterNodeFactory("GainEnergy", Actions::GainEnergy::GetFactory());
+    RegisterNodeFactory("Flee", Actions::Flee::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());
@@ -58,6 +63,9 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("AllyHealthCritical", Conditions::IsAllyHealthCritical::GetFactory());
     RegisterConditionFactory("IsAttacked", Conditions::IsAttacked::GetFactory());
     RegisterConditionFactory("IsEnergyLow", Conditions::IsEnergyLow::GetFactory());
+    RegisterConditionFactory("IsInAOE", Conditions::IsInAOE::GetFactory());
+    RegisterConditionFactory("IsMeleeTarget", Conditions::IsMeleeTarget::GetFactory());
+    RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());

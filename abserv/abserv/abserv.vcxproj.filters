@@ -357,9 +357,6 @@
     <ClInclude Include="AiAgent.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="actions\AiIdle.h">
-      <Filter>Quelldateien\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="filters\AiSelectRandom.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>
@@ -371,6 +368,21 @@
     </ClInclude>
     <ClInclude Include="filters\AiSelectAttackTarget.h">
       <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiIdle.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiRandomCondition.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiFlee.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsInAOE.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsMeleeTarget.h">
+      <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -683,17 +695,29 @@
     <ClCompile Include="actions\AiIdle.cpp">
       <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="filters\AiSelectRandom.cpp">
-      <Filter>Headerdateien\Filters</Filter>
-    </ClCompile>
     <ClCompile Include="conditions\AiIsEnergyLow.cpp">
-      <Filter>Headerdateien\Conditions</Filter>
+      <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
-    <ClCompile Include="actions\AiGainEnergy.cpp">
-      <Filter>Headerdateien\Actions</Filter>
+    <ClCompile Include="filters\AiSelectRandom.cpp">
+      <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
     <ClCompile Include="filters\AiSelectAttackTarget.cpp">
-      <Filter>Headerdateien\Filters</Filter>
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiRandomCondition.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiGainEnergy.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiFlee.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsInAOE.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsMeleeTarget.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

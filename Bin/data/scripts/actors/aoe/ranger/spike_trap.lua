@@ -6,6 +6,8 @@ include("/scripts/includes/damage.lua")
 
 itemIndex = 6000
 creatureState = CREATURESTATE_IDLE
+effect = SkillEffectDamage
+effectTarget = SkillTargetAoe
 
 -- 90 seconds
 local lifeTime = 90 * 1000

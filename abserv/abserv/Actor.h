@@ -148,9 +148,6 @@ public:
     DamagePos GetDamagePos() const { return damageComp_->GetDamagePos(); }
     int GetResource(Components::ResourceType type) const { return resourceComp_->GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
-    /// Adds damage to this actor, skill or effect index may be 0. Damage reduction/increase should be already calculated.
-    /// Use Actor::Damage() to add damage instead. This is more an internal function...
-    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
     /// Steal life from this actor. The source must add the returned value to its life.
     int DrainLife(Actor* source, uint32_t index, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.

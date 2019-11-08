@@ -5,6 +5,7 @@ function init(root)
   prio:AddNode(stayAlive())
   prio:AddNode(defend())
   prio:AddNode(attackAggro())
+  prio:AddNode(avoidSelfDamage())
   prio:AddNode(idle(1000))
 
   root:AddNode(prio)

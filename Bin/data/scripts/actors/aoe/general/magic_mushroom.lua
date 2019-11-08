@@ -3,6 +3,8 @@ include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 
 itemIndex = 6000
+effect = SkillEffectDamage
+effectTarget = SkillTargetAoe
 
 -- https://wiki.guildwars.com/wiki/Poison_Spout
 local damage = 50

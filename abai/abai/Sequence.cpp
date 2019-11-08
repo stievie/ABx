@@ -22,6 +22,7 @@ Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
 
     while (it_ != children_.end())
     {
+        // Call until one failed
         Status status = (*it_)->Execute(agent, timeElapsed);
         if (status != Status::Finished)
             return ReturnStatus(status);

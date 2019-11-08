@@ -9,9 +9,6 @@
 #include "AiDefines.h"
 #include "Factory.h"
 #include <sa/IdGenerator.h>
-#ifdef DEBUG_AI
-#include "Logger.h"
-#endif // DEBUG_AI
 
 namespace AI {
 

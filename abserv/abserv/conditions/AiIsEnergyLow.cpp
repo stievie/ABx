@@ -9,9 +9,8 @@ namespace Conditions {
 bool IsEnergyLow::Evaluate(Agent& agent)
 {
     auto& npc = AI::GetNpc(agent);
-    if (npc.IsDead())
-        // Too late
-        return false;
+    // TODO: Also consider what Skills the NPC has, e.g. only skills that
+    // need a lot of energy.
     return npc.resourceComp_->GetEnergyRatio() <= LOW_ENERGY_THRESHOLD;
 }
 

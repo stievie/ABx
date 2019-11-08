@@ -1,5 +1,26 @@
 function idle(time)
-  return self:CreateNode("Idle", time)
+  return self:CreateNode("Idle", { time })
+end
+
+local function avoidSelfMeleeDamage()
+  -- Dodge melee attacks
+  local node = self:CreateNode("Flee")
+  node:SetCondition(self:CreateCondition("IsMeleeTarget"))
+  return node
+end
+
+local function avoidSelfAoeDamage()
+  -- Move out of AOE
+  local node = self:CreateNode("Flee")
+  node:SetCondition(self:CreateCondition("IsInAOE"))
+  return node
+end
+
+function avoidSelfDamage()
+  local node = self:CreateNode("Priority")
+  node:AddNode(avoidSelfMeleeDamage())
+  node:AddNode(avoidSelfAoeDamage())
+  return node
 end
 
 function stayAlive()
@@ -12,7 +33,7 @@ function stayAlive()
   node:AddNode(self:CreateNode("HealSelf"))
   -- 2. If that failes flee
   -- TODO: No Flee action yet
---  node:AddNode(self:CreateNode("Flee"))
+  node:AddNode(self:CreateNode("Flee"))
   return node
 end
 

@@ -108,8 +108,10 @@
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Parallel.h" />
     <ClInclude Include="Registry.h" />
+    <ClInclude Include="Repeater.h" />
     <ClInclude Include="Root.h" />
     <ClInclude Include="Succeed.h" />
+    <ClInclude Include="UntilFail.h" />
     <ClInclude Include="ZoneFilter.h" />
     <ClInclude Include="LogicConditions.h" />
     <ClInclude Include="Condition.h" />
@@ -137,8 +139,10 @@
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Parallel.cpp" />
     <ClCompile Include="Registry.cpp" />
+    <ClCompile Include="Repeater.cpp" />
     <ClCompile Include="Root.cpp" />
     <ClCompile Include="Succeed.cpp" />
+    <ClCompile Include="UntilFail.cpp" />
     <ClCompile Include="ZoneFilter.cpp" />
     <ClCompile Include="LogicConditions.cpp" />
     <ClCompile Include="Condition.cpp" />
@@ -152,6 +156,9 @@
     </ClCompile>
     <ClCompile Include="TimedNode.cpp" />
     <ClCompile Include="Zone.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

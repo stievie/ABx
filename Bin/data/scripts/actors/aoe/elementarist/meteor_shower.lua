@@ -3,6 +3,9 @@ include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 include("/scripts/includes/attributes.lua")
 
+effect = SkillEffectDamage
+effectTarget = SkillTargetAoe
+
 local damage
 local lastDamage
 

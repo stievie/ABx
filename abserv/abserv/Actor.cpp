@@ -727,11 +727,6 @@ void Actor::SetResource(Components::ResourceType type, Components::SetValueType 
     resourceComp_->SetValue(type, t, value);
 }
 
-void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
-{
-    damageComp_->ApplyDamage(source, index, type, value, penetration);
-}
-
 int Actor::DrainLife(Actor* source, uint32_t index, int value)
 {
     return damageComp_->DrainLife(source, index, value);
@@ -974,7 +969,7 @@ int Actor::Damage(Actor* source, uint32_t index, DamageType type, int value)
     int val = value;
     bool crit = false;
     effectsComp_->GetDamage(type, val, crit);
-    ApplyDamage(source, index, type, val, 0.0f);
+    damageComp_->ApplyDamage(source, index, type, val, 0.0f, false);
     return val;
 }
 

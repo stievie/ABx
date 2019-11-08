@@ -13,6 +13,8 @@
 #include "Sequence.h"
 #include "Limit.h"
 #include "Root.h"
+#include "Repeater.h"
+#include "UntilFail.h"
 
 namespace AI {
 
@@ -30,6 +32,8 @@ void Registry::Initialize()
     RegisterNodeFactory("Fail", Fail::GetFactory());
     RegisterNodeFactory("Inverter", Inverter::GetFactory());
     RegisterNodeFactory("Limit", Limit::GetFactory());
+    RegisterNodeFactory("Repeater", Repeater::GetFactory());
+    RegisterNodeFactory("UntilFail", UntilFail::GetFactory());
 
     RegisterConditionFactory("And", Conditions::AndCondition::GetFactory());
     RegisterConditionFactory("False", Conditions::FalseCondition::GetFactory());

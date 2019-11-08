@@ -68,7 +68,7 @@ void AttackComp::Hit(Actor& target)
                 target.CallEvent<void(Actor*,bool&)>(EVENT_ON_GET_CRITICAL_HIT, &owner_, critical);
             if (critical)
                 damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
-            target.ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
+            target.damageComp_->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration(), true);
         }
         else
         {

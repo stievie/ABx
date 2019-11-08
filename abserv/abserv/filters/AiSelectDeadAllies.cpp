@@ -29,6 +29,7 @@ void SelectDeadAllies::Execute(Agent& agent)
         const float& p2 = sorting[j];
         return p1 < p2;
     });
+    entities.erase(std::unique(entities.begin(), entities.end()), entities.end());
 }
 
 }

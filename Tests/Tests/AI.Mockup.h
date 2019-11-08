@@ -17,6 +17,30 @@ public:
     { }
 };
 
+class RunningAction : public Action
+{
+protected:
+    Status DoAction(Agent& agent, uint32_t timeElapsed) override;
+public:
+    NODE_FACTORY(RunningAction)
+    explicit RunningAction(const ArgumentsType& arguments) :
+        Action(arguments)
+    { }
+};
+
+class Running2Action : public Action
+{
+private:
+    int runs_{ 0 };
+protected:
+    Status DoAction(Agent& agent, uint32_t timeElapsed) override;
+public:
+    NODE_FACTORY(Running2Action)
+    explicit Running2Action(const ArgumentsType& arguments) :
+        Action(arguments)
+    { }
+};
+
 class SelectSelf : public Filter
 {
 public:

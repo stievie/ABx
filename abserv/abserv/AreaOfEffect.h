@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Script.h"
+#include "Skill.h"
 
 namespace Game {
 
@@ -26,6 +27,8 @@ private:
     /// Effect or skill index
     uint32_t index_{ 0 };
     Ranges range_{ Ranges::Adjecent };
+    uint32_t skillEffect_{ SkillEffectNone };
+    uint32_t effectTarget_{ SkillTargetNone };
     uint32_t functions_{ FunctionNone };
     int64_t startTime_;
     // Lifetime
@@ -71,8 +74,13 @@ public:
     int64_t GetStartTime() const { return startTime_; }
     uint32_t GetIndex() const { return index_; }
     void SetIndex(uint32_t value) { index_ = value; }
+    bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
+    bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
 
     uint32_t GetGroupId() const;
+    bool IsEnemy(const Actor* other) const;
+    bool IsAlly(const Actor* other) const;
+    bool IsInRange(const Actor* other) const;
     uint32_t GetItemIndex() const;
     void SetItemIndex(uint32_t value) { itemIndex_ = value; }
 

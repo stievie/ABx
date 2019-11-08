@@ -4,10 +4,10 @@
 
 namespace AI {
 
-// The Sequence ticks each child node in order.
-// If a child fails or runs, the sequence returns the same status.
-// In the next tick, it will try to run each child in order again.
-// If all children succeeds, only then does the sequence succeed.
+// A sequence will visit each child in order, starting with the first, and when that
+// succeeds will call the second, and so on down the list of children. If any child
+// fails it will immediately return failure to the parent. If the last child in the
+// sequence succeeds, then the sequence will return success to its parent.
 class Sequence : public Composite
 {
 private:
