@@ -83,6 +83,12 @@ bool Player::CanUseSkill() const
         account_.type >= AB::Entities::AccountTypeGamemaster;
 }
 
+void Player::SetLevel(uint32_t value)
+{
+    data_.level = static_cast<uint8_t>(value);
+    resourceComp_->UpdateResources();
+}
+
 void Player::AddXp(int value)
 {
     assert(value >= 0);
@@ -98,9 +104,9 @@ void Player::AddSkillPoint()
 
 void Player::AdvanceLevel()
 {
-    Actor::AdvanceLevel();
     if (data_.level < LEVEL_CAP)
         ++data_.level;
+    Actor::AdvanceLevel();
 }
 
 void Player::Initialize()
@@ -636,7 +642,7 @@ void Player::CRQGetGuildMembers()
     for (const AB::Entities::GuildMember& member : members.members)
     {
         msg->AddString(member.accountUuid);
-    };
+    }
     WriteToOutput(*msg);
 }
 

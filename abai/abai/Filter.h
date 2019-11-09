@@ -18,7 +18,7 @@ using FilterFactory = AbstractFactory<Filter>;
     public:                                                                                 \
         std::shared_ptr<Filter> Create(const ArgumentsType& arguments) const override       \
         {                                                                                   \
-            auto res = std::make_shared<FilterName>(arguments);                             \
+            std::shared_ptr<Filter> res = std::make_shared<FilterName>(arguments);          \
             res->SetType(ABAI_STRINGIFY(FilterName));                                       \
             return res;                                                                     \
         }                                                                                   \

@@ -11,7 +11,7 @@ SelectRandom::SelectRandom(const ArgumentsType& arguments) :
     Filter(arguments)
 {
     if (arguments.size() != 0)
-        count_ = atoi(arguments[0].c_str());
+        count_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
     else
         count_ = 1;
 }

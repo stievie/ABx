@@ -148,8 +148,10 @@ void Npc::SetLevel(uint32_t value)
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
+    // I think first we should run the BT
     if (aiComp_)
         aiComp_->Update(timeElapsed);
+
     Actor::Update(timeElapsed, message);
 
     if (luaInitialized_ && HaveFunction(FunctionUpdate))

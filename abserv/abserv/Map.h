@@ -49,7 +49,7 @@ private:
     // TerrainPatches are also owned by the game
     std::vector<std::shared_ptr<TerrainPatch>> patches_;
 public:
-    Map(std::shared_ptr<Game> game, const std::string name);
+    Map(std::shared_ptr<Game> game);
     Map() = delete;
     ~Map();
 

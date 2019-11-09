@@ -23,7 +23,7 @@ using NodeFactory = AbstractFactory<Node>;
     public:                                                                                 \
         std::shared_ptr<Node> Create(const ArgumentsType& arguments) const override         \
         {                                                                                   \
-            auto res = std::make_shared<NodeName>(arguments);                               \
+            std::shared_ptr<Node> res = std::make_shared<NodeName>(arguments);              \
             res->SetType(ABAI_STRINGIFY(NodeName));                                         \
             return res;                                                                     \
         }                                                                                   \

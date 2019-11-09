@@ -7,7 +7,7 @@ Fail::Fail(const ArgumentsType& arguments) :
     Decorator(arguments)
 { }
 
-Node::Status Fail::Execute(Agent & agent, uint32_t timeElapsed)
+Node::Status Fail::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
         return ReturnStatus(Node::Status::CanNotExecute);

@@ -255,7 +255,6 @@ void Game::Update()
     switch (state_)
     {
     case ExecutionState::Running:
-        [[fallthrough]];
     case ExecutionState::Shutdown:
     {
         if (state_ == ExecutionState::Shutdown && IsInactive())
@@ -536,7 +535,7 @@ void Game::Load(const std::string& mapUuid)
     }
     std::stringstream name;
     name << data_.name << " (" << instanceData_.number << ")";
-    map_ = std::make_unique<Map>(shared_from_this(), name.str());
+    map_ = std::make_unique<Map>(shared_from_this());
     map_->data_.name = data_.name;
     map_->data_.directory = data_.directory;
 

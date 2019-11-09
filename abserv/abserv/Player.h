@@ -98,7 +98,7 @@ public:
     bool CanAttack() const override;
     bool CanUseSkill() const override;
     uint32_t GetLevel() const override { return data_.level; }
-    void SetLevel(uint32_t value) override { data_.level = static_cast<uint8_t>(value); }
+    void SetLevel(uint32_t value) override;
 
     void AddXp(int value) override;
     uint32_t GetXp() const override { return data_.xp; }

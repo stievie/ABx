@@ -96,8 +96,7 @@ public:
         const float distSquared = (point - center_).LengthSqr();
         if (distSquared < radius_ * radius_)
             return Intersection::Inside;
-        else
-            return Intersection::Outside;
+        return Intersection::Outside;
     }
 
     /// Test if another sphere is inside, outside or intersects.
@@ -106,10 +105,9 @@ public:
         const float dist = (sphere.center_ - center_).Length();
         if (dist >= sphere.radius_ + radius_)
             return Intersection::Outside;
-        else if (dist + sphere.radius_ < radius_)
+        if (dist + sphere.radius_ < radius_)
             return Intersection::Inside;
-        else
-            return Intersection::Intersects;
+        return Intersection::Intersects;
     }
     Intersection IsInside(const HeightMap& sphere) const;
     Intersection IsInside(const ConvexHull& sphere) const;
@@ -122,8 +120,7 @@ public:
 
         if (distSquared >= combined * combined)
             return Intersection::Outside;
-        else
-            return Intersection::Inside;
+        return Intersection::Inside;
     }
 
     /// Test if a bounding box is inside, outside or intersects.

@@ -25,7 +25,7 @@ void SelectAttackers::Execute(Agent& agent)
             sorting[o->id_] = o->GetDistance(&chr);
         }
     });
-    std::sort(entities.begin(), entities.end(), [&sorting](int i, int j)
+    std::sort(entities.begin(), entities.end(), [&sorting](uint32_t i, uint32_t j)
     {
         const float& p1 = sorting[i];
         const float& p2 = sorting[j];

@@ -22,7 +22,7 @@ using ConditionFactory = AbstractFactory<Condition>;
     public:                                                                                  \
         std::shared_ptr<Condition> Create(const ArgumentsType& arguments) const override     \
         {                                                                                    \
-            auto res = std::make_shared<ConditionName>(arguments);                           \
+            std::shared_ptr<Condition> res = std::make_shared<ConditionName>(arguments);     \
             res->SetType(ABAI_STRINGIFY(ConditionName));                                     \
             return res;                                                                      \
         }                                                                                    \

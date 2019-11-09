@@ -89,7 +89,7 @@ int ItemStats::GetArmor(DamageType damageType) const
 
 uint32_t ItemStats::GetAttributeIncrease(uint32_t index) const
 {
-    return GetValue(static_cast<size_t>(Stat::AttributeOffset) + index, 0);
+    return GetValue(static_cast<size_t>(Stat::AttributeOffset) + index, 0u);
 }
 
 int ItemStats::GetHealth() const

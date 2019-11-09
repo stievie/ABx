@@ -8,7 +8,7 @@ Limit::Limit(const ArgumentsType& arguments) :
     Decorator(arguments)
 {
     if (arguments.size() != 0)
-        limit_ = atoi(arguments[0].c_str());
+        limit_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
 }
 
 void Limit::Initialize()

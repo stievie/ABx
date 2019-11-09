@@ -152,8 +152,8 @@ public:
         if (point.x_ < min_.x_ || point.x_ > max_.x_ || point.y_ < min_.y_ || point.y_ > max_.y_ ||
             point.z_ < min_.z_ || point.z_ > max_.z_)
             return Intersection::Outside;
-        else
-            return Intersection::Inside;
+
+        return Intersection::Inside;
     }
 
     /// Test if another bounding box is inside, outside or intersects.
@@ -169,11 +169,12 @@ public:
         if (box.max_.x_ < min_.x_ || box.min_.x_ > max_.x_ || box.max_.y_ < min_.y_ || box.min_.y_ > max_.y_ ||
             box.max_.z_ < min_.z_ || box.min_.z_ > max_.z_)
             return Intersection::Outside;
-        else if (box.min_.x_ < min_.x_ || box.max_.x_ > max_.x_ || box.min_.y_ < min_.y_ || box.max_.y_ > max_.y_ ||
+
+        if (box.min_.x_ < min_.x_ || box.max_.x_ > max_.x_ || box.min_.y_ < min_.y_ || box.max_.y_ > max_.y_ ||
             box.min_.z_ < min_.z_ || box.max_.z_ > max_.z_)
             return Intersection::Intersects;
-        else
-            return Intersection::Inside;
+
+        return Intersection::Inside;
     }
     Intersection IsInside(const HeightMap& shape) const;
     Intersection IsInside(const ConvexHull& shape) const;
@@ -188,8 +189,8 @@ public:
         if (box.max_.x_ < min_.x_ || box.min_.x_ > max_.x_ || box.max_.y_ < min_.y_ || box.min_.y_ > max_.y_ ||
             box.max_.z_ < min_.z_ || box.min_.z_ > max_.z_)
             return Intersection::Outside;
-        else
-            return Intersection::Inside;
+
+        return Intersection::Inside;
     }
 
     Vector3 min_;

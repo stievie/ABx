@@ -24,7 +24,7 @@ void SelectLowHealth::Execute(Agent& agent)
             sorting[o->id_] = std::make_pair<float, float>(o->resourceComp_->GetHealthRatio(), o->GetDistance(&chr));
         }
     });
-    std::sort(entities.begin(), entities.end(), [&sorting](int i, int j)
+    std::sort(entities.begin(), entities.end(), [&sorting](uint32_t i, uint32_t j)
     {
         const std::pair<float, float>& p1 = sorting[i];
         const std::pair<float, float>& p2 = sorting[j];
