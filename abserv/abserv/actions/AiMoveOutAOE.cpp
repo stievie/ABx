@@ -44,7 +44,7 @@ Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
     auto* rnd = GetSubsystem<Crypto::Random>();
     // Away from damager
     float angle = (npc.transformation_.position_.AngleY(damager->transformation_.position_) + Math::M_PIHALF) +
-        rnd->Get<float>(-30.0f, 30.0f);
+        rnd->Get<float>(-Math::M_PIHALF / 3.0f, Math::M_PIHALF / 3.0f);
 
     Math::Quaternion rot(0.0f, angle, 0.0f);
     destination_ = Math::GetPosFromDirectionDistance(npc.transformation_.position_, rot,
