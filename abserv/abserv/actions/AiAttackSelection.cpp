@@ -25,7 +25,7 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 
         Game::Actor* actor = Game::To<Game::Actor>(target.get());
         if (actor->IsDead())
-            Status::Finished;
+            return Status::Finished;
         if (npc.attackComp_->IsAttackingTarget(actor))
             return Status::Running;
 
