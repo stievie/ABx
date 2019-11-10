@@ -2,6 +2,7 @@
 #include "VectorMath.h"
 #include "MathDefs.h"
 #include "MathUtils.h"
+#include "Matrix4.h"
 
 namespace Math {
 
@@ -115,6 +116,13 @@ Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p
 void ReverseOrder(std::array<Vector3, 3>& triangle)
 {
     std::swap(triangle[0], triangle[2]);
+}
+
+Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance)
+{
+    Math::Matrix4 m = Math::Matrix4::FromQuaternion(direction.Inverse());
+    Math::Vector3 v = m * (Math::Vector3::One * distance);
+    return position + v;
 }
 
 }

@@ -14,6 +14,8 @@ abserv/actions/AiHealSelf.cpp
 abserv/actions/AiHealSelf.h
 abserv/actions/AiIdle.cpp
 abserv/actions/AiIdle.h
+abserv/actions/AiMoveOutAOE.cpp
+abserv/actions/AiMoveOutAOE.h
 abserv/actions/AiMoveTo.cpp
 abserv/actions/AiMoveTo.h
 abserv/actions/AiResurrectSelection.cpp

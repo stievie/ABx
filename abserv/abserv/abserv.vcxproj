@@ -199,6 +199,7 @@
     <ClInclude Include="actions\AiHealOther.h" />
     <ClInclude Include="actions\AiHealSelf.h" />
     <ClInclude Include="actions\AiIdle.h" />
+    <ClInclude Include="actions\AiMoveOutAOE.h" />
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
     <ClInclude Include="actions\AiSay.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="actions\AiHealOther.cpp" />
     <ClCompile Include="actions\AiHealSelf.cpp" />
     <ClCompile Include="actions\AiIdle.cpp" />
+    <ClCompile Include="actions\AiMoveOutAOE.cpp" />
     <ClCompile Include="actions\AiMoveTo.cpp" />
     <ClCompile Include="actions\AiResurrectSelection.cpp" />
     <ClCompile Include="actions\AiSay.cpp" />

@@ -384,6 +384,9 @@
     <ClInclude Include="conditions\AiIsMeleeTarget.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="actions\AiMoveOutAOE.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -718,6 +721,9 @@
     </ClCompile>
     <ClCompile Include="conditions\AiIsMeleeTarget.cpp">
       <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiMoveOutAOE.cpp">
+      <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@
 #include "actions/AiResurrectSelection.h"
 #include "actions/AiGainEnergy.h"
 #include "actions/AiFlee.h"
+#include "actions/AiMoveOutAOE.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsSelfHealthLow.h"
@@ -54,6 +55,7 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("ResurrectSelection", Actions::ResurrectSelection::GetFactory());
     RegisterNodeFactory("GainEnergy", Actions::GainEnergy::GetFactory());
     RegisterNodeFactory("Flee", Actions::Flee::GetFactory());
+    RegisterNodeFactory("MoveOutAOE", Actions::MoveOutAOE::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());

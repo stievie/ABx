@@ -14,14 +14,12 @@ HealSelf::HealSelf(const ArgumentsType& arguments) :
 Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (agent.currentAction_ == id_)
+    if (agent.IsActionRunning(id_))
     {
         if (auto cs = npc.GetCurrentSkill())
         {
             if (cs->IsUsing())
                 return Status::Running;
-            else
-                return Status::Finished;
         }
         return Status::Finished;
     }

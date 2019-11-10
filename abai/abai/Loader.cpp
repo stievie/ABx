@@ -61,32 +61,50 @@ void Loader::RegisterLua(kaguya::State& state)
 
 std::shared_ptr<Node> Loader::CreateNode(const std::string& type)
 {
-    return registry_.CreateNode(type, { });
+    auto result = registry_.CreateNode(type, { });
+    if (!result)
+        LoadError("Node type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Condition> Loader::CreateCondition(const std::string& type)
 {
-    return registry_.CreateCondition(type, { });
+    auto result = registry_.CreateCondition(type, { });
+    if (!result)
+        LoadError("Condition type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Filter> Loader::CreateFilter(const std::string& type)
 {
-    return registry_.CreateFilter(type, { });
+    auto result = registry_.CreateFilter(type, { });
+    if (!result)
+        LoadError("Filter type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Node> Loader::CreateNodeWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
-    return registry_.CreateNode(type, arguments);
+    auto result = registry_.CreateNode(type, arguments);
+    if (!result)
+        LoadError("Node type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Condition> Loader::CreateConditionWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
-    return registry_.CreateCondition(type, arguments);
+    auto result = registry_.CreateCondition(type, arguments);
+    if (!result)
+        LoadError("Condition type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Filter> Loader::CreateFilterWidthArgs(const std::string& type, const ArgumentsType& arguments)
 {
-    return registry_.CreateFilter(type, arguments);
+    auto result = registry_.CreateFilter(type, arguments);
+    if (!result)
+        LoadError("Filter type " + type + " not found");
+    return result;
 }
 
 std::shared_ptr<Root> Loader::LoadString(const std::string& value)

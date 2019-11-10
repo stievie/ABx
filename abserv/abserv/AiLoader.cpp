@@ -22,4 +22,9 @@ bool AiLoader::ExecuteScript(kaguya::State& state, const std::string& file)
     return script->Execute(state);
 }
 
+void AiLoader::LoadError(const std::string& message)
+{
+    LOG_ERROR << message << std::endl;
+}
+
 }

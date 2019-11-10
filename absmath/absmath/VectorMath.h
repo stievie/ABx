@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector3.h"
+#include "Quaternion.h"
 
 namespace Math {
 
@@ -21,5 +22,6 @@ PointClass GetPointClass(const Vector3& point, const Vector3& origin, const Vect
 Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p3);
 /// Make CCW -> CW and vice versa
 void ReverseOrder(std::array<Vector3, 3>& triangle);
+Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance);
 
 }

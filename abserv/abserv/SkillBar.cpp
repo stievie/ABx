@@ -77,6 +77,7 @@ AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor
             oldSkill->CancelUse();
     }
 
+    currentSkillIndex_ = index;
     return s->StartUse(owner_.GetThis<Actor>(), target); // overcast
 }
 

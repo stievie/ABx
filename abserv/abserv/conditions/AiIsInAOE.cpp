@@ -9,7 +9,7 @@ namespace Conditions {
 
 bool IsInAOE::Evaluate(Agent& agent)
 {
-    auto& npc = AI::GetNpc(agent);
+    auto& npc = GetNpc(agent);
     bool result = false;
     npc.VisitInRange(Game::Ranges::Aggro, [&result, &npc](const Game::GameObject& object)
     {

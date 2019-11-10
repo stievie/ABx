@@ -5,6 +5,7 @@
 #include "MathUtils.h"
 #include "ConfigManager.h"
 #include "Player.h"
+#include "VectorMath.h"
 
 namespace Game {
 namespace Components {
@@ -44,6 +45,13 @@ bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     maxDist_ = 0.2f;
     return FindPath(dest);
+}
+
+bool AutoRunComp::GotoDirection(const Math::Quaternion& direction, float distance)
+{
+    Math::Vector3 pos = Math::GetPosFromDirectionDistance(owner_.transformation_.position_,
+        direction, distance);
+    return Goto(pos);
 }
 
 void AutoRunComp::Reset()

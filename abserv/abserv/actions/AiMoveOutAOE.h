@@ -6,15 +6,15 @@
 namespace AI {
 namespace Actions {
 
-class Flee : public Action
+class MoveOutAOE : public Action
 {
 private:
     Math::Vector3 destination_;
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(Flee)
-    explicit Flee(const ArgumentsType& arguments) :
+    NODE_FACTORY(MoveOutAOE)
+    explicit MoveOutAOE(const ArgumentsType& arguments) :
         Action(arguments)
     { }
 };

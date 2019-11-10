@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "AiDefines.h"
 #include "Node.h"
+#include <set>
 
 namespace AI {
 
@@ -17,7 +18,7 @@ typedef std::vector<Id> AgentIds;
 class Agent
 {
 private:
-    /// Game provided ID, not managed by the library.
+    /// Game provided ID, not managed by the library, unlike the Node ID.
     Id id_;
     Zone* zone_{ nullptr };
 protected:
@@ -35,11 +36,11 @@ public:
     Zone* GetZone() const;
     void SetZone(Zone* zone);
     Node::Status GetCurrentStatus() const { return currentStatus_; }
-
+    bool IsActionRunning(Id id) const { return runningActions_.find(id) != runningActions_.end(); }
 
     bool pause_{ false };
-    mutable AgentIds filteredAgents_;
-    Id currentAction_{ INVALID_ID };
+    AgentIds filteredAgents_;
+    std::set<Id> runningActions_;
     std::unordered_map<Id, size_t> limits_;
 };
 

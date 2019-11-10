@@ -12,9 +12,14 @@ Node::Status GoHome::DoAction(Agent& agent, uint32_t)
     Math::Vector3 home = npc.GetHomePos();
     if (home.Equals(Math::Vector3::Zero))
         return Status::Failed;
-    if (home.Equals(npc.GetPosition()))
-        return Status::Finished;
-    return Status::Running;
+    if (agent.IsActionRunning(id_))
+    {
+        if (home.Distance(npc.GetPosition()) <= 0.3f)
+            return Status::Finished;
+    }
+    if (npc.GotoHomePos())
+        return Status::Running;
+    return Status::Failed;
 }
 
 GoHome::GoHome(const ArgumentsType& arguments) :

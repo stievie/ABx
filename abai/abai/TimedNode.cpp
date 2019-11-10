@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TimedNode.h"
+#include "Agent.h"
 
 namespace AI {
 
@@ -39,8 +40,9 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
     return ReturnStatus(ExecuteExpired(agent, timeElapsed));
 }
 
-Node::Status TimedNode::ExecuteStart(Agent&, uint32_t)
+Node::Status TimedNode::ExecuteStart(Agent& agent, uint32_t)
 {
+    agent.runningActions_.emplace(id_);
     return ReturnStatus(Status::Running);
 }
 
@@ -49,8 +51,9 @@ Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
     return ReturnStatus(Status::Running);
 }
 
-Node::Status TimedNode::ExecuteExpired(Agent&, uint32_t)
+Node::Status TimedNode::ExecuteExpired(Agent& agent, uint32_t)
 {
+    agent.runningActions_.erase(id_);
     return ReturnStatus(Status::Finished);
 }
 

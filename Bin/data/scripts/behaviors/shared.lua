@@ -11,7 +11,7 @@ end
 
 local function avoidSelfAoeDamage()
   -- Move out of AOE
-  local node = self:CreateNode("Flee")
+  local node = self:CreateNode("MoveOutAOE")
   node:SetCondition(self:CreateCondition("IsInAOE"))
   return node
 end
@@ -32,13 +32,12 @@ function stayAlive()
   -- 1. try to heal
   node:AddNode(self:CreateNode("HealSelf"))
   -- 2. If that failes flee
-  -- TODO: No Flee action yet
   node:AddNode(self:CreateNode("Flee"))
   return node
 end
 
 function defend()
-  local node = self:CreateNode("Sequence")
+  local node = self:CreateNode("AttackSelection")
   -- If we are getting attackend AND there is an attacker
   local andCond = self:CreateCondition("And")
   andCond:AddCondition(self:CreateCondition("IsAttacked"))
@@ -46,35 +45,32 @@ function defend()
   haveAttackers:SetFilter(self:CreateFilter("SelectAttackers"))
   andCond:AddCondition(haveAttackers)
   node:SetCondition(andCond)
-  node:AddNode(self:CreateNode("AttackSelection"))
   return node
 end
 
 function healAlly()
-  local node = self:CreateNode("Sequence")
+  local node = self:CreateNode("HealOther")
   local andCond = self:CreateCondition("And")
   andCond:AddCondition(self:CreateCondition("IsAllyHealthLow"))
   local haveAttackers = self:CreateCondition("Filter")
   haveAttackers:SetFilter(self:CreateFilter("SelectLowHealth"))
   andCond:AddCondition(haveAttackers)
   node:SetCondition(andCond)
-  node:AddNode(self:CreateNode("HealOther"))
   return node
 end
 
 function attackAggro()
-  local node = self:CreateNode("Sequence")
+  local node = self:CreateNode("AttackSelection")
   local haveAggro = self:CreateCondition("Filter")
   haveAggro:SetFilter(self:CreateFilter("SelectAggro"))
   node:SetCondition(haveAggro)
-  node:AddNode(self:CreateNode("AttackSelection"))
   return node
 end
 
 function rezzAlly()
-  local node = self:CreateNode("Sequence")
+  local node = self:CreateNode("ResurrectSelection")
   local haveDeadAllies = self:CreateCondition("Filter")
   haveDeadAllies:SetFilter(self:CreateFilter("SelectDeadAllies"))
-  node:AddNode(self:CreateNode("ResurrectSelection"))
+  node:SetCondition(haveDeadAllies)
   return node
 end

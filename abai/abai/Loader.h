@@ -28,6 +28,7 @@ private:
 protected:
     // Can be overwritten if the script is somehow cached
     virtual bool ExecuteScript(kaguya::State& state, const std::string& file);
+    virtual void LoadError(const std::string&) { }
 public:
     explicit Loader(Registry& reg);
     virtual ~Loader();

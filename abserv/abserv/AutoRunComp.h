@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "Vector3.h"
+#include "Quaternion.h"
 
 namespace Game {
 
@@ -40,6 +41,7 @@ public:
 
     bool Follow(std::shared_ptr<GameObject> object, bool ping);
     bool Goto(const Math::Vector3& dest);
+    bool GotoDirection(const Math::Quaternion& direction, float distance);
     void Reset();
     bool HasWaypoints() const
     {

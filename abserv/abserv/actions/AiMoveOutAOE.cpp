@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AiFlee.h"
+#include "AiMoveOutAOE.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
 #include "Subsystems.h"
@@ -7,12 +7,13 @@
 #include "../Mechanic.h"
 #include "Matrix4.h"
 #include "../Game.h"
+#include "../AreaOfEffect.h"
 #include "VectorMath.h"
 
 namespace AI {
 namespace Actions {
 
-Node::Status Flee::DoAction(Agent& agent, uint32_t)
+Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
     if (!destination_.Equals(Math::Vector3::Zero) && agent.IsActionRunning(GetId()))
@@ -22,17 +23,32 @@ Node::Status Flee::DoAction(Agent& agent, uint32_t)
         return Status::Finished;
     }
 
-    // See who is damaging us and run away from that position
-    auto damager = npc.damageComp_->GetLastMeleeDamager();
+    Game::AreaOfEffect* damager = nullptr;
+    npc.VisitInRange(Game::Ranges::Aggro, [&](const Game::GameObject& object)
+    {
+        if (Game::Is<Game::AreaOfEffect>(object))
+        {
+            const auto& aoe = Game::To<Game::AreaOfEffect>(object);
+            if (aoe.IsEnemy(&npc) && aoe.HasEffect(Game::SkillEffectDamage) && aoe.IsInRange(&npc))
+            {
+                damager = const_cast<Game::AreaOfEffect*>(&aoe);
+                return Iteration::Break;
+            }
+        }
+        return Iteration::Continue;
+    });
+
+    if (!damager)
+        return Status::Finished;
 
     auto* rnd = GetSubsystem<Crypto::Random>();
     // Away from damager
     float angle = (npc.transformation_.position_.AngleY(damager->transformation_.position_) + Math::M_PIHALF) +
-        rnd->Get<float>(-30, 30);
+        rnd->Get<float>(-30.0f, 30.0f);
 
     Math::Quaternion rot(0.0f, angle, 0.0f);
     destination_ = Math::GetPosFromDirectionDistance(npc.transformation_.position_, rot,
-        Game::RangeDistances[static_cast<size_t>(Game::Ranges::Adjecent)] + rnd->Get<float>(0.1f, 0.7f));
+        Game::RangeDistances[static_cast<size_t>(damager->GetRange())] + rnd->Get<float>(0.1f, 0.7f));
     destination_.y_ = npc.GetGame()->map_->GetTerrainHeight(destination_);
 
     if (npc.autorunComp_->Goto(destination_))
