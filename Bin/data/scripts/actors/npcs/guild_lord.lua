@@ -1,5 +1,7 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
+include("/scripts/includes/attributes.lua")
+include("/scripts/includes/skill_consts.lua")
 
 name = "Guild Lord"
 level = 20
@@ -14,6 +16,8 @@ function onInit()
   local skillBar = self:GetSkillBar()
   -- Add a heal skill
   skillBar:AddSkill(1)
+  skillBar:SetAttributeValue(ATTRIB_TACTICS, 12)
+  skillBar:SetAttributeValue(ATTRIB_STRENGTH, 12)
   return true
 end
 

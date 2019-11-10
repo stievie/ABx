@@ -24,6 +24,8 @@ Node::Status Flee::DoAction(Agent& agent, uint32_t)
 
     // See who is damaging us and run away from that position
     auto damager = npc.damageComp_->GetLastMeleeDamager();
+    if (!damager)
+        return Status::Failed;
 
     auto* rnd = GetSubsystem<Crypto::Random>();
     // Away from damager

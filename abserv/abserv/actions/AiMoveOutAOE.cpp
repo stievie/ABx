@@ -39,7 +39,7 @@ Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
     });
 
     if (!damager)
-        return Status::Finished;
+        return Status::Failed;
 
     auto* rnd = GetSubsystem<Crypto::Random>();
     // Away from damager
