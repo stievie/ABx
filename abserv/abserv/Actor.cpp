@@ -682,10 +682,9 @@ int32_t Actor::GetAttackDamage(bool critical)
 
 float Actor::GetArmorPenetration()
 {
-    float value = 0.0f;
     // 1. Attribute strength
     const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
-    value += (strength * 0.01f);
+    float value = (strength * 0.01f);
     // 2. Weapons
     value += inventoryComp_->GetArmorPenetration();
     // 3. Effects
