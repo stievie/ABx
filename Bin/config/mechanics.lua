@@ -4,4 +4,4 @@
 
 require("config/functions")
 
-behaviours = "/scripts/ai/behaviours.lua"
+behaviors = "/scripts/behaviors/behaviors.lua"

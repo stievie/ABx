@@ -10,10 +10,6 @@ namespace AI {
 // sequence succeeds, then the sequence will return success to its parent.
 class Sequence : public Composite
 {
-private:
-    Nodes::iterator it_;
-protected:
-    void Initialize() override;
 public:
     NODE_FACTORY(Sequence)
     explicit Sequence(const ArgumentsType& arguments);

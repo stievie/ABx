@@ -10,7 +10,7 @@ sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior
 prof2Index = 2     -- Ranger
-behavior = "/scripts/behaviors/guild_lord.lua"
+behavior = "guild_lord"
 
 function onInit()
   local skillBar = self:GetSkillBar()

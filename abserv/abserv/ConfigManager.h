@@ -34,9 +34,6 @@ public:
         LoginRetryTimeout,
 
         Behaviours,
-        AIServer,
-        AIServerIp,
-        AIServerPort,
     };
 public:
     ConfigManager();

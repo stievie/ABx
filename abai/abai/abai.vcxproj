@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="Action.h" />
     <ClInclude Include="Agent.h" />
+    <ClInclude Include="BevaviorCache.h" />
     <ClInclude Include="Composite.h" />
     <ClInclude Include="Decorator.h" />
     <ClInclude Include="Factory.h" />
@@ -128,6 +129,7 @@
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Agent.cpp" />
     <ClInclude Include="AiDefines.h" />
+    <ClCompile Include="BevaviorCache.cpp" />
     <ClCompile Include="Composite.cpp" />
     <ClCompile Include="Decorator.cpp" />
     <ClCompile Include="Fail.cpp" />

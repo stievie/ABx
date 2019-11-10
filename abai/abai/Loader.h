@@ -5,12 +5,18 @@
 #include <string>
 #include <map>
 
+#if defined(LoadString)
+// Silly windows macros!
+#undef LoadString
+#endif
+
 namespace AI {
 
 class Node;
 class Root;
 class Condition;
 class Filter;
+class BevaviorCache;
 
 class Loader
 {
@@ -23,6 +29,7 @@ private:
     std::shared_ptr<Node> CreateNodeWidthArgs(const std::string& type, const ArgumentsType& arguments);
     std::shared_ptr<Condition> CreateConditionWidthArgs(const std::string& type, const ArgumentsType& arguments);
     std::shared_ptr<Filter> CreateFilterWidthArgs(const std::string& type, const ArgumentsType& arguments);
+    std::shared_ptr<Root> CreateTree(const std::string& name, const std::string& filename);
     // Subclasses should override it to get the full filename of an include file.
     virtual std::string GetScriptFile(const std::string file) { return file; }
 protected:
@@ -34,6 +41,7 @@ public:
     virtual ~Loader();
     std::shared_ptr<Root> LoadFile(const std::string& fileName);
     std::shared_ptr<Root> LoadString(const std::string& value);
+    void InitChache(const std::string& initScript, BevaviorCache& cache);
 };
 
 }

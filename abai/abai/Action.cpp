@@ -13,7 +13,7 @@ Action::~Action() = default;
 Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnStatus(Status::CanNotExecute);
+        return Status::CanNotExecute;
     auto status = DoAction(agent, timeElapsed);
     switch (status)
     {
@@ -27,7 +27,7 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
     default:
         break;
     }
-    return ReturnStatus(status);
+    return status;
 }
 
 }

@@ -4,6 +4,7 @@
 #include "Condition.h"
 #include "Filter.h"
 #include <sa/StringUtils.h>
+#include "BevaviorCache.h"
 
 namespace AI {
 
@@ -56,6 +57,10 @@ void Loader::RegisterLua(kaguya::State& state)
         .addOverloadedFunctions("CreateNode", &Loader::CreateNode, &Loader::CreateNodeWidthArgs)
         .addOverloadedFunctions("CreateCondition", &Loader::CreateCondition, &Loader::CreateConditionWidthArgs)
         .addOverloadedFunctions("CreateFilter", &Loader::CreateFilter, &Loader::CreateFilterWidthArgs)
+        .addFunction("CreateTree", &Loader::CreateTree)
+    );
+    state["BevaviorCache"].setClass(kaguya::UserdataMetatable<BevaviorCache>()
+        .addFunction("Add", &BevaviorCache::Add)
     );
 }
 
@@ -107,6 +112,14 @@ std::shared_ptr<Filter> Loader::CreateFilterWidthArgs(const std::string& type, c
     return result;
 }
 
+std::shared_ptr<Root> Loader::CreateTree(const std::string& name, const std::string& filename)
+{
+    auto result = LoadFile(filename);
+    if (result)
+        result->SetName(name);
+    return result;
+}
+
 std::shared_ptr<Root> Loader::LoadString(const std::string& value)
 {
     kaguya::State luaState;
@@ -120,6 +133,17 @@ std::shared_ptr<Root> Loader::LoadString(const std::string& value)
     luaState["init"](result);
 
     return result;
+}
+
+void Loader::InitChache(const std::string& initScript, BevaviorCache& cache)
+{
+    kaguya::State luaState;
+    RegisterLua(luaState);
+    luaState["self"] = this;
+    luaState["cache"] = &cache;
+    if (!ExecuteScript(luaState, initScript))
+        return;
+    luaState["init"]();
 }
 
 std::shared_ptr<Root> Loader::LoadFile(const std::string& fileName)

@@ -16,7 +16,6 @@ class TimedNode : public Node
 {
 protected:
     uint32_t millis_{ 0 };
-    uint32_t timer_{ NOT_STARTED };
 public:
     explicit TimedNode(const ArgumentsType& arguments);
     ~TimedNode() override;

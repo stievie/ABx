@@ -42,6 +42,9 @@ public:
     AgentIds filteredAgents_;
     std::set<Id> runningActions_;
     std::unordered_map<Id, size_t> limits_;
+    std::unordered_map<Id, uint32_t> timers_;
+    // Once the BT is loaded it must not be modified, so the iterators are not invalidated.
+    std::unordered_map<Id, Nodes::iterator> iterators_;
 };
 
 }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Sequence.h"
+#include "Agent.h"
 
 namespace AI {
 
@@ -9,26 +10,25 @@ Sequence::Sequence(const ArgumentsType& arguments) :
 
 Sequence::~Sequence() = default;
 
-void Sequence::Initialize()
-{
-    Composite::Initialize();
-    it_ = children_.begin();
-}
-
 Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnStatus(Status::CanNotExecute);
+        return Status::CanNotExecute;
 
-    while (it_ != children_.end())
+    const auto it = agent.iterators_.find(id_);
+    Nodes::iterator nIt = (it != agent.iterators_.end()) ? (*it).second : children_.begin();
+
+    while (nIt != children_.end())
     {
         // Call until one failed
-        Status status = (*it_)->Execute(agent, timeElapsed);
+        Status status = (*nIt)->Execute(agent, timeElapsed);
         if (status != Status::Finished)
-            return ReturnStatus(status);
-        ++it_;
+            return status;
+        ++nIt;
+        agent.iterators_.emplace(id_, nIt);
     }
-    return ReturnStatus(Status::Finished);
+    agent.iterators_.erase(id_);
+    return Status::Finished;
 }
 
 }

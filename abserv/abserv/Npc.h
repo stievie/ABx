@@ -98,7 +98,7 @@ public:
         return groupId_;
     }
     void SetGroupId(uint32_t value);
-    bool LoadBehavior(const std::string& file);
+    bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target);
     bool IsServerOnly() const { return serverOnly_; }

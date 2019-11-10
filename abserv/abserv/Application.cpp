@@ -38,6 +38,7 @@
 #include "GuildManager.h"
 #include "OutputMessage.h"
 #include "NetworkMessage.h"
+#include "BevaviorCache.h"
 
 Application* Application::Instance = nullptr;
 
@@ -84,6 +85,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
     auto* reg = GetSubsystem<AI::AiRegistry>();
     Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);
+    Subsystems::Instance.CreateSubsystem<AI::BevaviorCache>();
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 
@@ -334,6 +336,10 @@ bool Application::LoadMain()
     LOG_INFO << "Loading behavior trees...";
     auto* aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
+    auto* btCache = GetSubsystem<AI::BevaviorCache>();
+    auto* aiLoader = GetSubsystem<AI::AiLoader>();
+    const std::string& behaviors = (*config)[ConfigManager::Key::Behaviours].GetString();
+    aiLoader->InitChache(behaviors, *btCache);
     LOG_INFO << "[done]" << std::endl;
 
     // Data server

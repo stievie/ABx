@@ -16,45 +16,52 @@ TimedNode::~TimedNode() = default;
 Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnStatus(Status::CanNotExecute);
+        return Status::CanNotExecute;
 
-    if (timer_ == NOT_STARTED)
+    uint32_t timer = NOT_STARTED;
+    auto it = agent.timers_.find(id_);
+    if (it != agent.timers_.end())
+        timer = (*it).second;
+
+    if (timer == NOT_STARTED)
     {
-        timer_ = millis_;
+        timer = millis_;
         Status status = ExecuteStart(agent, timeElapsed);
         if (status == Status::Finished)
-            timer_ = NOT_STARTED;
-        return ReturnStatus(status);
+            timer = NOT_STARTED;
+        agent.timers_[id_] = timer;
+        return status;
     }
 
-    if (timer_ - timeElapsed > 0)
+    if (timer - timeElapsed > 0)
     {
-        timer_ -= timeElapsed;
+        timer -= timeElapsed;
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
-            timer_ = NOT_STARTED;
-        return ReturnStatus(status);
+            timer = NOT_STARTED;
+        agent.timers_[id_] = timer;
+        return status;
     }
 
-    timer_ = NOT_STARTED;
-    return ReturnStatus(ExecuteExpired(agent, timeElapsed));
+    agent.timers_[id_] = timer;
+    return ExecuteExpired(agent, timeElapsed);
 }
 
 Node::Status TimedNode::ExecuteStart(Agent& agent, uint32_t)
 {
     agent.runningActions_.emplace(id_);
-    return ReturnStatus(Status::Running);
+    return Status::Running;
 }
 
 Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
 {
-    return ReturnStatus(Status::Running);
+    return Status::Running;
 }
 
 Node::Status TimedNode::ExecuteExpired(Agent& agent, uint32_t)
 {
     agent.runningActions_.erase(id_);
-    return ReturnStatus(Status::Finished);
+    return Status::Finished;
 }
 
 }

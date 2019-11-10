@@ -10,13 +10,13 @@ Succeed::Succeed(const ArgumentsType& arguments) :
 Node::Status Succeed::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnStatus(Status::CanNotExecute);
+        return Status::CanNotExecute;
 
     auto status = child_->Execute(agent, timeElapsed);
     if (status == Status::Running)
-        return ReturnStatus(Status::Running);
+        return Status::Running;
 
-    return ReturnStatus(Status::Finished);
+    return Status::Finished;
 }
 
 }

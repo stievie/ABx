@@ -53,14 +53,7 @@ protected:
     Id id_;
     std::string type_;
     std::string name_;
-    Status status_{ Status::Unknown };
     std::shared_ptr<Condition> condition_;
-    Status ReturnStatus(Status status)
-    {
-        status_ = status;
-        return status_;
-    }
-    virtual void Initialize() {}
 public:
     explicit Node(const ArgumentsType& arguments);
     virtual ~Node();

@@ -10,9 +10,6 @@ class Limit : public Decorator
 {
 private:
     uint32_t limit_{ 0 };
-    bool reset_{ false };
-protected:
-    void Initialize() override;
 public:
     NODE_FACTORY(Limit)
     explicit Limit(const ArgumentsType& arguments);

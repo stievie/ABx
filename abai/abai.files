@@ -4,6 +4,8 @@ abai/Agent.cpp
 abai/Agent.h
 abai/AiDefines.h
 abai/AiTypes.h
+abai/BevaviorCache.cpp
+abai/BevaviorCache.h
 abai/Composite.cpp
 abai/Composite.h
 abai/Condition.cpp

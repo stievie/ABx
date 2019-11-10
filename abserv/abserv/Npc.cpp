@@ -8,8 +8,7 @@
 #include "Random.h"
 #include "Party.h"
 #include <Mustache/mustache.hpp>
-#include "AiRegistry.h"
-#include "AiLoader.h"
+#include "BevaviorCache.h"
 
 namespace Game {
 
@@ -32,6 +31,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("ShootAt", &Npc::ShootAt)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
+        .addFunction("SetBehavior", &Npc::SetBehavior)
     );
 }
 
@@ -135,7 +135,7 @@ bool Npc::LoadScript(const std::string& fileName)
     Initialize();
 
     if (!bt.empty())
-        LoadBehavior(bt);
+        SetBehavior(bt);
 
     return luaState_["onInit"]();
 }
@@ -168,13 +168,14 @@ void Npc::SetGroupId(uint32_t value)
     }
 }
 
-bool Npc::LoadBehavior(const std::string& file)
+bool Npc::SetBehavior(const std::string& name)
 {
-    auto* loader = GetSubsystem<AI::AiLoader>();
-    auto root = loader->LoadFile(file);
+    auto* cache = GetSubsystem<AI::BevaviorCache>();
+    auto root = cache->Get(name);
     if (!root)
     {
         aiComp_.reset();
+        LOG_WARNING << "Behavior with name " << name << " not found in cache" << std::endl;
         return false;
     }
     aiComp_ = std::make_unique<Components::AiComp>(*this);

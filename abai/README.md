@@ -6,6 +6,17 @@ but it's single threaded and simpler.
 [Here](https://outforafight.wordpress.com/2014/07/15/behaviour-behavior-trees-for-ai-dudes-part-1/)
 is a nice writeup about behavior trees.
 
+## Dependencies
+
+* [Kaguya](https://github.com/satoren/kaguya)
+* [Some headers](/Include/sa)
+
+## Features/Limitations
+
+Once a BT is created it must not be modified. Nodes do not store any state
+data, so it is safe to reuse BTs for other NPCs. The Agent object is used 
+to store state data when necessary.
+
 ## Integration
 
 You may need to subclass the following classes:
@@ -19,7 +30,9 @@ You may need to subclass the following classes:
 
 Your game object which should act somehow " intelligent" should have am `Agent`
 member and in each game update `Agent::Update()` should be called with the time
-passed since the last call of the `Update()` method on milliseconds.
+passed since the last call of the `Update()` method on milliseconds. Since most
+game engines uses seconds as floats you must multiply this value by 1000, then
+you can pass it to the `Update()` method.
 
 ### Filter
 
@@ -46,6 +59,8 @@ public:
     void Execute(Agent& agent) override;
 };
 ~~~
+
+CPP file:
 
 ~~~cpp
 void SelectAggro::Execute(Agent& agent)
@@ -108,9 +123,7 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
-    {
         return Status::Failed;
-    }
     for (auto id : selection)
     {
         auto target = npc.GetGame()->GetObjectById(id);
