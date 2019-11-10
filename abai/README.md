@@ -9,7 +9,7 @@ is a nice writeup about behavior trees.
 ## Dependencies
 
 * [Kaguya](https://github.com/satoren/kaguya)
-* [Some headers](/Include/sa)
+* [Some headers](../Include/sa)
 
 ## Features/Limitations
 
