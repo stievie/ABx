@@ -149,3 +149,23 @@ void MyRegistry::Initialize()
 
 Note: The `Initialize()` must be explicitly called by your game, e.g. when your
 game starts.
+
+### Trees
+
+The trees itself are build with Lua, hence the dependency on [Kaguya](https://github.com/satoren/kaguya).
+The loader calls the `init()` Lua function in the tree script and passes the 
+root node to it, so you could do something like this:
+
+~~~lua
+function init(root)
+  local prio = self:CreateNode("Priority")
+  prio:AddNode(stayAlive())
+  prio:AddNode(avoidDamage())
+  prio:AddNode(idle(1000))
+  root:AddNode(prio)
+end
+~~~
+
+* `self:CreateNode("type")` creates a new node of type `type`.
+* `self:CreateCondition("type")` creates a new condition of type `type`.
+* `self:CreateFilter("type")` creates a new filter of type `type`.
