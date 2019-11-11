@@ -3,6 +3,7 @@
 #include <memory>
 #include "Vector3.h"
 #include "Quaternion.h"
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -23,13 +24,12 @@ private:
     Math::Vector3 destination_;
     std::weak_ptr<Actor> following_;
     void Pop();
-    const Math::Vector3& Next() const
-    {
-        return wayPoints_[0];
-    }
+    Math::Vector3 Next();
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
     void OnCollide(GameObject* other);
+    void OnStuck();
+    Math::Vector3 AvoidObstacles(const Math::Vector3& destination);
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
     AutoRunComp() = delete;
@@ -39,7 +39,7 @@ public:
     AutoRunComp& operator=(const AutoRunComp&) = delete;
     ~AutoRunComp() = default;
 
-    bool Follow(std::shared_ptr<GameObject> object, bool ping);
+    bool Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist = RANGE_TOUCH);
     bool Goto(const Math::Vector3& dest);
     bool GotoDirection(const Math::Quaternion& direction, float distance);
     void Reset();

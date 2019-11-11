@@ -153,6 +153,8 @@ public:
     {
         return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
     }
+    void Clamp(const Vector3& min, const Vector3& max);
+    void Clamp(float min, float max);
 
     std::string ToString() const
     {

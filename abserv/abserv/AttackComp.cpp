@@ -91,6 +91,27 @@ void AttackComp::FireWeapon(Actor& target)
     }
 }
 
+void AttackComp::MoveToTarget(std::shared_ptr<Actor> target)
+{
+    if (!owner_.autorunComp_->IsAutoRun())
+    {
+        Item* item = owner_.GetWeapon();
+        float dist = item ? item->GetWeaponRange() : RANGE_TOUCH;
+        if (owner_.autorunComp_->Follow(target, false, dist))
+        {
+            owner_.followedObject_ = target;
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+            owner_.autorunComp_->SetAutoRun(true);
+        }
+        else
+        {
+            // No way to get to the target
+            attacking_ = false;
+            SetAttackState(false);
+        }
+    }
+}
+
 void AttackComp::Update(uint32_t /* timeElapsed */)
 {
     if (!attacking_ || pause_)
@@ -118,21 +139,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     // We need to move to the target
     if (!CheckRange())
     {
-        if (!owner_.autorunComp_->IsAutoRun())
-        {
-            if (owner_.autorunComp_->Follow(target, false))
-            {
-                owner_.followedObject_ = target;
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_->SetAutoRun(true);
-            }
-            else
-            {
-                // No way to get to the target
-                attacking_ = false;
-                SetAttackState(false);
-            }
-        }
+        MoveToTarget(target);
         return;
     }
     else

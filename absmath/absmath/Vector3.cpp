@@ -186,4 +186,18 @@ void Vector3::Normalize()
     }
 }
 
+void Vector3::Clamp(const Vector3& min, const Vector3& max)
+{
+    Math::Clamp(x_, min.x_, max.x_);
+    Math::Clamp(y_, min.y_, max.y_);
+    Math::Clamp(z_, min.z_, max.z_);
+}
+
+void Vector3::Clamp(float min, float max)
+{
+    Math::Clamp(x_, min, max);
+    Math::Clamp(y_, min, max);
+    Math::Clamp(z_, min, max);
+}
+
 }

@@ -328,12 +328,25 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
         return false;
 
     std::vector<Math::RayQueryResult> res;
-    Math::Ray ray(position, direction);
-    Math::RayOctreeQuery query(res, ray, maxDist, this);
+    if (!Raycast(result, position, direction, maxDist))
+        return false;
+
+    for (const auto& o : res)
+        result.push_back(o.object_);
+    return true;
+}
+
+bool GameObject::Raycast(std::vector<Math::RayQueryResult>& result,
+    const Math::Vector3& position, const Math::Vector3& direction,
+    float maxDist /* = Math::M_INFINITE */) const
+{
+    if (!octant_)
+        return false;
+
+    const Math::Ray ray(position, direction);
+    Math::RayOctreeQuery query(result, ray, maxDist, this);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
-    for (const auto& o : query.result_)
-        result.push_back(o.object_);
     return true;
 }
 

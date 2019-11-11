@@ -39,6 +39,7 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
         LOG_DEBUG << "going back to " << oldPos.ToString() << std::endl;
 #endif
         GotoSafePosition();
+        owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
         return false;
     }
 

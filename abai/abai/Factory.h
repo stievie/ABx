@@ -19,7 +19,7 @@ class FactoryRegistry
 {
 protected:
     using FactoryMap = std::map<const Key, const AbstractFactory<T>*>;
-    FactoryMap factores_;
+    FactoryMap factories_;
 public:
     FactoryRegistry() = default;
     FactoryRegistry(const FactoryRegistry&) = delete;
@@ -27,27 +27,27 @@ public:
 
     bool RegisterFactory(const Key& key, const AbstractFactory<T>& factory)
     {
-        const auto it = factores_.find(key);
-        if (it != factores_.end())
+        const auto it = factories_.find(key);
+        if (it != factories_.end())
             return false;
 
-        factores_[key] = &factory;
+        factories_[key] = &factory;
         return true;
     }
 
     bool UnregisterFactory(const Key& key)
     {
-        auto it = factores_.find(key);
-        if (it == factores_.end())
+        auto it = factories_.find(key);
+        if (it == factories_.end())
             return false;
-        factores_.erase(it);
+        factories_.erase(it);
         return true;
     }
 
     std::shared_ptr<T> Create(const Key& key, const ArgumentsType& arguments) const
     {
-        const auto it = factores_.find(key);
-        if (it == factores_.end())
+        const auto it = factories_.find(key);
+        if (it == factories_.end())
             return std::shared_ptr<T>();
 
         const auto* factory = (*it).second;

@@ -14,9 +14,10 @@ AutoRunComp::AutoRunComp(Actor& owner) :
     owner_(owner)
 {
     owner_.SubscribeEvent<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AutoRunComp::OnCollide, this, std::placeholders::_1));
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_STUCK, std::bind(&AutoRunComp::OnStuck, this));
 }
 
-bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
+bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
 {
     auto actor = object->GetThis<Actor>();
     if (!actor)
@@ -29,7 +30,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
     }
 
     following_ = actor;
-    maxDist_ = RANGE_TOUCH;
+    maxDist_ = maxDist;
     if (auto f = following_.lock())
     {
         wayPoints_.clear();
@@ -89,6 +90,15 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     return false;
 }
 
+void AutoRunComp::OnStuck()
+{
+    if (IsAutoRun())
+    {
+        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+        SetAutoRun(false);
+    }
+}
+
 void AutoRunComp::OnCollide(GameObject* other)
 {
     if (auto fo = following_.lock())
@@ -117,6 +127,55 @@ void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
     owner_.moveComp_->Move(
         owner_.moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED),
         Math::Vector3::UnitZ);
+}
+
+Math::Vector3 AutoRunComp::Next()
+{
+    return AvoidObstacles(wayPoints_[0]);
+}
+
+Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
+{
+    // https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777
+    const Math::Vector3& pos = owner_.transformation_.position_;
+
+    // Raycast to the point and see if there is a hit.
+    std::vector<Math::RayQueryResult> result;
+    float dist = pos.Distance(destination);
+    if (!owner_.Raycast(result, pos, destination - pos, dist))
+        // No Octree (shouldn't happen)
+        return destination;
+    if (result.size() == 0)
+        // Lucky, no obstacles
+        return destination;
+
+    Math::RayQueryResult* hit = nullptr;
+    for (auto& r : result)
+    {
+        if (!Is<TerrainPatch>(r.object_))
+        {
+            hit = &r;
+            break;
+        }
+    }
+    if (!hit)
+        // Only TerrainPatches
+        return destination;
+    // May be the object we are moving to
+    if (hit->object_->transformation_.position_.Distance(destination) < 1.0f)
+        return destination;
+
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "Obstacle " << object->object_->GetName() << std::endl;
+#endif
+
+    const Math::Vector3 direction = (destination - pos).Normal();
+    const Math::Vector3& obstacleCenter = hit->object_->transformation_.position_;
+    const Math::Vector3 avoidance = (direction + obstacleCenter).Normal();
+
+    // TODO: Check if this solution is possible
+    // TODO: Also need to recalculate the whole route?
+    return destination + avoidance;
 }
 
 void AutoRunComp::Update(uint32_t timeElapsed)
@@ -155,18 +214,14 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         return;
     }
 
-    const Math::Vector3& pt = Next();
+    const Math::Vector3 pt = Next();
     const float distance = pt.Distance(pos);
 
     if (distance > SWITCH_WAYPOINT_DIST)
-    {
         MoveTo(timeElapsed, pt);
-    }
     else
-    {
         // If we are close to this point remove it from the list
         Pop();
-    }
 }
 
 void AutoRunComp::SetAutoRun(bool value)

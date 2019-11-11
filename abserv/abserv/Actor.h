@@ -43,6 +43,7 @@ static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnIn
 static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
 static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
 static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
+static constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
 
 /// Player, NPC, Monster some such
 class Actor : public GameObject

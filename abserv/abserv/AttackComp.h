@@ -32,6 +32,7 @@ private:
     void StartHit(Actor& target);
     void Hit(Actor& target);
     void FireWeapon(Actor& target);
+    void MoveToTarget(std::shared_ptr<Actor> target);
 public:
     AttackComp() = delete;
     explicit AttackComp(Actor& owner) :

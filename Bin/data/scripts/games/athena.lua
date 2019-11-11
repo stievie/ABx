@@ -38,8 +38,8 @@ function onStart()
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then
-    local x = 2.5
-    local z = 17
+    local x = 4.08
+    local z = 16.6
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetHomePos({x, y, z})

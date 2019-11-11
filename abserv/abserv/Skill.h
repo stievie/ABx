@@ -8,6 +8,7 @@
 namespace Game {
 
 class Actor;
+class SkillBar;
 
 enum SkillEffect : uint32_t
 {
@@ -40,6 +41,7 @@ enum class CostType
 
 class Skill
 {
+    friend class SkillBar;
 private:
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -69,6 +71,8 @@ private:
     bool _LuaIsElite() const { return data_.isElite; }
     std::string _LuaGetName() const { return data_.name; }
     int32_t GetActivation(Actor& source, int32_t activation);
+    // Only SkillBar may use this
+    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -86,7 +90,6 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)

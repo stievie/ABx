@@ -259,6 +259,7 @@ public:
 
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool Raycast(std::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool IsObjectInSight(const GameObject& object) const;
     /// Remove this object from scene
     void Remove();
