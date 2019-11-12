@@ -118,8 +118,6 @@ Actor::Actor() :
      * <attribute name="Size" value="0.3 1.7 0.5"/>
      * <attribute name="Offset Position" value="0 0.85 0"/>
     */
-    static constexpr Math::Vector3 CREATURTE_BB_MIN(-0.15f, 0.0f, -0.25f);
-    static constexpr Math::Vector3 CREATURTE_BB_MAX(0.15f, 1.7f, 0.25f);
     SetCollisionShape(
         std::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)

@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "VectorMath.h"
 
+//#define DEBUG_NAVIGATION
+
 namespace Game {
 namespace Components {
 
@@ -136,46 +138,67 @@ Math::Vector3 AutoRunComp::Next()
 
 Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
 {
-    // https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777
     const Math::Vector3& pos = owner_.transformation_.position_;
 
     // Raycast to the point and see if there is a hit.
-    std::vector<Math::RayQueryResult> result;
-    float dist = pos.Distance(destination);
-    if (!owner_.Raycast(result, pos, destination - pos, dist))
-        // No Octree (shouldn't happen)
-        return destination;
-    if (result.size() == 0)
-        // Lucky, no obstacles
-        return destination;
-
-    Math::RayQueryResult* hit = nullptr;
-    for (auto& r : result)
+    auto raycast = [&pos, this](const Math::Vector3& dest) -> Math::RayQueryResult*
     {
-        if (!Is<TerrainPatch>(r.object_))
+        std::vector<Math::RayQueryResult> result;
+        float dist = pos.Distance(dest);
+        if (!owner_.Raycast(result, pos, dest - pos, dist))
+            // No Octree (shouldn't happen)
+            return nullptr;
+        if (result.size() == 0)
+            // Lucky, no obstacles
+            return nullptr;
+
+        // The first non-TerrainPatch hit
+        Math::RayQueryResult* hit = nullptr;
+        for (auto& r : result)
         {
-            hit = &r;
-            break;
+            if (!Is<TerrainPatch>(r.object_))
+            {
+                hit = &r;
+                break;
+            }
         }
-    }
+        if (hit)
+        {
+            // May be the object we are moving to.
+            // 0.5 = a bit more than the approx. extends of an average creature BB.
+            if (hit->object_->transformation_.position_.Distance(dest) < AVERAGE_BB_EXTENDS * 2.0f)
+                return nullptr;
+        }
+        return hit;
+    };
+
+    auto* hit = raycast(destination);
     if (!hit)
-        // Only TerrainPatches
-        return destination;
-    // May be the object we are moving to
-    if (hit->object_->transformation_.position_.Distance(destination) < 1.0f)
+        // Nothing or only TerrainPatches on the way
         return destination;
 
 #ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "Obstacle " << object->object_->GetName() << std::endl;
+//    LOG_DEBUG << "Obstacle " << hit->object_->GetName() << " on the way to " << destination.ToString() << std::endl;
 #endif
 
-    const Math::Vector3 direction = (destination - pos).Normal();
-    const Math::Vector3& obstacleCenter = hit->object_->transformation_.position_;
-    const Math::Vector3 avoidance = (direction + obstacleCenter).Normal();
+    const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
+    const Math::Vector3 size = bb.Size();
+    const Math::Vector3 x = bb.Center() - hit->position_;
+    const Math::Vector3 newDest = hit->position_ + (x.LengthSqr() > 0.0f ? size : -size);
+    auto* newHit = raycast(newDest);
+    if (newHit)
+    {
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "Stuck: new destination " << newDest.ToString() << std::endl;
+#endif
+        owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
+        return destination;
+    }
 
-    // TODO: Check if this solution is possible
-    // TODO: Also need to recalculate the whole route?
-    return destination + avoidance;
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "New destination " << newDest.ToString() << std::endl;
+#endif
+    return newDest;
 }
 
 void AutoRunComp::Update(uint32_t timeElapsed)
@@ -214,14 +237,17 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         return;
     }
 
-    const Math::Vector3 pt = Next();
-    const float distance = pt.Distance(pos);
+    // Here we must have some waypoints left
+    const Math::Vector3 currWp = Next();
+    const float distance = currWp.Distance(pos);
 
     if (distance > SWITCH_WAYPOINT_DIST)
-        MoveTo(timeElapsed, pt);
+        MoveTo(timeElapsed, currWp);
     else
+    {
         // If we are close to this point remove it from the list
         Pop();
+    }
 }
 
 void AutoRunComp::SetAutoRun(bool value)

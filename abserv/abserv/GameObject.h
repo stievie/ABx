@@ -45,11 +45,11 @@ class Player;
 class AreaOfEffect;
 class Skill;
 
-static constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
-static constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
-static constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
-static constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
-static constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
+constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
+constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
+constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
+constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
+constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
 
 using GameObjectEvents = sa::Events<
     void(void),

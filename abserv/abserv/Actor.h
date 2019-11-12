@@ -21,29 +21,33 @@
 
 namespace Game {
 
-static constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = sa::StringHash("OnKnockedDown");
-static constexpr sa::event_t EVENT_ON_HEALED = sa::StringHash("OnHealed");
-static constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");
-static constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
-static constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
-static constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
-static constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
-static constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
-static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
-static constexpr sa::event_t EVENT_ON_USESKILL = sa::StringHash("OnUseSkill");
-static constexpr sa::event_t EVENT_ON_SKILLTARGETED = sa::StringHash("OnSkillTargeted");
-static constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = sa::StringHash("OnGetCriticalHit");
-static constexpr sa::event_t EVENT_ON_ENDUSESKILL = sa::StringHash("OnEndUseSkill");
-static constexpr sa::event_t EVENT_ON_STARTUSESKILL = sa::StringHash("OnStartUseSkill");
-static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = sa::StringHash("OnHandleCommand");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnInterruptingAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
-static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
-static constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
+constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
+constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
+constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
+constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = sa::StringHash("OnKnockedDown");
+constexpr sa::event_t EVENT_ON_HEALED = sa::StringHash("OnHealed");
+constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");
+constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
+constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
+constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
+constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
+constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
+constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
+constexpr sa::event_t EVENT_ON_USESKILL = sa::StringHash("OnUseSkill");
+constexpr sa::event_t EVENT_ON_SKILLTARGETED = sa::StringHash("OnSkillTargeted");
+constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = sa::StringHash("OnGetCriticalHit");
+constexpr sa::event_t EVENT_ON_ENDUSESKILL = sa::StringHash("OnEndUseSkill");
+constexpr sa::event_t EVENT_ON_STARTUSESKILL = sa::StringHash("OnStartUseSkill");
+constexpr sa::event_t EVENT_ON_HANDLECOMMAND = sa::StringHash("OnHandleCommand");
+constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnInterruptingAttack");
+constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
+constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
+constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
+constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
+
+constexpr Math::Vector3 CREATURTE_BB_MIN(-0.15f, 0.0f, -0.25f);
+constexpr Math::Vector3 CREATURTE_BB_MAX(0.15f, 1.7f, 0.25f);
+constexpr float AVERAGE_BB_EXTENDS = 0.3f;
 
 /// Player, NPC, Monster some such
 class Actor : public GameObject
