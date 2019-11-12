@@ -10,7 +10,7 @@ class Die : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(Die)
+    NODE_CLASS(Die)
     explicit Die(const ArgumentsType& arguments);
 };
 

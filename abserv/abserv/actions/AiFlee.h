@@ -13,7 +13,7 @@ private:
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(Flee)
+    NODE_CLASS(Flee)
     explicit Flee(const ArgumentsType& arguments) :
         Action(arguments)
     { }

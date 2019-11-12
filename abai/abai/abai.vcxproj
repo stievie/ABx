@@ -113,6 +113,7 @@
     <ClInclude Include="Root.h" />
     <ClInclude Include="Succeed.h" />
     <ClInclude Include="UntilFail.h" />
+    <ClInclude Include="UntilSuccess.h" />
     <ClInclude Include="ZoneFilter.h" />
     <ClInclude Include="LogicConditions.h" />
     <ClInclude Include="Condition.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Root.cpp" />
     <ClCompile Include="Succeed.cpp" />
     <ClCompile Include="UntilFail.cpp" />
+    <ClCompile Include="UntilSuccess.cpp" />
     <ClCompile Include="ZoneFilter.cpp" />
     <ClCompile Include="LogicConditions.cpp" />
     <ClCompile Include="Condition.cpp" />

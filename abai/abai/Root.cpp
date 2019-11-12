@@ -5,9 +5,7 @@ namespace AI {
 
 Root::Root() :
     Decorator(ArgumentsType{})
-{
-    type_ = "Root";
-}
+{ }
 
 Node::Status Root::Execute(Agent& agent, uint32_t timeElapsed)
 {

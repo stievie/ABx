@@ -11,7 +11,6 @@ private:
     asio::io_service& ioService_;
     asio::ip::address_v4 localhostAddress;
     asio::ip::tcp::acceptor acceptor_;
-    // TODO: We need one bridge for each connection...
     std::shared_ptr<Bridge> session_;
     GetServiceCallback getServiceCallback_;
     void HandleAccept(const std::error_code& error);

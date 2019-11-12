@@ -4,15 +4,15 @@
 
 namespace AI {
 
-// Run the child until it fails. Then it retutrns Finished.
-class UntilFail : public Decorator
+class UntilSuccess : public Decorator
 {
 public:
-    NODE_CLASS(UntilFail)
-    explicit UntilFail(const ArgumentsType& arguments) :
+    NODE_CLASS(UntilSuccess)
+    explicit UntilSuccess(const ArgumentsType& arguments) :
         Decorator(arguments)
     { }
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };
 
 }
+

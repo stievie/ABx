@@ -10,7 +10,7 @@ class GoHome : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(GoHome)
+    NODE_CLASS(GoHome)
     explicit GoHome(const ArgumentsType& arguments);
 };
 

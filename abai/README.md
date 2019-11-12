@@ -8,6 +8,7 @@ is a nice writeup about behavior trees.
 
 ## Dependencies
 
+* [Lua 5.3](https://www.lua.org/)
 * [Kaguya](https://github.com/satoren/kaguya)
 * [Some headers](../Include/sa)
 
@@ -165,9 +166,9 @@ game starts.
 
 ### Trees
 
-The trees itself are build with Lua, hence the dependency on [Kaguya](https://github.com/satoren/kaguya).
-The loader calls the `init()` Lua function in the tree script and passes the 
-root node to it, so you could do something like this:
+The trees itself are build with Lua, hence the dependency on [Kaguya](https://github.com/satoren/kaguya)
+and [Lua](https://www.lua.org/). The loader calls the `init()` Lua function in 
+the tree script and passes the root node to it, so you could do something like this:
 
 ~~~lua
 function init(root)

@@ -9,7 +9,7 @@ namespace Conditions {
 class IsAttacked : public AI::Condition
 {
 public:
-    CONDITON_FACTORY(IsAttacked)
+    CONDITON_CLASS(IsAttacked)
 
     explicit IsAttacked(const ArgumentsType& arguments) :
         Condition(arguments)

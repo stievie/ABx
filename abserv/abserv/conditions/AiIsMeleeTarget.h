@@ -9,7 +9,7 @@ namespace Conditions {
 class IsMeleeTarget : public AI::Condition
 {
 public:
-    CONDITON_FACTORY(IsMeleeTarget)
+    CONDITON_CLASS(IsMeleeTarget)
 
     explicit IsMeleeTarget(const ArgumentsType& arguments) :
         Condition(arguments)

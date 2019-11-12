@@ -8,7 +8,7 @@ namespace Filters {
 class SelectAttackers : public Filter
 {
 public:
-    FILTER_FACTORY(SelectAttackers)
+    FILTER_CLASS(SelectAttackers)
     explicit SelectAttackers(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

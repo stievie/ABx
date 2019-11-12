@@ -10,7 +10,7 @@ class RandomCondition : public Condition
 private:
     float weight_{ 1.0f };
 public:
-    CONDITON_FACTORY(RandomCondition)
+    CONDITON_CLASS(RandomCondition)
     explicit RandomCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&) override;
 };

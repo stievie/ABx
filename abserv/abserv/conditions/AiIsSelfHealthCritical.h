@@ -9,7 +9,7 @@ namespace Conditions {
 class IsSelfHealthCritical : public AI::Condition
 {
 public:
-    CONDITON_FACTORY(IsSelfHealthCritical)
+    CONDITON_CLASS(IsSelfHealthCritical)
 
     explicit IsSelfHealthCritical(const ArgumentsType& arguments) :
         Condition(arguments)

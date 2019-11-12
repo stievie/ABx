@@ -13,7 +13,7 @@ private:
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(MoveOutAOE)
+    NODE_CLASS(MoveOutAOE)
     explicit MoveOutAOE(const ArgumentsType& arguments) :
         Action(arguments)
     { }

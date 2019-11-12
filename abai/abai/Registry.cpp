@@ -15,6 +15,7 @@
 #include "Root.h"
 #include "Repeater.h"
 #include "UntilFail.h"
+#include "UntilSuccess.h"
 
 namespace AI {
 
@@ -34,6 +35,7 @@ void Registry::Initialize()
     RegisterNodeFactory("Limit", Limit::GetFactory());
     RegisterNodeFactory("Repeater", Repeater::GetFactory());
     RegisterNodeFactory("UntilFail", UntilFail::GetFactory());
+    RegisterNodeFactory("UntilSuccess", UntilSuccess::GetFactory());
 
     RegisterConditionFactory("And", Conditions::AndCondition::GetFactory());
     RegisterConditionFactory("False", Conditions::FalseCondition::GetFactory());

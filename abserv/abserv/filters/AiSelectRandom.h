@@ -10,7 +10,7 @@ class SelectRandom : public Filter
 protected:
     uint32_t count_;
 public:
-    FILTER_FACTORY(SelectRandom)
+    FILTER_CLASS(SelectRandom)
     explicit SelectRandom(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

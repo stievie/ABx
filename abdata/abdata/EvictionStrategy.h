@@ -58,7 +58,7 @@ public:
 private:
     uint64_t GetNextRank()
     {
-        //NOTE not thread safe
+        // NOTE: Not thread safe
         return currentRank_++;
     }
     uint64_t currentRank_;

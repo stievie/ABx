@@ -8,7 +8,7 @@ namespace Filters {
 class SelectVisible : public Filter
 {
 public:
-    FILTER_FACTORY(SelectVisible)
+    FILTER_CLASS(SelectVisible)
     explicit SelectVisible(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

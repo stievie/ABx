@@ -51,6 +51,8 @@ abai/TimedNode.cpp
 abai/TimedNode.h
 abai/UntilFail.cpp
 abai/UntilFail.h
+abai/UntilSuccess.cpp
+abai/UntilSuccess.h
 abai/Zone.cpp
 abai/Zone.h
 abai/ZoneFilter.cpp

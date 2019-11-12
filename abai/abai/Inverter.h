@@ -8,7 +8,7 @@ namespace AI {
 class Inverter : public Decorator
 {
 public:
-    NODE_FACTORY(Inverter)
+    NODE_CLASS(Inverter)
     explicit Inverter(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };

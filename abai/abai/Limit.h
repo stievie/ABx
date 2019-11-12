@@ -11,7 +11,7 @@ class Limit : public Decorator
 private:
     uint32_t limit_{ 0 };
 public:
-    NODE_FACTORY(Limit)
+    NODE_CLASS(Limit)
     explicit Limit(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };

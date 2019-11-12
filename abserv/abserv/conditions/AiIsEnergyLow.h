@@ -9,7 +9,7 @@ namespace Conditions {
 class IsEnergyLow : public AI::Condition
 {
 public:
-    CONDITON_FACTORY(IsEnergyLow)
+    CONDITON_CLASS(IsEnergyLow)
 
     explicit IsEnergyLow(const ArgumentsType& arguments) :
         Condition(arguments)

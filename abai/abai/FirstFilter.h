@@ -8,7 +8,7 @@ namespace Filters {
 class FirstFilter : public Filter
 {
 public:
-    FILTER_FACTORY(FirstFilter)
+    FILTER_CLASS(FirstFilter)
     explicit FirstFilter(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

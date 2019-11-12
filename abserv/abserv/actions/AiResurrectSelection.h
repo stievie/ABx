@@ -10,7 +10,7 @@ class ResurrectSelection : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(ResurrectSelection)
+    NODE_CLASS(ResurrectSelection)
     explicit ResurrectSelection(const ArgumentsType& arguments) :
         Action(arguments)
     { }

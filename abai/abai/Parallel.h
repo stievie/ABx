@@ -8,7 +8,7 @@ namespace AI {
 class Parallel : public Composite
 {
 public:
-    NODE_FACTORY(Parallel)
+    NODE_CLASS(Parallel)
     explicit Parallel(const ArgumentsType& arguments);
     ~Parallel() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

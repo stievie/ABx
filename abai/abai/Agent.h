@@ -39,6 +39,7 @@ public:
     bool IsActionRunning(Id id) const { return runningActions_.find(id) != runningActions_.end(); }
 
     bool pause_{ false };
+    // Selected Agent IDs
     AgentIds filteredAgents_;
     std::set<Id> runningActions_;
     std::unordered_map<Id, size_t> limits_;

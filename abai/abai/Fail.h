@@ -8,7 +8,7 @@ namespace AI {
 class Fail : public Decorator
 {
 public:
-    NODE_FACTORY(Fail)
+    NODE_CLASS(Fail)
     explicit Fail(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };

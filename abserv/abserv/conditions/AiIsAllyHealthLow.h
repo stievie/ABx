@@ -9,7 +9,7 @@ namespace Conditions {
 class IsAllyHealthLow : public AI::Condition
 {
 public:
-    CONDITON_FACTORY(IsAllyHealthLow)
+    CONDITON_CLASS(IsAllyHealthLow)
 
     explicit IsAllyHealthLow(const ArgumentsType& arguments) :
         Condition(arguments)

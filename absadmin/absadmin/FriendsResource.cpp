@@ -6,7 +6,7 @@ namespace Resources {
 
 bool FriendsResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
-    // TODO:
+    // TODO: Implement this
     (void)objects;
     return false;
 }

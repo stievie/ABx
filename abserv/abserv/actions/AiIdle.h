@@ -8,7 +8,7 @@ namespace Actions {
 class Idle : public TimedNode
 {
 public:
-    NODE_FACTORY(Idle)
+    NODE_CLASS(Idle)
     explicit Idle(const ArgumentsType& arguments) :
         TimedNode(arguments)
     { }

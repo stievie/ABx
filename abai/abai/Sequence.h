@@ -11,7 +11,7 @@ namespace AI {
 class Sequence : public Composite
 {
 public:
-    NODE_FACTORY(Sequence)
+    NODE_CLASS(Sequence)
     explicit Sequence(const ArgumentsType& arguments);
     ~Sequence() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

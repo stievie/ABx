@@ -8,7 +8,7 @@ namespace Filters {
 class SelectLowHealth : public Filter
 {
 public:
-    FILTER_FACTORY(SelectLowHealth)
+    FILTER_CLASS(SelectLowHealth)
     explicit SelectLowHealth(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

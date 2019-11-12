@@ -10,7 +10,7 @@ namespace AI {
 class Repeater : public Decorator
 {
 public:
-    NODE_FACTORY(Repeater)
+    NODE_CLASS(Repeater)
     explicit Repeater(const ArgumentsType& arguments) :
         Decorator(arguments)
     { }

@@ -10,7 +10,7 @@ class HealSelf : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(HealSelf)
+    NODE_CLASS(HealSelf)
     explicit HealSelf(const ArgumentsType& arguments);
 };
 

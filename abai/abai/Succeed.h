@@ -8,7 +8,7 @@ namespace AI {
 class Succeed : public Decorator
 {
 public:
-    NODE_FACTORY(Succeed)
+    NODE_CLASS(Succeed)
     explicit Succeed(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };

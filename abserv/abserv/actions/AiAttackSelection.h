@@ -12,7 +12,7 @@ class AttackSelection : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(AttackSelection)
+    NODE_CLASS(AttackSelection)
     explicit AttackSelection(const ArgumentsType& arguments);
 };
 

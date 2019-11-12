@@ -11,7 +11,7 @@ class IsCloseToSelection : public AI::Condition
 private:
     float distance_;
 public:
-    CONDITON_FACTORY(IsCloseToSelection)
+    CONDITON_CLASS(IsCloseToSelection)
 
     explicit IsCloseToSelection(const ArgumentsType& arguments);
     bool Evaluate(AI::Agent&) override;
