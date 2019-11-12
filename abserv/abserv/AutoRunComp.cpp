@@ -183,8 +183,8 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
 
     const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
     const Math::Vector3 size = bb.Size();
-    const Math::Vector3 x = bb.Center() - hit->position_;
-    const Math::Vector3 newDest = hit->position_ + (x.LengthSqr() > 0.0f ? size : -size);
+    const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
+    const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
     auto* newHit = raycast(newDest);
     if (newHit)
     {
