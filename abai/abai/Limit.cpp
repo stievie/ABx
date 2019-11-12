@@ -16,14 +16,14 @@ Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
         return Node::Status::CanNotExecute;
 
-    const size_t executions = (agent.context_.Exists<size_t>(id_)) ? agent.context_.Get<size_t>(id_) : 0;
+    const size_t executions = (agent.context_.Exists<limit_type>(id_)) ? agent.context_.Get<limit_type>(id_) : 0;
 
     if (executions >= limit_)
         return Node::Status::Finished;
 
     auto status = child_->Execute(agent, timeElapsed);
 
-    agent.context_.Set(id_, executions + 1);
+    agent.context_.Set<limit_type>(id_, executions + 1);
     if (status == Node::Status::Running)
         return Node::Status::Running;
 

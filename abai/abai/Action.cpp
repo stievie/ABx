@@ -18,11 +18,11 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
     switch (status)
     {
     case Status::Running:
-        agent.runningActions_.emplace(id_);
+        agent.context_.runningActions_.emplace(id_);
         break;
     case Status::Finished:
     case Status::Failed:
-        agent.runningActions_.erase(id_);
+        agent.context_.runningActions_.erase(id_);
         break;
     default:
         break;

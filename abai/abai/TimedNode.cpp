@@ -19,8 +19,8 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         return Status::CanNotExecute;
 
     uint32_t timer = NOT_STARTED;
-    if (agent.context_.Exists<uint32_t>(id_))
-        timer = agent.context_.Get<uint32_t>(id_);
+    if (agent.context_.Exists<timer_type>(id_))
+        timer = agent.context_.Get<timer_type>(id_);
 
     if (timer == NOT_STARTED)
     {
@@ -28,7 +28,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteStart(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.context_.Set(id_, timer);
+        agent.context_.Set<timer_type>(id_, timer);
         return status;
     }
 
@@ -38,17 +38,17 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.context_.Set(id_, timer);
+        agent.context_.Set<timer_type>(id_, timer);
         return status;
     }
 
-    agent.context_.Set(id_, timer);
+    agent.context_.Set<timer_type>(id_, timer);
     return ExecuteExpired(agent, timeElapsed);
 }
 
 Node::Status TimedNode::ExecuteStart(Agent& agent, uint32_t)
 {
-    agent.runningActions_.emplace(id_);
+    agent.context_.runningActions_.emplace(id_);
     return Status::Running;
 }
 
@@ -59,7 +59,7 @@ Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
 
 Node::Status TimedNode::ExecuteExpired(Agent& agent, uint32_t)
 {
-    agent.runningActions_.erase(id_);
+    agent.context_.runningActions_.erase(id_);
     return Status::Finished;
 }
 

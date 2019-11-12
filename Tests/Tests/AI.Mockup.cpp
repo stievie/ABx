@@ -39,14 +39,14 @@ Node::Status RunningAction::DoAction(Agent&, uint32_t)
 
 Node::Status Running2Action::DoAction(Agent& agent, uint32_t)
 {
-    uint32_t runs = (agent.context_.Exists<uint32_t>(id_) ? agent.context_.Get<uint32_t>(id_) : 0);
+    uint32_t runs = (agent.context_.Exists<counter_type>(id_) ? agent.context_.Get<counter_type>(id_) : 0);
     ++runs;
     if (runs == 1)
     {
-        agent.context_.Set(id_, runs);
+        agent.context_.Set<counter_type>(id_, runs);
         return Status::Running;
     }
-    agent.context_.Set(id_, runs);
+    agent.context_.Set<counter_type>(id_, runs);
     return Status::Finished;
 }
 
