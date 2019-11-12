@@ -15,7 +15,7 @@ Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
         return Status::CanNotExecute;
 
-    Nodes::iterator nIt = agent.context_.Exists<Nodes::iterator>(id_) ? agent.context_.Get<Nodes::iterator>(id_) : children_.begin();
+    Nodes::iterator nIt = agent.context_.Has<Nodes::iterator>(id_) ? agent.context_.Get<Nodes::iterator>(id_) : children_.begin();
 
     while (nIt != children_.end())
     {

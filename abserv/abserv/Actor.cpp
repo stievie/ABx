@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "Actor.h"
+#include "ConfigManager.h"
 #include "EffectManager.h"
 #include "Game.h"
-#include <AB/ProtocolCodes.h>
-#include "Logger.h"
-#include "OctreeQuery.h"
 #include "GameManager.h"
-#include "MathUtils.h"
-#include "ScriptManager.h"
-#include "ConfigManager.h"
-#include "TemplateEncoder.h"
 #include "Item.h"
 #include "ItemFactory.h"
-#include "Scheduler.h"
+#include "ItemsCache.h"
+#include "Logger.h"
+#include "MathUtils.h"
+#include "OctreeQuery.h"
 #include "PartyManager.h"
 #include "Player.h"
-#include "ItemsCache.h"
+#include "Scheduler.h"
+#include "ScriptManager.h"
+#include "TemplateEncoder.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 

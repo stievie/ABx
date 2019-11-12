@@ -34,7 +34,8 @@ inline T Clamp(T value, T min, T max)
 template <typename T>
 inline bool Equals(T lhs, T rhs)
 {
-    return lhs + std::numeric_limits<T>::epsilon() >= rhs && lhs - std::numeric_limits<T>::epsilon() <= rhs;
+    return lhs + std::numeric_limits<T>::epsilon() >= rhs &&
+        lhs - std::numeric_limits<T>::epsilon() <= rhs;
 }
 
 template <typename T>
@@ -46,7 +47,7 @@ inline bool Equals(T lhs, T rhs, T epsilon)
 template <typename T>
 inline bool IsInfinite(T value)
 {
-    static_assert(std::numeric_limits<T>::has_infinity);
+    static_assert(std::numeric_limits<T>::has_infinity, "T has no infinity");
     return Equals(value, std::numeric_limits<T>::infinity());
 }
 

@@ -16,7 +16,9 @@ Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
         return Node::Status::CanNotExecute;
 
-    const size_t executions = (agent.context_.Exists<limit_type>(id_)) ? agent.context_.Get<limit_type>(id_) : 0;
+    size_t executions = 0;
+    if (agent.context_.Has<limit_type>(id_))
+        executions = agent.context_.Get<limit_type>(id_);
 
     if (executions >= limit_)
         return Node::Status::Finished;

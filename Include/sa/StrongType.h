@@ -16,11 +16,11 @@ struct StrongType
     StrongType(T value) :
         value(value)
     { }
-    inline operator T () const { return value; }
+    operator T () const { return value; }
     T value;
 };
 
-// To be used with structs annd classes
+// To be used with structs and classes
 template <typename T, typename Tag>
 struct StrongClass : public T
 {

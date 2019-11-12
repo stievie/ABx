@@ -148,7 +148,7 @@ public:
     bool Uncompress();
 };
 
-static_assert(NETWORKMESSAGE_MAXSIZE == sizeof(NetworkMessage));
+static_assert(NETWORKMESSAGE_MAXSIZE == sizeof(NetworkMessage), "NETWORKMESSAGE_MAXSIZE doesn't match sizeof(NetworkMessage)");
 
 }
 

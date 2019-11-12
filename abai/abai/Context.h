@@ -36,7 +36,7 @@ private:
     }
 public:
     template <typename T>
-    bool Exists(Id id)
+    bool Has(Id id)
     {
         const auto& vals = GetValuesT<T>().values;
         const auto it = vals.find(id);

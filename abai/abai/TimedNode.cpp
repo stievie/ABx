@@ -19,7 +19,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         return Status::CanNotExecute;
 
     uint32_t timer = NOT_STARTED;
-    if (agent.context_.Exists<timer_type>(id_))
+    if (agent.context_.Has<timer_type>(id_))
         timer = agent.context_.Get<timer_type>(id_);
 
     if (timer == NOT_STARTED)
