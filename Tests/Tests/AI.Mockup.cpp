@@ -37,11 +37,17 @@ Node::Status RunningAction::DoAction(Agent&, uint32_t)
     return Status::Running;
 }
 
-Node::Status Running2Action::DoAction(Agent&, uint32_t)
+Node::Status Running2Action::DoAction(Agent& agent, uint32_t)
 {
-    ++runs_;
-    if (runs_ == 1)
+    auto it = agent.counters_.find(id_);
+    uint32_t runs = (it != agent.counters_.end() ? (*it).second : 0);
+    ++runs;
+    if (runs == 1)
+    {
+        agent.counters_[id_] = runs;
         return Status::Running;
+    }
+    agent.counters_[id_] = runs;
     return Status::Finished;
 }
 

@@ -30,8 +30,6 @@ public:
 
 class Running2Action : public Action
 {
-private:
-    int runs_{ 0 };
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
