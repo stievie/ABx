@@ -15,8 +15,7 @@ Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
         return Status::CanNotExecute;
 
-    const auto it = agent.iterators_.find(id_);
-    Nodes::iterator nIt = (it != agent.iterators_.end()) ? (*it).second : children_.begin();
+    Nodes::iterator nIt = agent.context_.Exists<Nodes::iterator>(id_) ? agent.context_.Get<Nodes::iterator>(id_) : children_.begin();
 
     while (nIt != children_.end())
     {
@@ -25,9 +24,9 @@ Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
         if (status != Status::Finished)
             return status;
         ++nIt;
-        agent.iterators_.emplace(id_, nIt);
+        agent.context_.Set(id_, nIt);
     }
-    agent.iterators_.erase(id_);
+    agent.context_.Delete<Nodes::iterator>(id_);
     return Status::Finished;
 }
 

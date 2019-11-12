@@ -7,6 +7,7 @@
 #include "AiDefines.h"
 #include "Node.h"
 #include <set>
+#include "Context.h"
 
 namespace AI {
 
@@ -14,6 +15,12 @@ class Root;
 class Zone;
 
 typedef std::vector<Id> AgentIds;
+// Once the BT is loaded it must not be modified, so the iterators are not invalidated.
+using AgentContext = Context<
+    uint32_t,
+    size_t,
+    Nodes::iterator
+>;
 
 class Agent
 {
@@ -42,11 +49,7 @@ public:
     // Selected Agent IDs
     AgentIds filteredAgents_;
     std::set<Id> runningActions_;
-    std::unordered_map<Id, size_t> limits_;
-    std::unordered_map<Id, uint32_t> timers_;
-    std::unordered_map<Id, uint32_t> counters_;
-    // Once the BT is loaded it must not be modified, so the iterators are not invalidated.
-    std::unordered_map<Id, Nodes::iterator> iterators_;
+    AgentContext context_;
 };
 
 }

@@ -8,7 +8,7 @@ TimedNode::TimedNode(const ArgumentsType& arguments) :
     Node(arguments)
 {
     if (arguments.size() != 0)
-        millis_ = atoi(arguments[0].c_str());
+        millis_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
 }
 
 TimedNode::~TimedNode() = default;
@@ -19,9 +19,8 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         return Status::CanNotExecute;
 
     uint32_t timer = NOT_STARTED;
-    auto it = agent.timers_.find(id_);
-    if (it != agent.timers_.end())
-        timer = (*it).second;
+    if (agent.context_.Exists<uint32_t>(id_))
+        timer = agent.context_.Get<uint32_t>(id_);
 
     if (timer == NOT_STARTED)
     {
@@ -29,7 +28,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteStart(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.timers_[id_] = timer;
+        agent.context_.Set(id_, timer);
         return status;
     }
 
@@ -39,11 +38,11 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.timers_[id_] = timer;
+        agent.context_.Set(id_, timer);
         return status;
     }
 
-    agent.timers_[id_] = timer;
+    agent.context_.Set(id_, timer);
     return ExecuteExpired(agent, timeElapsed);
 }
 

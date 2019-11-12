@@ -98,6 +98,7 @@
     <ClInclude Include="Agent.h" />
     <ClInclude Include="BevaviorCache.h" />
     <ClInclude Include="Composite.h" />
+    <ClInclude Include="Context.h" />
     <ClInclude Include="Decorator.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Fail.h" />

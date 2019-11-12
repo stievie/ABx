@@ -10,6 +10,7 @@ abai/Composite.cpp
 abai/Composite.h
 abai/Condition.cpp
 abai/Condition.h
+abai/Context.h
 abai/Decorator.cpp
 abai/Decorator.h
 abai/Factory.h
