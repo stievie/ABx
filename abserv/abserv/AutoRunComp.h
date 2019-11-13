@@ -27,6 +27,7 @@ private:
     Math::Vector3 Next();
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
+    void StopAutoRun();
     void OnCollide(GameObject* other);
     void OnStuck();
     Math::Vector3 AvoidObstacles(const Math::Vector3& destination);

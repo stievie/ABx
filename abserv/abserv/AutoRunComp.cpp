@@ -1,9 +1,8 @@
 #include "stdafx.h"
-#include "AutoRunComp.h"
 #include "Actor.h"
+#include "AutoRunComp.h"
 #include "Game.h"
 #include "MathUtils.h"
-#include "ConfigManager.h"
 #include "Player.h"
 #include "VectorMath.h"
 
@@ -92,13 +91,19 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     return false;
 }
 
-void AutoRunComp::OnStuck()
+void AutoRunComp::StopAutoRun()
 {
     if (IsAutoRun())
     {
-        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+        if (owner_.stateComp_.IsMoving())
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         SetAutoRun(false);
     }
+}
+
+void AutoRunComp::OnStuck()
+{
+    StopAutoRun();
 }
 
 void AutoRunComp::OnCollide(GameObject* other)
@@ -108,8 +113,7 @@ void AutoRunComp::OnCollide(GameObject* other)
         if (other->id_ == fo->id_)
         {
             // If at dest reset
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            SetAutoRun(false);
+            StopAutoRun();
             owner_.CallEvent<void(void)>(EVENT_ON_ARRIVED);
         }
         else
@@ -141,7 +145,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
     const Math::Vector3& pos = owner_.transformation_.position_;
 
     // Raycast to the point and see if there is a hit.
-    auto raycast = [&pos, this](const Math::Vector3& dest) -> Math::RayQueryResult*
+    const auto raycast = [&pos, this](const Math::Vector3& dest) -> Math::RayQueryResult*
     {
         std::vector<Math::RayQueryResult> result;
         float dist = pos.Distance(dest);
@@ -172,7 +176,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
         return hit;
     };
 
-    auto* hit = raycast(destination);
+    const auto* hit = raycast(destination);
     if (!hit)
         // Nothing or only TerrainPatches on the way
         return destination;
@@ -185,7 +189,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
     const Math::Vector3 size = bb.Size();
     const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
     const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
-    auto* newHit = raycast(newDest);
+    const auto* newHit = raycast(newDest);
     if (newHit)
     {
 #ifdef DEBUG_NAVIGATION
@@ -230,8 +234,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         else
         {
             // If at dest reset
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            SetAutoRun(false);
+            StopAutoRun();
             owner_.CallEvent<void(void)>(EVENT_ON_ARRIVED);
         }
         return;
@@ -255,7 +258,7 @@ void AutoRunComp::SetAutoRun(bool value)
     if (autoRun_ != value)
     {
         autoRun_ = value;
-        if (owner_.GetType() == AB::GameProtocol::ObjectTypePlayer)
+        if (Is<Player>(owner_))
         {
             // This tells the players client to switch off client prediction and use server positions instead
             auto nmsg = Net::NetworkMessage::GetNew();

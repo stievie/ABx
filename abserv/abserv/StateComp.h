@@ -43,6 +43,7 @@ public:
     }
     bool IsDead() const { return newState_ == AB::GameProtocol::CreatureStateDead; }
     bool IsKnockedDown() const { return newState_ == AB::GameProtocol::CreatureStateKnockedDown; }
+    bool IsMoving() const { return newState_ == AB::GameProtocol::CreatureStateMoving; }
     bool KnockDown(uint32_t time);
     void Apply();
     /// Reset to idle state
