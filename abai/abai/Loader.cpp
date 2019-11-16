@@ -142,10 +142,9 @@ bool Loader::InitChache(const std::string& initScript, BevaviorCache& cache)
     kaguya::State luaState;
     RegisterLua(luaState);
     luaState["self"] = this;
-    luaState["cache"] = &cache;
     if (!ExecuteScript(luaState, initScript))
         return false;
-    luaState["init"]();
+    luaState["init"](&cache);
     return true;
 }
 

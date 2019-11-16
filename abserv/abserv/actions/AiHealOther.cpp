@@ -62,11 +62,11 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (!target->IsActorType())
         return Status::Failed;
 
-    Game::Actor* actor = Game::To<Game::Actor>(target.get());
-    if (actor->IsDead())
+    const Game::Actor& actor = Game::To<Game::Actor>(*target);
+    if (actor.IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget, actor);
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget, &actor);
     if (skillIndex == -1)
         return Status::Failed;
 

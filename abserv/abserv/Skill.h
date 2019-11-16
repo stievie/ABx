@@ -118,8 +118,9 @@ public:
     uint32_t GetIndex() const { return data_.index; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
-    float CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback);
+    float CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback) const;
     bool IsInRange(const Actor* target) const;
+    Ranges GetRange() const { return range_; }
     Actor* GetSource()
     {
         if (auto s = source_.lock())

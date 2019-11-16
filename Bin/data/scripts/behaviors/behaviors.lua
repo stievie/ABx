@@ -1,6 +1,6 @@
--- Autload these behavior trees
+-- Autoload these behavior trees into the cache
 
-function init()
+function init(cache)
   -- CreateTree(name, script) creates and loads a whole BT, returns a Root node
   -- NPCs use this name to set the bevavior
   cache:Add(self:CreateTree("guild_lord", "/scripts/behaviors/guild_lord.lua"))

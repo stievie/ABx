@@ -12,6 +12,7 @@ protected:
     // If true tthis Action is executted until it returns not running without
     // revaluating the tree.
     bool mustComplete_{ false };
+    bool IsCurrentAction(const Agent& agent) const;
     virtual Status DoAction(Agent& agent, uint32_t timeElapsed) = 0;
 public:
     explicit Action(const ArgumentsType& arguments);

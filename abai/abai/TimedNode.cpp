@@ -59,11 +59,8 @@ Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
 
 Node::Status TimedNode::ExecuteExpired(Agent& agent, uint32_t)
 {
-    if (auto ca = agent.context_.currentAction_.lock())
-    {
-        if (ca->GetId() == id_)
-            agent.context_.currentAction_.reset();
-    }
+    if (IsCurrentAction(agent))
+        agent.context_.currentAction_.reset();
     return Status::Finished;
 }
 

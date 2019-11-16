@@ -183,7 +183,7 @@ int ResourceComp::DrainEnergy(int value)
     return result;
 }
 
-bool ResourceComp::HaveEnoughResources(Skill* skill) const
+bool ResourceComp::HaveEnoughResources(const Skill* skill) const
 {
     if (!skill)
         return false;

@@ -54,7 +54,7 @@ public:
         _Count_
     };
 protected:
-    // Noide ID managed by the library.
+    // Node ID managed by the library.
     Id id_;
     std::string name_;
     std::shared_ptr<Condition> condition_;

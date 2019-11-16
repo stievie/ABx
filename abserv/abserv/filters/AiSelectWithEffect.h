@@ -6,6 +6,8 @@
 namespace AI {
 namespace Filters {
 
+// Select friend|foe|all which have an effect of the effect category.
+//
 // 2 arguments:
 // 1. EffectCategory name as defined in EffectManager.h
 // 2. Optional friend|foe|all (default)

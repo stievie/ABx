@@ -228,7 +228,7 @@ bool Skill::Interrupt()
     return true;
 }
 
-float Skill::CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback)
+float Skill::CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback) const
 {
     float result = 0.0f;
     if (activation_ > 0)

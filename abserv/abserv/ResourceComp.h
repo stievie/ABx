@@ -153,7 +153,7 @@ public:
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
     /// Approx. check if we have enough resource to use this skill.
-    bool HaveEnoughResources(Skill* skill) const;
+    bool HaveEnoughResources(const Skill* skill) const;
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message, bool ignoreDirty = false);

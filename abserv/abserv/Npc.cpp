@@ -199,9 +199,10 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* 
     // skill index -> cost (smaller is better)
     std::map<int, float> sorting;
     std::vector<int> skillIndices;
-    skills_->VisitSkills([&](int index, auto& current)
+    skills_->VisitSkills([&](int index, const Skill& current)
     {
-        if (targetActor && !current.IsInRange(targetActor))
+        // If there is a target check if it's in range
+        if (targetActor && !IsInRange(current.GetRange(), targetActor))
             return Iteration::Continue;
         if (!current.HasEffect(effect))
             return Iteration::Continue;

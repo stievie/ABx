@@ -13,7 +13,7 @@ SelectWithEffect::SelectWithEffect(const ArgumentsType& arguments) :
 {
     if (arguments.size() > 0)
         effectCat_ = Game::EffectCatNameToEffectCat(arguments[0]);
-    if (arguments.size() > 0)
+    if (arguments.size() > 1)
     {
         const std::string& value = arguments.at(1);
         if (value.compare("friend") == 0)

@@ -10,15 +10,19 @@ Action::Action(const ArgumentsType& arguments) :
 
 Action::~Action() = default;
 
+bool Action::IsCurrentAction(const Agent& agent) const
+{
+    if (auto co = agent.context_.currentAction_.lock())
+        return co->GetId() == id_;
+    return false;
+}
+
 Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
     {
-        if (auto ca = agent.context_.currentAction_.lock())
-        {
-            if (ca->GetId() == id_)
-                agent.context_.currentAction_.reset();
-        }
+        if (IsCurrentAction(agent))
+            agent.context_.currentAction_.reset();
         return Status::CanNotExecute;
     }
     const auto status = DoAction(agent, timeElapsed);
@@ -29,11 +33,8 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
         break;
     case Status::Finished:
     case Status::Failed:
-        if (auto ca = agent.context_.currentAction_.lock())
-        {
-            if (ca->GetId() == id_)
-                agent.context_.currentAction_.reset();
-        }
+        if (IsCurrentAction(agent))
+            agent.context_.currentAction_.reset();
         break;
     default:
         break;
