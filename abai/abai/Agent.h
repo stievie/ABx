@@ -9,6 +9,7 @@
 #include <set>
 #include "Context.h"
 #include <sa/StrongType.h>
+#include "Action.h"
 
 namespace AI {
 
@@ -20,13 +21,20 @@ using limit_type = sa::StrongType<size_t, struct LimitTag>;
 using timer_type = sa::StrongType<uint32_t, struct TimerTag>;
 using counter_type = sa::StrongType<uint32_t, struct CounterTag>;
 
-typedef std::vector<Id> AgentIds;
+using AgentIds = std::vector<Id>;
 // Once the BT is loaded it must not be modified, so the iterators are not invalidated.
+// This is a bit unflexible when an application needs to store other types, but
+// you could create a second context in the subclass.
 class AgentContext : public Context<limit_type, timer_type, counter_type, Nodes::iterator>
 {
 public:
-    std::set<Id> runningActions_;
-    bool IsActionRunning(Id id) const { return runningActions_.find(id) != runningActions_.end(); }
+    std::weak_ptr<Action> currentAction_;
+    inline bool IsActionRunning(Id id) const
+    {
+        if (auto ca = currentAction_.lock())
+            return ca->GetId() == id;
+        return false;
+    }
 };
 
 class Agent
@@ -50,7 +58,6 @@ public:
     Zone* GetZone() const;
     void SetZone(Zone* zone);
     Node::Status GetCurrentStatus() const { return currentStatus_; }
-    bool IsActionRunning(Id id) const { return context_.IsActionRunning(id); }
 
     bool pause_{ false };
     // Selected Agent IDs

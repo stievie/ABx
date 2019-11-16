@@ -18,4 +18,14 @@ void BevaviorCache::Add(std::shared_ptr<Root> node)
     cache_.emplace(node->GetName(), node);
 }
 
+void BevaviorCache::Remove(std::shared_ptr<Root> node)
+{
+    if (!node)
+        return;
+    auto it = cache_.find(node->GetName());
+    if (it == cache_.end())
+        return;
+    cache_.erase(it);
+}
+
 }

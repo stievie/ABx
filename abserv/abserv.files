@@ -159,6 +159,8 @@ abserv/ItemStats.cpp
 abserv/ItemStats.h
 abserv/MailBox.cpp
 abserv/MailBox.h
+abserv/filters/AiSelectWithEffect.cpp
+abserv/filters/AiSelectWithEffect.h
 abserv/main.cpp
 abserv/Maintenance.cpp
 abserv/Maintenance.h

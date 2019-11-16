@@ -21,7 +21,7 @@ Node::Status MoveTo::DoAction(Agent& agent, uint32_t)
     auto target = npc.GetGame()->GetObjectById(selection[0]);
     if (!target)
         return Status::Failed;
-    if (agent.IsActionRunning(id_))
+    if (agent.context_.IsActionRunning(id_))
     {
         if (npc.IsInRange(Game::Ranges::Touch, target.get()))
             return Status::Finished;

@@ -61,6 +61,8 @@ void Loader::RegisterLua(kaguya::State& state)
     );
     state["BevaviorCache"].setClass(kaguya::UserdataMetatable<BevaviorCache>()
         .addFunction("Add", &BevaviorCache::Add)
+        .addFunction("Remove", &BevaviorCache::Remove)
+        .addFunction("Get", &BevaviorCache::Get)
     );
 }
 
@@ -135,15 +137,16 @@ std::shared_ptr<Root> Loader::LoadString(const std::string& value)
     return result;
 }
 
-void Loader::InitChache(const std::string& initScript, BevaviorCache& cache)
+bool Loader::InitChache(const std::string& initScript, BevaviorCache& cache)
 {
     kaguya::State luaState;
     RegisterLua(luaState);
     luaState["self"] = this;
     luaState["cache"] = &cache;
     if (!ExecuteScript(luaState, initScript))
-        return;
+        return false;
     luaState["init"]();
+    return true;
 }
 
 std::shared_ptr<Root> Loader::LoadFile(const std::string& fileName)

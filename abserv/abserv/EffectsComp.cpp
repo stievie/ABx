@@ -25,11 +25,11 @@ EffectsComp::EffectsComp(Actor& owner) :
     owner_.SubscribeEvent<void(Actor*, int&)>(EVENT_ON_HEALING, std::bind(&EffectsComp::OnHealing, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
+void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory category)
 {
-    const auto check = [categroy](const std::shared_ptr<Effect>& current)
+    const auto check = [category](const std::shared_ptr<Effect>& current)
     {
-        return current->data_.category == categroy;
+        return current->data_.category == category;
     };
 
     auto it = std::find_if(effects_.begin(), effects_.end(), check);
@@ -41,6 +41,18 @@ void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
         it = std::find_if(effects_.begin(), effects_.end(), check);
     }
 }
+
+bool EffectsComp::HasEffectOf(AB::Entities::EffectCategory category)
+{
+    const auto check = [category](const std::shared_ptr<Effect>& current)
+    {
+        return current->data_.category == category;
+    };
+
+    auto it = std::find_if(effects_.begin(), effects_.end(), check);
+    return it != effects_.end();
+}
+
 
 void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t time)
 {

@@ -149,7 +149,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
     {
         std::vector<Math::RayQueryResult> result;
         float dist = pos.Distance(dest);
-        if (!owner_.Raycast(result, pos, dest - pos, dist))
+        if (!owner_.RaycastWithResult(result, pos, dest - pos, dist))
             // No Octree (shouldn't happen)
             return nullptr;
         if (result.size() == 0)

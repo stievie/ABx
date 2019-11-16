@@ -57,7 +57,7 @@ inline T Lerp(T lhs, T rhs, U i)
     return lhs * (static_cast<U>(1.0) - i) + rhs * i;
 }
 
-/// Return fractional part of passed value in range [0, 1).
+/// Return fractional part of passed value in range [0, 1].
 template <typename T>
 T Fract(T value)
 {
@@ -79,8 +79,8 @@ inline T RadToDeg(T rad)
 /// Make angle between 0 and 2 * Pi.
 inline void NormalizeAngle(float& angle)
 {
-    angle = fmodf(angle, Math::M_TWOPI);
-    angle = fmodf(angle + Math::M_TWOPI, Math::M_TWOPI);
+    angle = fmodf(angle, M_TWOPI);
+    angle = fmodf(angle + M_TWOPI, M_TWOPI);
 }
 
 inline float NormalizedAngle(float angle)

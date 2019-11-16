@@ -13,7 +13,9 @@ public:
     NODE_CLASS(ResurrectSelection)
     explicit ResurrectSelection(const ArgumentsType& arguments) :
         Action(arguments)
-    { }
+    {
+        mustComplete_ = true;
+    }
 };
 
 }

@@ -328,7 +328,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
         return false;
 
     std::vector<Math::RayQueryResult> res;
-    if (!Raycast(result, position, direction, maxDist))
+    if (!RaycastWithResult(res, position, direction, maxDist))
         return false;
 
     for (const auto& o : res)
@@ -336,7 +336,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
     return true;
 }
 
-bool GameObject::Raycast(std::vector<Math::RayQueryResult>& result,
+bool GameObject::RaycastWithResult(std::vector<Math::RayQueryResult>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
@@ -354,29 +354,27 @@ bool GameObject::IsObjectInSight(const GameObject& object) const
 {
     std::vector<GameObject*> result;
     const bool res = Raycast(result, object.transformation_.position_ + BodyOffset);
-    if (res)
-    {
-        for (const auto* o : result)
-        {
-            if (!o->occluder_)
-                continue;
+    if (!res)
+        // Shouldn't happen
+        return false;
 
-            // result is sorted by distance
-            if (o->id_ != object.id_)
-            {
+    for (const auto* o : result)
+    {
+        if (!o->occluder_)
+            continue;
+
+        // result is sorted by distance
+        if (o->id_ != object.id_)
+        {
 #ifdef DEBUG_COLLISION
-                LOG_DEBUG << "Obstructed by " << *o << std::endl;
+            LOG_DEBUG << "Obstructed by " << *o << std::endl;
 #endif
-                return false;
-            }
-            // Can stop here it doesn't matter whats behind the target.
-            return true;
+            return false;
         }
-        // Actually shouldn't get here
+        // Can stop here it doesn't matter whats behind the target.
         return true;
     }
-    // Shouldn't happen
-    return false;
+    return true;
 }
 
 void GameObject::Remove()

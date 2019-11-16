@@ -13,7 +13,9 @@ public:
     NODE_CLASS(GainEnergy)
     explicit GainEnergy(const ArgumentsType& arguments) :
         Action(arguments)
-    { }
+    {
+        mustComplete_ = true;
+    }
 };
 
 }

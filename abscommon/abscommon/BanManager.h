@@ -45,13 +45,18 @@ public:
     BanManager() = default;
     ~BanManager() {}
 
+    // Avoid brute forcing logins
+    bool IsIpDisabled(uint32_t clientIP) const;
+    void AddLoginAttempt(uint32_t clientIP, bool success);
+
+    // Avoid DOS
     bool AcceptConnection(uint32_t clientIP);
+
+    // Bans
     /// mask = network mask
     bool IsIpBanned(uint32_t clientIP, uint32_t mask = 0xFFFFFFFF) const;
     /// May happen when there are too many connections from this IP
-    bool IsIpDisabled(uint32_t clientIP) const;
     bool IsAccountBanned(const uuids::uuid& accountUuid);
-    void AddLoginAttempt(uint32_t clientIP, bool success);
     bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires,
         const std::string& adminUuid, const std::string& comment,
         AB::Entities::BanReason reason = AB::Entities::BanReasonOther);

@@ -18,6 +18,12 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     if (clientIP == 0)
         return false;
 
+    // Too many unsuccessful login attempts -> refuse connection
+    // Only the login server counts login attempts so this is not relevant for
+    // the game server.
+    if (IsIpDisabled(clientIP))
+        return false;
+
     int64_t currentTime = Utils::Tick();
     std::map<uint32_t, ConnectBlock>::iterator it = ipConnects_.find(clientIP);
     if (it == ipConnects_.end())
@@ -77,6 +83,26 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
     return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick() / 1000);
 }
 
+bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
+{
+    AB_PROFILE;
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    if (!client)
+        return false;
+
+    AB::Entities::AccountBan ban;
+    ban.accountUuid = accountUuid.to_string();
+    if (!client->Read(ban))
+        return false;
+    AB::Entities::Ban _ban;
+    _ban.uuid = ban.banUuid;
+    if (!client->Read(_ban))
+        return false;
+    if (!_ban.active)
+        return false;
+    return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick() / 1000);
+}
+
 bool BanManager::IsIpDisabled(uint32_t clientIP) const
 {
     if (clientIP == 0)
@@ -96,26 +122,6 @@ bool BanManager::IsIpDisabled(uint32_t clientIP) const
         return true;
 
     return false;
-}
-
-bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
-{
-    AB_PROFILE;
-    IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    if (!client)
-        return false;
-
-    AB::Entities::AccountBan ban;
-    ban.accountUuid = accountUuid.to_string();
-    if (!client->Read(ban))
-        return false;
-    AB::Entities::Ban _ban;
-    _ban.uuid = ban.banUuid;
-    if (!client->Read(_ban))
-        return false;
-    if (!_ban.active)
-        return false;
-    return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick() / 1000);
 }
 
 void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)

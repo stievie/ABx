@@ -9,12 +9,14 @@ namespace Actions {
 
 HealSelf::HealSelf(const ArgumentsType& arguments) :
     Action(arguments)
-{ }
+{
+    mustComplete_ = true;
+}
 
 Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (agent.IsActionRunning(id_))
+    if (agent.context_.IsActionRunning(id_))
     {
         if (auto cs = npc.GetCurrentSkill())
         {

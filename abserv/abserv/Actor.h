@@ -1,23 +1,23 @@
 #pragma once
 
-#include "GameObject.h"
-#include "Effect.h"
-#include "SkillBar.h"
-#include "InputQueue.h"
-#include <AB/ProtocolCodes.h>
-#include "MoveComp.h"
-#include "AutoRunComp.h"
-#include "ResourceComp.h"
-#include "CollisionComp.h"
 #include "AttackComp.h"
-#include "EffectsComp.h"
-#include "InventoryComp.h"
-#include "SkillsComp.h"
-#include "InputComp.h"
+#include "AutoRunComp.h"
+#include "CollisionComp.h"
 #include "DamageComp.h"
+#include "Effect.h"
+#include "EffectsComp.h"
+#include "GameObject.h"
 #include "HealComp.h"
+#include "InputComp.h"
+#include "InputQueue.h"
+#include "InventoryComp.h"
+#include "MoveComp.h"
 #include "ProgressComp.h"
+#include "ResourceComp.h"
+#include "SkillBar.h"
+#include "SkillsComp.h"
 #include "UuidUtils.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 
@@ -65,6 +65,8 @@ private:
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
+    std::vector<Actor*> _LuaGetAlliesInRange(Ranges range);
+    std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);
     /// Get lower 16 bits of the group mask
     uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
     /// Get upper 16 bits of the group mask
@@ -105,7 +107,6 @@ public:
             return Iteration::Continue;
         });
     }
-    std::vector<Actor*> GetEnemiesInRange(Ranges range);
     size_t GetEnemyCountInRange(Ranges range);
     /// Ally is always without self
     template<typename Func>
@@ -122,7 +123,6 @@ public:
             return Iteration::Continue;
         });
     }
-    std::vector<Actor*> GetAlliesInRange(Ranges range);
     size_t GetAllyCountInRange(Ranges range);
     Actor* GetClosestEnemy(bool undestroyable, bool unselectable);
     Actor* GetClosestAlly(bool undestroyable, bool unselectable);

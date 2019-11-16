@@ -80,9 +80,6 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
     Subsystems::Instance.CreateSubsystem<Game::ItemFactory>();
     Subsystems::Instance.CreateSubsystem<Game::ItemsCache>();
-    Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
-    auto* reg = GetSubsystem<AI::AiRegistry>();
-    Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);
     Subsystems::Instance.CreateSubsystem<AI::BevaviorCache>();
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
@@ -278,6 +275,8 @@ bool Application::LoadMain()
         configFile_ = path_ + "/" + CONFIG_FILE;
 #endif
     }
+
+    // Config -----------------------------------------------------------------
     LOG_INFO << "Loading configuration: " << configFile_ << "...";
     auto* config = GetSubsystem<ConfigManager>();
     if (!config)
@@ -304,16 +303,20 @@ bool Application::LoadMain()
     Net::ProtocolGame::serverId_ = GetServerId();
 
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
-    Auth::BanManager::LoginTries = static_cast<uint32_t>((*config)[ConfigManager::Key::LoginTries].GetInt64());
-    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>((*config)[ConfigManager::Key::LoginRetryTimeout].GetInt64());
+    // Not relevant for the game server since it does not count login attempts,
+    // because the player authenticates with a token from the login server.
+    Auth::BanManager::LoginTries = 0;
+    Auth::BanManager::LoginRetryTimeout = 0;
 
     LOG_INFO << "[done]" << std::endl;
 
+    // RNG --------------------------------------------------------------------
     LOG_INFO << "Initializing RNG...";
     auto* rnd = GetSubsystem<Crypto::Random>();
     rnd->Initialize();
     LOG_INFO << "[done]" << std::endl;
 
+    // Crypto -----------------------------------------------------------------
     LOG_INFO << "Loading encryption keys...";
     auto* keys = GetSubsystem<Crypto::DHKeys>();
     if (!keys)
@@ -330,17 +333,30 @@ bool Application::LoadMain()
     }
     LOG_INFO << "[done]" << std::endl;
 
-    // AI
+    // AI ---------------------------------------------------------------------
     LOG_INFO << "Loading behavior trees...";
-    auto* aiReg = GetSubsystem<AI::AiRegistry>();
-    aiReg->Initialize();
+    // We are loading all BTs into a cache, so the only thing that needs to be around is the
+    // cache. The Registry and Loader is not needed after that.
+    AI::AiRegistry aiReg;
+    // Register classes
+    aiReg.Initialize();
+    // Load BTs into cache
     auto* btCache = GetSubsystem<AI::BevaviorCache>();
-    auto* aiLoader = GetSubsystem<AI::AiLoader>();
+    AI::AiLoader aiLoader(aiReg);
     const std::string& behaviors = (*config)[ConfigManager::Key::Behaviours].GetString();
-    aiLoader->InitChache(behaviors, *btCache);
-    LOG_INFO << "[done]" << std::endl;
+    if (!behaviors.empty())
+    {
+        if (aiLoader.InitChache(behaviors, *btCache))
+            LOG_INFO << "[done]" << std::endl;
+        else
+        {
+            LOG_INFO << "[FAIL]"  << std::endl;
+            // Just a warning because the game can still run without BTs
+            LOG_WARNING << "Failed to load behavior trees from file " << behaviors << std::endl;
+        }
+    }
 
-    // Data server
+    // Data server ------------------------------------------------------------
     LOG_INFO << "Connecting to data server...";
     const std::string& dataHost = (*config)[ConfigManager::Key::DataServerHost].GetString();
     uint16_t dataPort = static_cast<uint16_t>((*config)[ConfigManager::Key::DataServerPort].GetInt());
@@ -358,6 +374,7 @@ bool Application::LoadMain()
         serverName_ = GetFreeName(dataClient);
     }
 
+    // Message server ---------------------------------------------------------
     LOG_INFO << "Connecting to message server...";
     const std::string& msgHost = (*config)[ConfigManager::Key::MessageServerHost].GetString();
     uint16_t msgPort = static_cast<uint16_t>((*config)[ConfigManager::Key::MessageServerPort].GetInt());
@@ -373,6 +390,7 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to connect to message server" << std::endl;
     }
 
+    // Game items -------------------------------------------------------------
     LOG_INFO << "Loading Game items...";
     auto* itemFactory = GetSubsystem<Game::ItemFactory>();
     itemFactory->Initialize();
@@ -402,7 +420,7 @@ bool Application::LoadMain()
         LOG_ERROR << "Port can not be 0" << std::endl;
     }
 
-
+    // Done -------------------------------------------------------------------
     uint32_t loadingTime = Utils::TimeElapsed(startLoading);
 
     PrintServerInfo();
@@ -606,29 +624,19 @@ unsigned Application::GetLoad()
         float ld = (static_cast<float>(playerCount) / static_cast<float>(SERVER_MAX_CONNECTIONS)) * 100.0f;
         unsigned load = static_cast<unsigned>(ld);
 
-        unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
-        if (utilization > load)
-            load = utilization;
-
-        unsigned l = static_cast<unsigned>(usage.GetUsage());
-        if (l > load)
-            // Use the higher value
-            load = l;
+        load = std::max(load, GetSubsystem<Asynch::Dispatcher>()->GetUtilization());
+        load = std::max(load, static_cast<unsigned>(usage.GetUsage()));
 
         {
             // Get memory pool usage
             std::lock_guard<std::mutex> lock(lock_);
             const auto ompi = Net::OutputMessagePool::GetPoolInfo();
-            if (ompi.usage > load)
-                load = l;
-
+            load = std::max(load, ompi.usage);
             const auto nwpi = Net::NetworkMessage::GetPoolInfo();
-            if (nwpi.usage > load)
-                load = l;
+            load = std::max(load, nwpi.usage);
         }
 
-        if (load > 100)
-            load = 100;
+        load = Math::Clamp(load, 0u, 100u);
 
         while (loads_.size() > 9)
             loads_.erase(loads_.begin());

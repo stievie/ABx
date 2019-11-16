@@ -64,7 +64,7 @@ using GameObjectEvents = sa::Events<
     void(Actor*, DamageType, int32_t, bool&),
     void(AB::Entities::SkillType, Skill*, bool&),
     void(uint32_t, AB::GameProtocol::ObjectCallType, int),   // OnPingObject
-    void(Actor*, Skill*, bool&),                                    // OnUseSkill, OnSkillTargeted
+    void(Actor*, Skill*, bool&),                             // OnUseSkill, OnSkillTargeted
     void(Actor*, bool&),
     void(Actor*, int&),
     void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
@@ -259,7 +259,7 @@ public:
 
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool Raycast(std::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool RaycastWithResult(std::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool IsObjectInSight(const GameObject& object) const;
     /// Remove this object from scene
     void Remove();

@@ -2,6 +2,7 @@
 #include "Agent.h"
 #include "Zone.h"
 #include "Root.h"
+#include "Action.h"
 
 namespace AI {
 
@@ -16,7 +17,17 @@ void Agent::Update(uint32_t timeElapsed)
     if (pause_)
         return;
     if (root_)
+    {
+        if (auto ca = context_.currentAction_.lock())
+        {
+            if (ca->MustComplete())
+            {
+                currentStatus_ = ca->Execute(*this, timeElapsed);
+                return;
+            }
+        }
         currentStatus_ = root_->Execute(*this, timeElapsed);
+    }
 }
 
 void Agent::SetBehavior(std::shared_ptr<Root> node)

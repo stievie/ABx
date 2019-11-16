@@ -7,6 +7,41 @@
 
 namespace Game {
 
+AB::Entities::EffectCategory EffectCatNameToEffectCat(const std::string& name)
+{
+    const size_t hash = sa::StringHashRt(name.c_str());
+    switch (hash) {
+    case EFFECTTCAT_CONDITION:
+        return AB::Entities::EffectCondition;
+    case EFFECTTCAT_ENCHANTMENT:
+        return AB::Entities::EffectEnchantment;
+    case EFFECTTCAT_HEX:
+        return AB::Entities::EffectHex;
+    case EFFECTTCAT_SHOUT:
+        return AB::Entities::EffectShout;
+    case EFFECTTCAT_SPIRIT:
+        return AB::Entities::EffectSpirit;
+    case EFFECTTCAT_WARD:
+        return AB::Entities::EffectWard;
+    case EFFECTTCAT_WELL:
+        return AB::Entities::EffectWell;
+    case EFFECTTCAT_PREPARATION:
+        return AB::Entities::EffectPreparation;
+    case EFFECTTCAT_STANCE:
+        return AB::Entities::EffectStance;
+    case EFFECTTCAT_FORM:
+        return AB::Entities::EffectForm;
+    case EFFECTTCAT_GLYPHE:
+        return AB::Entities::EffectGlyphe;
+    case EFFECTTCAT_PETATTTACK:
+        return AB::Entities::EffectPetAttack;
+    case EFFECTTCAT_WEAPONSPELL:
+        return AB::Entities::EffectWeaponSpell;
+    default:
+        return AB::Entities::EffectNone;
+    }
+}
+
 std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
 {
     std::shared_ptr<Effect> result;

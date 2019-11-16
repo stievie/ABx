@@ -5,7 +5,7 @@
 namespace AI {
 
 TimedNode::TimedNode(const ArgumentsType& arguments) :
-    Node(arguments)
+    Action(arguments)
 {
     if (arguments.size() != 0)
         millis_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
@@ -48,7 +48,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
 
 Node::Status TimedNode::ExecuteStart(Agent& agent, uint32_t)
 {
-    agent.context_.runningActions_.emplace(id_);
+    agent.context_.currentAction_ = shared_from_this();
     return Status::Running;
 }
 
@@ -59,7 +59,11 @@ Node::Status TimedNode::ExecuteRunning(Agent&, uint32_t)
 
 Node::Status TimedNode::ExecuteExpired(Agent& agent, uint32_t)
 {
-    agent.context_.runningActions_.erase(id_);
+    if (auto ca = agent.context_.currentAction_.lock())
+    {
+        if (ca->GetId() == id_)
+            agent.context_.currentAction_.reset();
+    }
     return Status::Finished;
 }
 

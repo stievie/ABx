@@ -13,16 +13,27 @@ Action::~Action() = default;
 Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
+    {
+        if (auto ca = agent.context_.currentAction_.lock())
+        {
+            if (ca->GetId() == id_)
+                agent.context_.currentAction_.reset();
+        }
         return Status::CanNotExecute;
-    auto status = DoAction(agent, timeElapsed);
+    }
+    const auto status = DoAction(agent, timeElapsed);
     switch (status)
     {
     case Status::Running:
-        agent.context_.runningActions_.emplace(id_);
+        agent.context_.currentAction_ = shared_from_this();
         break;
     case Status::Finished:
     case Status::Failed:
-        agent.context_.runningActions_.erase(id_);
+        if (auto ca = agent.context_.currentAction_.lock())
+        {
+            if (ca->GetId() == id_)
+                agent.context_.currentAction_.reset();
+        }
         break;
     default:
         break;

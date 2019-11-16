@@ -82,9 +82,9 @@ void Actor::RegisterLua(kaguya::State& state)
 
         .addFunction("DropRandomItem", &Actor::DropRandomItem)
 
-        .addFunction("GetEnemiesInRange", &Actor::GetEnemiesInRange)
+        .addFunction("GetEnemiesInRange", &Actor::_LuaGetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
-        .addFunction("GetAlliesInRange", &Actor::GetAlliesInRange)
+        .addFunction("GetAlliesInRange", &Actor::_LuaGetAlliesInRange)
         .addFunction("GetAllyCountInRange", &Actor::GetAllyCountInRange)
         .addFunction("GetClosestEnemy", &Actor::GetClosestEnemy)
         .addFunction("GetClosestAlly", &Actor::GetClosestAlly)
@@ -407,7 +407,7 @@ std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
     return result;
 }
 
-std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
+std::vector<Actor*> Actor::_LuaGetEnemiesInRange(Ranges range)
 {
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)
@@ -439,7 +439,7 @@ size_t Actor::GetEnemyCountInRange(Ranges range)
     return result;
 }
 
-std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
+std::vector<Actor*> Actor::_LuaGetAlliesInRange(Ranges range)
 {
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)

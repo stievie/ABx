@@ -23,7 +23,7 @@ private:
     Actor& owner_;
     EffectList addedEffects_;
     EffectList removedEffects_;
-    void RemoveAllOfCategory(AB::Entities::EffectCategory categroy);
+    void RemoveAllOfCategory(AB::Entities::EffectCategory category);
 private:
     // Events
     void OnGetCriticalHit(Actor* source, bool& value);
@@ -53,6 +53,7 @@ public:
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
     bool HasEffect(uint32_t index);
+    bool HasEffectOf(AB::Entities::EffectCategory category);
     std::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);

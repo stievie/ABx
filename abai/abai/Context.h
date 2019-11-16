@@ -34,9 +34,15 @@ private:
         constexpr auto index = FindElement<Values<T>>::value;
         return std::get<index>(values_);
     }
+    template <typename T>
+    const Values<T>& GetValuesT() const
+    {
+        constexpr auto index = FindElement<Values<T>>::value;
+        return std::get<index>(values_);
+    }
 public:
     template <typename T>
-    bool Has(Id id)
+    bool Has(Id id) const
     {
         const auto& vals = GetValuesT<T>().values;
         const auto it = vals.find(id);

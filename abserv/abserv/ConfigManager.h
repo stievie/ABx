@@ -29,10 +29,6 @@ public:
 
         MaxPacketsPerSecond,
 
-        LoginTries,
-        LoginTimeout,
-        LoginRetryTimeout,
-
         Behaviours,
     };
 public:

@@ -23,10 +23,13 @@ private:
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
     std::weak_ptr<Actor> following_;
+    // Remove the first way points
     void Pop();
+    // Get next waypoint
     Math::Vector3 Next();
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
+    // Stop auto running and set state to idle
     void StopAutoRun();
     void OnCollide(GameObject* other);
     void OnStuck();

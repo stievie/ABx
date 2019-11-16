@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Condition.h"
-#include "Agent.h"
 
 namespace AI {
+
+class Agent;
+
 namespace Conditions {
 
 class IsSelectionAlive : public AI::Condition

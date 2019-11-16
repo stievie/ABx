@@ -16,6 +16,7 @@ public:
 
     std::shared_ptr<Root> Get(const std::string& name) const;
     void Add(std::shared_ptr<Root> node);
+    void Remove(std::shared_ptr<Root> node);
 };
 
 }
