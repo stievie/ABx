@@ -258,8 +258,11 @@ bool Actor::IsAttackingActor(Actor* target)
     return false;
 }
 
-void Actor::UseSkill(uint32_t index)
+void Actor::UseSkill(int index)
 {
+    if (index < 0 || index >= PLAYER_MAX_SKILLS)
+        return;
+
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
     inputComp_->Add(InputType::UseSkill, std::move(data));

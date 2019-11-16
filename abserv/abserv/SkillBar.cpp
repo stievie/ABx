@@ -28,8 +28,10 @@ void SkillBar::RegisterLua(kaguya::State& state)
     );
 }
 
-Skill* SkillBar::_LuaGetSkill(uint32_t index)
+Skill* SkillBar::_LuaGetSkill(int index)
 {
+    if (index < 0)
+        return nullptr;
     auto s = GetSkill(index);
     if (s)
         return s.get();
@@ -193,10 +195,12 @@ bool SkillBar::Load(const std::string& str, bool locked)
     return true;
 }
 
-std::shared_ptr<Skill> SkillBar::GetSkill(uint32_t index)
+std::shared_ptr<Skill> SkillBar::GetSkill(int index)
 {
+    if (index < 0)
+        return std::shared_ptr<Skill>();
     if (index < PLAYER_MAX_SKILLS)
-        return skills_[index];
+        return skills_[static_cast<size_t>(index)];
     return std::shared_ptr<Skill>();
 }
 

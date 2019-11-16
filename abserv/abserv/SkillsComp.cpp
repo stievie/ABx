@@ -27,6 +27,11 @@ void SkillsComp::Update(uint32_t timeElapsed)
 
 AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 {
+    if (index == -1)
+    {
+        lastError_ = AB::GameProtocol::SkillErrorInvalidSkill;
+        return lastError_;
+    }
     std::shared_ptr<Actor> target;
     if (auto selObj = owner_.selectedObject_.lock())
         target = selObj->GetThis<Actor>();

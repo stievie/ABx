@@ -119,7 +119,7 @@ public:
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
     float CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback);
-    bool IsInRange(Actor* target);
+    bool IsInRange(const Actor* target) const;
     Actor* GetSource()
     {
         if (auto s = source_.lock())

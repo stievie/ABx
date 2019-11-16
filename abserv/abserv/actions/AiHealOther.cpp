@@ -66,7 +66,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (actor->IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget);
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget, actor);
     if (skillIndex == -1)
         return Status::Failed;
 

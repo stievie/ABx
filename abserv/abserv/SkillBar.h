@@ -30,7 +30,7 @@ private:
     std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const {
         return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target));
     }
-    Skill* _LuaGetSkill(uint32_t index);
+    Skill* _LuaGetSkill(int index);
     void SetAttributes(const AB::Attributes& attributes);
     void ResetAttributes();
     bool HaveAttribute(uint32_t index);
@@ -53,12 +53,12 @@ public:
     std::string Encode();
     bool Load(const std::string& str, bool locked);
 
-    std::shared_ptr<Skill> GetSkill(uint32_t index);
+    std::shared_ptr<Skill> GetSkill(int index);
     void SetSkill(int index, std::shared_ptr<Skill> skill)
     {
         if (index < 0 || index >= PLAYER_MAX_SKILLS)
             return;
-        skills_[index] = skill;
+        skills_[static_cast<size_t>(index)] = skill;
     }
     void InitAttributes();
     /// Get an attribute

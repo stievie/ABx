@@ -25,9 +25,6 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget);
-    if (skillIndex == -1)
-        return Status::Failed;
     // Possible heal targets
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
@@ -41,6 +38,10 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
 
     Game::Actor* actor = Game::To<Game::Actor>(target.get());
     if (!actor->IsDead())
+        return Status::Failed;
+
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget, actor);
+    if (skillIndex == -1)
         return Status::Failed;
 
     auto skill = npc.skills_->GetSkill(skillIndex);

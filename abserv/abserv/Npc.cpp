@@ -194,13 +194,15 @@ float Npc::GetAggro(const Actor* other)
     return (1.0f / dist) * rval;
 }
 
-int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target)
+int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* targetActor /* = nullptr */)
 {
     // skill index -> cost (smaller is better)
     std::map<int, float> sorting;
     std::vector<int> skillIndices;
     skills_->VisitSkills([&](int index, auto& current)
     {
+        if (targetActor && !current.IsInRange(targetActor))
+            return Iteration::Continue;
         if (!current.HasEffect(effect))
             return Iteration::Continue;
         if (!current.HasTarget(target))

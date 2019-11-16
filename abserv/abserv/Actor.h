@@ -254,7 +254,7 @@ public:
     void GotoPosition(const Math::Vector3& pos);
     void FollowObject(std::shared_ptr<GameObject> object);
     void FollowObject(uint32_t objectId);
-    void UseSkill(uint32_t index);
+    void UseSkill(int index);
     void Attack(Actor* target);
     bool AttackById(uint32_t targetId);
     bool IsAttackingActor(Actor* target);

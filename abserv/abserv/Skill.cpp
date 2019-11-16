@@ -245,7 +245,7 @@ float Skill::CalculateCost(const std::function<float(const Skill&, CostType)>& i
     return result;
 }
 
-bool Skill::IsInRange(Actor* target)
+bool Skill::IsInRange(const Actor* target) const
 {
     if (!target)
         return false;

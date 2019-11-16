@@ -100,7 +100,7 @@ public:
     void SetGroupId(uint32_t value);
     bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
-    int GetBestSkillIndex(SkillEffect effect, SkillTarget target);
+    int GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* targetActor = nullptr);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
 
