@@ -14,7 +14,7 @@ IsCloseToSelection::IsCloseToSelection(const ArgumentsType& arguments) :
         distance_ = static_cast<float>(atof(arguments[0].c_str()));
 }
 
-bool IsCloseToSelection::Evaluate(Agent& agent)
+bool IsCloseToSelection::Evaluate(Agent& agent, const Node&)
 {
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())

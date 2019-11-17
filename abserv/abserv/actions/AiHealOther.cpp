@@ -48,6 +48,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
         int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetParty);
         if (skillIndex != -1)
         {
+            GetAgent(agent).selectedSkill_ = skillIndex;
             if (useSkill(skillIndex, selection[0]))
                 return Status::Running;
         }
@@ -64,9 +65,10 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (actor.IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget, &actor);
+    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget);
     if (skillIndex == -1)
         return Status::Failed;
+    GetAgent(agent).selectedSkill_ = skillIndex;
 
     if (useSkill(skillIndex, selection[0]))
     {

@@ -12,7 +12,7 @@ private:
 public:
     CONDITON_CLASS(RandomCondition)
     explicit RandomCondition(const ArgumentsType& arguments);
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 }

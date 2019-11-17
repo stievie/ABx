@@ -10,7 +10,7 @@ class FalseCondition : public Condition
 public:
     CONDITON_CLASS(FalseCondition)
     explicit FalseCondition(const ArgumentsType& arguments);
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 class TrueCondition : public Condition
@@ -18,7 +18,7 @@ class TrueCondition : public Condition
 public:
     CONDITON_CLASS(TrueCondition)
     explicit TrueCondition(const ArgumentsType& arguments);
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 class AndCondition : public Condition
@@ -30,7 +30,7 @@ public:
     explicit AndCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 class OrCondition : public Condition
@@ -42,7 +42,7 @@ public:
     explicit OrCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 class NotCondition : public Condition
@@ -54,7 +54,7 @@ public:
     explicit NotCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
 };
 
 }

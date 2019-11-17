@@ -16,7 +16,7 @@ private:
 public:
     CONDITON_CLASS(FilterCondition)
     explicit FilterCondition(const ArgumentsType& arguments);
-    bool Evaluate(Agent&) override;
+    bool Evaluate(Agent&, const Node&) override;
     bool SetFilter(std::shared_ptr<AI::Filter> filter) override;
 };
 

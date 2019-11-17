@@ -7,7 +7,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsInAOE::Evaluate(Agent& agent)
+bool IsInAOE::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = GetNpc(agent);
     bool result = false;

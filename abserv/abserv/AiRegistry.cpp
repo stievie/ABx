@@ -18,6 +18,7 @@
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsEnergyLow.h"
 #include "conditions/AiIsInAOE.h"
+#include "conditions/AiIsInSkillRange.h"
 #include "conditions/AiIsMeleeTarget.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsSelfHealthCritical.h"
@@ -68,6 +69,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("IsEnergyLow", Conditions::IsEnergyLow::GetFactory());
     RegisterConditionFactory("IsInAOE", Conditions::IsInAOE::GetFactory());
     RegisterConditionFactory("IsMeleeTarget", Conditions::IsMeleeTarget::GetFactory());
+    RegisterConditionFactory("IsInSkillRange", Conditions::IsInSkillRange::GetFactory());
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());

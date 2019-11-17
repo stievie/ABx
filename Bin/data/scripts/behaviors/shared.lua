@@ -58,10 +58,21 @@ function healAlly()
       andCond:AddCondition(haveTargets)
     node:SetCondition(andCond)
     -- Heal fails if out of range
-    node:AddNode(self:CreateNode("HealOther"))
+    local heal = self:CreateNode("HealOther")
+      heal:SetCondition(self:CreateCondition("IsInSkillRange"))
+    node:AddNode(heal)
+
     -- If out of range move to target
-    node:AddNode(self:CreateNode("MoveTo"))
-    
+    local move = self:CreateNode("MoveTo")
+      -- Only move there when not in range
+      local notinrange = self:CreateCondition("Not")
+        notinrange:AddCondition(self:CreateCondition("IsInSkillRange"))
+
+      move:SetCondition(notinrange)
+
+    -- If out of range move to target
+    node:AddNode(move)
+
   return node
 end
 
@@ -79,9 +90,18 @@ function rezzAlly()
       haveDeadAllies:SetFilter(self:CreateFilter("SelectDeadAllies"))
     node:SetCondition(haveDeadAllies)
 
-    node:AddNode(self:CreateNode("ResurrectSelection"))
+    local rezz = self:CreateNode("ResurrectSelection")
+      rezz:SetCondition(self:CreateCondition("IsInSkillRange"))
+    node:AddNode(rezz)
+
     -- If out of range move to target
-    node:AddNode(self:CreateNode("MoveTo"))
+    local move = self:CreateNode("MoveTo")
+      -- Only move there when not in range
+      local notinrange = self:CreateCondition("Not")
+        notinrange:AddCondition(self:CreateCondition("IsInSkillRange"))
+
+      move:SetCondition(notinrange)
+    node:AddNode(move)
 
   return node
 end

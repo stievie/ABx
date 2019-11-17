@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsAttacked::Evaluate(Agent& agent)
+bool IsAttacked::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = AI::GetNpc(agent);
 

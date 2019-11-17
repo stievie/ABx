@@ -13,7 +13,7 @@ public:
     explicit HasSelection(const ArgumentsType& arguments) :
         Condition(arguments)
     { }
-    virtual bool Evaluate(Agent& agent) override;
+    virtual bool Evaluate(Agent& agent, const Node&) override;
 };
 
 }

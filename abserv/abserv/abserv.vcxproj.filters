@@ -390,6 +390,9 @@
     <ClInclude Include="filters\AiSelectWithEffect.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiIsInSkillRange.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -730,6 +733,9 @@
     </ClCompile>
     <ClCompile Include="filters\AiSelectWithEffect.cpp">
       <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsInSkillRange.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsSelfHealthCritical::Evaluate(Agent& agent)
+bool IsSelfHealthCritical::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = AI::GetNpc(agent);
     if (npc.IsDead())

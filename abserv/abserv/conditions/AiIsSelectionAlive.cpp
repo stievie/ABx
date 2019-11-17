@@ -8,7 +8,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsSelectionAlive::Evaluate(Agent& agent)
+bool IsSelectionAlive::Evaluate(Agent& agent, const Node&)
 {
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())

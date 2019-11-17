@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Condition.h"
-#include "Agent.h"
 
 namespace AI {
 namespace Conditions {
 
-class IsAllyHealthCritical : public AI::Condition
+class IsAllyHealthCritical : public Condition
 {
 public:
     CONDITON_CLASS(IsAllyHealthCritical)
@@ -14,7 +13,7 @@ public:
     explicit IsAllyHealthCritical(const ArgumentsType& arguments) :
         Condition(arguments)
     { }
-    bool Evaluate(AI::Agent&) override;
+    bool Evaluate(AI::Agent&, const Node&) override;
 };
 
 }

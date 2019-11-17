@@ -63,6 +63,8 @@ abserv/conditions/AiIsEnergyLow.cpp
 abserv/conditions/AiIsEnergyLow.h
 abserv/conditions/AiIsInAOE.cpp
 abserv/conditions/AiIsInAOE.h
+abserv/conditions/AiIsInSkillRange.cpp
+abserv/conditions/AiIsInSkillRange.h
 abserv/conditions/AiIsMeleeTarget.cpp
 abserv/conditions/AiIsMeleeTarget.h
 abserv/conditions/AiIsSelectionAlive.cpp

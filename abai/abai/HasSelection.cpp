@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-bool HasSelection::Evaluate(Agent& agent)
+bool HasSelection::Evaluate(Agent& agent, const Node&)
 {
     return agent.filteredAgents_.size() != 0;
 }

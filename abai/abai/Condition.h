@@ -10,6 +10,7 @@ namespace AI {
 class Agent;
 class Condition;
 class Filter;
+class Node;
 
 using ConditionFactory = AbstractFactory<Condition>;
 
@@ -48,7 +49,10 @@ public:
 
     virtual bool AddCondition(std::shared_ptr<Condition>);
     virtual bool SetFilter(std::shared_ptr<Filter>);
-    virtual bool Evaluate(Agent&) = 0;
+    /// Evaluate the condition
+    /// @param agent
+    /// @param node The calling node
+    virtual bool Evaluate(Agent& agent, const Node& node) = 0;
 };
 
 }

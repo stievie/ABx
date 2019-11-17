@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsMeleeTarget::Evaluate(Agent& agent)
+bool IsMeleeTarget::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = AI::GetNpc(agent);
 

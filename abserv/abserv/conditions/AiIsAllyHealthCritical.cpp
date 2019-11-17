@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-bool IsAllyHealthCritical::Evaluate(Agent& agent)
+bool IsAllyHealthCritical::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = AI::GetNpc(agent);
     bool result = false;

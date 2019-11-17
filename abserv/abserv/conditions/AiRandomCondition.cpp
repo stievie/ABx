@@ -13,7 +13,7 @@ RandomCondition::RandomCondition(const ArgumentsType& arguments) :
         weight_ = static_cast<float>(atof(arguments[0].c_str()));
 }
 
-bool RandomCondition::Evaluate(Agent&)
+bool RandomCondition::Evaluate(Agent&, const Node&)
 {
     auto* rnd = GetSubsystem<Crypto::Random>();
     float rand = rnd->GetFloat() * weight_;

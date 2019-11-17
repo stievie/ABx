@@ -9,7 +9,7 @@ FilterCondition::FilterCondition(const ArgumentsType& arguments) :
     Condition(arguments)
 { }
 
-bool FilterCondition::Evaluate(Agent& agent)
+bool FilterCondition::Evaluate(Agent& agent, const Node&)
 {
     // If there is a filter assigned execute it firs, otherwise just see if the
     // Agent has something selected.

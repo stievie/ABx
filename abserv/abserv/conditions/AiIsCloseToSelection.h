@@ -14,7 +14,7 @@ public:
     CONDITON_CLASS(IsCloseToSelection)
 
     explicit IsCloseToSelection(const ArgumentsType& arguments);
-    bool Evaluate(AI::Agent&) override;
+    bool Evaluate(AI::Agent&, const Node&) override;
 };
 
 }

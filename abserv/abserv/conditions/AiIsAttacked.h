@@ -14,7 +14,7 @@ public:
     explicit IsAttacked(const ArgumentsType& arguments) :
         Condition(arguments)
     { }
-    bool Evaluate(AI::Agent&) override;
+    bool Evaluate(AI::Agent&, const Node&) override;
 };
 
 }

@@ -1,33 +1,31 @@
 #include "stdafx.h"
 #include "LogicConditions.h"
+#include "Node.h"
 
 namespace AI {
 namespace Conditions {
 
 FalseCondition::FalseCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{
-}
+{ }
 
-bool FalseCondition::Evaluate(Agent&)
+bool FalseCondition::Evaluate(Agent&, const Node&)
 {
     return false;
 }
 
 TrueCondition::TrueCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{
-}
+{ }
 
-bool TrueCondition::Evaluate(Agent&)
+bool TrueCondition::Evaluate(Agent&, const Node&)
 {
     return true;
 }
 
 AndCondition::AndCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{
-}
+{ }
 
 bool AndCondition::AddCondition(std::shared_ptr<Condition> condition)
 {
@@ -35,11 +33,11 @@ bool AndCondition::AddCondition(std::shared_ptr<Condition> condition)
     return true;
 }
 
-bool AndCondition::Evaluate(Agent& agent)
+bool AndCondition::Evaluate(Agent& agent, const Node& node)
 {
     for (auto& condition : conditions_)
     {
-        if (!condition->Evaluate(agent))
+        if (!condition->Evaluate(agent, node))
             return false;
     }
     return true;
@@ -47,8 +45,7 @@ bool AndCondition::Evaluate(Agent& agent)
 
 OrCondition::OrCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{
-}
+{ }
 
 bool OrCondition::AddCondition(std::shared_ptr<Condition> condition)
 {
@@ -56,11 +53,11 @@ bool OrCondition::AddCondition(std::shared_ptr<Condition> condition)
     return true;
 }
 
-bool OrCondition::Evaluate(Agent& agent)
+bool OrCondition::Evaluate(Agent& agent, const Node& node)
 {
     for (auto& condition : conditions_)
     {
-        if (condition->Evaluate(agent))
+        if (condition->Evaluate(agent, node))
             return true;
     }
     return false;
@@ -68,20 +65,21 @@ bool OrCondition::Evaluate(Agent& agent)
 
 NotCondition::NotCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{
-}
+{ }
 
 bool NotCondition::AddCondition(std::shared_ptr<Condition> condition)
 {
-    if (condition)
+    if (!condition)
         return false;
     condition_ = condition;
     return true;
 }
 
-bool NotCondition::Evaluate(Agent& agent)
+bool NotCondition::Evaluate(Agent& agent, const Node& node)
 {
-    return !condition_->Evaluate(agent);
+    // A Not condition must have a condition assigned.
+    assert(condition_);
+    return !condition_->Evaluate(agent, node);
 }
 
 }
