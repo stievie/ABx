@@ -215,6 +215,7 @@
     <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
+    <ClInclude Include="conditions\AiHaveHome.h" />
     <ClInclude Include="conditions\AiIsAllyHealthCritical.h" />
     <ClInclude Include="conditions\AiIsAllyHealthLow.h" />
     <ClInclude Include="conditions\AiIsAttacked.h" />
@@ -336,6 +337,7 @@
     <ClCompile Include="AutoRunComp.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
+    <ClCompile Include="conditions\AiHaveHome.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthLow.cpp" />
     <ClCompile Include="conditions\AiIsAttacked.cpp" />

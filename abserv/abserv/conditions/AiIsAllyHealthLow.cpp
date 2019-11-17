@@ -10,7 +10,7 @@ bool IsAllyHealthLow::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = AI::GetNpc(agent);
     bool result = false;
-    npc.VisitAlliesInRange(Game::Ranges::Aggro, [&result](const Game::Actor* o)
+    npc.VisitAlliesInRange(Game::Ranges::HalfCompass, [&result](const Game::Actor* o)
     {
         if (result)
             return;

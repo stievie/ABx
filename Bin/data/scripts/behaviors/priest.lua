@@ -7,6 +7,7 @@ function init(root)
     prio:AddNode(healAlly())
     prio:AddNode(rezzAlly())
     prio:AddNode(defend())
+    prio:AddNode(goHome())
     prio:AddNode(idle(1000))
 
   root:AddNode(prio)

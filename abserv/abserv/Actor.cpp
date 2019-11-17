@@ -159,6 +159,7 @@ bool Actor::GotoHomePos()
         GotoPosition(homePos_);
         return true;
     }
+    // Already there
     return false;
 }
 

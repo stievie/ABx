@@ -12,6 +12,7 @@
 #include "actions/AiMoveTo.h"
 #include "actions/AiResurrectSelection.h"
 #include "actions/AiSay.h"
+#include "conditions/AiHaveHome.h"
 #include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAllyHealthLow.h"
 #include "conditions/AiIsAttacked.h"
@@ -70,6 +71,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("IsInAOE", Conditions::IsInAOE::GetFactory());
     RegisterConditionFactory("IsMeleeTarget", Conditions::IsMeleeTarget::GetFactory());
     RegisterConditionFactory("IsInSkillRange", Conditions::IsInSkillRange::GetFactory());
+    RegisterConditionFactory("HaveHome", Conditions::HaveHome::GetFactory());
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());

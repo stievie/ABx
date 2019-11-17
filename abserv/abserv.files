@@ -51,6 +51,8 @@ abserv/Chat.cpp
 abserv/Chat.h
 abserv/CollisionComp.cpp
 abserv/CollisionComp.h
+abserv/conditions/AiHaveHome.cpp
+abserv/conditions/AiHaveHome.h
 abserv/conditions/AiIsAllyHealthCritical.cpp
 abserv/conditions/AiIsAllyHealthCritical.h
 abserv/conditions/AiIsAllyHealthLow.cpp

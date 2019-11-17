@@ -16,7 +16,7 @@ void SelectLowHealth::Execute(Agent& agent)
     Game::Npc& chr = GetNpc(agent);
     std::map<uint32_t, std::pair<float, float>> sorting;
 
-    chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
+    chr.VisitAlliesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor* o)
     {
         if (o->resourceComp_->GetHealthRatio() < LOW_HP_THRESHOLD)
         {

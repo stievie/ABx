@@ -2,6 +2,12 @@ function idle(time)
   return self:CreateNode("Idle", { time })
 end
 
+function goHome()
+  local node = self:CreateNode("GoHome")
+    node:AddCondition(self:CreateCondition("HaveHome"))
+  return node
+end
+
 local function avoidSelfMeleeDamage()
   -- Dodge melee attacks
   local node = self:CreateNode("Flee")

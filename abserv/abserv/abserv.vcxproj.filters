@@ -393,6 +393,9 @@
     <ClInclude Include="conditions\AiIsInSkillRange.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiHaveHome.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -735,6 +738,9 @@
       <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
     <ClCompile Include="conditions\AiIsInSkillRange.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiHaveHome.cpp">
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>

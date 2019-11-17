@@ -16,16 +16,16 @@ Node::Status GoHome::DoAction(Agent& agent, uint32_t)
     {
         if (home.Distance(npc.GetPosition()) <= 0.3f)
             return Status::Finished;
+        return Status::Running;
     }
     if (npc.GotoHomePos())
         return Status::Running;
-    return Status::Failed;
+    return Status::Finished;
 }
 
 GoHome::GoHome(const ArgumentsType& arguments) :
     Action(arguments)
-{
-}
+{ }
 
 }
 }
