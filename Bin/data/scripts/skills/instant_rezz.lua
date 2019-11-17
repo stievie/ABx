@@ -7,7 +7,7 @@ activation = 2000
 recharge = 1000
 overcast = 0
 hp = 0
-range = RANGE_CASTING
+range = RANGE_ADJECENT
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget
 

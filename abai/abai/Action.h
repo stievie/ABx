@@ -9,10 +9,12 @@ namespace AI {
 class Action : public Node, public std::enable_shared_from_this<Action>
 {
 protected:
-    // If true tthis Action is executted until it returns not running without
+    // If true this Action is executed until it returns not running without
     // revaluating the tree.
     bool mustComplete_{ false };
     bool IsCurrentAction(const Agent& agent) const;
+    void SetCurrentAction(Agent& agent);
+    void UnsetCurrentAction(Agent& agent);
     virtual Status DoAction(Agent& agent, uint32_t timeElapsed) = 0;
 public:
     explicit Action(const ArgumentsType& arguments);

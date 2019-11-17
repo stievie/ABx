@@ -1,3 +1,4 @@
+README.md
 abai/Action.cpp
 abai/Action.h
 abai/Agent.cpp
@@ -22,6 +23,8 @@ abai/FilterCondition.cpp
 abai/FilterCondition.h
 abai/FirstFilter.cpp
 abai/FirstFilter.h
+abai/HasSelection.cpp
+abai/HasSelection.h
 abai/Inverter.cpp
 abai/Inverter.h
 abai/LastFilter.cpp

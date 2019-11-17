@@ -10,7 +10,7 @@ namespace Actions {
 Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (agent.context_.IsActionRunning(id_))
+    if (IsCurrentAction(agent))
     {
         if (auto cs = npc.GetCurrentSkill())
         {

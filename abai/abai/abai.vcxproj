@@ -104,6 +104,7 @@
     <ClInclude Include="Fail.h" />
     <ClInclude Include="FilterCondition.h" />
     <ClInclude Include="FirstFilter.h" />
+    <ClInclude Include="HasSelection.h" />
     <ClInclude Include="Inverter.h" />
     <ClInclude Include="LastFilter.h" />
     <ClInclude Include="Limit.h" />
@@ -137,6 +138,7 @@
     <ClCompile Include="Fail.cpp" />
     <ClCompile Include="FilterCondition.cpp" />
     <ClCompile Include="FirstFilter.cpp" />
+    <ClCompile Include="HasSelection.cpp" />
     <ClCompile Include="Inverter.cpp" />
     <ClCompile Include="LastFilter.cpp" />
     <ClCompile Include="Limit.cpp" />

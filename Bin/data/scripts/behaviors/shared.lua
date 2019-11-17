@@ -31,7 +31,7 @@ function stayAlive()
     node:SetCondition(condition)
     -- 1. try to heal
     node:AddNode(self:CreateNode("HealSelf"))
-    -- 2. If that failes flee
+    -- 2. If that failes, flee
     node:AddNode(self:CreateNode("Flee"))
   return node
 end
@@ -49,13 +49,19 @@ function defend()
 end
 
 function healAlly()
-  local node = self:CreateNode("HealOther")
+  -- Priority: Execute the first child that does not fail, either HealOther or MoveTo
+  local node = self:CreateNode("Priority")
     local andCond = self:CreateCondition("And")
       andCond:AddCondition(self:CreateCondition("IsAllyHealthLow"))
-      local haveAttackers = self:CreateCondition("Filter")
-        haveAttackers:SetFilter(self:CreateFilter("SelectLowHealth"))
-      andCond:AddCondition(haveAttackers)
+      local haveTargets = self:CreateCondition("Filter")
+        haveTargets:SetFilter(self:CreateFilter("SelectLowHealth"))
+      andCond:AddCondition(haveTargets)
     node:SetCondition(andCond)
+    -- Heal fails if out of range
+    node:AddNode(self:CreateNode("HealOther"))
+    -- If out of range move to target
+    node:AddNode(self:CreateNode("MoveTo"))
+    
   return node
 end
 
@@ -68,9 +74,14 @@ function attackAggro()
 end
 
 function rezzAlly()
-  local node = self:CreateNode("ResurrectSelection")
+  local node = self:CreateNode("Priority")
     local haveDeadAllies = self:CreateCondition("Filter")
       haveDeadAllies:SetFilter(self:CreateFilter("SelectDeadAllies"))
     node:SetCondition(haveDeadAllies)
+
+    node:AddNode(self:CreateNode("ResurrectSelection"))
+    -- If out of range move to target
+    node:AddNode(self:CreateNode("MoveTo"))
+
   return node
 end

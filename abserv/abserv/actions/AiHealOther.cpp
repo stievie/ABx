@@ -10,7 +10,7 @@ namespace Actions {
 Node::Status HealOther::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (agent.context_.IsActionRunning(id_))
+    if (IsCurrentAction(agent))
     {
         if (auto cs = npc.GetCurrentSkill())
         {
@@ -49,9 +49,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
         if (skillIndex != -1)
         {
             if (useSkill(skillIndex, selection[0]))
-            {
                 return Status::Running;
-            }
         }
     }
 

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <stdint.h>
-#include <memory>
-#include <string>
 #include "Action.h"
 #include <limits>
+#include <stdint.h>
 
 namespace AI {
 

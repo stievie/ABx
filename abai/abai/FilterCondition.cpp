@@ -11,9 +11,10 @@ FilterCondition::FilterCondition(const ArgumentsType& arguments) :
 
 bool FilterCondition::Evaluate(Agent& agent)
 {
-    if (!filter_)
-        return false;
-    filter_->Execute(agent);
+    // If there is a filter assigned execute it firs, otherwise just see if the
+    // Agent has something selected.
+    if (filter_)
+        filter_->Execute(agent);
     return agent.filteredAgents_.size() != 0;
 }
 

@@ -16,7 +16,7 @@ HealSelf::HealSelf(const ArgumentsType& arguments) :
 Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (agent.context_.IsActionRunning(id_))
+    if (IsCurrentAction(agent))
     {
         if (auto cs = npc.GetCurrentSkill())
         {

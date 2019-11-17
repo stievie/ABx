@@ -68,26 +68,17 @@ void Loader::RegisterLua(kaguya::State& state)
 
 std::shared_ptr<Node> Loader::CreateNode(const std::string& type)
 {
-    auto result = registry_.CreateNode(type, { });
-    if (!result)
-        LoadError("Node type " + type + " not found");
-    return result;
+    return CreateNodeWidthArgs(type, { });
 }
 
 std::shared_ptr<Condition> Loader::CreateCondition(const std::string& type)
 {
-    auto result = registry_.CreateCondition(type, { });
-    if (!result)
-        LoadError("Condition type " + type + " not found");
-    return result;
+    return CreateConditionWidthArgs(type, { });
 }
 
 std::shared_ptr<Filter> Loader::CreateFilter(const std::string& type)
 {
-    auto result = registry_.CreateFilter(type, { });
-    if (!result)
-        LoadError("Filter type " + type + " not found");
-    return result;
+    return CreateFilterWidthArgs(type, { });
 }
 
 std::shared_ptr<Node> Loader::CreateNodeWidthArgs(const std::string& type, const ArgumentsType& arguments)

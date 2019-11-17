@@ -15,7 +15,7 @@ is a nice writeup about behavior trees.
 ## Features/Limitations
 
 Once a BT is created it must not be modified. Nodes do not store any state
-data, so it is safe to reuse BTs for other NPCs. The Agent object is used 
+data, so it is safe to reuse BTs for other NPCs. The Agent object is used
 to store state data when necessary.
 
 ## Integration
@@ -85,7 +85,9 @@ If a node has a condition, this condition must evaluate to `true`, otherwise the
 node is not executed but returns `Status::CanNotExecute`.
 
 A special condition is the `FilterCondition` which returns `true` when the assigned
-filter selected something.
+filter selected something. If a `FilterCondition` does not have a filter assigned,
+it returns `true` when previously was something selected. So it is similar to the
+`HasSelection` condition.
 
 ### Actions
 
@@ -166,8 +168,10 @@ game starts.
 
 ### Trees
 
+[Examples](../Bin/data/scripts/behaviors)
+
 The trees itself are build with Lua, hence the dependency on [Kaguya](https://github.com/satoren/kaguya)
-and [Lua](https://www.lua.org/). The loader calls the `init()` Lua function in 
+and [Lua](https://www.lua.org/). The loader calls the `init()` Lua function in
 the tree script and passes the root node to it, so you could do something like this:
 
 ~~~lua
@@ -180,6 +184,42 @@ function init(root)
 end
 ~~~
 
-* `self:CreateNode("type")` creates a new node of type `type`.
-* `self:CreateCondition("type")` creates a new condition of type `type`.
-* `self:CreateFilter("type")` creates a new filter of type `type`.
+Example for `stayAlive()`:
+
+~~~lua
+function stayAlive()
+  -- Execute the first child that does not fail
+  local node = self:CreateNode("Priority")
+    local condition = self:CreateCondition("IsSelfHealthLow")
+    -- If we have low HP
+    node:SetCondition(condition)
+    -- 1. try to heal
+    node:AddNode(self:CreateNode("HealSelf"))
+    -- 2. If that failes, flee
+    node:AddNode(self:CreateNode("Flee"))
+  return node
+end
+~~~
+
+* `self:CreateNode("type")`, `self:CreateNode("type", { <arguments> })` creates a new node of type `type`.
+* `self:CreateCondition("type")`, `self:CreateCondition("type", { <arguments> })` creates a new condition of type `type`.
+* `self:CreateFilter("type")`, `self:CreateFilter("type", { <arguments> })` creates a new filter of type `type`.
+
+### Cache
+
+Load all trees at once and add it to a cache.
+
+~~~lua
+function init(cache)
+  -- CreateTree(name, script) creates and loads a whole BT, returns a Root node
+  -- NPCs use this name to set the bevavior
+  cache:Add(self:CreateTree("guild_lord", "/scripts/behaviors/guild_lord.lua"))
+  cache:Add(self:CreateTree("marianna_gani", "/scripts/behaviors/marianna_gani.lua"))
+  cache:Add(self:CreateTree("priest", "/scripts/behaviors/priest.lua"))
+  cache:Add(self:CreateTree("smith", "/scripts/behaviors/smith.lua"))
+end
+~~~
+
+~~~cpp
+    agent.SetBehavior(behaviorCache.Get("priest"));
+~~~

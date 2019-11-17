@@ -5,6 +5,7 @@
 #include "ZoneFilter.h"
 #include "FirstFilter.h"
 #include "LastFilter.h"
+#include "HasSelection.h"
 #include "Inverter.h"
 #include "Succeed.h"
 #include "Fail.h"
@@ -43,6 +44,7 @@ void Registry::Initialize()
     RegisterConditionFactory("Or", Conditions::OrCondition::GetFactory());
     RegisterConditionFactory("True", Conditions::TrueCondition::GetFactory());
     RegisterConditionFactory("Filter", Conditions::FilterCondition::GetFactory());
+    RegisterConditionFactory("HasSelection", Conditions::HasSelection::GetFactory());
 
     RegisterFilterFactory("Zone", Filters::ZoneFilter::GetFactory());
     RegisterFilterFactory("First", Filters::FirstFilter::GetFactory());

@@ -15,7 +15,7 @@ namespace Actions {
 Node::Status Flee::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    if (!destination_.Equals(Math::Vector3::Zero) && agent.context_.IsActionRunning(GetId()))
+    if (!destination_.Equals(Math::Vector3::Zero) && IsCurrentAction(agent))
     {
         if (destination_.Distance(npc.transformation_.position_) > 0.5f)
             return Status::Running;

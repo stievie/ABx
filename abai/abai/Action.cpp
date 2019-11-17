@@ -17,24 +17,34 @@ bool Action::IsCurrentAction(const Agent& agent) const
     return false;
 }
 
+void Action::SetCurrentAction(Agent& agent)
+{
+    if (!IsCurrentAction(agent))
+        agent.context_.currentAction_ = shared_from_this();
+}
+
+void Action::UnsetCurrentAction(Agent& agent)
+{
+    if (IsCurrentAction(agent))
+        agent.context_.currentAction_.reset();
+}
+
 Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
     {
-        if (IsCurrentAction(agent))
-            agent.context_.currentAction_.reset();
+        UnsetCurrentAction(agent);
         return Status::CanNotExecute;
     }
     const auto status = DoAction(agent, timeElapsed);
     switch (status)
     {
     case Status::Running:
-        agent.context_.currentAction_ = shared_from_this();
+        SetCurrentAction(agent);
         break;
     case Status::Finished:
     case Status::Failed:
-        if (IsCurrentAction(agent))
-            agent.context_.currentAction_.reset();
+        UnsetCurrentAction(agent);
         break;
     default:
         break;
