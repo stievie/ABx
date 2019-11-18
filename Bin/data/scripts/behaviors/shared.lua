@@ -8,6 +8,12 @@ function goHome()
   return node
 end
 
+function wander()
+  local node = self:CreateNode("Wander")
+    node:AddCondition(self:CreateCondition("HaveWanderRoute"))
+  return node
+end
+
 local function avoidSelfMeleeDamage()
   -- Dodge melee attacks
   local node = self:CreateNode("Flee")

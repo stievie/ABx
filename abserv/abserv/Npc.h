@@ -6,6 +6,7 @@
 #include "AiLoader.h"
 #include "TriggerComp.h"
 #include "AiComp.h"
+#include "WanderComp.h"
 
 namespace Game {
 
@@ -41,6 +42,7 @@ private:
     bool luaInitialized_;
     void InitializeLua();
     std::string GetQuote(int index);
+    void _LuaAddWanderPoint(const Math::STLVector3& point);
 private:
     // Events
     void OnArrived();
@@ -103,6 +105,8 @@ public:
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* targetActor = nullptr);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
+    bool IsWander() const;
+    void SetWander(bool value);
 
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
@@ -112,6 +116,7 @@ public:
     void ShootAt(const std::string& itemUuid, Actor* target);
 
     std::unique_ptr<Components::AiComp> aiComp_;
+    std::unique_ptr<Components::WanderComp> wanderComp_;
 };
 
 template <>

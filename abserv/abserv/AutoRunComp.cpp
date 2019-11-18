@@ -65,7 +65,9 @@ void AutoRunComp::Reset()
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
-    destination_ = dest;
+    if (destination_.Equals(dest) && wayPoints_.size() != 0)
+        return true;
+
     static constexpr Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
 
     const Math::Vector3& pos = owner_.transformation_.position_;

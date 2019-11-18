@@ -12,7 +12,9 @@
 #include "actions/AiMoveTo.h"
 #include "actions/AiResurrectSelection.h"
 #include "actions/AiSay.h"
+#include "actions/AiWander.h"
 #include "conditions/AiHaveHome.h"
+#include "conditions/AiHaveWanderRoute.h"
 #include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAllyHealthLow.h"
 #include "conditions/AiIsAttacked.h"
@@ -59,6 +61,7 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("GainEnergy", Actions::GainEnergy::GetFactory());
     RegisterNodeFactory("Flee", Actions::Flee::GetFactory());
     RegisterNodeFactory("MoveOutAOE", Actions::MoveOutAOE::GetFactory());
+    RegisterNodeFactory("Wander", Actions::Wander::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());
@@ -72,6 +75,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("IsMeleeTarget", Conditions::IsMeleeTarget::GetFactory());
     RegisterConditionFactory("IsInSkillRange", Conditions::IsInSkillRange::GetFactory());
     RegisterConditionFactory("HaveHome", Conditions::HaveHome::GetFactory());
+    RegisterConditionFactory("HaveWanderRoute", Conditions::HaveWanderRoute::GetFactory());
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());

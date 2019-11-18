@@ -32,6 +32,8 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
         .addFunction("SetBehavior", &Npc::SetBehavior)
+        .addFunction("IsWander", &Npc::IsWander)
+        .addFunction("SetWander", &Npc::SetWander)
     );
 }
 
@@ -87,6 +89,8 @@ bool Npc::LoadScript(const std::string& fileName)
         sex_ = luaState_["sex"];
     if (Lua::IsNumber(luaState_, "group_id"))
         groupId_ = luaState_["group_id"];
+    if (Lua::IsBool(luaState_, "wander"))
+        SetWander(luaState_("wander"));
 
     if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
@@ -151,6 +155,8 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     // I think first we should run the BT
     if (aiComp_)
         aiComp_->Update(timeElapsed);
+    if (wanderComp_)
+        wanderComp_->Update(timeElapsed);
 
     Actor::Update(timeElapsed, message);
 
@@ -256,6 +262,25 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* 
     return *skillIndices.begin();
 }
 
+bool Npc::IsWander() const
+{
+    return !!wanderComp_;
+}
+
+void Npc::SetWander(bool value)
+{
+    if (!value)
+    {
+        if (wanderComp_)
+            wanderComp_.reset();
+    }
+    else
+    {
+        if (!wanderComp_)
+            wanderComp_ = std::make_unique<Components::WanderComp>(*this);
+    }
+}
+
 void Npc::WriteSpawnData(Net::NetworkMessage& msg)
 {
     if (!serverOnly_)
@@ -292,6 +317,12 @@ std::string Npc::GetQuote(int index)
         return "";
     const char* q = (const char*)luaState_["onGetQuote"](index);
     return q;
+}
+
+void Npc::_LuaAddWanderPoint(const Math::STLVector3& point)
+{
+    if (IsWander())
+        wanderComp_->AddRoutePoint(point);
 }
 
 bool Npc::SayQuote(ChatType channel, int index)

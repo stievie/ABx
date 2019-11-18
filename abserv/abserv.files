@@ -1,4 +1,6 @@
 README.md
+abserv/WanderComp.cpp
+abserv/WanderComp.h
 abserv/actions/AiAttackSelection.cpp
 abserv/actions/AiAttackSelection.h
 abserv/actions/AiDie.cpp
@@ -51,8 +53,12 @@ abserv/Chat.cpp
 abserv/Chat.h
 abserv/CollisionComp.cpp
 abserv/CollisionComp.h
+abserv/actions/AiWander.cpp
+abserv/actions/AiWander.h
 abserv/conditions/AiHaveHome.cpp
 abserv/conditions/AiHaveHome.h
+abserv/conditions/AiHaveWanderRoute.cpp
+abserv/conditions/AiHaveWanderRoute.h
 abserv/conditions/AiIsAllyHealthCritical.cpp
 abserv/conditions/AiIsAllyHealthCritical.h
 abserv/conditions/AiIsAllyHealthLow.cpp

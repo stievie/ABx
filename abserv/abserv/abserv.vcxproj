@@ -203,6 +203,7 @@
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
     <ClInclude Include="actions\AiSay.h" />
+    <ClInclude Include="actions\AiWander.h" />
     <ClInclude Include="AiAgent.h" />
     <ClInclude Include="AiComp.h" />
     <ClInclude Include="AiLoader.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="conditions\AiHaveHome.h" />
+    <ClInclude Include="conditions\AiHaveWanderRoute.h" />
     <ClInclude Include="conditions\AiIsAllyHealthCritical.h" />
     <ClInclude Include="conditions\AiIsAllyHealthLow.h" />
     <ClInclude Include="conditions\AiIsAttacked.h" />
@@ -312,6 +314,7 @@
     <ClInclude Include="TerrainPatch.h" />
     <ClInclude Include="TriggerComp.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="WanderComp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actions\AiAttackSelection.cpp" />
@@ -326,6 +329,7 @@
     <ClCompile Include="actions\AiMoveTo.cpp" />
     <ClCompile Include="actions\AiResurrectSelection.cpp" />
     <ClCompile Include="actions\AiSay.cpp" />
+    <ClCompile Include="actions\AiWander.cpp" />
     <ClCompile Include="AiAgent.cpp" />
     <ClCompile Include="AiComp.cpp" />
     <ClCompile Include="AiLoader.cpp" />
@@ -338,6 +342,7 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="conditions\AiHaveHome.cpp" />
+    <ClCompile Include="conditions\AiHaveWanderRoute.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthLow.cpp" />
     <ClCompile Include="conditions\AiIsAttacked.cpp" />
@@ -434,6 +439,7 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainPatch.cpp" />
     <ClCompile Include="TriggerComp.cpp" />
+    <ClCompile Include="WanderComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abai\abai\abai.vcxproj">

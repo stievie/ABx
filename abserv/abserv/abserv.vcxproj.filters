@@ -396,6 +396,15 @@
     <ClInclude Include="conditions\AiHaveHome.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="WanderComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiWander.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiHaveWanderRoute.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -741,6 +750,15 @@
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
     <ClCompile Include="conditions\AiHaveHome.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="WanderComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiWander.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiHaveWanderRoute.cpp">
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
