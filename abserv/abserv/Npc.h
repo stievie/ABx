@@ -43,6 +43,7 @@ private:
     void InitializeLua();
     std::string GetQuote(int index);
     void _LuaAddWanderPoint(const Math::STLVector3& point);
+    void _LuaAddWanderPoints(const std::vector<Math::STLVector3>& points);
 private:
     // Events
     void OnArrived();

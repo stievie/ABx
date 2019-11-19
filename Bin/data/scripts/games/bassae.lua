@@ -1,3 +1,6 @@
+include("/scripts/includes/consts.lua")
+include("/scripts/includes/create_npcs.lua")
+
 function onStart()
   local ped2 = self:AddNpc("/scripts/actors/npcs/marianna_gani.lua")
   if (ped2 ~= nil) then
@@ -5,6 +8,7 @@ function onStart()
     local z = 5.2049
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
+    ped2:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
   end
 end
 

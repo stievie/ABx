@@ -56,6 +56,12 @@ function onArrived()
 end
 
 function onEndUseSkill(skill)
+  local target = skill:GetTarget()
+  if (target ~= nil) then
+    if skill:HasEffect(SkillEffectResurrect) then
+      self:Say(CHAT_CHANNEL_GENERAL, "Haha, " .. target:GetName() .. " you noob!")
+    end
+  end
 end
 
 function onStartUseSkill(skill)

@@ -4,13 +4,13 @@ end
 
 function goHome()
   local node = self:CreateNode("GoHome")
-    node:AddCondition(self:CreateCondition("HaveHome"))
+    node:SetCondition(self:CreateCondition("HaveHome"))
   return node
 end
 
 function wander()
   local node = self:CreateNode("Wander")
-    node:AddCondition(self:CreateCondition("HaveWanderRoute"))
+    node:SetCondition(self:CreateCondition("HaveWanderRoute"))
   return node
 end
 

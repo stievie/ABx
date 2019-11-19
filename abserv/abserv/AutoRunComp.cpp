@@ -45,7 +45,8 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float ma
 
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
-    maxDist_ = 0.2f;
+    maxDist_ = AT_POSITON_THRESHOLD;
+    following_.reset();
     return FindPath(dest);
 }
 
@@ -65,10 +66,10 @@ void AutoRunComp::Reset()
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
-    if (destination_.Equals(dest) && wayPoints_.size() != 0)
+    if (destination_.Equals(dest, AT_POSITON_THRESHOLD) && wayPoints_.size() != 0)
         return true;
 
-    static constexpr Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
+    static constexpr Math::Vector3 EXTENDS{ 1.0f, 8.0f, 1.0f };
 
     const Math::Vector3& pos = owner_.transformation_.position_;
     if (pos.Distance(dest) < maxDist_)
@@ -86,6 +87,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     if (succ && wp.size() != 0)
     {
         wayPoints_ = wp;
+        destination_ = dest;
         lastCalc_ = Utils::Tick();
         return true;
     }
@@ -216,7 +218,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (auto f = following_.lock())
     {
         if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > 1000)
-            && (destination_.Distance(f->transformation_.position_) > SWITCH_WAYPOINT_DIST))
+            && (!destination_.Equals(f->transformation_.position_, AT_POSITON_THRESHOLD)))
         {
             // Find new path when following object moved and enough time passed
             FindPath(f->transformation_.position_);
@@ -225,6 +227,9 @@ void AutoRunComp::Update(uint32_t timeElapsed)
 
     if (!HasWaypoints())
     {
+#ifdef DEBUG_NAVIGATION
+        LOG_DEBUG << owner_.GetName() << " has no (more) waypoints" << std::endl;
+#endif
         // Still auto running but no more waypoints, move close to dest
         const float distance = destination_.Distance(pos);
         // Remaining distance
@@ -244,10 +249,13 @@ void AutoRunComp::Update(uint32_t timeElapsed)
 
     // Here we must have some waypoints left
     const Math::Vector3 currWp = Next();
-    const float distance = currWp.Distance(pos);
-
-    if (distance > SWITCH_WAYPOINT_DIST)
+    if (!pos.Equals(currWp, AT_POSITON_THRESHOLD))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_DEBUG << owner_.GetName() << " moving to way point " << currWp.ToString() << std::endl;
+#endif
         MoveTo(timeElapsed, currWp);
+    }
     else
     {
         // If we are close to this point remove it from the list

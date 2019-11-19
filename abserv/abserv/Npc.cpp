@@ -34,6 +34,8 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehavior", &Npc::SetBehavior)
         .addFunction("IsWander", &Npc::IsWander)
         .addFunction("SetWander", &Npc::SetWander)
+        .addFunction("AddWanderPoint", &Npc::_LuaAddWanderPoint)
+        .addFunction("AddWanderPoints", &Npc::_LuaAddWanderPoints)
     );
 }
 
@@ -254,9 +256,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* 
 
     std::sort(skillIndices.begin(), skillIndices.end(), [&sorting](int i, int j)
     {
-        float p1 = sorting[i];
-        float p2 = sorting[j];
-        return p1 < p2;
+        return sorting[i] < sorting[j];
     });
 
     return *skillIndices.begin();
@@ -273,12 +273,11 @@ void Npc::SetWander(bool value)
     {
         if (wanderComp_)
             wanderComp_.reset();
+        return;
     }
-    else
-    {
-        if (!wanderComp_)
-            wanderComp_ = std::make_unique<Components::WanderComp>(*this);
-    }
+
+    if (!wanderComp_)
+        wanderComp_ = std::make_unique<Components::WanderComp>(*this);
 }
 
 void Npc::WriteSpawnData(Net::NetworkMessage& msg)
@@ -322,7 +321,17 @@ std::string Npc::GetQuote(int index)
 void Npc::_LuaAddWanderPoint(const Math::STLVector3& point)
 {
     if (IsWander())
-        wanderComp_->AddRoutePoint(point);
+    {
+        Math::Vector3 pt(point);
+        pt.y_ = GetGame()->map_->GetTerrainHeight(pt);
+        wanderComp_->AddRoutePoint(pt);
+    }
+}
+
+void Npc::_LuaAddWanderPoints(const std::vector<Math::STLVector3>& points)
+{
+    for (const auto& point : points)
+        _LuaAddWanderPoint(point);
 }
 
 bool Npc::SayQuote(ChatType channel, int index)

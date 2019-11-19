@@ -2,6 +2,10 @@
 #include "AiGoHome.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
+#include "../Mechanic.h"
+#include "Logger.h"
+
+//#define DEBUG_AI
 
 namespace AI {
 namespace Actions {
@@ -9,17 +13,24 @@ namespace Actions {
 Node::Status GoHome::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    Math::Vector3 home = npc.GetHomePos();
+    const Math::Vector3& home = npc.GetHomePos();
     if (home.Equals(Math::Vector3::Zero))
         return Status::Failed;
+
+    if (home.Equals(npc.GetPosition(), Game::AT_POSITON_THRESHOLD * 2.0f))
+        return Status::Finished;
+
     if (IsCurrentAction(agent))
+        return Status::Running;
+
+    if (npc.GotoHomePos())
     {
-        if (home.Distance(npc.GetPosition()) <= 0.3f)
-            return Status::Finished;
+#ifdef DEBUG_AI
+        LOG_DEBUG << npc.GetName() << " goes home from " << npc.GetPosition().ToString() <<
+                     " to " << home.ToString() << std::endl;
+#endif
         return Status::Running;
     }
-    if (npc.GotoHomePos())
-        return Status::Running;
     return Status::Finished;
 }
 

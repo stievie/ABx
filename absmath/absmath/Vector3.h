@@ -153,6 +153,12 @@ public:
     {
         return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
     }
+    inline bool Equals(const Vector3& rhs, float epsilon) const
+    {
+        return Math::Equals(x_, rhs.x_, epsilon) &&
+            Math::Equals(y_, rhs.y_, epsilon) &&
+            Math::Equals(z_, rhs.z_, epsilon);
+    }
     void Clamp(const Vector3& min, const Vector3& max);
     void Clamp(float min, float max);
 

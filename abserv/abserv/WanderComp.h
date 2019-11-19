@@ -14,7 +14,7 @@ private:
     enum class Direction
     {
         Forward,
-        Backeward
+        Backward
     };
     Npc& owner_;
 

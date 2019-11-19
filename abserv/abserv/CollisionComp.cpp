@@ -67,11 +67,17 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
         " intersection at " << manifold.intersectionPoint.ToString() << std::endl;
 #endif
 
+    // TODO:
+#if 1
     owner_.transformation_.position_ = newPos;
     mc.StickToGround();
     mc.moved_ = true;
     mc.forcePosition_ = true;
     return true;
+#else
+    (void)newPos;
+    return false;
+#endif
 }
 
 void CollisionComp::GotoSafePosition()
@@ -86,7 +92,8 @@ Math::Vector3 CollisionComp::GetBodyCenter(const Math::Vector3& pos)
     return pos + GameObject::BodyOffset;
 }
 
-Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB, GameObject& other, const Math::Vector3& move,
+Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
+    GameObject& other, const Math::Vector3& move,
     bool& updateTrans)
 {
     if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::ObjectTypePlayer))
@@ -99,7 +106,9 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB, GameOb
 
         // There was no simple sliding solution, let's try the complicated one
         if (move.Equals(Math::Vector3::Zero))
+        {
             updateTrans = Slide(myBB, other);
+        }
         else
         {
             // There was a simple solution, e.g. an AABB can do that

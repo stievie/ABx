@@ -3,6 +3,8 @@
 #include "Npc.h"
 #include "AutoRunComp.h"
 
+//#define DEBUG_NAVIGATION
+
 namespace Game {
 namespace Components {
 
@@ -31,9 +33,9 @@ int WanderComp::GetNextIndex()
     if (direction_ == Direction::Forward)
     {
         if (currentIndex_ >= static_cast<int>(route_.size()) - 1)
-            direction_ = Direction::Backeward;
+            direction_ = Direction::Backward;
     }
-    else if (direction_ == Direction::Backeward)
+    else if (direction_ == Direction::Backward)
     {
         if (currentIndex_ <= 0)
             direction_ = Direction::Forward;
@@ -44,7 +46,7 @@ int WanderComp::GetNextIndex()
     case Direction::Forward:
         ++result;
         break;
-    case Direction::Backeward:
+    case Direction::Backward:
         --result;
         break;
     }
@@ -55,7 +57,7 @@ bool WanderComp::CheckDestination() const
 {
     const auto& ownerPos = owner_.GetPosition();
     const Math::Vector3& point = route_[static_cast<size_t>(currentIndex_)];
-    if (ownerPos.Distance(point) <= AutoRunComp::SWITCH_WAYPOINT_DIST)
+    if (ownerPos.Equals(point, AT_POSITON_THRESHOLD))
         return true;
     return false;
 }
@@ -63,7 +65,23 @@ bool WanderComp::CheckDestination() const
 bool WanderComp::GotoCurrentPoint()
 {
     if (currentIndex_ >= 0 && currentIndex_ < static_cast<int>(route_.size()))
-        return owner_.autorunComp_->Goto(route_.at(static_cast<size_t>(currentIndex_)));
+    {
+        const Math::Vector3& pt = route_[static_cast<size_t>(currentIndex_)];
+        bool res = owner_.autorunComp_->Goto(pt);
+        if (res)
+        {
+            owner_.autorunComp_->SetAutoRun(true);
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+        }
+#ifdef DEBUG_NAVIGATION
+        else
+        {
+            LOG_WARNING << "Failed to go to current point " <<
+                pt.ToString() << std::endl;
+        }
+#endif
+        return res;
+    }
     return false;
 }
 
@@ -86,18 +104,29 @@ void WanderComp::Update(uint32_t)
 bool WanderComp::Wander(bool value)
 {
     if (route_.size() == 0)
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "No route points" << std::endl;
+#endif
         return false;
+    }
 
-    if (value != wandering_)
+    if (value == wandering_)
         return wandering_;
     wandering_ = value;
     if (wandering_)
     {
         currentIndex_ = FindCurrentPointIndex();
         if (!GotoCurrentPoint())
+        {
             wandering_ = false;
+        }
     }
 
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << owner_.GetName() << (wandering_ ? " starting" : "stopped") <<
+        " wandering" << std::endl;
+#endif
     return wandering_;
 }
 

@@ -8,7 +8,7 @@ sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_MESMER
 prof2Index = PROFESSIONINDEX_NONE
---behavior = "patrol"
+behavior = "dorothea_samara"
 
 local startTick;
 
@@ -33,7 +33,7 @@ end
 
 function onClicked(creature)
   if (self:GetState() == CREATURESTATE_IDLE) then
-    self:FollowObject(creature)
+--    self:FollowObject(creature)
   end
 end
 

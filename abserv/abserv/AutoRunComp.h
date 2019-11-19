@@ -35,7 +35,6 @@ private:
     void OnStuck();
     Math::Vector3 AvoidObstacles(const Math::Vector3& destination);
 public:
-    static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
     AutoRunComp() = delete;
     explicit AutoRunComp(Actor& owner);
     // non-copyable

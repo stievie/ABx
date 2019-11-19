@@ -1,6 +1,15 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/create_npcs.lua")
 
+local dorothea_samara_waypoints = {
+  {  -2.4, 0.0,  -9.9 },
+  { -20.0, 0.0, -32.7 },
+  { -47.6, 0.0, -47.8 },
+  {   6.2, 0.0, -12.2 },
+  {  38.2, 0.0, -11.2 },
+  {   5.8, 0.0,   9.9 },
+}
+
 -- Game start up
 function onStart()
 --  createPortal(self, -20.059, 26.7, -0.00870347, "Athena Arena", "3c081fd5-3966-433a-bc61-50a33084eac2")
@@ -40,10 +49,16 @@ function onStart()
   if (ped2 ~= nil) then
     local x = 4.08
     local z = 16.6
+--    local x = 4.1
+--    local z = 8.1
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetHomePos({x, y, z})
     ped2:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
+    ped2:SetWander(true)
+    -- Add current position as first point
+--    ped2:AddWanderPoint({x, y, z})
+    ped2:AddWanderPoints(dorothea_samara_waypoints)
   end
 
   local chest = createChest(self, 0.8, 15.0)

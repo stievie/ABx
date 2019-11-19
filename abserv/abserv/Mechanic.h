@@ -124,6 +124,10 @@ constexpr uint32_t DEFAULT_CHEST_MONEY = MAX_INVENTOREY_MONEY * 100;
 constexpr uint32_t MAX_INVENTORY_STACK_SIZE = 250;
 constexpr uint32_t MAX_CHEST_STACK_SIZE = 250;
 
+// If the difference is smaller than this we will say it's the same position.
+// Should be smaller than RANGE_TOUCH.
+constexpr float AT_POSITON_THRESHOLD = RANGE_TOUCH - 0.1f;
+
 }
 
 namespace AI {

@@ -154,7 +154,7 @@ bool Actor::SetSpawnPoint(const std::string& group)
 
 bool Actor::GotoHomePos()
 {
-    if (!homePos_.Equals(transformation_.position_))
+    if (!homePos_.Equals(transformation_.position_, AT_POSITON_THRESHOLD * 2.0f))
     {
         GotoPosition(homePos_);
         return true;
