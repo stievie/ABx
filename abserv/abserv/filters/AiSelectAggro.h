@@ -7,8 +7,8 @@ namespace Filters {
 
 class SelectAggro : public Filter
 {
-public:
     FILTER_CLASS(SelectAggro)
+public:
     explicit SelectAggro(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

@@ -7,10 +7,10 @@ namespace Actions {
 
 class Say : public Action
 {
+    NODE_CLASS(Say)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(Say)
     explicit Say(const ArgumentsType& arguments) :
         Action(arguments)
     { }

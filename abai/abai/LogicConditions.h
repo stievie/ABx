@@ -7,26 +7,26 @@ namespace Conditions {
 
 class FalseCondition : public Condition
 {
-public:
     CONDITON_CLASS(FalseCondition)
+public:
     explicit FalseCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
 };
 
 class TrueCondition : public Condition
 {
-public:
     CONDITON_CLASS(TrueCondition)
+public:
     explicit TrueCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
 };
 
 class AndCondition : public Condition
 {
+    CONDITON_CLASS(AndCondition)
 private:
     std::vector<std::shared_ptr<Condition>> conditions_;
 public:
-    CONDITON_CLASS(AndCondition)
     explicit AndCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 
@@ -35,10 +35,10 @@ public:
 
 class OrCondition : public Condition
 {
+    CONDITON_CLASS(OrCondition)
 private:
     std::vector<std::shared_ptr<Condition>> conditions_;
 public:
-    CONDITON_CLASS(OrCondition)
     explicit OrCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 
@@ -47,10 +47,10 @@ public:
 
 class NotCondition : public Condition
 {
+    CONDITON_CLASS(NotCondition)
 private:
     std::shared_ptr<Condition> condition_;
 public:
-    CONDITON_CLASS(NotCondition)
     explicit NotCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
 

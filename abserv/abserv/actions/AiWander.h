@@ -7,10 +7,10 @@ namespace Actions {
 
 class Wander : public Action
 {
+    NODE_CLASS(Wander)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(Wander)
     explicit Wander(const ArgumentsType& arguments);
 };
 

@@ -7,8 +7,8 @@ namespace Filters {
 
 class SelectAttackTarget : public Filter
 {
-public:
     FILTER_CLASS(SelectAttackTarget)
+public:
     explicit SelectAttackTarget(const ArgumentsType& arguments) :
         Filter(arguments)
     { }

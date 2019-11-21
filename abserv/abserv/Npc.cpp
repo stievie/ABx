@@ -73,8 +73,7 @@ Npc::Npc() :
     InitializeLua();
 }
 
-Npc::~Npc()
-{ }
+Npc::~Npc() = default;
 
 bool Npc::LoadScript(const std::string& fileName)
 {
@@ -84,7 +83,7 @@ bool Npc::LoadScript(const std::string& fileName)
     if (!script_->Execute(luaState_))
         return false;
 
-    name_ = (const char*)luaState_["name"];
+    name_ = static_cast<const char*>(luaState_["name"]);
     level_ = luaState_["level"];
     itemIndex_ = luaState_["itemIndex"];
     if (Lua::IsNumber(luaState_, "sex"))
@@ -126,7 +125,7 @@ bool Npc::LoadScript(const std::string& fileName)
 
     std::string bt;
     if (Lua::IsString(luaState_, "behavior"))
-        bt = (const char*)luaState_["behavior"];
+        bt = static_cast<const char*>(luaState_["behavior"]);
     if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
     if (Lua::IsFunction(luaState_, "onTrigger"))
@@ -183,7 +182,8 @@ bool Npc::SetBehavior(const std::string& name)
     if (!root)
     {
         aiComp_.reset();
-        LOG_WARNING << "Behavior with name " << name << " not found in cache" << std::endl;
+        if (!name.empty())
+            LOG_WARNING << "Behavior with name " << name << " not found in cache" << std::endl;
         return false;
     }
     aiComp_ = std::make_unique<Components::AiComp>(*this);
@@ -202,7 +202,9 @@ float Npc::GetAggro(const Actor* other)
     return (1.0f / dist) * rval;
 }
 
-int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* targetActor /* = nullptr */)
+int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
+    AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeSkill */,
+    const Actor* targetActor /* = nullptr */)
 {
     // skill index -> cost (smaller is better)
     std::map<int, float> sorting;
@@ -220,10 +222,12 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* 
             return Iteration::Continue;
         if (!resourceComp_->HaveEnoughResources(&current))
             return Iteration::Continue;
+        if (effect == SkillEffect::SkillEffectInterrupt && !current.CanInterrupt(interrupts))
+            return Iteration::Continue;
 
         skillIndices.push_back(index);
         // Calculate some score, depending on activation time, costs...
-        sorting[index] = current.CalculateCost([this](const Skill& self, CostType type)
+        sorting[index] = current.CalculateCost([this, &current](CostType type)
         {
             switch (type)
             {
@@ -231,22 +235,21 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target, const Actor* 
                 return 1.0f;
             case CostType::Energy:
             {
-                float er = resourceComp_->GetEnergyRatio();
+                const float er = resourceComp_->GetEnergyRatio();
                 return 1.0f - er;
             }
             case CostType::Adrenaline:
             {
-                int a = resourceComp_->GetAdrenaline();
-                return static_cast<float>(a) / static_cast<float>(self.adrenaline_);
+                const int a = resourceComp_->GetAdrenaline();
+                return static_cast<float>(a) / static_cast<float>(current.adrenaline_);
             }
             case CostType::HpSacrify:
             {
-                float hr = resourceComp_->GetHealthRatio();
+                const float hr = resourceComp_->GetHealthRatio();
                 return 1.0f - hr;
             }
-            default:
-                return 0.0f;
             }
+            return 0.0f;
         });
         return Iteration::Continue;
     });
@@ -314,18 +317,14 @@ std::string Npc::GetQuote(int index)
 {
     if (!HaveFunction(FunctionOnGetQuote))
         return "";
-    const char* q = (const char*)luaState_["onGetQuote"](index);
+    const char* q = static_cast<const char*>(luaState_["onGetQuote"](index));
     return q;
 }
 
 void Npc::_LuaAddWanderPoint(const Math::STLVector3& point)
 {
     if (IsWander())
-    {
-        Math::Vector3 pt(point);
-        pt.y_ = GetGame()->map_->GetTerrainHeight(pt);
-        wanderComp_->AddRoutePoint(pt);
-    }
+        wanderComp_->AddRoutePoint(point);
 }
 
 void Npc::_LuaAddWanderPoints(const std::vector<Math::STLVector3>& points)

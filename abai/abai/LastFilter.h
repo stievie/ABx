@@ -7,8 +7,8 @@ namespace Filters {
 
 class LastFilter : public Filter
 {
-public:
     FILTER_CLASS(LastFilter)
+public:
     explicit LastFilter(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

@@ -15,6 +15,7 @@ class Node;
 using ConditionFactory = AbstractFactory<Condition>;
 
 #define CONDITON_CLASS(ConditionName)                                                    \
+public:                                                                                  \
     class Factory : public ConditionFactory                                              \
     {                                                                                    \
     public:                                                                              \

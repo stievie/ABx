@@ -9,10 +9,10 @@ namespace Actions {
 
 class AttackSelection : public Action
 {
+    NODE_CLASS(AttackSelection)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(AttackSelection)
     explicit AttackSelection(const ArgumentsType& arguments);
 };
 

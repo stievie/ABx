@@ -149,16 +149,8 @@ public:
         return *this * (1.0f - i) + to * i;
     }
     /// Test for equality with another vector with epsilon.
-    inline bool Equals(const Vector3& rhs) const
-    {
-        return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
-    }
-    inline bool Equals(const Vector3& rhs, float epsilon) const
-    {
-        return Math::Equals(x_, rhs.x_, epsilon) &&
-            Math::Equals(y_, rhs.y_, epsilon) &&
-            Math::Equals(z_, rhs.z_, epsilon);
-    }
+    inline bool Equals(const Vector3& rhs) const;
+    inline bool Equals(const Vector3& rhs, float epsilon) const;
     void Clamp(const Vector3& min, const Vector3& max);
     void Clamp(float min, float max);
 
@@ -186,6 +178,18 @@ public:
     static const Vector3 Down;
     static const Vector3 Left;
 };
+
+inline bool Vector3::Equals(const Vector3& rhs) const
+{
+    return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
+}
+
+inline bool Vector3::Equals(const Vector3& rhs, float epsilon) const
+{
+    return Math::Equals(x_, rhs.x_, epsilon) &&
+        Math::Equals(y_, rhs.y_, epsilon) &&
+        Math::Equals(z_, rhs.z_, epsilon);
+}
 
 template<class _Stream>
 inline _Stream& operator << (_Stream& os, const Vector3& value)

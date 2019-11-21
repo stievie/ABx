@@ -7,7 +7,10 @@ namespace Conditions {
 
 FilterCondition::FilterCondition(const ArgumentsType& arguments) :
     Condition(arguments)
-{ }
+{
+    if (arguments.size() != 0)
+        min_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
+}
 
 bool FilterCondition::Evaluate(Agent& agent, const Node&)
 {
@@ -15,7 +18,7 @@ bool FilterCondition::Evaluate(Agent& agent, const Node&)
     // Agent has something selected.
     if (filter_)
         filter_->Execute(agent);
-    return agent.filteredAgents_.size() != 0;
+    return agent.filteredAgents_.size() >= min_;
 }
 
 bool FilterCondition::SetFilter(std::shared_ptr<AI::Filter> filter)

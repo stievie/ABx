@@ -13,11 +13,13 @@ namespace Actions {
 Node::Status GoHome::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
+    if (npc.IsImmobilized())
+        return Status::Failed;
     const Math::Vector3& home = npc.GetHomePos();
     if (home.Equals(Math::Vector3::Zero))
         return Status::Failed;
 
-    if (home.Equals(npc.GetPosition(), Game::AT_POSITON_THRESHOLD * 2.0f))
+    if (home.Equals(npc.GetPosition(), Game::AT_POSITION_THRESHOLD))
         return Status::Finished;
 
     if (IsCurrentAction(agent))

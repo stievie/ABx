@@ -45,7 +45,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float ma
 
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
-    maxDist_ = AT_POSITON_THRESHOLD;
+    maxDist_ = AT_POSITION_THRESHOLD;
     following_.reset();
     return FindPath(dest);
 }
@@ -66,7 +66,7 @@ void AutoRunComp::Reset()
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
-    if (destination_.Equals(dest, AT_POSITON_THRESHOLD) && wayPoints_.size() != 0)
+    if (destination_.Equals(dest, AT_POSITION_THRESHOLD) && wayPoints_.size() != 0)
         return true;
 
     static constexpr Math::Vector3 EXTENDS{ 1.0f, 8.0f, 1.0f };
@@ -218,7 +218,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (auto f = following_.lock())
     {
         if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > 1000)
-            && (!destination_.Equals(f->transformation_.position_, AT_POSITON_THRESHOLD)))
+            && (!destination_.Equals(f->transformation_.position_, AT_POSITION_THRESHOLD)))
         {
             // Find new path when following object moved and enough time passed
             FindPath(f->transformation_.position_);
@@ -249,7 +249,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
 
     // Here we must have some waypoints left
     const Math::Vector3 currWp = Next();
-    if (!pos.Equals(currWp, AT_POSITON_THRESHOLD))
+    if (!pos.Equals(currWp, AT_POSITION_THRESHOLD))
     {
 #ifdef DEBUG_NAVIGATION
         LOG_DEBUG << owner_.GetName() << " moving to way point " << currWp.ToString() << std::endl;

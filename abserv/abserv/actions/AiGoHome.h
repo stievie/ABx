@@ -7,10 +7,10 @@ namespace Actions {
 
 class GoHome : public Action
 {
+    NODE_CLASS(GoHome)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(GoHome)
     explicit GoHome(const ArgumentsType& arguments);
 };
 

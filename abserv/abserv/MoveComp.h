@@ -69,7 +69,7 @@ public:
     {
         return oldPosition_;
     }
-    bool IsMoving() const { return velocity_ != Math::Vector3::Zero; }
+    bool IsMoving() const { return !velocity_.Equals(Math::Vector3::Zero); }
     void Write(Net::NetworkMessage& message);
     void StoreOldPosition();
     Math::Vector3& CalculateVelocity(uint32_t timeElapsed);

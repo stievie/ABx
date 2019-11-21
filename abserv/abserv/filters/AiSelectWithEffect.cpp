@@ -7,19 +7,18 @@ namespace AI {
 namespace Filters {
 
 SelectWithEffect::SelectWithEffect(const ArgumentsType& arguments) :
-    Filter(arguments),
-    class_(TargetClass::All),
-    effectCat_(AB::Entities::EffectNone)
+    Filter(arguments)
 {
     if (arguments.size() > 0)
         effectCat_ = Game::EffectCatNameToEffectCat(arguments[0]);
+
     if (arguments.size() > 1)
     {
         const std::string& value = arguments.at(1);
         if (value.compare("friend") == 0)
-            class_ = TargetClass::Friend;
+            class_ = Game::TargetClass::Friend;
         else if (value.compare("foe") == 0)
-            class_ = TargetClass::Foe;
+            class_ = Game::TargetClass::Foe;
     }
 }
 
@@ -35,14 +34,10 @@ void SelectWithEffect::Execute(Agent &agent)
             return Iteration::Continue;
 
         const Game::Actor& actor = Game::To<Game::Actor>(current);
-        if ((class_ == TargetClass::All) ||
-            (class_ == TargetClass::Foe && chr.IsEnemy(&actor)) ||
-            (class_ == TargetClass::Friend && chr.IsAlly(&actor)))
-        {
-            if (actor.effectsComp_->HasEffectOf(effectCat_))
-                entities.push_back(actor.id_);
-            return Iteration::Continue;
-        }
+        if (Game::TargetClassMatches(class_, actor) &&
+            actor.effectsComp_->HasEffectOf(effectCat_))
+            entities.push_back(actor.id_);
+
         return Iteration::Continue;
     });
 }

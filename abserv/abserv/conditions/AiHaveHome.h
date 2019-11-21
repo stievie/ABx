@@ -7,8 +7,8 @@ namespace Conditions {
 
 class HaveHome : public Condition
 {
-public:
     CONDITON_CLASS(HaveHome)
+public:
     explicit HaveHome(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

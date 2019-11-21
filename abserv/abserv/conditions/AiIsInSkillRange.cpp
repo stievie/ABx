@@ -14,7 +14,7 @@ bool IsInSkillRange::Evaluate(Agent& agent, const Node&)
     if (selection.empty())
         return true;
 
-    // The skill must be selected by the action, so the actionn must be executed once
+    // The skill must be selected by the action, so the action must be executed once
     // before this conditions returns something useful.
     // If the skill is executed but the target is out of range the action fails,
     // but stores the selected skill. So the second time it tries to execute the
@@ -36,5 +36,4 @@ bool IsInSkillRange::Evaluate(Agent& agent, const Node&)
 }
 
 }
-
 }

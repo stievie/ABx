@@ -15,6 +15,7 @@ void SelectAttackTarget::Execute(Agent& agent)
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&candidates](const Game::Actor* o)
     {
         candidates.push_back(o->id_);
+        return Iteration::Continue;
     });
 
     auto& entities = agent.filteredAgents_;

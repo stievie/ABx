@@ -8,9 +8,8 @@ namespace Conditions {
 
 class IsInAOE : public AI::Condition
 {
-public:
     CONDITON_CLASS(IsInAOE)
-
+public:
     explicit IsInAOE(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

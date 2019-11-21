@@ -8,8 +8,8 @@ namespace Conditions {
 // Return true when the agent has selected something.
 class HasSelection : public Condition
 {
-public:
     CONDITON_CLASS(HasSelection)
+public:
     explicit HasSelection(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

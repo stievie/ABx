@@ -51,6 +51,8 @@ private:
     Ranges range_{ Ranges::Aggro };
     uint32_t skillEffect_{ SkillEffectNone };
     uint32_t effectTarget_{ SkillTargetNone };
+    bool interrupts_{ false };
+    AB::Entities::SkillType canInterrupt_{ AB::Entities::SkillTypeSkill };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     // The real cost may be influenced by skills, armor, effects etc.
@@ -108,6 +110,10 @@ public:
     {
         return (data_.type & type) == type;
     }
+    bool CanInterrupt(AB::Entities::SkillType type) const
+    {
+        return interrupts_ && ((canInterrupt_ & type) == type);
+    }
     /// Does a skill change the creature state.
     bool IsChangingState() const
     {
@@ -118,7 +124,7 @@ public:
     uint32_t GetIndex() const { return data_.index; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
-    float CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback) const;
+    float CalculateCost(const std::function<float(CostType)>& importanceCallback) const;
     bool IsInRange(const Actor* target) const;
     Ranges GetRange() const { return range_; }
     Actor* GetSource()

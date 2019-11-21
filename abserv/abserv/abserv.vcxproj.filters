@@ -405,6 +405,21 @@
     <ClInclude Include="conditions\AiHaveWanderRoute.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="filters\AiSelectMob.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectTargetUsingSkill.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiUseDamageSkill.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiInterrupt.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectTargetAttacking.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -760,6 +775,21 @@
     </ClCompile>
     <ClCompile Include="conditions\AiHaveWanderRoute.cpp">
       <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectMob.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectTargetUsingSkill.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiUseDamageSkill.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiInterrupt.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectTargetAttacking.cpp">
+      <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

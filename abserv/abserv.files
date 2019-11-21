@@ -17,6 +17,8 @@ abserv/actions/AiHealSelf.cpp
 abserv/actions/AiHealSelf.h
 abserv/actions/AiIdle.cpp
 abserv/actions/AiIdle.h
+abserv/actions/AiInterrupt.cpp
+abserv/actions/AiInterrupt.h
 abserv/actions/AiMoveOutAOE.cpp
 abserv/actions/AiMoveOutAOE.h
 abserv/actions/AiMoveTo.cpp
@@ -53,6 +55,8 @@ abserv/Chat.cpp
 abserv/Chat.h
 abserv/CollisionComp.cpp
 abserv/CollisionComp.h
+abserv/actions/AiUseDamageSkill.cpp
+abserv/actions/AiUseDamageSkill.h
 abserv/actions/AiWander.cpp
 abserv/actions/AiWander.h
 abserv/conditions/AiHaveHome.cpp
@@ -111,8 +115,14 @@ abserv/filters/AiSelectDeadAllies.cpp
 abserv/filters/AiSelectDeadAllies.h
 abserv/filters/AiSelectLowHealth.cpp
 abserv/filters/AiSelectLowHealth.h
+abserv/filters/AiSelectMob.cpp
+abserv/filters/AiSelectMob.h
 abserv/filters/AiSelectRandom.cpp
 abserv/filters/AiSelectRandom.h
+abserv/filters/AiSelectTargetAttacking.cpp
+abserv/filters/AiSelectTargetAttacking.h
+abserv/filters/AiSelectTargetUsingSkill.cpp
+abserv/filters/AiSelectTargetUsingSkill.h
 abserv/filters/AiSelectVisible.cpp
 abserv/filters/AiSelectVisible.h
 abserv/FriendList.cpp

@@ -35,6 +35,21 @@ void Loader::RegisterLua(kaguya::State& state)
         if (ExecuteScript(state, file))
             state[ident] = true;
     });
+    state["node"] = kaguya::overload(
+        [this](const std::string& type) { return CreateNodeWidthArgs(type, { }); },
+        [this](const std::string& type, const ArgumentsType& arguments) { return CreateNodeWidthArgs(type, arguments); }
+    );
+    state["filter"] = kaguya::overload(
+        [this](const std::string& type) { return CreateFilterWidthArgs(type, { }); },
+        [this](const std::string& type, const ArgumentsType& arguments) { return CreateFilterWidthArgs(type, arguments); }
+    );
+    state["condition"] = kaguya::overload(
+        [this](const std::string& type) { return CreateConditionWidthArgs(type, { }); },
+        [this](const std::string& type, const ArgumentsType& arguments) { return CreateConditionWidthArgs(type, arguments); }
+    );
+    state["tree"] = kaguya::function(
+        [this](const std::string& name, const std::string& filename) { return CreateTree(name, filename); }
+    );
 
     state["Node"].setClass(kaguya::UserdataMetatable<Node>()
         .addFunction("SetCondition", &Node::SetCondition)
@@ -53,12 +68,6 @@ void Loader::RegisterLua(kaguya::State& state)
         .addFunction("SetName", &Filter::SetName)
     );
 
-    state["Loader"].setClass(kaguya::UserdataMetatable<Loader>()
-        .addOverloadedFunctions("CreateNode", &Loader::CreateNode, &Loader::CreateNodeWidthArgs)
-        .addOverloadedFunctions("CreateCondition", &Loader::CreateCondition, &Loader::CreateConditionWidthArgs)
-        .addOverloadedFunctions("CreateFilter", &Loader::CreateFilter, &Loader::CreateFilterWidthArgs)
-        .addFunction("CreateTree", &Loader::CreateTree)
-    );
     state["BevaviorCache"].setClass(kaguya::UserdataMetatable<BevaviorCache>()
         .addFunction("Add", &BevaviorCache::Add)
         .addFunction("Remove", &BevaviorCache::Remove)
@@ -117,7 +126,6 @@ std::shared_ptr<Root> Loader::LoadString(const std::string& value)
 {
     kaguya::State luaState;
     RegisterLua(luaState);
-    luaState["self"] = this;
     std::shared_ptr<Root> result = std::make_shared<Root>();
 
     if (!luaState.dostring(value))
@@ -132,7 +140,6 @@ bool Loader::InitChache(const std::string& initScript, BevaviorCache& cache)
 {
     kaguya::State luaState;
     RegisterLua(luaState);
-    luaState["self"] = this;
     if (!ExecuteScript(luaState, initScript))
         return false;
     luaState["init"](&cache);
@@ -143,7 +150,6 @@ std::shared_ptr<Root> Loader::LoadFile(const std::string& fileName)
 {
     kaguya::State luaState;
     RegisterLua(luaState);
-    luaState["self"] = this;
     std::shared_ptr<Root> result = std::make_shared<Root>();
 
     if (!ExecuteScript(luaState, fileName))

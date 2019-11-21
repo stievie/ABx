@@ -1,119 +1,196 @@
-function idle(time)
-  return self:CreateNode("Idle", { time })
+include("/scripts/includes/skill_consts.lua")
+
+local function useSkill(action)
+  local result = node(action)
+    result:SetCondition(condition("IsInSkillRange"))
+  return result
 end
 
-function goHome()
-  local node = self:CreateNode("GoHome")
-    node:SetCondition(self:CreateCondition("HaveHome"))
-  return node
+local function aoeDamage()
+  local result = node("UseDamageSkill", { SkillTargetAoe })
+    local cond = condition("Filter")
+      cond:SetFilter(filter("SelectMob"))
+
+    result:SetCondition(cond)
+  return result
 end
 
-function wander()
-  local node = self:CreateNode("Wander")
-    node:SetCondition(self:CreateCondition("HaveWanderRoute"))
-  return node
+local function singleDamage()
+  local result = node("UseDamageSkill", { SkillTargetTarget })
+
+    local cond = condition("Filter")
+      cond:SetFilter(filter("SelectAttackTarget"))
+
+    result:SetCondition(cond)
+  return result
+end
+
+local function interruptSpell()
+  local result = node("Interrupt", { SkillTypeSpell })
+
+    local cond = condition("Filter")
+      cond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeSpell }))
+
+    result:SetCondition(cond)
+  return result
+end
+
+local function interruptAttack()
+  local result = node("Interrupt", { SkillTypeAttack })
+
+    local orCond = condition("Or")
+      local skillCond = condition("Filter")
+        skillCond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeAttack }))
+      orCond:AddCondition(skillCond)
+
+      local attackCond = condition("Filter")
+        attackCond:SetFilter(filter("SelectTargetAttacking"))
+      orCond:AddCondition(attackCond)
+
+    result:SetCondition(orCond)
+  return result
 end
 
 local function avoidSelfMeleeDamage()
   -- Dodge melee attacks
-  local node = self:CreateNode("Flee")
-    node:SetCondition(self:CreateCondition("IsMeleeTarget"))
-  return node
+  local nd = node("Flee")
+    nd:SetCondition(condition("IsMeleeTarget"))
+  return nd
 end
 
 local function avoidSelfAoeDamage()
   -- Move out of AOE
-  local node = self:CreateNode("MoveOutAOE")
-    node:SetCondition(self:CreateCondition("IsInAOE"))
-  return node
+  local nd = node("MoveOutAOE")
+    nd:SetCondition(condition("IsInAOE"))
+  return nd
+end
+
+function damageSkill()
+  local result = node("Priority")
+    result:AddNode(aoeDamage())
+    result:AddNode(interruptSpell())
+    result:AddNode(interruptAttack())
+    result:AddNode(singleDamage())
+
+    -- If out of range move to target
+    local move = node("MoveTo")
+      -- Only move there when not in range
+      local notinrange = condition("Not")
+        notinrange:AddCondition(condition("IsInSkillRange"))
+
+      move:SetCondition(notinrange)
+    result:AddNode(move)
+
+  return result
+end
+
+function checkEnergy()
+  local result = node("GainEnergy")
+    result:SetCondition(condition("IsEnergyLow"))
+  return result
+end
+
+function idle(time)
+  return node("Idle", { time })
+end
+
+function goHome()
+  local nd = node("GoHome")
+    nd:SetCondition(condition("HaveHome"))
+  return nd
+end
+
+function wander()
+  local nd = node("Wander")
+    nd:SetCondition(condition("HaveWanderRoute"))
+  return nd
 end
 
 function avoidSelfDamage()
-  local node = self:CreateNode("Priority")
-    node:AddNode(avoidSelfMeleeDamage())
-    node:AddNode(avoidSelfAoeDamage())
-  return node
+  local nd = node("Priority")
+    nd:AddNode(avoidSelfMeleeDamage())
+    nd:AddNode(avoidSelfAoeDamage())
+  return nd
 end
 
 function stayAlive()
   -- Execute the first child that does not fail
-  local node = self:CreateNode("Priority")
-    local condition = self:CreateCondition("IsSelfHealthLow")
+  local nd = node("Priority")
+    local cond = condition("IsSelfHealthLow")
     -- If we have low HP
-    node:SetCondition(condition)
+    nd:SetCondition(cond)
     -- 1. try to heal
-    node:AddNode(self:CreateNode("HealSelf"))
-    -- 2. If that failes, flee
-    node:AddNode(self:CreateNode("Flee"))
-  return node
+    nd:AddNode(node("HealSelf"))
+    -- 2. If that fails, flee
+    nd:AddNode(node("Flee"))
+  return nd
 end
 
 function defend()
-  local node = self:CreateNode("AttackSelection")
-    -- If we are getting attackend AND there is an attacker
-    local andCond = self:CreateCondition("And")
-      andCond:AddCondition(self:CreateCondition("IsAttacked"))
-      local haveAttackers = self:CreateCondition("Filter")
-        haveAttackers:SetFilter(self:CreateFilter("SelectAttackers"))
+  local nd = node("AttackSelection")
+    -- If we are getting attacked AND there is an attacker
+    local andCond = condition("And")
+      andCond:AddCondition(condition("IsAttacked"))
+      local haveAttackers = condition("Filter")
+        haveAttackers:SetFilter(filter("SelectAttackers"))
       andCond:AddCondition(haveAttackers)
-    node:SetCondition(andCond)
-  return node
+    nd:SetCondition(andCond)
+  return nd
 end
 
 function healAlly()
   -- Priority: Execute the first child that does not fail, either HealOther or MoveTo
-  local node = self:CreateNode("Priority")
-    local andCond = self:CreateCondition("And")
-      andCond:AddCondition(self:CreateCondition("IsAllyHealthLow"))
-      local haveTargets = self:CreateCondition("Filter")
-        haveTargets:SetFilter(self:CreateFilter("SelectLowHealth"))
+  local nd = node("Priority")
+    local andCond = condition("And")
+      andCond:AddCondition(condition("IsAllyHealthLow"))
+      local haveTargets = condition("Filter")
+        haveTargets:SetFilter(filter("SelectLowHealth"))
       andCond:AddCondition(haveTargets)
-    node:SetCondition(andCond)
+    nd:SetCondition(andCond)
     -- Heal fails if out of range
-    local heal = self:CreateNode("HealOther")
-      heal:SetCondition(self:CreateCondition("IsInSkillRange"))
-    node:AddNode(heal)
+    local heal = useSkill("HealOther")
+    nd:AddNode(heal)
 
     -- If out of range move to target
-    local move = self:CreateNode("MoveTo")
+    local move = node("MoveTo")
       -- Only move there when not in range
-      local notinrange = self:CreateCondition("Not")
-        notinrange:AddCondition(self:CreateCondition("IsInSkillRange"))
+      local notinrange = condition("Not")
+        notinrange:AddCondition(condition("IsInSkillRange"))
 
       move:SetCondition(notinrange)
 
     -- If out of range move to target
-    node:AddNode(move)
+    nd:AddNode(move)
 
-  return node
+  return nd
 end
 
 function attackAggro()
-  local node = self:CreateNode("AttackSelection")
-    local haveAggro = self:CreateCondition("Filter")
-      haveAggro:SetFilter(self:CreateFilter("SelectAggro"))
-    node:SetCondition(haveAggro)
-  return node
+  -- Melee attack without skills
+  local nd = node("AttackSelection")
+    local haveAggro = condition("Filter")
+      haveAggro:SetFilter(filter("SelectAggro"))
+    nd:SetCondition(haveAggro)
+  return nd
 end
 
 function rezzAlly()
-  local node = self:CreateNode("Priority")
-    local haveDeadAllies = self:CreateCondition("Filter")
-      haveDeadAllies:SetFilter(self:CreateFilter("SelectDeadAllies"))
-    node:SetCondition(haveDeadAllies)
+  local nd = node("Priority")
+    local haveDeadAllies = condition("Filter")
+      haveDeadAllies:SetFilter(filter("SelectDeadAllies"))
+    nd:SetCondition(haveDeadAllies)
 
-    local rezz = self:CreateNode("ResurrectSelection")
-      rezz:SetCondition(self:CreateCondition("IsInSkillRange"))
-    node:AddNode(rezz)
+    local rezz = useSkill("ResurrectSelection")
+    nd:AddNode(rezz)
 
     -- If out of range move to target
-    local move = self:CreateNode("MoveTo")
+    local move = node("MoveTo")
       -- Only move there when not in range
-      local notinrange = self:CreateCondition("Not")
-        notinrange:AddCondition(self:CreateCondition("IsInSkillRange"))
+      local notinrange = condition("Not")
+        notinrange:AddCondition(condition("IsInSkillRange"))
 
       move:SetCondition(notinrange)
-    node:AddNode(move)
+    nd:AddNode(move)
 
-  return node
+  return nd
 end

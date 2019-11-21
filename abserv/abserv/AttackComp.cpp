@@ -213,7 +213,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     lastAttackTime_ = 0;
 }
 
-bool AttackComp::IsAttackingTarget(Actor* target) const
+bool AttackComp::IsAttackingTarget(const Actor* target) const
 {
     if (!IsAttackState())
         return false;

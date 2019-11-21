@@ -10,8 +10,8 @@ namespace AI {
 // sequence succeeds, then the sequence will return success to its parent.
 class Sequence : public Composite
 {
-public:
     NODE_CLASS(Sequence)
+public:
     explicit Sequence(const ArgumentsType& arguments);
     ~Sequence() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

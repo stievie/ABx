@@ -7,9 +7,8 @@ namespace Conditions {
 
 class IsAllyHealthCritical : public Condition
 {
-public:
     CONDITON_CLASS(IsAllyHealthCritical)
-
+public:
     explicit IsAllyHealthCritical(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

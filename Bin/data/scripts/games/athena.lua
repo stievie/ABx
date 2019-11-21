@@ -9,6 +9,14 @@ local dorothea_samara_waypoints = {
   {  38.2, 0.0, -11.2 },
   {   5.8, 0.0,   9.9 },
 }
+local marianna_gani_waypoints = {
+  {  48.5, 0.0,  19.4 },
+  {  35.9, 0.0,  47.8 },
+  { -25.9, 0.0,  41.2 },
+  {  -6.1, 0.0,  -9.5 },
+  {  40.1, 0.0, -35.4 },
+  {  75.9, 0.0, -28.8 },
+}
 
 -- Game start up
 function onStart()
@@ -44,6 +52,8 @@ function onStart()
     ped:SetRotation(90)
     ped:SetHomePos({x, y, z})
     ped:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
+    ped:SetWander(true)
+    ped:AddWanderPoints(marianna_gani_waypoints)
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then

@@ -8,10 +8,10 @@ namespace AI {
 // is reached it return finished.
 class Limit : public Decorator
 {
+    NODE_CLASS(Limit)
 private:
     uint32_t limit_{ 0 };
 public:
-    NODE_CLASS(Limit)
     explicit Limit(const ArgumentsType& arguments);
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;
 };

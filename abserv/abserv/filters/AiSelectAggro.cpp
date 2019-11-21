@@ -17,6 +17,7 @@ void SelectAggro::Execute(Agent& agent)
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
         entities.push_back(o->id_);
+        return Iteration::Continue;
     });
     entities.erase(std::unique(entities.begin(), entities.end()), entities.end());
 }

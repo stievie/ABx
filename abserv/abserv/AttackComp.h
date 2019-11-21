@@ -51,7 +51,7 @@ public:
     int64_t GetLastAttackTime() const { return lastAttackTime_; }
     bool IsAttackState() const;
     void SetAttackState(bool value);
-    bool IsAttackingTarget(Actor* target) const;
+    bool IsAttackingTarget(const Actor* target) const;
     bool Interrupt();
     void Pause(bool value = true);
     bool IsTarget(const Actor* target) const;

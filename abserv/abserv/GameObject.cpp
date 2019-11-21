@@ -55,7 +55,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 
         .addFunction("IsSelectable",     &GameObject::IsSelectable)
         .addFunction("SetSelectable",    &GameObject::SetSelectable)
-        .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
+        .addFunction("GetActorsInRange", &GameObject::_LuaGetActorsInRange)
         .addFunction("GetClosestActor",  &GameObject::_LuaGetClosestActor)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsCloserThan",     &GameObject::IsCloserThan)
@@ -466,12 +466,32 @@ std::vector<GameObject*> GameObject::_LuaRaycastTo(const Math::STLVector3& desti
     return _LuaRaycast(direction);
 }
 
+bool GameObject::IsInRange(Ranges range, const GameObject* object) const
+{
+    if (!object)
+        return false;
+    if (range == Ranges::Map)
+        return true;
+    // Don't calculate the distance now, but use previously calculated values.
+    const auto rIt = ranges_.find(range);
+    if (rIt == ranges_.end())
+        return false;
+    const auto& r = (*rIt).second;
+    const auto it = std::find_if(r.begin(), r.end(), [&object](const std::weak_ptr<GameObject>& current) -> bool
+    {
+        if (auto c = current.lock())
+            return c->id_ == object->id_;
+        return false;
+    });
+    return it != r.end();
+}
+
 bool GameObject::IsCloserThan(float maxDist, const GameObject* object) const
 {
     return GetDistance(object) < maxDist;
 }
 
-std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
+std::vector<Actor*> GameObject::_LuaGetActorsInRange(Ranges range) const
 {
     std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject& o)

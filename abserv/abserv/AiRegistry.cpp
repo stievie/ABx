@@ -8,10 +8,12 @@
 #include "actions/AiHealOther.h"
 #include "actions/AiHealSelf.h"
 #include "actions/AiIdle.h"
+#include "actions/AiInterrupt.h"
 #include "actions/AiMoveOutAOE.h"
 #include "actions/AiMoveTo.h"
 #include "actions/AiResurrectSelection.h"
 #include "actions/AiSay.h"
+#include "actions/AiUseDamageSkill.h"
 #include "actions/AiWander.h"
 #include "conditions/AiHaveHome.h"
 #include "conditions/AiHaveWanderRoute.h"
@@ -31,10 +33,13 @@
 #include "filters/AiSelectAttackTarget.h"
 #include "filters/AiSelectAttackers.h"
 #include "filters/AiSelectDeadAllies.h"
-#include "filters/AiSelectWithEffect.h"
 #include "filters/AiSelectLowHealth.h"
+#include "filters/AiSelectMob.h"
 #include "filters/AiSelectRandom.h"
+#include "filters/AiSelectTargetAttacking.h"
+#include "filters/AiSelectTargetUsingSkill.h"
 #include "filters/AiSelectVisible.h"
+#include "filters/AiSelectWithEffect.h"
 
 namespace AI {
 
@@ -62,6 +67,8 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("Flee", Actions::Flee::GetFactory());
     RegisterNodeFactory("MoveOutAOE", Actions::MoveOutAOE::GetFactory());
     RegisterNodeFactory("Wander", Actions::Wander::GetFactory());
+    RegisterNodeFactory("UseDamageSkill", Actions::UseDamageSkill::GetFactory());
+    RegisterNodeFactory("Interrupt", Actions::Interrupt::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());
@@ -86,6 +93,9 @@ void AiRegistry::Initialize()
     RegisterFilterFactory("SelectRandom", Filters::SelectRandom::GetFactory());
     RegisterFilterFactory("SelectAttackTarget", Filters::SelectAttackTarget::GetFactory());
     RegisterFilterFactory("SelectWithEffect", Filters::SelectWithEffect::GetFactory());
+    RegisterFilterFactory("SelectMob", Filters::SelectMob::GetFactory());
+    RegisterFilterFactory("SelectTargetUsingSkill", Filters::SelectTargetUsingSkill::GetFactory());
+    RegisterFilterFactory("SelectTargetAttacking", Filters::SelectTargetAttacking::GetFactory());
 }
 
 }

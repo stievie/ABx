@@ -17,6 +17,7 @@ typedef std::vector<std::shared_ptr<Node>> Nodes;
 using NodeFactory = AbstractFactory<Node>;
 
 #define NODE_CLASS(NodeName)                                                        \
+public:                                                                             \
     class Factory : public NodeFactory                                              \
     {                                                                               \
     public:                                                                         \

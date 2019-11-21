@@ -7,10 +7,10 @@ namespace Conditions {
 
 class RandomCondition : public Condition
 {
+    CONDITON_CLASS(RandomCondition)
 private:
     float weight_{ 1.0f };
 public:
-    CONDITON_CLASS(RandomCondition)
     explicit RandomCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
 };

@@ -8,9 +8,8 @@ namespace Conditions {
 
 class IsSelfHealthLow : public AI::Condition
 {
-public:
     CONDITON_CLASS(IsSelfHealthLow)
-
+public:
     explicit IsSelfHealthLow(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

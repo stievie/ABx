@@ -1,12 +1,20 @@
 #pragma once
 
 #include "Agent.h"
+#include "Vector3.h"
+#include <sa/StrongType.h>
 
 namespace Game {
 class Npc;
 }
 
 namespace AI {
+
+using AiAgentContext = Context<
+    sa::StrongType<int, struct SkillIndexType>,    // Skill index
+    sa::StrongType<Id, struct TargetType>,         // Target ID
+    Math::Vector3
+>;
 
 class AiAgent : public Agent
 {
@@ -20,6 +28,7 @@ public:
     const Game::Npc& GetNpc() const { return npc_; }
 
     int selectedSkill_{ -1 };
+    AiAgentContext aiContext_;
 };
 
 inline Game::Npc& GetNpc(Agent& agent)

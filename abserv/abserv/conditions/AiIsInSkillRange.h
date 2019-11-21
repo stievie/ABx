@@ -7,8 +7,8 @@ namespace Conditions {
 
 class IsInSkillRange : public Condition
 {
-public:
     CONDITON_CLASS(IsInSkillRange)
+public:
     explicit IsInSkillRange(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

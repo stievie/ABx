@@ -22,6 +22,7 @@ void SelectDeadAllies::Execute(Agent& agent)
             entities.push_back(o->id_);
             sorting[o->id_] = o->GetDistance(&chr);
         }
+        return Iteration::Continue;
     });
     std::sort(entities.begin(), entities.end(), [&sorting](uint32_t i, uint32_t j)
     {

@@ -21,6 +21,13 @@
 
 namespace Game {
 
+enum class TargetClass
+{
+    All,
+    Friend,
+    Foe
+};
+
 constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
 constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
 constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
@@ -45,8 +52,8 @@ constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
 constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
 constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
 
-constexpr Math::Vector3 CREATURTE_BB_MIN(-0.15f, 0.0f, -0.25f);
-constexpr Math::Vector3 CREATURTE_BB_MAX(0.15f, 1.7f, 0.25f);
+constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
+constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
 constexpr float AVERAGE_BB_EXTENDS = 0.3f;
 
 /// Player, NPC, Monster some such
@@ -102,12 +109,12 @@ public:
             {
                 const auto* actor = To<Actor>(&o);
                 if (actor->IsEnemy(this))
-                    func(actor);
+                    return func(actor);
             }
             return Iteration::Continue;
         });
     }
-    size_t GetEnemyCountInRange(Ranges range);
+    size_t GetEnemyCountInRange(Ranges range) const;
     /// Ally is always without self
     template<typename Func>
     void VisitAlliesInRange(Ranges range, const Func& func)
@@ -118,12 +125,12 @@ public:
             {
                 const auto* actor = To<Actor>(&o);
                 if (actor->IsAlly(this))
-                    func(actor);
+                    return func(actor);
             }
             return Iteration::Continue;
         });
     }
-    size_t GetAllyCountInRange(Ranges range);
+    size_t GetAllyCountInRange(Ranges range) const;
     Actor* GetClosestEnemy(bool undestroyable, bool unselectable);
     Actor* GetClosestAlly(bool undestroyable, bool unselectable);
     Item* GetWeapon() const;
@@ -257,7 +264,7 @@ public:
     void UseSkill(int index);
     void Attack(Actor* target);
     bool AttackById(uint32_t targetId);
-    bool IsAttackingActor(Actor* target);
+    bool IsAttackingActor(const Actor* target) const;
     /// Cancel attack, use skill, follow
     void CancelAction();
 
@@ -293,6 +300,13 @@ template <>
 inline bool Is<Actor>(const GameObject& obj)
 {
     return obj.GetType() >= AB::GameProtocol::ObjectTypeProjectile;
+}
+
+inline bool TargetClassMatches(TargetClass _class, const Actor& actor)
+{
+    return ((_class == TargetClass::All) ||
+        (_class == TargetClass::Foe && actor.IsEnemy(&actor)) ||
+        (_class == TargetClass::Friend && actor.IsAlly(&actor)));
 }
 
 }

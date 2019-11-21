@@ -7,10 +7,10 @@ namespace Actions {
 
 class GainEnergy : public Action
 {
+    NODE_CLASS(GainEnergy)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(GainEnergy)
     explicit GainEnergy(const ArgumentsType& arguments) :
         Action(arguments)
     {

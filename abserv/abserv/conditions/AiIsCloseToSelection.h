@@ -8,11 +8,10 @@ namespace Conditions {
 
 class IsCloseToSelection : public AI::Condition
 {
+    CONDITON_CLASS(IsCloseToSelection)
 private:
     float distance_;
 public:
-    CONDITON_CLASS(IsCloseToSelection)
-
     explicit IsCloseToSelection(const ArgumentsType& arguments);
     bool Evaluate(AI::Agent&, const Node&) override;
 };

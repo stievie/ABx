@@ -8,12 +8,10 @@ namespace Actions {
 
 class MoveOutAOE : public Action
 {
-private:
-    Math::Vector3 destination_;
+    NODE_CLASS(MoveOutAOE)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(MoveOutAOE)
     explicit MoveOutAOE(const ArgumentsType& arguments) :
         Action(arguments)
     { }

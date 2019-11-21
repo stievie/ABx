@@ -11,8 +11,8 @@ namespace AI {
 // Order or importance is top to bottom
 class Priority : public Composite
 {
-public:
     NODE_CLASS(Priority)
+public:
     explicit Priority(const ArgumentsType& arguments);
     ~Priority() override;
     Node::Status Execute(Agent& agent, uint32_t timeElapsed) override;

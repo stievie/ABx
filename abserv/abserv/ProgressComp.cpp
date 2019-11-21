@@ -59,6 +59,7 @@ void ProgressComp::OnDied()
         if (!actor->IsDead())
             // Actors get only XP for kills when they are not dead
             actor->progressComp_->AddXpForKill(&owner_);
+        return Iteration::Continue;
     });
 }
 

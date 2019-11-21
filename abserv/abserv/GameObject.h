@@ -1,32 +1,33 @@
 #pragma once
 
-#include <mutex>
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "PropStream.h"
-#include <AB/ProtocolCodes.h>
-#include "NetworkMessage.h"
-#include "Transformation.h"
 #include "BoundingBox.h"
-#include "Octree.h"
+#include "CollisionComp.h"
 #include "CollisionShape.h"
+#include "Damage.h"
+#include "InputComp.h"
+#include "Matrix4.h"
+#include "Mechanic.h"
+#include "MoveComp.h"
+#include "NetworkMessage.h"
+#include "Octree.h"
+#include "PropStream.h"
+#include "Quaternion.h"
+#include "StateComp.h"
+#include "Transformation.h"
+#include "TriggerComp.h"
+#include "Variant.h"
+#include "Vector3.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
-#include <sa/IdGenerator.h>
-#include "StateComp.h"
-#include "TriggerComp.h"
-#include "Variant.h"
-#include "Matrix4.h"
-#include "CollisionComp.h"
-#include "MoveComp.h"
-#include "InputComp.h"
-#include <sa/Iteration.h>
-#include "Mechanic.h"
+#include <AB/ProtocolCodes.h>
 #include <kaguya/kaguya.hpp>
+#include <mutex>
 #include <sa/Events.h>
-#include "Damage.h"
+#include <sa/IdGenerator.h>
+#include <sa/Iteration.h>
 #include <sa/StringHash.h>
+#include <type_traits>
 
 namespace Game {
 
@@ -109,6 +110,7 @@ private:
     /// Returns all object inside the collision shape. This object must be a Trigger, i.e. it returns only objects when SetTrigger(true) was called before.
     std::vector<GameObject*> _LuaGetObjectsInside();
     bool _LuaIsObjectInSight(const GameObject* object) const;
+    std::vector<Actor*> _LuaGetActorsInRange(Ranges range) const;
 protected:
     std::string name_;
     Utils::VariantMap variables_;
@@ -185,39 +187,23 @@ public:
     }
 
     /// Test if object is in our range
-    bool IsInRange(Ranges range, const GameObject* object) const
-    {
-        if (!object)
-            return false;
-        if (range == Ranges::Map)
-            return true;
-        // Don't calculate the distance now, but use previously calculated values.
-        const auto rIt = ranges_.find(range);
-        if (rIt == ranges_.end())
-            return false;
-        const auto& r = (*rIt).second;
-        const auto it = std::find_if(r.begin(), r.end(), [object](const std::weak_ptr<GameObject>& current) -> bool
-        {
-            if (auto c = current.lock())
-                return c->id_ == object->id_;
-            return false;
-        });
-        return it != r.end();
-    }
+    bool IsInRange(Ranges range, const GameObject* object) const;
     /// Check if the object is within maxDist
     bool IsCloserThan(float maxDist, const GameObject* object) const;
     /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
-    void VisitInRange(Ranges range, const Func& func)
+    void VisitInRange(Ranges range, const Func& func) const
     {
-        for (const auto& o : ranges_[range])
+        const auto r = ranges_.find(range);
+        if (r == ranges_.end())
+            return;
+        for (const auto& o : (*r).second)
         {
             if (auto so = o.lock())
                 if (func(*so) != Iteration::Continue)
                     break;
         }
     }
-    std::vector<Actor*> GetActorsInRange(Ranges range);
     /// Returns the closest actor or nullptr
     /// @param[in] undestroyable If true include undestroyable actors
     /// @param[in] unselectable If true includes unselectable actors

@@ -199,10 +199,12 @@
     <ClInclude Include="actions\AiHealOther.h" />
     <ClInclude Include="actions\AiHealSelf.h" />
     <ClInclude Include="actions\AiIdle.h" />
+    <ClInclude Include="actions\AiInterrupt.h" />
     <ClInclude Include="actions\AiMoveOutAOE.h" />
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
     <ClInclude Include="actions\AiSay.h" />
+    <ClInclude Include="actions\AiUseDamageSkill.h" />
     <ClInclude Include="actions\AiWander.h" />
     <ClInclude Include="AiAgent.h" />
     <ClInclude Include="AiComp.h" />
@@ -244,6 +246,9 @@
     <ClInclude Include="filters\AiSelectAttackers.h" />
     <ClInclude Include="filters\AiSelectAttackTarget.h" />
     <ClInclude Include="filters\AiSelectDeadAllies.h" />
+    <ClInclude Include="filters\AiSelectTargetAttacking.h" />
+    <ClInclude Include="filters\AiSelectTargetUsingSkill.h" />
+    <ClInclude Include="filters\AiSelectMob.h" />
     <ClInclude Include="filters\AiSelectWithEffect.h" />
     <ClInclude Include="filters\AiSelectLowHealth.h" />
     <ClInclude Include="filters\AiSelectRandom.h" />
@@ -325,10 +330,12 @@
     <ClCompile Include="actions\AiHealOther.cpp" />
     <ClCompile Include="actions\AiHealSelf.cpp" />
     <ClCompile Include="actions\AiIdle.cpp" />
+    <ClCompile Include="actions\AiInterrupt.cpp" />
     <ClCompile Include="actions\AiMoveOutAOE.cpp" />
     <ClCompile Include="actions\AiMoveTo.cpp" />
     <ClCompile Include="actions\AiResurrectSelection.cpp" />
     <ClCompile Include="actions\AiSay.cpp" />
+    <ClCompile Include="actions\AiUseDamageSkill.cpp" />
     <ClCompile Include="actions\AiWander.cpp" />
     <ClCompile Include="AiAgent.cpp" />
     <ClCompile Include="AiComp.cpp" />
@@ -367,6 +374,9 @@
     <ClCompile Include="filters\AiSelectAttackers.cpp" />
     <ClCompile Include="filters\AiSelectAttackTarget.cpp" />
     <ClCompile Include="filters\AiSelectDeadAllies.cpp" />
+    <ClCompile Include="filters\AiSelectTargetAttacking.cpp" />
+    <ClCompile Include="filters\AiSelectTargetUsingSkill.cpp" />
+    <ClCompile Include="filters\AiSelectMob.cpp" />
     <ClCompile Include="filters\AiSelectWithEffect.cpp" />
     <ClCompile Include="filters\AiSelectLowHealth.cpp" />
     <ClCompile Include="filters\AiSelectRandom.cpp" />

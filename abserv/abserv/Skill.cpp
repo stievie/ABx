@@ -59,6 +59,11 @@ bool Skill::LoadScript(const std::string& fileName)
         skillEffect_ = static_cast<uint32_t>(luaState_["effect"]);
     if (Lua::IsNumber(luaState_, "effectTarget"))
         effectTarget_ = static_cast<uint32_t>(luaState_["effectTarget"]);
+    if (Lua::IsBool(luaState_, "interrupts"))
+        interrupts_ = luaState_["interrupts"];
+    if (Lua::IsNumber(luaState_, "canInterrupt"))
+        canInterrupt_ = luaState_["canInterrupt"];
+
     haveOnCancelled_ = Lua::IsFunction(luaState_, "onCancelled");
     haveOnInterrupted_ = Lua::IsFunction(luaState_, "onInterrupted");
 
@@ -228,19 +233,19 @@ bool Skill::Interrupt()
     return true;
 }
 
-float Skill::CalculateCost(const std::function<float(const Skill&, CostType)>& importanceCallback) const
+float Skill::CalculateCost(const std::function<float(CostType)>& importanceCallback) const
 {
     float result = 0.0f;
     if (activation_ > 0)
-        result += importanceCallback(*this, CostType::Activation) * activation_;
+        result += importanceCallback(CostType::Activation) * activation_;
     if (energy_ > 0)
-        result += importanceCallback(*this, CostType::Energy) * energy_;
+        result += importanceCallback(CostType::Energy) * energy_;
     if (adrenaline_ > 0)
-        result += importanceCallback(*this, CostType::Adrenaline) * adrenaline_;
+        result += importanceCallback(CostType::Adrenaline) * adrenaline_;
     if (hp_ > 0)
-        result += importanceCallback(*this, CostType::HpSacrify) * hp_;
+        result += importanceCallback(CostType::HpSacrify) * hp_;
     if (overcast_ > 0)
-        result += importanceCallback(*this, CostType::HpSacrify) * overcast_;
+        result += importanceCallback(CostType::HpSacrify) * overcast_;
 
     return result;
 }

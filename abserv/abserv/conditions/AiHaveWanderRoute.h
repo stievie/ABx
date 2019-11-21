@@ -7,8 +7,8 @@ namespace Conditions {
 
 class HaveWanderRoute : public Condition
 {
-public:
     CONDITON_CLASS(HaveWanderRoute)
+public:
     explicit HaveWanderRoute(const ArgumentsType& arguments) :
         Condition(arguments)
     { }

@@ -1,7 +1,7 @@
 # abai
 
 Behavior tree implementation inspired by [SimpleAI](https://github.com/mgerhardy/simpleai)
-but it's single threaded and simpler.
+but this is single threaded and simpler.
 
 [Here](https://outforafight.wordpress.com/2014/07/15/behaviour-behavior-trees-for-ai-dudes-part-1/)
 is a nice writeup about behavior trees.
@@ -25,13 +25,13 @@ You may need to subclass the following classes:
 * `Loader`
 * `Registry` to register your own Filters, Conditions and Actions
 * `Agent`
-* Some `Filter`s
+* `Filter`s to add you own filters
 * Some `Condition`s
 * Some `Action`s
 
-Your game object which should act somehow " intelligent" should have am `Agent`
-member and in each game update `Agent::Update()` should be called with the time
-passed since the last call of the `Update()` method on milliseconds. Since most
+Your game object which should act somehow "intelligent" should have am `Agent`
+member, and in each game update `Agent::Update()` should be called with the time
+passed since the last call of the `Update()` method in milliseconds. Since most
 game engines uses seconds as floats you must multiply this value by 1000, then
 you can pass it to the `Update()` method.
 
@@ -52,8 +52,8 @@ Header file:
 
 class SelectAggro : public AI::Filter
 {
-public:
     FILTER_FACTORY(SelectAggro)
+public:
     explicit SelectAggro(const ArgumentsType& arguments) :
         Filter(arguments)
     {}
@@ -107,10 +107,10 @@ Header file:
 
 class AttackSelection : public AI::Action
 {
+    NODE_FACTORY(AttackSelection)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_FACTORY(AttackSelection)
     explicit AttackSelection(const ArgumentsType& arguments) :
         Action(arguments)
     {}
@@ -176,7 +176,7 @@ the tree script and passes the root node to it, so you could do something like t
 
 ~~~lua
 function init(root)
-  local prio = self:CreateNode("Priority")
+  local prio = node("Priority")
   prio:AddNode(stayAlive())
   prio:AddNode(avoidDamage())
   prio:AddNode(idle(1000))
@@ -189,36 +189,38 @@ Example for `stayAlive()`:
 ~~~lua
 function stayAlive()
   -- Execute the first child that does not fail
-  local node = self:CreateNode("Priority")
-    local condition = self:CreateCondition("IsSelfHealthLow")
+  local nd = node("Priority")
+    local cond = condition("IsSelfHealthLow")
     -- If we have low HP
-    node:SetCondition(condition)
+    nd:SetCondition(cond)
     -- 1. try to heal
-    node:AddNode(self:CreateNode("HealSelf"))
+    nd:AddNode(node("HealSelf"))
     -- 2. If that failes, flee
-    node:AddNode(self:CreateNode("Flee"))
-  return node
+    nd:AddNode(node("Flee"))
+  return nd
 end
 ~~~
 
-* `self:CreateNode("type")`, `self:CreateNode("type", { <arguments> })` creates a new node of type `type`.
-* `self:CreateCondition("type")`, `self:CreateCondition("type", { <arguments> })` creates a new condition of type `type`.
-* `self:CreateFilter("type")`, `self:CreateFilter("type", { <arguments> })` creates a new filter of type `type`.
+* `node("type")`, `node("type", { <arguments> })` creates a new node of type `type`.
+* `nondition("type")`, `nondition("type", { <arguments> })` creates a new condition of type `type`.
+* `filter("type")`, `filter("type", { <arguments> })` creates a new filter of type `type`.
 
 ### Cache
 
-Load all trees at once and add it to a cache.
+Load all trees at once and add it to a cache:
 
 ~~~lua
 function init(cache)
-  -- CreateTree(name, script) creates and loads a whole BT, returns a Root node
+  -- tree(name, script) creates and loads a whole BT, returns a Root node
   -- NPCs use this name to set the bevavior
-  cache:Add(self:CreateTree("guild_lord", "/scripts/behaviors/guild_lord.lua"))
-  cache:Add(self:CreateTree("marianna_gani", "/scripts/behaviors/marianna_gani.lua"))
-  cache:Add(self:CreateTree("priest", "/scripts/behaviors/priest.lua"))
-  cache:Add(self:CreateTree("smith", "/scripts/behaviors/smith.lua"))
+  cache:Add(tree("guild_lord", "/scripts/behaviors/guild_lord.lua"))
+  cache:Add(tree("marianna_gani", "/scripts/behaviors/marianna_gani.lua"))
+  cache:Add(tree("priest", "/scripts/behaviors/priest.lua"))
+  cache:Add(tree("smith", "/scripts/behaviors/smith.lua"))
 end
 ~~~
+
+Set the Agent's behavior:
 
 ~~~cpp
     agent.SetBehavior(behaviorCache.Get("priest"));

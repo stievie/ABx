@@ -22,10 +22,12 @@ private:
     Direction direction_{ Direction::Forward };
     int currentIndex_{ -1 };
     bool wandering_{ false };
+    bool initialized_{ false };
     int FindCurrentPointIndex() const;
     int GetNextIndex();
     bool GotoCurrentPoint();
     bool CheckDestination() const;
+    void Initialize();
 public:
     WanderComp() = delete;
     explicit WanderComp(Npc& owner);

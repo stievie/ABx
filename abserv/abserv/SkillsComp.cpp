@@ -41,6 +41,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     // if it needs a target, and may fail.
     SkillBar* sb = owner_.GetSkillBar();
     auto skill = sb->GetSkill(index);
+    assert(skill);
     lastError_ = sb->UseSkill(index, target);
     usingSkill_ = lastError_ == AB::GameProtocol::SkillErrorNone;
     lastSkillIndex_ = index;

@@ -2,6 +2,8 @@
 #include "WanderComp.h"
 #include "Npc.h"
 #include "AutoRunComp.h"
+#include "Game.h"
+#include "Map.h"
 
 //#define DEBUG_NAVIGATION
 
@@ -11,6 +13,15 @@ namespace Components {
 WanderComp::WanderComp(Npc& owner) :
     owner_(owner)
 { }
+
+void WanderComp::Initialize()
+{
+    // Calculate Y value once
+    const auto& map = *owner_.GetGame()->map_;
+    for (auto& p : route_)
+        map.UpdatePointHeight(p);
+    initialized_ = true;
+}
 
 int WanderComp::FindCurrentPointIndex() const
 {
@@ -57,7 +68,7 @@ bool WanderComp::CheckDestination() const
 {
     const auto& ownerPos = owner_.GetPosition();
     const Math::Vector3& point = route_[static_cast<size_t>(currentIndex_)];
-    if (ownerPos.Equals(point, AT_POSITON_THRESHOLD))
+    if (ownerPos.Equals(point, AT_POSITION_THRESHOLD))
         return true;
     return false;
 }
@@ -88,6 +99,7 @@ bool WanderComp::GotoCurrentPoint()
 void WanderComp::AddRoutePoint(const Math::Vector3& point)
 {
     route_.push_back(point);
+    initialized_ = false;
 }
 
 void WanderComp::Update(uint32_t)
@@ -116,6 +128,8 @@ bool WanderComp::Wander(bool value)
     wandering_ = value;
     if (wandering_)
     {
+        if (!initialized_)
+            Initialize();
         currentIndex_ = FindCurrentPointIndex();
         if (!GotoCurrentPoint())
         {

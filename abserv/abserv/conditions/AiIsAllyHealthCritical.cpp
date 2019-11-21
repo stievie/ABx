@@ -12,10 +12,12 @@ bool IsAllyHealthCritical::Evaluate(Agent& agent, const Node&)
     bool result = false;
     npc.VisitAlliesInRange(Game::Ranges::HalfCompass, [&result](const Game::Actor* o)
     {
-        if (result)
-            return;
         if (!o->IsDead() && o->resourceComp_->GetHealth() < CRITICAL_HP_THRESHOLD)
+        {
             result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
     });
 
     return result;

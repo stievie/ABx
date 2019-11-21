@@ -8,10 +8,10 @@ namespace AI {
 
 class TestAction : public Action
 {
+    NODE_CLASS(TestAction)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(TestAction)
     explicit TestAction(const ArgumentsType& arguments) :
         Action(arguments)
     { }
@@ -19,10 +19,10 @@ public:
 
 class RunningAction : public Action
 {
+    NODE_CLASS(RunningAction)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(RunningAction)
     explicit RunningAction(const ArgumentsType& arguments) :
         Action(arguments)
     { }
@@ -30,10 +30,10 @@ public:
 
 class Running2Action : public Action
 {
+    NODE_CLASS(Running2Action)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(Running2Action)
     explicit Running2Action(const ArgumentsType& arguments) :
         Action(arguments)
     { }
@@ -41,8 +41,8 @@ public:
 
 class SelectSelf : public Filter
 {
-public:
     FILTER_CLASS(SelectSelf)
+public:
     explicit SelectSelf(const ArgumentsType& arguments) :
         Filter(arguments)
     { }
@@ -51,8 +51,8 @@ public:
 
 class SelectNothing : public Filter
 {
-public:
     FILTER_CLASS(SelectNothing)
+public:
     explicit SelectNothing(const ArgumentsType& arguments) :
         Filter(arguments)
     { }

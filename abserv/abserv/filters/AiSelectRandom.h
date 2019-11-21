@@ -7,10 +7,10 @@ namespace Filters {
 
 class SelectRandom : public Filter
 {
+    FILTER_CLASS(SelectRandom)
 protected:
     uint32_t count_;
 public:
-    FILTER_CLASS(SelectRandom)
     explicit SelectRandom(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;
 };

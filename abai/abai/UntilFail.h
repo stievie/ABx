@@ -7,8 +7,8 @@ namespace AI {
 // Run the child until it fails. Then it retutrns Finished.
 class UntilFail : public Decorator
 {
-public:
     NODE_CLASS(UntilFail)
+public:
     explicit UntilFail(const ArgumentsType& arguments) :
         Decorator(arguments)
     { }

@@ -19,6 +19,8 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
 #endif
         return Status::Failed;
     }
+    if (npc.IsImmobilized())
+        return Status::Failed;
 
     if (npc.wanderComp_->IsWandering())
         return Status::Running;

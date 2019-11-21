@@ -62,12 +62,8 @@ public:
     {
         return patches_.size();
     }
-    float GetTerrainHeight(const Math::Vector3& world) const
-    {
-        if (terrain_)
-            return terrain_->GetHeight(world);
-        return 0.0f;
-    }
+    float GetTerrainHeight(const Math::Vector3& world) const;
+    void UpdatePointHeight(Math::Vector3& world) const;
     std::shared_ptr<Game> GetGame()
     {
         return game_.lock();

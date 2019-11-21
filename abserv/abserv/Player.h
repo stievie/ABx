@@ -159,7 +159,8 @@ public:
 
     //{ Client requests.
     // These functions should not have references as arguments, because
-    // they are executed by the dispatcher and not directly.
+    // they are executed by the dispatcher and not directly. All arguments
+    // must be passed by value.
     void CRQChangeMap(const std::string mapUuid);
     void CRQLogout();
     void CRQPing(int64_t clientTick);

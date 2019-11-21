@@ -7,10 +7,10 @@ namespace Actions {
 
 class ResurrectSelection : public Action
 {
+    NODE_CLASS(ResurrectSelection)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(ResurrectSelection)
     explicit ResurrectSelection(const ArgumentsType& arguments) :
         Action(arguments)
     {

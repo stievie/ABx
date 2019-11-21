@@ -23,10 +23,10 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
         if (!target->IsActorType())
             continue;
 
-        Game::Actor* actor = Game::To<Game::Actor>(target.get());
-        if (actor->IsDead())
+        const Game::Actor& actor = Game::To<Game::Actor>(*target);
+        if (actor.IsDead())
             return Status::Finished;
-        if (npc.attackComp_->IsAttackingTarget(actor))
+        if (npc.attackComp_->IsAttackingTarget(&actor))
             return Status::Running;
 
         if (npc.AttackById(id))

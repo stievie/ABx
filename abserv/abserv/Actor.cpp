@@ -134,6 +134,7 @@ void Actor::Initialize()
     resourceComp_->UpdateResources();
     resourceComp_->SetHealth(Components::SetValueType::Absolute, resourceComp_->GetMaxHealth());
     resourceComp_->SetEnergy(Components::SetValueType::Absolute, resourceComp_->GetMaxEnergy());
+    moveComp_->StoreOldPosition();
 }
 
 bool Actor::SetSpawnPoint(const std::string& group)
@@ -154,7 +155,7 @@ bool Actor::SetSpawnPoint(const std::string& group)
 
 bool Actor::GotoHomePos()
 {
-    if (!homePos_.Equals(transformation_.position_, AT_POSITON_THRESHOLD * 2.0f))
+    if (!homePos_.Equals(transformation_.position_, AT_POSITION_THRESHOLD * 2.0f))
     {
         GotoPosition(homePos_);
         return true;
@@ -228,21 +229,20 @@ bool Actor::AttackById(uint32_t targetId)
     auto target = GetGame()->GetObjectById(targetId);
     if (!target)
         return false;
+    if (!Is<Actor>(*target))
+        return false;
 
-    auto actor = std::dynamic_pointer_cast<Actor>(target);
-    if (!actor)
+    const auto& actor = To<Actor>(*target);
+    if (!IsEnemy(&actor))
         return false;
-    Actor* pActor = actor.get();
-    if (!IsEnemy(pActor))
-        return false;
-    if (attackComp_->IsAttackingTarget(pActor))
+    if (attackComp_->IsAttackingTarget(&actor))
         return true;
 
     {
         // First select object
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
-        data[InputDataObjectId2] = target->GetId();   // Target
+        data[InputDataObjectId2] = actor.GetId();   // Target
         inputComp_->Add(InputType::Select, std::move(data));
     }
     // Then attack
@@ -250,7 +250,7 @@ bool Actor::AttackById(uint32_t targetId)
     return true;
 }
 
-bool Actor::IsAttackingActor(Actor* target)
+bool Actor::IsAttackingActor(const Actor* target) const
 {
     if (!target)
         return false;
@@ -427,15 +427,15 @@ std::vector<Actor*> Actor::_LuaGetEnemiesInRange(Ranges range)
     return result;
 }
 
-size_t Actor::GetEnemyCountInRange(Ranges range)
+size_t Actor::GetEnemyCountInRange(Ranges range) const
 {
     size_t result = 0;
     VisitInRange(range, [&](const GameObject& o)
     {
         if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = To<Actor>(&o);
-            if (actor->IsEnemy(this))
+            const auto& actor = To<Actor>(o);
+            if (actor.IsEnemy(this))
                 ++result;
         }
         return Iteration::Continue;
@@ -459,7 +459,7 @@ std::vector<Actor*> Actor::_LuaGetAlliesInRange(Ranges range)
     return result;
 }
 
-size_t Actor::GetAllyCountInRange(Ranges range)
+size_t Actor::GetAllyCountInRange(Ranges range) const
 {
     // At least 1 ally that's we
     size_t result = 1;
@@ -467,8 +467,8 @@ size_t Actor::GetAllyCountInRange(Ranges range)
     {
         if (o.IsPlayerOrNpcType())
         {
-            const auto* actor = To<Actor>(&o);
-            if (actor->IsAlly(this))
+            const auto& actor = To<Actor>(o);
+            if (actor.IsAlly(this))
                 ++result;
         }
         return Iteration::Continue;
@@ -599,11 +599,12 @@ bool Actor::IsInWeaponRange(Actor* actor) const
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return GetDistance(actor) <= RANGE_TOUCH;
+        // If there is no weapon, use feasts!
+        return (GetDistance(actor) - AVERAGE_BB_EXTENDS) <= RANGE_TOUCH;
     const float range = weapon->GetWeaponRange();
     if (range == 0.0f)
         return false;
-    return GetDistance(actor) <= range;
+    return (GetDistance(actor) - AVERAGE_BB_EXTENDS) <= range;
 }
 
 float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetration)
@@ -740,7 +741,9 @@ int Actor::DrainEnergy(int value)
 
 void Actor::SetHealthRegen(int value)
 {
-    Components::SetValueType vt = value < 0 ? Components::SetValueType::Decrease : Components::SetValueType::Increase;
+    Components::SetValueType vt = value < 0 ?
+        Components::SetValueType::Decrease :
+        Components::SetValueType::Increase;
     resourceComp_->SetHealthRegen(vt, abs(value));
 }
 
@@ -976,6 +979,9 @@ int Actor::Damage(Actor* source, uint32_t index, DamageType type, int value)
 
 bool Actor::IsEnemy(const Actor* other) const
 {
+    if (!other)
+        return false;
+
     if ((GetGroupId() != 0) && GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return false;
@@ -985,6 +991,9 @@ bool Actor::IsEnemy(const Actor* other) const
 
 bool Actor::IsAlly(const Actor* other) const
 {
+    if (!other)
+        return false;
+
     if ((GetGroupId() != 0) && GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return true;

@@ -7,10 +7,10 @@ namespace Actions {
 
 class Die : public Action
 {
+    NODE_CLASS(Die)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(Die)
     explicit Die(const ArgumentsType& arguments);
 };
 

@@ -156,6 +156,20 @@ std::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
     return result;
 }
 
+float Map::GetTerrainHeight(const Math::Vector3& world) const
+{
+    if (terrain_)
+        return terrain_->GetHeight(world);
+    return 0.0f;
+}
+
+void Map::UpdatePointHeight(Math::Vector3& world) const
+{
+    if (!terrain_)
+        return;
+    world.y_ = terrain_->GetHeight(world);
+}
+
 bool Map::FindPath(std::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,

@@ -8,10 +8,10 @@ namespace Actions {
 
 class HealOther : public Action
 {
+    NODE_CLASS(HealOther)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    NODE_CLASS(HealOther)
     explicit HealOther(const ArgumentsType& arguments);
 };
 

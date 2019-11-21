@@ -10,6 +10,7 @@ class Filter;
 using FilterFactory = AbstractFactory<Filter>;
 
 #define FILTER_CLASS(FilterName)                                                      \
+public:                                                                               \
     class Factory : public FilterFactory                                              \
     {                                                                                 \
     public:                                                                           \

@@ -126,7 +126,7 @@ constexpr uint32_t MAX_CHEST_STACK_SIZE = 250;
 
 // If the difference is smaller than this we will say it's the same position.
 // Should be smaller than RANGE_TOUCH.
-constexpr float AT_POSITON_THRESHOLD = RANGE_TOUCH - 0.1f;
+constexpr float AT_POSITION_THRESHOLD = RANGE_TOUCH - 0.1f;
 
 }
 

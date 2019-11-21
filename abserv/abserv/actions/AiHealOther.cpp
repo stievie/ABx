@@ -20,10 +20,10 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
         return Status::Finished;
     }
 
-    auto currSkill = npc.skills_->GetCurrentSkill();
-    if (currSkill)
+    if (npc.skills_->GetCurrentSkill())
         // Some other skill currently using
         return Status::Failed;
+
     // Possible heal targets
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())

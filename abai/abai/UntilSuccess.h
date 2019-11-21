@@ -6,8 +6,8 @@ namespace AI {
 
 class UntilSuccess : public Decorator
 {
-public:
     NODE_CLASS(UntilSuccess)
+public:
     explicit UntilSuccess(const ArgumentsType& arguments) :
         Decorator(arguments)
     { }

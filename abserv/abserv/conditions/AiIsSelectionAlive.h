@@ -10,9 +10,8 @@ namespace Conditions {
 
 class IsSelectionAlive : public AI::Condition
 {
-public:
     CONDITON_CLASS(IsSelectionAlive)
-
+public:
     explicit IsSelectionAlive(const ArgumentsType& arguments) :
         Condition(arguments)
     { }
