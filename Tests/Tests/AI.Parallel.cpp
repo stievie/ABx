@@ -14,9 +14,9 @@ TEST_CASE("Parallel")
     AI::Loader loader(reg);
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Parallel")
-    node:AddNode(self:CreateNode("TestAction"))
-    root:AddNode(node)
+    local nd = node("Parallel")
+    nd:AddNode(node("TestAction"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);
@@ -37,10 +37,10 @@ TEST_CASE("Parallel2")
     AI::Loader loader(reg);
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Parallel")
-    node:AddNode(self:CreateNode("TestAction"))
-    node:AddNode(self:CreateNode("RunningAction"))
-    root:AddNode(node)
+    local nd = node("Parallel")
+    nd:AddNode(node("TestAction"))
+    nd:AddNode(node("RunningAction"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);
@@ -61,10 +61,10 @@ TEST_CASE("Parallel3")
     AI::Loader loader(reg);
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Parallel")
-    node:AddNode(self:CreateNode("TestAction"))
-    node:AddNode(self:CreateNode("Running2Action"))
-    root:AddNode(node)
+    local nd = node("Parallel")
+    nd:AddNode(node("TestAction"))
+    nd:AddNode(node("Running2Action"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);

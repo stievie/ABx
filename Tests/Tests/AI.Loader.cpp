@@ -13,8 +13,8 @@ TEST_CASE("Load")
     // root node, but I'm not sure...
     std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Parallel", {1, "xx"})
-    root:AddNode(node)
+    local nd = node("Parallel", {1, "xx"})
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);

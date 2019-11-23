@@ -14,9 +14,9 @@ TEST_CASE("Sequence")
     AI::Loader loader(reg);
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Sequence")
-    node:AddNode(self:CreateNode("TestAction"))
-    root:AddNode(node)
+    local nd = node("Sequence")
+    nd:AddNode(node("TestAction"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);
@@ -42,12 +42,12 @@ TEST_CASE("Sequence Filter condition")
     */
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Sequence")
-    local haveAggro = self:CreateCondition("Filter")
-    haveAggro:SetFilter(self:CreateFilter("SelectSelf"))
-    node:SetCondition(haveAggro)
-    node:AddNode(self:CreateNode("TestAction"))
-    root:AddNode(node)
+    local nd = node("Sequence")
+    local haveAggro = condition("Filter")
+    haveAggro:SetFilter(filter("SelectSelf"))
+    nd:SetCondition(haveAggro)
+    nd:AddNode(node("TestAction"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);
@@ -73,12 +73,12 @@ TEST_CASE("Sequence Filter condition fail")
     */
     const std::string script = R"lua(
 function init(root)
-    local node = self:CreateNode("Sequence")
-    local haveAggro = self:CreateCondition("Filter")
-    haveAggro:SetFilter(self:CreateFilter("SelectNothing"))
-    node:SetCondition(haveAggro)
-    node:AddNode(self:CreateNode("TestAction"))
-    root:AddNode(node)
+    local nd = node("Sequence")
+    local haveAggro = condition("Filter")
+    haveAggro:SetFilter(filter("SelectNothing"))
+    nd:SetCondition(haveAggro)
+    nd:AddNode(node("TestAction"))
+    root:AddNode(nd)
 end
 )lua";
     auto root = loader.LoadString(script);
