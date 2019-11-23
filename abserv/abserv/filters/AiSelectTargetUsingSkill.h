@@ -17,7 +17,7 @@ class SelectTargetUsingSkill : public Filter
 {
     FILTER_CLASS(SelectTargetUsingSkill)
 private:
-    Game::TargetClass class_{ Game::TargetClass::Foe };
+    Game::TargetClass class_{ Game::TargetClass::All };
     AB::Entities::SkillType type_{ AB::Entities::SkillTypeSkill };
     // Ignore when activation time is too short
     int32_t minActivationTime_{ 0 };

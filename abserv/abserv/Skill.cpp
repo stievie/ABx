@@ -59,8 +59,6 @@ bool Skill::LoadScript(const std::string& fileName)
         skillEffect_ = static_cast<uint32_t>(luaState_["effect"]);
     if (Lua::IsNumber(luaState_, "effectTarget"))
         effectTarget_ = static_cast<uint32_t>(luaState_["effectTarget"]);
-    if (Lua::IsBool(luaState_, "interrupts"))
-        interrupts_ = luaState_["interrupts"];
     if (Lua::IsNumber(luaState_, "canInterrupt"))
         canInterrupt_ = luaState_["canInterrupt"];
 

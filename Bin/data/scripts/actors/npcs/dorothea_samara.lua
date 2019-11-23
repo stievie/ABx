@@ -1,5 +1,6 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
+include("/scripts/includes/attributes.lua")
 
 name = "Dorothea Samara"
 level = 20
@@ -15,14 +16,18 @@ local startTick;
 function onInit()
   startTick = Tick()
   self:SetSpeed(0.5)
+
+  local skillBar = self:GetSkillBar()
+  skillBar:AddSkill(61)
+  skillBar:SetAttributeValue(ATTRIB_FASTCAST, 9)
+  skillBar:SetAttributeValue(ATTRIB_INSPIRATION, 9)
+  skillBar:SetAttributeValue(ATTRIB_DOMINATION, 12)
+
   return true
 end
 
 function onUpdate(timeElapsed)
   if (Tick() - startTick > 10000 and self:GetState() == CREATURESTATE_IDLE) then
---    local pos = self:GetPosition();
---    print("going " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
---    self:GotoPosition({-48.85, 0.0, -34.67})
     startTick = Tick()
   end
 end

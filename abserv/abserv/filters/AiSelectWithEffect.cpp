@@ -34,7 +34,7 @@ void SelectWithEffect::Execute(Agent &agent)
             return Iteration::Continue;
 
         const Game::Actor& actor = Game::To<Game::Actor>(current);
-        if (Game::TargetClassMatches(class_, actor) &&
+        if (Game::TargetClassMatches(chr, class_, actor) &&
             actor.effectsComp_->HasEffectOf(effectCat_))
             entities.push_back(actor.id_);
 

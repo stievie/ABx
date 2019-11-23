@@ -51,7 +51,6 @@ private:
     Ranges range_{ Ranges::Aggro };
     uint32_t skillEffect_{ SkillEffectNone };
     uint32_t effectTarget_{ SkillTargetNone };
-    bool interrupts_{ false };
     AB::Entities::SkillType canInterrupt_{ AB::Entities::SkillTypeSkill };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
@@ -112,7 +111,7 @@ public:
     }
     bool CanInterrupt(AB::Entities::SkillType type) const
     {
-        return interrupts_ && ((canInterrupt_ & type) == type);
+        return HasEffect(SkillEffectInterrupt) && ((canInterrupt_ & type) == type);
     }
     /// Does a skill change the creature state.
     bool IsChangingState() const

@@ -101,14 +101,14 @@ public:
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
     template<typename Func>
-    void VisitEnemiesInRange(Ranges range, const Func& func)
+    void VisitEnemiesInRange(Ranges range, const Func& func) const
     {
         VisitInRange(range, [&](const GameObject& o)
         {
             if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = To<Actor>(&o);
-                if (actor->IsEnemy(this))
+                const auto& actor = To<Actor>(o);
+                if (this->IsEnemy(&actor))
                     return func(actor);
             }
             return Iteration::Continue;
@@ -117,14 +117,14 @@ public:
     size_t GetEnemyCountInRange(Ranges range) const;
     /// Ally is always without self
     template<typename Func>
-    void VisitAlliesInRange(Ranges range, const Func& func)
+    void VisitAlliesInRange(Ranges range, const Func& func) const
     {
         VisitInRange(range, [&](const GameObject& o)
         {
             if (o.IsPlayerOrNpcType())
             {
-                const auto* actor = To<Actor>(&o);
-                if (actor->IsAlly(this))
+                const auto& actor = To<Actor>(o);
+                if (this->IsAlly(&actor))
                     return func(actor);
             }
             return Iteration::Continue;
@@ -164,6 +164,7 @@ public:
     int DrainLife(Actor* source, uint32_t index, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
+    int AddEnergy(int value);
     void SetHealthRegen(int value);
 
     bool InterruptAttack();
@@ -302,11 +303,11 @@ inline bool Is<Actor>(const GameObject& obj)
     return obj.GetType() >= AB::GameProtocol::ObjectTypeProjectile;
 }
 
-inline bool TargetClassMatches(TargetClass _class, const Actor& actor)
+inline bool TargetClassMatches(const Actor& actor, TargetClass _class, const Actor& target)
 {
     return ((_class == TargetClass::All) ||
-        (_class == TargetClass::Foe && actor.IsEnemy(&actor)) ||
-        (_class == TargetClass::Friend && actor.IsAlly(&actor)));
+        (_class == TargetClass::Foe && actor.IsEnemy(&target)) ||
+        (_class == TargetClass::Friend && actor.IsAlly(&target)));
 }
 
 }

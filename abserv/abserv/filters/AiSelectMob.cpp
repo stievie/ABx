@@ -12,14 +12,14 @@ void SelectMob::Execute(Agent& agent)
     entities.clear();
     std::map<uint32_t, size_t> sorting;
     Game::Npc& chr = GetNpc(agent);
-    chr.VisitEnemiesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor* o)
+    chr.VisitEnemiesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor& o)
     {
 
-        if (o->IsSelectable() && !o->IsUndestroyable())
+        if (o.IsSelectable() && !o.IsUndestroyable())
         {
-            size_t c = o->GetAllyCountInRange(Game::Ranges::Casting);
-            entities.push_back(o->id_);
-            sorting[o->id_] = c;
+            size_t c = o.GetAllyCountInRange(Game::Ranges::Casting);
+            entities.push_back(o.id_);
+            sorting[o.id_] = c;
         }
         return Iteration::Continue;
     });

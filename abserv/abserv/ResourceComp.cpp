@@ -175,6 +175,15 @@ void ResourceComp::SetValue(ResourceType type, SetValueType t, int value)
     }
 }
 
+int ResourceComp::AddEnergy(int value)
+{
+    const int n = GetEnergy() + value;
+    if (n > maxEnergy_)
+        value -= (n + maxEnergy_);
+    SetEnergy(Components::SetValueType::Increase, value);
+    return value;
+}
+
 int ResourceComp::DrainEnergy(int value)
 {
     const int curr = GetEnergy();

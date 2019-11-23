@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "AiSelectTargetUsingSkill.h"
 #include "../Npc.h"
+#include "Logger.h"
+
+//#define DEBUG_AI
 
 namespace AI {
 namespace Filters {
@@ -32,28 +35,35 @@ void SelectTargetUsingSkill::Execute(Agent& agent)
     auto& entities = agent.filteredAgents_;
     entities.clear();
     Game::Npc& chr = GetNpc(agent);
-    Id selection = INVALID_ID;
     chr.VisitInRange(Game::Ranges::Casting, [&](const Game::GameObject& current)
     {
         if (!Game::Is<Game::Actor>(current))
             return Iteration::Continue;
 
         const Game::Actor& actor = Game::To<Game::Actor>(current);
-        if (Game::TargetClassMatches(class_, actor) &&
+#ifdef DEBUG_AI
+        if (!Game::TargetClassMatches(chr, class_, actor))
+        {
+//            LOG_DEBUG << actor.GetName() << " does not match target class " << static_cast<unsigned>(class_) << std::endl;
+        }
+#endif // DEBUG_AI
+
+        if (Game::TargetClassMatches(chr, class_, actor) &&
             actor.IsSelectable() && !actor.IsUndestroyable() && !actor.IsDead())
         {
             const auto* skill = actor.skills_->GetCurrentSkill();
             if (skill && skill->IsUsing() && skill->IsType(type_) &&
                 (skill->activation_ > minActivationTime_))
             {
-                selection = actor.id_;
+#ifdef DEBUG_AI
+                LOG_DEBUG << "Selected " << actor.GetName() << std::endl;
+#endif
+                entities.push_back(actor.id_);
                 return Iteration::Break;
             }
         }
         return Iteration::Continue;
     });
-    if (selection != INVALID_ID)
-        entities.push_back(selection);
 }
 
 }

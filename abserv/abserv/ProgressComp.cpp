@@ -54,11 +54,11 @@ void ProgressComp::Write(Net::NetworkMessage& message)
 void ProgressComp::OnDied()
 {
     // When we die all Enemies in range get XP for that
-    owner_.VisitEnemiesInRange(Ranges::Aggro, [this](const Actor* actor)
+    owner_.VisitEnemiesInRange(Ranges::Aggro, [this](const Actor& actor)
     {
-        if (!actor->IsDead())
+        if (!actor.IsDead())
             // Actors get only XP for kills when they are not dead
-            actor->progressComp_->AddXpForKill(&owner_);
+            actor.progressComp_->AddXpForKill(&owner_);
         return Iteration::Continue;
     });
 }

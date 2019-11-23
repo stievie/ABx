@@ -36,6 +36,7 @@ SkillTypeSpell = 512
     SkillTypeWellSpell           = SkillTypeSpell | 32 << 16
 SkillTypeStance = 1024
 SkillTypeTrap = 2048
+SkillTypeAll = 0xFFFFFFFFFFFFFFFF
 
 -- Effects skills can have
 SkillEffectNone         = 0

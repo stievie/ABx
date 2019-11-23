@@ -34,7 +34,7 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (!actor.IsDead())
+    if (actor.IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectDamage, targetType_);

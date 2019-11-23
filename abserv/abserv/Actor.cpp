@@ -40,6 +40,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Damage", &Actor::Damage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
+        .addFunction("AddEnergy", &Actor::AddEnergy)
         .addFunction("SetHealthRegen", &Actor::SetHealthRegen)
         .addFunction("InterruptAttack", &Actor::InterruptAttack)
         .addFunction("InterruptSkill", &Actor::InterruptSkill)
@@ -732,6 +733,11 @@ void Actor::SetResource(Components::ResourceType type, Components::SetValueType 
 int Actor::DrainLife(Actor* source, uint32_t index, int value)
 {
     return damageComp_->DrainLife(source, index, value);
+}
+
+int Actor::AddEnergy(int value)
+{
+    return resourceComp_->AddEnergy(value);
 }
 
 int Actor::DrainEnergy(int value)

@@ -23,6 +23,15 @@ function onStart()
     guildLord:SetGroupId(groupId)
     guildLord:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
   end
+  local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
+  if (ped2 ~= nil) then
+    local x = -4.08
+    local z = 18.6
+    local y = self:GetTerrainHeight(x, z)
+    ped2:SetPosition({x, y, z})
+    ped2:SetHomePos({x, y, z})
+    ped2:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
+  end
 end
 
 function onStop()

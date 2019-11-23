@@ -16,12 +16,12 @@ void SelectLowHealth::Execute(Agent& agent)
     Game::Npc& chr = GetNpc(agent);
     std::map<uint32_t, std::pair<float, float>> sorting;
 
-    chr.VisitAlliesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor* o)
+    chr.VisitAlliesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor& o)
     {
-        if (o->resourceComp_->GetHealthRatio() < LOW_HP_THRESHOLD)
+        if (o.resourceComp_->GetHealthRatio() < LOW_HP_THRESHOLD)
         {
-            entities.push_back(o->id_);
-            sorting[o->id_] = std::make_pair<float, float>(o->resourceComp_->GetHealthRatio(), o->GetDistance(&chr));
+            entities.push_back(o.id_);
+            sorting[o.id_] = std::make_pair<float, float>(o.resourceComp_->GetHealthRatio(), o.GetDistance(&chr));
         }
         return Iteration::Continue;
     });

@@ -6,7 +6,7 @@ local function useSkill(action)
   return result
 end
 
-local function aoeDamage()
+local function _aoeDamage()
   local result = node("UseDamageSkill", { SkillTargetAoe })
     local cond = condition("Filter")
       cond:SetFilter(filter("SelectMob"))
@@ -15,7 +15,7 @@ local function aoeDamage()
   return result
 end
 
-local function singleDamage()
+local function _singleDamage()
   local result = node("UseDamageSkill", { SkillTargetTarget })
 
     local cond = condition("Filter")
@@ -25,22 +25,38 @@ local function singleDamage()
   return result
 end
 
-local function interruptSpell()
+local function _interruptSpell()
   local result = node("Interrupt", { SkillTypeSpell })
 
     local cond = condition("Filter")
-      cond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeSpell }))
+      cond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeSpell, "foe" }))
 
     result:SetCondition(cond)
   return result
 end
 
-local function interruptAttack()
+function interruptSpell()
+  local result = node("Priority")
+    result:AddNode(_interruptSpell());
+
+    -- If out of range move to target
+    local move = node("MoveTo")
+      -- Only move there when not in range
+      local notinrange = condition("Not")
+        notinrange:AddCondition(condition("IsInSkillRange"))
+
+      move:SetCondition(notinrange)
+    result:AddNode(move)
+
+  return result
+end
+
+local function _interruptAttack()
   local result = node("Interrupt", { SkillTypeAttack })
 
     local orCond = condition("Or")
       local skillCond = condition("Filter")
-        skillCond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeAttack }))
+        skillCond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeAttack, "foe" }))
       orCond:AddCondition(skillCond)
 
       local attackCond = condition("Filter")
@@ -48,6 +64,22 @@ local function interruptAttack()
       orCond:AddCondition(attackCond)
 
     result:SetCondition(orCond)
+  return result
+end
+
+function interruptAttack()
+  local result = node("Priority")
+    result:AddNode(_interruptAttack());
+
+    -- If out of range move to target
+    local move = node("MoveTo")
+      -- Only move there when not in range
+      local notinrange = condition("Not")
+        notinrange:AddCondition(condition("IsInSkillRange"))
+
+      move:SetCondition(notinrange)
+    result:AddNode(move)
+
   return result
 end
 
@@ -65,12 +97,13 @@ local function avoidSelfAoeDamage()
   return nd
 end
 
+-- Make any damage to a target
 function damageSkill()
   local result = node("Priority")
-    result:AddNode(aoeDamage())
-    result:AddNode(interruptSpell())
-    result:AddNode(interruptAttack())
-    result:AddNode(singleDamage())
+    result:AddNode(_aoeDamage())
+    result:AddNode(_interruptSpell())
+    result:AddNode(_interruptAttack())
+    result:AddNode(_singleDamage())
 
     -- If out of range move to target
     local move = node("MoveTo")

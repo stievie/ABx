@@ -15,12 +15,12 @@ void SelectDeadAllies::Execute(Agent& agent)
     entities.clear();
     std::map<uint32_t, float> sorting;
     Game::Npc& chr = GetNpc(agent);
-    chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
+    chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
     {
-        if (o->IsDead())
+        if (o.IsDead())
         {
-            entities.push_back(o->id_);
-            sorting[o->id_] = o->GetDistance(&chr);
+            entities.push_back(o.id_);
+            sorting[o.id_] = o.GetDistance(&chr);
         }
         return Iteration::Continue;
     });

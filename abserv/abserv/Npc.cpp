@@ -232,6 +232,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
             switch (type)
             {
             case CostType::Activation:
+                // Activation always plays a role
                 return 1.0f;
             case CostType::Energy:
             {

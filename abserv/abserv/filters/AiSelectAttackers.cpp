@@ -17,12 +17,12 @@ void SelectAttackers::Execute(Agent& agent)
 
     std::map<uint32_t, float> sorting;
     Game::Npc& chr = GetNpc(agent);
-    chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
+    chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
     {
-        if (o->attackComp_->IsTarget(&chr))
+        if (o.attackComp_->IsTarget(&chr))
         {
-            entities.push_back(o->id_);
-            sorting[o->id_] = o->GetDistance(&chr);
+            entities.push_back(o.id_);
+            sorting[o.id_] = o.GetDistance(&chr);
         }
         return Iteration::Continue;
     });

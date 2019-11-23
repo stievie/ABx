@@ -3,6 +3,9 @@
 #include "../AiAgent.h"
 #include "../Npc.h"
 #include "../Game.h"
+#include "Logger.h"
+
+//#define DEBUG_AI
 
 namespace AI {
 namespace Actions {
@@ -42,13 +45,18 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (!actor.IsDead())
+    if (actor.IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectInterrupt,
         Game::SkillTargetTarget, type_);
     if (skillIndex == -1)
+    {
+#ifdef DEBUG_AI
+        LOG_DEBUG << "No skill" << std::endl;
+#endif
         return Status::Failed;
+    }
 
     auto skill = npc.skills_->GetSkill(skillIndex);
     if (!skill)
@@ -59,6 +67,10 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     GetAgent(agent).selectedSkill_ = skillIndex;
     if (!npc.IsInRange(skill->GetRange(), target.get()))
         return Status::Failed;
+
+#ifdef DEBUG_AI
+    LOG_DEBUG << "Interrupting " << target->GetName() << " Skill " << skill->data_.name << std::endl;
+#endif
 
     npc.SetSelectedObjectById(selection[0]);
     npc.UseSkill(skillIndex);

@@ -152,6 +152,7 @@ public:
     void SetValue(ResourceType type, SetValueType t, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
+    int AddEnergy(int value);
     /// Approx. check if we have enough resource to use this skill.
     bool HaveEnoughResources(const Skill* skill) const;
 
