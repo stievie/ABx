@@ -11,7 +11,7 @@ class Follow final : public Action
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
-    Follow(const ArgumentsType& arguments) :
+    explicit Follow(const ArgumentsType& arguments) :
         Action(arguments)
     { }
 };

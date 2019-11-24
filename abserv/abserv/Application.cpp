@@ -10,6 +10,7 @@
 #include "DataClient.h"
 #include "DataProvider.h"
 #include "Dispatcher.h"
+#include "Dump.h"
 #include "EffectManager.h"
 #include "GameManager.h"
 #include "GuildManager.h"
@@ -347,7 +348,10 @@ bool Application::LoadMain()
     if (!behaviors.empty())
     {
         if (aiLoader.InitChache(behaviors, *btCache))
+        {
             LOG_INFO << "[done]" << std::endl;
+//            AI::DumpCache(std::cout, *btCache);
+        }
         else
         {
             LOG_INFO << "[FAIL]"  << std::endl;

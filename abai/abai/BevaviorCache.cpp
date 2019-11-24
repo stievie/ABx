@@ -28,4 +28,13 @@ void BevaviorCache::Remove(std::shared_ptr<Root> node)
     cache_.erase(it);
 }
 
+void BevaviorCache::VisitBehaviors(const std::function<Iteration(const std::string& name, const Root& root)>& callback) const
+{
+    for (const auto& i : cache_)
+    {
+        if (callback(i.first, *i.second) != Iteration::Continue)
+            break;
+    }
+}
+
 }

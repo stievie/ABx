@@ -22,6 +22,9 @@ Node::Status Follow::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     const Game::Actor& actor = Game::To<Game::Actor>(*target);
+    if (npc.GetPosition().Equals(actor.GetPosition(), Game::AT_POSITION_THRESHOLD))
+        return Status::Finished;
+
     if (npc.autorunComp_->IsFollowing(actor))
         return Status::Running;
 

@@ -423,6 +423,9 @@
     <ClInclude Include="actions\AiFollow.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiIsInWeaponRange.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -796,6 +799,9 @@
     </ClCompile>
     <ClCompile Include="actions\AiFollow.cpp">
       <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsInWeaponRange.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

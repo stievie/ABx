@@ -228,6 +228,7 @@
     <ClInclude Include="conditions\AiIsEnergyLow.h" />
     <ClInclude Include="conditions\AiIsInAOE.h" />
     <ClInclude Include="conditions\AiIsInSkillRange.h" />
+    <ClInclude Include="conditions\AiIsInWeaponRange.h" />
     <ClInclude Include="conditions\AiIsMeleeTarget.h" />
     <ClInclude Include="conditions\AiIsSelfHealthCritical.h" />
     <ClInclude Include="conditions\AiIsSelfHealthLow.h" />
@@ -359,6 +360,7 @@
     <ClCompile Include="conditions\AiIsEnergyLow.cpp" />
     <ClCompile Include="conditions\AiIsInAOE.cpp" />
     <ClCompile Include="conditions\AiIsInSkillRange.cpp" />
+    <ClCompile Include="conditions\AiIsInWeaponRange.cpp" />
     <ClCompile Include="conditions\AiIsMeleeTarget.cpp" />
     <ClCompile Include="conditions\AiIsSelectionAlive.cpp" />
     <ClCompile Include="conditions\AiIsSelfHealthCritical.cpp" />

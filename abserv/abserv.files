@@ -79,6 +79,8 @@ abserv/conditions/AiIsInAOE.cpp
 abserv/conditions/AiIsInAOE.h
 abserv/conditions/AiIsInSkillRange.cpp
 abserv/conditions/AiIsInSkillRange.h
+abserv/conditions/AiIsInWeaponRange.cpp
+abserv/conditions/AiIsInWeaponRange.h
 abserv/conditions/AiIsMeleeTarget.cpp
 abserv/conditions/AiIsMeleeTarget.h
 abserv/conditions/AiIsSelectionAlive.cpp

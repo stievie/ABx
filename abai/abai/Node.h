@@ -7,7 +7,9 @@
 #include "Condition.h"
 #include "AiDefines.h"
 #include "Factory.h"
+#include <functional>
 #include <sa/IdGenerator.h>
+#include <sa/Iteration.h>
 
 namespace AI {
 
@@ -68,7 +70,9 @@ public:
     const std::string& GetName() const { return name_; }
     void SetName(const std::string& value) { name_ = value; }
     virtual bool AddNode(std::shared_ptr<Node> node);
+    virtual void VisitChildren(const std::function<Iteration(const Node&)>&) const { }
     void SetCondition(std::shared_ptr<Condition> condition);
+    const Condition* GetCondition() const { return condition_.get(); }
     virtual Node::Status Execute(Agent& agent, uint32_t timeElapsed);
 };
 

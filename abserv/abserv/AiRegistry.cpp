@@ -25,6 +25,7 @@
 #include "conditions/AiIsEnergyLow.h"
 #include "conditions/AiIsInAOE.h"
 #include "conditions/AiIsInSkillRange.h"
+#include "conditions/AiIsInWeaponRange.h"
 #include "conditions/AiIsMeleeTarget.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsSelfHealthCritical.h"
@@ -86,6 +87,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("HaveHome", Conditions::HaveHome::GetFactory());
     RegisterConditionFactory("HaveWanderRoute", Conditions::HaveWanderRoute::GetFactory());
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
+    RegisterConditionFactory("IsInWeaponRange", Conditions::IsInWeaponRange::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());

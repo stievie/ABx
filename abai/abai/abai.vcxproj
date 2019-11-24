@@ -100,6 +100,7 @@
     <ClInclude Include="Composite.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Decorator.h" />
+    <ClInclude Include="Dump.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Fail.h" />
     <ClInclude Include="FilterCondition.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="BevaviorCache.cpp" />
     <ClCompile Include="Composite.cpp" />
     <ClCompile Include="Decorator.cpp" />
+    <ClCompile Include="Dump.cpp" />
     <ClCompile Include="Fail.cpp" />
     <ClCompile Include="FilterCondition.cpp" />
     <ClCompile Include="FirstFilter.cpp" />

@@ -17,4 +17,10 @@ bool Decorator::AddNode(std::shared_ptr<Node> node)
     return true;
 }
 
+void Decorator::VisitChildren(const std::function<Iteration (const Node&)>& callback) const
+{
+    if (child_)
+        callback(*child_);
+}
+
 }
