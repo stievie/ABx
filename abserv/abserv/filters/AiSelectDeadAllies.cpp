@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AiSelectDeadAllies.h"
 #include "../Npc.h"
+#include "Subsystems.h"
+#include "Random.h"
 
 namespace AI {
 namespace Filters {
@@ -17,6 +19,10 @@ void SelectDeadAllies::Execute(Agent& agent)
     Game::Npc& chr = GetNpc(agent);
     chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
     {
+        float negligence = GetSubsystem<Crypto::Random>()->GetFloat();
+        if (negligence < 0.05f)
+            // 5% chance to not seeing it
+            return Iteration::Continue;
         if (o.IsDead())
         {
             entities.push_back(o.id_);

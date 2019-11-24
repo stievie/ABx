@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AiSelectLowHealth.h"
 #include "../Npc.h"
+#include "Random.h"
+#include "Subsystems.h"
 
 namespace AI {
 namespace Filters {
@@ -15,10 +17,11 @@ void SelectLowHealth::Execute(Agent& agent)
     entities.clear();
     Game::Npc& chr = GetNpc(agent);
     std::map<uint32_t, std::pair<float, float>> sorting;
+    auto* rnd = GetSubsystem<Crypto::Random>();
 
     chr.VisitAlliesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor& o)
     {
-        if (o.resourceComp_->GetHealthRatio() < LOW_HP_THRESHOLD)
+        if (!o.IsDead() && rnd->Matches(LOW_HP_THRESHOLD, o.resourceComp_->GetHealthRatio(), 10.0f))
         {
             entities.push_back(o.id_);
             sorting[o.id_] = std::make_pair<float, float>(o.resourceComp_->GetHealthRatio(), o.GetDistance(&chr));

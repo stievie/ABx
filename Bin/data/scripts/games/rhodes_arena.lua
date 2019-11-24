@@ -29,6 +29,7 @@ function onStart()
     local z = 18.6
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
+    ped2:SetRotation(180)
     ped2:SetHomePos({x, y, z})
     ped2:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
   end

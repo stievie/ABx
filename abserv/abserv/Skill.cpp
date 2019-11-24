@@ -138,9 +138,9 @@ int32_t Skill::GetActivation(Actor& source, int32_t activation)
     if (fastcast == 0)
         return activation;
     if (IsType(AB::Entities::SkillTypeSignet))
-        return static_cast<int32_t>(static_cast<float>(activation) * (1.0f - (3.0f * static_cast<float>(fastcast))));
+        return static_cast<int32_t>(static_cast<float>(activation) * (1.0f - (0.03f * static_cast<float>(fastcast))));
     if (IsType(AB::Entities::SkillTypeSpell))
-        return static_cast<int32_t>(static_cast<float>(activation) / powf(static_cast<float>(fastcast) / 15.0f, 2.0f));
+        return static_cast<int32_t>(static_cast<float>(activation) * powf(0.5f, static_cast<float>(fastcast) / 15.0f));
     return activation;
 }
 

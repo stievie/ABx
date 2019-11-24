@@ -34,10 +34,11 @@ void RegisterLuaAll(kaguya::State& state)
     {
         return Utils::Tick();
     });
-    state["Random"] = kaguya::function([]
-    {
-        return GetSubsystem<Crypto::Random>()->GetFloat();
-    });
+    state["Random"] = kaguya::overload(
+        [] { return GetSubsystem<Crypto::Random>()->GetFloat(); },
+        [] (float max){ return GetSubsystem<Crypto::Random>()->Get<float>(0.0f, max); },
+        [] (float min, float max){ return GetSubsystem<Crypto::Random>()->Get<float>(min, max); }
+    );
     state["ServerId"] = kaguya::function([]
     {
         return Application::Instance->GetServerId();

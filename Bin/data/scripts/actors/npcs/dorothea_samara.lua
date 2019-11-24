@@ -18,6 +18,7 @@ function onInit()
   self:SetSpeed(0.5)
 
   local skillBar = self:GetSkillBar()
+  skillBar:AddSkill(39)
   skillBar:AddSkill(61)
   skillBar:SetAttributeValue(ATTRIB_FASTCAST, 9)
   skillBar:SetAttributeValue(ATTRIB_INSPIRATION, 9)

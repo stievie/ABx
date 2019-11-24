@@ -46,6 +46,15 @@ public:
         assert(max > min);
         return static_cast<T>(GetFloat() * static_cast<float>(max - min)) + min;
     }
+    /// Test if `test` is smaller or equal to `value` (value = constant value), with max. +/-
+    /// random deviation in `percent` of value.
+    template <typename T>
+    bool Matches(T value, T test, T percent)
+    {
+        T deviatiton = (value / static_cast<T>(100)) * percent;
+        T rnd = Get<T>(value - deviatiton, value + deviatiton);
+        return test <= rnd;
+    }
 };
 
 }
