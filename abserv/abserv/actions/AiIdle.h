@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class Idle : public TimedNode
+class Idle final : public TimedNode
 {
     NODE_CLASS(Idle)
 public:

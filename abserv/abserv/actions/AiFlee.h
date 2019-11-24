@@ -6,11 +6,9 @@
 namespace AI {
 namespace Actions {
 
-class Flee : public Action
+class Flee final : public Action
 {
     NODE_CLASS(Flee)
-private:
-    Math::Vector3 destination_;
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:

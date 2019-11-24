@@ -46,7 +46,8 @@ enum SkillType : uint64_t
         SkillTypeWeaponSpell         = SkillTypeSpell | 16ll << 16,
         SkillTypeWellSpell           = SkillTypeSpell | 32ll << 16,
     SkillTypeStance = 1024ll,
-    SkillTypeTrap = 2048ll
+    SkillTypeTrap = 2048ll,
+    SkillTypeAll = 0xFFFFFFFFFFFFFFFF
 };
 
 struct Skill : Entity

@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class HealSelf : public Action
+class HealSelf final : public Action
 {
     NODE_CLASS(HealSelf)
 protected:

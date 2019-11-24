@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class Die : public Action
+class Die final : public Action
 {
     NODE_CLASS(Die)
 protected:

@@ -5,7 +5,7 @@
 namespace AI {
 namespace Filters {
 
-class SelectDeadAllies : public Filter
+class SelectDeadAllies final : public Filter
 {
     FILTER_CLASS(SelectDeadAllies)
 public:

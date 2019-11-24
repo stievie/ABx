@@ -203,7 +203,7 @@ float Npc::GetAggro(const Actor* other)
 }
 
 int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
-    AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeSkill */,
+    AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
     // skill index -> cost (smaller is better)
@@ -222,7 +222,10 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
             return Iteration::Continue;
         if (!resourceComp_->HaveEnoughResources(&current))
             return Iteration::Continue;
-        if (effect == SkillEffect::SkillEffectInterrupt && !current.CanInterrupt(interrupts))
+        if (effect == SkillEffect::SkillEffectInterrupt &&
+            interrupts != AB::Entities::SkillTypeAll &&
+            !current.CanInterrupt(interrupts))
+            // If this is an interrupt skill, and interrupts argument was passed, check also that
             return Iteration::Continue;
 
         skillIndices.push_back(index);

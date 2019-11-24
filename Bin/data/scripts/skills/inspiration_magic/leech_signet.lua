@@ -15,7 +15,7 @@ range = RANGE_CASTING
 damageType = DAMAGETYPE_UNKNOWN
 effect = SkillEffectInterrupt | SkillEffectGainEnergy
 effectTarget = SkillTargetTarget
-canInterrupt = SkillTypeAll
+canInterrupt = SkillTypeSkill
 
 function onStartUse(source, target)
   if (target == nil) then

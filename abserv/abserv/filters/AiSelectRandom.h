@@ -5,10 +5,10 @@
 namespace AI {
 namespace Filters {
 
-class SelectRandom : public Filter
+class SelectRandom final : public Filter
 {
     FILTER_CLASS(SelectRandom)
-protected:
+private:
     uint32_t count_;
 public:
     explicit SelectRandom(const ArgumentsType& arguments);

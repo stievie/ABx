@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-class RandomCondition : public Condition
+class RandomCondition final : public Condition
 {
     CONDITON_CLASS(RandomCondition)
 private:

@@ -8,7 +8,7 @@ class Agent;
 
 namespace Conditions {
 
-class IsSelectionAlive : public AI::Condition
+class IsSelectionAlive final : public Condition
 {
     CONDITON_CLASS(IsSelectionAlive)
 public:

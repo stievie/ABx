@@ -53,6 +53,7 @@ public:
     void Update(uint32_t timeElapsed);
     void SetAutoRun(bool value);
     bool IsAutoRun() const { return autoRun_; }
+    bool IsFollowing(const Actor& actor) const;
 };
 
 }

@@ -280,5 +280,14 @@ void AutoRunComp::SetAutoRun(bool value)
     }
 }
 
+bool AutoRunComp::IsFollowing(const Actor& actor) const
+{
+    if (!IsAutoRun())
+        return false;
+    if (auto f = following_.lock())
+        return f->id_ == actor.id_;
+    return false;
+}
+
 }
 }

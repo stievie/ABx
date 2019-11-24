@@ -107,11 +107,19 @@ public:
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type) const
     {
+        // Unfortunately AB::Entities::SkillTypeSkill = 0 and 0 & 0 = 0 :/
+        if (data_.type == AB::Entities::SkillTypeSkill || type == AB::Entities::SkillTypeSkill)
+            return true;
         return (data_.type & type) == type;
     }
+    // Returns true if this skill can interrupt skills of type
     bool CanInterrupt(AB::Entities::SkillType type) const
     {
-        return HasEffect(SkillEffectInterrupt) && ((canInterrupt_ & type) == type);
+        if (!HasEffect(SkillEffectInterrupt))
+            return false;
+        if (canInterrupt_ == type)
+            return true;
+        return ((canInterrupt_ & type) == type);
     }
     /// Does a skill change the creature state.
     bool IsChangingState() const
@@ -122,7 +130,7 @@ public:
     }
     uint32_t GetIndex() const { return data_.index; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
+    bool HasTarget(SkillTarget target) const { return (effectTarget_ & target) == target; }
     float CalculateCost(const std::function<float(CostType)>& importanceCallback) const;
     bool IsInRange(const Actor* target) const;
     Ranges GetRange() const { return range_; }

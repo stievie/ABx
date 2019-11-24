@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-class HaveHome : public Condition
+class HaveHome final : public Condition
 {
     CONDITON_CLASS(HaveHome)
 public:

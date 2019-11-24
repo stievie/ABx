@@ -6,7 +6,7 @@
 namespace AI {
 namespace Actions {
 
-class Interrupt : public Action
+class Interrupt final : public Action
 {
     NODE_CLASS(Interrupt)
 private:

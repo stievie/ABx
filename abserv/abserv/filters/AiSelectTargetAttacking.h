@@ -6,7 +6,7 @@ namespace AI {
 namespace Filters {
 
 // Selectt a target that is in attack state
-class SelectTargetAttacking : public Filter
+class SelectTargetAttacking final : public Filter
 {
     FILTER_CLASS(SelectTargetAttacking)
 public:

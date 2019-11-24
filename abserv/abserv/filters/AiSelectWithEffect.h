@@ -12,7 +12,7 @@ namespace Filters {
 // 2 Arguments:
 //  1. EffectCategory name as defined in EffectManager.h
 //  2. Optional friend|foe|all (default)
-class SelectWithEffect : public Filter
+class SelectWithEffect final : public Filter
 {
     FILTER_CLASS(SelectWithEffect)
 private:

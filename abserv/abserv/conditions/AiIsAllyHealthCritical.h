@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsAllyHealthCritical : public Condition
+class IsAllyHealthCritical final : public Condition
 {
     CONDITON_CLASS(IsAllyHealthCritical)
 public:

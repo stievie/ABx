@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsSelfHealthLow : public AI::Condition
+class IsSelfHealthLow final : public Condition
 {
     CONDITON_CLASS(IsSelfHealthLow)
 public:

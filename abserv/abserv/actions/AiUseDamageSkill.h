@@ -6,7 +6,7 @@
 namespace AI {
 namespace Actions {
 
-class UseDamageSkill : public Action
+class UseDamageSkill final : public Action
 {
     NODE_CLASS(UseDamageSkill)
 private:

@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsMeleeTarget : public AI::Condition
+class IsMeleeTarget final : public Condition
 {
     CONDITON_CLASS(IsMeleeTarget)
 public:

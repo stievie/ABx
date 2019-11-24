@@ -104,7 +104,7 @@ public:
     bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target,
-        AB::Entities::SkillType interrupts = AB::Entities::SkillTypeSkill,
+        AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }

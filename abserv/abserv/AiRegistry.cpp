@@ -3,6 +3,7 @@
 #include "actions/AiAttackSelection.h"
 #include "actions/AiDie.h"
 #include "actions/AiFlee.h"
+#include "actions/AiFollow.h"
 #include "actions/AiGainEnergy.h"
 #include "actions/AiGoHome.h"
 #include "actions/AiHealOther.h"
@@ -69,6 +70,7 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("Wander", Actions::Wander::GetFactory());
     RegisterNodeFactory("UseDamageSkill", Actions::UseDamageSkill::GetFactory());
     RegisterNodeFactory("Interrupt", Actions::Interrupt::GetFactory());
+    RegisterNodeFactory("Follow", Actions::Follow::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());

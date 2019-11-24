@@ -7,7 +7,7 @@
 namespace AI {
 namespace Actions {
 
-class AttackSelection : public Action
+class AttackSelection final : public Action
 {
     NODE_CLASS(AttackSelection)
 protected:

@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-class HaveWanderRoute : public Condition
+class HaveWanderRoute final : public Condition
 {
     CONDITON_CLASS(HaveWanderRoute)
 public:

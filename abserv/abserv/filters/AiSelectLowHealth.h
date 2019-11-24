@@ -5,7 +5,7 @@
 namespace AI {
 namespace Filters {
 
-class SelectLowHealth : public Filter
+class SelectLowHealth final : public Filter
 {
     FILTER_CLASS(SelectLowHealth)
 public:

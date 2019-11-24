@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class Wander : public Action
+class Wander final : public Action
 {
     NODE_CLASS(Wander)
 protected:

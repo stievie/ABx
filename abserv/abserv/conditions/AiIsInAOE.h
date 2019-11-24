@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsInAOE : public AI::Condition
+class IsInAOE final : public Condition
 {
     CONDITON_CLASS(IsInAOE)
 public:

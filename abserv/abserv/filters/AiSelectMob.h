@@ -6,7 +6,7 @@ namespace AI {
 namespace Filters {
 
 // Select the foe with most other foes around
-class SelectMob : public Filter
+class SelectMob final : public Filter
 {
     FILTER_CLASS(SelectMob)
 public:

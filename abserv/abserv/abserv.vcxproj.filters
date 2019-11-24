@@ -420,6 +420,9 @@
     <ClInclude Include="filters\AiSelectTargetAttacking.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="actions\AiFollow.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -790,6 +793,9 @@
     </ClCompile>
     <ClCompile Include="filters\AiSelectTargetAttacking.cpp">
       <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiFollow.cpp">
+      <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

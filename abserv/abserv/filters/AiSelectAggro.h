@@ -5,7 +5,7 @@
 namespace AI {
 namespace Filters {
 
-class SelectAggro : public Filter
+class SelectAggro final : public Filter
 {
     FILTER_CLASS(SelectAggro)
 public:

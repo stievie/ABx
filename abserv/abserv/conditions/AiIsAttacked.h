@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsAttacked : public AI::Condition
+class IsAttacked final : public AI::Condition
 {
     CONDITON_CLASS(IsAttacked)
 public:

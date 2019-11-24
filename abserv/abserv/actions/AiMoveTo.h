@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class MoveTo : public Action
+class MoveTo final : public Action
 {
     NODE_CLASS(MoveTo)
 protected:

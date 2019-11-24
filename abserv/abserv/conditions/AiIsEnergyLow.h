@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsEnergyLow : public AI::Condition
+class IsEnergyLow final : public Condition
 {
     CONDITON_CLASS(IsEnergyLow)
 public:

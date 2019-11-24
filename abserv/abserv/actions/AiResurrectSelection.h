@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class ResurrectSelection : public Action
+class ResurrectSelection final : public Action
 {
     NODE_CLASS(ResurrectSelection)
 protected:

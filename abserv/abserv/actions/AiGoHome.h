@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class GoHome : public Action
+class GoHome final : public Action
 {
     NODE_CLASS(GoHome)
 protected:

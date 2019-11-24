@@ -194,6 +194,7 @@
     <ClInclude Include="actions\AiAttackSelection.h" />
     <ClInclude Include="actions\AiDie.h" />
     <ClInclude Include="actions\AiFlee.h" />
+    <ClInclude Include="actions\AiFollow.h" />
     <ClInclude Include="actions\AiGainEnergy.h" />
     <ClInclude Include="actions\AiGoHome.h" />
     <ClInclude Include="actions\AiHealOther.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="actions\AiAttackSelection.cpp" />
     <ClCompile Include="actions\AiDie.cpp" />
     <ClCompile Include="actions\AiFlee.cpp" />
+    <ClCompile Include="actions\AiFollow.cpp" />
     <ClCompile Include="actions\AiGainEnergy.cpp" />
     <ClCompile Include="actions\AiGoHome.cpp" />
     <ClCompile Include="actions\AiHealOther.cpp" />

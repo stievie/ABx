@@ -7,6 +7,8 @@ abserv/actions/AiDie.cpp
 abserv/actions/AiDie.h
 abserv/actions/AiFlee.cpp
 abserv/actions/AiFlee.h
+abserv/actions/AiFollow.cpp
+abserv/actions/AiFollow.h
 abserv/actions/AiGainEnergy.cpp
 abserv/actions/AiGainEnergy.h
 abserv/actions/AiGoHome.cpp

@@ -13,7 +13,7 @@ namespace Filters {
 //  1. Optional friend|foe(default)|all
 //  2. Skill type as defined in Entities/Skill.h and /scripts/includes/skill_consts.lua
 //  3. Min skill activation time (optional)
-class SelectTargetUsingSkill : public Filter
+class SelectTargetUsingSkill final : public Filter
 {
     FILTER_CLASS(SelectTargetUsingSkill)
 private:

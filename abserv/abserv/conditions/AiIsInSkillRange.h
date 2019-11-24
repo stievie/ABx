@@ -5,7 +5,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsInSkillRange : public Condition
+class IsInSkillRange final : public Condition
 {
     CONDITON_CLASS(IsInSkillRange)
 public:

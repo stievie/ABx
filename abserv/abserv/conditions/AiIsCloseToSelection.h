@@ -6,7 +6,7 @@
 namespace AI {
 namespace Conditions {
 
-class IsCloseToSelection : public AI::Condition
+class IsCloseToSelection final : public Condition
 {
     CONDITON_CLASS(IsCloseToSelection)
 private:

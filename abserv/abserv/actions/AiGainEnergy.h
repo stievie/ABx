@@ -5,7 +5,7 @@
 namespace AI {
 namespace Actions {
 
-class GainEnergy : public Action
+class GainEnergy final : public Action
 {
     NODE_CLASS(GainEnergy)
 protected:
