@@ -75,7 +75,7 @@ void Skill::Update(uint32_t timeElapsed)
     {
         if (startUse_ + realActivation_ <= Utils::Tick())
         {
-            recharged_ = Utils::Tick() + recharge_;
+            recharged_ = Utils::Tick() + GetRecharge(recharge_);
             auto source = source_.lock();
             auto target = target_.lock();
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
@@ -132,8 +132,29 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
     return (lastError_ == AB::GameProtocol::SkillErrorNone);
 }
 
+int32_t Skill::GetRecharge(int32_t recharge)
+{
+    if (auto s = source_.lock())
+    {
+        s->inventoryComp_->GetSkillRecharge(this, recharge);
+        s->effectsComp_->GetSkillRecharge(this, recharge);
+
+        if (!IsType(AB::Entities::SkillTypeSpell))
+            return recharge;
+
+        // Recharge time of all Spells is decreased by the Fastcast attribute in PvE and PvP
+        const uint32_t fastcast = s->GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
+        if (fastcast == 0)
+            return recharge;
+        float reduce = static_cast<float>(recharge) / 100.0f * (3.0f * static_cast<float>(fastcast));
+        return static_cast<int32_t>(recharge - reduce);
+    }
+    return recharge;
+}
+
 int32_t Skill::GetActivation(Actor& source, int32_t activation)
 {
+    // Activation takes equipments/effects into account with GetSkillCost()
     const uint32_t fastcast = source.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
     if (fastcast == 0)
         return activation;

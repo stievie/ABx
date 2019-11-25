@@ -230,6 +230,15 @@ void InventoryComp::GetResources(int& maxHealth, int& maxEnergy)
     });
 }
 
+void InventoryComp::GetSkillRecharge(Skill* skill, int32_t &recharge)
+{
+    VisitEquipement([&](Item& item)
+    {
+        item.GetSkillRecharge(skill, recharge);
+        return Iteration::Continue;
+    });
+}
+
 void InventoryComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
     VisitEquipement([&](Item& item)

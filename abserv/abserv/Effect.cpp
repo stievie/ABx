@@ -77,6 +77,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetAttributeValue;
     if (Lua::IsFunction(luaState_, "getResources"))
         functions_ |= FunctionGetResources;
+    if (Lua::IsFunction(luaState_, "getSkillRecharge"))
+        functions_ |= FunctionGetSkillRecharge;
     return true;
 }
 
@@ -121,6 +123,14 @@ void Effect::Remove()
         Lua::CallFunction(luaState_, "onRemove", source.get(), target.get());
     }
     cancelled_ = true;
+}
+
+void Effect::GetSkillRecharge(Skill* skill, int32_t& recharge)
+{
+    if (!HaveFunction(FunctionGetSkillRecharge))
+        return;
+
+    recharge = luaState_["getSkillRecharge"](skill, recharge);
 }
 
 void Effect::GetSkillCost(Skill* skill,

@@ -74,6 +74,8 @@ bool Item::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnUnequip;
     if (Lua::IsFunction(luaState_, "getSkillCost"))
         functions_ |= FunctionGetSkillCost;
+    if (Lua::IsFunction(luaState_, "getSkillRecharge"))
+        functions_ |= FunctionGetSkillRecharge;
     return true;
 }
 
@@ -179,7 +181,7 @@ Item* Item::SetUpgrade(ItemUpgrade type, uint32_t id)
 {
     auto* cache = GetSubsystem<ItemsCache>();
     Item* upgrade = cache->Get(id);
-    if (upgrade != 0)
+    if (upgrade)
     {
 
         upgrades_[type] = upgrade->id_;
@@ -493,10 +495,29 @@ void Item::GetResources(int& maxHealth, int& maxEnergy)
     }
 }
 
+void Item::GetSkillRecharge(Skill *skill, int32_t &recharge)
+{
+    if (HaveFunction(FunctionGetSkillRecharge))
+    {
+        recharge = luaState_["getSkillRecharge"](skill, recharge);
+    }
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetSkillRecharge(skill, recharge);
+    }
+}
+
 void Item::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
-    kaguya::tie(activation, energy, adrenaline, overcast, hp) =
-        luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
+    if (HaveFunction(FunctionGetSkillCost))
+    {
+        kaguya::tie(activation, energy, adrenaline, overcast, hp) =
+            luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
+    }
 
     auto* cache = GetSubsystem<ItemsCache>();
     for (auto& i : upgrades_)

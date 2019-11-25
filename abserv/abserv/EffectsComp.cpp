@@ -173,10 +173,17 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     }
 }
 
+void EffectsComp::GetSkillRecharge(Skill* skill, int32_t& recharge)
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetSkillRecharge(skill, recharge);
+    }
+}
+
 void EffectsComp::GetSkillCost(Skill* skill,
     int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
-    // Since equipments, attributes etc. add (hidden) effects to the actor, we need only ask the effects component, I think...
     for (const auto& effect : effects_)
     {
         effect->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);

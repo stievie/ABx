@@ -50,6 +50,7 @@ private:
         FunctionOnEquip = 1 << 3,
         FunctionOnUnequip = 1 << 4,
         FunctionGetSkillCost = 1 << 5,
+        FunctionGetSkillRecharge = 1 << 6,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -103,6 +104,7 @@ public:
     void GetArmorPenetration(float& value) const;
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    void GetSkillRecharge(Skill* skill, int32_t& recharge);
     void GetAttributeValue(uint32_t index, uint32_t& value);
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);
