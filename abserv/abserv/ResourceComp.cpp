@@ -14,11 +14,7 @@ void ResourceComp::UpdateResources()
     int hp = 100 + (levelAdvance * 20);
     int energy = BASE_ENERGY;
 
-    // Runes etc.
-    owner_.inventoryComp_->GetResources(hp, energy);
-    // Effects influencing
-    owner_.effectsComp_->GetResources(hp, energy);
-    // TODO: Attribute values may also influence max energy
+    GetResources(owner_, hp, energy);
 
     SetMaxHealth(hp);
     SetMaxEnergy(energy);

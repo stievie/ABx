@@ -5,6 +5,7 @@
 namespace AI {
 namespace Filters {
 
+// Select a target which we will attack
 class SelectAttackTarget final : public Filter
 {
     FILTER_CLASS(SelectAttackTarget)

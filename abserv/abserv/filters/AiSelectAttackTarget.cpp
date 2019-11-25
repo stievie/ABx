@@ -14,10 +14,8 @@ void SelectAttackTarget::Execute(Agent& agent)
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
     {
         candidates.push_back(o.id_);
-        // Smaller is more likely to be selected
-        float score = o.GetDistance(&chr) / Game::RANGE_AGGRO;
-        score += o.resourceComp_->GetHealthRatio();
-        sorting[o.id_] = score;
+        // Bigger is more likely to be selected
+        sorting[o.id_] = chr.GetAggro(&o);
         return Iteration::Continue;
     });
 
@@ -43,7 +41,7 @@ void SelectAttackTarget::Execute(Agent& agent)
     {
         const float& p1 = sorting[i];
         const float& p2 = sorting[j];
-        return p1 < p2;
+        return p1 > p2;
     });
 
     entities.push_back(candidates.front());

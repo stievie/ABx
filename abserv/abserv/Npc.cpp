@@ -193,13 +193,14 @@ bool Npc::SetBehavior(const std::string& name)
 
 float Npc::GetAggro(const Actor* other)
 {
-    if (!other)
+    if (!other || !IsEnemy(other))
         return 0.0f;
 
     auto* random = GetSubsystem<Crypto::Random>();
-    const float dist = GetPosition().Distance(other->GetPosition());
+    const float dist = 1.0f / (GetPosition().Distance(other->GetPosition()) / RANGE_AGGRO);
+    const float health = 1.0f - other->resourceComp_->GetHealthRatio();
     const float rval = random->GetFloat();
-    return (1.0f / dist) * rval;
+    return (dist + health) * rval;
 }
 
 int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,

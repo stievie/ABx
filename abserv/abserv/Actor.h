@@ -54,7 +54,6 @@ constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
 
 constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
 constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
-constexpr float AVERAGE_BB_EXTENDS = 0.3f;
 
 /// Player, NPC, Monster some such
 class Actor : public GameObject
@@ -308,6 +307,32 @@ inline bool TargetClassMatches(const Actor& actor, TargetClass _class, const Act
     return ((_class == TargetClass::All) ||
         (_class == TargetClass::Foe && actor.IsEnemy(&target)) ||
         (_class == TargetClass::Friend && actor.IsAlly(&target)));
+}
+
+inline void GetSkillRecharge(const Actor& actor, Skill* skill, int32_t& recharge)
+{
+    actor.inventoryComp_->GetSkillRecharge(skill, recharge);
+    actor.effectsComp_->GetSkillRecharge(skill, recharge);
+    actor.skillsComp_->GetSkillRecharge(skill, recharge);
+}
+
+inline void GetSkillCost(const Actor& actor, Skill* skill,
+    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+{
+    actor.skillsComp_->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+
+    actor.inventoryComp_->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+    actor.effectsComp_->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+}
+
+inline void GetResources(const Actor& actor, int& maxHealth, int& maxEnergy)
+{
+    // Attributtes first
+    actor.skillsComp_->GetResources(maxHealth, maxEnergy);
+    // Runes etc.
+    actor.inventoryComp_->GetResources(maxHealth, maxEnergy);
+    // Effects influencing
+    actor.effectsComp_->GetResources(maxHealth, maxEnergy);
 }
 
 }

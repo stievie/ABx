@@ -55,6 +55,10 @@ public:
     bool Interrupt(AB::Entities::SkillType type);
     /// Return currently using skill. Maybe nullptr.
     Skill* GetCurrentSkill();
+    void GetResources(int& maxHealth, int& maxEnergy);
+    void GetSkillRecharge(Skill* skill, int32_t& recharge);
+    void GetSkillCost(Skill* skill,
+        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
 };
 
 }

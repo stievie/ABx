@@ -71,7 +71,6 @@ private:
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
     std::string _LuaGetName() const { return data_.name; }
-    int32_t GetActivation(Actor& source, int32_t activation);
     int32_t GetRecharge(int32_t recharge);
     // Only SkillBar may use this
     AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);

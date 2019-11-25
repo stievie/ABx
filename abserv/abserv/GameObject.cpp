@@ -95,7 +95,7 @@ void GameObject::UpdateRanges()
             {
                 auto so = o->shared_from_this();
                 const Math::Vector3& objectPos = o->GetPosition();
-                const float dist = myPos.Distance(objectPos);
+                const float dist = myPos.Distance(objectPos) - AVERAGE_BB_EXTENDS;
                 if (dist <= RANGE_AGGRO)
                     ranges_[Ranges::Aggro].push_back(so);
                 if (dist <= RANGE_COMPASS)

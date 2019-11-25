@@ -71,6 +71,8 @@ using GameObjectEvents = sa::Events<
     void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
 >;
 
+constexpr float AVERAGE_BB_EXTENDS = 0.3f;
+
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;

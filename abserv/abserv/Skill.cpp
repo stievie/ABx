@@ -135,34 +135,8 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
 int32_t Skill::GetRecharge(int32_t recharge)
 {
     if (auto s = source_.lock())
-    {
-        s->inventoryComp_->GetSkillRecharge(this, recharge);
-        s->effectsComp_->GetSkillRecharge(this, recharge);
-
-        if (!IsType(AB::Entities::SkillTypeSpell))
-            return recharge;
-
-        // Recharge time of all Spells is decreased by the Fastcast attribute in PvE and PvP
-        const uint32_t fastcast = s->GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
-        if (fastcast == 0)
-            return recharge;
-        float reduce = static_cast<float>(recharge) / 100.0f * (3.0f * static_cast<float>(fastcast));
-        return static_cast<int32_t>(recharge - reduce);
-    }
+        GetSkillRecharge(*s, this, recharge);
     return recharge;
-}
-
-int32_t Skill::GetActivation(Actor& source, int32_t activation)
-{
-    // Activation takes equipments/effects into account with GetSkillCost()
-    const uint32_t fastcast = source.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
-    if (fastcast == 0)
-        return activation;
-    if (IsType(AB::Entities::SkillTypeSignet))
-        return static_cast<int32_t>(static_cast<float>(activation) * (1.0f - (0.03f * static_cast<float>(fastcast))));
-    if (IsType(AB::Entities::SkillTypeSpell))
-        return static_cast<int32_t>(static_cast<float>(activation) * powf(0.5f, static_cast<float>(fastcast) / 15.0f));
-    return activation;
 }
 
 AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
@@ -173,12 +147,11 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
 
     realEnergy_ = energy_;
     realAdrenaline_ = adrenaline_;
-    realActivation_ = GetActivation(*source, activation_);
+    realActivation_ = activation_;
     realOvercast_ = overcast_;
     realHp_ = hp_;
     // Get real skill cost, which depends on the effects and equipment of the source
-    source->inventoryComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
-    source->effectsComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
+    GetSkillCost(*source, this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
     if (source->resourceComp_->GetEnergy() < realEnergy_)
         lastError_ = AB::GameProtocol::SkillErrorNoEnergy;

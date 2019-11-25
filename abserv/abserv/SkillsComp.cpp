@@ -2,6 +2,7 @@
 #include "SkillsComp.h"
 #include "Actor.h"
 #include "Skill.h"
+#include "Attributes.h"
 
 namespace Game {
 namespace Components {
@@ -176,6 +177,54 @@ Skill* SkillsComp::GetCurrentSkill()
             return ls.get();
     }
     return nullptr;
+}
+
+void SkillsComp::GetResources(int&, int &maxEnergy)
+{
+    uint32_t estorage = owner_.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::EnergyStorage));
+    maxEnergy += (estorage * 3);
+}
+
+void SkillsComp::GetSkillRecharge(Skill* skill, int32_t& recharge)
+{
+    if (!skill->IsType(AB::Entities::SkillTypeSpell))
+        return;
+    // Recharge time of all Spells is decreased by the Fastcast attribute in PvE and PvP
+    const uint32_t fastcast = owner_.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
+    if (fastcast == 0)
+        return;
+    float reduce = static_cast<float>(recharge) / 100.0f * (3.0f * static_cast<float>(fastcast));
+    recharge -= static_cast<int32_t>(reduce);
+    if (recharge < 0)
+        recharge = 0;
+}
+
+void SkillsComp::GetSkillCost(Skill* skill,
+    int32_t& activation, int32_t& energy, int32_t&, int32_t&, int32_t&)
+{
+    // Expertise reduces energy cost of ranger skills
+    const uint32_t expertise = owner_.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Expertise));
+    if (expertise != 0)
+    {
+        // Must be a ranger
+        if (skill->data_.professionUuid.compare(owner_.skills_->prof1_.uuid) == 0)
+        {
+            // Seems to be a ranger skill
+            float reduce = static_cast<float>(energy) / 100.0f * (4.0f * static_cast<float>(expertise));
+            energy -= static_cast<int32_t>(reduce);
+            if (energy < 0)
+                energy = 0;
+        }
+    }
+
+    const uint32_t fastcast = owner_.GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
+    if (fastcast != 0)
+    {
+        if (skill->IsType(AB::Entities::SkillTypeSignet))
+            activation = static_cast<int32_t>(static_cast<float>(activation) * (1.0f - (0.03f * static_cast<float>(fastcast))));
+        else if (skill->IsType(AB::Entities::SkillTypeSpell))
+            activation = static_cast<int32_t>(static_cast<float>(activation) * powf(0.5f, static_cast<float>(fastcast) / 15.0f));
+    }
 }
 
 }
