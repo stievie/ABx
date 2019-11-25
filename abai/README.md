@@ -225,3 +225,8 @@ Set the Agent's behavior:
 ~~~cpp
     agent.SetBehavior(behaviorCache.Get("priest"));
 ~~~
+
+## Getting rid of the Lua dependency
+
+Create your own loader by inheriting from `Loader` and override the methods
+`LoadFile()`, `LoadString()` and `InitChache()`.

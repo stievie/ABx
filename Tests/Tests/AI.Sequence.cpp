@@ -2,7 +2,7 @@
 #include <catch.hpp>
 
 #include "AI.Mockup.h"
-#include "Loader.h"
+#include "LuaLoader.h"
 #include "Registry.h"
 #include "Zone.h"
 #include "Agent.h"
@@ -11,7 +11,7 @@ TEST_CASE("Sequence")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     const std::string script = R"lua(
 function init(root)
     local nd = node("Sequence")
@@ -34,7 +34,7 @@ TEST_CASE("Sequence Filter condition")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     /*
     Sequence
         - Condition(Filter)              success 1 selected
@@ -65,7 +65,7 @@ TEST_CASE("Sequence Filter condition fail")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     /*
     Sequence
         - Condition(Filter)              fail because nothing is selected

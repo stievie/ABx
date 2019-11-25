@@ -37,6 +37,8 @@ abai/Loader.cpp
 abai/Loader.h
 abai/LogicConditions.cpp
 abai/LogicConditions.h
+abai/LuaLoader.cpp
+abai/LuaLoader.h
 abai/Node.cpp
 abai/Node.h
 abai/Parallel.cpp

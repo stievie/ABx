@@ -110,6 +110,7 @@
     <ClInclude Include="LastFilter.h" />
     <ClInclude Include="Limit.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="LuaLoader.h" />
     <ClInclude Include="Parallel.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Repeater.h" />
@@ -145,6 +146,7 @@
     <ClCompile Include="LastFilter.cpp" />
     <ClCompile Include="Limit.cpp" />
     <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="LuaLoader.cpp" />
     <ClCompile Include="Parallel.cpp" />
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="Repeater.cpp" />

@@ -120,6 +120,9 @@
     <ClInclude Include="Dump.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LuaLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -213,6 +216,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

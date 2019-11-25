@@ -2,7 +2,7 @@
 #include <catch.hpp>
 
 #include "AI.Mockup.h"
-#include "Loader.h"
+#include "LuaLoader.h"
 #include "Registry.h"
 #include "Zone.h"
 #include "Agent.h"
@@ -11,7 +11,7 @@ TEST_CASE("Parallel")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     const std::string script = R"lua(
 function init(root)
     local nd = node("Parallel")
@@ -34,7 +34,7 @@ TEST_CASE("Parallel2")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     const std::string script = R"lua(
 function init(root)
     local nd = node("Parallel")
@@ -58,7 +58,7 @@ TEST_CASE("Parallel3")
 {
     AI::TestRegistry reg;
     reg.Initialize();
-    AI::Loader loader(reg);
+    AI::LuaLoader loader(reg);
     const std::string script = R"lua(
 function init(root)
     local nd = node("Parallel")
