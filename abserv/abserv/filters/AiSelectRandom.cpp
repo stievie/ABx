@@ -27,7 +27,7 @@ void SelectRandom::Execute(Agent& agent)
     auto* rnd = GetSubsystem<Crypto::Random>();
     AI::AgentIds copy(entities);
     entities.clear();
-    while (entities.size() < count_)
+    while (entities.size() < count_ && copy.size() > 0)
     {
         const float rn = rnd->GetFloat();
         auto it = Utils::SelectRandomly(copy.begin(), copy.end(), rn);

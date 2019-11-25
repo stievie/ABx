@@ -202,7 +202,7 @@ function attackAggro()
   -- Melee attack without skills
   local nd = node("AttackSelection")
     local haveAggro = condition("Filter")
-      haveAggro:SetFilter(filter("SelectAggro"))
+      haveAggro:SetFilter(filter("SelectAttackTarget"))
     nd:SetCondition(haveAggro)
   return nd
 end

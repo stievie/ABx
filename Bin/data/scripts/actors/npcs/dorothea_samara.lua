@@ -19,6 +19,7 @@ function onInit()
 
   local skillBar = self:GetSkillBar()
   skillBar:AddSkill(39)
+  skillBar:AddSkill(42)
   skillBar:AddSkill(61)
   skillBar:SetAttributeValue(ATTRIB_FASTCAST, 9)
   skillBar:SetAttributeValue(ATTRIB_INSPIRATION, 9)
@@ -46,7 +47,7 @@ end
 -- self was selected by creature
 function onSelected(creature)
   if (self:GetState() ~= CREATURESTATE_IDLE) then
-    self:Say(CHAT_CHANNEL_GENERAL, "Not now!")
+--    self:Say(CHAT_CHANNEL_GENERAL, "Not now!")
   end
 end
 

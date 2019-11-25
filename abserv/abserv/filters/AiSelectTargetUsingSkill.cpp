@@ -2,6 +2,8 @@
 #include "AiSelectTargetUsingSkill.h"
 #include "../Npc.h"
 #include "Logger.h"
+#include "Subsystems.h"
+#include "Random.h"
 
 //#define DEBUG_AI
 
@@ -41,12 +43,6 @@ void SelectTargetUsingSkill::Execute(Agent& agent)
             return Iteration::Continue;
 
         const Game::Actor& actor = Game::To<Game::Actor>(current);
-#ifdef DEBUG_AI
-        if (!Game::TargetClassMatches(chr, class_, actor))
-        {
-//            LOG_DEBUG << actor.GetName() << " does not match target class " << static_cast<unsigned>(class_) << std::endl;
-        }
-#endif // DEBUG_AI
 
         if (Game::TargetClassMatches(chr, class_, actor) &&
             actor.IsSelectable() && !actor.IsUndestroyable() && !actor.IsDead())
@@ -55,6 +51,8 @@ void SelectTargetUsingSkill::Execute(Agent& agent)
             if (skill && skill->IsUsing() && skill->IsType(type_) &&
                 (skill->activation_ > minActivationTime_))
             {
+                if (GetSubsystem<Crypto::Random>()->GetFloat() < 0.3f)
+                    return Iteration::Continue;
 #ifdef DEBUG_AI
                 LOG_DEBUG << "Selected " << actor.GetName() << std::endl;
 #endif
