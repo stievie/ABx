@@ -16,6 +16,9 @@ function onEnd(source, target)
 end
 
 function onUpdate(source, target, timeElapsed)
+  if (target:IsDead()) then
+    target:Resurrect(100, 100)
+  end
   local maxHp = target:GetResource(RESOURCE_TYPE_MAXHEALTH)
   target:SetResource(RESOURCE_TYPE_HEALTH, SETVALUE_TYPE_ABSOLUTE, maxHp)
   local maxE = target:GetResource(RESOURCE_TYPE_MAXENERGY)

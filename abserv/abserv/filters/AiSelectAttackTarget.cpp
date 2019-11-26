@@ -2,6 +2,7 @@
 #include "AiSelectAttackTarget.h"
 #include "../Npc.h"
 #include "../Mechanic.h"
+#include "../Game.h"
 
 namespace AI {
 namespace Filters {
@@ -31,7 +32,12 @@ void SelectAttackTarget::Execute(Agent& agent)
         // If the old selected is also in the candidates list, use this, regardless of the score.
         // This prevents switching targets.
         if (it != candidates.end())
-            return;
+        {
+            auto t = chr.GetGame()->GetObjectById(*it);
+            if (Game::Is<Game::Actor>(*t) && !Game::To<Game::Actor>(*t).IsDead())
+                // Not dead yet.
+                return;
+        }
     }
     entities.clear();
     if (candidates.size() == 0)

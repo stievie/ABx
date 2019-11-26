@@ -563,8 +563,6 @@ AreaOfEffect* GameObject::_LuaAsAOE()
 void GameObject::_LuaSetPosition(const Math::STLVector3& pos)
 {
     transformation_.position_ = pos;
-    if (auto g = game_.lock())
-        g->map_->UpdatePointHeight(transformation_.position_);
 }
 
 void GameObject::_LuaSetRotation(float y)

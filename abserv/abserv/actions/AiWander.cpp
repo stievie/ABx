@@ -40,7 +40,6 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
             aia.aiContext_.Set<distance_type>(id_, distance);
         }
 
-
         // If we are in a crowd and we are not the leader, follow the leader
         Game::Npc* leader = crowd->GetLeader();
         if (npc.GetPosition().Equals(leader->GetPosition(), distance))

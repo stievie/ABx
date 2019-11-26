@@ -16,9 +16,10 @@ local function createTeam(spawn, frnd, foe, rot)
     crowd:Add(guildLord)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
+    local y = self:GetTerrainHeight(x, z)
     guildLord:SetPosition({x, y, z})
     guildLord:SetRotation(rot)
-    guildLord:SetHomePos({x, y, z})
+--    guildLord:SetHomePos({x, y, z})
     guildLord:AddFriendFoe(frnd, foe)
   end
 
@@ -27,9 +28,10 @@ local function createTeam(spawn, frnd, foe, rot)
     crowd:Add(ped2)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
+    local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetRotation(rot)
-    ped2:SetHomePos({x, y, z})
+--    ped2:SetHomePos({x, y, z})
     ped2:AddFriendFoe(frnd, foe)
   end
 
@@ -38,17 +40,18 @@ local function createTeam(spawn, frnd, foe, rot)
     crowd:Add(priest)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
+    local y = self:GetTerrainHeight(x, z)
     priest:SetPosition({x, y, z})
     priest:SetRotation(rot)
-    priest:SetHomePos({x, y, z})
+--    priest:SetHomePos({x, y, z})
     priest:AddFriendFoe(frnd, foe)
   end
 end
 
 function onStart()
-  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2, -90)
+  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90)
 --  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2, -90)
-  createTeam(point_red, GROUPMASK_2, GROUPMASK_1, -90)
+  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90)
 end
 
 function onStop()
@@ -64,7 +67,8 @@ end
 
 function onPlayerJoin(player)
   player:AddEffect(empty, 1000, 0)
-  player:AddFriendFoe(GROUPMASK_2, GROUPMASK_1)
+
+  player:AddFriendFoe(GROUPMASK_3, GROUPMASK_1 | GROUPMASK_2)
 end
 
 function onPlayerLeave(player)
