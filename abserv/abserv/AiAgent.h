@@ -10,9 +10,14 @@ class Npc;
 
 namespace AI {
 
+using skill_index_type = sa::StrongType<int, struct SkillIndexType>;
+using target_id_type = sa::StrongType<Id, struct TargetType>;
+using distance_type = sa::StrongType<float, struct DistanceType>;
+
 using AiAgentContext = Context<
-    sa::StrongType<int, struct SkillIndexType>,    // Skill index
-    sa::StrongType<Id, struct TargetType>,         // Target ID
+    skill_index_type,    // Skill index
+    target_id_type,         // Target ID
+    distance_type,
     Math::Vector3
 >;
 

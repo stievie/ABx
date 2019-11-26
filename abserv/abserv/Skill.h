@@ -12,14 +12,17 @@ class SkillBar;
 
 enum SkillEffect : uint32_t
 {
-    SkillEffectNone       = 0,
-    SkillEffectResurrect  = 1 << 1,
-    SkillEffectHeal       = 1 << 2,
-    SkillEffectProtect    = 1 << 3,
-    SkillEffectDamage     = 1 << 4,
-    SkillEffectSpeed      = 1 << 5,
-    SkillEffectInterrupt  = 1 << 6,
-    SkillEffectGainEnergy = 1 << 7,
+    SkillEffectNone              = 0,
+    SkillEffectResurrect         = 1 <<  1,
+    SkillEffectHeal              = 1 <<  2,
+    SkillEffectProtect           = 1 <<  3,
+    SkillEffectDamage            = 1 <<  4,
+    SkillEffectSpeed             = 1 <<  5,
+    SkillEffectInterrupt         = 1 <<  6,
+    SkillEffectGainEnergy        = 1 <<  7,
+    SkillEffectRemoveEnchantment = 1 <<  8,
+    SkillEffectRemoveHex         = 1 <<  9,
+    SkillEffectRemoveStance      = 1 << 10,
 };
 
 enum SkillTarget : uint32_t

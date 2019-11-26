@@ -26,6 +26,7 @@
 #include "Subsystems.h"
 #include "ThreadPool.h"
 #include "UuidUtils.h"
+#include "Crowd.h"
 #include <AB/ProtocolCodes.h>
 
 namespace Game {
@@ -136,6 +137,8 @@ void Game::RegisterLua(kaguya::State& state)
         // Get player of game by ID or name
         .addFunction("GetPlayer", &Game::GetPlayerById)
         .addFunction("GetParties", &Game::GetParties)
+        .addFunction("GetCrowd", &Game::GetCrowd)
+        .addFunction("AddCrowd", &Game::AddCrowd)
 
         .addFunction("GetTerrainHeight", &Game::_LuaGetTerrainHeight)
         .addFunction("GetStartTime", &Game::_LuaGetStartTime)
@@ -705,6 +708,22 @@ void Game::PlayerLeave(uint32_t playerId)
         );
         InternalRemoveObject(player);
     }
+}
+
+Crowd* Game::AddCrowd()
+{
+    std::unique_ptr<Crowd> crowd = std::make_unique<Crowd>();
+    Crowd* result = crowd.get();
+    crowds_.emplace(crowd->id_, std::move(crowd));
+    return result;
+}
+
+Crowd* Game::GetCrowd(uint32_t id)
+{
+    const auto it = crowds_.find(id);
+    if (it == crowds_.end())
+        return nullptr;
+    return (*it).second.get();
 }
 
 }

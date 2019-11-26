@@ -1,4 +1,7 @@
 README.md
+abserv/ConfigManager.cpp
+abserv/Crowd.cpp
+abserv/Crowd.h
 abserv/WanderComp.cpp
 abserv/WanderComp.h
 abserv/actions/AiAttackSelection.cpp
@@ -92,12 +95,7 @@ abserv/conditions/AiIsSelfHealthLow.h
 abserv/conditions/AiRandomCondition.cpp
 abserv/conditions/AiRandomCondition.h
 abserv/Config.h
-abserv/ConfigManager.cpp
 abserv/ConfigManager.h
-abserv/CrowdAgent.cpp
-abserv/CrowdAgent.h
-abserv/CrowdManager.cpp
-abserv/CrowdManager.h
 abserv/Damage.h
 abserv/DamageComp.cpp
 abserv/DamageComp.h

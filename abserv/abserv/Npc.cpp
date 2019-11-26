@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "Npc.h"
-#include "GameManager.h"
-#include "ScriptManager.h"
-#include "MathUtils.h"
-#include "DataProvider.h"
-#include "Subsystems.h"
-#include "Random.h"
-#include "Party.h"
-#include <Mustache/mustache.hpp>
 #include "BevaviorCache.h"
+#include "Crowd.h"
+#include "DataProvider.h"
+#include "GameManager.h"
+#include "MathUtils.h"
+#include "Party.h"
+#include "Random.h"
+#include "ScriptManager.h"
+#include "Subsystems.h"
+#include <Mustache/mustache.hpp>
 
 namespace Game {
 
@@ -36,6 +37,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetWander", &Npc::SetWander)
         .addFunction("AddWanderPoint", &Npc::_LuaAddWanderPoint)
         .addFunction("AddWanderPoints", &Npc::_LuaAddWanderPoints)
+        .addFunction("GetCrowd", &Npc::GetCrowd)
     );
 }
 
@@ -488,6 +490,13 @@ void Npc::OnResurrected(int, int)
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onResurrected");
+}
+
+Crowd* Npc::GetCrowd()
+{
+    if (auto g = GetGame())
+        return g->GetCrowd(GetGroupId());
+    return nullptr;
 }
 
 }

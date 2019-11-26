@@ -11,6 +11,7 @@
 namespace Game {
 
 class Map;
+class Crowd;
 
 class Npc final : public Actor
 {
@@ -110,6 +111,7 @@ public:
     void SetServerOnly(bool value) { serverOnly_ = value; }
     bool IsWander() const;
     void SetWander(bool value);
+    Crowd* GetCrowd();
 
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 

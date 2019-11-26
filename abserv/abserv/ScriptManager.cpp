@@ -14,6 +14,7 @@
 #include "Random.h"
 #include "Party.h"
 #include "Projectile.h"
+#include "Crowd.h"
 
 namespace Game {
 namespace Lua {
@@ -73,6 +74,7 @@ void RegisterLuaAll(kaguya::State& state)
     Skill::RegisterLua(state);
     SkillBar::RegisterLua(state);
     Party::RegisterLua(state);
+    Crowd::RegisterLua(state);
 
     AreaOfEffect::RegisterLua(state);
     Player::RegisterLua(state);

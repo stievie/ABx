@@ -3,6 +3,9 @@
 #include "../Npc.h"
 #include "../AiAgent.h"
 #include "Logger.h"
+#include "../Crowd.h"
+#include "Subsystems.h"
+#include "Random.h"
 
 //#define DEBUG_AI
 
@@ -22,6 +25,33 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
     if (npc.IsImmobilized())
         return Status::Failed;
 
+    Game::Crowd* crowd = npc.GetCrowd();
+
+    if (crowd && crowd->GetLeader() && crowd->GetLeader() != &npc)
+    {
+        float distance;
+        auto& aia = GetAgent(agent);
+        if (aia.aiContext_.Has<distance_type>(id_))
+            distance = aia.aiContext_.Get<distance_type>(id_);
+        else
+        {
+            auto* rnd = GetSubsystem<Crypto::Random>();
+            distance = Game::AT_POSITION_THRESHOLD + rnd->Get<float>(-1.0f, 1.0f);
+            aia.aiContext_.Set<distance_type>(id_, distance);
+        }
+
+
+        // If we are in a crowd and we are not the leader, follow the leader
+        Game::Npc* leader = crowd->GetLeader();
+        if (npc.GetPosition().Equals(leader->GetPosition(), distance))
+            return Status::Finished;
+        if (npc.autorunComp_->IsFollowing(*leader))
+            return Status::Running;
+        npc.autorunComp_->Follow(leader->GetThis<Game::GameObject>(), false, distance);
+        return Status::Running;
+    }
+
+    // Not in a crowd or we are the leader and our fellow witches follow us
     if (npc.wanderComp_->IsWandering())
         return Status::Running;
 

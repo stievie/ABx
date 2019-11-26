@@ -9,38 +9,39 @@ local point_red = {
 }
 
 local function createTeam(spawn, frnd, foe, rot)
-  local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
-  -- To make them allies set the same group ID
-  local groupId = NewGroupId()
-  if (priest ~= nil) then
-    local x = spawn[1] + Random(-1, 1)
-    local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
-    priest:SetPosition({x, y, z})
-    priest:SetRotation(rot)
-    priest:SetGroupId(groupId)
-    priest:AddFriendFoe(frnd, foe)
-  end
+  -- To make them allies set the same group ID. Adding NPCs to a Crowd sets the group ID.
+  local crowd = self:AddCrowd()
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
+    crowd:Add(guildLord)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
     guildLord:SetPosition({x, y, z})
     guildLord:SetRotation(rot)
-    guildLord:SetGroupId(groupId)
+    guildLord:SetHomePos({x, y, z})
     guildLord:AddFriendFoe(frnd, foe)
   end
+
   local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then
+    crowd:Add(ped2)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetRotation(rot)
     ped2:SetHomePos({x, y, z})
-    guildLord:SetGroupId(groupId)
     ped2:AddFriendFoe(frnd, foe)
+  end
+
+  local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
+  if (priest ~= nil) then
+    crowd:Add(priest)
+    local x = spawn[1] + Random(-1, 1)
+    local z = spawn[3] + Random(-1, 1)
+    priest:SetPosition({x, y, z})
+    priest:SetRotation(rot)
+    priest:SetHomePos({x, y, z})
+    priest:AddFriendFoe(frnd, foe)
   end
 end
 

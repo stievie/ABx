@@ -23,11 +23,13 @@ class Npc;
 class AreaOfEffect;
 class ItemDrop;
 class Projectile;
+class Crowd;
 
 /// The list which owns the objects. We use a std::map because we want to
 /// have it in the order of creation (allocation) when Update() is called.
 using ObjectList = std::map<uint32_t, std::shared_ptr<GameObject>>;
 using PlayersList = std::unordered_map<uint32_t, Player*>;
+using CrowdList = std::unordered_map<uint32_t, std::unique_ptr<Crowd>>;
 
 class Game : public std::enable_shared_from_this<Game>
 {
@@ -47,6 +49,7 @@ private:
     /// The primary owner of the game objects
     ObjectList objects_;
     PlayersList players_;
+    CrowdList crowds_;
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     /// First player(s) triggering the creation of this game
@@ -134,6 +137,8 @@ public:
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);
+    Crowd* GetCrowd(uint32_t id);
+    Crowd* AddCrowd();
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
     std::shared_ptr<AreaOfEffect> AddAreaOfEffect(const std::string& script,
