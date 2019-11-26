@@ -428,6 +428,9 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
 {
     if (state_ != ExecutionState::Running || !dropper)
         return std::shared_ptr<ItemDrop>();
+    if (AB::Entities::IsOutpost(data_.type) || data_.type == AB::Entities::GameTypePvPCombat)
+        // No drops in outposts and PvP games
+        return std::shared_ptr<ItemDrop>();
 
     if (target->GetType() != AB::GameProtocol::ObjectTypePlayer)
         return std::shared_ptr<ItemDrop>();
@@ -455,6 +458,9 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
 std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
 {
     if (state_ != ExecutionState::Running || !dropper)
+        return std::shared_ptr<ItemDrop>();
+    if (AB::Entities::IsOutpost(data_.type) || data_.type == AB::Entities::GameTypePvPCombat)
+        // No drops in outposts and PvP games
         return std::shared_ptr<ItemDrop>();
 
     auto* rng = GetSubsystem<Crypto::Random>();

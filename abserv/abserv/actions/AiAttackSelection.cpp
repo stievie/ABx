@@ -30,7 +30,11 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
             return Status::Running;
 
         if (npc.AttackById(id))
+        {
+            if (npc.GetSpeed() < 1.0f)
+                npc.SetSpeed(1.0f);
             return Status::Running;
+        }
     }
     return Status::Finished;
 }

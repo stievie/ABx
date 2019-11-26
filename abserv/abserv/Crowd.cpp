@@ -10,6 +10,7 @@ void Crowd::RegisterLua(kaguya::State& state)
     state["Crowd"].setClass(kaguya::UserdataMetatable<Crowd>()
         .addFunction("GetLeader", &Crowd::GetLeader)
         .addFunction("Add", &Crowd::_LuaAdd)
+        .addFunction("Remove", &Crowd::_LuaRemove)
     );
 }
 
@@ -28,6 +29,26 @@ Npc* Crowd::GetLeader()
     if (auto l = members_.front().lock())
         return l.get();
     return nullptr;
+}
+
+void Crowd::_LuaRemove(Npc* actor)
+{
+    if (!actor)
+        return;
+    Remove(actor->id_);
+}
+
+void Crowd::Remove(uint32_t id)
+{
+    const auto it = std::find_if(members_.begin(), members_.end(), [&](const std::weak_ptr<Npc>& current)
+    {
+        if (auto c = current.lock())
+            return c->id_ == id;
+        return false;
+    });
+    if (it == members_.end())
+        return;
+    members_.erase(it);
 }
 
 void Crowd::_LuaAdd(Npc* actor)

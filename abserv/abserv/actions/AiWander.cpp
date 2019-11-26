@@ -46,6 +46,7 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
             return Status::Finished;
         if (npc.autorunComp_->IsFollowing(*leader))
             return Status::Running;
+        npc.SetSpeed(leader->GetSpeed());
         npc.autorunComp_->Follow(leader->GetThis<Game::GameObject>(), false, distance);
         return Status::Running;
     }
@@ -61,6 +62,9 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
 #endif
         return Status::Failed;
     }
+
+    if (npc.GetSpeed() > 0.5f)
+        npc.SetSpeed(0.5f);
 
 #ifdef DEBUG_AI
     LOG_DEBUG << npc.GetName() << " start wandering" << std::endl;

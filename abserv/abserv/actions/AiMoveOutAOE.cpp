@@ -61,6 +61,8 @@ Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
 
     if (npc.autorunComp_->Goto(destination))
     {
+        if (npc.GetSpeed() < 1.0f)
+            npc.SetSpeed(1.0f);
         aiAgent.aiContext_.Set(id_, destination);
         return Status::Running;
     }

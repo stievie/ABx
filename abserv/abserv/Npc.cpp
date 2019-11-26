@@ -75,7 +75,12 @@ Npc::Npc() :
     InitializeLua();
 }
 
-Npc::~Npc() = default;
+Npc::~Npc()
+{
+    auto* crowd = GetCrowd();
+    if (crowd)
+        crowd->Remove(id_);
+}
 
 bool Npc::LoadScript(const std::string& fileName)
 {
