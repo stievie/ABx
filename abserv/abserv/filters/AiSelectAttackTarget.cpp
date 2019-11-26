@@ -28,7 +28,7 @@ void SelectAttackTarget::Execute(Agent& agent)
         {
             return selected == current;
         });
-        // If this selected is also in the candidates list, use this, regardless of the score.
+        // If the old selected is also in the candidates list, use this, regardless of the score.
         // This prevents switching targets.
         if (it != candidates.end())
             return;
@@ -39,9 +39,7 @@ void SelectAttackTarget::Execute(Agent& agent)
 
     std::sort(candidates.begin(), candidates.end(), [&sorting](uint32_t i, uint32_t j)
     {
-        const float& p1 = sorting[i];
-        const float& p2 = sorting[j];
-        return p1 > p2;
+        return sorting[i] > sorting[j];
     });
 
     entities.push_back(candidates.front());

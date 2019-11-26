@@ -62,7 +62,7 @@ DamagePos DamageComp::GetDamagePos() const
         ws.Update();
     }
 
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
     return ws.Get(rnd1, rnd2);
@@ -76,6 +76,14 @@ uint32_t DamageComp::NoDamageTime() const
 bool DamageComp::IsGettingMeleeDamage() const
 {
     return Utils::TimeElapsed(lastMeleeDamage_) <= 1000;
+}
+
+bool DamageComp::IsLastDamager(const Actor& actor)
+{
+    if (auto d = lastDamager_.lock())
+        if (actor.id_ == d->id_)
+            return true;
+    return false;
 }
 
 void DamageComp::Write(Net::NetworkMessage& message)

@@ -199,8 +199,9 @@ float Npc::GetAggro(const Actor* other)
     auto* random = GetSubsystem<Crypto::Random>();
     const float dist = 1.0f / (GetPosition().Distance(other->GetPosition()) / RANGE_AGGRO);
     const float health = 1.0f - other->resourceComp_->GetHealthRatio();
+    const float ld = damageComp_->IsLastDamager(*other) ? 2.0f : 1.0f;
     const float rval = random->GetFloat();
-    return (dist + health) * rval;
+    return ((dist + health) * ld) * rval;
 }
 
 int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,

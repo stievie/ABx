@@ -55,6 +55,7 @@ public:
     uint32_t NoDamageTime() const;
     std::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
     std::shared_ptr<Actor> GetLastMeleeDamager() const { return lastMeleeDamager_.lock(); }
+    bool IsLastDamager(const Actor& actor);
     void Write(Net::NetworkMessage& message);
 
     int64_t lastDamage_{ 0 };
