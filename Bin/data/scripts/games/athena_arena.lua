@@ -62,6 +62,7 @@ function onRemoveObject(object)
 end
 
 function onPlayerJoin(player)
+  player:AddEffect(empty, 1000, 0)
   player:AddFriendFoe(GROUPMASK_2, GROUPMASK_1)
 end
 

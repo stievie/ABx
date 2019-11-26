@@ -17,6 +17,7 @@ function onInit()
   -- Add a heal skill
   skillBar:AddSkill(281)
   skillBar:AddSkill(280)
+  skillBar:AddSkill(288)
   -- Instant rezz skill
   skillBar:AddSkill(9996)
   skillBar:SetAttributeValue(ATTRIB_HEALING, 12)
