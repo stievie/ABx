@@ -47,7 +47,7 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
         if (npc.autorunComp_->IsFollowing(*leader))
             return Status::Running;
         npc.SetSpeed(leader->GetSpeed());
-        npc.autorunComp_->Follow(leader->GetThis<Game::GameObject>(), false, distance);
+        npc.autorunComp_->Follow(leader->GetPtr<Game::GameObject>(), false, distance);
         return Status::Running;
     }
 

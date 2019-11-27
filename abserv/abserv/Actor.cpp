@@ -349,7 +349,7 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_->AddEffect(source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(), index, time);
+    effectsComp_->AddEffect(source ? source->GetPtr<Actor>() : std::shared_ptr<Actor>(), index, time);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)

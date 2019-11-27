@@ -35,7 +35,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     }
     std::shared_ptr<Actor> target;
     if (auto selObj = owner_.selectedObject_.lock())
-        target = selObj->GetThis<Actor>();
+        target = selObj->GetPtr<Actor>();
 
     // Can use skills only on Creatures not all GameObjects.
     // But a target is not mandatory, the Skill script will decide

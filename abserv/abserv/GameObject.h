@@ -142,8 +142,9 @@ public:
     GameObject& operator=(const GameObject&) = delete;
     virtual ~GameObject();
 
+    // Return smart pointer
     template <typename T>
-    inline std::shared_ptr<T> GetThis();
+    inline std::shared_ptr<T> GetPtr();
 
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 
@@ -266,7 +267,7 @@ public:
     }
     /// Call the first subscriber
     template <typename Signature, typename... _CArgs>
-    auto CallEventOne(sa::event_t id, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
+    auto CallEventOne(sa::event_t id, _CArgs&& ... _Args)
     {
         return events_.CallOne<Signature, _CArgs...>(id, std::forward<_CArgs>(_Args)...);
     }
@@ -391,7 +392,7 @@ inline T* To(GameObject* obj)
 }
 
 template <typename T>
-inline std::shared_ptr<T> GameObject::GetThis()
+inline std::shared_ptr<T> GameObject::GetPtr()
 {
     if (Is<T>(*this))
         return std::static_pointer_cast<T>(shared_from_this());

@@ -27,10 +27,10 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
         }
         else if (targetId != source->GetSelectedObjectId())
         {
-            auto target = owner_.GetGame()->GetObjectById(targetId);
+            auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
             if (target->selectable_)
             {
-                source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
+                source->selectedObject_ = target->GetPtr<GameObject>();
                 message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
                 message.Add<uint32_t>(source->id_);
                 if (auto sel = source->selectedObject_.lock())
@@ -56,7 +56,7 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
 
     if (source)
     {
-        auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
+        auto* clickedObj = owner_.GetGame()->GetObject<GameObject>(targetId);
         if (clickedObj)
             clickedObj->CallEvent<void(Actor*)>(EVENT_ON_CLICKED, source);
     }
@@ -66,14 +66,15 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
 {
     if (!owner_.IsDead() && !owner_.IsKnockedDown())
     {
-        auto target = owner_.GetGame()->GetObjectById(targetId);
+        auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
         if (target)
         {
-            bool succ = owner_.autorunComp_->Follow(target, ping);
+            auto targePtr = target->GetPtr<GameObject>();
+            bool succ = owner_.autorunComp_->Follow(targePtr, ping);
             if (succ)
             {
                 owner_.attackComp_->Cancel();
-                owner_.followedObject_ = target;
+                owner_.followedObject_ = targePtr;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 owner_.autorunComp_->SetAutoRun(true);
             }
@@ -89,6 +90,7 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
 
 void InputComp::CancelAll()
 {
+    owner_.attackComp_->Cancel();
     owner_.skillsComp_->Cancel();
     owner_.autorunComp_->Reset();
     owner_.stateComp_.Reset();

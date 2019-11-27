@@ -34,7 +34,7 @@ void SelectAttackTarget::Execute(Agent& agent)
         if (it != candidates.end())
         {
             auto* t = chr.GetGame()->GetObject<Game::Actor>(*it);
-            if (t->IsDead())
+            if (!t->IsDead())
                 // Not dead yet.
                 return;
         }

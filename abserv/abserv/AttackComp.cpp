@@ -84,7 +84,7 @@ void AttackComp::FireWeapon(Actor& target)
     if (!weapon || !weapon->IsWeaponProjectile())
         return;
     owner_.GetGame()->AddProjectile(weapon->data_.spawnItemUuid,
-        owner_.GetThis<Actor>(), target.GetThis<Actor>());
+        owner_.GetPtr<Actor>(), target.GetPtr<Actor>());
     if (!owner_.IsObjectInSight(target))
     {
         lastError_ = AB::GameProtocol::AttackErrorTargetObstructed;

@@ -23,10 +23,10 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
     {
-        lastDamager_ = source->GetThis<Actor>();
+        lastDamager_ = source->GetPtr<Actor>();
         if (melee)
         {
-            lastMeleeDamager_ = source->GetThis<Actor>();
+            lastMeleeDamager_ = source->GetPtr<Actor>();
             lastMeleeDamage_ = lastDamage_;
         }
     }
@@ -43,7 +43,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     damages_.push_back({ DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
-        lastDamager_ = source->GetThis<Actor>();
+        lastDamager_ = source->GetPtr<Actor>();
     return result;
 }
 

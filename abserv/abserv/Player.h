@@ -73,10 +73,6 @@ public:
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
-    inline std::shared_ptr<Player> GetThis()
-    {
-        return std::static_pointer_cast<Player>(shared_from_this());
-    }
 
     /// We are entering a game
     void SetGame(std::shared_ptr<Game> game) override;

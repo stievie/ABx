@@ -55,7 +55,7 @@ void Crowd::_LuaAdd(Npc* actor)
 {
     if (!actor)
         return;
-    return Add(actor->GetThis<Npc>());
+    return Add(actor->GetPtr<Npc>());
 }
 
 void Crowd::Add(std::shared_ptr<Npc> actor)

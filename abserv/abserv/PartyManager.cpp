@@ -29,7 +29,7 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 
 std::shared_ptr<Party> PartyManager::Get(uint32_t partyId) const
 {
-    auto it = std::find_if(parties_.begin(), parties_.end(), [partyId](const auto& o) -> bool
+    const auto it = std::find_if(parties_.begin(), parties_.end(), [partyId](const auto& o) -> bool
     {
         return o.second->id_ == partyId;
     });

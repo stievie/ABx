@@ -25,7 +25,7 @@ Node::Status Follow::DoAction(Agent& agent, uint32_t)
     if (npc.autorunComp_->IsFollowing(*target))
         return Status::Running;
 
-    npc.FollowObject(target->GetThis<Game::GameObject>());
+    npc.FollowObject(target->GetPtr<Game::GameObject>());
     return Status::Running;
 }
 

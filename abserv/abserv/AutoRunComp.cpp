@@ -20,7 +20,7 @@ AutoRunComp::AutoRunComp(Actor& owner) :
 
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
 {
-    auto actor = object->GetThis<Actor>();
+    auto actor = object->GetPtr<Actor>();
     if (!actor)
         return false;
     if (auto f = following_.lock())

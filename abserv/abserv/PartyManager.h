@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Party.h"
+#include <sa/Iteration.h>
 
 namespace Game {
 
@@ -21,6 +22,20 @@ public:
     void Remove(uint32_t partyId);
     /// Get all parties in a game
     std::vector<Party*> GetByGame(uint32_t id) const;
+    template <typename Callback>
+    void VisitGameParties(uint32_t id, const Callback& callback)
+    {
+        if (id == 0)
+            return result;
+        for (const auto& p : parties_)
+        {
+            if (p.second->gameId_ == id)
+            {
+                if (callback(*p.second) != Iteration::Continue)
+                    break;
+            }
+        }
+    }
 };
 
 }

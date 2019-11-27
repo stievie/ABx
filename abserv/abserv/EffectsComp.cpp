@@ -71,7 +71,7 @@ void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint3
         // E.g. only one stance allowed
         if (effect->data_.category >= SINGLEEFFECT_START && effect->data_.category <= SINGLEEFFECT_END)
             RemoveAllOfCategory(effect->data_.category);
-        if (effect->Start(source, owner_.GetThis<Actor>(), time))
+        if (effect->Start(source, owner_.GetPtr<Actor>(), time))
         {
             effects_.push_back(effect);
             addedEffects_.push_back(effect);

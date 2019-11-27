@@ -60,7 +60,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetThis());
+    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetPtr());
     assert(player);
 
     // Load player and account data from DB
@@ -446,7 +446,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::Login, GetThis(), characterUuid, uuids::uuid(accountUuid), map, instance)
+            std::bind(&ProtocolGame::Login, GetPtr(), characterUuid, uuids::uuid(accountUuid), map, instance)
         )
     );
 }
@@ -491,7 +491,7 @@ void ProtocolGame::Connect()
 
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::EnterGame, GetThis())
+            std::bind(&ProtocolGame::EnterGame, GetPtr())
         )
     );
 }
@@ -525,7 +525,7 @@ void ProtocolGame::EnterGame()
         else
             LOG_ERROR << "Game instance not found " << player->data_.instanceUuid << std::endl;
     }
-    else if (gameMan->AddPlayer(player->data_.currentMapUuid, player->GetThis()))
+    else if (gameMan->AddPlayer(player->data_.currentMapUuid, player))
     {
         // Create new instance
         success = true;

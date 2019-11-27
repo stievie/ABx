@@ -96,6 +96,8 @@ private:
         return startTime_;
     }
     GameObject* _LuaGetObjectById(uint32_t objectId);
+    /// Return all Parties in this Game
+    std::vector<Party*> _LuaGetParties() const;
     Npc* _LuaAddNpc(const std::string& script);
     AreaOfEffect* _LuaAddAreaOfEffect(const std::string& script,
         Actor* source,
@@ -149,7 +151,6 @@ public:
             return To<T>(o);
         return nullptr;
     }
-    std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);
     Crowd* GetCrowd(uint32_t id);
@@ -166,8 +167,6 @@ public:
     std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
     std::shared_ptr<ItemDrop> AddRandomItemDropFor(Actor* dropper, Actor* target);
     void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
-    /// Return all Parties in this Game
-    std::vector<Party*> GetParties() const;
 
     ExecutionState GetState() const { return state_; }
     bool IsInactive() const
@@ -176,7 +175,6 @@ public:
             return false;
         return noplayerTime_ > GAME_INACTIVE_TIME;
     }
-    const kaguya::State& GetLuaState() const { return luaState_; }
     void CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data);
     void SetState(ExecutionState state);
     void Load(const std::string& mapUuid);
@@ -208,6 +206,12 @@ public:
             if (callback(player.second) != Iteration::Continue)
                 break;
         }
+    }
+    template <typename Callback>
+    void VisitParties(const Callback& callback)
+    {
+        auto* partyMngr = GetSubsystem<PartyManager>();
+        partyMngr->VisitGameParties(id_, callback);
     }
 };
 

@@ -61,7 +61,7 @@ void AreaOfEffect::InitializeLua()
 void AreaOfEffect::_LuaSetSource(Actor* source)
 {
     if (source)
-        source_ = source->GetThis<Actor>();
+        source_ = source->GetPtr<Actor>();
     else
         source_.reset();
 }

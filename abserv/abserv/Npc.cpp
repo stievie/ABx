@@ -368,7 +368,7 @@ bool Npc::SayQuote(ChatType channel, int index)
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 {
     auto game = GetGame();
-    game->AddProjectile(itemUuid, GetThis<Actor>(), target->GetThis<Actor>());
+    game->AddProjectile(itemUuid, GetPtr<Actor>(), target->GetPtr<Actor>());
 }
 
 void Npc::OnSelected(Actor* selector)

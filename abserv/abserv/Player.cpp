@@ -290,7 +290,7 @@ void Player::CRQDropInventoryItem(uint16_t pos)
         drop->transformation_.position_.y_ += 0.2f;
         drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
         drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-        drop->SetSource(GetThis());
+        drop->SetSource(GetPtr<Player>());
         GetGame()->SpawnItemDrop(drop);
 
         auto msg = Net::NetworkMessage::GetNew();
@@ -726,7 +726,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
         party_->SetPartySize(GetGame()->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
     }
-    party_->Set(GetThis());
+    party_->Set(GetPtr<Player>());
 }
 
 void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
@@ -884,7 +884,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
     {
         // Leave current party
         PartyLeave();
-        if (leader->GetParty()->Add(GetThis()))
+        if (leader->GetParty()->Add(GetPtr<Player>()))
         {
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
@@ -908,7 +908,7 @@ void Player::CRQPartyRejectInvite(uint32_t inviterId)
     std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
     if (leader)
     {
-        if (leader->GetParty()->RemoveInvite(GetThis()))
+        if (leader->GetParty()->RemoveInvite(GetPtr<Player>()))
         {
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PartyInviteRemoved);

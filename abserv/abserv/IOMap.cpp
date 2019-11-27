@@ -409,7 +409,7 @@ bool Load(Game::Map& map)
     {
         // We need a copy of that
         Game::TerrainPatch* patch = map.GetPatch(static_cast<unsigned>(i));
-        map.AddGameObject(patch->GetThis<Game::TerrainPatch>());
+        map.AddGameObject(patch->GetPtr<Game::TerrainPatch>());
     }
 
     return true;

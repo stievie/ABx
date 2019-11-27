@@ -66,7 +66,7 @@ private:
         );
     }
 
-    std::shared_ptr<ProtocolGame> GetThis()
+    std::shared_ptr<ProtocolGame> GetPtr()
     {
         return std::static_pointer_cast<ProtocolGame>(shared_from_this());
     }

@@ -67,7 +67,7 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
     const Math::STLVector3& pos)
 {
     auto o = AddAreaOfEffect(script,
-        source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(),
+        source ? source->GetPtr<Actor>() : std::shared_ptr<Actor>(),
         index, pos);
     if (o)
         return o.get();
@@ -80,7 +80,7 @@ void Game::_LuaAddProjectile(const std::string& itemUuid,
 {
     assert(source);
     assert(target);
-    AddProjectile(itemUuid, source->GetThis<Actor>(), target->GetThis<Actor>());
+    AddProjectile(itemUuid, source->GetPtr<Actor>(), target->GetPtr<Actor>());
 }
 
 ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
@@ -133,7 +133,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetObject", &Game::_LuaGetObjectById)
         // Get player of game by ID or name
         .addFunction("GetPlayer", &Game::GetPlayerById)
-        .addFunction("GetParties", &Game::GetParties)
+        .addFunction("GetParties", &Game::_LuaGetParties)
         .addFunction("GetCrowd", &Game::GetCrowd)
         .addFunction("AddCrowd", &Game::AddCrowd)
 
@@ -227,7 +227,8 @@ void Game::Update()
 
         // First Update all objects
         {
-            // FIXME: Why is this iterator becoming invalid when spawning an object (e.g. a Projectile) at the wrong time?
+            // We need a copy of the objects because the iterator may become
+            // invalid if objects are added.
             const auto localObjs = objects_;
             for (const auto& o : localObjs)
             {
@@ -237,7 +238,7 @@ void Game::Update()
             }
         }
 
-        // Update Octree stuff
+        // Update Octree
         map_->UpdateOctree(delta);
 
         // Then call Lua Update function
@@ -330,14 +331,6 @@ Player* Game::GetPlayerByName(const std::string& name)
     if (playerId != 0)
         return GetPlayerById(playerId);
     return nullptr;
-}
-
-std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
-{
-    auto it = objects_.find(objectId);
-    if (it != objects_.end())
-        return (*it).second;
-    return std::shared_ptr<GameObject>();
 }
 
 void Game::AddObject(std::shared_ptr<GameObject> object)
@@ -445,7 +438,7 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
     result->transformation_.position_.y_ += 0.2f;
     result->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
     result->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-    result->SetSource(dropper->GetThis<Actor>());
+    result->SetSource(dropper->GetPtr<Actor>());
     result->actorId_ = target->id_;
 
     SpawnItemDrop(result);
@@ -497,7 +490,7 @@ void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
     }
 }
 
-std::vector<Party*> Game::GetParties() const
+std::vector<Party*> Game::_LuaGetParties() const
 {
     auto* partyMngr = GetSubsystem<PartyManager>();
     return partyMngr->GetByGame(id_);
@@ -707,7 +700,7 @@ void Game::PlayerLeave(uint32_t playerId)
         sched->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
                 shared_from_this(),
-                player->GetThis()))
+                player->GetPtr<Player>()))
         );
         InternalRemoveObject(player);
     }
