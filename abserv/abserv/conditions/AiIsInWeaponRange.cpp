@@ -16,16 +16,16 @@ bool IsInWeaponRange::Evaluate(Agent& agent, const Node&)
         return true;
 
     const auto& npc = GetNpc(agent);
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::GameObject>(selection[0]);
     if (!target)
         return true;
 
     auto* weapon = npc.GetWeapon();
     if (!weapon)
-        return npc.IsInRange(Game::Ranges::Touch, target.get());
+        return npc.IsInRange(Game::Ranges::Touch, target);
 
     float dist = weapon->GetWeaponRange();
-    return (npc.GetDistance(target.get()) <= dist);
+    return (npc.GetDistance(target) <= dist);
 }
 
 }

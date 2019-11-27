@@ -13,7 +13,7 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
     if (sourceId == owner_.id_)
         source = &owner_;
     else
-        source = To<Actor>(owner_.GetGame()->GetObjectById(sourceId).get());
+        source = owner_.GetGame()->GetObject<Actor>(sourceId);
 
     if (source)
     {
@@ -52,7 +52,7 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
     if (sourceId == owner_.id_)
         source = &owner_;
     else
-        source = To<Actor>(owner_.GetGame()->GetObjectById(sourceId).get());
+        source = owner_.GetGame()->GetObject<Actor>(sourceId);
 
     if (source)
     {

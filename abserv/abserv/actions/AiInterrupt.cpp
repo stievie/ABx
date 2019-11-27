@@ -22,7 +22,7 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     Game::Npc& npc = GetNpc(agent);
     if (IsCurrentAction(agent))
     {
-        if (auto cs = npc.GetCurrentSkill())
+        if (auto* cs = npc.GetCurrentSkill())
         {
             if (cs->IsUsing())
                 return Status::Running;
@@ -38,14 +38,10 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     if (selection.empty())
         return Status::Failed;
 
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
     if (!target)
         return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
-
-    const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (actor.IsDead())
+    if (target->IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectInterrupt,
@@ -65,7 +61,7 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     GetAgent(agent).selectedSkill_ = skillIndex;
-    if (!npc.IsInRange(skill->GetRange(), target.get()))
+    if (!npc.IsInRange(skill->GetRange(), target))
         return Status::Failed;
 
 #ifdef DEBUG_AI

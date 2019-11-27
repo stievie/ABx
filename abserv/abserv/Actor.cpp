@@ -227,23 +227,20 @@ void Actor::Attack(Actor* target)
 
 bool Actor::AttackById(uint32_t targetId)
 {
-    auto target = GetGame()->GetObjectById(targetId);
+    auto* target = GetGame()->GetObject<Actor>(targetId);
     if (!target)
         return false;
-    if (!Is<Actor>(*target))
-        return false;
 
-    const auto& actor = To<Actor>(*target);
-    if (!IsEnemy(&actor))
+    if (!IsEnemy(target))
         return false;
-    if (attackComp_->IsAttackingTarget(&actor))
+    if (attackComp_->IsAttackingTarget(target))
         return true;
 
     {
         // First select object
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
-        data[InputDataObjectId2] = actor.GetId();   // Target
+        data[InputDataObjectId2] = target->GetId();   // Target
         inputComp_->Add(InputType::Select, std::move(data));
     }
     // Then attack

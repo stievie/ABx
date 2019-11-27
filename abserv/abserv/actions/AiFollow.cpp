@@ -15,20 +15,17 @@ Node::Status Follow::DoAction(Agent& agent, uint32_t)
     if (selection.empty())
         return Status::Failed;
 
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
     if (!target)
         return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
 
-    const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (npc.GetPosition().Equals(actor.GetPosition(), Game::AT_POSITION_THRESHOLD))
+    if (npc.GetPosition().Equals(target->GetPosition(), Game::AT_POSITION_THRESHOLD))
         return Status::Finished;
 
-    if (npc.autorunComp_->IsFollowing(actor))
+    if (npc.autorunComp_->IsFollowing(*target))
         return Status::Running;
 
-    npc.FollowObject(target);
+    npc.FollowObject(target->GetThis<Game::GameObject>());
     return Status::Running;
 }
 

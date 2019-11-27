@@ -51,10 +51,7 @@ Game::~Game()
 
 GameObject* Game::_LuaGetObjectById(uint32_t objectId)
 {
-    auto o = GetObjectById(objectId);
-    if (o)
-        return o.get();
-    return nullptr;
+    return GetObject<GameObject>(objectId);
 }
 
 Npc* Game::_LuaAddNpc(const std::string& script)

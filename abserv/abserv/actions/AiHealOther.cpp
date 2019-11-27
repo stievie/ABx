@@ -55,14 +55,10 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     }
 
     // Highest priorioty target is on top
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
     if (!target)
         return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
-
-    const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (actor.IsDead())
+    if (target->IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget);

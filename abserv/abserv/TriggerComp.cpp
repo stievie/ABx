@@ -49,18 +49,18 @@ void TriggerComp::Update(uint32_t timeElapsed)
         Math::Vector3 move;
         for (auto it = triggered_.begin(); it != triggered_.end(); )
         {
-            auto o = game->GetObjectById((*it).first);
+            auto* o = game->GetObject<GameObject>((*it).first);
             // If not inside remove from triggered list
             if (!o)
             {
                 // This object is gone
                 triggered_.erase(it++);
             }
-            else if (!owner_.Collides(o.get(), Math::Vector3::Zero, move))
+            else if (!owner_.Collides(o, Math::Vector3::Zero, move))
             {
                 // No longer collides
                 triggered_.erase(it++);
-                owner_.CallEvent<void(GameObject*)>(EVENT_ON_LEFTAREA, o.get());
+                owner_.CallEvent<void(GameObject*)>(EVENT_ON_LEFTAREA, o);
             }
             else
                 ++it;

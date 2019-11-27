@@ -16,6 +16,10 @@
 #include "DataClient.h"
 #include <sa/Iteration.h>
 
+#if defined(GetObject)
+#undef GetObject
+#endif
+
 namespace Game {
 
 class Player;
@@ -134,6 +138,17 @@ public:
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
     const ObjectList& GetObjects() const { return objects_; }
+    template <typename T>
+    T* GetObject(uint32_t id)
+    {
+        auto it = objects_.find(id);
+        if (it == objects_.end())
+            return nullptr;
+        GameObject* o = (*it).second.get();
+        if (Is<T>(o))
+            return To<T>(o);
+        return nullptr;
+    }
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);

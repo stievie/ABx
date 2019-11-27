@@ -17,7 +17,7 @@ void SelectMob::Execute(Agent& agent)
 
         if (o.IsSelectable() && !o.IsUndestroyable())
         {
-            size_t c = o.GetAllyCountInRange(Game::Ranges::Casting);
+            size_t c = o.GetAllyCountInRange(range_);
             entities.push_back(o.id_);
             sorting[o.id_] = c;
         }

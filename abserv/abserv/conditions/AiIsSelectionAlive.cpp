@@ -19,10 +19,10 @@ bool IsSelectionAlive::Evaluate(Agent& agent, const Node&)
 
     for (auto id : selection)
     {
-        auto& sel = *game->GetObjectById(id);
-        if (Game::Is<Game::Actor>(sel))
+        auto* sel = game->GetObject<Game::Actor>(id);
+        if (sel)
         {
-            if (Game::To<Game::Actor>(sel).IsDead())
+            if (sel->IsDead())
                 return false;
         }
     }

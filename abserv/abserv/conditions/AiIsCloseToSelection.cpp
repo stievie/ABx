@@ -26,7 +26,7 @@ bool IsCloseToSelection::Evaluate(Agent& agent, const Node&)
     const auto& ownPos = npc.GetPosition();
     for (auto id : selection)
     {
-        auto sel = game->GetObjectById(id);
+        auto* sel = game->GetObject<Game::GameObject>(id);
         const Math::Vector3& _pos = sel->GetPosition();
         const float distance = ownPos.Distance(_pos);
         if (distance > distance_)

@@ -27,14 +27,10 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
     if (selection.empty())
         return Status::Failed;
 
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
     if (!target)
         return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
-
-    const Game::Actor& actor = Game::To<Game::Actor>(*target);
-    if (actor.IsDead())
+    if (target->IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectDamage, targetType_);
@@ -48,7 +44,7 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     GetAgent(agent).selectedSkill_ = skillIndex;
-    if (!npc.IsInRange(skill->GetRange(), target.get()))
+    if (!npc.IsInRange(skill->GetRange(), target))
         return Status::Failed;
 
     npc.SetSelectedObjectById(selection[0]);

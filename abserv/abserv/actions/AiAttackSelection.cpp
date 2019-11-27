@@ -17,16 +17,13 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
     }
     for (auto id : selection)
     {
-        auto target = npc.GetGame()->GetObjectById(id);
+        auto* target = npc.GetGame()->GetObject<Game::Actor>(id);
         if (!target)
             continue;
-        if (!target->IsActorType())
-            continue;
 
-        const Game::Actor& actor = Game::To<Game::Actor>(*target);
-        if (actor.IsDead())
+        if (target->IsDead())
             return Status::Finished;
-        if (npc.attackComp_->IsAttackingTarget(&actor))
+        if (npc.attackComp_->IsAttackingTarget(target))
             return Status::Running;
 
         if (npc.AttackById(id))

@@ -28,11 +28,11 @@ bool IsInSkillRange::Evaluate(Agent& agent, const Node&)
     auto skill = npc.skills_->GetSkill(skillIndex);
     if (!skill)
         return true;
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::GameObject>(selection[0]);
     if (!target)
         return true;
 
-    return npc.IsInRange(skill->GetRange(), target.get());
+    return npc.IsInRange(skill->GetRange(), target);
 }
 
 }

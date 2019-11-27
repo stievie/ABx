@@ -421,10 +421,11 @@ std::vector<GameObject*> GameObject::_LuaGetObjectsInside()
         return result;
 
     auto game = GetGame();
-    triggerComp_->VisitObjectInside([&](uint32_t id) -> Iteration {
-        auto object = game->GetObjectById(id);
+    triggerComp_->VisitObjectInside([&](uint32_t id) -> Iteration
+    {
+        auto* object = game->GetObject<GameObject>(id);
         if (object)
-            result.push_back(object.get());
+            result.push_back(object);
         return Iteration::Continue;
     });
     return result;

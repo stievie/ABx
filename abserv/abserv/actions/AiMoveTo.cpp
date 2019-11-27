@@ -18,12 +18,12 @@ Node::Status MoveTo::DoAction(Agent& agent, uint32_t)
     LOG_DEBUG << "Moving to " << selection[0] << std::endl;
 #endif
 
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::GameObject>(selection[0]);
     if (!target)
         return Status::Failed;
     if (IsCurrentAction(agent))
     {
-        if (npc.IsInRange(Game::Ranges::Touch, target.get()))
+        if (npc.IsInRange(Game::Ranges::Touch, target))
             return Status::Finished;
     }
 

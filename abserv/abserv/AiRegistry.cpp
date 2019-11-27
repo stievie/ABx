@@ -18,6 +18,7 @@
 #include "actions/AiWander.h"
 #include "conditions/AiHaveHome.h"
 #include "conditions/AiHaveWanderRoute.h"
+#include "conditions/AiHaveWeapon.h"
 #include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAllyHealthLow.h"
 #include "conditions/AiIsAttacked.h"
@@ -42,6 +43,7 @@
 #include "filters/AiSelectTargetUsingSkill.h"
 #include "filters/AiSelectVisible.h"
 #include "filters/AiSelectWithEffect.h"
+#include "filters/AiSortByDistance.h"
 
 namespace AI {
 
@@ -88,6 +90,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("HaveWanderRoute", Conditions::HaveWanderRoute::GetFactory());
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
     RegisterConditionFactory("IsInWeaponRange", Conditions::IsInWeaponRange::GetFactory());
+    RegisterConditionFactory("HaveWeapon", Conditions::HaveWeapon::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());
@@ -100,6 +103,7 @@ void AiRegistry::Initialize()
     RegisterFilterFactory("SelectMob", Filters::SelectMob::GetFactory());
     RegisterFilterFactory("SelectTargetUsingSkill", Filters::SelectTargetUsingSkill::GetFactory());
     RegisterFilterFactory("SelectTargetAttacking", Filters::SelectTargetAttacking::GetFactory());
+    RegisterFilterFactory("SortByDistance", Filters::SortByDistance::GetFactory());
 }
 
 }

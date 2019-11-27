@@ -25,7 +25,7 @@ void SelectVisible::Execute(Agent& agent)
 {
     auto& entities = agent.filteredAgents_;
     entities.clear();
-    Game::Npc& chr = GetNpc(agent);
+    const Game::Npc& chr = GetNpc(agent);
     chr.VisitInRange(range_, [&](const Game::GameObject& o)
     {
         if (!Game::Is<Game::Actor>(o))

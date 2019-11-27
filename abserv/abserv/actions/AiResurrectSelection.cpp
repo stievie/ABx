@@ -30,14 +30,10 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
     if (selection.empty())
         return Status::Failed;
 
-    auto target = npc.GetGame()->GetObjectById(selection[0]);
+    auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
     if (!target)
         return Status::Failed;
-    if (!target->IsActorType())
-        return Status::Failed;
-
-    Game::Actor* actor = Game::To<Game::Actor>(target.get());
-    if (!actor->IsDead())
+    if (!target->IsDead())
         return Status::Failed;
 
     int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget);
@@ -50,7 +46,7 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
     if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
         return Status::Failed;
     GetAgent(agent).selectedSkill_ = skillIndex;
-    if (!npc.IsInRange(skill->GetRange(), target.get()))
+    if (!npc.IsInRange(skill->GetRange(), target))
         return Status::Failed;
 
     npc.SetSelectedObjectById(selection[0]);

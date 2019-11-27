@@ -26,7 +26,7 @@ void SelectWithEffect::Execute(Agent &agent)
 {
     auto& entities = agent.filteredAgents_;
     entities.clear();
-    Game::Npc& chr = GetNpc(agent);
+    const Game::Npc& chr = GetNpc(agent);
 
     chr.VisitInRange(Game::Ranges::Aggro, [&](const Game::GameObject& current)
     {
