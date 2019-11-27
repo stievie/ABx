@@ -221,6 +221,7 @@
     <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="conditions\AiHaveHome.h" />
     <ClInclude Include="conditions\AiHaveWanderRoute.h" />
+    <ClInclude Include="conditions\AiHaveWeapon.h" />
     <ClInclude Include="conditions\AiIsAllyHealthCritical.h" />
     <ClInclude Include="conditions\AiIsAllyHealthLow.h" />
     <ClInclude Include="conditions\AiIsAttacked.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="filters\AiSelectWithEffect.h" />
     <ClInclude Include="filters\AiSelectLowHealth.h" />
     <ClInclude Include="filters\AiSelectRandom.h" />
+    <ClInclude Include="filters\AiSortByDistance.h" />
     <ClInclude Include="Guild.h" />
     <ClInclude Include="GuildManager.h" />
     <ClInclude Include="InventoryComp.h" />
@@ -352,6 +354,7 @@
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="conditions\AiHaveHome.cpp" />
     <ClCompile Include="conditions\AiHaveWanderRoute.cpp" />
+    <ClCompile Include="conditions\AiHaveWeapon.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthLow.cpp" />
     <ClCompile Include="conditions\AiIsAttacked.cpp" />
@@ -382,6 +385,7 @@
     <ClCompile Include="filters\AiSelectWithEffect.cpp" />
     <ClCompile Include="filters\AiSelectLowHealth.cpp" />
     <ClCompile Include="filters\AiSelectRandom.cpp" />
+    <ClCompile Include="filters\AiSortByDistance.cpp" />
     <ClCompile Include="Guild.cpp" />
     <ClCompile Include="GuildManager.cpp" />
     <ClCompile Include="InventoryComp.cpp" />

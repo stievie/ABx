@@ -68,6 +68,8 @@ abserv/conditions/AiHaveHome.cpp
 abserv/conditions/AiHaveHome.h
 abserv/conditions/AiHaveWanderRoute.cpp
 abserv/conditions/AiHaveWanderRoute.h
+abserv/conditions/AiHaveWeapon.cpp
+abserv/conditions/AiHaveWeapon.h
 abserv/conditions/AiIsAllyHealthCritical.cpp
 abserv/conditions/AiIsAllyHealthCritical.h
 abserv/conditions/AiIsAllyHealthLow.cpp
@@ -184,6 +186,8 @@ abserv/MailBox.cpp
 abserv/MailBox.h
 abserv/filters/AiSelectWithEffect.cpp
 abserv/filters/AiSelectWithEffect.h
+abserv/filters/AiSortByDistance.cpp
+abserv/filters/AiSortByDistance.h
 abserv/main.cpp
 abserv/Maintenance.cpp
 abserv/Maintenance.h

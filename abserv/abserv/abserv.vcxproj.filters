@@ -423,6 +423,12 @@
     <ClInclude Include="Crowd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiHaveWeapon.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSortByDistance.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -796,6 +802,12 @@
     </ClCompile>
     <ClCompile Include="Crowd.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiHaveWeapon.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSortByDistance.cpp">
+      <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
