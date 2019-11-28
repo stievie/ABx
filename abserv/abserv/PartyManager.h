@@ -2,6 +2,11 @@
 
 #include "Party.h"
 #include <sa/Iteration.h>
+#include <multi_index_container.hpp>
+#include <multi_index/hashed_index.hpp>
+#include <multi_index/ordered_index.hpp>
+#include <multi_index/member.hpp>
+#include <unordered_map>
 
 namespace Game {
 
@@ -9,7 +14,37 @@ class PartyManager
 {
 private:
     /// The owner of Parties
-    std::map<std::string, std::shared_ptr<Party>> parties_;
+    std::unordered_map<uint32_t, std::shared_ptr<Party>> parties_;
+
+    // https://stackoverflow.com/questions/39510143/how-to-use-create-boostmulti-index
+    struct PartyIndexItem
+    {
+        uint32_t partyId;
+        std::string partyUuid;
+        uint32_t gameId;
+    };
+    struct PartyIdTag {};
+    struct PartyUuidTag {};
+    struct GameIdTag {};
+    using PartyIndex = multi_index::multi_index_container<
+        PartyIndexItem,
+        multi_index::indexed_by<
+            multi_index::hashed_unique<
+                multi_index::tag<PartyIdTag>,
+                multi_index::member<PartyIndexItem, uint32_t, &PartyIndexItem::partyId>
+            >,
+            multi_index::hashed_unique<
+                multi_index::tag<PartyUuidTag>,
+                multi_index::member<PartyIndexItem, std::string, &PartyIndexItem::partyUuid>
+            >,
+            multi_index::hashed_non_unique<
+                multi_index::tag<GameIdTag>,
+                multi_index::member<PartyIndexItem, uint32_t, &PartyIndexItem::gameId>
+            >
+        >
+    >;
+    PartyIndex partyIndex_;
+    void AddToIndex(const Party& party);
 public:
     PartyManager() = default;
     ~PartyManager()
@@ -21,19 +56,22 @@ public:
     std::shared_ptr<Party> Get(uint32_t partyId) const;
     void Remove(uint32_t partyId);
     /// Get all parties in a game
-    std::vector<Party*> GetByGame(uint32_t id) const;
+    std::vector<Party*> GetByGame(uint32_t gameId);
     template <typename Callback>
-    void VisitGameParties(uint32_t id, const Callback& callback)
+    void VisitGameParties(uint32_t gameId, const Callback& callback)
     {
-        if (id == 0)
-            return result;
-        for (const auto& p : parties_)
+        if (gameId == 0)
+            return;
+
+        auto& idIndex = partyIndex_.get<GameIdTag>();
+        auto its = idIndex.equal_range(gameId);
+        while (its.first != its.second)
         {
-            if (p.second->gameId_ == id)
-            {
-                if (callback(*p.second) != Iteration::Continue)
-                    break;
-            }
+            auto it = parties_.find((*its.first).partyId);
+            if ((*it).second)
+                if (callback(*(*it).second) != Iteration::Continue)
+                    return;
+            ++its.first;
         }
     }
 };

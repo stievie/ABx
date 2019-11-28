@@ -6,11 +6,25 @@
 
 namespace Game {
 
+void PartyManager::AddToIndex(const Party& party)
+{
+    partyIndex_.insert({
+       party.id_,
+       party.data_.uuid,
+       party.gameId_
+   });
+}
+
 std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 {
-    auto it = parties_.find(uuid);
-    if (it != parties_.end())
-        return (*it).second;
+    auto& idIndex = partyIndex_.get<PartyUuidTag>();
+    auto indexIt = idIndex.find(uuid);
+    if (indexIt != idIndex.end())
+    {
+        auto it = parties_.find((*indexIt).partyId);
+        if (it != parties_.end())
+            return (*it).second;
+    }
 
     std::string _uuid(uuid);
     if (uuids::uuid(_uuid).nil())
@@ -22,44 +36,38 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
         cli->Create(p);
 
     std::shared_ptr<Party> result = std::make_shared<Party>();
-    result->data_ = p;
-    parties_[_uuid] = result;
+    result->data_ = std::move(p);
+    parties_[result->id_] = result;
+    AddToIndex(*result);
     return result;
 }
 
 std::shared_ptr<Party> PartyManager::Get(uint32_t partyId) const
 {
-    const auto it = std::find_if(parties_.begin(), parties_.end(), [partyId](const auto& o) -> bool
-    {
-        return o.second->id_ == partyId;
-    });
-    if (it != parties_.end())
-        return (*it).second;
-
-    return std::shared_ptr<Party>();
+    const auto it = parties_.find(partyId);
+    if (it == parties_.end())
+        return std::shared_ptr<Party>();
+    return (*it).second;
 }
 
 void PartyManager::Remove(uint32_t partyId)
 {
-    auto it = std::find_if(parties_.begin(), parties_.end(), [partyId](const auto& o) -> bool
-    {
-        return o.second->id_ == partyId;
-    });
+    auto it = parties_.find(partyId);
     if (it != parties_.end())
         parties_.erase(it);
 }
 
-std::vector<Party*> PartyManager::GetByGame(uint32_t id) const
+std::vector<Party*> PartyManager::GetByGame(uint32_t gameId)
 {
     std::vector<Party*> result;
-    if (id == 0)
+    if (gameId == 0)
         return result;
 
-    for (const auto& p : parties_)
+    VisitGameParties(gameId, [&result] (Party& party)
     {
-        if (p.second->gameId_ == id)
-            result.push_back(p.second.get());
-    }
+        result.push_back(&party);
+        return Iteration::Continue;
+    });
     return result;
 }
 
