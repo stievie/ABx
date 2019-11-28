@@ -1,16 +1,15 @@
 #pragma once
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4310 4100)
-#endif
-#include <bitsery/bitsery.h>
-#include <bitsery/adapter/buffer.h>
-#include <bitsery/traits/vector.h>
-#include <bitsery/traits/string.h>
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+#include <sa/PragmaWarning.h>
+
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4310 4100)
+#   include <bitsery/bitsery.h>
+#   include <bitsery/adapter/buffer.h>
+#   include <bitsery/traits/vector.h>
+#   include <bitsery/traits/string.h>
+PRAGMA_WARNING_POP
+
 #include <uuid.h>
 #include "DataKey.h"
 #include "DataCodes.h"

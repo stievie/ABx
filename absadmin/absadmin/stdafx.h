@@ -13,6 +13,7 @@
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
 #include <stdio.h>
 #include <stdint.h>
@@ -29,14 +30,10 @@
 #endif
 #include "Servers.h"
 
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4701 4800)
-#endif
-#include <ginger.h>
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4701 4800)
+#   include <ginger.h>
+PRAGMA_WARNING_POP
 
 #include <json.hpp>
 

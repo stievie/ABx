@@ -8,10 +8,9 @@
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
-#if defined(_MSC_VER)
-#pragma warning(disable: 4307)
-#endif
+PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #include <stdio.h>
 #include <cassert>
@@ -26,15 +25,13 @@
 #include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
+#if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#endif // defined
-#include <asio.hpp>
-#if defined(_MSC_VER)
-#pragma warning(pop)
 #endif
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4592)
+#   include <asio.hpp>
+PRAGMA_WARNING_POP
 
 #include <uuid.h>
 

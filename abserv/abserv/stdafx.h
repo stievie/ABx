@@ -21,6 +21,7 @@
 
 #include <cassert>
 #include <AB/CommonConfig.h>
+#include <sa/PragmaWarning.h>
 #include "ServiceConfig.h"
 #include "Config.h"
 #include "DebugConfig.h"
@@ -55,38 +56,18 @@
 #include "MathConfig.h"
 #include <pugixml.hpp>
 
-#if defined(_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4592)
-#endif
-#if defined(__clang__)
-#   pragma clang diagnostic push
-#   pragma clang diagnostic ignored "-Wpadded"
-#endif
-#if defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wpadded"
-#endif
-#include <asio.hpp>
-#if defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#endif
-#if defined(__clang__)
-#   pragma clang diagnostic pop
-#endif
-#if defined(_MSC_VER)
-#   pragma warning(pop)
-#endif
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4592)
+    PRAGMA_WARNING_DISABLE_CLANG("-Wpadded")
+    PRAGMA_WARNING_DISABLE_GCC("-Wpadded")
+#   include <asio.hpp>
+PRAGMA_WARNING_POP
 
-#if defined(_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4702 4127)
-#endif
-#include <lua.hpp>
-#include <kaguya/kaguya.hpp>
-#if defined(_MSC_VER)
-#   pragma warning(pop)
-#endif
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
+#   include <lua.hpp>
+#   include <kaguya/kaguya.hpp>
+PRAGMA_WARNING_POP
 
 #include <base64.h>
 #include <uuid.h>

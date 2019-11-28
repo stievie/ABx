@@ -3,32 +3,19 @@
 #include <mutex>
 #include <unordered_map>
 #include <vector>
+#include <sa/PragmaWarning.h>
 #include "EvictionStrategy.h"
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4310 4100)
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-parameter"
-#endif
-#if defined(__GCC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
-#include <bitsery/bitsery.h>
-#include <bitsery/adapter/buffer.h>
-#include <bitsery/traits/vector.h>
-#include <bitsery/traits/string.h>
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GCC__)
-#pragma GCC diagnostic pop
-#endif
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
+
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4310 4100)
+    PRAGMA_WARNING_DISABLE_CLANG("-Wunused-parameter")
+    PRAGMA_WARNING_DISABLE_GCC("-Wunused-parameter")
+#   include <bitsery/bitsery.h>
+#   include <bitsery/adapter/buffer.h>
+#   include <bitsery/traits/vector.h>
+#   include <bitsery/traits/string.h>
+PRAGMA_WARNING_POP
+
 #include <sa/StringHash.h>
 #include "DataKey.h"
 #include <sa/CallableTable.h>

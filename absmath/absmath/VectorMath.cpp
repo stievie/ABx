@@ -3,6 +3,7 @@
 #include "MathDefs.h"
 #include "MathUtils.h"
 #include "Matrix4.h"
+#include <sa/PragmaWarning.h>
 
 namespace Math {
 
@@ -26,14 +27,10 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
     float z = x + y - ac_bb;
 
 #define in(a) ((uint32_t&) a)
-#   if defined(__GNUC__)
-#       pragma GCC diagnostic push
-#       pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#   endif
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_GCC("-Wstrict-aliasing")
     return ((in(z) & ~(in(x) | in(y)))) & 0x80000000;
-#   if defined(__GNUC__)
-#       pragma GCC diagnostic pop
-#   endif
+PRAGMA_WARNING_POP
 #undef in
 #else
     const Vector3 v1 = (point - pa).Normal();

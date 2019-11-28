@@ -3,10 +3,9 @@
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
-#if defined(_MSC_VER)
-#pragma warning(disable: 4307)
-#endif
+PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschließen
@@ -19,12 +18,8 @@
 #include <initializer_list>
 
 #include "MathConfig.h"
-#if defined(_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4702 4127)
-#endif
-#include <lua.hpp>
-#include <kaguya/kaguya.hpp>
-#if defined(_MSC_VER)
-#   pragma warning(pop)
-#endif
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
+#   include <lua.hpp>
+#   include <kaguya/kaguya.hpp>
+PRAGMA_WARNING_POP
