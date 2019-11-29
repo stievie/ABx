@@ -14,6 +14,7 @@
 #include "Script.h"
 #include "Subsystems.h"
 #include "DataClient.h"
+#include "PartyManager.h"
 #include <sa/Iteration.h>
 
 #if defined(GetObject)
