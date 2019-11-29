@@ -55,10 +55,11 @@ public:
     std::shared_ptr<Party> GetByUuid(const std::string& uuid);
     std::shared_ptr<Party> Get(uint32_t partyId) const;
     void Remove(uint32_t partyId);
-    /// Get all parties in a game
-    std::vector<Party*> GetByGame(uint32_t gameId);
+    void SetPartyGameId(uint32_t partyId, uint32_t gameId);
+    /// Get all parties in a game. Used by Lua.
+    std::vector<Party*> GetByGame(uint32_t gameId) const;
     template <typename Callback>
-    void VisitGameParties(uint32_t gameId, const Callback& callback)
+    void VisitGameParties(uint32_t gameId, const Callback& callback) const
     {
         if (gameId == 0)
             return;

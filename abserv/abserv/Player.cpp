@@ -61,6 +61,7 @@ void Player::SetGame(std::shared_ptr<Game> game)
     if (game)
     {
         party_->gameId_ = game->id_;
+        GetSubsystem<PartyManager>()->SetPartyGameId(party_->id_, game->id_);
         if (party_->IsLeader(*this))
             party_->SetPartySize(game->data_.partySize);
     }

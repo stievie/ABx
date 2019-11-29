@@ -15,16 +15,32 @@ void PartyManager::AddToIndex(const Party& party)
    });
 }
 
+void PartyManager::SetPartyGameId(uint32_t partyId, uint32_t gameId)
+{
+    auto& idIndex = partyIndex_.get<PartyIdTag>();
+    auto its = idIndex.find(partyId);
+    if (its != idIndex.end())
+    {
+        idIndex.replace(its, {
+            its->partyId,
+            its->partyUuid,
+            gameId
+        });
+    }
+
+    auto it = parties_.find(partyId);
+    if (it != parties_.end())
+    {
+        (*it).second->gameId_ = gameId;
+    }
+}
+
 std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 {
     auto& idIndex = partyIndex_.get<PartyUuidTag>();
     auto indexIt = idIndex.find(uuid);
     if (indexIt != idIndex.end())
-    {
-        auto it = parties_.find((*indexIt).partyId);
-        if (it != parties_.end())
-            return (*it).second;
-    }
+        return Get((*indexIt).partyId);
 
     std::string _uuid(uuid);
     if (uuids::uuid(_uuid).nil())
@@ -57,11 +73,9 @@ void PartyManager::Remove(uint32_t partyId)
         parties_.erase(it);
 }
 
-std::vector<Party*> PartyManager::GetByGame(uint32_t gameId)
+std::vector<Party*> PartyManager::GetByGame(uint32_t gameId) const
 {
     std::vector<Party*> result;
-    if (gameId == 0)
-        return result;
 
     VisitGameParties(gameId, [&result] (Party& party)
     {
