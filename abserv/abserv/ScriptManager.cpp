@@ -12,7 +12,7 @@
 #include "Party.h"
 #include "ItemDrop.h"
 #include "Random.h"
-#include "Party.h"
+#include "Group.h"
 #include "Projectile.h"
 #include "Crowd.h"
 
@@ -46,7 +46,7 @@ void RegisterLuaAll(kaguya::State& state)
     });
     state["NewGroupId"] = kaguya::function([]
     {
-        return Party::GetNewId();
+        return Group::GetNewId();
     });
     state["include"] = kaguya::function([&state](const std::string& file)
     {

@@ -14,6 +14,9 @@ void SelectAttackTarget::Execute(Agent& agent)
     std::map<uint32_t, float> sorting;
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
     {
+        if (!o.IsSelectable() || o.IsDead() || o.IsUndestroyable())
+            return Iteration::Continue;
+
         candidates.push_back(o.id_);
         // Bigger is more likely to be selected
         sorting[o.id_] = chr.GetAggro(&o);

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Npc.h"
 #include "IOGame.h"
+#include "Group.h"
 
 namespace Game {
 
@@ -161,7 +162,7 @@ void GameManager::CleanGames()
         // If no games we can reset IDs
         gameIds_.Reset();
         GameObject::objectIds_.Reset();
-        Party::partyIds_.Reset();
+        Group::groupIds_.Reset();
         return;
     }
 

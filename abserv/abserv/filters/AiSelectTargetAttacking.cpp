@@ -13,6 +13,9 @@ void SelectTargetAttacking::Execute(Agent& agent)
     Game::Npc& chr = GetNpc(agent);
     chr.VisitEnemiesInRange(Game::Ranges::Casting, [&](const Game::Actor& current)
     {
+        if (current.IsDead() || current.IsUndestroyable())
+            return Iteration::Continue;
+
         if (current.attackComp_->IsHitting())
         {
             entities.push_back(current.id_);

@@ -8,10 +8,9 @@
 #include "PartyManager.h"
 #include "Random.h"
 #include "UuidUtils.h"
+#include "Group.h"
 
 namespace Game {
-
-sa::IdGenerator<uint32_t> Party::partyIds_;
 
 void Party::RegisterLua(kaguya::State& state)
 {
@@ -33,7 +32,7 @@ void Party::RegisterLua(kaguya::State& state)
 }
 
 Party::Party() :
-    id_(GetNewId())
+    id_(Group::GetNewId())
 {
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;

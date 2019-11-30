@@ -10,7 +10,7 @@ namespace Conditions {
 
 bool IsAllyHealthCritical::Evaluate(Agent& agent, const Node&)
 {
-    auto& npc = AI::GetNpc(agent);
+    auto& npc = GetNpc(agent);
     bool result = false;
     auto* rnd = GetSubsystem<Crypto::Random>();
 

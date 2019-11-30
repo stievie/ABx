@@ -15,6 +15,7 @@
 #include "Scheduler.h"
 #include "ScriptManager.h"
 #include "TemplateEncoder.h"
+#include "AreaOfEffect.h"
 #include <AB/ProtocolCodes.h>
 
 namespace Game {
@@ -82,6 +83,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("CancelAction", &Actor::CancelAction)
 
         .addFunction("DropRandomItem", &Actor::DropRandomItem)
+        .addFunction("AddAOE", &Actor::_LuaAddAOE)
 
         .addFunction("GetEnemiesInRange", &Actor::_LuaGetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
@@ -1018,6 +1020,12 @@ uint32_t Actor::GetAttributeValue(uint32_t index)
     effectsComp_->GetAttributeValue(index, value);
     result += value;
     return result;
+}
+
+void Actor::_LuaAddAOE(const std::string& script, uint32_t index,
+    const Math::STLVector3& pos)
+{
+    GetGame()->AddAreaOfEffect(script, GetPtr<Actor>(), index, pos);
 }
 
 }

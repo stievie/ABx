@@ -5,7 +5,7 @@
 #include "DataProvider.h"
 #include "GameManager.h"
 #include "MathUtils.h"
-#include "Party.h"
+#include "Group.h"
 #include "Random.h"
 #include "ScriptManager.h"
 #include "Subsystems.h"
@@ -71,7 +71,7 @@ Npc::Npc() :
     events_.Subscribe<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
     events_.Subscribe<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
     // Party and Groups must be unique, i.e. share the same ID pool.
-    groupId_ = Party::GetNewId();
+    groupId_ = Group::GetNewId();
     InitializeLua();
 }
 

@@ -44,12 +44,6 @@ private:
     Actor* _LuaGetMember(int index);
     int _LuaGetMemberCount();
 public:
-    static sa::IdGenerator<uint32_t> partyIds_;
-    /// Returns a new Party/Group ID
-    static uint32_t GetNewId()
-    {
-        return partyIds_.Next();
-    }
     static void RegisterLua(kaguya::State& state);
 
     Party();

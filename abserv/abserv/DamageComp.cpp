@@ -114,7 +114,7 @@ void DamageComp::ClearDamages()
     }), damages_.end());
 }
 
-bool DamageComp::GotDamageType(DamageType type)
+bool DamageComp::GotDamageType(DamageType type) const
 {
     for (const auto& d : damages_)
     {
@@ -124,7 +124,7 @@ bool DamageComp::GotDamageType(DamageType type)
     return false;
 }
 
-bool DamageComp::GotDamageCategory(DamageTypeCategory cat)
+bool DamageComp::GotDamageCategory(DamageTypeCategory cat) const
 {
     if (cat == DamageTypeCategory::Any)
         // Any damage

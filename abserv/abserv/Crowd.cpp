@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Crowd.h"
-#include "Party.h"
 #include <algorithm>
 
 namespace Game {
@@ -15,11 +14,11 @@ void Crowd::RegisterLua(kaguya::State& state)
 }
 
 Crowd::Crowd() :
-    id_(Party::GetNewId())
+    Group(Group::GetNewId())
 { }
 
 Crowd::Crowd(uint32_t id) :
-    id_(id)
+    Group(id)
 { }
 
 Npc* Crowd::GetLeader()
@@ -27,7 +26,10 @@ Npc* Crowd::GetLeader()
     if (members_.size() == 0)
         return nullptr;
     if (auto l = members_.front().lock())
-        return l.get();
+    {
+        if (Is<Npc>(*l))
+            return To<Npc>(l.get());
+    }
     return nullptr;
 }
 
@@ -38,38 +40,11 @@ void Crowd::_LuaRemove(Npc* actor)
     Remove(actor->id_);
 }
 
-void Crowd::Remove(uint32_t id)
-{
-    const auto it = std::find_if(members_.begin(), members_.end(), [&](const std::weak_ptr<Npc>& current)
-    {
-        if (auto c = current.lock())
-            return c->id_ == id;
-        return false;
-    });
-    if (it == members_.end())
-        return;
-    members_.erase(it);
-}
-
 void Crowd::_LuaAdd(Npc* actor)
 {
     if (!actor)
         return;
     return Add(actor->GetPtr<Npc>());
-}
-
-void Crowd::Add(std::shared_ptr<Npc> actor)
-{
-    const auto it = std::find_if(members_.begin(), members_.end(), [&](const std::weak_ptr<Npc>& current)
-    {
-        if (auto c = current.lock())
-            return c->id_ == actor->id_;
-        return false;
-    });
-    if (it != members_.end())
-        return;
-    members_.push_back(actor);
-    actor->SetGroupId(id_);
 }
 
 }

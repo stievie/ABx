@@ -55,6 +55,8 @@ constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
 constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
 constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
 
+class AreaOfEffect;
+
 /// Player, NPC, Monster some such
 class Actor : public GameObject
 {
@@ -73,6 +75,9 @@ private:
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     std::vector<Actor*> _LuaGetAlliesInRange(Ranges range);
     std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);
+    void _LuaAddAOE(const std::string& script,
+        uint32_t index,
+        const Math::STLVector3& pos);
     /// Get lower 16 bits of the group mask
     uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
     /// Get upper 16 bits of the group mask

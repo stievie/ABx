@@ -709,7 +709,7 @@ Crowd* Game::AddCrowd()
 {
     std::unique_ptr<Crowd> crowd = std::make_unique<Crowd>();
     Crowd* result = crowd.get();
-    crowds_.emplace(crowd->id_, std::move(crowd));
+    crowds_.emplace(crowd->GetId(), std::move(crowd));
     return result;
 }
 
