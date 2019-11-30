@@ -24,6 +24,7 @@
 #include "conditions/AiIsAttacked.h"
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsEnergyLow.h"
+#include "conditions/AiIsFighting.h"
 #include "conditions/AiIsInAOE.h"
 #include "conditions/AiIsInSkillRange.h"
 #include "conditions/AiIsInWeaponRange.h"
@@ -92,6 +93,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("Random", Conditions::RandomCondition::GetFactory());
     RegisterConditionFactory("IsInWeaponRange", Conditions::IsInWeaponRange::GetFactory());
     RegisterConditionFactory("HaveWeapon", Conditions::HaveWeapon::GetFactory());
+    RegisterConditionFactory("IsFighting", Conditions::IsFighting::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());

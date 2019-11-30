@@ -432,6 +432,12 @@
     <ClInclude Include="filters\AiSelectGettingDamage.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiIsFighting.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Group.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -814,6 +820,12 @@
     </ClCompile>
     <ClCompile Include="filters\AiSelectGettingDamage.cpp">
       <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiIsFighting.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="Group.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

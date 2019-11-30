@@ -2,6 +2,8 @@ README.md
 abserv/ConfigManager.cpp
 abserv/Crowd.cpp
 abserv/Crowd.h
+abserv/Group.cpp
+abserv/Group.h
 abserv/WanderComp.cpp
 abserv/WanderComp.h
 abserv/actions/AiAttackSelection.cpp
@@ -80,6 +82,8 @@ abserv/conditions/AiIsCloseToSelection.cpp
 abserv/conditions/AiIsCloseToSelection.h
 abserv/conditions/AiIsEnergyLow.cpp
 abserv/conditions/AiIsEnergyLow.h
+abserv/conditions/AiIsFighting.cpp
+abserv/conditions/AiIsFighting.h
 abserv/conditions/AiIsInAOE.cpp
 abserv/conditions/AiIsInAOE.h
 abserv/conditions/AiIsInSkillRange.cpp

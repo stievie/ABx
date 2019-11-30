@@ -227,6 +227,7 @@
     <ClInclude Include="conditions\AiIsAttacked.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
     <ClInclude Include="conditions\AiIsEnergyLow.h" />
+    <ClInclude Include="conditions\AiIsFighting.h" />
     <ClInclude Include="conditions\AiIsInAOE.h" />
     <ClInclude Include="conditions\AiIsInSkillRange.h" />
     <ClInclude Include="conditions\AiIsInWeaponRange.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="filters\AiSelectLowHealth.h" />
     <ClInclude Include="filters\AiSelectRandom.h" />
     <ClInclude Include="filters\AiSortByDistance.h" />
+    <ClInclude Include="Group.h" />
     <ClInclude Include="Guild.h" />
     <ClInclude Include="GuildManager.h" />
     <ClInclude Include="InventoryComp.h" />
@@ -361,6 +363,7 @@
     <ClCompile Include="conditions\AiIsAttacked.cpp" />
     <ClCompile Include="conditions\AiIsCloseToSelection.cpp" />
     <ClCompile Include="conditions\AiIsEnergyLow.cpp" />
+    <ClCompile Include="conditions\AiIsFighting.cpp" />
     <ClCompile Include="conditions\AiIsInAOE.cpp" />
     <ClCompile Include="conditions\AiIsInSkillRange.cpp" />
     <ClCompile Include="conditions\AiIsInWeaponRange.cpp" />
@@ -388,6 +391,7 @@
     <ClCompile Include="filters\AiSelectLowHealth.cpp" />
     <ClCompile Include="filters\AiSelectRandom.cpp" />
     <ClCompile Include="filters\AiSortByDistance.cpp" />
+    <ClCompile Include="Group.cpp" />
     <ClCompile Include="Guild.cpp" />
     <ClCompile Include="GuildManager.cpp" />
     <ClCompile Include="InventoryComp.cpp" />
