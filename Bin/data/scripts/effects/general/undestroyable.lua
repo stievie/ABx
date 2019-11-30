@@ -9,10 +9,12 @@ function getDuration(source, target)
 end
 
 function onStart(source, target)
+  target:SetUndestroyable(true)
   return true
 end
 
 function onEnd(source, target)
+  target:SetUndestroyable(false)
 end
 
 function onUpdate(source, target, timeElapsed)
@@ -26,6 +28,7 @@ function onUpdate(source, target, timeElapsed)
 end
 
 function onRemove(source, target)
+  target:SetUndestroyable(false)
 end
 
 function getSkillCost(skill, activation, energy, adrenaline, overcast, hp)

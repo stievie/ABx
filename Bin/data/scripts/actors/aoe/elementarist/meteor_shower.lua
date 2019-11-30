@@ -3,6 +3,8 @@ include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 include("/scripts/includes/attributes.lua")
 
+-- FIXME: This needs an item index
+itemIndex = 6000
 effect = SkillEffectDamage
 effectTarget = SkillTargetAoe
 
@@ -11,7 +13,7 @@ local lastDamage
 
 function onInit()
   local source = self:GetSource()
-  if (source == nil)
+  if (source == nil) then
     return false
   end
   
@@ -25,11 +27,11 @@ end
 
 function onUpdate(timeElapsed)
   local tick = Tick()
-  if (tick - lastDamage > 3000)
+  if (tick - lastDamage > 3000) then
     local actors = self:GetActorsInRange(self:GetRange())
     local source = self:GetSource()
     for i, actor in ipairs(actors) do
-      if (actor:IsEnemy(source))
+      if (actor:IsEnemy(source)) then
         actor:Damage(source, self:Index(), DAMAGETYPE_FIRE, damage)
         actor:KnockDown(source, 500)
       end

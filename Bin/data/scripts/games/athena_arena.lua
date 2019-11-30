@@ -34,6 +34,17 @@ local function createTeam(spawn, frnd, foe, rot)
 --    ped2:SetHomePos({x, y, z})
     ped2:AddFriendFoe(frnd, foe)
   end
+  local ped3 = self:AddNpc("/scripts/actors/npcs/electra_staneli.lua")
+  if (ped3 ~= nil) then
+    crowd:Add(ped3)
+    local x = spawn[1] + Random(-1, 1)
+    local z = spawn[3] + Random(-1, 1)
+    local y = self:GetTerrainHeight(x, z)
+    ped3:SetPosition({x, y, z})
+    ped3:SetRotation(rot)
+--    ped2:SetHomePos({x, y, z})
+    ped3:AddFriendFoe(frnd, foe)
+  end
 
   local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
   if (priest ~= nil) then

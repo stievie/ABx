@@ -77,7 +77,7 @@ function onStart()
   end
 
   -- Add some poison
-  local poison = self:AddAreaOfEffect(
+  self:AddAreaOfEffect(
     "/scripts/actors/aoe/general/magic_mushroom.lua",
     nil, 10001, {-14.8, 0.0, 22.98})
 

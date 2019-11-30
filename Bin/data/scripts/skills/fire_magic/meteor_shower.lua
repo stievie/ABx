@@ -45,9 +45,6 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local game = target:GetGame()
-  local position = target:GetPosition();
-  local aoe = game:AddAreaOfEffect("/scripts/actors/aoe/elementarist/meteor_shower.lua",
-    source, self:Index(), position)
+  source:AddAOE("/scripts/actors/aoe/elementarist/meteor_shower.lua", self:Index(), target:GetPosition())
   return SkillErrorNone
 end
