@@ -16,10 +16,13 @@ class Skill;
 
 namespace Components {
 
+// Kepp damage history for 5 seconds
+constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
+
 class DamageComp
 {
 private:
-    struct DamageItem
+    struct DamageStruct
     {
         DamageType type;
         DamagePos pos;
@@ -29,10 +32,18 @@ private:
         uint32_t index;
         int64_t tick;
     };
+    struct DamageItem
+    {
+        bool dirty;
+        DamageStruct damage;
+    };
+
     Actor& owner_;
+    // Damage history kept for DAMAGEHISTORY_TOKEEP
     std::vector<DamageItem> damages_;
     std::weak_ptr<Actor> lastDamager_;
     std::weak_ptr<Actor> lastMeleeDamager_;
+    void ClearDamages();
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner) :
@@ -55,6 +66,9 @@ public:
     uint32_t NoDamageTime() const;
     std::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
     std::shared_ptr<Actor> GetLastMeleeDamager() const { return lastMeleeDamager_.lock(); }
+    bool GotDamageType(DamageType type);
+    bool GotDamageCategory(DamageTypeCategory cat);
+
     bool IsLastDamager(const Actor& actor);
     void Write(Net::NetworkMessage& message);
 

@@ -19,7 +19,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     // Get the armor effect at this pos with the given damage type and armor penetration
     const float am = owner_.GetArmorEffect(type, pos, penetration);
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
-    damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
+    damages_.push_back({ true, { type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ }});
     owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
     {
@@ -40,7 +40,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     const int currLife = owner_.resourceComp_->GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
-    damages_.push_back({ DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ });
+    damages_.push_back({ true, { DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ }});
     owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
         lastDamager_ = source->GetPtr<Actor>();
@@ -90,16 +90,52 @@ void DamageComp::Write(Net::NetworkMessage& message)
 {
     if (damages_.size() == 0)
         return;
-    for (const auto& d : damages_)
+    for (auto& d : damages_)
     {
+        if (!d.dirty)
+            continue;
+
         message.AddByte(AB::GameProtocol::GameObjectDamaged);
         message.Add<uint32_t>(owner_.id_);
-        message.Add<uint32_t>(d.actorId);
-        message.Add<uint16_t>(static_cast<uint16_t>(d.index));
-        message.Add<uint8_t>(static_cast<uint8_t>(d.type));
-        message.Add<int16_t>(static_cast<int16_t>(d.value));
+        message.Add<uint32_t>(d.damage.actorId);
+        message.Add<uint16_t>(static_cast<uint16_t>(d.damage.index));
+        message.Add<uint8_t>(static_cast<uint8_t>(d.damage.type));
+        message.Add<int16_t>(static_cast<int16_t>(d.damage.value));
+        d.dirty = false;
     }
-    damages_.clear();
+    ClearDamages();
+}
+
+void DamageComp::ClearDamages()
+{
+    damages_.erase(std::remove_if(damages_.begin(), damages_.end(), [](const DamageItem& current)
+    {
+        return !current.dirty && (Utils::TimeElapsed(current.damage.tick) > DAMAGEHISTORY_TOKEEP);
+    }), damages_.end());
+}
+
+bool DamageComp::GotDamageType(DamageType type)
+{
+    for (const auto& d : damages_)
+    {
+        if (d.damage.type == type)
+            return true;
+    }
+    return false;
+}
+
+bool DamageComp::GotDamageCategory(DamageTypeCategory cat)
+{
+    if (cat == DamageTypeCategory::Any)
+        // Any damage
+        return damages_.size() != 0;
+
+    for (const auto& d : damages_)
+    {
+        if (IsDamageCategory(d.damage.type, cat))
+            return true;
+    }
+    return false;
 }
 
 }
