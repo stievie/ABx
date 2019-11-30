@@ -429,6 +429,9 @@
     <ClInclude Include="filters\AiSortByDistance.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="filters\AiSelectGettingDamage.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -807,6 +810,9 @@
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
     <ClCompile Include="filters\AiSortByDistance.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectGettingDamage.cpp">
       <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>

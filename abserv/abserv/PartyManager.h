@@ -47,14 +47,12 @@ private:
     void AddToIndex(const Party& party);
 public:
     PartyManager() = default;
-    ~PartyManager()
-    {
-        parties_.clear();
-    }
+    ~PartyManager() = default;
     /// Returns an existing party or creates a new one
     std::shared_ptr<Party> GetByUuid(const std::string& uuid);
     std::shared_ptr<Party> Get(uint32_t partyId) const;
     void Remove(uint32_t partyId);
+    // Update parties game ID
     void SetPartyGameId(uint32_t partyId, uint32_t gameId);
     /// Get all parties in a game. Used by Lua.
     std::vector<Party*> GetByGame(uint32_t gameId) const;

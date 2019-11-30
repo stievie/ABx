@@ -13,3 +13,8 @@ DAMAGETYPE_DARK = 11
 DAMAGETYPE_CHAOS = 12
 -- Not a real damage
 DAMAGETYPE_LIFEDRAIN = 99
+
+DamageCategoryElemental = 1
+DamageCategoryPhysical = 2
+DamageCategoryArmorIgnoring = 3
+DamageCategoryTypeless = 4

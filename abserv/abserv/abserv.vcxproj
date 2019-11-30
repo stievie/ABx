@@ -248,6 +248,7 @@
     <ClInclude Include="filters\AiSelectAttackers.h" />
     <ClInclude Include="filters\AiSelectAttackTarget.h" />
     <ClInclude Include="filters\AiSelectDeadAllies.h" />
+    <ClInclude Include="filters\AiSelectGettingDamage.h" />
     <ClInclude Include="filters\AiSelectTargetAttacking.h" />
     <ClInclude Include="filters\AiSelectTargetUsingSkill.h" />
     <ClInclude Include="filters\AiSelectMob.h" />
@@ -379,6 +380,7 @@
     <ClCompile Include="filters\AiSelectAttackers.cpp" />
     <ClCompile Include="filters\AiSelectAttackTarget.cpp" />
     <ClCompile Include="filters\AiSelectDeadAllies.cpp" />
+    <ClCompile Include="filters\AiSelectGettingDamage.cpp" />
     <ClCompile Include="filters\AiSelectTargetAttacking.cpp" />
     <ClCompile Include="filters\AiSelectTargetUsingSkill.cpp" />
     <ClCompile Include="filters\AiSelectMob.cpp" />

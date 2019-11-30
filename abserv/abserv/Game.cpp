@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "Game.h"
 #include "AreaOfEffect.h"
 #include "ConfigManager.h"
+#include "Crowd.h"
 #include "DataProvider.h"
 #include "Dispatcher.h"
 #include "Effect.h"
-#include "Game.h"
 #include "GameManager.h"
 #include "IOGame.h"
 #include "IOMap.h"
@@ -12,7 +13,6 @@
 #include "ItemFactory.h"
 #include "Logger.h"
 #include "Npc.h"
-#include "PartyManager.h"
 #include "Player.h"
 #include "PlayerManager.h"
 #include "Profiler.h"
@@ -26,7 +26,6 @@
 #include "Subsystems.h"
 #include "ThreadPool.h"
 #include "UuidUtils.h"
-#include "Crowd.h"
 #include <AB/ProtocolCodes.h>
 
 namespace Game {

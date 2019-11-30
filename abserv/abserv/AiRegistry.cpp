@@ -36,6 +36,7 @@
 #include "filters/AiSelectAttackTarget.h"
 #include "filters/AiSelectAttackers.h"
 #include "filters/AiSelectDeadAllies.h"
+#include "filters/AiSelectGettingDamage.h"
 #include "filters/AiSelectLowHealth.h"
 #include "filters/AiSelectMob.h"
 #include "filters/AiSelectRandom.h"
@@ -104,6 +105,7 @@ void AiRegistry::Initialize()
     RegisterFilterFactory("SelectTargetUsingSkill", Filters::SelectTargetUsingSkill::GetFactory());
     RegisterFilterFactory("SelectTargetAttacking", Filters::SelectTargetAttacking::GetFactory());
     RegisterFilterFactory("SortByDistance", Filters::SortByDistance::GetFactory());
+    RegisterFilterFactory("SelectGettingDamage", Filters::SelectGettingDamage::GetFactory());
 }
 
 }

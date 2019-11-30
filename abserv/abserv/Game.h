@@ -1,20 +1,20 @@
 #pragma once
 
-#include <mutex>
-#include <atomic>
+#include "Chat.h"
 #include "Config.h"
-#include "Map.h"
+#include "DataClient.h"
 #include "GameObject.h"
+#include "GameStream.h"
+#include "Map.h"
 #include "NavigationMesh.h"
 #include "NetworkMessage.h"
-#include "Chat.h"
-#include <AB/Entities/Game.h>
-#include <AB/Entities/GameInstance.h>
-#include "GameStream.h"
+#include "PartyManager.h"
 #include "Script.h"
 #include "Subsystems.h"
-#include "DataClient.h"
-#include "PartyManager.h"
+#include <AB/Entities/Game.h>
+#include <AB/Entities/GameInstance.h>
+#include <atomic>
+#include <mutex>
 #include <sa/Iteration.h>
 
 #if defined(GetObject)

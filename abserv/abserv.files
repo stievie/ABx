@@ -117,6 +117,8 @@ abserv/filters/AiSelectAttackTarget.cpp
 abserv/filters/AiSelectAttackTarget.h
 abserv/filters/AiSelectDeadAllies.cpp
 abserv/filters/AiSelectDeadAllies.h
+abserv/filters/AiSelectGettingDamage.cpp
+abserv/filters/AiSelectGettingDamage.h
 abserv/filters/AiSelectLowHealth.cpp
 abserv/filters/AiSelectLowHealth.h
 abserv/filters/AiSelectMob.cpp
