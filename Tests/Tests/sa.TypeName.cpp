@@ -3,6 +3,8 @@
 
 #include <sa/TypeName.h>
 #include <sa/StringHash.h>
+#include <string_view>
+#include <sa/StrongType.h>
 
 class Baz
 {
@@ -15,6 +17,12 @@ class Bar
 
 };
 }
+
+template <typename T>
+struct TemplateStruct
+{
+
+};
 
 TEST_CASE("TypeName no NS")
 {
@@ -46,4 +54,16 @@ TEST_CASE("TypeName Hash")
     constexpr size_t hash = sa::StringHash(res);
     INFO(hash);
     REQUIRE(hash == sa::StringHashRt(res.data(), res.size()));
+}
+
+TEST_CASE("Template type")
+{
+    constexpr auto res = sa::TypeName<TemplateStruct<int>>::Get();
+    INFO(res);
+#if defined __GNUC__
+    REQUIRE(res.compare("TemplateStruct<int>") == 0);
+#else
+    // struct TemplateStruct<int>
+    REQUIRE(res.compare("struct TemplateStruct<int> ") == 0);
+#endif
 }
