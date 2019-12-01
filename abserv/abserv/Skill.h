@@ -40,6 +40,7 @@ enum class CostType
     Energy,
     Adrenaline,
     HpSacrify,
+    Recharge
 };
 
 class Skill

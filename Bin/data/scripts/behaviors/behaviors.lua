@@ -8,4 +8,5 @@ function init(cache)
   cache:Add(tree("dorothea_samara", "/scripts/behaviors/dorothea_samara.lua"))
   cache:Add(tree("priest", "/scripts/behaviors/priest.lua"))
   cache:Add(tree("smith", "/scripts/behaviors/smith.lua"))
+  cache:Add(tree("elementarist", "/scripts/behaviors/elementarist.lua"))
 end

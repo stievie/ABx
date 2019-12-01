@@ -238,14 +238,15 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
             return Iteration::Continue;
 
         skillIndices.push_back(index);
-        // Calculate some score, depending on activation time, costs...
+        // Calculate some score, depending on activation time, costs.... Smaller is better
         sorting[index] = current.CalculateCost([this, &current](CostType type)
         {
             switch (type)
             {
             case CostType::Activation:
-                // Activation always plays a role
-                return 1.0f;
+                return 0.5f;
+            case CostType::Recharge:
+                return 0.1f;
             case CostType::Energy:
             {
                 const float er = resourceComp_->GetEnergyRatio();

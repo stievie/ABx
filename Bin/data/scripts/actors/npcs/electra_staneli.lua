@@ -9,7 +9,7 @@ sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_ELEMENTARIST
 prof2Index = PROFESSIONINDEX_NONE
-behavior = "dorothea_samara"
+behavior = "elementarist"
 
 local startTick;
 
@@ -18,10 +18,10 @@ function onInit()
   self:SetSpeed(0.5)
 
   local skillBar = self:GetSkillBar()
-  skillBar:AddSkill(884)
-  skillBar:AddSkill(1379)
-  skillBar:AddSkill(191)
   skillBar:AddSkill(192)
+--  skillBar:AddSkill(884)
+--  skillBar:AddSkill(1379)
+--  skillBar:AddSkill(191)
   skillBar:SetAttributeValue(ATTRIB_ENERGY_STORAGE, 12)
   skillBar:SetAttributeValue(ATTRIB_FIRE, 12)
 

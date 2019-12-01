@@ -228,18 +228,39 @@ bool Skill::Interrupt()
 float Skill::CalculateCost(const std::function<float(CostType)>& importanceCallback) const
 {
     float result = 0.0f;
+    int c = 0;
     if (activation_ > 0)
+    {
         result += importanceCallback(CostType::Activation) * activation_;
+        ++c;
+    }
     if (energy_ > 0)
+    {
         result += importanceCallback(CostType::Energy) * energy_;
+        ++c;
+    }
     if (adrenaline_ > 0)
+    {
         result += importanceCallback(CostType::Adrenaline) * adrenaline_;
+        ++c;
+    }
     if (hp_ > 0)
+    {
         result += importanceCallback(CostType::HpSacrify) * hp_;
+        ++c;
+    }
     if (overcast_ > 0)
+    {
         result += importanceCallback(CostType::HpSacrify) * overcast_;
+        ++c;
+    }
+    if (recharge_ > 0)
+    {
+        result += importanceCallback(CostType::Recharge) * recharge_;
+        ++c;
+    }
 
-    return result;
+    return result / static_cast<float>(c);
 }
 
 bool Skill::IsInRange(const Actor* target) const
