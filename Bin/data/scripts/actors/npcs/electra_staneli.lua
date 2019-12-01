@@ -18,8 +18,11 @@ function onInit()
   self:SetSpeed(0.5)
 
   local skillBar = self:GetSkillBar()
+  skillBar:AddSkill(884)
+  skillBar:AddSkill(1379)
+  skillBar:AddSkill(191)
   skillBar:AddSkill(192)
-  skillBar:SetAttributeValue(ATTRIB_ENERGY_STORAGE, 9)
+  skillBar:SetAttributeValue(ATTRIB_ENERGY_STORAGE, 12)
   skillBar:SetAttributeValue(ATTRIB_FIRE, 12)
 
   return true

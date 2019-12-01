@@ -78,6 +78,7 @@ private:
     void _LuaAddAOE(const std::string& script,
         uint32_t index,
         const Math::STLVector3& pos);
+    bool _LuaHasEffect(uint32_t index);
     /// Get lower 16 bits of the group mask
     uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
     /// Get upper 16 bits of the group mask

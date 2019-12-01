@@ -3,8 +3,7 @@ include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 include("/scripts/includes/attributes.lua")
 
--- FIXME: This needs an item index
-itemIndex = 6000
+itemIndex = 6001
 effect = SkillEffectDamage
 effectTarget = SkillTargetAoe
 

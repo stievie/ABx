@@ -82,7 +82,10 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
     if (!script_->Execute(luaState_))
         return false;
 
-    itemIndex_ = luaState_["itemIndex"];
+    if (Lua::IsNumber(luaState_, "itemIndex"))
+        itemIndex_ = luaState_["itemIndex"];
+    else
+        LOG_WARNING << "AOE " << fileName << " does not have an itemIndex" << std::endl;
     if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
     else

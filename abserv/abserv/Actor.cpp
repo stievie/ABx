@@ -56,6 +56,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetSpeed", &Actor::SetSpeed)
         .addFunction("AddSpeed", &Actor::AddSpeed)
         .addFunction("AddEffect", &Actor::_LuaAddEffect)
+        .addFunction("HasEffect", &Actor::_LuaHasEffect)
         .addFunction("IsMoving", &Actor::IsMoving)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
         .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
@@ -352,6 +353,11 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
     effectsComp_->AddEffect(source ? source->GetPtr<Actor>() : std::shared_ptr<Actor>(), index, time);
+}
+
+bool Actor::_LuaHasEffect(uint32_t index)
+{
+    return effectsComp_->HasEffect(index);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)
