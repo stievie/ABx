@@ -14,16 +14,13 @@ namespace Game {
 
 void Party::RegisterLua(kaguya::State& state)
 {
-    state["Party"].setClass(kaguya::UserdataMetatable<Party>()
-        .addFunction("GetLeader", &Party::_LuaGetLeader)
+    state["Party"].setClass(kaguya::UserdataMetatable<Party, Group>()
         .addFunction("ChangeInstance", &Party::ChangeInstance)
         .addFunction("Defeat", &Party::Defeat)
         .addFunction("IsDefeated", &Party::IsDefeated)
         .addFunction("KillAll", &Party::KillAll)
         .addFunction("GetRandomPlayer", &Party::GetRandomPlayer)
         .addFunction("GetRandomPlayerInRange", &Party::GetRandomPlayerInRange)
-        .addFunction("GetMember", &Party::_LuaGetMember)
-        .addFunction("GetMemberCount", &Party::_LuaGetMemberCount)
         .addFunction("GetVarString", &Party::_LuaGetVarString)
         .addFunction("SetVarString", &Party::_LuaSetVarString)
         .addFunction("GetVarNumber", &Party::_LuaGetVarNumber)
@@ -32,7 +29,7 @@ void Party::RegisterLua(kaguya::State& state)
 }
 
 Party::Party() :
-    id_(Group::GetNewId())
+    Group(Group::GetNewId())
 {
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
@@ -61,12 +58,6 @@ size_t Party::GetDataPos(const Player& player)
     return index + 1;
 }
 
-Player* Party::_LuaGetLeader()
-{
-    auto leader = GetLeader();
-    return leader ? leader.get() : nullptr;
-}
-
 std::string Party::_LuaGetVarString(const std::string& name)
 {
     return GetVar(name).GetString();
@@ -87,21 +78,7 @@ void Party::_LuaSetVarNumber(const std::string& name, float value)
     SetVar(name, Utils::Variant(value));
 }
 
-Actor* Party::_LuaGetMember(int index)
-{
-    if (index >= static_cast<int>(members_.size()))
-        return nullptr;
-    if (auto m = members_.at(static_cast<size_t>(index)).lock())
-        return m.get();
-    return nullptr;
-}
-
-int Party::_LuaGetMemberCount()
-{
-    return static_cast<int>(members_.size());
-}
-
-bool Party::Add(std::shared_ptr<Player> player)
+bool Party::AddPlayer(std::shared_ptr<Player> player)
 {
     if (!player)
         return false;
@@ -120,7 +97,7 @@ bool Party::Add(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::Set(std::shared_ptr<Player> player)
+bool Party::SetPlayer(std::shared_ptr<Player> player)
 {
     if (!player)
         return false;
@@ -129,7 +106,7 @@ bool Party::Set(std::shared_ptr<Player> player)
     if (pos == 0)
     {
         // Not in data_ -> append it
-        return Add(player);
+        return AddPlayer(player);
     }
     if (pos == GetPosition(player.get()))
         // Already here
@@ -140,9 +117,9 @@ bool Party::Set(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::Remove(Player& player, bool newParty /* = true */)
+bool Party::RemovePlayer(Player& player, bool newParty /* = true */)
 {
-    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Player>& current)
+    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Actor>& current)
     {
         if (auto p = current.lock())
             return (p->id_ == player.id_);
@@ -203,12 +180,12 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
     if (defeatedTick_ == 0)
     {
         size_t resigned = 0;
-        VisitMembers([&resigned] (Player& player) {
+        VisitPlayers([&resigned] (Player& player) {
             if (player.IsResigned())
                 ++resigned;
             return Iteration::Continue;
         });
-        if (resigned == GetValidMemberCount())
+        if (resigned == GetValidPlayerCount())
         {
             defeatedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyResigned);
@@ -239,7 +216,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
 void Party::WriteToMembers(const Net::NetworkMessage& message)
 {
-    VisitMembers([&message](Player& player) {
+    VisitPlayers([&message](Player& player) {
         player.WriteToOutput(message);
         return Iteration::Continue;
     });
@@ -253,10 +230,10 @@ void Party::SetPartySize(size_t size)
     maxMembers_ = static_cast<uint32_t>(size);
 }
 
-inline size_t Party::GetValidMemberCount() const
+inline size_t Party::GetValidPlayerCount() const
 {
     size_t result = 0;
-    VisitMembers([&result](Player&) {
+    VisitPlayers([&result](Player&) {
         ++result;
         return Iteration::Continue;
     });
@@ -265,7 +242,7 @@ inline size_t Party::GetValidMemberCount() const
 
 bool Party::IsMember(const Player& player) const
 {
-    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Actor>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -298,50 +275,10 @@ bool Party::IsLeader(const Player& player) const
     return false;
 }
 
-Player* Party::GetRandomPlayer() const
-{
-    if (members_.size() == 0)
-        return nullptr;
-
-    auto* rng = GetSubsystem<Crypto::Random>();
-    const float rnd = rng->GetFloat();
-    using iterator = std::vector<std::weak_ptr<Player>>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
-    if (it != members_.end())
-    {
-        if (auto p = (*it).lock())
-            return p.get();
-    }
-    return nullptr;
-}
-
-Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
-{
-    if (members_.size() == 0 || actor == nullptr)
-        return nullptr;
-    std::vector<Player*> players;
-    VisitMembers([&](Player& player) {
-        if (actor->IsInRange(range, &player))
-            players.push_back(&player);
-        return Iteration::Continue;
-    });
-    if (players.size() == 0)
-        return nullptr;
-
-    auto* rng = GetSubsystem<Crypto::Random>();
-    const float rnd = rng->GetFloat();
-    using iterator = std::vector<Player*>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
-    if (it != players.end())
-        return (*it);
-
-    return nullptr;
-}
-
 void Party::KillAll()
 {
-    VisitMembers([](Player& player) {
-        player.Die();
+    VisitMembers([](Actor& actor) {
+        actor.Die();
         return Iteration::Continue;
     });
 }
@@ -353,7 +290,7 @@ void Party::Defeat()
 
 void Party::TeleportBack()
 {
-    auto member = GetAnyMember();
+    auto member = GetAnyPlayer();
     if (member)
         ChangeInstance(member->data_.lastOutpostUuid);
 }
@@ -373,7 +310,7 @@ size_t Party::GetPosition(const Actor* actor) const
 
 void Party::ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid)
 {
-    VisitMembers([&](Player& player)
+    VisitPlayers([&](Player& player)
     {
         player.ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
         return Iteration::Continue;
@@ -424,10 +361,68 @@ void Party::ChangeInstance(const std::string& mapUuid)
         LOG_ERROR << "Failed to get game " << mapUuid << std::endl;
         return;
     }
-    VisitMembers([&mapUuid, &game] (Player& player) {
+    VisitPlayers([&mapUuid, &game] (Player& player) {
         player.ChangeInstance(mapUuid, game->instanceData_.uuid);
         return Iteration::Continue;
     });
+}
+
+std::shared_ptr<Player> Party::GetAnyPlayer() const
+{
+    if (members_.size() == 0)
+        return std::shared_ptr<Player>();
+    for (const auto& m : members_)
+    {
+        if (auto sm = m.lock())
+        {
+            if (Is<Player>(*sm))
+                return To<Player>(*sm).GetPtr<Player>();
+        }
+    }
+    return std::shared_ptr<Player>();
+}
+
+Player* Party::GetRandomPlayer() const
+{
+    if (members_.size() == 0)
+        return nullptr;
+
+    std::vector<Player*> players;
+    VisitPlayers([&players](Player& current) {
+       players.push_back(&current);
+       return Iteration::Continue;
+    });
+
+    auto* rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
+    using iterator = std::vector<Player*>::const_iterator;
+    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
+    if (it != players.end())
+        return (*it);
+    return nullptr;
+}
+
+Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
+{
+    if (members_.size() == 0 || actor == nullptr)
+        return nullptr;
+    std::vector<Player*> players;
+    VisitPlayers([&](Player& current) {
+        if (actor->IsInRange(range, &current))
+            players.push_back(&current);
+        return Iteration::Continue;
+    });
+    if (players.size() == 0)
+        return nullptr;
+
+    auto* rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
+    using iterator = std::vector<Player*>::const_iterator;
+    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
+    if (it != players.end())
+        return (*it);
+
+    return nullptr;
 }
 
 }

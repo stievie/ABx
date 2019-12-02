@@ -133,7 +133,7 @@ void Game::RegisterLua(kaguya::State& state)
         // Get player of game by ID or name
         .addFunction("GetPlayer", &Game::GetPlayerById)
         .addFunction("GetParties", &Game::_LuaGetParties)
-        .addFunction("GetCrowd", &Game::GetCrowd)
+        .addFunction("GetGroup", &Game::GetGroup)
         .addFunction("AddCrowd", &Game::AddCrowd)
 
         .addFunction("GetTerrainHeight", &Game::_LuaGetTerrainHeight)
@@ -713,12 +713,16 @@ Crowd* Game::AddCrowd()
     return result;
 }
 
-Crowd* Game::GetCrowd(uint32_t id)
+Group* Game::GetGroup(uint32_t id)
 {
     const auto it = crowds_.find(id);
-    if (it == crowds_.end())
-        return nullptr;
-    return (*it).second.get();
+    if (it != crowds_.end())
+        return (*it).second.get();
+    auto pMngr = GetSubsystem<PartyManager>();
+    auto party = pMngr->Get(id);
+    if (party)
+        return party.get();
+    return nullptr;
 }
 
 }

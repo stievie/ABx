@@ -25,7 +25,7 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
     if (npc.IsImmobilized())
         return Status::Failed;
 
-    Game::Crowd* crowd = npc.GetCrowd();
+    Game::Group* crowd = npc.GetGroup();
 
     if (crowd && crowd->GetLeader() && crowd->GetLeader() != &npc)
     {

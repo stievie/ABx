@@ -60,7 +60,7 @@ void Player::SetGame(std::shared_ptr<Game> game)
     party_->ClearInvites();
     if (game)
     {
-        GetSubsystem<PartyManager>()->SetPartyGameId(party_->id_, game->id_);
+        GetSubsystem<PartyManager>()->SetPartyGameId(party_->GetId(), game->id_);
         if (party_->IsLeader(*this))
             party_->SetPartySize(game->data_.partySize);
     }
@@ -708,9 +708,9 @@ void Player::SetParty(std::shared_ptr<Party> party)
 {
     if (party_)
     {
-        if (party && (party_->id_ == party->id_))
+        if (party && (party_->GetId() == party->GetId()))
             return;
-        party_->Remove(*this, false);
+        party_->RemovePlayer(*this, false);
         SetGroupId(0);
     }
 
@@ -718,7 +718,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
     {
         party_ = party;
         data_.partyUuid = party->data_.uuid;
-        SetGroupId(party_->id_);
+        SetGroupId(party_->GetId());
     }
     else
     {
@@ -727,9 +727,9 @@ void Player::SetParty(std::shared_ptr<Party> party)
         party_ = GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid);
         party_->SetPartySize(GetGame()->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
-        SetGroupId(party_->id_);
+        SetGroupId(party_->GetId());
     }
-    party_->Set(GetPtr<Player>());
+    party_->SetPlayer(GetPtr<Player>());
 }
 
 void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
@@ -776,7 +776,7 @@ void Player::CRQPartyInvitePlayer(uint32_t playerId)
             nmsg->AddByte(AB::GameProtocol::PartyPlayerInvited);
             nmsg->Add<uint32_t>(id_);                             // Leader
             nmsg->Add<uint32_t>(playerId);                        // Invitee
-            nmsg->Add<uint32_t>(party_->id_);
+            nmsg->Add<uint32_t>(party_->GetId());
             // Send us confirmation
             party_->WriteToMembers(*nmsg);
             // Send player he was invited
@@ -806,7 +806,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
         auto nmsg = Net::NetworkMessage::GetNew();
         if (party_->IsMember(*player))
         {
-            if (!party_->Remove(*player))
+            if (!party_->RemovePlayer(*player))
                 return;
             nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
             removedMember = true;
@@ -822,7 +822,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
 
         nmsg->Add<uint32_t>(id_);                 // Leader
         nmsg->Add<uint32_t>(playerId);            // Member
-        nmsg->Add<uint32_t>(party_->id_);
+        nmsg->Add<uint32_t>(party_->GetId());
         party_->WriteToMembers(*nmsg);
 
         // Also send to player which is removed already
@@ -837,7 +837,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(player->id_);                           // Acceptor
         nmsg->Add<uint32_t>(player->id_);                           // Leader
-        nmsg->Add<uint32_t>(player->GetParty()->id_);
+        nmsg->Add<uint32_t>(player->GetParty()->GetId());
         player->GetParty()->WriteToMembers(*nmsg);
     }
 }
@@ -854,9 +854,9 @@ void Player::PartyLeave()
         auto leader = party_->GetLeader();
         nmsg->Add<uint32_t>(leader ? leader->id_ : 0);
         nmsg->Add<uint32_t>(id_);
-        nmsg->Add<uint32_t>(party_->id_);
+        nmsg->Add<uint32_t>(party_->GetId());
         party_->WriteToMembers(*nmsg);
-        party_->Remove(*this);
+        party_->RemovePlayer(*this);
     }
 
     {
@@ -866,7 +866,7 @@ void Player::PartyLeave()
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(id_);                           // Acceptor
         nmsg->Add<uint32_t>(id_);                           // Leader
-        nmsg->Add<uint32_t>(party_->id_);
+        nmsg->Add<uint32_t>(party_->GetId());
         party_->WriteToMembers(*nmsg);
     }
 }
@@ -893,7 +893,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
             nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
             nmsg->Add<uint32_t>(id_);                           // Acceptor
             nmsg->Add<uint32_t>(playerId);                      // Leader
-            nmsg->Add<uint32_t>(party_->id_);
+            nmsg->Add<uint32_t>(party_->GetId());
             party_->WriteToMembers(*nmsg);
 #ifdef DEBUG_GAME
             LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->id_ << std::endl;
@@ -917,7 +917,7 @@ void Player::CRQPartyRejectInvite(uint32_t inviterId)
             nmsg->AddByte(AB::GameProtocol::PartyInviteRemoved);
             nmsg->Add<uint32_t>(inviterId);                // Leader
             nmsg->Add<uint32_t>(id_);                      // We
-            nmsg->Add<uint32_t>(leader->GetParty()->id_);
+            nmsg->Add<uint32_t>(leader->GetParty()->GetId());
             // Inform the party
             leader->GetParty()->WriteToMembers(*nmsg);
             // Inform us
@@ -1391,7 +1391,7 @@ void Player::HandleGeneralChatCommand(const std::string& arguments, Net::Network
 
 void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->id_);
+    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->GetId());
     if (channel)
         channel->Talk(*this, arguments);
 }

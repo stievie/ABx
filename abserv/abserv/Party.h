@@ -17,10 +17,9 @@ class Player;
 class Actor;
 class PartyChatChannel;
 
-class Party : public std::enable_shared_from_this<Party>
+class Party final : public Group, public std::enable_shared_from_this<Party>
 {
 private:
-    std::vector<std::weak_ptr<Player>> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
     std::shared_ptr<PartyChatChannel> chatChannel_;
@@ -37,13 +36,10 @@ private:
     }
     /// 1-base position
     size_t GetDataPos(const Player& player);
-    Player* _LuaGetLeader();
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
-    Actor* _LuaGetMember(int index);
-    int _LuaGetMemberCount();
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -55,60 +51,45 @@ public:
     ~Party();
 
     /// Append player
-    bool Add(std::shared_ptr<Player> player);
+    bool AddPlayer(std::shared_ptr<Player> player);
     /// Insert at the position in data_
-    bool Set(std::shared_ptr<Player> player);
-    bool Remove(Player& player, bool newParty = true);
+    bool SetPlayer(std::shared_ptr<Player> player);
+    bool RemovePlayer(Player& player, bool newParty = true);
     bool Invite(std::shared_ptr<Player> player);
     bool RemoveInvite(std::shared_ptr<Player> player);
     /// Clear all invites
     void ClearInvites();
+    const std::vector<std::weak_ptr<Actor>>& GetMembers() const { return members_; }
+    Player* GetRandomPlayer() const;
+    Player* GetRandomPlayerInRange(const Actor* actor, Ranges range) const;
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
     void WriteToMembers(const Net::NetworkMessage& message);
 
     void SetPartySize(size_t size);
-    inline size_t GetValidMemberCount() const;
+    inline size_t GetValidPlayerCount() const;
     inline size_t GetMemberCount() const { return members_.size(); }
-    const std::vector<std::weak_ptr<Player>>& GetMembers() const
-    {
-        return members_;
-    }
     /// Iteration callback(Player& player)
-    template<typename Callback>
-    inline void VisitMembers(const Callback& callback) const
+    template <typename Callback>
+    void VisitPlayers(const Callback callback) const
     {
-        for (auto& wm : members_)
+        for (auto& m : members_)
         {
-            if (auto sm = wm.lock())
-                if (callback(*sm) != Iteration::Continue)
+            if (auto sm = m.lock())
+            {
+                if (!Is<Player>(*sm))
+                    continue;
+                auto& p = To<Player>(*sm);
+                if (callback(p) != Iteration::Continue)
                     break;
+            }
         }
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
     bool IsMember(const Player& player) const;
     bool IsInvited(const Player& player) const;
     bool IsLeader(const Player& player) const;
-    std::shared_ptr<Player> GetLeader() const
-    {
-        if (members_.size() == 0)
-            return std::shared_ptr<Player>();
-        return members_[0].lock();
-    }
-    std::shared_ptr<Player> GetAnyMember() const
-    {
-        if (members_.size() == 0)
-            return std::shared_ptr<Player>();
-        for (const auto& m : members_)
-        {
-            if (auto sm = m.lock())
-                return sm;
-        }
-        return std::shared_ptr<Player>();
-    }
-    /// Return a random Player of this Party
-    Player* GetRandomPlayer() const;
-    Player* GetRandomPlayerInRange(const Actor* actor, Ranges range) const;
+    std::shared_ptr<Player> GetAnyPlayer() const;
     void KillAll();
     void Defeat();
     bool IsDefeated() const { return defeated_; }
@@ -126,7 +107,6 @@ public:
     const Utils::Variant& GetVar(const std::string& name) const;
     void SetVar(const std::string& name, const Utils::Variant& val);
 
-    uint32_t id_;
     AB::Entities::Party data_;
     /// Get the ID of the game the members are in
     uint32_t gameId_{ 0 };

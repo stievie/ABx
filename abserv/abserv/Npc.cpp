@@ -37,7 +37,6 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetWander", &Npc::SetWander)
         .addFunction("AddWanderPoint", &Npc::_LuaAddWanderPoint)
         .addFunction("AddWanderPoints", &Npc::_LuaAddWanderPoints)
-        .addFunction("GetCrowd", &Npc::GetCrowd)
     );
 }
 
@@ -77,9 +76,9 @@ Npc::Npc() :
 
 Npc::~Npc()
 {
-    auto* crowd = GetCrowd();
-    if (crowd)
-        crowd->Remove(id_);
+    auto* group = GetGroup();
+    if (group)
+        group->Remove(id_);
 }
 
 bool Npc::LoadScript(const std::string& fileName)
@@ -488,13 +487,6 @@ void Npc::OnResurrected(int, int)
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onResurrected");
-}
-
-Crowd* Npc::GetCrowd()
-{
-    if (auto g = GetGame())
-        return g->GetCrowd(GetGroupId());
-    return nullptr;
 }
 
 }

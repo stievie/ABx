@@ -5,6 +5,7 @@
 #include <sa/Iteration.h>
 #include <sa/IdGenerator.h>
 #include <kaguya/kaguya.hpp>
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -21,8 +22,10 @@ enum class TeamColor
 class Group
 {
 private:
-    void _LuaAdd(Actor* actor);
-    void _LuaRemove(Actor* actor);
+    bool _LuaAdd(Actor* actor);
+    bool _LuaRemove(Actor* actor);
+    Actor* _LuaGetMember(int index);
+    int _LuaGetMemberCount();
 protected:
     std::vector<std::weak_ptr<Actor>> members_;
     TeamColor color_{ TeamColor::Default };
@@ -45,11 +48,15 @@ public:
     bool IsEnemy(const Group* other) const;
     bool IsAlly(const Group* other) const;
 
-    void Add(std::shared_ptr<Actor> actor);
-    void Remove(uint32_t id);
+    bool Add(std::shared_ptr<Actor> actor);
+    bool Remove(uint32_t id);
     Actor* GetLeader() const;
+
+    Actor* GetRandomMember() const;
+    Actor* GetRandomMemberInRange(const Actor* actor, Ranges range) const;
+
     template <typename Callback>
-    void VisistMembers(const Callback callback)
+    void VisitMembers(const Callback callback) const
     {
         for (auto& m : members_)
         {

@@ -10,7 +10,7 @@ namespace Conditions {
 bool IsFighting::Evaluate(Agent& agent, const Node&)
 {
     auto& npc = GetNpc(agent);
-    Game::Crowd* crowd = npc.GetCrowd();
+    Game::Group* crowd = npc.GetGroup();
     if (!crowd)
     {
         return (Utils::TimeElapsed(npc.damageComp_->lastDamage_) < 1000) ||
@@ -18,7 +18,7 @@ bool IsFighting::Evaluate(Agent& agent, const Node&)
     }
 
     bool result = false;
-    crowd->VisistMembers([&result](const Game::Actor& current)
+    crowd->VisitMembers([&result](const Game::Actor& current)
     {
         result = (Utils::TimeElapsed(current.damageComp_->lastDamage_) < 1000) ||
             current.attackComp_->IsAttackState();

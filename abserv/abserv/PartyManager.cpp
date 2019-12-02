@@ -9,7 +9,7 @@ namespace Game {
 void PartyManager::AddToIndex(const Party& party)
 {
     partyIndex_.insert({
-       party.id_,
+       party.GetId(),
        party.data_.uuid,
        party.gameId_
    });
@@ -53,7 +53,7 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 
     std::shared_ptr<Party> result = std::make_shared<Party>();
     result->data_ = std::move(p);
-    parties_[result->id_] = result;
+    parties_[result->GetId()] = result;
     AddToIndex(*result);
     return result;
 }

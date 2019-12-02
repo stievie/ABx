@@ -56,6 +56,7 @@ constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
 constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
 
 class AreaOfEffect;
+class Group;
 
 /// Player, NPC, Monster some such
 class Actor : public GameObject
@@ -140,6 +141,7 @@ public:
     size_t GetAllyCountInRange(Ranges range) const;
     Actor* GetClosestEnemy(bool undestroyable, bool unselectable);
     Actor* GetClosestAlly(bool undestroyable, bool unselectable);
+    Group* GetGroup() const;
     Item* GetWeapon() const;
 
     void HeadTo(const Math::Vector3& pos);

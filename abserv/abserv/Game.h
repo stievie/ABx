@@ -154,7 +154,7 @@ public:
     }
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);
-    Crowd* GetCrowd(uint32_t id);
+    Group* GetGroup(uint32_t id);
     Crowd* AddCrowd();
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);

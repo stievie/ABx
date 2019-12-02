@@ -305,7 +305,7 @@ bool PartyChatChannel::Talk(Player& player, const std::string& text)
         msg->Add<uint32_t>(player.id_);
         msg->AddString(player.GetName());
         msg->AddString(text);
-        party_->VisitMembers([&player, &msg](Player& _player) {
+        party_->VisitPlayers([&player, &msg](Player& _player) {
             if (_player.IsIgnored(player))
                 return Iteration::Continue;
             _player.WriteToOutput(*msg);
@@ -326,7 +326,7 @@ bool PartyChatChannel::TalkNpc(Npc& npc, const std::string& text)
         msg->Add<uint32_t>(npc.id_);
         msg->AddString(npc.GetName());
         msg->AddString(text);
-        party_->VisitMembers([&msg](auto& player) {
+        party_->VisitPlayers([&msg](auto& player) {
             player.WriteToOutput(*msg);
             return Iteration::Continue;
         });

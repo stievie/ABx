@@ -17,6 +17,7 @@
 #include "TemplateEncoder.h"
 #include "AreaOfEffect.h"
 #include <AB/ProtocolCodes.h>
+#include "Group.h"
 
 namespace Game {
 
@@ -71,6 +72,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("IsAlly", &Actor::IsAlly)
         .addFunction("AddFriendFoe", &Actor::AddFriendFoe)
         .addFunction("RemoveFriendFoe", &Actor::RemoveFriendFoe)
+        .addFunction("GetGroup", &Actor::GetGroup)
 
         .addFunction("SetSpawnPoint", &Actor::SetSpawnPoint)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
@@ -1032,6 +1034,13 @@ void Actor::_LuaAddAOE(const std::string& script, uint32_t index,
     const Math::STLVector3& pos)
 {
     GetGame()->AddAreaOfEffect(script, GetPtr<Actor>(), index, pos);
+}
+
+Group* Actor::GetGroup() const
+{
+    if (auto g = GetGame())
+        return g->GetGroup(GetGroupId());
+    return nullptr;
 }
 
 }
