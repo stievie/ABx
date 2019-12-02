@@ -16,6 +16,8 @@ damageType = DAMAGETYPE_FIRE
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget | SkillTargetAoe
 
+local position;
+
 function onStartUse(source, target)
   if (target == nil) then
     -- This skill needs a target
@@ -38,13 +40,11 @@ function onStartUse(source, target)
     return SkillErrorInvalidTarget
   end
   source:FaceObject(target)
+  position = target:GetPosition()
   return SkillErrorNone
 end
 
 function onSuccess(source, target)
-  if (target:IsDead()) then
-    return SkillErrorInvalidTarget
-  end
-  source:AddAOE("/scripts/actors/aoe/elementarist/meteor_shower.lua", self:Index(), target:GetPosition())
+  source:AddAOE("/scripts/actors/aoe/elementarist/meteor_shower.lua", self:Index(), position)
   return SkillErrorNone
 end

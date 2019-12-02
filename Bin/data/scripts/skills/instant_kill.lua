@@ -34,7 +34,9 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
-  -- print("Using Instant Kill on " .. target:GetName())
+  if (target == nil) then
+    return SkillErrorInvalidTarget
+  end
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end

@@ -29,6 +29,9 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
+  if (target == nil) then
+    return SkillErrorInvalidTarget
+  end
   if (target:IsDead() == false) then
     return SkillErrorInvalidTarget
   end
