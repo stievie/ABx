@@ -7,7 +7,6 @@
 #include "Actor.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
-#include "Party.h"
 #include "QuestComp.h"
 #include <AB/Entities/FriendList.h>
 
@@ -16,6 +15,7 @@ namespace Game {
 class PlayerManager;
 class MailBox;
 class FriendList;
+class Party;
 
 class Player final : public Actor
 {

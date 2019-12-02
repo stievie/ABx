@@ -15,6 +15,7 @@
 #include "Logger.h"
 #include "MailBox.h"
 #include "PartyManager.h"
+#include "Party.h"
 #include "Player.h"
 #include "PlayerManager.h"
 #include "Profiler.h"

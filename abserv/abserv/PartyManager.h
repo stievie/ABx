@@ -20,8 +20,8 @@ private:
     struct PartyIndexItem
     {
         uint32_t partyId;
-        std::string partyUuid;
         uint32_t gameId;
+        std::string partyUuid;
     };
     struct PartyIdTag {};
     struct PartyUuidTag {};

@@ -73,6 +73,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("AddFriendFoe", &Actor::AddFriendFoe)
         .addFunction("RemoveFriendFoe", &Actor::RemoveFriendFoe)
         .addFunction("GetGroup", &Actor::GetGroup)
+        .addFunction("GetGroupId", &Actor::GetGroupId)
+        .addFunction("SetGroupId", &Actor::SetGroupId)
 
         .addFunction("SetSpawnPoint", &Actor::SetSpawnPoint)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)

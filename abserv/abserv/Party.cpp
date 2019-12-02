@@ -425,4 +425,19 @@ Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
     return nullptr;
 }
 
+void Party::VisitPlayers(const std::function<Iteration(Player& current)>& callback) const
+{
+    for (auto& m : members_)
+    {
+        if (auto sm = m.lock())
+        {
+            if (!Is<Player>(*sm))
+                continue;
+            auto& p = To<Player>(*sm);
+            if (callback(p) != Iteration::Continue)
+                break;
+        }
+    }
+}
+
 }

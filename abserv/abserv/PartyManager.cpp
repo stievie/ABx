@@ -9,9 +9,9 @@ namespace Game {
 void PartyManager::AddToIndex(const Party& party)
 {
     partyIndex_.insert({
-       party.GetId(),
-       party.data_.uuid,
-       party.gameId_
+        party.GetId(),
+        party.gameId_,
+        party.data_.uuid
    });
 }
 
@@ -23,8 +23,8 @@ void PartyManager::SetPartyGameId(uint32_t partyId, uint32_t gameId)
     {
         idIndex.replace(its, {
             its->partyId,
-            its->partyUuid,
-            gameId
+            gameId,
+            its->partyUuid
         });
     }
 

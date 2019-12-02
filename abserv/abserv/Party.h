@@ -13,9 +13,8 @@
 
 namespace Game {
 
-class Player;
-class Actor;
 class PartyChatChannel;
+class Player;
 
 class Party final : public Group, public std::enable_shared_from_this<Party>
 {
@@ -69,22 +68,7 @@ public:
     void SetPartySize(size_t size);
     inline size_t GetValidPlayerCount() const;
     inline size_t GetMemberCount() const { return members_.size(); }
-    /// Iteration callback(Player& player)
-    template <typename Callback>
-    void VisitPlayers(const Callback callback) const
-    {
-        for (auto& m : members_)
-        {
-            if (auto sm = m.lock())
-            {
-                if (!Is<Player>(*sm))
-                    continue;
-                auto& p = To<Player>(*sm);
-                if (callback(p) != Iteration::Continue)
-                    break;
-            }
-        }
-    }
+    void VisitPlayers(const std::function<Iteration(Player& current)>& callback) const;
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
     bool IsMember(const Player& player) const;
     bool IsInvited(const Player& player) const;
