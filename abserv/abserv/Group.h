@@ -4,6 +4,7 @@
 #include <memory>
 #include <sa/Iteration.h>
 #include <sa/IdGenerator.h>
+#include <kaguya/kaguya.hpp>
 
 namespace Game {
 
@@ -11,7 +12,7 @@ class Actor;
 
 enum class TeamColor
 {
-    NothingSpecial = 0,
+    Default = 0,
     Red,
     Blue,
     Yellow
@@ -19,9 +20,12 @@ enum class TeamColor
 
 class Group
 {
+private:
+    void _LuaAdd(Actor* actor);
+    void _LuaRemove(Actor* actor);
 protected:
     std::vector<std::weak_ptr<Actor>> members_;
-    TeamColor color_{ TeamColor::NothingSpecial };
+    TeamColor color_{ TeamColor::Default };
     uint32_t id_;
 public:
     static sa::IdGenerator<uint32_t> groupIds_;
@@ -30,15 +34,20 @@ public:
     {
         return groupIds_.Next();
     }
+    static void RegisterLua(kaguya::State& state);
 
     explicit Group(uint32_t id);
     Group(uint32_t id, TeamColor color);
 
     TeamColor GetColor() const { return color_; }
+    void SetColor(TeamColor value) { color_ = value; }
     uint32_t GetId() const { return id_; }
+    bool IsEnemy(const Group* other) const;
+    bool IsAlly(const Group* other) const;
 
     void Add(std::shared_ptr<Actor> actor);
     void Remove(uint32_t id);
+    Actor* GetLeader() const;
     template <typename Callback>
     void VisistMembers(const Callback callback)
     {

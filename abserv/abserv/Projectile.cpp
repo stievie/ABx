@@ -79,6 +79,7 @@ void Projectile::SetSource(std::shared_ptr<Actor> source)
     if (!startSet_)
     {
         source_ = source;
+        SetGroupId(source->GetGroupId());
         startPos_ = source->transformation_.position_ + HeadOffset;
         transformation_.position_ = startPos_;
         moveComp_->moved_ = true;
@@ -225,13 +226,6 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         // Target gone
         Remove();
     }
-}
-
-uint32_t Projectile::GetGroupId() const
-{
-    if (auto s = source_.lock())
-        return s->GetGroupId();
-    return 0u;
 }
 
 uint32_t Projectile::GetLevel() const

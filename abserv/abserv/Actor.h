@@ -86,6 +86,8 @@ private:
 protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
+    /// Group/Party ID
+    uint32_t groupId_{ 0 };
 private:
     // Events
     void OnEndUseSkill(Skill* skill);
@@ -196,7 +198,8 @@ public:
     {
         return 0;
     }
-    virtual uint32_t GetGroupId() const { return 0u; }
+    uint32_t GetGroupId() const { return groupId_; }
+    void SetGroupId(uint32_t value) { groupId_ = value; }
     virtual size_t GetGroupPos() { return 0u; }
     AB::Entities::ProfessionIndex GetProfIndex() const
     {

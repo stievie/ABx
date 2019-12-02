@@ -30,9 +30,6 @@ private:
     uint32_t level_{ 1 };
     uint32_t itemIndex_{ 0 };
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
-    /// Group is like a party and they need unique IDs.
-    /// If this NPC belongs to a party with players this must be the PartyID.
-    uint32_t groupId_;
     std::shared_ptr<Script> script_;
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
@@ -97,11 +94,6 @@ public:
     {
         return sex_;
     }
-    uint32_t GetGroupId() const override
-    {
-        return groupId_;
-    }
-    void SetGroupId(uint32_t value);
     bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target,

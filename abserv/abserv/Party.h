@@ -1,14 +1,15 @@
 #pragma once
 
-#include <kaguya/kaguya.hpp>
-#include "NetworkMessage.h"
-#include <sa/IdGenerator.h>
-#include <AB/Entities/Party.h>
-#include "Subsystems.h"
 #include "DataClient.h"
+#include "Group.h"
 #include "Mechanic.h"
-#include <sa/Iteration.h>
+#include "NetworkMessage.h"
+#include "Subsystems.h"
 #include "Variant.h"
+#include <AB/Entities/Party.h>
+#include <kaguya/kaguya.hpp>
+#include <sa/IdGenerator.h>
+#include <sa/Iteration.h>
 
 namespace Game {
 

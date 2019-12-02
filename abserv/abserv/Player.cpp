@@ -711,12 +711,14 @@ void Player::SetParty(std::shared_ptr<Party> party)
         if (party && (party_->id_ == party->id_))
             return;
         party_->Remove(*this, false);
+        SetGroupId(0);
     }
 
     if (party)
     {
         party_ = party;
         data_.partyUuid = party->data_.uuid;
+        SetGroupId(party_->id_);
     }
     else
     {
@@ -725,6 +727,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
         party_ = GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid);
         party_->SetPartySize(GetGame()->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
+        SetGroupId(party_->id_);
     }
     party_->Set(GetPtr<Player>());
 }

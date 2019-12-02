@@ -85,10 +85,6 @@ public:
     {
         return data_.modelIndex;
     }
-    uint32_t GetGroupId() const override
-    {
-        return party_->id_;
-    }
     size_t GetGroupPos() override;
 
     bool CanAttack() const override;

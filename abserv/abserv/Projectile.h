@@ -68,7 +68,6 @@ public:
     std::shared_ptr<Actor> GetTarget() const { return target_.lock(); }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
-    uint32_t GetGroupId() const override;
     uint32_t GetItemIndex() const override { return itemIndex_; }
     uint32_t GetLevel() const override;
 };

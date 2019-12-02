@@ -41,7 +41,7 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
         }
 
         // If we are in a crowd and we are not the leader, follow the leader
-        Game::Npc* leader = crowd->GetLeader();
+        Game::Actor* leader = crowd->GetLeader();
         if (npc.GetPosition().Equals(leader->GetPosition(), distance))
             return Status::Finished;
         if (npc.autorunComp_->IsFollowing(*leader))

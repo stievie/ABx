@@ -174,14 +174,6 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Lua::CollectGarbage(luaState_);
 }
 
-void Npc::SetGroupId(uint32_t value)
-{
-    if (groupId_ != value)
-    {
-        groupId_ = value;
-    }
-}
-
 bool Npc::SetBehavior(const std::string& name)
 {
     auto* cache = GetSubsystem<AI::BevaviorCache>();
@@ -246,7 +238,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
             case CostType::Activation:
                 return 0.5f;
             case CostType::Recharge:
-                return 0.1f;
+                return 0.0f;
             case CostType::Energy:
             {
                 const float er = resourceComp_->GetEnergyRatio();

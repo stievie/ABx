@@ -73,6 +73,7 @@ void RegisterLuaAll(kaguya::State& state)
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);
     SkillBar::RegisterLua(state);
+    Group::RegisterLua(state);
     Party::RegisterLua(state);
     Crowd::RegisterLua(state);
 
