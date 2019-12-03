@@ -17,7 +17,7 @@ class Skill;
 namespace Components {
 
 // Kepp damage history for 5 seconds
-constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
+static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
 
 class DamageComp
 {

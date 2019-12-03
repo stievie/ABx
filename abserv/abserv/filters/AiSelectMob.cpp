@@ -15,7 +15,7 @@ void SelectMob::Execute(Agent& agent)
     chr.VisitEnemiesInRange(Game::Ranges::HalfCompass, [&](const Game::Actor& o)
     {
 
-        if (o.IsSelectable() && !o.IsUndestroyable())
+        if (o.IsSelectable() && !o.IsUndestroyable() && !o.IsDead())
         {
             size_t c = o.GetAllyCountInRange(range_);
             entities.push_back(o.id_);

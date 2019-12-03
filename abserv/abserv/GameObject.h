@@ -46,11 +46,11 @@ class Player;
 class AreaOfEffect;
 class Skill;
 
-constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
-constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
-constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
-constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
-constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
+static constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
+static constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
+static constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
+static constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
+static constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
 
 using GameObjectEvents = sa::Events<
     void(void),
@@ -71,7 +71,7 @@ using GameObjectEvents = sa::Events<
     void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
 >;
 
-constexpr float AVERAGE_BB_EXTENDS = 0.3f;
+static const float AVERAGE_BB_EXTENDS = 0.3f;
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {

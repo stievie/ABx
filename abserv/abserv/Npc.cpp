@@ -209,9 +209,12 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
     std::vector<int> skillIndices;
     skills_->VisitSkills([&](int index, const Skill& current)
     {
-        // If there is a target check if it's in range
-        if (targetActor && !IsInRange(current.GetRange(), targetActor))
-            return Iteration::Continue;
+        if (target == SkillTargetTarget)
+        {
+            // If there is a target check if it's in range
+            if (targetActor && !IsInRange(current.GetRange(), targetActor))
+                return Iteration::Continue;
+        }
         if (!current.HasEffect(effect))
             return Iteration::Continue;
         if (!current.HasTarget(target))

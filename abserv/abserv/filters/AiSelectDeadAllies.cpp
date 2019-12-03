@@ -4,6 +4,8 @@
 #include "Subsystems.h"
 #include "Random.h"
 
+//#define DEBUG_AI
+
 namespace AI {
 namespace Filters {
 
@@ -37,6 +39,9 @@ void SelectDeadAllies::Execute(Agent& agent)
         return p1 < p2;
     });
     entities.erase(std::unique(entities.begin(), entities.end()), entities.end());
+#ifdef DEBUG_AI
+//    LOG_DEBUG << "Dead allies " << entities.size() << std::endl;
+#endif
 }
 
 }

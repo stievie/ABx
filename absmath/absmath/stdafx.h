@@ -1,15 +1,10 @@
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
 
 #include "targetver.h"
 
-#define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschließen
+#define WIN32_LEAN_AND_MEAN
 
 #include <cmath>
 

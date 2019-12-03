@@ -12,8 +12,8 @@
 namespace Game {
 namespace Components {
 
-constexpr float UnitScale = 1.0f / 100.0f;
-constexpr float CloseDistance = 0.005f * UnitScale;
+static constexpr float UnitScale = 1.0f / 100.0f;
+static constexpr float CloseDistance = 0.005f * UnitScale;
 
 bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other)
 {

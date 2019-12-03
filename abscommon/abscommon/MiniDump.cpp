@@ -24,18 +24,18 @@
 
 #if defined(AB_WINDOWS)
 
+#include <sa/PragmaWarning.h>
 #include "StringUtils.h"
 #include <cstdio>
 #include <io.h>
 #include <fcntl.h>
 #include <time.h>
 #define WIN32_LEAN_AND_MEAN
-#define _WINSOCKAPI_
-#include <windows.h>
-#pragma warning(push)
-#pragma warning(disable: 4091)
-#include <dbghelp.h>
-#pragma warning(pop)
+#include <Windows.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4091)
+#include <DbgHelp.h>
+PRAGMA_WARNING_POP
 #include "Logger.h"
 #include "MiniDump.h"
 

@@ -55,6 +55,12 @@ public:
     bool Interrupt();
     void Pause(bool value = true);
     bool IsTarget(const Actor* target) const;
+    Actor* GetCurrentTarget() const
+    {
+        if (auto t = target_.lock())
+            return t.get();
+        return nullptr;
+    }
     void SetAttackError(AB::GameProtocol::AttackError error) { lastError_ = error; }
 };
 

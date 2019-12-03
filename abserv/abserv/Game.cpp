@@ -378,11 +378,11 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
 {
     std::shared_ptr<AreaOfEffect> result = std::make_shared<AreaOfEffect>();
     result->SetGame(shared_from_this());
+    result->SetSource(source);
+    result->SetIndex(index);
     result->transformation_.position_ = pos;
     if (Math::Equals(pos.y_, 0.0f))
         result->transformation_.position_.y_ = map_->GetTerrainHeight(pos);
-    result->SetSource(source);
-    result->SetIndex(index);
     if (!result->LoadScript(script))
         return std::shared_ptr<AreaOfEffect>();
 

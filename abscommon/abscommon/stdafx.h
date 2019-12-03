@@ -1,8 +1,3 @@
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
@@ -14,7 +9,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #include <stdint.h>
 
-#define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschließen
+#define WIN32_LEAN_AND_MEAN
 
 #include <memory>
 #include <iostream>

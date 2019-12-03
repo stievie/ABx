@@ -1,7 +1,7 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
 
-costEnergy = 10
+costEnergy = 0
 costAdrenaline = 0
 activation = 2000
 recharge = 1000

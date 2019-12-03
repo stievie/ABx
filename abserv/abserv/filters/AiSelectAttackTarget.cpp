@@ -3,6 +3,7 @@
 #include "../Npc.h"
 #include "../Mechanic.h"
 #include "../Game.h"
+#include "../Group.h"
 
 namespace AI {
 namespace Filters {
@@ -42,7 +43,29 @@ void SelectAttackTarget::Execute(Agent& agent)
                 return;
         }
     }
+
     entities.clear();
+    if (candidates.size() == 0)
+    {
+        Game::Group* crowd = chr.GetGroup();
+        if (!crowd)
+            return;
+        crowd->VisitMembers([&](const Game::Actor& current)
+        {
+            auto* target = current.attackComp_->GetCurrentTarget();
+            if (target)
+            {
+                if (!target->IsSelectable() || target->IsDead() || target->IsUndestroyable())
+                    return Iteration::Continue;
+
+                candidates.push_back(target->id_);
+                // Bigger is more likely to be selected
+                sorting[target->id_] = chr.GetAggro(target);
+                return Iteration::Continue;
+            }
+            return Iteration::Continue;
+        });
+    }
     if (candidates.size() == 0)
         return;
 

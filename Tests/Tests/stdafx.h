@@ -8,10 +8,9 @@
 PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschließen
+#define WIN32_LEAN_AND_MEAN
 #endif
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include <stdint.h>

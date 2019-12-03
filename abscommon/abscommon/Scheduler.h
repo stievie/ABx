@@ -10,7 +10,7 @@
 
 namespace Asynch {
 
-constexpr unsigned SCHEDULER_MINTICKS = 10u;
+static constexpr unsigned SCHEDULER_MINTICKS = 10u;
 
 class ScheduledTask : public Task
 {

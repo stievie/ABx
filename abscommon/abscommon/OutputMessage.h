@@ -65,7 +65,7 @@ public:
     }
 };
 
-constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
+static constexpr size_t OUTPUTMESSAGE_SIZE = sizeof(OutputMessage);
 
 struct PoolWrapper
 {

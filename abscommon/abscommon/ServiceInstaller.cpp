@@ -15,13 +15,11 @@
 \***************************************************************************/
 
 #include "stdafx.h"
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 
-#pragma region "Includes"
 #include <stdio.h>
 #define WIN32_LEAN_AND_MEAN
-#define _WINSOCKAPI_
-#include <windows.h>
+#include <Windows.h>
 #include "ServiceInstaller.h"
 #pragma endregion
 

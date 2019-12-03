@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace Game {
 
 enum class AttributeIndices : uint32_t

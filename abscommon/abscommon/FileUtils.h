@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace Utils {
 
 bool FileCopy(const std::string& src, const std::string& dst);

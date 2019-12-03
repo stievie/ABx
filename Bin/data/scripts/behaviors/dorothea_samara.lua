@@ -8,7 +8,6 @@ function init(root)
     prio:AddNode(checkEnergy())
     prio:AddNode(defend())
     prio:AddNode(wander())
-    prio:AddNode(idle(1000))
 
   root:AddNode(prio)
 end

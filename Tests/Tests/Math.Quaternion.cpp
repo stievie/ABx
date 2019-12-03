@@ -4,6 +4,7 @@
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "MathUtils.h"
+#include "MathDefs.h"
 
 // https://github.com/gareth-cross/quat/blob/master/test/quaternion_test.cpp
 
@@ -101,7 +102,7 @@ TEST_CASE("Quaternion Operations")
     }
     SECTION("Inverse")
     {
-        Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI) / 3.0f);
+        Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::M_PIF / 3.0f);
         Math::Quaternion inv = q.Inverse();
         REQUIRE(q.w_ == Approx(inv.w_));
         REQUIRE(q.x_ == Approx(-inv.x_));
