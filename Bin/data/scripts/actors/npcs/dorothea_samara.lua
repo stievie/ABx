@@ -35,20 +35,13 @@ function onUpdate(timeElapsed)
 end
 
 function onArrived()
---  self:SetState(CREATURESTATE_EMOTE_SIT)
 end
 
 function onClicked(creature)
-  if (self:GetState() == CREATURESTATE_IDLE) then
---    self:FollowObject(creature)
-  end
 end
 
 -- self was selected by creature
 function onSelected(creature)
-  if (self:GetState() ~= CREATURESTATE_IDLE) then
---    self:Say(CHAT_CHANNEL_GENERAL, "Not now!")
-  end
 end
 
 -- creature collides with self

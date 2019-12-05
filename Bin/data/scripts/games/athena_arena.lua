@@ -8,9 +8,10 @@ local point_red = {
   -19.0, 0.0, -44.0
 }
 
-local function createTeam(spawn, frnd, foe, rot)
+local function createTeam(spawn, frnd, foe, rot, color)
   -- To make them allies set the same group ID. Adding NPCs to a Crowd sets the group ID.
   local crowd = self:AddCrowd()
+  crowd:SetColor(color)
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
     crowd:Add(guildLord)
@@ -60,20 +61,17 @@ local function createTeam(spawn, frnd, foe, rot)
 end
 
 function onStart()
-  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90)
---  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2, -90)
-  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90)
+  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90, TEAMCOLOR_BLUE)
+  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90, TEAMCOLOR_RED)
 end
 
 function onStop()
 end
 
 function onAddObject(object)
---  print("Object added: " .. object:GetName())
 end
 
 function onRemoveObject(object)
---  print("Object added: " .. object:GetName())
 end
 
 function onPlayerJoin(player)
@@ -87,5 +85,4 @@ end
 
 -- Game Update
 function onUpdate(timeElapsed)
---  print(timeElapsed)
 end
