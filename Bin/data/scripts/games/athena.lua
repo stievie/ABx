@@ -110,12 +110,14 @@ function onPlayerJoin(player)
   if (player ~= nil) then
     player:AddEffect(empty, 1000, 0)
     player:AddFriendFoe(GROUPMASK_2, 0)
+    player:IncreaseMorale()
   end
 end
 
 function onPlayerLeave(player)
   if (player ~= nil) then
     player:RemoveEffect(1000)
+    player:DecreaseMorale()
   end
 --  print("Player left: " .. player:GetName())
 end

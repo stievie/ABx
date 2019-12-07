@@ -36,6 +36,7 @@ private:
     void OnSkillTargeted(Actor* source, Skill* skill, bool& value);
     void OnKnockingDown(Actor* source, uint32_t time, bool& value);
     void OnHealing(Actor* source, int& value);
+    void OnMorale(int morale);
 public:
     EffectsComp() = delete;
     explicit EffectsComp(Actor& owner);

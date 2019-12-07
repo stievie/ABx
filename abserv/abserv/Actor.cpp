@@ -50,6 +50,10 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Healing", &Actor::Healing)
         .addFunction("GetResource", &Actor::GetResource)
         .addFunction("SetResource", &Actor::SetResource)
+        .addFunction("GetMorale", &Actor::GetMorale)
+        .addFunction("SetMorale", &Actor::SetMorale)
+        .addFunction("IncreaseMorale", &Actor::IncreaseMorale)
+        .addFunction("DecreaseMorale", &Actor::DecreaseMorale)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -920,6 +924,7 @@ bool Actor::Die()
         resourceComp_->SetAdrenaline(Components::SetValueType::Absolute, 0);
         damageComp_->Touch();
         autorunComp_->SetAutoRun(false);
+        DecreaseMorale();
         killedBy_ = damageComp_->GetLastDamager();
         CallEvent<void(void)>(EVENT_ON_DIED);
         return true;
@@ -1043,6 +1048,30 @@ Group* Actor::GetGroup() const
     if (auto g = GetGame())
         return g->GetGroup(GetGroupId());
     return nullptr;
+}
+
+bool Actor::IncreaseMorale()
+{
+    if (morale_ < MAX_MORALE)
+    {
+        morale_ += 2;
+        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
+        CallEvent<void(int)>(EVENT_ON_INCMORALE, morale_);
+        return true;
+    }
+    return false;
+}
+
+bool Actor::DecreaseMorale()
+{
+    if (morale_ > MIN_MORALE)
+    {
+        morale_ -= 15;
+        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
+        CallEvent<void(int)>(EVENT_ON_DECMORALE, morale_);
+        return true;
+    }
+    return false;
 }
 
 }

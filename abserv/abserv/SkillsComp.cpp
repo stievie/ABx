@@ -7,6 +7,27 @@
 namespace Game {
 namespace Components {
 
+SkillsComp::SkillsComp(Actor& owner) :
+    owner_(owner),
+    lastError_(AB::GameProtocol::SkillErrorNone),
+    lastSkillIndex_(-1),
+    startDirty_(false),
+    endDirty_(false),
+    usingSkill_(false),
+    newRecharge_(0),
+    lastSkillTime_(0)
+{
+    owner_.SubscribeEvent<void(int)>(EVENT_ON_INCMORALE, std::bind(&SkillsComp::OnIncMorale, this, std::placeholders::_1));
+}
+
+void SkillsComp::OnIncMorale(int)
+{
+    owner_.skills_->VisitSkills([](int, Skill& current) {
+        current.SetRecharged(0);
+        return Iteration::Continue;
+    });
+}
+
 void SkillsComp::Update(uint32_t timeElapsed)
 {
     SkillBar* sb = owner_.GetSkillBar();

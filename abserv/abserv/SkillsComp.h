@@ -28,18 +28,10 @@ private:
     int32_t newRecharge_;
     int64_t lastSkillTime_;
     std::weak_ptr<Skill> lastSkill_;
+    void OnIncMorale(int morale);
 public:
     SkillsComp() = delete;
-    explicit SkillsComp(Actor& owner) :
-        owner_(owner),
-        lastError_(AB::GameProtocol::SkillErrorNone),
-        lastSkillIndex_(-1),
-        startDirty_(false),
-        endDirty_(false),
-        usingSkill_(false),
-        newRecharge_(0),
-        lastSkillTime_(0)
-    { }
+    explicit SkillsComp(Actor& owner);
     // non-copyable
     SkillsComp(const SkillsComp&) = delete;
     SkillsComp& operator=(const SkillsComp&) = delete;

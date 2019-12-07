@@ -23,6 +23,13 @@ EffectsComp::EffectsComp(Actor& owner) :
     owner_.SubscribeEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, std::bind(&EffectsComp::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     owner_.SubscribeEvent<void(Actor*, uint32_t, bool&)>(EVENT_ON_KNOCKING_DOWN, std::bind(&EffectsComp::OnKnockingDown, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     owner_.SubscribeEvent<void(Actor*, int&)>(EVENT_ON_HEALING, std::bind(&EffectsComp::OnHealing, this, std::placeholders::_1, std::placeholders::_2));
+    owner_.SubscribeEvent<void(int)>(EVENT_ON_INCMORALE, std::bind(&EffectsComp::OnMorale, this, std::placeholders::_1));
+    owner_.SubscribeEvent<void(int)>(EVENT_ON_DECMORALE, std::bind(&EffectsComp::OnMorale, this, std::placeholders::_1));
+}
+
+void EffectsComp::OnMorale(int)
+{
+    AddEffect(std::shared_ptr<Actor>(), 1001, 0);
 }
 
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory category)

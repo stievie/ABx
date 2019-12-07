@@ -15,6 +15,8 @@ void Effect::RegisterLua(kaguya::State& state)
         .addFunction("GetStartTime", &Effect::GetStartTime)
         .addFunction("GetEndTime", &Effect::GetEndTime)
         .addFunction("GetTicks", &Effect::GetTicks)
+        .addFunction("GetSource", &Effect::_LuaGetSource)
+        .addFunction("GetTarget", &Effect::_LuaGetTarget)
         .addFunction("Index", &Effect::GetIndex)
     );
 }
@@ -80,6 +82,20 @@ bool Effect::LoadScript(const std::string& fileName)
     if (Lua::IsFunction(luaState_, "getSkillRecharge"))
         functions_ |= FunctionGetSkillRecharge;
     return true;
+}
+
+Actor* Effect::_LuaGetTarget()
+{
+    if (auto a = target_.lock())
+        return a.get();
+    return nullptr;
+}
+
+Actor* Effect::_LuaGetSource()
+{
+    if (auto a = source_.lock())
+        return a.get();
+    return nullptr;
 }
 
 void Effect::Update(uint32_t timeElapsed)

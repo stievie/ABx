@@ -113,9 +113,7 @@ private:
     uint32_t GetLastHpDecrease() const;
 public:
     ResourceComp() = delete;
-    explicit ResourceComp(Actor& owner) :
-        owner_(owner)
-    { }
+    explicit ResourceComp(Actor& owner);
     // non-copyable
     ResourceComp(const ResourceComp&) = delete;
     ResourceComp& operator=(const ResourceComp&) = delete;

@@ -7,11 +7,15 @@
 namespace Game {
 namespace Components {
 
+ResourceComp::ResourceComp(Actor& owner) :
+    owner_(owner)
+{ }
+
 void ResourceComp::UpdateResources()
 {
     // Base HP
     const unsigned levelAdvance = owner_.GetLevel() - 1;
-    int hp = 100 + (levelAdvance * 20);
+    int hp = 100 + (static_cast<int>(levelAdvance) * 20);
     int energy = BASE_ENERGY;
 
     GetResources(owner_, hp, energy);

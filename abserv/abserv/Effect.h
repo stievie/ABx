@@ -65,6 +65,8 @@ private:
     {
         return (functions_ & func) == func;
     }
+    Actor* _LuaGetTarget();
+    Actor* _LuaGetSource();
 public:
     static void RegisterLua(kaguya::State& state);
 

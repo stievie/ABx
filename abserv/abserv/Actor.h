@@ -51,6 +51,8 @@ static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInt
 static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
 static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
 static constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
+static constexpr sa::event_t EVENT_ON_INCMORALE = sa::StringHash("OnIncMorale");
+static constexpr sa::event_t EVENT_ON_DECMORALE = sa::StringHash("OnDecMorale");
 
 static constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
 static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
@@ -87,6 +89,7 @@ private:
 protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
+    int morale_{ 0 };
     /// Group/Party ID
     uint32_t groupId_{ 0 };
 private:
@@ -175,6 +178,10 @@ public:
     int DrainEnergy(int value);
     int AddEnergy(int value);
     void SetHealthRegen(int value);
+    int GetMorale() const { return morale_; }
+    void SetMorale(int value) { morale_ = value; }
+    bool IncreaseMorale();
+    bool DecreaseMorale();
 
     bool InterruptAttack();
     bool InterruptSkill(AB::Entities::SkillType type);
