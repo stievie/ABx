@@ -10,7 +10,7 @@
 #include "../AreaOfEffect.h"
 #include "VectorMath.h"
 
-#undef DEBUG_AI
+//#define DEBUG_AI
 
 namespace AI {
 namespace Actions {
@@ -90,6 +90,8 @@ Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
         {
             if (npc.GetSpeed() < 1.0f)
                 npc.SetSpeed(1.0f);
+            if (npc.attackComp_->IsAttackState())
+                npc.attackComp_->Cancel();
             npc.autorunComp_->SetAutoRun(true);
             npc.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
             aiAgent.aiContext_.Set(id_, destination);

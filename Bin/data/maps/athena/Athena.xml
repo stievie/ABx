@@ -1,0 +1,897 @@
+<?xml version="1.0"?>
+<scene id="1">
+	<attribute name="Name" value="" />
+	<attribute name="Time Scale" value="1" />
+	<attribute name="Smoothing Constant" value="50" />
+	<attribute name="Snap Threshold" value="5" />
+	<attribute name="Elapsed Time" value="2415.64" />
+	<attribute name="Next Replicated Node ID" value="37" />
+	<attribute name="Next Replicated Component ID" value="42" />
+	<attribute name="Next Local Node ID" value="16786362" />
+	<attribute name="Next Local Component ID" value="16787717" />
+	<attribute name="Variables" />
+	<attribute name="Variable Names" value="Group;AnimationFile" />
+	<component type="Octree" id="1" />
+	<component type="DebugRenderer" id="2">
+		<attribute name="Line Antialias" value="true" />
+	</component>
+	<component type="Skybox" id="4">
+		<attribute name="Model" value="Model;Models/Box.mdl" />
+		<attribute name="Material" value="Material;Materials/Skybox.xml" />
+	</component>
+	<component type="PhysicsWorld" id="11" />
+	<node id="16779317">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Sun" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-64.7732 83.8265 0" />
+		<attribute name="Rotation" value="0.690694 0.68907 0.159545 -0.150565" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Light" id="16779339">
+			<attribute name="Light Type" value="Directional" />
+			<attribute name="Color" value="0.9 0.9 0.9 1" />
+			<attribute name="Specular Intensity" value="0.5" />
+			<attribute name="Temperature" value="4000" />
+			<attribute name="Range" value="1000" />
+			<attribute name="Spot FOV" value="60" />
+			<attribute name="Can Be Occluded" value="false" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Shadow Distance" value="200" />
+			<attribute name="Shadow Fade Distance" value="100" />
+		</component>
+	</node>
+	<node id="16779919">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Terrain" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Terrain" id="16780072">
+			<attribute name="Height Map" value="Image;Textures/temple_of_athene_HeightField.png" />
+			<attribute name="Material" value="Material;Materials/temple_of_athene.xml" />
+			<attribute name="Vertex Spacing" value="1 0.2 1" />
+			<attribute name="Smooth Height Map" value="true" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Can Be Occluded" value="false" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16780673">
+			<attribute name="Collision Layer" value="2" />
+		</component>
+		<component type="CollisionShape" id="16780674">
+			<attribute name="Shape Type" value="Terrain" />
+		</component>
+	</node>
+	<node id="16780019">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SpawnPoint" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-13 25.775 -8" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables">
+			<variant hash="3316982911" type="String" value="Player" />
+		</attribute>
+	</node>
+	<node id="7">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Ocean" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 24.54 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="500 1 500" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="15">
+			<attribute name="Model" value="Model;Models/Plane.mdl" />
+			<attribute name="Material" value="Material;Materials/Water.xml" />
+			<attribute name="Can Be Occluded" value="false" />
+		</component>
+	</node>
+	<node id="16780421">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ZoneNode" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 250 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+	</node>
+	<node id="16781340">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Temple" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="72.1225 30.1575 4.85019" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16781725">
+			<attribute name="Model" value="Model;Models/Temple1.mdl" />
+			<attribute name="Material" value="Material;Materials/Temple1_Pillar.xml;Materials/Temple1_Default.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16781726">
+			<attribute name="Physics Position" value="72.1225 30.1575 4.85019" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16781727">
+			<attribute name="Size" value="32 6 13" />
+			<attribute name="Offset Position" value="0 3 0" />
+			<attribute name="Model" value="Model;Models/Temple1.mdl" />
+		</component>
+	</node>
+	<node id="16781391">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="FirePlace" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-4.01834 25.3975 15.3441" />
+		<attribute name="Rotation" value="0.678221 0 -0.734858 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16781789">
+			<attribute name="Model" value="Model;Models/FirePlace1.mdl" />
+			<attribute name="Material" value="Material;Materials/FirePlace1_Wood.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16781790">
+			<attribute name="Physics Rotation" value="0.678221 0 -0.734858 0" />
+			<attribute name="Physics Position" value="-4.01834 25.3975 15.3441" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16781791">
+			<attribute name="Size" value="1.95238 1.05011 1.97868" />
+			<attribute name="Offset Position" value="0.0612605 0.471883 0.00731263" />
+		</component>
+		<component type="Light" id="16781792">
+			<attribute name="Color" value="1 0.5 0 1" />
+			<attribute name="Brightness Multiplier" value="5" />
+			<attribute name="Temperature" value="1000" />
+			<attribute name="Use Physical Values" value="true" />
+			<attribute name="Range" value="5" />
+			<attribute name="Light Shape Texture" value="TextureCube;" />
+		</component>
+		<component type="SoundSource3D" id="16782107">
+			<attribute name="Sound" value="Sound;Sounds/FX/fireloop.wav" />
+			<attribute name="Frequency" value="44100" />
+			<attribute name="Gain" value="0.8" />
+			<attribute name="Is Playing" value="true" />
+			<attribute name="Play Position" value="145940" />
+			<attribute name="Far Distance" value="10" />
+		</component>
+		<node id="16780923">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Fire" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 0" />
+			<attribute name="Rotation" value="1 0 0 0" />
+			<attribute name="Scale" value="2 2 2" />
+			<attribute name="Variables" />
+			<component type="ParticleEmitter" id="16781288">
+				<attribute name="Effect" value="ParticleEffect;Particle/Fire.xml" />
+				<attribute name="Cast Shadows" value="true" />
+				<attribute name="Animation LOD Bias" value="0" />
+				<attribute name="Period Timer" value="1849.44" />
+				<attribute name="Emission Timer" value="-0.0025588" />
+				<attribute name="Particles">
+					<variant type="Int" value="1000" />
+				</attribute>
+				<attribute name="Billboards">
+					<variant type="Int" value="1000" />
+				</attribute>
+				<attribute name="Serialize Particles" value="false" />
+			</component>
+			<node id="16781025">
+				<attribute name="Is Enabled" value="true" />
+				<attribute name="Name" value="Smoke" />
+				<attribute name="Tags" />
+				<attribute name="Position" value="0 1.125 0" />
+				<attribute name="Rotation" value="1 0 0 0" />
+				<attribute name="Scale" value="0.5 0.5 0.5" />
+				<attribute name="Variables" />
+				<component type="ParticleEmitter" id="16781413">
+					<attribute name="Effect" value="ParticleEffect;Particle/SmokeSmall.xml" />
+					<attribute name="Animation LOD Bias" value="0" />
+					<attribute name="Period Timer" value="1406.02" />
+					<attribute name="Emission Timer" value="-0.0165321" />
+					<attribute name="Particles">
+						<variant type="Int" value="10" />
+					</attribute>
+					<attribute name="Billboards">
+						<variant type="Int" value="10" />
+					</attribute>
+					<attribute name="Serialize Particles" value="false" />
+				</component>
+			</node>
+		</node>
+	</node>
+	<node id="14">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SmithTend" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-6.78231 25.0758 23.6858" />
+		<attribute name="Rotation" value="-4.37114e-08 0 1 -0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16781854">
+			<attribute name="Model" value="Model;Models/Tend1.mdl" />
+			<attribute name="Material" value="Material;Materials/Material.001.xml;Materials/Material.002.xml;Materials/Material.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16781855">
+			<attribute name="Physics Rotation" value="-4.37114e-08 0 1 0" />
+			<attribute name="Physics Position" value="-6.78231 25.0758 23.6858" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16781856">
+			<attribute name="Size" value="6.5 4 8.4" />
+			<attribute name="Offset Position" value="0 2.3 1" />
+			<attribute name="Model" value="Model;Models/Tend1.mdl" />
+		</component>
+	</node>
+	<node id="16">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Pier1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-24.3243 24.3612 -1.18003" />
+		<attribute name="Rotation" value="0.996163 0 -0.0875206 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16781982">
+			<attribute name="Model" value="Model;Models/Pier1.mdl" />
+			<attribute name="Material" value="Material;Materials/Pier1_Wood.xml;Materials/Pier1_Rope.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16781983">
+			<attribute name="Physics Rotation" value="0.996163 0 -0.0875205 0" />
+			<attribute name="Physics Position" value="-24.3243 24.3612 -1.18003" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16781984">
+			<attribute name="Size" value="6.6 1 2" />
+			<attribute name="Offset Position" value="0 0.5 0" />
+			<attribute name="Model" value="Model;Models/Pier1.mdl" />
+		</component>
+	</node>
+	<node id="16781792">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="EternalShield" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.69556 25.7938 20.9703" />
+		<attribute name="Rotation" value="-0.148517 -0.14524 0.977938 -0.0220573" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782291">
+			<attribute name="Model" value="Model;Models/EternalShield.mdl" />
+			<attribute name="Material" value="Material;Materials/EternalShield.xml" />
+		</component>
+	</node>
+	<node id="16781845">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="EternalBlade" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.871 25.9602 18.6202" />
+		<attribute name="Rotation" value="0.699162 0.697117 0.0927609 0.128822" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782361">
+			<attribute name="Model" value="Model;Models/EternalBlade.mdl" />
+			<attribute name="Material" value="Material;Materials/EternalBlade.xml" />
+		</component>
+	</node>
+	<node id="19">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Amboss" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-8.12362 25.1573 15.8177" />
+		<attribute name="Rotation" value="-0.696091 0 -0.717953 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782431">
+			<attribute name="Model" value="Model;Models/Amboss.mdl" />
+			<attribute name="Material" value="Material;Materials/Amboss_Iron.xml;Materials/Amboss_Wood.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16782432">
+			<attribute name="Physics Rotation" value="0.696091 -0 0.717953 -0" />
+			<attribute name="Physics Position" value="-8.12362 25.1573 15.8177" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16782433">
+			<attribute name="Offset Position" value="0 0.432543 0.0375472" />
+			<attribute name="Model" value="Model;Models/Amboss.mdl" />
+		</component>
+	</node>
+	<node id="22">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SmithHammer1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-7.89385 25.7985 15.8194" />
+		<attribute name="Rotation" value="0.0491966 0 0 -0.99879" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782928">
+			<attribute name="Model" value="Model;Models/SmithHammer1.mdl" />
+			<attribute name="Material" value="Material;Materials/SmithHammer1_Iron.xml;Materials/SmithHammer1_Wood.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+	</node>
+	<node id="16782408">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Xiphos" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.90283 25.8484 18.585" />
+		<attribute name="Rotation" value="0.5078 0.759154 -0.313009 0.260478" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782992">
+			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
+			<attribute name="Material" value="Material;Materials/Xiphos_Wood.xml;Materials/Xiphos_Leather.xml;Materials/Xiphos_Steel.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+	</node>
+	<node id="16782661">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.49773 25.2481 18.8261" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783306">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783307">
+			<attribute name="Physics Position" value="8.49773 25.2481 18.8261" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783308">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782662">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.49773 25.2481 20.823" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783309">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783310">
+			<attribute name="Physics Position" value="8.49773 25.2481 20.823" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783311">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782663">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.49773 25.2481 22.8165" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783312">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783313">
+			<attribute name="Physics Position" value="8.49773 25.2481 22.8165" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783314">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782864">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.49773 25.2481 24.8167" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783559">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783560">
+			<attribute name="Physics Position" value="8.49773 25.2481 24.8167" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783561">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782865">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.49773 25.2481 26.8144" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783562">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783563">
+			<attribute name="Physics Position" value="8.49773 25.2481 26.8144" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783564">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782866">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="7.31627 25.2481 27.6049" />
+		<attribute name="Rotation" value="0.705512 0 -0.708697 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783565">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783566">
+			<attribute name="Physics Rotation" value="0.705513 0 -0.708697 0" />
+			<attribute name="Physics Position" value="7.31627 25.2481 27.6049" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783567">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16782867">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="5.31347 25.2481 27.6049" />
+		<attribute name="Rotation" value="0.705512 0 -0.708697 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783568">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16783569">
+			<attribute name="Physics Rotation" value="0.705513 0 -0.708697 0" />
+			<attribute name="Physics Position" value="5.31347 25.2481 27.6049" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783570">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="30">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="grass_patch" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="52.8564 31.6983 31.0726" />
+		<attribute name="Rotation" value="0.986168 0.0520946 -0.135102 -0.0806545" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784678">
+			<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+			<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+	</node>
+	<node id="31">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="massive_swamptree" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-41.4223 33.4814 -61.8397" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784803">
+			<attribute name="Model" value="Model;Models/massive_swamptree.mdl" />
+			<attribute name="Material" value="Material;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_branch.xml" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+		<component type="RigidBody" id="16784804">
+			<attribute name="Physics Position" value="-41.4223 33.4814 -61.8397" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16784805">
+			<attribute name="Size" value="3 5 3" />
+		</component>
+	</node>
+	<node id="16784500">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SwesterTrillianStatue" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="38.7787 32.947 5.56485" />
+		<attribute name="Rotation" value="-4.37114e-08 -0 -1 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16785416">
+			<attribute name="Model" value="Model;Models/SchwesterTrillian.mdl" />
+			<attribute name="Material" value="Material;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16785600">
+			<attribute name="Physics Rotation" value="4.37114e-08 0 1 0" />
+			<attribute name="Physics Position" value="38.7787 32.947 5.56485" />
+		</component>
+		<component type="CollisionShape" id="16785601">
+			<attribute name="Size" value="3.4 5 3.4" />
+			<attribute name="Offset Position" value="0 2.6 0" />
+			<attribute name="Model" value="Model;Models/SchwesterTrillian.mdl" />
+		</component>
+	</node>
+	<node id="16784901">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ClothesLine" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-12.4794 25.568 33.7408" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16785907">
+			<attribute name="Model" value="Model;Models/ClothesLine.mdl" />
+			<attribute name="Material" value="Material;Materials/ClothesLine_Pin.xml;Materials/ClothesLine_Material.002.xml;Materials/ClothesLine_Material.001.xml;Materials/ClothesLine_Grow.xml;Materials/ClothesLine_Basekt.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16785908">
+			<attribute name="Physics Position" value="-12.4794 25.568 33.7408" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+	</node>
+	<node id="16785202">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SpawnPoint" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-46.6756 31.4525 -60.4956" />
+		<attribute name="Rotation" value="-4.37114e-08 0 1 -0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables">
+			<variant hash="3316982911" type="String" value="Player" />
+		</attribute>
+	</node>
+	<node id="16785404">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Ship1" />
+		<attribute name="Tags">
+			<string value="HasAnimation" />
+		</attribute>
+		<attribute name="Position" value="-102.104 25.0588 -5.29618" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables">
+			<variant hash="2570276288" type="String" value="Models/Ship1.ani" />
+		</attribute>
+		<component type="AnimatedModel" id="16786523">
+			<attribute name="Model" value="Model;Models/Ship1.mdl" />
+			<attribute name="Material" value="Material;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_sail_marble.jpg.xml" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Bone Animation Enabled">
+				<variant type="Bool" value="true" />
+				<variant type="Bool" value="true" />
+			</attribute>
+			<attribute name="Animation States">
+				<variant type="Int" value="0" />
+			</attribute>
+		</component>
+		<component type="RigidBody" id="16786524">
+			<attribute name="Physics Position" value="-102.104 25.0588 -5.29618" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16786525">
+			<attribute name="Size" value="26.6608 42.9752 51.4746" />
+			<attribute name="Offset Position" value="0.0245228 16.5314 4.48161" />
+		</component>
+		<component type="AnimationController" id="16786527">
+			<attribute name="Node Animation States">
+				<variant type="Int" value="0" />
+			</attribute>
+		</component>
+		<node id="16785405">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="0.5 0.5 -0.5 -0.5" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
+		<node id="16785406">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone.001" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="1.21016e-08 1.21016e-08 -0.707107 0.707107" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
+	</node>
+	<node id="16785757">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="9.14594 25.2481 17.2245" />
+		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16786955">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16786956">
+			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Physics Position" value="9.14594 25.2481 17.2245" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16786957">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786008">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="15.0987 25.2481 10.0666" />
+		<attribute name="Rotation" value="0.92388 0 0.382683 0" />
+		<attribute name="Scale" value="1 1 4" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787263">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787264">
+			<attribute name="Physics Rotation" value="0.92388 0 0.382683 0" />
+			<attribute name="Physics Position" value="15.0987 25.2481 10.0666" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787265">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786009">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="10.539 25.2481 15.8309" />
+		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787266">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787267">
+			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Physics Position" value="10.539 25.2481 15.8309" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787268">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786010">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="11.9612 25.2481 14.4343" />
+		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787269">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787270">
+			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Physics Position" value="11.9612 25.2481 14.4343" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787271">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786211">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SpartanShield" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.72675 25.648 21.7824" />
+		<attribute name="Rotation" value="1.50421e-07 0.0871557 -0.996195 -1.31602e-08" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787516">
+			<attribute name="Model" value="Model;Models/SpartanShield.mdl" />
+			<attribute name="Material" value="Material;Materials/SpartanShield.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+	</node>
+	<node id="32">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="5.59049 27.4596 21.8738" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787580">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787581">
+			<attribute name="Physics Position" value="5.59049 27.4596 21.8738" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787582">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="33">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.90546 26.2677 21.8821" />
+		<attribute name="Rotation" value="0.96709 0 0.254433 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787583">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787584">
+			<attribute name="Physics Rotation" value="0.96709 0 0.254433 0" />
+			<attribute name="Physics Position" value="4.90546 26.2677 21.8821" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787585">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="34">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="6.55398 26.2677 21.7951" />
+		<attribute name="Rotation" value="0.986827 0 0.161776 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787586">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787587">
+			<attribute name="Physics Rotation" value="0.986827 0 0.161776 0" />
+			<attribute name="Physics Position" value="6.55398 26.2677 21.7951" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787588">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="35">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="3.51231 25.9329 22.1348" />
+		<attribute name="Rotation" value="0.996876 0 0.0789811 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787650">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box2.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787651">
+			<attribute name="Physics Rotation" value="0.996876 0 0.0789811 0" />
+			<attribute name="Physics Position" value="3.51231 25.9329 22.1348" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787652">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="36">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="GoldBag" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="2.74458 25.3528 19.435" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="4 4 4" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787714">
+			<attribute name="Model" value="Model;Models/GoldBag.mdl" />
+			<attribute name="Material" value="Material;Materials/Coin.xml;Materials/GoldBag.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787715">
+			<attribute name="Physics Position" value="2.74458 25.3528 19.435" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787716">
+			<attribute name="Size" value="0.230128 0.141163 0.223866" />
+			<attribute name="Offset Position" value="0.000737593 0.0685208 0.0076894" />
+		</component>
+	</node>
+</scene>

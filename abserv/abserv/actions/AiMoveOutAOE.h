@@ -21,7 +21,9 @@ protected:
 public:
     explicit MoveOutAOE(const ArgumentsType& arguments) :
         Action(arguments)
-    { }
+    {
+        mustComplete_ = true;
+    }
 };
 
 }

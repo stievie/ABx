@@ -8,6 +8,7 @@
 #include <cassert>
 #include "Player.h"
 #include "MathUtils.h"
+#include "CollisionShape.h"
 
 // http://www.alecjacobson.com/weblog/?p=4307
 
@@ -42,7 +43,7 @@ void main()
 )glsl";
 
 SceneViewer::SceneViewer() :
-    cameraDistance_(CAMERA_INITIAL_DIST),
+    cameraDistance_(CAMERA_INITIAL_DIST)
 {
     assert(SceneViewer::instance_ == nullptr);
     SceneViewer::instance_ = this;
@@ -105,7 +106,7 @@ void SceneViewer::Update()
     {
         if (GetSubsystem<Game::GameManager>()->GetGameCount() != 0)
         {
-            auto games = GetSubsystem<Game::GameManager>()->GetGames();
+            auto& games = GetSubsystem<Game::GameManager>()->GetGames();
             game_ = (*games.begin()).second;
         }
 
@@ -113,20 +114,28 @@ void SceneViewer::Update()
         {
             if (g->GetPlayerCount() != 0)
             {
-                auto p = g->GetPlayers().begin()->second;
+                const Game::Player* p = nullptr;
 
-                // Get camera look at dir from character yaw + pitch
-                Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + float(Math::M_PIF));
-                Math::Quaternion dir = rot * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, pitch_);
-                Math::Vector3 aimPoint;
-                static constexpr Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
-                aimPoint = p->transformation_.position_;// +rot * CAM_POS;
-                Math::Vector3 rayDir = dir * Math::Vector3::Back;
+                g->VisitPlayers([&](const Game::Player* player) {
+                    p = player;
+                    return Iteration::Break;
+                });
 
-                camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
-                Math::Quaternion quat = p->transformation_.oriention_;// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(Math::M_PIF));
+                if (p)
+                {
+                    // Get camera look at dir from character yaw + pitch
+                    Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + Math::M_PIF);
+                    Math::Quaternion dir = rot * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, pitch_);
+                    Math::Vector3 aimPoint;
+                    static constexpr Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
+                    aimPoint = p->transformation_.position_;// +rot * CAM_POS;
+                    Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
-                camera_.rotation_ = quat * dir;
+                    camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
+                    Math::Quaternion quat = p->transformation_.oriention_;// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(Math::M_PIF));
+
+                    camera_.rotation_ = quat * dir;
+                }
             }
         }
         glutMainLoopStep();
@@ -220,33 +229,32 @@ void SceneViewer::DrawScene()
         matrix.Translate(Math::Vector3(0.0f, 0.0f, -1.0f));
         glUniformMatrix4fv(proj_loc, 1, GL_FALSE, matrix.Transpose().Data());
 
-        auto objects = g->GetObjects();
-        for (const auto& object : objects)
-        {
-            DrawObject(object.second);
-        }
+        g->VisitObjects([&](const Game::GameObject& current) {
+            DrawObject(current);
+            return Iteration::Continue;
+        });
     }
 }
 
-void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
+void SceneViewer::DrawObject(const Game::GameObject& object)
 {
-    auto collShape = object->GetCollisionShape();
+    auto collShape = object.GetCollisionShape();
     if (!collShape)
         return;
-    const Math::Transformation& trans = object->transformation_;
+    const Math::Transformation& trans = object.transformation_;
     Math::Shape s = collShape->GetShape();
     if (s.indexCount_ == 0)
         return;
 
     Math::Matrix4 matrix;
-    if (collShape->shapeType_ == Math::ShapeTypeBoundingBox)
+    if (collShape->shapeType_ == Math::ShapeType::BoundingBox)
     {
         // There is 1 special case, an oriented BB
-        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(collShape);
         auto obj = shape->Object();
-        if (obj->IsOriented())
-            matrix = trans.GetMatrix(obj->orientation_);
+        if (obj.IsOriented())
+            matrix = trans.GetMatrix(obj.orientation_);
         else
             matrix = trans.GetMatrix();
     }

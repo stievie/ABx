@@ -98,6 +98,12 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
 {
     if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::ObjectTypePlayer))
         return Iteration::Continue;
+    if (Is<Actor>(other))
+    {
+        // Not colliding with dead actors
+        if (To<Actor>(other).IsDead())
+            return Iteration::Continue;
+    }
 
     if ((other.collisionMask_ != 0) && (owner_.collisionMask_ != 0))
     {

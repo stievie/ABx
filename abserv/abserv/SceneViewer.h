@@ -62,7 +62,7 @@ private:
     void UpdateMenu();
     void InternalInitialize();
     void DrawScene();
-    void DrawObject(const std::shared_ptr<Game::GameObject>& object);
+    void DrawObject(const Game::GameObject& object);
     void Mouse(int button, int state, int x, int y);
     void MouseMove(int x, int y);
     void MouseWheel(int button, int dir, int x, int y);

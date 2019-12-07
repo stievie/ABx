@@ -4,7 +4,7 @@
 #include "../AiAgent.h"
 #include "../Game.h"
 
-#undef DEBUG_AI
+//#define DEBUG_AI
 
 namespace AI {
 namespace Actions {
@@ -27,7 +27,6 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    // Possible heal targets
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
         return Status::Failed;

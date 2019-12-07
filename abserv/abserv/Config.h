@@ -11,7 +11,7 @@
 #if !defined(WIN_SERVICE)
     // Compiled with Debug::SceneViewer
 #   if !defined(SCENE_VIEWER)
-//#      define SCENE_VIEWER
+#      define SCENE_VIEWER
 #   endif
 #else
 #   undef SCENE_VIEWER

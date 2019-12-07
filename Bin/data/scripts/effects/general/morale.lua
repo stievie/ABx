@@ -11,7 +11,10 @@ end
 function onStart(source, target)
   local skillBar = target:GetSkillBar()
   for i = 1, MAX_SKILLS, 1 do
-    skillBar:GetSkill(i - 1):SetRecharged(0)
+    local skill = skillBar:GetSkill(i - 1)
+    if (skill ~= nil) then
+      skill:SetRecharged(0)
+    end
   end
   return true
 end

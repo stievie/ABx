@@ -14,7 +14,7 @@ FilterCondition::FilterCondition(const ArgumentsType& arguments) :
 
 bool FilterCondition::Evaluate(Agent& agent, const Node&)
 {
-    // If there is a filter assigned execute it firs, otherwise just see if the
+    // If there is a filter assigned execute it first, otherwise just see if the
     // Agent has something selected.
     if (filter_)
         filter_->Execute(agent);

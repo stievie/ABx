@@ -30,6 +30,7 @@ protected:
     std::vector<std::weak_ptr<Actor>> members_;
     TeamColor color_{ TeamColor::Default };
     uint32_t id_;
+    std::string name_;
 public:
     static sa::IdGenerator<uint32_t> groupIds_;
     /// Returns a new Party/Group ID
@@ -44,6 +45,8 @@ public:
 
     TeamColor GetColor() const { return color_; }
     void SetColor(TeamColor value) { color_ = value; }
+    const std::string& GetName() const { return name_; }
+    void SetName(const std::string value) { name_ = value; }
     uint32_t GetId() const { return id_; }
     bool IsEnemy(const Group* other) const;
     bool IsAlly(const Group* other) const;
