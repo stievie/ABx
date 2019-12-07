@@ -22,6 +22,7 @@ void Group::RegisterLua(kaguya::State& state)
         .addFunction("SetName", &Group::SetName)
         .addFunction("IsAlly", &Group::IsAlly)
         .addFunction("IsEnemy", &Group::IsEnemy)
+        .addFunction("GetMorale", &Group::GetMorale)
         .addFunction("GetMember", &Group::_LuaGetMember)
         .addFunction("GetMemberCount", &Group::_LuaGetMemberCount)
         .addFunction("GetRandomMember", &Group::GetRandomMember)
@@ -164,6 +165,21 @@ Actor* Group::_LuaGetMember(int index)
 int Group::_LuaGetMemberCount()
 {
     return static_cast<int>(members_.size());
+}
+
+int Group::GetMorale() const
+{
+    int morale{ 0 };
+    int count{ 0 };
+    VisitMembers([&morale, &count](const Actor& current)
+    {
+        morale += current.GetMorale();
+        ++count;
+        return Iteration::Continue;
+    });
+    if (count == 0)
+        return 0;
+    return morale / count;
 }
 
 }

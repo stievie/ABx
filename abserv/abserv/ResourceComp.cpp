@@ -13,28 +13,31 @@ ResourceComp::ResourceComp(Actor& owner) :
 
 bool ResourceComp::IncreaseMorale()
 {
+    bool result{ false };
     if (morale_ < MAX_MORALE)
     {
         morale_ += 2;
         morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
-        owner_.CallEvent<void(int)>(EVENT_ON_INCMORALE, morale_);
         dirtyFlags_ |= ResourceDirty::DirtyMorale;
-        return true;
+        result = true;
     }
-    return false;
+    // We should fire this event even when we reached tthe limit
+    owner_.CallEvent<void(int)>(EVENT_ON_INCMORALE, morale_);
+    return result;
 }
 
 bool ResourceComp::DecreaseMorale()
 {
+    bool result{ false };
     if (morale_ > MIN_MORALE)
     {
         morale_ -= 15;
         morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
-        owner_.CallEvent<void(int)>(EVENT_ON_DECMORALE, morale_);
         dirtyFlags_ |= ResourceDirty::DirtyMorale;
-        return true;
+        result = true;
     }
-    return false;
+    owner_.CallEvent<void(int)>(EVENT_ON_DECMORALE, morale_);
+    return result;
 }
 
 void ResourceComp::UpdateResources()

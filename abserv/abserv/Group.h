@@ -50,6 +50,7 @@ public:
     uint32_t GetId() const { return id_; }
     bool IsEnemy(const Group* other) const;
     bool IsAlly(const Group* other) const;
+    int GetMorale() const;
 
     bool Add(std::shared_ptr<Actor> actor);
     bool Remove(uint32_t id);
