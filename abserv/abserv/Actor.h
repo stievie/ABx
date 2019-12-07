@@ -178,8 +178,7 @@ public:
     int DrainEnergy(int value);
     int AddEnergy(int value);
     void SetHealthRegen(int value);
-    int GetMorale() const { return morale_; }
-    void SetMorale(int value) { morale_ = value; }
+    int GetMorale() const;
     bool IncreaseMorale();
     bool DecreaseMorale();
 

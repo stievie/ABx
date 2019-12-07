@@ -540,6 +540,7 @@ void ProtocolGame::ParseResourceChanged(InputMessage& message)
     }
     case AB::GameProtocol::ResourceTypeHealthRegen:
     case AB::GameProtocol::ResourceTypeEnergyRegen:
+    case AB::GameProtocol::ResourceTypeMorale:
     {
         int8_t value = message.Get<int8_t>();
 

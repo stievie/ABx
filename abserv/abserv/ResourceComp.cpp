@@ -11,6 +11,32 @@ ResourceComp::ResourceComp(Actor& owner) :
     owner_(owner)
 { }
 
+bool ResourceComp::IncreaseMorale()
+{
+    if (morale_ < MAX_MORALE)
+    {
+        morale_ += 2;
+        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
+        owner_.CallEvent<void(int)>(EVENT_ON_INCMORALE, morale_);
+        dirtyFlags_ |= ResourceDirty::DirtyMorale;
+        return true;
+    }
+    return false;
+}
+
+bool ResourceComp::DecreaseMorale()
+{
+    if (morale_ > MIN_MORALE)
+    {
+        morale_ -= 15;
+        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
+        owner_.CallEvent<void(int)>(EVENT_ON_DECMORALE, morale_);
+        dirtyFlags_ |= ResourceDirty::DirtyMorale;
+        return true;
+    }
+    return false;
+}
+
 void ResourceComp::UpdateResources()
 {
     // Base HP
@@ -18,10 +44,17 @@ void ResourceComp::UpdateResources()
     int hp = 100 + (static_cast<int>(levelAdvance) * 20);
     int energy = BASE_ENERGY;
 
+    int oldHp = maxHealth_;
+    int oldE = maxEnergy_;
+
     GetResources(owner_, hp, energy);
 
     SetMaxHealth(hp);
     SetMaxEnergy(energy);
+    if (maxHealth_ != oldHp)
+        dirtyFlags_ |= ResourceDirty::DirtyMaxHealth;
+    if (maxEnergy_ != oldE)
+        dirtyFlags_ |= ResourceDirty::DirtyMaxEnergy;
 }
 
 void ResourceComp::SetHealth(SetValueType t, int value)
@@ -332,6 +365,13 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeMaxEnergy);
         message.Add<int16_t>(static_cast<int16_t>(maxEnergy_));
+    }
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyMorale) == ResourceDirty::DirtyMorale)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.AddByte(AB::GameProtocol::ResourceTypeMorale);
+        message.Add<int8_t>(static_cast<int8_t>(morale_));
     }
 
     if (!ignoreDirty)

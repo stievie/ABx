@@ -51,7 +51,6 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetResource", &Actor::GetResource)
         .addFunction("SetResource", &Actor::SetResource)
         .addFunction("GetMorale", &Actor::GetMorale)
-        .addFunction("SetMorale", &Actor::SetMorale)
         .addFunction("IncreaseMorale", &Actor::IncreaseMorale)
         .addFunction("DecreaseMorale", &Actor::DecreaseMorale)
 
@@ -1050,28 +1049,19 @@ Group* Actor::GetGroup() const
     return nullptr;
 }
 
+int Actor::GetMorale() const
+{
+    return resourceComp_->GetMorale();
+}
+
 bool Actor::IncreaseMorale()
 {
-    if (morale_ < MAX_MORALE)
-    {
-        morale_ += 2;
-        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
-        CallEvent<void(int)>(EVENT_ON_INCMORALE, morale_);
-        return true;
-    }
-    return false;
+    return resourceComp_->IncreaseMorale();
 }
 
 bool Actor::DecreaseMorale()
 {
-    if (morale_ > MIN_MORALE)
-    {
-        morale_ -= 15;
-        morale_ = Math::Clamp(morale_, MIN_MORALE, MAX_MORALE);
-        CallEvent<void(int)>(EVENT_ON_DECMORALE, morale_);
-        return true;
-    }
-    return false;
+    return resourceComp_->DecreaseMorale();
 }
 
 }

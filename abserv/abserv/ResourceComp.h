@@ -30,7 +30,8 @@ enum ResourceDirty
     DirtyHealthRegen = 1 << 4,
     DirtyEnergyRegen = 1 << 5,
     DirtyMaxHealth = 1 << 6,
-    DirtyMaxEnergy = 1 << 7
+    DirtyMaxEnergy = 1 << 7,
+    DirtyMorale = 1 << 8,
 };
 
 // Lua definition in /scripts/includes/consts.lua
@@ -60,6 +61,7 @@ private:
     int naturalHealthRegen_{ 0 };
     int maxHealth_{ 0 };
     int maxEnergy_{ 0 };
+    int morale_{ 0 };
     uint32_t dirtyFlags_{ 0 };
     int64_t lastHpDecrease_{ 0 };
     int64_t lastRegenIncrease_{ 0 };
@@ -121,6 +123,9 @@ public:
 
     void UpdateResources();
 
+    int GetMorale() const { return morale_; }
+    bool IncreaseMorale();
+    bool DecreaseMorale();
     int GetHealth() const { return static_cast<int>(health_); }
     void SetHealth(SetValueType t, int value);
     /// Get health / max health. Value between 0..1

@@ -1,3 +1,2 @@
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
 The client says "Unknown packet code..." Maybe some messages out of order.
-~ Merge Party and Crowd they seem to be similar

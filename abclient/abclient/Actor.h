@@ -51,14 +51,15 @@ static const StringHash COLLADJ_DIV("div");
 
 struct ActorStats
 {
-    unsigned health = 0;
-    unsigned maxHealth = 0;
-    int healthRegen = 0;
-    unsigned energy = 0;
-    unsigned maxEnergy = 0;
-    int energyRegen = 0;
-    unsigned adrenaline = 0;
-    unsigned overcast = 0;
+    unsigned health{ 0 };
+    unsigned maxHealth{ 0 };
+    int healthRegen{ 0 };
+    unsigned energy{ 0 };
+    unsigned maxEnergy{ 0 };
+    int energyRegen{ 0 };
+    unsigned adrenaline{ 0 };
+    unsigned overcast{ 0 };
+    int morale{ 0 };
 };
 
 /// Character component, responsible for physical movement according to controls, as well as animation.

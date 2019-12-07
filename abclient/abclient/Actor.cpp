@@ -945,6 +945,9 @@ void Actor::ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value
     case AB::GameProtocol::ResourceTypeMaxEnergy:
         stats_.maxEnergy = value;
         break;
+    case AB::GameProtocol::ResourceTypeMorale:
+        stats_.morale = value;
+        break;
     }
 }
 

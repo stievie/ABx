@@ -297,6 +297,7 @@ enum ResourceType : uint8_t
     ResourceTypeEnergyRegen,
     ResourceTypeMaxHealth,
     ResourceTypeMaxEnergy,
+    ResourceTypeMorale,
 };
 
 enum SkillError : uint8_t

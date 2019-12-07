@@ -19,9 +19,9 @@ function onInit()
 
   local skillBar = self:GetSkillBar()
   skillBar:AddSkill(192)
---  skillBar:AddSkill(884)
---  skillBar:AddSkill(1379)
---  skillBar:AddSkill(191)
+  skillBar:AddSkill(884)
+  skillBar:AddSkill(1379)
+  skillBar:AddSkill(191)
   skillBar:SetAttributeValue(ATTRIB_ENERGY_STORAGE, 12)
   skillBar:SetAttributeValue(ATTRIB_FIRE, 12)
 
