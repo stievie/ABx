@@ -89,7 +89,7 @@ private:
     float _LuaGetTerrainHeight(float x, float z) const
     {
         if (map_)
-            return map_->terrain_->GetHeight(Math::Vector3(x, 0.0f, z));
+            return map_->terrain_->GetHeight({ x, 0.0f, z });
         return 0.0f;
     }
     int64_t _LuaGetStartTime() const

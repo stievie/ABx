@@ -27,9 +27,12 @@ EffectsComp::EffectsComp(Actor& owner) :
     owner_.SubscribeEvent<void(int)>(EVENT_ON_DECMORALE, std::bind(&EffectsComp::OnMorale, this, std::placeholders::_1));
 }
 
-void EffectsComp::OnMorale(int)
+void EffectsComp::OnMorale(int morale)
 {
-    AddEffect(std::shared_ptr<Actor>(), 1001, 0);
+    if (morale != 0)
+        AddEffect(std::shared_ptr<Actor>(), AB::Entities::EFFECT_INDEX_MORALE, 0);
+    else
+        RemoveEffect(AB::Entities::EFFECT_INDEX_MORALE);
 }
 
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory category)

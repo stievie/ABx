@@ -18,7 +18,6 @@ void Party::RegisterLua(kaguya::State& state)
         .addFunction("ChangeInstance", &Party::ChangeInstance)
         .addFunction("Defeat", &Party::Defeat)
         .addFunction("IsDefeated", &Party::IsDefeated)
-        .addFunction("KillAll", &Party::KillAll)
         .addFunction("GetRandomPlayer", &Party::GetRandomPlayer)
         .addFunction("GetRandomPlayerInRange", &Party::GetRandomPlayerInRange)
         .addFunction("GetVarString", &Party::_LuaGetVarString)
@@ -273,14 +272,6 @@ bool Party::IsLeader(const Player& player) const
     if (auto p = members_[0].lock())
         return p->id_ == player.id_;
     return false;
-}
-
-void Party::KillAll()
-{
-    VisitMembers([](Actor& actor) {
-        actor.Die();
-        return Iteration::Continue;
-    });
 }
 
 void Party::Defeat()

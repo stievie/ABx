@@ -74,7 +74,6 @@ public:
     bool IsInvited(const Player& player) const;
     bool IsLeader(const Player& player) const;
     std::shared_ptr<Player> GetAnyPlayer() const;
-    void KillAll();
     void Defeat();
     bool IsDefeated() const { return defeated_; }
     /// Bring all players back to their last outpost

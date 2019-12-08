@@ -1036,10 +1036,13 @@ uint32_t Actor::GetAttributeValue(uint32_t index)
     return result;
 }
 
-void Actor::_LuaAddAOE(const std::string& script, uint32_t index,
+AreaOfEffect* Actor::_LuaAddAOE(const std::string& script, uint32_t index,
     const Math::STLVector3& pos)
 {
-    GetGame()->AddAreaOfEffect(script, GetPtr<Actor>(), index, pos);
+    auto result = GetGame()->AddAreaOfEffect(script, GetPtr<Actor>(), index, pos);
+    if (result)
+        return result.get();
+    return nullptr;
 }
 
 Group* Actor::GetGroup() const
@@ -1056,12 +1059,14 @@ int Actor::GetMorale() const
 
 bool Actor::IncreaseMorale()
 {
-    return resourceComp_->IncreaseMorale();
+    if (!IsUndestroyable())
+        return resourceComp_->IncreaseMorale();
 }
 
 bool Actor::DecreaseMorale()
 {
-    return resourceComp_->DecreaseMorale();
+    if (!IsUndestroyable())
+        return resourceComp_->DecreaseMorale();
 }
 
 }

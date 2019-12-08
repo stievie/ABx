@@ -31,6 +31,7 @@ private:
     };
     std::vector<ProgressItem> items_;
     Actor& owner_;
+    unsigned deaths_{ 0 };
 private:
     /// The owner died
     void OnDied();

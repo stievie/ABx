@@ -122,6 +122,7 @@ public:
     ~ResourceComp() = default;
 
     void UpdateResources();
+    int GetBaseHealth() const;
 
     int GetMorale() const { return morale_; }
     bool IncreaseMorale();

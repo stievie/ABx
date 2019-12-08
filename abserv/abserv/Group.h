@@ -51,6 +51,10 @@ public:
     bool IsEnemy(const Group* other) const;
     bool IsAlly(const Group* other) const;
     int GetMorale() const;
+    void IncreaseMorale();
+    void DecreaseMorale();
+    void Resurrect(int precentHealth, int percentEnergy);
+    void KillAll();
 
     bool Add(std::shared_ptr<Actor> actor);
     bool Remove(uint32_t id);

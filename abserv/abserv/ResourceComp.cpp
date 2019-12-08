@@ -40,11 +40,17 @@ bool ResourceComp::DecreaseMorale()
     return result;
 }
 
+int ResourceComp::GetBaseHealth() const
+{
+    const unsigned levelAdvance = owner_.GetLevel() - 1;
+    int hp = 100 + (static_cast<int>(levelAdvance) * 20);
+    return hp;
+}
+
 void ResourceComp::UpdateResources()
 {
     // Base HP
-    const unsigned levelAdvance = owner_.GetLevel() - 1;
-    int hp = 100 + (static_cast<int>(levelAdvance) * 20);
+    int hp = GetBaseHealth();
     int energy = BASE_ENERGY;
 
     int oldHp = maxHealth_;

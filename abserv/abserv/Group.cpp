@@ -23,6 +23,10 @@ void Group::RegisterLua(kaguya::State& state)
         .addFunction("IsAlly", &Group::IsAlly)
         .addFunction("IsEnemy", &Group::IsEnemy)
         .addFunction("GetMorale", &Group::GetMorale)
+        .addFunction("IncreaseMorale", &Group::IncreaseMorale)
+        .addFunction("DecreaseMorale", &Group::DecreaseMorale)
+        .addFunction("Resurrect", &Group::Resurrect)
+        .addFunction("KillAll", &Group::KillAll)
         .addFunction("GetMember", &Group::_LuaGetMember)
         .addFunction("GetMemberCount", &Group::_LuaGetMemberCount)
         .addFunction("GetRandomMember", &Group::GetRandomMember)
@@ -180,6 +184,45 @@ int Group::GetMorale() const
     if (count == 0)
         return 0;
     return morale / count;
+}
+
+void Group::IncreaseMorale()
+{
+    VisitMembers([](Actor& current)
+    {
+        if (!current.IsDead())
+            current.IncreaseMorale();
+        return Iteration::Continue;
+    });
+}
+
+void Group::DecreaseMorale()
+{
+    VisitMembers([](Actor& current)
+    {
+        if (!current.IsDead())
+            current.DecreaseMorale();
+        return Iteration::Continue;
+    });
+}
+
+void Group::Resurrect(int precentHealth, int percentEnergy)
+{
+    VisitMembers([&](Actor& current)
+    {
+        if (!current.IsDead())
+            current.Resurrect(precentHealth, percentEnergy);
+        return Iteration::Continue;
+    });
+}
+
+void Group::KillAll()
+{
+    VisitMembers([&](Actor& current)
+    {
+        current.Die();
+        return Iteration::Continue;
+    });
 }
 
 }

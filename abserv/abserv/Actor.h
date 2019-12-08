@@ -78,7 +78,7 @@ private:
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     std::vector<Actor*> _LuaGetAlliesInRange(Ranges range);
     std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);
-    void _LuaAddAOE(const std::string& script,
+    AreaOfEffect* _LuaAddAOE(const std::string& script,
         uint32_t index,
         const Math::STLVector3& pos);
     bool _LuaHasEffect(uint32_t index);

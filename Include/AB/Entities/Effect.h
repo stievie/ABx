@@ -32,6 +32,8 @@ enum EffectCategory : uint8_t
     EffectEnvironment = 254
 };
 
+static constexpr uint32_t EFFECT_INDEX_MORALE = 1001;
+
 struct Effect : Entity
 {
     static constexpr const char* KEY()
