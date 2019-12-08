@@ -1061,12 +1061,14 @@ bool Actor::IncreaseMorale()
 {
     if (!IsUndestroyable())
         return resourceComp_->IncreaseMorale();
+    return false;
 }
 
 bool Actor::DecreaseMorale()
 {
     if (!IsUndestroyable())
         return resourceComp_->DecreaseMorale();
+    return false;
 }
 
 }
