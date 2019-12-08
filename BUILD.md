@@ -62,7 +62,8 @@ Required lib files for the client not in this repostitory:
 * `Urho3D(_d).lib`
 
 Build them and put the library files in `./Lib/x64`. Copy Urho3D header files to
-`Include/Urho3D` and apply the patch `Urho3D.patch`in this directory.
+`Include/Urho3D` and apply the patch `Urho3D.patch`in this directory. Copy Urho3D 
+assets to the `bin` directory.
 
 #### Build
 
