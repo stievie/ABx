@@ -15,7 +15,7 @@ db_pass = "password"
 4. Create a database with the name `forgottenwars`.
 5. Create the DB structure with importing `sql/schema.*.sql`
 6. Import `sql/data.*.sql`
-7. Download server assets from https://0x2a.wtf/assets/data.zip and put them into the Bin/data directory. Don't overwrite files that are in the git repository.
+7. Download server assets `data` from https://1drv.ms/u/s!Ajy_fJI3BLBobPUajcfpcJ7oePM?e=ua2adS and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run `run.bat` or `./run.sh` in the root directory
 9. You may want to create an account key to be able to create an account:
 ~~~sql
@@ -25,6 +25,6 @@ INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key
 ## Client
 
 1. Build it, see [BUILD.md](BUILD.md)
-2. (Download client assets from and put them into bin/AbData (don't replace existing files), oh snap that's 500 MB :/)
+2. Download client assets `client_data.zip` from https://1drv.ms/u/s!Ajy_fJI3BLBobPUajcfpcJ7oePM?e=ua2adS and put them into `bin/AbData` (don't replace existing files)
 3. Run `fw.exe`
 4. Create an account using your previously created account key
