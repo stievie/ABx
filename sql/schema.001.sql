@@ -13,3 +13,6 @@ ALTER TABLE public.game_music ALTER COLUMN uuid SET DEFAULT public.random_guid()
 ALTER TABLE public.game_professions ALTER COLUMN uuid SET DEFAULT public.random_guid();
 ALTER TABLE public.game_quests ALTER COLUMN uuid SET DEFAULT public.random_guid();
 ALTER TABLE public.game_skills ALTER COLUMN uuid SET DEFAULT public.random_guid();
+ALTER TABLE public.versions ALTER COLUMN uuid SET DEFAULT public.random_guid();
+
+INSERT INTO public.versions (name, value, internal) VALUES ('schema', 1, 1);
