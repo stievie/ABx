@@ -34,6 +34,14 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 
 ![Architecture](/Doc/screenshot.jpg?raw=true)
 
+## Build, install, run
+
+See `BUILD.md` and `INSTALL.md`.
+
+## Credits
+
+See `CREDITS.md`.
+
 ## Architecture
 
 ![Architecture](/Doc/abschema.png?raw=true)
@@ -199,11 +207,3 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
 Everything is UTF-8 encoded. The Client sends only UTF-8 encoded strings to the
 server. All files on the server are UTF-8 encoded. So there is no additional
 conversion required.
-
-## Build
-
-See BUILD.md
-
-## Credits
-
-See `CREDITS.md`
