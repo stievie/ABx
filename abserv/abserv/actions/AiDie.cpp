@@ -10,7 +10,7 @@ Node::Status Die::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
     if (npc.IsDead())
-        return Status::Finished;
+        return Status::Failed;
     if (npc.Die())
         return Status::Finished;
     return Status::Failed;
