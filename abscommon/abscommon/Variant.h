@@ -129,7 +129,8 @@ public:
     bool operator ==(int other) const { return type_ == VAR_INT ? value_.intValue == other : false; }
     bool operator ==(unsigned other) const { return type_ == VAR_INT ? value_.intValue == static_cast<int>(other) : false; }
     bool operator ==(bool other) const { return type_ == VAR_BOOL ? value_.boolValue == other : false; }
-    bool operator ==(float other) const { return type_ == VAR_FLOAT ? value_.floatValue == other : false; }
+    bool operator ==(float other) const { return type_ == VAR_FLOAT ? (value_.floatValue + std::numeric_limits<float>::epsilon() >= other &&
+                                                                       value_.floatValue - std::numeric_limits<float>::epsilon() <= other) : false; }
     bool operator ==(long long other) const { return type_ == VAR_INT64 ? value_.int64Value == other : false; }
     bool operator ==(unsigned long long other) const { return type_ == VAR_INT64 ? value_.int64Value == static_cast<long long>(other) : false; }
     bool operator ==(const std::string& other) const { return type_ == VAR_STRING ? (stringValue_.compare(other) == 0) : false; }

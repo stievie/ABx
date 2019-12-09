@@ -1,4 +1,8 @@
--- 2 Sec
+include("/scripts/includes/consts.lua")
+include("/scripts/includes/skill_consts.lua")
+include("/scripts/includes/attributes.lua")
+include("/scripts/includes/monk.lua")
+
 isPersistent = false
 
 function getDuration(source, target)
@@ -10,12 +14,18 @@ function onStart(source, target)
 end
 
 function onEnd(source, target)
---  target:Health = target:Health + 120
-end
-
--- Effect was removed before ended
-function onRemove(source, target)
-end
-
-function onUpdate(source, target, timeElapsed)
+  -- No effect when it was removed before ended
+  if (target == nil) then
+    return
+  end
+  if (target:IsDead()) then
+    return
+  end
+  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local hp = math.floor(30 + (attribVal * 6))
+  target:Healing(source, self:Index(), hp)
+  local bonus = math.floor(getDevineFavorHealBonus(source))
+  if (bonus ~= 0) then
+    target:Healing(source, self:Index(), bonus)
+  end
 end

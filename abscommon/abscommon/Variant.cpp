@@ -64,7 +64,7 @@ std::string Variant::ToString() const
     {
         char buff[100];
         int len = snprintf(buff, 100, "0x%p", value_.ptrValue);
-        return std::string(buff, len);
+        return std::string(buff, static_cast<size_t>(len));
     }
     default:
         return std::string();

@@ -50,9 +50,7 @@ size_t Party::GetDataPos(const Player& player)
     });
     const size_t index = std::distance(data_.members.begin(), iter);
     if (index == data_.members.size())
-    {
         return 0;
-    }
     // 1-based, 0 = invalid
     return index + 1;
 }

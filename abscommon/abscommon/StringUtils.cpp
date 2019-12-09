@@ -179,10 +179,9 @@ uint32_t ConvertStringToIP(const std::string& ip)
 
 static float RoundOff(float n)
 {
-    float d = n * 100.0f;
-    int i = static_cast<int>(d + 0.5f);
-    d = (float)i / 100.0f;
-    return d;
+    const float d = n * 100.0f;
+    const int i = static_cast<int>(d + 0.5f);
+    return static_cast<float>(i) / 100.0f;
 }
 
 std::string ConvertSize(size_t size)
@@ -261,6 +260,18 @@ std::string UrlDecode(const std::string& str)
         }
     }
     return ret;
+}
+
+std::string EscapeArguments(const std::string& value)
+{
+    const size_t spacepos = value.find(' ');
+    if (spacepos != std::string::npos)
+        return "\"" + value + "\"";
+    const size_t tabpos = value.find('\t');
+    if (tabpos != std::string::npos)
+        return "\"" + value + "\"";
+
+    return value;
 }
 
 }

@@ -1,34 +1,37 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
-#include "OutputMessage.h"
 #include "BanManager.h"
 #include "Dispatcher.h"
-#include <functional>
 #include "IOAccount.h"
-#include <AB/ProtocolCodes.h>
-#include <AB/Entities/Account.h>
-#include <AB/Entities/Game.h>
-#include <uuid.h>
-#include "StringUtils.h"
-#include "IOService.h"
 #include "IOGame.h"
+#include "IOService.h"
+#include "OutputMessage.h"
+#include "StringUtils.h"
 #include "Subsystems.h"
 #include "UuidUtils.h"
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Game.h>
+#include <AB/ProtocolCodes.h>
+#include <functional>
+#include <uuid.h>
 
 namespace Net {
 
 void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 {
+    std::shared_ptr<Connection> conn = GetConnection();
+    uint32_t clientIp = conn->GetIP();
+
     message.Skip(2);    // Client OS
+
     uint16_t version = message.Get<uint16_t>();
     if (version != AB::PROTOCOL_VERSION)
     {
+        LOG_ERROR << "Wrong protocol version from client " << Utils::ConvertIPToString(clientIp) << std::endl;
         DisconnectClient(AB::Errors::WrongProtocolVersion);
         return;
     }
 
-    std::shared_ptr<Connection> conn = GetConnection();
-    uint32_t clientIp = conn->GetIP();
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(clientIp))
     {

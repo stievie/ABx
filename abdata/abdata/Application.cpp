@@ -98,16 +98,14 @@ bool Application::ParseCommandLine()
     if (!logDir_.empty())
         IO::Logger::logDir_ = logDir_;
 
-    auto val = sa::arg_parser::get_value<size_t>(parsedArgs_, "maxsize");
-    if (val.has_value())
-        maxSize_ = val.value();
+    maxSize_ = sa::arg_parser::get_value<size_t>(parsedArgs_, "maxsize", maxSize_);
     readonly_ = sa::arg_parser::get_value<bool>(parsedArgs_, "readonly", false);
     DB::Database::driver_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::driver_);
-    DB::Database::dbHost_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbHost_);
-    DB::Database::dbName_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbName_);
-    DB::Database::dbUser_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbUser_);
-    DB::Database::dbPass_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbdriver", DB::Database::dbPass_);
-    DB::Database::dbPort_ = sa::arg_parser::get_value<int16_t>(parsedArgs_, "dbport", DB::Database::dbPort_);
+    DB::Database::dbHost_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbhost", DB::Database::dbHost_);
+    DB::Database::dbName_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbname", DB::Database::dbName_);
+    DB::Database::dbUser_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbuser", DB::Database::dbUser_);
+    DB::Database::dbPass_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "dbpass", DB::Database::dbPass_);
+    DB::Database::dbPort_ = sa::arg_parser::get_value<uint16_t>(parsedArgs_, "dbport", DB::Database::dbPort_);
 
     return true;
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 namespace Utils {
 
@@ -27,5 +29,7 @@ std::string ConvertIPToString(uint32_t ip, bool mask = false);
 
 std::string UrlEncode(const std::string& str);
 std::string UrlDecode(const std::string& str);
+
+std::string EscapeArguments(const std::string& value);
 
 }

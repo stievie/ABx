@@ -50,6 +50,7 @@ private:
         FunctionGetAttributeValue = 1 << 18,
         FunctionGetResources = 1 << 19,
         FunctionGetSkillRecharge = 1 << 20,
+        FunctionOnRemoved = 1 << 21,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;

@@ -81,6 +81,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetResources;
     if (Lua::IsFunction(luaState_, "getSkillRecharge"))
         functions_ |= FunctionGetSkillRecharge;
+    if (Lua::IsFunction(luaState_, "onRemove"))
+        functions_ |= FunctionOnRemoved;
     return true;
 }
 
@@ -133,6 +135,7 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target,
 void Effect::Remove()
 {
     // The Effect was removed before it ended
+    if (HaveFunction(FunctionOnRemoved))
     {
         auto source = source_.lock();
         auto target = target_.lock();
