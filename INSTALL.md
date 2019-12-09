@@ -31,6 +31,6 @@ INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key
 ## Client
 
 1. Build it, see [BUILD.md](BUILD.md)
-2. Download client assets `client_data.zip` from https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg and put them into `bin/AbData` (don't replace existing files)
+2. Download client assets `client_data.zip` from https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg and put them into the clients `abclient/bin` directory (don't replace existing files)
 3. Run `fw.exe`
 4. Create an account using the (Random_Guid) value of your previously created account key.
