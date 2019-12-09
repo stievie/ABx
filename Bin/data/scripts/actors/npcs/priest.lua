@@ -18,8 +18,7 @@ function onInit()
   skillBar:AddSkill(281)
   skillBar:AddSkill(280)
   skillBar:AddSkill(288)
-  -- Instant rezz skill
-  skillBar:AddSkill(9996)
+  skillBar:AddSkill(2061)
   skillBar:SetAttributeValue(ATTRIB_HEALING, 12)
   skillBar:SetAttributeValue(ATTRIB_DEVINE_FAVOUR, 12)
   return true

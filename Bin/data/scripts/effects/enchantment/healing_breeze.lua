@@ -24,6 +24,3 @@ end
 function onRemove(source, target)
   target:SetHealthRegen(-regen)
 end
-
-function onUpdate(source, target, timeElapsed)
-end

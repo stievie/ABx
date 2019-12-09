@@ -25,6 +25,8 @@ function onInit()
   skillBar:SetAttributeValue(ATTRIB_ENERGY_STORAGE, 12)
   skillBar:SetAttributeValue(ATTRIB_FIRE, 12)
 
+  skillBar:AddSkill(2)
+
   return true
 end
 

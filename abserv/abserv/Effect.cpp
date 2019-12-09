@@ -213,7 +213,7 @@ void Effect::GetAttackDamage(int32_t& value)
     value = luaState_["getAttackDamage"](value);
 }
 
-void Effect::GetRecources(int & maxHealth, int & maxEnergy)
+void Effect::GetRecources(int& maxHealth, int& maxEnergy)
 {
     if (!HaveFunction(FunctionGetResources))
         return;

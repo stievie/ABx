@@ -26,6 +26,8 @@ function onInit()
   skillBar:SetAttributeValue(ATTRIB_INSPIRATION, 9)
   skillBar:SetAttributeValue(ATTRIB_DOMINATION, 12)
 
+  skillBar:AddSkill(2)
+
   return true
 end
 

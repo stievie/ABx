@@ -48,7 +48,12 @@ bool Skill::LoadScript(const std::string& fileName)
     energy_ = luaState_["costEnergy"];
     adrenaline_ = luaState_["costAdrenaline"];
     activation_ = luaState_["activation"];
-    recharge_ = luaState_["recharge"];
+    // FIXME: That is a bit ugly, maybe we should change recharge_ to an uint32_t
+    uint32_t r = luaState_["recharge"];
+    if (r > std::numeric_limits<decltype(recharge_)>::max())
+        recharge_ = std::numeric_limits<decltype(recharge_)>::max();
+    else
+        recharge_ = static_cast<int32_t>(r);
     overcast_ = luaState_["overcast"];
     if (Lua::IsNumber(luaState_, "hp"))
         hp_ = luaState_["hp"];

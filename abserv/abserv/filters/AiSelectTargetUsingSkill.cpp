@@ -37,28 +37,29 @@ void SelectTargetUsingSkill::Execute(Agent& agent)
     auto& entities = agent.filteredAgents_;
     entities.clear();
     Game::Npc& chr = GetNpc(agent);
+    auto& rng = *GetSubsystem<Crypto::Random>();
     chr.VisitInRange(Game::Ranges::Casting, [&](const Game::GameObject& current)
     {
         if (!Game::Is<Game::Actor>(current))
             return Iteration::Continue;
 
         const Game::Actor& actor = Game::To<Game::Actor>(current);
+        if (!Game::TargetClassMatches(chr, class_, actor))
+            return Iteration::Continue;
+        if (!actor.IsSelectable() || actor.IsDead() || actor.IsUndestroyable())
+            return Iteration::Continue;
 
-        if (Game::TargetClassMatches(chr, class_, actor) &&
-            actor.IsSelectable() && !actor.IsUndestroyable() && !actor.IsDead())
+        const auto* skill = actor.skills_->GetCurrentSkill();
+        if (skill && skill->IsUsing() && skill->IsType(type_) &&
+            (skill->activation_ > minActivationTime_))
         {
-            const auto* skill = actor.skills_->GetCurrentSkill();
-            if (skill && skill->IsUsing() && skill->IsType(type_) &&
-                (skill->activation_ > minActivationTime_))
-            {
-                if (GetSubsystem<Crypto::Random>()->GetFloat() < 0.3f)
-                    return Iteration::Continue;
+            if (rng.GetFloat() < 0.3f)
+                return Iteration::Continue;
 #ifdef DEBUG_AI
-                LOG_DEBUG << "Selected " << actor.GetName() << std::endl;
+            LOG_DEBUG << "Selected " << actor.GetName() << std::endl;
 #endif
-                entities.push_back(actor.id_);
-                return Iteration::Break;
-            }
+            entities.push_back(actor.id_);
+            return Iteration::Break;
         }
         return Iteration::Continue;
     });
