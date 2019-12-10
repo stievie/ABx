@@ -217,7 +217,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
         }
         if (!current.HasEffect(effect))
             return Iteration::Continue;
-        if (!current.HasTarget(target))
+        if (target != SkillTargetNone && !current.HasTarget(target))
             return Iteration::Continue;
         if (!current.IsRecharged())
             return Iteration::Continue;

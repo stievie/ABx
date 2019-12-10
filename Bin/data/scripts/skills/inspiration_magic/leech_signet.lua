@@ -49,11 +49,16 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
+  local skill = target:GetCurrentSkill();
+  if (skill == nil) then
+    -- No skill to interrupt -> no error just nothing happens
+    return SkillErrorNone
+  end
+
   if (target:Interrupt()) then
     if (skill:IsType(SkillTypeSpell)) then
       local attribVal = source:GetAttributeValue(ATTRIB_INSPIRATION)
       local energy = math.floor(attribVal)
-      local skill = target:GetCurrentSkill();
       source:AddEnergy(energy)
     end
   end

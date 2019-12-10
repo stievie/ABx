@@ -113,7 +113,7 @@ public:
     uint32_t GetAttributeValue(uint32_t index);
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    void GetSkillRecharge(Skill* skill, int32_t& recharge);
+    void GetSkillRecharge(Skill* skill, uint32_t& recharge);
     template<typename Func>
     void VisitEquipement(const Func& func);
     template<typename Func>

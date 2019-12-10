@@ -325,7 +325,7 @@ inline bool TargetClassMatches(const Actor& actor, TargetClass _class, const Act
         (_class == TargetClass::Friend && actor.IsAlly(&target)));
 }
 
-inline void GetSkillRecharge(const Actor& actor, Skill* skill, int32_t& recharge)
+inline void GetSkillRecharge(const Actor& actor, Skill* skill, uint32_t& recharge)
 {
     actor.inventoryComp_->GetSkillRecharge(skill, recharge);
     actor.effectsComp_->GetSkillRecharge(skill, recharge);

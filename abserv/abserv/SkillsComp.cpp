@@ -206,7 +206,7 @@ void SkillsComp::GetResources(int&, int &maxEnergy)
     maxEnergy += (estorage * 3);
 }
 
-void SkillsComp::GetSkillRecharge(Skill* skill, int32_t& recharge)
+void SkillsComp::GetSkillRecharge(Skill* skill, uint32_t& recharge)
 {
     if (!skill->IsType(AB::Entities::SkillTypeSpell))
         return;
@@ -215,8 +215,9 @@ void SkillsComp::GetSkillRecharge(Skill* skill, int32_t& recharge)
     if (fastcast == 0)
         return;
     float reduce = static_cast<float>(recharge) / 100.0f * (3.0f * static_cast<float>(fastcast));
-    recharge -= static_cast<int32_t>(reduce);
-    if (recharge < 0)
+    if (reduce < recharge)
+        recharge -= static_cast<uint32_t>(reduce);
+    else
         recharge = 0;
 }
 

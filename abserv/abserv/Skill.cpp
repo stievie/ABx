@@ -133,7 +133,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
     return (lastError_ == AB::GameProtocol::SkillErrorNone);
 }
 
-int32_t Skill::GetRecharge(int32_t recharge)
+uint32_t Skill::GetRecharge(uint32_t recharge)
 {
     if (auto s = source_.lock())
         GetSkillRecharge(*s, this, recharge);

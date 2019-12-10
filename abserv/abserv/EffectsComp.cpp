@@ -183,7 +183,7 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     }
 }
 
-void EffectsComp::GetSkillRecharge(Skill* skill, int32_t& recharge)
+void EffectsComp::GetSkillRecharge(Skill* skill, uint32_t& recharge)
 {
     for (const auto& effect : effects_)
     {

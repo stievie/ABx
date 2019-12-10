@@ -144,7 +144,7 @@ void Effect::Remove()
     cancelled_ = true;
 }
 
-void Effect::GetSkillRecharge(Skill* skill, int32_t& recharge)
+void Effect::GetSkillRecharge(Skill* skill, uint32_t& recharge)
 {
     if (!HaveFunction(FunctionGetSkillRecharge))
         return;

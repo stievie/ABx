@@ -109,7 +109,7 @@ public:
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill,
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    void GetSkillRecharge(Skill* skill, int32_t& recharge);
+    void GetSkillRecharge(Skill* skill, uint32_t& recharge);
     /// Get real damage. It may be in-/decreased by some effects on the *Target*. This is called when the damage is applied to the target.
     void GetDamage(DamageType type, int32_t& value, bool& critical);
     void GetAttackSpeed(Item* weapon, uint32_t& value);

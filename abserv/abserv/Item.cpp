@@ -495,7 +495,7 @@ void Item::GetResources(int& maxHealth, int& maxEnergy)
     }
 }
 
-void Item::GetSkillRecharge(Skill *skill, int32_t &recharge)
+void Item::GetSkillRecharge(Skill *skill, uint32_t &recharge)
 {
     if (HaveFunction(FunctionGetSkillRecharge))
     {
