@@ -3,6 +3,8 @@
 #include "../Npc.h"
 #include "../Game.h"
 
+#define DEBUG_AI
+
 namespace AI {
 namespace Actions {
 
@@ -51,6 +53,10 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
     if (npc.UseSkill(skillIndex, false))
         return Status::Running;
+
+#ifdef DEBUG_AI
+    LOG_DEBUG << npc.GetName() << " failed to use skill " << skill->data_.name << std::endl;
+#endif
     return Status::Failed;
 }
 

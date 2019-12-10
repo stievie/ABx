@@ -67,9 +67,11 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     GetAgent(agent).selectedSkill_ = skillIndex;
 
     if (useSkill(skillIndex, selection[0]))
-    {
         return Status::Running;
-    }
+
+#ifdef DEBUG_AI
+    LOG_DEBUG << npc.GetName() << " failed to use skill " << skill->data_.name << std::endl;
+#endif
     return Status::Failed;
 }
 
