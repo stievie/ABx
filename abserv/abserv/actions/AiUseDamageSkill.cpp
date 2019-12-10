@@ -47,10 +47,11 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
     if (!npc.IsInRange(skill->GetRange(), target))
         return Status::Failed;
 
-    npc.SetSelectedObjectById(selection[0]);
-    npc.UseSkill(skillIndex);
-
-    return Status::Running;
+    if (!npc.SetSelectedObjectById(selection[0]))
+        return Status::Failed;
+    if (npc.UseSkill(skillIndex, false))
+        return Status::Running;
+    return Status::Failed;
 }
 
 }

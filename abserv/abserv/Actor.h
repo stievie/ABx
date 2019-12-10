@@ -14,6 +14,7 @@
 #include "MoveComp.h"
 #include "ProgressComp.h"
 #include "ResourceComp.h"
+#include "SelectionComp.h"
 #include "SkillBar.h"
 #include "SkillsComp.h"
 #include "UuidUtils.h"
@@ -261,26 +262,22 @@ public:
     }
     uint32_t GetAttributeValue(uint32_t index);
 
-    std::weak_ptr<GameObject> selectedObject_;
-    std::weak_ptr<GameObject> followedObject_;
+    GameObject* GetSelectedObject() const
+    {
+        return selectionComp_->GetSelectedObject();
+    }
     uint32_t GetSelectedObjectId() const
     {
-        if (auto sel = selectedObject_.lock())
-            return sel->GetId();
-        return 0;
+        return selectionComp_->GetSelectedObjectId();
     }
-    std::shared_ptr<GameObject> GetSelectedObject() const
-    {
-        return selectedObject_.lock();
-    }
-    void SetSelectedObject(std::shared_ptr<GameObject> object);
-    void SetSelectedObjectById(uint32_t id);
+    bool SetSelectedObject(std::shared_ptr<GameObject> object);
+    bool SetSelectedObjectById(uint32_t id);
     void GotoPosition(const Math::Vector3& pos);
     void FollowObject(std::shared_ptr<GameObject> object);
     void FollowObject(uint32_t objectId);
-    void UseSkill(int index);
-    void Attack(Actor* target);
-    bool AttackById(uint32_t targetId);
+    bool UseSkill(int index, bool ping);
+    bool Attack(Actor* target, bool ping);
+    bool AttackById(uint32_t targetId, bool ping);
     bool IsAttackingActor(const Actor* target) const;
     /// Cancel attack, use skill, follow
     void CancelAction();
@@ -302,6 +299,7 @@ public:
     std::unique_ptr<Components::InventoryComp> inventoryComp_;
     std::unique_ptr<Components::MoveComp> moveComp_;
     std::unique_ptr<Components::CollisionComp> collisionComp_;
+    std::unique_ptr<Components::SelectionComp> selectionComp_;
 
     bool undestroyable_{ false };
     /// Friend foe identification. Upper 16 bit is foe mask, lower 16 bit friend mask.

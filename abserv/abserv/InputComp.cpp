@@ -7,7 +7,7 @@
 namespace Game {
 namespace Components {
 
-void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message)
+void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
     Actor* source = nullptr;
     if (sourceId == owner_.id_)
@@ -16,37 +16,10 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
         source = owner_.GetGame()->GetObject<Actor>(sourceId);
 
     if (source)
-    {
-        if (targetId == 0)
-        {
-            source->selectedObject_.reset();
-            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-            message.Add<uint32_t>(source->id_);
-            // Clear Target
-            message.Add<uint32_t>(0);
-        }
-        else if (targetId != source->GetSelectedObjectId())
-        {
-            auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
-            if (target->selectable_)
-            {
-                source->selectedObject_ = target->GetPtr<GameObject>();
-                message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-                message.Add<uint32_t>(source->id_);
-                if (auto sel = source->selectedObject_.lock())
-                {
-                    sel->CallEvent<void(Actor*)>(EVENT_ON_SELECTED, source);
-                    message.Add<uint32_t>(sel->id_);
-                }
-                else
-                    // Clear Target
-                    message.Add<uint32_t>(0);
-            }
-        }
-    }
+        source->selectionComp_->SelectObject(targetId);
 }
 
-void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage&)
+void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId)
 {
     Actor* source = nullptr;
     if (sourceId == owner_.id_)
@@ -55,16 +28,12 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
         source = owner_.GetGame()->GetObject<Actor>(sourceId);
 
     if (source)
-    {
-        auto* clickedObj = owner_.GetGame()->GetObject<GameObject>(targetId);
-        if (clickedObj)
-            clickedObj->CallEvent<void(Actor*)>(EVENT_ON_CLICKED, source);
-    }
+        source->selectionComp_->ClickObject(targetId);
 }
 
-void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
+void InputComp::FollowObject(uint32_t targetId, bool ping)
 {
-    if (!owner_.IsDead() && !owner_.IsKnockedDown())
+    if (!owner_.IsImmobilized())
     {
         auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
         if (target)
@@ -74,7 +43,6 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
             if (succ)
             {
                 owner_.attackComp_->Cancel();
-                owner_.followedObject_ = targePtr;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 owner_.autorunComp_->SetAutoRun(true);
             }
@@ -192,34 +160,27 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             bool ping = input.data[InputDataPingTarget].GetBool();
-            FollowObject(targetId, ping, message);
+            FollowObject(targetId, ping);
             break;
         }
         case InputType::Attack:
         {
-            if (owner_.CanAttack() && !owner_.IsImmobilized())
-            {
-                if (auto target = owner_.selectedObject_.lock())
+                if (auto* target = owner_.GetSelectedObject())
                 {
-                    auto actor = std::dynamic_pointer_cast<Actor>(target);
-                    if (actor)
+                    if (Is<Actor>(target))
                     {
                         bool ping = input.data[InputDataPingTarget].GetBool();
-                        owner_.attackComp_->Attack(actor, ping);
+                        owner_.Attack(To<Actor>(target), ping);
                     }
                 }
-            }
             break;
         }
         case InputType::UseSkill:
         {
-            if (owner_.CanUseSkill() && !owner_.IsDead())
-            {
-                // The index of the skill in the users skill bar, 0 based
-                int skillIndex = input.data[InputDataSkillIndex].GetInt();
-                bool ping = input.data[InputDataPingTarget].GetBool();
-                owner_.skillsComp_->UseSkill(skillIndex, ping);
-            }
+            // The index of the skill in the users skill bar, 0 based
+            int skillIndex = input.data[InputDataSkillIndex].GetInt();
+            bool ping = input.data[InputDataPingTarget].GetBool();
+            owner_.UseSkill(skillIndex, ping);
             break;
         }
         case InputType::Select:
@@ -228,7 +189,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             // targets for this NPC, so we also need the source ID.
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
-            SelectObject(sourceId, targetId, message);
+            SelectObject(sourceId, targetId);
             break;
         }
         case InputType::ClickObject:
@@ -237,7 +198,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             // targets for this NPC, so we also need the source ID.
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
-            ClickObject(sourceId, targetId, message);
+            ClickObject(sourceId, targetId);
             break;
         }
         case InputType::Cancel:
@@ -247,7 +208,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
-            owner_.CallEvent<void(AB::GameProtocol::CommandTypes,const std::string&,Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
+            owner_.CallEvent<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(
+                EVENT_ON_HANDLECOMMAND,
                 type, cmd, message);
             break;
         }

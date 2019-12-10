@@ -438,6 +438,9 @@
     <ClInclude Include="Group.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="SelectionComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -825,6 +828,9 @@
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
     <ClCompile Include="Group.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectionComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

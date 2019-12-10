@@ -12,9 +12,8 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
-    {
         return Status::Failed;
-    }
+
     for (auto id : selection)
     {
         auto* target = npc.GetGame()->GetObject<Game::Actor>(id);
@@ -26,14 +25,14 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
         if (npc.attackComp_->IsAttackingTarget(target))
             return Status::Running;
 
-        if (npc.AttackById(id))
+        if (npc.Attack(target, false))
         {
             if (npc.GetSpeed() < 1.0f)
                 npc.SetSpeed(1.0f);
             return Status::Running;
         }
     }
-    return Status::Finished;
+    return Status::Failed;
 }
 
 AttackSelection::AttackSelection(const ArgumentsType& arguments) :

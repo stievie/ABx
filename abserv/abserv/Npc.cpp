@@ -347,7 +347,7 @@ bool Npc::SayQuote(ChatType channel, int index)
 
     kainjow::mustache::mustache tpl{ quote };
     kainjow::mustache::data data;
-    if (auto sel = selectedObject_.lock())
+    if (auto sel = GetSelectedObject())
         data.set("selected_name", sel->GetName());
     else
         data.set("selected_name", "");

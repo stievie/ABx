@@ -313,6 +313,7 @@
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ScriptManager.h" />
+    <ClInclude Include="SelectionComp.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
@@ -446,6 +447,7 @@
     <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
     <ClCompile Include="ScriptManager.cpp" />
+    <ClCompile Include="SelectionComp.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />

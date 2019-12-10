@@ -99,7 +99,6 @@ void AttackComp::MoveToTarget(std::shared_ptr<Actor> target)
         float dist = item ? item->GetWeaponRange() : RANGE_TOUCH;
         if (owner_.autorunComp_->Follow(target, false, dist))
         {
-            owner_.followedObject_ = target;
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
             owner_.autorunComp_->SetAutoRun(true);
         }
@@ -181,20 +180,20 @@ void AttackComp::Cancel()
     SetAttackState(false);
 }
 
-void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
+bool AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 {
     bool canAttack = true;
     owner_.CallEvent<void(Actor*,bool&)>(EVENT_ON_ATTACK, target.get(), canAttack);
     if (!canAttack)
     {
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
-        return;
+        return false;
     }
     if (!target)
     {
         // Attack needs a target
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
-        return;
+        return false;
     }
     bool canGettingAttacked = true;
     target->CallEvent<void(Actor*, bool&)>(EVENT_ON_GETTING_ATTACKED, &owner_, canGettingAttacked);
@@ -202,7 +201,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     {
         // Can not attack an destroyable target
         lastError_ = AB::GameProtocol::AttackErrorTargetUndestroyable;
-        return;
+        return false;
     }
 
     target_ = target;
@@ -211,6 +210,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
             target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
     attacking_ = true;
     lastAttackTime_ = 0;
+    return true;
 }
 
 bool AttackComp::IsAttackingTarget(const Actor* target) const

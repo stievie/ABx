@@ -73,9 +73,11 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
 #ifdef DEBUG_AI
     LOG_DEBUG << "Resurrecting " << target->GetName() << std::endl;
 #endif
-    npc.SetSelectedObjectById(selection[0]);
-    npc.UseSkill(skillIndex);
-    return Status::Running;
+    if (!npc.SetSelectedObjectById(selection[0]))
+        return Status::Failed;
+    if (npc.UseSkill(skillIndex, false))
+        return Status::Running;
+    return Status::Failed;
 }
 
 }

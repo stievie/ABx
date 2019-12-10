@@ -68,10 +68,11 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     LOG_DEBUG << "Interrupting " << target->GetName() << " Skill " << skill->data_.name << std::endl;
 #endif
 
-    npc.SetSelectedObjectById(selection[0]);
-    npc.UseSkill(skillIndex);
-
-    return Status::Running;
+    if (!npc.SetSelectedObjectById(selection[0]))
+        return Status::Failed;
+    if (npc.UseSkill(skillIndex, false))
+        return Status::Running;
+    return Status::Failed;
 }
 
 }

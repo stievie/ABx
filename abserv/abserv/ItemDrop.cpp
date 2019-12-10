@@ -89,11 +89,8 @@ void ItemDrop::OnClicked(Actor* actor)
 {
     if (!actor)
         return;
-    if (auto o = actor->selectedObject_.lock())
-    {
-        if (o->id_ == id_)
-            PickUp(actor);
-    }
+    if (actor->GetSelectedObjectId() == id_)
+        PickUp(actor);
 }
 
 void ItemDrop::SetSource(std::shared_ptr<Actor> source)

@@ -119,7 +119,8 @@ Actor::Actor() :
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
     inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
-    collisionComp_(std::make_unique<Components::CollisionComp>(*this))    // Actor always collides
+    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
+    selectionComp_(std::make_unique<Components::SelectionComp>(*this))
 {
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Actor::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Actor::OnStartUseSkill, this, std::placeholders::_1));
@@ -175,20 +176,17 @@ bool Actor::GotoHomePos()
     return false;
 }
 
-void Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
+bool Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
 {
     if (object)
-        SetSelectedObjectById(object->GetId());
+        return selectionComp_->SelectObject(object->GetId());
     else
-        SetSelectedObjectById(0);
+        return selectionComp_->SelectObject(0);
 }
 
-void Actor::SetSelectedObjectById(uint32_t id)
+bool Actor::SetSelectedObjectById(uint32_t id)
 {
-    Utils::VariantMap data;
-    data[InputDataObjectId] = GetId();    // Source
-    data[InputDataObjectId2] = id;   // Target
-    inputComp_->Add(InputType::Select, std::move(data));
+    return selectionComp_->SelectObject(id);
 }
 
 void Actor::GotoPosition(const Math::Vector3& pos)
@@ -215,30 +213,11 @@ void Actor::FollowObject(uint32_t objectId)
     inputComp_->Add(InputType::Follow, std::move(data));
 }
 
-void Actor::Attack(Actor* target)
+bool Actor::Attack(Actor* target, bool ping)
 {
     if (!target)
-        return;
-    if (!IsEnemy(target))
-        return;
-    if (attackComp_->IsAttackingTarget(target))
-        return;
-
-    {
-        // First select object
-        Utils::VariantMap data;
-        data[InputDataObjectId] = GetId();    // Source
-        data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_->Add(InputType::Select, std::move(data));
-    }
-    // Then attack
-    inputComp_->Add(InputType::Attack);
-}
-
-bool Actor::AttackById(uint32_t targetId)
-{
-    auto* target = GetGame()->GetObject<Actor>(targetId);
-    if (!target)
+        return false;
+    if (!CanAttack() || IsImmobilized())
         return false;
 
     if (!IsEnemy(target))
@@ -246,16 +225,20 @@ bool Actor::AttackById(uint32_t targetId)
     if (attackComp_->IsAttackingTarget(target))
         return true;
 
-    {
-        // First select object
-        Utils::VariantMap data;
-        data[InputDataObjectId] = GetId();    // Source
-        data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_->Add(InputType::Select, std::move(data));
-    }
+    // First select the target
+    if (!selectionComp_->SelectObject(target->GetId()))
+        return false;
     // Then attack
-    inputComp_->Add(InputType::Attack);
-    return true;
+    return attackComp_->Attack(target->GetPtr<Actor>(), ping);
+}
+
+bool Actor::AttackById(uint32_t targetId, bool ping)
+{
+    auto* target = GetGame()->GetObject<Actor>(targetId);
+    if (!target)
+        return false;
+
+    return Attack(target, ping);
 }
 
 bool Actor::IsAttackingActor(const Actor* target) const
@@ -267,14 +250,14 @@ bool Actor::IsAttackingActor(const Actor* target) const
     return false;
 }
 
-void Actor::UseSkill(int index)
+bool Actor::UseSkill(int index, bool ping)
 {
+    if (!CanUseSkill() || IsDead())
+        return false;
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
-        return;
+        return false;
 
-    Utils::VariantMap data;
-    data[InputDataSkillIndex] = static_cast<uint8_t>(index);
-    inputComp_->Add(InputType::UseSkill, std::move(data));
+    return skillsComp_->UseSkill(index, ping) == AB::GameProtocol::SkillErrorNone;
 }
 
 void Actor::CancelAction()
@@ -392,9 +375,7 @@ Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
 
 GameObject* Actor::_LuaGetSelectedObject()
 {
-    if (auto o = selectedObject_.lock())
-        return o.get();
-    return nullptr;
+    return selectionComp_->GetSelectedObject();
 }
 
 void Actor::_LuaSetSelectedObject(GameObject* object)
@@ -902,6 +883,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     // Write all
     stateComp_.Write(message);
     moveComp_->Write(message);
+    selectionComp_->Write(message);
 
     skillsComp_->Write(message);
     attackComp_->Write(message);

@@ -35,8 +35,9 @@ Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
     if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
         return Status::Failed;
 
-    npc.UseSkill(skillIndex);
-    return Status::Running;
+    if (npc.UseSkill(skillIndex, false))
+        return Status::Running;
+    return Status::Failed;
 }
 
 }

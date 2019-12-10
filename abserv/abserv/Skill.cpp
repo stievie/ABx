@@ -50,7 +50,7 @@ bool Skill::LoadScript(const std::string& fileName)
     activation_ = luaState_["activation"];
     // FIXME: That is a bit ugly, maybe we should change recharge_ to an uint32_t
     uint32_t r = luaState_["recharge"];
-    if (r > std::numeric_limits<decltype(recharge_)>::max())
+    if (r > static_cast<uint32_t>(std::numeric_limits<decltype(recharge_)>::max()))
         recharge_ = std::numeric_limits<decltype(recharge_)>::max();
     else
         recharge_ = static_cast<int32_t>(r);

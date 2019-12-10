@@ -4,6 +4,8 @@ abserv/Crowd.cpp
 abserv/Crowd.h
 abserv/Group.cpp
 abserv/Group.h
+abserv/SelectionComp.cpp
+abserv/SelectionComp.h
 abserv/WanderComp.cpp
 abserv/WanderComp.h
 abserv/actions/AiAttackSelection.cpp
