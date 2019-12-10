@@ -163,7 +163,7 @@ public:
     int32_t energy_{ 0 };
     int32_t adrenaline_{ 0 };
     int32_t activation_{ 0 };
-    int32_t recharge_{ 0 };
+    uint32_t recharge_{ 0 };
     int32_t overcast_{ 0 };
     /// HP sacrifice
     int32_t hp_{ 0 };

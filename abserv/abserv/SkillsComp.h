@@ -25,7 +25,7 @@ private:
     bool startDirty_;
     bool endDirty_;
     bool usingSkill_;
-    int32_t newRecharge_;
+    uint32_t newRecharge_;
     int64_t lastSkillTime_;
     std::weak_ptr<Skill> lastSkill_;
     void OnIncMorale(int morale);

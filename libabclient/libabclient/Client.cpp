@@ -248,7 +248,7 @@ void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
     receiver_.OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast, hp);
 }
 
-void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
+void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge)
 {
     receiver_.OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
 }

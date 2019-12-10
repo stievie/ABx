@@ -1340,7 +1340,7 @@ void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
     QueueEvent(Events::E_OBJECTUSESKILL, eData);
 }
 
-void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
+void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge)
 {
     URHO3D_LOGINFOF("Object %u used skill %u: Recharge = %u", id, skillIndex, recharge);
     VariantMap& eData = GetEventDataMap();

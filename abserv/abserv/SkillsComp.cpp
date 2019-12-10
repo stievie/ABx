@@ -167,7 +167,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
             message.Add<uint32_t>(owner_.id_);
             message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
-            message.Add<uint16_t>(static_cast<uint16_t>(newRecharge_));
+            message.Add<uint32_t>(newRecharge_);
         }
         else
         {

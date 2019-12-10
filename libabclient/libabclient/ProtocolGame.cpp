@@ -341,7 +341,7 @@ void ProtocolGame::ParseObjectEndUseSkill(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     int skillIndex = static_cast<int>(message.Get<uint8_t>());
-    uint16_t recharge = message.Get<uint16_t>();
+    uint32_t recharge = message.Get<uint32_t>();
 
     receiver_.OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
 }
