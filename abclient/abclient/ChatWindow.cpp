@@ -3,14 +3,11 @@
 #include "FwClient.h"
 #include "Utils.h"
 #include <TimeUtils.h>
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-lambda-capture"
-#endif // __clang__
-#include <Mustache/mustache.hpp>
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif // __clang__
+#include <sa/PragmaWarning.h>
+PRAGMA_WARNING_PUSH
+    PRAGMA_WARNING_DISABLE_CLANG("-Wunused-lambda-capture")
+#   include <Mustache/mustache.hpp>
+PRAGMA_WARNING_POP
 #include "Shortcuts.h"
 #include "Options.h"
 #include "LevelManager.h"

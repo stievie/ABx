@@ -940,10 +940,10 @@ void Actor::ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value
         stats_.energyRegen = value;
         break;
     case AB::GameProtocol::ResourceTypeMaxHealth:
-        stats_.maxHealth = value;
+        stats_.maxHealth = static_cast<unsigned>(value);
         break;
     case AB::GameProtocol::ResourceTypeMaxEnergy:
-        stats_.maxEnergy = value;
+        stats_.maxEnergy = static_cast<unsigned>(value);
         break;
     case AB::GameProtocol::ResourceTypeMorale:
         stats_.morale = value;

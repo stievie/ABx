@@ -13,6 +13,7 @@
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -40,29 +41,18 @@
 #include "Config.h"
 
 #define USE_STANDALONE_ASIO
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#endif
-#include <asio.hpp>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif // _MSC_VER
 
-#if defined(_MSC_VER)
-#pragma warning( push )
-#pragma warning( disable : 4100 4305 4800 4244)
-#elif defined(__GCC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#pragma GCC diagnostic ignored "-Wreorder"
-#endif
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4592)
+#include <asio.hpp>
+PRAGMA_WARNING_POP
+
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4100 4305 4800 4244)
+PRAGMA_WARNING_DISABLE_GCC("-Wstrict-aliasing")
+PRAGMA_WARNING_DISABLE_GCC("-Wreorder")
 #include <Urho3D/Urho3DAll.h>
-#if defined(_MSC_VER)
-#pragma warning( pop )
-#elif defined(__GCC__)
-#pragma GCC diagnostic pop
-#endif
+PRAGMA_WARNING_POP
 
 #include "InternalEvents.h"
 #include "ShortcutEvents.h"

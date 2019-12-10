@@ -8,6 +8,7 @@
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
 #include <stdio.h>
 #include <cassert>
@@ -32,14 +33,12 @@
 #endif
 
 #define USE_STANDALONE_ASIO
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#endif
+
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4592)
 #include <asio.hpp>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif // _MSC_VER
+PRAGMA_WARNING_POP
+
 #include <base64.h>
 
 #define AB_UNUSED(P) (void)(P)
