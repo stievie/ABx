@@ -65,7 +65,7 @@ void ItemDrop::PickUp(Actor* actor)
         if (actor->AddToInventory(itemId_))
         {
             pickedUp_ = true;
-            actor->SetSelectedObjectById(0);
+            actor->SelectedObjectById(0);
             Remove();
         }
     }

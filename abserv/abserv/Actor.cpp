@@ -176,7 +176,7 @@ bool Actor::GotoHomePos()
     return false;
 }
 
-bool Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
+bool Actor::SelectedObject(GameObject* object)
 {
     if (object)
         return selectionComp_->SelectObject(object->GetId());
@@ -184,7 +184,7 @@ bool Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
         return selectionComp_->SelectObject(0);
 }
 
-bool Actor::SetSelectedObjectById(uint32_t id)
+bool Actor::SelectedObjectById(uint32_t id)
 {
     return selectionComp_->SelectObject(id);
 }

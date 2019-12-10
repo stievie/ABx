@@ -40,7 +40,7 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
     if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
         return Status::Failed;
 
-    if (!npc.SetSelectedObjectById(npc.GetId()))
+    if (!npc.SelectedObjectById(npc.GetId()))
         return Status::Failed;
     if (npc.UseSkill(skillIndex, false))
         return Status::Running;

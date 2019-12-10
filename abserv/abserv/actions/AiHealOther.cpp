@@ -37,7 +37,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
             return false;
         if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
             return false;
-        if (!npc.SetSelectedObjectById(targetId))
+        if (!npc.SelectedObjectById(targetId))
             return false;
         return npc.UseSkill(skillIndex, false);
     };

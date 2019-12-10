@@ -270,8 +270,8 @@ public:
     {
         return selectionComp_->GetSelectedObjectId();
     }
-    bool SetSelectedObject(std::shared_ptr<GameObject> object);
-    bool SetSelectedObjectById(uint32_t id);
+    bool SelectedObject(GameObject* object);
+    bool SelectedObjectById(uint32_t id);
     void GotoPosition(const Math::Vector3& pos);
     bool FollowObject(GameObject* object, bool ping);
     bool FollowObjectById(uint32_t objectId, bool ping);
