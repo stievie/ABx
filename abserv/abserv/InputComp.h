@@ -19,7 +19,6 @@ private:
     InputQueue inputs_;
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void ClickObject(uint32_t sourceId, uint32_t targetId);
-    void FollowObject(uint32_t targetId, bool ping);
 public:
     InputComp() = delete;
     explicit InputComp(Actor& owner) :
@@ -39,7 +38,6 @@ public:
     {
         inputs_.Add(type);
     }
-    void CancelAll();
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 };
 

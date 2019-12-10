@@ -96,7 +96,7 @@ void AttackComp::MoveToTarget(std::shared_ptr<Actor> target)
     if (!owner_.autorunComp_->IsAutoRun())
     {
         Item* item = owner_.GetWeapon();
-        float dist = item ? item->GetWeaponRange() : RANGE_TOUCH;
+        const float dist = item ? item->GetWeaponRange() : RANGE_TOUCH;
         if (owner_.autorunComp_->Follow(target, false, dist))
         {
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);

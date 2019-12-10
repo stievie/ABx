@@ -27,8 +27,9 @@ Node::Status MoveTo::DoAction(Agent& agent, uint32_t)
             return Status::Finished;
     }
 
-    npc.FollowObject(selection[0]);
-    return Status::Running;
+    if (npc.FollowObjectById(selection[0], false))
+        return Status::Running;
+    return Status::Failed;
 }
 
 }

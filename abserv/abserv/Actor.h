@@ -273,14 +273,15 @@ public:
     bool SetSelectedObject(std::shared_ptr<GameObject> object);
     bool SetSelectedObjectById(uint32_t id);
     void GotoPosition(const Math::Vector3& pos);
-    void FollowObject(std::shared_ptr<GameObject> object);
-    void FollowObject(uint32_t objectId);
+    bool FollowObject(GameObject* object, bool ping);
+    bool FollowObjectById(uint32_t objectId, bool ping);
     bool UseSkill(int index, bool ping);
     bool Attack(Actor* target, bool ping);
     bool AttackById(uint32_t targetId, bool ping);
     bool IsAttackingActor(const Actor* target) const;
     /// Cancel attack, use skill, follow
     void CancelAction();
+    void CancelAll();
 
     virtual bool AddToInventory(uint32_t itemId);
     void DropRandomItem();

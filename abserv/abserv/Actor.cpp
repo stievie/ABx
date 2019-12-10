@@ -198,19 +198,30 @@ void Actor::GotoPosition(const Math::Vector3& pos)
     inputComp_->Add(InputType::Goto, std::move(data));
 }
 
-void Actor::FollowObject(std::shared_ptr<GameObject> object)
+bool Actor::FollowObject(GameObject* object, bool ping)
 {
-    if (object)
-        FollowObject(object->id_);
-    else
-        FollowObject(0);
+    if (!object)
+        return false;
+    if (IsImmobilized())
+        return false;
+
+    bool result = autorunComp_->Follow(object->GetPtr<GameObject>(), ping);
+    if (result)
+    {
+        CancelAll();
+        stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+        autorunComp_->SetAutoRun(true);
+
+    }
+    return result;
 }
 
-void Actor::FollowObject(uint32_t objectId)
+bool Actor::FollowObjectById(uint32_t objectId, bool ping)
 {
-    Utils::VariantMap data;
-    data[InputDataObjectId] = objectId;
-    inputComp_->Add(InputType::Follow, std::move(data));
+    auto* target = GetGame()->GetObject<GameObject>(objectId);
+    if (!target)
+        return false;
+    return FollowObject(target, ping);
 }
 
 bool Actor::Attack(Actor* target, bool ping)
@@ -258,6 +269,14 @@ bool Actor::UseSkill(int index, bool ping)
         return false;
 
     return skillsComp_->UseSkill(index, ping) == AB::GameProtocol::SkillErrorNone;
+}
+
+void Actor::CancelAll()
+{
+    attackComp_->Cancel();
+    skillsComp_->Cancel();
+    autorunComp_->Reset();
+    stateComp_.Reset();
 }
 
 void Actor::CancelAction()
@@ -332,9 +351,7 @@ Math::STLVector3 Actor::_LuaGetHomePos()
 void Actor::_LuaFollowObject(GameObject* object)
 {
     if (object)
-        FollowObject(object->id_);
-    else
-        FollowObject(0);
+        FollowObject(object, false);
 }
 
 void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)

@@ -31,39 +31,6 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId)
         source->selectionComp_->ClickObject(targetId);
 }
 
-void InputComp::FollowObject(uint32_t targetId, bool ping)
-{
-    if (!owner_.IsImmobilized())
-    {
-        auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
-        if (target)
-        {
-            auto targePtr = target->GetPtr<GameObject>();
-            bool succ = owner_.autorunComp_->Follow(targePtr, ping);
-            if (succ)
-            {
-                owner_.attackComp_->Cancel();
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_->SetAutoRun(true);
-            }
-        }
-#ifdef DEBUG_NAVIGATION
-        else
-        {
-            LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
-        }
-#endif
-    }
-}
-
-void InputComp::CancelAll()
-{
-    owner_.attackComp_->Cancel();
-    owner_.skillsComp_->Cancel();
-    owner_.autorunComp_->Reset();
-    owner_.stateComp_.Reset();
-}
-
 void InputComp::Update(uint32_t, Net::NetworkMessage& message)
 {
     InputItem input;
@@ -160,7 +127,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             bool ping = input.data[InputDataPingTarget].GetBool();
-            FollowObject(targetId, ping);
+            owner_.FollowObjectById(targetId, ping);
             break;
         }
         case InputType::Attack:
@@ -202,7 +169,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Cancel:
-            CancelAll();
+            owner_.CancelAll();
             break;
         case InputType::Command:
         {
