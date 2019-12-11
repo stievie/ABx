@@ -1,8 +1,3 @@
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
@@ -29,7 +24,7 @@
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+#include "Windows.h"
 #endif
 
 #define USE_STANDALONE_ASIO

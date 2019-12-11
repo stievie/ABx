@@ -16,10 +16,7 @@
 #include <atomic>
 #include <mutex>
 #include <sa/Iteration.h>
-
-#if defined(GetObject)
-#undef GetObject
-#endif
+#include <CleanupNs.h>
 
 namespace Game {
 

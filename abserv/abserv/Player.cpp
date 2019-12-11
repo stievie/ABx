@@ -27,7 +27,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/ProtocolCodes.h>
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 
 namespace Game {
 

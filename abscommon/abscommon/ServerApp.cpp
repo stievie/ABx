@@ -13,7 +13,7 @@
 #include <AB/Entities/ServiceList.h>
 #include <algorithm>
 #include <codecvt>
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 
 ServerApp::ServerApp() :
     running_(false),

@@ -13,7 +13,7 @@
 #include "Subsystems.h"
 #include "ThreadPool.h"
 #include "UuidUtils.h"
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 
 Application::Application() :
     ServerApp::ServerApp(),

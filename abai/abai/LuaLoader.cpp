@@ -3,7 +3,7 @@
 #include "Root.h"
 #include "Condition.h"
 #include "Filter.h"
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 #include "BevaviorCache.h"
 
 namespace AI {

@@ -95,7 +95,7 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    /// Calls the `canUse` or `onStartUse` function to see if the skill can ge used
+    /// Calls the `canUse` or `onStartUse` function to see if the skill can be used
     /// and/or makes sense to use it
     AB::GameProtocol::SkillError CanUse(Actor* source, Actor* target);
     void CancelUse();

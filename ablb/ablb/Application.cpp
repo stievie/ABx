@@ -5,7 +5,7 @@
 #include "Bridge.h"
 #include "SimpleConfigManager.h"
 #include <AB/Entities/ServiceList.h>
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "BanManager.h"

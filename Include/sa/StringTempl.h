@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
+// Some string templates.
 
 namespace sa {
 
@@ -19,6 +22,7 @@ std::basic_string<charType> Trim(const std::basic_string<charType>& str,
 
     return str.substr(strBegin, strRange);
 }
+
 template <typename charType>
 std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")

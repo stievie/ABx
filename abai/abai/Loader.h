@@ -3,11 +3,7 @@
 #include "Registry.h"
 #include <memory>
 #include <string>
-
-#if defined(LoadString)
-// Silly windows macros!
-#undef LoadString
-#endif
+#include <CleanupNs.h>
 
 namespace AI {
 

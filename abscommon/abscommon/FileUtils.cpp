@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileUtils.h"
 #include <fstream>
-#include <sa/StringUtils.h>
+#include <sa/StringTempl.h>
 
 namespace Utils {
 
