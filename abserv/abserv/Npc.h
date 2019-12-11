@@ -99,6 +99,11 @@ public:
     int GetBestSkillIndex(SkillEffect effect, SkillTarget target,
         AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);
+    bool GetSkillCandidates(
+        std::vector<int>& results,
+        SkillEffect effect, SkillTarget target,
+        AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
+        const Actor* targetActor = nullptr);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
     bool IsWander() const;

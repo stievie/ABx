@@ -230,6 +230,7 @@ public:
         return skills_.get();
     }
     Skill* GetCurrentSkill() const;
+    bool IsUsingSkillOfType(AB::Entities::SkillType type, int32_t minActivationTime) const;
     bool SetEquipment(const std::string& ciUuid);
     bool SetInventory(const std::string& ciUuid);
     bool SetChest(const std::string& ciUuid);

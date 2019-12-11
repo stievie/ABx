@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Action.h"
+#include "SkillAction.h"
 #include <AB/Entities/Skill.h>
 
 namespace AI {
 namespace Actions {
 
-class Interrupt final : public Action
+class Interrupt final : public SkillAction
 {
     NODE_CLASS(Interrupt)
 private:

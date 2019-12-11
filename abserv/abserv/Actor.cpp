@@ -92,6 +92,7 @@ void Actor::RegisterLua(kaguya::State& state)
 
         .addFunction("DropRandomItem", &Actor::DropRandomItem)
         .addFunction("AddAOE", &Actor::_LuaAddAOE)
+        .addFunction("IsUsingSkillOfType", &Actor::IsUsingSkillOfType)
 
         .addFunction("GetEnemiesInRange", &Actor::_LuaGetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
@@ -810,6 +811,15 @@ uint32_t Actor::GetAttributePoints() const
 void Actor::AdvanceLevel()
 {
     resourceComp_->UpdateResources();
+}
+
+bool Actor::IsUsingSkillOfType(AB::Entities::SkillType type, int32_t minActivationTime) const
+{
+    const auto* skill = skills_->GetCurrentSkill();
+    if (skill && skill->IsUsing() && skill->IsType(type) &&
+        (skill->activation_ > minActivationTime))
+        return true;
+    return false;
 }
 
 Skill* Actor::GetCurrentSkill() const

@@ -200,13 +200,14 @@ float Npc::GetAggro(const Actor* other)
     return ((dist + health) * ld) * rval;
 }
 
-int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
+bool Npc::GetSkillCandidates(
+    std::vector<int>& results,
+    SkillEffect effect, SkillTarget target,
     AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
     // skill index -> cost (smaller is better)
     std::map<int, float> sorting;
-    std::vector<int> skillIndices;
     skills_->VisitSkills([&](int index, const Skill& current)
     {
         if (target == SkillTargetTarget)
@@ -229,7 +230,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
             // If this is an interrupt skill, and interrupts argument was passed, check also that
             return Iteration::Continue;
 
-        skillIndices.push_back(index);
+        results.push_back(index);
         // Calculate some score, depending on activation time, costs.... Smaller is better
         sorting[index] = current.CalculateCost([this, &current](CostType type)
         {
@@ -260,15 +261,24 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
         return Iteration::Continue;
     });
 
-    if (skillIndices.size() == 0)
-        return -1;
+    if (results.size() == 0)
+        return false;
 
-    std::sort(skillIndices.begin(), skillIndices.end(), [&sorting](int i, int j)
+    std::sort(results.begin(), results.end(), [&sorting](int i, int j)
     {
         return sorting[i] < sorting[j];
     });
+    return true;
+}
 
-    return *skillIndices.begin();
+int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
+    AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
+    const Actor* targetActor /* = nullptr */)
+{
+    std::vector<int> skillIndices;
+    if (GetSkillCandidates(skillIndices, effect, target, interrupts, targetActor))
+        return *skillIndices.begin();
+    return -1;
 }
 
 bool Npc::IsWander() const

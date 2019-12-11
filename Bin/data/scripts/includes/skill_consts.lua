@@ -64,6 +64,9 @@ SkillErrorOutOfRange    = 3
 SkillErrorNoEnergy      = 4
 SkillErrorNoAdrenaline  = 5
 SkillErrorRecharging    = 6
+SkillErrorTargetUndestroyable = 7
+SkillErrorCannotUseSkill = 8
+SkillErrorNotAppropriate = 255
 
 -- Effect categories
 EffectCategoryNone        = 0

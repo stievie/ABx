@@ -140,6 +140,13 @@ uint32_t Skill::GetRecharge(uint32_t recharge)
     return recharge;
 }
 
+AB::GameProtocol::SkillError Skill::CanUse(Actor* source, Actor* target)
+{
+    if (Lua::IsFunction(luaState_, "canUse"))
+        return luaState_["canUse"](source, target);
+    return luaState_["onStartUse"](source, target);
+}
+
 AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     lastError_ = AB::GameProtocol::SkillErrorNone;

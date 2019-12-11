@@ -25,15 +25,20 @@ Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectGainEnergy, Game::SkillTargetNone);
+    std::vector<int> skills;
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectGainEnergy, Game::SkillTargetNone))
+    {
+#ifdef DEBUG_AI
+    LOG_DEBUG << "No skill found" << std::endl;
+#endif
+        return Status::Failed;
+    }
+
+    int skillIndex = GetSkillIndex(skills, npc, nullptr);
     if (skillIndex == -1)
         return Status::Failed;
 
     auto skill = npc.skills_->GetSkill(skillIndex);
-    if (!skill)
-        return Status::Failed;
-    if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
-        return Status::Failed;
 
     if (skill->HasTarget(Game::SkillTargetTarget))
     {

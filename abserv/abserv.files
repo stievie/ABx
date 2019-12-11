@@ -68,6 +68,8 @@ abserv/actions/AiUseDamageSkill.cpp
 abserv/actions/AiUseDamageSkill.h
 abserv/actions/AiWander.cpp
 abserv/actions/AiWander.h
+abserv/actions/SkillAction.cpp
+abserv/actions/SkillAction.h
 abserv/conditions/AiHaveHome.cpp
 abserv/conditions/AiHaveHome.h
 abserv/conditions/AiHaveWanderRoute.cpp

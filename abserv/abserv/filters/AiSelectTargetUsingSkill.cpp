@@ -49,9 +49,7 @@ void SelectTargetUsingSkill::Execute(Agent& agent)
         if (!actor.IsSelectable() || actor.IsDead() || actor.IsUndestroyable())
             return Iteration::Continue;
 
-        const auto* skill = actor.skills_->GetCurrentSkill();
-        if (skill && skill->IsUsing() && skill->IsType(type_) &&
-            (skill->activation_ > minActivationTime_))
+        if (actor.IsUsingSkillOfType(type_, minActivationTime_))
         {
             if (rng.GetFloat() < 0.3f)
                 return Iteration::Continue;

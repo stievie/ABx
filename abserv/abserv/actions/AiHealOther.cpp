@@ -45,12 +45,16 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (selection.size() > 4)
     {
         // Many to heal try party healing
-        int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetParty);
-        if (skillIndex != -1)
+        std::vector<int> skills;
+        if (npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetParty))
         {
-            GetAgent(agent).selectedSkill_ = skillIndex;
-            if (useSkill(skillIndex, selection[0]))
-                return Status::Running;
+            int skillIndex = GetSkillIndex(skills, npc, nullptr);
+            if (skillIndex != -1)
+            {
+                GetAgent(agent).selectedSkill_ = skillIndex;
+                if (useSkill(skillIndex, selection[0]))
+                    return Status::Running;
+            }
         }
     }
 
@@ -61,7 +65,11 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectHeal, Game::SkillTargetTarget);
+    std::vector<int> skills;
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetTarget))
+        return Status::Failed;
+
+    int skillIndex = GetSkillIndex(skills, npc, target);
     if (skillIndex == -1)
         return Status::Failed;
     GetAgent(agent).selectedSkill_ = skillIndex;
@@ -76,10 +84,8 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
 }
 
 HealOther::HealOther(const ArgumentsType& arguments) :
-    Action(arguments)
-{
-    mustComplete_ = true;
-}
+    SkillAction(arguments)
+{ }
 
 }
 }

@@ -311,6 +311,7 @@ enum SkillError : uint8_t
     SkillErrorRecharging,
     SkillErrorTargetUndestroyable,
     SkillErrorCannotUseSkill,
+    SkillErrorNotAppropriate = 255,       // not an error but does not make sense to use it
 };
 
 enum AttackError : uint8_t

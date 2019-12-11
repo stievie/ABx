@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Action.h"
+#include "SkillAction.h"
 #include "../Skill.h"
 
 namespace AI {
 namespace Actions {
 
-class UseDamageSkill final : public Action
+class UseDamageSkill final : public SkillAction
 {
     NODE_CLASS(UseDamageSkill)
 private:
@@ -16,10 +16,8 @@ protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
     explicit UseDamageSkill(const ArgumentsType& arguments) :
-        Action(arguments)
+        SkillAction(arguments)
     {
-        // So Skills are not cancelled
-        mustComplete_ = true;
         if (arguments.size() > 0)
         {
             targetType_ = static_cast<Game::SkillTarget>(atoi(arguments[0].c_str()));

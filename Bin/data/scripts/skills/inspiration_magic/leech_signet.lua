@@ -17,6 +17,33 @@ effect = SkillEffectInterrupt | SkillEffectGainEnergy
 effectTarget = SkillTargetTarget
 canInterrupt = SkillTypeSkill
 
+function canUse(source, target)
+  if (target == nil) then
+    -- This skill needs a target
+    return SkillErrorInvalidTarget
+  end
+  if (source:GetId() == target:GetId()) then
+    -- Can not use this skill on self
+    return SkillErrorInvalidTarget
+  end
+  if (self:IsInRange(target) == false) then
+    -- The target must be in range
+    return SkillErrorOutOfRange
+  end
+  if (source:IsEnemy(target) == false) then
+    -- Targets only enemies
+    return SkillErrorInvalidTarget
+  end
+  if (target:IsDead()) then
+    -- Can not kill what's already dead :(
+    return SkillErrorInvalidTarget
+  end
+  if (target:IsUsingSkillOfType(SkillTypeSpell, 250) == false) then
+    return SkillErrorNotAppropriate
+  end
+  return SkillErrorNone
+end
+
 function onStartUse(source, target)
   if (target == nil) then
     -- This skill needs a target

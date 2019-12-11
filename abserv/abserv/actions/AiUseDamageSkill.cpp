@@ -3,7 +3,7 @@
 #include "../Npc.h"
 #include "../Game.h"
 
-#define DEBUG_AI
+//#define DEBUG_AI
 
 namespace AI {
 namespace Actions {
@@ -35,16 +35,25 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectDamage, targetType_);
-    if (skillIndex == -1)
+    std::vector<int> skills;
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectDamage, targetType_))
+    {
+#ifdef DEBUG_AI
+//    LOG_DEBUG << npc.GetName() << " no skill found" << std::endl;
+#endif
         return Status::Failed;
+    }
+
+    int skillIndex = GetSkillIndex(skills, npc, target);
+    if (skillIndex == -1)
+    {
+#ifdef DEBUG_AI
+    LOG_DEBUG << npc.GetName() << " no skill found" << std::endl;
+#endif
+        return Status::Failed;
+    }
 
     auto skill = npc.skills_->GetSkill(skillIndex);
-    if (!skill)
-        return Status::Failed;
-    if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
-        return Status::Failed;
-
     GetAgent(agent).selectedSkill_ = skillIndex;
     if (!npc.IsInRange(skill->GetRange(), target))
         return Status::Failed;

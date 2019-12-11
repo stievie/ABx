@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include "Action.h"
+#include "SkillAction.h"
 
 namespace AI {
 namespace Actions {
 
-class HealOther final : public Action
+class HealOther final : public SkillAction
 {
     NODE_CLASS(HealOther)
 protected:

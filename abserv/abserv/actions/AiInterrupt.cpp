@@ -11,7 +11,7 @@ namespace AI {
 namespace Actions {
 
 Interrupt::Interrupt(const ArgumentsType& arguments) :
-    Action(arguments)
+    SkillAction(arguments)
 {
     if (arguments.size() > 0)
         type_ = static_cast<AB::Entities::SkillType>(atoi(arguments[0].c_str()));
@@ -44,8 +44,17 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectInterrupt,
-        Game::SkillTargetTarget, type_);
+    std::vector<int> skills;
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectInterrupt,
+        Game::SkillTargetTarget, type_))
+    {
+#ifdef DEBUG_AI
+    LOG_DEBUG << "No skill found" << std::endl;
+#endif
+        return Status::Failed;
+    }
+
+    int skillIndex = GetSkillIndex(skills, npc, target);
     if (skillIndex == -1)
     {
 #ifdef DEBUG_AI
@@ -55,9 +64,7 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     }
 
     auto skill = npc.skills_->GetSkill(skillIndex);
-    if (!skill)
-        return Status::Failed;
-    if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
+    if (npc.IsDead())
         return Status::Failed;
 
     GetAgent(agent).selectedSkill_ = skillIndex;

@@ -207,6 +207,7 @@
     <ClInclude Include="actions\AiSay.h" />
     <ClInclude Include="actions\AiUseDamageSkill.h" />
     <ClInclude Include="actions\AiWander.h" />
+    <ClInclude Include="actions\SkillAction.h" />
     <ClInclude Include="AiAgent.h" />
     <ClInclude Include="AiComp.h" />
     <ClInclude Include="AiLoader.h" />
@@ -345,6 +346,7 @@
     <ClCompile Include="actions\AiSay.cpp" />
     <ClCompile Include="actions\AiUseDamageSkill.cpp" />
     <ClCompile Include="actions\AiWander.cpp" />
+    <ClCompile Include="actions\SkillAction.cpp" />
     <ClCompile Include="AiAgent.cpp" />
     <ClCompile Include="AiComp.cpp" />
     <ClCompile Include="AiLoader.cpp" />

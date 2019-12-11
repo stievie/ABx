@@ -441,6 +441,9 @@
     <ClInclude Include="SelectionComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="actions\SkillAction.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -832,6 +835,9 @@
     </ClCompile>
     <ClCompile Include="SelectionComp.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\SkillAction.cpp">
+      <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

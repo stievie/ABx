@@ -37,8 +37,8 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
     if (!target->IsDead())
         return Status::Failed;
 
-    int skillIndex = npc.GetBestSkillIndex(Game::SkillEffectResurrect, Game::SkillTargetTarget);
-    if (skillIndex == -1)
+    std::vector<int> skills;
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectResurrect, Game::SkillTargetTarget))
     {
 #ifdef DEBUG_AI
     LOG_DEBUG << "No skill found" << std::endl;
@@ -46,21 +46,11 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
     }
 
+    int skillIndex = GetSkillIndex(skills, npc, target);
+    if (skillIndex == -1)
+        return Status::Failed;
+
     auto skill = npc.skills_->GetSkill(skillIndex);
-    if (!skill)
-    {
-#ifdef DEBUG_AI
-    LOG_DEBUG << "Skill " << skillIndex << " not found" << std::endl;
-#endif
-        return Status::Failed;
-    }
-    if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
-    {
-#ifdef DEBUG_AI
-    LOG_DEBUG << "Not enough resources to use skill" << std::endl;
-#endif
-        return Status::Failed;
-    }
     GetAgent(agent).selectedSkill_ = skillIndex;
     if (!npc.IsInRange(skill->GetRange(), target))
     {
