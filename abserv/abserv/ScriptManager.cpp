@@ -1,20 +1,21 @@
 #include "stdafx.h"
 #include "ScriptManager.h"
-#include "Player.h"
-#include "Npc.h"
+#include "AreaOfEffect.h"
+#include "Crowd.h"
 #include "DataProvider.h"
+#include "Group.h"
+#include "Item.h"
+#include "ItemDrop.h"
+#include "Npc.h"
+#include "Party.h"
+#include "Player.h"
 #include "Profiler.h"
-#include <sa/StringUtils.h>
+#include "Projectile.h"
+#include "Quest.h"
+#include "Random.h"
 #include "Script.h"
 #include "Subsystems.h"
-#include "Item.h"
-#include "AreaOfEffect.h"
-#include "Party.h"
-#include "ItemDrop.h"
-#include "Random.h"
-#include "Group.h"
-#include "Projectile.h"
-#include "Crowd.h"
+#include <sa/StringTempl.h>
 
 namespace Game {
 namespace Lua {
@@ -76,6 +77,7 @@ void RegisterLuaAll(kaguya::State& state)
     Group::RegisterLua(state);
     Party::RegisterLua(state);
     Crowd::RegisterLua(state);
+    Quest::RegisterLua(state);
 
     AreaOfEffect::RegisterLua(state);
     Player::RegisterLua(state);

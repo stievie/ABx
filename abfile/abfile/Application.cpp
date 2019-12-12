@@ -30,6 +30,8 @@
 #include <AB/Entities/Music.h>
 #include <AB/Entities/MusicList.h>
 #include <AB/Entities/VersionList.h>
+#include <AB/Entities/Quest.h>
+#include <AB/Entities/QuestList.h>
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "FileUtils.h"
@@ -294,6 +296,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
         server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_items_$"]["GET"] = std::bind(&Application::GetHandlerItems, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_quests_$"]["GET"] = std::bind(&Application::GetHandlerQuests, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
@@ -952,6 +956,64 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("object").set_value(s.objectFile.c_str());
         gNd.append_attribute("icon").set_value(s.iconFile.c_str());
         gNd.append_attribute("stack_able").set_value(s.stackAble);
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerQuests(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    auto* dataClient = GetSubsystem<IO::DataClient>();
+    AB::Entities::QuestList gl;
+    if (!dataClient->Read(gl))
+    {
+        LOG_ERROR << "Error reading game list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    AB::Entities::Version gamesVersion;
+    gamesVersion.name = "game_quests";
+    if (!dataClient->Read(gamesVersion))
+    {
+        LOG_ERROR << "Error reading game version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
+    auto root = doc.append_child("quests");
+    root.append_attribute("version").set_value(gamesVersion.value);
+
+    for (const std::string& uuid : gl.questUuids)
+    {
+        AB::Entities::Quest g;
+        g.uuid = uuid;
+        if (!dataClient->Read(g))
+            continue;
+        auto gNd = root.append_child("game");
+        gNd.append_attribute("uuid").set_value(g.uuid.c_str());
+        gNd.append_attribute("index").set_value(g.index);
+        gNd.append_attribute("name").set_value(g.name.c_str());
+        gNd.append_attribute("description").set_value(g.description.c_str());
     }
 
     std::stringstream stream;

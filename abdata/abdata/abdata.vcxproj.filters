@@ -168,6 +168,18 @@
     <ClInclude Include="DBFriendedMe.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBPlayerQuest.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBPlayerQuestList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBQuest.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBQuestList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -315,6 +327,18 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBFriendedMe.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBPlayerQuest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBPlayerQuestList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBQuest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBQuestList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

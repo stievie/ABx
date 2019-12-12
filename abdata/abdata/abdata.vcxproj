@@ -220,8 +220,12 @@
     <ClInclude Include="DBMusic.h" />
     <ClInclude Include="DBMusicList.h" />
     <ClInclude Include="DBPlayerItemList.h" />
+    <ClInclude Include="DBPlayerQuest.h" />
+    <ClInclude Include="DBPlayerQuestList.h" />
     <ClInclude Include="DBProfession.h" />
     <ClInclude Include="DBProfessionList.h" />
+    <ClInclude Include="DBQuest.h" />
+    <ClInclude Include="DBQuestList.h" />
     <ClInclude Include="DBTypedItemList.h" />
     <ClInclude Include="DBReservedName.h" />
     <ClInclude Include="DBService.h" />
@@ -272,8 +276,12 @@
     <ClCompile Include="DBMusic.cpp" />
     <ClCompile Include="DBMusicList.cpp" />
     <ClCompile Include="DBPlayerItemList.cpp" />
+    <ClCompile Include="DBPlayerQuest.cpp" />
+    <ClCompile Include="DBPlayerQuestList.cpp" />
     <ClCompile Include="DBProfession.cpp" />
     <ClCompile Include="DBProfessionList.cpp" />
+    <ClCompile Include="DBQuest.cpp" />
+    <ClCompile Include="DBQuestList.cpp" />
     <ClCompile Include="DBTypedItemList.cpp" />
     <ClCompile Include="DBReservedName.cpp" />
     <ClCompile Include="DBService.cpp" />

@@ -129,6 +129,10 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>();
     AddEntityClass<DB::DBInstance, AB::Entities::GameInstance>();
     AddEntityClass<DB::DBFriendedMe, AB::Entities::FriendedMe>();
+    AddEntityClass<DB::DBQuest, AB::Entities::Quest>();
+    AddEntityClass<DB::DBQuestList, AB::Entities::QuestList>();
+    AddEntityClass<DB::DBPlayerQuest, AB::Entities::PlayerQuest>();
+    AddEntityClass<DB::DBPlayerQuestList, AB::Entities::PlayerQuestList>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)

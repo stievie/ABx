@@ -58,6 +58,13 @@ static constexpr int MAX_RESERVED_NAME = 40;
 static constexpr int MAX_FRIENDS = 100;
 static constexpr int MAX_FRIENDED_ME = std::numeric_limits<int>::max();
 
+// Quest
+static constexpr int MAX_QUESTS = 1024;
+static constexpr int MAX_QUESTNAME = 256;
+static constexpr int MAX_QUESTDESCR = 4096;
+static constexpr int MAX_QUESTPROGRESS = 1024;
+static constexpr int MAX_PLAYERQUESTS = 64;
+
 // Party
 static constexpr int MAX_PARTY_MEMBERS = 12;
 
