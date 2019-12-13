@@ -44,6 +44,7 @@ bool Quest::LoadScript(const std::string& fileName)
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
+    return true;
 }
 
 void Quest::Update(uint32_t timeElapsed)
