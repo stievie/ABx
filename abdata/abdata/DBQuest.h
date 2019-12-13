@@ -10,11 +10,11 @@ public:
     DBQuest() = delete;
     ~DBQuest() = delete;
 
-    static bool Create(AB::Entities::Quest& v);
-    static bool Load(AB::Entities::Quest& g);
-    static bool Save(const AB::Entities::Quest& g);
-    static bool Delete(const AB::Entities::Quest& g);
-    static bool Exists(const AB::Entities::Quest& g);
+    static bool Create(AB::Entities::Quest&);
+    static bool Load(AB::Entities::Quest&);
+    static bool Save(const AB::Entities::Quest&);
+    static bool Delete(const AB::Entities::Quest&);
+    static bool Exists(const AB::Entities::Quest&);
 };
 
 }

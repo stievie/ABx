@@ -309,9 +309,13 @@ void Actor::DropRandomItem()
         auto party = partyMngr->Get(killer->GetGroupId());
         Actor* target = nullptr;
         if (party)
-            target = party->GetRandomPlayerInRange(this, Ranges::Compass);
+            target = party->GetRandomPlayerInRange(this, Ranges::HalfCompass);
         else
             target = killer.get();
+        if (!target)
+            // Drop nothing when no target
+            return;
+
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::AddRandomItemDropFor, game, this, target))
         );

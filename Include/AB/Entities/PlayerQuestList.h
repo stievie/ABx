@@ -11,7 +11,7 @@ namespace Entities {
 
 static constexpr auto KEY_PLAYERQUSTLIST = "player_quest_list";
 
-/// A list of quests a player has running, completed or not.
+/// A list of quests a player has running, completed or not but still not collected reward.
 /// UUID is the player UUID
 struct PlayerQuestList : Entity
 {
