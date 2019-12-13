@@ -33,6 +33,7 @@
 #include "DBPlayerItemList.h"
 #include "DBPlayerQuest.h"
 #include "DBPlayerQuestList.h"
+#include "DBPlayerQuestListRewarded.h"
 #include "DBProfession.h"
 #include "DBProfessionList.h"
 #include "DBQuest.h"

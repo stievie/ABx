@@ -180,6 +180,9 @@
     <ClInclude Include="DBQuestList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBPlayerQuestListRewarded.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -339,6 +342,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBQuestList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBPlayerQuestListRewarded.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

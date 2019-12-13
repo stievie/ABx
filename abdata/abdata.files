@@ -72,6 +72,8 @@ abdata/DBPlayerQuest.cpp
 abdata/DBPlayerQuest.h
 abdata/DBPlayerQuestList.cpp
 abdata/DBPlayerQuestList.h
+abdata/DBPlayerQuestListRewarded.cpp
+abdata/DBPlayerQuestListRewarded.h
 abdata/DBProfession.cpp
 abdata/DBProfession.h
 abdata/DBProfessionList.cpp

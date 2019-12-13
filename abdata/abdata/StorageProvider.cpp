@@ -133,6 +133,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBQuestList, AB::Entities::QuestList>();
     AddEntityClass<DB::DBPlayerQuest, AB::Entities::PlayerQuest>();
     AddEntityClass<DB::DBPlayerQuestList, AB::Entities::PlayerQuestList>();
+    AddEntityClass<DB::DBPlayerQuestListRewarded, AB::Entities::PlayerQuestListRewarded>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)

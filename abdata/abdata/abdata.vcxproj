@@ -222,6 +222,7 @@
     <ClInclude Include="DBPlayerItemList.h" />
     <ClInclude Include="DBPlayerQuest.h" />
     <ClInclude Include="DBPlayerQuestList.h" />
+    <ClInclude Include="DBPlayerQuestListRewarded.h" />
     <ClInclude Include="DBProfession.h" />
     <ClInclude Include="DBProfessionList.h" />
     <ClInclude Include="DBQuest.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="DBPlayerItemList.cpp" />
     <ClCompile Include="DBPlayerQuest.cpp" />
     <ClCompile Include="DBPlayerQuestList.cpp" />
+    <ClCompile Include="DBPlayerQuestListRewarded.cpp" />
     <ClCompile Include="DBProfession.cpp" />
     <ClCompile Include="DBProfessionList.cpp" />
     <ClCompile Include="DBQuest.cpp" />
