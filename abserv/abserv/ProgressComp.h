@@ -51,6 +51,7 @@ public:
     void AddXpForKill(Actor* victim);
     void AddSkillPoint();
     void AdvanceLevel();
+    unsigned GetDeaths() const { return deaths_; }
 };
 
 }

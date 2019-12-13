@@ -242,6 +242,7 @@ public:
     virtual bool Die();
     virtual bool Resurrect(int precentHealth, int percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
+    unsigned GetDeaths() const;
     bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
     /// Returns true when the actor can't do anything
     bool IsImmobilized() const { return stateComp_.IsDead() || stateComp_.IsKnockedDown(); }

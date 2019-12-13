@@ -4,12 +4,12 @@
 
 1. Build the server, see [BUILD.md](BUILD.md)
 2. On Windows copy the *OpenSSL* and *PostgreSQL* client libraries to the `Bin` directory.
-    * libeay32.dll (OpenSSL)
-    * ssleay32.dll (OpenSSL)
-    * libiconv-2.dll (PostgreSQL)
-    * libintl-9.dll (PostgreSQL)
-    * libpq.dll (PostgreSQL)
-    * libwinpthread-1.dll (PostgreSQL)
+    * `libeay32.dll` (OpenSSL)
+    * `ssleay32.dll` (OpenSSL)
+    * `libiconv-2.dll` (PostgreSQL)
+    * `libintl-9.dll` (PostgreSQL)
+    * `libpq.dll` (PostgreSQL)
+    * `libwinpthread-1.dll` (PostgreSQL)
 3. Setup a PosgreSQL server
 4. Create a `db_private.lua` file in `Bin/config` directory to enter the DB configuration, example:
 ~~~lua
@@ -32,5 +32,16 @@ INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key
 
 1. Build it, see [BUILD.md](BUILD.md)
 2. Download client assets `client_data.zip` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files)
-3. Run `fw.exe`
-4. Create an account using the (Random_Guid) value of your previously created account key.
+3. On Windows copy the required libraries to the `abclient/bin` directory:
+    * `d3dcompiler_47.dll`
+    * `libeay32.dll` (OpenSSL)
+    * `ssleay32.dll` (OpenSSL)
+4. Copy `ablicnent/Setup/config.xml` to `ablicnent/bin/config.xml` and enter the Host and Port of the Login server:
+~~~xml
+<config>
+  <parameter name="LoginHost" type="string" value="127.0.0.1" />
+  <parameter name="LoginPort" type="int" value="2748" />
+</config>
+~~~
+5. Run `fw.exe` in `abclient/bin`.
+6. Create an account using the (Random_Guid) value of your previously created account key.

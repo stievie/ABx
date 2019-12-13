@@ -42,5 +42,7 @@ function onAttacked(source, _type, damage, success)
 end
 
 function onDied()
-  self:DropRandomItem()
+  if (self::GetDeaths() < 2) then
+    self:DropRandomItem()
+  end
 end

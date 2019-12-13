@@ -36,5 +36,7 @@ function onCollide(creature)
 end
 
 function onDied()
-  self:DropRandomItem()
+  if (self::GetDeaths() < 2) then
+    self:DropRandomItem()
+  end
 end

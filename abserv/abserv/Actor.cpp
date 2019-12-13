@@ -53,6 +53,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetMorale", &Actor::GetMorale)
         .addFunction("IncreaseMorale", &Actor::IncreaseMorale)
         .addFunction("DecreaseMorale", &Actor::DecreaseMorale)
+        .addFunction("GetDeaths", &Actor::GetDeaths)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -181,8 +182,7 @@ bool Actor::SelectedObject(GameObject* object)
 {
     if (object)
         return selectionComp_->SelectObject(object->GetId());
-    else
-        return selectionComp_->SelectObject(0);
+    return selectionComp_->SelectObject(0);
 }
 
 bool Actor::SelectedObjectById(uint32_t id)
@@ -1078,6 +1078,11 @@ bool Actor::DecreaseMorale()
     if (!IsUndestroyable())
         return resourceComp_->DecreaseMorale();
     return false;
+}
+
+unsigned Actor::GetDeaths() const
+{
+    return progressComp_->GetDeaths();
 }
 
 }
