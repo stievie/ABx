@@ -1,8 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <vector>
+#include <map>
 #include "Quest.h"
+#include <sa/Iteration.h>
 
 namespace Net {
 class NetworkMessage;
@@ -18,7 +19,7 @@ class QuestComp
 {
 private:
     Player& owner_;
-    std::vector<std::unique_ptr<Quest>> quests_;
+    std::map<uint32_t, std::unique_ptr<Quest>> quests_;
 public:
     QuestComp() = delete;
     explicit QuestComp(Player& owner) :
@@ -31,6 +32,19 @@ public:
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
+
+    bool Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq);
+    bool GetReward(uint32_t questIndex);
+
+    template<typename Callback>
+    void VisitQuests(const Callback& callback)
+    {
+        for (const auto& q : quests_)
+        {
+            if (callback(*q.second) != Iteration::Continue)
+                break;
+        }
+    }
 };
 
 }

@@ -23,6 +23,7 @@
 #include "Scheduler.h"
 #include "StringUtils.h"
 #include "UuidUtils.h"
+#include "ItemFactory.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/PlayerItemList.h>
@@ -741,6 +742,21 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     auto party = GetParty();
     if (party->IsLeader(*this))
         party->Update(timeElapsed, message);
+}
+
+bool Player::RemoveMoney(uint32_t count)
+{
+    (void)count;
+    return true;
+}
+
+bool Player::AddMoney(uint32_t count)
+{
+    auto* factory = GetSubsystem<ItemFactory>();
+    uint32_t id = factory->CreatePlayerMoneyItem(*this, count);
+    if (id == 0)
+        return false;
+    return AddToInventory(id);
 }
 
 bool Player::AddToInventory(uint32_t itemId)

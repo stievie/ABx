@@ -125,7 +125,7 @@ private:
     template<typename D, typename E>
     void AddEntityClass()
     {
-        constexpr size_t hash = sa::StringHash(E::KEY());
+        static constexpr size_t hash = sa::StringHash(E::KEY());
         // For each Entity there are 3 methods that we need:
         // 1. Does the Entity exist
         // 2. Write (also delete) the entity to the DB

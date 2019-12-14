@@ -35,8 +35,8 @@ public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
-        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE, AB::Entities::StoragePlaceInventory)),
-        chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE, AB::Entities::DEFAULT_CHEST_SIZE, AB::Entities::StoragePlaceChest))
+        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY, AB::Entities::StoragePlaceInventory)),
+        chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE, AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY, AB::Entities::StoragePlaceChest))
     { }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;

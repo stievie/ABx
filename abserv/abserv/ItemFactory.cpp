@@ -202,6 +202,47 @@ uint32_t ItemFactory::CreateItem(const std::string& itemUuid,
     return cache->Add(std::move(result));
 }
 
+uint32_t ItemFactory::CreatePlayerItem(Player& forPlayer, const std::string& itemUuid, uint32_t count /* = 1 */)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item gameItem;
+    gameItem.uuid = itemUuid;
+    if (!client->Read(gameItem))
+    {
+        LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
+        return 0;
+    }
+    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    if (!result->LoadScript(result->data_.script))
+        return 0;
+
+    AB::Entities::ConcreteItem ci;
+    ci.uuid = Utils::Uuid::New();
+    ci.itemUuid = gameItem.uuid;
+    ci.accountUuid = forPlayer.account_.uuid;
+    ci.playerUuid = forPlayer.data_.uuid;
+    ci.instanceUuid = forPlayer.GetGame()->instanceData_.uuid;
+    ci.mapUuid = forPlayer.GetGame()->data_.uuid;
+    ci.creation = Utils::Tick();
+
+    // Create item stats for this drop
+    if (!result->GenerateConcrete(ci, forPlayer.data_.level, true))
+        return 0;
+    ci.count = count;
+
+    // Save the created stats
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
+    );
+    auto* cache = GetSubsystem<ItemsCache>();
+    return cache->Add(std::move(result));
+}
+
+uint32_t ItemFactory::CreatePlayerMoneyItem(Player& forPlayer, uint32_t count)
+{
+    return CreatePlayerItem(forPlayer, MONEY_ITEM_UUID, count);
+}
+
 std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
 {
     AB::Entities::ConcreteItem ci;

@@ -18,6 +18,7 @@ public:
 private:
     size_t stackSize_;
     size_t size_;
+    size_t maxMoney_;
     AB::Entities::StoragePlace place_;
     /// All inventory. Index 0 is the money
     std::vector<uint32_t> items_;
@@ -26,9 +27,10 @@ private:
     /// Insert in first free slot. Return position
     ItemPos InsertItem(Item* item);
 public:
-    ItemContainer(size_t stackSize, size_t size, AB::Entities::StoragePlace place) :
+    ItemContainer(size_t stackSize, size_t size, size_t maxMoney, AB::Entities::StoragePlace place) :
         stackSize_(stackSize),
         size_(size),
+        maxMoney_(maxMoney),
         place_(place)
     {
         // Money

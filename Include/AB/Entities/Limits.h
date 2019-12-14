@@ -64,6 +64,7 @@ static constexpr int MAX_QUESTNAME = 256;
 static constexpr int MAX_QUESTDESCR = 4096;
 static constexpr int MAX_QUESTPROGRESS = 1024;
 static constexpr int MAX_PLAYERQUESTS = 64;
+static constexpr int MAX_QUEST_REWARDITEMS = 4;
 
 // Party
 static constexpr int MAX_PARTY_MEMBERS = 12;

@@ -139,6 +139,8 @@ public:
     const std::string& GetAccountUuid() const override { return account_.uuid; }
 
     bool AddToInventory(uint32_t itemId) override;
+    bool AddMoney(uint32_t count);
+    bool RemoveMoney(uint32_t count);
     void EquipInventoryItem(uint16_t pos);
     /// Leave current party
     void PartyLeave();

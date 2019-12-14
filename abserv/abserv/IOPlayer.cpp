@@ -1,22 +1,26 @@
 #include "stdafx.h"
 #include "IOPlayer.h"
-#include "PropStream.h"
-#include "IOGame.h"
 #include "ConfigManager.h"
 #include "DataClient.h"
-#include <AB/Entities/Account.h>
+#include "IOGame.h"
+#include "Logger.h"
 #include "Profiler.h"
-#include <AB/Entities/Profession.h>
-#include <AB/Entities/PlayerItemList.h>
+#include "PropStream.h"
+#include "SkillManager.h"
+#include "Subsystems.h"
+#include "UuidUtils.h"
+#include "QuestComp.h"
+#include <AB/Entities/Account.h>
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/FriendList.h>
-#include <AB/Entities/GuildMembers.h>
 #include <AB/Entities/FriendedMe.h>
-#include "Logger.h"
+#include <AB/Entities/GuildMembers.h>
+#include <AB/Entities/PlayerItemList.h>
+#include <AB/Entities/PlayerQuest.h>
+#include <AB/Entities/PlayerQuestList.h>
+#include <AB/Entities/Profession.h>
+#include <AB/Entities/Quest.h>
 #include <uuid.h>
-#include "Subsystems.h"
-#include "SkillManager.h"
-#include "UuidUtils.h"
 
 namespace IO {
 namespace IOPlayer {
@@ -91,6 +95,46 @@ static bool SavePlayerInventory(Game::Player& player)
     return true;
 }
 
+static bool LoadQuestLog(Game::Player& player)
+{
+    AB_PROFILE;
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::PlayerQuestList ql;
+    ql.uuid = player.data_.uuid;
+    if (!client->Read(ql))
+        return false;
+
+    Game::Components::QuestComp& questComp = *player.questComp_;
+    for (const auto& q : ql.questUuids)
+    {
+        AB::Entities::PlayerQuest pq;
+        pq.uuid = q;
+        if (!client->Read(pq))
+            continue;
+
+        AB::Entities::Quest quest;
+        quest.uuid = pq.questUuid;
+        if (!client->Read(quest))
+            continue;
+
+        questComp.Add(quest, std::move(pq));
+    }
+    return true;
+}
+
+static bool SaveQuestLog(Game::Player& player)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    Game::Components::QuestComp& questComp = *player.questComp_;
+    questComp.VisitQuests([client](Game::Quest& current)
+    {
+        current.SaveProgress();
+        client->UpdateOrCreate(current.playerQuest_);
+        return Iteration::Continue;
+    });
+    return true;
+}
+
 static bool LoadPlayer(Game::Player& player)
 {
     AB_PROFILE;
@@ -150,6 +194,8 @@ static bool LoadPlayer(Game::Player& player)
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
     if (!LoadPlayerInventory(player))
         return false;
+    if (!LoadQuestLog(player))
+        return false;
     return true;
 }
 
@@ -189,7 +235,11 @@ bool SavePlayer(Game::Player& player)
     player.data_.onlineTime += static_cast<int64_t>((player.logoutTime_ - player.loginTime_) / 1000);
     if (!client->Update(player.data_))
         return false;
-    return SavePlayerInventory(player);
+    if (!SavePlayerInventory(player))
+        return false;
+    if (!SaveQuestLog(player))
+        return false;
+    return true;
 }
 
 size_t GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)

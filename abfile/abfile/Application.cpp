@@ -1,43 +1,44 @@
 #include "stdafx.h"
 #include "Application.h"
-#include "Version.h"
-#include "Logo.h"
-#include "SimpleConfigManager.h"
-#include <sstream>
-#include <fstream>
-#include "Logger.h"
-#include "DataClient.h"
 #include "BanManager.h"
+#include "DataClient.h"
+#include "Dispatcher.h"
+#include "FileUtils.h"
+#include "Logger.h"
+#include "Logo.h"
+#include "Scheduler.h"
 #include "Service.h"
-#include <AB/Entities/GameList.h>
-#include <AB/Entities/Game.h>
-#include <AB/Entities/Skill.h>
-#include <AB/Entities/SkillList.h>
-#include <AB/Entities/ProfessionList.h>
-#include <AB/Entities/Profession.h>
-#include <AB/Entities/Version.h>
+#include "SimpleConfigManager.h"
+#include "StringUtils.h"
+#include "Subsystems.h"
+#include "UuidUtils.h"
+#include "Version.h"
+#include "sa/StringTempl.h"
+#include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Attribute.h>
 #include <AB/Entities/AttributeList.h>
-#include <AB/Entities/IpBan.h>
 #include <AB/Entities/Ban.h>
-#include <AB/Entities/EffectList.h>
 #include <AB/Entities/Effect.h>
-#include <AB/Entities/AccountBan.h>
-#include <AB/Entities/Service.h>
-#include <AB/Entities/ServiceList.h>
+#include <AB/Entities/EffectList.h>
+#include <AB/Entities/Game.h>
+#include <AB/Entities/GameList.h>
+#include <AB/Entities/IpBan.h>
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ItemList.h>
 #include <AB/Entities/Music.h>
 #include <AB/Entities/MusicList.h>
-#include <AB/Entities/VersionList.h>
+#include <AB/Entities/Profession.h>
+#include <AB/Entities/ProfessionList.h>
 #include <AB/Entities/Quest.h>
 #include <AB/Entities/QuestList.h>
-#include "StringUtils.h"
-#include "Subsystems.h"
-#include "FileUtils.h"
-#include "Dispatcher.h"
-#include "Scheduler.h"
-#include "UuidUtils.h"
+#include <AB/Entities/Service.h>
+#include <AB/Entities/ServiceList.h>
+#include <AB/Entities/Skill.h>
+#include <AB/Entities/SkillList.h>
+#include <AB/Entities/Version.h>
+#include <AB/Entities/VersionList.h>
+#include <fstream>
+#include <sstream>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -1014,6 +1015,9 @@ void Application::GetHandlerQuests(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("index").set_value(g.index);
         gNd.append_attribute("name").set_value(g.name.c_str());
         gNd.append_attribute("description").set_value(g.description.c_str());
+        gNd.append_attribute("reward_xp").set_value(g.rewardXp);
+        gNd.append_attribute("reward_money").set_value(g.rewardMoney);
+        gNd.append_attribute("reward_items").set_value(sa::CombineString(g.rewardItems, std::string(";")).c_str());
     }
 
     std::stringstream stream;

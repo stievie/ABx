@@ -97,7 +97,7 @@ template<> struct hash<IO::DataKey>
     typedef std::size_t result_type;
     result_type operator()(argument_type const& s) const noexcept
     {
-        return sa::StringHashRt((const char*)s.data(), s.size());
+        return sa::StringHashRt(reinterpret_cast<const char*>(s.data()), s.size());
     }
 };
 }

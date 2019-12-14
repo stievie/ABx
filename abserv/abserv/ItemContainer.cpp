@@ -30,7 +30,7 @@ bool ItemContainer::SetItem(uint32_t itemId, const ItemUpdatedCallback& callback
         else
         {
             auto* currItem = GetItem(0);
-            if (currItem->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
+            if (currItem->concreteItem_.count + item->concreteItem_.count > maxMoney_)
                 return false;
             currItem->concreteItem_.count += item->concreteItem_.count;
             // Merged -> delete this

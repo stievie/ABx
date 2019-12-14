@@ -23,7 +23,7 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
     query << db->EscapeString(g.playerUuid) << ", ";
     query << (g.completed ? 1 : 0) << ", ";
     query << (g.rewarded ? 1 : 0) << ", ";
-    query << g.progress;
+    query << db->EscapeBlob(g.progress.data(), g.progress.length());
 
     query << ")";
 
@@ -63,7 +63,7 @@ bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
     g.questUuid = result->GetString("quests_uuid");
     g.completed = result->GetUInt("completed") != 0;
     g.rewarded = result->GetUInt("rewarded") != 0;
-    g.progress = result->GetString("progress");
+    g.progress = result->GetStream("progress");
 
     return true;
 }
@@ -84,7 +84,7 @@ bool DBPlayerQuest::Save(const AB::Entities::PlayerQuest& g)
     // Only these may be changed
     query << " `completed` = " << (g.completed ? 1 : 0) << ", ";
     query << " `rewarded` = " << (g.rewarded ? 1 : 0) << ", ";
-    query << " `progress` = " << db->EscapeString(g.progress);
+    query << " `progress` = " << db->EscapeBlob(g.progress.data(), g.progress.length());
 
     query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
 

@@ -35,10 +35,12 @@ private:
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
+    Player* _LuaGetOwner();
+    void LoadProgress();
 public:
     static void RegisterLua(kaguya::State& state);
 
-    explicit Quest(Player& owner);
+    Quest(Player& owner, AB::Entities::PlayerQuest&& playerQuest);
     // non-copyable
     Quest(const Quest&) = delete;
     Quest& operator=(const Quest&) = delete;
@@ -53,7 +55,12 @@ public:
     const Utils::Variant& GetVar(const std::string& name) const;
     void SetVar(const std::string& name, const Utils::Variant& val);
 
-    AB::Entities::Quest data_;
+    bool IsCompleted() const { return playerQuest_.completed; }
+    bool IsRewarded() const { return playerQuest_.rewarded; }
+    void SaveProgress();
+    bool CollectReward();
+
+    uint32_t index_{ AB::Entities::INVALID_INDEX };
     AB::Entities::PlayerQuest playerQuest_;
 };
 

@@ -2,6 +2,8 @@
 #include "DBQuest.h"
 #include "Database.h"
 #include "Subsystems.h"
+#include "StringUtils.h"
+#include <sa/StringTempl.h>
 
 namespace DB {
 
@@ -16,6 +18,7 @@ bool DBQuest::Create(AB::Entities::Quest& v)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `game_quests` (`uuid`, `idx`, `name`, `script`, `repeatable`, `description` ";
+    query << "`reward_xp`, `reward_money`, `reward_items`";
     query << ") VALUES (";
 
     query << db->EscapeString(v.uuid) << ", ";
@@ -23,7 +26,10 @@ bool DBQuest::Create(AB::Entities::Quest& v)
     query << db->EscapeString(v.name) << ", ";
     query << db->EscapeString(v.script) << ", ";
     query << (v.repeatable ? 1 : 0) << ", ";
-    query << db->EscapeString(v.description);
+    query << db->EscapeString(v.description) << ", ";
+    query << v.rewardXp << ", ";
+    query << v.rewardMoney << ", ";
+    query << db->EscapeString(sa::CombineString(v.rewardItems, std::string(";")));
 
     query << ")";
 
@@ -67,6 +73,9 @@ bool DBQuest::Load(AB::Entities::Quest& v)
     v.script = result->GetString("script");
     v.repeatable = result->GetUInt("repeatable") != 0;
     v.description = result->GetString("description");
+    v.rewardXp = result->GetInt("reward_xp");
+    v.rewardMoney = result->GetInt("reward_money");
+    v.rewardItems = Utils::Split(result->GetString("reward_items"), ";");
 
     return true;
 }
@@ -88,7 +97,10 @@ bool DBQuest::Save(const AB::Entities::Quest& v)
     query << " `name` = " << db->EscapeString(v.name) << ", ";
     query << " `script` = " << db->EscapeString(v.script) << ", ";
     query << " `repeatable` = " << (v.repeatable ? 1 : 0) << ", ";
-    query << " `description` = " << db->EscapeString(v.description);
+    query << " `description` = " << db->EscapeString(v.description) << ", ";
+    query << " `reward_xp` = " << v.rewardXp << ", ";
+    query << " `reward_money` = " << v.rewardMoney << ", ";
+    query << " `reward_items` = " << sa::CombineString(v.rewardItems, std::string(";"));
 
     query << " WHERE `uuid` = " << db->EscapeString(v.uuid);
 

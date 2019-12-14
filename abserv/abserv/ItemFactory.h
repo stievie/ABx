@@ -8,6 +8,8 @@
 
 namespace Game {
 
+static constexpr const char* MONEY_ITEM_UUID = "08fbf9bd-b84f-412f-ae4a-bc499784fadf";
+
 class Player;
 
 class ItemFactory
@@ -54,6 +56,8 @@ public:
     void DeleteMap(const std::string& uuid);
     uint32_t CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level, Player* player);
+    uint32_t CreatePlayerMoneyItem(Player& forPlayer, uint32_t count);
+    uint32_t CreatePlayerItem(Player& forPlayer, const std::string& itemUuid, uint32_t count = 1);
 };
 
 }
