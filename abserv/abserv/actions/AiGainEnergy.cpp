@@ -50,6 +50,8 @@ Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
             return Status::Failed;
         if (target->IsDead())
             return Status::Failed;
+        if (!TestSkill(skillIndex, npc, target))
+            return Status::Failed;
 
         GetAgent(agent).selectedSkill_ = skillIndex;
         if (!npc.IsInRange(skill->GetRange(), target))

@@ -8,6 +8,7 @@ recharge = 20000
 overcast = 0
 effect = SkillEffectDamage
 effectTarget = SkillTargetAoe
+targetType = SkillTargetTypeNone
 
 function onStartUse(source, target)
   return SkillErrorNone

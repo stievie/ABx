@@ -42,6 +42,8 @@ private:
     std::string GetQuote(int index);
     void _LuaAddWanderPoint(const Math::STLVector3& point);
     void _LuaAddWanderPoints(const std::vector<Math::STLVector3>& points);
+    /// Set the name of the NPC. This must happen before the spawn data is sent to the clients
+    void _LuaSetName(const std::string& name);
 private:
     // Events
     void OnArrived();
@@ -96,12 +98,12 @@ public:
     }
     bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
-    int GetBestSkillIndex(SkillEffect effect, SkillTarget target,
+    int GetBestSkillIndex(SkillEffect effect, SkillEffectTarget target,
         AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);
     bool GetSkillCandidates(
         std::vector<int>& results,
-        SkillEffect effect, SkillTarget target,
+        SkillEffect effect, SkillEffectTarget target,
         AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);
     bool IsServerOnly() const { return serverOnly_; }

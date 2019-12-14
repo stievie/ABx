@@ -15,6 +15,7 @@ range = RANGE_CASTING
 damageType = DAMAGETYPE_FIRE
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget | SkillTargetAoe
+targetType = SkillTargetTypeFoe
 
 function onStartUse(source, target)
   if (target == nil) then

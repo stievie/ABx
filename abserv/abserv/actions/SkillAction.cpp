@@ -19,12 +19,17 @@ bool SkillAction::TestSkill(int index, Game::Actor& source, Game::Actor* target)
         return false;
     if (!source.resourceComp_->HaveEnoughResources(skill.get()))
         return false;
-    if (skill->HasTarget(Game::SkillTargetTarget))
+    if (skill->NeedsTarget())
     {
         if (!target)
             return false;
-        if (!skill->HasEffect(Game::SkillEffectResurrect) && target->IsDead())
-            return false;
+        if (target->IsDead())
+        {
+            if (!skill->HasEffect(Game::SkillEffectResurrect))
+                return false;
+            if (!source.IsAlly(target))
+                return false;
+        }
     }
     auto res = skill->CanUse(&source, target);
 #ifdef DEBUG_AI

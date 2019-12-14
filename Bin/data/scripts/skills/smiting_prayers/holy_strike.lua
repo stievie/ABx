@@ -15,6 +15,7 @@ range = RANGE_TOUCH
 damageType = DAMAGETYPE_HOLY
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeFoe
 
 function onStartUse(source, target)
   if (target == nil) then

@@ -15,6 +15,7 @@ hp = 0
 range = RANGE_ADJECENT
 effect = SkillEffectHeal
 effectTarget = SkillTargetTarget | SkillTargetSelf | SkillTargetAoe
+targetType = SkillTargetTypeNone
 
 function onStartUse(source, target)
   return SkillErrorNone
@@ -24,7 +25,7 @@ function onSuccess(source, target)
   local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
   local hp = math.floor(30 + (attribVal * 10))
   local bonus = math.floor(getDevineFavorHealBonus(source))
-  
+
   local actors = source:GetActorsInRange(range)
   for i, actor in ipairs(actors) do
     actor:Healing(source, self:Index(), hp)

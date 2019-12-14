@@ -15,6 +15,7 @@ hp = 0
 range = RANGE_CASTING
 effect = SkillEffectHeal
 effectTarget = SkillTargetTarget | SkillTargetSelf
+targetType = SkillTargetTypeAlly
 
 function onStartUse(source, target)
   if (target == nil) then

@@ -15,6 +15,7 @@ range = RANGE_CASTING
 damageType = DAMAGETYPE_HOLY
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeFoe
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -28,7 +29,7 @@ function onStartUse(source, target)
   if (self:IsInRange(target) == false) then
     -- The target must be in range
     return SkillErrorOutOfRange
-  end  
+  end
   if (source:IsEnemy(target) == false) then
     -- Targets only enemies
     return SkillErrorInvalidTarget

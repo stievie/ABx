@@ -56,6 +56,8 @@ bool Skill::LoadScript(const std::string& fileName)
 
     if (Lua::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
+    if (Lua::IsNumber(luaState_, "targetType"))
+        targetType_ = static_cast<SkillTargetType>(luaState_["targetType"]);
     if (Lua::IsNumber(luaState_, "effect"))
         skillEffect_ = static_cast<uint32_t>(luaState_["effect"]);
     if (Lua::IsNumber(luaState_, "effectTarget"))
@@ -287,7 +289,24 @@ bool Skill::IsInRange(const Actor* target) const
 
 void Skill::AddRecharge(int32_t ms)
 {
-    recharge_ += ms;
+    if (ms > 0)
+        recharge_ += static_cast<uint32_t>(ms);
+    else if (ms < 0)
+        recharge_ -= static_cast<uint32_t>(ms);
+}
+
+bool Skill::CanUseOnTarget(const Actor& source, const Actor* target) const
+{
+    switch (targetType_)
+    {
+    case SkillTargetTypeNone:
+        return true;
+    case SkillTargetTypeFoe:
+        return source.IsEnemy(target);
+    case SkillTargetTypeAlly:
+        return source.IsAlly(target);
+    }
+    return false;
 }
 
 }

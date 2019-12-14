@@ -8,12 +8,13 @@ local point_red = {
   -19.0, 0.0, -44.0
 }
 
-local function createTeam(spawn, frnd, foe, rot, color)
+local function createTeam(spawn, frnd, foe, rot, color, name_suffix)
   -- To make them allies set the same group ID. Adding NPCs to a Crowd sets the group ID.
   local crowd = self:AddCrowd()
   crowd:SetColor(color)
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
+    guildLord:SetName(guildLord:GetName() .. " " .. name_suffix)
     crowd:Add(guildLord)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
@@ -26,6 +27,7 @@ local function createTeam(spawn, frnd, foe, rot, color)
 
   local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then
+    ped2:SetName(ped2:GetName() .. " " .. name_suffix)
     crowd:Add(ped2)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
@@ -37,6 +39,7 @@ local function createTeam(spawn, frnd, foe, rot, color)
   end
   local ped3 = self:AddNpc("/scripts/actors/npcs/electra_staneli.lua")
   if (ped3 ~= nil) then
+    ped3:SetName(ped3:GetName() .. " " .. name_suffix)
     crowd:Add(ped3)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
@@ -49,6 +52,7 @@ local function createTeam(spawn, frnd, foe, rot, color)
 
   local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
   if (priest ~= nil) then
+    priest:SetName(priest:GetName() .. " " .. name_suffix)
     crowd:Add(priest)
     local x = spawn[1] + Random(-1, 1)
     local z = spawn[3] + Random(-1, 1)
@@ -61,8 +65,8 @@ local function createTeam(spawn, frnd, foe, rot, color)
 end
 
 function onStart()
-  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90, TEAMCOLOR_BLUE)
-  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90, TEAMCOLOR_RED)
+  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90, TEAMCOLOR_BLUE, "(Blue)")
+  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90, TEAMCOLOR_RED, "(Red)")
 end
 
 function onStop()

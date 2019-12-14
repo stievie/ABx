@@ -11,7 +11,7 @@ class UseDamageSkill final : public SkillAction
     NODE_CLASS(UseDamageSkill)
 private:
     // By default any target type
-    Game::SkillTarget targetType_{ Game::SkillTargetTarget };
+    Game::SkillEffectTarget targetType_{ Game::SkillTargetTarget };
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:
@@ -20,7 +20,7 @@ public:
     {
         if (arguments.size() > 0)
         {
-            targetType_ = static_cast<Game::SkillTarget>(atoi(arguments[0].c_str()));
+            targetType_ = static_cast<Game::SkillEffectTarget>(atoi(arguments[0].c_str()));
         }
     }
 };

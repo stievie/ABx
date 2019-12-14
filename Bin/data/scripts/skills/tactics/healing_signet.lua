@@ -10,6 +10,7 @@ overcast = 0
 range = RANGE_TOUCH
 effect = SkillEffectHeal
 effectTarget = SkillTargetSelf
+targetType = SkillTargetTypeNone
 
 function onStartUse(source, target)
   return SkillErrorNone

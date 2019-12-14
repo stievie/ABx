@@ -15,6 +15,7 @@ hp = 0
 range = RANGE_CASTING
 effect = SkillEffectHeal
 effectTarget = SkillTargetTarget | SkillTargetSelf | SkillTargetParty
+targetType = SkillTargetTypeNone
 
 function onStartUse(source, target)
   return SkillErrorNone

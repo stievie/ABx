@@ -75,7 +75,7 @@ public:
     uint32_t GetIndex() const { return index_; }
     void SetIndex(uint32_t value) { index_ = value; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
+    bool HasTarget(SkillEffectTarget t) const { return (effectTarget_ & t) == t; }
 
     uint32_t GetGroupId() const;
     bool IsEnemy(const Actor* other) const;

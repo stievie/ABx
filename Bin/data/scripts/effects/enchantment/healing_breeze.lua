@@ -1,5 +1,6 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
+include("/scripts/includes/attributes.lua")
 
 isPersistent = false
 

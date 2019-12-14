@@ -23,19 +23,15 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
         }
         return Status::Finished;
     }
+    if (npc.IsDead())
+        return Status::Failed;
 
     if (npc.skills_->GetCurrentSkill())
         // Some other skill currently using
         return Status::Failed;
 
     std::vector<int> skills;
-    if (!npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetSelf))
-    {
-#ifdef DEBUG_AI
-    LOG_DEBUG << "No skill found" << std::endl;
-#endif
-        return Status::Failed;
-    }
+    npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetSelf);
 
     int skillIndex = GetSkillIndex(skills, npc, &npc);
     if (skillIndex == -1)
@@ -43,16 +39,26 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
         const auto& selection = agent.filteredAgents_;
         auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
         if (target)
-            skillIndex = GetSkillIndex(skills, npc, target);
+        {
+            if (npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetSelf,
+                                       AB::Entities::SkillTypeAll, target))
+                skillIndex = GetSkillIndex(skills, npc, target);
+        }
         if (skillIndex == -1)
+            return Status::Failed;
+        if (target)
+        {
+            if (!npc.SelectedObjectById(target->GetId()))
+                return Status::Failed;
+        }
+    }
+    else
+    {
+        if (!npc.SelectedObjectById(npc.GetId()))
             return Status::Failed;
     }
 
-    if (npc.IsDead())
-        return Status::Failed;
 
-    if (!npc.SelectedObjectById(npc.GetId()))
-        return Status::Failed;
     if (npc.UseSkill(skillIndex, false))
         return Status::Running;
 

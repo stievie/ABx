@@ -4,6 +4,8 @@
 #include "Skill.h"
 #include "Attributes.h"
 
+#define DEBUG_AI
+
 namespace Game {
 namespace Components {
 
@@ -79,6 +81,16 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT,
             targetId, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
     }
+#ifdef DEBUG_AI
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+    {
+        LOG_DEBUG << owner_.GetName() << " using invalid skill " <<
+                     skill->data_.name <<
+                     " on target " << (target ? target->GetName() : "(none)") <<
+                     " error = " <<
+                     static_cast<int>(lastError_) << std::endl;
+    }
+#endif
     return lastError_;
 }
 

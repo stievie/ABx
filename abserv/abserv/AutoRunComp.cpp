@@ -190,7 +190,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
 #endif
 
     const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
-    const Math::Vector3 size = bb.Size();
+    const Math::Vector3 size = bb.Size() * 2.0f;
     const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
     const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
     const auto* newHit = raycast(newDest);

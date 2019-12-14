@@ -251,7 +251,7 @@ std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rec
     return result;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillTarget target, bool rechargedOnly /* = false */) const
+std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly /* = false */) const
 {
     std::vector<uint32_t> result;
     uint32_t i = 0;
@@ -264,7 +264,7 @@ std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillTarget target, bool rec
     return result;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, SkillTarget target, bool rechargedOnly /* = false */) const
+std::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly /* = false */) const
 {
     std::vector<uint32_t> result;
     uint32_t i = 0;

@@ -11,6 +11,7 @@ hp = 0
 range = RANGE_MAP
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeNone
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -24,7 +25,7 @@ function onStartUse(source, target)
   if (self:IsInRange(target) == false) then
     -- The target must be in range
     return SkillErrorOutOfRange
-  end  
+  end
   if (target:IsDead()) then
     -- Can not kill what's already dead :(
     return SkillErrorInvalidTarget

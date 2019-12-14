@@ -16,6 +16,7 @@ damageType = DAMAGETYPE_UNKNOWN
 effect = SkillEffectInterrupt | SkillEffectGainEnergy
 effectTarget = SkillTargetTarget
 canInterrupt = SkillTypeSkill
+targetType = SkillTargetTypeFoe
 
 function canUse(source, target)
   if (target == nil) then

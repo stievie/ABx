@@ -26,7 +26,8 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("IsServerOnly", &Npc::IsServerOnly)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
 
-        .addFunction("SetLevel", &Npc::SetLevel)             // Can only be used in onInit(), i.e. before it is sent to the clients
+        .addFunction("SetLevel", &Npc::SetLevel)     // Can only be used in onInit(), i.e. before it is sent to the clients
+        .addFunction("SetName", &Npc::_LuaSetName)   // After the spawn has been sent to the client it can not be changed
         .addFunction("Say", &Npc::Say)
         .addFunction("SayQuote", &Npc::SayQuote)
         .addFunction("ShootAt", &Npc::ShootAt)
@@ -202,7 +203,7 @@ float Npc::GetAggro(const Actor* other)
 
 bool Npc::GetSkillCandidates(
     std::vector<int>& results,
-    SkillEffect effect, SkillTarget target,
+    SkillEffect effect, SkillEffectTarget target,
     AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
@@ -210,7 +211,9 @@ bool Npc::GetSkillCandidates(
     std::map<int, float> sorting;
     skills_->VisitSkills([&](int index, const Skill& current)
     {
-        if (target == SkillTargetTarget)
+        if (!current.CanUseOnTarget(*this, targetActor))
+            return Iteration::Continue;
+        if (current.NeedsTarget())
         {
             // If there is a target check if it's in range
             if (targetActor && !IsInRange(current.GetRange(), targetActor))
@@ -258,6 +261,9 @@ bool Npc::GetSkillCandidates(
             }
             return 0.0f;
         });
+        // Prefer Elite skills
+        if (current.data_.isElite)
+            sorting[index] = sorting[index] * 0.5f;
         return Iteration::Continue;
     });
 
@@ -271,7 +277,7 @@ bool Npc::GetSkillCandidates(
     return true;
 }
 
-int Npc::GetBestSkillIndex(SkillEffect effect, SkillTarget target,
+int Npc::GetBestSkillIndex(SkillEffect effect, SkillEffectTarget target,
     AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
@@ -335,6 +341,11 @@ std::string Npc::GetQuote(int index)
         return "";
     const char* q = static_cast<const char*>(luaState_["onGetQuote"](index));
     return q;
+}
+
+void Npc::_LuaSetName(const std::string& name)
+{
+    name_ = name;
 }
 
 void Npc::_LuaAddWanderPoint(const Math::STLVector3& point)

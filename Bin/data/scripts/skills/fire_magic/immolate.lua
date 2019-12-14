@@ -15,6 +15,7 @@ range = RANGE_CASTING
 damageType = DAMAGETYPE_FIRE
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeFoe
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -52,7 +53,7 @@ function onSuccess(source, target)
   local attribVal = source:GetAttributeValue(ATTRIB_FIRE)
   local damage = math.floor((attribVal * 4) + 20)
   local burning = math.floor(attribVal / 4) + 1
-  
+
   target:Damage(source, self:Index(), damageType, damage)
   target:AddEffect(source, 10004, burning * 1000)
 

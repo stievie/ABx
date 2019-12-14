@@ -25,10 +25,10 @@ private:
         return GetSkillsWithEffect(static_cast<SkillEffect>(effect));
     }
     std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const {
-        return GetSkillsWithTarget(static_cast<SkillTarget>(target));
+        return GetSkillsWithTarget(static_cast<SkillEffectTarget>(target));
     }
     std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const {
-        return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target));
+        return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillEffectTarget>(target));
     }
     Skill* _LuaGetSkill(int index);
     void SetAttributes(const AB::Attributes& attributes);
@@ -70,8 +70,8 @@ public:
     uint32_t GetAttributeValue(uint32_t index) const;
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
-    std::vector<uint32_t> GetSkillsWithTarget(SkillTarget target, bool rechargedOnly = false) const;
-    std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillTarget target, bool rechargedOnly = false) const;
+    std::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;
+    std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly = false) const;
 
     Skill* operator[](uint32_t index)
     {

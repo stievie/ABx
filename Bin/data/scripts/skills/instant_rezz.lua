@@ -10,6 +10,7 @@ hp = 0
 range = RANGE_ADJECENT
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeAlly
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -36,7 +37,7 @@ function onSuccess(source, target)
   if (target:IsDead() == false) then
     return SkillErrorInvalidTarget
   end
-    
+
   target:Resurrect(25, 100)
   return SkillErrorNone
 end

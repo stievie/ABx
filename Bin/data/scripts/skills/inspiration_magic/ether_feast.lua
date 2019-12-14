@@ -14,7 +14,10 @@ hp = 0
 range = RANGE_CASTING
 damageType = DAMAGETYPE_UNKNOWN
 effect = SkillEffectHeal
+-- To whom effect applies
 effectTarget = SkillTargetSelf
+-- What must be the target
+targetType = SkillTargetTypeFoe
 
 function onStartUse(source, target)
   if (target == nil) then

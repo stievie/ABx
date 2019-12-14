@@ -9,6 +9,7 @@ overcast = 0
 range = RANGE_CASTING
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget
+targetType = SkillTargetTypeAlly
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -35,7 +36,7 @@ function onSuccess(source, target)
   if (target:IsDead() == false) then
     return SkillErrorInvalidTarget
   end
-    
+
   target:Resurrect(100, 25)
   return SkillErrorNone
 end

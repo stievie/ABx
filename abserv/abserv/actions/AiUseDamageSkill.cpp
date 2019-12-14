@@ -36,7 +36,8 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
         return Status::Failed;
 
     std::vector<int> skills;
-    if (!npc.GetSkillCandidates(skills, Game::SkillEffectDamage, targetType_))
+    if (!npc.GetSkillCandidates(skills, Game::SkillEffectDamage, targetType_,
+                                AB::Entities::SkillTypeAll, target))
     {
 #ifdef DEBUG_AI
 //    LOG_DEBUG << npc.GetName() << " no skill found" << std::endl;

@@ -25,7 +25,7 @@ enum SkillEffect : uint32_t
     SkillEffectRemoveStance      = 1 << 10,
 };
 
-enum SkillTarget : uint32_t
+enum SkillEffectTarget : uint32_t
 {
     SkillTargetNone    = 0,
     SkillTargetSelf    = 1 << 1,
@@ -34,13 +34,20 @@ enum SkillTarget : uint32_t
     SkillTargetParty   = 1 << 4,
 };
 
+enum SkillTargetType : uint32_t
+{
+    SkillTargetTypeNone = 0,
+    SkillTargetTypeAlly = 1,
+    SkillTargetTypeFoe = 2,
+};
+
 enum class CostType
 {
     Activation,
     Energy,
     Adrenaline,
     HpSacrify,
-    Recharge
+    Recharge,
 };
 
 class Skill
@@ -55,6 +62,7 @@ private:
     Ranges range_{ Ranges::Aggro };
     uint32_t skillEffect_{ SkillEffectNone };
     uint32_t effectTarget_{ SkillTargetNone };
+    SkillTargetType targetType_{ SkillTargetTypeNone };
     AB::Entities::SkillType canInterrupt_{ AB::Entities::SkillTypeSkill };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
@@ -119,6 +127,19 @@ public:
             return true;
         return (data_.type & type) == type;
     }
+    bool CanUseOnAlly() const
+    {
+        return targetType_ == SkillTargetTypeNone || targetType_ == SkillTargetTypeAlly;
+    }
+    bool CanUseOnFoe() const
+    {
+        return targetType_ == SkillTargetTypeNone || targetType_ == SkillTargetTypeFoe;
+    }
+    bool CanUseOnTarget(const Actor& source, const Actor* target) const;
+    bool NeedsTarget() const
+    {
+        return targetType_ != SkillTargetTypeNone;
+    }
     // Returns true if this skill can interrupt skills of type
     bool CanInterrupt(AB::Entities::SkillType type) const
     {
@@ -137,7 +158,7 @@ public:
     }
     uint32_t GetIndex() const { return data_.index; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillTarget target) const { return (effectTarget_ & target) == target; }
+    bool HasTarget(SkillEffectTarget target) const { return (effectTarget_ & target) == target; }
     float CalculateCost(const std::function<float(CostType)>& importanceCallback) const;
     bool IsInRange(const Actor* target) const;
     Ranges GetRange() const { return range_; }
