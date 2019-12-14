@@ -26,14 +26,14 @@ bool DBPlayerQuestList::Load(AB::Entities::PlayerQuestList& g)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `quest_uuid` FROM `player_quests` WHERE ";
+    query << "SELECT `quests_uuid` FROM `player_quests` WHERE ";
     query << "`player_uuid` = " << db->EscapeString(g.uuid) << " AND ";
     query << "`rewarded` = 0";
 
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         g.questUuids.push_back(
-            result->GetString("quest_uuid")
+            result->GetString("quests_uuid")
         );
     }
 
