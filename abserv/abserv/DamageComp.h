@@ -21,21 +21,21 @@ namespace Components {
 class DamageComp
 {
 private:
-    // Kepp damage history for 5 seconds
+    // Keep some history
     static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 25;
     struct DamageItem
     {
-        bool dirty;
         struct
         {
+            int64_t tick;
             DamageType type;
             DamagePos pos;
             int value;
             uint32_t actorId;
             // The skill/effect causing this damage. If 0 it's a melee damage.
             uint32_t index;
-            int64_t tick;
         } damage;
+        bool dirty;
     };
 
     Actor& owner_;
