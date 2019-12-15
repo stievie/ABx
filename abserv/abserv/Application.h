@@ -20,7 +20,7 @@ private:
     std::mutex lock_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
-    sa::PODCircularQueue<unsigned, 10> loads_;
+    sa::CircularQueue<unsigned, 10> loads_;
     int64_t lastLoadCalc_{ 0 };
     Maintenance maintenance_;
 #if defined(SCENE_VIEWER)

@@ -57,7 +57,7 @@ private:
     uint16_t dataPort_;
     /// Byte/sec
     uint64_t maxThroughput_;
-    sa::PODCircularQueue<unsigned, 10> loads_;
+    sa::CircularQueue<unsigned, 10> loads_;
     std::mutex mutex_;
     void HandleMessage(const Net::MessageMsg& msg);
     void UpdateBytesSent(size_t bytes);
