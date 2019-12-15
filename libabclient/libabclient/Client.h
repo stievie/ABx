@@ -12,6 +12,8 @@
 #include <AB/DHKeys.hpp>
 #include "Errors.h"
 #include <asio.hpp>
+#include <sa/CircularQueue.h>
+#include <numeric>
 
 namespace Client {
 
@@ -37,7 +39,7 @@ private:
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
     std::string mapUuid_;
-    std::vector<int> pings_;
+    sa::CircularQueue<int, 10> pings_;
     int lastRun_;
     int lastPing_;
     bool gotPong_;
@@ -168,18 +170,14 @@ public:
     }
     int GetAvgPing() const
     {
-        if (pings_.empty())
+        if (pings_.IsEmpty())
             return 0;
-
-        float pings = 0.0f;
-        for (int p : pings_)
-            pings += static_cast<float>(p);
-        return static_cast<int>(pings / pings_.size());
+        return std::accumulate(pings_.begin(), pings_.end(), 0) / static_cast<int>(pings_.Size());
     }
     int GetLastPing() const
     {
-        if (!pings_.empty())
-            return pings_.back();
+        if (!pings_.IsEmpty())
+            return pings_.Last();
         return 0;
     }
     int64_t GetClockDiff() const;

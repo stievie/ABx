@@ -416,9 +416,7 @@ void Client::OnProtocolError(uint8_t err)
 void Client::OnPong(int lastPing)
 {
     gotPong_ = true;
-    while (pings_.size() > 9)
-        pings_.erase(pings_.begin());
-    pings_.push_back(lastPing);
+    pings_.Enqueue(lastPing);
 }
 
 void Client::OnServerJoined(const AB::Entities::Service& service)
