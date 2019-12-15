@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include "Damage.h"
-#include <sa/CurcularQueue.h>
+#include <sa/CircularQueue.h>
 
 namespace Net {
 class NetworkMessage;

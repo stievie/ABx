@@ -14,7 +14,7 @@
 #include "MessageClient.h"
 #include "Servers.h"
 #include <numeric>
-#include <sa/CurcularQueue.h>
+#include <sa/CircularQueue.h>
 
 #if __cplusplus < 201703L
 // C++14

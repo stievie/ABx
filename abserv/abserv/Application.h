@@ -11,7 +11,7 @@
 #include "SceneViewer.h"
 #endif
 #include <numeric>
-#include <sa/CurcularQueue.h>
+#include <sa/CircularQueue.h>
 
 class Application final : public ServerApp
 {
