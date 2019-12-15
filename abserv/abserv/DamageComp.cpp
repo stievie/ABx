@@ -23,7 +23,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     // Get the armor effect at this pos with the given damage type and armor penetration
     const float am = owner_.GetArmorEffect(type, pos, penetration);
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
-    damages_.push_back({ true, { type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ }});
+    damages_.Enqueue({ true, { type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ }});
     owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
     {
@@ -44,7 +44,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     const int currLife = owner_.resourceComp_->GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
-    damages_.push_back({ true, { DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ }});
+    damages_.Enqueue({ true, { DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ }});
     owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
         lastDamager_ = source->GetPtr<Actor>();
@@ -92,7 +92,7 @@ bool DamageComp::IsLastDamager(const Actor& actor)
 
 void DamageComp::Write(Net::NetworkMessage& message)
 {
-    if (damages_.size() == 0)
+    if (damages_.Size() == 0)
         return;
     for (auto& d : damages_)
     {
@@ -107,15 +107,6 @@ void DamageComp::Write(Net::NetworkMessage& message)
         message.Add<int16_t>(static_cast<int16_t>(d.damage.value));
         d.dirty = false;
     }
-    ClearDamages();
-}
-
-void DamageComp::ClearDamages()
-{
-    damages_.erase(std::remove_if(damages_.begin(), damages_.end(), [](const DamageItem& current)
-    {
-        return !current.dirty && (Utils::TimeElapsed(current.damage.tick) > DAMAGEHISTORY_TOKEEP);
-    }), damages_.end());
 }
 
 bool DamageComp::GotDamageType(DamageType type) const
@@ -132,7 +123,7 @@ bool DamageComp::GotDamageCategory(DamageTypeCategory cat) const
 {
     if (cat == DamageTypeCategory::Any)
         // Any damage
-        return damages_.size() != 0;
+        return damages_.Size() != 0;
 
     for (const auto& d : damages_)
     {

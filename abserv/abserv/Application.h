@@ -37,7 +37,7 @@ private:
     {
         if (loads_.Size() == 0)
             return 0;
-        return std::accumulate(loads_.Begin(), loads_.End(), 0u) / static_cast<unsigned>(loads_.Size());
+        return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.Size());
     }
 protected:
     bool ParseCommandLine() override;

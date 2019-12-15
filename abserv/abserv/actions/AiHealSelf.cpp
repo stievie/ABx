@@ -37,6 +37,9 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
     if (skillIndex == -1)
     {
         const auto& selection = agent.filteredAgents_;
+        if (selection.size() == 0)
+            return Status::Failed;
+
         auto* target = npc.GetGame()->GetObject<Game::Actor>(selection[0]);
         if (target)
         {

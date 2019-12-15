@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "Damage.h"
+#include <sa/CurcularQueue.h>
 
 namespace Net {
 class NetworkMessage;
@@ -21,7 +22,7 @@ class DamageComp
 {
 private:
     // Kepp damage history for 5 seconds
-    static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
+    static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 25;
     struct DamageItem
     {
         bool dirty;
@@ -39,10 +40,9 @@ private:
 
     Actor& owner_;
     // Damage history kept for DAMAGEHISTORY_TOKEEP
-    std::vector<DamageItem> damages_;
+    sa::CircularQueue<DamageItem, DAMAGEHISTORY_TOKEEP> damages_;
     std::weak_ptr<Actor> lastDamager_;
     std::weak_ptr<Actor> lastMeleeDamager_;
-    void ClearDamages();
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner);
