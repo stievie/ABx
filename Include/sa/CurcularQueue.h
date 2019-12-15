@@ -22,8 +22,9 @@ public:
     {
         Clear();
     }
-    template <typename = typename std::enable_if_t<std::is_fundamental<T>::value>>
-    void Enqueue(T value)
+    template<typename U = T>
+      typename std::enable_if<std::is_fundamental<U>::value>::type
+    Enqueue(U value)
     {
         Elements()[(head_ + size_) % Capacity] = value;
         if (size_ == Capacity)
@@ -31,19 +32,21 @@ public:
         else
             ++size_;
     }
-    template <typename = typename std::enable_if_t<std::is_compound<T>::value>>
-    void Enqueue(const T& value)
+    template<typename U = T>
+      typename std::enable_if<std::is_compound<U>::value>::type
+    Enqueue(const U& value)
     {
-        Enqueue(std::move(T(value)));
+        Enqueue(std::move(U(value)));
     }
-    template <typename = typename std::enable_if_t<std::is_compound<T>::value>>
-    void Enqueue(T&& value)
+    template<typename U = T>
+      typename std::enable_if<std::is_compound<U>::value>::type
+    Enqueue(U&& value)
     {
         auto& item = Elements()[(head_ + size_) % Capacity];
         if (size_ == Capacity)
-            item.~T();
+            item.~U();
 
-        new(&item)T(value);
+        new(&item)U(value);
         if (size_ == Capacity)
             head_ = (head_ + 1) % Capacity;
         else
