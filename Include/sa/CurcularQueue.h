@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 #include <cassert>
+#include <cstddef>
+#include <utility>
 
 namespace sa {
 
@@ -43,7 +45,7 @@ public:
         T result = std::move(item);
         item.~T();
         head_ = (head_ + 1) % Capacity;
-        --size;
+        --size_;
         return result;
     }
     void Clear()
@@ -152,7 +154,7 @@ public:
         auto& item = Elements()[head_];
         T result = std::move(item);
         head_ = (head_ + 1) % Capacity;
-        --size;
+        --size_;
         return result;
     }
     void Clear()
