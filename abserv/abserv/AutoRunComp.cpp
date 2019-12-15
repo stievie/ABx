@@ -144,8 +144,17 @@ Math::Vector3 AutoRunComp::Next()
     return AvoidObstacles(wayPoints_[0]);
 }
 
-Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
+Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destination, unsigned recursionLevel)
 {
+    if (recursionLevel > 2)
+    {
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "Stuck: new destination " << newDest.ToString() << std::endl;
+#endif
+        owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
+        return destination;
+    }
+
     const Math::Vector3& pos = owner_.transformation_.position_;
 
     // Raycast to the point and see if there is a hit.
@@ -173,7 +182,7 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
         if (hit)
         {
             // May be the object we are moving to.
-            // 0.5 = a bit more than the approx. extends of an average creature BB.
+            // A bit more than the approx. extends of an average creature BB.
             if (hit->object_->transformation_.position_.Distance(dest) < AVERAGE_BB_EXTENDS * 2.0f)
                 return nullptr;
         }
@@ -195,18 +204,17 @@ Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
     const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
     const auto* newHit = raycast(newDest);
     if (newHit)
-    {
-#ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "Stuck: new destination " << newDest.ToString() << std::endl;
-#endif
-        owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
-        return destination;
-    }
-
+        return AvoidObstaclesInternal(newDest, recursionLevel + 1);
 #ifdef DEBUG_NAVIGATION
     LOG_DEBUG << "New destination " << newDest.ToString() << std::endl;
 #endif
     return newDest;
+}
+
+
+Math::Vector3 AutoRunComp::AvoidObstacles(const Math::Vector3& destination)
+{
+    return AvoidObstaclesInternal(destination, 0);
 }
 
 void AutoRunComp::Update(uint32_t timeElapsed)
@@ -217,7 +225,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     const Math::Vector3& pos = owner_.transformation_.position_;
     if (auto f = following_.lock())
     {
-        if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > 1000)
+        if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > RECALCULATE_PATH_TIME)
             && (!destination_.Equals(f->transformation_.position_, AT_POSITION_THRESHOLD)))
         {
             // Find new path when following object moved and enough time passed

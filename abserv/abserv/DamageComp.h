@@ -16,26 +16,25 @@ class Skill;
 
 namespace Components {
 
-// Kepp damage history for 5 seconds
-static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
 
 class DamageComp
 {
 private:
-    struct DamageStruct
-    {
-        DamageType type;
-        DamagePos pos;
-        int value;
-        uint32_t actorId;
-        // The skill/effect causing this damage. If 0 it's a melee damage.
-        uint32_t index;
-        int64_t tick;
-    };
+    // Kepp damage history for 5 seconds
+    static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 5000;
     struct DamageItem
     {
         bool dirty;
-        DamageStruct damage;
+        struct
+        {
+            DamageType type;
+            DamagePos pos;
+            int value;
+            uint32_t actorId;
+            // The skill/effect causing this damage. If 0 it's a melee damage.
+            uint32_t index;
+            int64_t tick;
+        } damage;
     };
 
     Actor& owner_;
@@ -46,9 +45,7 @@ private:
     void ClearDamages();
 public:
     DamageComp() = delete;
-    explicit DamageComp(Actor& owner) :
-        owner_(owner)
-    { }
+    explicit DamageComp(Actor& owner);
     // non-copyable
     DamageComp(const DamageComp&) = delete;
     DamageComp& operator=(const DamageComp&) = delete;

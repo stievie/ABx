@@ -22,9 +22,7 @@ private:
     std::map<uint32_t, std::unique_ptr<Quest>> quests_;
 public:
     QuestComp() = delete;
-    explicit QuestComp(Player& owner) :
-        owner_(owner)
-    { }
+    explicit QuestComp(Player& owner);
     // non-copyable
     QuestComp(const QuestComp&) = delete;
     QuestComp& operator=(const QuestComp&) = delete;

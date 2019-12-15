@@ -13,6 +13,7 @@ class NetworkMessage;
 namespace Game {
 
 class Player;
+class Actor;
 
 class Quest
 {
@@ -37,6 +38,8 @@ private:
     void _LuaSetVarNumber(const std::string& name, float value);
     Player* _LuaGetOwner();
     void LoadProgress();
+    /// A foe was killed nearby
+    void OnKilledFoe(Actor* foe, Actor* killer);
 public:
     static void RegisterLua(kaguya::State& state);
 

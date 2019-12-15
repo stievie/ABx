@@ -61,6 +61,7 @@ using GameObjectEvents = sa::Events<
     void(GameObject*),
     void(Actor*),
     void(Skill*),
+    void(Actor*, Actor*),
     void(Actor*, uint32_t, bool&),
     void(Actor*, DamageType, int32_t, bool&),
     void(AB::Entities::SkillType, Skill*, bool&),

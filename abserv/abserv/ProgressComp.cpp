@@ -9,6 +9,8 @@ ProgressComp::ProgressComp(Actor& owner) :
     owner_(owner)
 {
     owner_.SubscribeEvent<void(void)>(EVENT_ON_DIED, std::bind(&ProgressComp::OnDied, this));
+    owner_.SubscribeEvent<void(Actor*, Actor*)>(EVENT_ON_KILLEDFOE, std::bind(&ProgressComp::OnKilledFoe,
+        this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void ProgressComp::Write(Net::NetworkMessage& message)
@@ -51,20 +53,23 @@ void ProgressComp::Write(Net::NetworkMessage& message)
     items_.clear();
 }
 
+void ProgressComp::OnKilledFoe(Actor* foe, Actor*)
+{
+    // Get only XP for the first death of NPCs.
+    if (foe && !owner_.IsDead() && foe->GetDeaths() == 0)
+        // When the owner is not dead add some XP for killing this foe
+        owner_.progressComp_->AddXpForKill(foe);
+}
+
 void ProgressComp::OnDied()
 {
-    if (Is<Player>(owner_) || deaths_ == 0)
+    Actor* killer = owner_.GetKiller();
+    // When we die all Enemies in range get XP for that
+    owner_.VisitEnemiesInRange(Ranges::Aggro, [&](const Actor& actor)
     {
-        // Get only XP for the first death of NPCs.
-        // When we die all Enemies in range get XP for that
-        owner_.VisitEnemiesInRange(Ranges::Aggro, [this](const Actor& actor)
-        {
-            if (!actor.IsDead())
-                // Actors get only XP for kills when they are not dead
-                actor.progressComp_->AddXpForKill(&owner_);
-            return Iteration::Continue;
-        });
-    }
+        const_cast<Actor&>(actor).CallEvent<void(Actor*, Actor*)>(EVENT_ON_KILLEDFOE, &owner_, killer);
+        return Iteration::Continue;
+    });
     ++deaths_;
 }
 

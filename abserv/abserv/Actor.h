@@ -54,6 +54,7 @@ static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
 static constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
 static constexpr sa::event_t EVENT_ON_INCMORALE = sa::StringHash("OnIncMorale");
 static constexpr sa::event_t EVENT_ON_DECMORALE = sa::StringHash("OnDecMorale");
+static constexpr sa::event_t EVENT_ON_KILLEDFOE = sa::StringHash("OnKilledFoe");
 
 static constexpr Math::Vector3 CREATURTE_BB_MIN { -0.15f, 0.0f, -0.25f };
 static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.15f, 1.7f, 0.25f };
@@ -147,6 +148,12 @@ public:
     Actor* GetClosestAlly(bool undestroyable, bool unselectable);
     Group* GetGroup() const;
     Item* GetWeapon() const;
+    Actor* GetKiller() const
+    {
+        if (auto k = killedBy_.lock())
+            return k.get();
+        return nullptr;
+    }
 
     void HeadTo(const Math::Vector3& pos);
     void FaceObject(GameObject* object);

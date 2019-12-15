@@ -15,10 +15,11 @@ namespace Components {
 class AutoRunComp
 {
 private:
+    static constexpr uint32_t RECALCULATE_PATH_TIME = 1000;
     Actor& owner_;
     int64_t lastCalc_{ 0 };
     /// Maximum distance to consider being there
-    float maxDist_{ 1.0f };
+    float maxDist_{ RANGE_TOUCH };
     bool autoRun_{ false };
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
@@ -33,6 +34,7 @@ private:
     void StopAutoRun();
     void OnCollide(GameObject* other);
     void OnStuck();
+    Math::Vector3 AvoidObstaclesInternal(const Math::Vector3& destination, unsigned recursionLevel);
     Math::Vector3 AvoidObstacles(const Math::Vector3& destination);
 public:
     AutoRunComp() = delete;

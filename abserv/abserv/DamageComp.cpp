@@ -8,6 +8,10 @@
 namespace Game {
 namespace Components {
 
+DamageComp::DamageComp(Actor& owner) :
+    owner_(owner)
+{ }
+
 void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration, bool melee)
 {
     if (owner_.IsDead())

@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "Quest.h"
-#include "ScriptManager.h"
-#include "Script.h"
-#include "Subsystems.h"
 #include "DataProvider.h"
-#include "Player.h"
-#include "NetworkMessage.h"
 #include "ItemFactory.h"
+#include "NetworkMessage.h"
+#include "Player.h"
 #include "PropStream.h"
+#include "Script.h"
+#include "ScriptManager.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -28,6 +28,8 @@ Quest::Quest(Player& owner, AB::Entities::PlayerQuest&& playerQuest) :
     owner_(owner),
     playerQuest_(std::move(playerQuest))
 {
+    owner_.SubscribeEvent<void(Actor*, Actor*)>(EVENT_ON_KILLEDFOE, std::bind(&Quest::OnKilledFoe,
+        this, std::placeholders::_1, std::placeholders::_2));
     InitializeLua();
     LoadProgress();
 }
@@ -147,6 +149,11 @@ const Utils::Variant& Quest::GetVar(const std::string& name) const
 void Quest::SetVar(const std::string& name, const Utils::Variant& val)
 {
     variables_[sa::StringHashRt(name.c_str())] = val;
+}
+
+void Quest::OnKilledFoe(Actor* foe, Actor* killer)
+{
+    Lua::CallFunction(luaState_, "onKilledFoe", foe, killer);
 }
 
 }

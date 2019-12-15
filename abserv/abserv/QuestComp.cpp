@@ -7,6 +7,10 @@
 namespace Game {
 namespace Components {
 
+QuestComp::QuestComp(Player& owner) :
+    owner_(owner)
+{ }
+
 void QuestComp::Update(uint32_t timeElapsed)
 {
     for (const auto& q : quests_)

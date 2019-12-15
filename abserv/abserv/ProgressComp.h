@@ -35,6 +35,8 @@ private:
 private:
     /// The owner died
     void OnDied();
+    /// A foe was killed nearby
+    void OnKilledFoe(Actor* foe, Actor* killer);
 public:
     ProgressComp() = delete;
     explicit ProgressComp(Actor& owner);
