@@ -148,11 +148,8 @@ void Application::UpdateBytesSent(size_t bytes)
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
             load = static_cast<unsigned>(ld);
-            if (load > 100)
-                load = 100;
         }
-
-        loads_.Enqueue(load);
+        loads_.Enqueue(std::min(load, 100u));
     }
 }
 
