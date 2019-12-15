@@ -16,6 +16,7 @@
 #include "actions/AiSay.h"
 #include "actions/AiUseDamageSkill.h"
 #include "actions/AiWander.h"
+#include "actions/AiMoveIntoSkillRange.h"
 #include "conditions/AiHaveHome.h"
 #include "conditions/AiHaveWanderRoute.h"
 #include "conditions/AiHaveWeapon.h"
@@ -76,6 +77,7 @@ void AiRegistry::Initialize()
     RegisterNodeFactory("UseDamageSkill", Actions::UseDamageSkill::GetFactory());
     RegisterNodeFactory("Interrupt", Actions::Interrupt::GetFactory());
     RegisterNodeFactory("Follow", Actions::Follow::GetFactory());
+    RegisterNodeFactory("MoveIntoSkillRange", Actions::MoveIntoSkillRange::GetFactory());
 
     RegisterConditionFactory("IsSelectionAlive", Conditions::IsSelectionAlive::GetFactory());
     RegisterConditionFactory("IsCloseToSelection", Conditions::IsCloseToSelection::GetFactory());

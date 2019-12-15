@@ -201,6 +201,7 @@
     <ClInclude Include="actions\AiHealSelf.h" />
     <ClInclude Include="actions\AiIdle.h" />
     <ClInclude Include="actions\AiInterrupt.h" />
+    <ClInclude Include="actions\AiMoveIntoSkillRange.h" />
     <ClInclude Include="actions\AiMoveOutAOE.h" />
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
@@ -340,6 +341,7 @@
     <ClCompile Include="actions\AiHealSelf.cpp" />
     <ClCompile Include="actions\AiIdle.cpp" />
     <ClCompile Include="actions\AiInterrupt.cpp" />
+    <ClCompile Include="actions\AiMoveIntoSkillRange.cpp" />
     <ClCompile Include="actions\AiMoveOutAOE.cpp" />
     <ClCompile Include="actions\AiMoveTo.cpp" />
     <ClCompile Include="actions\AiResurrectSelection.cpp" />

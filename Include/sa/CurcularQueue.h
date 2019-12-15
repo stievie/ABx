@@ -58,7 +58,7 @@ public:
 
     size_t Size() const { return size_; }
     bool IsEmpty() const { return size_ == 0; }
-    const T& At(size_t index)
+    const T& At(size_t index) const
     {
         return Elements()[(head_ + index) % Capacity];
     }
@@ -165,7 +165,7 @@ public:
 
     size_t Size() const { return size_; }
     bool IsEmpty() const { return size_ == 0; }
-    const T& At(size_t index)
+    const T& At(size_t index) const
     {
         return Elements()[(head_ + index) % Capacity];
     }

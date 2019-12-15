@@ -92,7 +92,7 @@ private:
 
     unsigned GetAvgLoad() const
     {
-        if (loads_.Size() == 0)
+        if (loads_.IsEmpty())
             return 0;
         return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.Size());
     }

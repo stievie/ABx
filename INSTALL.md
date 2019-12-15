@@ -22,7 +22,7 @@ db_pass = "password"
 5. Create a database with the name `forgottenwars`.
 6. Create the DB structure with importing `sql/schema.*.sql` one by one in the proper order.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
-8. Run `run.bat` or `./run` in the root directory
+8. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
 9. You may want to create an account key to be able to create an account:
 ~~~sql
 INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key', 2, 1, '');

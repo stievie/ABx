@@ -92,7 +92,7 @@ bool DamageComp::IsLastDamager(const Actor& actor)
 
 void DamageComp::Write(Net::NetworkMessage& message)
 {
-    if (damages_.Size() == 0)
+    if (damages_.IsEmpty())
         return;
     for (auto& d : damages_)
     {
@@ -111,8 +111,12 @@ void DamageComp::Write(Net::NetworkMessage& message)
 
 bool DamageComp::GotDamageType(DamageType type) const
 {
+    if (damages_.IsEmpty())
+        return false;
     for (const auto& d : damages_)
     {
+        if (Utils::TimeElapsed(d.damage.tick) > LAST_DAMAGE_TIME)
+            continue;
         if (d.damage.type == type)
             return true;
     }
@@ -121,12 +125,19 @@ bool DamageComp::GotDamageType(DamageType type) const
 
 bool DamageComp::GotDamageCategory(DamageTypeCategory cat) const
 {
+    if (damages_.IsEmpty())
+        return false;
+
     if (cat == DamageTypeCategory::Any)
-        // Any damage
-        return damages_.Size() != 0;
+    {
+        const auto& last = damages_.Last();
+        return Utils::TimeElapsed(last.damage.tick) <= LAST_DAMAGE_TIME;
+    }
 
     for (const auto& d : damages_)
     {
+        if (Utils::TimeElapsed(d.damage.tick) > LAST_DAMAGE_TIME)
+            continue;
         if (IsDamageCategory(d.damage.type, cat))
             return true;
     }

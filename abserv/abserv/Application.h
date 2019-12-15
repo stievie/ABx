@@ -23,8 +23,6 @@ private:
     sa::PODCircularQueue<unsigned, 10> loads_;
     int64_t lastLoadCalc_{ 0 };
     Maintenance maintenance_;
-    std::string aiServerIp_;
-    uint16_t aiServerPort_{ 0 };
 #if defined(SCENE_VIEWER)
     std::shared_ptr<Debug::SceneViewer> sceneViewer_;
 #endif
@@ -35,7 +33,7 @@ private:
     void HandleCreateInstanceMessage(const Net::MessageMsg& msg);
     unsigned GetAvgLoad() const
     {
-        if (loads_.Size() == 0)
+        if (loads_.IsEmpty())
             return 0;
         return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.Size());
     }

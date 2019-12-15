@@ -444,6 +444,9 @@
     <ClInclude Include="actions\SkillAction.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="actions\AiMoveIntoSkillRange.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -837,6 +840,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="actions\SkillAction.cpp">
+      <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="actions\AiMoveIntoSkillRange.cpp">
       <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
   </ItemGroup>

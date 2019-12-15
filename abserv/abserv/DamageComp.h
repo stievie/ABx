@@ -17,12 +17,13 @@ class Skill;
 
 namespace Components {
 
-
 class DamageComp
 {
 private:
     // Keep some history
     static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 25;
+    // The AI may check if we got some damage. This is the time how long to go back in history.
+    static constexpr uint32_t LAST_DAMAGE_TIME = 5000;
     struct DamageItem
     {
         struct

@@ -28,6 +28,8 @@ abserv/actions/AiIdle.cpp
 abserv/actions/AiIdle.h
 abserv/actions/AiInterrupt.cpp
 abserv/actions/AiInterrupt.h
+abserv/actions/AiMoveIntoSkillRange.cpp
+abserv/actions/AiMoveIntoSkillRange.h
 abserv/actions/AiMoveOutAOE.cpp
 abserv/actions/AiMoveOutAOE.h
 abserv/actions/AiMoveTo.cpp

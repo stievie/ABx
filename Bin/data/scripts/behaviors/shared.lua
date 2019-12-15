@@ -40,7 +40,7 @@ function interruptSpell()
     result:AddNode(_interruptSpell());
 
     -- If out of range move to target
-    local move = node("MoveTo")
+    local move = node("MoveIntoSkillRange")
       -- Only move there when not in range
       local notinrange = condition("Not")
         notinrange:AddCondition(condition("IsInSkillRange"))
@@ -72,7 +72,7 @@ function interruptAttack()
     result:AddNode(_interruptAttack());
 
     -- If out of range move to target
-    local move = node("MoveTo")
+    local move = node("MoveIntoSkillRange")
       -- Only move there when not in range
       local notinrange = condition("Not")
         notinrange:AddCondition(condition("IsInSkillRange"))
@@ -106,7 +106,7 @@ function damageSkill()
     result:AddNode(_singleDamage())
 
     -- If out of range move to target
-    local move = node("MoveTo")
+    local move = node("MoveIntoSkillRange")
       -- Only move there when not in range
       local notinrange = condition("Not")
         notinrange:AddCondition(condition("IsInSkillRange"))
@@ -185,7 +185,7 @@ function healAlly()
     nd:AddNode(heal)
 
     -- If out of range move to target
-    local move = node("MoveTo")
+    local move = node("MoveIntoSkillRange")
       -- Only move there when not in range
       local notinrange = condition("Not")
         notinrange:AddCondition(condition("IsInSkillRange"))
@@ -217,7 +217,7 @@ function rezzAlly()
     nd:AddNode(rezz)
 
     -- If out of range move to target
-    local move = node("MoveTo")
+    local move = node("MoveIntoSkillRange")
       -- Only move there when not in range
       local notinrange = condition("Not")
         notinrange:AddCondition(condition("IsInSkillRange"))
