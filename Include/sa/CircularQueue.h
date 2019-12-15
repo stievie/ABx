@@ -26,6 +26,7 @@ public:
       std::enable_if_t<std::is_fundamental<U>::value, int> = 0>
     void Enqueue(T value)
     {
+        static_assert(std::is_fundamental<T>::value, "Not a fundamental type");
         Elements()[(head_ + size_) % Capacity] = value;
         if (size_ == Capacity)
             head_ = (head_ + 1) % Capacity;
@@ -36,12 +37,14 @@ public:
       std::enable_if_t<std::is_compound<U>::value, int> = 0>
     void Enqueue(const T& value)
     {
+        static_assert(std::is_compound<T>::value, "Not a compound type");
         Enqueue(std::move(T(value)));
     }
     template<typename U = T,
       std::enable_if_t<std::is_compound<U>::value, int> = 0>
     void Enqueue(T&& value)
     {
+        static_assert(std::is_compound<T>::value, "Not a compound type");
         auto& item = Elements()[(head_ + size_) % Capacity];
         if (size_ == Capacity)
             item.~T();
