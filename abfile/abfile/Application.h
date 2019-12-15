@@ -14,6 +14,7 @@
 #include "MessageClient.h"
 #include "Servers.h"
 #include <numeric>
+#include <sa/CurcularQueue.h>
 
 #if __cplusplus < 201703L
 // C++14
@@ -56,7 +57,7 @@ private:
     uint16_t dataPort_;
     /// Byte/sec
     uint64_t maxThroughput_;
-    std::vector<unsigned> loads_;
+    sa::PODCircularQueue<unsigned, 10> loads_;
     std::mutex mutex_;
     void HandleMessage(const Net::MessageMsg& msg);
     void UpdateBytesSent(size_t bytes);
@@ -91,9 +92,9 @@ private:
 
     unsigned GetAvgLoad() const
     {
-        if (loads_.size() == 0)
+        if (loads_.Size() == 0)
             return 0;
-        return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.size());
+        return std::accumulate(loads_.Begin(), loads_.End(), 0u) / static_cast<unsigned>(loads_.Size());
     }
     void ShowLogo();
 protected:

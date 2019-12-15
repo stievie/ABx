@@ -11,6 +11,7 @@
 #include "SceneViewer.h"
 #endif
 #include <numeric>
+#include <sa/CurcularQueue.h>
 
 class Application final : public ServerApp
 {
@@ -19,7 +20,7 @@ private:
     std::mutex lock_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
-    std::vector<unsigned> loads_;
+    sa::PODCircularQueue<unsigned, 10> loads_;
     int64_t lastLoadCalc_{ 0 };
     Maintenance maintenance_;
     std::string aiServerIp_;
@@ -34,9 +35,9 @@ private:
     void HandleCreateInstanceMessage(const Net::MessageMsg& msg);
     unsigned GetAvgLoad() const
     {
-        if (loads_.size() == 0)
+        if (loads_.Size() == 0)
             return 0;
-        return std::accumulate(loads_.begin(), loads_.end(), 0u) / static_cast<unsigned>(loads_.size());
+        return std::accumulate(loads_.Begin(), loads_.End(), 0u) / static_cast<unsigned>(loads_.Size());
     }
 protected:
     bool ParseCommandLine() override;

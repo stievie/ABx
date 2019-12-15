@@ -137,14 +137,14 @@ void Application::UpdateBytesSent(size_t bytes)
     bytesSent_ += bytes;
 
     // Calculate load
-    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.empty())
+    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
     {
         lastLoadCalc_ = Utils::Tick();
 
         unsigned load = 0;
         if (maxThroughput_ != 0)
         {
-            int64_t mesTime = Utils::TimeElapsed(statusMeasureTime_);
+            uint64_t mesTime = Utils::TimeElapsed(statusMeasureTime_);
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
             load = static_cast<unsigned>(ld);
@@ -152,9 +152,7 @@ void Application::UpdateBytesSent(size_t bytes)
                 load = 100;
         }
 
-        while (loads_.size() > 9)
-            loads_.erase(loads_.begin());
-        loads_.push_back(load);
+        loads_.Enqueue(load);
     }
 }
 

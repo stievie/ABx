@@ -621,7 +621,7 @@ std::string Application::GetKeysFile() const
 unsigned Application::GetLoad()
 {
     static System::CpuUsage usage;
-    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.empty())
+    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
     {
         lastLoadCalc_ = Utils::Tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
@@ -640,11 +640,7 @@ unsigned Application::GetLoad()
             load = std::max(load, nwpi.usage);
         }
 
-        load = Math::Clamp(load, 0u, 100u);
-
-        while (loads_.size() > 9)
-            loads_.erase(loads_.begin());
-        loads_.push_back(load);
+        loads_.Enqueue(Math::Clamp(load, 0u, 100u));
     }
     return GetAvgLoad();
 }
