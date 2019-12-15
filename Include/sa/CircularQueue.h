@@ -36,7 +36,7 @@ public:
       std::enable_if_t<std::is_compound<U>::value, int> = 0>
     void Enqueue(const T& value)
     {
-        Enqueue(std::move(U(value)));
+        Enqueue(std::move(T(value)));
     }
     template<typename U = T,
       std::enable_if_t<std::is_compound<U>::value, int> = 0>
@@ -44,9 +44,9 @@ public:
     {
         auto& item = Elements()[(head_ + size_) % Capacity];
         if (size_ == Capacity)
-            item.~U();
+            item.~T();
 
-        new(&item)U(value);
+        new(&item)T(value);
         if (size_ == Capacity)
             head_ = (head_ + 1) % Capacity;
         else
