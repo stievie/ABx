@@ -1,3 +1,3 @@
 # sa
 
-Some uitility templates.
+Some utility templates.

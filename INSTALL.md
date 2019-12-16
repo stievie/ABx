@@ -28,6 +28,10 @@ db_pass = "password"
 INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key', 2, 1, '');
 ~~~
 
+### Known issuses
+
+The Server should run on Windows and Linux.
+
 ## Client
 
 1. Build it, see [BUILD.md](BUILD.md)
@@ -45,3 +49,7 @@ INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key
 ~~~
 5. Run `fw.exe` in `abclient/bin`.
 6. Create an account using the (Random_Guid) value of your previously created account key.
+
+### Known issues
+
+* Linux: The client loses the connection to the server.
