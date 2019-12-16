@@ -6,6 +6,8 @@ Ancient Greece Multiplayer Online RPG.
 
 https://devtube.dev-wiki.de/video-channels/trill_channel/videos
 
+https://www.gamedev.net/projects/1587-abx
+
 ## License
 
 The source code is licensed under the MIT License.
@@ -24,15 +26,17 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Spawn any number of server which may have heavy load (game, file server) even on different hardware.
 * Local (map), Guild, Team, Trade chat and whisper is currently working, even across different game server.
 * Friend/ignore list
-* Mail
+* Persistent Mail
 * Static objects are directly loaded from Urho3D's scene files.
+* Lua API to script Games, NPCs, Skills, Effects, Items etc.
 * Navigation using Recast/Detour
 * Server runs on Windows and Linux
+* Client runs on Windows and Linux, butt has some bugs on Linux
 * Game AI, Behavior Tree
 
 ## Screenshot
 
-![Architecture](/Doc/screenshot.jpg?raw=true)
+![Screenshot](/Doc/screenshot.jpg?raw=true)
 
 ## Build, install, run
 
@@ -171,7 +175,8 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
        - aoe (area of effect)
        - logic (portals etc)
        - npcs
-     - ai (behaviours)
+       - ...
+     - behaviors (behavior trees)
      - effects
        - conditions
        - ...

@@ -450,6 +450,9 @@
     <ClInclude Include="conditions\AiHaveResurrection.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiHaveSkill.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -849,6 +852,9 @@
       <Filter>Quelldateien\Actions</Filter>
     </ClCompile>
     <ClCompile Include="conditions\AiHaveResurrection.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiHaveSkill.cpp">
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
