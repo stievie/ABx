@@ -10,6 +10,7 @@
 #include <functional>
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
+#include <CleanupNs.h>
 
 namespace AI {
 

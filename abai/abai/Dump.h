@@ -5,6 +5,7 @@
 #include "Condition.h"
 #include <iostream>
 #include "BevaviorCache.h"
+#include <CleanupNs.h>
 
 namespace AI {
 
