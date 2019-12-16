@@ -447,6 +447,9 @@
     <ClInclude Include="actions\AiMoveIntoSkillRange.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiHaveResurrection.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -844,6 +847,9 @@
     </ClCompile>
     <ClCompile Include="actions\AiMoveIntoSkillRange.cpp">
       <Filter>Quelldateien\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="conditions\AiHaveResurrection.cpp">
+      <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

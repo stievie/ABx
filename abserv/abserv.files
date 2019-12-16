@@ -74,6 +74,8 @@ abserv/actions/SkillAction.cpp
 abserv/actions/SkillAction.h
 abserv/conditions/AiHaveHome.cpp
 abserv/conditions/AiHaveHome.h
+abserv/conditions/AiHaveResurrection.cpp
+abserv/conditions/AiHaveResurrection.h
 abserv/conditions/AiHaveWanderRoute.cpp
 abserv/conditions/AiHaveWanderRoute.h
 abserv/conditions/AiHaveWeapon.cpp

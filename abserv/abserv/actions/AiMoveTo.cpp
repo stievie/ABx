@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include "AiMoveTo.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
-#include "AiMoveTo.h"
 #include "../Game.h"
 
 namespace AI {

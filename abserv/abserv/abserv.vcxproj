@@ -222,6 +222,7 @@
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="conditions\AiHaveHome.h" />
+    <ClInclude Include="conditions\AiHaveResurrection.h" />
     <ClInclude Include="conditions\AiHaveWanderRoute.h" />
     <ClInclude Include="conditions\AiHaveWeapon.h" />
     <ClInclude Include="conditions\AiIsAllyHealthCritical.h" />
@@ -361,6 +362,7 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="conditions\AiHaveHome.cpp" />
+    <ClCompile Include="conditions\AiHaveResurrection.cpp" />
     <ClCompile Include="conditions\AiHaveWanderRoute.cpp" />
     <ClCompile Include="conditions\AiHaveWeapon.cpp" />
     <ClCompile Include="conditions\AiIsAllyHealthCritical.cpp" />

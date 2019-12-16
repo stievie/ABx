@@ -34,6 +34,7 @@
 #include "conditions/AiIsSelfHealthCritical.h"
 #include "conditions/AiIsSelfHealthLow.h"
 #include "conditions/AiRandomCondition.h"
+#include "conditions/AiHaveResurrection.h"
 #include "filters/AiSelectAggro.h"
 #include "filters/AiSelectAttackTarget.h"
 #include "filters/AiSelectAttackers.h"
@@ -96,6 +97,7 @@ void AiRegistry::Initialize()
     RegisterConditionFactory("IsInWeaponRange", Conditions::IsInWeaponRange::GetFactory());
     RegisterConditionFactory("HaveWeapon", Conditions::HaveWeapon::GetFactory());
     RegisterConditionFactory("IsFighting", Conditions::IsFighting::GetFactory());
+    RegisterConditionFactory("HaveResurrection", Conditions::HaveResurrection::GetFactory());
 
     RegisterFilterFactory("SelectVisible", Filters::SelectVisible::GetFactory());
     RegisterFilterFactory("SelectAggro", Filters::SelectAggro::GetFactory());

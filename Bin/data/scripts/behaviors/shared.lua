@@ -209,6 +209,8 @@ end
 
 function rezzAlly()
   local nd = node("Priority")
+    nd:SetCondition(condition("HaveResurrection"))
+
     local haveDeadAllies = condition("Filter")
       haveDeadAllies:SetFilter(filter("SelectDeadAllies"))
     nd:SetCondition(haveDeadAllies)
