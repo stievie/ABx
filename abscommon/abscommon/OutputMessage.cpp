@@ -46,6 +46,13 @@ sa::PoolInfo OutputMessagePool::GetPoolInfo()
     return { };
 }
 
+unsigned OutputMessagePool::GetPoolUsage()
+{
+    if (PoolWrapper::MessagePool* pool = PoolWrapper::GetOutputMessagePool())
+        return pool->GetUsage();
+    return 0;
+}
+
 sa::SharedPtr<OutputMessage> OutputMessagePool::GetOutputMessage()
 {
     return sa::MakeShared<OutputMessage>();

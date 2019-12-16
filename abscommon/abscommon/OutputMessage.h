@@ -118,6 +118,7 @@ private:
     OutputMessagePool() = default;
 public:
     static sa::PoolInfo GetPoolInfo();
+    static unsigned GetPoolUsage();
     static sa::SharedPtr<OutputMessage> GetOutputMessage();
 
     OutputMessagePool(const OutputMessagePool&) = delete;

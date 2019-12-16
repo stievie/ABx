@@ -23,6 +23,7 @@ public:
     static void Delete(NetworkMessage* p);
     static std::unique_ptr<NetworkMessage> GetNew();
     static sa::PoolInfo GetPoolInfo();
+    static unsigned GetPoolUsage();
     NetworkMessage() = default;
 protected:
     struct NetworkMessageInfo

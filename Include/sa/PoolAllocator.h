@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <stdint.h>
 #ifdef _WIN32
-#include <windows.h>
+#include <Windows.h>
 #else
 #include <sys/mman.h>
 #endif

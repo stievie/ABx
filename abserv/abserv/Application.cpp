@@ -634,10 +634,8 @@ unsigned Application::GetLoad()
         {
             // Get memory pool usage
             std::lock_guard<std::mutex> lock(lock_);    // Memory pool must always be locked!
-            const auto ompi = Net::OutputMessagePool::GetPoolInfo();
-            load = std::max(load, ompi.usage);
-            const auto nwpi = Net::NetworkMessage::GetPoolInfo();
-            load = std::max(load, nwpi.usage);
+            load = std::max(load, Net::OutputMessagePool::GetPoolUsage());
+            load = std::max(load, Net::NetworkMessage::GetPoolUsage());
         }
 
         loads_.Enqueue(std::min(load, 100u));

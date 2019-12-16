@@ -46,6 +46,14 @@ sa::PoolInfo NetworkMessage::GetPoolInfo()
     return pool->GetInfo();
 }
 
+unsigned NetworkMessage::GetPoolUsage()
+{
+    auto* pool = GetSubsystem<NetworkMessage::MessagePool>();
+    if (pool)
+        return pool->GetUsage();
+    return 0;
+}
+
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 {
     if (len == 0)
