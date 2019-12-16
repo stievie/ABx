@@ -69,6 +69,7 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
         if (!node)
             continue;
         if (node->GetComponent<Player>() != nullptr)
+            // Thats we
             continue;
 
         auto actor = node->GetComponent<Actor>();
@@ -87,6 +88,9 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
             continue;
         else if (type == ObjectTypeAreaOfEffect || type == ObjectTypeItemDrop)
             // Never collide with these
+            continue;
+        else if ((type == ObjectTypePlayer || type == ObjectTypeNpc) && actor->IsDead())
+            // Dont collide with dead actors
             continue;
         // When we are here we do collide with some object and can't go to pos
         return false;

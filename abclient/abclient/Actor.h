@@ -164,6 +164,7 @@ public:
     AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
+    bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();
     void SetSelectedObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
