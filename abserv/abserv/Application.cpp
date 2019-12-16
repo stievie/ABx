@@ -629,18 +629,18 @@ unsigned Application::GetLoad()
         unsigned load = static_cast<unsigned>(ld);
 
         load = std::max(load, GetSubsystem<Asynch::Dispatcher>()->GetUtilization());
-        load = std::max(load, static_cast<unsigned>(usage.GetUsage()));
+        load = std::max(load, usage.GetUsage());
 
         {
             // Get memory pool usage
-            std::lock_guard<std::mutex> lock(lock_);
+            std::lock_guard<std::mutex> lock(lock_);    // Memory pool must always be locked!
             const auto ompi = Net::OutputMessagePool::GetPoolInfo();
             load = std::max(load, ompi.usage);
             const auto nwpi = Net::NetworkMessage::GetPoolInfo();
             load = std::max(load, nwpi.usage);
         }
 
-        loads_.Enqueue(Math::Clamp(load, 0u, 100u));
+        loads_.Enqueue(std::min(load, 100u));
     }
     return GetAvgLoad();
 }

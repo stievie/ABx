@@ -10,9 +10,9 @@ namespace System {
 
 CpuUsage::CpuUsage() = default;
 
-short CpuUsage::GetUsage()
+unsigned CpuUsage::GetUsage()
 {
-    short nCpuCopy = cpuUsage_;
+    unsigned nCpuCopy = cpuUsage_;
     if (!EnoughTimePassed())
         return nCpuCopy;
 
@@ -34,7 +34,7 @@ short CpuUsage::GetUsage()
         lastSysCPU_ = buf.tms_stime;
         lastUserCPU_ = buf.tms_utime;
 
-        cpuUsage_ = static_cast<short>(percent);
+        cpuUsage_ = static_cast<unsigned>(percent);
         nCpuCopy = cpuUsage_;
     }
 

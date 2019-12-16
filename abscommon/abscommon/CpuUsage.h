@@ -3,7 +3,7 @@
 #include <stdint.h>
 #if defined(AB_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 #elif defined (AB_UNIX)
 #include <ctime>
 #endif
@@ -16,9 +16,10 @@ public:
     CpuUsage();
 
     /// Returns CPU usage of the calling process in percent, i.e. a value between 0..100.
-    short GetUsage();
+    unsigned GetUsage();
 private:
-    short cpuUsage_{ -1 };
+    unsigned cpuUsage_{ 0 };
+    int64_t lastRun_{ 0 };
 #if defined(AB_WINDOWS)
     ULONGLONG SubtractTimes(const FILETIME& ftA, const FILETIME& ftB);
 
@@ -30,11 +31,8 @@ private:
     FILETIME prevProcKernel_;
     FILETIME prevProcUser_;
 
-    ULONGLONG lastRun_{ 0 };
-
     volatile LONG runCount_;
 #elif defined(AB_UNIX)
-    int64_t lastRun_{ 0 };
     clock_t lastCPU_{ 0 };
     clock_t lastSysCPU_{ 0 };
     clock_t lastUserCPU_{ 0 };

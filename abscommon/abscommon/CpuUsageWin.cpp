@@ -3,6 +3,7 @@
 #if defined(AB_WINDOWS)
 
 #include "CpuUsage.h"
+#include "Utils.h"
 
 namespace System {
 
@@ -24,11 +25,11 @@ CpuUsage::CpuUsage() :
 * If the method is recalled to quickly, the previous value
 * is returned.
 ***********************************************/
-short CpuUsage::GetUsage()
+unsigned CpuUsage::GetUsage()
 {
     //create a local copy to protect against race conditions in setting the
     //member variable
-    short nCpuCopy = cpuUsage_;
+    unsigned nCpuCopy = cpuUsage_;
     if (::InterlockedIncrement(&runCount_) == 1)
     {
         /*
@@ -69,9 +70,7 @@ short CpuUsage::GetUsage()
             ULONGLONG nTotalProc = ftProcKernelDiff + ftProcUserDiff;
 
             if (nTotalSys > 0)
-            {
-                cpuUsage_ = (short)((100.0 * nTotalProc) / nTotalSys);
-            }
+                cpuUsage_ = static_cast<unsigned>((100.0 * nTotalProc) / nTotalSys);
         }
 
         prevSysKernel_ = ftSysKernel;
@@ -79,7 +78,7 @@ short CpuUsage::GetUsage()
         prevProcKernel_ = ftProcKernel;
         prevProcUser_ = ftProcUser;
 
-        lastRun_ = GetTickCount64();
+        lastRun_ = Utils::Tick();
 
         nCpuCopy = cpuUsage_;
     }
@@ -103,10 +102,8 @@ ULONGLONG CpuUsage::SubtractTimes(const FILETIME& ftA, const FILETIME& ftB)
 
 bool CpuUsage::EnoughTimePassed()
 {
-    static const int minElapsedMS = 250;   // milliseconds
-
-    ULONGLONG dwCurrentTickCount = GetTickCount64();
-    return (dwCurrentTickCount - lastRun_) > minElapsedMS;
+    static const unsigned minElapsedMS = 250;   // milliseconds
+    return Utils::TimeElapsed(lastRun_) > minElapsedMS;
 }
 
 }
