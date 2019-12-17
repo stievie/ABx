@@ -2,12 +2,6 @@
 #include "SimpleConfigManager.h"
 #include <sa/ArgParser.h>
 #include "Logo.h"
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
 #include "Utils.h"
 #include "FileUtils.h"
 #include "StringUtils.h"
@@ -171,17 +165,8 @@ int main(int argc, char** argv)
 {
     ShowLogo();
 
-    std::string exeFile;
-#ifdef _WIN32
-    char buff[MAX_PATH];
-    GetModuleFileNameA(NULL, buff, MAX_PATH);
-    exeFile = std::string(buff);
-#else
-    char buff[PATH_MAX];
-    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile = std::string(buff, (count > 0) ? count : 0);
-#endif
-    std::string path = Utils::ExtractFileDir(exeFile);
+    const std::string exeFile = Utils::GetExeName();
+    const std::string path = Utils::ExtractFileDir(exeFile);
     std::string schemasDir = path + "/../sql";
 
     sa::arg_parser::cli _cli{ {

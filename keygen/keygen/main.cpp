@@ -5,11 +5,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
 #include "StringUtils.h"
 #include "SimpleConfigManager.h"
 #include "FileUtils.h"
@@ -53,17 +48,8 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 int main(int argc, char** argv)
 {
     ShowLogo();
-    std::string exeFile;
-#ifdef _WIN32
-    char buff[MAX_PATH];
-    GetModuleFileNameA(NULL, buff, MAX_PATH);
-    exeFile = std::string(buff);
-#else
-    char buff[PATH_MAX];
-    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile = std::string(buff, (count > 0) ? count : 0);
-#endif
-    std::string path = Utils::ExtractFileDir(exeFile);
+    const std::string exeFile = Utils::GetExeName();
+    const std::string path = Utils::ExtractFileDir(exeFile);
 
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },

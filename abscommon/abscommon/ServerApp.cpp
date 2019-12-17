@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <codecvt>
 #include <sa/StringTempl.h>
+#include "FileUtils.h"
 
 ServerApp::ServerApp() :
     running_(false),
@@ -211,15 +212,7 @@ bool ServerApp::ParseCommandLine()
 
 void ServerApp::Init()
 {
-#ifdef AB_WINDOWS
-    char buff[MAX_PATH];
-    GetModuleFileNameA(NULL, buff, MAX_PATH);
-    exeFile_ = std::string(buff);
-#else
-    char buff[PATH_MAX];
-    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile_ = std::string(buff, (count > 0) ? static_cast<size_t>(count) : 0);
-#endif
+    exeFile_ = Utils::GetExeName();
     path_ = Utils::ExtractFileDir(exeFile_);
     machine_ = GetMachineName();
 }

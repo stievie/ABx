@@ -2,6 +2,13 @@
 #include "FileUtils.h"
 #include <fstream>
 #include <sa/StringTempl.h>
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#else
+#include <linux/limits.h>
+#include <unistd.h>
+#endif
 
 namespace Utils {
 
@@ -56,6 +63,19 @@ bool IsHiddenFile(const std::string& path)
         return true;
 
     return false;
+}
+
+std::string GetExeName()
+{
+#ifdef AB_WINDOWS
+    char buff[MAX_PATH];
+    GetModuleFileNameA(NULL, buff, MAX_PATH);
+    return std::string(buff);
+#else
+    char buff[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
+    return std::string(buff, (count > 0) ? count : 0);
+#endif
 }
 
 }
