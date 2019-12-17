@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/dbtool$(SUFFIX)
 SOURDEDIR = ../dbtool/dbtool
 OBJDIR = obj/x64/$(CONFIG)/dbtool
-LIBS += -lpthread -llua5.3 -labscommon -labdb
+LIBS += -llua5.3 -labscommon -labdb -lpthread
 CXXFLAGS += -Werror
 DEFINES += -DUSE_PGSQL
 # Database Libs
