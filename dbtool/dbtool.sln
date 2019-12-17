@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.960
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbtool", "dbtool\dbtool.vcxproj", "{1265A2DD-79BA-411B-A2FB-943587261019}"
+	ProjectSection(ProjectDependencies) = postProject
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6} = {58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225} = {2482B1C7-086B-4968-AA1E-2EA0D4D71225}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abdb", "..\abdb\abdb\abdb.vcxproj", "{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+		RelNoProfiling|x64 = RelNoProfiling|x64
+		RelWithDebInfo|x64 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1265A2DD-79BA-411B-A2FB-943587261019}.Debug|x64.ActiveCfg = Debug|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.Debug|x64.Build.0 = Debug|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.Release|x64.ActiveCfg = Release|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.Release|x64.Build.0 = Release|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.RelNoProfiling|x64.Build.0 = Release|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{1265A2DD-79BA-411B-A2FB-943587261019}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.Debug|x64.ActiveCfg = Debug|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.Debug|x64.Build.0 = Debug|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.Release|x64.ActiveCfg = Release|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.Release|x64.Build.0 = Release|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.RelNoProfiling|x64.Build.0 = Release|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.ActiveCfg = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.Build.0 = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.ActiveCfg = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.Build.0 = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelNoProfiling|x64.ActiveCfg = RelNoProfiling|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelNoProfiling|x64.Build.0 = RelNoProfiling|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54B4F724-11E4-4498-9473-52603D124B72}
+	EndGlobalSection
+EndGlobal

@@ -71,17 +71,17 @@ int main(int argc, char** argv)
     } };
     sa::arg_parser::values parsedArgs;
     sa::arg_parser::result cmdres = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
-    if (!cmdres)
-    {
-        std::cout << cmdres << std::endl;
-        std::cout << "Type `keygen -h` for help." << std::endl;
-        return EXIT_FAILURE;
-    }
     auto val = sa::arg_parser::get_value<bool>(parsedArgs, "help");
     if (val.has_value() && val.value())
     {
         ShowHelp(_cli);
         return EXIT_SUCCESS;
+    }
+    if (!cmdres)
+    {
+        std::cout << cmdres << std::endl;
+        std::cout << "Type `keygen -h` for help." << std::endl;
+        return EXIT_FAILURE;
     }
 
     std::string cfgFile = path + "/abserv.lua";
