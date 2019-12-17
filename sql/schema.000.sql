@@ -1,7 +1,3 @@
---
--- PostgreSQL database dump
---
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -9,61 +5,27 @@ SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET xmloption = content;
-SET client_min_messages = warning;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
--- Name: logout_all(); Type: FUNCTION; Schema: public; Owner: sa
---
 
 CREATE FUNCTION public.logout_all() RETURNS void
     LANGUAGE sql
     AS $$update accounts set online_status = 0$$;
 
-
 SET default_tablespace = '';
-
 SET default_with_oids = false;
-
---
--- Name: account_account_keys; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.account_account_keys (
     account_uuid character(36) NOT NULL,
     account_key_uuid character(36) NOT NULL
 );
 
-
---
--- Name: account_bans; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE TABLE public.account_bans (
     uuid character(36) NOT NULL,
     ban_uuid character(36) NOT NULL,
     account_uuid character(36) NOT NULL
 );
-
-
-
-
---
--- Name: account_keys; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.account_keys (
     uuid character(36) NOT NULL,
@@ -74,13 +36,6 @@ CREATE TABLE public.account_keys (
     key_type bigint DEFAULT 0::bigint NOT NULL,
     email text DEFAULT ''::text NOT NULL
 );
-
-
-
-
---
--- Name: accounts; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.accounts (
     uuid character(36) DEFAULT ''::bpchar NOT NULL,
@@ -100,62 +55,13 @@ CREATE TABLE public.accounts (
     auth_token character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     auth_token_expiry bigint DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: TABLE accounts; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON TABLE public.accounts IS 'Player accounts';
-
-
---
--- Name: COLUMN accounts.name; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.name IS 'User/Login name';
-
-
---
--- Name: COLUMN accounts.email; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.email IS 'Email (optional)';
-
-
---
--- Name: COLUMN accounts.type; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.type IS 'Account type';
-
-
---
--- Name: COLUMN accounts.creation; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.creation IS 'Date this account was created';
-
-
---
--- Name: COLUMN accounts.char_slots; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.char_slots IS 'Number of character slots';
-
-
---
--- Name: COLUMN accounts.titles; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.accounts.titles IS 'Base64 encoded';
-
-
---
--- Name: bans; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.bans (
     uuid character(36) NOT NULL,
@@ -166,13 +72,6 @@ CREATE TABLE public.bans (
     admin_uuid character(36) NOT NULL,
     comment text DEFAULT ''::text NOT NULL
 );
-
-
-
-
---
--- Name: concrete_items; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.concrete_items (
     uuid character(36) NOT NULL,
@@ -191,118 +90,21 @@ CREATE TABLE public.concrete_items (
     instance_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     map_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL
 );
-
-
-
-
---
--- Name: TABLE concrete_items; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON TABLE public.concrete_items IS 'Concrete items';
-
-
---
--- Name: COLUMN concrete_items.player_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.player_uuid IS 'Player this belongs to';
-
-
---
--- Name: COLUMN concrete_items.storage_place; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.storage_place IS 'Inventory, Chest or equipped';
-
-
---
--- Name: COLUMN concrete_items.storage_pos; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.storage_pos IS 'Sorage position in inventory or chest';
-
-
---
--- Name: COLUMN concrete_items.upgrade_1; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.upgrade_1 IS 'Upgrade item concrete UUID';
-
-
---
--- Name: COLUMN concrete_items.upgrade_2; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.upgrade_2 IS 'Upgrade item concrete UUID';
-
-
---
--- Name: COLUMN concrete_items.upgrade_3; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.upgrade_3 IS 'Upgrade item concrete UUID';
-
-
---
--- Name: COLUMN concrete_items.account_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.account_uuid IS 'Account this belongs to';
-
-
---
--- Name: COLUMN concrete_items.item_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.item_uuid IS 'UUID in game_items table';
-
-
---
--- Name: COLUMN concrete_items.stats; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.stats IS 'Stats of the item';
-
-
---
--- Name: COLUMN concrete_items.count; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.count IS 'How many of this item';
-
-
---
--- Name: COLUMN concrete_items.creation; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.creation IS 'Creation time';
-
-
---
--- Name: COLUMN concrete_items.value; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.value IS 'Value when sold';
-
-
---
--- Name: COLUMN concrete_items.instance_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.instance_uuid IS 'The game instance where this item dropped';
-
-
---
--- Name: COLUMN concrete_items.map_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.concrete_items.map_uuid IS 'The map where this item dropped';
-
-
---
--- Name: friend_list; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.friend_list (
     account_uuid character(36) NOT NULL,
@@ -311,48 +113,11 @@ CREATE TABLE public.friend_list (
     relation bigint NOT NULL,
     creation bigint DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN friend_list.account_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.friend_list.account_uuid IS 'The account this friendlist belongs to';
-
-
---
--- Name: COLUMN friend_list.friend_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.friend_list.friend_uuid IS 'Friend Account UUID that was friended';
-
-
---
--- Name: COLUMN friend_list.friend_name; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.friend_list.friend_name IS 'Name of character that was friended. Should be changeable by the user.';
-
-
---
--- Name: COLUMN friend_list.relation; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.friend_list.relation IS '0 = unknown, 1 = friend, 2 = ignore';
-
-
---
--- Name: COLUMN friend_list.creation; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.friend_list.creation IS 'Time stamp';
-
-
---
--- Name: game_attributes; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_attributes (
     uuid character(36) NOT NULL,
@@ -361,13 +126,6 @@ CREATE TABLE public.game_attributes (
     name text NOT NULL,
     is_primary bigint DEFAULT 0::bigint NOT NULL
 );
-
-
-
-
---
--- Name: game_effects; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_effects (
     uuid character(36) NOT NULL,
@@ -380,40 +138,14 @@ CREATE TABLE public.game_effects (
     particle_effect character varying(260) DEFAULT ''::character varying NOT NULL
 );
 
-
-
-
---
--- Name: game_item_chances; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE TABLE public.game_item_chances (
     uuid character(36) NOT NULL,
     map_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     item_uuid character(36) NOT NULL,
     chance integer DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN game_item_chances.map_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_item_chances.map_uuid IS 'Map this item can drop. Empty GUID = everywhere';
-
-
---
--- Name: COLUMN game_item_chances.chance; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_item_chances.chance IS 'Chance (promille) to find this item on the map. (0..1000)';
-
-
---
--- Name: game_items; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_items (
     uuid character(36) NOT NULL,
@@ -430,55 +162,12 @@ CREATE TABLE public.game_items (
     spawn_item_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     actor_script character varying(260) DEFAULT ''::character varying
 );
-
-
-
-
---
--- Name: COLUMN game_items.object_file; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.object_file IS 'Prefab file somewhere in /Objects';
-
-
---
--- Name: COLUMN game_items.stack_able; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.stack_able IS 'Is the item stack able';
-
-
---
--- Name: COLUMN game_items.belongs_to; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.belongs_to IS 'This can be used as upgrade for types';
-
-
---
--- Name: COLUMN game_items.value; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.value IS 'Some items have a fixed value';
-
-
---
--- Name: COLUMN game_items.spawn_item_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.spawn_item_uuid IS 'This item can spawn another item, e.g. a projectile';
-
-
---
--- Name: COLUMN game_items.actor_script; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_items.actor_script IS 'If this Item is an Actor (e.g. Projectile) this is the actor script';
-
-
---
--- Name: game_maps; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_maps (
     uuid character(36) NOT NULL,
@@ -496,41 +185,10 @@ CREATE TABLE public.game_maps (
     queue_map_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     game_mode integer DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN game_maps.default_level; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_maps.default_level IS 'The default level of players and NPCs on this map';
-
-
---
--- Name: COLUMN game_maps.party_count; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_maps.party_count IS 'Number of opposing parties in this game';
-
-
---
--- Name: COLUMN game_maps.random_party; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_maps.random_party IS 'Party with random players';
-
-
---
--- Name: COLUMN game_maps.queue_map_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_maps.queue_map_uuid IS 'From this map you can queue to another map';
-
-
---
--- Name: game_music; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_music (
     uuid character(36) NOT NULL,
@@ -540,20 +198,7 @@ CREATE TABLE public.game_music (
     sorting integer DEFAULT 0 NOT NULL,
     style integer DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN game_music.map_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_music.map_uuid IS 'Map UUIDs separated with a semicolon';
-
-
---
--- Name: game_professions; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_professions (
     uuid character(36) NOT NULL,
@@ -564,34 +209,9 @@ CREATE TABLE public.game_professions (
     model_index_male bigint DEFAULT 0 NOT NULL,
     "position" integer DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN game_professions.model_index_female; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_professions.model_index_female IS 'Index in game_items table';
-
-
---
--- Name: COLUMN game_professions.model_index_male; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_professions.model_index_male IS 'Index in game_items table';
-
-
---
--- Name: COLUMN game_professions."position"; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.game_professions."position" IS 'Front-, mid-, backline';
-
-
---
--- Name: game_quests; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_quests (
     uuid character(36) NOT NULL,
@@ -599,13 +219,6 @@ CREATE TABLE public.game_quests (
     name text NOT NULL,
     script character varying(260) NOT NULL
 );
-
-
-
-
---
--- Name: game_skills; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.game_skills (
     uuid character(36) NOT NULL,
@@ -624,13 +237,6 @@ CREATE TABLE public.game_skills (
     particle_effect character varying(260) DEFAULT ''::character varying NOT NULL
 );
 
-
-
-
---
--- Name: guild_members; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE TABLE public.guild_members (
     account_uuid character(36) DEFAULT NULL::bpchar,
     guild_uuid character(36) DEFAULT NULL::bpchar,
@@ -640,13 +246,6 @@ CREATE TABLE public.guild_members (
     joined bigint DEFAULT 0::bigint NOT NULL,
     expires bigint DEFAULT 0::bigint NOT NULL
 );
-
-
-
-
---
--- Name: guilds; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.guilds (
     uuid character(36) NOT NULL,
@@ -660,34 +259,9 @@ CREATE TABLE public.guilds (
     guild_hall_instance_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     guild_hall_server_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL
 );
-
-
-
-
---
--- Name: COLUMN guilds.guild_hall_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.guilds.guild_hall_uuid IS 'Guild Hall Map UUID';
-
-
---
--- Name: COLUMN guilds.guild_hall_instance_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.guilds.guild_hall_instance_uuid IS 'If the guild hall instance is running, this is the UUID';
-
-
---
--- Name: COLUMN guilds.guild_hall_server_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.guilds.guild_hall_server_uuid IS 'If the instance is running, this is the server where it runs on';
-
-
---
--- Name: instances; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.instances (
     uuid character(36) NOT NULL,
@@ -700,20 +274,7 @@ CREATE TABLE public.instances (
     is_running integer DEFAULT 0 NOT NULL,
     stop_time bigint DEFAULT (0)::bigint NOT NULL
 );
-
-
-
-
---
--- Name: TABLE instances; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON TABLE public.instances IS 'Game instances';
-
-
---
--- Name: ip_bans; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.ip_bans (
     uuid character(36) NOT NULL,
@@ -721,13 +282,6 @@ CREATE TABLE public.ip_bans (
     ip bigint NOT NULL,
     mask bigint NOT NULL
 );
-
-
-
-
---
--- Name: mails; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.mails (
     uuid character(36) NOT NULL,
@@ -740,13 +294,6 @@ CREATE TABLE public.mails (
     created bigint DEFAULT 0::bigint NOT NULL,
     is_read bigint DEFAULT 0::bigint NOT NULL
 );
-
-
-
-
---
--- Name: players; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.players (
     uuid character(36) DEFAULT ''::bpchar NOT NULL,
@@ -776,20 +323,7 @@ CREATE TABLE public.players (
     last_outpost_uuid character(36) DEFAULT '00000000-0000-0000-0000-000000000000'::bpchar NOT NULL,
     inventory_size integer DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: TABLE players; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON TABLE public.players IS 'Characters';
-
-
---
--- Name: reserved_names; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.reserved_names (
     uuid character(36) NOT NULL,
@@ -798,34 +332,9 @@ CREATE TABLE public.reserved_names (
     reserved_for_account_uuid character(36) DEFAULT ''::bpchar,
     expires bigint DEFAULT 0 NOT NULL
 );
-
-
-
-
---
--- Name: TABLE reserved_names; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON TABLE public.reserved_names IS 'Names that can not be used to create characters';
-
-
---
--- Name: COLUMN reserved_names.reserved_for_account_uuid; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.reserved_names.reserved_for_account_uuid IS 'When a user deletes a character the name will be reserved for some time';
-
-
---
--- Name: COLUMN reserved_names.expires; Type: COMMENT; Schema: public; Owner: sa
---
-
 COMMENT ON COLUMN public.reserved_names.expires IS 'Timestamp when this reservation expires';
-
-
---
--- Name: services; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
 
 CREATE TABLE public.services (
     uuid character(36) NOT NULL,
@@ -844,13 +353,6 @@ CREATE TABLE public.services (
     machine character varying(260) DEFAULT ''::character varying NOT NULL
 );
 
-
-
-
---
--- Name: versions; Type: TABLE; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE TABLE public.versions (
     uuid character(36) NOT NULL,
     name text NOT NULL,
@@ -858,541 +360,77 @@ CREATE TABLE public.versions (
     internal smallint DEFAULT (0)::smallint NOT NULL
 );
 
-
-
-
---
--- Name: account_bans_ban_uuid_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.account_bans
-    ADD CONSTRAINT account_bans_ban_uuid_key UNIQUE (ban_uuid);
-
-
---
--- Name: account_bans_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.account_bans
-    ADD CONSTRAINT account_bans_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: account_keys_uuid; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.account_keys
-    ADD CONSTRAINT account_keys_uuid PRIMARY KEY (uuid);
-
-
---
--- Name: accounts_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_name_key UNIQUE (name);
-
-
---
--- Name: accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: bans_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.bans
-    ADD CONSTRAINT bans_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: friend_list_account_uuid_friend_uuid_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.friend_list
-    ADD CONSTRAINT friend_list_account_uuid_friend_uuid_key UNIQUE (account_uuid, friend_uuid);
-
-
---
--- Name: game_attributes_idx_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_attributes
-    ADD CONSTRAINT game_attributes_idx_key UNIQUE (idx);
-
-
---
--- Name: game_attributes_uuid_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_attributes
-    ADD CONSTRAINT game_attributes_uuid_key UNIQUE (uuid);
-
-
---
--- Name: game_effects_idx_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_effects
-    ADD CONSTRAINT game_effects_idx_key UNIQUE (idx);
-
-
---
--- Name: game_effects_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_effects
-    ADD CONSTRAINT game_effects_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_item_chances_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_item_chances
-    ADD CONSTRAINT game_item_chances_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_items_idx_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_items
-    ADD CONSTRAINT game_items_idx_key UNIQUE (idx);
-
-
---
--- Name: game_items_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_items
-    ADD CONSTRAINT game_items_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_maps_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_maps
-    ADD CONSTRAINT game_maps_name_key UNIQUE (name);
-
-
---
--- Name: game_maps_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_maps
-    ADD CONSTRAINT game_maps_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_music_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_music
-    ADD CONSTRAINT game_music_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_professions_abbr_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_professions
-    ADD CONSTRAINT game_professions_abbr_key UNIQUE (abbr);
-
-
---
--- Name: game_professions_idx_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_professions
-    ADD CONSTRAINT game_professions_idx_key UNIQUE (idx);
-
-
---
--- Name: game_professions_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_professions
-    ADD CONSTRAINT game_professions_name_key UNIQUE (name);
-
-
---
--- Name: game_professions_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_professions
-    ADD CONSTRAINT game_professions_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_quests_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_quests
-    ADD CONSTRAINT game_quests_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: game_skills_idx_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_skills
-    ADD CONSTRAINT game_skills_idx_key UNIQUE (idx);
-
-
---
--- Name: game_skills_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.game_skills
-    ADD CONSTRAINT game_skills_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: guild_members_account_uuid_guild_uuid_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.guild_members
-    ADD CONSTRAINT guild_members_account_uuid_guild_uuid_key UNIQUE (account_uuid, guild_uuid);
-
-
---
--- Name: guilds_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.guilds
-    ADD CONSTRAINT guilds_name_key UNIQUE (name);
-
-
---
--- Name: guilds_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.guilds
-    ADD CONSTRAINT guilds_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: instances_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.instances
-    ADD CONSTRAINT instances_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: inventory_items_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.concrete_items
-    ADD CONSTRAINT inventory_items_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: ip_bans_ip_mask_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.ip_bans
-    ADD CONSTRAINT ip_bans_ip_mask_key UNIQUE (ip, mask);
-
-
---
--- Name: ip_bans_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.ip_bans
-    ADD CONSTRAINT ip_bans_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: mails_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.mails
-    ADD CONSTRAINT mails_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: players_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.players
-    ADD CONSTRAINT players_name_key UNIQUE (name);
-
-
---
--- Name: players_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.players
-    ADD CONSTRAINT players_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: reserved_names_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.reserved_names
-    ADD CONSTRAINT reserved_names_name_key UNIQUE (name);
-
-
---
--- Name: reserved_names_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.reserved_names
-    ADD CONSTRAINT reserved_names_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: services_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.services
-    ADD CONSTRAINT services_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: versions_name_key; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.versions
-    ADD CONSTRAINT versions_name_key UNIQUE (name);
-
-
---
--- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: sa; Tablespace: 
---
-
-ALTER TABLE ONLY public.versions
-    ADD CONSTRAINT versions_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: account_ban_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
+ALTER TABLE ONLY public.account_bans ADD CONSTRAINT account_bans_ban_uuid_key UNIQUE (ban_uuid);
+ALTER TABLE ONLY public.account_bans ADD CONSTRAINT account_bans_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.account_keys ADD CONSTRAINT account_keys_uuid PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.accounts ADD CONSTRAINT accounts_name_key UNIQUE (name);
+ALTER TABLE ONLY public.accounts ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.bans ADD CONSTRAINT bans_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.friend_list ADD CONSTRAINT friend_list_account_uuid_friend_uuid_key UNIQUE (account_uuid, friend_uuid);
+ALTER TABLE ONLY public.game_attributes ADD CONSTRAINT game_attributes_idx_key UNIQUE (idx);
+ALTER TABLE ONLY public.game_attributes ADD CONSTRAINT game_attributes_uuid_key UNIQUE (uuid);
+ALTER TABLE ONLY public.game_effects ADD CONSTRAINT game_effects_idx_key UNIQUE (idx);
+ALTER TABLE ONLY public.game_effects ADD CONSTRAINT game_effects_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_item_chances ADD CONSTRAINT game_item_chances_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_items ADD CONSTRAINT game_items_idx_key UNIQUE (idx);
+ALTER TABLE ONLY public.game_items ADD CONSTRAINT game_items_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_maps ADD CONSTRAINT game_maps_name_key UNIQUE (name);
+ALTER TABLE ONLY public.game_maps ADD CONSTRAINT game_maps_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_music ADD CONSTRAINT game_music_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_professions ADD CONSTRAINT game_professions_abbr_key UNIQUE (abbr);
+ALTER TABLE ONLY public.game_professions ADD CONSTRAINT game_professions_idx_key UNIQUE (idx);
+ALTER TABLE ONLY public.game_professions ADD CONSTRAINT game_professions_name_key UNIQUE (name);
+ALTER TABLE ONLY public.game_professions ADD CONSTRAINT game_professions_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_quests ADD CONSTRAINT game_quests_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.game_skills ADD CONSTRAINT game_skills_idx_key UNIQUE (idx);
+ALTER TABLE ONLY public.game_skills ADD CONSTRAINT game_skills_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.guild_members ADD CONSTRAINT guild_members_account_uuid_guild_uuid_key UNIQUE (account_uuid, guild_uuid);
+ALTER TABLE ONLY public.guilds ADD CONSTRAINT guilds_name_key UNIQUE (name);
+ALTER TABLE ONLY public.guilds ADD CONSTRAINT guilds_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.instances ADD CONSTRAINT instances_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.concrete_items ADD CONSTRAINT inventory_items_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.ip_bans ADD CONSTRAINT ip_bans_ip_mask_key UNIQUE (ip, mask);
+ALTER TABLE ONLY public.ip_bans ADD CONSTRAINT ip_bans_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.mails ADD CONSTRAINT mails_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.players ADD CONSTRAINT players_name_key UNIQUE (name);
+ALTER TABLE ONLY public.players ADD CONSTRAINT players_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.reserved_names ADD CONSTRAINT reserved_names_name_key UNIQUE (name);
+ALTER TABLE ONLY public.reserved_names ADD CONSTRAINT reserved_names_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.services ADD CONSTRAINT services_pkey PRIMARY KEY (uuid);
+ALTER TABLE ONLY public.versions ADD CONSTRAINT versions_name_key UNIQUE (name);
+ALTER TABLE ONLY public.versions ADD CONSTRAINT versions_pkey PRIMARY KEY (uuid);
 
 CREATE INDEX account_ban_account_uuid ON public.account_bans USING btree (account_uuid);
-
-
---
--- Name: account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE UNIQUE INDEX account_uuid ON public.account_account_keys USING btree (account_uuid, account_key_uuid);
-
-
---
--- Name: accunt_key_status; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX accunt_key_status ON public.account_keys USING btree (status);
-
-
---
--- Name: bans_admin_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX bans_admin_uuid ON public.bans USING btree (admin_uuid);
-
-
---
--- Name: concrete_items_storage_place; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX concrete_items_storage_place ON public.concrete_items USING btree (storage_place);
-
-
---
--- Name: friend_list_account_uuid_key; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX friend_list_account_uuid_key ON public.friend_list USING btree (account_uuid);
-
-
---
--- Name: friend_list_friend_uuid_key; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX friend_list_friend_uuid_key ON public.friend_list USING btree (friend_uuid);
-
-
---
--- Name: game_attributes_profession_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX game_attributes_profession_uuid ON public.game_attributes USING btree (profession_uuid);
-
-
---
--- Name: game_item_chances_may_uuid_key; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX game_item_chances_may_uuid_key ON public.game_item_chances USING btree (map_uuid);
-
-
---
--- Name: game_items_type; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX game_items_type ON public.game_items USING btree (type);
-
-
---
--- Name: game_maps_type; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX game_maps_type ON public.game_maps USING btree (type);
-
-
---
--- Name: game_music_sorting; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX game_music_sorting ON public.game_music USING btree (sorting);
-
-
---
--- Name: guild_members_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX guild_members_account_uuid ON public.guild_members USING btree (account_uuid);
-
-
---
--- Name: guild_members_expires; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX guild_members_expires ON public.guild_members USING btree (expires);
-
-
---
--- Name: guild_members_guild_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX guild_members_guild_uuid ON public.guild_members USING btree (guild_uuid);
-
-
---
--- Name: guilds_name_ci_index; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE UNIQUE INDEX guilds_name_ci_index ON public.guilds USING btree (lower(name));
-
-
---
--- Name: instances_recording_index; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX instances_recording_index ON public.instances USING btree (recording);
-
-
---
--- Name: inventory_items_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX inventory_items_account_uuid ON public.concrete_items USING btree (account_uuid);
-
-
---
--- Name: inventory_items_player_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX inventory_items_player_uuid ON public.concrete_items USING btree (player_uuid);
-
-
---
--- Name: ip_bans_ban_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX ip_bans_ban_uuid ON public.ip_bans USING btree (ban_uuid);
-
-
---
--- Name: ip_bans_ip; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX ip_bans_ip ON public.ip_bans USING btree (ip);
-
-
---
--- Name: mails_created; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX mails_created ON public.mails USING btree (created);
-
-
---
--- Name: mails_from_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX mails_from_account_uuid ON public.mails USING btree (from_account_uuid);
-
-
---
--- Name: mails_is_read; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX mails_is_read ON public.mails USING btree (is_read);
-
-
---
--- Name: mails_to_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX mails_to_account_uuid ON public.mails USING btree (to_account_uuid);
-
-
---
--- Name: players_account_uuid; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX players_account_uuid ON public.players USING btree (account_uuid);
-
-
---
--- Name: players_name_ci_index; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE UNIQUE INDEX players_name_ci_index ON public.players USING btree (lower(name));
-
-
---
--- Name: reserved_names_is_reserved; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX reserved_names_is_reserved ON public.reserved_names USING btree (is_reserved);
-
-
---
--- Name: reserved_names_name_ci_index; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX reserved_names_name_ci_index ON public.reserved_names USING btree (lower(name));
-
-
---
--- Name: reserved_names_until; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX reserved_names_until ON public.reserved_names USING btree (expires);
-
-
---
--- Name: services_type; Type: INDEX; Schema: public; Owner: sa; Tablespace: 
---
-
 CREATE INDEX services_type ON public.services USING btree (type);
-
-
---
--- Data for Name: game_attributes; Type: TABLE DATA; Schema: public; Owner: sa
---
 
 INSERT INTO public.game_attributes VALUES ('0739ed7d-50f6-11e8-a7ca-02100700d6f0', 12, '85d0ef81-50f4-11e8-a7ca-02100700d6f0', 'Energy Storage', 1);
 INSERT INTO public.game_attributes VALUES ('073a57c1-50f6-11e8-a7ca-02100700d6f0', 9, '85d0ef81-50f4-11e8-a7ca-02100700d6f0', 'Earth Magic', 0);
@@ -1422,11 +460,6 @@ INSERT INTO public.game_attributes VALUES ('f7477bbe-50f5-11e8-a7ca-02100700d6f0
 INSERT INTO public.game_attributes VALUES ('fcb26454-50f4-11e8-a7ca-02100700d6f0', 17, '59f4493d-50f4-11e8-a7ca-02100700d6f0', 'Strength', 1);
 INSERT INTO public.game_attributes VALUES ('fcb2cbfc-50f4-11e8-a7ca-02100700d6f0', 18, '59f4493d-50f4-11e8-a7ca-02100700d6f0', 'Axe Mastery', 0);
 
-
---
--- Data for Name: game_effects; Type: TABLE DATA; Schema: public; Owner: sa
---
-
 INSERT INTO public.game_effects VALUES ('827f837a-5113-11e8-a7ca-02100700d6f0', 1000, 'PvP', 254, '/scripts/effects/environment/pvp.lua', '/Textures/Effects/pvp.png', '', '');
 INSERT INTO public.game_effects VALUES ('decedb0a-1c81-419e-ba36-38c655cbc792', 1043, 'Dash', 9, '/scripts/effects/stance/dash.lua', '/Textures/Skills/dash.png', '', '');
 INSERT INTO public.game_effects VALUES ('bcda113a-74d9-416a-a630-df1c9b34e70a', 10003, 'Dazed', 1, 'scripts/effects/condition/dazed.lua', '/Textures/Effects/dazed.png', '', '');
@@ -1436,11 +469,6 @@ INSERT INTO public.game_effects VALUES ('a40a6807-f687-4de8-867b-488c59353da7', 
 INSERT INTO public.game_effects VALUES ('4d021639-612e-4fe2-b359-d272eef353ed', 288, 'Healing Breeze', 2, '/scripts/effects/enchantment/healing_breeze.lua', '', '', '');
 INSERT INTO public.game_effects VALUES ('5c389b57-bed1-4554-bb5f-4e48d70f1b86', 10004, 'Burning', 1, 'scripts/effects/condition/burning.lua', '/Textures/Effects/fire.png', '', '');
 INSERT INTO public.game_effects VALUES ('62781eff-5286-11e8-a7ca-02100700d6f0', 1001, 'Morale', 20, '/scripts/effects/general/morale.lua', '/Textures/Effects/morale.png', '', '');
-
-
---
--- Data for Name: game_item_chances; Type: TABLE DATA; Schema: public; Owner: sa
---
 
 INSERT INTO public.game_item_chances VALUES ('c70c8b6d-4027-4e3f-a15d-0de55f694b56', 'a13b71f8-fe19-4bf5-bba7-c7642c796c0f', 'a53eb26d-39e4-4900-b6f4-12c7da07b68b', 1);
 INSERT INTO public.game_item_chances VALUES ('baa149ed-9e4a-4a4a-bede-bb1835538a20', 'a13b71f8-fe19-4bf5-bba7-c7642c796c0f', '00000000-0000-0000-0000-000000000000', 300);
@@ -1455,11 +483,6 @@ INSERT INTO public.game_item_chances VALUES ('4846f62d-8249-4c78-97d6-600fd75a49
 INSERT INTO public.game_item_chances VALUES ('64f636ff-668b-417c-b250-9267f18635d4', '00000000-0000-0000-0000-000000000000', 'f87b5cf3-c8e5-4f9f-b2c1-3768940484a7', 100);
 INSERT INTO public.game_item_chances VALUES ('55e6d7fd-3087-4997-9a58-43c715b9f469', '00000000-0000-0000-0000-000000000000', '19e4420f-2af3-4039-822f-4be1e3e5450e', 100);
 INSERT INTO public.game_item_chances VALUES ('6914b2d1-49d8-4130-9f19-a0b867b76f08', 'a13b71f8-fe19-4bf5-bba7-c7642c796c0f', '7ccd5ff5-4788-42b1-9dc7-f644bcc5766f', 1);
-
-
---
--- Data for Name: game_items; Type: TABLE DATA; Schema: public; Owner: sa
---
 
 INSERT INTO public.game_items VALUES ('fa5d7b1b-987a-11e8-a7ca-02100700d6f0', 8, 'Hair Female Long blonde', '', 'Objects/Hair_Female_LongBlonde.xml', '', 2, 0, 0, 0, 0, '00000000-0000-0000-0000-000000000000', '');
 INSERT INTO public.game_items VALUES ('00000000-0000-0000-0000-000000000000', 0, 'No Item', '', '', '', 0, 0, 0, 0, 0, '00000000-0000-0000-0000-000000000000', '');
@@ -1495,11 +518,6 @@ INSERT INTO public.game_items VALUES ('e945dcab-b383-4247-9da5-0a01c4bd4bfd', 50
 INSERT INTO public.game_items VALUES ('ce54bf1a-af80-44d2-b4b6-82393407c946', 6000, 'Magic Mushroom', '', '/Objects/MagicMushroom.xml', '', 49, 0, 0, 0, 1000, '00000000-0000-0000-0000-000000000000', '');
 INSERT INTO public.game_items VALUES ('2cea6cb6-a77e-4808-baef-c1b11601dc08', 6001, 'Meteor Shower', '', '/Objects/MeteorShower.xml', '/Textures/Icons/placeholder.png', 49, 0, 0, 0, 1000, '00000000-0000-0000-0000-000000000000', '');
 
-
---
--- Data for Name: game_maps; Type: TABLE DATA; Schema: public; Owner: sa
---
-
 INSERT INTO public.game_maps VALUES ('964152eb-b3e3-4a2b-b8d1-45eb01cce0ea', 'Pergamon', 1, '/maps/pergamon', '/scripts/games/pergamon.lua', 0, 4, 1080, 402, 1, 0, 0, '00000000-0000-0000-0000-000000000000', 0);
 INSERT INTO public.game_maps VALUES ('f39eef5f-b946-4661-8a46-a4490e466e15', 'Argos', 1, '/maps/argos', '/scripts/games/argos.lua', 0, 4, 642, 740, 1, 0, 0, '00000000-0000-0000-0000-000000000000', 0);
 INSERT INTO public.game_maps VALUES ('8604e197-6e54-46b0-945a-16e265cf0e0c', 'Cos', 1, '/maps/cos', '/scripts/games/cos.lua', 0, 4, 1199, 731, 1, 0, 0, '00000000-0000-0000-0000-000000000000', 0);
@@ -1518,11 +536,6 @@ INSERT INTO public.game_maps VALUES ('75e3fc5c-479a-11e8-ad09-02100700d6f0', 'Rh
 INSERT INTO public.game_maps VALUES ('a13b71f8-fe19-4bf5-bba7-c7642c796c0f', 'Rhodes Arena', 4, '/maps/rhodes_arena', '/scripts/games/rhodes_arena.lua', 0, 4, 0, 0, 1, 2, 1, '00000000-0000-0000-0000-000000000000', 0);
 INSERT INTO public.game_maps VALUES ('3c081fd5-3966-433a-bc61-50a33084eac2', 'Athena Arena', 4, '/maps/athena_arena', '/scripts/games/athena_arena.lua', 0, 4, 0, 0, 1, 2, 1, '00000000-0000-0000-0000-000000000000', 0);
 INSERT INTO public.game_maps VALUES ('75e3eeb5-479a-11e8-ad09-02100700d6f0', 'Athena', 2, '/maps/athena', '/scripts/games/athena.lua', 1, 4, 741, 668, 1, 0, 0, '3c081fd5-3966-433a-bc61-50a33084eac2', 0);
-
-
---
--- Data for Name: game_music; Type: TABLE DATA; Schema: public; Owner: sa
---
 
 INSERT INTO public.game_music VALUES ('67a1233a-f391-4e2b-870e-ab6e073795fa', '4c43346f-dc73-43bc-beb0-d119db10032a;964152eb-b3e3-4a2b-b8d1-45eb01cce0ea;e3c8fa12-3c04-48d6-aa45-59c7cb0a3ee0;9ad4b59c-0ae6-4ac6-be8a-091f36525850;a9c02902-ce0c-47d0-9e74-499219ae71ee;8604e197-6e54-46b0-945a-16e265cf0e0c;75e3fc5c-479a-11e8-ad09-02100700d6f0', 'Sounds/Music/Eastern/Jalandhar.ogg', '', 0, 2);
 INSERT INTO public.game_music VALUES ('7f621c3b-9f84-4fcc-93f9-36ea41a41b51', '4c43346f-dc73-43bc-beb0-d119db10032a;964152eb-b3e3-4a2b-b8d1-45eb01cce0ea;e3c8fa12-3c04-48d6-aa45-59c7cb0a3ee0;9ad4b59c-0ae6-4ac6-be8a-091f36525850;a9c02902-ce0c-47d0-9e74-499219ae71ee;8604e197-6e54-46b0-945a-16e265cf0e0c;75e3fc5c-479a-11e8-ad09-02100700d6f0', 'Sounds/Music/Eastern/Lord of the Land.ogg', '', 0, 2);
@@ -1566,11 +579,6 @@ INSERT INTO public.game_music VALUES ('af88b7e6-60ad-4432-bb91-20a0f6cdd47d', 'C
 INSERT INTO public.game_music VALUES ('e5d638ab-9c8a-4c5d-8579-2341aec89029', 'CreateAccount;CreateCharacter;SelectCharacter;00000000-0000-0000-0000-000000000000', 'Sounds/Music/Action/Rynos Theme.ogg', '', 0, 352);
 INSERT INTO public.game_music VALUES ('f0b3bba0-f697-4f23-81ac-e6ee58ce765c', 'CreateAccount;CreateCharacter;SelectCharacter;00000000-0000-0000-0000-000000000000', 'Sounds/Music/Action/Unholy Knight.ogg', '', 0, 192);
 
-
---
--- Data for Name: game_professions; Type: TABLE DATA; Schema: public; Owner: sa
---
-
 INSERT INTO public.game_professions VALUES ('79b75ff4-92f0-11e8-a7ca-02100700d6f0', 0, 'None', 'NA', 0, 0, 0);
 INSERT INTO public.game_professions VALUES ('59f4493d-50f4-11e8-a7ca-02100700d6f0', 1, 'Warrior', 'W', 4, 6, 1);
 INSERT INTO public.game_professions VALUES ('85d0ef81-50f4-11e8-a7ca-02100700d6f0', 6, 'Elementarist', 'E', 7, 1, 2);
@@ -1578,17 +586,6 @@ INSERT INTO public.game_professions VALUES ('85d0939b-50f4-11e8-a7ca-02100700d6f
 INSERT INTO public.game_professions VALUES ('7315cbd6-50f4-11e8-a7ca-02100700d6f0', 4, 'Necromancer', 'N', 1, 2, 2);
 INSERT INTO public.game_professions VALUES ('73156b15-50f4-11e8-a7ca-02100700d6f0', 3, 'Monk', 'Mo', 1, 2, 3);
 INSERT INTO public.game_professions VALUES ('59f4b30b-50f4-11e8-a7ca-02100700d6f0', 2, 'Ranger', 'R', 1, 2, 2);
-
-
---
--- Data for Name: game_quests; Type: TABLE DATA; Schema: public; Owner: sa
---
-
-
-
---
--- Data for Name: game_skills; Type: TABLE DATA; Schema: public; Owner: sa
---
 
 INSERT INTO public.game_skills VALUES ('177e1b60-0796-4acc-bc34-7c4ab2e482de', 9998, 'Sudden Death', '4e8d25fe-50f7-11e8-a7ca-02100700d6f0', 0, 0, 'Sudden Death', 'Instant suicide', '/Textures/Skills/sudden_death.png', '/scripts/skills/sudden_death.lua', 1, '79b75ff4-92f0-11e8-a7ca-02100700d6f0', '', '');
 INSERT INTO public.game_skills VALUES ('b1b9761a-3fca-4302-acb1-6f1a537dd548', 9997, 'Instant Kill', '4e8d25fe-50f7-11e8-a7ca-02100700d6f0', 512, 0, 'Instant Kill', 'Instantly kills the target', '/Textures/Skills/instant_kill.png', '/scripts/skills/instant_kill.lua', 1, '79b75ff4-92f0-11e8-a7ca-02100700d6f0', '', '');
@@ -1613,14 +610,4 @@ INSERT INTO public.game_skills VALUES ('e7062cfe-daf2-4b50-8f07-d1b20c032355', 8
 INSERT INTO public.game_skills VALUES ('fab4bcad-5fe1-4616-bf29-b9148740c869', 1379, 'Glowing Gaze', '13582547-50f6-11e8-a7ca-02100700d6f0', 512, 0, 'Spell. Deal 5..50 fire damage. If the target is burning, you get 5 energy plus 1 Energy for every 2 ranks of Energy Storage.', 'Spell. Deal 5..50 fire damage. If the target is burning, you get 5 energy plus 1 Energy for every 2 ranks of Energy Storage.', '/Textures/Skills/placeholder.png', '/scripts/skills/fire_magic/glowing_gaze.lua', 0, '85d0ef81-50f4-11e8-a7ca-02100700d6f0', '', '');
 INSERT INTO public.game_skills VALUES ('eecf3e66-d7fb-499c-872f-2824e34fdae1', 40, 'Ether Feast', 'f7477bbe-50f5-11e8-a7ca-02100700d6f0', 512, 0, 'Sudden Death', 'Spell. Target loses 3 energy, you are healed for 20..65 health by lost energy point.', '/Textures/Skills/placeholder.png', '/scripts/skills/inspiration_magic/ether_feast.lua', 0, '85d0939b-50f4-11e8-a7ca-02100700d6f0', '', '');
 
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- PostgreSQL database dump complete
---
-
+INSERT INTO public.versions (name, value, internal) VALUES ('schema', 0, 1);

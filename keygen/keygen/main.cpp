@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     IO::SimpleConfigManager cfg;
     if (!cfg.Load(cfgFile))
     {
-        std::cout << "Failed to load config file " << cfgFile << std::endl;
+        std::cerr << "Failed to load config file " << cfgFile << std::endl;
         return EXIT_FAILURE;
     }
     std::string keyFile = cfg.GetGlobalString("server_keys", "");
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 
     if (!GenerateKeys(keyFile))
     {
-        std::cout << "Error generating keys: " << keyFile << std::endl;
+        std::cerr << "Error generating keys: " << keyFile << std::endl;
         return EXIT_FAILURE;
     }
     std::cout << "Generated new keys: " << keyFile << std::endl;

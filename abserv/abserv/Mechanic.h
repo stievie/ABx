@@ -7,12 +7,10 @@
 
 namespace Game {
 
-namespace {
 template<typename T>
 constexpr T GetPercent(T max, T percent)
 {
     return (max / static_cast<T>(100)) * percent;
-}
 }
 
 // Max level a player can reach

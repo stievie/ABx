@@ -1,4 +1,4 @@
-# Install/run
+# Install and run
 
 ## Server
 

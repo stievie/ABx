@@ -67,6 +67,8 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database",
         false, true, sa::arg_parser::option_type::string });
+    cli.push_back({ "schemadir", { "-d", "--schema-dir" }, "Directory with .sql files to import",
+        false, true, sa::arg_parser::option_type::string });
 }
 
 static void GetFiles(const std::string& dir, std::map<unsigned, std::string>& result)
@@ -95,7 +97,7 @@ static bool ImportFile(DB::Database& db, const std::string& file)
     std::string str;
 
     t.seekg(0, std::ios::end);
-    str.reserve(t.tellg());
+    str.reserve(static_cast<size_t>(t.tellg()));
     t.seekg(0, std::ios::beg);
 
     str.assign((std::istreambuf_iterator<char>(t)),
@@ -128,8 +130,8 @@ static int GetDBVersion(DB::Database& db)
     std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str());
     if (!result)
     {
-        // First version does not have this record
-        return 0;
+        // No such record means not even the first file (file 0) was imported
+        return -1;
     }
 
     return static_cast<int>(result->GetUInt("value"));
@@ -146,9 +148,7 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
     {
         // Files must update the version, so with each import this value should change
         int version = GetDBVersion(db);
-        if (version == -1)
-            return false;
-        if (f.first > static_cast<unsigned>(version))
+        if (static_cast<int>(f.first) > version)
         {
             if (!ImportFile(db, f.second))
                 return false;
@@ -158,6 +158,8 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
     return true;
 }
 
+/// What should we do.
+/// At the moment we can only update the DB
 enum class Action
 {
     Update
@@ -175,8 +177,6 @@ int main(int argc, char** argv)
         { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none }
     } };
     InitCli(_cli);
-    _cli.push_back({ "schemadir", { "-d", "--schema-dir" }, "Directory with .sql files to import",
-        false, true, sa::arg_parser::option_type::string });
 
     sa::arg_parser::values parsedArgs;
     sa::arg_parser::result cmdres = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
