@@ -13,6 +13,8 @@
 #include <fstream>
 #include <streambuf>
 
+namespace fs = std::filesystem;
+
 static void ShowLogo()
 {
     std::cout << "This is AB Database tool" << std::endl;
@@ -69,7 +71,7 @@ static void InitCli(sa::arg_parser::cli& cli)
 
 static void GetFiles(const std::string& dir, std::map<unsigned, std::string>& result)
 {
-    for (const auto& entry : std::filesystem::directory_iterator(dir))
+    for (const auto& entry : fs::directory_iterator(dir))
     {
         const auto path = entry.path().string();
         const std::string filename = Utils::ExtractFileName(path);

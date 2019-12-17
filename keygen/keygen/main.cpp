@@ -1,6 +1,3 @@
-// keygen.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
-//
-
 #include "stdafx.h"
 #include <string>
 #include <vector>
