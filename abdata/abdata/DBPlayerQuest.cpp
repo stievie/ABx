@@ -15,7 +15,8 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `player_quests` (`uuid`, `quests_uuid`, `player_uuid`, `completed`, `rewarded, `progress`";
+    query << "INSERT INTO `player_quests` (`uuid`, `quests_uuid`, `player_uuid`, " <<
+        "`completed`, `rewarded, `progress`, `picked_up_times`, `completed_time`, `rewarded_time`";
     query << ") VALUES (";
 
     query << db->EscapeString(g.uuid) << ", ";
@@ -23,7 +24,10 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
     query << db->EscapeString(g.playerUuid) << ", ";
     query << (g.completed ? 1 : 0) << ", ";
     query << (g.rewarded ? 1 : 0) << ", ";
-    query << db->EscapeBlob(g.progress.data(), g.progress.length());
+    query << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
+    query << g.pickupTime << ", ";
+    query << g.completeTime << ", ";
+    query << g.rewardTime;
 
     query << ")";
 
@@ -64,6 +68,9 @@ bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
     g.completed = result->GetUInt("completed") != 0;
     g.rewarded = result->GetUInt("rewarded") != 0;
     g.progress = result->GetStream("progress");
+    g.pickupTime = result->GetLong("picked_up_times");
+    g.completeTime = result->GetLong("completed_time");
+    g.rewardTime = result->GetLong("rewarded_time");
 
     return true;
 }
@@ -84,7 +91,10 @@ bool DBPlayerQuest::Save(const AB::Entities::PlayerQuest& g)
     // Only these may be changed
     query << " `completed` = " << (g.completed ? 1 : 0) << ", ";
     query << " `rewarded` = " << (g.rewarded ? 1 : 0) << ", ";
-    query << " `progress` = " << db->EscapeBlob(g.progress.data(), g.progress.length());
+    query << " `progress` = " << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
+    query << " `picked_up_times` = " << g.pickupTime << ", ";
+    query << " `completed_time` = " << g.completeTime << ", ";
+    query << " `rewarded_time` = " << g.rewardTime;
 
     query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
 

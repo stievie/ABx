@@ -32,6 +32,9 @@ struct PlayerQuest : Entity
     std::string questUuid{ EMPTY_GUID };
     bool completed{ false };   //!< Player completed the quest
     bool rewarded{ false };    //!< Player collected reward for this quest -> no longer shown in quest log
+    timestamp_t pickupTime{ 0 };
+    timestamp_t completeTime{ 0 };
+    timestamp_t rewardTime{ 0 };
     std::string progress;
 };
 
