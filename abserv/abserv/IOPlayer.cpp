@@ -111,6 +111,8 @@ static bool LoadQuestLog(Game::Player& player)
         pq.uuid = q;
         if (!client->Read(pq))
             continue;
+        if (pq.deleted)
+            continue;
 
         AB::Entities::Quest quest;
         quest.uuid = pq.questUuid;

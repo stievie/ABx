@@ -32,6 +32,18 @@
 
 namespace Game {
 
+void Player::RegisterLua(kaguya::State& state)
+{
+    state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
+        .addFunction("GetParty", &Player::_LuaGetParty)
+        .addFunction("ChangeMap", &Player::ChangeMap)
+        .addFunction("TriggerDialog", &Player::TriggerDialog)
+        .addFunction("AddQuest", &Player::AddQuest)
+        .addFunction("GetQuestReward", &Player::GetQuestReward)
+        .addFunction("SatisfyQuestRequirements", &Player::SatisfyQuestRequirements)
+    );
+}
+
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client), mailBox_(nullptr),
@@ -128,6 +140,21 @@ void Player::Logout()
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
+}
+
+bool Player::SatisfyQuestRequirements(uint32_t index) const
+{
+    return questComp_->SatisfyRequirements(index);
+}
+
+bool Player::AddQuest(uint32_t index)
+{
+    return questComp_->PickupQuest(index);
+}
+
+bool Player::GetQuestReward(uint32_t index)
+{
+    return questComp_->GetReward(index);
 }
 
 void Player::CRQChangeMap(const std::string mapUuid)
@@ -1591,6 +1618,11 @@ void Player::CRQUnqueueForMatch()
     queueing_ = false;
 }
 
+void Player::CRQDeleteQuest(uint32_t index)
+{
+    questComp_->DeleteQuest(index);
+}
+
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
     resigned_ = false;
@@ -1598,15 +1630,6 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
         client_->ChangeInstance(mapUuid, instanceUuid);
     else
         LOG_ERROR << "client_ = null" << std::endl;
-}
-
-void Player::RegisterLua(kaguya::State& state)
-{
-    state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
-        .addFunction("GetParty", &Player::_LuaGetParty)
-        .addFunction("ChangeMap", &Player::ChangeMap)
-        .addFunction("TriggerDialog", &Player::TriggerDialog)
-    );
 }
 
 }

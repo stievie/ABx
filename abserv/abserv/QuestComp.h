@@ -31,8 +31,14 @@ public:
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
 
+    // Player adds a quest
+    bool PickupQuest(uint32_t index);
+    bool DeleteQuest(uint32_t index);
+    bool HaveQuest(uint32_t index) const;
     bool Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq);
     bool GetReward(uint32_t questIndex);
+    bool SatisfyRequirements(const AB::Entities::Quest& q) const;
+    bool SatisfyRequirements(uint32_t index) const;
 
     template<typename Callback>
     void VisitQuests(const Callback& callback)

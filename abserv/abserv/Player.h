@@ -117,6 +117,9 @@ public:
     void UpdateMailBox();
     void NotifyNewMail();
     void SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields);
+    bool AddQuest(uint32_t index);
+    bool GetQuestReward(uint32_t index);
+    bool SatisfyQuestRequirements(uint32_t index) const;
 
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
@@ -192,6 +195,7 @@ public:
     void CRQPartyRejectInvite(uint32_t inviterId);
     void CRQPartyGetMembers(uint32_t partyId);
     void CRQSetOnlineStatus(AB::Entities::OnlineStatus status);
+    void CRQDeleteQuest(uint32_t index);
     //}
 
     AB::Entities::Character data_;

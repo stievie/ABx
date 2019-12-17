@@ -98,17 +98,22 @@ bool Quest::CollectReward()
     }
 
     playerQuest_.rewarded = true;
+    playerQuest_.rewardTime = Utils::Tick();
     return true;
 }
 
 void Quest::Update(uint32_t timeElapsed)
 {
+    if (playerQuest_.deleted)
+        return;
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
 }
 
 void Quest::Write(Net::NetworkMessage& message)
 {
+    if (playerQuest_.deleted)
+        return;
     // TODO:
     (void)message;
 }

@@ -25,6 +25,10 @@ struct PlayerQuest : Entity
         s.text1b(questUuid, Limits::MAX_UUID);
         s.value1b(completed);
         s.value1b(rewarded);
+        s.value1b(deleted);
+        s.value8b(pickupTime);
+        s.value8b(completeTime);
+        s.value8b(rewardTime);
         s.text1b(progress, Limits::MAX_QUESTPROGRESS);
     }
 
@@ -32,6 +36,7 @@ struct PlayerQuest : Entity
     std::string questUuid{ EMPTY_GUID };
     bool completed{ false };   //!< Player completed the quest
     bool rewarded{ false };    //!< Player collected reward for this quest -> no longer shown in quest log
+    bool deleted{ false };
     timestamp_t pickupTime{ 0 };
     timestamp_t completeTime{ 0 };
     timestamp_t rewardTime{ 0 };

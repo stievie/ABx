@@ -17,8 +17,8 @@ bool DBQuest::Create(AB::Entities::Quest& v)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `game_quests` (`uuid`, `idx`, `name`, `script`, `repeatable`, `description` ";
-    query << "`reward_xp`, `reward_money`, `reward_items`";
+    query << "INSERT INTO `game_quests` (`uuid`, `idx`, `name`, `script`, `repeatable`, `description` " <<
+        "`depends_on_uuid`, `reward_xp`, `reward_money`, `reward_items`";
     query << ") VALUES (";
 
     query << db->EscapeString(v.uuid) << ", ";
@@ -27,6 +27,7 @@ bool DBQuest::Create(AB::Entities::Quest& v)
     query << db->EscapeString(v.script) << ", ";
     query << (v.repeatable ? 1 : 0) << ", ";
     query << db->EscapeString(v.description) << ", ";
+    query << db->EscapeString(v.dependsOn) << ", ";
     query << v.rewardXp << ", ";
     query << v.rewardMoney << ", ";
     query << db->EscapeString(sa::CombineString(v.rewardItems, std::string(";")));
@@ -73,6 +74,7 @@ bool DBQuest::Load(AB::Entities::Quest& v)
     v.script = result->GetString("script");
     v.repeatable = result->GetUInt("repeatable") != 0;
     v.description = result->GetString("description");
+    v.dependsOn = result->GetString("depends_on_uuid");
     v.rewardXp = result->GetInt("reward_xp");
     v.rewardMoney = result->GetInt("reward_money");
     v.rewardItems = Utils::Split(result->GetString("reward_items"), ";");
@@ -98,6 +100,7 @@ bool DBQuest::Save(const AB::Entities::Quest& v)
     query << " `script` = " << db->EscapeString(v.script) << ", ";
     query << " `repeatable` = " << (v.repeatable ? 1 : 0) << ", ";
     query << " `description` = " << db->EscapeString(v.description) << ", ";
+    query << " `depends_on_uuid` = " << db->EscapeString(v.dependsOn) << ", ";
     query << " `reward_xp` = " << v.rewardXp << ", ";
     query << " `reward_money` = " << v.rewardMoney << ", ";
     query << " `reward_items` = " << sa::CombineString(v.rewardItems, std::string(";"));

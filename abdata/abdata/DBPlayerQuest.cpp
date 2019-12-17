@@ -16,7 +16,8 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `player_quests` (`uuid`, `quests_uuid`, `player_uuid`, " <<
-        "`completed`, `rewarded, `progress`, `picked_up_times`, `completed_time`, `rewarded_time`";
+        "`completed`, `rewarded, `progress`, `picked_up_times`, `completed_time`, `rewarded_time`, " <<
+        "`deleted`";
     query << ") VALUES (";
 
     query << db->EscapeString(g.uuid) << ", ";
@@ -27,7 +28,8 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
     query << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
     query << g.pickupTime << ", ";
     query << g.completeTime << ", ";
-    query << g.rewardTime;
+    query << g.rewardTime << ", ";
+    query << (g.deleted ? 1 : 0);
 
     query << ")";
 
@@ -56,7 +58,7 @@ bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
     std::ostringstream query;
     Database* db = GetSubsystem<Database>();
     query << "SELECT * FROM `player_quests` WHERE ";
-    query << "`uuid` = " << db->EscapeString(g.uuid);
+    query << "`uuid` = " << db->EscapeString(g.uuid) << " AND `deleted` = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -71,6 +73,7 @@ bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
     g.pickupTime = result->GetLong("picked_up_times");
     g.completeTime = result->GetLong("completed_time");
     g.rewardTime = result->GetLong("rewarded_time");
+    g.deleted = result->GetUInt("deleted");
 
     return true;
 }
@@ -94,7 +97,8 @@ bool DBPlayerQuest::Save(const AB::Entities::PlayerQuest& g)
     query << " `progress` = " << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
     query << " `picked_up_times` = " << g.pickupTime << ", ";
     query << " `completed_time` = " << g.completeTime << ", ";
-    query << " `rewarded_time` = " << g.rewardTime;
+    query << " `rewarded_time` = " << g.rewardTime << ", ";
+    query << " `deleted` = " << (g.deleted ? 1 : 0);
 
     query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
 
@@ -142,7 +146,7 @@ bool DBPlayerQuest::Exists(const AB::Entities::PlayerQuest& g)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `player_quests` WHERE ";
-    query << "`uuid` = " << db->EscapeString(g.uuid);
+    query << "`uuid` = " << db->EscapeString(g.uuid) << " AND `deleted` = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

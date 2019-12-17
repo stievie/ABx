@@ -29,6 +29,7 @@ struct Quest : Entity
         s.text1b(name, Limits::MAX_QUESTNAME);
         s.text1b(script, Limits::MAX_FILENAME);
         s.text1b(description, Limits::MAX_QUESTDESCR);
+        s.text1b(dependsOn, Limits::MAX_UUID);
         s.container(rewardItems, Limits::MAX_QUEST_REWARDITEMS, [&s](std::string& c)
         {
             s.text1b(c, Limits::MAX_UUID);
@@ -42,6 +43,7 @@ struct Quest : Entity
     std::string name;
     std::string script;
     std::string description;
+    std::string dependsOn{ EMPTY_GUID };
     std::vector<std::string> rewardItems;
 };
 
