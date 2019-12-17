@@ -107,6 +107,7 @@ static bool ImportFile(DB::Database& db, const std::string& file)
     if (str.empty())
     {
         std::cout << "File " << file << " is empty" << std::endl;
+        // Don't fail just because of an empty file
         return true;
     }
 
@@ -125,14 +126,14 @@ static bool ImportFile(DB::Database& db, const std::string& file)
 static int GetDBVersion(DB::Database& db)
 {
     std::ostringstream query;
-    query << "SELECT * FROM `versions` WHERE ";
+    query << "SELECT `value` FROM `versions` WHERE ";
     query << "`name` = " << db.EscapeString("schema");
 
     std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str());
     if (!result)
     {
-        std::cerr << "Unable to read DB schema version" << std::endl;
-        return -1;
+        // First version does not have this record
+        return 0;
     }
 
     return static_cast<int>(result->GetUInt("value"));
@@ -147,6 +148,7 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
     // Fortunately the items in a map are sorted by key
     for (const auto& f : files)
     {
+        // Files must update the version, so with each import this value should change
         int version = GetDBVersion(db);
         if (version == -1)
             return false;
@@ -252,7 +254,8 @@ int main(int argc, char** argv)
     if (DB::Database::dbPort_ == 0)
         DB::Database::dbPort_ = static_cast<uint16_t>(cfg.GetGlobalInt("db_port", 0ll));
 
-    std::unique_ptr<DB::Database> db = std::unique_ptr<DB::Database>(DB::Database::CreateInstance(DB::Database::driver_,
+    std::unique_ptr<DB::Database> db = std::unique_ptr<DB::Database>(DB::Database::CreateInstance(
+        DB::Database::driver_,
         DB::Database::dbHost_, DB::Database::dbPort_,
         DB::Database::dbUser_, DB::Database::dbPass_,
         DB::Database::dbName_

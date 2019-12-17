@@ -20,12 +20,12 @@ db_user = "user"
 db_pass = "password"
 ~~~
 5. Create a database with the name `forgottenwars`.
-6. Create the DB structure with importing `sql/schema.*.sql` one by one in the proper order.
+6. Create the DB structure with importing `sql/schema.*.sql` one by one in the proper order. Instead of importing the files manually, you can run `Bin/dbtool -a update`.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
-9. You may want to create an account key to be able to create an account:
+9. You may want to create an account key to be able to create an account. You could use the `random_guid()` function to generate the GUID, e.g.:
 ~~~sql
-INSERT INTO public.account_keys VALUES ('(Random_Guid)', 0, 100, 'My Account Key', 2, 1, '');
+INSERT INTO public.account_keys VALUES (random_guid(), 0, 100, 'My Account Key', 2, 1, '');
 ~~~
 
 ### Known issuses
@@ -48,7 +48,10 @@ The Server should run on Windows and Linux.
 </config>
 ~~~
 5. Run `fw.exe` in `abclient/bin`.
-6. Create an account using the (Random_Guid) value of your previously created account key.
+6. Create an account using the `random_guid()` value of your previously created account key. To find out what GUID was created, run:
+~~~sql
+SELECT uuid FROM accounts;
+~~~
 
 ### Known issues
 
