@@ -1,2 +1,4 @@
 README.md
+dbtool/SqlReader.cpp
+dbtool/SqlReader.h
 dbtool/main.cpp

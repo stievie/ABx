@@ -12,6 +12,7 @@
 #include <map>
 #include <fstream>
 #include <streambuf>
+#include "SqlReader.h"
 
 namespace fs = std::filesystem;
 
@@ -93,32 +94,33 @@ static bool ImportFile(DB::Database& db, const std::string& file)
 {
     std::cout << "Importing " << file << std::endl;
 
-    std::ifstream t(file);
-    std::string str;
-
-    t.seekg(0, std::ios::end);
-    str.reserve(static_cast<size_t>(t.tellg()));
-    t.seekg(0, std::ios::beg);
-
-    str.assign((std::istreambuf_iterator<char>(t)),
-        std::istreambuf_iterator<char>());
-    if (str.empty())
+    SqlReader reader;
+    if (!reader.Read(file))
     {
-        std::cout << "File " << file << " is empty" << std::endl;
-        // Don't fail just because of an empty file
-        return true;
+        std::cerr << "Error reading file " << file << std::endl;
+        return false;
     }
 
     DB::DBTransaction transaction(&db);
     if (!transaction.Begin())
         return false;
 
-    if (db.ExecuteQuery(str))
+    bool failed = false;
+    reader.VisitStatements([&](const auto& statement) -> Iteration
+    {
+        if (!db.ExecuteQuery(statement))
+        {
+            failed = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+
+    if (failed)
         return false;
 
     // End transaction
     return transaction.Commit();
-
 }
 
 static int GetDBVersion(DB::Database& db)
