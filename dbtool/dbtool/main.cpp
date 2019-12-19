@@ -13,6 +13,7 @@
 #include <fstream>
 #include <streambuf>
 #include "SqlReader.h"
+#include <AB/CommonConfig.h>
 
 namespace fs = std::filesystem;
 
@@ -36,6 +37,10 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
     std::cout << std::endl;
     std::cout << sa::arg_parser::get_help("dbtool", _cli);
+    std::cout << std::endl;
+    std::cout << "ACTIONS" << std::endl;
+    std::cout << "    update: Update the database"<< std::endl;
+    std::cout << "    versions: Show database and table versions"<< std::endl;
 }
 
 static void InitCli(sa::arg_parser::cli& cli)
@@ -54,7 +59,7 @@ static void InitCli(sa::arg_parser::cli& cli)
     dbDrivers << " odbc";
 #endif
 
-    cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s): update",
+    cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s): update, versions",
         true, true, sa::arg_parser::option_type::string });
     cli.push_back({ "dbdriver", { "-dbdriver", "--database-driver" }, "Database driver, possible value(s):" + dbDrivers.str(),
         false, true, sa::arg_parser::option_type::string });
@@ -160,11 +165,25 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
     return true;
 }
 
+static void ShowVersions(DB::Database& db)
+{
+    std::ostringstream query;
+    query << "SELECT * FROM `versions` ORDER BY `name`";
+    for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
+    {
+        std::cout << result->GetString("name");
+        std::cout << '\t';
+        std::cout << result->GetUInt("value");
+        std::cout << std::endl;
+    }
+}
+
 /// What should we do.
 /// At the moment we can only update the DB
 enum class Action
 {
-    Update
+    Update,
+    Versions
 };
 
 int main(int argc, char** argv)
@@ -205,9 +224,9 @@ int main(int argc, char** argv)
     const std::string& sActval = actval.value();
     Action action;
     if (sActval.compare("update") == 0)
-    {
         action = Action::Update;
-    }
+    else if (sActval.compare("versions") == 0)
+        action = Action::Versions;
     else
     {
         std::cerr << "Unknown action " << sActval << std::endl;
@@ -268,6 +287,10 @@ int main(int argc, char** argv)
         }
         if (!UpdateDatabase(*db, schemasDir))
             return EXIT_FAILURE;
+    }
+    else if (action == Action::Versions)
+    {
+        ShowVersions(*db);
     }
     else
         return EXIT_FAILURE;

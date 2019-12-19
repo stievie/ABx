@@ -12,7 +12,7 @@ OPTIONS
     [-h, -help, -?]
         Show help
     -a, --action <string>
-        What to do, possible value(s): update
+        What to do, possible value(s): update, versions
     [-dbdriver, --database-driver <string>]
         Database driver, possible value(s): pgsql
     [-dbhost, --database-host <string>]
@@ -27,4 +27,8 @@ OPTIONS
         Password for database
     [-d, --schema-dir <string>]
         Directory with .sql files to import
+
+ACTIONS
+    update: Update the database
+    versions: Show database and table versions
 ~~~
