@@ -15,7 +15,7 @@ tools chains:
 Visual Studio 2017 required. Open `.sln` files and build. There are `.sln` files in `absall` and
 in the directories of the projects.
 
-I use Visual Studio 2019 as IDE with the Visual Studio 2017 tools chain. I didn't try the Visual 
+I use Visual Studio 2019 as IDE with the Visual Studio 2017 tools chain. I didn't try the Visual
 Studio 2019 tools chain yet.
 
 ## Linux
@@ -57,13 +57,20 @@ not work.
 
 #### Dependencies
 
-Required lib files for the client not in this repostitory:
+Required lib files for the client not in this repository:
 
 * `Urho3D(_d).lib`
 
-Build them and put the library files in `./Lib/x64`. Copy Urho3D header files to
-`Include/Urho3D` and apply the patch `Urho3D.patch` in this directory. Copy Urho3D 
-assets to the `bin` directory.
+Clone Urho3D from GitHub (https://github.com/urho3d/Urho3D, I think version 1.7
+should work), then apply the patch `Urho3D.patch` to it. If you don't want to do
+it, this patch just adds an inline function to the header `UI/CheckBox.h`, you
+can do it manually:
+~~~cpp
+    /// Set checked state without generating an event.
+    void SetCheckedInternal(bool enable){ checked_ = enable; }
+~~~
+Build Urho3D and put the library files in `./Lib/x64`. Copy Urho3D header files to
+`Include/Urho3D`. Copy Urho3D assets to the `bin` directory.
 
 #### Build
 
