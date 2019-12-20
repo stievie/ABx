@@ -13,6 +13,7 @@ bool SqlReader::Read(const std::string& filename)
         return false;
 
     std::string line;
+    bool haveTerminator = false;
     while (std::getline(in, line))
     {
         line = sa::Trim(line);
@@ -22,7 +23,11 @@ bool SqlReader::Read(const std::string& filename)
         if (line.compare(0, 2, "--") == 0)
             continue;
 
+        if (line.back() == ';')
+            haveTerminator = true;
         lines_.push_back(line);
     }
+    if (!haveTerminator && !IsEmpty())
+        return false;
     return true;
 }

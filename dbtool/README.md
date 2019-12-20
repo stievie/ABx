@@ -6,13 +6,17 @@ Tool to update the Database.
 
 ~~~plain
 SYNOPSIS
-    dbtool [-h] -a <action> [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>]
+    dbtool [-h] -a <action> [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>]
 
 OPTIONS
     [-h, -help, -?]
         Show help
     -a, --action <string>
         What to do, possible value(s): update, versions
+    [-r, --read-only]
+        Do not write to Database
+    [-v, --verbose]
+        Write out stuff
     [-dbdriver, --database-driver <string>]
         Database driver, possible value(s): pgsql
     [-dbhost, --database-host <string>]

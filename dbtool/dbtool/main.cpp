@@ -1,21 +1,24 @@
-#include <iostream>
-#include "SimpleConfigManager.h"
-#include <sa/ArgParser.h>
-#include "Logo.h"
-#include "Utils.h"
-#include "FileUtils.h"
-#include "StringUtils.h"
-#include "Database.h"
-#include <memory>
-#include "Logger.h"
-#include <filesystem>
-#include <map>
-#include <fstream>
-#include <streambuf>
-#include "SqlReader.h"
 #include <AB/CommonConfig.h>
+#include "Database.h"
+#include "FileUtils.h"
+#include "Logger.h"
+#include "Logo.h"
+#include "SimpleConfigManager.h"
+#include "SqlReader.h"
+#include "StringUtils.h"
+#include "Utils.h"
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <sa/ArgParser.h>
+#include <streambuf>
 
 namespace fs = std::filesystem;
+
+static bool sReadOnly = false;
+static bool sVerbose = false;
 
 static void ShowLogo()
 {
@@ -39,8 +42,8 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << sa::arg_parser::get_help("dbtool", _cli);
     std::cout << std::endl;
     std::cout << "ACTIONS" << std::endl;
-    std::cout << "    update: Update the database"<< std::endl;
-    std::cout << "    versions: Show database and table versions"<< std::endl;
+    std::cout << "    update: Update the database" << std::endl;
+    std::cout << "    versions: Show database and table versions" << std::endl;
 }
 
 static void InitCli(sa::arg_parser::cli& cli)
@@ -61,6 +64,10 @@ static void InitCli(sa::arg_parser::cli& cli)
 
     cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s): update, versions",
         true, true, sa::arg_parser::option_type::string });
+    cli.push_back({ "readonly", { "-r", "--read-only" }, "Do not write to Database",
+        false, false, sa::arg_parser::option_type::none });
+    cli.push_back({ "verbose", { "-v", "--verbose" }, "Write out stuff",
+        false, false, sa::arg_parser::option_type::none });
     cli.push_back({ "dbdriver", { "-dbdriver", "--database-driver" }, "Database driver, possible value(s):" + dbDrivers.str(),
         false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "dbhost", { "-dbhost", "--database-host" }, "Host name of database server",
@@ -105,6 +112,12 @@ static bool ImportFile(DB::Database& db, const std::string& file)
         std::cerr << "Error reading file " << file << std::endl;
         return false;
     }
+    if (reader.IsEmpty())
+    {
+        std::cout << "File " << file << " is emtpy" << std::endl;
+        // I guess empty files are okay.
+        return true;
+    }
 
     DB::DBTransaction transaction(&db);
     if (!transaction.Begin())
@@ -113,10 +126,15 @@ static bool ImportFile(DB::Database& db, const std::string& file)
     bool failed = false;
     reader.VisitStatements([&](const auto& statement) -> Iteration
     {
-        if (!db.ExecuteQuery(statement))
+        if (sVerbose)
+            std::cout << statement << std::endl;
+        if (!sReadOnly)
         {
-            failed = true;
-            return Iteration::Break;
+            if (!db.ExecuteQuery(statement))
+            {
+                failed = true;
+                return Iteration::Break;
+            }
         }
         return Iteration::Continue;
     });
@@ -155,6 +173,8 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
     {
         // Files must update the version, so with each import this value should change
         int version = GetDBVersion(db);
+        if (sVerbose)
+            std::cout << "Database version is: " << version << std::endl;
         if (static_cast<int>(f.first) > version)
         {
             if (!ImportFile(db, f.second))
@@ -233,6 +253,8 @@ int main(int argc, char** argv)
         ShowHelp(_cli);
         return EXIT_FAILURE;
     }
+    sReadOnly = sa::arg_parser::get_value<bool>(parsedArgs, "readonly", false);
+    sVerbose = sa::arg_parser::get_value<bool>(parsedArgs, "verbose", false);
 
     std::string cfgFile = path + "/config/db.lua";
     IO::SimpleConfigManager cfg;
