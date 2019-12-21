@@ -35,7 +35,16 @@ The Server should run on Windows and Linux.
 ## Client
 
 1. Build it, see [BUILD.md](BUILD.md)
-2. Download client assets `client_data.zip` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files)
+2. Download client assets `client_data.zip` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files). There should also be the Urho3D asset files, this directory should look like:
+~~~plain
+bin
+  - AbData
+  - Autoload
+  - CoreData
+  - Data
+  - GameData
+  - SoundData
+~~~
 3. On Windows copy the required libraries to the `abclient/bin` directory:
     * `d3dcompiler_47.dll`
     * `libeay32.dll` (OpenSSL)
