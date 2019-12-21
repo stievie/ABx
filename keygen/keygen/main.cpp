@@ -50,7 +50,8 @@ int main(int argc, char** argv)
 
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
-        { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string }
+        { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string },
+        { "force", { "-f", "--force" }, "Overwrite existing file without asking", false, false, sa::arg_parser::option_type::none }
     } };
     sa::arg_parser::values parsedArgs;
     sa::arg_parser::result cmdres = sa::arg_parser::parse(argc, argv, _cli, parsedArgs);
@@ -78,6 +79,22 @@ int main(int argc, char** argv)
     if (keyFile.empty())
         keyFile = Utils::AddSlash(path) + "abserver.dh";
     keyFile = sa::arg_parser::get_value<std::string>(parsedArgs, "file", keyFile);
+
+    if (Utils::FileExists(keyFile))
+    {
+        if (!sa::arg_parser::get_value<bool>(parsedArgs, "force", false))
+        {
+            std::cout << "Overwrite existing file (y/n)? ";
+            std::string answer;
+            if (!std::getline(std::cin, answer))
+                return EXIT_FAILURE;
+            if (answer.compare("y") != 0)
+            {
+                std::cout << "Aborted" << std::endl;
+                return EXIT_FAILURE;
+            }
+        }
+    }
 
     if (!GenerateKeys(keyFile))
     {
