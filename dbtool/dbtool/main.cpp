@@ -27,7 +27,7 @@ static void ShowLogo()
     std::cout << " DEBUG";
 #endif
     std::cout << std::endl;
-    std::cout << "(C) 2017-2019" << std::endl;
+    std::cout << "(C) 2017-" << CURRENT_YEAR << std::endl;
 
     std::cout << std::endl;
 

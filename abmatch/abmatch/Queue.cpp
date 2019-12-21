@@ -248,7 +248,7 @@ bool Queue::MakeRandomTeams(MatchTeams& teams)
             LOG_ERROR << "Not enough players" << std::endl;
             return false;
         }
-        teams.push_back(team);
+        teams.push_back(std::move(team));
     }
 
     return true;
@@ -271,7 +271,7 @@ bool Queue::MakePartyTeams(MatchTeams& teams)
         QueueEntry& e = entries_.front();
         team.members.push_back(e.uuid);
         entries_.pop_front();
-        teams.push_back(team);
+        teams.push_back(std::move(team));
     }
     return true;
 }
