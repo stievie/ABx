@@ -29,6 +29,7 @@
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/StringTempl.h>
+#include "Npc.h"
 
 namespace Game {
 
@@ -182,6 +183,31 @@ void Player::TriggerDialog(uint32_t dialogIndex)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::DialogTrigger);
     msg->Add<uint32_t>(dialogIndex);
+    WriteToOutput(*msg);
+}
+
+void Player::TriggerQuestSelectionDialog(const std::set<uint32_t>& quests)
+{
+    if (quests.size() == 0)
+        return;
+    if (quests.size() == 1)
+    {
+        TriggerQuestDialog(*quests.begin());
+        return;
+    }
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::QuestSelectionDialogTrigger);
+    msg->Add<uint8_t>(static_cast<uint8_t>(quests.size()));
+    for (auto i : quests)
+        msg->Add<uint32_t>(i);
+    WriteToOutput(*msg);
+}
+
+void Player::TriggerQuestDialog(uint32_t index)
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::QuestDialogTrigger);
+    msg->Add<uint32_t>(index);
     WriteToOutput(*msg);
 }
 
@@ -1622,6 +1648,20 @@ void Player::CRQDeleteQuest(uint32_t index)
 {
     questComp_->DeleteQuest(index);
 }
+
+void Player::CRQHasQuests(uint32_t npcId)
+{
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::QuestNpcHasQuest);
+    nmsg->Add<uint32_t>(npcId);
+    nmsg->Add<uint8_t>(npc->HaveQuestsForPlayer(*this) ? 1 : 0);
+    WriteToOutput(*nmsg);
+}
+
 
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {

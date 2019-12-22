@@ -43,6 +43,58 @@ bool QuestComp::GetReward(uint32_t questIndex)
     return true;
 }
 
+Quest* QuestComp::Get(uint32_t index)
+{
+    const auto it = quests_.find(index);
+    if (it == quests_.end())
+        return nullptr;
+    return (*it).second.get();
+}
+
+const Quest* QuestComp::Get(uint32_t index) const
+{
+    const auto it = quests_.find(index);
+    if (it == quests_.end())
+        return nullptr;
+    return (*it).second.get();
+}
+
+bool QuestComp::IsAvailable(uint32_t index) const
+{
+    const auto* q = Get(index);
+    if (!q)
+        return true;
+    if (q->IsActive())
+        return false;
+    if (q->IsRewarded() && !q->IsRepeatable())
+        return false;
+    return SatisfyRequirements(index);
+}
+
+bool QuestComp::IsActive(uint32_t index) const
+{
+    const auto* q = Get(index);
+    if (!q)
+        return false;
+    return q->IsActive();
+}
+
+bool QuestComp::IsRewarded(uint32_t index) const
+{
+    const auto* q = Get(index);
+    if (!q)
+        return false;
+    return q->playerQuest_.rewarded;
+}
+
+bool QuestComp::IsRepeatable(uint32_t index) const
+{
+    const auto* q = Get(index);
+    if (!q)
+        return false;
+    return q->IsRepeatable();
+}
+
 bool QuestComp::SatisfyRequirements(const AB::Entities::Quest& q) const
 {
     if (Utils::Uuid::IsEmpty(q.dependsOn))

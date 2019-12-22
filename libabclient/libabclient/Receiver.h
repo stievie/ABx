@@ -16,6 +16,7 @@
 #include <AB/Entities/GuildMembers.h>
 #include <AB/Entities/Guild.h>
 #include "Errors.h"
+#include <set>
 
 namespace Client {
 
@@ -171,6 +172,9 @@ public:
     virtual void OnFriendRemoved(int64_t updateTick, const std::string&, RelatedAccount::Relation relation) = 0;
     virtual void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) = 0;
     virtual void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild&) = 0;
+    virtual void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>&) = 0;
+    virtual void OnQuestDialogTrigger(int64_t updateTick, uint32_t) = 0;
+    virtual void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) = 0;
 };
 
 }

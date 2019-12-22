@@ -1594,6 +1594,37 @@ void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
     QueueEvent(Events::E_DIALOGGTRIGGER, eData);
 }
 
+void FwClient::OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::QuestSelectionDialogTrigger;
+    VariantVector q;
+    for (auto i : quests)
+        q.Push(i);
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_QUESTS] = q;
+    QueueEvent(Events::E_QUESTSELECTIONDIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex)
+{
+    using namespace Events::QuestDialogTrigger;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_QUESTINDEX] = questIndex;
+    QueueEvent(Events::E_QUESTDIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
+{
+    using namespace Events::NpcHasQuest;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = npcId;
+    eData[P_HASQUEST] = hasQuest;
+    QueueEvent(Events::E_NPCHASQUEST, eData);
+}
+
 void FwClient::UpdatePlayer(const Client::RelatedAccount& player)
 {
     auto it = relatedAccounts_.find(player.accountUuid);

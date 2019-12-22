@@ -337,6 +337,25 @@ URHO3D_EVENT(E_DIALOGGTRIGGER, DialogTrigger)
     URHO3D_PARAM(P_DIALOGID, DialogId);     // unit32_t
 }
 
+URHO3D_EVENT(E_QUESTSELECTIONDIALOGGTRIGGER, QuestSelectionDialogTrigger)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_QUESTS, Quests);     // VariantVector
+}
+
+URHO3D_EVENT(E_QUESTDIALOGGTRIGGER, QuestDialogTrigger)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_QUESTINDEX, QuestIndex);     // unit32_t
+}
+
+URHO3D_EVENT(E_NPCHASQUEST, NpcHasQuest)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);     // unit32_t
+    URHO3D_PARAM(P_HASQUEST, HasQuest);     // bool
+}
+
 URHO3D_EVENT(E_GOT_FRIENDLIST, GotFriendList)
 {
 }

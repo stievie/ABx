@@ -93,6 +93,9 @@ protected:
     void ParseFriendRemoved(InputMessage& message);
     void ParseGuildInfo(InputMessage& message);
     void ParseGuildMemberList(InputMessage& message);
+    void ParseQuestSelectionDialogTrigger(InputMessage& message);
+    void ParseQuestDialogTrigger(InputMessage& message);
+    void ParseQuestNpcHasQuest(InputMessage& message);
     void ParsePlayerInfo(InputMessage& message);
 public:
     ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);

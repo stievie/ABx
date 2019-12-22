@@ -161,4 +161,21 @@ void Quest::OnKilledFoe(Actor* foe, Actor* killer)
     Lua::CallFunction(luaState_, "onKilledFoe", foe, killer);
 }
 
+bool Quest::IsActive() const
+{
+    if (playerQuest_.deleted)
+        return false;
+    return !IsRewarded();
+}
+
+bool Quest::IsRepeatable() const
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Quest q;
+    q.index = index_;
+    if (!client->Read(q))
+        return false;
+    return q.repeatable;
+}
+
 }

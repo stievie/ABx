@@ -266,6 +266,10 @@ enum ServerPacketType : uint8_t
     GuildMemberList,
 
     DialogTrigger,                // Show a dialog
+    QuestSelectionDialogTrigger,
+    QuestDialogTrigger,
+    QuestNpcHasQuest,
+
     PlayerInfo,                   // Get info of related player (e.g. friend, guild member)
 
     CodeLast = 0xFF
@@ -361,7 +365,7 @@ enum PlayerInfoFields : uint32_t
     PlayerInfoFieldGuildJoined = 1 << 9,
     PlayerInfoFieldGuildExpires = 1 << 10
 };
-constexpr uint32_t PlayerInfoFieldsAll = 0xFFFFFFFF;
+static constexpr uint32_t PlayerInfoFieldsAll = 0xFFFFFFFF;
 
 /// What fields are sent with GameSpawnObjectExisting and GameSpawnObject the message
 enum ObjectSpawnFields : uint32_t

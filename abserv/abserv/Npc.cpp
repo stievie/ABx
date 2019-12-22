@@ -10,6 +10,8 @@
 #include "ScriptManager.h"
 #include "Subsystems.h"
 #include <Mustache/mustache.hpp>
+#include "Player.h"
+#include "QuestComp.h"
 
 namespace Game {
 
@@ -36,6 +38,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetWander", &Npc::SetWander)
         .addFunction("AddWanderPoint", &Npc::_LuaAddWanderPoint)
         .addFunction("AddWanderPoints", &Npc::_LuaAddWanderPoints)
+        .addFunction("AddQuest", &Npc::_LuaAddQuest)
     );
 }
 
@@ -395,6 +398,15 @@ void Npc::OnClicked(Actor* selector)
 {
     if (luaInitialized_ && selector)
         Lua::CallFunction(luaState_, "onClicked", selector);
+    if (Is<Player>(selector))
+    {
+        if (!IsInRange(Ranges::Adjecent, selector))
+            return;
+        // Get quests for this player
+        auto& player = To<Player>(*selector);
+        const auto quests = GetQuestsForPlayer(player);
+        player.TriggerQuestSelectionDialog(quests);
+    }
 }
 
 void Npc::OnArrived()
@@ -509,6 +521,34 @@ void Npc::OnResurrected(int, int)
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onResurrected");
+}
+
+void Npc::_LuaAddQuest(uint32_t index)
+{
+    quests_.emplace(index);
+}
+
+std::set<uint32_t> Npc::GetQuestsForPlayer(const Player& player) const
+{
+    std::set<uint32_t> result;
+    const auto& qc = *player.questComp_;
+    for (auto qIndex : quests_)
+    {
+        if (qc.IsAvailable(qIndex))
+            result.emplace(qIndex);
+    }
+    return result;
+}
+
+bool Npc::HaveQuestsForPlayer(const Player& player) const
+{
+    auto& qc = *player.questComp_;
+    for (auto qIndex : quests_)
+    {
+        if (qc.IsAvailable(qIndex))
+            return true;
+    }
+    return false;
 }
 
 }

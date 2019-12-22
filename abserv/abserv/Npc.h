@@ -31,6 +31,8 @@ private:
     uint32_t itemIndex_{ 0 };
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
     std::shared_ptr<Script> script_;
+    /// Quests this NPC may have for the player
+    std::set<uint32_t> quests_;
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
     {
@@ -44,6 +46,7 @@ private:
     void _LuaAddWanderPoints(const std::vector<Math::STLVector3>& points);
     /// Set the name of the NPC. This must happen before the spawn data is sent to the clients
     void _LuaSetName(const std::string& name);
+    void _LuaAddQuest(uint32_t index);
 private:
     // Events
     void OnArrived();
@@ -117,6 +120,8 @@ public:
     bool SayQuote(ChatType channel, int index);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
+    std::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
+    bool HaveQuestsForPlayer(const Player& player) const;
 
     std::unique_ptr<Components::AiComp> aiComp_;
     std::unique_ptr<Components::WanderComp> wanderComp_;

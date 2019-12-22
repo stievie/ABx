@@ -60,8 +60,10 @@ public:
 
     bool IsCompleted() const { return playerQuest_.completed; }
     bool IsRewarded() const { return playerQuest_.rewarded; }
+    bool IsRepeatable() const;
     void SaveProgress();
     bool CollectReward();
+    bool IsActive() const;
 
     uint32_t index_{ AB::Entities::INVALID_INDEX };
     AB::Entities::PlayerQuest playerQuest_;

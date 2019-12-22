@@ -152,6 +152,9 @@ public:
     void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation) override;
     void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) override;
     void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
+    void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests) override;
+    void OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex) override;
+    void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) override;
 
     std::string accountUuid_;
     std::string password_;

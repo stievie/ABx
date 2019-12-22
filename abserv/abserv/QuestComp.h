@@ -39,6 +39,13 @@ public:
     bool GetReward(uint32_t questIndex);
     bool SatisfyRequirements(const AB::Entities::Quest& q) const;
     bool SatisfyRequirements(uint32_t index) const;
+    bool IsActive(uint32_t index) const;
+    bool IsRewarded(uint32_t index) const;
+    bool IsRepeatable(uint32_t index) const;
+    /// Check if a quest is available for the player
+    bool IsAvailable(uint32_t index) const;
+    Quest* Get(uint32_t index);
+    const Quest* Get(uint32_t index) const;
 
     template<typename Callback>
     void VisitQuests(const Callback& callback)

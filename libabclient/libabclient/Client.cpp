@@ -398,6 +398,21 @@ void Client::OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
     receiver_.OnObjectSpawn(updateTick, objectSpawn, data, existing);
 }
 
+void Client::OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests)
+{
+    receiver_.OnQuestSelectionDialogTrigger(updateTick, quests);
+}
+
+void Client::OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex)
+{
+    receiver_.OnQuestDialogTrigger(updateTick, questIndex);
+}
+
+void Client::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
+{
+    receiver_.OnNpcHasQuest(updateTick, npcId, hasQuest);
+}
+
 void Client::OnLog(const std::string& message)
 {
     receiver_.OnLog(message);

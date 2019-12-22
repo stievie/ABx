@@ -3,6 +3,7 @@
 #include "TimeUtils.h"
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
+#include <set>
 
 namespace Client {
 
@@ -254,6 +255,15 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             break;
         case GuildMemberList:
             ParseGuildMemberList(message);
+            break;
+        case QuestSelectionDialogTrigger:
+            ParseQuestSelectionDialogTrigger(message);
+            break;
+        case QuestDialogTrigger:
+            ParseQuestDialogTrigger(message);
+            break;
+        case QuestNpcHasQuest:
+            ParseQuestNpcHasQuest(message);
             break;
         case PlayerInfo:
             ParsePlayerInfo(message);
@@ -914,6 +924,29 @@ void ProtocolGame::ParseChestItemDelete(InputMessage& message)
 {
     uint16_t pos = message.Get<uint16_t>();
     receiver_.OnChestItemDelete(updateTick_, pos);
+}
+
+void ProtocolGame::ParseQuestSelectionDialogTrigger(InputMessage& message)
+{
+    uint32_t count = message.Get<uint8_t>();
+    std::set<uint32_t> quests;
+    for (uint32_t i = 0; i < count; ++i)
+        quests.emplace(message.Get<uint32_t>());
+    receiver_.OnQuestSelectionDialogTrigger(updateTick_, quests);
+}
+
+void ProtocolGame::ParseQuestDialogTrigger(InputMessage& message)
+{
+    uint32_t questIndex = message.Get<uint32_t>();
+    receiver_.OnQuestDialogTrigger(updateTick_, questIndex);
+}
+
+void ProtocolGame::ParseQuestNpcHasQuest(InputMessage& message)
+{
+    // Nothing to read
+    uint32_t npcId = message.Get<uint32_t>();
+    bool hasQuest = (message.Get<uint8_t>() != 0);
+    receiver_.OnNpcHasQuest(updateTick_, npcId, hasQuest);
 }
 
 void ProtocolGame::LogMessage(const std::string& message)
