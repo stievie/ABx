@@ -8,7 +8,7 @@ The Server is  known to compile on the following platforms with the following
 tools chains:
 
 * Windows 7 with VS 2017 (don't have Windows 10)
-* Debian, Ubuntu, Arch, Manjaro Linux with GCC 8 and up, and Clang 7 and up.
+* Debian, Ubuntu, Arch, Manjaro Linux with GCC 8 and newer.
 
 ## Windows
 

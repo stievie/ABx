@@ -40,11 +40,11 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 
 ## Build, install, run
 
-See `BUILD.md` and `INSTALL.md`.
+See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 
 ## Credits
 
-See `CREDITS.md`.
+See [CREDITS.md](CREDITS.md).
 
 ## Architecture
 
