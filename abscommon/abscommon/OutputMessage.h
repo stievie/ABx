@@ -42,7 +42,7 @@ public:
     {
         if (addChecksum)
         {
-            uint32_t checksum = Utils::AdlerChecksum((uint8_t*)(buffer_ + outputBufferStart_), info_.length);
+            uint32_t checksum = Utils::AdlerChecksum(reinterpret_cast<uint8_t*>(buffer_ + outputBufferStart_), info_.length);
             AddHeader<uint32_t>(checksum);
         }
         WriteMessageLength();
@@ -56,7 +56,8 @@ public:
     {
         int32_t msgLen = msg.GetSize();
 #ifdef _MSC_VER
-        memcpy_s(buffer_ + info_.position, NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE, (msg.GetBuffer() + 8), msgLen);
+        memcpy_s(buffer_ + info_.position, NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE,
+            (msg.GetBuffer() + 8), static_cast<size_t>(msgLen));
 #else
         memcpy(buffer_ + info_.position, (msg.GetBuffer() + 8), msgLen);
 #endif

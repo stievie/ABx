@@ -91,7 +91,7 @@ public:
     std::string GetStringEncrypted();
     uint32_t PeekU32()
     {
-        uint32_t v = *(uint32_t*)(buffer_ + info_.position);
+        uint32_t v = *reinterpret_cast<uint32_t*>(buffer_ + info_.position);
         return v;
     }
 
@@ -125,12 +125,12 @@ public:
 
     int32_t GetHeaderSize()
     {
-        return (int32_t)(buffer_[0] | buffer_[1] << 8);
+        return static_cast<int32_t>(buffer_[0] | buffer_[1] << 8);
     }
     /// Other function
     void Skip(int bytes)
     {
-        info_.position += (MsgSize_t)bytes;
+        info_.position += static_cast<MsgSize_t>(bytes);
     }
 
     uint8_t* GetBuffer() { return buffer_; }
@@ -148,6 +148,12 @@ public:
     bool Compress();
     bool Uncompress();
 };
+
+template <>
+inline void NetworkMessage::Add<bool>(bool value)
+{
+    Add<uint8_t>(value ? 1 : 0);
+}
 
 static_assert(NETWORKMESSAGE_MAXSIZE == sizeof(NetworkMessage), "NETWORKMESSAGE_MAXSIZE doesn't match sizeof(NetworkMessage)");
 

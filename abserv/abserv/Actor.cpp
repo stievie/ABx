@@ -557,8 +557,8 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.x_);
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
-    msg.Add<uint8_t>(undestroyable_ ? 1 : 0);
-    msg.Add<uint8_t>(selectable_ ? 1 : 0);
+    msg.Add<bool>(undestroyable_);
+    msg.Add<bool>(selectable_);
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(GetSpeed());
     msg.Add<uint32_t>(GetGroupId());

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <stdint.h>
+#include <cassert>
+
 namespace Client {
 
 class Protocol;
@@ -38,6 +42,7 @@ protected:
     }
     void FillBuffer(uint8_t *buffer, uint16_t size);
     void SetMessageSize(uint16_t size) { size_ = size; }
+    std::string GetString();
 public:
     InputMessage();
 
@@ -55,17 +60,27 @@ public:
 
     void SetBuffer(const std::string& buffer);
 
-    std::string GetString();
     std::string GetStringEncrypted();
     template <typename T>
     T Get()
     {
         CheckRead(sizeof(T));
-        T v = *(T*)(buffer_ + pos_);
+        T v = *reinterpret_cast<T*>(buffer_ + pos_);
         pos_ += sizeof(T);
         return v;
     }
     bool Uncompress();
 };
+
+template<>
+inline std::string InputMessage::Get<std::string>()
+{
+    return GetString();
+}
+template<>
+inline bool InputMessage::Get<bool>()
+{
+    return Get<uint8_t>() != 0;
+}
 
 }

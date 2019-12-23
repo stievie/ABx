@@ -297,7 +297,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<uint8_t>(1);                                  // not destroyable
-    msg.Add<uint8_t>(selectable_ ? 1 : 0);
+    msg.Add<bool>(selectable_);
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<uint32_t>(GetGroupId());                      // Group id
     IO::PropWriteStream data;

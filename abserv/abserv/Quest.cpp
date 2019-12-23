@@ -118,14 +118,14 @@ void Quest::Write(Net::NetworkMessage& message)
         playerQuest_.deleted = internalDeleted_;
         message.AddByte(QuestDeleted);
         message.Add<uint32_t>(index_);
-        message.Add<uint8_t>(playerQuest_.deleted ? 1 : 0);
+        message.Add<bool>(playerQuest_.deleted);
     }
     if (internalRewarded_ != playerQuest_.rewarded)
     {
         playerQuest_.rewarded = internalRewarded_;
         message.AddByte(QuestRewarded);
         message.Add<uint32_t>(index_);
-        message.Add<uint8_t>(playerQuest_.rewarded ? 1 : 0);
+        message.Add<bool>(playerQuest_.rewarded);
     }
 }
 

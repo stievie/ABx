@@ -180,7 +180,7 @@ void MoveComp::Write(Net::NetworkMessage& message)
         message.AddByte(AB::GameProtocol::GameObjectRotationChange);
         message.Add<uint32_t>(owner_.id_);
         message.Add<float>(owner_.transformation_.GetYRotation());
-        message.Add<uint8_t>(directionSet_ ? 1 : 0);
+        message.Add<bool>(directionSet_);
         turned_ = false;
         directionSet_ = false;
     }

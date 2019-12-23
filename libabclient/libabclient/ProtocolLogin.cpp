@@ -171,11 +171,11 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     {
         std::string accountUuid = message.GetStringEncrypted();
         std::string authToken = message.GetStringEncrypted();
-        std::string host = message.GetString();
+        std::string host = message.Get<std::string>();
         if (!host.empty())
             gameHost_ = host;
         gamePort_ = message.Get<uint16_t>();
-        host = message.GetString();
+        host = message.Get<std::string>();
         if (!host.empty())
             fileHost_ = host;
         filePort_ = message.Get<uint16_t>();

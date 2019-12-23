@@ -301,7 +301,7 @@ void ProtocolGame::ParseObjectRotUpdate(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     float rot = message.Get<float>();
-    bool manual = message.Get<uint8_t>() != 0;
+    bool manual = message.Get<bool>();
 
     receiver_.OnObjectRot(updateTick_, objectId, rot, manual);
 }
@@ -455,8 +455,8 @@ void ProtocolGame::ParseServerMessage(InputMessage& message)
 {
     AB::GameProtocol::ServerMessageType type =
         static_cast<AB::GameProtocol::ServerMessageType>(message.Get<uint8_t>());
-    std::string sender = message.GetString();
-    std::string data = message.GetString();
+    std::string sender = message.Get<std::string>();
+    std::string data = message.Get<std::string>();
 
     receiver_.OnServerMessage(updateTick_, type, sender, data);
 }
@@ -466,8 +466,8 @@ void ProtocolGame::ParseChatMessage(InputMessage& message)
     AB::GameProtocol::ChatMessageChannel type =
         static_cast<AB::GameProtocol::ChatMessageChannel>(message.Get<uint8_t>());
     uint32_t senderId = message.Get<uint32_t>();
-    std::string sender = message.GetString();
-    std::string data = message.GetString();
+    std::string sender = message.Get<std::string>();
+    std::string data = message.Get<std::string>();
 
     receiver_.OnChatMessage(updateTick_, type, senderId, sender, data);
 }
@@ -580,7 +580,7 @@ void ProtocolGame::ParseFriendList(InputMessage& message)
     friends.reserve(count);
     for (size_t i = 0; i < count; ++i)
     {
-        friends.push_back(message.GetString());
+        friends.push_back(message.Get<std::string>());
     }
 
     receiver_.OnFriendList(updateTick_, friends);
@@ -588,14 +588,14 @@ void ProtocolGame::ParseFriendList(InputMessage& message)
 
 void ProtocolGame::ParseFriendAdded(InputMessage& message)
 {
-    std::string accountUuid = message.GetString();
+    std::string accountUuid = message.Get<std::string>();
     RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     receiver_.OnFriendAdded(updateTick_, accountUuid, rel);
 }
 
 void ProtocolGame::ParseFriendRemoved(InputMessage& message)
 {
-    std::string accountUuid = message.GetString();
+    std::string accountUuid = message.Get<std::string>();
     RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     receiver_.OnFriendRemoved(updateTick_, accountUuid, rel);
 }
@@ -603,11 +603,11 @@ void ProtocolGame::ParseFriendRemoved(InputMessage& message)
 void ProtocolGame::ParseGuildInfo(InputMessage& message)
 {
     AB::Entities::Guild guild;
-    guild.uuid = message.GetString();
-    guild.name = message.GetString();
-    guild.tag = message.GetString();
+    guild.uuid = message.Get<std::string>();
+    guild.name = message.Get<std::string>();
+    guild.tag = message.Get<std::string>();
     guild.creation = message.Get<int64_t>();
-    guild.creatorAccountUuid = message.GetString();
+    guild.creatorAccountUuid = message.Get<std::string>();
 
     receiver_.OnGuildInfo(updateTick_, guild);
 }
@@ -619,7 +619,7 @@ void ProtocolGame::ParseGuildMemberList(InputMessage& message)
     members.reserve(count);
     for (size_t i = 0; i < count; ++i)
     {
-        members.push_back(message.GetString());
+        members.push_back(message.Get<std::string>());
     }
 
     receiver_.OnGuildMemberList(updateTick_, members);
@@ -630,23 +630,23 @@ void ProtocolGame::ParsePlayerInfo(InputMessage& message)
     uint32_t fields = message.Get<uint32_t>();
     RelatedAccount frnd;
     frnd.fields = fields;
-    frnd.accountUuid = message.GetString();
+    frnd.accountUuid = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldName)
-        frnd.nickName = message.GetString();
+        frnd.nickName = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
         frnd.relation = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
     if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
         frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
     if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
-        frnd.currentName = message.GetString();
+        frnd.currentName = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-        frnd.currentMap = message.GetString();
+        frnd.currentMap = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
-        frnd.guildUuid = message.GetString();
+        frnd.guildUuid = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
         frnd.guildRole = static_cast<RelatedAccount::GuildRole>(message.Get<uint8_t>());
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
-        frnd.guildInviteName = message.GetString();
+        frnd.guildInviteName = message.Get<std::string>();
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
         frnd.invited = message.Get<int64_t>();
     if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
@@ -705,9 +705,9 @@ void ProtocolGame::ParseObjectSpawn(bool existing, InputMessage& message)
         };
     }
     if (os.validFields & ObjectSpawnFieldUndestroyable)
-        os.undestroyable = message.Get<uint8_t>() != 0;
+        os.undestroyable = message.Get<bool>();
     if (os.validFields & ObjectSpawnFieldSelectable)
-        os.selectable = message.Get<uint8_t>() != 0;
+        os.selectable = message.Get<bool>();
     if (os.validFields & ObjectSpawnFieldState)
         os.state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
     if (os.validFields & ObjectSpawnFieldSpeed)
@@ -717,7 +717,7 @@ void ProtocolGame::ParseObjectSpawn(bool existing, InputMessage& message)
     if (os.validFields & ObjectSpawnFieldGroupPos)
         os.groupPos = message.Get<uint8_t>();
 
-    std::string data = message.GetString();
+    std::string data = message.Get<std::string>();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
 
@@ -758,11 +758,11 @@ void ProtocolGame::ParseServerJoined(InputMessage& message)
 {
     AB::Entities::Service s;
     s.type = message.Get<AB::Entities::ServiceType>();
-    s.uuid = message.GetString();
-    s.host = message.GetString();
+    s.uuid = message.Get<std::string>();
+    s.host = message.Get<std::string>();
     s.port = message.Get<uint16_t>();
-    s.location = message.GetString();
-    s.name = message.GetString();
+    s.location = message.Get<std::string>();
+    s.name = message.Get<std::string>();
 
     receiver_.OnServerJoined(s);
 }
@@ -771,11 +771,11 @@ void ProtocolGame::ParseServerLeft(InputMessage& message)
 {
     AB::Entities::Service s;
     s.type = message.Get<AB::Entities::ServiceType>();
-    s.uuid = message.GetString();
-    s.host = message.GetString();
+    s.uuid = message.Get<std::string>();
+    s.host = message.Get<std::string>();
     s.port = message.Get<uint16_t>();
-    s.location = message.GetString();
-    s.name = message.GetString();
+    s.location = message.Get<std::string>();
+    s.name = message.Get<std::string>();
 
     receiver_.OnServerLeft(s);
 }
@@ -795,9 +795,9 @@ void ProtocolGame::ParseGameStart(InputMessage& message)
 
 void ProtocolGame::ParseEnterWorld(InputMessage& message)
 {
-    std::string serverId = message.GetString();
-    std::string mapUuid = message.GetString();
-    std::string instanceUuid = message.GetString();
+    std::string serverId = message.Get<std::string>();
+    std::string mapUuid = message.Get<std::string>();
+    std::string instanceUuid = message.Get<std::string>();
     uint32_t playerId = message.Get<uint32_t>();
     AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
     uint8_t partySize = message.Get<uint8_t>();
@@ -809,10 +809,10 @@ void ProtocolGame::ParseChangeInstance(InputMessage& message)
 {
     // The server is telling us to change the instance.
     // We should reply with an EnterWorld message.
-    std::string serverId = message.GetString();
-    std::string mapUuid = message.GetString();
-    std::string instanceUuid = message.GetString();
-    std::string charUuid = message.GetString();
+    std::string serverId = message.Get<std::string>();
+    std::string mapUuid = message.Get<std::string>();
+    std::string instanceUuid = message.Get<std::string>();
+    std::string charUuid = message.Get<std::string>();
 
     receiver_.OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
 }
@@ -824,9 +824,9 @@ void ProtocolGame::ParseMailHeaders(InputMessage& message)
     for (uint16_t i = 0; i < mailCount; i++)
     {
         mailHeaders.push_back({
-            message.GetString(),         // UUID
-            message.GetString(),         // From name
-            message.GetString(),         // Subject
+            message.Get<std::string>(),         // UUID
+            message.Get<std::string>(),         // From name
+            message.Get<std::string>(),         // Subject
             message.Get<int64_t>(),      // Created
             message.Get<uint8_t>() != 0  // Read
         });
@@ -843,13 +843,13 @@ void ProtocolGame::ParseMailHeaders(InputMessage& message)
 void ProtocolGame::ParseMailComplete(InputMessage& message)
 {
     AB::Entities::Mail mail;
-    mail.fromAccountUuid = message.GetString();
-    mail.fromName = message.GetString();
-    mail.toName = message.GetString();
-    mail.subject = message.GetString();
-    mail.message = message.GetString();
+    mail.fromAccountUuid = message.Get<std::string>();
+    mail.fromName = message.Get<std::string>();
+    mail.toName = message.Get<std::string>();
+    mail.subject = message.Get<std::string>();
+    mail.message = message.Get<std::string>();
     mail.created = message.Get<int64_t>();
-    mail.isRead = message.Get<uint8_t>() != 0;
+    mail.isRead = message.Get<bool>();
 
     receiver_.OnGetMail(updateTick_, mail);
 }
@@ -950,21 +950,21 @@ void ProtocolGame::ParseQuestDialogTrigger(InputMessage& message)
 void ProtocolGame::ParseQuestNpcHasQuest(InputMessage& message)
 {
     uint32_t npcId = message.Get<uint32_t>();
-    bool hasQuest = (message.Get<uint8_t>() != 0);
+    bool hasQuest = message.Get<bool>();
     receiver_.OnNpcHasQuest(updateTick_, npcId, hasQuest);
 }
 
 void ProtocolGame::ParseQuestDeleted(InputMessage& message)
 {
     uint32_t index = message.Get<uint32_t>();
-    bool deleted = message.Get<uint8_t>();
+    bool deleted = message.Get<bool>();
     receiver_.OnQuestDeleted(updateTick_, index, deleted);
 }
 
 void ProtocolGame::ParseQuestRewarded(InputMessage& message)
 {
     uint32_t index = message.Get<uint32_t>();
-    bool rewarded = message.Get<uint8_t>();
+    bool rewarded = message.Get<bool>();
     receiver_.OnQuestRewarded(updateTick_, index, rewarded);
 }
 
