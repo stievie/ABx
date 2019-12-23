@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <cstring>
 #include <memory>
 #include <vector>
 #include <sa/PoolAllocator.h>
