@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "DataClient.h"
 #include "Subsystems.h"
+#include "Dispatcher.h"
 
 namespace Game {
 namespace Components {
@@ -10,6 +11,40 @@ namespace Components {
 QuestComp::QuestComp(Player& owner) :
     owner_(owner)
 { }
+
+void QuestComp::RemoveDeleted()
+{
+    auto i = quests_.begin();
+    auto* client = GetSubsystem<IO::DataClient>();
+    while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
+    {
+        return current.second->playerQuest_.deleted;
+    })) != quests_.end())
+    {
+        Quest& q = *(*i).second;
+        q.SaveProgress();
+        client->Update(q.playerQuest_);
+        quests_.erase(i++);
+    }
+}
+
+void QuestComp::UpdateRewarded()
+{
+    auto i = quests_.begin();
+    auto* client = GetSubsystem<IO::DataClient>();
+    while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
+    {
+        return current.second->playerQuest_.rewarded;
+    })) != quests_.end())
+    {
+        Quest& q = *(*i).second;
+        uint32_t index = q.GetIndex();
+        q.SaveProgress();
+        client->Update(q.playerQuest_);
+        doneQuests_.emplace(index, std::move((*i).second));
+        quests_.erase(i++);
+    }
+}
 
 void QuestComp::Update(uint32_t timeElapsed)
 {
@@ -27,6 +62,9 @@ void QuestComp::Write(Net::NetworkMessage& message)
         current.Write(message);
         return Iteration::Continue;
     });
+    auto* disp = GetSubsystem<Asynch::Dispatcher>();
+    disp->Add(Asynch::CreateTask(std::bind(&QuestComp::RemoveDeleted, this)));
+    disp->Add(Asynch::CreateTask(std::bind(&QuestComp::UpdateRewarded, this)));
 }
 
 bool QuestComp::GetReward(uint32_t questIndex)
@@ -44,16 +82,24 @@ bool QuestComp::GetReward(uint32_t questIndex)
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(quest.playerQuest_))
         return false;
-    // Remove from quest log
-    quests_.erase(it);
     return true;
+}
+
+Quest* QuestComp::GetCompletedQuest(uint32_t index) const
+{
+    // We have to use a vector, because repeatable quests can be completed
+    // multiple times (obviously)
+    const auto it = doneQuests_.find(index);
+    if (it == doneQuests_.end())
+        return nullptr;
+    return (*it).second.get();
 }
 
 Quest* QuestComp::Get(uint32_t index)
 {
     const auto it = quests_.find(index);
     if (it == quests_.end())
-        return nullptr;
+        return GetCompletedQuest(index);
     return (*it).second.get();
 }
 
@@ -61,7 +107,7 @@ const Quest* QuestComp::Get(uint32_t index) const
 {
     const auto it = quests_.find(index);
     if (it == quests_.end())
-        return nullptr;
+        return GetCompletedQuest(index);
     return (*it).second.get();
 }
 
@@ -168,14 +214,16 @@ bool QuestComp::HaveQuest(uint32_t index) const
 
 bool QuestComp::Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq)
 {
-    std::unique_ptr<Quest> quest = std::make_unique<Quest>(owner_, std::move(pq));
+    std::unique_ptr<Quest> quest = std::make_unique<Quest>(owner_, q, std::move(pq));
     if (!quest->LoadScript(q.script))
     {
         LOG_ERROR << "Error loading quest script " << q.script << std::endl;
         return false;
     }
-    quest->index_ = q.index;
-    quests_.emplace(q.index, std::move(quest));
+    if (!pq.rewarded)
+        quests_.emplace(q.index, std::move(quest));
+    else
+        doneQuests_.emplace(q.index, std::move(quest));
     return true;
 }
 

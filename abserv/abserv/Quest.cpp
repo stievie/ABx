@@ -24,8 +24,12 @@ void Quest::RegisterLua(kaguya::State& state)
     );
 }
 
-Quest::Quest(Player& owner, AB::Entities::PlayerQuest&& playerQuest) :
-    owner_(owner),
+Quest::Quest(Player& owner,
+    const AB::Entities::Quest& q,
+    AB::Entities::PlayerQuest&& playerQuest) :
+    owner_(owner),    
+    index_(q.index),
+    repeatable_(q.repeatable),
     playerQuest_(std::move(playerQuest))
 {
     owner_.SubscribeEvent<void(Actor*, Actor*)>(EVENT_ON_KILLEDFOE, std::bind(&Quest::OnKilledFoe,
@@ -79,6 +83,9 @@ void Quest::SaveProgress()
 
 bool Quest::CollectReward()
 {
+    if (internalRewarded_ || playerQuest_.rewarded)
+        return false;
+
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Quest q;
     q.uuid = playerQuest_.questUuid;
@@ -179,19 +186,10 @@ bool Quest::IsActive() const
     return !IsRewarded();
 }
 
-bool Quest::IsRepeatable() const
-{
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Quest q;
-    q.index = index_;
-    if (!client->Read(q))
-        return false;
-    return q.repeatable;
-}
-
 bool Quest::Delete()
 {
-    if (internalDeleted_)
+    if (internalDeleted_ || playerQuest_.deleted ||
+        internalRewarded_ || playerQuest_.rewarded)
         return false;
     internalDeleted_ = true;
     return true;

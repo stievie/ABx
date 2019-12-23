@@ -27,6 +27,8 @@ private:
     kaguya::State luaState_;
     Utils::VariantMap variables_;
     Player& owner_;
+    uint32_t index_;
+    bool repeatable_;
     bool internalRewarded_{ false };
     bool internalDeleted_{ false };
     void InitializeLua();
@@ -45,7 +47,9 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Quest(Player& owner, AB::Entities::PlayerQuest&& playerQuest);
+    Quest(Player& owner,
+        const AB::Entities::Quest& q,
+        AB::Entities::PlayerQuest&& playerQuest);
     // non-copyable
     Quest(const Quest&) = delete;
     Quest& operator=(const Quest&) = delete;
@@ -62,13 +66,13 @@ public:
 
     bool IsCompleted() const { return playerQuest_.completed; }
     bool IsRewarded() const { return playerQuest_.rewarded; }
-    bool IsRepeatable() const;
+    bool IsRepeatable() const { return repeatable_; }
     void SaveProgress();
     bool CollectReward();
     bool Delete();
     bool IsActive() const;
+    uint32_t GetIndex() const { return index_; }
 
-    uint32_t index_{ AB::Entities::INVALID_INDEX };
     AB::Entities::PlayerQuest playerQuest_;
 };
 

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <map>
+#include <vector>
 #include "Quest.h"
 #include <sa/Iteration.h>
 
@@ -20,6 +21,12 @@ class QuestComp
 private:
     Player& owner_;
     std::map<uint32_t, std::unique_ptr<Quest>> quests_;
+    // This can be a std::map because we keep this only to check if the player
+    // has the requirements for another quest.
+    std::map<uint32_t, std::unique_ptr<Quest>> doneQuests_;
+    void RemoveDeleted();
+    void UpdateRewarded();
+    Quest* GetCompletedQuest(uint32_t index) const;
 public:
     QuestComp() = delete;
     explicit QuestComp(Player& owner);
@@ -50,6 +57,11 @@ public:
     template<typename Callback>
     void VisitQuests(const Callback& callback)
     {
+        for (const auto& q : doneQuests_)
+        {
+            if (callback(*q.second) != Iteration::Continue)
+                break;
+        }
         for (const auto& q : quests_)
         {
             if (callback(*q.second) != Iteration::Continue)
