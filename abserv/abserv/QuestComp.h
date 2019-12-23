@@ -56,6 +56,17 @@ public:
                 break;
         }
     }
+    template<typename Callback>
+    void VisitActiveQuests(const Callback& callback)
+    {
+        for (const auto& q : quests_)
+        {
+            if (!q.second->IsActive())
+                continue;
+            if (callback(*q.second) != Iteration::Continue)
+                break;
+        }
+    }
 };
 
 }

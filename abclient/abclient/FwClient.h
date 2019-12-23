@@ -217,6 +217,8 @@ public:
     void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests) override;
     void OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex) override;
     void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) override;
+    void OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted) override;
+    void OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded) override;
 
     void SetState(Client::Client::ClientState state)
     {

@@ -265,6 +265,12 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         case QuestNpcHasQuest:
             ParseQuestNpcHasQuest(message);
             break;
+        case QuestDeleted:
+            ParseQuestDeleted(message);
+            break;
+        case QuestRewarded:
+            ParseQuestRewarded(message);
+            break;
         case PlayerInfo:
             ParsePlayerInfo(message);
             break;
@@ -943,10 +949,23 @@ void ProtocolGame::ParseQuestDialogTrigger(InputMessage& message)
 
 void ProtocolGame::ParseQuestNpcHasQuest(InputMessage& message)
 {
-    // Nothing to read
     uint32_t npcId = message.Get<uint32_t>();
     bool hasQuest = (message.Get<uint8_t>() != 0);
     receiver_.OnNpcHasQuest(updateTick_, npcId, hasQuest);
+}
+
+void ProtocolGame::ParseQuestDeleted(InputMessage& message)
+{
+    uint32_t index = message.Get<uint32_t>();
+    bool deleted = message.Get<uint8_t>();
+    receiver_.OnQuestDeleted(updateTick_, index, deleted);
+}
+
+void ProtocolGame::ParseQuestRewarded(InputMessage& message)
+{
+    uint32_t index = message.Get<uint32_t>();
+    bool rewarded = message.Get<uint8_t>();
+    receiver_.OnQuestRewarded(updateTick_, index, rewarded);
 }
 
 void ProtocolGame::LogMessage(const std::string& message)

@@ -27,6 +27,8 @@ private:
     kaguya::State luaState_;
     Utils::VariantMap variables_;
     Player& owner_;
+    bool internalRewarded_{ false };
+    bool internalDeleted_{ false };
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
@@ -63,6 +65,7 @@ public:
     bool IsRepeatable() const;
     void SaveProgress();
     bool CollectReward();
+    bool Delete();
     bool IsActive() const;
 
     uint32_t index_{ AB::Entities::INVALID_INDEX };

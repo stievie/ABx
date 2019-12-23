@@ -13,14 +13,20 @@ QuestComp::QuestComp(Player& owner) :
 
 void QuestComp::Update(uint32_t timeElapsed)
 {
-    for (const auto& q : quests_)
-        q.second->Update(timeElapsed);
+    VisitActiveQuests([&] (Quest& current)
+    {
+        current.Update(timeElapsed);
+        return Iteration::Continue;
+    });
 }
 
 void QuestComp::Write(Net::NetworkMessage& message)
 {
-    for (const auto& q : quests_)
-        q.second->Write(message);
+    VisitActiveQuests([&] (Quest& current)
+    {
+        current.Write(message);
+        return Iteration::Continue;
+    });
 }
 
 bool QuestComp::GetReward(uint32_t questIndex)
@@ -152,14 +158,7 @@ bool QuestComp::DeleteQuest(uint32_t index)
     if (it == quests_.end())
         return false;
 
-    AB::Entities::PlayerQuest& pq = (*it).second->playerQuest_;
-    pq.deleted = true;
-    auto* client = GetSubsystem<IO::DataClient>();
-    if (!client->Update(pq))
-        return false;
-    // Remove from quest log
-    quests_.erase(it);
-    return true;
+    return (*it).second->Delete();
 }
 
 bool QuestComp::HaveQuest(uint32_t index) const

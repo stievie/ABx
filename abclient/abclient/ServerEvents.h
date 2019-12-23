@@ -356,6 +356,20 @@ URHO3D_EVENT(E_NPCHASQUEST, NpcHasQuest)
     URHO3D_PARAM(P_HASQUEST, HasQuest);     // bool
 }
 
+URHO3D_EVENT(E_QUESTDELETED, QuestDeleted)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_INDEX, Index);     // unit32_t
+    URHO3D_PARAM(P_DELETED, Deleted);     // bool
+}
+
+URHO3D_EVENT(E_QUESTREWARDED, QuestRewarded)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_INDEX, Index);     // unit32_t
+    URHO3D_PARAM(P_REWARDED, Rewarded);     // bool
+}
+
 URHO3D_EVENT(E_GOT_FRIENDLIST, GotFriendList)
 {
 }

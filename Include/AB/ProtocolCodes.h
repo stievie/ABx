@@ -269,6 +269,8 @@ enum ServerPacketType : uint8_t
     QuestSelectionDialogTrigger,
     QuestDialogTrigger,
     QuestNpcHasQuest,
+    QuestDeleted,
+    QuestRewarded,
 
     PlayerInfo,                   // Get info of related player (e.g. friend, guild member)
 

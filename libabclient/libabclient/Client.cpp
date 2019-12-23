@@ -413,6 +413,16 @@ void Client::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
     receiver_.OnNpcHasQuest(updateTick, npcId, hasQuest);
 }
 
+void Client::OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted)
+{
+    receiver_.OnQuestDeleted(updateTick, index, deleted);
+}
+
+void Client::OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded)
+{
+    receiver_.OnQuestRewarded(updateTick, index, rewarded);
+}
+
 void Client::OnLog(const std::string& message)
 {
     receiver_.OnLog(message);

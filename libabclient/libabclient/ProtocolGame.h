@@ -96,6 +96,8 @@ protected:
     void ParseQuestSelectionDialogTrigger(InputMessage& message);
     void ParseQuestDialogTrigger(InputMessage& message);
     void ParseQuestNpcHasQuest(InputMessage& message);
+    void ParseQuestDeleted(InputMessage& message);
+    void ParseQuestRewarded(InputMessage& message);
     void ParsePlayerInfo(InputMessage& message);
 public:
     ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);

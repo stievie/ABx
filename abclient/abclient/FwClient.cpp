@@ -1625,6 +1625,26 @@ void FwClient::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
     QueueEvent(Events::E_NPCHASQUEST, eData);
 }
 
+void FwClient::OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted)
+{
+    using namespace Events::QuestDeleted;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_INDEX] = index;
+    eData[P_DELETED] = deleted;
+    QueueEvent(Events::E_QUESTDELETED, eData);
+}
+
+void FwClient::OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded)
+{
+    using namespace Events::QuestRewarded;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_INDEX] = index;
+    eData[P_REWARDED] = rewarded;
+    QueueEvent(Events::E_QUESTREWARDED, eData);
+}
+
 void FwClient::UpdatePlayer(const Client::RelatedAccount& player)
 {
     auto it = relatedAccounts_.find(player.accountUuid);

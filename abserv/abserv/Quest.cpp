@@ -58,6 +58,8 @@ bool Quest::LoadScript(const std::string& fileName)
 
 void Quest::LoadProgress()
 {
+    internalRewarded_ = playerQuest_.rewarded;
+    internalDeleted_ = playerQuest_.deleted;
     IO::PropReadStream stream;
     stream.Init(playerQuest_.progress.data(), playerQuest_.progress.length());
     if (!Utils::VariantMapRead(variables_, stream))
@@ -97,25 +99,34 @@ bool Quest::CollectReward()
             owner_.AddToInventory(id);
     }
 
-    playerQuest_.rewarded = true;
+    internalRewarded_ = true;
     playerQuest_.rewardTime = Utils::Tick();
     return true;
 }
 
 void Quest::Update(uint32_t timeElapsed)
 {
-    if (playerQuest_.deleted)
-        return;
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
 }
 
 void Quest::Write(Net::NetworkMessage& message)
 {
-    if (playerQuest_.deleted)
-        return;
-    // TODO:
-    (void)message;
+    using namespace AB::GameProtocol;
+    if (internalDeleted_ != playerQuest_.deleted)
+    {
+        playerQuest_.deleted = internalDeleted_;
+        message.AddByte(QuestDeleted);
+        message.Add<uint32_t>(index_);
+        message.Add<uint8_t>(playerQuest_.deleted ? 1 : 0);
+    }
+    if (internalRewarded_ != playerQuest_.rewarded)
+    {
+        playerQuest_.rewarded = internalRewarded_;
+        message.AddByte(QuestRewarded);
+        message.Add<uint32_t>(index_);
+        message.Add<uint8_t>(playerQuest_.rewarded ? 1 : 0);
+    }
 }
 
 Player* Quest::_LuaGetOwner()
@@ -176,6 +187,14 @@ bool Quest::IsRepeatable() const
     if (!client->Read(q))
         return false;
     return q.repeatable;
+}
+
+bool Quest::Delete()
+{
+    if (internalDeleted_)
+        return false;
+    internalDeleted_ = true;
+    return true;
 }
 
 }

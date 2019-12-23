@@ -175,6 +175,8 @@ public:
     virtual void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>&) = 0;
     virtual void OnQuestDialogTrigger(int64_t updateTick, uint32_t) = 0;
     virtual void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) = 0;
+    virtual void OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted) = 0;
+    virtual void OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded) = 0;
 };
 
 }
