@@ -77,4 +77,10 @@ public:
     bool Compress();
 };
 
+template<>
+inline void OutputMessage::Add<bool>(bool value)
+{
+    Add<uint8_t>(value ? 1 : 0);
+}
+
 }

@@ -827,8 +827,8 @@ void ProtocolGame::ParseMailHeaders(InputMessage& message)
             message.Get<std::string>(),         // UUID
             message.Get<std::string>(),         // From name
             message.Get<std::string>(),         // Subject
-            message.Get<int64_t>(),      // Created
-            message.Get<uint8_t>() != 0  // Read
+            message.Get<int64_t>(),             // Created
+            message.Get<bool>()                 // Read
         });
     }
     // Sort Date Desc
@@ -1178,7 +1178,7 @@ void ProtocolGame::Follow(uint32_t targetId, bool ping)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
     msg->Add<uint32_t>(targetId);
-    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
+    msg->Add<bool>(ping);
     Send(std::move(msg));
 }
 
@@ -1187,7 +1187,7 @@ void ProtocolGame::UseSkill(uint32_t index, bool ping)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
     msg->Add<uint8_t>(static_cast<uint8_t>(index));
-    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
+    msg->Add<bool>(ping);
     Send(std::move(msg));
 }
 
@@ -1195,7 +1195,7 @@ void ProtocolGame::Attack(bool ping)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAttack);
-    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
+    msg->Add<bool>(ping);
     Send(std::move(msg));
 }
 
