@@ -123,7 +123,8 @@ public:
     size_t GetUsedMem() const { return GetCurrentAllocations() * ChunkSize; }
     size_t GetAvailMem() const { return size_ - GetUsedMem(); }
     /// Usage, value between 0..100
-    unsigned GetUsage() const {
+    unsigned GetUsage() const
+    {
         const size_t nChunks = size_ / ChunkSize;
         return static_cast<unsigned>((static_cast<float>(GetCurrentAllocations()) / static_cast<float>(nChunks)) * 100.0f);
     }

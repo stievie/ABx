@@ -18,12 +18,18 @@ private:
     T* Elements() { return reinterpret_cast<T*>(buffer_); }
     const T* Elements() const { return reinterpret_cast<const T*>(buffer_); }
 public:
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef T value_type;
+
     ~CircularQueue()
     {
         Clear();
     }
     template<typename U = T,
-      std::enable_if_t<std::is_fundamental<U>::value, int> = 0>
+        std::enable_if_t<std::is_fundamental<U>::value, int> = 0>
     void Enqueue(T value)
     {
         static_assert(std::is_fundamental<T>::value, "Not a fundamental type");
@@ -34,14 +40,14 @@ public:
             ++size_;
     }
     template<typename U = T,
-      std::enable_if_t<std::is_compound<U>::value, int> = 0>
+        std::enable_if_t<std::is_compound<U>::value, int> = 0>
     void Enqueue(const T& value)
     {
         static_assert(std::is_compound<T>::value, "Not a compound type");
         Enqueue(std::move(T(value)));
     }
     template<typename U = T,
-      std::enable_if_t<std::is_compound<U>::value, int> = 0>
+        std::enable_if_t<std::is_compound<U>::value, int> = 0>
     void Enqueue(T&& value)
     {
         static_assert(std::is_compound<T>::value, "Not a compound type");

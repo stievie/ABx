@@ -542,7 +542,7 @@ std::set<uint32_t> Npc::GetQuestsForPlayer(const Player& player) const
 
 bool Npc::HaveQuestsForPlayer(const Player& player) const
 {
-    auto& qc = *player.questComp_;
+    const auto& qc = *player.questComp_;
     for (auto qIndex : quests_)
     {
         if (qc.IsAvailable(qIndex))

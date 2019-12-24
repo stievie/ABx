@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     {
         if (!sa::arg_parser::get_value<bool>(parsedArgs, "force", false))
         {
-            std::cout << "Overwrite existing file (y/n)? ";
+            std::cout << "Overwrite existing file " << keyFile << " (y/n)? ";
             std::string answer;
             if (!std::getline(std::cin, answer))
                 return EXIT_FAILURE;
