@@ -110,7 +110,7 @@ public:
     void AddString(const char* value);
     void AddStringEncrypted(const std::string& value);
     template <typename T>
-    void Add(T value)
+    void Add(const T& value)
     {
         if (!CanAdd(sizeof(T)))
             return;
@@ -151,7 +151,12 @@ public:
 };
 
 template <>
-inline void NetworkMessage::Add<bool>(bool value)
+inline void NetworkMessage::Add<std::string>(const std::string& value)
+{
+    AddString(value);
+}
+template <>
+inline void NetworkMessage::Add<bool>(const bool& value)
 {
     Add<uint8_t>(value ? 1 : 0);
 }

@@ -27,6 +27,8 @@
 #include "ThreadPool.h"
 #include "UuidUtils.h"
 #include <AB/ProtocolCodes.h>
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -577,7 +579,10 @@ void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
 void Game::SendLeaveObject(uint32_t objectId)
 {
     gameStatus_->AddByte(AB::GameProtocol::GameLeaveObject);
-    gameStatus_->Add<uint32_t>(objectId);
+    AB::Packets::Server::ObjectDespawn packet = {
+        objectId
+    };
+    AB::Packets::Add(packet, *gameStatus_);
 }
 
 void Game::SendInitStateToPlayer(Player& player)

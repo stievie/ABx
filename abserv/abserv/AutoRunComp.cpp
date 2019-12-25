@@ -5,6 +5,8 @@
 #include "MathUtils.h"
 #include "Player.h"
 #include "VectorMath.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 //#define DEBUG_NAVIGATION
 
@@ -281,7 +283,10 @@ void AutoRunComp::SetAutoRun(bool value)
             // This tells the players client to switch off client prediction and use server positions instead
             auto nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
-            nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
+            AB::Packets::Server::PlayerAutorun packet = {
+                autoRun_
+            };
+            AB::Packets::Add(packet, *nmsg);
             Player& player = To<Player>(owner_);
             player.WriteToOutput(*nmsg);
         }

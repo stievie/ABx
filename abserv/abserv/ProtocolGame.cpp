@@ -19,6 +19,8 @@
 #include <AB/DHKeys.hpp>
 #include "UuidUtils.h"
 #include <AB/Entities/FriendList.h>
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Net {
 
@@ -536,12 +538,15 @@ void ProtocolGame::EnterGame()
     {
         auto output = OutputMessagePool::GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
-        output->AddString(ProtocolGame::serverId_);
-        output->AddString(player->data_.currentMapUuid);
-        output->AddString(player->data_.instanceUuid);
-        output->Add<uint32_t>(player->id_);
-        output->Add<uint8_t>(static_cast<uint8_t>(instance->data_.type));
-        output->Add<uint8_t>(instance->data_.partySize);
+        AB::Packets::Server::EnterWorld packet = {
+            ProtocolGame::serverId_,
+            player->data_.currentMapUuid,
+            player->data_.instanceUuid,
+            player->id_,
+            static_cast<uint8_t>(instance->data_.type),
+            instance->data_.partySize
+        };
+        AB::Packets::Add(packet, *output);
         Send(output);
     }
     else
@@ -563,10 +568,10 @@ void ProtocolGame::ChangeServerInstance(const std::string& serverUuid, const std
 
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
-    output->AddString(serverUuid);               // Server UUID
-    output->AddString(mapUuid);                  // Map UUID
-    output->AddString(instanceUuid);             // Instance UUID
-    output->AddString(player->data_.uuid);       // Character UUID
+    AB::Packets::Server::ChangeInstance packet = {
+        serverUuid, mapUuid, instanceUuid, player->data_.uuid
+    };
+    AB::Packets::Add(packet, *output);
     Send(output);
 }
 

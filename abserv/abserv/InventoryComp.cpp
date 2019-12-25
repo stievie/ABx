@@ -6,6 +6,8 @@
 #include "MathUtils.h"
 #include "Skill.h"
 #include <sa/Transaction.h>
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -89,12 +91,16 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
     if (!item || !message)
         return;
     message->AddByte((!isChest) ? AB::GameProtocol::InventoryItemUpdate : AB::GameProtocol::ChestItemUpdate);
-    message->Add<uint16_t>(item->data_.type);
-    message->Add<uint32_t>(item->data_.index);
-    message->Add<uint8_t>(static_cast<uint8_t>(item->concreteItem_.storagePlace));
-    message->Add<uint16_t>(item->concreteItem_.storagePos);
-    message->Add<uint32_t>(item->concreteItem_.count);
-    message->Add<uint16_t>(item->concreteItem_.value);
+    AB::Packets::Server::InventoryItemUpdate packet = {
+        static_cast<uint16_t>(item->data_.type),
+        item->data_.index,
+        static_cast<uint8_t>(item->concreteItem_.storagePlace),
+        item->concreteItem_.storagePos,
+        item->concreteItem_.count,
+        item->concreteItem_.value,
+
+    };
+    AB::Packets::Add(packet, *message);
 }
 
 bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message)

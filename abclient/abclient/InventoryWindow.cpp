@@ -162,7 +162,7 @@ void InventoryWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void InventoryWindow::SetItem(Item* item, const Client::InventoryItem& iItem)
+void InventoryWindow::SetItem(Item* item, const InventoryItem& iItem)
 {
     BorderImage* container = GetItemContainer(iItem.pos);
     if (!container)
@@ -258,7 +258,7 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
 
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
 
-    const Client::InventoryItem& iItem = net->GetInventoryItem(pos);
+    const InventoryItem& iItem = net->GetInventoryItem(pos);
     if (iItem.type == AB::Entities::ItemTypeUnknown)
         return;
 
@@ -278,7 +278,7 @@ void InventoryWindow::HandleInventoryItemRemove(StringHash, VariantMap& eventDat
 {
     using namespace Events::InventoryItemDelete;
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
-    Client::InventoryItem item;
+    InventoryItem item;
     item.type = AB::Entities::ItemTypeUnknown;
     item.pos = pos;
     SetItem(nullptr, item);

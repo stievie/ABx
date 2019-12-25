@@ -81,8 +81,6 @@ public:
     void OnNetworkError(ConnectionError connectionError, const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
     void OnPong(int lastPing) override;
-    void OnServerJoined(const AB::Entities::Service& service) override;
-    void OnServerLeft(const AB::Entities::Service& service) override;
 
     void OnLoggedIn(const std::string& accountUui, const std::string& authTokend) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;
@@ -91,26 +89,7 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
-    void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
-    void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
-    void OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items) override;
-    void OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item) override;
-    void OnInventoryItemDelete(int64_t updateTick, uint16_t pos) override;
-    void OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items) override;
-    void OnChestItemUpdate(int64_t updateTick, const InventoryItem& item) override;
-    void OnChestItemDelete(int64_t updateTick, uint16_t pos) override;
-    void OnEnterWorld(int64_t updateTick, const std::string& serverId,
-        const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
-        AB::Entities::GameType type, uint8_t partySize) override;
-    void OnChangeInstance(int64_t updateTick, const std::string& serverId,
-        const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)override;
-    void OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
-        PropReadStream& data, bool existing) override;
-    void OnDespawnObject(int64_t updateTick, uint32_t id) override;
-    void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) override;
-    void OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) override;
-    void OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor) override;
     void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
     void OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error) override;
     void OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error) override;
@@ -133,7 +112,6 @@ public:
     void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
     void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) override;
-    void OnPlayerAutorun(int64_t updateTick, bool autorun) override;
     /// The player was invited into our party
     void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     /// Player was removed from our party
@@ -157,6 +135,28 @@ public:
     void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) override;
     void OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted) override;
     void OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded) override;
+
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;
+
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInstance& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerAutorun& packet) override;
+
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawn& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawnExisting& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::MailHeaders& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::MailComplete& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDespawn& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpeedChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryContent& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemUpdate& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemDelete& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestContent& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemUpdate& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDelete& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet) override;
 
     std::string accountUuid_;
     std::string password_;

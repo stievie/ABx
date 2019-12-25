@@ -136,85 +136,9 @@ void Client::OnGetServices(const std::vector<AB::Entities::Service>& services)
     receiver_.OnGetServices(services);
 }
 
-void Client::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
-{
-    receiver_.OnGetMailHeaders(updateTick, headers);
-}
-
-void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
-{
-    receiver_.OnGetMail(updateTick, mail);
-}
-
-void Client::OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items)
-{
-    receiver_.OnGetInventory(updateTick, items);
-}
-
-void Client::OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item)
-{
-    receiver_.OnInventoryItemUpdate(updateTick, item);
-}
-
-void Client::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
-{
-    receiver_.OnInventoryItemDelete(updateTick, pos);
-}
-
-void Client::OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items)
-{
-    receiver_.OnGetChest(updateTick, items);
-}
-
-void Client::OnChestItemUpdate(int64_t updateTick, const InventoryItem& item)
-{
-    receiver_.OnChestItemUpdate(updateTick, item);
-}
-
-void Client::OnChestItemDelete(int64_t updateTick, uint16_t pos)
-{
-    receiver_.OnChestItemDelete(updateTick, pos);
-}
-
-void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
-    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
-    AB::Entities::GameType type, uint8_t partySize)
-{
-    state_ = ClientState::World;
-    mapUuid_ = mapUuid;
-
-    receiver_.OnEnterWorld(updateTick, serverId, mapUuid, instanceUuid, playerId, type, partySize);
-}
-
-void Client::OnChangeInstance(int64_t updateTick, const std::string& serverId,
-    const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
-{
-    receiver_.OnChangeInstance(updateTick, serverId, mapUuid, instanceUuid, charUuid);
-}
-
-void Client::OnDespawnObject(int64_t updateTick, uint32_t id)
-{
-    receiver_.OnDespawnObject(updateTick, id);
-}
-
-void Client::OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos)
-{
-    receiver_.OnObjectPos(updateTick, id, pos);
-}
-
-void Client::OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual)
-{
-    receiver_.OnObjectRot(updateTick, id, rot, manual);
-}
-
 void Client::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
 {
     receiver_.OnObjectStateChange(updateTick, id, state);
-}
-
-void Client::OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor)
-{
-    receiver_.OnObjectSpeedChange(updateTick, id, speedFactor);
 }
 
 void Client::OnAccountCreated()
@@ -317,11 +241,6 @@ void Client::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValu
     receiver_.OnPlayerError(updateTick, error);
 }
 
-void Client::OnPlayerAutorun(int64_t updateTick, bool autorun)
-{
-    receiver_.OnPlayerAutorun(updateTick, autorun);
-}
-
 void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     receiver_.OnPartyInvited(updateTick, sourceId, targetId, partyId);
@@ -392,12 +311,6 @@ void Client::OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild)
     receiver_.OnGuildInfo(updateTick, guild);
 }
 
-void Client::OnObjectSpawn(int64_t updateTick, const ObjectSpawn& objectSpawn,
-    PropReadStream& data, bool existing)
-{
-    receiver_.OnObjectSpawn(updateTick, objectSpawn, data, existing);
-}
-
 void Client::OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests)
 {
     receiver_.OnQuestSelectionDialogTrigger(updateTick, quests);
@@ -442,16 +355,6 @@ void Client::OnPong(int lastPing)
 {
     gotPong_ = true;
     pings_.Enqueue(lastPing);
-}
-
-void Client::OnServerJoined(const AB::Entities::Service& service)
-{
-    receiver_.OnServerJoined(service);
-}
-
-void Client::OnServerLeft(const AB::Entities::Service& service)
-{
-    receiver_.OnServerLeft(service);
 }
 
 std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
@@ -864,6 +767,104 @@ void Client::SetOnlineStatus(RelatedAccount::Status status)
 {
     if (state_ == ClientState::World)
         protoGame_->SetOnlineStatus(status);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInstance& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
+{
+    state_ = ClientState::World;
+    mapUuid_ = packet.mapUuid;
+
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerAutorun& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawn& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawnExisting& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::MailHeaders& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::MailComplete& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDespawn& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpeedChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryContent& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemUpdate& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemDelete& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestContent& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemUpdate& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDelete& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
 }
 
 }

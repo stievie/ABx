@@ -30,6 +30,8 @@
 #include <AB/ProtocolCodes.h>
 #include <sa/StringTempl.h>
 #include "Npc.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -227,16 +229,17 @@ void Player::CRQGetMailHeaders()
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::MailHeaders);
-    msg->Add<uint16_t>(static_cast<uint16_t>(mailBox_->GetTotalMailCount()));
+    AB::Packets::Server::MailHeaders packet;
+    packet.count = static_cast<uint16_t>(mailBox_->GetTotalMailCount());
+    packet.headers.reserve(packet.count);
     const AB::Entities::MailList& mails = mailBox_->GetMails();
     for (const auto& mail : mails.mails)
     {
-        msg->AddString(mail.uuid);
-        msg->AddString(mail.fromName);
-        msg->AddString(mail.subject);
-        msg->Add<int64_t>(mail.created);
-        msg->AddByte(mail.isRead ? 1 : 0);
+        packet.headers.push_back({
+            mail.uuid, mail.fromName, mail.subject, mail.created, mail.isRead
+        });
     }
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -248,18 +251,22 @@ void Player::CRQGetInventory()
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryContent);
-    msg->Add<uint16_t>(static_cast<uint16_t>(count));
-    inventoryComp_->VisitInventory([&msg](const Item& current)
+    AB::Packets::Server::InventoryContent packet;
+    packet.count = static_cast<uint16_t>(count);
+
+    inventoryComp_->VisitInventory([&packet](const Item& current)
     {
-        msg->Add<uint16_t>(current.data_.type);
-        msg->Add<uint32_t>(current.data_.index);
-        msg->Add<uint8_t>(static_cast<uint8_t>(current.concreteItem_.storagePlace));
-        msg->Add<uint16_t>(current.concreteItem_.storagePos);
-        msg->Add<uint32_t>(current.concreteItem_.count);
-        msg->Add<uint16_t>(current.concreteItem_.value);
+        packet.items.push_back({
+            static_cast<uint16_t>(current.data_.type),
+            current.data_.index,
+            static_cast<uint8_t>(current.concreteItem_.storagePlace),
+            current.concreteItem_.storagePos,
+            current.concreteItem_.count,
+            current.concreteItem_.value
+        });
         return Iteration::Continue;
     });
-
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -420,13 +427,16 @@ void Player::CRQGetMail(const std::string mailUuid)
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::MailComplete);
-        msg->AddString(m.fromAccountUuid);
-        msg->AddString(m.fromName);
-        msg->AddString(m.toName);
-        msg->AddString(m.subject);
-        msg->AddString(m.message);
-        msg->Add<int64_t>(m.created);
-        msg->AddByte(m.isRead ? 1 : 0);
+        AB::Packets::Server::MailComplete packet = {
+            m.fromAccountUuid,
+            m.fromName,
+            m.toName,
+            m.subject,
+            m.message,
+            m.created,
+            m.isRead
+        };
+        AB::Packets::Add(packet, *msg);
         WriteToOutput(*msg);
     }
 }

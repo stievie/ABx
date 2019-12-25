@@ -5,6 +5,8 @@
 #include "MathUtils.h"
 #include "Game.h"
 #include "MathUtils.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -150,27 +152,40 @@ void MoveComp::Write(Net::NetworkMessage& message)
     {
         speedDirty_ = false;
         message.AddByte(AB::GameProtocol::GameObjectMoveSpeedChange);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<float>(GetSpeedFactor());
+        AB::Packets::Server::ObjectSpeedChanged packet = {
+            owner_.id_,
+            GetSpeedFactor()
+        };
+        AB::Packets::Add(packet, message);
     }
 
     if (moved_)
     {
         message.AddByte(AB::GameProtocol::GameObjectPositionChange);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<float>(owner_.transformation_.position_.x_);
-        message.Add<float>(owner_.transformation_.position_.y_);
-        message.Add<float>(owner_.transformation_.position_.z_);
+        AB::Packets::Server::ObjectPosUpdate packet = {
+            owner_.id_,
+            {
+                owner_.transformation_.position_.x_,
+                owner_.transformation_.position_.y_,
+                owner_.transformation_.position_.z_
+            }
+        };
+        AB::Packets::Add(packet, message);
         moved_ = false;
     }
 
     if (forcePosition_)
     {
         message.AddByte(AB::GameProtocol::GameObjectSetPosition);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<float>(owner_.transformation_.position_.x_);
-        message.Add<float>(owner_.transformation_.position_.y_);
-        message.Add<float>(owner_.transformation_.position_.z_);
+        AB::Packets::Server::ObjectPosUpdate packet = {
+            owner_.id_,
+            {
+                owner_.transformation_.position_.x_,
+                owner_.transformation_.position_.y_,
+                owner_.transformation_.position_.z_
+            }
+        };
+        AB::Packets::Add(packet, message);
         forcePosition_ = false;
     }
 
@@ -178,9 +193,12 @@ void MoveComp::Write(Net::NetworkMessage& message)
     if (turned_ || directionSet_)
     {
         message.AddByte(AB::GameProtocol::GameObjectRotationChange);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<float>(owner_.transformation_.GetYRotation());
-        message.Add<bool>(directionSet_);
+        AB::Packets::Server::ObjectRotationUpdate packet = {
+            owner_.id_,
+            owner_.transformation_.GetYRotation(),
+            directionSet_
+        };
+        AB::Packets::Add(packet, message);
         turned_ = false;
         directionSet_ = false;
     }

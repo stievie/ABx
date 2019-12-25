@@ -4,6 +4,8 @@
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
 #include <set>
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Client {
 
@@ -97,22 +99,22 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             ParseKeyExchange(message);
             break;
         case ServerJoined:
-            ParseServerJoined(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerJoined>(message));
             break;
         case ServerLeft:
-            ParseServerLeft(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerLeft>(message));
             break;
         case Error:
             ParseError(message);
             break;
         case ChangeInstance:
-            ParseChangeInstance(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChangeInstance>(message));
             break;
         case GameStart:
             ParseGameStart(message);
             break;
         case GameEnter:
-            ParseEnterWorld(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::EnterWorld>(message));
             break;
         case GamePong:
             ParsePong(message);
@@ -121,53 +123,55 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             ParseGameError(message);
             break;
         case PlayerAutoRun:
-            ParsePlayerAutoRun(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PlayerAutorun>(message));
             break;
         case MailHeaders:
-            ParseMailHeaders(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::MailHeaders>(message));
             break;
         case MailComplete:
-            ParseMailComplete(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::MailComplete>(message));
             break;
         case InventoryContent:
-            ParseInventoryContent(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryContent>(message));
             break;
         case InventoryItemUpdate:
-            ParseInventoryItemUpdate(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryItemUpdate>(message));
             break;
         case InventoryItemDelete:
-            ParseInventoryItemDelete(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryItemDelete>(message));
             break;
         case ChestContent:
-            ParseChestContent(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestContent>(message));
             break;
         case ChestItemUpdate:
-            ParseChestItemUpdate(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestItemUpdate>(message));
             break;
         case ChestItemDelete:
-            ParseChestItemDelete(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestItemDelete>(message));
             break;
         case GameUpdate:
             ParseUpdate(message);
             break;
         case GameSpawnObjectExisting:
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpawnExisting>(message));
+            break;
         case GameSpawnObject:
-            ParseObjectSpawn(opCode == GameSpawnObjectExisting, message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpawn>(message));
             break;
         case GameLeaveObject:
-            ParseLeaveObject(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDespawn>(message));
             break;
         case GameObjectPositionChange:
-            ParseObjectPosUpdate(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectPosUpdate>(message));
             break;
         case GameObjectRotationChange:
-            ParseObjectRotUpdate(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectRotationUpdate>(message));
             break;
         case GameObjectStateChange:
             ParseObjectStateChange(message);
             break;
         case GameObjectMoveSpeedChange:
-            ParseObjectSpeedChange(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpeedChanged>(message));
             break;
         case GameObjectSelectTarget:
             ParseObjectSelected(message);
@@ -297,29 +301,12 @@ void ProtocolGame::ParseKeyExchange(InputMessage& message)
         serverKey_[i] = message.Get<uint8_t>();
 }
 
-void ProtocolGame::ParseObjectRotUpdate(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    float rot = message.Get<float>();
-    bool manual = message.Get<bool>();
-
-    receiver_.OnObjectRot(updateTick_, objectId, rot, manual);
-}
-
 void ProtocolGame::ParseObjectStateChange(InputMessage& message)
 {
     uint32_t objectId = message.Get<uint32_t>();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
 
     receiver_.OnObjectStateChange(updateTick_, objectId, state);
-}
-
-void ProtocolGame::ParseObjectSpeedChange(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    float speedFactor = message.Get<float>();
-
-    receiver_.OnObjectSpeedChange(updateTick_, objectId, speedFactor);
 }
 
 void ProtocolGame::ParseObjectSelected(InputMessage& message)
@@ -657,73 +644,6 @@ void ProtocolGame::ParsePlayerInfo(InputMessage& message)
     receiver_.OnPlayerInfo(updateTick_, frnd);
 }
 
-void ProtocolGame::ParseObjectPosUpdate(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    Vec3 newPos
-    {
-        message.Get<float>(),
-        message.Get<float>(),
-        message.Get<float>()
-    };
-
-    receiver_.OnObjectPos(updateTick_, objectId, newPos);
-}
-
-void ProtocolGame::ParseLeaveObject(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-
-    receiver_.OnDespawnObject(updateTick_, objectId);
-}
-
-void ProtocolGame::ParseObjectSpawn(bool existing, InputMessage& message)
-{
-    using namespace AB::GameProtocol;
-
-    ObjectSpawn os{ };
-    os.id = message.Get<uint32_t>();
-    os.type = static_cast<AB::GameProtocol::GameObjectType>(message.Get<uint8_t>());
-    os.validFields = message.Get<uint32_t>();
-
-    if (os.validFields & ObjectSpawnFieldPos)
-    {
-        os.pos = {
-            message.Get<float>(),
-            message.Get<float>(),
-            message.Get<float>()
-        };
-    }
-    if (os.validFields & ObjectSpawnFieldRot)
-        os.rot = message.Get<float>();
-    if (os.validFields & ObjectSpawnFieldScale)
-    {
-        os.scale = {
-            message.Get<float>(),
-            message.Get<float>(),
-            message.Get<float>()
-        };
-    }
-    if (os.validFields & ObjectSpawnFieldUndestroyable)
-        os.undestroyable = message.Get<bool>();
-    if (os.validFields & ObjectSpawnFieldSelectable)
-        os.selectable = message.Get<bool>();
-    if (os.validFields & ObjectSpawnFieldState)
-        os.state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
-    if (os.validFields & ObjectSpawnFieldSpeed)
-        os.speed = message.Get<float>();
-    if (os.validFields & ObjectSpawnFieldGroupId)
-        os.groupId = message.Get<uint32_t>();
-    if (os.validFields & ObjectSpawnFieldGroupPos)
-        os.groupPos = message.Get<uint8_t>();
-
-    std::string data = message.Get<std::string>();
-    PropReadStream stream;
-    stream.Init(data.c_str(), data.length());
-
-    receiver_.OnObjectSpawn(updateTick_, os, stream, existing);
-}
-
 void ProtocolGame::ParseUpdate(InputMessage& message)
 {
     updateTick_ = message.Get<int64_t>();
@@ -747,39 +667,6 @@ void ProtocolGame::ParseGameError(InputMessage& message)
     receiver_.OnPlayerError(updateTick_, error);
 }
 
-void ProtocolGame::ParsePlayerAutoRun(InputMessage& message)
-{
-    bool autorun = message.Get<uint8_t>() == 1;
-
-    receiver_.OnPlayerAutorun(updateTick_, autorun);
-}
-
-void ProtocolGame::ParseServerJoined(InputMessage& message)
-{
-    AB::Entities::Service s;
-    s.type = message.Get<AB::Entities::ServiceType>();
-    s.uuid = message.Get<std::string>();
-    s.host = message.Get<std::string>();
-    s.port = message.Get<uint16_t>();
-    s.location = message.Get<std::string>();
-    s.name = message.Get<std::string>();
-
-    receiver_.OnServerJoined(s);
-}
-
-void ProtocolGame::ParseServerLeft(InputMessage& message)
-{
-    AB::Entities::Service s;
-    s.type = message.Get<AB::Entities::ServiceType>();
-    s.uuid = message.Get<std::string>();
-    s.host = message.Get<std::string>();
-    s.port = message.Get<uint16_t>();
-    s.location = message.Get<std::string>();
-    s.name = message.Get<std::string>();
-
-    receiver_.OnServerLeft(s);
-}
-
 void ProtocolGame::ParseError(InputMessage& message)
 {
     uint8_t error = message.Get<uint8_t>();
@@ -791,145 +678,6 @@ void ProtocolGame::ParseGameStart(InputMessage& message)
 {
     // We must read it
     /* int64_t startTick = */ message.Get<int64_t>();
-}
-
-void ProtocolGame::ParseEnterWorld(InputMessage& message)
-{
-    std::string serverId = message.Get<std::string>();
-    std::string mapUuid = message.Get<std::string>();
-    std::string instanceUuid = message.Get<std::string>();
-    uint32_t playerId = message.Get<uint32_t>();
-    AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
-    uint8_t partySize = message.Get<uint8_t>();
-
-    receiver_.OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId, type, partySize);
-}
-
-void ProtocolGame::ParseChangeInstance(InputMessage& message)
-{
-    // The server is telling us to change the instance.
-    // We should reply with an EnterWorld message.
-    std::string serverId = message.Get<std::string>();
-    std::string mapUuid = message.Get<std::string>();
-    std::string instanceUuid = message.Get<std::string>();
-    std::string charUuid = message.Get<std::string>();
-
-    receiver_.OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
-}
-
-void ProtocolGame::ParseMailHeaders(InputMessage& message)
-{
-    uint16_t mailCount = message.Get<uint16_t>();
-    std::vector<AB::Entities::MailHeader> mailHeaders;
-    for (uint16_t i = 0; i < mailCount; i++)
-    {
-        mailHeaders.push_back({
-            message.Get<std::string>(),         // UUID
-            message.Get<std::string>(),         // From name
-            message.Get<std::string>(),         // Subject
-            message.Get<int64_t>(),             // Created
-            message.Get<bool>()                 // Read
-        });
-    }
-    // Sort Date Desc
-    std::sort(mailHeaders.begin(), mailHeaders.end(), [](const auto& lhs, const auto& rhs)
-    {
-        return lhs.created - rhs.created;
-    });
-
-    receiver_.OnGetMailHeaders(updateTick_, mailHeaders);
-}
-
-void ProtocolGame::ParseMailComplete(InputMessage& message)
-{
-    AB::Entities::Mail mail;
-    mail.fromAccountUuid = message.Get<std::string>();
-    mail.fromName = message.Get<std::string>();
-    mail.toName = message.Get<std::string>();
-    mail.subject = message.Get<std::string>();
-    mail.message = message.Get<std::string>();
-    mail.created = message.Get<int64_t>();
-    mail.isRead = message.Get<bool>();
-
-    receiver_.OnGetMail(updateTick_, mail);
-}
-
-void ProtocolGame::ParseInventoryContent(InputMessage& message)
-{
-    uint16_t count = message.Get<uint16_t>();
-    std::vector<InventoryItem> items;
-    items.reserve(count);
-    for (uint16_t i = 0; i < count; i++)
-    {
-        items.push_back({
-            static_cast<AB::Entities::ItemType>(message.Get<uint16_t>()),
-            message.Get<uint32_t>(),
-            static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>()),
-            message.Get<uint16_t>(),
-            message.Get<uint32_t>(),
-            message.Get<uint16_t>()
-        });
-    }
-
-    receiver_.OnGetInventory(updateTick_, items);
-}
-
-void ProtocolGame::ParseInventoryItemUpdate(InputMessage& message)
-{
-    InventoryItem item;
-    item.type = static_cast<AB::Entities::ItemType>(message.Get<uint16_t>());
-    item.index = message.Get<uint32_t>();
-    item.place = static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>());
-    item.pos = message.Get<uint16_t>();
-    item.count = message.Get<uint32_t>();
-    item.value = message.Get<uint16_t>();
-
-    receiver_.OnInventoryItemUpdate(updateTick_, item);
-}
-
-void ProtocolGame::ParseInventoryItemDelete(InputMessage& message)
-{
-    uint16_t pos = message.Get<uint16_t>();
-    receiver_.OnInventoryItemDelete(updateTick_, pos);
-}
-
-void ProtocolGame::ParseChestContent(InputMessage& message)
-{
-    uint16_t count = message.Get<uint16_t>();
-    std::vector<InventoryItem> items;
-    items.reserve(count);
-    for (uint16_t i = 0; i < count; ++i)
-    {
-        items.push_back({
-            static_cast<AB::Entities::ItemType>(message.Get<uint16_t>()),
-            message.Get<uint32_t>(),
-            static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>()),
-            message.Get<uint16_t>(),
-            message.Get<uint32_t>(),
-            message.Get<uint16_t>()
-        });
-    }
-
-    receiver_.OnGetChest(updateTick_, items);
-}
-
-void ProtocolGame::ParseChestItemUpdate(InputMessage& message)
-{
-    InventoryItem item;
-    item.type = static_cast<AB::Entities::ItemType>(message.Get<uint16_t>());
-    item.index = message.Get<uint32_t>();
-    item.place = static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>());
-    item.pos = message.Get<uint16_t>();
-    item.count = message.Get<uint32_t>();
-    item.value = message.Get<uint16_t>();
-
-    receiver_.OnChestItemUpdate(updateTick_, item);
-}
-
-void ProtocolGame::ParseChestItemDelete(InputMessage& message)
-{
-    uint16_t pos = message.Get<uint16_t>();
-    receiver_.OnChestItemDelete(updateTick_, pos);
 }
 
 void ProtocolGame::ParseQuestSelectionDialogTrigger(InputMessage& message)
@@ -963,6 +711,8 @@ void ProtocolGame::ParseQuestDeleted(InputMessage& message)
 
 void ProtocolGame::ParseQuestRewarded(InputMessage& message)
 {
+//    auto packet = AB::Packets::Server::Get<AB::Packets::Server::QuestRewarded>(message);
+
     uint32_t index = message.Get<uint32_t>();
     bool rewarded = message.Get<bool>();
     receiver_.OnQuestRewarded(updateTick_, index, rewarded);

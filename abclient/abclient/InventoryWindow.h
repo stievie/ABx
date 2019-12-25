@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Receiver.h"
+#include "FwClient.h"
 
 class Item;
 
@@ -20,7 +20,7 @@ private:
     void HandleItemDestroySelected(StringHash eventType, VariantMap& eventData);
     void HandleItemDropSelected(StringHash eventType, VariantMap& eventData);
     BorderImage* GetItemContainer(uint16_t pos);
-    void SetItem(Item* item, const Client::InventoryItem& iItem);
+    void SetItem(Item* item, const InventoryItem& iItem);
 public:
     static void RegisterObject(Context* context);
 
