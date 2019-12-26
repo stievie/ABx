@@ -3,6 +3,8 @@
 #include "Actor.h"
 #include "Skill.h"
 #include "Attributes.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 #define DEBUG_AI
 
@@ -143,31 +145,36 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         if (lastError_ == AB::GameProtocol::SkillErrorNone)
         {
             message.AddByte(AB::GameProtocol::GameObjectUseSkill);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<uint8_t>(static_cast<uint8_t>(lastSkillIndex_ + 1));
+            AB::Packets::Server::ObjectUseSkill packet;
+            packet.id = owner_.id_;
+            packet.skillIndex = static_cast<int8_t>(lastSkillIndex_ + 1);
             if (auto ls = lastSkill_.lock())
             {
-                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealEnergy()));
-                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealAdrenaline()));
-                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealActivation()));
-                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealOvercast()));
-                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealHp()));
+                packet.energy = static_cast<uint16_t>(ls->GetRealEnergy());
+                packet.adrenaline = static_cast<uint16_t>(ls->GetRealAdrenaline());
+                packet.activation = static_cast<uint16_t>(ls->GetRealActivation());
+                packet.overcast = static_cast<uint16_t>(ls->GetRealOvercast());
+                packet.hp = static_cast<uint16_t>(ls->GetRealHp());
             }
             else
             {
-                message.Add<uint16_t>(0);
-                message.Add<uint16_t>(0);
-                message.Add<uint16_t>(0);
-                message.Add<uint16_t>(0);
-                message.Add<uint16_t>(0);
+                packet.energy = 0;
+                packet.adrenaline = 0;
+                packet.activation = 0;
+                packet.overcast = 0;
+                packet.hp = 0;
             }
+            AB::Packets::Add(packet, message);
         }
         else
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
-            message.AddByte(lastError_);
+            AB::Packets::Server::ObjectSkillFailure packet = {
+                owner_.id_,
+                static_cast<int8_t>(lastSkillIndex_ + 1),
+                lastError_
+            };
+            AB::Packets::Add(packet, message);
         }
         startDirty_ = false;
     }
@@ -177,16 +184,22 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         if (lastError_ == AB::GameProtocol::SkillErrorNone)
         {
             message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
-            message.Add<uint32_t>(newRecharge_);
+            AB::Packets::Server::ObjectSkillSuccess packet = {
+                owner_.id_,
+                static_cast<int8_t>(lastSkillIndex_ + 1),
+                newRecharge_
+            };
+            AB::Packets::Add(packet, message);
         }
         else
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
-            message.AddByte(lastError_);
+            AB::Packets::Server::ObjectSkillFailure packet = {
+                owner_.id_,
+                static_cast<int8_t>(lastSkillIndex_ + 1),
+                lastError_
+            };
+            AB::Packets::Add(packet, message);
         }
         endDirty_ = false;
     }

@@ -4,6 +4,8 @@
 #include "Subsystems.h"
 #include "Random.h"
 #include "Game.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -168,8 +170,11 @@ void AttackComp::Write(Net::NetworkMessage& message)
     if (lastError_ != AB::GameProtocol::AttackErrorNone)
     {
         message.AddByte(AB::GameProtocol::GameObjectAttackFailure);
-        message.Add<uint32_t>(owner_.id_);
-        message.AddByte(lastError_);
+        AB::Packets::Server::ObjectAttackFailure packet = {
+            owner_.id_,
+            static_cast<uint8_t>(lastError_)
+        };
+        AB::Packets::Add(packet, message);
         lastError_ = AB::GameProtocol::AttackErrorNone;
     }
 }

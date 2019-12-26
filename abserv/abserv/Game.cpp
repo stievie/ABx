@@ -213,7 +213,8 @@ void Game::Update()
             Lua::CallFunction(luaState_, "onStart");
             // Add start tick at the beginning
             gameStatus_->AddByte(AB::GameProtocol::GameStart);
-            gameStatus_->Add<int64_t>(startTime_);
+            AB::Packets::Server::GameStart packet = { startTime_ };
+            AB::Packets::Add(packet, *gameStatus_);
         }
 
         int64_t tick = Utils::Tick();
@@ -222,9 +223,12 @@ void Game::Update()
         uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
         lastUpdate_ = tick;
 
-        // Add timestamp
-        gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
-        gameStatus_->Add<int64_t>(tick);
+        {
+            // Add timestamp
+            gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+            AB::Packets::Server::GameUpdate packet = { tick };
+            AB::Packets::Add(packet, *gameStatus_);
+        }
 
         // First Update all objects
         {
@@ -473,22 +477,16 @@ void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
     SendSpawnObject(item);
 
     gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
-    gameStatus_->Add<uint32_t>(item->GetSourceId());
-    gameStatus_->Add<uint32_t>(item->actorId_);
-    gameStatus_->Add<uint32_t>(item->id_);
-    gameStatus_->Add<uint32_t>(item->GetItemIndex());
     const Item* pItem = item->GetItem();
-    if (pItem)
-    {
-        gameStatus_->Add<uint32_t>(pItem->concreteItem_.count);
-        gameStatus_->Add<uint16_t>(pItem->concreteItem_.value);
-    }
-    else
-    {
-        // Shouldn't get here!
-        gameStatus_->Add<uint32_t>(1);
-        gameStatus_->Add<uint16_t>(0);
-    }
+    AB::Packets::Server::ObjectDroppedItem packet = {
+        item->GetSourceId(),
+        item->actorId_,
+        item->id_,
+        item->GetItemIndex(),
+        static_cast<uint32_t>(pItem ? pItem->concreteItem_.count : 1u),
+        static_cast<uint16_t>(pItem ? pItem->concreteItem_.value : 0u)
+    };
+    AB::Packets::Add(packet, *gameStatus_);
 }
 
 std::vector<Party*> Game::_LuaGetParties() const

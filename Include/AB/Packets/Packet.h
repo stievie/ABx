@@ -1,8 +1,5 @@
 #pragma once
 
-#include <tuple>
-#include <type_traits>
-
 namespace AB {
 namespace Packets {
 
@@ -55,7 +52,7 @@ template<typename T, typename _Msg>
 void Add(T& value, _Msg& msg)
 {
     // Can not be const T& value because we are using the same function for reading
-    // and writing which is nott const
+    // and writing which is not const
     detail::Writer<_Msg> writer(msg);
     value.Serialize(writer);
 }

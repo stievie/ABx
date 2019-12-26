@@ -89,40 +89,8 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
-    void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) override;
-    void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
-    void OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error) override;
-    void OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error) override;
-    void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
-        uint16_t activation, uint16_t overcast, uint16_t hp) override;
-    void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge) override;
-    void OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
-    void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
-    void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
-    void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) override;
-    void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value) override;
-    void OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value) override;
-    void OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
-        uint32_t itemIndex, uint32_t count, uint16_t value) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
-    void OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos) override;
-    void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
-        const std::string& senderName, const std::string& message) override;
-    void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
-        uint32_t senderId, const std::string& senderName, const std::string& message) override;
-    void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) override;
-    /// The player was invited into our party
-    void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
-    /// Player was removed from our party
-    void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
-    /// Player was added to our party, i.e. the player accepted the invite
-    void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) override;
-    /// The invite to our party was removed
-    void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
-    void OnPartyResigned(int64_t updateTick, uint32_t partyId) override;
-    void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
-    void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
     void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) override;
     void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
@@ -138,11 +106,9 @@ public:
 
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;
-
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInstance& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerAutorun& packet) override;
-
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawn& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpawnExisting& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MailHeaders& packet) override;
@@ -157,6 +123,30 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemUpdate& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDelete& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectAttackFailure& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPingTarget& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectAdded& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDamaged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerAdded& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyInviteRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet) override;
 
     std::string accountUuid_;
     std::string password_;

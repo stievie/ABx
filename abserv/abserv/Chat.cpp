@@ -13,6 +13,8 @@
 #include "PropStream.h"
 #include "Subsystems.h"
 #include "UuidUtils.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -123,10 +125,13 @@ bool GameChatChannel::Talk(Player& player, const std::string& text)
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
-        msg->Add<uint32_t>(player.id_);
-        msg->AddString(player.GetName());
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelGeneral,
+            player.id_,
+            player.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
         g->VisitPlayers([&player, &msg](Player* current) {
             if (current->IsIgnored(player))
                 return Iteration::Continue;
@@ -144,10 +149,13 @@ bool GameChatChannel::TalkNpc(Npc& npc, const std::string& text)
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
-        msg->Add<uint32_t>(npc.id_);
-        msg->AddString(npc.GetName());
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelGeneral,
+            npc.id_,
+            npc.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
         g->VisitPlayers([&msg](Player* player) {
             player->WriteToOutput(*msg);
             return Iteration::Continue;
@@ -180,10 +188,13 @@ bool WhisperChatChannel::Talk(Player& player, const std::string& text)
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
-        msg->Add<uint32_t>(player.id_);
-        msg->AddString(player.GetName());
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelWhisper,
+            player.id_,
+            player.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
         p->WriteToOutput(*msg);
         return true;
     }
@@ -212,10 +223,13 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
-        msg->Add<uint32_t>(0);
-        msg->AddString(playerName);
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelWhisper,
+            0,
+            playerName,
+            text
+        };
+        AB::Packets::Add(packet, *msg);
         p->WriteToOutput(*msg);
         return true;
     }
@@ -249,10 +263,14 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ChatMessage);
-    msg->AddByte(AB::GameProtocol::ChatChannelGuild);
-    msg->Add<uint32_t>(0);
-    msg->AddString(playerName);
-    msg->AddString(text);
+    AB::Packets::Server::ChatMessage packet = {
+        AB::GameProtocol::ChatChannelGuild,
+        0,
+        playerName,
+        text
+    };
+    AB::Packets::Add(packet, *msg);
+
     for (const auto& g : gs.members)
     {
         std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerByAccountUuid(g.accountUuid);
@@ -283,10 +301,13 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     auto msg = Net::NetworkMessage::GetNew();
     auto* playerMngr = GetSubsystem<PlayerManager>();
     msg->AddByte(AB::GameProtocol::ChatMessage);
-    msg->AddByte(AB::GameProtocol::ChatChannelTrade);
-    msg->Add<uint32_t>(0);
-    msg->AddString(playerName);
-    msg->AddString(text);
+    AB::Packets::Server::ChatMessage packet = {
+        AB::GameProtocol::ChatChannelTrade,
+        0,
+        playerName,
+        text
+    };
+    AB::Packets::Add(packet, *msg);
     playerMngr->VisitPlayers([&playerName, &msg](Player& player) {
         if (player.IsIgnored(playerName))
             return Iteration::Continue;
@@ -301,10 +322,14 @@ bool PartyChatChannel::Talk(Player& player, const std::string& text)
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelParty);
-        msg->Add<uint32_t>(player.id_);
-        msg->AddString(player.GetName());
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelParty,
+            0,
+            player.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
+
         party_->VisitPlayers([&player, &msg](Player& _player) {
             if (_player.IsIgnored(player))
                 return Iteration::Continue;
@@ -322,10 +347,13 @@ bool PartyChatChannel::TalkNpc(Npc& npc, const std::string& text)
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelParty);
-        msg->Add<uint32_t>(npc.id_);
-        msg->AddString(npc.GetName());
-        msg->AddString(text);
+        AB::Packets::Server::ChatMessage packet = {
+            AB::GameProtocol::ChatChannelParty,
+            npc.id_,
+            npc.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
         party_->VisitPlayers([&msg](auto& player) {
             player.WriteToOutput(*msg);
             return Iteration::Continue;

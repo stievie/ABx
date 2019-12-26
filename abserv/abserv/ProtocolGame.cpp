@@ -466,7 +466,8 @@ void ProtocolGame::DisconnectClient(uint8_t error)
 {
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::Error);
-    output->AddByte(error);
+    AB::Packets::Server::ProtocolError packet = { error };
+    AB::Packets::Add(packet, *output);
     Send(output);
     Disconnect();
 }

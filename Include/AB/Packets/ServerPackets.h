@@ -12,12 +12,24 @@ namespace Packets {
 namespace Server {
 // Packets sent from the server to the client
 
-/// Dummy packet for unknown messages
-struct UnknownPacket
+struct ProtocolError
 {
+    uint8_t code;
     template<typename _Ar>
     void Serialize(_Ar& ar)
-    { }
+    {
+        ar.value(code);
+    }
+};
+
+struct GameError
+{
+    uint8_t code;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(code);
+    }
 };
 
 struct ServerJoined
@@ -44,6 +56,66 @@ struct ServerJoined
 };
 
 struct ServerLeft : ServerJoined { };
+
+struct GameStart
+{
+    int64_t tick;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(tick);
+    }
+};
+
+struct Pong
+{
+    int32_t clockDiff;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(clockDiff);
+    }
+};
+
+struct GameUpdate
+{
+    int64_t tick;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(tick);
+    }
+};
+
+struct ServerMessage
+{
+    uint8_t type;
+    std::string sender;
+    std::string data;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(type);
+        ar.value(sender);
+        ar.value(data);
+    }
+};
+
+struct ChatMessage
+{
+    uint8_t type;
+    uint32_t senderId;
+    std::string sender;
+    std::string data;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(type);
+        ar.value(senderId);
+        ar.value(sender);
+        ar.value(data);
+    }
+};
 
 struct ChangeInstance
 {
@@ -254,6 +326,30 @@ struct ObjectSpeedChanged
     }
 };
 
+struct ObjectStateChanged
+{
+    uint32_t id;
+    uint8_t state;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(state);
+    }
+};
+
+struct ObjectTargetSelected
+{
+    uint32_t id;
+    uint32_t targetId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(targetId);
+    }
+};
+
 struct InventoryContent
 {
     struct Item
@@ -333,6 +429,262 @@ struct QuestRewarded
         ar.value(index);
         ar.value(rewarded);
     }
+};
+
+struct ObjectSkillFailure
+{
+    uint32_t id;
+    int8_t skillIndex;
+    uint8_t errorCode;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(skillIndex);
+        ar.value(errorCode);
+    }
+};
+
+struct ObjectUseSkill
+{
+    uint32_t id;
+    int8_t skillIndex;
+    uint16_t energy;
+    uint16_t adrenaline;
+    uint16_t activation;
+    uint16_t overcast;
+    uint16_t hp;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(skillIndex);
+        ar.value(energy);
+        ar.value(adrenaline);
+        ar.value(activation);
+        ar.value(overcast);
+        ar.value(hp);
+    }
+};
+
+struct ObjectSkillSuccess
+{
+    uint32_t id;
+    int8_t skillIndex;
+    uint32_t recharge;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(skillIndex);
+        ar.value(recharge);
+    }
+};
+
+struct ObjectAttackFailure
+{
+    uint32_t id;
+    uint8_t errorCode;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(errorCode);
+    }
+};
+
+struct ObjectPingTarget
+{
+    uint32_t id;
+    uint32_t targetId;
+    uint8_t pingType;
+    int8_t skillIndex;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(targetId);
+        ar.value(pingType);
+        ar.value(skillIndex);
+    }
+};
+
+struct ObjectEffectAdded
+{
+    uint32_t id;
+    uint32_t effectIndex;
+    uint32_t ticks;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(effectIndex);
+        ar.value(ticks);
+    }
+};
+
+struct ObjectEffectRemoved
+{
+    uint32_t id;
+    uint32_t effectIndex;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(effectIndex);
+    }
+};
+
+struct ObjectDamaged
+{
+    uint32_t id;
+    uint32_t sourceId;
+    uint16_t index;
+    uint8_t damageType;
+    uint16_t damageValue;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(sourceId);
+        ar.value(index);
+        ar.value(damageType);
+        ar.value(damageValue);
+    }
+};
+
+struct ObjectHealed
+{
+    uint32_t id;
+    uint32_t sourceId;
+    uint16_t index;
+    int16_t healValue;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(sourceId);
+        ar.value(index);
+        ar.value(healValue);
+    }
+};
+
+struct ObjectProgress
+{
+    uint32_t id;
+    uint8_t type;
+    int16_t value;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(type);
+        ar.value(value);
+    }
+};
+
+struct ObjectDroppedItem
+{
+    uint32_t id;
+    uint32_t targetId;
+    uint32_t itemId;
+    uint32_t itemIndex;
+    uint32_t count;
+    uint16_t value;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(targetId);
+        ar.value(itemId);
+        ar.value(itemIndex);
+        ar.value(count);
+        ar.value(value);
+    }
+};
+
+struct PartyPlayerInvited
+{
+    uint32_t inviterId;
+    uint32_t inviteeId;
+    uint32_t partyId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(inviterId);
+        ar.value(inviteeId);
+        ar.value(partyId);
+    }
+};
+
+struct PartyPlayerRemoved
+{
+    uint32_t leaderId;
+    uint32_t targetId;
+    uint32_t partyId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(leaderId);
+        ar.value(targetId);
+        ar.value(partyId);
+    }
+};
+
+struct PartyInviteRemoved : PartyPlayerRemoved { };
+
+struct PartyPlayerAdded
+{
+    uint32_t acceptorId;
+    uint32_t leaderId;
+    uint32_t partyId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(acceptorId);
+        ar.value(leaderId);
+        ar.value(partyId);
+    }
+};
+
+struct PartyResigned
+{
+    uint32_t partyId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(partyId);
+    }
+};
+
+struct PartyDefeated
+{
+    uint32_t partyId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(partyId);
+    }
+};
+
+struct PartyMembersInfo
+{
+    uint32_t partyId;
+    uint8_t count;
+    std::vector<uint32_t> members;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(partyId);
+        ar.value(count);
+        members.resize(count);
+        for (uint8_t i = 0; i < count; ++i)
+        {
+            auto& member = members[i];
+            ar.value(member);
+        }
+    }
+
 };
 
 }

@@ -85,40 +85,8 @@ public:
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) = 0;
 
-    virtual void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) = 0;
-    virtual void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
-    virtual void OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error) = 0;
-    virtual void OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error) = 0;
-    virtual void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
-        uint16_t activation, uint16_t overcast, uint16_t hp) = 0;
-    virtual void OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) = 0;
-    virtual void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) = 0;
-    virtual void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) = 0;
-    virtual void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge) = 0;
-    virtual void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) = 0;
-    virtual void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value) = 0;
-    virtual void OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value) = 0;
     virtual void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) = 0;
-    virtual void OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
-        uint32_t itemIndex, uint32_t count, uint16_t value) = 0;
-    virtual void OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos) = 0;
-    virtual void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
-        const std::string& senderName, const std::string& message) = 0;
-    virtual void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
-        uint32_t senderId, const std::string& senderName, const std::string& message) = 0;
-    virtual void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) = 0;
-    /// The player was invited into our party
-    virtual void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
-    /// Player was removed from our party
-    virtual void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
-    /// Player was added to our party, i.e. the player accepted the invite
-    virtual void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) = 0;
-    /// The invite to our party was removed
-    virtual void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
-    virtual void OnPartyResigned(int64_t updateTick, uint32_t partyId) = 0;
-    virtual void OnPartyDefeated(int64_t updateTick, uint32_t partyId) = 0;
-    virtual void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) = 0;
     virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
     virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
     virtual void OnFriendList(int64_t updateTick, const std::vector<std::string>&) = 0;
@@ -152,6 +120,30 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemUpdate& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDelete& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectAttackFailure& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPingTarget& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectAdded& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectRemoved& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDamaged& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerRemoved& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerAdded& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyInviteRemoved& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet) = 0;
 
 };
 

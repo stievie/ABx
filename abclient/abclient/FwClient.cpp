@@ -985,16 +985,6 @@ void FwClient::OnProtocolError(uint8_t err)
         cl->OnProtocolError(err);
 }
 
-void FwClient::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectStateUpdate;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_STATE] = static_cast<unsigned>(state);
-    QueueEvent(Events::E_OBJECTSTATEUPDATE, eData);
-}
-
 void FwClient::OnAccountCreated()
 {
     // After successful account creation login with this credentials
@@ -1004,164 +994,6 @@ void FwClient::OnAccountCreated()
 void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid)
 {
     EnterWorld(String(uuid.c_str()), String(mapUuid.c_str()));
-}
-
-void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectSelected;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_SOURCEID] = sourceId;
-    eData[P_TARGETID] = targetId;
-    QueueEvent(Events::E_OBJECTSELECTED, eData);
-}
-
-void FwClient::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error)
-{
-    String errorMsg = GetSkillErrorMessage(error);
-    URHO3D_LOGINFOF("Object %d skill error %d: %s", id, skillIndex, errorMsg.CString());
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::SkillFailure;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_SKILLINDEX] = skillIndex;
-    eData[P_ERROR] = static_cast<uint8_t>(error);
-    eData[P_ERRORMSG] = errorMsg;
-    QueueEvent(Events::E_SKILLFAILURE, eData);
-}
-
-void FwClient::OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error)
-{
-    String errorMsg = GetAttackErrorMessage(error);
-    using namespace Events::AttackFailure;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_ERROR] = static_cast<uint8_t>(error);
-    eData[P_ERRORMSG] = errorMsg;
-    QueueEvent(Events::E_ATTACKFAILURE, eData);
-}
-
-void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
-    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast, uint16_t hp)
-{
-    URHO3D_LOGINFOF("Object %d using skill %d: Energy = %d, Adrenaline = %d, Activation = %d, Overcast = %d, HP = %d",
-        id, skillIndex, energy, adrenaline, activation, overcast, hp);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectUseSkill;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_SKILLINDEX] = skillIndex;
-    eData[P_ENERGY] = energy;
-    eData[P_ADRENALINE] = adrenaline;
-    eData[P_ACTIVATION] = activation;
-    eData[P_OVERCAST] = overcast;
-    eData[P_HPCOST] = hp;
-    QueueEvent(Events::E_OBJECTUSESKILL, eData);
-}
-
-void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge)
-{
-    URHO3D_LOGINFOF("Object %u used skill %u: Recharge = %u", id, skillIndex, recharge);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectEndUseSkill;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_SKILLINDEX] = skillIndex;
-    eData[P_RECHARGE] = recharge;
-    QueueEvent(Events::E_OBJECTENDUSESKILL, eData);
-}
-
-void FwClient::OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
-{
-    URHO3D_LOGINFOF("Object %d pings Target %d, Skill %d", id, targetId, skillIndex);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectPingTarget;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_TARGETID] = targetId;
-    eData[P_CALLTTYPE] = static_cast<int>(type);
-    eData[P_SKILLINDEX] = skillIndex;
-    QueueEvent(Events::E_OBJECTPINGTARGET, eData);
-}
-
-void FwClient::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
-{
-    URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %u", effectIndex, id, ticks);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectEffectAdded;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_EFFECTINDEX] = effectIndex;
-    eData[P_TICKS] = ticks;
-    QueueEvent(Events::E_OBJECTEFFECTADDED, eData);
-}
-
-void FwClient::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex)
-{
-    URHO3D_LOGINFOF("Effect %d removed: Object %d", effectIndex, id);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectEffectRemoved;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_EFFECTINDEX] = effectIndex;
-    QueueEvent(Events::E_OBJECTEFFECTREMOVED, eData);
-}
-
-void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value)
-{
-    URHO3D_LOGINFOF("Object %d was damaged by %d: value %d", id, sourceId, value);
-    using namespace Events::ObjectDamaged;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_DAMAGERID] = sourceId;
-    eData[P_INDEX] = index;
-    eData[P_DAMAGETYPE] = damageType;
-    eData[P_DAMAGEVALUE] = value;
-    QueueEvent(Events::E_OBJECTDAMAGED, eData);
-}
-
-void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value)
-{
-    URHO3D_LOGINFOF("Object %d was healed by %d: HP %d", id, healerId, value);
-    using namespace Events::ObjectHealed;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_HEALERID] = healerId;
-    eData[P_INDEX] = index;
-    eData[P_HEALVALUE] = value;
-    QueueEvent(Events::E_OBJECTHEALED, eData);
-}
-
-void FwClient::OnObjectProgress(int64_t updateTick, uint32_t id,
-    AB::GameProtocol::ObjectProgressType type, int value)
-{
-    URHO3D_LOGINFOF("Object %d progress type %d, value %d", id, static_cast<int>(type), value);
-
-    using namespace Events::ObjectProgress;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_TYPE] = static_cast<uint32_t>(type);
-    eData[P_VALUE] = value;
-    QueueEvent(Events::E_OBJECTPROGRESS, eData);
-}
-
-void FwClient::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
-    uint32_t itemIndex, uint32_t count, uint16_t value)
-{
-    using namespace Events::ObjectItemDropped;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_TARGETID] = targetId;
-    eData[P_ITEMID] = itemId;
-    eData[P_ITEMINDEX] = itemIndex;
-    eData[P_COUNT] = count;
-    eData[P_VALUE] = value;
-    QueueEvent(Events::E_OBJECTITEMDROPPED, eData);
 }
 
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
@@ -1174,126 +1006,6 @@ void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
     eData[P_RESTYPE] = static_cast<uint32_t>(resType);
     eData[P_VALUE] = static_cast<int32_t>(value);
     QueueEvent(Events::E_OBJECTRESOURCECHANGED, eData);
-}
-
-void FwClient::OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos)
-{
-    using namespace Events::ObjectSetPosition;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
-    QueueEvent(Events::E_OBJECTSETPOSITION, eData);
-}
-
-void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
-    const std::string& senderName, const std::string& message)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ServerMessage;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_MESSAGETYPE] = type;
-    eData[P_SENDER] = String(senderName.data(), static_cast<unsigned>(senderName.length()));
-    eData[P_DATA] = String(message.data(), static_cast<unsigned>(message.length()));
-    QueueEvent(Events::E_SERVERMESSAGE, eData);
-}
-
-void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
-    uint32_t senderId, const std::string& senderName, const std::string& message)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ChatMessage;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_MESSAGETYPE] = channel;
-    eData[P_SENDERID] = senderId;
-    eData[P_SENDER] = String(senderName.data(), static_cast<unsigned>(senderName.length()));
-    eData[P_DATA] = String(message.data(), static_cast<unsigned>(message.length()));
-    QueueEvent(Events::E_CHATMESSAGE, eData);
-}
-
-void FwClient::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PlayerError;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_ERROR] = static_cast<uint8_t>(error);
-    eData[P_ERRORMSG] = GetGameErrorMessage(error);
-    QueueEvent(Events::E_PLAYERERROR, eData);
-}
-
-void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyInvited;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_SOURCEID] = sourceId;
-    eData[P_TARGETID] = targetId;
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYINVITED, eData);
-}
-
-void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyRemoved;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_SOURCEID] = sourceId;
-    eData[P_TARGETID] = targetId;
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYREMOVED, eData);
-}
-
-void FwClient::OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyAdded;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_PLAYERID] = acceptorId;
-    eData[P_LEADERID] = leaderId;
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYADDED, eData);
-}
-
-void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyInviteRemoved;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_SOURCEID] = sourceId;
-    eData[P_TARGETID] = targetId;
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYINVITEREMOVED, eData);
-}
-
-void FwClient::OnPartyResigned(int64_t updateTick, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyResigned;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYRESIGNED, eData);
-}
-
-void FwClient::OnPartyDefeated(int64_t updateTick, uint32_t partyId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyDefeated;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_PARTYID] = partyId;
-    QueueEvent(Events::E_PARTYDEFEATED, eData);
-}
-
-void FwClient::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::PartyInfoMembers;
-    eData[P_PARTYID] = partyId;
-    VariantVector _members;
-    _members.Resize(static_cast<unsigned>(members.size()));
-    for (unsigned i = 0; i < static_cast<unsigned>(members.size()); i++)
-        _members[i] = members[i];
-    eData[P_MEMBERS] = _members;
-    QueueEvent(Events::E_PARTYINFOMEMBERS, eData);
 }
 
 void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
@@ -1711,7 +1423,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpe
     QueueEvent(Events::E_OBJECTSPEEDUPDATE, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryContent& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::InventoryContent& packet)
 {
     inventory_.clear();
     inventory_.reserve(packet.count);
@@ -1784,7 +1496,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
     inventory_.erase(it);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestContent& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::ChestContent& packet)
 {
     chest_.clear();
     chest_.reserve(packet.count);
@@ -1866,4 +1578,287 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRot
     eData[P_ROTATION] = packet.yRot;
     eData[P_MANUAL] = packet.manual;
     QueueEvent(Events::E_OBJECTROTUPDATE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectSelected;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_SOURCEID] = packet.id;
+    eData[P_TARGETID] = packet.targetId;
+    QueueEvent(Events::E_OBJECTSELECTED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectStateUpdate;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_STATE] = static_cast<unsigned>(packet.state);
+    QueueEvent(Events::E_OBJECTSTATEUPDATE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PlayerError;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_ERROR] = static_cast<uint8_t>(packet.code);
+    eData[P_ERRORMSG] = GetGameErrorMessage(static_cast<AB::GameProtocol::PlayerErrorValue>(packet.code));
+    QueueEvent(Events::E_PLAYERERROR, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet)
+{
+    String errorMsg = GetSkillErrorMessage(static_cast<AB::GameProtocol::SkillError>(packet.errorCode));
+    URHO3D_LOGINFOF("Object %d skill error %d: %s", packet.id, packet.skillIndex, errorMsg.CString());
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::SkillFailure;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_SKILLINDEX] = packet.skillIndex;
+    eData[P_ERROR] = packet.errorCode;
+    eData[P_ERRORMSG] = errorMsg;
+    QueueEvent(Events::E_SKILLFAILURE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet)
+{
+    URHO3D_LOGINFOF("Object %d using skill %d: Energy = %d, Adrenaline = %d, Activation = %d, Overcast = %d, HP = %d",
+        packet.id, packet.skillIndex, packet.energy, packet.adrenaline, packet.activation, packet.overcast, packet.hp);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectUseSkill;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_SKILLINDEX] = packet.skillIndex;
+    eData[P_ENERGY] = packet.energy;
+    eData[P_ADRENALINE] = packet.adrenaline;
+    eData[P_ACTIVATION] = packet.activation;
+    eData[P_OVERCAST] = packet.overcast;
+    eData[P_HPCOST] = packet.hp;
+    QueueEvent(Events::E_OBJECTUSESKILL, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet)
+{
+    URHO3D_LOGINFOF("Object %u used skill %u: Recharge = %u", packet.id, packet.skillIndex, packet.recharge);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectEndUseSkill;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_SKILLINDEX] = packet.skillIndex;
+    eData[P_RECHARGE] = packet.recharge;
+    QueueEvent(Events::E_OBJECTENDUSESKILL, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectAttackFailure& packet)
+{
+    String errorMsg = GetAttackErrorMessage(static_cast<AB::GameProtocol::AttackError>(packet.errorCode));
+    using namespace Events::AttackFailure;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_ERROR] = packet.errorCode;
+    eData[P_ERRORMSG] = errorMsg;
+    QueueEvent(Events::E_ATTACKFAILURE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPingTarget& packet)
+{
+    URHO3D_LOGINFOF("Object %d pings Target %d, Skill %d", packet.id, packet.targetId, packet.skillIndex);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectPingTarget;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_TARGETID] = packet.targetId;
+    eData[P_CALLTTYPE] = packet.pingType;
+    eData[P_SKILLINDEX] = packet.skillIndex;
+    QueueEvent(Events::E_OBJECTPINGTARGET, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectAdded& packet)
+{
+    URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %u", packet.effectIndex, packet.id, packet.ticks);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectEffectAdded;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_EFFECTINDEX] = packet.effectIndex;
+    eData[P_TICKS] = packet.ticks;
+    QueueEvent(Events::E_OBJECTEFFECTADDED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectRemoved& packet)
+{
+    URHO3D_LOGINFOF("Effect %d removed: Object %d", packet.effectIndex, packet.id);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectEffectRemoved;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_EFFECTINDEX] = packet.effectIndex;
+    QueueEvent(Events::E_OBJECTEFFECTREMOVED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDamaged& packet)
+{
+    URHO3D_LOGINFOF("Object %d was damaged by %d: value %d", packet.id, packet.sourceId, packet.damageValue);
+    using namespace Events::ObjectDamaged;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_DAMAGERID] = packet.sourceId;
+    eData[P_INDEX] = packet.index;
+    eData[P_DAMAGETYPE] = packet.damageType;
+    eData[P_DAMAGEVALUE] = packet.damageValue;
+    QueueEvent(Events::E_OBJECTDAMAGED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet)
+{
+    URHO3D_LOGINFOF("Object %d was healed by %d: HP %d", packet.id, packet.sourceId, packet.healValue);
+    using namespace Events::ObjectHealed;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_HEALERID] = packet.sourceId;
+    eData[P_INDEX] = packet.index;
+    eData[P_HEALVALUE] = packet.healValue;
+    QueueEvent(Events::E_OBJECTHEALED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet)
+{
+    URHO3D_LOGINFOF("Object %d progress type %d, value %d", packet.id, static_cast<int>(packet.type), packet.value);
+
+    using namespace Events::ObjectProgress;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_TYPE] = packet.type;
+    eData[P_VALUE] = packet.value;
+    QueueEvent(Events::E_OBJECTPROGRESS, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet)
+{
+    using namespace Events::ObjectItemDropped;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_TARGETID] = packet.targetId;
+    eData[P_ITEMID] = packet.itemId;
+    eData[P_ITEMINDEX] = packet.itemIndex;
+    eData[P_COUNT] = packet.count;
+    eData[P_VALUE] = packet.value;
+    QueueEvent(Events::E_OBJECTITEMDROPPED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet)
+{
+    using namespace Events::ObjectSetPosition;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_POSITION] = Vector3(packet.pos[0], packet.pos[1], packet.pos[2]);
+    QueueEvent(Events::E_OBJECTSETPOSITION, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ServerMessage;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_MESSAGETYPE] = packet.type;
+    eData[P_SENDER] = String(packet.sender.data(), static_cast<unsigned>(packet.sender.length()));
+    eData[P_DATA] = String(packet.data.data(), static_cast<unsigned>(packet.data.length()));
+    QueueEvent(Events::E_SERVERMESSAGE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ChatMessage;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_MESSAGETYPE] = packet.type;
+    eData[P_SENDERID] = packet.senderId;
+    eData[P_SENDER] = String(packet.sender.data(), static_cast<unsigned>(packet.sender.length()));
+    eData[P_DATA] = String(packet.data.data(), static_cast<unsigned>(packet.data.length()));
+    QueueEvent(Events::E_CHATMESSAGE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyInvited;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_SOURCEID] = packet.inviterId;
+    eData[P_TARGETID] = packet.inviteeId;
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYINVITED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerRemoved& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyRemoved;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_SOURCEID] = packet.leaderId;
+    eData[P_TARGETID] = packet.targetId;
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYREMOVED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerAdded& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyAdded;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_PLAYERID] = packet.acceptorId;
+    eData[P_LEADERID] = packet.leaderId;
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYADDED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyInviteRemoved& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyInviteRemoved;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_SOURCEID] = packet.leaderId;
+    eData[P_TARGETID] = packet.targetId;
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYINVITEREMOVED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyResigned;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYRESIGNED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyDefeated;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_PARTYID] = packet.partyId;
+    QueueEvent(Events::E_PARTYDEFEATED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::PartyInfoMembers;
+    eData[P_PARTYID] = packet.partyId;
+    VariantVector _members;
+    _members.Resize(static_cast<unsigned>(packet.count));
+    for (unsigned i = 0; i < static_cast<unsigned>(packet.count); i++)
+        _members[i] = packet.members[i];
+    eData[P_MEMBERS] = _members;
+    QueueEvent(Events::E_PARTYINFOMEMBERS, eData);
 }

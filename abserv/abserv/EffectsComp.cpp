@@ -4,6 +4,8 @@
 #include "EffectManager.h"
 #include "Subsystems.h"
 #include "Item.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -162,8 +164,11 @@ void EffectsComp::Write(Net::NetworkMessage& message)
             if (effect->IsInternal())
                 continue;
             message.AddByte(AB::GameProtocol::GameObjectEffectRemoved);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<uint32_t>(effect->data_.index);
+            AB::Packets::Server::ObjectEffectRemoved packet = {
+                owner_.id_,
+                effect->data_.index
+            };
+            AB::Packets::Add(packet, message);
         }
         removedEffects_.clear();
     }
@@ -175,9 +180,12 @@ void EffectsComp::Write(Net::NetworkMessage& message)
             if (effect->IsInternal())
                 continue;
             message.AddByte(AB::GameProtocol::GameObjectEffectAdded);
-            message.Add<uint32_t>(owner_.id_);
-            message.Add<uint32_t>(effect->data_.index);
-            message.Add<uint32_t>(effect->GetTicks());
+            AB::Packets::Server::ObjectEffectAdded packet = {
+                owner_.id_,
+                effect->data_.index,
+                effect->GetTicks()
+            };
+            AB::Packets::Add(packet, message);
         }
         addedEffects_.clear();
     }

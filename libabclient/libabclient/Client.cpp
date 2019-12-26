@@ -136,11 +136,6 @@ void Client::OnGetServices(const std::vector<AB::Entities::Service>& services)
     receiver_.OnGetServices(services);
 }
 
-void Client::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
-{
-    receiver_.OnObjectStateChange(updateTick, id, state);
-}
-
 void Client::OnAccountCreated()
 {
     receiver_.OnAccountCreated();
@@ -151,129 +146,10 @@ void Client::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid
     receiver_.OnPlayerCreated(uuid, mapUuid);
 }
 
-void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
-{
-    receiver_.OnObjectSelected(updateTick, sourceId, targetId);
-}
-
-void Client::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error)
-{
-    receiver_.OnObjectSkillFailure(updateTick, id, skillIndex, error);
-}
-
-void Client::OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error)
-{
-    receiver_.OnObjectAttackFailure(updateTick, id, error);
-}
-
-void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
-    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast, uint16_t hp)
-{
-    receiver_.OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast, hp);
-}
-
-void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint32_t recharge)
-{
-    receiver_.OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
-}
-
-void Client::OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
-{
-    receiver_.OnObjectPingTarget(updateTick, id, targetId, type, skillIndex);
-}
-
-void Client::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
-{
-    receiver_.OnObjectEffectAdded(updateTick, id, effectIndex, ticks);
-}
-
-void Client::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex)
-{
-    receiver_.OnObjectEffectRemoved(updateTick, id, effectIndex);
-}
-
-void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value)
-{
-    receiver_.OnObjectDamaged(updateTick, id, sourceId, index, damageType, value);
-}
-
-void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value)
-{
-    receiver_.OnObjectHealed(updateTick, id, healerId, index, value);
-}
-
-void Client::OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value)
-{
-    receiver_.OnObjectProgress(updateTick, id, type, value);
-}
-
-void Client::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
-    uint32_t itemIndex, uint32_t count, uint16_t value)
-{
-    receiver_.OnObjectDroppedItem(updateTick, id, targetId, itemId, itemIndex, count, value);
-}
-
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {
     receiver_.OnResourceChanged(updateTick, id, resType, value);
-}
-
-void Client::OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos)
-{
-    receiver_.OnObjectSetPosition(updateTick, id, pos);
-}
-
-void Client::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
-    const std::string& senderName, const std::string& message)
-{
-    receiver_.OnServerMessage(updateTick, type, senderName, message);
-}
-
-void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
-    uint32_t senderId, const std::string& senderName, const std::string& message)
-{
-    receiver_.OnChatMessage(updateTick, channel, senderId, senderName, message);
-}
-
-void Client::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error)
-{
-    receiver_.OnPlayerError(updateTick, error);
-}
-
-void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    receiver_.OnPartyInvited(updateTick, sourceId, targetId, partyId);
-}
-
-void Client::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    receiver_.OnPartyRemoved(updateTick, sourceId, targetId, partyId);
-}
-
-void Client::OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId)
-{
-    receiver_.OnPartyAdded(updateTick, acceptorId, leaderId, partyId);
-}
-
-void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
-{
-    receiver_.OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
-}
-
-void Client::OnPartyResigned(int64_t updateTick, uint32_t partyId)
-{
-    receiver_.OnPartyResigned(updateTick, partyId);
-}
-
-void Client::OnPartyDefeated(int64_t updateTick, uint32_t partyId)
-{
-    receiver_.OnPartyDefeated(updateTick, partyId);
-}
-
-void Client::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
-{
-    receiver_.OnPartyInfoMembers(partyId, members);
 }
 
 void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
@@ -863,6 +739,126 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDe
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectAttackFailure& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPingTarget& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectAdded& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectRemoved& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDamaged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerRemoved& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerAdded& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyInviteRemoved& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

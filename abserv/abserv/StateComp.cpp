@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "StateComp.h"
 #include "GameObject.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -63,8 +65,11 @@ void StateComp::Write(Net::NetworkMessage& message)
         LOG_DEBUG << "New state of " << owner_ << ": " << (int)GetState() << std::endl;
 #endif
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
-        message.Add<uint32_t>(owner_.id_);
-        message.AddByte(GetState());
+        AB::Packets::Server::ObjectStateChanged packet = {
+            owner_.id_,
+            static_cast<uint8_t>(GetState())
+        };
+        AB::Packets::Add(packet, message);
     }
 }
 

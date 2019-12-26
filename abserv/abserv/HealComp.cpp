@@ -2,6 +2,8 @@
 #include "HealComp.h"
 #include "Actor.h"
 #include "Skill.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -22,10 +24,13 @@ void HealComp::Write(Net::NetworkMessage& message)
     for (const auto& d : healings_)
     {
         message.AddByte(AB::GameProtocol::GameObjectHealed);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<uint32_t>(static_cast<uint8_t>(d.actorId));
-        message.Add<uint16_t>(static_cast<uint16_t>(d.index));
-        message.Add<int16_t>(static_cast<int16_t>(d.value));
+        AB::Packets::Server::ObjectHealed packet = {
+            owner_.id_,
+            d.actorId,
+            static_cast<uint16_t>(d.index),
+            static_cast<int16_t>(d.value)
+        };
+        AB::Packets::Add(packet, message);
     }
     healings_.clear();
 }

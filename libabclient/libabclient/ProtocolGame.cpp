@@ -105,22 +105,33 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerLeft>(message));
             break;
         case Error:
-            ParseError(message);
+        {
+            auto packet = AB::Packets::Get<AB::Packets::Server::ProtocolError>(message);
+            if (packet.code != 0)
+                ProtocolError(packet.code);
             break;
+        }
         case ChangeInstance:
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChangeInstance>(message));
             break;
         case GameStart:
-            ParseGameStart(message);
+            /* auto packet = */ AB::Packets::Get<AB::Packets::Server::GameStart>(message);
             break;
         case GameEnter:
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::EnterWorld>(message));
             break;
         case GamePong:
-            ParsePong(message);
+        {
+            auto packet = AB::Packets::Get<AB::Packets::Server::Pong>(message);
+            // Clock difference between client and server
+            clockDiff_ = static_cast<int64_t>(packet.clockDiff);
+            // Round trip time
+            lastPing_ = static_cast<int>(AbTick() - pingTick_);
+            receiver_.OnPong(lastPing_);
             break;
+        }
         case PlayerError:
-            ParseGameError(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GameError>(message));
             break;
         case PlayerAutoRun:
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PlayerAutorun>(message));
@@ -150,8 +161,11 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestItemDelete>(message));
             break;
         case GameUpdate:
-            ParseUpdate(message);
+        {
+            auto packet = AB::Packets::Get<AB::Packets::Server::GameUpdate>(message);
+            updateTick_ = packet.tick;
             break;
+        }
         case GameSpawnObjectExisting:
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpawnExisting>(message));
             break;
@@ -168,76 +182,76 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectRotationUpdate>(message));
             break;
         case GameObjectStateChange:
-            ParseObjectStateChange(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectStateChanged>(message));
             break;
         case GameObjectMoveSpeedChange:
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpeedChanged>(message));
             break;
         case GameObjectSelectTarget:
-            ParseObjectSelected(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectTargetSelected>(message));
             break;
         case GameObjectSkillFailure:
-            ParseObjectSkillFailure(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSkillFailure>(message));
             break;
         case GameObjectUseSkill:
-            ParseObjectUseSkill(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectUseSkill>(message));
             break;
         case GameObjectEndUseSkill:
-            ParseObjectEndUseSkill(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSkillSuccess>(message));
             break;
         case GameObjectAttackFailure:
-            ParseObjectAttackFailure(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectAttackFailure>(message));
             break;
         case GameObjectPingTarget:
-            ParseObjectPingTarget(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectPingTarget>(message));
             break;
         case GameObjectEffectAdded:
-            ParseObjectEffectAdded(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectEffectAdded>(message));
             break;
         case GameObjectEffectRemoved:
-            ParseObjectEffectRemoved(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectEffectRemoved>(message));
             break;
         case GameObjectDamaged:
-            ParseObjectDamaged(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDamaged>(message));
             break;
         case GameObjectHealed:
-            ParseObjectHealed(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectHealed>(message));
             break;
         case GameObjectProgress:
-            ParseObjectProgress(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectProgress>(message));
             break;
         case GameObjectDropItem:
-            ParseObjectDroppedItem(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDroppedItem>(message));
             break;
         case GameObjectSetPosition:
-            ParseObjectSetPosition(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSetPosition>(message));
             break;
         case ServerMessage:
-            ParseServerMessage(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerMessage>(message));
             break;
         case ChatMessage:
-            ParseChatMessage(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChatMessage>(message));
             break;
         case PartyPlayerInvited:
-            ParsePartyPlayerInvited(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerInvited>(message));
             break;
         case PartyPlayerRemoved:
-            ParsePartyPlayerRemoved(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerRemoved>(message));
             break;
         case PartyPlayerAdded:
-            ParsePartyPlayerAdded(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerAdded>(message));
             break;
         case PartyInviteRemoved:
-            ParsePartyInviteRemoved(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyInviteRemoved>(message));
             break;
         case PartyResigned:
-            ParsePartyResigned(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyResigned>(message));
             break;
         case PartyDefeated:
-            ParsePartyDefeated(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyDefeated>(message));
             break;
         case PartyInfoMembers:
-            ParsePartyInfoMembers(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyMembersInfo>(message));
             break;
         case GameObjectResourceChange:
             ParseResourceChanged(message);
@@ -299,228 +313,6 @@ void ProtocolGame::ParseKeyExchange(InputMessage& message)
 {
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
         serverKey_[i] = message.Get<uint8_t>();
-}
-
-void ProtocolGame::ParseObjectStateChange(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
-
-    receiver_.OnObjectStateChange(updateTick_, objectId, state);
-}
-
-void ProtocolGame::ParseObjectSelected(InputMessage& message)
-{
-    uint32_t sourceId = message.Get<uint32_t>();
-    uint32_t targetId = message.Get<uint32_t>();
-
-    receiver_.OnObjectSelected(updateTick_, sourceId, targetId);
-}
-
-void ProtocolGame::ParseObjectSkillFailure(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    int skillIndex = static_cast<int>(message.Get<int8_t>());
-    AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message.Get<uint8_t>());
-
-    receiver_.OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
-}
-
-void ProtocolGame::ParseObjectUseSkill(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    // Index in the skill bar, 1 based
-    int skillIndex = static_cast<int>(message.Get<uint8_t>());
-    uint16_t energy = message.Get<uint16_t>();
-    uint16_t adrenaline = message.Get<uint16_t>();
-    uint16_t activation = message.Get<uint16_t>();
-    uint16_t overcast = message.Get<uint16_t>();
-    uint16_t hpScarifies = message.Get<uint16_t>();
-
-    receiver_.OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast, hpScarifies);
-}
-
-void ProtocolGame::ParseObjectEndUseSkill(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    int skillIndex = static_cast<int>(message.Get<uint8_t>());
-    uint32_t recharge = message.Get<uint32_t>();
-
-    receiver_.OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
-}
-
-void ProtocolGame::ParseObjectAttackFailure(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message.Get<uint8_t>());
-
-    receiver_.OnObjectAttackFailure(updateTick_, objectId, attackError);
-}
-
-void ProtocolGame::ParseObjectPingTarget(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    uint32_t targetId = message.Get<uint32_t>();
-    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(message.Get<uint8_t>());
-    int skillIndex = message.Get<int8_t>();
-
-    receiver_.OnObjectPingTarget(updateTick_, objectId, targetId, type, skillIndex);
-}
-
-void ProtocolGame::ParseObjectEffectAdded(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    uint32_t effectIndex = message.Get<uint32_t>();
-    uint32_t ticks = message.Get<uint32_t>();
-
-    receiver_.OnObjectEffectAdded(updateTick_, objectId, effectIndex, ticks);
-}
-
-void ProtocolGame::ParseObjectEffectRemoved(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    uint32_t effectIndex = message.Get<uint32_t>();
-
-    receiver_.OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
-}
-
-void ProtocolGame::ParseObjectDamaged(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    uint32_t sourceId = message.Get<uint32_t>();
-    uint16_t index = message.Get<uint16_t>();
-    uint8_t damageType = message.Get<uint8_t>();
-    int16_t damageValue = message.Get<int16_t>();
-
-    receiver_.OnObjectDamaged(updateTick_, objectId, sourceId, index, damageType, damageValue);
-}
-
-void ProtocolGame::ParseObjectHealed(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    uint32_t healerId = message.Get<uint32_t>();
-    uint16_t index = message.Get<uint16_t>();
-    int16_t healValue = message.Get<int16_t>();
-
-    receiver_.OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
-}
-
-void ProtocolGame::ParseObjectProgress(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(message.Get<uint8_t>());
-    int value = static_cast<int>(message.Get<int16_t>());
-
-    receiver_.OnObjectProgress(updateTick_, objectId, type, value);
-}
-
-void ProtocolGame::ParseObjectDroppedItem(InputMessage& message)
-{
-    uint32_t dropperId = message.Get<uint32_t>();
-    uint32_t targetId = message.Get<uint32_t>();
-    uint32_t itemId = message.Get<uint32_t>();
-    uint32_t itemIndex = message.Get<uint32_t>();
-    uint32_t count = message.Get<uint32_t>();
-    uint16_t value = message.Get<uint16_t>();
-
-    receiver_.OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
-}
-
-void ProtocolGame::ParseObjectSetPosition(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    Vec3 pos = {
-        message.Get<float>(),
-        message.Get<float>(),
-        message.Get<float>()
-    };
-
-    receiver_.OnObjectSetPosition(updateTick_, objectId, pos);
-}
-
-void ProtocolGame::ParseServerMessage(InputMessage& message)
-{
-    AB::GameProtocol::ServerMessageType type =
-        static_cast<AB::GameProtocol::ServerMessageType>(message.Get<uint8_t>());
-    std::string sender = message.Get<std::string>();
-    std::string data = message.Get<std::string>();
-
-    receiver_.OnServerMessage(updateTick_, type, sender, data);
-}
-
-void ProtocolGame::ParseChatMessage(InputMessage& message)
-{
-    AB::GameProtocol::ChatMessageChannel type =
-        static_cast<AB::GameProtocol::ChatMessageChannel>(message.Get<uint8_t>());
-    uint32_t senderId = message.Get<uint32_t>();
-    std::string sender = message.Get<std::string>();
-    std::string data = message.Get<std::string>();
-
-    receiver_.OnChatMessage(updateTick_, type, senderId, sender, data);
-}
-
-void ProtocolGame::ParsePartyPlayerInvited(InputMessage& message)
-{
-    uint32_t sourceId = message.Get<uint32_t>();         // Inviter (source)
-    uint32_t targetId = message.Get<uint32_t>();         // Invitee (target)
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyInvited(updateTick_, sourceId, targetId, partyId);
-}
-
-void ProtocolGame::ParsePartyPlayerRemoved(InputMessage& message)
-{
-    uint32_t sourceId = message.Get<uint32_t>();
-    uint32_t targetId = message.Get<uint32_t>();
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyRemoved(updateTick_, sourceId, targetId, partyId);
-}
-
-void ProtocolGame::ParsePartyPlayerAdded(InputMessage& message)
-{
-    uint32_t acceptorId = message.Get<uint32_t>();
-    uint32_t leaderId = message.Get<uint32_t>();
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyAdded(updateTick_, acceptorId, leaderId, partyId);
-}
-
-void ProtocolGame::ParsePartyInviteRemoved(InputMessage& message)
-{
-    uint32_t sourceId = message.Get<uint32_t>();
-    uint32_t targetId = message.Get<uint32_t>();
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
-}
-
-void ProtocolGame::ParsePartyResigned(InputMessage& message)
-{
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyResigned(updateTick_, partyId);
-}
-
-void ProtocolGame::ParsePartyDefeated(InputMessage& message)
-{
-    uint32_t partyId = message.Get<uint32_t>();
-
-    receiver_.OnPartyDefeated(updateTick_, partyId);
-}
-
-void ProtocolGame::ParsePartyInfoMembers(InputMessage& message)
-{
-    uint32_t partyId = message.Get<uint32_t>();
-    size_t count = message.Get<uint8_t>();
-    std::vector<uint32_t> members;
-    members.resize(count);
-    for (size_t i = 0; i < count; i++)
-    {
-        members[i] = message.Get<uint32_t>();
-    }
-
-    receiver_.OnPartyInfoMembers(partyId, members);
 }
 
 void ProtocolGame::ParseResourceChanged(InputMessage& message)
@@ -642,42 +434,6 @@ void ProtocolGame::ParsePlayerInfo(InputMessage& message)
         frnd.expires = message.Get<int64_t>();
 
     receiver_.OnPlayerInfo(updateTick_, frnd);
-}
-
-void ProtocolGame::ParseUpdate(InputMessage& message)
-{
-    updateTick_ = message.Get<int64_t>();
-}
-
-void ProtocolGame::ParsePong(InputMessage& message)
-{
-    int32_t diff = message.Get<int32_t>();
-    // Clock difference between client and server
-    clockDiff_ = static_cast<int64_t>(diff);
-    // Round trip time
-    lastPing_ = static_cast<int>(AbTick() - pingTick_);
-
-    receiver_.OnPong(lastPing_);
-}
-
-void ProtocolGame::ParseGameError(InputMessage& message)
-{
-    AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message.Get<uint8_t>());
-
-    receiver_.OnPlayerError(updateTick_, error);
-}
-
-void ProtocolGame::ParseError(InputMessage& message)
-{
-    uint8_t error = message.Get<uint8_t>();
-    if (error != 0)
-        ProtocolError(error);
-}
-
-void ProtocolGame::ParseGameStart(InputMessage& message)
-{
-    // We must read it
-    /* int64_t startTick = */ message.Get<int64_t>();
 }
 
 void ProtocolGame::ParseQuestSelectionDialogTrigger(InputMessage& message)

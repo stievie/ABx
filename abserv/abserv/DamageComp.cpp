@@ -4,6 +4,8 @@
 #include "Subsystems.h"
 #include "Random.h"
 #include <sa/WeightedSelector.h>
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -100,11 +102,14 @@ void DamageComp::Write(Net::NetworkMessage& message)
             continue;
 
         message.AddByte(AB::GameProtocol::GameObjectDamaged);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<uint32_t>(d.damage.actorId);
-        message.Add<uint16_t>(static_cast<uint16_t>(d.damage.index));
-        message.Add<uint8_t>(static_cast<uint8_t>(d.damage.type));
-        message.Add<int16_t>(static_cast<int16_t>(d.damage.value));
+        AB::Packets::Server::ObjectDamaged packet = {
+            owner_.id_,
+            d.damage.actorId,
+            static_cast<uint16_t>(d.damage.index),
+            static_cast<uint8_t>(d.damage.type),
+            static_cast<uint16_t>(d.damage.value)
+        };
+        AB::Packets::Add(packet, message);
         d.dirty = false;
     }
 }

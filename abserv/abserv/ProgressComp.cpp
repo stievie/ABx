@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ProgressComp.h"
 #include "Actor.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -23,31 +25,49 @@ void ProgressComp::Write(Net::NetworkMessage& message)
         switch (i.type)
         {
         case ProgressType::XPIncrease:
+        {
             message.AddByte(AB::GameProtocol::GameObjectProgress);
-            message.Add<uint32_t>(owner_.id_);
-            message.AddByte(AB::GameProtocol::ObjectProgressXPIncreased);
-            message.Add<int16_t>(static_cast<int16_t>(i.value));
+            AB::Packets::Server::ObjectProgress packet = {
+                owner_.id_,
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressXPIncreased),
+                static_cast<int16_t>(i.value)
+            };
+            AB::Packets::Add(packet, message);
             break;
+        }
         case ProgressType::GotSkillPoint:
+        {
             message.AddByte(AB::GameProtocol::GameObjectProgress);
-            message.Add<uint32_t>(owner_.id_);
-            message.AddByte(AB::GameProtocol::ObjectProgressGotSkillPoint);
-            message.Add<int16_t>(static_cast<int16_t>(i.value));
+            AB::Packets::Server::ObjectProgress packet = {
+                owner_.id_,
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressGotSkillPoint),
+                static_cast<int16_t>(i.value)
+            };
+            AB::Packets::Add(packet, message);
             break;
+        }
         case ProgressType::LevelAdvance:
+        {
             message.AddByte(AB::GameProtocol::GameObjectProgress);
-            message.Add<uint32_t>(owner_.id_);
-            message.AddByte(AB::GameProtocol::ObjectProgressLevelAdvance);
-            message.Add<int16_t>(static_cast<int16_t>(i.value));
+            AB::Packets::Server::ObjectProgress packet = {
+                owner_.id_,
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressLevelAdvance),
+                static_cast<int16_t>(i.value)
+            };
+            AB::Packets::Add(packet, message);
             break;
+        }
         case ProgressType::TitleAdvance:
             // TODO:
             break;
         case ProgressType::AttributePointGain:
             message.AddByte(AB::GameProtocol::GameObjectProgress);
-            message.Add<uint32_t>(owner_.id_);
-            message.AddByte(AB::GameProtocol::ObjectProgressAttribPointsGain);
-            message.Add<int16_t>(static_cast<int16_t>(i.value));
+            AB::Packets::Server::ObjectProgress packet = {
+                owner_.id_,
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressAttribPointsGain),
+                static_cast<int16_t>(i.value)
+            };
+            AB::Packets::Add(packet, message);
         }
     }
     items_.clear();

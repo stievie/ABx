@@ -3,6 +3,8 @@
 #include <AB/ProtocolCodes.h>
 #include "Actor.h"
 #include "Game.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 namespace Components {
@@ -15,8 +17,11 @@ void SelectionComp::Write(Net::NetworkMessage& message)
         return;
 
     message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-    message.Add<uint32_t>(owner_.id_);
-    message.Add<uint32_t>(currObjectId_);
+    AB::Packets::Server::ObjectTargetSelected packet = {
+        owner_.id_,
+        currObjectId_
+    };
+    AB::Packets::Add(packet, message);
 
     prevObjectId_ = currObjectId_;
 }

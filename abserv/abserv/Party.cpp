@@ -9,6 +9,8 @@
 #include "Random.h"
 #include "UuidUtils.h"
 #include "Group.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -186,7 +188,8 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         {
             defeatedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyResigned);
-            message.Add<uint32_t>(id_);
+            AB::Packets::Server::PartyResigned packet = { id_ };
+            AB::Packets::Add(packet, message);
             KillAll();
         }
 
@@ -194,7 +197,8 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         {
             defeatedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyDefeated);
-            message.Add<uint32_t>(id_);
+            AB::Packets::Server::PartyDefeated packet = { id_ };
+            AB::Packets::Add(packet, message);
             KillAll();
         }
     }
@@ -311,9 +315,12 @@ void Party::NotifyPlayersQueued()
     assert(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerQueued);
-    nmsg->AddString(GetLeader()->GetName());
-    nmsg->AddString("");
+    AB::Packets::Server::ServerMessage packet = {
+        AB::GameProtocol::ServerMessageTypePlayerQueued,
+        GetLeader()->GetName(),
+        ""
+    };
+    AB::Packets::Add(packet, *nmsg);
     WriteToMembers(*nmsg);
 }
 
@@ -322,9 +329,12 @@ void Party::NotifyPlayersUnqueued()
     assert(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerUnqueued);
-    nmsg->AddString(GetLeader()->GetName());
-    nmsg->AddString("");
+    AB::Packets::Server::ServerMessage packet = {
+        AB::GameProtocol::ServerMessageTypePlayerUnqueued,
+        GetLeader()->GetName(),
+        ""
+    };
+    AB::Packets::Add(packet, *nmsg);
     WriteToMembers(*nmsg);
 }
 
