@@ -76,3 +76,13 @@ Build Urho3D and put the library files in `./Lib/x64`. Copy Urho3D header files 
 
 `cd` to `./makefiles` and type `make -f client.make`.
 
+## Troubleshooting
+
+If you have built it before and it doesn't build anymore, try to clean it before:
+
+~~~sh
+$ make clean && make
+~~~
+
+If it still doesn't compile, then maybe some header files were deleted or moved,
+then you should `cd makefiles/obj` and delete all `.d` files.
