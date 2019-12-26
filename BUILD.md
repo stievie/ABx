@@ -69,8 +69,15 @@ can do it manually:
     /// Set checked state without generating an event.
     void SetCheckedInternal(bool enable){ checked_ = enable; }
 ~~~
-Build Urho3D and put the library files in `./Lib/x64`. Copy Urho3D header files to
-`Include/Urho3D`. Copy Urho3D assets to the `bin` directory.
+Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`, 
+`/Lib/x64/Release`), *not* in `./Lib/x64`. Copy Urho3D header files to
+`Include/Urho3D`. Copy Urho3D assets to the `bin` directory:
+~~~plain
+bin
+  - Autoload
+  - CoreData
+  - Data
+~~~
 
 #### Build
 
