@@ -115,12 +115,18 @@ bool Quest::CollectReward()
 
 void Quest::Update(uint32_t timeElapsed)
 {
+    if (playerQuest_.deleted)
+        return;
+
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
 }
 
 void Quest::Write(Net::NetworkMessage& message)
 {
+    if (playerQuest_.deleted)
+        return;
+
     using namespace AB::GameProtocol;
     if (internalDeleted_ != playerQuest_.deleted)
     {
