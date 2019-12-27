@@ -160,6 +160,16 @@ inline void NetworkMessage::Add<bool>(const bool& value)
 {
     Add<uint8_t>(value ? 1 : 0);
 }
+template <>
+inline std::string NetworkMessage::Get<std::string>()
+{
+    return GetString();
+}
+template <>
+inline bool NetworkMessage::Get<bool>()
+{
+    return Get<uint8_t>() != 0;
+}
 
 static_assert(NETWORKMESSAGE_MAXSIZE == sizeof(NetworkMessage), "NETWORKMESSAGE_MAXSIZE doesn't match sizeof(NetworkMessage)");
 

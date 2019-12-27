@@ -2,6 +2,8 @@
 
 #include <limits>
 #include <stdint.h>
+#include <string>
+#include <memory>
 
 namespace Client {
 
@@ -52,7 +54,7 @@ public:
     uint16_t GetPos() const { return info_.pos; }
     void AddPaddingBytes(int bytes, uint8_t byte = 0);
     template <typename T>
-    void Add(T value)
+    void Add(const T& value)
     {
         if (!CanWrite(sizeof(T)))
             return;
@@ -78,9 +80,14 @@ public:
 };
 
 template<>
-inline void OutputMessage::Add<bool>(bool value)
+inline void OutputMessage::Add<bool>(const bool& value)
 {
     Add<uint8_t>(value ? 1 : 0);
+}
+template<>
+inline void OutputMessage::Add<std::string>(const std::string& value)
+{
+    AddString(value);
 }
 
 }
