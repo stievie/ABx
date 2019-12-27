@@ -49,6 +49,15 @@ public:
         const std::string& charUuid, const std::string& mapUuid, const std::string& instanceUuid,
         const std::string& host, uint16_t port);
     void Logout();
+
+    template <typename T>
+    void SendPacket(AB::GameProtocol::ClientPacketTypes type, T& packet)
+    {
+        auto msg = OutputMessage::New();
+        msg->Add<uint8_t>(type);
+        AB::Packets::Add(packet, *msg);
+        Send(std::move(msg));
+    }
     /// Triggers OnPong()
     void Ping();
     void ChangeMap(const std::string& mapUuid);

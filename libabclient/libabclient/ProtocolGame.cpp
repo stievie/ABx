@@ -5,6 +5,7 @@
 #include <AB/Entities/Mail.h>
 #include <set>
 #include <AB/Packets/Packet.h>
+#include <AB/Packets/ClientPackets.h>
 
 namespace Client {
 
@@ -339,318 +340,307 @@ void ProtocolGame::SendLoginPacket()
 void ProtocolGame::Logout()
 {
     loggingOut_ = true;
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
-    Send(std::move(msg));
+    AB::Packets::Client::Logout packet;
+    SendPacket(AB::GameProtocol::PacketTypeLogout, packet);
 }
 
 void ProtocolGame::Ping()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
-    msg->Add<int64_t>(pingTick_);
-    Send(std::move(msg));
+    AB::Packets::Client::Ping packet = {
+        pingTick_
+    };
+    SendPacket(AB::GameProtocol::PacketTypePing, packet);
 }
 
 void ProtocolGame::ChangeMap(const std::string& mapUuid)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChangeMap);
-    msg->AddString(mapUuid);
-    Send(std::move(msg));
+    AB::Packets::Client::ChangeMap packet = {
+        mapUuid
+    };
+    SendPacket(AB::GameProtocol::PacketTypeChangeMap, packet);;
 }
 
 void ProtocolGame::GetMailHeaders()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMailHeaders);
-    Send(std::move(msg));
+    AB::Packets::Client::GetMailHeaders packet;
+    SendPacket(AB::GameProtocol::PacketTypeGetMailHeaders, packet);
 }
 
 void ProtocolGame::GetInventory()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetInventory);
-    Send(std::move(msg));
+    AB::Packets::Client::GetInventory packet;
+    SendPacket(AB::GameProtocol::PacketTypeGetInventory, packet);
 }
 
 void ProtocolGame::InventoryStoreItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryStoreInChest);
-    msg->Add<uint16_t>(pos);
-    Send(std::move(msg));
+    AB::Packets::Client::InventoryStoreItem packet = {
+        pos
+    };
+    SendPacket(AB::GameProtocol::PacketTypeInventoryStoreInChest, packet);
 }
 
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDestroyItem);
-    msg->Add<uint16_t>(pos);
-    Send(std::move(msg));
+    AB::Packets::Client::InventoryDestroyItem packet = {
+        pos
+    };
+    SendPacket(AB::GameProtocol::PacketTypeInventoryDestroyItem, packet);
 }
 
 void ProtocolGame::InventoryDropItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDropItem);
-    msg->Add<uint16_t>(pos);
-    Send(std::move(msg));
+    AB::Packets::Client::InventoryDropItem packet = {
+        pos
+    };
+    SendPacket(AB::GameProtocol::PacketTypeInventoryDropItem, packet);
 }
 
 void ProtocolGame::GetChest()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetChest);
-    Send(std::move(msg));
+    AB::Packets::Client::GetChest packet;
+    SendPacket(AB::GameProtocol::PacketTypeGetChest, packet);
 }
 
 void ProtocolGame::ChestDestroyItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChestDestroyItem);
-    msg->Add<uint16_t>(pos);
-    Send(std::move(msg));
+    AB::Packets::Client::ChestDestroyItem packet = {
+        pos
+    };
+    SendPacket(AB::GameProtocol::PacketTypeChestDestroyItem, packet);
 }
 
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMail);
-    msg->AddString(mailUuid);
-    Send(std::move(msg));
+    AB::Packets::Client::GetMail packet = {
+        mailUuid
+    };
+    SendPacket(AB::GameProtocol::PacketTypeGetMail, packet);
 }
 
 void ProtocolGame::DeleteMail(const std::string& mailUuid)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeDeleteMail);
-    msg->AddString(mailUuid);
-    Send(std::move(msg));
+    AB::Packets::Client::DeleteMail packet = {
+        mailUuid
+    };
+    SendPacket(AB::GameProtocol::PacketTypeDeleteMail, packet);
 }
 
 void ProtocolGame::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSendMail);
-    msg->AddString(recipient);
-    msg->AddString(subject);
-    msg->AddString(body);
-    Send(std::move(msg));
+    AB::Packets::Client::SendMail packet = {
+        recipient,
+        subject,
+        body
+    };
+    SendPacket(AB::GameProtocol::PacketTypeSendMail, packet);
 }
 
 void ProtocolGame::GetPlayerInfoByName(const std::string& name, uint32_t fields)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByName);
-    msg->AddString(name);
-    msg->Add<uint32_t>(fields);
-    Send(std::move(msg));
+    AB::Packets::Client::GetPlayerInfoByName packet = {
+        name,
+        fields
+    };
+    SendPacket(AB::GameProtocol::PacketTypeGetPlayerInfoByName, packet);
 }
 
 void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetPlayerInfoByAccount);
-    msg->AddString(accountUuid);
-    msg->Add<uint32_t>(fields);
-    Send(std::move(msg));
+    AB::Packets::Client::GetPlayerInfoByAccount packet = {
+        accountUuid,
+        fields
+    };
+    SendPacket(AB::GameProtocol::PacketTypeGetPlayerInfoByAccount, packet);
 }
 
 void ProtocolGame::Move(uint8_t direction)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
-    msg->Add<uint8_t>(direction);
-    Send(std::move(msg));
+    AB::Packets::Client::Move packet = {
+        direction
+    };
+    SendPacket(AB::GameProtocol::PacketTypeMove, packet);
 }
 
 void ProtocolGame::Turn(uint8_t direction)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
-    msg->Add<uint8_t>(direction);
-    Send(std::move(msg));
+    AB::Packets::Client::Turn packet = {
+        direction
+    };
+    SendPacket(AB::GameProtocol::PacketTypeTurn, packet);
 }
 
 void ProtocolGame::SetDirection(float rad)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
-    msg->Add<float>(rad);
-    Send(std::move(msg));
+    AB::Packets::Client::SetDirection packet = {
+        rad
+    };
+    SendPacket(AB::GameProtocol::PacketTypeSetDirection, packet);
 }
 
 void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeClickObject);
-    msg->Add<uint32_t>(sourceId);
-    msg->Add<uint32_t>(targetId);
-    Send(std::move(msg));
+    AB::Packets::Client::ClickObject packet = {
+        sourceId,
+        targetId
+    };
+    SendPacket(AB::GameProtocol::PacketTypeClickObject, packet);
 }
 
 void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSelect);
-    msg->Add<uint32_t>(sourceId);
-    msg->Add<uint32_t>(targetId);
-    Send(std::move(msg));
+    AB::Packets::Client::SelectObject packet = {
+        sourceId,
+        targetId
+    };
+    SendPacket(AB::GameProtocol::PacketTypeSelect, packet);
 }
 
 void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCommand);
-    msg->Add<uint8_t>(type);
-    msg->AddString(data);
-    Send(std::move(msg));
+    AB::Packets::Client::Command packet = {
+        type,
+        data
+    };
+    SendPacket(AB::GameProtocol::PacketTypeCommand, packet);
 }
 
 void ProtocolGame::GotoPos(const Vec3& pos)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGoto);
-    msg->Add<float>(pos.x);
-    msg->Add<float>(pos.y);
-    msg->Add<float>(pos.z);
-    Send(std::move(msg));
+    AB::Packets::Client::GotoPos packet = {
+        { pos.x, pos.y, pos.z }
+    };
+    SendPacket(AB::GameProtocol::PacketTypeGoto, packet);
 }
 
 void ProtocolGame::Follow(uint32_t targetId, bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
-    msg->Add<uint32_t>(targetId);
-    msg->Add<bool>(ping);
-    Send(std::move(msg));
+    AB::Packets::Client::Follow packet = {
+        targetId,
+        ping
+    };
+    SendPacket(AB::GameProtocol::PacketTypeFollow, packet);
 }
 
 void ProtocolGame::UseSkill(uint32_t index, bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
-    msg->Add<uint8_t>(static_cast<uint8_t>(index));
-    msg->Add<bool>(ping);
-    Send(std::move(msg));
+    AB::Packets::Client::UseSkill packet = {
+        static_cast<uint8_t>(index),
+        ping
+    };
+    SendPacket(AB::GameProtocol::PacketTypeUseSkill, packet);
 }
 
 void ProtocolGame::Attack(bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAttack);
-    msg->Add<bool>(ping);
-    Send(std::move(msg));
+    AB::Packets::Client::Attack packet = {
+        ping
+    };
+    SendPacket(AB::GameProtocol::PacketTypeAttack, packet);
 }
 
 void ProtocolGame::Cancel()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCancel);
-    Send(std::move(msg));
+    AB::Packets::Client::Cancel packet = { };
+    SendPacket(AB::GameProtocol::PacketTypeCancel, packet);
 }
 
 void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetState);
-    msg->Add<uint8_t>(static_cast<uint8_t>(newState));
-    Send(std::move(msg));
+    AB::Packets::Client::SetPlayerState packet = {
+        static_cast<uint8_t>(newState)
+    };
+    SendPacket(AB::GameProtocol::PacketTypeSetState, packet);
 }
 
 void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyInvitePlayer);
-    msg->Add<uint32_t>(targetId);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyInvitePlayer packet = {
+        targetId
+    };
+    SendPacket(AB::GameProtocol::PacketTypePartyInvitePlayer, packet);
 }
 
 void ProtocolGame::PartyKickPlayer(uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyKickPlayer);
-    msg->Add<uint32_t>(targetId);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyKickPlayer packet = {
+        targetId
+    };
+    SendPacket(AB::GameProtocol::PacketTypePartyKickPlayer, packet);
 }
 
 void ProtocolGame::PartyLeave()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyLeave);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyLeave packet = { };
+    SendPacket(AB::GameProtocol::PacketTypePartyLeave, packet);
 }
 
 void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyAcceptInvite);
-    msg->Add<uint32_t>(inviterId);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyAcceptInvite packet = {
+        inviterId
+    };
+    SendPacket(AB::GameProtocol::PacketTypePartyAcceptInvite, packet);
 }
 
 void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyRejectInvite);
-    msg->Add<uint32_t>(inviterId);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyRejectInvite packet = {
+        inviterId
+    };
+    SendPacket(AB::GameProtocol::PacketTypePartyRejectInvite, packet);
 }
 
 void ProtocolGame::PartyGetMembers(uint32_t partyId)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacektTypeGetPartyMembers);
-    msg->Add<uint32_t>(partyId);
-    Send(std::move(msg));
+    AB::Packets::Client::PartyGetMembers packet = {
+        partyId
+    };
+    SendPacket(AB::GameProtocol::PacektTypeGetPartyMembers, packet);
 }
 
 void ProtocolGame::QueueMatch()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeQueue);
-    Send(std::move(msg));
+    AB::Packets::Client::QueueMatch packet = { };
+    SendPacket(AB::GameProtocol::PacketTypeQueue, packet);
 }
 
 void ProtocolGame::UnqueueMatch()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUnqueue);
-    Send(std::move(msg));
+    AB::Packets::Client::UnqueueMatch packet = { };
+    SendPacket(AB::GameProtocol::PacketTypeUnqueue, packet);
 }
 
 void ProtocolGame::AddFriend(const std::string& name, AB::Entities::FriendRelation relation)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAddFriend);
-    msg->AddString(name);
-    msg->Add<uint8_t>(static_cast<uint8_t>(relation));
-    Send(std::move(msg));
+    AB::Packets::Client::AddFriend packet = {
+        name,
+        relation
+    };
+    SendPacket(AB::GameProtocol::PacketTypeAddFriend, packet);
 }
 
 void ProtocolGame::RemoveFriend(const std::string& accountUuid)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeRemoveFriend);
-    msg->AddString(accountUuid);
-    Send(std::move(msg));
+    AB::Packets::Client::RemoveFriend packet = {
+        accountUuid
+    };
+    SendPacket(AB::GameProtocol::PacketTypeRemoveFriend, packet);
 }
 
 void ProtocolGame::UpdateFriendList()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetFriendList);
-    Send(std::move(msg));
+    AB::Packets::Client::UpdateFriendList packet = { };
+    SendPacket(AB::GameProtocol::PacketTypeGetFriendList, packet);
 }
 
 void ProtocolGame::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetOnlineStatus);
-    msg->Add<uint8_t>(static_cast<uint8_t>(status));
-    Send(std::move(msg));
+    AB::Packets::Client::SetOnlineStatus packet = {
+        status
+    };
+    SendPacket(AB::GameProtocol::PacketTypeSetOnlineStatus, packet);
 }
 
 }
