@@ -21,6 +21,7 @@
 #include <AB/Entities/FriendList.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <AB/Packets/ClientPackets.h>
 
 namespace Net {
 
@@ -132,228 +133,259 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
     case AB::GameProtocol::PacketTypePing:
     {
-        const int64_t clientTick = message.Get<int64_t>();
-        AddPlayerTask(&Game::Player::CRQPing, clientTick);
+        auto packet = AB::Packets::Get<AB::Packets::Client::Ping>(message);
+        AddPlayerTask(&Game::Player::CRQPing, packet.tick);
         break;
     }
     case AB::GameProtocol::PacketTypeLogout:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::Logout>(message);
         AddPlayerTask(&Game::Player::CRQLogout);
         break;
+    }
     case AB::GameProtocol::PacketTypeChangeMap:
     {
         // Called by the client when clicking on the map
-        const std::string mapUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQChangeMap, mapUuid);
+        auto packet = AB::Packets::Get<AB::Packets::Client::ChangeMap>(message);
+        AddPlayerTask(&Game::Player::CRQChangeMap, packet.mapUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeSendMail:
     {
-        const std::string recipient = message.GetString();
-        const std::string subject = message.GetString();
-        const std::string body = message.GetString();
-        AddPlayerTask(&Game::Player::CRQSendMail, recipient, subject, body);
+        auto packet = AB::Packets::Get<AB::Packets::Client::SendMail>(message);
+        AddPlayerTask(&Game::Player::CRQSendMail, packet.recipient, packet.subject, packet.body);
         break;
     }
     case AB::GameProtocol::PacketTypeGetMailHeaders:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetMailHeaders>(message);
         AddPlayerTask(&Game::Player::CRQGetMailHeaders);
         break;
+    }
     case AB::GameProtocol::PacketTypeGetMail:
     {
-        const std::string mailUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQGetMail, mailUuid);
+        auto packet = AB::Packets::Get<AB::Packets::Client::GetMail>(message);
+        AddPlayerTask(&Game::Player::CRQGetMail, packet.mailUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeDeleteMail:
     {
-        const std::string mailUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQDeleteMail, mailUuid);
+        auto packet = AB::Packets::Get<AB::Packets::Client::DeleteMail>(message);
+        AddPlayerTask(&Game::Player::CRQDeleteMail, packet.mailUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeGetInventory:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetInventory>(message);
         AddPlayerTask(&Game::Player::CRQGetInventory);
         break;
+    }
     case AB::GameProtocol::PacketTypeInventoryDestroyItem:
     {
-        uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::CRQDestroyInventoryItem, pos);
+        auto packet = AB::Packets::Get<AB::Packets::Client::InventoryDestroyItem>(message);
+        AddPlayerTask(&Game::Player::CRQDestroyInventoryItem, packet.pos);
         break;
     }
     case AB::GameProtocol::PacketTypeInventoryDropItem:
     {
-        uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::CRQDropInventoryItem, pos);
+        auto packet = AB::Packets::Get<AB::Packets::Client::InventoryDropItem>(message);
+        AddPlayerTask(&Game::Player::CRQDropInventoryItem, packet.pos);
         break;
     }
     case AB::GameProtocol::PacketTypeInventoryStoreInChest:
     {
-        uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::CRQStoreInChest, pos);
+        auto packet = AB::Packets::Get<AB::Packets::Client::InventoryStoreItem>(message);
+        AddPlayerTask(&Game::Player::CRQStoreInChest, packet.pos);
         break;
     }
     case AB::GameProtocol::PacketTypeGetChest:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);
         AddPlayerTask(&Game::Player::CRQGetChest);
         break;
+    }
     case AB::GameProtocol::PacketTypeChestDestroyItem:
     {
-        uint16_t pos = message.Get<uint16_t>();
-        AddPlayerTask(&Game::Player::CRQDestroyChestItem, pos);
+        auto packet = AB::Packets::Get<AB::Packets::Client::ChestDestroyItem>(message);
+        AddPlayerTask(&Game::Player::CRQDestroyChestItem, packet.pos);
         break;
     }
     case AB::GameProtocol::PacketTypePartyInvitePlayer:
     {
-        uint32_t playerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQPartyInvitePlayer, playerId);
+        auto packet = AB::Packets::Get<AB::Packets::Client::PartyInvitePlayer>(message);
+        AddPlayerTask(&Game::Player::CRQPartyInvitePlayer, packet.targetId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyKickPlayer:
     {
-        uint32_t playerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQPartyKickPlayer, playerId);
+        auto packet = AB::Packets::Get<AB::Packets::Client::PartyKickPlayer>(message);
+        AddPlayerTask(&Game::Player::CRQPartyKickPlayer, packet.targetId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyLeave:
     {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::PartyLeave>(message);
         AddPlayerTask(&Game::Player::CRQPartyLeave);
         break;
     }
     case AB::GameProtocol::PacketTypePartyAcceptInvite:
     {
-        uint32_t inviterId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQPartyAccept, inviterId);
+        auto packet = AB::Packets::Get<AB::Packets::Client::PartyAcceptInvite>(message);
+        AddPlayerTask(&Game::Player::CRQPartyAccept, packet.inviterId);
         break;
     }
     case AB::GameProtocol::PacketTypePartyRejectInvite:
     {
-        uint32_t inviterId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQPartyRejectInvite, inviterId);
+        auto packet = AB::Packets::Get<AB::Packets::Client::PartyRejectInvite>(message);
+        AddPlayerTask(&Game::Player::CRQPartyRejectInvite, packet.inviterId);
         break;
     }
     case AB::GameProtocol::PacektTypeGetPartyMembers:
     {
-        uint32_t partyId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQPartyGetMembers, partyId);
+        auto packet = AB::Packets::Get<AB::Packets::Client::PartyGetMembers>(message);
+        AddPlayerTask(&Game::Player::CRQPartyGetMembers, packet.partyId);
         break;
     }
     case AB::GameProtocol::PacketTypeMove:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Move>(message);
         Utils::VariantMap data;
-        data[Game::InputDataDirection] = message.Get<uint8_t>();
+        data[Game::InputDataDirection] = packet.direction;
         AddPlayerInput(Game::InputType::Move, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeTurn:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Turn>(message);
         Utils::VariantMap data;
-        data[Game::InputDataDirection] = message.Get<uint8_t>();   // None | Left | Right
+        data[Game::InputDataDirection] = packet.direction;   // None | Left | Right
         AddPlayerInput(Game::InputType::Turn, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeSetDirection:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetDirection>(message);
         Utils::VariantMap data;
-        data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
+        data[Game::InputDataDirection] = packet.rad;   // World angle Rad
         AddPlayerInput(Game::InputType::Direction, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeSetState:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetPlayerState>(message);
         Utils::VariantMap data;
-        data[Game::InputDataState] = message.Get<uint8_t>();
+        data[Game::InputDataState] = packet.newState;
         AddPlayerInput(Game::InputType::SetState, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeGoto:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::GotoPos>(message);
         Utils::VariantMap data;
-        data[Game::InputDataVertexX] = message.Get<float>();
-        data[Game::InputDataVertexY] = message.Get<float>();
-        data[Game::InputDataVertexZ] = message.Get<float>();
+        data[Game::InputDataVertexX] = packet.pos[0];
+        data[Game::InputDataVertexY] = packet.pos[1];
+        data[Game::InputDataVertexZ] = packet.pos[2];
         AddPlayerInput(Game::InputType::Goto, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeFollow:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Follow>(message);
         Utils::VariantMap data;
-        data[Game::InputDataObjectId] = message.Get<uint32_t>();
-        data[Game::InputDataPingTarget] = (message.Get<uint8_t>() != 0);
+        data[Game::InputDataObjectId] = packet.targetId;
+        data[Game::InputDataPingTarget] = packet.ping;
         AddPlayerInput(Game::InputType::Follow, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeUseSkill:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::UseSkill>(message);
         // 1 based -> convert to 0 based
-        uint8_t index = message.Get<uint8_t>();
-        bool ping = message.Get<uint8_t>() != 0;
+        const uint8_t index = packet.index;
         if (index > 0 && index <= Game::PLAYER_MAX_SKILLS)
         {
             Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = index - 1;
-            data[Game::InputDataPingTarget] = ping;
+            data[Game::InputDataPingTarget] = packet.ping;
             AddPlayerInput(Game::InputType::UseSkill, std::move(data));
         }
         break;
     }
     case AB::GameProtocol::PacketTypeCancel:
     {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::Cancel>(message);
         AddPlayerInput(Game::InputType::Cancel);
         break;
     }
     case AB::GameProtocol::PacketTypeAttack:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Attack>(message);
         Utils::VariantMap data;
-        bool ping = message.Get<uint8_t>() != 0;
-        data[Game::InputDataPingTarget] = ping;
+        data[Game::InputDataPingTarget] = packet.ping;
         AddPlayerInput(Game::InputType::Attack, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeSelect:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SelectObject>(message);
         Utils::VariantMap data;
-        data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
-        data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
+        data[Game::InputDataObjectId] = packet.sourceId;    // Source
+        data[Game::InputDataObjectId2] = packet.targetId;   // Target
         AddPlayerInput(Game::InputType::Select, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeClickObject:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::ClickObject>(message);
         Utils::VariantMap data;
-        data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
-        data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
+        data[Game::InputDataObjectId] = packet.sourceId;    // Source
+        data[Game::InputDataObjectId2] = packet.targetId;   // Target
         AddPlayerInput(Game::InputType::ClickObject, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeQueue:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::QueueMatch>(message);
         AddPlayerTask(&Game::Player::CRQQueueForMatch);
         break;
+    }
     case AB::GameProtocol::PacketTypeUnqueue:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::UnqueueMatch>(message);
         AddPlayerTask(&Game::Player::CRQUnqueueForMatch);
         break;
+    }
     case AB::GameProtocol::PacketTypeCommand:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Command>(message);
         Utils::VariantMap data;
-        data[Game::InputDataCommandType] = message.GetByte();
-        data[Game::InputDataCommandData] = message.GetString();
+        data[Game::InputDataCommandType] = packet.type;
+        data[Game::InputDataCommandData] = packet.data;
         AddPlayerInput(Game::InputType::Command, std::move(data));
         break;
     }
     case AB::GameProtocol::PacketTypeGetFriendList:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::UpdateFriendList>(message);
         AddPlayerTask(&Game::Player::CRQGetFriendList);
         break;
+    }
     case AB::GameProtocol::PacketTypeAddFriend:
     {
-        std::string playerName = message.GetString();
-        AB::Entities::FriendRelation rel = static_cast<AB::Entities::FriendRelation>(message.Get<uint8_t>());
-        AddPlayerTask(&Game::Player::CRQAddFriend, playerName, rel);
+        auto packet = AB::Packets::Get<AB::Packets::Client::AddFriend>(message);
+        const AB::Entities::FriendRelation rel = static_cast<AB::Entities::FriendRelation>(packet.relation);
+        AddPlayerTask(&Game::Player::CRQAddFriend, packet.name, rel);
         break;
     }
     case AB::GameProtocol::PacketTypeRemoveFriend:
     {
-        std::string accountUuid = message.GetString();
-        AddPlayerTask(&Game::Player::CRQRemoveFriend, accountUuid);
+        auto packet = AB::Packets::Get<AB::Packets::Client::RemoveFriend>(message);
+        AddPlayerTask(&Game::Player::CRQRemoveFriend, packet.accountUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeRenameFriend:
     {
+        // TODO:
         std::string accountUuid = message.GetString();
         std::string newName = message.GetString();
         AddPlayerTask(&Game::Player::CRQChangeFriendNick, accountUuid, newName);
@@ -361,27 +393,30 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeGetPlayerInfoByAccount:
     {
-        std::string accountUuid = message.GetString();
-        uint32_t fields = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByAccount, accountUuid, fields);
+        auto packet = AB::Packets::Get<AB::Packets::Client::GetPlayerInfoByAccount>(message);
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByAccount, packet.accountUuid, packet.fields);
         break;
     }
     case AB::GameProtocol::PacketTypeGetPlayerInfoByName:
     {
-        std::string name = message.GetString();
-        uint32_t fields = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByName, name, fields);
+        auto packet = AB::Packets::Get<AB::Packets::Client::GetPlayerInfoByName>(message);
+        AddPlayerTask(&Game::Player::CRQGetPlayerInfoByName, packet.name, packet.fields);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:
+    {
         AddPlayerTask(&Game::Player::CRQGetGuildInfo);
         break;
+    }
     case AB::GameProtocol::PacketTypeGetGuildMembers:
+    {
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
+    }
     case AB::GameProtocol::PacketTypeSetOnlineStatus:
     {
-        AB::Entities::OnlineStatus status = static_cast<AB::Entities::OnlineStatus>(message.Get<uint8_t>());
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetOnlineStatus>(message);
+        const AB::Entities::OnlineStatus status = static_cast<AB::Entities::OnlineStatus>(packet.newStatus);
         AddPlayerTask(&Game::Player::CRQSetOnlineStatus, status);
         break;
     }
