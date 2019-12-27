@@ -52,7 +52,7 @@ Header file:
 
 class SelectAggro : public AI::Filter
 {
-    FILTER_FACTORY(SelectAggro)
+    FILTER_CLASS(SelectAggro)
 public:
     explicit SelectAggro(const ArgumentsType& arguments) :
         Filter(arguments)
@@ -107,7 +107,7 @@ Header file:
 
 class AttackSelection : public AI::Action
 {
-    NODE_FACTORY(AttackSelection)
+    NODE_CLASS(AttackSelection)
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:

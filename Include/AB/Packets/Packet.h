@@ -39,6 +39,7 @@ public:
 
 }
 
+// Read a packet from the message
 template<typename T, typename _Msg>
 T Get(_Msg& msg)
 {
@@ -48,6 +49,7 @@ T Get(_Msg& msg)
     return result;
 }
 
+// Add a packet to the message
 template<typename T, typename _Msg>
 void Add(T& value, _Msg& msg)
 {

@@ -2,6 +2,7 @@
 
 #include "MathDefs.h"
 #include "MathUtils.h"
+#include "MathConfig.h"
 #include <sstream>
 #include <cmath>
 #include <array>
