@@ -712,7 +712,7 @@ void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t f
     {
         if (((*it).second.fields & fields) == fields)
         {
-            OnPlayerInfo(0, (*it).second);
+            OnPacket(0, (*it).second);
             return;
         }
     }
@@ -858,7 +858,7 @@ void FwClient::UpdateFriendList()
         client_.UpdateFriendList();
 }
 
-void FwClient::SetOnlineStatus(Client::RelatedAccount::Status status)
+void FwClient::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
 {
     if (loggedIn_)
         client_.SetOnlineStatus(status);
@@ -996,200 +996,12 @@ void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& mapUu
     EnterWorld(String(uuid.c_str()), String(mapUuid.c_str()));
 }
 
-void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
-    AB::GameProtocol::ResourceType resType, int16_t value)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::ObjectResourceChanged;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = id;
-    eData[P_RESTYPE] = static_cast<uint32_t>(resType);
-    eData[P_VALUE] = static_cast<int32_t>(value);
-    QueueEvent(Events::E_OBJECTRESOURCECHANGED, eData);
-}
-
-void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::DialogTrigger;
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_DIALOGID] = dialogId;
-    QueueEvent(Events::E_DIALOGGTRIGGER, eData);
-}
-
-void FwClient::OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::QuestSelectionDialogTrigger;
-    VariantVector q;
-    for (auto i : quests)
-        q.Push(i);
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_QUESTS] = q;
-    QueueEvent(Events::E_QUESTSELECTIONDIALOGGTRIGGER, eData);
-}
-
-void FwClient::OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex)
-{
-    using namespace Events::QuestDialogTrigger;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_QUESTINDEX] = questIndex;
-    QueueEvent(Events::E_QUESTDIALOGGTRIGGER, eData);
-}
-
-void FwClient::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
-{
-    using namespace Events::NpcHasQuest;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_OBJECTID] = npcId;
-    eData[P_HASQUEST] = hasQuest;
-    QueueEvent(Events::E_NPCHASQUEST, eData);
-}
-
-void FwClient::OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted)
-{
-    using namespace Events::QuestDeleted;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_INDEX] = index;
-    eData[P_DELETED] = deleted;
-    QueueEvent(Events::E_QUESTDELETED, eData);
-}
-
-void FwClient::OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded)
-{
-    using namespace Events::QuestRewarded;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_INDEX] = index;
-    eData[P_REWARDED] = rewarded;
-    QueueEvent(Events::E_QUESTREWARDED, eData);
-}
-
-void FwClient::UpdatePlayer(const Client::RelatedAccount& player)
-{
-    auto it = relatedAccounts_.find(player.accountUuid);
-    if (it == relatedAccounts_.end())
-    {
-        relatedAccounts_.emplace(player.accountUuid, player);
-        return;
-    }
-
-    Client::RelatedAccount& relAcc = (*it).second;
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldName)
-    {
-        relAcc.nickName = player.nickName;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldName;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
-    {
-        relAcc.currentName = player.currentName;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentName;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-    {
-        relAcc.currentMap = player.currentMap;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentMap;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
-    {
-        relAcc.status = player.status;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldOnlineStatus;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldRelation)
-    {
-        relAcc.relation = player.relation;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldRelation;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
-    {
-        relAcc.guildUuid = player.guildUuid;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildGuid;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
-    {
-        relAcc.guildRole = player.guildRole;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildRole;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
-    {
-        relAcc.guildInviteName = player.guildInviteName;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInviteName;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
-    {
-        relAcc.invited = player.invited;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInvited;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
-    {
-        relAcc.joined = player.joined;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildJoined;
-    }
-    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
-    {
-        relAcc.expires = player.expires;
-        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildExpires;
-    }
-}
-
-void FwClient::OnPlayerInfo(int64_t, const Client::RelatedAccount& player)
-{
-    UpdatePlayer(player);
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::GotPlayerInfo;
-    eData[P_ACCOUNTUUID] = String(player.accountUuid.c_str());
-    QueueEvent(Events::E_GOT_PLAYERINFO, eData);
-}
-
-void FwClient::OnFriendList(int64_t, const std::vector<std::string>& list)
-{
-    friendList_ = list;
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::GotFriendList;
-    QueueEvent(Events::E_GOT_FRIENDLIST, eData);
-}
-
-void FwClient::OnFriendAdded(int64_t, const std::string& accountUuid, Client::RelatedAccount::Relation relation)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::FriendAdded;
-    eData[P_ACCOUNTUUID] = String(accountUuid.c_str());
-    eData[P_RELATION] = static_cast<unsigned>(relation);
-    QueueEvent(Events::E_FRIENDADDED, eData);
-}
-
-void FwClient::OnFriendRemoved(int64_t, const std::string& accountUuid, Client::RelatedAccount::Relation relation)
-{
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::FriendRemoved;
-    eData[P_ACCOUNTUUID] = String(accountUuid.c_str());
-    eData[P_RELATION] = static_cast<unsigned>(relation);
-    QueueEvent(Events::E_FRIENDREMOVED, eData);
-}
-
-void FwClient::OnGuildMemberList(int64_t, const std::vector<std::string>& list)
-{
-    guildMembers_ = list;
-    VariantMap& eData = GetEventDataMap();
-    using namespace Events::GotGuildMembers;
-    QueueEvent(Events::E_GOT_GUILDMEMBERS, eData);
-}
-
-void FwClient::OnGuildInfo(int64_t, const AB::Entities::Guild& guild)
-{
-    // TODO:
-    (void)guild;
-}
-
 const std::string & FwClient::GetAccountUuid() const
 {
     return client_.accountUuid_;
 }
 
-const Client::RelatedAccount* FwClient::GetRelatedAccount(const String& accountUuid) const
+const AB::Packets::Server::PlayerInfo* FwClient::GetRelatedAccount(const String& accountUuid) const
 {
     const auto it = relatedAccounts_.find(std::string(accountUuid.CString()));
     if (it == relatedAccounts_.end())
@@ -1850,15 +1662,203 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefe
     QueueEvent(Events::E_PARTYDEFEATED, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::PartyMembersInfo& packet)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace Events::PartyInfoMembers;
     eData[P_PARTYID] = packet.partyId;
     VariantVector _members;
     _members.Resize(static_cast<unsigned>(packet.count));
-    for (unsigned i = 0; i < static_cast<unsigned>(packet.count); i++)
+    for (unsigned i = 0; i < static_cast<unsigned>(packet.count); ++i)
         _members[i] = packet.members[i];
     eData[P_MEMBERS] = _members;
     QueueEvent(Events::E_PARTYINFOMEMBERS, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectResourceChanged& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ObjectResourceChanged;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_RESTYPE] = packet.type;
+    eData[P_VALUE] = packet.value;
+    QueueEvent(Events::E_OBJECTRESOURCECHANGED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::DialogTrigger& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::DialogTrigger;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_DIALOGID] = packet.dialogId;
+    QueueEvent(Events::E_DIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendList& packet)
+{
+    friendList_ = packet.friends;
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::GotFriendList;
+    QueueEvent(Events::E_GOT_FRIENDLIST, eData);
+
+}
+
+void FwClient::UpdatePlayer(const AB::Packets::Server::PlayerInfo& player)
+{
+    auto it = relatedAccounts_.find(player.accountUuid);
+    if (it == relatedAccounts_.end())
+    {
+        relatedAccounts_.emplace(player.accountUuid, player);
+        return;
+    }
+
+    AB::Packets::Server::PlayerInfo& relAcc = (*it).second;
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldName)
+    {
+        relAcc.nickName = player.nickName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldName;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+    {
+        relAcc.currentName = player.currentName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentName;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+    {
+        relAcc.currentMap = player.currentMap;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldCurrentMap;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+    {
+        relAcc.status = player.status;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldOnlineStatus;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldRelation)
+    {
+        relAcc.relation = player.relation;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldRelation;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
+    {
+        relAcc.guildUuid = player.guildUuid;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildGuid;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
+    {
+        relAcc.guildRole = player.guildRole;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildRole;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
+    {
+        relAcc.guildInviteName = player.guildInviteName;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInviteName;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
+    {
+        relAcc.invited = player.invited;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildInvited;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
+    {
+        relAcc.joined = player.joined;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildJoined;
+    }
+    if (player.fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
+    {
+        relAcc.expires = player.expires;
+        relAcc.fields |= AB::GameProtocol::PlayerInfoFieldGuildExpires;
+    }
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::PlayerInfo& packet)
+{
+    UpdatePlayer(packet);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::GotPlayerInfo;
+    eData[P_ACCOUNTUUID] = String(packet.accountUuid.c_str());
+    QueueEvent(Events::E_GOT_PLAYERINFO, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendAdded& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::FriendAdded;
+    eData[P_ACCOUNTUUID] = String(packet.accountUuid.c_str());
+    eData[P_RELATION] = static_cast<unsigned>(packet.relation);
+    QueueEvent(Events::E_FRIENDADDED, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendRemoved& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::FriendRemoved;
+    eData[P_ACCOUNTUUID] = String(packet.accountUuid.c_str());
+    eData[P_RELATION] = static_cast<unsigned>(packet.relation);
+    QueueEvent(Events::E_FRIENDREMOVED, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::GuildInfo& packet)
+{
+    // TODO:
+    (void)packet;
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::GuildMemberList& packet)
+{
+    guildMembers_ = packet.members;
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::GotGuildMembers;
+    QueueEvent(Events::E_GOT_GUILDMEMBERS, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::QuestSelectionDialogTrigger;
+    VariantVector q;
+    for (auto i : packet.quests)
+        q.Push(i);
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_QUESTS] = q;
+    QueueEvent(Events::E_QUESTSELECTIONDIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDialogTrigger& packet)
+{
+    using namespace Events::QuestDialogTrigger;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_QUESTINDEX] = packet.questIndex;
+    QueueEvent(Events::E_QUESTDIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet)
+{
+    using namespace Events::NpcHasQuest;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.npcId;
+    eData[P_HASQUEST] = packet.hasQuest;
+    QueueEvent(Events::E_NPCHASQUEST, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet)
+{
+    using namespace Events::QuestDeleted;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_INDEX] = packet.questIndex;
+    eData[P_DELETED] = packet.deleted;
+    QueueEvent(Events::E_QUESTDELETED, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet)
+{
+    using namespace Events::QuestRewarded;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_INDEX] = packet.questIndex;
+    eData[P_REWARDED] = packet.rewarded;
+    QueueEvent(Events::E_QUESTREWARDED, eData);
 }

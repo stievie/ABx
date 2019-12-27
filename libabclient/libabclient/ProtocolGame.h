@@ -6,6 +6,7 @@
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/FriendList.h>
 #include "Receiver.h"
+#include <AB/Packets/ServerPackets.h>
 
 namespace Client {
 
@@ -40,19 +41,6 @@ protected:
 
     void ParseMessage(InputMessage& message);
     void ParseKeyExchange(InputMessage& message);
-    void ParseResourceChanged(InputMessage& message);
-    void ParseDialogTrigger(InputMessage& message);
-    void ParseFriendList(InputMessage& message);
-    void ParseFriendAdded(InputMessage& message);
-    void ParseFriendRemoved(InputMessage& message);
-    void ParseGuildInfo(InputMessage& message);
-    void ParseGuildMemberList(InputMessage& message);
-    void ParseQuestSelectionDialogTrigger(InputMessage& message);
-    void ParseQuestDialogTrigger(InputMessage& message);
-    void ParseQuestNpcHasQuest(InputMessage& message);
-    void ParseQuestDeleted(InputMessage& message);
-    void ParseQuestRewarded(InputMessage& message);
-    void ParsePlayerInfo(InputMessage& message);
 public:
     ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);
     ~ProtocolGame() override = default;
@@ -100,7 +88,7 @@ public:
     void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const std::string& accountUuid);
     void UpdateFriendList();
-    void SetOnlineStatus(RelatedAccount::Status status);
+    void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
 
     int64_t GetUpdateTick() const
     {

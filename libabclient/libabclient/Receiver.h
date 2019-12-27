@@ -22,52 +22,10 @@
 
 namespace Client {
 
-struct RelatedAccount
+inline bool IsOffline(AB::Packets::Server::PlayerInfo::Status status)
 {
-    enum Status
-    {
-        OnlineStatusOffline = 0,
-        OnlineStatusAway,
-        OnlineStatusDoNotDisturb,
-        OnlineStatusOnline,
-        OnlineStatusInvisible              // Like offline for other users
-    };
-    enum Relation
-    {
-        FriendRelationUnknown = 0,
-        FriendRelationFriend = 1,
-        FriendRelationIgnore = 2
-    };
-    enum GuildRole
-    {
-        GuildRoleUnknown = 0,
-        GuildRoleGuest,
-        GuildRoleInvited,
-        GuildRoleMember,
-        GuildRoleOfficer,
-        GuildRoleLeader
-    };
-    uint32_t fields{ 0 };
-    std::string accountUuid;
-    // Friend nick name
-    std::string nickName;
-    std::string currentName;
-    std::string currentMap;
-    Status status;
-    // Friend
-    Relation relation{ FriendRelationUnknown };
-    // Guild member
-    std::string guildUuid;
-    GuildRole guildRole{ GuildRoleUnknown };
-    std::string guildInviteName;
-    int64_t invited = 0;
-    int64_t joined = 0;
-    int64_t expires = 0;
-};
-
-inline bool IsOffline(RelatedAccount::Status status)
-{
-    return (status == RelatedAccount::OnlineStatusOffline) || (status == RelatedAccount::OnlineStatusInvisible);
+    return (status == AB::Packets::Server::PlayerInfo::OnlineStatusOffline) ||
+        (status == AB::Packets::Server::PlayerInfo::OnlineStatusInvisible);
 }
 
 class Receiver
@@ -85,24 +43,8 @@ public:
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) = 0;
 
-    virtual void OnResourceChanged(int64_t updateTick, uint32_t id,
-        AB::GameProtocol::ResourceType resType, int16_t value) = 0;
-    virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
-    virtual void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) = 0;
-    virtual void OnFriendList(int64_t updateTick, const std::vector<std::string>&) = 0;
-    virtual void OnFriendAdded(int64_t updateTick, const std::string&, RelatedAccount::Relation relation) = 0;
-    virtual void OnFriendRemoved(int64_t updateTick, const std::string&, RelatedAccount::Relation relation) = 0;
-    virtual void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) = 0;
-    virtual void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild&) = 0;
-    virtual void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>&) = 0;
-    virtual void OnQuestDialogTrigger(int64_t updateTick, uint32_t) = 0;
-    virtual void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) = 0;
-    virtual void OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted) = 0;
-    virtual void OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded) = 0;
-
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) = 0;
-
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInstance& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerAutorun& packet) = 0;
@@ -144,6 +86,19 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectResourceChanged& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::DialogTrigger& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendList& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDialogTrigger& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) = 0;
 
 };
 

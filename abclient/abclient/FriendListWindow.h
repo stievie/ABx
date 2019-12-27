@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Receiver.h"
+#include <AB/Packets/ServerPackets.h>
 
 class Player;
 
@@ -31,9 +32,9 @@ private:
     void HandleFriendWhisperClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendSendMailClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendItemClicked(StringHash eventType, VariantMap& eventData);
-    void UpdateItem(ListView* lv, const Client::RelatedAccount& f);
+    void UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f);
     void UpdateAll();
-    void UpdateSelf(const Client::RelatedAccount& acc);
+    void UpdateSelf(const AB::Packets::Server::PlayerInfo& acc);
 public:
     static void RegisterObject(Context* context);
 

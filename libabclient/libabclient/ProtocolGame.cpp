@@ -5,7 +5,6 @@
 #include <AB/Entities/Mail.h>
 #include <set>
 #include <AB/Packets/Packet.h>
-#include <AB/Packets/ServerPackets.h>
 
 namespace Client {
 
@@ -254,43 +253,43 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyMembersInfo>(message));
             break;
         case GameObjectResourceChange:
-            ParseResourceChanged(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectResourceChanged>(message));
             break;
         case DialogTrigger:
-            ParseDialogTrigger(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::DialogTrigger>(message));
             break;
         case FriendList:
-            ParseFriendList(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendList>(message));
             break;
         case FriendAdded:
-            ParseFriendAdded(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendAdded>(message));
             break;
         case FriendRemoved:
-            ParseFriendRemoved(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendRemoved>(message));
             break;
         case GuildInfo:
-            ParseGuildInfo(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GuildInfo>(message));
             break;
         case GuildMemberList:
-            ParseGuildMemberList(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GuildMemberList>(message));
             break;
         case QuestSelectionDialogTrigger:
-            ParseQuestSelectionDialogTrigger(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestSelectionDialogTrigger>(message));
             break;
         case QuestDialogTrigger:
-            ParseQuestDialogTrigger(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestDialogTrigger>(message));
             break;
         case QuestNpcHasQuest:
-            ParseQuestNpcHasQuest(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::NpcHasQuest>(message));
             break;
         case QuestDeleted:
-            ParseQuestDeleted(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestDeleted>(message));
             break;
         case QuestRewarded:
-            ParseQuestRewarded(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestRewarded>(message));
             break;
         case PlayerInfo:
-            ParsePlayerInfo(message);
+            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PlayerInfo>(message));
             break;
         case CodeLast:
             // Padding bytes, i.e. end of message
@@ -313,165 +312,6 @@ void ProtocolGame::ParseKeyExchange(InputMessage& message)
 {
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
         serverKey_[i] = message.Get<uint8_t>();
-}
-
-void ProtocolGame::ParseResourceChanged(InputMessage& message)
-{
-    uint32_t objectId = message.Get<uint32_t>();
-    AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(message.Get<uint8_t>());
-    switch (resType)
-    {
-    case AB::GameProtocol::ResourceTypeHealth:
-    case AB::GameProtocol::ResourceTypeEnergy:
-    case AB::GameProtocol::ResourceTypeAdrenaline:
-    case AB::GameProtocol::ResourceTypeOvercast:
-    case AB::GameProtocol::ResourceTypeMaxHealth:
-    case AB::GameProtocol::ResourceTypeMaxEnergy:
-    {
-        int16_t value = message.Get<int16_t>();
-
-        receiver_.OnResourceChanged(updateTick_, objectId, resType, value);
-        break;
-    }
-    case AB::GameProtocol::ResourceTypeHealthRegen:
-    case AB::GameProtocol::ResourceTypeEnergyRegen:
-    case AB::GameProtocol::ResourceTypeMorale:
-    {
-        int8_t value = message.Get<int8_t>();
-
-        receiver_.OnResourceChanged(updateTick_, objectId, resType, static_cast<int16_t>(value));
-        break;
-    }
-    }
-}
-
-void ProtocolGame::ParseDialogTrigger(InputMessage& message)
-{
-    uint32_t dialogId = message.Get<uint32_t>();
-
-    receiver_.OnDialogTrigger(updateTick_, dialogId);
-}
-
-void ProtocolGame::ParseFriendList(InputMessage& message)
-{
-    std::vector<std::string> friends;
-    size_t count = message.Get<uint16_t>();
-    friends.reserve(count);
-    for (size_t i = 0; i < count; ++i)
-    {
-        friends.push_back(message.Get<std::string>());
-    }
-
-    receiver_.OnFriendList(updateTick_, friends);
-}
-
-void ProtocolGame::ParseFriendAdded(InputMessage& message)
-{
-    std::string accountUuid = message.Get<std::string>();
-    RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
-    receiver_.OnFriendAdded(updateTick_, accountUuid, rel);
-}
-
-void ProtocolGame::ParseFriendRemoved(InputMessage& message)
-{
-    std::string accountUuid = message.Get<std::string>();
-    RelatedAccount::Relation rel = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
-    receiver_.OnFriendRemoved(updateTick_, accountUuid, rel);
-}
-
-void ProtocolGame::ParseGuildInfo(InputMessage& message)
-{
-    AB::Entities::Guild guild;
-    guild.uuid = message.Get<std::string>();
-    guild.name = message.Get<std::string>();
-    guild.tag = message.Get<std::string>();
-    guild.creation = message.Get<int64_t>();
-    guild.creatorAccountUuid = message.Get<std::string>();
-
-    receiver_.OnGuildInfo(updateTick_, guild);
-}
-
-void ProtocolGame::ParseGuildMemberList(InputMessage& message)
-{
-    std::vector<std::string> members;
-    size_t count = message.Get<uint16_t>();
-    members.reserve(count);
-    for (size_t i = 0; i < count; ++i)
-    {
-        members.push_back(message.Get<std::string>());
-    }
-
-    receiver_.OnGuildMemberList(updateTick_, members);
-}
-
-void ProtocolGame::ParsePlayerInfo(InputMessage& message)
-{
-    uint32_t fields = message.Get<uint32_t>();
-    RelatedAccount frnd;
-    frnd.fields = fields;
-    frnd.accountUuid = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldName)
-        frnd.nickName = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
-        frnd.relation = static_cast<RelatedAccount::Relation>(message.Get<uint8_t>());
-    if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
-        frnd.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
-    if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
-        frnd.currentName = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-        frnd.currentMap = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
-        frnd.guildUuid = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
-        frnd.guildRole = static_cast<RelatedAccount::GuildRole>(message.Get<uint8_t>());
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
-        frnd.guildInviteName = message.Get<std::string>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
-        frnd.invited = message.Get<int64_t>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
-        frnd.joined = message.Get<int64_t>();
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
-        frnd.expires = message.Get<int64_t>();
-
-    receiver_.OnPlayerInfo(updateTick_, frnd);
-}
-
-void ProtocolGame::ParseQuestSelectionDialogTrigger(InputMessage& message)
-{
-    uint32_t count = message.Get<uint8_t>();
-    std::set<uint32_t> quests;
-    for (uint32_t i = 0; i < count; ++i)
-        quests.emplace(message.Get<uint32_t>());
-    receiver_.OnQuestSelectionDialogTrigger(updateTick_, quests);
-}
-
-void ProtocolGame::ParseQuestDialogTrigger(InputMessage& message)
-{
-    uint32_t questIndex = message.Get<uint32_t>();
-    receiver_.OnQuestDialogTrigger(updateTick_, questIndex);
-}
-
-void ProtocolGame::ParseQuestNpcHasQuest(InputMessage& message)
-{
-    uint32_t npcId = message.Get<uint32_t>();
-    bool hasQuest = message.Get<bool>();
-    receiver_.OnNpcHasQuest(updateTick_, npcId, hasQuest);
-}
-
-void ProtocolGame::ParseQuestDeleted(InputMessage& message)
-{
-    uint32_t index = message.Get<uint32_t>();
-    bool deleted = message.Get<bool>();
-    receiver_.OnQuestDeleted(updateTick_, index, deleted);
-}
-
-void ProtocolGame::ParseQuestRewarded(InputMessage& message)
-{
-//    auto packet = AB::Packets::Server::Get<AB::Packets::Server::QuestRewarded>(message);
-
-    uint32_t index = message.Get<uint32_t>();
-    bool rewarded = message.Get<bool>();
-    receiver_.OnQuestRewarded(updateTick_, index, rewarded);
 }
 
 void ProtocolGame::LogMessage(const std::string& message)
@@ -805,7 +645,7 @@ void ProtocolGame::UpdateFriendList()
     Send(std::move(msg));
 }
 
-void ProtocolGame::SetOnlineStatus(RelatedAccount::Status status)
+void ProtocolGame::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetOnlineStatus);

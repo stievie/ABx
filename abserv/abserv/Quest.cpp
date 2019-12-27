@@ -8,6 +8,8 @@
 #include "Script.h"
 #include "ScriptManager.h"
 #include "Subsystems.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -27,7 +29,7 @@ void Quest::RegisterLua(kaguya::State& state)
 Quest::Quest(Player& owner,
     const AB::Entities::Quest& q,
     AB::Entities::PlayerQuest&& playerQuest) :
-    owner_(owner),    
+    owner_(owner),
     index_(q.index),
     repeatable_(q.repeatable),
     playerQuest_(std::move(playerQuest))
@@ -124,15 +126,21 @@ void Quest::Write(Net::NetworkMessage& message)
     {
         playerQuest_.deleted = internalDeleted_;
         message.AddByte(QuestDeleted);
-        message.Add<uint32_t>(index_);
-        message.Add<bool>(playerQuest_.deleted);
+        AB::Packets::Server::QuestDeleted packet = {
+            index_,
+            playerQuest_.deleted
+        };
+        AB::Packets::Add(packet, message);
     }
     if (internalRewarded_ != playerQuest_.rewarded)
     {
         playerQuest_.rewarded = internalRewarded_;
         message.AddByte(QuestRewarded);
-        message.Add<uint32_t>(index_);
-        message.Add<bool>(playerQuest_.rewarded);
+        AB::Packets::Server::QuestRewarded packet = {
+            index_,
+            playerQuest_.rewarded
+        };
+        AB::Packets::Add(packet, message);
     }
 }
 

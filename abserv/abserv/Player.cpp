@@ -185,7 +185,10 @@ void Player::TriggerDialog(uint32_t dialogIndex)
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::DialogTrigger);
-    msg->Add<uint32_t>(dialogIndex);
+    AB::Packets::Server::DialogTrigger packet = {
+        dialogIndex
+    };
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -200,9 +203,12 @@ void Player::TriggerQuestSelectionDialog(const std::set<uint32_t>& quests)
     }
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::QuestSelectionDialogTrigger);
-    msg->Add<uint8_t>(static_cast<uint8_t>(quests.size()));
+    AB::Packets::Server::QuestSelectionDialogTrigger packet;
+    packet.count = static_cast<uint8_t>(quests.size());
+    packet.quests.reserve(packet.count);
     for (auto i : quests)
-        msg->Add<uint32_t>(i);
+        packet.quests.push_back(i);
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -210,7 +216,10 @@ void Player::TriggerQuestDialog(uint32_t index)
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::QuestDialogTrigger);
-    msg->Add<uint32_t>(index);
+    AB::Packets::Server::QuestDialogTrigger packet = {
+        index
+    };
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -526,8 +535,11 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
         AB::Entities::Friend f;
         friendList_->GetFriendByName(playerName, f);
         msg->AddByte(AB::GameProtocol::FriendAdded);
-        msg->AddString(f.friendUuid);
-        msg->Add<uint8_t>(f.relation);
+        AB::Packets::Server::FriendAdded packet = {
+            f.friendUuid,
+            static_cast<AB::Packets::Server::PlayerInfo::Relation>(f.relation)
+        };
+        AB::Packets::Add(packet, *msg);
         break;
     }
     case FriendList::Error::NoFriend:
@@ -564,10 +576,15 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
     switch (res)
     {
     case FriendList::Error::Success:
+    {
         msg->AddByte(AB::GameProtocol::FriendRemoved);
-        msg->AddString(accountUuid);
-        msg->Add<uint8_t>(f.relation);
+        AB::Packets::Server::FriendRemoved packet = {
+            accountUuid,
+            static_cast<AB::Packets::Server::PlayerInfo::Relation>(f.relation)
+        };
+        AB::Packets::Add(packet, *msg);
         break;
+    }
     case FriendList::Error::AlreadyFriend:
         // N/A
     case FriendList::Error::NoFriend:
@@ -627,19 +644,17 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::PlayerInfo);
-    msg->Add<uint32_t>(fields);
-    msg->AddString(ch.accountUuid);
+    AB::Packets::Server::PlayerInfo packet;
+    packet.fields = fields;
+    packet.accountUuid = ch.accountUuid;
+
     AB::Entities::Friend f;
     bool isFriend = friendList_->GetFriendByAccount(ch.accountUuid, f);
-    if (fields & AB::GameProtocol::PlayerInfoFieldName)
-    {
-        if (isFriend)
-            msg->AddString(f.friendName);
-        else
-            msg->AddString(ch.name);
-    }
-    if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
-        msg->Add<uint8_t>(f.relation);
+    if (isFriend)
+        packet.nickName = f.friendName;
+    else
+        packet.nickName = ch.name;
+    packet.relation = static_cast<AB::Packets::Server::PlayerInfo::Relation>(f.relation);
 
     AB::Entities::Account account;
     account.uuid = ch.accountUuid;
@@ -648,45 +663,31 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
     if (f.relation != AB::Entities::FriendRelationIgnore && account.onlineStatus != AB::Entities::OnlineStatusInvisible)
     {
         // If success == false -> offline, empty toon name
-        if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
-            msg->Add<uint8_t>(account.onlineStatus);
-        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
-            msg->AddString(currentToon.name);
-        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-        {
-            if (IO::IOPlayer::HasFriendedMe(account_.uuid, account.uuid))
-                // Send only location when I'm in their FL
-                msg->AddString(currentToon.currentMapUuid);
-            else
-                msg->AddString(Utils::Uuid::EMPTY_UUID);
-        }
+        packet.status = static_cast<AB::Packets::Server::PlayerInfo::Status>(account.onlineStatus);
+        packet.currentName = currentToon.name;
+        if (IO::IOPlayer::HasFriendedMe(account_.uuid, account.uuid))
+            // Send only location when I'm in their FL
+            packet.currentMap = currentToon.currentMapUuid;
+        else
+            packet.currentMap = Utils::Uuid::EMPTY_UUID;
     }
     else
     {
         // Ignored always offline and no current toon
-        if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
-            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
-        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
-            msg->AddString("");
-        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
-            msg->AddString(Utils::Uuid::EMPTY_UUID);
+        packet.status = AB::Packets::Server::PlayerInfo::OnlineStatusOffline;
+        packet.currentMap = Utils::Uuid::EMPTY_UUID;
     }
     // Guild info
     AB::Entities::GuildMember gm;
     IO::IOAccount::GetGuildMemberInfo(account, gm);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
-        msg->AddString(account.guildUuid);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
-        msg->Add<uint8_t>(gm.role);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
-        msg->AddString(gm.inviteName);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
-        msg->Add<int64_t>(gm.invited);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
-        msg->Add<int64_t>(gm.joined);
-    if (fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
-        msg->Add<int64_t>(gm.expires);
+    packet.guildUuid = account.guildUuid;
+    packet.guildRole = static_cast<AB::Packets::Server::PlayerInfo::GuildRole>(gm.role);
+    packet.guildInviteName = gm.inviteName;
+    packet.invited = gm.invited;
+    packet.joined = gm.joined;
+    packet.expires = gm.expires;
 
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -725,12 +726,13 @@ void Player::CRQGetGuildMembers()
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::GuildMemberList);
-    msg->Add<uint16_t>(static_cast<uint16_t>(members.members.size()));
+    AB::Packets::Server::GuildMemberList packet;
+    packet.count = static_cast<uint16_t>(members.members.size());
+    packet.members.reserve(packet.count);
 
     for (const AB::Entities::GuildMember& member : members.members)
-    {
-        msg->AddString(member.accountUuid);
-    }
+        packet.members.push_back(member.accountUuid);
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -743,11 +745,14 @@ void Player::CRQGetGuildInfo()
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::GuildInfo);
-    msg->AddString(guild->data_.uuid);
-    msg->AddString(guild->data_.name);
-    msg->AddString(guild->data_.tag);
-    msg->Add<int64_t>(guild->data_.creation);
-    msg->AddString(guild->data_.creatorAccountUuid);
+    AB::Packets::Server::GuildInfo packet = {
+        guild->data_.uuid,
+        guild->data_.name,
+        guild->data_.tag,
+        guild->data_.creation,
+        guild->data_.creatorAccountUuid
+    };
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -755,13 +760,15 @@ void Player::CRQGetFriendList()
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::FriendList);
-    msg->Add<uint16_t>(static_cast<uint16_t>(friendList_->Count()));
-    friendList_->VisitAll([&msg](const AB::Entities::Friend& current)
+    AB::Packets::Server::FriendList packet;
+    packet.count = static_cast<uint16_t>(friendList_->Count());
+    packet.friends.reserve(packet.count);
+    friendList_->VisitAll([&packet](const AB::Entities::Friend& current)
     {
-        msg->AddString(current.friendUuid);
-
+        packet.friends.push_back(current.friendUuid);
         return Iteration::Continue;
     });
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -1067,6 +1074,7 @@ void Player::CRQPartyGetMembers(uint32_t partyId)
         AB::Packets::Server::PartyMembersInfo packet;
         packet.partyId = partyId;
         packet.count = static_cast<uint8_t>(count);
+        packet.members.reserve(count);
 
         // We also need invalid (i.e. not yet connected) members,
         // therefore we can not use Party::VisitMembers()
@@ -1768,8 +1776,11 @@ void Player::CRQHasQuests(uint32_t npcId)
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::QuestNpcHasQuest);
-    nmsg->Add<uint32_t>(npcId);
-    nmsg->Add<uint8_t>(npc->HaveQuestsForPlayer(*this) ? 1 : 0);
+    AB::Packets::Server::NpcHasQuest packet = {
+        npcId,
+        npc->HaveQuestsForPlayer(*this)
+    };
+    AB::Packets::Add(packet, *nmsg);
     WriteToOutput(*nmsg);
 }
 

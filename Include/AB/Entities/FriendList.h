@@ -21,8 +21,8 @@ static constexpr auto KEY_FRIENDLIST = "friend_list";
 enum FriendRelation : uint8_t
 {
     FriendRelationUnknown = 0,
-    FriendRelationFriend,
-    FriendRelationIgnore
+    FriendRelationFriend = 1,
+    FriendRelationIgnore = 2
 };
 
 struct Friend

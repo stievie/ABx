@@ -218,6 +218,153 @@ struct MailComplete
     }
 };
 
+struct FriendList
+{
+    uint16_t count;
+    std::vector<std::string> friends;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        friends.resize(count);
+        for (uint16_t i = 0; i < count; ++i)
+        {
+            auto& item = friends[i];
+            ar.value(item);
+        }
+    }
+};
+
+struct PlayerInfo
+{
+    enum Status : uint8_t
+    {
+        OnlineStatusOffline = 0,
+        OnlineStatusAway,
+        OnlineStatusDoNotDisturb,
+        OnlineStatusOnline,
+        OnlineStatusInvisible              // Like offline for other users
+    };
+    enum Relation : uint8_t
+    {
+        FriendRelationUnknown = 0,
+        FriendRelationFriend = 1,
+        FriendRelationIgnore = 2
+    };
+    enum GuildRole : uint8_t
+    {
+        GuildRoleUnknown = 0,
+        GuildRoleGuest,
+        GuildRoleInvited,
+        GuildRoleMember,
+        GuildRoleOfficer,
+        GuildRoleLeader
+    };
+
+    uint32_t fields;
+    std::string accountUuid;
+    // Friend nick name
+    std::string nickName;
+    std::string currentName;
+    std::string currentMap;
+    Status status;
+    Relation relation { FriendRelationUnknown };
+    std::string guildUuid;
+    GuildRole guildRole { GuildRoleUnknown };
+    std::string guildInviteName;
+    int64_t invited { 0 };
+    int64_t joined { 0 };
+    int64_t expires { 0 };
+
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(fields);
+        ar.value(accountUuid);
+        if (fields & AB::GameProtocol::PlayerInfoFieldName)
+            ar.value(nickName);
+        if (fields & AB::GameProtocol::PlayerInfoFieldRelation)
+            ar.value(relation);
+        if (fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
+            ar.value(status);
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentName)
+            ar.value(currentName);
+        if (fields & AB::GameProtocol::PlayerInfoFieldCurrentMap)
+            ar.value(currentMap);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildGuid)
+            ar.value(guildUuid);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildRole)
+            ar.value(guildRole);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildInviteName)
+            ar.value(guildInviteName);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildInvited)
+            ar.value(invited);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildJoined)
+            ar.value(joined);
+        if (fields & AB::GameProtocol::PlayerInfoFieldGuildExpires)
+            ar.value(expires);
+    }
+};
+
+struct FriendAdded
+{
+    std::string accountUuid;
+    PlayerInfo::Relation relation;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(accountUuid);
+        ar.value(relation);
+    }
+};
+
+struct FriendRemoved
+{
+    std::string accountUuid;
+    PlayerInfo::Relation relation;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(accountUuid);
+        ar.value(relation);
+    }
+};
+
+struct GuildInfo
+{
+    std::string uuid;
+    std::string name;
+    std::string tag;
+    int64_t creation;
+    std::string creatorAccountUuid;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(uuid);
+        ar.value(name);
+        ar.value(tag);
+        ar.value(creation);
+        ar.value(creatorAccountUuid);
+    }
+};
+
+struct GuildMemberList
+{
+    uint16_t count;
+    std::vector<std::string> members;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        members.resize(count);
+        for (uint16_t i = 0; i < count; ++i)
+        {
+            auto& item = members[i];
+            ar.value(item);
+        }
+    }
+};
+
 struct ObjectSpawn
 {
     uint32_t id;
@@ -418,16 +565,76 @@ struct InventoryItemDelete
 
 struct ChestItemDelete : InventoryItemDelete { };
 
-struct QuestRewarded
+struct QuestSelectionDialogTrigger
 {
-    uint32_t index;
-    bool rewarded;
-
+    uint8_t count;
+    std::vector<uint32_t> quests;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
-        ar.value(index);
+        ar.value(count);
+        quests.resize(count);
+        for (uint8_t i = 0; i < count; ++i)
+        {
+            auto& item = quests[i];
+            ar.value(item);
+        }
+    }
+};
+
+struct QuestDialogTrigger
+{
+    uint32_t questIndex;;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(questIndex);
+    }
+};
+
+struct NpcHasQuest
+{
+    uint32_t npcId;
+    bool hasQuest;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(npcId);
+        ar.value(hasQuest);
+    }
+};
+
+struct QuestDeleted
+{
+    uint32_t questIndex;
+    bool deleted;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(questIndex);
+        ar.value(deleted);
+    }
+};
+
+struct QuestRewarded
+{
+    uint32_t questIndex;
+    bool rewarded;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(questIndex);
         ar.value(rewarded);
+    }
+};
+
+struct DialogTrigger
+{
+    uint32_t dialogId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(dialogId);
     }
 };
 
@@ -599,6 +806,20 @@ struct ObjectDroppedItem
         ar.value(itemId);
         ar.value(itemIndex);
         ar.value(count);
+        ar.value(value);
+    }
+};
+
+struct ObjectResourceChanged
+{
+    uint32_t id;
+    uint8_t type;
+    int16_t value;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(type);
         ar.value(value);
     }
 };

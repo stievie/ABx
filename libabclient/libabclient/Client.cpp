@@ -146,72 +146,6 @@ void Client::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid
     receiver_.OnPlayerCreated(uuid, mapUuid);
 }
 
-void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
-    AB::GameProtocol::ResourceType resType, int16_t value)
-{
-    receiver_.OnResourceChanged(updateTick, id, resType, value);
-}
-
-void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
-{
-    receiver_.OnDialogTrigger(updateTick, dialogId);
-}
-
-void Client::OnPlayerInfo(int64_t updateTick, const RelatedAccount& player)
-{
-    receiver_.OnPlayerInfo(updateTick, player);
-}
-
-void Client::OnFriendList(int64_t updateTick, const std::vector<std::string>& list)
-{
-    receiver_.OnFriendList(updateTick, list);
-}
-
-void Client::OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation)
-{
-    receiver_.OnFriendAdded(updateTick, accountUuid, relation);
-}
-
-void Client::OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation)
-{
-    receiver_.OnFriendRemoved(updateTick, accountUuid, relation);
-}
-
-void Client::OnGuildMemberList(int64_t updateTick, const std::vector<std::string>& list)
-{
-    receiver_.OnGuildMemberList(updateTick, list);
-}
-
-void Client::OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild)
-{
-    receiver_.OnGuildInfo(updateTick, guild);
-}
-
-void Client::OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests)
-{
-    receiver_.OnQuestSelectionDialogTrigger(updateTick, quests);
-}
-
-void Client::OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex)
-{
-    receiver_.OnQuestDialogTrigger(updateTick, questIndex);
-}
-
-void Client::OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest)
-{
-    receiver_.OnNpcHasQuest(updateTick, npcId, hasQuest);
-}
-
-void Client::OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted)
-{
-    receiver_.OnQuestDeleted(updateTick, index, deleted);
-}
-
-void Client::OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded)
-{
-    receiver_.OnQuestRewarded(updateTick, index, rewarded);
-}
-
 void Client::OnLog(const std::string& message)
 {
     receiver_.OnLog(message);
@@ -639,7 +573,7 @@ void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
         protoGame_->SetPlayerState(newState);
 }
 
-void Client::SetOnlineStatus(RelatedAccount::Status status)
+void Client::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
 {
     if (state_ == ClientState::World)
         protoGame_->SetOnlineStatus(status);
@@ -859,6 +793,71 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeat
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectResourceChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::DialogTrigger& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendList& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDialogTrigger& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

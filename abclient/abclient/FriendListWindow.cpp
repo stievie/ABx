@@ -44,7 +44,7 @@ FriendListWindow::FriendListWindow(Context* context) :
     addIgnoreEdit_ = dynamic_cast<LineEdit*>(GetChild("AddIgnoredEdit", true));
     statusDropdown_ = dynamic_cast<DropDownList*>(GetChild("StatusDropdown", true));
 
-    auto createStatusDropdownItem = [this](const String& text, Client::RelatedAccount::Status status) -> Text*
+    auto createStatusDropdownItem = [this](const String& text, AB::Packets::Server::PlayerInfo::Status status) -> Text*
     {
         Text* result = new Text(context_);
         result->SetText(text);
@@ -52,10 +52,10 @@ FriendListWindow::FriendListWindow(Context* context) :
         result->SetStyle("DropDownItemEnumText");
         return result;
     };
-    statusDropdown_->AddItem(createStatusDropdownItem("Online", Client::RelatedAccount::Status::OnlineStatusOnline));
-    statusDropdown_->AddItem(createStatusDropdownItem("Away", Client::RelatedAccount::Status::OnlineStatusAway));
-    statusDropdown_->AddItem(createStatusDropdownItem("Do not disturb", Client::RelatedAccount::Status::OnlineStatusDoNotDisturb));
-    statusDropdown_->AddItem(createStatusDropdownItem("Offline", Client::RelatedAccount::Status::OnlineStatusInvisible));
+    statusDropdown_->AddItem(createStatusDropdownItem("Online", AB::Packets::Server::PlayerInfo::Status::OnlineStatusOnline));
+    statusDropdown_->AddItem(createStatusDropdownItem("Away", AB::Packets::Server::PlayerInfo::Status::OnlineStatusAway));
+    statusDropdown_->AddItem(createStatusDropdownItem("Do not disturb", AB::Packets::Server::PlayerInfo::Status::OnlineStatusDoNotDisturb));
+    statusDropdown_->AddItem(createStatusDropdownItem("Offline", AB::Packets::Server::PlayerInfo::Status::OnlineStatusInvisible));
 
     SetSize(272, 128);
     auto* graphics = GetSubsystem<Graphics>();
@@ -185,7 +185,7 @@ void FriendListWindow::HandleStatusDropdownSelected(StringHash, VariantMap& even
     UIElement* elem = list->GetItem(sel);
     if (elem)
     {
-        Client::RelatedAccount::Status status = static_cast<Client::RelatedAccount::Status>(elem->GetVar("Value").GetUInt());
+        AB::Packets::Server::PlayerInfo::Status status = static_cast<AB::Packets::Server::PlayerInfo::Status>(elem->GetVar("Value").GetUInt());
         auto* client = GetSubsystem<FwClient>();
         client->SetOnlineStatus(status);
     }
@@ -210,7 +210,7 @@ void FriendListWindow::UpdateAll()
     }
 }
 
-void FriendListWindow::UpdateSelf(const Client::RelatedAccount& acc)
+void FriendListWindow::UpdateSelf(const AB::Packets::Server::PlayerInfo& acc)
 {
     if (acc.fields & AB::GameProtocol::PlayerInfoFieldOnlineStatus)
     {
@@ -230,15 +230,15 @@ void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
 {
     using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
-    Client::RelatedAccount::Relation rel = static_cast<Client::RelatedAccount::Relation>(eventData[P_RELATION].GetUInt());
+    AB::Packets::Server::PlayerInfo::Relation rel = static_cast<AB::Packets::Server::PlayerInfo::Relation>(eventData[P_RELATION].GetUInt());
     const String name = "ListViewItem_" + uuid;
-    if (rel == Client::RelatedAccount::FriendRelationFriend)
+    if (rel == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
     {
         Text* txt = dynamic_cast<Text*>(friendList_->GetChild(name, true));
         if (txt)
             txt->Remove();
     }
-    else if (rel == Client::RelatedAccount::FriendRelationIgnore)
+    else if (rel == AB::Packets::Server::PlayerInfo::FriendRelationIgnore)
     {
         Text* txt = dynamic_cast<Text*>(ignoreList_->GetChild(name, true));
         if (txt)
@@ -315,7 +315,7 @@ void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
     client->GetPlayerInfoByAccount(std::string(uuid.CString()), AB::GameProtocol::PlayerInfoFieldsAll);
 }
 
-void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
+void FriendListWindow::UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f)
 {
     const String name = "ListViewItem_" + String(f.accountUuid.c_str());
     Text* txt = dynamic_cast<Text*>(lv->GetChild(name, true));
@@ -339,10 +339,10 @@ void FriendListWindow::UpdateItem(ListView* lv, const Client::RelatedAccount& f)
 
     switch (f.status)
     {
-    case Client::RelatedAccount::OnlineStatusAway:
+    case AB::Packets::Server::PlayerInfo::OnlineStatusAway:
         text.Append(" (AFK)");
         break;
-    case Client::RelatedAccount::OnlineStatusDoNotDisturb:
+    case AB::Packets::Server::PlayerInfo::OnlineStatusDoNotDisturb:
         text.Append(" (DND)");
         break;
     default:
@@ -398,8 +398,8 @@ void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)
 
     if (acc->accountUuid.compare(client->GetAccountUuid()) == 0)
         UpdateSelf(*acc);
-    else if (acc->relation == Client::RelatedAccount::FriendRelationFriend)
+    else if (acc->relation == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
         UpdateItem(friendList_, *acc);
-    else if (acc->relation == Client::RelatedAccount::FriendRelationIgnore)
+    else if (acc->relation == AB::Packets::Server::PlayerInfo::FriendRelationIgnore)
         UpdateItem(ignoreList_, *acc);
 }

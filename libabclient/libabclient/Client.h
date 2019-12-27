@@ -89,21 +89,6 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
-    void OnResourceChanged(int64_t updateTick, uint32_t id,
-        AB::GameProtocol::ResourceType resType, int16_t value) override;
-    void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
-    void OnPlayerInfo(int64_t updateTick, const RelatedAccount& player) override;
-    void OnFriendList(int64_t updateTick, const std::vector<std::string>& list) override;
-    void OnFriendAdded(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation) override;
-    void OnFriendRemoved(int64_t updateTick, const std::string& accountUuid, RelatedAccount::Relation relation) override;
-    void OnGuildMemberList(int64_t updateTick, const std::vector<std::string>&) override;
-    void OnGuildInfo(int64_t updateTick, const AB::Entities::Guild& guild) override;
-    void OnQuestSelectionDialogTrigger(int64_t updateTick, const std::set<uint32_t>& quests) override;
-    void OnQuestDialogTrigger(int64_t updateTick, uint32_t questIndex) override;
-    void OnNpcHasQuest(int64_t updateTick, uint32_t npcId, bool hasQuest) override;
-    void OnQuestDeleted(int64_t updateTick, uint32_t index, bool deleted) override;
-    void OnQuestRewarded(int64_t updateTick, uint32_t index, bool rewarded) override;
-
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInstance& packet) override;
@@ -147,6 +132,19 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResigned& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefeated& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyMembersInfo& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectResourceChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::DialogTrigger& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendList& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDialogTrigger& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -215,7 +213,7 @@ public:
     void UpdateFriendList();
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
-    void SetOnlineStatus(RelatedAccount::Status status);
+    void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
 };
 
 }
