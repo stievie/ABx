@@ -405,11 +405,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:
     {
+        // TODO
         AddPlayerTask(&Game::Player::CRQGetGuildInfo);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildMembers:
     {
+        // TODO
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
     }

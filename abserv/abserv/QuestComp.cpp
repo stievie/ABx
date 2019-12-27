@@ -14,6 +14,7 @@ QuestComp::QuestComp(Player& owner) :
 
 void QuestComp::RemoveDeleted()
 {
+    // FIXME: Race here
     auto i = quests_.begin();
     auto* client = GetSubsystem<IO::DataClient>();
     while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
@@ -30,6 +31,7 @@ void QuestComp::RemoveDeleted()
 
 void QuestComp::UpdateRewarded()
 {
+    // FIXME: Race here
     auto i = quests_.begin();
     auto* client = GetSubsystem<IO::DataClient>();
     while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
