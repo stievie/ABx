@@ -358,7 +358,7 @@ void ProtocolGame::ChangeMap(const std::string& mapUuid)
     AB::Packets::Client::ChangeMap packet = {
         mapUuid
     };
-    SendPacket(AB::GameProtocol::PacketTypeChangeMap, packet);;
+    SendPacket(AB::GameProtocol::PacketTypeChangeMap, packet);
 }
 
 void ProtocolGame::GetMailHeaders()

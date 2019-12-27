@@ -3,6 +3,9 @@
 #include "TimeUtils.h"
 #include "Errors.h"
 #include <list>
+#include <memory>
+#include <functional>
+#include <asio.hpp>
 
 namespace Client {
 

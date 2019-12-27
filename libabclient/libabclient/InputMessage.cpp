@@ -31,14 +31,14 @@ void InputMessage::SetBuffer(const std::string& buffer)
 #endif // _MSC_VER
     pos_ = MaxHeaderSize;
     headerPos_ = MaxHeaderSize;
-    size_ = (uint16_t)len;
+    size_ = static_cast<uint16_t>(len);
 }
 
 std::string InputMessage::GetString()
 {
     uint16_t len = Get<uint16_t>();
     CheckRead(len);
-    char* v = (char*)(buffer_ + pos_);
+    const char* v = reinterpret_cast<const char*>(buffer_ + pos_);
     pos_ += len;
     return std::string(v, len);
 }
