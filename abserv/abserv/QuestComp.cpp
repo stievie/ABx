@@ -12,42 +12,6 @@ QuestComp::QuestComp(Player& owner) :
     owner_(owner)
 { }
 
-void QuestComp::RemoveDeleted()
-{
-    // FIXME: Race here
-    auto i = quests_.begin();
-    auto* client = GetSubsystem<IO::DataClient>();
-    while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
-    {
-        return current.second->playerQuest_.deleted;
-    })) != quests_.end())
-    {
-        Quest& q = *(*i).second;
-        q.SaveProgress();
-        client->Update(q.playerQuest_);
-        quests_.erase(i++);
-    }
-}
-
-void QuestComp::UpdateRewarded()
-{
-    // FIXME: Race here
-    auto i = quests_.begin();
-    auto* client = GetSubsystem<IO::DataClient>();
-    while ((i = std::find_if(i, quests_.end(), [](const auto& current) -> bool
-    {
-        return current.second->playerQuest_.rewarded;
-    })) != quests_.end())
-    {
-        Quest& q = *(*i).second;
-        uint32_t index = q.GetIndex();
-        q.SaveProgress();
-        client->Update(q.playerQuest_);
-        doneQuests_.emplace(index, std::move((*i).second));
-        quests_.erase(i++);
-    }
-}
-
 void QuestComp::Update(uint32_t timeElapsed)
 {
     VisitActiveQuests([&] (Quest& current)
@@ -64,9 +28,6 @@ void QuestComp::Write(Net::NetworkMessage& message)
         current.Write(message);
         return Iteration::Continue;
     });
-    auto* disp = GetSubsystem<Asynch::Dispatcher>();
-    disp->Add(Asynch::CreateTask(std::bind(&QuestComp::RemoveDeleted, this)));
-    disp->Add(Asynch::CreateTask(std::bind(&QuestComp::UpdateRewarded, this)));
 }
 
 bool QuestComp::GetReward(uint32_t questIndex)
@@ -84,6 +45,9 @@ bool QuestComp::GetReward(uint32_t questIndex)
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(quest.playerQuest_))
         return false;
+    // Move to done quests
+    doneQuests_.emplace(questIndex, std::move((*it).second));
+    quests_.erase(it);
     return true;
 }
 

@@ -24,8 +24,6 @@ private:
     // This can be a std::map because we keep this only to check if the player
     // has the requirements for another quest.
     std::map<uint32_t, std::unique_ptr<Quest>> doneQuests_;
-    void RemoveDeleted();
-    void UpdateRewarded();
     Quest* GetCompletedQuest(uint32_t index) const;
 public:
     QuestComp() = delete;
