@@ -32,8 +32,8 @@ void QuestComp::Write(Net::NetworkMessage& message)
 
 bool QuestComp::GetReward(uint32_t questIndex)
 {
-    auto it = quests_.find(questIndex);
-    if (it == quests_.end())
+    auto it = activeQuests_.find(questIndex);
+    if (it == activeQuests_.end())
         return false;
     Quest& quest = *(*it).second;
     if (!quest.IsCompleted())
@@ -47,7 +47,7 @@ bool QuestComp::GetReward(uint32_t questIndex)
         return false;
     // Move to done quests
     doneQuests_.emplace(questIndex, std::move((*it).second));
-    quests_.erase(it);
+    activeQuests_.erase(it);
     return true;
 }
 
@@ -63,16 +63,16 @@ Quest* QuestComp::GetCompletedQuest(uint32_t index) const
 
 Quest* QuestComp::Get(uint32_t index)
 {
-    const auto it = quests_.find(index);
-    if (it == quests_.end())
+    const auto it = activeQuests_.find(index);
+    if (it == activeQuests_.end())
         return GetCompletedQuest(index);
     return (*it).second.get();
 }
 
 const Quest* QuestComp::Get(uint32_t index) const
 {
-    const auto it = quests_.find(index);
-    if (it == quests_.end())
+    const auto it = activeQuests_.find(index);
+    if (it == activeQuests_.end())
         return GetCompletedQuest(index);
     return (*it).second.get();
 }
@@ -126,8 +126,8 @@ bool QuestComp::SatisfyRequirements(const AB::Entities::Quest& q) const
         LOG_ERROR << "Error reading quest" << std::endl;
         return false;
     }
-    const auto it = quests_.find(dq.index);
-    if (it == quests_.end())
+    const auto it = activeQuests_.find(dq.index);
+    if (it == activeQuests_.end())
         return false;
     return (*it).second->playerQuest_.rewarded;
 }
@@ -166,8 +166,8 @@ bool QuestComp::PickupQuest(uint32_t index)
 
 bool QuestComp::DeleteQuest(uint32_t index)
 {
-    auto it = quests_.find(index);
-    if (it == quests_.end())
+    auto it = activeQuests_.find(index);
+    if (it == activeQuests_.end())
         return false;
 
     return (*it).second->Delete();
@@ -175,7 +175,7 @@ bool QuestComp::DeleteQuest(uint32_t index)
 
 bool QuestComp::HaveQuest(uint32_t index) const
 {
-    return quests_.find(index) != quests_.end();
+    return activeQuests_.find(index) != activeQuests_.end();
 }
 
 bool QuestComp::Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq)
@@ -187,7 +187,7 @@ bool QuestComp::Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq
         return false;
     }
     if (!pq.rewarded)
-        quests_.emplace(q.index, std::move(quest));
+        activeQuests_.emplace(q.index, std::move(quest));
     else
         doneQuests_.emplace(q.index, std::move(quest));
     return true;

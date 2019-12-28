@@ -32,6 +32,7 @@ private:
     uint8_t buffer_[OUTPUTMESSAGE_BUFFER_SIZE];
     bool CanWrite(int bytes);
     void CheckWrite(int bytes);
+    void AddString(const std::string& value);
 protected:
     friend class Protocol;
 
@@ -73,7 +74,6 @@ public:
         info_.pos = p;
     }
 
-    void AddString(const std::string& value);
     void AddStringEncrypted(const std::string& value);
 
     bool Compress();

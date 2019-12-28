@@ -20,7 +20,7 @@ class QuestComp
 {
 private:
     Player& owner_;
-    std::map<uint32_t, std::unique_ptr<Quest>> quests_;
+    std::map<uint32_t, std::unique_ptr<Quest>> activeQuests_;
     // This can be a std::map because we keep this only to check if the player
     // has the requirements for another quest.
     std::map<uint32_t, std::unique_ptr<Quest>> doneQuests_;
@@ -60,7 +60,7 @@ public:
             if (callback(*q.second) != Iteration::Continue)
                 break;
         }
-        for (const auto& q : quests_)
+        for (const auto& q : activeQuests_)
         {
             if (callback(*q.second) != Iteration::Continue)
                 break;
@@ -69,7 +69,7 @@ public:
     template<typename Callback>
     void VisitActiveQuests(const Callback& callback)
     {
-        for (const auto& q : quests_)
+        for (const auto& q : activeQuests_)
         {
             if (!q.second->IsActive())
                 continue;

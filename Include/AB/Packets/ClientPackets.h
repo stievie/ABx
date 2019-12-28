@@ -3,10 +3,37 @@
 #include "stdint.h"
 #include <string>
 #include <array>
+#include <abcrypto.hpp>
 
 namespace AB {
 namespace Packets {
 namespace Client {
+
+struct GameLogin
+{
+    uint16_t clientOs;
+    uint16_t protocolVersion;
+    uint8_t key[DH_KEY_LENGTH];
+    std::string accountUuid;
+    std::string authToken;
+    std::string charUuid;
+    std::string mapUuid;
+    std::string instanceUuid;
+
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(clientOs);
+        ar.value(protocolVersion);
+        for (unsigned i = 0; i < DH_KEY_LENGTH; ++i)
+            ar.value(key[i]);
+        ar.value(accountUuid);
+        ar.value(authToken);
+        ar.value(charUuid);
+        ar.value(mapUuid);
+        ar.value(instanceUuid);
+    }
+};
 
 struct Logout
 {
@@ -118,7 +145,7 @@ struct DeleteMail
 
 struct SendMail
 {
-    std::string recipient;;
+    std::string recipient;
     std::string subject;
     std::string body;
     template<typename _Ar>
@@ -376,6 +403,18 @@ struct RemoveFriend
     }
 };
 
+struct RenameFriend
+{
+    std::string accountUuid;
+    std::string newName;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(accountUuid);
+        ar.value(newName);
+    }
+};
+
 struct UpdateFriendList
 {
     template<typename _Ar>
@@ -391,6 +430,20 @@ struct SetOnlineStatus
     {
         ar.value(newStatus);
     }
+};
+
+struct GuildInfo
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
+};
+
+struct GuildMembers
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
 };
 
 }

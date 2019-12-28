@@ -324,16 +324,19 @@ void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
-    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+
+    AB::Packets::Client::GameLogin packet;
+    packet.clientOs = AB::CLIENT_OS_CURRENT;
+    packet.protocolVersion = AB::PROTOCOL_VERSION;
     const DH_KEY& key = keys_.GetPublickKey();
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
-        msg->Add<uint8_t>(key[i]);
-    msg->AddString(accountUuid_);
-    msg->AddString(authToken_);
-    msg->AddString(charUuid_);
-    msg->AddString(mapUuid_);
-    msg->AddString(instanceUuid_);
+        packet.key[i] = key[i];
+    packet.accountUuid = accountUuid_;
+    packet.authToken = authToken_;
+    packet.charUuid = charUuid_;
+    packet.mapUuid = mapUuid_;
+    packet.instanceUuid = instanceUuid_;
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 

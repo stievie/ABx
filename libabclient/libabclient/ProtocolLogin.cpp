@@ -133,7 +133,7 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->AddStringEncrypted(charName_);
     msg->Add<uint32_t>(itemIndex_);
     msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
-    msg->AddString(profUuid_);
+    msg->Add(profUuid_);
     msg->Add<uint8_t>(isPvp_ ? 1 : 0);
     Send(std::move(msg));
 }

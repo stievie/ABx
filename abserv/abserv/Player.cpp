@@ -292,7 +292,10 @@ void Player::CRQDestroyInventoryItem(uint16_t pos)
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-    msg->Add<uint16_t>(pos);
+    AB::Packets::Server::InventoryItemDelete packet = {
+        pos
+    };
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
@@ -311,7 +314,10 @@ void Player::EquipInventoryItem(uint16_t pos)
     auto msg = Net::NetworkMessage::GetNew();
     // Removed from inventory
     msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-    msg->Add<uint16_t>(pos);
+    AB::Packets::Server::InventoryItemDelete packet = {
+        pos
+    };
+    AB::Packets::Add(packet, *msg);
     // TODO: Write new equipment
 //    msg->AddByte(AB::GameProtocol::EquipmentItemUpdate);
 //    msg->Add<uint16_t>(static_cast<uint16_t>(ePos));
@@ -338,7 +344,10 @@ void Player::CRQStoreInChest(uint16_t pos)
     auto msg = Net::NetworkMessage::GetNew();
     // Remove from inventory
     msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-    msg->Add<uint16_t>(pos);
+    AB::Packets::Server::InventoryItemDelete packet = {
+        pos
+    };
+    AB::Packets::Add(packet, *msg);
 
     // Add to chest
     inventoryComp_->SetChestItem(itemId, msg.get());
@@ -367,7 +376,10 @@ void Player::CRQDropInventoryItem(uint16_t pos)
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-        msg->Add<uint16_t>(pos);
+        AB::Packets::Server::InventoryItemDelete packet = {
+            pos
+        };
+        AB::Packets::Add(packet, *msg);
         WriteToOutput(*msg);
     }
 }
@@ -380,17 +392,22 @@ void Player::CRQGetChest()
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ChestContent);
-    msg->Add<uint16_t>(static_cast<uint16_t>(count));
-    inventoryComp_->VisitChest([&msg](const Item& current)
+    AB::Packets::Server::InventoryContent packet;
+    packet.count = static_cast<uint16_t>(count);
+    packet.items.reserve(packet.count);
+    inventoryComp_->VisitChest([&packet](const Item& current)
     {
-        msg->Add<uint16_t>(current.data_.type);
-        msg->Add<uint32_t>(current.data_.index);
-        msg->Add<uint8_t>(static_cast<uint8_t>(current.concreteItem_.storagePlace));
-        msg->Add<uint16_t>(current.concreteItem_.storagePos);
-        msg->Add<uint32_t>(current.concreteItem_.count);
-        msg->Add<uint16_t>(current.concreteItem_.value);
+        packet.items.push_back({
+            current.data_.type,
+            current.data_.index,
+            static_cast<uint8_t>(current.concreteItem_.storagePlace),
+            current.concreteItem_.storagePos,
+            current.concreteItem_.count,
+            current.concreteItem_.value
+        });
         return Iteration::Continue;
     });
+    AB::Packets::Add(packet, *msg);
 
     WriteToOutput(*msg);
 }
@@ -406,7 +423,10 @@ void Player::CRQDestroyChestItem(uint16_t pos)
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChestItemDelete);
-        msg->Add<uint16_t>(pos);
+        AB::Packets::Server::InventoryItemDelete packet = {
+            pos
+        };
+        AB::Packets::Add(packet, *msg);
         WriteToOutput(*msg);
     }
 }
@@ -611,11 +631,16 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
     switch (res)
     {
     case FriendList::Error::Success:
+    {
         msg->AddByte(AB::GameProtocol::FriendRenamed);
-        msg->AddString(accountUuid);
-        msg->Add<uint8_t>(f.relation);
-        msg->AddString(newName);
+        AB::Packets::Server::FriendRenamed packet = {
+            accountUuid,
+            static_cast<AB::Packets::Server::PlayerInfo::Relation>(f.relation),
+            newName
+        };
+        AB::Packets::Add(packet, *msg);
         break;
+    }
     case FriendList::Error::PlayerNotFound:
     {
         // Do nothing

@@ -330,6 +330,20 @@ struct FriendRemoved
     }
 };
 
+struct FriendRenamed
+{
+    std::string accountUuid;
+    PlayerInfo::Relation relation;
+    std::string newName;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(accountUuid);
+        ar.value(relation);
+        ar.value(newName);
+    }
+};
+
 struct GuildInfo
 {
     std::string uuid;

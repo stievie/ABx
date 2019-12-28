@@ -301,11 +301,10 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::UseSkill>(message);
         // 1 based -> convert to 0 based
-        const uint8_t index = packet.index;
-        if (index > 0 && index <= Game::PLAYER_MAX_SKILLS)
+        if (packet.index > 0 && packet.index <= Game::PLAYER_MAX_SKILLS)
         {
             Utils::VariantMap data;
-            data[Game::InputDataSkillIndex] = index - 1;
+            data[Game::InputDataSkillIndex] = packet.index - 1;
             data[Game::InputDataPingTarget] = packet.ping;
             AddPlayerInput(Game::InputType::UseSkill, std::move(data));
         }
@@ -385,10 +384,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeRenameFriend:
     {
-        // TODO:
-        std::string accountUuid = message.GetString();
-        std::string newName = message.GetString();
-        AddPlayerTask(&Game::Player::CRQChangeFriendNick, accountUuid, newName);
+        auto packet = AB::Packets::Get<AB::Packets::Client::RenameFriend>(message);
+        AddPlayerTask(&Game::Player::CRQChangeFriendNick, packet.accountUuid, packet.newName);
         break;
     }
     case AB::GameProtocol::PacketTypeGetPlayerInfoByAccount:
@@ -405,13 +402,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeGetGuildInfo:
     {
-        // TODO
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GuildInfo>(message);
         AddPlayerTask(&Game::Player::CRQGetGuildInfo);
         break;
     }
     case AB::GameProtocol::PacketTypeGetGuildMembers:
     {
-        // TODO
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GuildMembers>(message);
         AddPlayerTask(&Game::Player::CRQGetGuildMembers);
         break;
     }
@@ -444,30 +441,23 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         }
     }
 
-    msg.Skip(2);    // Client OS
-    uint16_t version = msg.Get<uint16_t>();
-    if (version != AB::PROTOCOL_VERSION)
+    auto packet = AB::Packets::Get<AB::Packets::Client::GameLogin>(msg);
+    if (packet.protocolVersion != AB::PROTOCOL_VERSION)
     {
         DisconnectClient(AB::Errors::WrongProtocolVersion);
         return;
     }
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
-        clientKey_[i] = msg.GetByte();
+        clientKey_[i] = packet.key[i];
     auto keys = GetSubsystem<Crypto::DHKeys>();
     // Switch now to the shared key
     keys->GetSharedKey(clientKey_, encKey_);
-
-    const std::string accountUuid = msg.GetString();
-    if (Utils::Uuid::IsEmpty(accountUuid))
+    if (Utils::Uuid::IsEmpty(packet.accountUuid))
     {
-        LOG_ERROR << "Invalid account " << accountUuid << std::endl;
+        LOG_ERROR << "Invalid account " << packet.accountUuid << std::endl;
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string authToken = msg.GetString();
-    const std::string characterUuid = msg.GetString();
-    const std::string map = msg.GetString();
-    const std::string instance = msg.GetString();
 
     const uint32_t ip = GetIP();
     if (GetSubsystem<Auth::BanManager>()->IsIpBanned(ip))
@@ -477,7 +467,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    if (!IO::IOAccount::GameWorldAuth(accountUuid, authToken, characterUuid))
+    if (!IO::IOAccount::GameWorldAuth(packet.accountUuid, packet.authToken, packet.charUuid))
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
@@ -485,7 +475,11 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::Login, GetPtr(), characterUuid, uuids::uuid(accountUuid), map, instance)
+            std::bind(&ProtocolGame::Login, GetPtr(),
+                      packet.charUuid,
+                      uuids::uuid(packet.accountUuid),
+                      packet.mapUuid,
+                      packet.instanceUuid)
         )
     );
 }
