@@ -30,7 +30,7 @@ else
 	CXXFLAGS += -O3
 endif
 
-LDFLAGS =  -L../Lib -L../Lib/x64/$(CONFIG) -march=native
+LDFLAGS =  -L../Lib/x64/$(CONFIG) -L../Lib/x64 -L../Lib -march=native
 ifneq ($(CONFIG),Debug)
 	LDFLAGS += -s
 endif
