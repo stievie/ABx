@@ -80,12 +80,12 @@ std::string NetworkMessage::GetStringEncrypted()
     char* buff = new char[len + 1];
     memset(buff, 0, len + 1);
 #ifdef _MSC_VER
-    memcpy_s((char*)(buff), len, encString.data(), len);
+    memcpy_s(buff, len, encString.data(), len);
 #else
-    memcpy((char*)(buff), encString.data(), len);
+    memcpy(buff, encString.data(), len);
 #endif
-    uint32_t* buffer = (uint32_t*)(buff);
-    xxtea_dec(buffer, (uint32_t)(len / 4), AB::ENC_KEY);
+    uint32_t* buffer = reinterpret_cast<uint32_t*>(buff);
+    xxtea_dec(buffer, static_cast<uint32_t>(len / 4), AB::ENC_KEY);
     std::string result(buff);
     delete[] buff;
     return result;
@@ -96,7 +96,7 @@ void NetworkMessage::AddPaddingBytes(uint32_t n)
     if (!CanAdd(n))
         return;
 
-    memset((void*)&buffer_[info_.position], static_cast<int>(AB::GameProtocol::CodeLast), n);
+    memset(reinterpret_cast<void*>(&buffer_[info_.position]), static_cast<int>(AB::GameProtocol::CodeLast), n);
     info_.length += static_cast<MsgSize_t>(n);
 }
 
@@ -130,22 +130,6 @@ void NetworkMessage::AddString(const std::string& value)
     info_.length += static_cast<MsgSize_t>(len);
 }
 
-void NetworkMessage::AddString(const char* value)
-{
-    uint16_t len = static_cast<uint16_t>(strlen(value));
-    if (!CanAdd(len + 2) || len > 8192)
-        return;
-
-    Add<uint16_t>(len);
-#ifdef _MSC_VER
-    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_BUFFER_SIZE, value, len);
-#else
-    memcpy(buffer_ + info_.position, value, len);
-#endif
-    info_.position += static_cast<MsgSize_t>(len);
-    info_.length += static_cast<MsgSize_t>(len);
-}
-
 void NetworkMessage::AddStringEncrypted(const std::string& value)
 {
     uint16_t len = static_cast<uint16_t>(value.length());
@@ -167,11 +151,11 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
     char* buff = new char[len];
     memset(buff, 0, len);
 #ifdef _MSC_VER
-    memcpy_s((char*)(buff), len, value.data(), len);
+    memcpy_s(buff, len, value.data(), len);
 #else
-    memcpy((char*)(buff), value.data(), len);
+    memcpy(buff, value.data(), len);
 #endif
-    uint32_t* buffer = (uint32_t*)(buff);
+    uint32_t* buffer = reinterpret_cast<uint32_t*>(buff);
     xxtea_enc(buffer, len / 4, AB::ENC_KEY);
     std::string encString(buff, len);
     AddString(encString);

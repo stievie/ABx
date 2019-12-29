@@ -567,7 +567,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     size_t dataSize;
     Serialize(data);
     const char* cData = data.GetStream(dataSize);
-    msg.AddString(std::string(cData, dataSize));
+    msg.Add(std::string(cData, dataSize));
     resourceComp_->Write(msg, true);
     effectsComp_->Write(msg);
 }

@@ -255,9 +255,10 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     case AB::LoginProtocol::CreateAccountError:
     case AB::LoginProtocol::CreatePlayerError:
     case AB::LoginProtocol::AddAccountKeyError:
+    case AB::LoginProtocol::DeletePlayerError:
     {
-        uint8_t error = message.Get<uint8_t>();
-        ProtocolError(error);
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::Error>(message);
+        ProtocolError(packet.code);
         break;
     }
     case AB::LoginProtocol::CreateAccountSuccess:
@@ -266,10 +267,9 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         break;
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
-        std::string playerUuid = message.GetStringEncrypted();
-        std::string mapUuid = message.GetStringEncrypted();
+        auto packet = AB::Packets::Get< AB::Packets::Server::Login::CreateCharacterSuccess>(message);
         if (createPlayerCallback_)
-            createPlayerCallback_(playerUuid, mapUuid);
+            createPlayerCallback_(packet.uuid, packet.mapUuid);
         break;
     }
     case AB::LoginProtocol::AddAccountKeySuccess:

@@ -1578,7 +1578,6 @@ void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)
         ss << game.second->data_.uuid << ",";
         ss << game.second->data_.name << ";";
     }
-    nmsg->AddString(ss.str());
 
     AB::Packets::Server::ServerMessage packet = {
         AB::GameProtocol::ServerMessageTypeInstances,

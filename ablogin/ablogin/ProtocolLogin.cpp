@@ -490,24 +490,26 @@ void ProtocolLogin::CreateAccount(AB::Packets::Client::Login::CreateAccount requ
     else
     {
         output->AddByte(AB::LoginProtocol::CreateAccountError);
+        AB::Packets::Server::Login::Error packet;
         switch (res)
         {
         case IO::IOAccount::CreateAccountResult::NameExists:
-            output->AddByte(AB::Errors::AccountNameExists);
+            packet.code = AB::Errors::AccountNameExists;
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
-            output->AddByte(AB::Errors::InvalidAccountKey);
+            packet.code = AB::Errors::InvalidAccountKey;
             break;
         case IO::IOAccount::CreateAccountResult::PasswordError:
-            output->AddByte(AB::Errors::InvalidPassword);
+            packet.code = AB::Errors::InvalidPassword;
             break;
         case IO::IOAccount::CreateAccountResult::EmailError:
-            output->AddByte(AB::Errors::InvalidEmail);
+            packet.code = AB::Errors::InvalidEmail;
             break;
         default:
-            output->AddByte(AB::Errors::UnknownError);
+            packet.code = AB::Errors::UnknownError;
             break;
         }
+        AB::Packets::Add(packet, *output);
     }
 
     Send(output);
@@ -536,33 +538,38 @@ void ProtocolLogin::CreatePlayer(AB::Packets::Client::Login::CreatePlayer reques
     if (res == IO::IOAccount::CreatePlayerResult::OK)
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
-        output->AddStringEncrypted(uuid);
-        output->AddStringEncrypted(IO::IOGame::GetLandingGameUuid());
+        AB::Packets::Server::Login::CreateCharacterSuccess packet = {
+            uuid,
+            IO::IOGame::GetLandingGameUuid()
+        };
+        AB::Packets::Add(packet, *output);
     }
     else
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerError);
+        AB::Packets::Server::Login::Error packet;
         switch (res)
         {
         case IO::IOAccount::CreatePlayerResult::NameExists:
-            output->AddByte(AB::Errors::PlayerNameExists);
+            packet.code = AB::Errors::PlayerNameExists;
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidAccount:
-            output->AddByte(AB::Errors::InvalidAccount);
+            packet.code = AB::Errors::InvalidAccount;
             break;
         case IO::IOAccount::CreatePlayerResult::NoMoreCharSlots:
-            output->AddByte(AB::Errors::NoMoreCharSlots);
+            packet.code = AB::Errors::NoMoreCharSlots;
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidProfession:
-            output->AddByte(AB::Errors::InvalidProfession);
+            packet.code = AB::Errors::InvalidProfession;
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidName:
-            output->AddByte(AB::Errors::InvalidCharacterName);
+            packet.code = AB::Errors::InvalidCharacterName;
             break;
         default:
-            output->AddByte(AB::Errors::UnknownError);
+            packet.code = AB::Errors::UnknownError;
             break;
         }
+        AB::Packets::Add(packet, *output);
     }
 
     Send(output);
@@ -590,21 +597,23 @@ void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey requ
     else
     {
         output->AddByte(AB::LoginProtocol::AddAccountKeyError);
+        AB::Packets::Server::Login::Error packet;
         switch (res)
         {
         case IO::IOAccount::CreateAccountResult::NameExists:
-            output->AddByte(AB::Errors::AccountNameExists);
+            packet.code = AB::Errors::AccountNameExists;
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
-            output->AddByte(AB::Errors::InvalidAccountKey);
+            packet.code = AB::Errors::InvalidAccountKey;
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccount:
-            output->AddByte(AB::Errors::InvalidAccount);
+            packet.code = AB::Errors::InvalidAccount;
             break;
         default:
-            output->AddByte(AB::Errors::UnknownError);
+            packet.code = AB::Errors::UnknownError;
             break;
         }
+        AB::Packets::Add(packet, *output);
     }
 
     Send(output);
@@ -635,7 +644,10 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     else
     {
         output->AddByte(AB::LoginProtocol::DeletePlayerError);
-        output->AddByte(AB::Errors::InvalidCharacter);
+        AB::Packets::Server::Login::Error packet =  {
+            AB::Errors::InvalidCharacter
+        };
+        AB::Packets::Add(packet, *output);
     }
 
     LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
@@ -649,7 +661,10 @@ void ProtocolLogin::DisconnectClient(uint8_t error)
 {
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::LoginProtocol::LoginError);
-    output->AddByte(error);
+    AB::Packets::Server::Login::Error packet = {
+        error
+    };
+    AB::Packets::Add(packet, *output);
     Send(output);
     Disconnect();
 }

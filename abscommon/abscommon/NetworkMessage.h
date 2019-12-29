@@ -61,6 +61,9 @@ protected:
         }
         return true;
     }
+    std::string GetStringEncrypted();
+    void AddStringEncrypted(const std::string& value);
+    void AddString(const std::string& value);
 public:
     void Reset()
     {
@@ -94,7 +97,6 @@ public:
         return Get<T>();
     }
     std::string GetString(uint16_t len = 0);
-    std::string GetStringEncrypted();
     uint32_t PeekU32()
     {
         uint32_t v = *reinterpret_cast<uint32_t*>(buffer_ + info_.position);
@@ -111,9 +113,6 @@ public:
         buffer_[info_.position++] = value;
         info_.length++;
     }
-    void AddString(const std::string& value);
-    void AddString(const char* value);
-    void AddStringEncrypted(const std::string& value);
     template <typename T>
     void Add(const T& value)
     {

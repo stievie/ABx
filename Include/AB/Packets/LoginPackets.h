@@ -117,6 +117,29 @@ struct GetServers
 namespace Server {
 namespace Login {
 
+struct Error
+{
+    uint8_t code;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(code);
+    }
+};
+
+struct CreateCharacterSuccess
+{
+    // UUID of newly created character
+    std::string uuid;
+    std::string mapUuid;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value_enc(uuid);
+        ar.value_enc(mapUuid);
+    }
+};
+
 struct CharacterList
 {
     struct Character
