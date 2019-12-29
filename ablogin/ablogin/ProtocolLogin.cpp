@@ -14,6 +14,8 @@
 #include <AB/ProtocolCodes.h>
 #include <functional>
 #include <uuid.h>
+#include <AB/Packets/Packet.h>
+#include <AB/CommonConfig.h>
 
 namespace Net {
 
@@ -72,8 +74,8 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
 void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::Login>(message);
+    if (packet.accountName.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account name " << accountName << std::endl;
@@ -81,8 +83,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    if (packet.password.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
@@ -95,38 +96,37 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::AuthenticateSendCharacterList, thisPtr,
-            accountName, password
+            packet
         ))
     );
 }
 
 void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::CreateAccount>(message);
+    if (packet.accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    if (accountName.length() < 6 || accountName.length() > 32)
+    if (packet.accountName.length() < 6 || packet.accountName.length() > 32)
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    if (packet.password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    const std::string email = message.GetStringEncrypted();
-    if (password.empty())
+#ifdef EMAIL_MANDATORY
+    if (packet.email.empty())
     {
         DisconnectClient(AB::Errors::InvalidEmail);
         return;
     }
-    const std::string accKey = message.GetStringEncrypted();
-    if (accKey.empty())
+#endif
+    if (packet.accountKey.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
@@ -136,16 +136,15 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreateAccount, thisPtr,
-            accountName, password,
-            email, accKey
+            packet
         ))
     );
 }
 
 void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 {
-    const std::string accountUuid = message.GetStringEncrypted();
-    if (accountUuid.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::CreatePlayer>(message);
+    if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
@@ -153,57 +152,50 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
     }
-    const std::string charName = message.GetStringEncrypted();
-    if (charName.empty())
+    if (packet.charName.empty())
     {
         DisconnectClient(AB::Errors::InvalidCharacterName);
         return;
     }
-    if (charName.length() < 6 || charName.length() > 20)
+    if (packet.charName.length() < 6 || packet.charName.length() > 20)
     {
         DisconnectClient(AB::Errors::InvalidCharacterName);
         return;
     }
 
-    uint32_t modelIndex = message.Get<uint32_t>();
-
-    AB::Entities::CharacterSex sex = static_cast<AB::Entities::CharacterSex>(message.GetByte());
-    if (sex < AB::Entities::CharacterSex::CharacterSexFemale || sex > AB::Entities::CharacterSex::CharacterSexMale)
+    if (packet.sex < AB::Entities::CharacterSex::CharacterSexFemale ||
+        packet.sex > AB::Entities::CharacterSex::CharacterSexMale)
     {
         DisconnectClient(AB::Errors::InvalidPlayerSex);
         return;
     }
-    const std::string prof = message.GetString();
-    if (Utils::Uuid::IsEmpty(prof))
+    if (Utils::Uuid::IsEmpty(packet.profUuid))
     {
         DisconnectClient(AB::Errors::InvalidProfession);
         return;
     }
-    bool isPvp = message.GetByte() != 0;
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreatePlayer, thisPtr,
-            accountUuid, password,
-            charName, prof, modelIndex, sex, isPvp
+            packet
         ))
     );
 }
 
 void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 {
-    const std::string accountUuid = message.GetStringEncrypted();
-    if (accountUuid.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::DeleteCharacter>(message);
+    if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
@@ -211,17 +203,15 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
     }
-    const std::string charUuid = message.GetStringEncrypted();
-    if (Utils::Uuid::IsEmpty(charUuid))
+    if (Utils::Uuid::IsEmpty(packet.charUuid))
     {
         DisconnectClient(AB::Errors::InvalidCharacter);
         return;
@@ -231,28 +221,25 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::DeletePlayer, thisPtr,
-            accountUuid, password,
-            charUuid
+            packet
         ))
     );
 }
 
 void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
 {
-    const std::string accountUuid = message.GetStringEncrypted();
-    if (accountUuid.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::AddAccountKey>(message);
+    if (packet.accountUuid.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string token = message.GetStringEncrypted();
-    if (token.empty())
+    if (packet.authToken.empty())
     {
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
     }
-    const std::string accKey = message.GetStringEncrypted();
-    if (accKey.empty())
+    if (packet.accountKey.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
@@ -262,16 +249,15 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::AddAccountKey, thisPtr,
-            accountUuid, token,
-            accKey
+            packet
         ))
     );
 }
 
 void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 {
-    const std::string accountUuid = message.GetStringEncrypted();
-    if (accountUuid.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::GetOutposts>(message);
+    if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
@@ -279,13 +265,12 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string token = message.GetStringEncrypted();
-    if (token.empty())
+    if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid token" << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
     }
 
@@ -293,7 +278,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendOutposts, thisPtr,
-            accountUuid, token
+            packet
         ))
     );
 }
@@ -303,8 +288,8 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
     LOG_DEBUG << "Sending server list" << std::endl;
 #endif
-    const std::string accountUuid = message.GetStringEncrypted();
-    if (accountUuid.empty())
+    auto packet = AB::Packets::Get<AB::Packets::Client::Login::GetServers>(message);
+    if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
@@ -312,8 +297,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string token = message.GetStringEncrypted();
-    if (token.empty())
+    if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid token" << std::endl;
@@ -326,16 +310,16 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendServers, thisPtr,
-            accountUuid, token
+            packet
         ))
     );
 }
 
-void ProtocolLogin::AuthenticateSendCharacterList(const std::string& accountName, const std::string& password)
+void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Login request)
 {
     AB::Entities::Account account;
-    account.name = accountName;
-    IO::IOAccount::PasswordAuthResult res = IO::IOAccount::PasswordAuth(password, account);
+    account.name = request.accountName;
+    IO::IOAccount::PasswordAuthResult res = IO::IOAccount::PasswordAuth(request.password, account);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (res)
     {
@@ -379,52 +363,52 @@ void ProtocolLogin::AuthenticateSendCharacterList(const std::string& accountName
 
     banMan->AddLoginAttempt(GetIP(), true);
 
-    LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
+    LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << request.accountName << " logged in" << std::endl;
 
     auto output = OutputMessagePool::GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
 
-    output->AddStringEncrypted(account.uuid);
-    output->AddStringEncrypted(account.authToken);
-
-    output->AddString(gameServer.host);
-    output->Add<uint16_t>(gameServer.port);
-    output->AddString(fileServer.host);
-    output->Add<uint16_t>(fileServer.port);
+    AB::Packets::Server::Login::CharacterList packet;
+    packet.accountUuid = account.uuid;
+    packet.authToken = account.authToken;
+    packet.serverHost = gameServer.host;
+    packet.serverPort = gameServer.port;
+    packet.fileHost = fileServer.host;
+    packet.filePort = fileServer.port;
+    packet.charSlots = static_cast<uint16_t>(account.charSlots);
+    packet.charCount = static_cast<uint16_t>(account.characterUuids.size());
+    packet.characters.reserve(packet.charCount);
 
     const std::string landingGame = IO::IOGame::GetLandingGameUuid();
-    output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots));
-    output->Add<uint16_t>(static_cast<uint16_t>(account.characterUuids.size()));
     for (const std::string& characterUuid : account.characterUuids)
     {
         AB::Entities::Character character;
         character.uuid = characterUuid;
         if (!IO::IOAccount::LoadCharacter(character))
             continue;
-
-        output->AddStringEncrypted(character.uuid);
-        output->Add<uint8_t>(character.level);
-        output->AddStringEncrypted(character.name);
-        output->AddStringEncrypted(character.profession);
-        output->AddStringEncrypted(character.profession2);
-        output->AddByte(static_cast<uint8_t>(character.sex));
-        output->Add<uint32_t>(character.modelIndex);
-        if (!Utils::Uuid::IsEmpty(character.lastOutpostUuid))
-            output->AddStringEncrypted(character.lastOutpostUuid);
-        else
-            output->AddStringEncrypted(landingGame);
+        packet.characters.push_back({
+            character.uuid,
+            character.level,
+            character.name,
+            character.profession,
+            character.profession2,
+            character.sex,
+            character.modelIndex,
+            (Utils::Uuid::IsEmpty(character.lastOutpostUuid) ? landingGame : character.lastOutpostUuid)
+        });
     }
+    AB::Packets::Add(packet, *output);
 
     Send(output);
     Disconnect();
 }
 
-void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::string& token)
+void ProtocolLogin::SendOutposts(AB::Packets::Client::Login::GetOutposts request)
 {
     AB::Entities::Account account;
-    account.uuid = accountUuid;
-    bool res = IO::IOAccount::TokenAuth(token, account);
+    account.uuid = request.accountUuid;
+    bool res = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!res)
     {
         DisconnectClient(AB::Errors::TokenAuthFailure);
@@ -437,26 +421,31 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
         AB::Entities::GameType::GameTypeOutpost,
         AB::Entities::GameType::GameTypeTown });
 
-    output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
+    AB::Packets::Server::Login::OutpostList packet;
+    packet.count = static_cast<uint16_t>(games.size());
+    packet.outposts.reserve(packet.count);
     for (const AB::Entities::Game& game : games)
     {
-        output->AddStringEncrypted(game.uuid);
-        output->AddStringEncrypted(game.name);
-        output->AddByte(static_cast<uint8_t>(game.type));
-        output->AddByte(game.partySize);
-        output->Add<int32_t>(game.mapCoordX);
-        output->Add<int32_t>(game.mapCoordY);
+        packet.outposts.push_back({
+            game.uuid,
+            game.name,
+            game.type,
+            game.partySize,
+            game.mapCoordX,
+            game.mapCoordY
+        });
     }
+    AB::Packets::Add(packet, *output);
 
     Send(output);
     Disconnect();
 }
 
-void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& token)
+void ProtocolLogin::SendServers(AB::Packets::Client::Login::GetServers request)
 {
     AB::Entities::Account account;
-    account.uuid = accountUuid;
-    bool res = IO::IOAccount::TokenAuth(token, account);
+    account.uuid = request.accountUuid;
+    bool res = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!res)
     {
         DisconnectClient(AB::Errors::TokenAuthFailure);
@@ -467,27 +456,30 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     output->AddByte(AB::LoginProtocol::ServerList);
 
     std::vector<AB::Entities::Service> services;
-    int count = IO::IOService::GetServices(AB::Entities::ServiceTypeGameServer, services);
-
-    output->Add<uint16_t>(static_cast<uint16_t>(count));
+    AB::Packets::Server::Login::ServerList packet;
+    packet.count = static_cast<uint16_t>(IO::IOService::GetServices(AB::Entities::ServiceTypeGameServer, services));
+    packet.servers.reserve(packet.count);
     for (const AB::Entities::Service& service : services)
     {
-        output->Add<AB::Entities::ServiceType>(service.type);
-        output->AddStringEncrypted(service.uuid);
-        output->AddStringEncrypted(service.host);
-        output->Add<uint16_t>(service.port);
-        output->AddStringEncrypted(service.location);
-        output->AddStringEncrypted(service.name);
+        packet.servers.push_back({
+            service.type,
+            service.uuid,
+            service.host,
+            service.port,
+            service.location,
+            service.name
+        });
     }
+    AB::Packets::Add(packet, *output);
 
     Send(output);
     Disconnect();
 }
 
-void ProtocolLogin::CreateAccount(const std::string& accountName, const std::string& password,
-    const std::string& email, const std::string& accKey)
+void ProtocolLogin::CreateAccount(AB::Packets::Client::Login::CreateAccount request)
 {
-    IO::IOAccount::CreateAccountResult res = IO::IOAccount::CreateAccount(accountName, password, email, accKey);
+    IO::IOAccount::CreateAccountResult res = IO::IOAccount::CreateAccount(
+        request.accountName, request.password, request.email, request.accountKey);
 
     auto output = OutputMessagePool::GetOutputMessage();
 
@@ -522,14 +514,11 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::string& token,
-    const std::string& name, const std::string& prof,
-    uint32_t modelIndex,
-    AB::Entities::CharacterSex sex, bool isPvp)
+void ProtocolLogin::CreatePlayer(AB::Packets::Client::Login::CreatePlayer request)
 {
     AB::Entities::Account account;
-    account.uuid = accountUuid;
-    bool ses = IO::IOAccount::TokenAuth(token, account);
+    account.uuid = request.accountUuid;
+    bool ses = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!ses)
     {
         DisconnectClient(AB::Errors::TokenAuthFailure);
@@ -538,7 +527,8 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
 
     std::string uuid;
     IO::IOAccount::CreatePlayerResult res = IO::IOAccount::CreatePlayer(
-        account.uuid, name, prof, modelIndex, sex, isPvp, uuid
+        account.uuid, request.charName, request.profUuid, request.itemIndex,
+        static_cast<AB::Entities::CharacterSex>(request.sex), request.pvp, uuid
     );
 
     auto output = OutputMessagePool::GetOutputMessage();
@@ -579,19 +569,18 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
     Disconnect();
 }
 
-void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::string& token,
-    const std::string& accKey)
+void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey request)
 {
     AB::Entities::Account account;
-    account.uuid = accountUuid;
-    bool authres = IO::IOAccount::TokenAuth(token, account);
+    account.uuid = request.accountUuid;
+    bool authres = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!authres)
     {
         DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
     }
 
-    IO::IOAccount::CreateAccountResult res = IO::IOAccount::AddAccountKey(account, accKey);
+    IO::IOAccount::CreateAccountResult res = IO::IOAccount::AddAccountKey(account, request.accountKey);
     auto output = OutputMessagePool::GetOutputMessage();
 
     if (res == IO::IOAccount::CreateAccountResult::OK)
@@ -622,12 +611,11 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::string& token,
-    const std::string& playerUuid)
+void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter request)
 {
     AB::Entities::Account account;
-    account.uuid = accountUuid;
-    bool authRes = IO::IOAccount::TokenAuth(token, account);
+    account.uuid = request.accountUuid;
+    bool authRes = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!authRes)
     {
         DisconnectClient(AB::Errors::TokenAuthFailure);
@@ -635,7 +623,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     }
 
     bool res = IO::IOAccount::DeletePlayer(
-        account.uuid, playerUuid
+        account.uuid, request.charUuid
     );
 
     auto output = OutputMessagePool::GetOutputMessage();
@@ -651,7 +639,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     }
 
     LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountUuid << " deleted character with UUID " << playerUuid << std::endl;
+        << request.accountUuid << " deleted character with UUID " << request.charUuid << std::endl;
 
     Send(output);
     Disconnect();

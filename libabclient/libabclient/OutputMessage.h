@@ -64,6 +64,12 @@ public:
         info_.size += sizeof(T);
     }
     template <typename T>
+    void AddEncryted(const T& value)
+    {
+        // Only strings
+        Add<T>(value);
+    }
+    template <typename T>
     void Set(uint16_t pos, T value)
     {
         uint16_t p = info_.pos;
@@ -88,6 +94,11 @@ template<>
 inline void OutputMessage::Add<std::string>(const std::string& value)
 {
     AddString(value);
+}
+template<>
+inline void OutputMessage::AddEncryted<std::string>(const std::string& value)
+{
+    AddStringEncrypted(value);
 }
 
 }

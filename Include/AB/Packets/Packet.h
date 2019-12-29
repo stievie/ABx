@@ -19,6 +19,11 @@ public:
     {
         value = msg_.template Get<T>();
     }
+    template<typename T>
+    void value_enc(T& value)
+    {
+        value = msg_.template GetDecrypted<T>();
+    }
 };
 
 template <typename _Msg>
@@ -34,6 +39,11 @@ public:
     void value(T& value)
     {
         msg_.template Add<T>(value);
+    }
+    template<typename T>
+    void value_enc(T& value)
+    {
+        msg_.template AddEncryted<T>(value);
     }
 };
 

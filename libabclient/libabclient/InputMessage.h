@@ -69,6 +69,12 @@ public:
         pos_ += sizeof(T);
         return v;
     }
+    template <typename T>
+    T GetDecrypted()
+    {
+        // Only strings
+        return Get<T>();
+    }
     bool Uncompress();
 };
 
@@ -76,6 +82,11 @@ template<>
 inline std::string InputMessage::Get<std::string>()
 {
     return GetString();
+}
+template<>
+inline std::string InputMessage::GetDecrypted<std::string>()
+{
+    return GetStringEncrypted();
 }
 template<>
 inline bool InputMessage::Get<bool>()

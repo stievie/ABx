@@ -88,6 +88,11 @@ public:
         info_.position += sizeof(T);
         return v;
     }
+    template <typename T>
+    T GetDecrypted()
+    {
+        return Get<T>();
+    }
     std::string GetString(uint16_t len = 0);
     std::string GetStringEncrypted();
     uint32_t PeekU32()
@@ -123,6 +128,11 @@ public:
         info_.position += sizeof(T);
         info_.length += sizeof(T);
     }
+    template <typename T>
+    void AddEncryted(const T& value)
+    {
+        Add<T>(value);
+    }
 
     int32_t GetHeaderSize()
     {
@@ -155,6 +165,11 @@ inline void NetworkMessage::Add<std::string>(const std::string& value)
 {
     AddString(value);
 }
+template<>
+inline void NetworkMessage::AddEncryted<std::string>(const std::string& value)
+{
+    AddStringEncrypted(value);
+}
 template <>
 inline void NetworkMessage::Add<bool>(const bool& value)
 {
@@ -164,6 +179,11 @@ template <>
 inline std::string NetworkMessage::Get<std::string>()
 {
     return GetString();
+}
+template<>
+inline std::string NetworkMessage::GetDecrypted<std::string>()
+{
+    return GetStringEncrypted();
 }
 template <>
 inline bool NetworkMessage::Get<bool>()

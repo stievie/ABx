@@ -2,6 +2,8 @@
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Character.h>
+#include <AB/Packets/LoginPackets.h>
+#include <AB/Packets/Packet.h>
 
 namespace Client {
 
@@ -102,8 +104,11 @@ void ProtocolLogin::SendLoginPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginLogin);
-    msg->AddStringEncrypted(accountName_);
-    msg->AddStringEncrypted(password_);
+    AB::Packets::Client::Login::Login packet = {
+        accountName_,
+        password_
+    };
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 
@@ -114,10 +119,13 @@ void ProtocolLogin::SendCreateAccountPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
-    msg->AddStringEncrypted(accountName_);
-    msg->AddStringEncrypted(password_);
-    msg->AddStringEncrypted(email_);
-    msg->AddStringEncrypted(accKey_);
+    AB::Packets::Client::Login::CreateAccount packet = {
+        accountName_,
+        password_,
+        email_,
+        accKey_
+    };
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 
@@ -128,13 +136,16 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
-    msg->AddStringEncrypted(accountUuid_);
-    msg->AddStringEncrypted(authToken_);
-    msg->AddStringEncrypted(charName_);
-    msg->Add<uint32_t>(itemIndex_);
-    msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
-    msg->Add(profUuid_);
-    msg->Add<uint8_t>(isPvp_ ? 1 : 0);
+    AB::Packets::Client::Login::CreatePlayer packet = {
+        accountUuid_,
+        authToken_,
+        charName_,
+        itemIndex_,
+        sex_,
+        profUuid_,
+        isPvp_
+    };
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 
@@ -145,8 +156,11 @@ void ProtocolLogin::SendGetOutpostsPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
-    msg->AddStringEncrypted(accountUuid_);
-    msg->AddStringEncrypted(authToken_);
+    AB::Packets::Client::Login::GetOutposts packet = {
+        accountUuid_,
+        authToken_
+    };
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 
@@ -157,8 +171,11 @@ void ProtocolLogin::SendGetServersPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
-    msg->AddStringEncrypted(accountUuid_);
-    msg->AddStringEncrypted(authToken_);
+    AB::Packets::Client::Login::GetServers packet = {
+        accountUuid_,
+        authToken_
+    };
+    AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
 }
 
@@ -169,32 +186,27 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     {
     case AB::LoginProtocol::CharacterList:
     {
-        std::string accountUuid = message.GetStringEncrypted();
-        std::string authToken = message.GetStringEncrypted();
-        std::string host = message.Get<std::string>();
-        if (!host.empty())
-            gameHost_ = host;
-        gamePort_ = message.Get<uint16_t>();
-        host = message.Get<std::string>();
-        if (!host.empty())
-            fileHost_ = host;
-        filePort_ = message.Get<uint16_t>();
-        loggedInCallback_(accountUuid, authToken);
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::CharacterList>(message);
+        if (!packet.serverHost.empty())
+            gameHost_ = packet.serverHost;
+        gamePort_ = packet.serverPort;
+        if (!packet.fileHost.empty())
+            fileHost_ = packet.fileHost;
+        filePort_ = packet.filePort;
+        loggedInCallback_(packet.accountUuid, packet.authToken);
 
-        /* int charSlots = */ message.Get<uint16_t>();
         AB::Entities::CharList chars;
-        int count = message.Get<uint16_t>();
-        for (int i = 0; i < count; ++i)
+        for (const auto& c : packet.characters)
         {
             AB::Entities::Character cData;
-            cData.uuid = message.GetStringEncrypted();
-            cData.level = message.Get<uint8_t>();
-            cData.name = message.GetStringEncrypted();
-            cData.profession = message.GetStringEncrypted();
-            cData.profession2 = message.GetStringEncrypted();
-            cData.sex = static_cast<AB::Entities::CharacterSex>(message.Get<uint8_t>());
-            cData.modelIndex = message.Get<uint32_t>();
-            cData.lastOutpostUuid = message.GetStringEncrypted();
+            cData.uuid = c.uuid;
+            cData.level = c.level;
+            cData.name = c.name;
+            cData.profession = c.profession;
+            cData.profession2 = c.profession2;
+            cData.sex = static_cast<AB::Entities::CharacterSex>(c.sex);
+            cData.modelIndex = c.modelIndex;
+            cData.lastOutpostUuid = c.outpostUuid;
             chars.push_back(cData);
         }
         if (charlistCallback_)
@@ -203,17 +215,17 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     }
     case AB::LoginProtocol::OutpostList:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::OutpostList>(message);
         std::vector<AB::Entities::Game> games;
-        int count = message.Get<uint16_t>();
-        for (int i = 0; i < count; ++i)
+        for (const auto& o : packet.outposts)
         {
             AB::Entities::Game g;
-            g.uuid = message.GetStringEncrypted();
-            g.name = message.GetStringEncrypted();
-            g.type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
-            g.partySize = message.Get<uint8_t>();
-            g.mapCoordX = message.Get<int32_t>();
-            g.mapCoordY = message.Get<int32_t>();
+            g.uuid = o.uuid;
+            g.name = o.name;
+            g.type = static_cast<AB::Entities::GameType>(o.type);
+            g.partySize = o.partySize;
+            g.mapCoordX = o.coordX;
+            g.mapCoordY = o.coordY;
             games.push_back(g);
         }
         if (gamelistCallback_)
@@ -222,17 +234,17 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     }
     case AB::LoginProtocol::ServerList:
     {
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::ServerList>(message);
         std::vector<AB::Entities::Service> servers;
-        int count = message.Get<uint16_t>();
-        for (int i = 0; i < count; i++)
+        for (const auto& _s : packet.servers)
         {
             AB::Entities::Service s;
-            s.type = message.Get<AB::Entities::ServiceType>();
-            s.uuid = message.GetStringEncrypted();
-            s.host = message.GetStringEncrypted();
-            s.port = message.Get<uint16_t>();
-            s.location = message.GetStringEncrypted();
-            s.name = message.GetStringEncrypted();
+            s.type = static_cast<AB::Entities::ServiceType>(_s.type);
+            s.uuid = _s.uuid;
+            s.host = _s.host;
+            s.port = _s.port;
+            s.location = _s.location;
+            s.name = _s.name;
             servers.push_back(s);
         }
         if (serverlistCallback_)
