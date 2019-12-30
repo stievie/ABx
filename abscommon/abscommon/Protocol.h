@@ -58,7 +58,7 @@ public:
     uint32_t GetIP();
     sa::SharedPtr<OutputMessage>& GetCurrentBuffer();
 
-    void Send(sa::SharedPtr<OutputMessage> message);
+    void Send(sa::SharedPtr<OutputMessage>&& message);
 };
 
 }

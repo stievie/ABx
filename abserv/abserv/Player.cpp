@@ -1055,7 +1055,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
             AB::Packets::Add(packet, *nmsg);
             party_->WriteToMembers(*nmsg);
 #ifdef DEBUG_GAME
-            LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->id_ << std::endl;
+            LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->GetId() << std::endl;
 #endif
         }
         // else party maybe full

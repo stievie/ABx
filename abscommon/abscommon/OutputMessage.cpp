@@ -22,7 +22,8 @@ void OutputMessagePool::SendAll()
         auto& msg = proto->GetCurrentBuffer();
         if (msg && msg->GetSize() > 0)
         {
-            proto->Send(msg);
+            sa::SharedPtr<OutputMessage> msgCopy = msg;
+            proto->Send(std::move(msgCopy));
             proto->ResetOutputBuffer();
         }
     }

@@ -21,7 +21,6 @@
 #include <AB/Entities/FriendList.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
-#include <AB/Packets/ClientPackets.h>
 
 namespace Net {
 
@@ -39,14 +38,13 @@ inline void ProtocolGame::AddPlayerInput(Game::InputType type)
         p->AddInput(type);
 }
 
-void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
-    const std::string& mapUuid, const std::string& instanceUuid)
+void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Player " << playerUuid << " logging in" << std::endl;
+    LOG_DEBUG << "Player " << packet.charUuid << " logging in" << std::endl;
 #endif
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
-    std::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(playerUuid);
+    std::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(packet.charUuid);
     if (foundPlayer)
     {
 #ifdef DEBUG_NET
@@ -56,9 +54,9 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(accountUuid))
+    if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(uuids::uuid(packet.accountUuid)))
     {
-        LOG_INFO << "Login attempt from banned account " << accountUuid.to_string() << std::endl;
+        LOG_INFO << "Login attempt from banned account " << packet.accountUuid << std::endl;
         DisconnectClient(AB::Errors::AccountBanned);
         return;
     }
@@ -67,9 +65,9 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     assert(player);
 
     // Load player and account data from DB
-    if (!IO::IOPlayer::LoadPlayerByUuid(*player, playerUuid))
+    if (!IO::IOPlayer::LoadPlayerByUuid(*player, packet.charUuid))
     {
-        LOG_ERROR << "Error loading player " << playerUuid << std::endl;
+        LOG_ERROR << "Error loading player " << packet.charUuid << std::endl;
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
@@ -79,10 +77,10 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Check if game exists.
     AB::Entities::Game g;
-    g.uuid = mapUuid;
+    g.uuid = packet.mapUuid;
     if (!client->Read(g))
     {
-        LOG_ERROR << "Invalid game with map " << mapUuid << std::endl;
+        LOG_ERROR << "Invalid game with map " << packet.mapUuid << std::endl;
         DisconnectClient(AB::Errors::InvalidGame);
         return;
     }
@@ -93,10 +91,10 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     client->Update(player->account_);
 
     player->Initialize();
-    player->data_.currentMapUuid = mapUuid;
+    player->data_.currentMapUuid = packet.mapUuid;
     player->data_.lastLogin = Utils::Tick();
-    if (!uuids::uuid(instanceUuid).nil())
-        player->data_.instanceUuid = instanceUuid;
+    if (!uuids::uuid(packet.instanceUuid).nil())
+        player->data_.instanceUuid = packet.instanceUuid;
     client->Update(player->data_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
     LOG_INFO << "User " << player->account_.name << " logged in with " << player->data_.name << " entering " << g.name << std::endl;
@@ -475,11 +473,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::Login, GetPtr(),
-                      packet.charUuid,
-                      uuids::uuid(packet.accountUuid),
-                      packet.mapUuid,
-                      packet.instanceUuid)
+            std::bind(&ProtocolGame::Login, GetPtr(), packet)
         )
     );
 }
@@ -489,8 +483,8 @@ void ProtocolGame::OnConnect()
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::KeyExchange);
     auto keys = GetSubsystem<Crypto::DHKeys>();
-    output->AddBytes((const char*)&keys->GetPublickKey(), DH_KEY_LENGTH);
-    Send(output);
+    output->AddBytes(reinterpret_cast<const char*>(&keys->GetPublickKey()), DH_KEY_LENGTH);
+    Send(std::move(output));
 }
 
 void ProtocolGame::DisconnectClient(uint8_t error)
@@ -499,7 +493,7 @@ void ProtocolGame::DisconnectClient(uint8_t error)
     output->AddByte(AB::GameProtocol::Error);
     AB::Packets::Server::ProtocolError packet = { error };
     AB::Packets::Add(packet, *output);
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -579,13 +573,14 @@ void ProtocolGame::EnterGame()
             instance->data_.partySize
         };
         AB::Packets::Add(packet, *output);
-        Send(output);
+        Send(std::move(output));
     }
     else
         DisconnectClient(AB::Errors::CannotEnterGame);
 }
 
-void ProtocolGame::ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid)
+void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,
+    const std::string& mapUuid, const std::string& instanceUuid)
 {
     auto player = GetPlayer();
     if (!player)
@@ -604,7 +599,7 @@ void ProtocolGame::ChangeServerInstance(const std::string& serverUuid, const std
         serverUuid, mapUuid, instanceUuid, player->data_.uuid
     };
     AB::Packets::Add(packet, *output);
-    Send(output);
+    Send(std::move(output));
 }
 
 void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)

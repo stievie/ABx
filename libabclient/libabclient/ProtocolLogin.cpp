@@ -267,7 +267,7 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         break;
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
-        auto packet = AB::Packets::Get< AB::Packets::Server::Login::CreateCharacterSuccess>(message);
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::CreateCharacterSuccess>(message);
         if (createPlayerCallback_)
             createPlayerCallback_(packet.uuid, packet.mapUuid);
         break;

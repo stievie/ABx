@@ -66,7 +66,8 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
         return Status::Running;
 
 #ifdef DEBUG_AI
-    LOG_DEBUG << npc.GetName() << " failed to use skill " << skill->data_.name << std::endl;
+    auto skill = npc.skills_->GetSkill(skillIndex);
+    LOG_DEBUG << npc.GetName() << " failed to use skill " << (skill ? skill->data_.name : "(null)") << std::endl;
 #endif
     return Status::Failed;
 }

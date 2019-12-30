@@ -50,7 +50,7 @@ public:
 
     asio::ip::tcp::socket socket_;
     /// Send the message
-    bool Send(sa::SharedPtr<OutputMessage> message);
+    bool Send(sa::SharedPtr<OutputMessage>&& message);
     /// Close the connection
     void Close(bool force = false);
     /// Used by protocols that require server to send first

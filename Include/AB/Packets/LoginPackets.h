@@ -168,9 +168,9 @@ struct CharacterList
     {
         ar.value_enc(accountUuid);
         ar.value_enc(authToken);
-        ar.value(serverHost);
+        ar.value_enc(serverHost);
         ar.value(serverPort);
-        ar.value(fileHost);
+        ar.value_enc(fileHost);
         ar.value(filePort);
         ar.value(charSlots);
         ar.value(charCount);

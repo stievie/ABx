@@ -400,7 +400,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     }
     AB::Packets::Add(packet, *output);
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -437,7 +437,7 @@ void ProtocolLogin::SendOutposts(AB::Packets::Client::Login::GetOutposts request
     }
     AB::Packets::Add(packet, *output);
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -472,7 +472,7 @@ void ProtocolLogin::SendServers(AB::Packets::Client::Login::GetServers request)
     }
     AB::Packets::Add(packet, *output);
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -512,7 +512,7 @@ void ProtocolLogin::CreateAccount(AB::Packets::Client::Login::CreateAccount requ
         AB::Packets::Add(packet, *output);
     }
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -572,7 +572,7 @@ void ProtocolLogin::CreatePlayer(AB::Packets::Client::Login::CreatePlayer reques
         AB::Packets::Add(packet, *output);
     }
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -616,7 +616,7 @@ void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey requ
         AB::Packets::Add(packet, *output);
     }
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -653,7 +653,7 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
         << request.accountUuid << " deleted character with UUID " << request.charUuid << std::endl;
 
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 
@@ -665,7 +665,7 @@ void ProtocolLogin::DisconnectClient(uint8_t error)
         error
     };
     AB::Packets::Add(packet, *output);
-    Send(output);
+    Send(std::move(output));
     Disconnect();
 }
 

@@ -35,6 +35,8 @@ float Ray::HitDistance(const BoundingBox& box) const
     // If undefined, no hit (infinite distance)
     if (!box.IsDefined())
         return Math::M_INFINITE;
+    if (direction_.Equals(Math::Vector3::Zero))
+        return Math::M_INFINITE;
 
     float dist = Math::M_INFINITE;
 

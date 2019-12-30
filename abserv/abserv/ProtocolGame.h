@@ -8,6 +8,7 @@
 #include <AB/ProtocolCodes.h>
 #include "Subsystems.h"
 #include "InputQueue.h"
+#include <AB/Packets/ClientPackets.h>
 
 namespace Game {
 class Player;
@@ -34,6 +35,9 @@ private:
     }
     inline void AddPlayerInput(Game::InputType type, Utils::VariantMap&& data);
     inline void AddPlayerInput(Game::InputType type);
+    void Login(AB::Packets::Client::GameLogin packet);
+    /// The client requests to enter a game. Find/create it, add the player and return success.
+    void EnterGame();
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)
@@ -45,14 +49,11 @@ public:
         SetEncKey(AB::ENC_KEY);
     }
 
-    void Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
-        const std::string& mapUuid, const std::string& instanceUuid);
     void Logout();
-    /// The client requests to enter a game. Find/create it, add the player and return success.
-    void EnterGame();
     /// Tells the client to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
-    void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
+    void ChangeServerInstance(const std::string& serverUuid,
+        const std::string& mapUuid, const std::string& instanceUuid);
     void WriteToOutput(const NetworkMessage& message);
 private:
     template <typename Callable, typename... Args>
