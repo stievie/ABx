@@ -5,8 +5,8 @@
 
 inline void NormalizeAngle(float& angle)
 {
-    angle = fmod(angle, 360.0f);
-    angle = fmod(angle + 360.0f, 360.0f);
+    angle = fmodf(angle, 360.0f);
+    angle = fmodf(angle + 360.0f, 360.0f);
 }
 
 template <typename T>

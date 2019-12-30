@@ -320,8 +320,8 @@ void WorldLevel::Update(StringHash, VariantMap&)
             sc->Test(Events::E_SC_TURNRIGHT));
 
         Input* input = GetSubsystem<Input>();
-        player_->controls_.yaw_ += (float)input->GetMouseMoveX() * op->mouseSensitivity_;
-        player_->controls_.pitch_ += (float)input->GetMouseMoveY() * op->mouseSensitivity_;
+        player_->controls_.yaw_ += static_cast<float>(input->GetMouseMoveX()) * op->mouseSensitivity_;
+        player_->controls_.pitch_ += static_cast<float>(input->GetMouseMoveY()) * op->mouseSensitivity_;
     }
     else
     {
@@ -375,7 +375,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     const Vector3& pos = eventData[P_POSITION].GetVector3();
     float rot = eventData[P_ROTATION].GetFloat();
     Quaternion direction;
-    float deg = -rot * (180.0f / (float)M_PI);
+    float deg = -rot * (180.0f / M_PI);
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     const Vector3& scale = eventData[P_SCALE].GetVector3();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());

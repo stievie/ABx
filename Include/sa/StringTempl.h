@@ -55,15 +55,19 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
     return result;
 }
 
-/// Strip out all characters that are not valid for an identifier
+// Strip out all characters that are not valid for an identifier
 template <typename charType>
 void MakeIdent(std::basic_string<charType>& s)
 {
     s = Trim<charType>(s, " \t\\/");
-    static std::basic_string<charType> invalidChars("\\/:?\"<>|.+-*");
+    using string_type = std::basic_string<charType>;
+    static string_type invalidChars("\\/:?\"<>|.+-*");
     std::transform(s.begin(), s.end(), s.begin(), [](auto c) {
-        return (invalidChars.find(c) == std::string::npos) ? c : '_';
+        return (invalidChars.find(c) == std::basic_string<charType>::npos) ? c : '_';
     });
+    static string_type digits("1234567890");
+    if (digits.find(s.front()) != string_type::npos)
+        s.erase(s.begin());
 }
 
 template <typename charType>

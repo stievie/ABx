@@ -46,9 +46,9 @@ void OutputMessage::AddString(const std::string& value)
     CheckWrite(static_cast<int>(len) + 2);
     Add<uint16_t>(static_cast<uint16_t>(len));
 #ifdef _MSC_VER
-    memcpy_s((char*)(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.c_str(), len);
+    memcpy_s(reinterpret_cast<char*>(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.c_str(), len);
 #else
-    memcpy((char*)(buffer_ + info_.pos), value.c_str(), len);
+    memcpy(reinterpret_cast<char*>(buffer_ + info_.pos), value.c_str(), len);
 #endif
     info_.pos += static_cast<uint16_t>(len);
     info_.size += static_cast<uint16_t>(len);
@@ -75,11 +75,11 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
     char* buff = new char[len];
     memset(buff, 0, len);
 #ifdef _MSC_VER
-    memcpy_s((char*)(buff), len, value.data(), len);
+    memcpy_s(buff, len, value.data(), len);
 #else
-    memcpy((char*)(buff), value.data(), len);
+    memcpy(buff, value.data(), len);
 #endif
-    uint32_t* buffer = (uint32_t*)(buff);
+    uint32_t* buffer = reinterpret_cast<uint32_t*>(buff);
     xxtea_enc(buffer, static_cast<uint32_t>(len) / 4, AB::ENC_KEY);
     std::string encString(buff, len);
     AddString(encString);

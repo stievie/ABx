@@ -117,11 +117,11 @@ void MapWindow::FitMap()
 {
     int windowWidth = GetWidth();
     int windowHeight = GetHeight();
-    float scaleX = (float)mapTexture_->GetWidth() / (float)windowWidth;
-    float scaleY = (float)mapTexture_->GetHeight() / (float)windowHeight;
+    float scaleX = static_cast<float>(mapTexture_->GetWidth()) / static_cast<float>(windowWidth);
+    float scaleY = static_cast<float>(mapTexture_->GetHeight()) / static_cast<float>(windowHeight);
     scale_ = Max(scaleX, scaleY) / zoom_;
-    mapSprite_->SetSize(static_cast<int>((float)mapTexture_->GetWidth() / scale_),
-        static_cast<int>((float)mapTexture_->GetHeight() / scale_));
+    mapSprite_->SetSize(static_cast<int>(static_cast<float>(mapTexture_->GetWidth()) / scale_),
+        static_cast<int>(static_cast<float>(mapTexture_->GetHeight()) / scale_));
 
     int x = windowWidth / 2 - mapSprite_->GetWidth() / 2;
     int y = windowHeight / 2 - mapSprite_->GetHeight() / 2;
@@ -145,8 +145,8 @@ void MapWindow::SetButtonsPos()
         {
             const AB::Entities::Game& game = (*it).second;
             auto sPos = mapSprite_->GetPosition();
-            float x = (float)game.mapCoordX / scale_ + sPos.x_;
-            float y = (float)game.mapCoordY / scale_ + sPos.y_;
+            float x = static_cast<float>(game.mapCoordX) / scale_ + sPos.x_;
+            float y = static_cast<float>(game.mapCoordY) / scale_ + sPos.y_;
             child->SetPosition(static_cast<int>(x) - 20, static_cast<int>(y) - 20);
         }
     }

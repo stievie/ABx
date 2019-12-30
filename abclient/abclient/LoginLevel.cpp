@@ -70,8 +70,8 @@ void LoginLevel::CreateEnvironmentsList()
 
         Environment* selEnv = opts->GetSelectedEnvironment();
         int width = 0; int height = 0;
-        int selIndex = 0;
-        int i = 0;;
+        unsigned selIndex = 0;
+        unsigned i = 0;
         for (const auto& env : envs)
         {
             Text* txt = CreateDropdownItem(env.name, env.name);

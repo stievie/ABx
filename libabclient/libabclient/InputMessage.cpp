@@ -53,12 +53,12 @@ std::string InputMessage::GetStringEncrypted()
     char* buff = new char[len + 1];
     memset(buff, 0, len + 1);
 #ifdef _MSC_VER
-    memcpy_s((char*)(buff), len, encString.data(), len);
+    memcpy_s(buff, len, encString.data(), len);
 #else
-    memcpy((char*)(buff), encString.data(), len);
+    memcpy(buff, encString.data(), len);
 #endif
-    uint32_t* buffer = (uint32_t*)(buff);
-    xxtea_dec(buffer, (uint32_t)(len / 4), AB::ENC_KEY);
+    uint32_t* buffer = reinterpret_cast<uint32_t*>(buff);
+    xxtea_dec(buffer, static_cast<uint32_t>(len / 4), AB::ENC_KEY);
     std::string result(buff);
     delete[] buff;
     return result;

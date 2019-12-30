@@ -96,7 +96,7 @@ void HotkeyEdit::UpdateText()
     {
         if (key_ != KEY_LSHIFT && key_ != KEY_RSHIFT && key_ != KEY_LCTRL && key_ != KEY_RCTRL && key_ != KEY_LALT && key_ != KEY_RALT)
             text += GetQualName();
-        text += String(SDL_GetKeyName(key_));
+        text += String(SDL_GetKeyName(static_cast<SDL_Keycode>(key_)));
     }
     else if (mouseButton_ != MOUSEB_NONE)
         text += GetQualName() + GetMBName();
