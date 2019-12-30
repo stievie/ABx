@@ -175,7 +175,12 @@ bool QuestComp::DeleteQuest(uint32_t index)
 
 bool QuestComp::HaveQuest(uint32_t index) const
 {
-    return activeQuests_.find(index) != activeQuests_.end();
+    const auto it = activeQuests_.find(index);
+    if (it == activeQuests_.end())
+        return false;
+    if ((*it).second->playerQuest_.deleted)
+        return false;
+    return true;
 }
 
 bool QuestComp::Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq)
