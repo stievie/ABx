@@ -28,6 +28,10 @@ db_pass = "password"
 ~~~sql
 INSERT INTO public.account_keys VALUES (random_guid(), 0, 100, 'My Account Key', 2, 1, '');
 ~~~
+Or you can use the `dbtool`:
+~~~sh
+$ dbtool -a genacckey
+~~~
 
 ### Known issuses
 
