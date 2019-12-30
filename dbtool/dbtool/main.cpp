@@ -44,6 +44,7 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << "ACTIONS" << std::endl;
     std::cout << "    update: Update the database" << std::endl;
     std::cout << "    versions: Show database and table versions" << std::endl;
+    std::cout << "    acckeys: Show account keys" << std::endl;
 }
 
 static void InitCli(sa::arg_parser::cli& cli)
@@ -62,7 +63,7 @@ static void InitCli(sa::arg_parser::cli& cli)
     dbDrivers << " odbc";
 #endif
 
-    cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s): update, versions",
+    cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s) see bellow",
         true, true, sa::arg_parser::option_type::string });
     cli.push_back({ "readonly", { "-r", "--read-only" }, "Do not write to Database",
         false, false, sa::arg_parser::option_type::none });
@@ -198,12 +199,28 @@ static void ShowVersions(DB::Database& db)
     }
 }
 
+static void ShowAccountKeys(DB::Database& db)
+{
+    std::ostringstream query;
+    query << "SELECT * FROM `account_keys`";
+    for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
+    {
+        std::cout << result->GetString("uuid");
+        std::cout << '\t';
+        std::cout << result->GetUInt("used") << "/" << result->GetUInt("total");
+        std::cout << '\t';
+        std::cout << result->GetString("description");
+        std::cout << std::endl;
+    }
+}
+
 /// What should we do.
 /// At the moment we can only update the DB
 enum class Action
 {
     Update,
-    Versions
+    Versions,
+    AccountKeys
 };
 
 int main(int argc, char** argv)
@@ -247,6 +264,8 @@ int main(int argc, char** argv)
         action = Action::Update;
     else if (sActval.compare("versions") == 0)
         action = Action::Versions;
+    else if (sActval.compare("acckeys") == 0)
+        action = Action::AccountKeys;
     else
     {
         std::cerr << "Unknown action " << sActval << std::endl;
@@ -313,6 +332,10 @@ int main(int argc, char** argv)
     else if (action == Action::Versions)
     {
         ShowVersions(*db);
+    }
+    else if (action == Action::AccountKeys)
+    {
+        ShowAccountKeys(*db);
     }
     else
         return EXIT_FAILURE;

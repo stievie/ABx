@@ -62,6 +62,10 @@ bin
 ~~~sql
 SELECT uuid FROM public.account_keys;
 ~~~
+Or use the `dbtool`:
+~~~sh
+$ dbtool -a acckeys
+~~~
 
 ### Known issues
 
