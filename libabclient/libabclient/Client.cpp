@@ -20,14 +20,18 @@ namespace Client {
 class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>
 {
 public:
-    HttpsClient(const std::string &server_port_path, bool verify_certificate = true,
-        const std::string &cert_file = std::string(),
-        const std::string &private_key_file = std::string(),
-        const std::string &verify_file = std::string()) :
+    HttpsClient(const std::string& server_port_path,
+        bool verify_certificate = true,
+        const std::string& cert_file = std::string(),
+        const std::string& private_key_file = std::string(),
+        const std::string& verify_file = std::string()) :
         SimpleWeb::Client<SimpleWeb::HTTPS>::Client(server_port_path, verify_certificate,
             cert_file, private_key_file, verify_file)
     { }
+    virtual ~HttpsClient();
 };
+
+HttpsClient::~HttpsClient() = default;
 
 Client::Client(Receiver& receiver) :
     receiver_(receiver),
