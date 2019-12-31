@@ -169,7 +169,7 @@ std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
 {
     if (!protoLogin_)
     {
-        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_, *ioService_.get());
+        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_, *ioService_);
         protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }

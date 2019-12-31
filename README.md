@@ -31,7 +31,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Lua API to script Games, NPCs, Skills, Effects, Items etc.
 * Navigation using Recast/Detour
 * Server runs on Windows and Linux
-* Client runs on Windows and Linux, but has some bugs on Linux
+* Client runs on Windows and Linux
 * Game AI, Behavior Tree
 
 ## Screenshot
