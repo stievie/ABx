@@ -223,7 +223,7 @@ public:
     {
         if (state == Client::Client::ClientState::Disconnected || state == Client::Client::ClientState::CreateAccount)
             loggedIn_ = false;
-        client_.state_ = state;
+        client_.SetState(state);
     }
     const std::map<std::string, AB::Entities::Service>& GetServices() const
     {

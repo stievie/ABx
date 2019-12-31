@@ -375,7 +375,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     const Vector3& pos = eventData[P_POSITION].GetVector3();
     float rot = eventData[P_ROTATION].GetFloat();
     Quaternion direction;
-    float deg = -rot * (180.0f / M_PI);
+    float deg = -rot * (180.0f / static_cast<float>(M_PI));
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     const Vector3& scale = eventData[P_SCALE].GetVector3();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());

@@ -2,7 +2,6 @@
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Character.h>
-#include <AB/Packets/LoginPackets.h>
 #include <AB/Packets/Packet.h>
 
 namespace Client {
@@ -179,6 +178,81 @@ void ProtocolLogin::SendGetServersPacket()
     Send(std::move(msg));
 }
 
+void ProtocolLogin::HandleCharList(const AB::Packets::Server::Login::CharacterList& packet)
+{
+    if (!packet.serverHost.empty())
+        gameHost_ = packet.serverHost;
+    gamePort_ = packet.serverPort;
+    if (!packet.fileHost.empty())
+        fileHost_ = packet.fileHost;
+    filePort_ = packet.filePort;
+    loggedInCallback_(packet.accountUuid, packet.authToken);
+
+    AB::Entities::CharList chars;
+    for (const auto& c : packet.characters)
+    {
+        AB::Entities::Character cData;
+        cData.uuid = c.uuid;
+        cData.level = c.level;
+        cData.name = c.name;
+        cData.profession = c.profession;
+        cData.profession2 = c.profession2;
+        cData.sex = static_cast<AB::Entities::CharacterSex>(c.sex);
+        cData.modelIndex = c.modelIndex;
+        cData.lastOutpostUuid = c.outpostUuid;
+        chars.push_back(cData);
+    }
+    if (charlistCallback_)
+        charlistCallback_(chars);
+}
+
+void ProtocolLogin::HandleOutpostList(const AB::Packets::Server::Login::OutpostList& packet)
+{
+    std::vector<AB::Entities::Game> games;
+    for (const auto& o : packet.outposts)
+    {
+        AB::Entities::Game g;
+        g.uuid = o.uuid;
+        g.name = o.name;
+        g.type = static_cast<AB::Entities::GameType>(o.type);
+        g.partySize = o.partySize;
+        g.mapCoordX = o.coordX;
+        g.mapCoordY = o.coordY;
+        games.push_back(g);
+    }
+    if (gamelistCallback_)
+        gamelistCallback_(games);
+}
+
+void ProtocolLogin::HandleServerList(const AB::Packets::Server::Login::ServerList& packet)
+{
+    std::vector<AB::Entities::Service> servers;
+    for (const auto& _s : packet.servers)
+    {
+        AB::Entities::Service s;
+        s.type = static_cast<AB::Entities::ServiceType>(_s.type);
+        s.uuid = _s.uuid;
+        s.host = _s.host;
+        s.port = _s.port;
+        s.location = _s.location;
+        s.name = _s.name;
+        servers.push_back(s);
+    }
+    if (serverlistCallback_)
+        serverlistCallback_(servers);
+}
+
+void ProtocolLogin::HandleLoginError(const AB::Packets::Server::Login::Error& packet)
+{
+    ProtocolError(packet.code);
+}
+
+void ProtocolLogin::HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet)
+{
+    if (createPlayerCallback_)
+        createPlayerCallback_(packet.uuid, packet.mapUuid);
+}
+
 void ProtocolLogin::ParseMessage(InputMessage& message)
 {
     uint8_t recvByte = message.Get<uint8_t>();
@@ -187,68 +261,19 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     case AB::LoginProtocol::CharacterList:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::CharacterList>(message);
-        if (!packet.serverHost.empty())
-            gameHost_ = packet.serverHost;
-        gamePort_ = packet.serverPort;
-        if (!packet.fileHost.empty())
-            fileHost_ = packet.fileHost;
-        filePort_ = packet.filePort;
-        loggedInCallback_(packet.accountUuid, packet.authToken);
-
-        AB::Entities::CharList chars;
-        for (const auto& c : packet.characters)
-        {
-            AB::Entities::Character cData;
-            cData.uuid = c.uuid;
-            cData.level = c.level;
-            cData.name = c.name;
-            cData.profession = c.profession;
-            cData.profession2 = c.profession2;
-            cData.sex = static_cast<AB::Entities::CharacterSex>(c.sex);
-            cData.modelIndex = c.modelIndex;
-            cData.lastOutpostUuid = c.outpostUuid;
-            chars.push_back(cData);
-        }
-        if (charlistCallback_)
-            charlistCallback_(chars);
+        HandleCharList(packet);
         break;
     }
     case AB::LoginProtocol::OutpostList:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::OutpostList>(message);
-        std::vector<AB::Entities::Game> games;
-        for (const auto& o : packet.outposts)
-        {
-            AB::Entities::Game g;
-            g.uuid = o.uuid;
-            g.name = o.name;
-            g.type = static_cast<AB::Entities::GameType>(o.type);
-            g.partySize = o.partySize;
-            g.mapCoordX = o.coordX;
-            g.mapCoordY = o.coordY;
-            games.push_back(g);
-        }
-        if (gamelistCallback_)
-            gamelistCallback_(games);
+        HandleOutpostList(packet);
         break;
     }
     case AB::LoginProtocol::ServerList:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::ServerList>(message);
-        std::vector<AB::Entities::Service> servers;
-        for (const auto& _s : packet.servers)
-        {
-            AB::Entities::Service s;
-            s.type = static_cast<AB::Entities::ServiceType>(_s.type);
-            s.uuid = _s.uuid;
-            s.host = _s.host;
-            s.port = _s.port;
-            s.location = _s.location;
-            s.name = _s.name;
-            servers.push_back(s);
-        }
-        if (serverlistCallback_)
-            serverlistCallback_(servers);
+        HandleServerList(packet);
         break;
     }
     case AB::LoginProtocol::LoginError:
@@ -258,7 +283,7 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     case AB::LoginProtocol::DeletePlayerError:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::Error>(message);
-        ProtocolError(packet.code);
+        HandleLoginError(packet);
         break;
     }
     case AB::LoginProtocol::CreateAccountSuccess:
@@ -268,8 +293,7 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::CreateCharacterSuccess>(message);
-        if (createPlayerCallback_)
-            createPlayerCallback_(packet.uuid, packet.mapUuid);
+        HandleCreatePlayerSuccess(packet);
         break;
     }
     case AB::LoginProtocol::AddAccountKeySuccess:
@@ -309,9 +333,7 @@ void ProtocolLogin::OnConnect()
 void ProtocolLogin::OnReceive(InputMessage& message)
 {
     if (firstRecv_)
-    {
         firstRecv_ = false;
-    }
 
     ParseMessage(message);
 }

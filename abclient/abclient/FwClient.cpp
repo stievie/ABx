@@ -144,7 +144,7 @@ FwClient::FwClient(Context* context) :
     Options* o = context->GetSubsystem<Options>();
     client_.loginHost_ = std::string(o->loginHost_.CString());
     client_.loginPort_ = o->loginPort_;
-    lastState_ = client_.state_;
+    lastState_ = client_.GetState();
     SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
     SubscribeUpdate();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
@@ -577,10 +577,10 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
 void FwClient::Update(float timeStep)
 {
     client_.Update(static_cast<int>(timeStep * 1000));
-    if (lastState_ == client_.state_)
+    if (lastState_ == client_.GetState())
         return;
 
-    switch (client_.state_)
+    switch (client_.GetState())
     {
     case Client::Client::ClientState::SelectChar:
         loggedIn_ = true;
@@ -588,7 +588,7 @@ void FwClient::Update(float timeStep)
     default:
         break;
     }
-    lastState_ = client_.state_;
+    lastState_ = client_.GetState();
 }
 
 void FwClient::HandleUpdate(StringHash, VariantMap& eventData)

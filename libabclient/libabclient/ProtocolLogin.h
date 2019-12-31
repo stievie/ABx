@@ -7,6 +7,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 #include "Structs.h"
+#include <AB/Packets/LoginPackets.h>
 
 namespace Client {
 
@@ -60,6 +61,12 @@ private:
     void SendGetOutpostsPacket();
     void SendGetServersPacket();
     void ParseMessage(InputMessage& message);
+
+    void HandleCharList(const AB::Packets::Server::Login::CharacterList& packet);
+    void HandleOutpostList(const AB::Packets::Server::Login::OutpostList& packet);
+    void HandleServerList(const AB::Packets::Server::Login::ServerList& packet);
+    void HandleLoginError(const AB::Packets::Server::Login::Error& packet);
+    void HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet);
 protected:
     void OnConnect() override;
     void OnReceive(InputMessage& message) override;

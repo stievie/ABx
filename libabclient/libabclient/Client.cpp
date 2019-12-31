@@ -274,7 +274,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
     // 2. Login to game server
     if (!protoGame_)
-        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_.get());
+        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_);
 
     protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);
@@ -597,8 +597,6 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInsta
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
 {
     state_ = ClientState::World;
-    mapUuid_ = packet.mapUuid;
-
     receiver_.OnPacket(updateTick, packet);
 }
 

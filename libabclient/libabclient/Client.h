@@ -38,13 +38,13 @@ private:
     std::shared_ptr<ProtocolLogin> protoLogin_;
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
-    std::string mapUuid_;
     sa::CircularQueue<int, 10> pings_;
     int lastRun_;
     int lastPing_;
     bool gotPong_;
     // Our (client) key pair
     Crypto::DHKeys dhKeys_;
+    ClientState state_;
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
     void Terminate();
 public:
@@ -155,12 +155,9 @@ public:
     uint16_t filePort_;
     std::string gameHost_;
     uint16_t gamePort_;
-    ClientState state_;
     HttpsClient* httpClient_;
-    const std::string& GetMapUuid() const
-    {
-        return mapUuid_;
-    }
+    ClientState GetState() const { return state_; }
+    void SetState(ClientState value) { state_ = value; }
     int GetAvgPing() const
     {
         if (pings_.IsEmpty())
