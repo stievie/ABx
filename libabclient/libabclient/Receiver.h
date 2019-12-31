@@ -31,6 +31,7 @@ inline bool IsOffline(AB::Packets::Server::PlayerInfo::Status status)
 class Receiver
 {
 public:
+    virtual ~Receiver() = default;
     virtual void OnLog(const std::string& message) = 0;
     virtual void OnNetworkError(ConnectionError connectionError, const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;

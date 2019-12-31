@@ -4,7 +4,6 @@
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
 #include <set>
-#include <AB/Packets/Packet.h>
 #include <AB/Packets/ClientPackets.h>
 
 namespace Client {
@@ -19,6 +18,63 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     compressionEnabled_ = ENABLE_GAME_COMPRESSION;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
+
+    using namespace AB::GameProtocol;
+    AddHandler<AB::Packets::Server::ServerJoined, ServerJoined>();
+    AddHandler<AB::Packets::Server::ServerLeft, ServerLeft>();
+    AddHandler<AB::Packets::Server::ChangeInstance, ChangeInstance>();
+    AddHandler<AB::Packets::Server::EnterWorld, GameEnter>();
+    AddHandler<AB::Packets::Server::GameError, PlayerError>();
+    AddHandler<AB::Packets::Server::PlayerAutorun, PlayerAutoRun>();
+    AddHandler<AB::Packets::Server::MailHeaders, MailHeaders>();
+    AddHandler<AB::Packets::Server::MailComplete, MailComplete>();
+    AddHandler<AB::Packets::Server::InventoryContent, InventoryContent>();
+    AddHandler<AB::Packets::Server::InventoryItemUpdate, InventoryItemUpdate>();
+    AddHandler<AB::Packets::Server::InventoryItemDelete, InventoryItemDelete>();
+    AddHandler<AB::Packets::Server::ChestContent, ChestContent>();
+    AddHandler<AB::Packets::Server::ChestItemUpdate, ChestItemUpdate>();
+    AddHandler<AB::Packets::Server::ChestItemDelete, ChestItemDelete>();
+    AddHandler<AB::Packets::Server::ObjectSpawnExisting, GameSpawnObjectExisting>();
+    AddHandler<AB::Packets::Server::ObjectSpawn, GameSpawnObject>();
+    AddHandler<AB::Packets::Server::ObjectDespawn, GameLeaveObject>();
+    AddHandler<AB::Packets::Server::ObjectPosUpdate, GameObjectPositionChange>();
+    AddHandler<AB::Packets::Server::ObjectRotationUpdate, GameObjectRotationChange>();
+    AddHandler<AB::Packets::Server::ObjectStateChanged, GameObjectStateChange>();
+    AddHandler<AB::Packets::Server::ObjectTargetSelected, GameObjectSelectTarget>();
+    AddHandler<AB::Packets::Server::ObjectSkillFailure, GameObjectSkillFailure>();
+    AddHandler<AB::Packets::Server::ObjectUseSkill, GameObjectUseSkill>();
+    AddHandler<AB::Packets::Server::ObjectSkillSuccess, GameObjectEndUseSkill>();
+    AddHandler<AB::Packets::Server::ObjectAttackFailure, GameObjectAttackFailure>();
+    AddHandler<AB::Packets::Server::ObjectPingTarget, GameObjectPingTarget>();
+    AddHandler<AB::Packets::Server::ObjectEffectAdded, GameObjectEffectAdded>();
+    AddHandler<AB::Packets::Server::ObjectEffectRemoved, GameObjectEffectRemoved>();
+    AddHandler<AB::Packets::Server::ObjectDamaged, GameObjectDamaged>();
+    AddHandler<AB::Packets::Server::ObjectHealed, GameObjectHealed>();
+    AddHandler<AB::Packets::Server::ObjectProgress, GameObjectProgress>();
+    AddHandler<AB::Packets::Server::ObjectDroppedItem, GameObjectDropItem>();
+    AddHandler<AB::Packets::Server::ObjectSetPosition, GameObjectSetPosition>();
+    AddHandler<AB::Packets::Server::ServerMessage, ServerMessage>();
+    AddHandler<AB::Packets::Server::ChatMessage, ChatMessage>();
+    AddHandler<AB::Packets::Server::PartyPlayerInvited, PartyPlayerInvited>();
+    AddHandler<AB::Packets::Server::PartyPlayerRemoved, PartyPlayerRemoved>();
+    AddHandler<AB::Packets::Server::PartyPlayerAdded, PartyPlayerAdded>();
+    AddHandler<AB::Packets::Server::PartyInviteRemoved, PartyInviteRemoved>();
+    AddHandler<AB::Packets::Server::PartyResigned, PartyResigned>();
+    AddHandler<AB::Packets::Server::PartyDefeated, PartyDefeated>();
+    AddHandler<AB::Packets::Server::PartyMembersInfo, PartyInfoMembers>();
+    AddHandler<AB::Packets::Server::ObjectResourceChanged, GameObjectResourceChange>();
+    AddHandler<AB::Packets::Server::DialogTrigger, DialogTrigger>();
+    AddHandler<AB::Packets::Server::FriendList, FriendList>();
+    AddHandler<AB::Packets::Server::FriendAdded, FriendAdded>();
+    AddHandler<AB::Packets::Server::FriendRemoved, FriendRemoved>();
+    AddHandler<AB::Packets::Server::GuildInfo, GuildInfo>();
+    AddHandler<AB::Packets::Server::GuildMemberList, GuildMemberList>();
+    AddHandler<AB::Packets::Server::QuestSelectionDialogTrigger, QuestSelectionDialogTrigger>();
+    AddHandler<AB::Packets::Server::QuestDialogTrigger, QuestDialogTrigger>();
+    AddHandler<AB::Packets::Server::NpcHasQuest, QuestNpcHasQuest>();
+    AddHandler<AB::Packets::Server::QuestDeleted, QuestDeleted>();
+    AddHandler<AB::Packets::Server::QuestRewarded, QuestRewarded>();
+    AddHandler<AB::Packets::Server::PlayerInfo, PlayerInfo>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -93,16 +149,17 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         ServerPacketType prevCode = opCode;
         opCode = static_cast<ServerPacketType>(message.Get<uint8_t>());
 
+        if (packetHandlers_.Exists(opCode))
+        {
+            packetHandlers_.Call(opCode, message);
+            continue;
+        }
+
+        // There are some special codes we handle separately
         switch (opCode)
         {
         case KeyExchange:
             ParseKeyExchange(message);
-            break;
-        case ServerJoined:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerJoined>(message));
-            break;
-        case ServerLeft:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerLeft>(message));
             break;
         case Error:
         {
@@ -111,14 +168,9 @@ void ProtocolGame::ParseMessage(InputMessage& message)
                 ProtocolError(packet.code);
             break;
         }
-        case ChangeInstance:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChangeInstance>(message));
-            break;
         case GameStart:
-            /* auto packet = */ AB::Packets::Get<AB::Packets::Server::GameStart>(message);
-            break;
-        case GameEnter:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::EnterWorld>(message));
+            // This is not interesting for the client
+            AB::Packets::Get<AB::Packets::Server::GameStart>(message);
             break;
         case GamePong:
         {
@@ -130,168 +182,12 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPong(lastPing_);
             break;
         }
-        case PlayerError:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GameError>(message));
-            break;
-        case PlayerAutoRun:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PlayerAutorun>(message));
-            break;
-        case MailHeaders:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::MailHeaders>(message));
-            break;
-        case MailComplete:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::MailComplete>(message));
-            break;
-        case InventoryContent:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryContent>(message));
-            break;
-        case InventoryItemUpdate:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryItemUpdate>(message));
-            break;
-        case InventoryItemDelete:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::InventoryItemDelete>(message));
-            break;
-        case ChestContent:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestContent>(message));
-            break;
-        case ChestItemUpdate:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestItemUpdate>(message));
-            break;
-        case ChestItemDelete:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChestItemDelete>(message));
-            break;
         case GameUpdate:
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::GameUpdate>(message);
             updateTick_ = packet.tick;
             break;
         }
-        case GameSpawnObjectExisting:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpawnExisting>(message));
-            break;
-        case GameSpawnObject:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpawn>(message));
-            break;
-        case GameLeaveObject:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDespawn>(message));
-            break;
-        case GameObjectPositionChange:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectPosUpdate>(message));
-            break;
-        case GameObjectRotationChange:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectRotationUpdate>(message));
-            break;
-        case GameObjectStateChange:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectStateChanged>(message));
-            break;
-        case GameObjectMoveSpeedChange:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSpeedChanged>(message));
-            break;
-        case GameObjectSelectTarget:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectTargetSelected>(message));
-            break;
-        case GameObjectSkillFailure:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSkillFailure>(message));
-            break;
-        case GameObjectUseSkill:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectUseSkill>(message));
-            break;
-        case GameObjectEndUseSkill:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSkillSuccess>(message));
-            break;
-        case GameObjectAttackFailure:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectAttackFailure>(message));
-            break;
-        case GameObjectPingTarget:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectPingTarget>(message));
-            break;
-        case GameObjectEffectAdded:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectEffectAdded>(message));
-            break;
-        case GameObjectEffectRemoved:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectEffectRemoved>(message));
-            break;
-        case GameObjectDamaged:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDamaged>(message));
-            break;
-        case GameObjectHealed:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectHealed>(message));
-            break;
-        case GameObjectProgress:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectProgress>(message));
-            break;
-        case GameObjectDropItem:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectDroppedItem>(message));
-            break;
-        case GameObjectSetPosition:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectSetPosition>(message));
-            break;
-        case ServerMessage:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ServerMessage>(message));
-            break;
-        case ChatMessage:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ChatMessage>(message));
-            break;
-        case PartyPlayerInvited:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerInvited>(message));
-            break;
-        case PartyPlayerRemoved:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerRemoved>(message));
-            break;
-        case PartyPlayerAdded:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyPlayerAdded>(message));
-            break;
-        case PartyInviteRemoved:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyInviteRemoved>(message));
-            break;
-        case PartyResigned:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyResigned>(message));
-            break;
-        case PartyDefeated:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyDefeated>(message));
-            break;
-        case PartyInfoMembers:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PartyMembersInfo>(message));
-            break;
-        case GameObjectResourceChange:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::ObjectResourceChanged>(message));
-            break;
-        case DialogTrigger:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::DialogTrigger>(message));
-            break;
-        case FriendList:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendList>(message));
-            break;
-        case FriendAdded:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendAdded>(message));
-            break;
-        case FriendRemoved:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::FriendRemoved>(message));
-            break;
-        case GuildInfo:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GuildInfo>(message));
-            break;
-        case GuildMemberList:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::GuildMemberList>(message));
-            break;
-        case QuestSelectionDialogTrigger:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestSelectionDialogTrigger>(message));
-            break;
-        case QuestDialogTrigger:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestDialogTrigger>(message));
-            break;
-        case QuestNpcHasQuest:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::NpcHasQuest>(message));
-            break;
-        case QuestDeleted:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestDeleted>(message));
-            break;
-        case QuestRewarded:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::QuestRewarded>(message));
-            break;
-        case PlayerInfo:
-            receiver_.OnPacket(updateTick_, AB::Packets::Get<AB::Packets::Server::PlayerInfo>(message));
-            break;
         case CodeLast:
             // Padding bytes, i.e. end of message
             return;

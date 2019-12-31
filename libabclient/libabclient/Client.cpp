@@ -3,17 +3,15 @@
 #include "ProtocolLogin.h"
 #include "ProtocolGame.h"
 #include "Connection.h"
+#include <sa/PragmaWarning.h>
 #define USE_STANDALONE_ASIO
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4457 4456 4150)
-#endif
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4457 4456 4150)
 #include <SimpleWeb/client_https.hpp>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+PRAGMA_WARNING_POP
 #include <iostream>
 #include <fstream>
+#include "Random.h"
 
 namespace Client {
 
@@ -39,8 +37,8 @@ Client::Client(Receiver& receiver) :
     loginHost_("127.0.0.1"),
     loginPort_(2748)
 {
+    Utils::Random::Instance.Initialize();
     // Always create new keys
-    arc4random_stir();
     dhKeys_.GenerateKeys();
 }
 
@@ -211,7 +209,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     if (state_ != ClientState::SelectChar)
         return;
 
-    if (accountUuid_.empty() || password_.empty())
+    if (accountUuid_.empty() || authToken_.empty())
         return;
 
     GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
@@ -233,7 +231,7 @@ void Client::Logout()
 
 void Client::GetOutposts()
 {
-    if (accountUuid_.empty() || password_.empty())
+    if (accountUuid_.empty() || authToken_.empty())
         return;
 
     GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, authToken_,
@@ -242,7 +240,7 @@ void Client::GetOutposts()
 
 void Client::GetServers()
 {
-    if (accountUuid_.empty() || password_.empty())
+    if (accountUuid_.empty() || authToken_.empty())
         return;
 
     GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, authToken_,
@@ -253,6 +251,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
     const std::string& host /* = "" */, uint16_t port /* = 0 */, const std::string& instanceId /* = "" */)
 {
     assert(!accountUuid_.empty());
+    assert(!authToken_.empty());
     // Enter or changing the world
     if (state_ != ClientState::SelectChar && state_ != ClientState::World)
         return;

@@ -37,7 +37,9 @@ public:
     template <typename T>
     T Get(T max)
     {
-        return static_cast<T>((float)Get<T>() / (float)std::numeric_limits<T>::max() * (float)(max + 1));
+        return static_cast<T>(static_cast<float>(Get<T>()) /
+            static_cast<float>(std::numeric_limits<T>::max()) *
+            static_cast<float>(max + 1));
     }
     /// Get value from min..max
     template <typename T>

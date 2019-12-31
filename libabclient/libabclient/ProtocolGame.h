@@ -7,6 +7,8 @@
 #include <AB/Entities/FriendList.h>
 #include "Receiver.h"
 #include <AB/Packets/ServerPackets.h>
+#include <AB/Packets/Packet.h>
+#include <sa/CallableTable.h>
 
 namespace Client {
 
@@ -31,6 +33,18 @@ private:
     bool firstRevc_;
     DH_KEY serverKey_;
     bool loggingOut_;
+
+    // Lookup table code -> packet
+    sa::CallableTable<AB::GameProtocol::ServerPacketType, void, InputMessage&> packetHandlers_;
+    template<typename P, AB::GameProtocol::ServerPacketType _Type>
+    void AddHandler()
+    {
+        packetHandlers_.Add(_Type, [this](InputMessage& message)
+        {
+            auto packet = AB::Packets::Get<P>(message);
+            receiver_.OnPacket(updateTick_, packet);
+        });
+    }
 
     void LogMessage(const std::string& message);
     void SendLoginPacket();

@@ -78,7 +78,7 @@ public:
     static String GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err);
 
     FwClient(Context* context);
-    ~FwClient();
+    ~FwClient() override;
 
     void SetEnvironment(const Environment* env);
     uint32_t GetIp() const

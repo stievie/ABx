@@ -49,7 +49,7 @@ private:
     void Terminate();
 public:
     Client(Receiver& receiver);
-    virtual ~Client();
+    ~Client() override;
 
     void ResetPoll();
     void Poll();

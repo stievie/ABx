@@ -73,5 +73,5 @@ $ dbtool -a acckeys
 
 ### Known issues
 
-* Linux: The client should work on Windows and Linux.
+The client should work on Windows and Linux.
 

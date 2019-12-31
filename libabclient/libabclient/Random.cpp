@@ -19,7 +19,7 @@ bool Random::GetBool()
 /// 0..1
 float Random::GetFloat()
 {
-    return (float)Get<uint32_t>() / (float)std::numeric_limits<uint32_t>::max();
+    return static_cast<float>(Get<uint32_t>()) / static_cast<float>(std::numeric_limits<uint32_t>::max());
 }
 
 }
