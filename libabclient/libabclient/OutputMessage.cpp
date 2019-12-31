@@ -46,9 +46,9 @@ void OutputMessage::AddString(const std::string& value)
     CheckWrite(static_cast<int>(len) + 2);
     Add<uint16_t>(static_cast<uint16_t>(len));
 #ifdef _MSC_VER
-    memcpy_s(reinterpret_cast<char*>(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.c_str(), len);
+    memcpy_s(reinterpret_cast<char*>(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.data(), len);
 #else
-    memcpy(reinterpret_cast<char*>(buffer_ + info_.pos), value.c_str(), len);
+    memcpy(reinterpret_cast<char*>(buffer_ + info_.pos), value.data(), len);
 #endif
     info_.pos += static_cast<uint16_t>(len);
     info_.size += static_cast<uint16_t>(len);

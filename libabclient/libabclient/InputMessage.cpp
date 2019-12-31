@@ -25,9 +25,9 @@ void InputMessage::SetBuffer(const std::string& buffer)
     size_t len = buffer.size();
     CheckWrite(len);
 #ifdef _MSC_VER
-    memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buffer.c_str(), len);
+    memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buffer.data(), len);
 #else
-    memcpy(buffer_ + MaxHeaderSize, buffer.c_str(), len);
+    memcpy(buffer_ + MaxHeaderSize, buffer.data(), len);
 #endif // _MSC_VER
     pos_ = MaxHeaderSize;
     headerPos_ = MaxHeaderSize;
