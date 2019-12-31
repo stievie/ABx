@@ -73,4 +73,5 @@ $ dbtool -a acckeys
 
 ### Known issues
 
-* Linux: The client loses the connection to the server.
+* Linux: The client should work on Windoiws annd Linux.
+

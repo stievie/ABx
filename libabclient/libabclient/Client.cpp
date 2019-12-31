@@ -32,19 +32,8 @@ public:
 Client::Client(Receiver& receiver) :
     receiver_(receiver),
     ioService_(std::make_shared<asio::io_service>()),
-    protoLogin_(nullptr),
-    protoGame_(nullptr),
-    lastRun_(0),
-    lastPing_(0),
-    gotPong_(true),
     loginHost_("127.0.0.1"),
-    loginPort_(2748),
-    fileHost_(""),
-    filePort_(0),
-    gameHost_(""),
-    gamePort_(0),
-    state_(ClientState::Disconnected),
-    httpClient_(nullptr)
+    loginPort_(2748)
 {
     // Always create new keys
     arc4random_stir();
@@ -73,12 +62,17 @@ void Client::Poll()
 
 void Client::Run()
 {
-#ifndef _WIN32
-    // WTF, why is this needed on Linux but not on Windows?
-    if (ioService_->stopped())
-        ioService_->reset();
-#endif // _WIN32
+#ifdef _WIN32
     ioService_->run();
+#else
+    if (state_ != ClientState::World)
+    {
+        // WTF, why is this needed on Linux but not on Windows?
+        if (ioService_->stopped())
+            ioService_->reset();
+    }
+    ioService_->poll();
+#endif // _WIN32
 }
 
 void Client::Terminate()

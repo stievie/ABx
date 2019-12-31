@@ -39,12 +39,12 @@ private:
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
     sa::CircularQueue<int, 10> pings_;
-    int lastRun_;
-    int lastPing_;
-    bool gotPong_;
+    int lastRun_{ 0 };
+    int lastPing_{ 0 };
+    bool gotPong_{ true };
     // Our (client) key pair
     Crypto::DHKeys dhKeys_;
-    ClientState state_;
+    ClientState state_{ ClientState::Disconnected };
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
     void Terminate();
 public:
@@ -152,10 +152,10 @@ public:
     std::string loginHost_;
     uint16_t loginPort_;
     std::string fileHost_;
-    uint16_t filePort_;
+    uint16_t filePort_{ 0 };
     std::string gameHost_;
-    uint16_t gamePort_;
-    HttpsClient* httpClient_;
+    uint16_t gamePort_{ 0 };
+    HttpsClient* httpClient_{ nullptr };
     ClientState GetState() const { return state_; }
     void SetState(ClientState value) { state_ = value; }
     int GetAvgPing() const

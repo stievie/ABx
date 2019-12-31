@@ -31,7 +31,8 @@ void OutputMessage::AddPaddingBytes(int bytes, uint8_t byte)
     if (bytes <= 0)
         return;
     CheckWrite(bytes);
-    memset((void*)&buffer_[info_.pos], byte, static_cast<size_t>(bytes));
+    void* buff = reinterpret_cast<void*>(&buffer_[info_.pos]);
+    memset(buff, byte, static_cast<size_t>(bytes));
     info_.pos += static_cast<uint16_t>(bytes);
     info_.size += static_cast<uint16_t>(bytes);
 }
