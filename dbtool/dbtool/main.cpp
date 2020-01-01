@@ -117,7 +117,7 @@ static bool ImportFile(DB::Database& db, const std::string& file)
     }
     if (reader.IsEmpty())
     {
-        std::cout << "File " << file << " is emtpy" << std::endl;
+        std::cout << "File " << file << " is empty" << std::endl;
         // I guess empty files are okay.
         return true;
     }
@@ -152,6 +152,7 @@ static bool ImportFile(DB::Database& db, const std::string& file)
 static int GetDBVersion(DB::Database& db)
 {
     std::ostringstream query;
+    query << "SET search_path TO schema, public; ";
     query << "SELECT `value` FROM `versions` WHERE ";
     query << "`name` = " << db.EscapeString("schema");
 

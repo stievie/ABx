@@ -10,7 +10,7 @@
     * `libintl-9.dll` (PostgreSQL)
     * `libpq.dll` (PostgreSQL)
     * `libwinpthread-1.dll` (PostgreSQL)
-3. Setup a PosgreSQL server
+3. [Setup a PosgreSQL server](https://wiki.archlinux.org/index.php/PostgreSQL)
 4. Create a `db_private.lua` file in `Bin/config` directory to enter the DB configuration, example:
 ~~~lua
 -- Postgres
@@ -20,6 +20,9 @@ db_user = "user"
 db_pass = "password"
 ~~~
 5. Create a database with the name `forgottenwars`.
+~~~sh
+$ createdb forgottenwars
+~~~
 6. Create the DB structure with importing `sql/schema.*.sql` one by one in the proper order. Instead of importing the files manually, you can run `Bin/dbtool -a update`.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run the `Bin/keygen` tool to create the DH server keys.
