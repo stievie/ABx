@@ -129,6 +129,36 @@ struct Shortcut
                 return "[" + res + "]";
             }
         }
+#else
+        if (modifiers_ != 0)
+        {
+            if (keyboardKey_ != KEY_UNKNOWN)
+            {
+                String result;
+                if (modifiers_ & SC_MOD_CTRL)
+                    result += "^";
+                else if (modifiers_ & SC_MOD_LCTRL)
+                    result += "<^";
+                else if (modifiers_ & SC_MOD_RCTRL)
+                    result += ">^";
+                if (modifiers_ & SC_MOD_SHIFT)
+                    result += "|";
+                else if (modifiers_ & SC_MOD_LSHIFT)
+                    result += "<|";
+                else if (modifiers_ & SC_MOD_RSHIFT)
+                    result += ">|";
+                if (modifiers_ & SC_MOD_ALT)
+                    result += "@";
+                else if (modifiers_ & SC_MOD_LALT)
+                    result += "<@";
+                else if (modifiers_ & SC_MOD_RALT)
+                    result += ">@";
+                result += String(SDL_GetKeyName(keyboardKey_));
+                if (plain)
+                    return result;
+                return "[" + result + "]";
+            }
+        }
 #endif
         return ShortcutNameLong(plain);
     }
