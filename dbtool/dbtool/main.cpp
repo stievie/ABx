@@ -238,8 +238,11 @@ static std::string GenAccKey(DB::Database& db)
     if (!transaction.Begin())
         return "Error creating transaction";
 
-    if (!db.ExecuteQuery(query.str()))
-        return "Error";
+    if (!sReadOnly)
+    {
+        if (!db.ExecuteQuery(query.str()))
+            return "Error";
+    }
 
     // End transaction
     if (!transaction.Commit())
@@ -354,6 +357,9 @@ int main(int argc, char** argv)
 
     std::cout << "Connected to " << DB::Database::driver_ <<
         " " << DB::Database::dbUser_ << "@" << DB::Database::dbHost_ << ":" << DB::Database::dbPort_ << std::endl;
+
+    if (sReadOnly)
+        std::cout << "READ-ONLY mode, nothing is written to the database" << std::endl;
 
     if (action == Action::Update)
     {
