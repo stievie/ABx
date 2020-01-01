@@ -152,7 +152,10 @@ static bool ImportFile(DB::Database& db, const std::string& file)
 static int GetDBVersion(DB::Database& db)
 {
     std::ostringstream query;
-    query << "SET search_path TO schema, public; ";
+#ifdef USE_PGSQL
+    if (DB::Database::driver_ == "pgsql")
+        query << "SET search_path TO schema, public; ";
+#endif
     query << "SELECT `value` FROM `versions` WHERE ";
     query << "`name` = " << db.EscapeString("schema");
 
