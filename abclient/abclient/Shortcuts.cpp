@@ -7,6 +7,140 @@
 const Shortcut Shortcut::EMPTY;
 unsigned Shortcuts::shortcutIds = 0;
 
+String Shortcut::ModName() const
+{
+    if (modifiers_ == 0)
+        return "";
+    String result;
+    if (modifiers_ & SC_MOD_CTRL)
+        result += "Ctrl+";
+    if (modifiers_ & SC_MOD_LCTRL)
+        result += "LeftCtrl+";
+    if (modifiers_ & SC_MOD_RCTRL)
+        result += "RightCtrl+";
+    if (modifiers_ & SC_MOD_SHIFT)
+        result += "Shift+";
+    if (modifiers_ & SC_MOD_LSHIFT)
+        result += "LeftShift+";
+    if (modifiers_ & SC_MOD_RSHIFT)
+        result += "RightShift+";
+    if (modifiers_ & SC_MOD_ALT)
+        result += "Alt+";
+    if (modifiers_ & SC_MOD_LALT)
+        result += "LeftAlt+";
+    if (modifiers_ & SC_MOD_RALT)
+        result += "RightAlt+";
+    return result;
+}
+
+String Shortcut::ShortcutNameLong(bool plain) const
+{
+    if (keyboardKey_ != KEY_UNKNOWN)
+    {
+        String result = ModName() + String(SDL_GetKeyName(keyboardKey_));
+        if (plain)
+            return result;
+        return "[" + result + "]";
+    }
+    String result;
+    switch (mouseButton_)
+    {
+    case MOUSEB_LEFT:
+        result = ModName() + "LMB";
+        break;
+    case MOUSEB_MIDDLE:
+        result = ModName() + "MMB";
+        break;
+    case MOUSEB_RIGHT:
+        result = ModName() + "RMB";
+        break;
+    case MOUSEB_X1:
+        result = ModName() + "X1MB";
+        break;
+    case MOUSEB_X2:
+        result = ModName() + "X2MB";
+        break;
+    default:
+        break;
+    }
+    if (!result.Empty())
+    {
+        if (plain)
+            return result;
+        return "[" + result + "]";
+    }
+    return String::EMPTY;
+}
+
+String Shortcut::ShortcutName(bool plain) const
+{
+#ifdef _WIN32
+        if (modifiers_ != 0)
+        {
+            unsigned char keyboardState[256] = {};
+            if (modifiers_ & SC_MOD_CTRL)
+                keyboardState[VK_CONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_LCTRL)
+                keyboardState[VK_LCONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_RCTRL)
+                keyboardState[VK_RCONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_SHIFT)
+                keyboardState[VK_SHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_LSHIFT)
+                keyboardState[VK_LSHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_RSHIFT)
+                keyboardState[VK_RSHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_ALT)
+                keyboardState[VK_MENU] = 0xff;
+            if (modifiers_ & SC_MOD_LALT)
+                keyboardState[VK_LMENU] = 0xff;
+            if (modifiers_ & SC_MOD_RALT)
+                keyboardState[VK_RMENU] = 0xff;
+            wchar_t buff[256];
+            int length = ToUnicode(static_cast<unsigned>(keyboardKey_), 0, keyboardState, buff, 256, 0);
+            if (length > 0)
+            {
+                buff[length] = '\0';
+                String res(buff);
+                if (plain)
+                    return res;
+                return "[" + res + "]";
+            }
+        }
+#else
+        if (modifiers_ != 0)
+        {
+            if (keyboardKey_ != KEY_UNKNOWN)
+            {
+                String result;
+                if (modifiers_ & SC_MOD_CTRL)
+                    result += "^";
+                else if (modifiers_ & SC_MOD_LCTRL)
+                    result += "<^";
+                else if (modifiers_ & SC_MOD_RCTRL)
+                    result += ">^";
+                if (modifiers_ & SC_MOD_SHIFT)
+                    result += "|";
+                else if (modifiers_ & SC_MOD_LSHIFT)
+                    result += "<|";
+                else if (modifiers_ & SC_MOD_RSHIFT)
+                    result += ">|";
+                if (modifiers_ & SC_MOD_ALT)
+                    result += "@";
+                else if (modifiers_ & SC_MOD_LALT)
+                    result += "<@";
+                else if (modifiers_ & SC_MOD_RALT)
+                    result += ">@";
+                result += String(SDL_GetKeyName(static_cast<SDL_Keycode>(keyboardKey_)));
+                if (plain)
+                    return result;
+                return "[" + result + "]";
+            }
+        }
+#endif
+        return ShortcutNameLong(plain);
+}
+
 Shortcuts::Shortcuts(Context* context) :
     Object(context)
 {
