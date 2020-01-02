@@ -31,7 +31,7 @@ void GameObject::SetYRotation(int64_t, float rad, bool)
 
 void GameObject::SetCreatureState(int64_t, AB::GameProtocol::CreatureState newState)
 {
-//    URHO3D_LOGINFOF("New State of object %d; %d", id_, static_cast<int>(newState));
+//    URHO3D_LOGINFOF("New State of object %d; %d", gameId_, static_cast<int>(newState));
     creatureState_ = newState;
 }
 

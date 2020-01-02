@@ -32,7 +32,7 @@ struct InventoryItem
 
 class FwClient : public Object, public Client::Receiver
 {
-    URHO3D_OBJECT(FwClient, Object);
+    URHO3D_OBJECT(FwClient, Object)
 private:
     String currentLevel_;
     String currentMapUuid_;

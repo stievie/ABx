@@ -5,7 +5,7 @@
 /// Character select
 class CharSelectLevel : public BaseLevel
 {
-    URHO3D_OBJECT(CharSelectLevel, BaseLevel);
+    URHO3D_OBJECT(CharSelectLevel, BaseLevel)
 public:
     CharSelectLevel(Context* context);
     void CreateCamera();

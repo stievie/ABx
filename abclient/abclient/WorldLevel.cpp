@@ -187,9 +187,9 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
         GameObject* object = GetObjectAt(input->GetMousePosition());
         if (object)
         {
-            player_->ClickObject(object->id_);
+            player_->ClickObject(object->gameId_);
             if (object->IsSelectable())
-                player_->SelectObject(object->id_);
+                player_->SelectObject(object->gameId_);
         }
         else
         {
@@ -458,7 +458,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         nodeIds_[object->GetNode()->GetID()] = id;
         actor->AddActorUI();
 
-        URHO3D_LOGINFOF("Spawned object %d: %s", actor->id_, actor->name_.CString());
+        URHO3D_LOGINFOF("Spawned object %d: %s", actor->gameId_, actor->name_.CString());
 
         switch (object->objectType_)
         {
@@ -482,9 +482,9 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
     GameObject* object = objects_[objectId];
     if (object)
     {
-        URHO3D_LOGINFOF("Despawn object %d", object->id_);
+        URHO3D_LOGINFOF("Despawn object %d", object->gameId_);
         SharedPtr<GameObject> selO = player_->GetSelectedObject();
-        if (selO && selO->id_ == object->id_)
+        if (selO && selO->gameId_ == object->gameId_)
         {
             // If the selected object leaves unselect it
             player_->SetSelectedObject(SharedPtr<GameObject>());

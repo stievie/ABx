@@ -2,6 +2,7 @@
 
 #include <AB/ProtocolCodes.h>
 #include "PropStream.h"
+#include <Urho3DAll.h>
 
 enum ObjectType
 {
@@ -16,7 +17,7 @@ enum ObjectType
 
 class GameObject : public LogicComponent
 {
-    URHO3D_OBJECT(GameObject, LogicComponent);
+    URHO3D_OBJECT(GameObject, LogicComponent)
 protected:
     AB::GameProtocol::CreatureState creatureState_{ AB::GameProtocol::CreatureStateIdle };
     float speedFactor_{ 1.0f };
@@ -36,7 +37,7 @@ public:
         AB::GameProtocol::CreatureState)
     {}
 
-    uint32_t id_{ 0 };
+    uint32_t gameId_{ 0 };
     unsigned index_{ 0 };
     ObjectType objectType_{ ObjectTypeStatic };
     bool undestroyable_{ false };
@@ -56,7 +57,7 @@ public:
 
     double GetServerTime(int64_t tick) const
     {
-        return (double)(tick - spawnTickServer_) / 1000.0;
+        return static_cast<double>(tick - spawnTickServer_) / 1000.0;
     }
     double GetClientTime() const;
 

@@ -12,7 +12,7 @@ class FwClient;
 
 class BaseLevel : public Object
 {
-    URHO3D_OBJECT(BaseLevel, Object);
+    URHO3D_OBJECT(BaseLevel, Object)
 public:
     BaseLevel(Context* context) :
         Object(context),
@@ -25,7 +25,7 @@ public:
         debugGeometry_(false)
     {}
 
-    virtual ~BaseLevel()
+    virtual ~BaseLevel() override
     {
         UnsubscribeFromAllEvents();
         Dispose();

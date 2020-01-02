@@ -344,7 +344,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         auto player = lm->GetPlayer();
-        if (player && player->id_ == objectId)
+        if (player && player->gameId_ == objectId)
         {
             kainjow::mustache::mustache tpl{ "You got {{number}} attribute points" };
             kainjow::mustache::data data;

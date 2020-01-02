@@ -34,13 +34,13 @@ class BorderImage;
 /// Single-line text editor %UI element.
 class  MultiLineEdit : public BorderImage
 {
-    URHO3D_OBJECT(MultiLineEdit, BorderImage);
+    URHO3D_OBJECT(MultiLineEdit, BorderImage)
 
 public:
     /// Construct.
     MultiLineEdit(Context* context);
     /// Destruct.
-    virtual ~MultiLineEdit();
+    virtual ~MultiLineEdit() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 

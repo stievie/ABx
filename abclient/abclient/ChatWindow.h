@@ -2,12 +2,13 @@
 
 #include <AB/ProtocolCodes.h>
 #include "TabGroup.h"
+#include <Urho3DAll.h>
 
 class Player;
 
 class ChatWindow : public UIElement
 {
-    URHO3D_OBJECT(ChatWindow, UIElement);
+    URHO3D_OBJECT(ChatWindow, UIElement)
 private:
     static constexpr int MAX_LINES = 100;
     static const HashMap<String, AB::GameProtocol::CommandTypes> CHAT_COMMANDS;
@@ -87,7 +88,7 @@ public:
     void SayHello(Player* player);
 
     ChatWindow(Context* context);
-    ~ChatWindow()
+    ~ChatWindow() override
     {
         UnsubscribeFromAllEvents();
     }

@@ -14,11 +14,6 @@
 
 using namespace Urho3D;
 
-/// This first example, maintaining tradition, prints a "Hello World" message.
-/// Furthermore it shows:
-///     - Using the Sample / Application classes, which initialize the Urho3D engine and run the main loop
-///     - Adding a Text element to the graphical user interface
-///     - Subscribing to and handling of update events
 class ClientApp : public Application
 {
     URHO3D_OBJECT(ClientApp, Application)
@@ -34,8 +29,6 @@ public:
 #ifdef DEBUG_HUD
     void CreateHUD();
 #endif
-protected:
-
 private:
     SharedPtr<Options> options_;
     SharedPtr<FwClient> client_;

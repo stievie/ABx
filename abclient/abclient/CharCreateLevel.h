@@ -5,7 +5,7 @@
 /// Character creation
 class CharCreateLevel : public BaseLevel
 {
-    URHO3D_OBJECT(CharCreateLevel, BaseLevel);
+    URHO3D_OBJECT(CharCreateLevel, BaseLevel)
 public:
     CharCreateLevel(Context* context);
     void CreateCamera();

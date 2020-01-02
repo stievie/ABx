@@ -72,7 +72,7 @@ void PartyWindow::SetPlayer(SharedPtr<Player> player)
 {
     player_ = player;
     if (leaderId_ == 0)
-        leaderId_ = player->id_;
+        leaderId_ = player->gameId_;
 }
 
 void PartyWindow::SetPartySize(uint8_t value)
@@ -159,11 +159,11 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
-    if (type == MemberType::Member && IsInvited(actor->id_))
-        RemoveInvite(actor->id_);
+    if (type == MemberType::Member && IsInvited(actor->gameId_))
+        RemoveInvite(actor->gameId_);
     UIElement* cont = container->CreateChild<UIElement>(actor->name_);
     cont->SetLayoutMode(LM_HORIZONTAL);
-    cont->SetVar("ActorID", actor->id_);
+    cont->SetVar("ActorID", actor->gameId_);
     PartyItem* hb = cont->CreateChild<PartyItem>("HealthBar");
     hb->type_ = type;
     hb->SetAlignment(HA_LEFT, VA_TOP);
@@ -176,15 +176,15 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     switch (type)
     {
     case MemberType::Invitee:
-        invitees_[actor->id_] = actor;
+        invitees_[actor->gameId_] = actor;
         hb->SetStyle("HealthBarGrey");
         break;
     case MemberType::Member:
-        members_[actor->id_] = actor;
+        members_[actor->gameId_] = actor;
         hb->SetStyle("HealthBar");
         break;
     case MemberType::Invitation:
-        invitations_[actor->id_] = actor;
+        invitations_[actor->gameId_] = actor;
         hb->SetStyle("HealthBarGrey");
         break;
     }
@@ -195,7 +195,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
         {
             // We got an invitation, add Accept and Reject buttons
             Button* acceptButton = cont->CreateChild<Button>();
-            acceptButton->SetVar("ID", actor->id_);
+            acceptButton->SetVar("ID", actor->gameId_);
             acceptButton->SetSize(20, 20);
             acceptButton->SetMaxSize(20, 20);
             acceptButton->SetMinSize(20, 20);
@@ -208,7 +208,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
             SubscribeToEvent(acceptButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleAcceptInvitationClicked));
 
             Button* rejectButton = cont->CreateChild<Button>();
-            rejectButton->SetVar("ID", actor->id_);
+            rejectButton->SetVar("ID", actor->gameId_);
             rejectButton->SetSize(20, 20);
             rejectButton->SetMaxSize(20, 20);
             rejectButton->SetMinSize(20, 20);
@@ -225,7 +225,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     {
         // If thats not we and we are the leader we can kick players
         Button* kickButton = cont->CreateChild<Button>("KickButton");
-        kickButton->SetVar("ID", actor->id_);
+        kickButton->SetVar("ID", actor->gameId_);
         kickButton->SetSize(20, 20);
         kickButton->SetMaxSize(20, 20);
         kickButton->SetMinSize(20, 20);
@@ -241,8 +241,8 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     cont->UpdateLayout();
     if (auto p = player_.Lock())
-        if (p->GetSelectedObjectId() == actor->id_)
-            SelectItem(actor->id_);
+        if (p->GetSelectedObjectId() == actor->gameId_)
+            SelectItem(actor->gameId_);
     UpdateAll();
 }
 
@@ -257,7 +257,7 @@ void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
             {
                 pi->SetActor(actor);
                 pi->SetEnabled(true);
-                members_[actor->id_] = actor;
+                members_[actor->gameId_] = actor;
                 // Update ID of kick button
                 Button* kickButton = cont->GetChildDynamicCast<Button>("KickButton", false);
                 if (kickButton)
@@ -265,7 +265,7 @@ void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
                     if (mode_ != PartyWindowMode::ModeOutpost)
                         kickButton->SetVisible(false);
                     // Only leader has that and only in outposts
-                    kickButton->SetVar("ID", actor->id_);
+                    kickButton->SetVar("ID", actor->gameId_);
                 }
                 return;
             }
@@ -380,13 +380,13 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     {
         if (auto p = player_.Lock())
         {
-            if (a->id_ == p->id_)
+            if (a->gameId_ == p->gameId_)
             {
                 ShowError("You can not invite yourself!");
                 return;
             }
         }
-        targetId = a->id_;
+        targetId = a->gameId_;
     }
     if (targetId != 0)
     {
@@ -424,7 +424,7 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
     if (auto p = player_.Lock())
     {
         // This object was not selected by us
-        if (sourceId != p->id_)
+        if (sourceId != p->gameId_)
             return;
     }
     else
@@ -532,7 +532,7 @@ void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     if (auto p = player_.Lock())
     {
-        if (p->id_ == targetId)
+        if (p->gameId_ == targetId)
         {
             // Removed our invitation
             uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
@@ -577,7 +577,7 @@ void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
     {
         if (auto p = player_.Lock())
         {
-            p->SelectObject(actor->id_);
+            p->SelectObject(actor->gameId_);
         }
     }
 }
@@ -697,7 +697,7 @@ void PartyWindow::HandleSelectTarget(StringHash, VariantMap&)
 {
     if (auto t = target_.Lock())
     {
-        player_->SelectObject(t->id_);
+        player_->SelectObject(t->gameId_);
     }
 }
 
@@ -886,7 +886,7 @@ bool PartyWindow::IsLeader()
     {
         PartyItem* item = dynamic_cast<PartyItem*>(pi);
         if (item)
-            return item->GetActor()->id_ == player_->id_;
+            return item->GetActor()->gameId_ == player_->gameId_;
     }
     return false;
 }

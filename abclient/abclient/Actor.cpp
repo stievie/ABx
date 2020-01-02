@@ -57,7 +57,7 @@ Actor* Actor::CreateActor(uint32_t id, Scene* scene,
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Actor* result = node->CreateComponent<Actor>();
-    result->id_ = id;
+    result->gameId_ = id;
 
     result->Unserialize(data);
     result->Init(scene, position, rotation, state);
@@ -642,7 +642,7 @@ void Actor::HandleNameClicked(StringHash, VariantMap&)
     {
         VariantMap& eData = GetEventDataMap();
         using namespace Events::ActorNameClicked;
-        eData[P_SOURCEID] = id_;
+        eData[P_SOURCEID] = gameId_;
         SendEvent(Events::E_ACTORNAMECLICKED, eData);
     }
 }
@@ -696,7 +696,7 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
 {
     using namespace Events::ChatMessage;
     uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
-    if (senderId != id_)
+    if (senderId != gameId_)
         return;
 
     // Show what we say in a bubble for certain channels
@@ -713,7 +713,7 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectUseSkill;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
-    if (id != id_)
+    if (id != gameId_)
         return;
     int skillIndex = eventData[P_SKILLINDEX].GetInt();
     if (skillIndex < 1 || skillIndex > Game::PLAYER_MAX_SKILLS)
@@ -735,7 +735,7 @@ void Actor::HandleEndSkillUse(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectEndUseSkill;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
-    if (id != id_)
+    if (id != gameId_)
         return;
 /*    int skillIndex = eventData[P_SKILLINDEX].GetInt();
     if (skillIndex < 1 || skillIndex > PLAYER_MAX_SKILLS)
@@ -753,7 +753,7 @@ void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectEffectAdded;
     uint32_t id = eventData[P_OBJECTID].GetUInt();
-    if (id != id_)
+    if (id != gameId_)
         return;
     uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
     SkillManager* sm = GetSubsystem<SkillManager>();
@@ -773,7 +773,7 @@ void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectItemDropped;
     uint32_t itemId = eventData[P_ITEMID].GetUInt();
-    if (itemId == id_)
+    if (itemId == gameId_)
     {
         count_ = eventData[P_COUNT].GetUInt();
         value_ = eventData[P_VALUE].GetUInt();
@@ -1157,7 +1157,7 @@ void Actor::HandlePartyAdded(StringHash, VariantMap& eventData)
 {
     using namespace Events::PartyAdded;
     uint32_t targetId = eventData[P_PLAYERID].GetUInt(); // Actor
-    if (targetId == id_)
+    if (targetId == gameId_)
     {
         groupId_ = eventData[P_PARTYID].GetUInt();
     }
@@ -1167,7 +1167,7 @@ void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
     using namespace Events::PartyRemoved;
     uint32_t targetId = eventData[P_TARGETID].GetUInt(); // Actor
-    if (targetId == id_)
+    if (targetId == gameId_)
     {
         groupId_ = 0;
     }

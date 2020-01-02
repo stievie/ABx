@@ -2,10 +2,11 @@
 
 #include "HealthBarPlain.h"
 #include "Actor.h"
+#include <Urho3DAll.h>
 
 class HealthBar : public HealthBarPlain
 {
-    URHO3D_OBJECT(HealthBar, HealthBarPlain);
+    URHO3D_OBJECT(HealthBar, HealthBarPlain)
 private:
     WeakPtr<Actor> actor_;
     SharedPtr<Text> nameText_;
@@ -15,7 +16,7 @@ public:
     static void RegisterObject(Context* context);
 
     HealthBar(Context* context);
-    ~HealthBar();
+    ~HealthBar() override;
 
     void SetActor(SharedPtr<Actor> actor);
     SharedPtr<Actor> GetActor();

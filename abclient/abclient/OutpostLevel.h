@@ -5,7 +5,7 @@
 /// No combat area
 class OutpostLevel : public WorldLevel
 {
-    URHO3D_OBJECT(OutpostLevel, BaseLevel);
+    URHO3D_OBJECT(OutpostLevel, BaseLevel)
 public:
     OutpostLevel(Context* context);
 protected:

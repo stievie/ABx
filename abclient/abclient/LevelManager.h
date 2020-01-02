@@ -3,6 +3,7 @@
 // Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 
 #include <AB/Entities/Game.h>
+#include <Urho3DAll.h>
 
 using namespace Urho3D;
 
@@ -15,7 +16,7 @@ class LevelManager : public Object
     URHO3D_OBJECT(LevelManager, Object)
 public:
     LevelManager(Context* context);
-    ~LevelManager();
+    ~LevelManager() override;
 private:
     void HandleSetLevelQueue(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);

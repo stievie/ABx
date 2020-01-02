@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class GameMessagesWindow : public UIElement
 {
-    URHO3D_OBJECT(GameMessagesWindow, UIElement);
+    URHO3D_OBJECT(GameMessagesWindow, UIElement)
 private:
     float visibleTime_;
     SharedPtr<Text> text_;
@@ -11,7 +13,7 @@ public:
     static void RegisterObject(Context* context);
 
     GameMessagesWindow(Context* context);
-    ~GameMessagesWindow();
+    ~GameMessagesWindow() override;
 
     void ShowError(const String& message);
 };

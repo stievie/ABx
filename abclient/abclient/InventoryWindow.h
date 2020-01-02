@@ -6,7 +6,7 @@ class Item;
 
 class InventoryWindow : public Window
 {
-    URHO3D_OBJECT(InventoryWindow, Window);
+    URHO3D_OBJECT(InventoryWindow, Window)
 private:
     bool initializted_;
     SharedPtr<Menu> itemPopup_;

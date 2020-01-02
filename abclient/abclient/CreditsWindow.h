@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class CreditsWindow : public Window
 {
-    URHO3D_OBJECT(CreditsWindow, Window);
+    URHO3D_OBJECT(CreditsWindow, Window)
 private:
     Vector<SharedPtr<UIElement>> credits_;
     SharedPtr<UIElement> creditsBase_;
@@ -19,7 +21,7 @@ public:
     static void RegisterObject(Context* context);
     static String NAME;
     CreditsWindow(Context* context);
-    ~CreditsWindow();
+    ~CreditsWindow() override;
     void Close();
 };
 

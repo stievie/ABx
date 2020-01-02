@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class ClientPrediction : public LogicComponent
 {
-    URHO3D_OBJECT(ClientPrediction, LogicComponent);
+    URHO3D_OBJECT(ClientPrediction, LogicComponent)
 private:
     int64_t serverTime_;
     Vector3 serverPos_;
@@ -22,7 +24,7 @@ public:
     static void RegisterObject(Context* context);
 
     ClientPrediction(Context* context);
-    ~ClientPrediction();
+    ~ClientPrediction() override;
 
     /// Called on scene update, variable timestep.
     void FixedUpdate(float timeStep) override;

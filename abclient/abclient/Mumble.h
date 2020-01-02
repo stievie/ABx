@@ -6,6 +6,8 @@
 #include <sys/mman.h>
 #include <fcntl.h> /* For O_* constants */
 #endif // _WIN32
+#include <stdint.h>
+#include <Urho3DAll.h>
 
 struct LinkedMem
 {
@@ -26,7 +28,7 @@ struct LinkedMem
 
 class Mumble : public Object
 {
-    URHO3D_OBJECT(Mumble, Object);
+    URHO3D_OBJECT(Mumble, Object)
 private:
 #ifdef _WIN32
     HANDLE hMapObject_;
@@ -39,13 +41,13 @@ private:
     WeakPtr<Node> camera_;
     String identity_;
     bool identityDirty_;
-    String context_;
+    String mumbleContext_;
     bool contextDirty_;
     bool initialized_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     Mumble(Context* context);
-    ~Mumble();
+    ~Mumble() override;
     /// Connect to Mumble
     void Initialize();
     /// Disconnect from Mumble
@@ -71,9 +73,9 @@ public:
     }
     void SetContext(const String& context)
     {
-        if (context_.Compare(context) != 0)
+        if (mumbleContext_.Compare(context) != 0)
         {
-            context_ = context;
+            mumbleContext_ = context;
             contextDirty_ = true;
         }
     }

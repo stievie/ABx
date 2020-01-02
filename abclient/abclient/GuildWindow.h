@@ -1,10 +1,11 @@
 #pragma once
 
 #include "TabGroup.h"
+#include <Urho3DAll.h>
 
 class GuildWindow : public Window
 {
-    URHO3D_OBJECT(GuildWindow, Window);
+    URHO3D_OBJECT(GuildWindow, Window)
 private:
     SharedPtr<TabGroup> tabgroup_;
     void SubscribeEvents();

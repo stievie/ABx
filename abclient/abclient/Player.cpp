@@ -49,7 +49,7 @@ Player* Player::CreatePlayer(uint32_t id, Scene* scene,
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
     node->CreateComponent<ClientPrediction>();
-    result->id_ = id;
+    result->gameId_ = id;
 
     result->Unserialize(data);
     result->Init(scene, position, rotation, state);
@@ -234,7 +234,7 @@ void Player::FollowSelected()
     if (auto so = selectedObject_.Lock())
     {
         FwClient* client = context_->GetSubsystem<FwClient>();
-        client->FollowObject(so->id_);
+        client->FollowObject(so->gameId_);
     }
 }
 
@@ -253,7 +253,7 @@ void Player::GotoPosition(const Vector3& pos)
 void Player::ClickObject(uint32_t objectId)
 {
     FwClient* client = context_->GetSubsystem<FwClient>();
-    client->ClickObject(id_, objectId);
+    client->ClickObject(gameId_, objectId);
 }
 
 void Player::SelectObject(uint32_t objectId)
@@ -261,7 +261,7 @@ void Player::SelectObject(uint32_t objectId)
     if (objectId == GetSelectedObjectId())
         return;
     FwClient* client = context_->GetSubsystem<FwClient>();
-    client->SelectObject(id_, objectId);
+    client->SelectObject(gameId_, objectId);
 }
 
 void Player::PostUpdate(float timeStep)
@@ -328,7 +328,7 @@ void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
 {
     using namespace Events::ActorNameClicked;
     uint32_t id = eventData[P_SOURCEID].GetUInt();
-    if (id != id_)
+    if (id != gameId_)
     {
         ClickObject(id);
         SelectObject(id);
@@ -337,6 +337,6 @@ void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
 
 void Player::HandleSelectSelf(StringHash, VariantMap&)
 {
-    SelectObject(id_);
+    SelectObject(gameId_);
 }
 

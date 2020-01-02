@@ -5,13 +5,14 @@
 #include <AB/Entities/Skill.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Attribute.h>
+#include <Urho3DAll.h>
 
 class SkillManager : public Object
 {
-    URHO3D_OBJECT(SkillManager, Object);
+    URHO3D_OBJECT(SkillManager, Object)
 public:
     SkillManager(Context* context);
-    ~SkillManager();
+    ~SkillManager() override;
 
     const std::map<std::string, AB::Entities::Profession>& GetProfessions() const
     {

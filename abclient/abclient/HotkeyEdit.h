@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 #define SC_MOD_LSHIFT  1               // Left Shift
 #define SC_MOD_RSHIFT  1 << 1          // Right Shift
 #define SC_MOD_SHIFT   1 << 2          // Left or right Shift
@@ -12,7 +14,7 @@
 
 class HotkeyEdit : public LineEdit
 {
-    URHO3D_OBJECT(HotkeyEdit, LineEdit);
+    URHO3D_OBJECT(HotkeyEdit, LineEdit)
 private:
     Key key_;
     MouseButton mouseButton_;
@@ -67,7 +69,7 @@ public:
     static void RegisterObject(Context* context);
 
     HotkeyEdit(Context* context);
-    ~HotkeyEdit();
+    ~HotkeyEdit() override;
 
     Key GetKey() const
     {

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <AB/Entities/Item.h>
+#include <Urho3DAll.h>
 
 class Item : public Object
 {
-    URHO3D_OBJECT(Item, Object);
+    URHO3D_OBJECT(Item, Object)
 public:
     Item(Context* context);
-    ~Item();
+    ~Item() override;
 
     template <class T>
     T* GetObjectResource()

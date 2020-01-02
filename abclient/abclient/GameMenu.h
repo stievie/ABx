@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class GameMenu : public UIElement
 {
-    URHO3D_OBJECT(GameMenu, UIElement);
+    URHO3D_OBJECT(GameMenu, UIElement)
 private:
     SharedPtr<BorderImage> menuBar_;
     SharedPtr<Menu> menu_;
@@ -31,6 +33,6 @@ public:
     static void RegisterObject(Context* context);
 
     GameMenu(Context* context);
-    ~GameMenu();
+    ~GameMenu() override;
 };
 

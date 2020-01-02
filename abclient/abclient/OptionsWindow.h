@@ -5,7 +5,7 @@
 
 class OptionsWindow : public Window
 {
-    URHO3D_OBJECT(OptionsWindow, Window);
+    URHO3D_OBJECT(OptionsWindow, Window)
 private:
     SharedPtr<TabGroup> tabgroup_;
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
@@ -26,6 +26,6 @@ public:
     static void RegisterObject(Context* context);
 
     OptionsWindow(Context* context);
-    ~OptionsWindow();
+    ~OptionsWindow() override;
 };
 

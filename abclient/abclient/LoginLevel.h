@@ -4,7 +4,7 @@
 
 class LoginLevel : public BaseLevel
 {
-    URHO3D_OBJECT(LoginLevel, BaseLevel);
+    URHO3D_OBJECT(LoginLevel, BaseLevel)
 public:
     /// Construct.
     LoginLevel(Context* context);

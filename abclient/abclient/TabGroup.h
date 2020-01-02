@@ -49,12 +49,12 @@ struct TabElement
 //=============================================================================
 class TabGroup : public BorderImage
 {
-    URHO3D_OBJECT(TabGroup, BorderImage);
+    URHO3D_OBJECT(TabGroup, BorderImage)
 public:
     static void RegisterObject(Context* context);
 
     TabGroup(Context *context);
-    virtual ~TabGroup();
+    virtual ~TabGroup() override;
 
     TabElement* CreateTab(const IntVector2 &tabSize, const IntVector2 &bodySize);
     TabElement* GetTabElement(unsigned idx);

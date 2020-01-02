@@ -79,7 +79,7 @@ struct ShortcutEvent
 
 class Shortcuts : public Object
 {
-    URHO3D_OBJECT(Shortcuts, Object);
+    URHO3D_OBJECT(Shortcuts, Object)
 private:
     HashMap<StringHash, bool> triggered_;
     void SubscribeToEvents();
@@ -96,7 +96,7 @@ private:
     static bool IsModifier(Key key);
 public:
     Shortcuts(Context* context);
-    ~Shortcuts();
+    ~Shortcuts() override;
 
     bool Test(const StringHash& e);
     void Load(const XMLElement& root);

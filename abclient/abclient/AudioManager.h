@@ -1,12 +1,13 @@
 #pragma once
 
 #include <AB/Entities/Music.h>
+#include <Urho3DAll.h>
 
 /// Only for non-3D sounds, like ambient and music.
 /// !!! Don't use MP3 use OGG instead. !!!
 class AudioManager : public Object
 {
-    URHO3D_OBJECT(AudioManager, Object);
+    URHO3D_OBJECT(AudioManager, Object)
 private:
     bool playlistDirty_;
     bool multipleAmbientTracks_;
@@ -62,7 +63,7 @@ private:
     }
 public:
     AudioManager(Context* context);
-    ~AudioManager();
+    ~AudioManager() override;
 
     void LoadMusic(XMLFile* file);
     void StartMusic();

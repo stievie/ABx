@@ -2,12 +2,13 @@
 
 #include "Receiver.h"
 #include <AB/Packets/ServerPackets.h>
+#include <Urho3DAll.h>
 
 class Player;
 
 class FriendListWindow : public Window
 {
-    URHO3D_OBJECT(FriendListWindow, Window);
+    URHO3D_OBJECT(FriendListWindow, Window)
 private:
     SharedPtr<ListView> friendList_;
     SharedPtr<ListView> ignoreList_;
@@ -39,7 +40,7 @@ public:
     static void RegisterObject(Context* context);
 
     FriendListWindow(Context* context);
-    ~FriendListWindow();
+    ~FriendListWindow() override;
 
     void GetList();
     void Clear();

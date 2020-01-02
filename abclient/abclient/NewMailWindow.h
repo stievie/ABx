@@ -1,15 +1,16 @@
 #pragma once
 
 #include "MultiLineEdit.h"
+#include <Urho3DAll.h>
 
 class NewMailWindow : public Window
 {
-    URHO3D_OBJECT(NewMailWindow, Window);
+    URHO3D_OBJECT(NewMailWindow, Window)
 public:
     static void RegisterObject(Context* context);
 
     NewMailWindow(Context* context);
-    ~NewMailWindow()
+    ~NewMailWindow() override
     {
         UnsubscribeFromAllEvents();
     }

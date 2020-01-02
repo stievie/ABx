@@ -14,7 +14,7 @@ enum class PartyWindowMode
 
 class PartyWindow : public Window
 {
-    URHO3D_OBJECT(PartyWindow, Window);
+    URHO3D_OBJECT(PartyWindow, Window)
 private:
     PartyWindowMode mode_{ PartyWindowMode::ModeOutpost };
     SharedPtr<Window> window_;
@@ -68,7 +68,7 @@ public:
     static void RegisterObject(Context* context);
 
     PartyWindow(Context* context);
-    ~PartyWindow();
+    ~PartyWindow() override;
 
     void SetPlayer(SharedPtr<Player> player);
     void SetPartySize(uint8_t value);

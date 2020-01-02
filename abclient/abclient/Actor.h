@@ -7,14 +7,15 @@
 #include <AB/Entities/Item.h>
 #include <AB/TemplEncoder.h>
 #include "HealthBarPlain.h"
+#include <Urho3DAll.h>
 
 using namespace Urho3D;
 
-const float MOVE_FORCE = 0.7f;
-const float INAIR_MOVE_FORCE = 0.02f;
-const float BRAKE_FORCE = 0.2f;
-const float JUMP_FORCE = 6.0f;
-const float INAIR_THRESHOLD_TIME = 0.1f;
+static const float MOVE_FORCE = 0.7f;
+static const float INAIR_MOVE_FORCE = 0.02f;
+static const float BRAKE_FORCE = 0.2f;
+static const float JUMP_FORCE = 6.0f;
+static const float INAIR_THRESHOLD_TIME = 0.1f;
 
 static const StringHash ANIM_IDLE("Idle");
 static const StringHash ANIM_WALK("Walk");
@@ -65,7 +66,7 @@ struct ActorStats
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Actor : public GameObject
 {
-    URHO3D_OBJECT(Actor, GameObject);
+    URHO3D_OBJECT(Actor, GameObject)
 public:
     enum ModelType {
         Static,
@@ -171,7 +172,7 @@ public:
     uint32_t GetSelectedObjectId() const
     {
         if (auto sel = selectedObject_.Lock())
-            return sel->id_;
+            return sel->gameId_;
         return 0;
     }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f, float speed = 1.0f);

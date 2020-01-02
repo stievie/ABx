@@ -20,12 +20,12 @@ static const StringHash WINDOW_GUILD("GuildWindow");
 
 class WindowManager : public Object
 {
-    URHO3D_OBJECT(WindowManager, Object);
+    URHO3D_OBJECT(WindowManager, Object)
 private:
     HashMap<StringHash, SharedPtr<UIElement>> windows_;
 public:
     WindowManager(Context* context);
-    ~WindowManager() = default;
+    ~WindowManager() override = default;
 
     const HashMap<StringHash, SharedPtr<UIElement>>& GetWindows() const
     {

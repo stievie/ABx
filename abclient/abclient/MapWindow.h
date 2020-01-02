@@ -1,7 +1,10 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class MapWindow : public Window
 {
+    URHO3D_OBJECT(MapWindow, Window)
 private:
     static constexpr int BUTTON_SIZE = 32;
     SharedPtr<Sprite> mapSprite_;
@@ -15,6 +18,6 @@ private:
     void SetButtonsPos();
 public:
     MapWindow(Context* context);
-    ~MapWindow();
+    ~MapWindow() override;
 };
 

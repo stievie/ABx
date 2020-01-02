@@ -7,7 +7,7 @@ static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unse
 
 class TargetWindow : public UIElement
 {
-    URHO3D_OBJECT(TargetWindow, UIElement);
+    URHO3D_OBJECT(TargetWindow, UIElement)
 private:
     WeakPtr<Actor> target_;
     SharedPtr<Text> targetText_;
@@ -18,7 +18,7 @@ public:
     static void RegisterObject(Context* context);
 
     TargetWindow(Context* context);
-    ~TargetWindow();
+    ~TargetWindow() override;
 
     void SetTarget(SharedPtr<Actor> target);
 };

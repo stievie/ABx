@@ -2,15 +2,16 @@
 
 #include <AB/Entities/MailList.h>
 #include "MultiLineEdit.h"
+#include <Urho3DAll.h>
 
 class MailWindow : public Window
 {
-    URHO3D_OBJECT(MailWindow, Window);
+    URHO3D_OBJECT(MailWindow, Window)
 public:
     static void RegisterObject(Context* context);
 
     MailWindow(Context* context);
-    ~MailWindow()
+    ~MailWindow() override
     {
         UnsubscribeFromAllEvents();
     }

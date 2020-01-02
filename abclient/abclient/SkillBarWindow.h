@@ -1,10 +1,11 @@
 #pragma once
 
 #include <AB/TemplEncoder.h>
+#include <Urho3DAll.h>
 
 class SkillBarWindow : public Window
 {
-    URHO3D_OBJECT(SkillBarWindow, Window);
+    URHO3D_OBJECT(SkillBarWindow, Window)
 private:
     SharedArrayPtr<Button> skillButtons_;
     SharedPtr<Button> skill1_;
@@ -31,7 +32,7 @@ public:
     static void RegisterObject(Context* context);
 
     SkillBarWindow(Context* context);
-    ~SkillBarWindow();
+    ~SkillBarWindow() override;
 
     void SetSkills(const AB::SkillIndices& skills);
 };

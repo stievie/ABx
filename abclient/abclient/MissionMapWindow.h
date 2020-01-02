@@ -1,13 +1,15 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 class MissionMapWindow : public Window
 {
-    URHO3D_OBJECT(MissionMapWindow, Window);
+    URHO3D_OBJECT(MissionMapWindow, Window)
 public:
     static void RegisterObject(Context* context);
 
     MissionMapWindow(Context* context);
-    ~MissionMapWindow()
+    ~MissionMapWindow() override
     {
         UnsubscribeFromAllEvents();
     }

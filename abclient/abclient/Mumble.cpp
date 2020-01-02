@@ -172,8 +172,8 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
         // Context should be equal for players which should be able to hear each other positional and
         // differ for those who shouldn't (e.g. it could contain the server+port and team)
         // E.g. Map instance ID
-        unsigned length = Min(256u, context_.Length());
-        memcpy(lm_->context, context_.CString(), length);
+        unsigned length = Min(256u, mumbleContext_.Length());
+        memcpy(lm_->context, mumbleContext_.CString(), length);
         lm_->context_len = length;
         contextDirty_ = false;
     }

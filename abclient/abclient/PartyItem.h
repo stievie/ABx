@@ -11,12 +11,12 @@ enum class MemberType
 
 class PartyItem : public HealthBar
 {
-    URHO3D_OBJECT(PartyItem, HealthBar);
+    URHO3D_OBJECT(PartyItem, HealthBar)
 public:
     static void RegisterObject(Context* context);
 
     PartyItem(Context* context);
-    ~PartyItem();
+    ~PartyItem() override;
 
     MemberType type_;
 };
