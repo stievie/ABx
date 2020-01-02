@@ -53,6 +53,11 @@ not work.
 2. `cd` to `./makefiles`
 3. Type `make`.
 
+If you run make with `CCACHE=""` it doesn't use ccache and therefore it doesn't need to be installed.
+~~~sh
+$ make CCACHE=""
+~~~
+
 ### Client
 
 #### Dependencies

@@ -638,7 +638,7 @@ void PartyWindow::HandleKickClicked(StringHash, VariantMap& eventData)
 void PartyWindow::HandleObjectDespawn(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectDespawn;
-    uint32_t objectId = eventData[P_OBJECTID].GetInt();
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     RemoveActor(objectId);
 }
 
