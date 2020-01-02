@@ -10,6 +10,7 @@
 #include "Mumble.h"
 #include "AudioManager.h"
 #include "SkillManager.h"
+#include <Urho3DAll.h>
 
 using namespace Urho3D;
 
@@ -20,7 +21,7 @@ using namespace Urho3D;
 ///     - Subscribing to and handling of update events
 class ClientApp : public Application
 {
-    URHO3D_OBJECT(ClientApp, Application);
+    URHO3D_OBJECT(ClientApp, Application)
 public:
     /// Construct.
     ClientApp(Context* context);
@@ -45,6 +46,8 @@ private:
     SharedPtr<WindowManager> windowManager_;
     SharedPtr<AudioManager> audioManager_;
     SharedPtr<Mumble> mumble_;
+    String exeName_;
+    String appPath_;
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);

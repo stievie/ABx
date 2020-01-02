@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 enum class WindowMode
 {
     Windowed,
@@ -31,16 +33,17 @@ struct Environment
 
 class Options : public Object
 {
-    URHO3D_OBJECT(Options, Object);
+    URHO3D_OBJECT(Options, Object)
 public:
     Options(Context* context);
-    ~Options();
+    ~Options() override;
 
     String loginHost_;
     uint16_t loginPort_{ 0 };
     String username_;
     String password_;
     Vector<Environment> environments_;
+    String dataPath_;
 
     bool stickCameraToHead_{ true };
     bool disableMouseWalking_{ false };
@@ -56,6 +59,8 @@ public:
     void Load();
     void Save();
 
+    String GetDataFile(const String& file) const;
+    std::string GetDataFileStl(const std::string& file) const;
     Environment* GetEnvironmment(const String& name);
     Environment* GetSelectedEnvironment();
     void SetSelectedEnvironment(const String& name);
@@ -86,7 +91,7 @@ public:
         return resizeable_;
     }
     void SetResizeable(bool value);
-    bool IsMiximized() const
+    bool IsMaximized() const
     {
         return maximized_;
     }

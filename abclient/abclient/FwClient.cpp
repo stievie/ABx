@@ -273,7 +273,8 @@ void FwClient::LoadGames(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_games_", "GameData/Games.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_games_", o->GetDataFileStl("GameData/Games.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -308,7 +309,8 @@ void FwClient::LoadSkills(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_skills_", "GameData/Skills.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_skills_", o->GetDataFileStl("GameData/Skills.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -350,7 +352,8 @@ void FwClient::LoadAttributes(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_attributes_", "GameData/Attributes.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_attributes_", o->GetDataFileStl("GameData/Attributes.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -403,7 +406,8 @@ void FwClient::LoadProfessions(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_professions_", o->GetDataFileStl("GameData/Professions.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -441,7 +445,8 @@ void FwClient::LoadEffects(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_effects_", "GameData/Effects.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_effects_", o->GetDataFileStl("GameData/Effects.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -478,7 +483,8 @@ void FwClient::LoadItems(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_items_", "GameData/Items.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_items_", o->GetDataFileStl("GameData/Items.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -517,7 +523,8 @@ void FwClient::LoadMusic(uint32_t curVersion)
 
     if (!file || IsOldData(curVersion, file))
     {
-        if (!client_.HttpDownload("/_music_", "GameData/Music.xml"))
+        Options* o = GetSubsystem<Options>();
+        if (!client_.HttpDownload("/_music_", o->GetDataFileStl("GameData/Music.xml")))
             return;
         if (file)
             cache->ReloadResource(file);

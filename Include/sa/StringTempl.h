@@ -82,4 +82,15 @@ std::basic_string<charType> CombineString(const std::vector<std::basic_string<ch
     return Trim(res, delim);
 }
 
+template <typename charType>
+std::basic_string<charType> CombinePath(const std::basic_string<charType>& path,
+    const std::basic_string<charType>& file)
+{
+    std::basic_string<charType> result = path;
+    if (result.back() != '/' && result.back() != '\\' && file.front() != '/' && file.front() != '\\')
+        result += "/";
+    result += file;
+    return result;
+}
+
 }

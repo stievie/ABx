@@ -843,3 +843,17 @@ bool Options::CreateDir(const String& path)
         return true;
     return fs::create_directories(p);
 }
+
+String Options::GetDataFile(const String& file) const
+{
+    String result = dataPath_;
+    if (result.Back() != '/' && result.Back() != '\\' &&
+        file.Front() != '/' && file.Front() != '\\')
+        result += "/";
+    return result + file;
+}
+
+std::string Options::GetDataFileStl(const std::string& file) const
+{
+    return std::string(GetDataFile(String(file.c_str())).CString());
+}

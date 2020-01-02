@@ -1,45 +1,45 @@
 #include "stdafx.h"
 
 #include "ClientApp.h"
-#include "LoginLevel.h"
-#include "OutpostLevel.h"
-#include "PvpCombatLevel.h"
-#include "CharSelectLevel.h"
+#include "AntiRE.h"
 #include "CharCreateLevel.h"
-#include "Player.h"
+#include "CharSelectLevel.h"
 #include "ChatWindow.h"
+#include "ClientPrediction.h"
 #include "CreateAccountLevel.h"
+#include "CreditsWindow.h"
+#include "EffectsWindow.h"
+#include "FormatText.h"
+#include "FriendListWindow.h"
 #include "GameMenu.h"
+#include "GameMenu.h"
+#include "GameMessagesWindow.h"
+#include "HealthBar.h"
+#include "HealthBar.h"
+#include "HotkeyEdit.h"
+#include "InventoryWindow.h"
+#include "LoginLevel.h"
+#include "MailWindow.h"
+#include "MissionMapWindow.h"
+#include "MultiLineEdit.h"
+#include "NewMailWindow.h"
+#include "Options.h"
+#include "OutpostLevel.h"
+#include "PartyItem.h"
+#include "PartyWindow.h"
 #include "PingDot.h"
+#include "Player.h"
+#include "PostProcessController.h"
+#include "PvpCombatLevel.h"
+#include "SkillBarWindow.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
-#include "MailWindow.h"
-#include "PostProcessController.h"
-#include "PartyWindow.h"
-#include "GameMenu.h"
-#include "HealthBar.h"
-#include <chrono>
-#include <ctime>
-#include "Options.h"
-#include "MultiLineEdit.h"
-#include "FormatText.h"
-#include "NewMailWindow.h"
-#include "MissionMapWindow.h"
-#include "HotkeyEdit.h"
-#include "SkillBarWindow.h"
-#include "FriendListWindow.h"
-#include "GameMessagesWindow.h"
-#include "AntiRE.h"
-#include <time.h>
-#include <stdlib.h>
-#include "EffectsWindow.h"
-#include "CreditsWindow.h"
-#include "PartyItem.h"
-#include "HealthBar.h"
-#include "InventoryWindow.h"
-#include "ClientPrediction.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
+#include <chrono>
+#include <ctime>
+#include <stdlib.h>
+#include <time.h>
 #if defined(__linux__)
 #include <linux/version.h>
 #endif
@@ -83,6 +83,23 @@ ClientApp::ClientApp(Context* context) :
     Application(context)
 {
     options_ = new Options(context);
+
+#ifdef AB_WINDOWS
+    char buff[MAX_PATH];
+    GetModuleFileNameA(NULL, buff, MAX_PATH);
+    exeName_ = String(buff);
+    unsigned pos = exeName_.FindLast('\\', 0, false);
+    if  (pos != String::NPOS)
+        appPath_ = exeName_.Substring(0, pos);
+#else
+    char buff[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
+    exeName_ = String(buff, (count > 0) ? static_cast<unsigned>(count) : 0);
+    unsigned pos = exeName_.FindLast('/', 0, false);
+    if  (pos != String::NPOS)
+        appPath_ = exeName_.Substring(0, pos);
+#endif
+    options_->dataPath_ = appPath_;
 
     const Vector<String>& args = GetArguments();
     decltype(args.Size()) i = 0;
@@ -247,7 +264,6 @@ void ClientApp::Start()
 #endif
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
-    // For DHKeys
     SetRandomSeed(Time::GetSystemTime());
     SetWindowTitleAndIcon();
 
@@ -259,7 +275,7 @@ void ClientApp::Start()
 
     Options* options = GetSubsystem<Options>();
     options->UpdateAudio();
-    if (options->IsMiximized())
+    if (options->IsMaximized())
     {
         GetSubsystem<Graphics>()->Maximize();
     }
