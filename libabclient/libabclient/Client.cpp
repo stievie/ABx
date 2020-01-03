@@ -142,6 +142,11 @@ void Client::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid
     receiver_.OnPlayerCreated(uuid, mapUuid);
 }
 
+void Client::OnAccountKeyAdded()
+{
+    receiver_.OnAccountKeyAdded();
+}
+
 void Client::OnLog(const std::string& message)
 {
     receiver_.OnLog(message);
@@ -215,6 +220,20 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+void Client::AddAccountKey(const std::string& newKey)
+{
+    if (state_ != ClientState::SelectChar)
+        return;
+
+    if (accountUuid_.empty() || authToken_.empty())
+        return;
+    if (newKey.empty())
+        return;
+    GetProtoLogin()->AddAccountKey(loginHost_, loginPort_, accountUuid_, authToken_,
+        newKey,
+        std::bind(&Client::OnAccountKeyAdded, this));
 }
 
 void Client::Logout()

@@ -4,13 +4,12 @@
 
 class CreateAccountLevel : public BaseLevel
 {
-    URHO3D_OBJECT(CreateAccountLevel, BaseLevel);
+    URHO3D_OBJECT(CreateAccountLevel, BaseLevel)
 public:
     /// Construct.
     CreateAccountLevel(Context* context);
     void CreateCamera();
     void ShowError(const String& message, const String& title = "Error") override;
-
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;

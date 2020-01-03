@@ -24,6 +24,7 @@ public:
     typedef std::function<void(const std::vector<AB::Entities::Service>& services)> ServerlistCallback;
     typedef std::function<void()> CreateAccountCallback;
     typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
+    typedef std::function<void()> AccountKeyAddedCallback;
 private:
     enum ProtocolAction
     {
@@ -33,6 +34,7 @@ private:
         ActionCreatePlayer,
         ActionGetOutposts,
         ActionGetServers,
+        ActionAddAccountKey,
     };
     ProtocolAction action_;
     std::string host_;
@@ -43,6 +45,7 @@ private:
     std::string authToken_;
     std::string email_;
     std::string accKey_;
+    std::string addAccountKey_;
     std::string charName_;
     std::string profUuid_;
     uint32_t itemIndex_;
@@ -55,11 +58,13 @@ private:
     ServerlistCallback serverlistCallback_;
     CreateAccountCallback createAccCallback_;
     CreatePlayerCallback createPlayerCallback_;
+    AccountKeyAddedCallback accountKeyAddedCallback_;
     void SendLoginPacket();
     void SendCreateAccountPacket();
     void SendCreatePlayerPacket();
     void SendGetOutpostsPacket();
     void SendGetServersPacket();
+    void SendAddAccountKeyPacket();
     void ParseMessage(InputMessage& message);
 
     void HandleCharList(const AB::Packets::Server::Login::CharacterList& packet);
@@ -88,6 +93,10 @@ public:
         uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
+    void AddAccountKey(std::string& host, uint16_t port,
+        const std::string& accountUuid, const std::string& token,
+        const std::string& newAccountKey,
+        const AccountKeyAddedCallback& callback);
     void GetOutposts(std::string& host, uint16_t port,
         const std::string& accountUuid, const std::string& token,
         const GamelistCallback& callback);

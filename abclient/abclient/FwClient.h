@@ -95,6 +95,7 @@ public:
         return 0;
     }
     void UpdateServers();
+    void AddAccountKey(const String& newKey);
     bool Start();
     void Stop();
     void UnsubscribeUpdate();
@@ -161,6 +162,7 @@ public:
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
+    void OnAccountKeyAdded() override;
 
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;

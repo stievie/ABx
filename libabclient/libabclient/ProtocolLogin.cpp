@@ -70,6 +70,21 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     Connect(host, port);
 }
 
+void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
+    const std::string& accountUuid, const std::string& token,
+    const std::string& newAccountKey,
+    const AccountKeyAddedCallback& callback)
+{
+    host_ = host;
+    port_ = port;
+    accountUuid_ = accountUuid;
+    authToken_ = token;
+    addAccountKey_ = newAccountKey;
+    action_ = ActionAddAccountKey;
+    accountKeyAddedCallback_ = callback;
+    Connect(host, port);
+}
+
 void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
     const std::string& accountUuid, const std::string& token,
     const GamelistCallback& callback)
@@ -173,6 +188,22 @@ void ProtocolLogin::SendGetServersPacket()
     AB::Packets::Client::Login::GetServers packet = {
         accountUuid_,
         authToken_
+    };
+    AB::Packets::Add(packet, *msg);
+    Send(std::move(msg));
+}
+
+void ProtocolLogin::SendAddAccountKeyPacket()
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginAddAccountKey);
+    AB::Packets::Client::Login::AddAccountKey packet = {
+        accountUuid_,
+        authToken_,
+        addAccountKey_
     };
     AB::Packets::Add(packet, *msg);
     Send(std::move(msg));
@@ -290,15 +321,16 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         if (createAccCallback_)
             createAccCallback_();
         break;
+    case AB::LoginProtocol::AddAccountKeySuccess:
+        if (accountKeyAddedCallback_)
+            accountKeyAddedCallback_();
+        break;
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::CreateCharacterSuccess>(message);
         HandleCreatePlayerSuccess(packet);
         break;
     }
-    case AB::LoginProtocol::AddAccountKeySuccess:
-        // TODO:
-        break;
     }
 }
 
@@ -323,6 +355,9 @@ void ProtocolLogin::OnConnect()
         break;
     case ActionGetServers:
         SendGetServersPacket();
+        break;
+    case ActionAddAccountKey:
+        SendAddAccountKeyPacket();
         break;
     default:
         return;
