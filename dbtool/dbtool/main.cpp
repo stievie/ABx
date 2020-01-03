@@ -189,6 +189,8 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
         }
     }
 
+    std::cout << "Database version is now: " << GetDBVersion(db) << std::endl;
+
     return true;
 }
 

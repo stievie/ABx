@@ -137,7 +137,7 @@ void CharCreateLevel::DoCreateCharacter()
     }
 
     Text* sexTxt = dynamic_cast<Text*>(sexDropdown_->GetSelectedItem());
-    uint32_t sex = sexTxt->GetVar("Int Value").GetInt();
+    uint32_t sex = sexTxt->GetVar("Int Value").GetUInt();
     if (sex == 0 || sex > AB::Entities::CharacterSexMale)
     {
         ShowError("Please select the gender of your character.");
