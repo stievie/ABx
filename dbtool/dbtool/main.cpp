@@ -173,6 +173,7 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
 {
     std::cout << "Importing directory " << dir << std::endl;
 
+    size_t importedCount = 0;
     std::map<unsigned, std::string> files;
     GetFiles(dir, files);
     // Fortunately the items in a map are sorted by key
@@ -184,11 +185,13 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
             std::cout << "Database version is: " << version << std::endl;
         if (static_cast<int>(f.first) > version)
         {
+            ++importedCount;
             if (!ImportFile(db, f.second))
                 return false;
         }
     }
 
+    std::cout << "Imported " << importedCount << " files" << std::endl;
     std::cout << "Database version is now: " << GetDBVersion(db) << std::endl;
 
     return true;

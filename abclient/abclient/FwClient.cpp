@@ -1075,7 +1075,6 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeIns
             eData[P_INSTANCEUUID] = String(packet.instanceUuid.c_str());
             SendEvent(Events::E_CHANGINGINSTANCE, eData);
 
-            //            URHO3D_LOGINFOF("Changing instance %s", instanceUuid.c_str());
             currentCharacterUuid_ = String(packet.charUuid.c_str());
             client_.EnterWorld(packet.charUuid, packet.mapUuid,
                 (*it).second.host, (*it).second.port, packet.instanceUuid);
