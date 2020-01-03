@@ -106,6 +106,24 @@ IOAccount::CreateAccountResult IOAccount::AddAccountKey(AB::Entities::Account& a
     if (ak.used + 1 > ak.total)
         return CreateAccountResult::InvalidAccountKey;
 
+    // Bind account to key
+    AB::Entities::AccountKeyAccounts aka;
+    aka.uuid = ak.uuid;
+    aka.accountUuid = account.uuid;
+    if (!client->Create(aka))
+    {
+        LOG_ERROR << "Creating account - account key failed" << std::endl;
+        return CreateAccountResult::AlreadyAdded;
+    }
+
+    // Update account key
+    ak.used++;
+    if (!client->Update(ak))
+    {
+        LOG_ERROR << "Updating account key failed" << std::endl;
+        return CreateAccountResult::InternalError;
+    }
+
     switch (ak.type)
     {
     case AB::Entities::KeyTypeCharSlot:
@@ -130,24 +148,6 @@ IOAccount::CreateAccountResult IOAccount::AddAccountKey(AB::Entities::Account& a
     }
     default:
         return CreateAccountResult::InvalidAccountKey;
-    }
-
-    // Bind account to key
-    AB::Entities::AccountKeyAccounts aka;
-    aka.uuid = ak.uuid;
-    aka.accountUuid = account.uuid;
-    if (!client->Create(aka))
-    {
-        LOG_ERROR << "Creating account - account key failed" << std::endl;
-        return CreateAccountResult::InternalError;
-    }
-
-    // Update account key
-    ak.used++;
-    if (!client->Update(ak))
-    {
-        LOG_ERROR << "Updating account key failed" << std::endl;
-        return CreateAccountResult::InternalError;
     }
 
     return CreateAccountResult::OK;

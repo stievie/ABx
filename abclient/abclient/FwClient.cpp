@@ -71,6 +71,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Exception";
     case AB::Errors::TokenAuthFailure:
         return "Token authentication failure";
+    case AB::Errors::AccountKeyAlreadyAdded:
+        return "This account key was already added to the account";
     default:
         return "";
     }

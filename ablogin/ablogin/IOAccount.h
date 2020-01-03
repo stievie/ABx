@@ -36,6 +36,7 @@ public:
         InternalError,
         EmailError,
         PasswordError,
+        AlreadyAdded,
     };
     enum class CreatePlayerResult
     {

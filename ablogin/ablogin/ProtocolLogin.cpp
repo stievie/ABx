@@ -634,6 +634,9 @@ void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey requ
         case IO::IOAccount::CreateAccountResult::InvalidAccount:
             packet.code = AB::Errors::InvalidAccount;
             break;
+        case IO::IOAccount::CreateAccountResult::AlreadyAdded:
+            packet.code = AB::Errors::AccountKeyAlreadyAdded;
+            break;
         default:
             packet.code = AB::Errors::UnknownError;
             break;

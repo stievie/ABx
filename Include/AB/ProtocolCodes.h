@@ -64,6 +64,7 @@ enum ErrorCodes : uint8_t
     InvalidGame = 0x17,
     AllServersFull = 0x18,
     TokenAuthFailure = 0x19,
+    AccountKeyAlreadyAdded = 0x20,
 
     ErrorException = 0xff
 };
