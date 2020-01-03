@@ -197,7 +197,7 @@ void Connection::ParseHeader(const asio::error_code& error)
         // Read content
         msg_->SetSize(size + NetworkMessage::HeaderLength);
         asio::async_read(socket_,
-            asio::buffer(msg_->GetBodyBuffer(), size),
+            asio::buffer(msg_->GetBodyBuffer(), static_cast<size_t>(size)),
             std::bind(&Connection::ParsePacket, shared_from_this(), std::placeholders::_1));
 
     }
@@ -231,8 +231,10 @@ void Connection::ParsePacket(const asio::error_code& error)
     uint32_t checksum;
     int32_t len = msg_->GetSize() - msg_->GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
-        checksum = Utils::AdlerChecksum((uint8_t*)(msg_->GetBuffer() + msg_->GetReadPos() +
-            NetworkMessage::ChecksumLength), len);
+        checksum = Utils::AdlerChecksum(
+            reinterpret_cast<uint8_t*>(msg_->GetBuffer() + msg_->GetReadPos() +
+                NetworkMessage::ChecksumLength),
+            len);
     else
         checksum = 0;
     uint32_t recvChecksum = msg_->Get<uint32_t>();

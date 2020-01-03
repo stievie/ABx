@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <AB/CommonConfig.h>
 
 namespace AB {
 namespace Entities {
@@ -19,10 +20,10 @@ static constexpr int MAX_MUSIC = 65536;
 static constexpr int MAX_MUSIC_MAPS = 5000;
 
 // Account
-static constexpr int MAX_ACCOUNT_NAME = 32;
-static constexpr int MAX_ACCOUNT_PASS = 61;
-static constexpr int MAX_ACCOUNT_EMAIL = 60;
-static constexpr int MAX_ACCOUNT_CHARACTERS = 50;
+static constexpr int MAX_ACCOUNT_NAME = ACCOUNT_NAME_MAX;
+static constexpr int MAX_ACCOUNT_PASS = PASSWORD_LENGTH_MAX;
+static constexpr int MAX_ACCOUNT_EMAIL = EMAIL_LENGTH_MAX;
+static constexpr int MAX_ACCOUNT_CHARACTERS = 50;   // Max number of characters
 static constexpr int MAX_ACCOUNTS = std::numeric_limits<int>::max();
 // AccountKey
 static constexpr int MAX_ACCOUNTKEY_DESCRIPTION = 255;

@@ -18,13 +18,13 @@ namespace Net {
 
 class ProtocolGame final : public Protocol
 {
+    friend class Game::Player;
 public:
     // static protocol information
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
     static const char* ProtocolName() { return "Game Protocol"; }
-    friend class Game::Player;
     static std::string serverId_;
 private:
     std::weak_ptr<Game::Player> player_;

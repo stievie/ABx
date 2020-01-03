@@ -32,13 +32,13 @@ void CreateAccountLevel::DoCreateAccount()
         nameEdit_->SetFocus(true);
         return;
     }
-    if (name.Length() < 6)
+    if (name.Length() < ACCOUNT_NAME_MIN)
     {
         ShowError("Names must have at least six characters.");
         nameEdit_->SetFocus(true);
         return;
     }
-    if (name.Length() > 32)
+    if (name.Length() > ACCOUNT_NAME_MAX)
     {
         ShowError("The name is too long. Max 32 characters allowed.");
         nameEdit_->SetFocus(true);
@@ -52,9 +52,15 @@ void CreateAccountLevel::DoCreateAccount()
         passEdit_->SetFocus(true);
         return;
     }
-    if (name.Length() < 6)
+    if (pass.Length() < PASSWORD_LENGTH_MIN)
     {
         ShowError("Passwords must have at least six characters.");
+        passEdit_->SetFocus(true);
+        return;
+    }
+    if (pass.Length() > PASSWORD_LENGTH_MAX)
+    {
+        ShowError("Password is too long. Max 61 characters allowed.");
         passEdit_->SetFocus(true);
         return;
     }
@@ -64,6 +70,18 @@ void CreateAccountLevel::DoCreateAccount()
     if (email.Empty())
     {
         ShowError("Please enter an Email address.");
+        emailEdit_->SetFocus(true);
+        return;
+    }
+    if (email.Length() < 3)
+    {
+        ShowError("Please enter a valid Email address.");
+        emailEdit_->SetFocus(true);
+        return;
+    }
+    if (email.Length() > EMAIL_LENGTH_MAX)
+    {
+        ShowError("Email address is too long.");
         emailEdit_->SetFocus(true);
         return;
     }

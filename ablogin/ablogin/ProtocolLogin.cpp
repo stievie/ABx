@@ -109,7 +109,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    if (packet.accountName.length() < 6 || packet.accountName.length() > 32)
+    if (packet.accountName.length() < ACCOUNT_NAME_MIN || packet.accountName.length() > ACCOUNT_NAME_MAX)
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
@@ -119,8 +119,28 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
+    if (packet.password.length() < PASSWORD_LENGTH_MIN)
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+    if (packet.password.length() > PASSWORD_LENGTH_MAX)
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
 #ifdef EMAIL_MANDATORY
     if (packet.email.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidEmail);
+        return;
+    }
+    if (packet.email.length() < 3)
+    {
+        DisconnectClient(AB::Errors::InvalidEmail);
+        return;
+    }
+    if (packet.email.length() > EMAIL_LENGTH_MAX)
     {
         DisconnectClient(AB::Errors::InvalidEmail);
         return;
@@ -165,7 +185,12 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidCharacterName);
         return;
     }
-    if (packet.charName.length() < 6 || packet.charName.length() > 20)
+    if (packet.charName.length() < CHARACTER_NAME_NIM || packet.charName.length() > CHARACTER_NAME_MAX)
+    {
+        DisconnectClient(AB::Errors::InvalidCharacterName);
+        return;
+    }
+    if (packet.charName.find_first_of(RESTRICTED_NAME_CHARS) != std::string::npos)
     {
         DisconnectClient(AB::Errors::InvalidCharacterName);
         return;

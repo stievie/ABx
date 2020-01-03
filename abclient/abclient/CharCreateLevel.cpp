@@ -6,6 +6,7 @@
 #include <AB/Entities/Limits.h>
 #include "AudioManager.h"
 #include "SkillManager.h"
+#include <AB/CommonConfig.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -105,13 +106,13 @@ void CharCreateLevel::DoCreateCharacter()
         nameEdit_->SetFocus(true);
         return;
     }
-    if (name.Length() < 6)
+    if (name.Length() < CHARACTER_NAME_NIM)
     {
         ShowError("Names must have at least six characters.");
         nameEdit_->SetFocus(true);
         return;
     }
-    if (name.Length() > 20)
+    if (name.Length() > CHARACTER_NAME_MAX)
     {
         ShowError("The name is too long. Max 20 characters allowed.");
         nameEdit_->SetFocus(true);
