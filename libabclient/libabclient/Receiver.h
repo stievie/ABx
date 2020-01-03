@@ -43,6 +43,7 @@ public:
     virtual void OnGetServices(const std::vector<AB::Entities::Service>& services) = 0;
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) = 0;
+    virtual void OnAccountKeyAdded() = 0;
 
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) = 0;

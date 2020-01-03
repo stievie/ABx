@@ -615,6 +615,14 @@ void FwClient::Login(const String& name, const String& pass)
     }
 }
 
+void FwClient::AddAccountKey(const String& newKey)
+{
+    if (loggedIn_)
+    {
+        client_.AddAccountKey(std::string(newKey.CString()));
+    }
+}
+
 void FwClient::CreateAccount(const String& name, const String& pass, const String& email, const String& accKey)
 {
     if (!loggedIn_)
@@ -1003,7 +1011,14 @@ void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& mapUu
     EnterWorld(String(uuid.c_str()), String(mapUuid.c_str()));
 }
 
-const std::string & FwClient::GetAccountUuid() const
+void FwClient::OnAccountKeyAdded()
+{
+    using namespace Events::AccountKeyAdded;
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(Events::E_ACCOUNTKEYADDED, eData);
+}
+
+const std::string& FwClient::GetAccountUuid() const
 {
     return client_.accountUuid_;
 }

@@ -4,6 +4,8 @@
 DialogWindow::DialogWindow(Context* context) :
     Window(context)
 {
+    UI* ui = GetSubsystem<UI>();
+    uiRoot_ = ui->GetRoot();
 }
 
 DialogWindow::~DialogWindow()
@@ -14,7 +16,8 @@ DialogWindow::~DialogWindow()
 void DialogWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
-    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(DialogWindow, HandleCloseClicked));
+    if (closeButton)
+        SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(DialogWindow, HandleCloseClicked));
 }
 
 void DialogWindow::LoadLayout(const String& fileName)

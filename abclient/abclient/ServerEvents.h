@@ -4,6 +4,10 @@ using namespace Urho3D;
 
 namespace Events {
 
+URHO3D_EVENT(E_ACCOUNTKEYADDED, AccountKeyAdded)
+{
+}
+
 URHO3D_EVENT(E_SERVERJOINED, ServerJoined)
 {
     URHO3D_PARAM(P_SERVERID, ServerId);        // String

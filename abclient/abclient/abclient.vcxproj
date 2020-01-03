@@ -268,6 +268,7 @@
   <ItemGroup>
     <ClCompile Include="AccountChestDialog.cpp" />
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AddAccountKeyDialog.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BaseLevel.cpp" />
     <ClCompile Include="CharCreateLevel.cpp" />
@@ -322,6 +323,7 @@
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="AccountChestDialog.h" />
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="AddAccountKeyDialog.h" />
     <ClInclude Include="AntiRE.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CharCreateLevel.h" />

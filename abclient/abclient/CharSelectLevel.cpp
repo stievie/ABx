@@ -36,6 +36,7 @@ void CharSelectLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CharSelectLevel, HandleUpdate));
+    SubscribeToEvent(Events::E_ACCOUNTKEYADDED, URHO3D_HANDLER(CharSelectLevel, HandleAccountKeyAdded));
 }
 
 void CharSelectLevel::CreateUI()
@@ -132,6 +133,22 @@ void CharSelectLevel::CreateUI()
             button->AddChild(t);
         }
     }
+
+    // Add account key button
+    auto accKeyButton = uiRoot_->CreateChild<Button>("AddAccountKeyButton");
+    accKeyButton->SetStyleAuto();
+    accKeyButton->SetLayoutMode(LM_FREE);
+    accKeyButton->SetAlignment(HA_LEFT, VA_BOTTOM);
+    accKeyButton->SetPosition(8, -8);
+    accKeyButton->SetStyleAuto();
+    auto accKeyText = accKeyButton->CreateChild<Text>("AddAccountKeyText");
+    accKeyText->SetText("Add Account Key");
+    accKeyText->SetAlignment(HA_CENTER, VA_CENTER);
+    accKeyText->SetStyle("Text");
+    accKeyText->SetFontSize(10);
+    accKeyButton->SetMinWidth(accKeyText->GetWidth() + 20);
+    accKeyButton->SetMinHeight(accKeyText->GetHeight() + 8);
+    SubscribeToEvent(accKeyButton, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleAddAccountKeyClicked));
 }
 
 void CharSelectLevel::CreateScene()
@@ -171,6 +188,31 @@ void CharSelectLevel::HandleBackClicked(StringHash, VariantMap&)
     using namespace Events::SetLevel;
     e[P_NAME] = "LoginLevel";
     SendEvent(Events::E_SETLEVEL, e);
+}
+
+void CharSelectLevel::HandleAddAccountKeyClicked(StringHash, VariantMap&)
+{
+    if (!addAccountKeyDialog_)
+    {
+        addAccountKeyDialog_ = new AddAccountKeyDialog(context_);
+        uiRoot_->AddChild(addAccountKeyDialog_);
+        addAccountKeyDialog_->SetAlignment(HA_LEFT, VA_BOTTOM);
+        addAccountKeyDialog_->SetPosition(8, -8);
+    }
+    addAccountKeyDialog_->SetVisible(true);
+    addAccountKeyDialog_->accountKeyEdit_->SetFocus(true);
+}
+
+void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)
+{
+    if (addAccountKeyDialog_)
+    {
+        addAccountKeyDialog_->SetVisible(false);
+        addAccountKeyDialog_->accountKeyEdit_->SetText("");
+    }
+    using MsgBox = Urho3D::MessageBox;
+    /* MsgBox* msgBox = */ new MsgBox(context_, "The account key was successfully added to your account",
+        "Account key added");
 }
 
 void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)
