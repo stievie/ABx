@@ -211,7 +211,7 @@ void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)
         addAccountKeyDialog_->accountKeyEdit_->SetText("");
     }
     using MsgBox = Urho3D::MessageBox;
-    /* MsgBox* msgBox = */ new MsgBox(context_, "The account key was successfully added to your account",
+    /* MsgBox* msgBox = */ new MsgBox(context_, "The key was successfully added to your account",
         "Account key added");
 }
 

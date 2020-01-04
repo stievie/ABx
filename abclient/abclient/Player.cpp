@@ -340,3 +340,14 @@ void Player::HandleSelectSelf(StringHash, VariantMap&)
     SelectObject(gameId_);
 }
 
+void Player::UpdateMumberContext()
+{
+    auto* mumble = GetSubsystem<Mumble>();
+    if (!mumble)
+        return;
+
+//    auto* lm = GetSubsystem<LevelManager>();
+//    String ctx(lm->GetLastInstanceUuid());
+//    ctx.AppendWithFormat("-%d", groupId_);
+//    mumble->SetContext(ctx);
+}

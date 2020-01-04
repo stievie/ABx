@@ -61,6 +61,7 @@ void Mumble::Initialize()
     lm_ = (LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd_, 0));
     if (lm_ == (void *)(-1))
     {
+        URHO3D_LOGERROR("Mumble::Initialize: mmap() failed");
         lm_ = NULL;
         return;
     }
@@ -165,6 +166,7 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
         WString identity(identity_);
         wcsncpy(lm_->identity, identity.CString(), Min(256u, identity.Length()));
         identityDirty_ = false;
+        URHO3D_LOGINFOF("Mumble identity is now %s", identity_.CString());
     }
 
     if (contextDirty_)
@@ -173,8 +175,10 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
         // differ for those who shouldn't (e.g. it could contain the server+port and team)
         // E.g. Map instance ID
         unsigned length = Min(256u, mumbleContext_.Length());
-        memcpy(lm_->context, mumbleContext_.CString(), length);
+        if (length > 0)
+            memcpy(lm_->context, mumbleContext_.CString(), length);
         lm_->context_len = length;
         contextDirty_ = false;
+        URHO3D_LOGINFOF("Mumble context is now %s", mumbleContext_.CString());
     }
 }
