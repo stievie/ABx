@@ -118,7 +118,7 @@ void CharCreateLevel::DoCreateCharacter()
         nameEdit_->SetFocus(true);
         return;
     }
-    static const String restircted(RESTRICTED_NAME_CHARS);
+    String restircted(RESTRICTED_NAME_CHARS);
     for (unsigned i = 0; i < restircted.Length(); ++i)
     {
         if (name.Contains(restircted.At(i)))

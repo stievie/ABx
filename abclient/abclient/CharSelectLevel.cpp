@@ -78,14 +78,14 @@ void CharSelectLevel::CreateUI()
             String text = String(ch.profession.c_str());
             if (!ch.profession2.empty())
                 text += "/" + String(ch.profession2.c_str());
-            text += String(static_cast<int>(ch.level));
+            text += String((int)ch.level);
             text += " " + String(ch.name.c_str());
             t->SetText(text);
             t->SetStyle("Text");
             button->AddChild(t);
         }
         window->AddChild(button);
-        ++i;
+        i++;
     }
     {
         if (i != 0)
@@ -211,7 +211,7 @@ void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)
         addAccountKeyDialog_->accountKeyEdit_->SetText("");
     }
     using MsgBox = Urho3D::MessageBox;
-    /* MsgBox* msgBox = */ new MsgBox(context_, "The key was successfully added to your account",
+    /* MsgBox* msgBox = */ new MsgBox(context_, "The account key was successfully added to your account",
         "Account key added");
 }
 

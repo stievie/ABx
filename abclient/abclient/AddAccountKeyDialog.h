@@ -16,3 +16,4 @@ public:
 
     SharedPtr<LineEdit> accountKeyEdit_;
 };
+
