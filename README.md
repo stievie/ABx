@@ -33,6 +33,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Server runs on Windows and Linux
 * Client runs on Windows and Linux
 * Game AI, Behavior Tree
+* Mumble void chat integration.
 
 ## Screenshot
 

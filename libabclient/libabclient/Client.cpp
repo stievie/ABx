@@ -67,7 +67,7 @@ void Client::Run()
 #ifdef _WIN32
     ioService_->run();
 #else
-    if (state_ != ClientState::World)
+    if (state_ != State::World)
     {
         // WTF, why is this needed on Linux but not on Windows?
         if (ioService_->stopped())
@@ -113,7 +113,7 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
 
 void Client::OnGetCharlist(const AB::Entities::CharList& chars)
 {
-    state_ = ClientState::SelectChar;
+    state_ = State::SelectChar;
 
     receiver_.OnGetCharlist(chars);
 
@@ -181,7 +181,7 @@ std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
 
 void Client::Login(const std::string& name, const std::string& pass)
 {
-    if (!(state_ == ClientState::Disconnected || state_ == ClientState::CreateAccount))
+    if (!(state_ == State::Disconnected || state_ == State::CreateAccount))
         return;
 
     accountName_ = name;
@@ -196,7 +196,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 void Client::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
-    if (state_ != ClientState::CreateAccount)
+    if (state_ != State::CreateAccount)
         return;
 
     accountName_ = name;
@@ -211,7 +211,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     uint32_t modelIndex,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
-    if (state_ != ClientState::SelectChar)
+    if (state_ != State::SelectChar)
         return;
 
     if (accountUuid_.empty() || authToken_.empty())
@@ -224,7 +224,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
 
 void Client::AddAccountKey(const std::string& newKey)
 {
-    if (state_ != ClientState::SelectChar)
+    if (state_ != State::SelectChar)
         return;
 
     if (accountUuid_.empty() || authToken_.empty())
@@ -238,11 +238,11 @@ void Client::AddAccountKey(const std::string& newKey)
 
 void Client::Logout()
 {
-    if (state_ != ClientState::World)
+    if (state_ != State::World)
         return;
     if (protoGame_)
     {
-        state_ = ClientState::Disconnected;
+        state_ = State::Disconnected;
         protoGame_->Logout();
         Run();
     }
@@ -272,10 +272,10 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
     assert(!accountUuid_.empty());
     assert(!authToken_.empty());
     // Enter or changing the world
-    if (state_ != ClientState::SelectChar && state_ != ClientState::World)
+    if (state_ != State::SelectChar && state_ != State::World)
         return;
 
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
     {
         // We are already logged in to some world so we must logout
         Logout();
@@ -298,7 +298,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
 void Client::Update(int timeElapsed)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
     {
         if ((lastPing_ >= 1000 && gotPong_) || (lastPing_ > 5000))
         {
@@ -320,7 +320,7 @@ void Client::Update(int timeElapsed)
         lastRun_ = 0;
         Run();
     }
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         lastPing_ += timeElapsed;
 }
 
@@ -375,223 +375,223 @@ int64_t Client::GetClockDiff() const
 
 void Client::ChangeMap(const std::string& mapUuid)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->ChangeMap(mapUuid);
 }
 
 void Client::GetMailHeaders()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetMailHeaders();
 }
 
 void Client::GetMail(const std::string& mailUuid)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetMail(mailUuid);
 }
 
 void Client::GetInventory()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetInventory();
 }
 
 void Client::InventoryStoreItem(uint16_t pos)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->InventoryStoreItem(pos);
 }
 
 void Client::InventoryDestroyItem(uint16_t pos)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->InventoryDestroyItem(pos);
 }
 
 void Client::InventoryDropItem(uint16_t pos)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->InventoryDropItem(pos);
 }
 
 void Client::GetChest()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetChest();
 }
 
 void Client::ChestDestroyItem(uint16_t pos)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->ChestDestroyItem(pos);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->DeleteMail(mailUuid);
 }
 
 void Client::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->SendMail(recipient, subject, body);
 }
 
 void Client::GetPlayerInfoByName(const std::string& name, uint32_t fields)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetPlayerInfoByName(name, fields);
 }
 
 void Client::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GetPlayerInfoByAccount(accountUuid, fields);
 }
 
 void Client::Move(uint8_t direction)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Move(direction);
 }
 
 void Client::Turn(uint8_t direction)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Turn(direction);
 }
 
 void Client::SetDirection(float rad)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->SetDirection(rad);
 }
 
 void Client::ClickObject(uint32_t sourceId, uint32_t targetId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->ClickObject(sourceId, targetId);
 }
 
 void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->SelectObject(sourceId, targetId);
 }
 
 void Client::FollowObject(uint32_t targetId, bool ping)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Follow(targetId, ping);
 }
 
 void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Command(type, data);
 }
 
 void Client::GotoPos(const Vec3& pos)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->GotoPos(pos);
 }
 
 void Client::PartyInvitePlayer(uint32_t targetId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyInvitePlayer(targetId);
 }
 
 void Client::PartyKickPlayer(uint32_t targetId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyKickPlayer(targetId);
 }
 
 void Client::PartyAcceptInvite(uint32_t inviterId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyAcceptInvite(inviterId);
 }
 
 void Client::PartyRejectInvite(uint32_t inviterId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyRejectInvite(inviterId);
 }
 
 void Client::PartyGetMembers(uint32_t partyId)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyGetMembers(partyId);
 }
 
 void Client::PartyLeave()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->PartyLeave();
 }
 
 void Client::UseSkill(uint32_t index, bool ping)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->UseSkill(index, ping);
 }
 
 void Client::Attack(bool ping)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Attack(ping);
 }
 
 void Client::QueueMatch()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->QueueMatch();
 }
 
 void Client::UnqueueMatch()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->UnqueueMatch();
 }
 
 void Client::AddFriend(const std::string& name, AB::Entities::FriendRelation relation)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->AddFriend(name, relation);
 }
 
 void Client::RemoveFriend(const std::string& accountUuid)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->RemoveFriend(accountUuid);
 }
 
 void Client::UpdateFriendList()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->UpdateFriendList();
 }
 
 void Client::Cancel()
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->Cancel();
 }
 
 void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->SetPlayerState(newState);
 }
 
 void Client::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
 {
-    if (state_ == ClientState::World)
+    if (state_ == State::World)
         protoGame_->SetOnlineStatus(status);
 }
 
@@ -612,7 +612,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInsta
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
 {
-    state_ = ClientState::World;
+    state_ = State::World;
     receiver_.OnPacket(updateTick, packet);
 }
 

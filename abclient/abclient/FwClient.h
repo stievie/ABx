@@ -40,7 +40,7 @@ private:
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_{ 0 };
     Client::Client client_;
-    Client::Client::ClientState lastState_{ Client::Client::ClientState::Disconnected };
+    Client::Client::State lastState_{ Client::Client::State::Disconnected };
     AB::Entities::CharList characters_;
     std::map<std::string, AB::Entities::Game> outposts_;
     std::map<std::string, AB::Entities::Game> games_;
@@ -221,9 +221,9 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) override;
 
-    void SetState(Client::Client::ClientState state)
+    void SetState(Client::Client::State state)
     {
-        if (state == Client::Client::ClientState::Disconnected || state == Client::Client::ClientState::CreateAccount)
+        if (state == Client::Client::State::Disconnected || state == Client::Client::State::CreateAccount)
             loggedIn_ = false;
         client_.SetState(state);
     }

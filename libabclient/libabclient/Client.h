@@ -24,7 +24,7 @@ class HttpsClient;
 class Client : public Receiver
 {
 public:
-    enum class ClientState
+    enum class State
     {
         Disconnected,
         CreateAccount,
@@ -44,7 +44,7 @@ private:
     bool gotPong_{ true };
     // Our (client) key pair
     Crypto::DHKeys dhKeys_;
-    ClientState state_{ ClientState::Disconnected };
+    State state_{ State::Disconnected };
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
     void Terminate();
 public:
@@ -158,8 +158,8 @@ public:
     std::string gameHost_;
     uint16_t gamePort_{ 0 };
     HttpsClient* httpClient_{ nullptr };
-    ClientState GetState() const { return state_; }
-    void SetState(ClientState value) { state_ = value; }
+    State GetState() const { return state_; }
+    void SetState(State value) { state_ = value; }
     int GetAvgPing() const
     {
         if (pings_.IsEmpty())
