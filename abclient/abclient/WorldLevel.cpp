@@ -464,7 +464,10 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         {
         case ObjectTypePlayer:
             if (!existing)
-                chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
+                chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
+            break;
+        case ObjectTypeSelf:
+            static_cast<Player*>(object)->UpdateMumbleContext();
             break;
         default:
             break;

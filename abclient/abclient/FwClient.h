@@ -40,7 +40,7 @@ private:
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_{ 0 };
     Client::Client client_;
-    Client::Client::ClientState lastState_;
+    Client::Client::ClientState lastState_{ Client::Client::ClientState::Disconnected };
     AB::Entities::CharList characters_;
     std::map<std::string, AB::Entities::Game> outposts_;
     std::map<std::string, AB::Entities::Game> games_;
@@ -56,6 +56,7 @@ private:
     String currentCharacterUuid_;
     Mutex mutex_;
     HashMap<String, uint32_t> versions_;
+    bool loggedIn_{ false };
     void LoadData();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
     void LoadGames(uint32_t curVersion);
@@ -66,7 +67,6 @@ private:
     void LoadItems(uint32_t curVersion);
     void LoadMusic(uint32_t curVersion);
     bool MakeHttpRequest(const String& path, const String& outFile);
-    bool loggedIn_{ false };
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);

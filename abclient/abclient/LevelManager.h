@@ -29,18 +29,19 @@ private:
     uint8_t partySize_{ 0 };
     /// Name of level we're coming from. Needed to get the spawn point
     String lastLevelName_;
+    String instanceUuid_;
     SharedPtr<Object> level_;
     SharedPtr<Window> fadeWindow_;
     float fadeTime_{ 0 };
     int fadeStatus_{ 0 };
     bool drawDebugGeometry_{ false };
     const float MAX_FADE_TIME = 0.7f;
-
 public:
     template<typename T>
     T* GetCurrentLevel() const { return dynamic_cast<T*>(level_.Get()); }
     const String& GetLevelName() const { return levelName_ ; }
     const String& GetLastLevelName() const { return lastLevelName_; }
+    const String& GetInstanceUuid() const { return instanceUuid_; }
     String GetMapUuid() const { return mapUuid_; }
     AB::Entities::GameType GetMapType() const { return mapType_; }
     const AB::Entities::Game* GetGame() const;

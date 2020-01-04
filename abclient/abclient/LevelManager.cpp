@@ -122,6 +122,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         {
             mumble->SetContext(instanceUuid);
         }
+        instanceUuid_ = instanceUuid;
 
         // Add a fade layer
         if (!fadeWindow_)
