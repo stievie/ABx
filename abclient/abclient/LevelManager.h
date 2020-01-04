@@ -25,7 +25,6 @@ private:
     List<VariantMap> levelQueue_;
     String levelName_;
     String mapUuid_;
-    String instanceUuid_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
     uint8_t partySize_{ 0 };
     /// Name of level we're coming from. Needed to get the spawn point
@@ -42,7 +41,6 @@ public:
     T* GetCurrentLevel() const { return dynamic_cast<T*>(level_.Get()); }
     const String& GetLevelName() const { return levelName_ ; }
     const String& GetLastLevelName() const { return lastLevelName_; }
-    const String& GetLastInstanceUuid() const { return instanceUuid_; }
     String GetMapUuid() const { return mapUuid_; }
     AB::Entities::GameType GetMapType() const { return mapType_; }
     const AB::Entities::Game* GetGame() const;

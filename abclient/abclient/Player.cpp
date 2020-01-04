@@ -340,11 +340,3 @@ void Player::HandleSelectSelf(StringHash, VariantMap&)
     SelectObject(gameId_);
 }
 
-void Player::UpdateMumbleContext(const String& instanceUuid, uint32_t groupId, bool wholeMap)
-{
-    auto* mumble = GetSubsystem<Mumble>();
-    if (groupId == 0 || wholeMap)
-        mumble->SetContext(instanceUuid);
-    else
-        mumble->SetContext(instanceUuid + String(groupId));
-}

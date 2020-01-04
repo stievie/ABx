@@ -406,12 +406,9 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
     case AB::GameProtocol::ObjectTypePlayer:
         if (playerId == id)
         {
-            auto lm = GetSubsystem<LevelManager>();
             CreatePlayer(id, position, scale, rot, state, data);
             object = player_;
             object->objectType_ = ObjectTypeSelf;
-            player_->UpdateMumbleContext(lm->GetLastInstanceUuid(), groupId,
-                AB::Entities::IsOutpost(lm->GetMapType()));
         }
         else
         {

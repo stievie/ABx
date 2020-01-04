@@ -61,7 +61,6 @@ void Mumble::Initialize()
     lm_ = (LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd_, 0));
     if (lm_ == (void *)(-1))
     {
-        URHO3D_LOGERROR("Mumble::Initialize: mmap() failed");
         lm_ = NULL;
         return;
     }

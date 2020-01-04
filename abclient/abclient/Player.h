@@ -53,7 +53,6 @@ public:
     void SelectObject(uint32_t objectId);
     uint8_t GetMoveDir();
     uint8_t GetTurnDir();
-    void UpdateMumbleContext(const String& instanceUuid, uint32_t groupId, bool wholeMap);
     void MoveTo(int64_t time, const Vector3& newPos) override;
     float lastYaw_{ 0.0f };
 protected:

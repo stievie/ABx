@@ -4,6 +4,7 @@
 #include "WorldLevel.h"
 #include "GameMenu.h"
 #include "Actor.h"
+#include "Mumble.h"
 #include "FwClient.h"
 
 //#include <Urho3D/DebugNew.h>
@@ -107,7 +108,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         using namespace Events::SetLevel;
         levelName_ = levelData[P_NAME].GetString();
         mapUuid_ = levelData[P_MAPUUID].GetString();
-        instanceUuid_ = levelData[P_INSTANCEUUID].GetString();
+        const String& instanceUuid = levelData[P_INSTANCEUUID].GetString();
         mapType_ = static_cast<AB::Entities::GameType>(levelData[P_TYPE].GetUInt());
         partySize_ = static_cast<uint8_t>(levelData[P_PARTYSIZE].GetUInt());
         level_ = context_->CreateObject(StringHash(levelName_));
@@ -115,6 +116,11 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         if (baseLevel)
         {
             baseLevel->debugGeometry_ = drawDebugGeometry_;
+        }
+        Mumble* mumble = GetSubsystem<Mumble>();
+        if (mumble)
+        {
+            mumble->SetContext(instanceUuid);
         }
 
         // Add a fade layer
