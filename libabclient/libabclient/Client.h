@@ -21,17 +21,17 @@ class ProtocolLogin;
 class ProtocolGame;
 class HttpsClient;
 
+enum class State
+{
+    Disconnected,
+    CreateAccount,
+    CreateChar,
+    SelectChar,
+    World
+};
+
 class Client : public Receiver
 {
-public:
-    enum class State
-    {
-        Disconnected,
-        CreateAccount,
-        CreateChar,
-        SelectChar,
-        World
-    };
 private:
     Receiver& receiver_;
     std::shared_ptr<asio::io_service> ioService_;
