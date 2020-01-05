@@ -25,7 +25,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     // Get the armor effect at this pos with the given damage type and armor penetration
     const float am = owner_.GetArmorEffect(type, pos, penetration);
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
-    damages_.Enqueue({ { lastDamage_, type, pos, realValue, source ? source->id_ : 0, index }, true });
+    damages_.Enqueue({ { lastDamage_, type, pos, realValue, (source ? source->id_ : 0), index }, true });
     owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
     {
@@ -46,7 +46,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     const int currLife = owner_.resourceComp_->GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
-    damages_.Enqueue({ { lastDamage_, DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index }, true });
+    damages_.Enqueue({ { lastDamage_, DamageType::LifeDrain, DamagePos::NoPos, result, (source ? source->id_ : 0), index }, true });
     owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
         lastDamager_ = source->GetPtr<Actor>();
@@ -107,7 +107,7 @@ void DamageComp::Write(Net::NetworkMessage& message)
             d.damage.actorId,
             static_cast<uint16_t>(d.damage.index),
             static_cast<uint8_t>(d.damage.type),
-            static_cast<uint16_t>(d.damage.value)
+            static_cast<uint16_t>(abs(d.damage.value))
         };
         AB::Packets::Add(packet, message);
         d.dirty = false;
