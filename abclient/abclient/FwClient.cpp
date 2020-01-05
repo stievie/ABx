@@ -578,7 +578,7 @@ void FwClient::Update(float timeStep)
 
     switch (client_.GetState())
     {
-    case Client::Client::State::SelectChar:
+    case Client::State::SelectChar:
         loggedIn_ = true;
         break;
     default:

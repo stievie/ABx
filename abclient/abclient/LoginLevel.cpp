@@ -23,7 +23,7 @@ LoginLevel::LoginLevel(Context* context) :
     // Subscribe to global events for camera movement
     SubscribeToEvents();
     FwClient* net = context_->GetSubsystem<FwClient>();
-    net->SetState(Client::Client::State::Disconnected);
+    net->SetState(Client::State::Disconnected);
 }
 
 void LoginLevel::CreateScene()
