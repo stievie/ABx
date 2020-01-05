@@ -20,16 +20,10 @@ Player::Player(Context* context) :
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
-    FwClient* cli = GetSubsystem<FwClient>();
-    cli->UnsubscribeUpdate();
 }
 
 Player::~Player()
-{
-    FwClient* cli = GetSubsystem<FwClient>();
-    if (cli)
-        cli->SubscribeUpdate();
-}
+{ }
 
 void Player::RegisterObject(Context* context)
 {

@@ -148,7 +148,6 @@ FwClient::FwClient(Context* context) :
     client_.loginPort_ = o->loginPort_;
     lastState_ = client_.GetState();
     SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
-    SubscribeUpdate();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
@@ -179,18 +178,6 @@ void FwClient::Stop()
 {
     PartyLeave();
     Logout();
-}
-
-void FwClient::UnsubscribeUpdate()
-{
-//    URHO3D_LOGINFO("FwClient::UnsubscribeUpdate()");
-//    UnsubscribeFromEvent(E_UPDATE);
-}
-
-void FwClient::SubscribeUpdate()
-{
-//    URHO3D_LOGINFO("FwClient::SubscribeUpdate()");
-//    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
 void FwClient::HandleLevelReady(StringHash, VariantMap&)

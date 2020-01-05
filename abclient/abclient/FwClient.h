@@ -98,8 +98,6 @@ public:
     void AddAccountKey(const String& newKey);
     bool Start();
     void Stop();
-    void UnsubscribeUpdate();
-    void SubscribeUpdate();
     void Update(float timeStep);
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
