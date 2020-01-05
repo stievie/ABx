@@ -40,6 +40,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ObjectPosUpdate, GameObjectPositionChange>();
     AddHandler<AB::Packets::Server::ObjectRotationUpdate, GameObjectRotationChange>();
     AddHandler<AB::Packets::Server::ObjectStateChanged, GameObjectStateChange>();
+    AddHandler<AB::Packets::Server::ObjectSpeedChanged, GameObjectMoveSpeedChange>();
     AddHandler<AB::Packets::Server::ObjectTargetSelected, GameObjectSelectTarget>();
     AddHandler<AB::Packets::Server::ObjectSkillFailure, GameObjectSkillFailure>();
     AddHandler<AB::Packets::Server::ObjectUseSkill, GameObjectUseSkill>();
