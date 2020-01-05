@@ -918,7 +918,8 @@ void FwClient::UnqueueMatch()
 
 void FwClient::OnLog(const std::string& message)
 {
-    URHO3D_LOGINFO(String(message.c_str()));
+    String msg(message.c_str(), static_cast<unsigned>(message.length()));
+    URHO3D_LOGINFO(msg);
 }
 
 void FwClient::OnLoggedIn(const std::string&, const std::string&)

@@ -12,6 +12,7 @@ PRAGMA_WARNING_POP
 #include <iostream>
 #include <fstream>
 #include "Random.h"
+#include <thread>
 
 namespace Client {
 
@@ -333,18 +334,33 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     std::stringstream ss;
     ss << accountUuid_ << authToken_;
     header.emplace("Auth", ss.str());
-    try
+
+    auto get = [&]() -> bool
     {
-        auto r = httpClient_->request("GET", path, "", header);
-        if (r->status_code != "200 OK")
+        try
+        {
+            auto r = httpClient_->request("GET", path, "", header);
+            if (r->status_code != "200 OK")
+                return false;
+            out << r->content.rdbuf();
+            return true;
+        }
+        catch (...)
+        {
             return false;
-        out << r->content.rdbuf();
+        }
+    };
+
+    if (get())
         return true;
-    }
-    catch (const SimpleWeb::system_error&)
-    {
-        return false;
-    }
+
+    // Try once again
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(500ms);
+    if (get())
+        return true;
+
+    return false;
 }
 
 bool Client::HttpDownload(const std::string& path, const std::string& outFile)
