@@ -513,6 +513,7 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
             groupId_ = partyId;
             // We was added to a new party
             Clear();
+            static_cast<Player*>(o)->UpdateMumbleContext();
             // Get full list of members
             FwClient* cli = GetSubsystem<FwClient>();
             cli->PartyGetMembers(partyId);
@@ -560,6 +561,7 @@ void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
         {
             // We get a new party
             groupId_ = 0;
+            static_cast<Player*>(o)->UpdateMumbleContext();
             ClearMembers();
             return;
         }
