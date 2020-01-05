@@ -203,10 +203,8 @@ void FwClient::LoadData()
 
     pugi::xml_document doc;
     std::string strVer = ss.str();
-    if (!doc.load_string(strVer.c_str(), (unsigned)strVer.length()))
-    {
+    if (!doc.load_string(strVer.c_str(), static_cast<unsigned>(strVer.length())))
         return;
-    }
 
     const pugi::xml_node& ver_node = doc.child("versions");
     for (const auto& file_node : ver_node.children("version"))

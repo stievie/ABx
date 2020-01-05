@@ -190,3 +190,9 @@ public:
         return (other->groupId_ != groupId_);
     }
 };
+
+template <>
+inline bool Is<Actor>(const GameObject& obj)
+{
+    return obj.objectType_ > ObjectTypeStatic;
+}

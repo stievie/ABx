@@ -936,7 +936,7 @@ void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
     uint32_t itemId = eventData[P_ITEMID].GetUInt();
     uint32_t count = eventData[P_COUNT].GetUInt();
     uint32_t value = eventData[P_VALUE].GetUInt();
-    GameObject* item = GetObjectById(itemId);
+    GameObject* item = GetObject(itemId);
     if (item)
     {
         item->count_ = count;
@@ -970,18 +970,18 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     return result;
 }
 
-SharedPtr<Actor> WorldLevel::GetActorByName(const String& name, ObjectType type /* = ObjectTypePlayer */)
+Actor* WorldLevel::GetActorByName(const String& name, ObjectType type /* = ObjectTypePlayer */)
 {
     for (const auto& o : objects_)
     {
         if (o.second_->objectType_ == type)
         {
-            Actor* a = dynamic_cast<Actor*>(o.second_.Get());
+            Actor* a = To<Actor>(o.second_.Get());
             if (a && a->name_.Compare(name, false) == 0)
-                return SharedPtr<Actor>(a);
+                return a;
         }
     }
-    return SharedPtr<Actor>();
+    return nullptr;
 }
 
 void WorldLevel::CreatePlayer(uint32_t id,

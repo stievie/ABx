@@ -45,7 +45,7 @@ void GameMessagesWindow::HandleUpdate(StringHash, VariantMap& eventData)
     if (IsVisible())
     {
         visibleTime_ += eventData[P_TIMESTEP].GetFloat();
-        if (visibleTime_ > 3.0f)
+        if (visibleTime_ >= VISIBLE_TIME)
         {
             SetVisible(false);
             visibleTime_ = 0.0f;

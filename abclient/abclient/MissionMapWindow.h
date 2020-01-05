@@ -9,12 +9,10 @@ public:
     static void RegisterObject(Context* context);
 
     MissionMapWindow(Context* context);
-    ~MissionMapWindow() override
-    {
-        UnsubscribeFromAllEvents();
-    }
-    void
-        OnDragBegin(const IntVector2& position, const IntVector2& screenPosition, int buttons, int qualifiers, Cursor* cursor) override;
+    ~MissionMapWindow() override;
+    void OnDragBegin(const IntVector2& position,
+        const IntVector2& screenPosition,
+        int buttons, int qualifiers, Cursor* cursor) override;
     void SetScene(SharedPtr<Scene> scene);
 private:
     SharedPtr<Texture2D> renderTexture_;

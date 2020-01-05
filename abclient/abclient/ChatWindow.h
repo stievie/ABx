@@ -21,12 +21,12 @@ private:
     unsigned historyPosition_{ 0 };
     /// Current row being edited.
     String currentRow_;
+    int tabIndexWhisper_{ -1 };
     bool visibleGeneral_{ true };
     bool visibleGuild_{ true };
     bool visibleParty_{ true };
     bool visibleTrade_{ true };
     bool visibleWhisper_{ true };
-    int tabIndexWhisper_{ -1 };
     void TrimLines();
     void UpdateVisibleItems();
     void HandleFilterClick(StringHash eventType, VariantMap& eventData);
@@ -88,10 +88,7 @@ public:
     void SayHello(Player* player);
 
     ChatWindow(Context* context);
-    ~ChatWindow() override
-    {
-        UnsubscribeFromAllEvents();
-    }
+    ~ChatWindow() override;
 
     void FocusEdit();
     SharedPtr<ListView> chatLog_;

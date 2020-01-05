@@ -139,6 +139,11 @@ ChatWindow::ChatWindow(Context* context) :
     SetAlignment(HA_LEFT, VA_BOTTOM);
 }
 
+ChatWindow::~ChatWindow()
+{
+    UnsubscribeFromAllEvents();
+}
+
 void ChatWindow::FocusEdit()
 {
     LineEdit* edit = GetActiveLineEdit();
@@ -171,7 +176,7 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         break;
     case AB::GameProtocol::ChatChannelWhisper:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATWHISPER, "Whisper", true));
-        tabIndexWhisper_ = tabs->GetTabCount() - 1;
+        tabIndexWhisper_ = static_cast<int>(tabs->GetTabCount() - 1);
         break;
     default:
         break;
@@ -234,7 +239,9 @@ LineEdit* ChatWindow::GetActiveLineEdit()
 
 LineEdit* ChatWindow::GetLineEdit(int index)
 {
-    TabElement* elem = tabgroup_->GetTabElement(index);
+    if (index < 0)
+        return nullptr;
+    TabElement* elem = tabgroup_->GetTabElement(static_cast<unsigned>(index));
     if (!elem)
         return nullptr;
     LineEdit* edit = dynamic_cast<LineEdit*>(elem->tabBody_->GetChild("ChatLineEdit", true));
@@ -329,14 +336,14 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ObjectProgressGotSkillPoint:
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
-        Actor* actor = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
+        Actor* actor = To<Actor>(lm->GetObject(objectId));
         if (actor)
         {
             kainjow::mustache::mustache tpl{ "{{name}} got a skill point" };
             kainjow::mustache::data data;
             data.set("name", std::string(actor->name_.CString(), actor->name_.Length()));
             std::string t = tpl.render(data);
-            AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+            AddLine(String(t.c_str()), "ChatLogServerInfoText");
         }
         break;
     }
@@ -350,7 +357,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
             kainjow::mustache::data data;
             data.set("number", std::to_string(eventData[P_VALUE].GetInt()));
             std::string t = tpl.render(data);
-            AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+            AddLine(String(t.c_str()), "ChatLogServerInfoText");
         }
         break;
     }
@@ -389,7 +396,7 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
     data.set("res", std::string(res.CString(), res.Length()));
     data.set("max", std::string(max.CString(), max.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
+    AddLine(String(t.c_str()), "ChatLogChatText");
 }
 
 void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
@@ -400,9 +407,9 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     String age = message.Substring(0, p);
     String playTime = message.Substring(p + 1);
     // Seconds
-    uint32_t uAge = std::atoi(age.CString());
+    uint32_t uAge = static_cast<uint32_t>(std::atoi(age.CString()));
     // Seconds
-    uint32_t uPlayTime = std::atoi(playTime.CString());
+    uint32_t uPlayTime = static_cast<uint32_t>(std::atoi(playTime.CString()));
     Client::TimeSpan tAge(uAge);
     std::stringstream ss;
     ss << "You have played this character for ";
@@ -446,7 +453,7 @@ void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
         data.set("maxE", std::string(maxE.CString(), maxE.Length()));
     }
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
@@ -461,7 +468,7 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
         data.set("xp", std::string(parts[0].CString(), parts[0].Length()));
         data.set("sp", std::string(parts[1].CString(), parts[1].Length()));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        AddLine(String(t.c_str()), "ChatLogServerInfoText");
     }
 }
 
@@ -495,7 +502,7 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 
     VariantMap& eData = GetEventDataMap();
     using namespace Events::NewMail;
@@ -511,7 +518,7 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
@@ -522,7 +529,7 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
@@ -533,7 +540,7 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailDeleted(VariantMap&)
@@ -620,7 +627,7 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("name", std::string(resigner.CString(), resigner.Length()));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
@@ -640,7 +647,7 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
         data.set("game", std::string(instData[1].CString(), instData[1].Length()));
         data.set("name", std::string(instData[2].CString(), instData[2].Length()));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        AddLine(String(t.c_str()), "ChatLogServerInfoText");
     }
 }
 
@@ -686,7 +693,7 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("id", std::to_string(partyId));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
@@ -698,7 +705,7 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("id", std::to_string(partyId));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
@@ -715,8 +722,8 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
     int skillIndex = eventData[P_SKILLINDEX].GetInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
-    Actor* pinger = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
-    Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
+    Actor* pinger = To<Actor>(lm->GetObject(objectId));
+    Actor* target = To<Actor>(lm->GetObject(targetId));
 
     switch (type)
     {
@@ -756,8 +763,8 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     uint32_t count = eventData[P_COUNT].GetUInt();
 
     LevelManager* lm = GetSubsystem<LevelManager>();
-    Actor* dropper = dynamic_cast<Actor*>(lm->GetObjectById(dropperId).Get());
-    Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
+    Actor* dropper = To<Actor>(lm->GetObject(dropperId));
+    Actor* target = To<Actor>(lm->GetObject(targetId));
     if (!target)
         return;
 
@@ -784,7 +791,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     }
     else
         t = tpl.render(data);
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
@@ -981,7 +988,7 @@ void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
     data.set("file", std::string(file.CString()));
     std::string t = tpl.render(data);
 
-    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleEditFocused(StringHash, VariantMap& eventData)
@@ -1209,7 +1216,7 @@ void ChatWindow::SayHello(Player* player)
         kainjow::mustache::data data;
         data.set("name", std::string(player->name_.CString(), player->name_.Length()));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        AddLine(String(t.c_str()), "ChatLogServerInfoText");
         firstStart_ = false;
     }
 }

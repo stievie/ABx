@@ -51,6 +51,12 @@ MissionMapWindow::MissionMapWindow(Context* context) :
     SubscribeToEvents();
 }
 
+
+MissionMapWindow::~MissionMapWindow()
+{
+    UnsubscribeFromAllEvents();
+}
+
 void MissionMapWindow::OnDragBegin(const IntVector2& position, const IntVector2& screenPosition,
     int buttons, int qualifiers, Cursor* cursor)
 {
@@ -134,7 +140,7 @@ void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
 void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
 {
     LevelManager* lm = GetSubsystem<LevelManager>();
-    SharedPtr<Player> p = lm->GetPlayer();
+    auto* p = lm->GetPlayer();
     if (p)
     {
         Vector3 pos = p->GetNode()->GetPosition();

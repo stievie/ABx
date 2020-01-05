@@ -57,7 +57,7 @@ void CreditsWindow::CreateUI()
     creditsBase_->SetStyleAuto();
 
     AddCredits();
-    creditLengthInSeconds_ = credits_.Size() * 2;
+    creditLengthInSeconds_ = static_cast<int>(credits_.Size() * 2);
 
     auto* graphics = GetSubsystem<Graphics>();
     SharedPtr<ObjectAnimation> animation(new ObjectAnimation(context_));
@@ -125,8 +125,8 @@ void CreditsWindow::CreateLogo(const String& file, float scale)
     logoSprite->SetTexture(logoTexture);
     int textureWidth = logoTexture->GetWidth();
     int textureHeight = logoTexture->GetHeight();
-    int width = static_cast<int>((float)textureWidth * scale);
-    int height = static_cast<int>((float)textureHeight * scale);
+    int width = static_cast<int>(static_cast<float>(textureWidth) * scale);
+    int height = static_cast<int>(static_cast<float>(textureHeight) * scale);
     logoSprite->SetFullImageRect();
     logoSprite->SetPosition(IntVector2(0, totalCreditsHeight_));
     logoSprite->SetSize(IntVector2(width, height));

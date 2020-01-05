@@ -65,3 +65,9 @@ private:
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
 };
+
+template <>
+inline bool Is<Player>(const GameObject& obj)
+{
+    return obj.objectType_ == ObjectTypeSelf;
+}

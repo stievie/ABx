@@ -64,6 +64,11 @@ NewMailWindow::NewMailWindow(Context* context) :
     SubscribeToEvents();
 }
 
+NewMailWindow::~NewMailWindow()
+{
+    UnsubscribeFromAllEvents();
+}
+
 void NewMailWindow::SubscribeToEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));

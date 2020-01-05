@@ -132,7 +132,7 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
         data.set("subject", (header.subject.empty() ? "(No Subject)" : header.subject));
         data.set("date", Client::format_tick(header.created));
         std::string t = tpl.render(data);
-        AddItem(String(t.c_str(), (unsigned)t.size()),
+        AddItem(String(t.c_str()),
             header.isRead ? "MailListItem" : "MailListItemUnread", header);
     }
 }
@@ -141,7 +141,7 @@ void MailWindow::HandleMailReadMessage(StringHash, VariantMap&)
 {
     FwClient* client = context_->GetSubsystem<FwClient>();
     const AB::Entities::Mail mail = client->GetCurrentMail();
-    mailBody_->SetText(String(mail.message.c_str(), (unsigned)mail.message.size()));
+    mailBody_->SetText(String(mail.message.c_str()));
 }
 
 void MailWindow::HandleNewClicked(StringHash, VariantMap&)

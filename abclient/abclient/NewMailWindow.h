@@ -10,10 +10,7 @@ public:
     static void RegisterObject(Context* context);
 
     NewMailWindow(Context* context);
-    ~NewMailWindow() override
-    {
-        UnsubscribeFromAllEvents();
-    }
+    ~NewMailWindow() override;
     void SetRecipient(const String& value);
     void SetSubject(const String& value);
     const String& GetSubject() const;

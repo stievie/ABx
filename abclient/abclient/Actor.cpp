@@ -480,7 +480,7 @@ void Actor::AddActorUI()
         }
         else
         {
-            if (IsPlayer())
+            if (IsPlayingCharacter())
             {
                 classLevel_ = uiRoot->CreateChild<Text>();
                 classLevel_->SetStyleAuto();

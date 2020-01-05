@@ -36,13 +36,13 @@ public:
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);
-    SharedPtr<GameObject> GetObjectById(uint32_t id)
+    GameObject* GetObject(uint32_t id)
     {
         if (objects_.Contains(id))
-            return objects_[id];
-        return SharedPtr<GameObject>();
+            return objects_[id].Get();
+        return nullptr;
     }
-    SharedPtr<Actor> GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
+    Actor* GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
 protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;

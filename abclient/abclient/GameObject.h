@@ -25,7 +25,8 @@ protected:
     {
         return selectable_ && (objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf);
     }
-    bool IsPlayer() const
+    // A real player, not an NPC or such
+    bool IsPlayingCharacter() const
     {
         return objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
     }
@@ -89,3 +90,51 @@ public:
     virtual void RemoveFromScene() {}
 };
 
+template <typename T>
+inline bool Is(const GameObject&)
+{
+    return false;
+}
+
+/// Returns false when obj is null
+template <typename T>
+inline bool Is(const GameObject* obj)
+{
+    return obj && Is<T>(*obj);
+}
+
+template <>
+inline bool Is<GameObject>(const GameObject&)
+{
+    return true;
+}
+
+template <typename T>
+inline const T& To(const GameObject& obj)
+{
+    assert(Is<T>(obj));
+    return static_cast<const T&>(obj);
+}
+
+template <typename T>
+inline T& To(GameObject& obj)
+{
+    assert(Is<T>(obj));
+    return static_cast<T&>(obj);
+}
+
+template <typename T>
+inline const T* To(const GameObject* obj)
+{
+    if (!Is<T>(obj))
+        return nullptr;
+    return static_cast<const T*>(obj);
+}
+
+template <typename T>
+inline T* To(GameObject* obj)
+{
+    if (!Is<T>(obj))
+        return nullptr;
+    return static_cast<T*>(obj);
+}

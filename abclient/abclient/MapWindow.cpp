@@ -79,6 +79,7 @@ MapWindow::MapWindow(Context* context) :
 
 MapWindow::~MapWindow()
 {
+    UnsubscribeFromAllEvents();
 }
 
 void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)

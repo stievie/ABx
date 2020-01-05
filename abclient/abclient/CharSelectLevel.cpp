@@ -78,7 +78,7 @@ void CharSelectLevel::CreateUI()
             String text = String(ch.profession.c_str());
             if (!ch.profession2.empty())
                 text += "/" + String(ch.profession2.c_str());
-            text += String((int)ch.level);
+            text += String(static_cast<int>(ch.level));
             text += " " + String(ch.name.c_str());
             t->SetText(text);
             t->SetStyle("Text");

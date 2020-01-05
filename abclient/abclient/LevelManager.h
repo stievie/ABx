@@ -52,8 +52,8 @@ public:
     {
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
-    SharedPtr<GameObject> GetObjectById(uint32_t objectId);
-    SharedPtr<Actor> GetActorByName(const String& name);
-    SharedPtr<Player> GetPlayer();
+    GameObject* GetObject(uint32_t objectId);
+    Actor* GetActorByName(const String& name);
+    Player* GetPlayer();
     Camera* GetCamera() const;
 };

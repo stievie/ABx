@@ -223,7 +223,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     }
     if ((type != MemberType::Invitation) && (actor->objectType_ != ObjectTypeSelf) && IsLeader())
     {
-        // If thats not we and we are the leader we can kick players
+        // If that's not we and we are the leader we can kick players
         Button* kickButton = cont->CreateChild<Button>("KickButton");
         kickButton->SetVar("ID", actor->gameId_);
         kickButton->SetSize(20, 20);
@@ -375,7 +375,7 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     }
     uint32_t targetId = 0;
     LevelManager* lm = GetSubsystem<LevelManager>();
-    SharedPtr<Actor> a = lm->GetActorByName(addPlayerEdit_->GetText());
+    auto* a = lm->GetActorByName(addPlayerEdit_->GetText());
     if (a)
     {
         if (auto p = player_.Lock())
@@ -442,14 +442,11 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
     if (mode_ == PartyWindowMode::ModeOutpost)
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
-        SharedPtr<GameObject> o = lm->GetObjectById(targetId);
+        auto* o = lm->GetObject(targetId);
         if (o && o->objectType_ == ObjectTypePlayer)
         {
-            Actor* a = dynamic_cast<Actor*>(o.Get());
-            if (a)
-            {
-                addPlayerEdit_->SetText(a->name_);
-            }
+            Actor& a = To<Actor>(*o);
+            addPlayerEdit_->SetText(a.name_);
         }
     }
 }
@@ -463,20 +460,20 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
     uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
-    GameObject* o = lm->GetObjectById(targetId);
+    GameObject* o = lm->GetObject(targetId);
     if (o)
     {
-        if (o->objectType_ == ObjectTypePlayer)
-        {
-            // We invited another player
-            AddInvitee(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
-        }
-        else if (o->objectType_ == ObjectTypeSelf)
+        if (Is<Player>(o))
         {
             // We got an invitation from another group
-            GameObject* leader = lm->GetObjectById(sourceId);
+            GameObject* leader = lm->GetObject(sourceId);
             if (leader)
-                AddInvitation(SharedPtr<Actor>(dynamic_cast<Actor*>(leader)));
+                AddInvitation(SharedPtr<Actor>(To<Actor>(leader)));
+        }
+        else if (o->objectType_ == ObjectTypePlayer)
+        {
+            // We invited another player
+            AddInvitee(SharedPtr<Actor>(To<Actor>(o)));
         }
     }
 }
@@ -497,27 +494,24 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
         leaderId_ = leaderId;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
-    GameObject* o = lm->GetObjectById(actorId);
-    if (o)
+    GameObject* o = lm->GetObject(actorId);
+    if (Is<Player>(o))
     {
-        if (o->objectType_ == ObjectTypePlayer)
-        {
-            Actor* actor = dynamic_cast<Actor*>(o);
-            actor->groupId_ = partyId;
-            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
-        }
-        else if (o->objectType_ == ObjectTypeSelf)
-        {
-            if (auto p = player_.Lock())
-                p->groupId_ = partyId;
-            groupId_ = partyId;
-            // We was added to a new party
-            Clear();
-            static_cast<Player*>(o)->UpdateMumbleContext();
-            // Get full list of members
-            FwClient* cli = GetSubsystem<FwClient>();
-            cli->PartyGetMembers(partyId);
-        }
+        if (auto p = player_.Lock())
+            p->groupId_ = partyId;
+        groupId_ = partyId;
+        // We was added to a new party
+        Clear();
+        To<Player>(*o).UpdateMumbleContext();
+        // Get full list of members
+        FwClient* cli = GetSubsystem<FwClient>();
+        cli->PartyGetMembers(partyId);
+    }
+    else if (Is<Actor>(o) && o->objectType_ == ObjectTypePlayer)
+    {
+        Actor* actor = To<Actor>(o);
+        actor->groupId_ = partyId;
+        AddMember(SharedPtr<Actor>(actor));
     }
 }
 
@@ -554,17 +548,14 @@ void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
     using namespace Events::PartyRemoved;
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
-    GameObject* o = lm->GetObjectById(targetId);
-    if (o)
+    GameObject* o = lm->GetObject(targetId);
+    if (Is<Player>(o))
     {
-        if (o->objectType_ == ObjectTypeSelf)
-        {
-            // We get a new party
-            groupId_ = 0;
-            static_cast<Player*>(o)->UpdateMumbleContext();
-            ClearMembers();
-            return;
-        }
+        // We get a new party
+        groupId_ = 0;
+        To<Player>(*o).UpdateMumbleContext();
+        ClearMembers();
+        return;
     }
     RemoveMember(targetId);
 }
@@ -666,12 +657,12 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
         if (leaderId_ == 0)
             leaderId_ = m.GetUInt();                       // First is leader
         LevelManager* lm = GetSubsystem<LevelManager>();
-        GameObject* o = lm->GetObjectById(m.GetUInt());
-        if (o)
+        GameObject* o = lm->GetObject(m.GetUInt());
+        if (Is<Actor>(o))
         {
-            Actor* actor = dynamic_cast<Actor*>(o);
+            Actor* actor = To<Actor>(o);
             actor->groupId_ = eventData[P_PARTYID].GetUInt();
-            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
+            AddMember(SharedPtr<Actor>(actor));
         }
     }
 }
@@ -691,8 +682,8 @@ void PartyWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
 //    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
     LevelManager* lm = GetSubsystem<LevelManager>();
-//    Actor* pinger = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
-    target_ = lm->GetObjectById(targetId);
+//    Actor* pinger = dynamic_cast<Actor*>(lm->GetObject(objectId).Get());
+    target_ = lm->GetObject(targetId);
 }
 
 void PartyWindow::HandleSelectTarget(StringHash, VariantMap&)
@@ -864,16 +855,14 @@ bool PartyWindow::UnselectItem(uint32_t actorId)
 
 void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos)
 {
-    if (object)
+    if (Is<Actor>(object))
     {
         if (object->objectType_ == ObjectTypeSelf)
             groupId_ = groupId;
 
         URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->gameId_, groupId, groupPos, groupId_);
         if (groupId == groupId_)
-        {
-            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)), groupPos);
-        }
+            AddMember(SharedPtr<Actor>(To<Actor>(object)), groupPos);
     }
 }
 

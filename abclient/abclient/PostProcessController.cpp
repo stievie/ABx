@@ -20,13 +20,13 @@ static const StringVector viewportsStructureElementNames =
     "   viewport index:"
 };
 
-const char* tonemapTypesNames[] =
+static const char* tonemapTypesNames[] =
 {
     "TonemapReinhardEq3",
     "TonemapReinhardEq4",
     "TonemapUncharted2",
     "TonemapDisabled",
-    0
+    nullptr
 };
 
 

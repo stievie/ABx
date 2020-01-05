@@ -18,7 +18,7 @@ GameObject::~GameObject()
 double GameObject::GetClientTime() const
 {
     FwClient* c = context_->GetSubsystem<FwClient>();
-    return (double)(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
+    return static_cast<double>(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
 }
 
 void GameObject::SetYRotation(int64_t, float rad, bool)
@@ -75,8 +75,8 @@ IntVector2 GameObject::WorldToScreenPoint(Vector3 pos)
     int y;
     /// \todo This is incorrect if the viewport is used on a texture rendertarget instead of the backbuffer, as it may have different dimensions.
     Graphics* graphics = GetSubsystem<Graphics>();
-    x = (int)(screenPoint.x_ * graphics->GetWidth());
-    y = (int)(screenPoint.y_ * graphics->GetHeight());
+    x = static_cast<int>(screenPoint.x_ * graphics->GetWidth());
+    y = static_cast<int>(screenPoint.y_ * graphics->GetHeight());
 
     return IntVector2(x, y);
 }

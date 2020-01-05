@@ -7,6 +7,7 @@
 #include "Errors.h"
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <Urho3D/Navigation/NavigationMesh.h>
+#include <CleanupNs.h>
 
 class FwClient;
 
@@ -76,7 +77,7 @@ public:
         debugGeometry_ = !debugGeometry_;
     }
     virtual void ShowError(const String& message, const String& title = "Error");
-    SharedPtr<Player> GetPlayer() const { return player_; }
+    Player* GetPlayer() const { return player_.Get(); }
     Camera* GetCamera() const
     {
         if (cameraNode_)

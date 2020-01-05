@@ -192,34 +192,28 @@ void LevelManager::SetDrawDebugGeometry(bool draw)
     }
 }
 
-SharedPtr<GameObject> LevelManager::GetObjectById(uint32_t objectId)
+GameObject* LevelManager::GetObject(uint32_t objectId)
 {
     WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
-    {
-        return lvl->GetObjectById(objectId);
-    }
-    return SharedPtr<GameObject>();
+        return lvl->GetObject(objectId);
+    return nullptr;
 }
 
-SharedPtr<Actor> LevelManager::GetActorByName(const String& name)
+Actor* LevelManager::GetActorByName(const String& name)
 {
     WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
-    {
         return lvl->GetActorByName(name);
-    }
-    return SharedPtr<Actor>();
+    return nullptr;
 }
 
-SharedPtr<Player> LevelManager::GetPlayer()
+Player* LevelManager::GetPlayer()
 {
     WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
-    {
         return lvl->GetPlayer();
-    }
-    return SharedPtr<Player>();
+    return nullptr;
 }
 
 Camera* LevelManager::GetCamera() const
