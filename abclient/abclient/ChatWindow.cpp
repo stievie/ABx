@@ -66,44 +66,44 @@ ChatWindow::ChatWindow(Context* context) :
     SetName("ChatWindow");
 
     // Set self to same size as the window so align works
-    Window* wnd = dynamic_cast<Window*>(GetChild("ChatWindow", true));
+    Window* wnd = GetChildStaticCast<Window>("ChatWindow", true);
     wnd->SetPosition(0, 0);
     SetSize(wnd->GetSize());
 
     // Chat filter
     UIElement* filterContainer = wnd->GetChild("ChatFilter", false);
     {
-        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterGeneral", true));
+        CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterGeneral", true);
         filterCheck->SetChecked(visibleGeneral_);
         filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGeneral);
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
-        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterGuild", true));
+        CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterGuild", true);
         filterCheck->SetChecked(visibleGuild_);
         filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGuild);
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
-        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterParty", true));
+        CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterParty", true);
         filterCheck->SetChecked(visibleParty_);
         filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelParty);
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
-        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterTrade", true));
+        CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterTrade", true);
         filterCheck->SetChecked(visibleTrade_);
         filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelTrade);
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
-        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterWhisper", true));
+        CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterWhisper", true);
         filterCheck->SetChecked(visibleWhisper_);
         filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelWhisper);
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
 
-    UIElement* container = dynamic_cast<UIElement*>(wnd->GetChild("ChatTextContainer", false));
+    UIElement* container = wnd->GetChild("ChatTextContainer", false);
     tabgroup_ = container->CreateChild<TabGroup>();
     tabgroup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     tabgroup_->SetAlignment(HA_CENTER, VA_BOTTOM);
@@ -118,7 +118,7 @@ ChatWindow::ChatWindow(Context* context) :
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(ChatWindow, HandleTabSelected));
 
-    chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
+    chatLog_ = GetChildStaticCast<ListView>("ChatLog", true);
 
     SubscribeToEvent(Events::E_SCREENSHOTTAKEN, URHO3D_HANDLER(ChatWindow, HandleScreenshotTaken));
     SubscribeToEvent(Events::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
@@ -244,7 +244,7 @@ LineEdit* ChatWindow::GetLineEdit(int index)
     TabElement* elem = tabgroup_->GetTabElement(static_cast<unsigned>(index));
     if (!elem)
         return nullptr;
-    LineEdit* edit = dynamic_cast<LineEdit*>(elem->tabBody_->GetChild("ChatLineEdit", true));
+    LineEdit* edit = elem->tabBody_->GetChildStaticCast<LineEdit>("ChatLineEdit", true);
     return edit;
 }
 
@@ -594,7 +594,7 @@ void ChatWindow::HandleWhisperTo(StringHash, VariantMap& eventData)
     const String& name = eventData[P_NAME].GetString();
     if (!name.Empty())
     {
-        LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
+        LineEdit* nameEdit = GetChildStaticCast<LineEdit>("WhisperChatNameEdit", true);
         nameEdit->SetText(name);
         tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     }
@@ -839,7 +839,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         case AB::GameProtocol::ChatChannelWhisper:
         {
             type = AB::GameProtocol::CommandTypeChatWhisper;
-            LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
+            LineEdit* nameEdit = GetChildStaticCast<LineEdit>("WhisperChatNameEdit", true);
             String name = nameEdit->GetText().Trimmed();
             if (name.Empty())
             {

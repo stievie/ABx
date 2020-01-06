@@ -43,12 +43,12 @@ PartyWindow::PartyWindow(Context* context) :
 
     UpdateCaption();
 
-    memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
-    partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));
-    inviteContainer_ = dynamic_cast<UIElement*>(GetChild("InviteContainer", true));
-    addContainer_ = dynamic_cast<UIElement*>(GetChild("AddContainer", true));
-    addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
-    invitationContainer_ = dynamic_cast<UIElement*>(GetChild("InvitationsContainer", true));
+    memberContainer_ = GetChild("MemberContainer", true);
+    partyContainer_ = GetChild("PartyContainer", true);
+    inviteContainer_ = GetChild("InviteContainer", true);
+    addContainer_ = GetChild("AddContainer", true);
+    addPlayerEdit_ = GetChildStaticCast<LineEdit>("AddPlayerEdit", true);
+    invitationContainer_ = GetChild("InvitationsContainer", true);
     SetPartySize(1);
 
     SetSize(272, 156);
@@ -100,8 +100,8 @@ void PartyWindow::SetPartySize(uint8_t value)
 
 void PartyWindow::UpdateEnterButton()
 {
-    auto* enterContainer = dynamic_cast<UIElement*>(GetChild("EnterContainer", true));
-    auto* enterButton = dynamic_cast<Button*>(GetChild("EnterButton", true));
+    auto* enterContainer = GetChild("EnterContainer", true);
+    auto* enterButton = GetChildStaticCast<Button>("EnterButton", true);
     if (mode_ == PartyWindowMode::ModeOutpost)
     {
         auto* lvl = GetSubsystem<LevelManager>();
@@ -123,8 +123,8 @@ void PartyWindow::UpdateEnterButton()
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
     mode_ = mode;
-    auto* buttonContainer = dynamic_cast<UIElement*>(GetChild("ButtonContainer", true));
-    Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
+    auto* buttonContainer = GetChild("ButtonContainer", true);
+    Button* addPlayerButton = GetChildStaticCast<Button>("AddPlayerButton", true);
     if (mode == PartyWindowMode::ModeOutpost)
     {
         addContainer_->SetVisible(true);
@@ -564,7 +564,7 @@ void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
 {
     // An actor was clicked in the Party window
     using namespace Click;
-    PartyItem* hb = dynamic_cast<PartyItem*>(eventData[P_ELEMENT].GetPtr());
+    PartyItem* hb = static_cast<PartyItem*>(eventData[P_ELEMENT].GetPtr());
     SharedPtr<Actor> actor = hb->GetActor();
     if (actor)
     {
@@ -579,7 +579,7 @@ void PartyWindow::HandleActorDoubleClicked(StringHash, VariantMap& eventData)
 {
     // An actor was double clicked in the Party window
     using namespace DoubleClick;
-    PartyItem* hb = dynamic_cast<PartyItem*>(eventData[P_ELEMENT].GetPtr());
+    PartyItem* hb = static_cast<PartyItem*>(eventData[P_ELEMENT].GetPtr());
     SharedPtr<Actor> actor = hb->GetActor();
     if (actor)
     {
@@ -678,11 +678,8 @@ void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
 void PartyWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectPingTarget;
-//    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
-//    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
     LevelManager* lm = GetSubsystem<LevelManager>();
-//    Actor* pinger = dynamic_cast<Actor*>(lm->GetObject(objectId).Get());
     target_ = lm->GetObject(targetId);
 }
 
@@ -696,9 +693,9 @@ void PartyWindow::HandleSelectTarget(StringHash, VariantMap&)
 
 void PartyWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
-    Button* leaveButton = dynamic_cast<Button*>(GetChild("LeaveButton", true));
+    Button* leaveButton = GetChildStaticCast<Button>("LeaveButton", true);
     SubscribeToEvent(leaveButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleLeaveButtonClicked));
 
     SubscribeToEvent(Events::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
@@ -716,7 +713,7 @@ void PartyWindow::SubscribeEvents()
 void PartyWindow::UpdateCaption()
 {
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
+    Text* caption = GetChildStaticCast<Text>("Caption", true);
     String s(scs->GetCaption(Events::E_SC_TOGGLEPARTYWINDOW, "Party", true));
     if (mode_ == PartyWindowMode::ModeOutpost)
         s += "  " + String(members_.Size()) + "/" + String(static_cast<int>(partySize_));
@@ -810,21 +807,21 @@ void PartyWindow::UnselectAll()
     auto members = memberContainer_->GetChildren();
     for (auto& cont : members)
     {
-        auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", true));
+        auto pi = cont->GetChildDynamicCast<PartyItem>("HealthBar", true);
         if (pi)
             pi->SetSelected(false);
     }
     auto invites = inviteContainer_->GetChildren();
     for (auto& cont : invites)
     {
-        auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", false));
+        auto pi = cont->GetChildDynamicCast<PartyItem>("HealthBar", false);
         if (pi)
             pi->SetSelected(false);
     }
     auto inv = invitationContainer_->GetChildren();
     for (auto& cont : inv)
     {
-        auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", false));
+        auto pi = cont->GetChildDynamicCast<PartyItem>("HealthBar", false);
         if (pi)
             pi->SetSelected(false);
     }

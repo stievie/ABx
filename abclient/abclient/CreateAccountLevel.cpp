@@ -155,21 +155,21 @@ void CreateAccountLevel::CreateUI()
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/CreateAccountWindow.xml");
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
-    nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
+    nameEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("NameEdit", true);
     nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_ACCOUNT_NAME);
-    passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
-    repeatPassEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("RepeatPassEdit", true));
-    emailEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("EmailEdit", true));
-    accKeyEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("AccountKeyEdit", true));
+    passEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("PassEdit", true);
+    repeatPassEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("RepeatPassEdit", true);
+    emailEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("EmailEdit", true);
+    accKeyEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("AccountKeyEdit", true);
     accKeyEdit_->SetMaxLength(AB::Entities::Limits::MAX_UUID);
     SubscribeToEvent(accKeyEdit_, E_FOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyFocused));
     SubscribeToEvent(accKeyEdit_, E_DEFOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyDefocused));
-    accKeyPlaceholder_ = dynamic_cast<Text*>(uiRoot_->GetChild("AccountKeyPlaceHolder", true));
-    button_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));
+    accKeyPlaceholder_ = uiRoot_->GetChildStaticCast<Text>("AccountKeyPlaceHolder", true);
+    button_ = uiRoot_->GetChildStaticCast<Button>("CreateButton", true);
     button_->SetEnabled(false);
     nameEdit_->SetFocus(true);
     SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(CreateAccountLevel, HandleCreateClicked));
-    Button* cancelButton = dynamic_cast<Button*>(uiRoot_->GetChild("CancelButton", true));
+    Button* cancelButton = uiRoot_->GetChildStaticCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(CreateAccountLevel, HandleCancelClicked));
 }
 

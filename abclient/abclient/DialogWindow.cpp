@@ -15,7 +15,7 @@ DialogWindow::~DialogWindow()
 
 void DialogWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     if (closeButton)
         SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(DialogWindow, HandleCloseClicked));
 }

@@ -40,17 +40,17 @@ MailWindow::MailWindow(Context* context) :
     SetBringToFront(true);
     SetBringToBack(true);
 
-    mailList_ = dynamic_cast<ListView*>(GetChild("MailList", true));
+    mailList_ = GetChildStaticCast<ListView>("MailList", true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
+    Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEMAILWINDOW, "Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() - GetWidth() - 5, graphics->GetHeight() / 2 - (GetHeight() / 2));
 
-    UIElement* container = dynamic_cast<UIElement*>(GetChild("EditorContainer", true));
+    UIElement* container = GetChild("EditorContainer", true);
     mailBody_ = container->CreateChild<MultiLineEdit>();
     mailBody_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     mailBody_->SetStyle("MultiLineEdit");
@@ -67,9 +67,9 @@ MailWindow::MailWindow(Context* context) :
 
     SubscribeToEvents();
 
-    Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+    Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
     delButton->SetEnabled(false);
-    Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
     repButton->SetEnabled(false);
 }
 
@@ -81,15 +81,15 @@ void MailWindow::GetHeaders()
 
 void MailWindow::SubscribeToEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleCloseClicked));
     SubscribeToEvent(Events::E_MAILINBOX, URHO3D_HANDLER(MailWindow, HandleMailInboxMessage));
     SubscribeToEvent(Events::E_MAILREAD, URHO3D_HANDLER(MailWindow, HandleMailReadMessage));
-    Button* newButton = dynamic_cast<Button*>(GetChild("NewMailButton", true));
+    Button* newButton = GetChildStaticCast<Button>("NewMailButton", true);
     SubscribeToEvent(newButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleNewClicked));
-    Button* deleteButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+    Button* deleteButton = GetChildStaticCast<Button>("DeleteMailButton", true);
     SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleDeleteClicked));
-    Button* replyButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    Button* replyButton = GetChildStaticCast<Button>("ReplyMailButton", true);
     SubscribeToEvent(replyButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleReplyClicked));
     SubscribeToEvent(mailList_, E_ITEMSELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
     SubscribeToEvent(mailList_, E_ITEMDESELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
@@ -188,9 +188,9 @@ void MailWindow::HandleItemSelected(StringHash, VariantMap&)
         net->ReadMail(std::string(uuid.CString()));
         // Mark read
         sel->SetStyle("MailListItem");
-        Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+        Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
         delButton->SetEnabled(true);
-        Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+        Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
         repButton->SetEnabled(true);
     }
 }
@@ -198,9 +198,9 @@ void MailWindow::HandleItemSelected(StringHash, VariantMap&)
 void MailWindow::HandleItemUnselected(StringHash, VariantMap&)
 {
     mailBody_->SetText(String::EMPTY);
-    Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+    Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
     delButton->SetEnabled(false);
-    Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
     repButton->SetEnabled(false);
 }
 

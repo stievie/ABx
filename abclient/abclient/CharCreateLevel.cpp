@@ -52,12 +52,12 @@ void CharCreateLevel::CreateUI()
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/CreateCharacterWindow.xml");
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
-    nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("CharacterNameEdit", true));
+    nameEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("CharacterNameEdit", true);
     nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_CHARACTER_NAME);
-    professionDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("ProfessionDropDown", true));
-    sexDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("GenderDropDown", true));
-    createButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));
-    cancelButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CancelButton", true));
+    professionDropdown_ = uiRoot_->GetChildStaticCast<DropDownList>("ProfessionDropDown", true);
+    sexDropdown_ = uiRoot_->GetChildStaticCast<DropDownList>("GenderDropDown", true);
+    createButton_ = uiRoot_->GetChildStaticCast<Button>("CreateButton", true);
+    cancelButton_ = uiRoot_->GetChildStaticCast<Button>("CancelButton", true);
     SubscribeToEvent(createButton_, E_RELEASED, URHO3D_HANDLER(CharCreateLevel, HandleCreateClicked));
     SubscribeToEvent(cancelButton_, E_RELEASED, URHO3D_HANDLER(CharCreateLevel, HandleCancelClicked));
 
@@ -128,7 +128,7 @@ void CharCreateLevel::DoCreateCharacter()
             return;
         }
     }
-    Text* profTxt = dynamic_cast<Text*>(professionDropdown_->GetSelectedItem());
+    Text* profTxt = static_cast<Text*>(professionDropdown_->GetSelectedItem());
     String prof = profTxt->GetVar("String Value").GetString();
     if (prof.Empty())
     {
@@ -136,7 +136,7 @@ void CharCreateLevel::DoCreateCharacter()
         return;
     }
 
-    Text* sexTxt = dynamic_cast<Text*>(sexDropdown_->GetSelectedItem());
+    Text* sexTxt = static_cast<Text*>(sexDropdown_->GetSelectedItem());
     uint32_t sex = sexTxt->GetVar("Int Value").GetUInt();
     if (sex == 0 || sex > AB::Entities::CharacterSexMale)
     {

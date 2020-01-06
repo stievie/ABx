@@ -17,7 +17,7 @@ GameMessagesWindow::GameMessagesWindow(Context* context) :
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/GameMessagesWindow.xml");
     LoadChildXML(chatFile->GetRoot(), nullptr);
 
-    text_ = dynamic_cast<Text*>(GetChild("GameMessageText", true));
+    text_ = GetChildStaticCast<Text>("GameMessageText", true);
 
     SetAlignment(HA_CENTER, VA_CENTER);
     SetPosition(0, -60);

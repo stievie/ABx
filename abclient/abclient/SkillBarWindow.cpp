@@ -40,14 +40,14 @@ SkillBarWindow::SkillBarWindow(Context* context) :
 
     SetStyleAuto();
 
-    skill1_ = dynamic_cast<Button*>(GetChild("Skill1", true));
-    skill2_ = dynamic_cast<Button*>(GetChild("Skill2", true));
-    skill3_ = dynamic_cast<Button*>(GetChild("Skill3", true));
-    skill4_ = dynamic_cast<Button*>(GetChild("Skill4", true));
-    skill5_ = dynamic_cast<Button*>(GetChild("Skill5", true));
-    skill6_ = dynamic_cast<Button*>(GetChild("Skill6", true));
-    skill7_ = dynamic_cast<Button*>(GetChild("Skill7", true));
-    skill8_ = dynamic_cast<Button*>(GetChild("Skill8", true));
+    skill1_ = GetChildStaticCast<Button>("Skill1", true);
+    skill2_ = GetChildStaticCast<Button>("Skill2", true);
+    skill3_ = GetChildStaticCast<Button>("Skill3", true);
+    skill4_ = GetChildStaticCast<Button>("Skill4", true);
+    skill5_ = GetChildStaticCast<Button>("Skill5", true);
+    skill6_ = GetChildStaticCast<Button>("Skill6", true);
+    skill7_ = GetChildStaticCast<Button>("Skill7", true);
+    skill8_ = GetChildStaticCast<Button>("Skill8", true);
 
     SubscribeToEvent(skill1_, E_RELEASED, URHO3D_HANDLER(SkillBarWindow, HandleSkill1Clicked));
     SubscribeToEvent(skill2_, E_RELEASED, URHO3D_HANDLER(SkillBarWindow, HandleSkill2Clicked));
@@ -87,11 +87,11 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
                 btn->SetBorder(IntRect(4, 4, 4, 4));
                 btn->SetHoverOffset(IntVector2(4, 4));
                 btn->SetPressedOffset(IntVector2(-4, -4));
-                Text* tooltip = dynamic_cast<Text*>(btn->GetChild("SkillTooltipText", true));
+                Text* tooltip = btn->GetChildStaticCast<Text>("SkillTooltipText", true);
                 String tip = String(skill->name.c_str());
                 tip += "\n" + String(skill->shortDescription.c_str());
                 tooltip->SetText(tip);
-                ToolTip* tt = dynamic_cast<ToolTip*>(btn->GetChild("SkillTooltip", true));
+                ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
                 tt->SetPosition(IntVector2(0, -(tooltip->GetHeight() + 10)));
                 iconSet = true;
             }
@@ -105,7 +105,7 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
             btn->SetImageRect(IntRect(16, 0, 32, 16));
             btn->SetBorder(IntRect(4, 4, 4, 4));
             btn->SetHoverOffset(IntVector2(0, 0));
-            Text* tooltip = dynamic_cast<Text*>(btn->GetChild("SkillTooltipText", true));
+            Text* tooltip = btn->GetChildStaticCast<Text>("SkillTooltipText", true);
             tooltip->SetText(String::EMPTY);
         }
         ++i;

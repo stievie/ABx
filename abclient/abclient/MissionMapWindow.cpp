@@ -36,7 +36,7 @@ MissionMapWindow::MissionMapWindow(Context* context) :
     SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
+    Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", true));
 
     SetSize(300, 300);
@@ -81,7 +81,7 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
     camera->SetViewOverrideFlags(VO_DISABLE_OCCLUSION | VO_DISABLE_SHADOWS | VO_LOW_MATERIAL_QUALITY);
     cameraNode_->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
 
-    BorderImage* container = dynamic_cast<BorderImage*>(GetChild("Container", true));
+    BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
     renderTexture_ = new Texture2D(context_);
     renderTexture_->SetSize(4096, 4096, Graphics::GetRGBFormat(), TEXTURE_RENDERTARGET);
     renderTexture_->SetFilterMode(FILTER_BILINEAR);
@@ -112,7 +112,7 @@ void MissionMapWindow::FitTexture()
     if (!renderTexture_)
         return;
 
-    BorderImage* container = dynamic_cast<BorderImage*>(GetChild("Container", true));
+    BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
 /*
     int x = ((renderTexture_->GetWidth() / 2) - (container->GetWidth() / 2));
     int y = ((renderTexture_->GetHeight() / 2) - (container->GetHeight() / 2));
@@ -125,7 +125,7 @@ void MissionMapWindow::FitTexture()
 
 void MissionMapWindow::SubscribeToEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MissionMapWindow, HandleCloseClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MissionMapWindow, HandleUpdate));
     SubscribeToEvent(this, E_RESIZED, URHO3D_HANDLER(MissionMapWindow, HandleResized));

@@ -16,7 +16,7 @@ AddAccountKeyDialog::AddAccountKeyDialog(Context* context) :
     SetLayoutSpacing(10);
     UpdateLayout();
 
-    accountKeyEdit_ = dynamic_cast<LineEdit*>(GetChild("AccountKeyEdit", true));
+    accountKeyEdit_ = GetChildStaticCast<LineEdit>("AccountKeyEdit", true);
     SubscribeEvents();
 }
 
@@ -28,9 +28,9 @@ AddAccountKeyDialog::~AddAccountKeyDialog()
 void AddAccountKeyDialog::SubscribeEvents()
 {
     DialogWindow::SubscribeEvents();
-    auto addButton = dynamic_cast<Button*>(GetChild("AddButton", true));
+    auto addButton = GetChildStaticCast<Button>("AddButton", true);
     SubscribeToEvent(addButton, E_RELEASED, URHO3D_HANDLER(AddAccountKeyDialog, HandleAddClicked));
-    auto closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    auto closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(AddAccountKeyDialog, HandleCloseClicked));
 }
 

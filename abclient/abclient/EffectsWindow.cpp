@@ -46,7 +46,7 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
 
     ++effectCount_;
 
-    BorderImage* effectIcon = dynamic_cast<BorderImage*>(GetChild(name, true));
+    BorderImage* effectIcon = GetChildStaticCast<BorderImage>(name, true);
     if (!effectIcon)
         effectIcon = CreateChild<BorderImage>(name);
     Texture2D* icon = cache->GetResource<Texture2D>(String(effect->icon.c_str()));
@@ -68,7 +68,7 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
 void EffectsWindow::EffectRemoved(uint32_t effectIndex)
 {
     String name = "Effect_" + String(effectIndex);
-    BorderImage* effectIcon = dynamic_cast<BorderImage*>(GetChild(name, true));
+    BorderImage* effectIcon = GetChildStaticCast<BorderImage>(name, true);
     if (effectIcon)
     {
         --effectCount_;

@@ -20,12 +20,12 @@ OptionsWindow::OptionsWindow(Context* context) :
     SetName("OptionsWindow");
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* titleText = dynamic_cast<Text*>(GetChild("TitleText", true));
+    Text* titleText = GetChildStaticCast<Text>("TitleText", true);
     titleText->SetText(scs->GetCaption(Events::E_SC_TOGGLEOPTIONS, "Options", true));
     SetBringToFront(true);
     SetBringToBack(true);
 
-    UIElement* container = dynamic_cast<UIElement*>(GetChild("Container", true));
+    UIElement* container = GetChild("Container", true);
 
     tabgroup_ = container->CreateChild<TabGroup>();
     tabgroup_->SetSize(container->GetSize());
@@ -93,7 +93,7 @@ void OptionsWindow::HandleFovSliderChanged(StringHash, VariantMap& eventData)
     float value = eventData[P_VALUE].GetFloat();
     Options* opt = GetSubsystem<Options>();
     opt->SetCameraFov(value + MIN_FOV);
-    Text* fovText = dynamic_cast<Text*>(GetChild("FovText", true));
+    Text* fovText = GetChildStaticCast<Text>("FovText", true);
     char buff[255] = { 0 };
     sprintf(buff, "FOV %d Deg", static_cast<int>(opt->GetCameraFov()));
     fovText->SetText(String(buff));
@@ -101,7 +101,7 @@ void OptionsWindow::HandleFovSliderChanged(StringHash, VariantMap& eventData)
 
 void OptionsWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(OptionsWindow, HandleCloseClicked));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(OptionsWindow, HandleKeyDown));
 }
@@ -146,7 +146,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         return result;
     };
 
-    DropDownList* windowDropdown = dynamic_cast<DropDownList*>(wnd->GetChild("WindowDropdown", true));
+    DropDownList* windowDropdown = wnd->GetChildStaticCast<DropDownList>("WindowDropdown", true);
     windowDropdown->AddItem(getWindowModeItem("Windowed", WindowMode::Windowed));
     windowDropdown->AddItem(getWindowModeItem("Fullscreen", WindowMode::Fullcreen));
     windowDropdown->AddItem(getWindowModeItem("Borderless", WindowMode::Borderless));
@@ -169,7 +169,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         }
     });
 
-    CheckBox* shCheck = dynamic_cast<CheckBox*>(wnd->GetChild("StickCameraToHeadCheck", true));
+    CheckBox* shCheck = wnd->GetChildStaticCast<CheckBox>("StickCameraToHeadCheck", true);
     shCheck->SetChecked(opts->stickCameraToHead_);
     SubscribeToEvent(shCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
@@ -178,7 +178,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         Options* opt = GetSubsystem<Options>();
         opt->stickCameraToHead_ = checked;
     });
-    CheckBox* mwCheck = dynamic_cast<CheckBox*>(wnd->GetChild("DisableMouseWalkingCheck", true));
+    CheckBox* mwCheck = wnd->GetChildStaticCast<CheckBox>("DisableMouseWalkingCheck", true);
     mwCheck->SetChecked(opts->disableMouseWalking_);
     SubscribeToEvent(mwCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
@@ -188,7 +188,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         opt->disableMouseWalking_ = checked;
     });
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("MouseSensSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("MouseSensSlider", true);
         slider->SetValue(opts->mouseSensitivity_);
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -198,7 +198,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
             opt->mouseSensitivity_ = value;
         });
     }
-    CheckBox* mumbleCheck = dynamic_cast<CheckBox*>(wnd->GetChild("EnableMumbleCheck", true));
+    CheckBox* mumbleCheck = wnd->GetChildStaticCast<CheckBox>("EnableMumbleCheck", true);
     mumbleCheck->SetChecked(opts->enableMumble_);
     SubscribeToEvent(mumbleCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
@@ -234,7 +234,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
 
     {
 
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("ShadowQualityDropdown", true));
+        DropDownList* dropdown = wnd->GetChildStaticCast<DropDownList>("ShadowQualityDropdown", true);
         auto getItem = [this](const String& text, ShadowQuality qual) -> Text*
         {
             Text* result = new Text(context_);
@@ -266,7 +266,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        DropDownList* materialDropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaterialQualityDropdown", true));
+        DropDownList* materialDropdown = wnd->GetChildStaticCast<DropDownList>("MaterialQualityDropdown", true);
         auto getQualityItem = [this](const String& text, MaterialQuality mode) -> Text*
         {
             Text* result = new Text(context_);
@@ -310,7 +310,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             }
         });
 
-        DropDownList* textureQropdown = dynamic_cast<DropDownList*>(wnd->GetChild("TextureQualityDropdown", true));
+        DropDownList* textureQropdown = wnd->GetChildStaticCast<DropDownList>("TextureQualityDropdown", true);
         textureQropdown->AddItem(getQualityItem("Low", QUALITY_LOW));
         textureQropdown->AddItem(getQualityItem("Medium", QUALITY_MEDIUM));
         textureQropdown->AddItem(getQualityItem("High", QUALITY_HIGH));
@@ -348,7 +348,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("TextureFilterDropdown", true));
+        DropDownList* dropdown = wnd->GetChildStaticCast<DropDownList>("TextureFilterDropdown", true);
         auto getItem = [this](const String& text, TextureFilterMode mode) -> Text*
         {
             Text* result = new Text(context_);
@@ -381,7 +381,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("ShadowsCheck", true));
+        CheckBox* check = wnd->GetChildStaticCast<CheckBox>("ShadowsCheck", true);
         check->SetChecked(opts->GetShadows());
         SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
@@ -392,7 +392,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         });
     }
     {
-        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("VSynchCheck", true));
+        CheckBox* check = wnd->GetChildStaticCast<CheckBox>("VSynchCheck", true);
         check->SetChecked(opts->GetVSync());
         SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
@@ -404,7 +404,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaxFPSDropdown", true));
+        DropDownList* dropdown = wnd->GetChildStaticCast<DropDownList>("MaxFPSDropdown", true);
         auto getItem = [this](const String& text, int value) -> Text*
         {
             Text* result = new Text(context_);
@@ -463,7 +463,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("SpecularLightningCheck", true));
+        CheckBox* check = wnd->GetChildStaticCast<CheckBox>("SpecularLightningCheck", true);
         check->SetChecked(opts->GetSpecularLightning());
         SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
@@ -474,11 +474,11 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         });
     }
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("FovSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("FovSlider", true);
         slider->SetRange(MAX_FOV - MIN_FOV);
         slider->SetValue(opts->GetCameraFov() - MIN_FOV);
         {
-            Text* fovText = dynamic_cast<Text*>(wnd->GetChild("FovText", true));
+            Text* fovText = wnd->GetChildStaticCast<Text>("FovText", true);
             char buff[255] = { 0 };
             sprintf(buff, "FOV %d Deg", static_cast<int>(opts->GetCameraFov()));
             fovText->SetText(String(buff));
@@ -486,7 +486,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         SubscribeToEvent(slider, E_SLIDERCHANGED, URHO3D_HANDLER(OptionsWindow, HandleFovSliderChanged));
     }
     {
-        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HighDPICheck", true));
+        CheckBox* check = wnd->GetChildStaticCast<CheckBox>("HighDPICheck", true);
         check->SetChecked(opts->GetHighDPI());
         SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
@@ -498,7 +498,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     }
 
     {
-        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("AntiAliasingDropdown", true));
+        DropDownList* dropdown = wnd->GetChildStaticCast<DropDownList>("AntiAliasingDropdown", true);
         auto getItem = [this](const String& text, AntiAliasingMode mode)
         {
             Text* result = new Text(context_);
@@ -545,7 +545,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     Options* opts = GetSubsystem<Options>();
 
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMasterSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("GainMasterSlider", true);
         slider->SetValue(opts->gainMaster_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -558,7 +558,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
         });
     }
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainEffectSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("GainEffectSlider", true);
         slider->SetValue(opts->gainEffect_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -571,7 +571,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
         });
     }
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainAmbientSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("GainAmbientSlider", true);
         slider->SetValue(opts->gainAmbient_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -584,7 +584,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
         });
     }
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainVoiceSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("GainVoiceSlider", true);
         slider->SetValue(opts->gainVoice_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -597,7 +597,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
         });
     }
     {
-        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMusicSlider", true));
+        Slider* slider = wnd->GetChildStaticCast<Slider>("GainMusicSlider", true);
         slider->SetValue(opts->gainMusic_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
@@ -613,7 +613,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
 
 void OptionsWindow::FillShortcutsList()
 {
-    ListView* lvw = dynamic_cast<ListView*>(GetChild("ShortcutsListView", true));
+    ListView* lvw = GetChildStaticCast<ListView>("ShortcutsListView", true);
     lvw->RemoveAllItems();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     for (const auto& sc : scs->shortcuts_)
@@ -637,14 +637,14 @@ void OptionsWindow::FillShortcutsList()
 void OptionsWindow::HandleShortcutItemSelected(StringHash, VariantMap& eventData)
 {
     using namespace ItemSelected;
-    ListView* lvw = dynamic_cast<ListView*>(eventData[P_ELEMENT].GetPtr());
+    ListView* lvw = static_cast<ListView*>(eventData[P_ELEMENT].GetPtr());
     Text* sel = dynamic_cast<Text*>(lvw->GetSelectedItem());
     if (sel)
     {
         StringHash _event = sel->GetVar("Event").GetStringHash();
-        Button* addButton = dynamic_cast<Button*>(GetChild("AddButton", true));
+        Button* addButton = GetChildStaticCast<Button>("AddButton", true);
         addButton->SetVar("Event", _event);
-        ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+        ListView* hkLvw = GetChildStaticCast<ListView>("HotkeysListView", true);
         hkLvw->RemoveAllItems();
         Shortcuts* scs = GetSubsystem<Shortcuts>();
         const auto& sc = scs->shortcuts_[_event];
@@ -680,7 +680,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     wnd->SetPosition(0, 0);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    UIElement* hkContainer = dynamic_cast<UIElement*>(GetChild("HotkeyEditContainer", true));
+    UIElement* hkContainer = GetChild("HotkeyEditContainer", true);
     HotkeyEdit* hkEdit = hkContainer->CreateChild<HotkeyEdit>("HotkeyEditor");
     hkEdit->SetLayoutBorder(IntRect(4, 4, 4, 4));
     hkEdit->SetAlignment(HA_CENTER, VA_BOTTOM);
@@ -696,21 +696,21 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     wnd->UpdateLayout();
 
     FillShortcutsList();
-    ListView* lvw = dynamic_cast<ListView*>(GetChild("ShortcutsListView", true));
+    ListView* lvw = GetChildStaticCast<ListView>("ShortcutsListView", true);
     SubscribeToEvent(lvw, E_ITEMSELECTED, URHO3D_HANDLER(OptionsWindow, HandleShortcutItemSelected));
 
     {
-        Button* button = dynamic_cast<Button*>(wnd->GetChild("AddButton", true));
+        Button* button = wnd->GetChildStaticCast<Button>("AddButton", true);
         SubscribeToEvent(button, E_RELEASED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Released;
 
-            HotkeyEdit* hkEdit = dynamic_cast<HotkeyEdit*>(GetChild("HotkeyEditor", true));
+            HotkeyEdit* hkEdit = GetChildStaticCast<HotkeyEdit>("HotkeyEditor", true);
             if (hkEdit->Empty())
                 return;
 
             Shortcut sc;
-            Button* self = dynamic_cast<Button*>(eventData[P_ELEMENT].GetPtr());
+            Button* self = static_cast<Button*>(eventData[P_ELEMENT].GetPtr());
             StringHash _event = self->GetVar("Event").GetStringHash();
             sc.keyboardKey_ = hkEdit->GetKey();
             sc.modifiers_ = hkEdit->GetQualifiers();
@@ -720,7 +720,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
 
             if (id != 0)
             {
-                ListView* lvwHk = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+                ListView* lvwHk = GetChildStaticCast<ListView>("HotkeysListView", true);
                 Text* txt = new Text(context_);
                 txt->SetText(sc.ShortcutName(true));
                 txt->SetMaxWidth(lvwHk->GetWidth());
@@ -733,10 +733,10 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
         });
     }
     {
-        Button* button = dynamic_cast<Button*>(wnd->GetChild("DeleteButton", true));
+        Button* button = wnd->GetChildStaticCast<Button>("DeleteButton", true);
         SubscribeToEvent(button, E_RELEASED, [this](StringHash, VariantMap&)
         {
-            ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+            ListView* hkLvw = GetChildStaticCast<ListView>("HotkeysListView", true);
             Text* sel = dynamic_cast<Text*>(hkLvw->GetSelectedItem());
             if (sel)
             {
@@ -749,13 +749,13 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     }
 
     {
-        Button* button = dynamic_cast<Button*>(wnd->GetChild("RestoreDefaultButton", true));
+        Button* button = wnd->GetChildStaticCast<Button>("RestoreDefaultButton", true);
         SubscribeToEvent(button, E_RELEASED, [this](StringHash, VariantMap&)
         {
             Shortcuts* scs = GetSubsystem<Shortcuts>();
             scs->RestoreDefault();
             FillShortcutsList();
-            ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+            ListView* hkLvw = GetChildStaticCast<ListView>("HotkeysListView", true);
             hkLvw->RemoveAllItems();
         });
     }

@@ -36,17 +36,17 @@ NewMailWindow::NewMailWindow(Context* context) :
     SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
+    Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLENEWMAILWINDOW, "New Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() - GetWidth() - 5, graphics->GetHeight() / 2 - (GetHeight() / 2));
 
-    recipient_ = dynamic_cast<LineEdit*>(GetChild("RecipientEdit", true));
-    subject_ = dynamic_cast<LineEdit*>(GetChild("SubjectEdit", true));
+    recipient_ = GetChildStaticCast<LineEdit>("RecipientEdit", true);
+    subject_ = GetChildStaticCast<LineEdit>("SubjectEdit", true);
 
-    UIElement* container = dynamic_cast<UIElement*>(GetChild("EditorContainer", true));
+    UIElement* container = GetChild("EditorContainer", true);
     mailBody_ = container->CreateChild<MultiLineEdit>();
     mailBody_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     mailBody_->SetStyle("MultiLineEdit");
@@ -71,9 +71,9 @@ NewMailWindow::~NewMailWindow()
 
 void NewMailWindow::SubscribeToEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(NewMailWindow, HandleCloseClicked));
-    Button* sendButton = dynamic_cast<Button*>(GetChild("SendMailButton", true));
+    Button* sendButton = GetChildStaticCast<Button>("SendMailButton", true);
     SubscribeToEvent(sendButton, E_RELEASED, URHO3D_HANDLER(NewMailWindow, HandleSendClicked));
 }
 

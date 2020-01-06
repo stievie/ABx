@@ -35,14 +35,14 @@ FriendListWindow::FriendListWindow(Context* context) :
     SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
+    Text* caption = GetChildStaticCast<Text>("Caption", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends", true));
 
-    friendList_ = dynamic_cast<ListView*>(GetChild("FriendListView", true));
-    ignoreList_ = dynamic_cast<ListView*>(GetChild("IgnoreListView", true));
-    addFriendEdit_ = dynamic_cast<LineEdit*>(GetChild("AddFriendEdit", true));
-    addIgnoreEdit_ = dynamic_cast<LineEdit*>(GetChild("AddIgnoredEdit", true));
-    statusDropdown_ = dynamic_cast<DropDownList*>(GetChild("StatusDropdown", true));
+    friendList_ = GetChildStaticCast<ListView>("FriendListView", true);
+    ignoreList_ = GetChildStaticCast<ListView>("IgnoreListView", true);
+    addFriendEdit_ = GetChildStaticCast<LineEdit>("AddFriendEdit", true);
+    addIgnoreEdit_ = GetChildStaticCast<LineEdit>("AddIgnoredEdit", true);
+    statusDropdown_ = GetChildStaticCast<DropDownList>("StatusDropdown", true);
 
     auto createStatusDropdownItem = [this](const String& text, AB::Packets::Server::PlayerInfo::Status status) -> Text*
     {
@@ -163,11 +163,11 @@ void FriendListWindow::Clear()
 
 void FriendListWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleCloseClicked));
-    Button* addFriendButton = dynamic_cast<Button*>(GetChild("AddFriendButton", true));
+    Button* addFriendButton = GetChildStaticCast<Button>("AddFriendButton", true);
     SubscribeToEvent(addFriendButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddFriendClicked));
-    Button* addIgnoreButton = dynamic_cast<Button*>(GetChild("AddIgnoredButton", true));
+    Button* addIgnoreButton = GetChildStaticCast<Button>("AddIgnoredButton", true);
     SubscribeToEvent(addIgnoreButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddIgnoreClicked));
     SubscribeToEvent(statusDropdown_, E_ITEMSELECTED, URHO3D_HANDLER(FriendListWindow, HandleStatusDropdownSelected));
 
@@ -234,13 +234,13 @@ void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
     const String name = "ListViewItem_" + uuid;
     if (rel == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
     {
-        Text* txt = dynamic_cast<Text*>(friendList_->GetChild(name, true));
+        Text* txt = friendList_->GetChildStaticCast<Text>(name, true);
         if (txt)
             txt->Remove();
     }
     else if (rel == AB::Packets::Server::PlayerInfo::FriendRelationIgnore)
     {
-        Text* txt = dynamic_cast<Text*>(ignoreList_->GetChild(name, true));
+        Text* txt = ignoreList_->GetChildStaticCast<Text>(name, true);
         if (txt)
             txt->Remove();
     }
@@ -318,7 +318,7 @@ void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
 void FriendListWindow::UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f)
 {
     const String name = "ListViewItem_" + String(f.accountUuid.c_str());
-    Text* txt = dynamic_cast<Text*>(lv->GetChild(name, true));
+    Text* txt = lv->GetChildStaticCast<Text>(name, true);
     if (!txt)
     {
         txt = lv->CreateChild<Text>();

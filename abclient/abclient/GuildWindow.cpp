@@ -34,10 +34,10 @@ GuildWindow::GuildWindow(Context* context) :
     SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
+    Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEGUILDWINDOW, "Guild", true));
 
-    UIElement* container = dynamic_cast<UIElement*>(GetChild("Container", true));
+    UIElement* container = GetChild("Container", true);
     tabgroup_ = container->CreateChild<TabGroup>();
     tabgroup_->SetSize(container->GetSize());
     tabgroup_->SetPosition(0, 0);
@@ -80,7 +80,7 @@ void GuildWindow::UpdateAll()
 
 void GuildWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(GuildWindow, HandleCloseClicked));
 }
 

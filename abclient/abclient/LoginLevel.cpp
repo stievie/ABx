@@ -110,10 +110,10 @@ void LoginLevel::CreateUI()
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/LoginWindow.xml");
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
-    nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
+    nameEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("NameEdit", true);
     nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_ACCOUNT_NAME);
-    passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
-    button_ = dynamic_cast<Button*>(uiRoot_->GetChild("LoginButton", true));
+    passEdit_ = uiRoot_->GetChildStaticCast<LineEdit>("PassEdit", true);
+    button_ = uiRoot_->GetChildStaticCast<Button>("LoginButton", true);
     button_->SetEnabled(false);
     nameEdit_->SetFocus(true);
     SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleLoginClicked));
@@ -121,7 +121,7 @@ void LoginLevel::CreateUI()
     SubscribeToEvent(nameEdit_, E_TEXTFINISHED, URHO3D_HANDLER(LoginLevel, HandleTextFinished));
     SubscribeToEvent(passEdit_, E_TEXTFINISHED, URHO3D_HANDLER(LoginLevel, HandleTextFinished));
 
-    createAccountButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateAccountButton", true));
+    createAccountButton_ = uiRoot_->GetChildStaticCast<Button>("CreateAccountButton", true);
     SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
 
     FwClient* net = context_->GetSubsystem<FwClient>();

@@ -882,11 +882,9 @@ void WorldLevel::HandleToggleGuildWindow(StringHash, VariantMap&)
 void WorldLevel::HandleShowCredits(StringHash, VariantMap&)
 {
     auto* ui = GetSubsystem<UI>();
-    CreditsWindow* wnd = dynamic_cast<CreditsWindow*>(ui->GetRoot()->GetChild(CreditsWindow::NAME));
+    CreditsWindow* wnd = ui->GetRoot()->GetChildDynamicCast<CreditsWindow>(CreditsWindow::NAME);
     if (wnd)
-    {
         ui->GetRoot()->RemoveChild(wnd);
-    }
     wnd = ui->GetRoot()->CreateChild<CreditsWindow>(CreditsWindow::NAME);
     wnd->SetVisible(true);
 }

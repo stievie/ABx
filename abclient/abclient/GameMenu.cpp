@@ -38,7 +38,7 @@ void GameMenu::CreateMenuBar()
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
-    Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
+    Window* popup = static_cast<Window*>(menu_->GetPopup());
     CreateMenuItem(popup, scs->GetCaption(Events::E_SC_EXITPROGRAM, "Exit"),
         scs->GetShortcutName(Events::E_SC_EXITPROGRAM),
         URHO3D_HANDLER(GameMenu, HandleExitUsed));
@@ -242,7 +242,7 @@ void GameMenu::HandleGuildWindowUsed(StringHash, VariantMap&)
 void GameMenu::UpdateServers()
 {
     FwClient* client = GetSubsystem<FwClient>();
-    Window* popup = dynamic_cast<Window*>(serversMenu_->GetPopup());
+    Window* popup = static_cast<Window*>(serversMenu_->GetPopup());
     popup->RemoveAllChildren();
     popup->SetLayout(LM_VERTICAL, 1);
     serversMenu_->SetPopupOffset(IntVector2(menu_->GetPopup()->GetWidth(), 0));

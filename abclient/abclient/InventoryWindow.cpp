@@ -38,10 +38,10 @@ InventoryWindow::InventoryWindow(Context* context) :
     SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
+    Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", true));
 
-    Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
+    Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
     moneyText->SetText("0 Drachma");
     SetSize(260, 480);
     SetPosition(10, 30);
@@ -137,7 +137,7 @@ void InventoryWindow::GetInventory()
 
 void InventoryWindow::Clear()
 {
-    Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
+    Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
     moneyText->SetText("0 Drachma");
     uint16_t pos = 1;
     while (auto cont = GetItemContainer(pos))
@@ -150,7 +150,7 @@ void InventoryWindow::Clear()
 
 void InventoryWindow::SubscribeEvents()
 {
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(InventoryWindow, HandleCloseClicked));
     SubscribeToEvent(Events::E_INVENTORY, URHO3D_HANDLER(InventoryWindow, HandleInventory));
     SubscribeToEvent(Events::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemUpdate));
@@ -231,7 +231,7 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
     const auto& items = net->GetInventoryItems();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();
 
-    Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
+    Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
 
     for (const auto& item : items)
     {
@@ -264,7 +264,7 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
 
     if (iItem.type == AB::Entities::ItemTypeMoney)
     {
-        Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
+        Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
         moneyText->SetText(String(iItem.count) + " Drachma");
         return;
     }
@@ -347,7 +347,7 @@ BorderImage* InventoryWindow::GetItemContainer(uint16_t pos)
 {
     // pos is 1-based
     unsigned rowIndex = (pos - 1) / 5;
-    UIElement* container = dynamic_cast<UIElement*>(GetChild("Container", true));
+    UIElement* container = GetChild("Container", true);
     String name("ItemRow" + String(rowIndex + 1));
     UIElement* row = container->GetChild(name, true);
     if (!row)
@@ -355,6 +355,6 @@ BorderImage* InventoryWindow::GetItemContainer(uint16_t pos)
         return nullptr;
     }
     unsigned index = pos - (rowIndex * 5) - 1;
-    BorderImage* result = dynamic_cast<BorderImage*>(row->GetChild(index));
+    BorderImage* result = row->GetChildStaticCast<BorderImage>(index);
     return result;
 }

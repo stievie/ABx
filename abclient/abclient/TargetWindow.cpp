@@ -16,12 +16,12 @@ TargetWindow::TargetWindow(Context* context) :
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/TargetWindow.xml");
     LoadChildXML(chatFile->GetRoot(), nullptr);
 
-    targetText_ = dynamic_cast<Text*>(GetChild("TargetText", true));
+    targetText_ = GetChildStaticCast<Text>("TargetText", true);
     SetAlignment(HA_CENTER, VA_TOP);
-    healthBar_ = dynamic_cast<HealthBarPlain*>(GetChild("TargetHealthBar", true));
+    healthBar_ = GetChildStaticCast<HealthBarPlain>("TargetHealthBar", true);
     healthBar_->SetStyle("HealthBar");
 
-    Button* clearTarget = dynamic_cast<Button*>(GetChild("ClearTargetButton", true));
+    Button* clearTarget = GetChildStaticCast<Button>("ClearTargetButton", true);
     SubscribeToEvent(clearTarget, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleClearTargetClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(TargetWindow, HandleUpdate));
 }
