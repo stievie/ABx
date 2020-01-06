@@ -8,7 +8,6 @@ namespace Client {
 
 ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService) :
     Protocol(keys, ioService),
-    action_(ActionUnknown),
     charlistCallback_(nullptr),
     gamelistCallback_(nullptr),
     createAccCallback_(nullptr)
@@ -29,8 +28,12 @@ void ProtocolLogin::Login(std::string& host, uint16_t port,
     password_ = password;
     loggedInCallback_ = onLoggedIn;
     charlistCallback_ = callback;
-    action_ = ActionLogin;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendLoginPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
@@ -45,8 +48,12 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
     email_ = email;
     accKey_ = accKey;
     createAccCallback_ = callback;
-    action_ = ActionCreateAccount;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendCreateAccountPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
@@ -66,8 +73,12 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     sex_ = sex;
     isPvp_ = isPvp;
     createPlayerCallback_ = callback;
-    action_ = ActionCreatePlayer;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendCreatePlayerPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
@@ -80,9 +91,13 @@ void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
     accountUuid_ = accountUuid;
     authToken_ = token;
     addAccountKey_ = newAccountKey;
-    action_ = ActionAddAccountKey;
     accountKeyAddedCallback_ = callback;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendAddAccountKeyPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
@@ -94,8 +109,12 @@ void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
     accountUuid_ = accountUuid;
     authToken_ = token;
     gamelistCallback_ = callback;
-    action_ = ActionGetOutposts;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendGetOutpostsPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::GetServers(std::string& host, uint16_t port,
@@ -107,8 +126,12 @@ void ProtocolLogin::GetServers(std::string& host, uint16_t port,
     accountUuid_ = accountUuid;
     authToken_ = token;
     serverlistCallback_ = callback;
-    action_ = ActionGetServers;
-    Connect(host, port);
+    Connect(host, port, [this]()
+    {
+        firstRecv_ = true;
+        SendGetServersPacket();
+        Receive();
+    });
 }
 
 void ProtocolLogin::SendLoginPacket()
@@ -332,37 +355,6 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         break;
     }
     }
-}
-
-void ProtocolLogin::OnConnect()
-{
-    firstRecv_ = true;
-    Protocol::OnConnect();
-
-    switch (action_)
-    {
-    case ActionLogin:
-        SendLoginPacket();
-        break;
-    case ActionCreateAccount:
-        SendCreateAccountPacket();
-        break;
-    case ActionCreatePlayer:
-        SendCreatePlayerPacket();
-        break;
-    case ActionGetOutposts:
-        SendGetOutpostsPacket();
-        break;
-    case ActionGetServers:
-        SendGetServersPacket();
-        break;
-    case ActionAddAccountKey:
-        SendAddAccountKeyPacket();
-        break;
-    default:
-        return;
-    }
-    Receive();
 }
 
 void ProtocolLogin::OnReceive(InputMessage& message)

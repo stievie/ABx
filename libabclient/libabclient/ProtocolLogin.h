@@ -26,17 +26,6 @@ public:
     typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
     typedef std::function<void()> AccountKeyAddedCallback;
 private:
-    enum ProtocolAction
-    {
-        ActionUnknown,
-        ActionLogin,
-        ActionCreateAccount,
-        ActionCreatePlayer,
-        ActionGetOutposts,
-        ActionGetServers,
-        ActionAddAccountKey,
-    };
-    ProtocolAction action_;
     std::string host_;
     uint16_t port_;
     std::string accountName_;
@@ -73,7 +62,6 @@ private:
     void HandleLoginError(const AB::Packets::Server::Login::Error& packet);
     void HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet);
 protected:
-    void OnConnect() override;
     void OnReceive(InputMessage& message) override;
 public:
     ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService);

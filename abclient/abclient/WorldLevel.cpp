@@ -447,7 +447,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
 
         const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor
-        Actor* actor = dynamic_cast<Actor*>(object);
+        Actor* actor = To<Actor>(object);
         actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
         object->GetNode()->SetName(actor->name_);
@@ -467,7 +467,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
                 chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         case ObjectTypeSelf:
-            static_cast<Player*>(object)->UpdateMumbleContext();
+            To<Player>(object)->UpdateMumbleContext();
             break;
         default:
             break;
@@ -486,7 +486,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
     if (object)
     {
         URHO3D_LOGINFOF("Despawn object %d", object->gameId_);
-        SharedPtr<GameObject> selO = player_->GetSelectedObject();
+        GameObject* selO = player_->GetSelectedObject();
         if (selO && selO->gameId_ == object->gameId_)
         {
             // If the selected object leaves unselect it
@@ -497,7 +497,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
         {
-            Actor* act = dynamic_cast<Actor*>(object);
+            Actor* act = To<Actor>(object);
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
         }
         objects_.Erase(objectId);
@@ -579,7 +579,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
     GameObject* object = objects_[objectId];
     if (object)
     {
-        Actor* actor = dynamic_cast<Actor*>(object);
+        Actor* actor = To<Actor>(object);
         if (actor)
         {
             if (targetId != 0)
@@ -590,7 +590,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                     actor->SetSelectedObject(SharedPtr<GameObject>(target));
                     if (actor->objectType_ == ObjectTypeSelf)
                     {
-                        targetWindow_->SetTarget(SharedPtr<Actor>(dynamic_cast<Actor*>(target)));
+                        targetWindow_->SetTarget(SharedPtr<Actor>(To<Actor>(target)));
                         partyWindow_->SelectItem(targetId);
                     }
                 }
@@ -721,14 +721,8 @@ void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
     AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(eventData[P_RESTYPE].GetUInt());
     int32_t value = eventData[P_VALUE].GetInt();
     GameObject* object = objects_[objectId];
-    if (object)
-    {
-        Actor* actor = dynamic_cast<Actor*>(object);
-        if (actor)
-        {
-            actor->ChangeResource(resType, value);
-        }
-    }
+    if (Is<Actor>(object))
+        To<Actor>(object)->ChangeResource(resType, value);
 }
 
 void WorldLevel::HandleLogout(StringHash, VariantMap&)
@@ -800,12 +794,10 @@ void WorldLevel::HandleHideUI(StringHash, VariantMap&)
 void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
 {
     auto sel = player_->GetSelectedObject();
-    if (!sel)
+    if (!Is<Actor>(sel))
         return;
-    Actor* a = dynamic_cast<Actor*>(sel.Get());
-    if (!a)
-        return;
-    if (!AB::Entities::IsOutpost(mapType_) && player_->IsEnemy(a))
+
+    if (!AB::Entities::IsOutpost(mapType_) && player_->IsEnemy(To<Actor>(sel)))
         player_->Attack();
     else
         player_->FollowSelected();

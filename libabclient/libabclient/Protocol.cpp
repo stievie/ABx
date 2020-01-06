@@ -26,16 +26,23 @@ Protocol::~Protocol()
 void Protocol::Connect(const std::string& host, uint16_t port)
 {
     connection_ = std::make_shared<Connection>(ioService_);
-    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2));
     connection_->Connect(host, port, std::bind(&Protocol::OnConnect, shared_from_this()));
+}
+
+void Protocol::Connect(const std::string& host, uint16_t port, std::function<void()>&& onConnect)
+{
+    connection_ = std::make_shared<Connection>(ioService_);
+    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2));
+    connection_->Connect(host, port, std::move(onConnect));
 }
 
 void Protocol::Disconnect()
 {
     if (connection_)
-    {
         connection_->Close();
-    }
 }
 
 void Protocol::Send(std::shared_ptr<OutputMessage>&& message)

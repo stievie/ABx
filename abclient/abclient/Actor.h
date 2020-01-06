@@ -168,7 +168,12 @@ public:
     bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();
     void SetSelectedObject(SharedPtr<GameObject> object);
-    SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
+    GameObject* GetSelectedObject() const
+    {
+        if (auto sel = selectedObject_.Lock())
+            return sel.Get();
+        return nullptr;
+    }
     uint32_t GetSelectedObjectId() const
     {
         if (auto sel = selectedObject_.Lock())

@@ -47,7 +47,10 @@ public:
     Protocol(const Protocol&) = delete;
     virtual ~Protocol();
 
+    // Connect to server. Calls OnConnect virtual function on success.
     void Connect(const std::string& host, uint16_t port);
+    // Connect to server. Calls nnConnect callback function on success. Does not call the OnConnect virtual function.
+    void Connect(const std::string& host, uint16_t port, std::function<void()>&& onConnect);
     void Disconnect();
 
     bool IsConnected() const
