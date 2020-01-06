@@ -73,6 +73,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
     SubscribeToEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLEEQUIPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleEquipmentWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEGUILDWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleGuildWindow));
     SubscribeToEvent(Events::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
@@ -145,6 +146,7 @@ void WorldLevel::RemoveUIWindows()
     uiRoot_->RemoveChild(gameMenu_);
     inventoryWindow_->Clear();
     uiRoot_->RemoveChild(inventoryWindow_);
+    uiRoot_->RemoveChild(equipmentWindow_);
     friendsWindow_->Clear();
     uiRoot_->RemoveChild(friendsWindow_);
     uiRoot_->RemoveChild(guildWindow_);
@@ -766,6 +768,16 @@ void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
     }
 }
 
+void WorldLevel::HandleToggleEquipmentWindow(StringHash, VariantMap&)
+{
+    equipmentWindow_->SetVisible(!equipmentWindow_->IsVisible());
+    if (equipmentWindow_->IsVisible())
+    {
+        equipmentWindow_->BringToFront();
+        equipmentWindow_->UpdateEquipment();
+    }
+}
+
 void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)
 {
     if (missionMap_)
@@ -1060,6 +1072,10 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(inventoryWindow_);
     if (inventoryWindow_->IsVisible())
         inventoryWindow_->GetInventory();
+    equipmentWindow_.DynamicCast(wm->GetWindow(WINDOW_EQUIPMENT));
+    uiRoot_->AddChild(equipmentWindow_);
+    if (equipmentWindow_->IsVisible())
+        equipmentWindow_->UpdateEquipment();
 
     friendsWindow_.DynamicCast(wm->GetWindow(WINDOW_FRIENDLIST));
     uiRoot_->AddChild(friendsWindow_);

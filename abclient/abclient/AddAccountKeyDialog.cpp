@@ -28,9 +28,9 @@ AddAccountKeyDialog::~AddAccountKeyDialog()
 void AddAccountKeyDialog::SubscribeEvents()
 {
     DialogWindow::SubscribeEvents();
-    auto addButton = GetChildStaticCast<Button>("AddButton", true);
+    auto* addButton = GetChildStaticCast<Button>("AddButton", true);
     SubscribeToEvent(addButton, E_RELEASED, URHO3D_HANDLER(AddAccountKeyDialog, HandleAddClicked));
-    auto closeButton = GetChildStaticCast<Button>("CloseButton", true);
+    auto* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(AddAccountKeyDialog, HandleCloseClicked));
 }
 

@@ -279,6 +279,7 @@
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
+    <ClCompile Include="EquipmentWindow.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
     <ClCompile Include="FwClient.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
+    <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="GuildWindow.h" />
     <ClInclude Include="InternalEvents.h" />
     <ClInclude Include="BaseLevel.h" />

@@ -23,6 +23,7 @@ private:
     void HandleMailUsed(StringHash eventType, VariantMap& eventData);
     void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleInventoryWindowUsed(StringHash eventType, VariantMap& eventData);
+    void HandleEquipmentWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleMissionMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleGotServices(StringHash eventType, VariantMap& eventData);

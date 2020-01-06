@@ -17,6 +17,7 @@ static const StringHash WINDOW_GAMEMESSAGES("GameMessagesWindow");
 static const StringHash WINDOW_EFFECTS("EffectsWindow");
 static const StringHash WINDOW_INVENTORY("InventoryWindow");
 static const StringHash WINDOW_GUILD("GuildWindow");
+static const StringHash WINDOW_EQUIPMENT("EquipmentWindow");
 
 class WindowManager : public Object
 {
