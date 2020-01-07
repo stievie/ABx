@@ -138,6 +138,24 @@
             </element>
         </element>
     </element>
+    <element type="Spinner" style="BorderImage">
+        <attribute name="Border" value="0 0 0 0" />
+        <element type="Button" internal="true">
+            <attribute name="Border" value="0 0 0 0" />
+            <attribute name="Image Rect" value="130 102 146 110" />
+            <attribute name="Image Border" value="0 0 0 0" />
+            <attribute name="Pressed Image Offset" value="1 -1" />
+            <attribute name="Hover Image Offset" value="0 1" />
+        </element>
+        <element type="Button" internal="true">
+            <attribute name="Border" value="0 0 0 0" />
+            <attribute name="Image Rect" value="130 86 146 94" />
+            <attribute name="Image Border" value="0 0 0 0" />
+            <attribute name="Pressed Image Offset" value="1 -1" />
+            <attribute name="Hover Image Offset" value="0 1" />
+        </element>
+    </element>
+
     <element type="LineEdit" style="BorderImage">
         <attribute name="Border" value="4 4 4 4" />
         <attribute name="Image Rect" value="64 0 80 16" />

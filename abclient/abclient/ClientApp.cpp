@@ -29,6 +29,7 @@
 #include "PartyWindow.h"
 #include "PingDot.h"
 #include "Player.h"
+#include "Spinner.h"
 #include "PostProcessController.h"
 #include "PvpCombatLevel.h"
 #include "SkillBarWindow.h"
@@ -169,6 +170,7 @@ ClientApp::ClientApp(Context* context) :
     HealthBar::RegisterObject(context);
     HealthBarPlain::RegisterObject(context);
     HotkeyEdit::RegisterObject(context);
+    Spinner::RegisterObject(context);
     PartyItem::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
