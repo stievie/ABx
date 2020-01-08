@@ -34,9 +34,7 @@ protected:
     ProtocolErrorCallback protocolErrorCallback_;
     virtual void OnError(ConnectionError connectionError, const asio::error_code& err);
     virtual void OnConnect() {}
-    virtual void OnReceive(InputMessage& message) {
-        AB_UNUSED(message);
-    }
+    virtual void OnReceive(InputMessage&) { }
     void ProtocolError(uint8_t err)
     {
         if (protocolErrorCallback_)
@@ -49,7 +47,7 @@ public:
 
     // Connect to server. Calls OnConnect virtual function on success.
     void Connect(const std::string& host, uint16_t port);
-    // Connect to server. Calls nnConnect callback function on success. Does not call the OnConnect virtual function.
+    // Connect to server. Calls onConnect callback function on success. Does not call the OnConnect virtual function.
     void Connect(const std::string& host, uint16_t port, std::function<void()>&& onConnect);
     void Disconnect();
 
@@ -73,7 +71,7 @@ public:
         memcpy(&encKey_, key, sizeof(encKey_));
     }
 
-    virtual void Send(std::shared_ptr<OutputMessage>&& message);
+    virtual void Send(OutputMessage& message);
     virtual void Receive();
     void SetErrorCallback(const ErrorCallback& errorCallback) { errorCallback_ = errorCallback; }
     void SetProtocolErrorCallback(const ProtocolErrorCallback& errorCallback) { protocolErrorCallback_ = errorCallback; }

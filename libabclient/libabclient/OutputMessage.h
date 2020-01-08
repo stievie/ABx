@@ -3,7 +3,6 @@
 #include <limits>
 #include <stdint.h>
 #include <string>
-#include <memory>
 
 namespace Client {
 
@@ -21,13 +20,11 @@ struct OutputMessageInfo
 
 static constexpr size_t OUTPUTMESSAGE_BUFFER_SIZE = 1024 - sizeof(OutputMessageInfo);
 static constexpr size_t OUTPUTMESSAGE_MAX_STRING_LEN = OUTPUTMESSAGE_BUFFER_SIZE - OUTPUTMESSAGE_HEADER_SIZE - sizeof(uint16_t);
-static constexpr size_t MESSAGEPOOL_COUNT = 240;
 
 /// Message to write to the network
 class OutputMessage
 {
 private:
-    static std::vector<std::shared_ptr<OutputMessage>> pool_;
     OutputMessageInfo info_;
     uint8_t buffer_[OUTPUTMESSAGE_BUFFER_SIZE];
     bool CanWrite(int bytes);
@@ -36,19 +33,12 @@ private:
 protected:
     friend class Protocol;
 
-    void Reset()
-    {
-        info_.pos = OUTPUTMESSAGE_HEADER_SIZE;
-        info_.headerPos = OUTPUTMESSAGE_HEADER_SIZE;
-        info_.size = 0;
-    }
     void WriteChecksum();
     void WriteMessageSize();
     uint8_t* GetWriteBuffer() { return buffer_ + info_.pos; }
     uint8_t* GetHeaderBuffer() { return buffer_ + info_.headerPos; }
     uint8_t* GetDataBuffer() { return buffer_ + OUTPUTMESSAGE_HEADER_SIZE; }
 public:
-    static std::shared_ptr<OutputMessage> New();
     OutputMessage();
 
     uint16_t GetSize() const { return info_.size; }

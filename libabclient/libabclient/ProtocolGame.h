@@ -67,10 +67,10 @@ public:
     template <typename T>
     void SendPacket(AB::GameProtocol::ClientPacketTypes type, T& packet)
     {
-        auto msg = OutputMessage::New();
-        msg->Add<uint8_t>(type);
-        AB::Packets::Add(packet, *msg);
-        Send(std::move(msg));
+        OutputMessage msg;
+        msg.Add<uint8_t>(type);
+        AB::Packets::Add(packet, msg);
+        Send(msg);
     }
     /// Triggers OnPong()
     void Ping();

@@ -219,8 +219,8 @@ void ProtocolGame::LogMessage(const std::string& message)
 
 void ProtocolGame::SendLoginPacket()
 {
-    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
-    msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
+    OutputMessage msg;
+    msg.Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
 
     AB::Packets::Client::GameLogin packet;
     packet.clientOs = AB::CLIENT_OS_CURRENT;
@@ -233,8 +233,8 @@ void ProtocolGame::SendLoginPacket()
     packet.charUuid = charUuid_;
     packet.mapUuid = mapUuid_;
     packet.instanceUuid = instanceUuid_;
-    AB::Packets::Add(packet, *msg);
-    Send(std::move(msg));
+    AB::Packets::Add(packet, msg);
+    Send(msg);
 }
 
 void ProtocolGame::Logout()
