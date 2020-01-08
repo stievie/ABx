@@ -18,7 +18,6 @@
 #include "InventoryWindow.h"
 #include "FriendListWindow.h"
 #include "GuildWindow.h"
-#include "EquipmentWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -56,7 +55,6 @@ protected:
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
-    SharedPtr<EquipmentWindow> equipmentWindow_;
     SharedPtr<FriendListWindow> friendsWindow_;
     SharedPtr<GuildWindow> guildWindow_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };

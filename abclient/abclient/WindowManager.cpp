@@ -70,11 +70,9 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         else if (hash == WINDOW_EQUIPMENT)
         {
             SharedPtr<EquipmentWindow> wnd = SharedPtr<EquipmentWindow>(new EquipmentWindow(context_));
-            wnd->SetVisible(true);
             opts->LoadWindow(wnd);
+            wnd->SetVisible(false);
             windows_[hash] = wnd;
-            if (wnd->IsVisible())
-                wnd->UpdateEquipment();
         }
         else if (hash == WINDOW_PARTY)
         {

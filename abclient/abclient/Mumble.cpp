@@ -58,11 +58,11 @@ void Mumble::Initialize()
         return;
     }
 
-    lm_ = (LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd_, 0));
-    if (lm_ == (void *)(-1))
+    lm_ = (LinkedMem *)(mmap(nullptr, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd_, 0));
+    if (lm_ == MAP_FAILED)
     {
         URHO3D_LOGERROR("Mumble::Initialize: mmap() failed");
-        lm_ = NULL;
+        lm_ = nullptr;
         return;
     }
 #endif
@@ -85,7 +85,7 @@ void Mumble::Shutdown()
         hMapObject_ = NULL;
     }
 #else
-    if (lm_ != (void *)(-1))
+    if (lm_ != nullptr)
     {
         munmap(lm_, sizeof(struct LinkedMem));
     }

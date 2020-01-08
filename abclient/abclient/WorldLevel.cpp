@@ -16,8 +16,7 @@
 #include "AudioManager.h"
 #include "CreditsWindow.h"
 #include "ShortcutEvents.h"
-
-//#include <Urho3D/DebugNew.h>
+#include "EquipmentWindow.h"
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
@@ -146,7 +145,6 @@ void WorldLevel::RemoveUIWindows()
     uiRoot_->RemoveChild(gameMenu_);
     inventoryWindow_->Clear();
     uiRoot_->RemoveChild(inventoryWindow_);
-    uiRoot_->RemoveChild(equipmentWindow_);
     friendsWindow_->Clear();
     uiRoot_->RemoveChild(friendsWindow_);
     uiRoot_->RemoveChild(guildWindow_);
@@ -770,11 +768,14 @@ void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
 
 void WorldLevel::HandleToggleEquipmentWindow(StringHash, VariantMap&)
 {
-    equipmentWindow_->SetVisible(!equipmentWindow_->IsVisible());
-    if (equipmentWindow_->IsVisible())
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<EquipmentWindow> equipmentWindow;
+    equipmentWindow.StaticCast(wm->GetWindow(WINDOW_EQUIPMENT, true));
+    equipmentWindow->SetVisible(!equipmentWindow->IsVisible());
+    if (equipmentWindow->IsVisible())
     {
-        equipmentWindow_->BringToFront();
-        equipmentWindow_->UpdateEquipment();
+        equipmentWindow->BringToFront();
+        equipmentWindow->UpdateAll();
     }
 }
 
@@ -1072,11 +1073,6 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(inventoryWindow_);
     if (inventoryWindow_->IsVisible())
         inventoryWindow_->GetInventory();
-    equipmentWindow_.DynamicCast(wm->GetWindow(WINDOW_EQUIPMENT));
-    uiRoot_->AddChild(equipmentWindow_);
-    if (equipmentWindow_->IsVisible())
-        equipmentWindow_->UpdateEquipment();
-
     friendsWindow_.DynamicCast(wm->GetWindow(WINDOW_FRIENDLIST));
     uiRoot_->AddChild(friendsWindow_);
     if (friendsWindow_->IsVisible())

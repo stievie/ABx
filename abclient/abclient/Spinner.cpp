@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Spinner.h"
-#include <SDL/SDL_keyboard.h>
 
 static const float DEFAULT_REPEAT_DELAY = 0.4f;
 static const float DEFAULT_REPEAT_RATE = 20.0f;
@@ -72,7 +71,7 @@ void Spinner::Increase()
 {
     if (value_ < max_)
     {
-        ++value_;
+        value_ += step_;
         Validate();
     }
 }
@@ -81,7 +80,7 @@ void Spinner::Decrease()
 {
     if (value_ > min_)
     {
-        --value_;
+        value_ -= step_;
         Validate();
     }
 }
@@ -110,12 +109,15 @@ void Spinner::HandleDecreaseClicked(StringHash, VariantMap&)
     Decrease();
 }
 
+void Spinner::SetEdit(SharedPtr<LineEdit> value)
+{
+    edit_ = value;
+    Validate();
+}
+
 void Spinner::Validate()
 {
-    if (value_ > max_)
-        value_ = max_;
-    if (value_ < min_)
-        value_ = min_;
+    value_ = Clamp(value_, min_, max_);
     if (auto e = edit_.Lock())
         e->SetText(String(value_));
 }

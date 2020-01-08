@@ -103,6 +103,8 @@ abclient/SkillBarWindow.cpp
 abclient/SkillBarWindow.h
 abclient/SkillManager.cpp
 abclient/SkillManager.h
+abclient/Spinner.cpp
+abclient/Spinner.h
 abclient/stdafx.cpp
 abclient/stdafx.h
 abclient/TabGroup.cpp

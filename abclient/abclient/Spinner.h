@@ -9,6 +9,7 @@ private:
     int min_{ 0 };
     int max_{ 100 };
     int value_{ 0 };
+    unsigned step_{ 1 };
     WeakPtr<LineEdit> edit_;
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
     void HandleIncreaseClicked(StringHash eventType, VariantMap& eventData);
@@ -26,8 +27,9 @@ public:
     void SetMax(int value);
     int GetValue() const { return value_; }
     void SetValue(int value);
+    unsigned GetStep() const { return step_; }
+    void SetStep(unsigned value) { step_ = value; }
     void Increase();
     void Decrease();
-    void SetEdit(SharedPtr<LineEdit> value) { edit_ = value; }
+    void SetEdit(SharedPtr<LineEdit> value);
 };
-
