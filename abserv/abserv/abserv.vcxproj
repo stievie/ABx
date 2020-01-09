@@ -308,7 +308,6 @@
     <ClInclude Include="MoveComp.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="Npc.h" />
-    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeQuery.h" />
     <ClInclude Include="OffMeshConnection.h" />
@@ -446,7 +445,6 @@
     <ClCompile Include="MoveComp.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="Npc.cpp" />
-    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeQuery.cpp" />
     <ClCompile Include="OffMeshConnection.cpp" />

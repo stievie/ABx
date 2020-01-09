@@ -220,8 +220,6 @@ abserv/NavigationMesh.cpp
 abserv/NavigationMesh.h
 abserv/Npc.cpp
 abserv/Npc.h
-abserv/Obstacle.cpp
-abserv/Obstacle.h
 abserv/Octree.cpp
 abserv/Octree.h
 abserv/OctreeQuery.cpp

@@ -177,9 +177,6 @@
     <ClInclude Include="GameStream.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Obstacle.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -591,9 +588,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GameStream.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Obstacle.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ScriptManager.cpp">
