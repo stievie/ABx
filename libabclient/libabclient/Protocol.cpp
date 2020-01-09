@@ -31,7 +31,8 @@ void Protocol::Connect(const std::string& host, uint16_t port)
     connection_->Connect(host, port, std::bind(&Protocol::OnConnect, shared_from_this()));
 }
 
-void Protocol::Connect(const std::string& host, uint16_t port, std::function<void()>&& onConnect)
+void Protocol::Connect(const std::string& host, uint16_t port,
+    std::function<void()>&& onConnect)
 {
     connection_ = std::make_shared<Connection>(ioService_);
     connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(),
@@ -99,9 +100,7 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     inputMessage_->FillBuffer(buffer, size);
 
     if (checksumEnabled_ && !inputMessage_->ReadChecksum())
-    {
         return;
-    }
     if (compressionEnabled_)
     {
         if (!inputMessage_->Uncompress())
@@ -110,9 +109,7 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     if (encryptEnabled_)
     {
         if (!XTEADecrypt(*inputMessage_))
-        {
             return;
-        }
     }
 
     OnReceive(*inputMessage_);
@@ -120,21 +117,19 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 
 bool Protocol::XTEADecrypt(InputMessage& inputMessage)
 {
-    uint16_t encryptedSize = (uint16_t)inputMessage.GetUnreadSize();
+    size_t encryptedSize = inputMessage.GetUnreadSize();
     if (encryptedSize % 8 != 0)
-    {
         return false;
-    }
 
     uint32_t* buffer = reinterpret_cast<uint32_t*>(inputMessage.GetReadBuffer());
-    xxtea_dec(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
+    xxtea_dec(buffer, static_cast<uint32_t>(encryptedSize / 4), reinterpret_cast<const uint32_t*>(&encKey_));
 
     return true;
 }
 
 void Protocol::XTEAEncrypt(OutputMessage& outputMessage)
 {
-    uint16_t encryptedSize = outputMessage.GetSize();
+    size_t encryptedSize = outputMessage.GetSize();
 
     //add bytes until reach 8 multiple
     if ((encryptedSize % 8) != 0)
@@ -145,7 +140,7 @@ void Protocol::XTEAEncrypt(OutputMessage& outputMessage)
     }
 
     uint32_t* buffer = reinterpret_cast<uint32_t*>(outputMessage.GetDataBuffer());
-    xxtea_enc(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
+    xxtea_enc(buffer, static_cast<uint32_t>(encryptedSize / 4), reinterpret_cast<const uint32_t*>(&encKey_));
 }
 
 void Protocol::OnError(ConnectionError connectionError, const asio::error_code& err)

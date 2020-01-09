@@ -43,31 +43,31 @@ protected:
     void FillBuffer(uint8_t *buffer, uint16_t size);
     void SetMessageSize(uint16_t size) { size_ = size; }
     std::string GetString();
+    std::string GetStringEncrypted();
 public:
     InputMessage();
 
-    int GetUnreadSize() { return size_ - (pos_ - headerPos_); }
     uint16_t ReadSize() { return Get<uint16_t>(); }
     bool ReadChecksum();
 
-    uint16_t GetMessageSize() { return size_; }
+    size_t GetUnreadSize() const { return size_ - (pos_ - headerPos_); }
+    size_t GetMessageSize() const { return size_; }
 
     uint8_t* GetReadBuffer() { return buffer_ + pos_; }
     uint8_t* GetHeaderBuffer() { return buffer_ + headerPos_; }
     uint8_t* GetDataBuffer() { return buffer_ + MaxHeaderSize; }
-    uint16_t GetHeaderSize() { return (MaxHeaderSize - headerPos_); }
+    size_t GetHeaderSize() const { return (MaxHeaderSize - headerPos_); }
     bool Eof() const { return (pos_ - headerPos_) >= size_; }
 
     void SetBuffer(const std::string& buffer);
 
-    std::string GetStringEncrypted();
     template <typename T>
     T Get()
     {
         CheckRead(sizeof(T));
-        T v = *reinterpret_cast<T*>(buffer_ + pos_);
+        unsigned p = pos_;
         pos_ += sizeof(T);
-        return v;
+        return *reinterpret_cast<T*>(buffer_ + p);
     }
     template <typename T>
     T GetDecrypted()

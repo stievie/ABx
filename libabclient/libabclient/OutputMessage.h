@@ -24,15 +24,15 @@ static constexpr size_t OUTPUTMESSAGE_MAX_STRING_LEN = OUTPUTMESSAGE_BUFFER_SIZE
 /// Message to write to the network
 class OutputMessage
 {
+    friend class Protocol;
 private:
     OutputMessageInfo info_;
     uint8_t buffer_[OUTPUTMESSAGE_BUFFER_SIZE];
     bool CanWrite(int bytes);
     void CheckWrite(int bytes);
     void AddString(const std::string& value);
+    void AddStringEncrypted(const std::string& value);
 protected:
-    friend class Protocol;
-
     void WriteChecksum();
     void WriteMessageSize();
     uint8_t* GetWriteBuffer() { return buffer_ + info_.pos; }
@@ -41,7 +41,7 @@ protected:
 public:
     OutputMessage();
 
-    uint16_t GetSize() const { return info_.size; }
+    size_t GetSize() const { return info_.size; }
     uint16_t GetPos() const { return info_.pos; }
     void AddPaddingBytes(int bytes, uint8_t byte = 0);
     template <typename T>
@@ -49,7 +49,7 @@ public:
     {
         if (!CanWrite(sizeof(T)))
             return;
-        *(T*)(buffer_ + info_.pos) = value;
+        *reinterpret_cast<T*>(buffer_ + info_.pos) = value;
         info_.pos += sizeof(T);
         info_.size += sizeof(T);
     }
@@ -66,11 +66,9 @@ public:
         info_.pos = pos;
         if (!CanWrite(sizeof(T)))
             return;
-        *(T*)(buffer_ + info_.pos) = value;
+        *reinterpret_cast<T*>(buffer_ + info_.pos) = value;
         info_.pos = p;
     }
-
-    void AddStringEncrypted(const std::string& value);
 
     bool Compress();
 };
