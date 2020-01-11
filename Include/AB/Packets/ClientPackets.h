@@ -432,6 +432,40 @@ struct SetOnlineStatus
     }
 };
 
+struct SetSecondaryProfession
+{
+    uint32_t profIndex;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(profIndex);
+    }
+};
+
+struct SetAttributeValue
+{
+    uint32_t attribIndex;
+    uint8_t value;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(attribIndex);
+        ar.value(value);
+    }
+};
+
+struct EquipSkill
+{
+    uint32_t skillIndex;
+    uint8_t pos;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(skillIndex);
+        ar.value(pos);
+    }
+};
+
 struct GuildInfo
 {
     template<typename _Ar>

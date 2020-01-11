@@ -417,6 +417,24 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQSetOnlineStatus, status);
         break;
     }
+    case AB::GameProtocol::PacketSetSecondaryProfession:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetSecondaryProfession>(message);
+        AddPlayerTask(&Game::Player::CRQSetSecondaryProfession, packet.profIndex);
+        break;
+    }
+    case AB::GameProtocol::PacektSetAttributeValue:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetAttributeValue>(message);
+        AddPlayerTask(&Game::Player::CRQSetAttributeValue, packet.attribIndex, packet.value);
+        break;
+    }
+    case AB::GameProtocol::PacketEquipSkill:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::EquipSkill>(message);
+        AddPlayerTask(&Game::Player::CRQEquipSkill, packet.skillIndex, packet.pos);
+        break;
+    }
     default:
     {
         auto player = GetPlayer();

@@ -1135,6 +1135,26 @@ void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
     GetGame()->BroadcastPlayerChanged(*this, AB::GameProtocol::PlayerInfoFieldOnlineStatus);
 }
 
+void Player::CRQSetSecondaryProfession(uint32_t profIndex)
+{
+    (void)profIndex;
+    // TODO:
+}
+
+void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
+{
+    (void)attribIndex;
+    (void)value;
+    // TODO:
+}
+
+void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
+{
+    (void)skillIndex;
+    (void)pos;
+    // TODO:
+}
+
 bool Player::IsIgnored(const Player& player)
 {
     return friendList_->IsIgnored(player.account_.uuid);

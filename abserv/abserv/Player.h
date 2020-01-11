@@ -200,6 +200,9 @@ public:
     void CRQSetOnlineStatus(AB::Entities::OnlineStatus status);
     void CRQDeleteQuest(uint32_t index);
     void CRQHasQuests(uint32_t npcId);
+    void CRQSetSecondaryProfession(uint32_t profIndex);
+    void CRQSetAttributeValue(uint32_t attribIndex, uint8_t value);
+    void CRQEquipSkill(uint32_t skillIndex, uint8_t pos);
     //}
 
     AB::Entities::Character data_;

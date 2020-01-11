@@ -543,4 +543,28 @@ void ProtocolGame::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status statu
     SendPacket(AB::GameProtocol::PacketTypeSetOnlineStatus, packet);
 }
 
+void ProtocolGame::SetSecondaryProfession(uint32_t profIndex)
+{
+    AB::Packets::Client::SetSecondaryProfession packet = {
+        profIndex
+    };
+    SendPacket(AB::GameProtocol::PacketSetSecondaryProfession, packet);
+}
+
+void ProtocolGame::SetAttributeValue(uint32_t attribIndex, uint8_t value)
+{
+    AB::Packets::Client::SetAttributeValue packet = {
+        attribIndex, value
+    };
+    SendPacket(AB::GameProtocol::PacektSetAttributeValue, packet);
+}
+
+void ProtocolGame::EquipSkill(uint32_t skillIndex, uint8_t pos)
+{
+    AB::Packets::Client::EquipSkill packet = {
+        skillIndex, pos
+    };
+    SendPacket(AB::GameProtocol::PacketEquipSkill, packet);
+}
+
 }

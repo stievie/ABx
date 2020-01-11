@@ -443,6 +443,10 @@ enum ClientPacketTypes : uint8_t
     PacketTypePartyRejectInvite,
     PacektTypeGetPartyMembers,
 
+    // Skills/Equipment
+    PacketSetSecondaryProfession,
+    PacektSetAttributeValue,
+    PacketEquipSkill,
     // Inventory
     PacketTypeGetInventory,
     PacketTypeInventoryDestroyItem,
