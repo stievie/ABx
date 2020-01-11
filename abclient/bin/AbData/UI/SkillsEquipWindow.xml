@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="SkillsEquipWindow" />
 	<attribute name="Position" value="776 191" />
-	<attribute name="Size" value="330 420" />
+	<attribute name="Size" value="340 435" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Layout Mode" value="Vertical" />
@@ -46,10 +46,60 @@
 		</element>
 	</element>
 	<element>
+		<attribute name="Name" value="Toolbar" />
+		<attribute name="Max Size" value="2147483647 30" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="2" />
+		<attribute name="Layout Border" value="2 2 2 2" />
+		<element type="Button">
+			<attribute name="Name" value="LoadButton" />
+			<attribute name="Min Size" value="28 22" />
+			<attribute name="Max Size" value="50 25" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="16 0 32 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<element type="Text">
+				<attribute name="Min Anchor" value="0.5 0.5" />
+				<attribute name="Max Anchor" value="0.5 0.5" />
+				<attribute name="Pivot" value="0.5 0.5" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Load" />
+			</element>
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="SaveButton" />
+			<attribute name="Min Size" value="28 25" />
+			<attribute name="Max Size" value="50 25" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="16 0 32 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<element type="Text">
+				<attribute name="Min Anchor" value="0.5 0.5" />
+				<attribute name="Max Anchor" value="0.5 0.5" />
+				<attribute name="Pivot" value="0.5 0.5" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Save" />
+			</element>
+		</element>
+	</element>
+	<element>
 		<attribute name="Name" value="AttributesContanier" />
-		<attribute name="Max Size" value="2147483647 180" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Border" value="2 2 2 2" />
 		<element type="DropDownList">
 			<attribute name="Name" value="ProfessionDropdown" />
 			<attribute name="Min Size" value="0 22" />
@@ -98,14 +148,22 @@
 		<element>
 			<attribute name="Name" value="Attributes" />
 			<attribute name="Pivot" value="0 0" />
-			<attribute name="Layout Mode" value="Vertical" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<attribute name="Layout Border" value="2 2 2 2" />
+			<element>
+				<attribute name="Name" value="PrimaryAttributes" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
+			</element>
+			<element>
+				<attribute name="Name" value="SecondaryAttributes" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
+			</element>
 		</element>
 	</element>
-	<element type="BorderImage">
-		<attribute name="Name" value="Container" />
+	<element>
+		<attribute name="Name" value="EquipmentContainer" />
 		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Texture" value="Texture2D;Textures/GuildEmblems/cross.png" />
-		<attribute name="Image Rect" value="0 0 1024 1024" />
 	</element>
 </element>

@@ -32,4 +32,5 @@ public:
     void Increase();
     void Decrease();
     void SetEdit(SharedPtr<LineEdit> value);
+    bool HaveFocus() const;
 };

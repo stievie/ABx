@@ -100,8 +100,8 @@ void EquipmentWindow::AddProfessions(const Player& player)
     auto* dropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     dropdown->RemoveAllItems();
 
-    uint32_t primIndex = player.profession_ ? player.profession_->index : 0;
-    uint32_t secIndex = player.profession2_ ? player.profession2_->index : 0;
+    uint32_t primIndex = player.profession_->index;
+    uint32_t secIndex = player.profession2_->index;
     if (secIndex == 0)
     {
         dropdown->AddItem(CreateDropdownItem("(None)", 0));
@@ -130,10 +130,12 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
 
     auto* attribContainer = GetChild("AttributesContanier", true);
     auto* attribs = attribContainer->GetChild("Attributes", true);
-    attribs->RemoveAllChildren();
+    auto* primAttribs = attribs->GetChild("PrimaryAttributes", true);
+    auto* secAttribs = attribs->GetChild("SecondaryAttributes", true);
+    primAttribs->RemoveAllChildren();
+    secAttribs->RemoveAllChildren();
     auto* pDropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     unsigned p1Index = player.profession_->index;
-    unsigned p2Index = pDropdown->GetSelection();
 
     auto* sm = GetSubsystem<SkillManager>();
     auto* p1 = sm->GetProfessionByIndex(p1Index);
@@ -141,26 +143,28 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         // This shouldn't happen, all characters need a primary profession
         return;
 
-    auto addAttribute = [&](const AB::Entities::AttriInfo& attr)
+    auto addAttribute = [&](UIElement* container, const AB::Entities::AttriInfo& attr)
     {
         auto a = sm->GetAttributeByIndex(attr.index);
         if(!a)
             return;
 
-        auto* cont = attribs->CreateChild<UIElement>();
+        auto* cont = container->CreateChild<UIElement>();
         cont->SetLayoutMode(LM_HORIZONTAL);
         auto* label = cont->CreateChild<Text>();
         label->SetText(String(a->name.c_str()));
         label->SetStyleAuto();
+        label->SetFontSize(9);
+        label->SetAlignment(HA_LEFT, VA_TOP);
         auto* edit = cont->CreateChild<LineEdit>();
         edit->SetMaxHeight(22);
         edit->SetTexture(tex);
         edit->SetImageRect(IntRect(48, 0, 64, 16));
         edit->SetBorder(IntRect(4, 4, 4, 4));
         edit->SetStyleAuto();
-        edit->SetCursorMovable(false);
-        edit->SetTextCopyable(false);
-        edit->SetTextSelectable(false);
+        edit->SetAlignment(HA_RIGHT, VA_TOP);
+        edit->SetMaxWidth(50);
+        edit->SetEditable(false);
 
         auto* spinner = cont->CreateChild<Spinner>("AttribSpinner");
         spinner->SetTexture(tex);
@@ -172,20 +176,30 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         spinner->SetMin(0);
         spinner->SetMax(20);
         spinner->SetStyleAuto();
+        spinner->SetAlignment(HA_RIGHT, VA_TOP);
     };
 
+    unsigned maxAttribCount = p1->attributeCount;
     for (const auto& attrib : p1->attributes)
-    {
-        addAttribute(attrib);
-    }
+        addAttribute(primAttribs, attrib);
+    primAttribs->UpdateLayout();
 
-    auto* p2 = sm->GetProfessionByIndex(p2Index);
-    if (!p2)
-        return;
-    for (const auto& attrib : p2->attributes)
+    auto* selItem = pDropdown->GetSelectedItem();
+    unsigned p2Index = selItem->GetVar("Int Value").GetUInt();
+    if (p2Index > 0)
     {
-        addAttribute(attrib);
+        auto* p2 = sm->GetProfessionByIndex(p2Index);
+        if (p2)
+        {
+            if (p2->attributeCount > maxAttribCount)
+                maxAttribCount = p2->attributeCount;
+            for (const auto& attrib : p2->attributes)
+                addAttribute(secAttribs, attrib);
+        }
     }
+    secAttribs->UpdateLayout();
+
+    attribContainer->SetMaxHeight(maxAttribCount * 20);
 }
 
 void EquipmentWindow::UpdateSkills(const Player& player)

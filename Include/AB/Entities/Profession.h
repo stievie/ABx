@@ -61,7 +61,7 @@ struct Profession : Entity
         });
     }
 
-    uint32_t index = INVALID_INDEX;
+    uint32_t index = 0;
     std::string name;
     std::string abbr;
     uint32_t modelIndexFemale = 0;

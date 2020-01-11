@@ -85,10 +85,23 @@ void Spinner::Decrease()
     }
 }
 
-void Spinner::HandleMouseWheel(StringHash, VariantMap& eventData)
+bool Spinner::HaveFocus() const
 {
     UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement() != this)
+    auto* f = ui->GetFocusElement();
+    if (f == this)
+        return true;
+    if (auto e = edit_.Lock())
+    {
+        if (e.Get() == f)
+            return true;
+    }
+    return false;
+}
+
+void Spinner::HandleMouseWheel(StringHash, VariantMap& eventData)
+{
+    if (!HaveFocus())
         return;
 
     using namespace MouseWheel;
