@@ -15,8 +15,8 @@ InputMessage::InputMessage()
 bool InputMessage::ReadChecksum()
 {
     uint32_t receivedCheck = Get<uint32_t>();
-    int size = GetUnreadSize();
-    uint32_t checksum = AdlerChecksum(buffer_ + pos_, size);
+    size_t size = GetUnreadSize();
+    uint32_t checksum = AdlerChecksum(buffer_ + pos_, static_cast<int>(size));
     return receivedCheck == checksum;
 }
 
