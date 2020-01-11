@@ -22,16 +22,23 @@ void ProtocolLogin::Login(std::string& host, uint16_t port,
     const LoggedInCallback& onLoggedIn,
     const CharlistCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountName_ = account;
-    password_ = password;
     loggedInCallback_ = onLoggedIn;
     charlistCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendLoginPacket();
+
+        OutputMessage msg ;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginLogin);
+        AB::Packets::Client::Login::Login packet = {
+            account,
+            password
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
         Receive();
     });
 }
@@ -41,17 +48,25 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
     const std::string& email, const std::string& accKey,
     const CreateAccountCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountName_ = account;
-    password_ = password;
-    email_ = email;
-    accKey_ = accKey;
     createAccCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendCreateAccountPacket();
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
+        AB::Packets::Client::Login::CreateAccount packet = {
+            account,
+            password,
+            email,
+            accKey
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
         Receive();
     });
 }
@@ -63,20 +78,28 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     AB::Entities::CharacterSex sex, bool isPvp,
     const CreatePlayerCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountUuid_ = accountUuid;
-    authToken_ = token;
-    charName_ = charName;
-    profUuid_ = profUuid;
-    itemIndex_ = itemIndex;
-    sex_ = sex;
-    isPvp_ = isPvp;
     createPlayerCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendCreatePlayerPacket();
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
+        AB::Packets::Client::Login::CreatePlayer packet = {
+            accountUuid,
+            token,
+            charName,
+            itemIndex,
+            sex,
+            profUuid,
+            isPvp
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
         Receive();
     });
 }
@@ -86,16 +109,24 @@ void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
     const std::string& newAccountKey,
     const AccountKeyAddedCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountUuid_ = accountUuid;
-    authToken_ = token;
-    addAccountKey_ = newAccountKey;
     accountKeyAddedCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendAddAccountKeyPacket();
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginAddAccountKey);
+        AB::Packets::Client::Login::AddAccountKey packet = {
+            accountUuid,
+            token,
+            newAccountKey
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
         Receive();
     });
 }
@@ -104,15 +135,23 @@ void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
     const std::string& accountUuid, const std::string& token,
     const GamelistCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountUuid_ = accountUuid;
-    authToken_ = token;
     gamelistCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendGetOutpostsPacket();
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
+        AB::Packets::Client::Login::GetOutposts packet = {
+            accountUuid,
+            token
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
         Receive();
     });
 }
@@ -121,115 +160,25 @@ void ProtocolLogin::GetServers(std::string& host, uint16_t port,
     const std::string& accountUuid, const std::string& token,
     const ServerlistCallback& callback)
 {
-    host_ = host;
-    port_ = port;
-    accountUuid_ = accountUuid;
-    authToken_ = token;
     serverlistCallback_ = callback;
-    Connect(host, port, [this]()
+    Connect(host, port, [=]()
     {
         firstRecv_ = true;
-        SendGetServersPacket();
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
+        AB::Packets::Client::Login::GetServers packet = {
+            accountUuid,
+            token
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
         Receive();
     });
-}
-
-void ProtocolLogin::SendLoginPacket()
-{
-    OutputMessage msg ;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginLogin);
-    AB::Packets::Client::Login::Login packet = {
-        accountName_,
-        password_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
-}
-
-void ProtocolLogin::SendCreateAccountPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
-    AB::Packets::Client::Login::CreateAccount packet = {
-        accountName_,
-        password_,
-        email_,
-        accKey_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
-}
-
-void ProtocolLogin::SendCreatePlayerPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
-    AB::Packets::Client::Login::CreatePlayer packet = {
-        accountUuid_,
-        authToken_,
-        charName_,
-        itemIndex_,
-        sex_,
-        profUuid_,
-        isPvp_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
-}
-
-void ProtocolLogin::SendGetOutpostsPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
-    AB::Packets::Client::Login::GetOutposts packet = {
-        accountUuid_,
-        authToken_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
-}
-
-void ProtocolLogin::SendGetServersPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
-    AB::Packets::Client::Login::GetServers packet = {
-        accountUuid_,
-        authToken_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
-}
-
-void ProtocolLogin::SendAddAccountKeyPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
-    msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg.Add<uint8_t>(AB::LoginProtocol::LoginAddAccountKey);
-    AB::Packets::Client::Login::AddAccountKey packet = {
-        accountUuid_,
-        authToken_,
-        addAccountKey_
-    };
-    AB::Packets::Add(packet, msg);
-    Send(msg);
 }
 
 void ProtocolLogin::HandleCharList(const AB::Packets::Server::Login::CharacterList& packet)

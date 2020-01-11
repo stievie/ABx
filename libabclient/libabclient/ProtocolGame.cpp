@@ -84,26 +84,32 @@ void ProtocolGame::Login(const std::string& accountUuid,
     const std::string& instanceUuid,
     const std::string& host, uint16_t port)
 {
-    accountUuid_ = accountUuid;
-    authToken_ = authToken;
-    charUuid_ = charUuid;
-    charUuid_ = charUuid;
-    mapUuid_ = mapUuid;
-    instanceUuid_ = instanceUuid;
+    Connect(host, port, [=]()
+    {
+        firstRevc_ = true;
 
-    Connect(host, port);
-}
+        // Login packet uses the default key
+        SetEncKey(AB::ENC_KEY);
 
-void ProtocolGame::OnConnect()
-{
-    firstRevc_ = true;
-    Protocol::OnConnect();
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
 
-    // Login packet uses the default key
-    SetEncKey(AB::ENC_KEY);
-    SendLoginPacket();
+        AB::Packets::Client::GameLogin packet;
+        packet.clientOs = AB::CLIENT_OS_CURRENT;
+        packet.protocolVersion = AB::PROTOCOL_VERSION;
+        const DH_KEY& key = keys_.GetPublickKey();
+        for (int i = 0; i < DH_KEY_LENGTH; ++i)
+            packet.key[i] = key[i];
+        packet.accountUuid = accountUuid;
+        packet.authToken = authToken;
+        packet.charUuid = charUuid;
+        packet.mapUuid = mapUuid;
+        packet.instanceUuid = instanceUuid;
+        AB::Packets::Add(packet, msg);
+        Send(msg);
 
-    Receive();
+        Receive();
+    });
 }
 
 void ProtocolGame::OnReceive(InputMessage& message)
@@ -215,26 +221,6 @@ void ProtocolGame::ParseKeyExchange(InputMessage& message)
 void ProtocolGame::LogMessage(const std::string& message)
 {
     receiver_.OnLog(message);
-}
-
-void ProtocolGame::SendLoginPacket()
-{
-    OutputMessage msg;
-    msg.Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
-
-    AB::Packets::Client::GameLogin packet;
-    packet.clientOs = AB::CLIENT_OS_CURRENT;
-    packet.protocolVersion = AB::PROTOCOL_VERSION;
-    const DH_KEY& key = keys_.GetPublickKey();
-    for (int i = 0; i < DH_KEY_LENGTH; ++i)
-        packet.key[i] = key[i];
-    packet.accountUuid = accountUuid_;
-    packet.authToken = authToken_;
-    packet.charUuid = charUuid_;
-    packet.mapUuid = mapUuid_;
-    packet.instanceUuid = instanceUuid_;
-    AB::Packets::Add(packet, msg);
-    Send(msg);
 }
 
 void ProtocolGame::Logout()

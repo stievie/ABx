@@ -21,11 +21,6 @@ public:
     enum { UseChecksum = true };
 private:
     Receiver& receiver_;
-    std::string accountUuid_;
-    std::string authToken_;
-    std::string charUuid_;
-    std::string mapUuid_;
-    std::string instanceUuid_;
     int64_t pingTick_;
     int64_t updateTick_;
     int64_t clockDiff_;
@@ -47,9 +42,7 @@ private:
     }
 
     void LogMessage(const std::string& message);
-    void SendLoginPacket();
 protected:
-    void OnConnect() override;
     void OnReceive(InputMessage& message) override;
     void OnError(ConnectionError connectionError, const asio::error_code& err) override;
 

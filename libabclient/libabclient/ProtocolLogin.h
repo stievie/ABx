@@ -26,21 +26,6 @@ public:
     typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
     typedef std::function<void()> AccountKeyAddedCallback;
 private:
-    std::string host_;
-    uint16_t port_;
-    std::string accountName_;
-    std::string accountUuid_;
-    std::string password_;
-    std::string authToken_;
-    std::string email_;
-    std::string accKey_;
-    std::string addAccountKey_;
-    std::string charName_;
-    std::string profUuid_;
-    uint32_t itemIndex_;
-    AB::Entities::CharacterSex sex_;
-    bool isPvp_;
-    bool firstRecv_;
     LoggedInCallback loggedInCallback_;
     CharlistCallback charlistCallback_;
     GamelistCallback gamelistCallback_;
@@ -48,12 +33,7 @@ private:
     CreateAccountCallback createAccCallback_;
     CreatePlayerCallback createPlayerCallback_;
     AccountKeyAddedCallback accountKeyAddedCallback_;
-    void SendLoginPacket();
-    void SendCreateAccountPacket();
-    void SendCreatePlayerPacket();
-    void SendGetOutpostsPacket();
-    void SendGetServersPacket();
-    void SendAddAccountKeyPacket();
+    bool firstRecv_;
     void ParseMessage(InputMessage& message);
 
     void HandleCharList(const AB::Packets::Server::Login::CharacterList& packet);
