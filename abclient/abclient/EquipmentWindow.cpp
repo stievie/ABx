@@ -194,7 +194,10 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
             if (p2->attributeCount > maxAttribCount)
                 maxAttribCount = p2->attributeCount;
             for (const auto& attrib : p2->attributes)
-                addAttribute(secAttribs, attrib);
+            {
+                if (!attrib.primary)
+                    addAttribute(secAttribs, attrib);
+            }
         }
     }
     secAttribs->UpdateLayout();
