@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "LevelManager.h"
 #include "TabGroup.h"
+#include "ShortcutEvents.h"
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
