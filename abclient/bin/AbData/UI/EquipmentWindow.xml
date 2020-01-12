@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="EquipmentWindow" />
+	<attribute name="Position" value="681 107" />
+	<attribute name="Size" value="420 521" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Opacity" value="0.9" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Spacing" value="4" />
+	<attribute name="Layout Border" value="4 4 4 4" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
+	<attribute name="Is Movable" value="true" />
+	<attribute name="Is Resizable" value="true" />
+	<element>
+		<attribute name="Name" value="TitleBar" />
+		<attribute name="Min Size" value="0 23" />
+		<attribute name="Max Size" value="2147483647 23" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Button">
+			<attribute name="Name" value="LoadButton" />
+			<attribute name="Size" value="20 20" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="20 20" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="60 75 75 90" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="SaveButton" />
+			<attribute name="Position" value="22 0" />
+			<attribute name="Size" value="20 20" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="20 20" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="90 75 105 90" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="CreateButton" />
+			<attribute name="Position" value="44 0" />
+			<attribute name="Size" value="20 20" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="20 20" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="90 75 105 90" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="CaptionText" />
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Equipment" />
+		</element>
+		<element type="Button" style="CloseButton">
+			<attribute name="Name" value="CloseButton" />
+			<attribute name="Size" value="16 16" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="16 16" />
+			<attribute name="Min Anchor" value="1 0.5" />
+			<attribute name="Max Anchor" value="1 0.5" />
+			<attribute name="Pivot" value="1 0.5" />
+			<attribute name="Focus Mode" value="NotFocusable" />
+			<attribute name="Image Rect" value="144 0 160 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+	</element>
+	<element>
+		<attribute name="Name" value="Container" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element>
+			<attribute name="Name" value="Left" />
+			<attribute name="Min Size" value="90 0" />
+			<attribute name="Max Size" value="90 2147483647" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Vertical" />
+			<element type="BorderImage">
+				<attribute name="Name" value="Cape" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="LeadHand" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="OffHand" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="WeaponSets" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
+				<attribute name="Layout Spacing" value="4" />
+				<attribute name="Layout Border" value="8 8 8 8" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<element type="CheckBox">
+					<attribute name="Min Size" value="16 16" />
+					<attribute name="Max Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="80 0 96 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Checked Image Offset" value="16 0" />
+					<element type="Text">
+						<attribute name="Position" value="22 0" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="1" />
+					</element>
+				</element>
+				<element type="CheckBox">
+					<attribute name="Min Size" value="16 16" />
+					<attribute name="Max Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="80 0 96 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Checked Image Offset" value="16 0" />
+					<element type="Text">
+						<attribute name="Position" value="22 0" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="2" />
+					</element>
+				</element>
+				<element type="CheckBox">
+					<attribute name="Min Size" value="16 16" />
+					<attribute name="Max Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="80 0 96 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Checked Image Offset" value="16 0" />
+					<element type="Text">
+						<attribute name="Position" value="22 0" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="3" />
+					</element>
+				</element>
+				<element type="CheckBox">
+					<attribute name="Min Size" value="16 16" />
+					<attribute name="Max Size" value="16 16" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="80 0 96 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+					<attribute name="Checked Image Offset" value="16 0" />
+					<element type="Text">
+						<attribute name="Position" value="22 0" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="4" />
+					</element>
+				</element>
+			</element>
+		</element>
+		<element type="View3D" style="View3D">
+			<attribute name="Name" value="Model" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="0 0 232 486" />
+		</element>
+		<element>
+			<attribute name="Name" value="Right" />
+			<attribute name="Min Size" value="90 0" />
+			<attribute name="Max Size" value="90 2147483647" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Vertical" />
+			<element type="BorderImage">
+				<attribute name="Name" value="Head" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="Chest" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="Hands" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="Legs" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Name" value="Feet" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+		</element>
+	</element>
+</element>
