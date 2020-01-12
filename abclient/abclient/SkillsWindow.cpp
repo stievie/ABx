@@ -68,6 +68,24 @@ void SkillsWindow::SubscribeEvents()
 
     auto* professionDropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     SubscribeToEvent(professionDropdown, E_ITEMSELECTED, URHO3D_HANDLER(SkillsWindow, HandleProfessionSelected));
+
+    SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(SkillsWindow, HandleSetAttribValue));
+    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(SkillsWindow, HandleSetSecProfession));
+}
+
+void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetAttributeValue;
+    uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
+    int value = eventData[P_VALUE].GetInt();
+    SetAttributeValue(attribIndex, value);
+}
+
+void SkillsWindow::HandleSetSecProfession(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetSecProfession;
+    uint32_t index = eventData[P_PROFINDEX].GetUInt();
+    SetProfessionIndex(index);
 }
 
 void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
@@ -110,6 +128,77 @@ void SkillsWindow::AddProfessions(const Player& player)
     dropdown->SetSelection(selection);
 }
 
+void SkillsWindow::SetProfessionIndex(uint32_t index)
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
+    auto* dropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
+    for (unsigned i = 0; i < dropdown->GetNumItems(); ++i)
+    {
+        auto* item = dropdown->GetItem(i);
+        if (item->GetVar("Int Value").GetUInt() == index)
+        {
+            if (dropdown->GetSelection() == i)
+                return;
+
+            dropdown->SetSelection(i);
+            break;
+        }
+    }
+
+    UpdateAttributes(*player);
+    UpdateLayout();
+}
+
+UIElement* SkillsWindow::GetAttributeContainer(uint32_t index)
+{
+    auto* attribContainer = GetChild("AttributesContanier", true);
+    auto* primAttribs = attribContainer->GetChild("PrimaryAttributes", true);
+    auto* attr = primAttribs->GetChild("Attribute" + String(index));
+    if (attr)
+        return attr;
+
+    auto* secAttribs = attribContainer->GetChild("SecondaryAttributes", true);
+    auto* attr2 = secAttribs->GetChild("Attribute" + String(index));
+    if (attr2)
+        return attr2;
+
+    return nullptr;
+}
+
+LineEdit* SkillsWindow::GetAttributeEdit(uint32_t index)
+{
+    auto* cont = GetAttributeContainer(index);
+    if (!cont)
+        return nullptr;
+
+    auto* edit = cont->GetChildStaticCast<LineEdit>("AttributeEdit", true);
+    return edit;
+}
+
+Spinner* SkillsWindow::GetAttributeSpinner(uint32_t index)
+{
+    auto* cont = GetAttributeContainer(index);
+    if (!cont)
+        return nullptr;
+
+    auto* spinner = cont->GetChildStaticCast<Spinner>("AttributeSpinner", true);
+    return spinner;
+}
+
+void SkillsWindow::SetAttributeValue(uint32_t index, int value)
+{
+    auto* spinner = GetAttributeSpinner(index);
+    if (!spinner)
+        return;
+
+    // Should also update the edit text
+    spinner->SetValue(value);
+}
+
 void SkillsWindow::UpdateAttributes(const Player& player)
 {
     (void)player;
@@ -138,6 +227,8 @@ void SkillsWindow::UpdateAttributes(const Player& player)
             return;
 
         auto* cont = container->CreateChild<UIElement>();
+        cont->SetVar("AttributeIndex", attr.index);
+        cont->SetName("Attribute" + String(attr.index));
         cont->SetLayoutMode(LM_HORIZONTAL);
         auto* label = cont->CreateChild<Text>();
         label->SetText(String(a->name.c_str()));
@@ -145,6 +236,7 @@ void SkillsWindow::UpdateAttributes(const Player& player)
         label->SetFontSize(9);
         label->SetAlignment(HA_LEFT, VA_CENTER);
         auto* edit = cont->CreateChild<LineEdit>();
+        edit->SetName("AttributeEdit");
         edit->SetMaxHeight(22);
         edit->SetTexture(tex);
         edit->SetImageRect(IntRect(48, 0, 64, 16));
@@ -155,6 +247,7 @@ void SkillsWindow::UpdateAttributes(const Player& player)
         edit->SetEditable(false);
 
         auto* spinner = cont->CreateChild<Spinner>("AttribSpinner");
+        spinner->SetName("AttributeSpinner");
         spinner->SetTexture(tex);
         spinner->SetImageRect(IntRect(48, 0, 64, 16));
         spinner->SetEdit(SharedPtr<LineEdit>(edit));

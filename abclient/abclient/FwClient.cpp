@@ -1899,3 +1899,20 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewa
     eData[P_REWARDED] = packet.rewarded;
     QueueEvent(Events::E_QUESTREWARDED, eData);
 }
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerAttributeValue& packet)
+{
+    using namespace Events::SetAttributeValue;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_ATTRIBINDEX] = packet.attribIndex;
+    eData[P_VALUE] = packet.value;
+    QueueEvent(Events::E_SET_ATTRIBUTEVALUE, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSecProfession& packet)
+{
+    using namespace Events::SetSecProfession;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_PROFINDEX] = packet.profIndex;
+    QueueEvent(Events::E_SET_SECPROFESSION, eData);
+}

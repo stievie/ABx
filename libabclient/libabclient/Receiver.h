@@ -101,6 +101,8 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSecProfession& packet) = 0;
 
 };
 

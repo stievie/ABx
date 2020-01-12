@@ -911,4 +911,14 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestReward
     receiver_.OnPacket(updateTick, packet);
 }
 
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSecProfession& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
 }

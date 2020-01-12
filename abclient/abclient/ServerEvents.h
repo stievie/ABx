@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 using namespace Urho3D;
 
 namespace Events {
@@ -397,6 +399,17 @@ URHO3D_EVENT(E_GOT_PLAYERINFO, GotPlayerInfo)
 
 URHO3D_EVENT(E_GOT_GUILDMEMBERS, GotGuildMembers)
 {
+}
+
+URHO3D_EVENT(E_SET_ATTRIBUTEVALUE, SetAttributeValue)
+{
+    URHO3D_PARAM(P_ATTRIBINDEX, AttribIndex);  // uint32_t
+    URHO3D_PARAM(P_VALUE, Value);              // int8_t
+}
+
+URHO3D_EVENT(E_SET_SECPROFESSION, SetSecProfession)
+{
+    URHO3D_PARAM(P_PROFINDEX, ProfIndex);  // uint32_t
 }
 
 }

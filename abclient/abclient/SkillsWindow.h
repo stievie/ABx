@@ -3,6 +3,7 @@
 #include <Urho3DAll.h>
 
 class Player;
+class Spinner;
 
 class SkillsWindow : public Window
 {
@@ -15,6 +16,13 @@ private:
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleProfessionSelected(StringHash eventType, VariantMap& eventData);
+    void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
+    void HandleSetSecProfession(StringHash eventType, VariantMap& eventData);
+    UIElement* GetAttributeContainer(uint32_t index);
+    LineEdit* GetAttributeEdit(uint32_t index);
+    Spinner* GetAttributeSpinner(uint32_t index);
+    void SetAttributeValue(uint32_t index, int value);
+    void SetProfessionIndex(uint32_t index);
 public:
     SkillsWindow(Context* context);
     ~SkillsWindow() override;

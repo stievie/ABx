@@ -274,6 +274,8 @@ enum ServerPacketType : uint8_t
     QuestRewarded,
 
     PlayerInfo,                   // Get info of related player (e.g. friend, guild member)
+    PlayerSetAttributeValue,
+    PlayerSetSecProfession,
 
     CodeLast = 0xFF
 };

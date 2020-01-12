@@ -919,7 +919,28 @@ struct PartyMembersInfo
             ar.value(member);
         }
     }
+};
 
+struct SetPlayerAttributeValue
+{
+    uint32_t attribIndex;
+    int8_t value;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(attribIndex);
+        ar.value(value);
+    }
+};
+
+struct SetPlayerSecProfession
+{
+    uint32_t profIndex;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(profIndex);
+    }
 };
 
 }
