@@ -611,6 +611,25 @@ void Client::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
         protoGame_->SetOnlineStatus(status);
 }
 
+void Client::SetSecondaryProfession(uint32_t profIndex)
+{
+    if (state_ == State::World)
+        protoGame_->SetSecondaryProfession(profIndex);
+}
+
+void Client::SetAttributeValue(uint32_t attribIndex, uint8_t value)
+{
+    if (state_ == State::World)
+        protoGame_->SetAttributeValue(attribIndex, value);
+}
+
+void Client::EquipSkill(uint32_t skillIndex, uint8_t pos)
+{
+    if (state_ == State::World)
+        protoGame_->EquipSkill(skillIndex, pos);
+}
+
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);

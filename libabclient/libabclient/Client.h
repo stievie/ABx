@@ -213,6 +213,9 @@ public:
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
+    void SetSecondaryProfession(uint32_t profIndex);
+    void SetAttributeValue(uint32_t attribIndex, uint8_t value);
+    void EquipSkill(uint32_t skillIndex, uint8_t pos);
 };
 
 }

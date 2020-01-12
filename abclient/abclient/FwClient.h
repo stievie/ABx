@@ -10,6 +10,7 @@
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Music.h>
 #include <AB/Entities/FriendList.h>
+#include <AB/Entities/Game.h>
 #include <map>
 #include "Options.h"
 #include <AB/Packets/ServerPackets.h>
@@ -36,6 +37,7 @@ class FwClient : public Object, public Client::Receiver
 private:
     String currentLevel_;
     String currentMapUuid_;
+    AB::Entities::GameType currentGameType_{ AB::Entities::GameTypeUnknown };
     bool levelReady_{ false };
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_{ 0 };
@@ -146,6 +148,9 @@ public:
     void PartyLeave();
     void QueueMatch();
     void UnqueueMatch();
+    void SetSecondaryProfession(uint32_t profIndex);
+    void SetAttributeValue(uint32_t attribIndex, uint8_t value);
+    void EquipSkill(uint32_t skillIndex, uint8_t pos);
 
     void OnLog(const std::string& message) override;
     /// asio network error

@@ -598,6 +598,7 @@ void FwClient::Login(const String& name, const String& pass)
     {
         accountName_ = name;
         accountPass_ = pass;
+        currentGameType_ = AB::Entities::GameTypeUnknown;
         client_.Login(std::string(name.CString()), std::string(pass.CString()));
     }
 }
@@ -636,6 +637,7 @@ void FwClient::EnterWorld(const String& charUuid, const String& mapUuid)
     if (loggedIn_)
     {
         currentCharacterUuid_ = charUuid;
+        currentGameType_ = AB::Entities::GameTypeUnknown;
         client_.EnterWorld(std::string(charUuid.CString()), std::string(mapUuid.CString()));
     }
 }
@@ -643,13 +645,19 @@ void FwClient::EnterWorld(const String& charUuid, const String& mapUuid)
 void FwClient::ChangeWorld(const String& mapUuid)
 {
     if (loggedIn_)
+    {
+        currentGameType_ = AB::Entities::GameTypeUnknown;
         client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(mapUuid.CString()));
+    }
 }
 
 void FwClient::ChangeMap(const String& mapUuid)
 {
     if (loggedIn_)
+    {
+        currentGameType_ = AB::Entities::GameTypeUnknown;
         client_.ChangeMap(std::string(mapUuid.CString()));
+    }
 }
 
 void FwClient::ChangeServer(const String& serverId)
@@ -672,6 +680,7 @@ void FwClient::Logout()
     client_.ResetPoll();
     client_.Run();
     loggedIn_ = false;
+    currentGameType_ = AB::Entities::GameTypeUnknown;
 }
 
 void FwClient::GetMailHeaders()
@@ -914,6 +923,24 @@ void FwClient::UnqueueMatch()
         client_.UnqueueMatch();
 }
 
+void FwClient::SetSecondaryProfession(uint32_t profIndex)
+{
+    if (loggedIn_ && AB::Entities::IsOutpost(currentGameType_))
+        client_.SetSecondaryProfession(profIndex);
+}
+
+void FwClient::SetAttributeValue(uint32_t attribIndex, uint8_t value)
+{
+    if (loggedIn_ && AB::Entities::IsOutpost(currentGameType_))
+        client_.SetAttributeValue(attribIndex, value);
+}
+
+void FwClient::EquipSkill(uint32_t skillIndex, uint8_t pos)
+{
+    if (loggedIn_ && AB::Entities::IsOutpost(currentGameType_))
+        client_.EquipSkill(skillIndex, pos);
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -1109,6 +1136,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorl
     URHO3D_LOGINFOF("Switching to level %s", currentLevel_.CString());
 
     currentMapUuid_ = String(packet.mapUuid.c_str());
+    currentGameType_ = static_cast<AB::Entities::GameType>(packet.gameType);
     {
         using namespace Events::SetLevel;
         VariantMap& eData = GetEventDataMap();

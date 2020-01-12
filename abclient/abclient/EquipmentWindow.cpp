@@ -155,14 +155,14 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         label->SetText(String(a->name.c_str()));
         label->SetStyleAuto();
         label->SetFontSize(9);
-        label->SetAlignment(HA_LEFT, VA_TOP);
+        label->SetAlignment(HA_LEFT, VA_CENTER);
         auto* edit = cont->CreateChild<LineEdit>();
         edit->SetMaxHeight(22);
         edit->SetTexture(tex);
         edit->SetImageRect(IntRect(48, 0, 64, 16));
         edit->SetBorder(IntRect(4, 4, 4, 4));
         edit->SetStyleAuto();
-        edit->SetAlignment(HA_RIGHT, VA_TOP);
+        edit->SetAlignment(HA_RIGHT, VA_CENTER);
         edit->SetMaxWidth(50);
         edit->SetEditable(false);
 
@@ -176,7 +176,7 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         spinner->SetMin(0);
         spinner->SetMax(20);
         spinner->SetStyleAuto();
-        spinner->SetAlignment(HA_RIGHT, VA_TOP);
+        spinner->SetAlignment(HA_RIGHT, VA_CENTER);
     };
 
     unsigned maxAttribCount = p1->attributeCount;
@@ -202,7 +202,7 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
     }
     secAttribs->UpdateLayout();
 
-    attribContainer->SetMaxHeight(maxAttribCount * 20);
+    attribContainer->SetMaxHeight(static_cast<int>(maxAttribCount * 20));
 }
 
 void EquipmentWindow::UpdateSkills(const Player& player)
