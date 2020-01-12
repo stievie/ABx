@@ -16,7 +16,7 @@
 #include "AudioManager.h"
 #include "CreditsWindow.h"
 #include "ShortcutEvents.h"
-#include "EquipmentWindow.h"
+#include "SkillsWindow.h"
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
@@ -72,7 +72,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
     SubscribeToEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
-    SubscribeToEvent(Events::E_SC_TOGGLEEQUIPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleEquipmentWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLESKILLSWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleSkillsWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEGUILDWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleGuildWindow));
     SubscribeToEvent(Events::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
@@ -766,16 +766,16 @@ void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
     }
 }
 
-void WorldLevel::HandleToggleEquipmentWindow(StringHash, VariantMap&)
+void WorldLevel::HandleToggleSkillsWindow(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<EquipmentWindow> equipmentWindow;
-    equipmentWindow.StaticCast(wm->GetWindow(WINDOW_EQUIPMENT, true));
-    equipmentWindow->SetVisible(!equipmentWindow->IsVisible());
-    if (equipmentWindow->IsVisible())
+    SharedPtr<SkillsWindow> wnd;
+    wnd.StaticCast(wm->GetWindow(WINDOW_SKILLS, true));
+    wnd->SetVisible(!wnd->IsVisible());
+    if (wnd->IsVisible())
     {
-        equipmentWindow->BringToFront();
-        equipmentWindow->UpdateAll();
+        wnd->BringToFront();
+        wnd->UpdateAll();
     }
 }
 

@@ -623,6 +623,7 @@ void OptionsWindow::FillShortcutsList()
             Text* txt = new Text(context_);
             txt->SetText(sc.second_.GetDescription());
             txt->SetMaxWidth(lvw->GetWidth());
+            txt->SetMinWidth(lvw->GetWidth());
             txt->SetWidth(lvw->GetWidth());
             txt->SetWordwrap(false);
             txt->SetVar("Event", sc.first_);
@@ -630,8 +631,6 @@ void OptionsWindow::FillShortcutsList()
             lvw->AddItem(txt);
         }
     }
-    lvw->EnableLayoutUpdate();
-    lvw->UpdateLayout();
 }
 
 void OptionsWindow::HandleShortcutItemSelected(StringHash, VariantMap& eventData)

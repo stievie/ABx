@@ -18,7 +18,7 @@
 #include "InventoryWindow.h"
 #include "AccountChestDialog.h"
 #include "GuildWindow.h"
-#include "EquipmentWindow.h"
+#include "SkillsWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -67,9 +67,9 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             if (wnd->IsVisible())
                 wnd->GetInventory();
         }
-        else if (hash == WINDOW_EQUIPMENT)
+        else if (hash == WINDOW_SKILLS)
         {
-            SharedPtr<EquipmentWindow> wnd = SharedPtr<EquipmentWindow>(new EquipmentWindow(context_));
+            SharedPtr<SkillsWindow> wnd = SharedPtr<SkillsWindow>(new SkillsWindow(context_));
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
             windows_[hash] = wnd;

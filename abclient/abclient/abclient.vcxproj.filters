@@ -201,10 +201,10 @@
     <ClInclude Include="AddAccountKeyDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EquipmentWindow.h">
+    <ClInclude Include="Spinner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Spinner.h">
+    <ClInclude Include="SkillsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -365,10 +365,10 @@
     <ClCompile Include="AddAccountKeyDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EquipmentWindow.cpp">
+    <ClCompile Include="Spinner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Spinner.cpp">
+    <ClCompile Include="SkillsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

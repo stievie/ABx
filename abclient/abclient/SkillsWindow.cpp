@@ -1,19 +1,20 @@
 #include "stdafx.h"
-#include "EquipmentWindow.h"
+#include "SkillsWindow.h"
 #include "Shortcuts.h"
 #include "Spinner.h"
 #include "SkillManager.h"
 #include "Player.h"
 #include "LevelManager.h"
+#include "TabGroup.h"
 
-EquipmentWindow::EquipmentWindow(Context* context) :
+SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
 {
-    SetName("EquipmentWindow");
+    SetName("SkillsWindow");
 
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* file = cache->GetResource<XMLFile>("UI/SkillsEquipWindow.xml");
+    XMLFile* file = cache->GetResource<XMLFile>("UI/SkillsWindow.xml");
     LoadXML(file->GetRoot());
 
     // It seems this isn't loaded from the XML file
@@ -34,25 +35,23 @@ EquipmentWindow::EquipmentWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = GetChildStaticCast<Text>("CaptionText", true);
-    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEEQUIPWINDOW, "Equipment", true));
+    caption->SetText(scs->GetCaption(Events::E_SC_TOGGLESKILLSWINDOW, "Skills", true));
 
     SetSize(330, 420);
     SetPosition(10, 30);
     SetVisible(true);
-
-    CreateUI();
 
     SetStyleAuto();
 
     SubscribeEvents();
 }
 
-EquipmentWindow::~EquipmentWindow()
+SkillsWindow::~SkillsWindow()
 {
     UnsubscribeFromAllEvents();
 }
 
-Text* EquipmentWindow::CreateDropdownItem(const String& text, unsigned value)
+Text* SkillsWindow::CreateDropdownItem(const String& text, unsigned value)
 {
     Text* result = new Text(context_);
     result->SetText(text);
@@ -61,43 +60,33 @@ Text* EquipmentWindow::CreateDropdownItem(const String& text, unsigned value)
     return result;
 }
 
-void EquipmentWindow::CreateUI()
-{
-    auto* attribContainer = GetChild("AttributesContanier", true);
-
-    auto* pDropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
-    pDropdown->GetPopup()->SetWidth(pDropdown->GetWidth());
-}
-
-void EquipmentWindow::SubscribeEvents()
+void SkillsWindow::SubscribeEvents()
 {
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
-    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleCloseClicked));
+    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(SkillsWindow, HandleCloseClicked));
 
-    auto* attribContainer = GetChild("AttributesContanier", true);
-    auto* professionDropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
-    SubscribeToEvent(professionDropdown, E_ITEMSELECTED, URHO3D_HANDLER(EquipmentWindow, HandleProfessionSelected));
+    auto* professionDropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
+    SubscribeToEvent(professionDropdown, E_ITEMSELECTED, URHO3D_HANDLER(SkillsWindow, HandleProfessionSelected));
 }
 
-void EquipmentWindow::HandleProfessionSelected(StringHash, VariantMap&)
+void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
 {
     auto* lm = GetSubsystem<LevelManager>();
     auto* player = lm->GetPlayer();
     if (!player)
         return;
     UpdateAttributes(*player);
+    UpdateLayout();
 }
 
-void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
+void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
 }
 
-void EquipmentWindow::AddProfessions(const Player& player)
+void SkillsWindow::AddProfessions(const Player& player)
 {
-    auto* attribContainer = GetChild("AttributesContanier", true);
-
-    auto* dropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
+    auto* dropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     dropdown->RemoveAllItems();
 
     uint32_t primIndex = player.profession_->index;
@@ -106,7 +95,6 @@ void EquipmentWindow::AddProfessions(const Player& player)
     {
         dropdown->AddItem(CreateDropdownItem("(None)", 0));
     }
-    dropdown->GetPopup()->SetWidth(dropdown->GetWidth());
     unsigned selection = 0;
     const auto& profs = GetSubsystem<SkillManager>()->GetProfessions();
     for (const auto& prof : profs)
@@ -121,7 +109,7 @@ void EquipmentWindow::AddProfessions(const Player& player)
     dropdown->SetSelection(selection);
 }
 
-void EquipmentWindow::UpdateAttributes(const Player& player)
+void SkillsWindow::UpdateAttributes(const Player& player)
 {
     (void)player;
 
@@ -129,12 +117,11 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
 
     auto* attribContainer = GetChild("AttributesContanier", true);
-    auto* attribs = attribContainer->GetChild("Attributes", true);
-    auto* primAttribs = attribs->GetChild("PrimaryAttributes", true);
-    auto* secAttribs = attribs->GetChild("SecondaryAttributes", true);
+    auto* primAttribs = attribContainer->GetChild("PrimaryAttributes", true);
+    auto* secAttribs = attribContainer->GetChild("SecondaryAttributes", true);
     primAttribs->RemoveAllChildren();
     secAttribs->RemoveAllChildren();
-    auto* pDropdown = attribContainer->GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
+    auto* pDropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     unsigned p1Index = player.profession_->index;
 
     auto* sm = GetSubsystem<SkillManager>();
@@ -179,10 +166,8 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
     };
 
-    unsigned maxAttribCount = p1->attributeCount;
     for (const auto& attrib : p1->attributes)
         addAttribute(primAttribs, attrib);
-    primAttribs->UpdateLayout();
 
     auto* selItem = pDropdown->GetSelectedItem();
     unsigned p2Index = selItem->GetVar("Int Value").GetUInt();
@@ -191,8 +176,6 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
         auto* p2 = sm->GetProfessionByIndex(p2Index);
         if (p2)
         {
-            if (p2->attributeCount > maxAttribCount)
-                maxAttribCount = p2->attributeCount;
             for (const auto& attrib : p2->attributes)
             {
                 if (!attrib.primary)
@@ -200,21 +183,17 @@ void EquipmentWindow::UpdateAttributes(const Player& player)
             }
         }
     }
-    secAttribs->UpdateLayout();
 
-    attribContainer->SetMaxHeight(static_cast<int>(maxAttribCount * 20));
+    attribContainer->SetFixedHeight(static_cast<int>(p1->attributeCount * 22));
+    attribContainer->UpdateLayout();
+    UpdateLayout();
 }
 
-void EquipmentWindow::UpdateSkills(const Player& player)
+void SkillsWindow::UpdateSkills(const Player& player)
 {
     (void)player;
 }
-void EquipmentWindow::UpdateEquipment(const Player& player)
-{
-    (void)player;
-}
-
-void EquipmentWindow::UpdateAll()
+void SkillsWindow::UpdateAll()
 {
     auto* lm = GetSubsystem<LevelManager>();
     auto* player = lm->GetPlayer();
@@ -223,5 +202,4 @@ void EquipmentWindow::UpdateAll()
     AddProfessions(*player);
     UpdateAttributes(*player);
     UpdateSkills(*player);
-    UpdateEquipment(*player);
 }

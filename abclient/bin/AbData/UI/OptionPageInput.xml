@@ -21,9 +21,7 @@
 			<attribute name="Pivot" value="0 0" />
 			<element type="ScrollBar" internal="true" style="none">
 				<attribute name="Size" value="144 16" />
-				<attribute name="Min Anchor" value="0 1" />
-				<attribute name="Max Anchor" value="0 1" />
-				<attribute name="Pivot" value="0 1" />
+				<attribute name="Pivot" value="0 0" />
 				<attribute name="Color" value="0 0 0 0" />
 				<attribute name="Top Left Color" value="0 0 0 0" />
 				<attribute name="Top Right Color" value="0 0 0 0" />
@@ -120,11 +118,9 @@
 			<element type="ListView">
 				<attribute name="Name" value="HotkeysListView" />
 				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
 				<element type="ScrollBar" internal="true" style="none">
-					<attribute name="Size" value="140 16" />
-					<attribute name="Min Anchor" value="0 1" />
-					<attribute name="Max Anchor" value="0 1" />
-					<attribute name="Pivot" value="0 1" />
+					<attribute name="Pivot" value="0 0" />
 					<attribute name="Color" value="0 0 0 0" />
 					<attribute name="Top Left Color" value="0 0 0 0" />
 					<attribute name="Top Right Color" value="0 0 0 0" />
@@ -162,7 +158,6 @@
 					</element>
 				</element>
 				<element type="ScrollBar" internal="true" style="none">
-					<attribute name="Size" value="16 166" />
 					<attribute name="Min Anchor" value="1 0" />
 					<attribute name="Max Anchor" value="1 0" />
 					<attribute name="Pivot" value="1 0" />

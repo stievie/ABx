@@ -78,9 +78,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory"),
         scs->GetShortcutName(Events::E_SC_TOGGLEINVENTORYWINDOW),
         URHO3D_HANDLER(GameMenu, HandleInventoryWindowUsed));
-    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLEEQUIPWINDOW, "Equipment"),
-        scs->GetShortcutName(Events::E_SC_TOGGLEEQUIPWINDOW),
-        URHO3D_HANDLER(GameMenu, HandleEquipmentWindowUsed));
+    CreateMenuItem(popup, scs->GetCaption(Events::E_SC_TOGGLESKILLSWINDOW, "Skills"),
+        scs->GetShortcutName(Events::E_SC_TOGGLESKILLSWINDOW),
+        URHO3D_HANDLER(GameMenu, HandleSkillsWindowUsed));
 
     popup->SetWidth(40);
 }
@@ -209,11 +209,11 @@ void GameMenu::HandleInventoryWindowUsed(StringHash, VariantMap&)
     SendEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, e);
 }
 
-void GameMenu::HandleEquipmentWindowUsed(StringHash, VariantMap&)
+void GameMenu::HandleSkillsWindowUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(Events::E_SC_TOGGLEEQUIPWINDOW, e);
+    SendEvent(Events::E_SC_TOGGLESKILLSWINDOW, e);
 }
 
 void GameMenu::HandleMapUsed(StringHash, VariantMap&)
