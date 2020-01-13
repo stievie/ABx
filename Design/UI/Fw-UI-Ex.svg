@@ -19,8 +19,8 @@
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="Fw-UI-Ex.svg"
    inkscape:export-filename="/home/sa/src/ABx/Design/UI/Fw-UI-Ex.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-xdpi="96.000008"
+   inkscape:export-ydpi="96.000008">
   <title
      id="title5629">Urho3D GUI</title>
   <sodipodi:namedview
@@ -30,9 +30,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16.000001"
-     inkscape:cx="139.59521"
-     inkscape:cy="44.558562"
+     inkscape:zoom="5.6568546"
+     inkscape:cx="104.18698"
+     inkscape:cy="61.369125"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1187,7 +1187,7 @@
            rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
       </cc:Work>
       <cc:License
-         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
         <cc:permits
            rdf:resource="http://creativecommons.org/ns#Reproduction" />
         <cc:permits
@@ -2882,79 +2882,62 @@
       <g
          id="g647"
          style="fill:#ffffff;fill-opacity:1">
-	<path
-   id="path643"
-   d="m 51.438,404.604 c -0.068,0.063 -0.134,0.121 -0.191,0.189 l -1.861,1.858 c -0.376,0.136 -0.749,0.32 -1.087,0.551 -7.402,4.872 -17.867,3.822 -24.168,-2.478 -6.397,-6.398 -7.455,-16.542 -2.5,-24.1 0.231,-0.348 0.404,-0.729 0.539,-1.124 l 224.4,-224.398 26.876,26.876 C 180.487,275.248 54.289,401.749 51.438,404.604 Z"
-   inkscape:connector-curvature="0"
-   style="fill:#ffffff;fill-opacity:1" />
-
-	<path
-   id="path645"
-   d="m 391.736,224.003 -26.726,26.729 c -2.025,2.026 -5.573,2.026 -7.601,0 L 188.08,81.395 c -1.016,-1.01 -1.575,-2.359 -1.575,-3.794 0,-1.436 0.559,-2.791 1.575,-3.807 L 260.297,1.576 C 261.315,0.56 262.664,0 264.097,0 c 1.444,0 2.792,0.56 3.807,1.575 l 123.833,123.828 v 98.6 z"
-   inkscape:connector-curvature="0"
-   style="fill:#ffffff;fill-opacity:1" />
-
-</g>
+        <path
+           id="path643"
+           d="m 51.438,404.604 c -0.068,0.063 -0.134,0.121 -0.191,0.189 l -1.861,1.858 c -0.376,0.136 -0.749,0.32 -1.087,0.551 -7.402,4.872 -17.867,3.822 -24.168,-2.478 -6.397,-6.398 -7.455,-16.542 -2.5,-24.1 0.231,-0.348 0.404,-0.729 0.539,-1.124 l 224.4,-224.398 26.876,26.876 C 180.487,275.248 54.289,401.749 51.438,404.604 Z"
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-opacity:1" />
+        <path
+           id="path645"
+           d="m 391.736,224.003 -26.726,26.729 c -2.025,2.026 -5.573,2.026 -7.601,0 L 188.08,81.395 c -1.016,-1.01 -1.575,-2.359 -1.575,-3.794 0,-1.436 0.559,-2.791 1.575,-3.807 L 260.297,1.576 C 261.315,0.56 262.664,0 264.097,0 c 1.444,0 2.792,0.56 3.807,1.575 l 123.833,123.828 v 98.6 z"
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-opacity:1" />
+      </g>
       <g
          id="g649"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g651"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g653"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g655"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g657"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g659"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g661"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g663"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g665"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g667"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g669"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g671"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g673"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g675"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
       <g
          id="g677"
-         style="fill:#ffffff;fill-opacity:1">
-</g>
+         style="fill:#ffffff;fill-opacity:1" />
     </g>
     <g
        id="g704-2"

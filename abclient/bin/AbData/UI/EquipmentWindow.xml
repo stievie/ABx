@@ -27,9 +27,9 @@
 			<attribute name="Max Anchor" value="0 0.5" />
 			<attribute name="Pivot" value="0 0.5" />
 			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-			<attribute name="Image Rect" value="60 75 75 90" />
+			<attribute name="Image Rect" value="64 80 80 96" />
 			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Hover Image Offset" value="16 0" />
 			<attribute name="Pressed Image Offset" value="0 -1" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
@@ -43,9 +43,9 @@
 			<attribute name="Max Anchor" value="0 0.5" />
 			<attribute name="Pivot" value="0 0.5" />
 			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-			<attribute name="Image Rect" value="90 75 105 90" />
+			<attribute name="Image Rect" value="96 80 112 96" />
 			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Hover Image Offset" value="16 0" />
 			<attribute name="Pressed Image Offset" value="0 -1" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
@@ -59,9 +59,9 @@
 			<attribute name="Max Anchor" value="0 0.5" />
 			<attribute name="Pivot" value="0 0.5" />
 			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-			<attribute name="Image Rect" value="90 75 105 90" />
+			<attribute name="Image Rect" value="128 80 144 96" />
 			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="15 0" />
+			<attribute name="Hover Image Offset" value="16 0" />
 			<attribute name="Pressed Image Offset" value="0 -1" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
