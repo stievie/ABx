@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Urho3DAll.h>
+
 using namespace Urho3D;
 
 namespace Events {
@@ -140,6 +142,10 @@ URHO3D_EVENT(E_SC_TOGGLEINVENTORYWINDOW, ToggleInventoryWindow)
 }
 
 URHO3D_EVENT(E_SC_TOGGLESKILLSWINDOW, ToggleSkillsWindow)
+{
+}
+
+URHO3D_EVENT(E_SC_TOGGLEEQUIPWINDOW, ToggleEquipWindow)
 {
 }
 

@@ -73,6 +73,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
     SubscribeToEvent(Events::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
     SubscribeToEvent(Events::E_SC_TOGGLESKILLSWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleSkillsWindow));
+    SubscribeToEvent(Events::E_SC_TOGGLEEQUIPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleEquipWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEGUILDWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleGuildWindow));
     SubscribeToEvent(Events::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
@@ -779,6 +780,16 @@ void WorldLevel::HandleToggleSkillsWindow(StringHash, VariantMap&)
     }
 }
 
+void WorldLevel::HandleToggleEquipWindow(StringHash, VariantMap&)
+{
+    equipWindow_->SetVisible(!equipWindow_->IsVisible());
+    if (equipWindow_->IsVisible())
+    {
+        equipWindow_->BringToFront();
+        equipWindow_->UpdateEquipment();
+    }
+}
+
 void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)
 {
     if (missionMap_)
@@ -1073,6 +1084,10 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(inventoryWindow_);
     if (inventoryWindow_->IsVisible())
         inventoryWindow_->GetInventory();
+    equipWindow_.DynamicCast(wm->GetWindow(WINDOW_EQUIPMENT));
+    uiRoot_->AddChild(equipWindow_);
+    if (equipWindow_->IsVisible())
+        equipWindow_->UpdateEquipment();
     friendsWindow_.DynamicCast(wm->GetWindow(WINDOW_FRIENDLIST));
     uiRoot_->AddChild(friendsWindow_);
     if (friendsWindow_->IsVisible())

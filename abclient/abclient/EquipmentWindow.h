@@ -1,9 +1,16 @@
 #pragma once
 
+#include <Urho3DAll.h>
 
-class EquipmentWindow
+class EquipmentWindow : public Window
 {
+    URHO3D_OBJECT(EquipmentWindow, Window)
+private:
+    void SubscribeEvents();
 public:
-    EquipmentWindow();
+    EquipmentWindow(Context* context);
+    ~EquipmentWindow() override;
+
+    void UpdateEquipment();
 };
 

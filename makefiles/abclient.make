@@ -6,7 +6,7 @@ TARGETDIR = ../abclient/bin
 TARGET = $(TARGETDIR)/fw$(SUFFIX)
 SOURDEDIR = ../abclient/abclient
 OBJDIR = obj/x64/$(CONFIG)/abclient
-LIBS += -lpthread -lGL -lcrypto -lssl -lUrho3D -labclient -ldl -lrt -lstdc++fs -labcrypto
+LIBS += -lpthread -lGL -lcrypto -lssl -lUrho3D -labclient -ldl -lrt -lstdc++fs -labcrypto -ltinyexpr
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes

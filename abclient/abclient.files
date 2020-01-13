@@ -30,6 +30,8 @@ abclient/DialogWindow.cpp
 abclient/DialogWindow.h
 abclient/EffectsWindow.cpp
 abclient/EffectsWindow.h
+abclient/EquipmentWindow.cpp
+abclient/EquipmentWindow.h
 abclient/SkillsWindow.cpp
 abclient/SkillsWindow.h
 abclient/Extrapolator.h

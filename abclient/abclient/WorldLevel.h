@@ -18,6 +18,7 @@
 #include "InventoryWindow.h"
 #include "FriendListWindow.h"
 #include "GuildWindow.h"
+#include "EquipmentWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -55,6 +56,7 @@ protected:
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
+    SharedPtr<EquipmentWindow> equipWindow_;
     SharedPtr<FriendListWindow> friendsWindow_;
     SharedPtr<GuildWindow> guildWindow_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
@@ -122,6 +124,7 @@ private:
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
     void HandleToggleInventoryWindow(StringHash eventType, VariantMap& eventData);
     void HandleToggleSkillsWindow(StringHash eventType, VariantMap& eventData);
+    void HandleToggleEquipWindow(StringHash eventType, VariantMap& eventData);
     void HandleToggleMissionMapWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);
