@@ -38,6 +38,7 @@ Creator: sa 2017-2019
 * Entity Position Interpolation https://github.com/jwatte/EPIC
 * http://kenney.nl/assets/particle-pack
 * Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
+* https://github.com/codeplea/tinyexpr
 * Font: ClearSans
 
 ## Assets

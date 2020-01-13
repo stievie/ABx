@@ -180,6 +180,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Entity Position Interpolation: https://github.com/jwatte/EPIC", 15);
     CreateSingleLine("Particles: https://kenney.nl/assets/particle-pack", 15);
     CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
+    CreateSingleLine("tinyexpr: https://github.com/codeplea/tinyexpr", 15);
 
     CreateSingleLine("Assets", 30, true);
     CreateSingleLine("World Map: https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg", 15);
