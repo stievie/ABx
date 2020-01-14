@@ -24,6 +24,7 @@ private:
     void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleInventoryWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleSkillsWindowUsed(StringHash eventType, VariantMap& eventData);
+    void HandleEquipWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleMissionMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleGotServices(StringHash eventType, VariantMap& eventData);

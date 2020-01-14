@@ -18,6 +18,14 @@ in the directories of the projects.
 I use Visual Studio 2019 as IDE with the Visual Studio 2017 tools chain. I didn't try the Visual
 Studio 2019 tools chain yet.
 
+### Server
+
+Build `absall\abs3rd.sln` and `absall\absall.sln`.
+
+### Client
+
+Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
+
 ## Linux
 
 ### Prerequisites
@@ -74,7 +82,7 @@ can do it manually:
     /// Set checked state without generating an event.
     void SetCheckedInternal(bool enable){ checked_ = enable; }
 ~~~
-Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`, 
+Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
 `/Lib/x64/Release`). Copy Urho3D header files to `Include/Urho3D`. Copy
 Urho3D assets to the `bin` directory:
 ~~~plain
@@ -86,7 +94,10 @@ bin
 
 #### Build
 
-`cd` to `./makefiles` and type `make -f client.make`.
+`cd` to `./makefiles` and type:
+~~~sh
+$ make -f client.make
+~~~
 
 ## Troubleshooting
 

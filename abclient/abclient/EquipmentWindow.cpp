@@ -6,7 +6,7 @@
 EquipmentWindow::EquipmentWindow(Context* context) :
     Window(context)
 {
-    SetName("SkillsWindow");
+    SetName("EquipmentWindow");
 
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -39,6 +39,18 @@ EquipmentWindow::EquipmentWindow(Context* context) :
 
     SetStyleAuto();
 
+    modelScene_ = new Scene(context);
+    auto* sceneFile = cache->GetResource<XMLFile>("Scenes/EquipmentScene.xml");
+    if (sceneFile)
+    {
+        modelScene_->LoadXML(sceneFile->GetRoot());
+        Camera* camera = modelScene_->GetComponent<Camera>(true);
+        View3D* modelViewer = GetChildStaticCast<View3D>("Model", true);
+        modelViewer->SetView(modelScene_, camera, false);
+    }
+    else
+        URHO3D_LOGERROR("Scene %s not found 'Scenes/EquipmentScene.xml'");
+
     SubscribeEvents();
 }
 
@@ -49,10 +61,15 @@ EquipmentWindow::~EquipmentWindow()
 
 void EquipmentWindow::SubscribeEvents()
 {
+    Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
+    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleCloseClicked));
+}
 
+void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
+{
+    SetVisible(false);
 }
 
 void EquipmentWindow::UpdateEquipment()
 {
-
 }

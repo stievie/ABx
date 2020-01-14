@@ -280,7 +280,7 @@ void Shortcuts::AddDefault()
     Add(Events::E_SC_TOGGLEFRIENDLISTWINDOW, { KEY_N });
     Add(Events::E_SC_TOGGLEINVENTORYWINDOW, { KEY_I });
     Add(Events::E_SC_TOGGLESKILLSWINDOW, { KEY_K });
-    Add(Events::E_SC_TOGGLEEQUIPWINDOW, { KEY_Q });
+    Add(Events::E_SC_TOGGLEEQUIPWINDOW, { KEY_U });
     Add(Events::E_SC_TOGGLEGUILDWINDOW, { KEY_G });
     Add(Events::E_SC_TAKESCREENSHOT, { KEY_PRINTSCREEN });
 
