@@ -9,6 +9,8 @@
 #include "Mumble.h"
 #include "LevelManager.h"
 #include "ClientPrediction.h"
+#include "WindowManager.h"
+#include "EquipmentWindow.h"
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
 
@@ -332,6 +334,14 @@ void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
 void Player::HandleSelectSelf(StringHash, VariantMap&)
 {
     SelectObject(gameId_);
+}
+
+void Player::UpdateUI()
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    EquipmentWindow* w = dynamic_cast<EquipmentWindow*>(wm->GetWindow(WINDOW_EQUIPMENT).Get());
+    if (w)
+        w->UpdateEquipment(this);
 }
 
 void Player::UpdateMumbleContext()

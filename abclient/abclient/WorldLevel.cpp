@@ -468,8 +468,11 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
                 chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         case ObjectTypeSelf:
+        {
             To<Player>(object)->UpdateMumbleContext();
+            To<Player>(object)->UpdateUI();
             break;
+        }
         default:
             break;
         }
@@ -786,7 +789,6 @@ void WorldLevel::HandleToggleEquipWindow(StringHash, VariantMap&)
     if (equipWindow_->IsVisible())
     {
         equipWindow_->BringToFront();
-        equipWindow_->UpdateEquipment();
     }
 }
 
@@ -1086,8 +1088,6 @@ void WorldLevel::CreateUI()
         inventoryWindow_->GetInventory();
     equipWindow_.DynamicCast(wm->GetWindow(WINDOW_EQUIPMENT));
     uiRoot_->AddChild(equipWindow_);
-    if (equipWindow_->IsVisible())
-        equipWindow_->UpdateEquipment();
     friendsWindow_.DynamicCast(wm->GetWindow(WINDOW_FRIENDLIST));
     uiRoot_->AddChild(friendsWindow_);
     if (friendsWindow_->IsVisible())

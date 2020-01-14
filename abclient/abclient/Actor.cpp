@@ -519,11 +519,11 @@ void Actor::RemoveActorUI()
     }
 }
 
-String Actor::GetAnimation(const StringHash& hash)
+String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
 {
     String result;
     result = "Animations/";
-    if (modelClass_ == AB::Entities::ModelClassAccountChest)
+    if (cls == AB::Entities::ModelClassAccountChest)
     {
         if (hash == ANIM_CHEST_OPENING)
         {
@@ -535,7 +535,7 @@ String Actor::GetAnimation(const StringHash& hash)
         }
     }
 
-    switch (modelClass_)
+    switch (cls)
     {
     case AB::Entities::ModelClassWarriorFemale:
         result += "W/F/";
@@ -604,6 +604,11 @@ String Actor::GetAnimation(const StringHash& hash)
     else
         return "";
     return result;
+}
+
+String Actor::GetAnimation(const StringHash& hash)
+{
+    return GetAnimation(modelClass_, hash);
 }
 
 String Actor::GetSoundEffect(const StringHash& hash)

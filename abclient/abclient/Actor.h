@@ -151,6 +151,7 @@ protected:
     HashMap<StringHash, String> sounds_;
     WeakPtr<GameObject> selectedObject_;
 public:
+    static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;
@@ -168,6 +169,7 @@ public:
     bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();
     void SetSelectedObject(SharedPtr<GameObject> object);
+    AnimatedModel* GetModel() const { return animatedModel_; }
     GameObject* GetSelectedObject() const
     {
         if (auto sel = selectedObject_.Lock())

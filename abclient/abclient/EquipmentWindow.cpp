@@ -2,6 +2,9 @@
 #include "EquipmentWindow.h"
 #include "Shortcuts.h"
 #include "ShortcutEvents.h"
+#include "LevelManager.h"
+#include "Player.h"
+#include "ItemsCache.h"
 
 EquipmentWindow::EquipmentWindow(Context* context) :
     Window(context)
@@ -70,6 +73,52 @@ void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void EquipmentWindow::UpdateEquipment()
+bool EquipmentWindow::LoadObject(uint32_t itemIndex, Node* node)
 {
+    ItemsCache* items = GetSubsystem<ItemsCache>();
+    SharedPtr<Item> item = items->Get(itemIndex);
+    if (!item)
+    {
+        URHO3D_LOGERRORF("Model Item not found: %d", itemIndex);
+        return false;
+    }
+    XMLFile* object = item->GetObjectResource<XMLFile>();
+    if (!object)
+    {
+        URHO3D_LOGERRORF("Prefab file not found for %s: %s", item->name_.CString(), item->objectFile_.CString());
+        return false;
+    }
+
+    XMLElement root = object->GetRoot();
+    unsigned nodeId = root.GetUInt("id");
+    SceneResolver resolver;
+    Node* adjNode = node->CreateChild(0, LOCAL);
+    resolver.AddNode(nodeId, adjNode);
+    adjNode->SetRotation(Quaternion(90, Vector3(0, 1, 0)));
+    if (adjNode->LoadXML(root, resolver, true, true))
+    {
+        resolver.Resolve();
+        adjNode->ApplyAttributes();
+        animController_ = adjNode->CreateComponent<AnimationController>();
+        String idleAnimation = Actor::GetAnimation(item->modelClass_, ANIM_IDLE);
+        if (!idleAnimation.Empty())
+            animController_->PlayExclusive(idleAnimation, 0, true, 0.0);
+    }
+    else
+    {
+        URHO3D_LOGERRORF("Error instantiating prefab %s", item->objectFile_.CString());
+        adjNode->Remove();
+        return false;
+    }
+    return true;
+}
+
+void EquipmentWindow::UpdateEquipment(Player* player)
+{
+    if (!player)
+        return;
+
+    Node* node = modelScene_->GetNode(16777649);
+
+    LoadObject(player->itemIndex_, node);
 }
