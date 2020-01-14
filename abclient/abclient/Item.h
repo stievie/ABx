@@ -10,7 +10,7 @@ public:
     Item(Context* context);
     ~Item() override;
 
-    template <class T>
+    template <typename T>
     T* GetObjectResource()
     {
         if (objectFile_.Empty())
@@ -18,7 +18,7 @@ public:
         ResourceCache* cache = GetSubsystem<ResourceCache>();
         return cache->GetResource<T>(objectFile_);
     }
-    template <class T>
+    template <typename T>
     T* GetIconResource()
     {
         if (iconFile_.Empty())
@@ -28,14 +28,14 @@ public:
     }
 
     String uuid_;
-    uint32_t index_;
+    uint32_t index_{ 0 };
     String name_;
     /// Prefab file
     String objectFile_;
     /// UI icon file, somewhere in /Textures
     String iconFile_;
-    AB::Entities::ItemType type_;
+    AB::Entities::ItemType type_{ AB::Entities::ItemTypeUnknown };
     AB::Entities::ModelClass modelClass_;
-    bool stackAble_;
+    bool stackAble_{ false };
 };
 

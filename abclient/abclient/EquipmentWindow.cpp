@@ -53,7 +53,7 @@ EquipmentWindow::EquipmentWindow(Context* context) :
         characterNode_ = modelScene_->CreateChild(0, LOCAL);
     }
     else
-        URHO3D_LOGERROR("Scene %s not found 'Scenes/EquipmentScene.xml'");
+        URHO3D_LOGERROR("Scene not found 'Scenes/EquipmentScene.xml'");
 
     SubscribeEvents();
 }
@@ -119,5 +119,9 @@ void EquipmentWindow::UpdateEquipment(Player* player)
     if (!player)
         return;
 
-    LoadObject(player->itemIndex_, characterNode_);
+    if (!modelLoaded_)
+    {
+        if  (LoadObject(player->itemIndex_, characterNode_))
+            modelLoaded_ = true;
+    }
 }

@@ -8,6 +8,7 @@ class EquipmentWindow : public Window
 {
     URHO3D_OBJECT(EquipmentWindow, Window)
 private:
+    bool modelLoaded_{ false };
     SharedPtr<Scene> modelScene_;
     SharedPtr<Node> characterNode_;
     SharedPtr<AnimationController> animController_;
