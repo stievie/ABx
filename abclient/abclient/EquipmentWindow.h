@@ -9,6 +9,7 @@ class EquipmentWindow : public Window
     URHO3D_OBJECT(EquipmentWindow, Window)
 private:
     SharedPtr<Scene> modelScene_;
+    SharedPtr<Node> characterNode_;
     SharedPtr<AnimationController> animController_;
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);

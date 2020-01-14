@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="313.191" />
 	<attribute name="Next Replicated Node ID" value="13" />
 	<attribute name="Next Replicated Component ID" value="6" />
-	<attribute name="Next Local Node ID" value="16777752" />
-	<attribute name="Next Local Component ID" value="16777531" />
+	<attribute name="Next Local Node ID" value="16777753" />
+	<attribute name="Next Local Component ID" value="16777543" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -29,15 +29,6 @@
 			<attribute name="Range" value="130" />
 		</component>
 	</node>
-	<node id="16777649">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="CharacterNode" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="0 0 0" />
-		<attribute name="Rotation" value="1 0 0 0" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-	</node>
 	<node id="16777747">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="CameraNode" />
@@ -47,7 +38,7 @@
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Camera" id="16777491">
-			<attribute name="Aspect Ratio" value="1.77778" />
+			<attribute name="Aspect Ratio" value="1.78067" />
 			<attribute name="Zoom" value="4" />
 		</component>
 	</node>
@@ -66,7 +57,7 @@
 	</node>
 	<node id="12">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Plane" />
+		<attribute name="Name" value="Terrain" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="0 0 0" />
 		<attribute name="Rotation" value="1 0 0 0" />

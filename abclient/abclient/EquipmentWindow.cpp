@@ -50,6 +50,7 @@ EquipmentWindow::EquipmentWindow(Context* context) :
         Camera* camera = modelScene_->GetComponent<Camera>(true);
         View3D* modelViewer = GetChildStaticCast<View3D>("Model", true);
         modelViewer->SetView(modelScene_, camera, false);
+        characterNode_ = modelScene_->CreateChild(0, LOCAL);
     }
     else
         URHO3D_LOGERROR("Scene %s not found 'Scenes/EquipmentScene.xml'");
@@ -118,7 +119,5 @@ void EquipmentWindow::UpdateEquipment(Player* player)
     if (!player)
         return;
 
-    Node* node = modelScene_->GetNode(16777649);
-
-    LoadObject(player->itemIndex_, node);
+    LoadObject(player->itemIndex_, characterNode_);
 }
