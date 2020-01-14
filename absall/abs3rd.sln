@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.271
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abcrypto", "..\ThirdParty\abcrypto\abcrypto.vcxproj", "{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugUtils", "..\ThirdParty\recastnavigation\Projects\DebugUtils.vcxproj", "{FFCC8CC2-AFEB-4572-9DE0-57756AE5D6BB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "..\ThirdParty\lz4\lz4.vcxproj", "{252C545B-4560-477B-9928-2B786C26B610}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyexpr", "..\ThirdParty\tinyexpr\tinyexpr.vcxproj", "{886848EA-B761-4383-8ABE-879FAD8414AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,12 @@ Global
 		{252C545B-4560-477B-9928-2B786C26B610}.Release|x64.ActiveCfg = Release|x64
 		{252C545B-4560-477B-9928-2B786C26B610}.Release|x64.Build.0 = Release|x64
 		{252C545B-4560-477B-9928-2B786C26B610}.Release|x86.ActiveCfg = Release|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Debug|x64.ActiveCfg = Debug|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Debug|x64.Build.0 = Debug|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Debug|x86.ActiveCfg = Debug|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x64.ActiveCfg = Release|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x64.Build.0 = Release|x64
+		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

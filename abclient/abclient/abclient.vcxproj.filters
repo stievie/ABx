@@ -207,6 +207,9 @@
     <ClInclude Include="SkillsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EquipmentWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -369,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SkillsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipmentWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

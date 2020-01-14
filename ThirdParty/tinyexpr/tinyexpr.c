@@ -41,6 +41,10 @@ For log = natural log uncomment the next line. */
 #include <stdio.h>
 #include <limits.h>
 
+#if defined(_MSC_VER)
+#pragma warning (disable: 4244 4090)
+#endif
+
 #ifndef NAN
 #define NAN (0.0/0.0)
 #endif
@@ -116,6 +120,9 @@ void te_free(te_expr *n) {
     free(n);
 }
 
+// MSVC imports these from a library, so they are not const
+static double _ceil(double x) { return ceil(x); }
+static double _floor(double x) { return floor(x); }
 
 static double pi(void) {return 3.14159265358979323846;}
 static double e(void) {return 2.71828182845904523536;}
@@ -156,13 +163,13 @@ static const te_variable functions[] = {
     {"asin", asin,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"atan", atan,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"atan2", atan2,  TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"ceil", ceil,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"ceil", _ceil,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"cos", cos,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"cosh", cosh,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"e", e,          TE_FUNCTION0 | TE_FLAG_PURE, 0},
     {"exp", exp,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"fac", fac,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"floor", floor,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"floor", _floor,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"ln", log,       TE_FUNCTION1 | TE_FLAG_PURE, 0},
 #ifdef TE_NAT_LOG
     {"log", log,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
