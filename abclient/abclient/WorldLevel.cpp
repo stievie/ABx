@@ -93,7 +93,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
 }
 
-SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
+GameObject* WorldLevel::GetObjectAt(const IntVector2& pos)
 {
     if (!viewport_)
         return SharedPtr<GameObject>();
@@ -110,12 +110,12 @@ SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
         {
             if (Node* nd = (*it).node_)
             {
-                if (SharedPtr<GameObject> obj = GetObjectFromNode(nd))
+                if (auto* obj = GetObjectFromNode(nd))
                     return obj;
             }
         }
     }
-    return SharedPtr<GameObject>();
+    return nullptr;
 }
 
 bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
@@ -245,6 +245,7 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
         return;
 
+    auto currHo = hoveredObject_.Lock();
     IntVector2 pos = input->GetMousePosition();
     Ray camRay = GetActiveViewportScreenRay(pos);
     PODVector<RayQueryResult> result;
@@ -252,34 +253,38 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
     RayOctreeQuery query(result, camRay);
     // Can not use RaycastSingle because it would return the Zone
     world->Raycast(query);
-    if (!result.Empty())
+
+    if (result.Empty())
     {
-        for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
+        // Nothing there
+        if (currHo)
         {
-            if (Node* nd = (*it).node_)
-            {
-                SharedPtr<GameObject> obj = GetObjectFromNode(nd);
-                if (!obj)
-                    continue;
-                if (obj == hoveredObject_.Lock())
-                    // Still the same object
-                    return;
-                // Unhover last
-                if (auto ho = hoveredObject_.Lock())
-                    ho->HoverEnd();
-                hoveredObject_ = obj;
-                if (auto ho = hoveredObject_.Lock())
-                {
-                    ho->HoverBegin();
-                }
-                return;
-            }
+            // Reset last hovered object
+            currHo->HoverEnd();
+            hoveredObject_.Reset();
         }
+        return;
     }
-    if (auto ho = hoveredObject_.Lock())
+
+    // There is something under the mouse
+    for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
     {
-        ho->HoverEnd();
-        hoveredObject_.Reset();
+        if (Node* nd = (*it).node_)
+        {
+            auto* obj = GetObjectFromNode(nd);
+            if (!obj)
+                continue;
+            if (obj == currHo.Get())
+                // Still the same object
+                return;
+            // Before we set the new object, unhover last
+            if (currHo)
+                currHo->HoverEnd();
+            hoveredObject_ = obj;
+            if (auto ho = hoveredObject_.Get())
+                ho->HoverBegin();
+            break;
+        }
     }
 }
 

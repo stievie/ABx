@@ -304,7 +304,7 @@ void Player::PostUpdate(float timeStep)
     if (cameraDistance_ <= 0.2f)
         model_->SetViewMask(0);
     else if (model_->GetViewMask() == 0)
-        model_->SetViewMask((unsigned)-1);
+        model_->SetViewMask(static_cast<unsigned>(-1));
 
     PhysicsRaycastResult result;
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly

@@ -81,7 +81,7 @@ private:
     IntVector2 mouseDownPos_;
     bool rmbDown_ { false };
     /// Local Node IDs are not the same as Object IDs on the server.
-    SharedPtr<GameObject> GetObjectFromNode(Node* node)
+    GameObject* GetObjectFromNode(Node* node)
     {
         unsigned id = node->GetID();
         uint32_t objectId = nodeIds_[id];
@@ -91,10 +91,10 @@ private:
             objectId = nodeIds_[id];
         }
         if (objectId != 0)
-            return objects_[objectId];
-        return SharedPtr<GameObject>();
+            return objects_[objectId].Get();
+        return nullptr;
     }
-    SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
+    GameObject* GetObjectAt(const IntVector2& pos);
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void RemoveUIWindows();
 
