@@ -224,8 +224,6 @@ abserv/Octree.cpp
 abserv/Octree.h
 abserv/OctreeQuery.cpp
 abserv/OctreeQuery.h
-abserv/OffMeshConnection.cpp
-abserv/OffMeshConnection.h
 abserv/Party.cpp
 abserv/Party.h
 abserv/PartyManager.cpp

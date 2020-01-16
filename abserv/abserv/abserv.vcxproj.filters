@@ -159,9 +159,6 @@
     <ClInclude Include="TerrainPatch.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="OffMeshConnection.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="MoveComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -570,9 +567,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TerrainPatch.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="OffMeshConnection.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MoveComp.cpp">

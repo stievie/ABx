@@ -310,7 +310,6 @@
     <ClInclude Include="Npc.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeQuery.h" />
-    <ClInclude Include="OffMeshConnection.h" />
     <ClInclude Include="Party.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
@@ -447,7 +446,6 @@
     <ClCompile Include="Npc.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeQuery.cpp" />
-    <ClCompile Include="OffMeshConnection.cpp" />
     <ClCompile Include="Party.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
