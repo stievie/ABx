@@ -48,7 +48,6 @@ bool Skill::LoadScript(const std::string& fileName)
     energy_ = luaState_["costEnergy"];
     adrenaline_ = luaState_["costAdrenaline"];
     activation_ = luaState_["activation"];
-    // FIXME: That is a bit ugly, maybe we should change recharge_ to an uint32_t
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
     if (Lua::IsNumber(luaState_, "hp"))
@@ -71,9 +70,8 @@ bool Skill::LoadScript(const std::string& fileName)
     return true;
 }
 
-void Skill::Update(uint32_t timeElapsed)
+void Skill::Update(uint32_t)
 {
-    AB_UNUSED(timeElapsed);
     if (startUse_ != 0)
     {
         if (startUse_ + realActivation_ <= Utils::Tick())
@@ -292,7 +290,12 @@ void Skill::AddRecharge(int32_t ms)
     if (ms > 0)
         recharge_ += static_cast<uint32_t>(ms);
     else if (ms < 0)
-        recharge_ -= static_cast<uint32_t>(ms);
+    {
+        if (static_cast<uint32_t>(ms) < recharge_)
+            recharge_ -= static_cast<uint32_t>(ms);
+        else
+            recharge_ = 0;
+    }
 }
 
 bool Skill::CanUseOnTarget(const Actor& source, const Actor* target) const

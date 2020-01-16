@@ -276,7 +276,7 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
                 continue;
             if (obj == currHo.Get())
                 // Still the same object
-                return;
+                break;
             // Before we set the new object, unhover last
             if (currHo)
                 currHo->HoverEnd();
