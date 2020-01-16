@@ -6,6 +6,7 @@
 #include <asio.hpp>
 #include <sa/SmartPtr.h>
 #include "NetworkMessage.h"
+#include <sa/Noncopyable.h>
 
 namespace Net {
 
@@ -16,12 +17,11 @@ class Connection;
 
 class ConnectionManager
 {
+    NON_COPYABLE(ConnectionManager)
 public:
     static uint32_t maxPacketsPerSec;
 
     ConnectionManager() = default;
-    ConnectionManager(const ConnectionManager&) = delete;
-    ConnectionManager& operator=(const ConnectionManager&) = delete;
 
     std::shared_ptr<Connection> CreateConnection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicer);
     void ReleaseConnection(std::shared_ptr<Connection> connection);

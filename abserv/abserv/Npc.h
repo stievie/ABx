@@ -75,9 +75,6 @@ public:
 
     Npc();
     ~Npc() override;
-    // non-copyable
-    Npc(const Npc&) = delete;
-    Npc& operator=(const Npc&) = delete;
 
     bool LoadScript(const std::string& fileName);
     AB::GameProtocol::GameObjectType GetType() const override

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <map>
 #include <sa/Iteration.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -13,6 +14,7 @@ namespace Components {
 /// NPCs can be used a trigger box. This component calls Actor::OnTrigger() when it collides with the collision shape.
 class TriggerComp
 {
+    NON_COPYABLE(TriggerComp)
 private:
     GameObject& owner_;
     std::map<uint32_t, int64_t> triggered_;
@@ -22,9 +24,6 @@ private:
 public:
     TriggerComp() = delete;
     explicit TriggerComp(GameObject& owner);
-    // non-copyable
-    TriggerComp(const TriggerComp&) = delete;
-    TriggerComp& operator=(const TriggerComp&) = delete;
     ~TriggerComp() = default;
 
     void Update(uint32_t timeElapsed);

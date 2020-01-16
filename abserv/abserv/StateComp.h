@@ -2,6 +2,7 @@
 
 #include <AB/ProtocolCodes.h>
 #include "Utils.h"
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -15,6 +16,7 @@ namespace Components {
 
 class StateComp
 {
+    NON_COPYABLE(StateComp)
 private:
     GameObject& owner_;
     AB::GameProtocol::CreatureState currentState_{ AB::GameProtocol::CreatureStateIdle };
@@ -27,9 +29,6 @@ public:
         owner_(owner),
         lastStateChange_(Utils::Tick())
     { }
-    // non-copyable
-    StateComp(const StateComp&) = delete;
-    StateComp& operator=(const StateComp&) = delete;
     ~StateComp() = default;
 
     void SetState(AB::GameProtocol::CreatureState state, bool apply = false);

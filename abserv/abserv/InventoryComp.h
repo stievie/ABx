@@ -8,6 +8,7 @@
 #include <AB/Entities/Account.h>
 #include "ItemContainer.h"
 #include "ItemsCache.h"
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -23,6 +24,7 @@ namespace Components {
 /// Equipment, like Armor, weapons, weapon mods etc.
 class InventoryComp
 {
+    NON_COPYABLE(InventoryComp)
 private:
     Actor& owner_;
     EquipmentMap equipment_;
@@ -38,9 +40,6 @@ public:
         inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY, AB::Entities::StoragePlaceInventory)),
         chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE, AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY, AB::Entities::StoragePlaceChest))
     { }
-    // non-copyable
-    InventoryComp(const InventoryComp&) = delete;
-    InventoryComp& operator=(const InventoryComp&) = delete;
     ~InventoryComp() = default;
 
     void Update(uint32_t timeElapsed);

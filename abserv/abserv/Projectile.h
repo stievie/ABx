@@ -53,9 +53,6 @@ public:
     explicit Projectile(const std::string& itemUuid);
     Projectile() = delete;
     ~Projectile() override;
-    // non-copyable
-    Projectile(const Projectile&) = delete;
-    Projectile& operator=(const Projectile&) = delete;
 
     bool Load();
     AB::GameProtocol::GameObjectType GetType() const override

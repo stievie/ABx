@@ -3,6 +3,7 @@
 #include <memory>
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Skill.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -17,6 +18,7 @@ namespace Components {
 
 class SkillsComp
 {
+    NON_COPYABLE(SkillsComp)
 private:
     Actor& owner_;
     AB::GameProtocol::SkillError lastError_;
@@ -32,9 +34,6 @@ private:
 public:
     SkillsComp() = delete;
     explicit SkillsComp(Actor& owner);
-    // non-copyable
-    SkillsComp(const SkillsComp&) = delete;
-    SkillsComp& operator=(const SkillsComp&) = delete;
     ~SkillsComp() = default;
 
     void Update(uint32_t timeElapsed);

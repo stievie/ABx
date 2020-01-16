@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 #include <sa/PoolAllocator.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 
@@ -18,6 +19,7 @@ static constexpr size_t NETWORKMESSAGE_MAXSIZE = 4096 - sizeof(uint32_t);
 
 class NetworkMessage
 {
+    NON_COPYABLE(NetworkMessage)
 public:
     using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_MAXSIZE>;
     using MsgSize_t = uint16_t;

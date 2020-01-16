@@ -5,6 +5,7 @@
 #include <vector>
 #include "Quest.h"
 #include <sa/Iteration.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -18,6 +19,7 @@ namespace Components {
 
 class QuestComp
 {
+    NON_COPYABLE(QuestComp)
 private:
     Player& owner_;
     std::map<uint32_t, std::unique_ptr<Quest>> activeQuests_;
@@ -28,9 +30,6 @@ private:
 public:
     QuestComp() = delete;
     explicit QuestComp(Player& owner);
-    // non-copyable
-    QuestComp(const QuestComp&) = delete;
-    QuestComp& operator=(const QuestComp&) = delete;
     ~QuestComp() = default;
 
     void Update(uint32_t timeElapsed);

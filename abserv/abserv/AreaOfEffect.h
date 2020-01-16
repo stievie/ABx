@@ -51,9 +51,6 @@ public:
 
     AreaOfEffect();
     ~AreaOfEffect() override;
-    // non-copyable
-    AreaOfEffect(const AreaOfEffect&) = delete;
-    AreaOfEffect& operator=(const AreaOfEffect&) = delete;
 
     bool LoadScript(const std::string& fileName);
     AB::GameProtocol::GameObjectType GetType() const override

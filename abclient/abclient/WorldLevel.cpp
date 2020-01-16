@@ -1064,7 +1064,7 @@ void WorldLevel::CreateUI()
     gameMenu_->SetVisible(true);
     uiRoot_->AddChild(gameMenu_);
 
-    // Alway add these windows, create if not yet done
+    // Always add these windows, create if not yet done
     chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));
     uiRoot_->AddChild(chatWindow_);
 

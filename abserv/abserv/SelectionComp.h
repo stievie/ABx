@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <memory>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -16,6 +17,7 @@ namespace Components {
 
 class SelectionComp
 {
+    NON_COPYABLE(SelectionComp)
 private:
     Actor& owner_;
     uint32_t prevObjectId_{ 0 };
@@ -25,9 +27,6 @@ public:
     explicit SelectionComp(Actor& owner) :
         owner_(owner)
     { }
-    // non-copyable
-    SelectionComp(const SelectionComp&) = delete;
-    SelectionComp& operator=(const SelectionComp&) = delete;
     ~SelectionComp();
 
     bool SelectObject(uint32_t targetId);

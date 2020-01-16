@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include <AB/ProtocolCodes.h>
 #include "NetworkMessage.h"
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -12,6 +13,7 @@ namespace Components {
 
 class MoveComp
 {
+    NON_COPYABLE(MoveComp)
 private:
     Actor& owner_;
     float speedFactor_{ 1.0f };
@@ -30,9 +32,6 @@ public:
     explicit MoveComp(Actor& owner) :
         owner_(owner)
     { }
-    // non-copyable
-    MoveComp(const MoveComp&) = delete;
-    MoveComp& operator=(const MoveComp&) = delete;
     ~MoveComp() = default;
 
     inline float GetSpeed(uint32_t timeElapsed, float baseSpeed)

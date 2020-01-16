@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -16,6 +17,7 @@ namespace Components {
 
 class HealComp
 {
+    NON_COPYABLE(HealComp)
 private:
     struct HealItem
     {
@@ -32,9 +34,6 @@ public:
     explicit HealComp(Actor& owner) :
         owner_(owner)
     { }
-    // non-copyable
-    HealComp(const HealComp&) = delete;
-    HealComp& operator=(const HealComp&) = delete;
     ~HealComp() = default;
 
     void Healing(Actor* source, uint32_t index, int value);

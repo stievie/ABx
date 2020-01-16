@@ -34,7 +34,6 @@ private:
     }
 public:
     OutputMessage() = default;
-    OutputMessage(const OutputMessage&) = delete;
     ~OutputMessage() {}
 
     uint8_t* GetOutputBuffer() { return buffer_ + outputBufferStart_; }
@@ -115,15 +114,13 @@ namespace Net {
 
 class OutputMessagePool
 {
+    NON_COPYABLE(OutputMessagePool)
 private:
     OutputMessagePool() = default;
 public:
     static sa::PoolInfo GetPoolInfo();
     static unsigned GetPoolUsage();
     static sa::SharedPtr<OutputMessage> GetOutputMessage();
-
-    OutputMessagePool(const OutputMessagePool&) = delete;
-    OutputMessagePool& operator=(const OutputMessagePool&) = delete;
 
     static OutputMessagePool* Instance()
     {

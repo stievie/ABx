@@ -28,6 +28,7 @@
 #include <sa/Iteration.h>
 #include <sa/StringHash.h>
 #include <type_traits>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -78,6 +79,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
+    NON_COPYABLE(GameObject)
 public:
     static sa::IdGenerator<uint32_t> objectIds_;
 private:
@@ -138,9 +140,6 @@ public:
     static constexpr Math::Vector3 BodyOffset{ 0.0f, 1.0f, 0.0f };
 
     GameObject();
-    // non-copyable
-    GameObject(const GameObject&) = delete;
-    GameObject& operator=(const GameObject&) = delete;
     virtual ~GameObject();
 
     // Return smart pointer

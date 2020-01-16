@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <stdint.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -15,6 +16,7 @@ namespace Components {
 
 class ProgressComp
 {
+    NON_COPYABLE(ProgressComp)
 private:
     enum class ProgressType
     {
@@ -40,9 +42,6 @@ private:
 public:
     ProgressComp() = delete;
     explicit ProgressComp(Actor& owner);
-    // non-copyable
-    ProgressComp(const ProgressComp&) = delete;
-    ProgressComp& operator=(const ProgressComp&) = delete;
     ~ProgressComp() = default;
 
     void Update(uint32_t /* timeElapsed */) { }

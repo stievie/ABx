@@ -5,6 +5,7 @@
 #include <memory>
 #include "Damage.h"
 #include <sa/CircularQueue.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -19,6 +20,7 @@ namespace Components {
 
 class DamageComp
 {
+    NON_COPYABLE(DamageComp)
 private:
     // Keep some history
     static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 25;
@@ -47,9 +49,6 @@ private:
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner);
-    // non-copyable
-    DamageComp(const DamageComp&) = delete;
-    DamageComp& operator=(const DamageComp&) = delete;
     ~DamageComp() = default;
 
     void Update(uint32_t /* timeElapsed */) { }

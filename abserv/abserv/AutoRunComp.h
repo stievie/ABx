@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "Mechanic.h"
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -14,6 +15,7 @@ namespace Components {
 
 class AutoRunComp
 {
+    NON_COPYABLE(AutoRunComp)
 private:
     static constexpr uint32_t RECALCULATE_PATH_TIME = 1000;
     Actor& owner_;
@@ -39,9 +41,6 @@ private:
 public:
     AutoRunComp() = delete;
     explicit AutoRunComp(Actor& owner);
-    // non-copyable
-    AutoRunComp(const AutoRunComp&) = delete;
-    AutoRunComp& operator=(const AutoRunComp&) = delete;
     ~AutoRunComp() = default;
 
     bool Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist = RANGE_TOUCH);

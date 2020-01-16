@@ -3,6 +3,7 @@
 #include <cassert>
 #include "NetworkMessage.h"
 #include "MathUtils.h"
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -50,6 +51,7 @@ enum class ResourceType
 
 class ResourceComp
 {
+    NON_COPYABLE(ResourceComp)
 private:
     Actor& owner_;
     float energy_{ 0.0f };
@@ -116,9 +118,6 @@ private:
 public:
     ResourceComp() = delete;
     explicit ResourceComp(Actor& owner);
-    // non-copyable
-    ResourceComp(const ResourceComp&) = delete;
-    ResourceComp& operator=(const ResourceComp&) = delete;
     ~ResourceComp() = default;
 
     void UpdateResources();

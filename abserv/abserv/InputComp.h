@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InputQueue.h"
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -14,6 +15,7 @@ namespace Components {
 
 class InputComp
 {
+    NON_COPYABLE(InputComp)
 private:
     Actor& owner_;
     InputQueue inputs_;
@@ -25,9 +27,6 @@ public:
         owner_(owner),
         inputs_()
     { }
-    // non-copyable
-    InputComp(const InputComp&) = delete;
-    InputComp& operator=(const InputComp&) = delete;
     ~InputComp() = default;
 
     void Add(InputType type, Utils::VariantMap&& data)

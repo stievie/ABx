@@ -4,19 +4,18 @@
 #include <iterator>
 #include <cstring>
 #include <vector>
+#include <sa/Noncopyable.h>
 
 namespace IO {
 
 class PropReadStream
 {
+    NON_COPYABLE(PropReadStream)
 private:
     const char* p_ = nullptr;
     const char* end_ = nullptr;
 public:
     PropReadStream() = default;
-    // non-copyable
-    PropReadStream(const PropReadStream&) = delete;
-    PropReadStream& operator=(const PropReadStream&) = delete;
     ~PropReadStream() = default;
 
     void Init(const char* p, size_t size)
@@ -71,13 +70,11 @@ public:
 
 class PropWriteStream
 {
+    NON_COPYABLE(PropWriteStream)
 private:
     std::vector<char> buffer_;
 public:
     PropWriteStream() = default;
-    // non-copyable
-    PropWriteStream(const PropWriteStream&) = delete;
-    PropWriteStream& operator=(const PropWriteStream&) = delete;
     ~PropWriteStream() = default;
 
     const char* GetStream(size_t& size) const

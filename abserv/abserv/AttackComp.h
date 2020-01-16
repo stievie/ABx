@@ -3,6 +3,7 @@
 #include <memory>
 #include "Damage.h"
 #include <AB/ProtocolCodes.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -16,6 +17,7 @@ namespace Components {
 
 class AttackComp
 {
+    NON_COPYABLE(AttackComp)
 private:
     Actor& owner_;
     /// Also includes running to the target
@@ -38,9 +40,6 @@ public:
     explicit AttackComp(Actor& owner) :
         owner_(owner)
     { }
-    // non-copyable
-    AttackComp(const AttackComp&) = delete;
-    AttackComp& operator=(const AttackComp&) = delete;
     ~AttackComp() = default;
 
     void Update(uint32_t timeElapsed);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AiAgent.h"
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -10,15 +11,13 @@ namespace Components {
 
 class AiComp
 {
+    NON_COPYABLE(AiComp)
 private:
     Npc& owner_;
     AI::AiAgent agent_;
-public:
     AiComp() = delete;
+public:
     explicit AiComp(Npc& owner);
-    // non-copyable
-    AiComp(const AiComp&) = delete;
-    AiComp& operator=(const AiComp&) = delete;
     ~AiComp() = default;
 
     void Update(uint32_t timeElapsed);

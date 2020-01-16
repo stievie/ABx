@@ -3,6 +3,7 @@
 #include <memory>
 #include <map>
 #include "AiDefines.h"
+#include <sa/Noncopyable.h>
 
 namespace AI {
 
@@ -17,13 +18,12 @@ public:
 template <typename Key, typename T>
 class FactoryRegistry
 {
+    NON_COPYABLE(FactoryRegistry)
 protected:
     using FactoryMap = std::map<const Key, const AbstractFactory<T>*>;
     FactoryMap factories_;
 public:
     FactoryRegistry() = default;
-    FactoryRegistry(const FactoryRegistry&) = delete;
-    FactoryRegistry& operator= (const FactoryRegistry&) = delete;
 
     bool RegisterFactory(const Key& key, const AbstractFactory<T>& factory)
     {

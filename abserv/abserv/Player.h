@@ -71,9 +71,6 @@ public:
 
     explicit Player(std::shared_ptr<Net::ProtocolGame> client);
     ~Player() override;
-    // non-copyable
-    Player(const Player&) = delete;
-    Player& operator=(const Player&) = delete;
 
     /// We are entering a game
     void SetGame(std::shared_ptr<Game> game) override;

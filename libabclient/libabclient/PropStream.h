@@ -5,9 +5,12 @@
 #include <limits>
 #include <iterator>
 #include <stdint.h>
+#include <cstring>
+#include <sa/Noncopyable.h>
 
 class PropReadStream
 {
+    NON_COPYABLE(PropReadStream)
 private:
     const char* p_ = nullptr;
     const char* start_ = nullptr;
@@ -77,13 +80,11 @@ public:
 
 class PropWriteStream
 {
+    NON_COPYABLE(PropWriteStream)
 private:
     std::vector<char> buffer_;
 public:
     PropWriteStream() = default;
-    // non-copyable
-    PropWriteStream(const PropWriteStream&) = delete;
-    PropWriteStream& operator=(const PropWriteStream&) = delete;
 
     const char* GetStream(size_t& size) const
     {

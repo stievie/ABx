@@ -6,6 +6,7 @@
 #include <list>
 #include <functional>
 #include <asio.hpp>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 
@@ -54,9 +55,8 @@ using AcceptConnection = std::function<bool(uint32_t remoteIp)>;
 
 class ServicePort : public std::enable_shared_from_this<ServicePort>
 {
+    NON_COPYABLE(ServicePort)
 public:
-    ServicePort(const ServicePort&) = delete;
-    ServicePort& operator=(const ServicePort&) = delete;
     explicit ServicePort(asio::io_service& ioService, AcceptConnection&& acceptConnection) :
         service_(ioService),
         serverPort_(0),
@@ -92,10 +92,10 @@ private:
 
 class ServiceManager
 {
+    NON_COPYABLE(ServiceManager)
 private:
     using AcceptorKey = std::pair<uint32_t, uint16_t>;
 public:
-    ServiceManager(const ServiceManager&) = delete;
     ServiceManager(asio::io_service& ioService) :
         ioService_(ioService),
         running_(false)

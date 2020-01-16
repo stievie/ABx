@@ -2,6 +2,7 @@
 
 #include "Effect.h"
 #include "Damage.h"
+#include <sa/Noncopyable.h>
 
 namespace Net {
 class NetworkMessage;
@@ -17,6 +18,7 @@ namespace Components {
 
 class EffectsComp
 {
+    NON_COPYABLE(EffectsComp)
 private:
     static constexpr AB::Entities::EffectCategory SINGLEEFFECT_START = AB::Entities::EffectPreparation;
     static constexpr AB::Entities::EffectCategory SINGLEEFFECT_END = AB::Entities::EffectWeaponSpell;
@@ -40,9 +42,6 @@ private:
 public:
     EffectsComp() = delete;
     explicit EffectsComp(Actor& owner);
-    // non-copyable
-    EffectsComp(const EffectsComp&) = delete;
-    EffectsComp& operator=(const EffectsComp&) = delete;
     ~EffectsComp() = default;
 
     /// Add an effect.
