@@ -108,6 +108,12 @@ public:
     /// Add function
     void AddPaddingBytes(uint32_t n);
     void AddBytes(const char* bytes, uint32_t size);
+    template<typename T>
+    void AddByte(T value)
+    {
+        static_assert(sizeof(T) == 1, "T is not a byte type");
+        AddByte(static_cast<uint8_t>(value));
+    }
     void AddByte(uint8_t value)
     {
         if (!CanAdd(1))

@@ -169,7 +169,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
 {
     if (lastError_ != AB::GameProtocol::AttackErrorNone)
     {
-        message.AddByte(AB::GameProtocol::GameObjectAttackFailure);
+        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectAttackFailure);
         AB::Packets::Server::ObjectAttackFailure packet = {
             owner_.id_,
             static_cast<uint8_t>(lastError_)

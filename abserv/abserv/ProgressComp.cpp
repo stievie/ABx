@@ -26,7 +26,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
         {
         case ProgressType::XPIncrease:
         {
-            message.AddByte(AB::GameProtocol::GameObjectProgress);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
                 static_cast<uint8_t>(AB::GameProtocol::ObjectProgressXPIncreased),
@@ -37,7 +37,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
         }
         case ProgressType::GotSkillPoint:
         {
-            message.AddByte(AB::GameProtocol::GameObjectProgress);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
                 static_cast<uint8_t>(AB::GameProtocol::ObjectProgressGotSkillPoint),
@@ -48,7 +48,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
         }
         case ProgressType::LevelAdvance:
         {
-            message.AddByte(AB::GameProtocol::GameObjectProgress);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
                 static_cast<uint8_t>(AB::GameProtocol::ObjectProgressLevelAdvance),
@@ -61,7 +61,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             // TODO:
             break;
         case ProgressType::AttributePointGain:
-            message.AddByte(AB::GameProtocol::GameObjectProgress);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
                 static_cast<uint8_t>(AB::GameProtocol::ObjectProgressAttribPointsGain),

@@ -212,7 +212,7 @@ void Game::Update()
             noplayerTime_ = 0;
             Lua::CallFunction(luaState_, "onStart");
             // Add start tick at the beginning
-            gameStatus_->AddByte(AB::GameProtocol::GameStart);
+            gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameStart);
             AB::Packets::Server::GameStart packet = { startTime_ };
             AB::Packets::Add(packet, *gameStatus_);
         }
@@ -225,7 +225,7 @@ void Game::Update()
 
         {
             // Add timestamp
-            gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+            gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameUpdate);
             AB::Packets::Server::GameUpdate packet = { tick };
             AB::Packets::Add(packet, *gameStatus_);
         }
@@ -476,7 +476,7 @@ void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
     // Also adds it to the objects array
     SendSpawnObject(item);
 
-    gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameObjectDropItem);
     const Item* pItem = item->GetItem();
     AB::Packets::Server::ObjectDroppedItem packet = {
         item->GetSourceId(),
@@ -569,14 +569,14 @@ void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
         object->transformation_.SetYRotation(p.rotation.EulerAngles().y_);
     }
 
-    gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameSpawnObject);
     object->WriteSpawnData(*gameStatus_);
     AddObject(object);
 }
 
 void Game::SendLeaveObject(uint32_t objectId)
 {
-    gameStatus_->AddByte(AB::GameProtocol::GameLeaveObject);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameLeaveObject);
     AB::Packets::Server::ObjectDespawn packet = {
         objectId
     };
@@ -598,7 +598,7 @@ void Game::SendInitStateToPlayer(Player& player)
             // Don't send spawn of our self
             return;
 
-        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
+        msg.AddByte(AB::GameProtocol::ServerPacketType::GameSpawnObjectExisting);
         o->WriteSpawnData(msg);
     };
 

@@ -16,7 +16,7 @@ void SelectionComp::Write(Net::NetworkMessage& message)
     if (prevObjectId_ == currObjectId_)
         return;
 
-    message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+    message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSelectTarget);
     AB::Packets::Server::ObjectTargetSelected packet = {
         owner_.id_,
         currObjectId_
@@ -29,13 +29,15 @@ void SelectionComp::Write(Net::NetworkMessage& message)
 bool SelectionComp::SelectObject(uint32_t targetId)
 {
     auto* target = owner_.GetGame()->GetObject<GameObject>(targetId);
-    if (!target || !target->selectable_)
+    // 0 = unselecting object
+    if ((targetId != 0) && (!target || !target->selectable_))
         return false;
     if (currObjectId_ == targetId)
         return true;
 
     currObjectId_ = targetId;
-    target->CallEvent<void(Actor*)>(EVENT_ON_SELECTED, &owner_);
+    if (target)
+        target->CallEvent<void(Actor*)>(EVENT_ON_SELECTED, &owner_);
     return true;
 }
 

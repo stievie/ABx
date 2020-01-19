@@ -187,7 +187,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         if (resigned == GetValidPlayerCount())
         {
             defeatedTick_ = Utils::Tick();
-            message.AddByte(AB::GameProtocol::PartyResigned);
+            message.AddByte(AB::GameProtocol::ServerPacketType::PartyResigned);
             AB::Packets::Server::PartyResigned packet = { id_ };
             AB::Packets::Add(packet, message);
             KillAll();
@@ -196,7 +196,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         if (defeated_)
         {
             defeatedTick_ = Utils::Tick();
-            message.AddByte(AB::GameProtocol::PartyDefeated);
+            message.AddByte(AB::GameProtocol::ServerPacketType::PartyDefeated);
             AB::Packets::Server::PartyDefeated packet = { id_ };
             AB::Packets::Add(packet, message);
             KillAll();
@@ -314,7 +314,7 @@ void Party::NotifyPlayersQueued()
 {
     assert(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
         AB::GameProtocol::ServerMessageTypePlayerQueued,
         GetLeader()->GetName(),
@@ -328,7 +328,7 @@ void Party::NotifyPlayersUnqueued()
 {
     assert(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
         AB::GameProtocol::ServerMessageTypePlayerUnqueued,
         GetLeader()->GetName(),

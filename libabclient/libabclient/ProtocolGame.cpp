@@ -20,64 +20,64 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     SetEncKey(AB::ENC_KEY);
 
     using namespace AB::GameProtocol;
-    AddHandler<AB::Packets::Server::ServerJoined, ServerJoined>();
-    AddHandler<AB::Packets::Server::ServerLeft, ServerLeft>();
-    AddHandler<AB::Packets::Server::ChangeInstance, ChangeInstance>();
-    AddHandler<AB::Packets::Server::EnterWorld, GameEnter>();
-    AddHandler<AB::Packets::Server::GameError, PlayerError>();
-    AddHandler<AB::Packets::Server::PlayerAutorun, PlayerAutoRun>();
-    AddHandler<AB::Packets::Server::MailHeaders, MailHeaders>();
-    AddHandler<AB::Packets::Server::MailComplete, MailComplete>();
-    AddHandler<AB::Packets::Server::InventoryContent, InventoryContent>();
-    AddHandler<AB::Packets::Server::InventoryItemUpdate, InventoryItemUpdate>();
-    AddHandler<AB::Packets::Server::InventoryItemDelete, InventoryItemDelete>();
-    AddHandler<AB::Packets::Server::ChestContent, ChestContent>();
-    AddHandler<AB::Packets::Server::ChestItemUpdate, ChestItemUpdate>();
-    AddHandler<AB::Packets::Server::ChestItemDelete, ChestItemDelete>();
-    AddHandler<AB::Packets::Server::ObjectSpawnExisting, GameSpawnObjectExisting>();
-    AddHandler<AB::Packets::Server::ObjectSpawn, GameSpawnObject>();
-    AddHandler<AB::Packets::Server::ObjectDespawn, GameLeaveObject>();
-    AddHandler<AB::Packets::Server::ObjectPosUpdate, GameObjectPositionChange>();
-    AddHandler<AB::Packets::Server::ObjectRotationUpdate, GameObjectRotationChange>();
-    AddHandler<AB::Packets::Server::ObjectStateChanged, GameObjectStateChange>();
-    AddHandler<AB::Packets::Server::ObjectSpeedChanged, GameObjectMoveSpeedChange>();
-    AddHandler<AB::Packets::Server::ObjectTargetSelected, GameObjectSelectTarget>();
-    AddHandler<AB::Packets::Server::ObjectSkillFailure, GameObjectSkillFailure>();
-    AddHandler<AB::Packets::Server::ObjectUseSkill, GameObjectUseSkill>();
-    AddHandler<AB::Packets::Server::ObjectSkillSuccess, GameObjectEndUseSkill>();
-    AddHandler<AB::Packets::Server::ObjectAttackFailure, GameObjectAttackFailure>();
-    AddHandler<AB::Packets::Server::ObjectPingTarget, GameObjectPingTarget>();
-    AddHandler<AB::Packets::Server::ObjectEffectAdded, GameObjectEffectAdded>();
-    AddHandler<AB::Packets::Server::ObjectEffectRemoved, GameObjectEffectRemoved>();
-    AddHandler<AB::Packets::Server::ObjectDamaged, GameObjectDamaged>();
-    AddHandler<AB::Packets::Server::ObjectHealed, GameObjectHealed>();
-    AddHandler<AB::Packets::Server::ObjectProgress, GameObjectProgress>();
-    AddHandler<AB::Packets::Server::ObjectDroppedItem, GameObjectDropItem>();
-    AddHandler<AB::Packets::Server::ObjectSetPosition, GameObjectSetPosition>();
-    AddHandler<AB::Packets::Server::ServerMessage, ServerMessage>();
-    AddHandler<AB::Packets::Server::ChatMessage, ChatMessage>();
-    AddHandler<AB::Packets::Server::PartyPlayerInvited, PartyPlayerInvited>();
-    AddHandler<AB::Packets::Server::PartyPlayerRemoved, PartyPlayerRemoved>();
-    AddHandler<AB::Packets::Server::PartyPlayerAdded, PartyPlayerAdded>();
-    AddHandler<AB::Packets::Server::PartyInviteRemoved, PartyInviteRemoved>();
-    AddHandler<AB::Packets::Server::PartyResigned, PartyResigned>();
-    AddHandler<AB::Packets::Server::PartyDefeated, PartyDefeated>();
-    AddHandler<AB::Packets::Server::PartyMembersInfo, PartyInfoMembers>();
-    AddHandler<AB::Packets::Server::ObjectResourceChanged, GameObjectResourceChange>();
-    AddHandler<AB::Packets::Server::DialogTrigger, DialogTrigger>();
-    AddHandler<AB::Packets::Server::FriendList, FriendList>();
-    AddHandler<AB::Packets::Server::FriendAdded, FriendAdded>();
-    AddHandler<AB::Packets::Server::FriendRemoved, FriendRemoved>();
-    AddHandler<AB::Packets::Server::GuildInfo, GuildInfo>();
-    AddHandler<AB::Packets::Server::GuildMemberList, GuildMemberList>();
-    AddHandler<AB::Packets::Server::QuestSelectionDialogTrigger, QuestSelectionDialogTrigger>();
-    AddHandler<AB::Packets::Server::QuestDialogTrigger, QuestDialogTrigger>();
-    AddHandler<AB::Packets::Server::NpcHasQuest, QuestNpcHasQuest>();
-    AddHandler<AB::Packets::Server::QuestDeleted, QuestDeleted>();
-    AddHandler<AB::Packets::Server::QuestRewarded, QuestRewarded>();
-    AddHandler<AB::Packets::Server::PlayerInfo, PlayerInfo>();
-    AddHandler<AB::Packets::Server::SetPlayerAttributeValue, PlayerSetAttributeValue>();
-    AddHandler<AB::Packets::Server::SetPlayerSecProfession, PlayerSetSecProfession>();
+    AddHandler<AB::Packets::Server::ServerJoined, ServerPacketType::ServerJoined>();
+    AddHandler<AB::Packets::Server::ServerLeft, ServerPacketType::ServerLeft>();
+    AddHandler<AB::Packets::Server::ChangeInstance, ServerPacketType::ChangeInstance>();
+    AddHandler<AB::Packets::Server::EnterWorld, ServerPacketType::GameEnter>();
+    AddHandler<AB::Packets::Server::GameError, ServerPacketType::PlayerError>();
+    AddHandler<AB::Packets::Server::PlayerAutorun, ServerPacketType::PlayerAutoRun>();
+    AddHandler<AB::Packets::Server::MailHeaders, ServerPacketType::MailHeaders>();
+    AddHandler<AB::Packets::Server::MailComplete, ServerPacketType::MailComplete>();
+    AddHandler<AB::Packets::Server::InventoryContent, ServerPacketType::InventoryContent>();
+    AddHandler<AB::Packets::Server::InventoryItemUpdate, ServerPacketType::InventoryItemUpdate>();
+    AddHandler<AB::Packets::Server::InventoryItemDelete, ServerPacketType::InventoryItemDelete>();
+    AddHandler<AB::Packets::Server::ChestContent, ServerPacketType::ChestContent>();
+    AddHandler<AB::Packets::Server::ChestItemUpdate, ServerPacketType::ChestItemUpdate>();
+    AddHandler<AB::Packets::Server::ChestItemDelete, ServerPacketType::ChestItemDelete>();
+    AddHandler<AB::Packets::Server::ObjectSpawnExisting, ServerPacketType::GameSpawnObjectExisting>();
+    AddHandler<AB::Packets::Server::ObjectSpawn, ServerPacketType::GameSpawnObject>();
+    AddHandler<AB::Packets::Server::ObjectDespawn, ServerPacketType::GameLeaveObject>();
+    AddHandler<AB::Packets::Server::ObjectPosUpdate, ServerPacketType::GameObjectPositionChange>();
+    AddHandler<AB::Packets::Server::ObjectRotationUpdate, ServerPacketType::GameObjectRotationChange>();
+    AddHandler<AB::Packets::Server::ObjectStateChanged, ServerPacketType::GameObjectStateChange>();
+    AddHandler<AB::Packets::Server::ObjectSpeedChanged, ServerPacketType::GameObjectMoveSpeedChange>();
+    AddHandler<AB::Packets::Server::ObjectTargetSelected, ServerPacketType::GameObjectSelectTarget>();
+    AddHandler<AB::Packets::Server::ObjectSkillFailure, ServerPacketType::GameObjectSkillFailure>();
+    AddHandler<AB::Packets::Server::ObjectUseSkill, ServerPacketType::GameObjectUseSkill>();
+    AddHandler<AB::Packets::Server::ObjectSkillSuccess, ServerPacketType::GameObjectEndUseSkill>();
+    AddHandler<AB::Packets::Server::ObjectAttackFailure, ServerPacketType::GameObjectAttackFailure>();
+    AddHandler<AB::Packets::Server::ObjectPingTarget, ServerPacketType::GameObjectPingTarget>();
+    AddHandler<AB::Packets::Server::ObjectEffectAdded, ServerPacketType::GameObjectEffectAdded>();
+    AddHandler<AB::Packets::Server::ObjectEffectRemoved, ServerPacketType::GameObjectEffectRemoved>();
+    AddHandler<AB::Packets::Server::ObjectDamaged, ServerPacketType::GameObjectDamaged>();
+    AddHandler<AB::Packets::Server::ObjectHealed, ServerPacketType::GameObjectHealed>();
+    AddHandler<AB::Packets::Server::ObjectProgress, ServerPacketType::GameObjectProgress>();
+    AddHandler<AB::Packets::Server::ObjectDroppedItem, ServerPacketType::GameObjectDropItem>();
+    AddHandler<AB::Packets::Server::ObjectSetPosition, ServerPacketType::GameObjectSetPosition>();
+    AddHandler<AB::Packets::Server::ServerMessage, ServerPacketType::ServerMessage>();
+    AddHandler<AB::Packets::Server::ChatMessage, ServerPacketType::ChatMessage>();
+    AddHandler<AB::Packets::Server::PartyPlayerInvited, ServerPacketType::PartyPlayerInvited>();
+    AddHandler<AB::Packets::Server::PartyPlayerRemoved, ServerPacketType::PartyPlayerRemoved>();
+    AddHandler<AB::Packets::Server::PartyPlayerAdded, ServerPacketType::PartyPlayerAdded>();
+    AddHandler<AB::Packets::Server::PartyInviteRemoved, ServerPacketType::PartyInviteRemoved>();
+    AddHandler<AB::Packets::Server::PartyResigned, ServerPacketType::PartyResigned>();
+    AddHandler<AB::Packets::Server::PartyDefeated, ServerPacketType::PartyDefeated>();
+    AddHandler<AB::Packets::Server::PartyMembersInfo, ServerPacketType::PartyInfoMembers>();
+    AddHandler<AB::Packets::Server::ObjectResourceChanged, ServerPacketType::GameObjectResourceChange>();
+    AddHandler<AB::Packets::Server::DialogTrigger, ServerPacketType::DialogTrigger>();
+    AddHandler<AB::Packets::Server::FriendList, ServerPacketType::FriendList>();
+    AddHandler<AB::Packets::Server::FriendAdded, ServerPacketType::FriendAdded>();
+    AddHandler<AB::Packets::Server::FriendRemoved, ServerPacketType::FriendRemoved>();
+    AddHandler<AB::Packets::Server::GuildInfo, ServerPacketType::GuildInfo>();
+    AddHandler<AB::Packets::Server::GuildMemberList, ServerPacketType::GuildMemberList>();
+    AddHandler<AB::Packets::Server::QuestSelectionDialogTrigger, ServerPacketType::QuestSelectionDialogTrigger>();
+    AddHandler<AB::Packets::Server::QuestDialogTrigger, ServerPacketType::QuestDialogTrigger>();
+    AddHandler<AB::Packets::Server::NpcHasQuest, ServerPacketType::QuestNpcHasQuest>();
+    AddHandler<AB::Packets::Server::QuestDeleted, ServerPacketType::QuestDeleted>();
+    AddHandler<AB::Packets::Server::QuestRewarded, ServerPacketType::QuestRewarded>();
+    AddHandler<AB::Packets::Server::PlayerInfo, ServerPacketType::PlayerInfo>();
+    AddHandler<AB::Packets::Server::SetPlayerAttributeValue, ServerPacketType::PlayerSetAttributeValue>();
+    AddHandler<AB::Packets::Server::SetPlayerSecProfession, ServerPacketType::PlayerSetSecProfession>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -151,7 +151,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
 {
     using namespace AB::GameProtocol;
 
-    ServerPacketType opCode = NoError;
+    ServerPacketType opCode = ServerPacketType::NoError;
     // One such message contains a variable number of packets and then some padding bytes.
     while (!message.Eof())
     {
@@ -167,21 +167,21 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         // There are some special codes we handle separately
         switch (opCode)
         {
-        case KeyExchange:
+        case ServerPacketType::KeyExchange:
             ParseKeyExchange(message);
             break;
-        case Error:
+        case ServerPacketType::Error:
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::ProtocolError>(message);
             if (packet.code != 0)
                 ProtocolError(packet.code);
             break;
         }
-        case GameStart:
+        case ServerPacketType::GameStart:
             // This is not interesting for the client
             AB::Packets::Get<AB::Packets::Server::GameStart>(message);
             break;
-        case GamePong:
+        case ServerPacketType::GamePong:
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::Pong>(message);
             // Clock difference between client and server
@@ -191,13 +191,13 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             receiver_.OnPong(lastPing_);
             break;
         }
-        case GameUpdate:
+        case ServerPacketType::GameUpdate:
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::GameUpdate>(message);
             updateTick_ = packet.tick;
             break;
         }
-        case CodeLast:
+        case ServerPacketType::CodeLast:
             // Padding bytes, i.e. end of message
             return;
         default:
@@ -229,7 +229,7 @@ void ProtocolGame::Logout()
 {
     loggingOut_ = true;
     AB::Packets::Client::Logout packet;
-    SendPacket(AB::GameProtocol::PacketTypeLogout, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Logout, packet);
 }
 
 void ProtocolGame::Ping()
@@ -238,7 +238,7 @@ void ProtocolGame::Ping()
     AB::Packets::Client::Ping packet = {
         pingTick_
     };
-    SendPacket(AB::GameProtocol::PacketTypePing, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Ping, packet);
 }
 
 void ProtocolGame::ChangeMap(const std::string& mapUuid)
@@ -246,19 +246,19 @@ void ProtocolGame::ChangeMap(const std::string& mapUuid)
     AB::Packets::Client::ChangeMap packet = {
         mapUuid
     };
-    SendPacket(AB::GameProtocol::PacketTypeChangeMap, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::ChangeMap, packet);
 }
 
 void ProtocolGame::GetMailHeaders()
 {
     AB::Packets::Client::GetMailHeaders packet;
-    SendPacket(AB::GameProtocol::PacketTypeGetMailHeaders, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetMailHeaders, packet);
 }
 
 void ProtocolGame::GetInventory()
 {
     AB::Packets::Client::GetInventory packet;
-    SendPacket(AB::GameProtocol::PacketTypeGetInventory, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetInventory, packet);
 }
 
 void ProtocolGame::InventoryStoreItem(uint16_t pos)
@@ -266,7 +266,7 @@ void ProtocolGame::InventoryStoreItem(uint16_t pos)
     AB::Packets::Client::InventoryStoreItem packet = {
         pos
     };
-    SendPacket(AB::GameProtocol::PacketTypeInventoryStoreInChest, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryStoreInChest, packet);
 }
 
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
@@ -274,7 +274,7 @@ void ProtocolGame::InventoryDestroyItem(uint16_t pos)
     AB::Packets::Client::InventoryDestroyItem packet = {
         pos
     };
-    SendPacket(AB::GameProtocol::PacketTypeInventoryDestroyItem, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryDestroyItem, packet);
 }
 
 void ProtocolGame::InventoryDropItem(uint16_t pos)
@@ -282,13 +282,13 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
     AB::Packets::Client::InventoryDropItem packet = {
         pos
     };
-    SendPacket(AB::GameProtocol::PacketTypeInventoryDropItem, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryDropItem, packet);
 }
 
 void ProtocolGame::GetChest()
 {
     AB::Packets::Client::GetChest packet;
-    SendPacket(AB::GameProtocol::PacketTypeGetChest, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetChest, packet);
 }
 
 void ProtocolGame::ChestDestroyItem(uint16_t pos)
@@ -296,7 +296,7 @@ void ProtocolGame::ChestDestroyItem(uint16_t pos)
     AB::Packets::Client::ChestDestroyItem packet = {
         pos
     };
-    SendPacket(AB::GameProtocol::PacketTypeChestDestroyItem, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::ChestDestroyItem, packet);
 }
 
 void ProtocolGame::GetMail(const std::string& mailUuid)
@@ -304,7 +304,7 @@ void ProtocolGame::GetMail(const std::string& mailUuid)
     AB::Packets::Client::GetMail packet = {
         mailUuid
     };
-    SendPacket(AB::GameProtocol::PacketTypeGetMail, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetMail, packet);
 }
 
 void ProtocolGame::DeleteMail(const std::string& mailUuid)
@@ -312,7 +312,7 @@ void ProtocolGame::DeleteMail(const std::string& mailUuid)
     AB::Packets::Client::DeleteMail packet = {
         mailUuid
     };
-    SendPacket(AB::GameProtocol::PacketTypeDeleteMail, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::DeleteMail, packet);
 }
 
 void ProtocolGame::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
@@ -322,7 +322,7 @@ void ProtocolGame::SendMail(const std::string& recipient, const std::string& sub
         subject,
         body
     };
-    SendPacket(AB::GameProtocol::PacketTypeSendMail, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SendMail, packet);
 }
 
 void ProtocolGame::GetPlayerInfoByName(const std::string& name, uint32_t fields)
@@ -331,7 +331,7 @@ void ProtocolGame::GetPlayerInfoByName(const std::string& name, uint32_t fields)
         name,
         fields
     };
-    SendPacket(AB::GameProtocol::PacketTypeGetPlayerInfoByName, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetPlayerInfoByName, packet);
 }
 
 void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
@@ -340,7 +340,7 @@ void ProtocolGame::GetPlayerInfoByAccount(const std::string& accountUuid, uint32
         accountUuid,
         fields
     };
-    SendPacket(AB::GameProtocol::PacketTypeGetPlayerInfoByAccount, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetPlayerInfoByAccount, packet);
 }
 
 void ProtocolGame::Move(uint8_t direction)
@@ -348,7 +348,7 @@ void ProtocolGame::Move(uint8_t direction)
     AB::Packets::Client::Move packet = {
         direction
     };
-    SendPacket(AB::GameProtocol::PacketTypeMove, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Move, packet);
 }
 
 void ProtocolGame::Turn(uint8_t direction)
@@ -356,7 +356,7 @@ void ProtocolGame::Turn(uint8_t direction)
     AB::Packets::Client::Turn packet = {
         direction
     };
-    SendPacket(AB::GameProtocol::PacketTypeTurn, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Turn, packet);
 }
 
 void ProtocolGame::SetDirection(float rad)
@@ -364,7 +364,7 @@ void ProtocolGame::SetDirection(float rad)
     AB::Packets::Client::SetDirection packet = {
         rad
     };
-    SendPacket(AB::GameProtocol::PacketTypeSetDirection, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetDirection, packet);
 }
 
 void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
@@ -373,7 +373,7 @@ void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
         sourceId,
         targetId
     };
-    SendPacket(AB::GameProtocol::PacketTypeClickObject, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::ClickObject, packet);
 }
 
 void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
@@ -382,7 +382,7 @@ void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
         sourceId,
         targetId
     };
-    SendPacket(AB::GameProtocol::PacketTypeSelect, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Select, packet);
 }
 
 void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
@@ -391,7 +391,7 @@ void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::strin
         type,
         data
     };
-    SendPacket(AB::GameProtocol::PacketTypeCommand, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Command, packet);
 }
 
 void ProtocolGame::GotoPos(const Vec3& pos)
@@ -399,7 +399,7 @@ void ProtocolGame::GotoPos(const Vec3& pos)
     AB::Packets::Client::GotoPos packet = {
         { pos.x, pos.y, pos.z }
     };
-    SendPacket(AB::GameProtocol::PacketTypeGoto, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Goto, packet);
 }
 
 void ProtocolGame::Follow(uint32_t targetId, bool ping)
@@ -408,7 +408,7 @@ void ProtocolGame::Follow(uint32_t targetId, bool ping)
         targetId,
         ping
     };
-    SendPacket(AB::GameProtocol::PacketTypeFollow, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Follow, packet);
 }
 
 void ProtocolGame::UseSkill(uint32_t index, bool ping)
@@ -417,7 +417,7 @@ void ProtocolGame::UseSkill(uint32_t index, bool ping)
         static_cast<uint8_t>(index),
         ping
     };
-    SendPacket(AB::GameProtocol::PacketTypeUseSkill, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::UseSkill, packet);
 }
 
 void ProtocolGame::Attack(bool ping)
@@ -425,13 +425,13 @@ void ProtocolGame::Attack(bool ping)
     AB::Packets::Client::Attack packet = {
         ping
     };
-    SendPacket(AB::GameProtocol::PacketTypeAttack, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Attack, packet);
 }
 
 void ProtocolGame::Cancel()
 {
     AB::Packets::Client::Cancel packet = { };
-    SendPacket(AB::GameProtocol::PacketTypeCancel, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Cancel, packet);
 }
 
 void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
@@ -439,7 +439,7 @@ void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
     AB::Packets::Client::SetPlayerState packet = {
         static_cast<uint8_t>(newState)
     };
-    SendPacket(AB::GameProtocol::PacketTypeSetState, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetState, packet);
 }
 
 void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
@@ -447,7 +447,7 @@ void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
     AB::Packets::Client::PartyInvitePlayer packet = {
         targetId
     };
-    SendPacket(AB::GameProtocol::PacketTypePartyInvitePlayer, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PartyInvitePlayer, packet);
 }
 
 void ProtocolGame::PartyKickPlayer(uint32_t targetId)
@@ -455,13 +455,13 @@ void ProtocolGame::PartyKickPlayer(uint32_t targetId)
     AB::Packets::Client::PartyKickPlayer packet = {
         targetId
     };
-    SendPacket(AB::GameProtocol::PacketTypePartyKickPlayer, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PartyKickPlayer, packet);
 }
 
 void ProtocolGame::PartyLeave()
 {
     AB::Packets::Client::PartyLeave packet = { };
-    SendPacket(AB::GameProtocol::PacketTypePartyLeave, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PartyLeave, packet);
 }
 
 void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
@@ -469,7 +469,7 @@ void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
     AB::Packets::Client::PartyAcceptInvite packet = {
         inviterId
     };
-    SendPacket(AB::GameProtocol::PacketTypePartyAcceptInvite, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PartyAcceptInvite, packet);
 }
 
 void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
@@ -477,7 +477,7 @@ void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
     AB::Packets::Client::PartyRejectInvite packet = {
         inviterId
     };
-    SendPacket(AB::GameProtocol::PacketTypePartyRejectInvite, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PartyRejectInvite, packet);
 }
 
 void ProtocolGame::PartyGetMembers(uint32_t partyId)
@@ -485,19 +485,19 @@ void ProtocolGame::PartyGetMembers(uint32_t partyId)
     AB::Packets::Client::PartyGetMembers packet = {
         partyId
     };
-    SendPacket(AB::GameProtocol::PacektTypeGetPartyMembers, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetPartyMembers, packet);
 }
 
 void ProtocolGame::QueueMatch()
 {
     AB::Packets::Client::QueueMatch packet = { };
-    SendPacket(AB::GameProtocol::PacketTypeQueue, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Queue, packet);
 }
 
 void ProtocolGame::UnqueueMatch()
 {
     AB::Packets::Client::UnqueueMatch packet = { };
-    SendPacket(AB::GameProtocol::PacketTypeUnqueue, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Unqueue, packet);
 }
 
 void ProtocolGame::AddFriend(const std::string& name, AB::Entities::FriendRelation relation)
@@ -506,7 +506,7 @@ void ProtocolGame::AddFriend(const std::string& name, AB::Entities::FriendRelati
         name,
         relation
     };
-    SendPacket(AB::GameProtocol::PacketTypeAddFriend, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::AddFriend, packet);
 }
 
 void ProtocolGame::RemoveFriend(const std::string& accountUuid)
@@ -514,13 +514,13 @@ void ProtocolGame::RemoveFriend(const std::string& accountUuid)
     AB::Packets::Client::RemoveFriend packet = {
         accountUuid
     };
-    SendPacket(AB::GameProtocol::PacketTypeRemoveFriend, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::RemoveFriend, packet);
 }
 
 void ProtocolGame::UpdateFriendList()
 {
     AB::Packets::Client::UpdateFriendList packet = { };
-    SendPacket(AB::GameProtocol::PacketTypeGetFriendList, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetFriendList, packet);
 }
 
 void ProtocolGame::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status)
@@ -528,7 +528,7 @@ void ProtocolGame::SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status statu
     AB::Packets::Client::SetOnlineStatus packet = {
         status
     };
-    SendPacket(AB::GameProtocol::PacketTypeSetOnlineStatus, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetOnlineStatus, packet);
 }
 
 void ProtocolGame::SetSecondaryProfession(uint32_t profIndex)
@@ -536,7 +536,7 @@ void ProtocolGame::SetSecondaryProfession(uint32_t profIndex)
     AB::Packets::Client::SetSecondaryProfession packet = {
         profIndex
     };
-    SendPacket(AB::GameProtocol::PacketSetSecondaryProfession, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetSecondaryProfession, packet);
 }
 
 void ProtocolGame::SetAttributeValue(uint32_t attribIndex, uint8_t value)
@@ -544,7 +544,7 @@ void ProtocolGame::SetAttributeValue(uint32_t attribIndex, uint8_t value)
     AB::Packets::Client::SetAttributeValue packet = {
         attribIndex, value
     };
-    SendPacket(AB::GameProtocol::PacektSetAttributeValue, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetAttributeValue, packet);
 }
 
 void ProtocolGame::EquipSkill(uint32_t skillIndex, uint8_t pos)
@@ -552,7 +552,7 @@ void ProtocolGame::EquipSkill(uint32_t skillIndex, uint8_t pos)
     AB::Packets::Client::EquipSkill packet = {
         skillIndex, pos
     };
-    SendPacket(AB::GameProtocol::PacketEquipSkill, packet);
+    SendPacket(AB::GameProtocol::ClientPacketTypes::EquipSkill, packet);
 }
 
 }

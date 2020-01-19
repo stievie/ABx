@@ -175,14 +175,14 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 #ifdef _DEBUG
         LOG_DEBUG << "Sending server joined message" << std::endl;
 #endif
-        nmsg->AddByte(AB::GameProtocol::ServerJoined);
+        nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerJoined);
     }
     else
     {
 #ifdef _DEBUG
         LOG_DEBUG << "Sending server left message" << std::endl;
 #endif
-        nmsg->AddByte(AB::GameProtocol::ServerLeft);
+        nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerLeft);
     }
 
     AB::Packets::Add(packet, *nmsg);

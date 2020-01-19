@@ -282,7 +282,7 @@ void AutoRunComp::SetAutoRun(bool value)
         {
             // This tells the players client to switch off client prediction and use server positions instead
             auto nmsg = Net::NetworkMessage::GetNew();
-            nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
+            nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerAutoRun);
             AB::Packets::Server::PlayerAutorun packet = {
                 autoRun_
             };

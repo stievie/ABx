@@ -144,7 +144,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
     {
         if (lastError_ == AB::GameProtocol::SkillErrorNone)
         {
-            message.AddByte(AB::GameProtocol::GameObjectUseSkill);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectUseSkill);
             AB::Packets::Server::ObjectUseSkill packet;
             packet.id = owner_.id_;
             packet.skillIndex = static_cast<int8_t>(lastSkillIndex_ + 1);
@@ -168,7 +168,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         }
         else
         {
-            message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSkillFailure);
             AB::Packets::Server::ObjectSkillFailure packet = {
                 owner_.id_,
                 static_cast<int8_t>(lastSkillIndex_ + 1),
@@ -183,7 +183,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
     {
         if (lastError_ == AB::GameProtocol::SkillErrorNone)
         {
-            message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectEndUseSkill);
             AB::Packets::Server::ObjectSkillSuccess packet = {
                 owner_.id_,
                 static_cast<int8_t>(lastSkillIndex_ + 1),
@@ -193,7 +193,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         }
         else
         {
-            message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSkillFailure);
             AB::Packets::Server::ObjectSkillFailure packet = {
                 owner_.id_,
                 static_cast<int8_t>(lastSkillIndex_ + 1),

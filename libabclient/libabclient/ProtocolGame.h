@@ -61,7 +61,7 @@ public:
     void SendPacket(AB::GameProtocol::ClientPacketTypes type, T& packet)
     {
         OutputMessage msg;
-        msg.Add<uint8_t>(type);
+        msg.Add<uint8_t>(static_cast<uint8_t>(type));
         AB::Packets::Add(packet, msg);
         Send(msg);
     }

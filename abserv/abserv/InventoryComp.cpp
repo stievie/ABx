@@ -90,7 +90,7 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
 {
     if (!item || !message)
         return;
-    message->AddByte((!isChest) ? AB::GameProtocol::InventoryItemUpdate : AB::GameProtocol::ChestItemUpdate);
+    message->AddByte((!isChest) ? AB::GameProtocol::ServerPacketType::InventoryItemUpdate : AB::GameProtocol::ServerPacketType::ChestItemUpdate);
     AB::Packets::Server::InventoryItemUpdate packet = {
         static_cast<uint16_t>(item->data_.type),
         item->data_.index,

@@ -131,7 +131,7 @@ void Quest::Write(Net::NetworkMessage& message)
     if (internalDeleted_ != playerQuest_.deleted)
     {
         playerQuest_.deleted = internalDeleted_;
-        message.AddByte(QuestDeleted);
+        message.AddByte(ServerPacketType::QuestDeleted);
         AB::Packets::Server::QuestDeleted packet = {
             index_,
             playerQuest_.deleted
@@ -141,7 +141,7 @@ void Quest::Write(Net::NetworkMessage& message)
     if (internalRewarded_ != playerQuest_.rewarded)
     {
         playerQuest_.rewarded = internalRewarded_;
-        message.AddByte(QuestRewarded);
+        message.AddByte(ServerPacketType::QuestRewarded);
         AB::Packets::Server::QuestRewarded packet = {
             index_,
             playerQuest_.rewarded

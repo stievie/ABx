@@ -64,7 +64,7 @@ void StateComp::Write(Net::NetworkMessage& message)
 #ifdef DEBUG_GAME
         LOG_DEBUG << "New state of " << owner_ << ": " << (int)GetState() << std::endl;
 #endif
-        message.AddByte(AB::GameProtocol::GameObjectStateChange);
+        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectStateChange);
         AB::Packets::Server::ObjectStateChanged packet = {
             owner_.id_,
             static_cast<uint8_t>(GetState())

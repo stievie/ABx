@@ -23,7 +23,7 @@ void HealComp::Write(Net::NetworkMessage& message)
         return;
     for (const auto& d : healings_)
     {
-        message.AddByte(AB::GameProtocol::GameObjectHealed);
+        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectHealed);
         AB::Packets::Server::ObjectHealed packet = {
             owner_.id_,
             d.actorId,
