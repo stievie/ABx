@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-namespace AB {
+namespace AB
+{
 
 /// Increase whenever the protocol changes
 static constexpr uint16_t PROTOCOL_VERSION = 1;
@@ -33,125 +34,127 @@ const uint32_t ENC_KEY[4] = {
     0xd705d09f,
     0x72a8a08c,
     0xecabe20b,
-    0x76924dc0};
+    0x76924dc0
+};
 
 // Packet types sent from the client to the server
-#define ENUMERATE_CLIENT_PACKET_CODES      \
-    ENUMERATE_CLIENT_PACKET_CODE(Ping)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Logout)  \
-    ENUMERATE_CLIENT_PACKET_CODE(ChangeMap)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SetOnlineStatus)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetPlayerInfoByAccount)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetPlayerInfoByName)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SendMail)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetMailHeaders)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetMail)  \
-    ENUMERATE_CLIENT_PACKET_CODE(DeleteMail)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Move)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Turn)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SetDirection)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Goto)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Follow)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SetState)  \
-    ENUMERATE_CLIENT_PACKET_CODE(UseSkill)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Attack)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Cancel)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Select)  \
-    ENUMERATE_CLIENT_PACKET_CODE(ClickObject)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Command)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Queue)  \
-    ENUMERATE_CLIENT_PACKET_CODE(Unqueue)  \
-    ENUMERATE_CLIENT_PACKET_CODE(PartyInvitePlayer)  \
-    ENUMERATE_CLIENT_PACKET_CODE(PartyKickPlayer)  \
-    ENUMERATE_CLIENT_PACKET_CODE(PartyLeave)  \
-    ENUMERATE_CLIENT_PACKET_CODE(PartyAcceptInvite)  \
-    ENUMERATE_CLIENT_PACKET_CODE(PartyRejectInvite)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetPartyMembers)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SetSecondaryProfession)  \
-    ENUMERATE_CLIENT_PACKET_CODE(SetAttributeValue)  \
-    ENUMERATE_CLIENT_PACKET_CODE(EquipSkill)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetInventory)  \
-    ENUMERATE_CLIENT_PACKET_CODE(InventoryDestroyItem)  \
-    ENUMERATE_CLIENT_PACKET_CODE(InventoryDropItem)  \
+#define ENUMERATE_CLIENT_PACKET_CODES                    \
+    ENUMERATE_CLIENT_PACKET_CODE(Ping)                   \
+    ENUMERATE_CLIENT_PACKET_CODE(Logout)                 \
+    ENUMERATE_CLIENT_PACKET_CODE(ChangeMap)              \
+    ENUMERATE_CLIENT_PACKET_CODE(SetOnlineStatus)        \
+    ENUMERATE_CLIENT_PACKET_CODE(GetPlayerInfoByAccount) \
+    ENUMERATE_CLIENT_PACKET_CODE(GetPlayerInfoByName)    \
+    ENUMERATE_CLIENT_PACKET_CODE(SendMail)               \
+    ENUMERATE_CLIENT_PACKET_CODE(GetMailHeaders)         \
+    ENUMERATE_CLIENT_PACKET_CODE(GetMail)                \
+    ENUMERATE_CLIENT_PACKET_CODE(DeleteMail)             \
+    ENUMERATE_CLIENT_PACKET_CODE(Move)                   \
+    ENUMERATE_CLIENT_PACKET_CODE(Turn)                   \
+    ENUMERATE_CLIENT_PACKET_CODE(SetDirection)           \
+    ENUMERATE_CLIENT_PACKET_CODE(Goto)                   \
+    ENUMERATE_CLIENT_PACKET_CODE(Follow)                 \
+    ENUMERATE_CLIENT_PACKET_CODE(SetState)               \
+    ENUMERATE_CLIENT_PACKET_CODE(UseSkill)               \
+    ENUMERATE_CLIENT_PACKET_CODE(Attack)                 \
+    ENUMERATE_CLIENT_PACKET_CODE(Cancel)                 \
+    ENUMERATE_CLIENT_PACKET_CODE(Select)                 \
+    ENUMERATE_CLIENT_PACKET_CODE(ClickObject)            \
+    ENUMERATE_CLIENT_PACKET_CODE(Command)                \
+    ENUMERATE_CLIENT_PACKET_CODE(Queue)                  \
+    ENUMERATE_CLIENT_PACKET_CODE(Unqueue)                \
+    ENUMERATE_CLIENT_PACKET_CODE(PartyInvitePlayer)      \
+    ENUMERATE_CLIENT_PACKET_CODE(PartyKickPlayer)        \
+    ENUMERATE_CLIENT_PACKET_CODE(PartyLeave)             \
+    ENUMERATE_CLIENT_PACKET_CODE(PartyAcceptInvite)      \
+    ENUMERATE_CLIENT_PACKET_CODE(PartyRejectInvite)      \
+    ENUMERATE_CLIENT_PACKET_CODE(GetPartyMembers)        \
+    ENUMERATE_CLIENT_PACKET_CODE(SetSecondaryProfession) \
+    ENUMERATE_CLIENT_PACKET_CODE(SetAttributeValue)      \
+    ENUMERATE_CLIENT_PACKET_CODE(EquipSkill)             \
+    ENUMERATE_CLIENT_PACKET_CODE(GetInventory)           \
+    ENUMERATE_CLIENT_PACKET_CODE(InventoryDestroyItem)   \
+    ENUMERATE_CLIENT_PACKET_CODE(InventoryDropItem)      \
     ENUMERATE_CLIENT_PACKET_CODE(InventoryStoreInChest)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetChest)  \
-    ENUMERATE_CLIENT_PACKET_CODE(ChestDestroyItem)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetFriendList)  \
-    ENUMERATE_CLIENT_PACKET_CODE(AddFriend)  \
-    ENUMERATE_CLIENT_PACKET_CODE(RemoveFriend)  \
-    ENUMERATE_CLIENT_PACKET_CODE(RenameFriend)  \
-    ENUMERATE_CLIENT_PACKET_CODE(GetGuildInfo)  \
+    ENUMERATE_CLIENT_PACKET_CODE(GetChest)               \
+    ENUMERATE_CLIENT_PACKET_CODE(ChestDestroyItem)       \
+    ENUMERATE_CLIENT_PACKET_CODE(GetFriendList)          \
+    ENUMERATE_CLIENT_PACKET_CODE(AddFriend)              \
+    ENUMERATE_CLIENT_PACKET_CODE(RemoveFriend)           \
+    ENUMERATE_CLIENT_PACKET_CODE(RenameFriend)           \
+    ENUMERATE_CLIENT_PACKET_CODE(GetGuildInfo)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)
 
 // Packet types sent from the server to the client
-#define ENUMERATE_SERVER_PACKET_CODES      \
-    ENUMERATE_SERVER_PACKET_CODE(NoError)  \
-    ENUMERATE_SERVER_PACKET_CODE(Error)  \
-    ENUMERATE_SERVER_PACKET_CODE(KeyExchange)  \
-    ENUMERATE_SERVER_PACKET_CODE(ServerJoined)  \
-    ENUMERATE_SERVER_PACKET_CODE(ServerLeft)  \
-    ENUMERATE_SERVER_PACKET_CODE(ServerMessage)  \
-    ENUMERATE_SERVER_PACKET_CODE(ChatMessage)  \
-    ENUMERATE_SERVER_PACKET_CODE(MailHeaders)  \
-    ENUMERATE_SERVER_PACKET_CODE(MailComplete)  \
-    ENUMERATE_SERVER_PACKET_CODE(ChangeInstance)  \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerError)  \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerAutoRun)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameStart)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameEnter)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameUpdate)  \
-    ENUMERATE_SERVER_PACKET_CODE(GamePong)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObjectExisting)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObject)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameLeaveObject)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectPositionChange)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectRotationChange)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSelectTarget)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectStateChange)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectMoveSpeedChange)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectResourceChange)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectUseSkill)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEndUseSkill)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSkillFailure)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectAttackFailure)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectAdded)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectRemoved)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectDamaged)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectHealed)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectProgress)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectPingTarget)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectDropItem)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSetPosition)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerRemoved)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerAdded)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyInviteRemoved)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyInfoMembers)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyResigned)  \
-    ENUMERATE_SERVER_PACKET_CODE(PartyDefeated)  \
-    ENUMERATE_SERVER_PACKET_CODE(InventoryContent)  \
-    ENUMERATE_SERVER_PACKET_CODE(InventoryItemUpdate)  \
-    ENUMERATE_SERVER_PACKET_CODE(InventoryItemDelete)  \
-    ENUMERATE_SERVER_PACKET_CODE(ChestContent)  \
-    ENUMERATE_SERVER_PACKET_CODE(ChestItemUpdate)  \
-    ENUMERATE_SERVER_PACKET_CODE(ChestItemDelete)  \
-    ENUMERATE_SERVER_PACKET_CODE(FriendList)  \
-    ENUMERATE_SERVER_PACKET_CODE(FriendAdded)  \
-    ENUMERATE_SERVER_PACKET_CODE(FriendRemoved)  \
-    ENUMERATE_SERVER_PACKET_CODE(FriendRenamed)  \
-    ENUMERATE_SERVER_PACKET_CODE(GuildInfo)  \
-    ENUMERATE_SERVER_PACKET_CODE(GuildMemberList)  \
-    ENUMERATE_SERVER_PACKET_CODE(DialogTrigger)  \
-    ENUMERATE_SERVER_PACKET_CODE(QuestSelectionDialogTrigger)  \
-    ENUMERATE_SERVER_PACKET_CODE(QuestDialogTrigger)  \
-    ENUMERATE_SERVER_PACKET_CODE(QuestNpcHasQuest)  \
-    ENUMERATE_SERVER_PACKET_CODE(QuestDeleted)  \
-    ENUMERATE_SERVER_PACKET_CODE(QuestRewarded)  \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)  \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)  \
+#define ENUMERATE_SERVER_PACKET_CODES                         \
+    ENUMERATE_SERVER_PACKET_CODE(NoError)                     \
+    ENUMERATE_SERVER_PACKET_CODE(Error)                       \
+    ENUMERATE_SERVER_PACKET_CODE(KeyExchange)                 \
+    ENUMERATE_SERVER_PACKET_CODE(ServerJoined)                \
+    ENUMERATE_SERVER_PACKET_CODE(ServerLeft)                  \
+    ENUMERATE_SERVER_PACKET_CODE(ServerMessage)               \
+    ENUMERATE_SERVER_PACKET_CODE(ChatMessage)                 \
+    ENUMERATE_SERVER_PACKET_CODE(MailHeaders)                 \
+    ENUMERATE_SERVER_PACKET_CODE(MailComplete)                \
+    ENUMERATE_SERVER_PACKET_CODE(ChangeInstance)              \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerError)                 \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerAutoRun)               \
+    ENUMERATE_SERVER_PACKET_CODE(GameStart)                   \
+    ENUMERATE_SERVER_PACKET_CODE(GameEnter)                   \
+    ENUMERATE_SERVER_PACKET_CODE(GameUpdate)                  \
+    ENUMERATE_SERVER_PACKET_CODE(GamePong)                    \
+    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObjectExisting)     \
+    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObject)             \
+    ENUMERATE_SERVER_PACKET_CODE(GameLeaveObject)             \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectPositionChange)    \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectRotationChange)    \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectSelectTarget)      \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectStateChange)       \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectMoveSpeedChange)   \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectResourceChange)    \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectUseSkill)          \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectEndUseSkill)       \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectSkillFailure)      \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectAttackFailure)     \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectAdded)       \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectRemoved)     \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectDamaged)           \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectHealed)            \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectProgress)          \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectPingTarget)        \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectDropItem)          \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectSetPosition)       \
+    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)          \
+    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerRemoved)          \
+    ENUMERATE_SERVER_PACKET_CODE(PartyPlayerAdded)            \
+    ENUMERATE_SERVER_PACKET_CODE(PartyInviteRemoved)          \
+    ENUMERATE_SERVER_PACKET_CODE(PartyInfoMembers)            \
+    ENUMERATE_SERVER_PACKET_CODE(PartyResigned)               \
+    ENUMERATE_SERVER_PACKET_CODE(PartyDefeated)               \
+    ENUMERATE_SERVER_PACKET_CODE(InventoryContent)            \
+    ENUMERATE_SERVER_PACKET_CODE(InventoryItemUpdate)         \
+    ENUMERATE_SERVER_PACKET_CODE(InventoryItemDelete)         \
+    ENUMERATE_SERVER_PACKET_CODE(ChestContent)                \
+    ENUMERATE_SERVER_PACKET_CODE(ChestItemUpdate)             \
+    ENUMERATE_SERVER_PACKET_CODE(ChestItemDelete)             \
+    ENUMERATE_SERVER_PACKET_CODE(FriendList)                  \
+    ENUMERATE_SERVER_PACKET_CODE(FriendAdded)                 \
+    ENUMERATE_SERVER_PACKET_CODE(FriendRemoved)               \
+    ENUMERATE_SERVER_PACKET_CODE(FriendRenamed)               \
+    ENUMERATE_SERVER_PACKET_CODE(GuildInfo)                   \
+    ENUMERATE_SERVER_PACKET_CODE(GuildMemberList)             \
+    ENUMERATE_SERVER_PACKET_CODE(DialogTrigger)               \
+    ENUMERATE_SERVER_PACKET_CODE(QuestSelectionDialogTrigger) \
+    ENUMERATE_SERVER_PACKET_CODE(QuestDialogTrigger)          \
+    ENUMERATE_SERVER_PACKET_CODE(QuestNpcHasQuest)            \
+    ENUMERATE_SERVER_PACKET_CODE(QuestDeleted)                \
+    ENUMERATE_SERVER_PACKET_CODE(QuestRewarded)               \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)                  \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)     \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetSecProfession)
 
-namespace Errors {
+namespace Errors
+{
 
 enum ErrorCodes : uint8_t
 {
@@ -187,7 +190,8 @@ enum ErrorCodes : uint8_t
 
 }
 
-namespace LoginProtocol {
+namespace LoginProtocol
+{
 
 enum LoginPacketTypes : uint8_t
 {
@@ -204,7 +208,7 @@ enum LoginPacketTypes : uint8_t
 enum LoginProtocolCodes : uint8_t
 {
     LoginError = 0x01,
-    CharacterList = 0x02,                   // Returns character list
+    CharacterList = 0x02, // Returns character list
     KeyExchange = 0x03,
     CreateAccountError = 0x04,
     CreateAccountSuccess = 0x05,
@@ -214,13 +218,14 @@ enum LoginProtocolCodes : uint8_t
     DeletePlayerSuccess = 0x09,
     AddAccountKeySuccess = 0x0a,
     AddAccountKeyError = 0x0b,
-    OutpostList = 0x0c,                       // List of maps
-    ServerList = 0x0d,                        // List of running game server
+    OutpostList = 0x0c, // List of maps
+    ServerList = 0x0d,  // List of running game server
 };
 
 }
 
-namespace GameProtocol {
+namespace GameProtocol
+{
 
 /// Direction relative to current rotation
 enum MoveDirection : uint8_t
@@ -266,7 +271,6 @@ enum CreatureState : uint8_t
     CreatureStateTriggered,
     // /Logic actors states ----------------------------------------------------
 
-
     CreatureStateDead = 255,
 };
 
@@ -274,11 +278,11 @@ enum ServerMessageType : uint8_t
 {
     ServerMessageTypeUnknown = 0,
     ServerMessageTypeInfo,
-    ServerMessageTypeRoll,                    // /roll result
-    ServerMessageTypeAge,                     // /age
-    ServerMessageTypeHp,                      // /hp
-    ServerMessageTypeXp,                      // /xp
-    ServerMessageTypePos,                     // /pos
+    ServerMessageTypeRoll, // /roll result
+    ServerMessageTypeAge,  // /age
+    ServerMessageTypeHp,   // /hp
+    ServerMessageTypeXp,   // /xp
+    ServerMessageTypePos,  // /pos
     ServerMessageTypePlayerNotOnline,
     ServerMessageTypePlayerGotMessage,
     ServerMessageTypeNewMail,
@@ -313,11 +317,10 @@ enum ChatMessageChannel : uint8_t
 /// Packets sent by the server
 enum class ServerPacketType : uint8_t
 {
-    __First = 0,                                  // Let's start with 1
+    __First = 0, // Let's start with 1
 #define ENUMERATE_SERVER_PACKET_CODE(v) v,
     ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
-
     __Last = 0xFF
 };
 
@@ -361,7 +364,7 @@ enum SkillError : uint8_t
     SkillErrorRecharging,
     SkillErrorTargetUndestroyable,
     SkillErrorCannotUseSkill,
-    SkillErrorNotAppropriate = 255,       // not an error but does not make sense to use it
+    SkillErrorNotAppropriate = 255, // not an error but does not make sense to use it
 };
 
 enum AttackError : uint8_t
@@ -385,16 +388,16 @@ enum PlayerErrorValue : uint8_t
 enum GameObjectType : uint8_t
 {
     ObjectTypeUnknown = 0,
-    ObjectTypeStatic,                // GameObject
-    ObjectTypeTerrainPatch,          // GameObject
+    ObjectTypeStatic,       // GameObject
+    ObjectTypeTerrainPatch, // GameObject
     // -- Bellow all objects are sent to player when they spawn ----------------
-    ObjectTypeSentToPlayer,          // Not an actual object type, all bellow is sent to the player
-    ObjectTypeItemDrop,              // GameObject
-    ObjectTypeAreaOfEffect,          // GameObject: Area that affects actors in it, e.g. a well
+    ObjectTypeSentToPlayer, // Not an actual object type, all bellow is sent to the player
+    ObjectTypeItemDrop,     // GameObject
+    ObjectTypeAreaOfEffect, // GameObject: Area that affects actors in it, e.g. a well
     // Bellow are all Actors
-    ObjectTypeProjectile,            // Actor
+    ObjectTypeProjectile, // Actor
     ObjectTypeNpc,
-    ObjectTypePlayer,                // Human player
+    ObjectTypePlayer, // Human player
 };
 
 enum PlayerInfoFields : uint32_t
@@ -438,10 +441,10 @@ enum ObjectSpawnDataFields : uint32_t
     ObjectSpawnDataFieldSkills = 1 << 5,
 };
 
-/// Pacekts sent by the client
+/// Packets sent by the client
 enum class ClientPacketTypes : uint8_t
 {
-    __First = 0,                               // Let's start with 1
+    __First = 0, // Let's start with 1
 #define ENUMERATE_CLIENT_PACKET_CODE(v) v,
     ENUMERATE_CLIENT_PACKET_CODES
 #undef ENUMERATE_CLIENT_PACKET_CODE
@@ -451,46 +454,46 @@ enum CommandTypes : uint8_t
 {
     CommandTypeUnknown = 0,
     // Chat
-    CommandTypeChatGeneral = 1,      // /a <message>
-    CommandTypeChatGuild,            // /g <message>
-    CommandTypeChatParty,            // /p <message>
-    CommandTypeChatTrade,            // /trade <message>
-    CommandTypeChatWhisper,          // /w <name>, <message>
+    CommandTypeChatGeneral = 1, // /a <message>
+    CommandTypeChatGuild,       // /g <message>
+    CommandTypeChatParty,       // /p <message>
+    CommandTypeChatTrade,       // /trade <message>
+    CommandTypeChatWhisper,     // /w <name>, <message>
 
-    CommandTypeResign,               // /resign
-    CommandTypeStuck,                // /stuck
+    CommandTypeResign, // /resign
+    CommandTypeStuck,  // /stuck
 
     // Info
-    CommandTypeAge,                  // /age
-    CommandTypeDeaths,               // /deaths
-    CommandTypeHealth,               // /hp
-    CommandTypeXp,                   // /xp
-    CommandTypePos,                  // /pos show position
+    CommandTypeAge,    // /age
+    CommandTypeDeaths, // /deaths
+    CommandTypeHealth, // /hp
+    CommandTypeXp,     // /xp
+    CommandTypePos,    // /pos show position
     // Emotes
-    CommandTypeRoll,                 // /roll <number>
-    CommandTypeSit,                  // /sit
-    CommandTypeStand,                // /sit -> Idle
-    CommandTypeCry,                  // /cry
-    CommandTypeTaunt,                // /taunt
-    CommandTypePonder,               // /ponder
-    CommandTypeWave,                 // /wave
-    CommandTypeLaugh,                // /laugh
+    CommandTypeRoll,   // /roll <number>
+    CommandTypeSit,    // /sit
+    CommandTypeStand,  // /sit -> Idle
+    CommandTypeCry,    // /cry
+    CommandTypeTaunt,  // /taunt
+    CommandTypePonder, // /ponder
+    CommandTypeWave,   // /wave
+    CommandTypeLaugh,  // /laugh
     // Admin/GM
     CommandTypeAdmin = 50,
-    CommandTypeEnterMap = CommandTypeAdmin,             // /entermap <name>
-    CommandTypeEnterInstance,        // /enterinstance <uuid>
-    CommandTypeInstances,            // /instances
-    CommandTypeDie,                  // /die (only GM)
-    CommandTypeGodMode,              // /gm  Toggle god mode
-    CommandTypeGotoPlayer,           // /gotoplayer <name>
-    CommandTypeGMInfo,               // /gminfo <message>  GM info massage
+    CommandTypeEnterMap = CommandTypeAdmin, // /entermap <name>
+    CommandTypeEnterInstance,               // /enterinstance <uuid>
+    CommandTypeInstances,                   // /instances
+    CommandTypeDie,                         // /die (only GM)
+    CommandTypeGodMode,                     // /gm  Toggle god mode
+    CommandTypeGotoPlayer,                  // /gotoplayer <name>
+    CommandTypeGMInfo,                      // /gminfo <message>  GM info massage
 
     // Internal
     CommandTypeInternal = 100,
     CommandTypeHelp = CommandTypeInternal, // /help
-    CommandTypeIp,       // /ip
-    CommandTypeServerId, // /id
-    CommandTypePrefPath, // /prefpath
+    CommandTypeIp,                         // /ip
+    CommandTypeServerId,                   // /id
+    CommandTypePrefPath,                   // /prefpath
     CommandTypeQuit,
 };
 
