@@ -79,6 +79,6 @@ $ dbtool -a acckeys
 The client should work on Windows and Linux, however there are some minor issues
 on Linux:
 
-* Just closing the client does not log you out from the server, use Logout first and the close the client.
+* Just closing the client does not log you out from the server, use Logout first and then close the client.
 * Using Select CHaracter menu item in the client crashes the data server (WTF?) and then the message and game server. Don't do that! :D
 
