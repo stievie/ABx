@@ -154,12 +154,18 @@ void TabGroup::HandleTabToggled(StringHash, VariantMap& eventData)
 {
     using namespace Toggled;
 
+    class TabCheck : public CheckBox
+    {
+    public:
+        void SetCheckedInternal(bool checked) { checked_ = checked; }
+    };
+
     CheckBox *element = (CheckBox*)eventData[P_ELEMENT].GetVoidPtr();
     int checkedIdx = -1;
 
     for ( int i = 0; i < (int)childList_.Size(); ++i )
     {
-        CheckBox *chkbox = childList_[i].tabButton_;
+        TabCheck* chkbox = (TabCheck*)childList_[i].tabButton_.Get();
 
         if (chkbox == element)
         {

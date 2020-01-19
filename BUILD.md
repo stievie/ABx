@@ -75,14 +75,7 @@ Required lib files for the client not in this repository:
 * `Urho3D(_d).lib`
 
 Clone Urho3D from GitHub (https://github.com/urho3d/Urho3D, I think version 1.7
-should work), then apply the patch `Urho3D.patch` to it. If you don't want to do
-it, this patch just adds an inline function to the header `UI/CheckBox.h`, you
-can do it manually:
-~~~cpp
-    /// Set checked state without generating an event.
-    void SetCheckedInternal(bool enable){ checked_ = enable; }
-~~~
-Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
+should work). Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
 `/Lib/x64/Release`). Copy Urho3D header files to `Include/Urho3D`. Copy
 Urho3D assets to the `bin` directory:
 ~~~plain
