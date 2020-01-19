@@ -98,6 +98,7 @@ private:
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void RemoveUIWindows();
 
+    bool HoverObject(GameObject* object);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);

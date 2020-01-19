@@ -234,6 +234,34 @@ void WorldLevel::HandleMouseWheel(StringHash, VariantMap& eventData)
     }
 }
 
+bool WorldLevel::HoverObject(GameObject* object)
+{
+    if (!object)
+    {
+        // Unhover
+        if (auto* o = hoveredObject_.Get())
+        {
+            o->HoverEnd();
+            hoveredObject_.Reset();
+        }
+        return true;
+    }
+
+    if (!object->selectable_)
+        return false;
+
+    if (auto* o = hoveredObject_.Get())
+    {
+        if (o == object)
+            return true;
+
+        o->HoverEnd();
+    }
+    object->HoverBegin();
+    hoveredObject_ = object;
+    return true;
+}
+
 void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
 {
     if (!viewport_)
@@ -245,47 +273,8 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
         return;
 
-    auto currHo = hoveredObject_.Lock();
-    IntVector2 pos = input->GetMousePosition();
-    Ray camRay = GetActiveViewportScreenRay(pos);
-    PODVector<RayQueryResult> result;
-    Octree* world = scene_->GetComponent<Octree>();
-    RayOctreeQuery query(result, camRay);
-    // Can not use RaycastSingle because it would return the Zone
-    world->Raycast(query);
-
-    if (result.Empty())
-    {
-        // Nothing there
-        if (currHo)
-        {
-            // Reset last hovered object
-            currHo->HoverEnd();
-            hoveredObject_.Reset();
-        }
-        return;
-    }
-
-    // There is something under the mouse
-    for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
-    {
-        if (Node* nd = (*it).node_)
-        {
-            auto* obj = GetObjectFromNode(nd);
-            if (!obj)
-                continue;
-            if (obj == currHo.Get())
-                // Still the same object
-                break;
-            // Before we set the new object, unhover last
-            if (currHo)
-                currHo->HoverEnd();
-            hoveredObject_ = obj;
-            if (auto ho = hoveredObject_.Get())
-                ho->HoverBegin();
-            break;
-        }
-    }
+    GameObject* object = GetObjectAt(input->GetMousePosition());
+    HoverObject(object);
 }
 
 void WorldLevel::Update(StringHash, VariantMap&)
