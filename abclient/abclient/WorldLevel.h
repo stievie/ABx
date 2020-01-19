@@ -67,7 +67,7 @@ protected:
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
     /// Urho3D NodeIDs -> AB Object IDs given from the server
     HashMap<uint32_t, uint32_t> nodeIds_;
-    WeakPtr<GameObject> hoveredObject_;
+    WeakPtr<Actor> hoveredObject_;
     void ShowMap();
     void HideMap();
     void ToggleMap();
@@ -94,11 +94,39 @@ private:
             return objects_[objectId].Get();
         return nullptr;
     }
-    GameObject* GetObjectAt(const IntVector2& pos);
+    template<typename T>
+    T* GetObjectAt(const IntVector2& pos)
+    {
+        if (!viewport_)
+            return nullptr;
+
+        Ray camRay = GetActiveViewportScreenRay(pos);
+        PODVector<RayQueryResult> result;
+        Octree* world = scene_->GetComponent<Octree>();
+        RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
+        // Can not use RaycastSingle because it would also return drawables that are not game objects
+        world->Raycast(query);
+        if (!result.Empty())
+        {
+            for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
+            {
+                if (Node* nd = (*it).node_)
+                {
+                    if (auto* obj = GetObjectFromNode(nd))
+                    {
+                        if (Is<T>(obj))
+                        return To<T>(obj);
+                    }
+                }
+            }
+        }
+        return nullptr;
+
+    }
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void RemoveUIWindows();
 
-    bool HoverObject(GameObject* object);
+    bool HoverObject(Actor* object);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);

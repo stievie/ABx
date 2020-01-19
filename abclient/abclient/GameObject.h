@@ -46,8 +46,6 @@ public:
     uint32_t count_ = 1;
     uint32_t value_ = 0;
     int64_t spawnTickServer_{ 0 };
-    /// Player hovers
-    bool hovered_{ false };
     /// Player has selected this object
     bool playerSelected_{ false };
     uint32_t groupId_{ 0 };
@@ -84,8 +82,6 @@ public:
     bool IsSelectable() const { return selectable_; }
     IntVector2 WorldToScreenPoint();
     IntVector2 WorldToScreenPoint(Vector3 pos);
-    virtual void HoverBegin() { hovered_ = true; }
-    virtual void HoverEnd() { hovered_ = false; }
 
     virtual void RemoveFromScene() {}
 };

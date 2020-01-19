@@ -119,6 +119,8 @@ public:
     Vector3 velocity_;
     bool autoRun_{ false };
 private:
+    /// Player hovers
+    bool hovered_{ false };
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;
     SharedPtr<Window> speechBubbleWindow_;
@@ -196,6 +198,8 @@ public:
             return false;
         return (other->groupId_ != groupId_);
     }
+    void HoverBegin() { hovered_ = true; }
+    void HoverEnd() { hovered_ = false; }
 };
 
 template <>

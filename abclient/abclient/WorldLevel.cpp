@@ -93,31 +93,6 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
 }
 
-GameObject* WorldLevel::GetObjectAt(const IntVector2& pos)
-{
-    if (!viewport_)
-        return SharedPtr<GameObject>();
-
-    Ray camRay = GetActiveViewportScreenRay(pos);
-    PODVector<RayQueryResult> result;
-    Octree* world = scene_->GetComponent<Octree>();
-    RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
-    // Can not use RaycastSingle because it would also return drawables that are not game objects
-    world->Raycast(query);
-    if (!result.Empty())
-    {
-        for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
-        {
-            if (Node* nd = (*it).node_)
-            {
-                if (auto* obj = GetObjectFromNode(nd))
-                    return obj;
-            }
-        }
-    }
-    return nullptr;
-}
-
 bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
 {
     Ray camRay = GetActiveViewportScreenRay(pos);
@@ -185,7 +160,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
     else if (input->GetMouseButtonDown(MOUSEB_LEFT))
     {
         // Pick object
-        GameObject* object = GetObjectAt(input->GetMousePosition());
+        GameObject* object = GetObjectAt<GameObject>(input->GetMousePosition());
         if (object)
         {
             player_->ClickObject(object->gameId_);
@@ -234,7 +209,7 @@ void WorldLevel::HandleMouseWheel(StringHash, VariantMap& eventData)
     }
 }
 
-bool WorldLevel::HoverObject(GameObject* object)
+bool WorldLevel::HoverObject(Actor* object)
 {
     if (!object)
     {
@@ -268,12 +243,12 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
         // Not ready yet
         return;
 
-    // Hover object
+    // Hover object only when no mouse button is pressed
     Input* input = GetSubsystem<Input>();
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
         return;
 
-    GameObject* object = GetObjectAt(input->GetMousePosition());
+    Actor* object = GetObjectAt<Actor>(input->GetMousePosition());
     HoverObject(object);
 }
 
