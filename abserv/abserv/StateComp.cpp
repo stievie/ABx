@@ -22,7 +22,7 @@ bool StateComp::KnockDown(uint32_t time)
     if (IsKnockedDown())
         return false;
     knockdownEndTime_ = Utils::Tick() + time;
-    SetState(AB::GameProtocol::CreatureStateKnockedDown);
+    SetState(AB::GameProtocol::CreatureState::KnockedDown);
     return true;
 }
 
@@ -34,7 +34,7 @@ void StateComp::Apply()
 
 void StateComp::Reset()
 {
-    SetState(AB::GameProtocol::CreatureStateIdle);
+    SetState(AB::GameProtocol::CreatureState::Idle);
 }
 
 void StateComp::Update(uint32_t)
@@ -43,16 +43,16 @@ void StateComp::Update(uint32_t)
     {
         if (knockdownEndTime_ <= Utils::Tick())
         {
-            SetState(AB::GameProtocol::CreatureStateIdle);
+            SetState(AB::GameProtocol::CreatureState::Idle);
         }
         return;
     }
-    if ((currentState_ > AB::GameProtocol::CreatureStateEmoteStart &&
-        currentState_ < AB::GameProtocol::CreatureStateEmoteEnd)
+    if ((currentState_ > AB::GameProtocol::CreatureState::EmoteStart &&
+        currentState_ < AB::GameProtocol::CreatureState::EmoteEnd)
         && lastStateChange_ + 4000 < Utils::Tick())
     {
         // Reset some emotes after 4 seconds
-        SetState(AB::GameProtocol::CreatureStateIdle);
+        SetState(AB::GameProtocol::CreatureState::Idle);
     }
 }
 

@@ -93,7 +93,7 @@ Node::Status MoveOutAOE::DoAction(Agent& agent, uint32_t)
             if (npc.attackComp_->IsAttackState())
                 npc.attackComp_->Cancel();
             npc.autorunComp_->SetAutoRun(true);
-            npc.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+            npc.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
             aiAgent.aiContext_.Set(id_, destination);
             return Status::Running;
         }

@@ -158,16 +158,16 @@ void ClientPrediction::FixedUpdate(float timeStep)
     Player* player = node_->GetComponent<Player>();
 
     const AB::GameProtocol::CreatureState state = player->GetCreatureState();
-    if (state != AB::GameProtocol::CreatureStateIdle && state != AB::GameProtocol::CreatureStateMoving)
+    if (state != AB::GameProtocol::CreatureState::Idle && state != AB::GameProtocol::CreatureState::Moving)
         return;
 
     const uint8_t moveDir = player->GetMoveDir();
     if (moveDir != 0)
     {
-        if (state == AB::GameProtocol::CreatureStateIdle)
+        if (state == AB::GameProtocol::CreatureState::Idle)
         {
             TurnAbsolute(player->controls_.yaw_);
-            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateMoving);
+            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
         }
         UpdateMove(timeStep, moveDir, player->GetSpeedFactor());
     }
@@ -175,16 +175,16 @@ void ClientPrediction::FixedUpdate(float timeStep)
     const uint8_t turnDir = player->GetTurnDir();
     if (turnDir != 0)
     {
-        if (state == AB::GameProtocol::CreatureStateIdle)
-            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateMoving);
+        if (state == AB::GameProtocol::CreatureState::Idle)
+            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
         UpdateTurn(timeStep, turnDir, player->GetSpeedFactor());
     }
 
-    if (state == AB::GameProtocol::CreatureStateMoving)
+    if (state == AB::GameProtocol::CreatureState::Moving)
     {
         if ((moveDir == 0 && lastMoveDir_ != 0) ||
             (turnDir == 0 && lastTurnDir_ != 0))
-            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateIdle);
+            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Idle);
     }
 
     lastMoveDir_ = moveDir;
@@ -199,7 +199,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     const Vector3& currPos = player->moveToPos_;
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     // FIXME: This sucks a bit, and needs some work.
-    if (dist > 5.0f || (dist > 1.0f && player->GetCreatureState() == AB::GameProtocol::CreatureStateIdle))
+    if (dist > 5.0f || (dist > 1.0f && player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
     {
         // If too far away or player is idle, Lerp to server position
         player->moveToPos_ = serverPos;

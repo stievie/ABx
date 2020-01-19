@@ -133,7 +133,7 @@ void ItemDrop::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<bool>(true);                                  // not destroyable
     msg.Add<bool>(selectable_);
-    msg.Add<uint8_t>(stateComp_.GetState());
+    msg.Add<uint8_t>(static_cast<uint8_t>(stateComp_.GetState()));
     IO::PropWriteStream data;
     size_t dataSize;
     Serialize(data);

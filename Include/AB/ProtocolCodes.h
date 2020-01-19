@@ -13,7 +13,7 @@ static constexpr uint16_t CLIENT_OS_LINUX = 2;
 static constexpr uint16_t CLIENT_OS_MAC = 3;
 #ifdef _WIN32
 static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_WIN;
-#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif defined(__unix__) || defined(__unix)
 static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_LINUX;
 #elif (defined(__APPLE__) && defined(__MACH__))
 static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_MAC;
@@ -244,34 +244,34 @@ enum TurnDirection : uint8_t
     TurnDirectionRight = 1 << 1
 };
 
-enum CreatureState : uint8_t
+enum class CreatureState : uint8_t
 {
-    CreatureStateUnknown = 0,
-    CreatureStateIdle = 1,
-    CreatureStateMoving = 2,
-    CreatureStateUsingSkill = 3,
-    CreatureStateAttacking = 4,
-    CreatureStateKnockedDown = 5,
-    CreatureStateEmote = 6,
-    CreatureStateEmoteSit = 7,
+    Unknown = 0,
+    Idle = 1,
+    Moving = 2,
+    UsingSkill = 3,
+    Attacking = 4,
+    KnockedDown = 5,
+    Emote = 6,
+    EmoteSit = 7,
 
     // Emotes ------------------------------------------------------------------
-    CreatureStateEmoteStart,
-    CreatureStateEmoteCry,
-    CreatureStateEmoteTaunt,
-    CreatureStateEmotePonder,
-    CreatureStateEmoteWave,
-    CreatureStateEmoteLaugh,
-    CreatureStateEmoteEnd,
+    EmoteStart,
+    EmoteCry,
+    EmoteTaunt,
+    EmotePonder,
+    EmoteWave,
+    EmoteLaugh,
+    EmoteEnd,
     // /Emotes -----------------------------------------------------------------
 
     // Logic actors states -----------------------------------------------------
-    CreatureStateChestClosed,
-    CreatureStateChestOpen,
-    CreatureStateTriggered,
+    ChestClosed,
+    ChestOpen,
+    Triggered,
     // /Logic actors states ----------------------------------------------------
 
-    CreatureStateDead = 255,
+    Dead = 255,
 };
 
 enum ServerMessageType : uint8_t

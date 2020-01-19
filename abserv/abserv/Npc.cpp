@@ -104,7 +104,7 @@ bool Npc::LoadScript(const std::string& fileName)
     if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
     else
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Idle, true);
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 

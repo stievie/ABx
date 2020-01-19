@@ -101,7 +101,7 @@ void AttackComp::MoveToTarget(std::shared_ptr<Actor> target)
         const float dist = item ? item->GetWeaponRange() : RANGE_TOUCH;
         if (owner_.autorunComp_->Follow(target, false, dist))
         {
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
             owner_.autorunComp_->SetAutoRun(true);
         }
         else
@@ -231,7 +231,7 @@ bool AttackComp::IsAttackingTarget(const Actor* target) const
 
 bool AttackComp::IsAttackState() const
 {
-    return owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking;
+    return owner_.stateComp_.GetState() == AB::GameProtocol::CreatureState::Attacking;
 }
 
 void AttackComp::SetAttackState(bool value)
@@ -239,7 +239,7 @@ void AttackComp::SetAttackState(bool value)
     if (IsAttackState() != value)
     {
         if (value)
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Attacking);
         else
             owner_.stateComp_.Reset();
     }

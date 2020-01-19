@@ -19,7 +19,7 @@ class GameObject : public LogicComponent
 {
     URHO3D_OBJECT(GameObject, LogicComponent)
 protected:
-    AB::GameProtocol::CreatureState creatureState_{ AB::GameProtocol::CreatureStateIdle };
+    AB::GameProtocol::CreatureState creatureState_{ AB::GameProtocol::CreatureState::Idle };
     float speedFactor_{ 1.0f };
     bool HasHealthBar() const
     {

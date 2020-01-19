@@ -89,7 +89,7 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
     if (Lua::IsNumber(luaState_, "creatureState"))
         stateComp_.SetState(luaState_["creatureState"], true);
     else
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Idle, true);
     if (Lua::IsNumber(luaState_, "effect"))
         skillEffect_ = luaState_["effect"];
     if (Lua::IsNumber(luaState_, "effectTarget"))
@@ -298,7 +298,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<uint8_t>(1);                                  // not destroyable
     msg.Add<bool>(selectable_);
-    msg.Add<uint8_t>(stateComp_.GetState());
+    msg.Add<uint8_t>(static_cast<uint8_t>(stateComp_.GetState()));
     msg.Add<uint32_t>(GetGroupId());                      // Group id
     IO::PropWriteStream data;
     size_t dataSize;

@@ -13,7 +13,7 @@ namespace Components {
 
 void MoveComp::Update(uint32_t timeElapsed, uint32_t flags)
 {
-    if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
+    if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureState::Moving)
         return;
     if (flags == 0 && !autoMove_)
         return;

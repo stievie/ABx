@@ -96,7 +96,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
         ParticleEmitter* pe = node_->GetComponent<ParticleEmitter>(true);
         if (pe)
         {
-            pe->SetEmitting(state == AB::GameProtocol::CreatureStateIdle ? false : true);
+            pe->SetEmitting(state == AB::GameProtocol::CreatureState::Idle ? false : true);
         }
     }
 
@@ -237,7 +237,7 @@ void Actor::UpdateTransformation()
 {
     extern bool gNoClientPrediction;
     Vector3 moveTo = {};
-    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) &&
+    if ((creatureState_ == AB::GameProtocol::CreatureState::Moving) &&
         (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
     {
         // Interpolate when:
@@ -661,11 +661,11 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
         if (!looped)
         {
             // Reset to idle when some emote animations ended
-            if (creatureState_ > AB::GameProtocol::CreatureStateEmoteStart &&
-                creatureState_ < AB::GameProtocol::CreatureStateEmoteEnd)
+            if (creatureState_ > AB::GameProtocol::CreatureState::EmoteStart &&
+                creatureState_ < AB::GameProtocol::CreatureState::EmoteEnd)
             {
                 FwClient* client = GetSubsystem<FwClient>();
-                client->SetPlayerState(AB::GameProtocol::CreatureStateIdle);
+                client->SetPlayerState(AB::GameProtocol::CreatureState::Idle);
             }
         }
     }
@@ -865,10 +865,10 @@ void Actor::PlayStateAnimation(float fadeTime)
 {
     switch (creatureState_)
     {
-    case AB::GameProtocol::CreatureStateIdle:
+    case AB::GameProtocol::CreatureState::Idle:
         PlayIdleAnimation(fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateMoving:
+    case AB::GameProtocol::CreatureState::Moving:
     {
         if (speedFactor_ > 0.5f)
             PlayAnimation(ANIM_RUN, true, fadeTime, RUN_ANIM_SPEED(speedFactor_));
@@ -877,43 +877,43 @@ void Actor::PlayStateAnimation(float fadeTime)
             PlayAnimation(ANIM_WALK, true, fadeTime, WALK_ANIM_SPEED(speedFactor_));
         break;
     }
-    case AB::GameProtocol::CreatureStateUsingSkill:
+    case AB::GameProtocol::CreatureState::UsingSkill:
         // Loop for extremely long spells
         PlayAnimation(ANIM_CASTING, true, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateAttacking:
+    case AB::GameProtocol::CreatureState::Attacking:
         PlayAnimation(ANIM_ATTACK, true, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmote:
+    case AB::GameProtocol::CreatureState::Emote:
         break;
-    case AB::GameProtocol::CreatureStateEmoteSit:
+    case AB::GameProtocol::CreatureState::EmoteSit:
         PlayAnimation(ANIM_SIT, true, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmoteCry:
+    case AB::GameProtocol::CreatureState::EmoteCry:
         PlayAnimation(ANIM_CRY, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmoteTaunt:
+    case AB::GameProtocol::CreatureState::EmoteTaunt:
         PlayAnimation(ANIM_TAUNTING, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmotePonder:
+    case AB::GameProtocol::CreatureState::EmotePonder:
         PlayAnimation(ANIM_PONDER, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmoteWave:
+    case AB::GameProtocol::CreatureState::EmoteWave:
         PlayAnimation(ANIM_WAVE, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateEmoteLaugh:
+    case AB::GameProtocol::CreatureState::EmoteLaugh:
         PlayAnimation(ANIM_LAUGH, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateDead:
+    case AB::GameProtocol::CreatureState::Dead:
         PlayAnimation(ANIM_DYING, false, fadeTime);
         break;
-    case AB::GameProtocol::CreatureStateChestOpen:
+    case AB::GameProtocol::CreatureState::ChestOpen:
         PlayAnimation(ANIM_CHEST_OPENING, false, 0.0f);
         break;
-    case AB::GameProtocol::CreatureStateChestClosed:
+    case AB::GameProtocol::CreatureState::ChestClosed:
         PlayAnimation(ANIM_CHEST_CLOSING, false, 0.0f);
         break;
-    case AB::GameProtocol::CreatureStateTriggered:
+    case AB::GameProtocol::CreatureState::Triggered:
         // E.g. Traps have their animation referenced in the object node
         PlayObjectAnimation();
         break;
@@ -964,37 +964,37 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     float fadeTime = 0.2f;
     switch (creatureState_)
     {
-    case AB::GameProtocol::CreatureStateIdle:
+    case AB::GameProtocol::CreatureState::Idle:
 //        if (prevState != AB::GameProtocol::CreatureStateEmoteSit)
 //            fadeTime = 0.0f;
 //        else
-        if (prevState == AB::GameProtocol::CreatureStateEmoteSit)
+        if (prevState == AB::GameProtocol::CreatureState::EmoteSit)
             fadeTime = 0.5f;
         PlaySoundEffect(SOUND_NONE, true);
         break;
-    case AB::GameProtocol::CreatureStateMoving:
+    case AB::GameProtocol::CreatureState::Moving:
     {
         const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
         posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
         PlaySoundEffect(SOUND_FOOTSTEPS, true);
         break;
     }
-    case AB::GameProtocol::CreatureStateUsingSkill:
+    case AB::GameProtocol::CreatureState::UsingSkill:
         break;
-    case AB::GameProtocol::CreatureStateAttacking:
+    case AB::GameProtocol::CreatureState::Attacking:
         break;
-    case AB::GameProtocol::CreatureStateEmote:
+    case AB::GameProtocol::CreatureState::Emote:
         PlaySoundEffect(SOUND_NONE, true);
         break;
-    case AB::GameProtocol::CreatureStateEmoteSit:
+    case AB::GameProtocol::CreatureState::EmoteSit:
         fadeTime = 0.5f;
         PlaySoundEffect(SOUND_NONE, true);
         break;
-    case AB::GameProtocol::CreatureStateEmoteCry:
+    case AB::GameProtocol::CreatureState::EmoteCry:
         PlaySoundEffect(SOUND_NONE, true);
         fadeTime = 0.5f;
         break;
-    case AB::GameProtocol::CreatureStateDead:
+    case AB::GameProtocol::CreatureState::Dead:
     {
         PlaySoundEffect(SOUND_NONE, true);
         PlaySoundEffect(SOUND_DIE);

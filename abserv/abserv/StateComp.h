@@ -19,8 +19,8 @@ class StateComp
     NON_COPYABLE(StateComp)
 private:
     GameObject& owner_;
-    AB::GameProtocol::CreatureState currentState_{ AB::GameProtocol::CreatureStateIdle };
-    AB::GameProtocol::CreatureState newState_{ AB::GameProtocol::CreatureStateIdle };
+    AB::GameProtocol::CreatureState currentState_{ AB::GameProtocol::CreatureState::Idle };
+    AB::GameProtocol::CreatureState newState_{ AB::GameProtocol::CreatureState::Idle };
     int64_t lastStateChange_;
     int64_t knockdownEndTime_{ 0 };
 public:
@@ -40,9 +40,9 @@ public:
     {
         return newState_ != currentState_;
     }
-    bool IsDead() const { return newState_ == AB::GameProtocol::CreatureStateDead; }
-    bool IsKnockedDown() const { return newState_ == AB::GameProtocol::CreatureStateKnockedDown; }
-    bool IsMoving() const { return newState_ == AB::GameProtocol::CreatureStateMoving; }
+    bool IsDead() const { return newState_ == AB::GameProtocol::CreatureState::Dead; }
+    bool IsKnockedDown() const { return newState_ == AB::GameProtocol::CreatureState::KnockedDown; }
+    bool IsMoving() const { return newState_ == AB::GameProtocol::CreatureState::Moving; }
     bool KnockDown(uint32_t time);
     void Apply();
     /// Reset to idle state

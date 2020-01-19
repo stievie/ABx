@@ -133,7 +133,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     started_ = DoStart();
     if (started_)
     {
-        stateComp_.SetState(AB::GameProtocol::CreatureStateMoving, true);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Moving, true);
     }
 }
 

@@ -102,7 +102,7 @@ void AutoRunComp::StopAutoRun()
     if (IsAutoRun())
     {
         if (owner_.stateComp_.IsMoving())
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
         SetAutoRun(false);
     }
 }

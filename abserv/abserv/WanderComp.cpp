@@ -82,7 +82,7 @@ bool WanderComp::GotoCurrentPoint()
         if (res)
         {
             owner_.autorunComp_->SetAutoRun(true);
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
         }
 #ifdef DEBUG_NAVIGATION
         else

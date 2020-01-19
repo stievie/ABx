@@ -1518,48 +1518,48 @@ void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteSit);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmoteSit);
 }
 
 void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (stateComp_.GetState() == AB::GameProtocol::CreatureStateEmoteSit)
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+    if (stateComp_.GetState() == AB::GameProtocol::CreatureState::EmoteSit)
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
 }
 
 void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmoteCry);
 }
 
 void Player::HandleTauntCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteTaunt);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmoteTaunt);
 }
 
 void Player::HandlePonderCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmotePonder);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmotePonder);
 }
 
 void Player::HandleWaveCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteWave);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmoteWave);
 }
 
 void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
 {
     if (attackComp_->IsAttackState())
         attackComp_->Cancel();
-    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteLaugh);
+    stateComp_.SetState(AB::GameProtocol::CreatureState::EmoteLaugh);
 }
 
 void Player::HandleDeathsCommand(const std::string&, Net::NetworkMessage&)

@@ -48,12 +48,12 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 if (owner_.moveComp_->moveDir_ > AB::GameProtocol::MoveDirectionNone)
                 {
                     owner_.skillsComp_->CancelWhenChangingState();
-                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
                 }
                 else
                 {
                     // Reset to Idle when neither moving nor turning
-                    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureState::Moving &&
                         owner_.moveComp_->turnDir_ == AB::GameProtocol::TurnDirectionNone)
                         owner_.stateComp_.Reset();
                 }
@@ -70,11 +70,11 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 if (owner_.moveComp_->turnDir_ > AB::GameProtocol::TurnDirectionNone)
                 {
                     owner_.skillsComp_->CancelWhenChangingState();
-                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
                 }
                 else
                 {
-                    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureState::Moving &&
                         owner_.moveComp_->moveDir_ == AB::GameProtocol::MoveDirectionNone)
                         owner_.stateComp_.Reset();
                 }
@@ -117,7 +117,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 if (succ)
                 {
                     owner_.attackComp_->Cancel();
-                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
                     owner_.autorunComp_->SetAutoRun(true);
                 }
             }

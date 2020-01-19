@@ -210,7 +210,7 @@ bool Actor::FollowObject(GameObject* object, bool ping)
     if (result)
     {
         CancelAll();
-        stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
         autorunComp_->SetAutoRun(true);
 
     }
@@ -559,7 +559,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<bool>(undestroyable_);
     msg.Add<bool>(selectable_);
-    msg.Add<uint8_t>(stateComp_.GetState());
+    msg.Add<uint8_t>(static_cast<uint8_t>(stateComp_.GetState()));
     msg.Add<float>(GetSpeed());
     msg.Add<uint32_t>(GetGroupId());
     msg.Add<uint8_t>(static_cast<uint8_t>(GetGroupPos()));
@@ -584,7 +584,7 @@ void Actor::OnEndUseSkill(Skill* skill)
     {
         attackComp_->Pause(false);
         if (!stateComp_.IsDead())
-            stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
     }
 }
 
@@ -595,7 +595,7 @@ void Actor::OnStartUseSkill(Skill* skill)
     {
         attackComp_->Pause();
         autorunComp_->Reset();
-        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::UsingSkill);
     }
 }
 
@@ -930,7 +930,7 @@ bool Actor::Die()
     if (!IsDead())
     {
         attackComp_->Cancel();
-        stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Dead);
         resourceComp_->SetHealth(Components::SetValueType::Absolute, 0);
         resourceComp_->SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_->SetAdrenaline(Components::SetValueType::Absolute, 0);
@@ -953,7 +953,7 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         const int energy = (resourceComp_->GetMaxEnergy() / 100) * percentEnergy;
         resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
         damageComp_->Touch();
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+        stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
         CallEvent<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
         return true;
     }
