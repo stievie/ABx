@@ -86,7 +86,7 @@ public:
     void SetDirection(float rad);
     void ClickObject(uint32_t sourceId, uint32_t targetId);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
-    void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
+    void Command(AB::GameProtocol::CommandType type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void Follow(uint32_t targetId, bool ping);
     void UseSkill(uint32_t index, bool ping);

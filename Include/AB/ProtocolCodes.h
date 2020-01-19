@@ -450,51 +450,51 @@ enum class ClientPacketTypes : uint8_t
 #undef ENUMERATE_CLIENT_PACKET_CODE
 };
 
-enum CommandTypes : uint8_t
+enum class CommandType : uint8_t
 {
-    CommandTypeUnknown = 0,
+    Unknown = 0,
     // Chat
-    CommandTypeChatGeneral = 1, // /a <message>
-    CommandTypeChatGuild,       // /g <message>
-    CommandTypeChatParty,       // /p <message>
-    CommandTypeChatTrade,       // /trade <message>
-    CommandTypeChatWhisper,     // /w <name>, <message>
+    ChatGeneral = 1, // /a <message>
+    ChatGuild,       // /g <message>
+    ChatParty,       // /p <message>
+    ChatTrade,       // /trade <message>
+    ChatWhisper,     // /w <name>, <message>
 
-    CommandTypeResign, // /resign
-    CommandTypeStuck,  // /stuck
+    Resign, // /resign
+    Stuck,  // /stuck
 
     // Info
-    CommandTypeAge,    // /age
-    CommandTypeDeaths, // /deaths
-    CommandTypeHealth, // /hp
-    CommandTypeXp,     // /xp
-    CommandTypePos,    // /pos show position
+    Age,    // /age
+    Deaths, // /deaths
+    Health, // /hp
+    Xp,     // /xp
+    Pos,    // /pos show position
     // Emotes
-    CommandTypeRoll,   // /roll <number>
-    CommandTypeSit,    // /sit
-    CommandTypeStand,  // /sit -> Idle
-    CommandTypeCry,    // /cry
-    CommandTypeTaunt,  // /taunt
-    CommandTypePonder, // /ponder
-    CommandTypeWave,   // /wave
-    CommandTypeLaugh,  // /laugh
+    Roll,   // /roll <number>
+    Sit,    // /sit
+    Stand,  // /sit -> Idle
+    Cry,    // /cry
+    Taunt,  // /taunt
+    Ponder, // /ponder
+    Wave,   // /wave
+    Laugh,  // /laugh
     // Admin/GM
-    CommandTypeAdmin = 50,
-    CommandTypeEnterMap = CommandTypeAdmin, // /entermap <name>
-    CommandTypeEnterInstance,               // /enterinstance <uuid>
-    CommandTypeInstances,                   // /instances
-    CommandTypeDie,                         // /die (only GM)
-    CommandTypeGodMode,                     // /gm  Toggle god mode
-    CommandTypeGotoPlayer,                  // /gotoplayer <name>
-    CommandTypeGMInfo,                      // /gminfo <message>  GM info massage
+    Admin = 50,
+    EnterMap = Admin, // /entermap <name>
+    EnterInstance,               // /enterinstance <uuid>
+    Instances,                   // /instances
+    Die,                         // /die (only GM)
+    GodMode,                     // /gm  Toggle god mode
+    GotoPlayer,                  // /gotoplayer <name>
+    GMInfo,                      // /gminfo <message>  GM info massage
 
     // Internal
-    CommandTypeInternal = 100,
-    CommandTypeHelp = CommandTypeInternal, // /help
-    CommandTypeIp,                         // /ip
-    CommandTypeServerId,                   // /id
-    CommandTypePrefPath,                   // /prefpath
-    CommandTypeQuit,
+    Internal = 100,
+    Help = Internal, // /help
+    Ip,                         // /ip
+    ServerId,                   // /id
+    PrefPath,                   // /prefpath
+    Quit,
 };
 
 }

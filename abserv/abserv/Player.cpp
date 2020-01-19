@@ -57,7 +57,7 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     lastPing_(0),
     questComp_(std::make_unique<Components::QuestComp>(*this))
 {
-    events_.Subscribe<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
+    events_.Subscribe<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
         std::bind(&Player::OnHandleCommand, this,
             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     events_.Subscribe<void(void)>(EVENT_ON_INVENTORYFULL, std::bind(&Player::OnInventoryFull, this));
@@ -1187,101 +1187,101 @@ void Player::LoadFriendList()
     friendList_->Load();
 }
 
-void Player::OnHandleCommand(AB::GameProtocol::CommandTypes type,
+void Player::OnHandleCommand(AB::GameProtocol::CommandType type,
     const std::string& arguments, Net::NetworkMessage& message)
 {
     switch (type)
     {
-    case AB::GameProtocol::CommandTypeUnknown:
+    case AB::GameProtocol::CommandType::Unknown:
         break;
-    case AB::GameProtocol::CommandTypeIp:
-    case AB::GameProtocol::CommandTypePrefPath:
-    case AB::GameProtocol::CommandTypeHelp:
-    case AB::GameProtocol::CommandTypeQuit:
+    case AB::GameProtocol::CommandType::Ip:
+    case AB::GameProtocol::CommandType::PrefPath:
+    case AB::GameProtocol::CommandType::Help:
+    case AB::GameProtocol::CommandType::Quit:
         // Client side only
         break;
-    case AB::GameProtocol::CommandTypeChatGeneral:
+    case AB::GameProtocol::CommandType::ChatGeneral:
         HandleGeneralChatCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeChatParty:
+    case AB::GameProtocol::CommandType::ChatParty:
         HandlePartyChatCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeRoll:
+    case AB::GameProtocol::CommandType::Roll:
         HandleRollCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeSit:
+    case AB::GameProtocol::CommandType::Sit:
         HandleSitCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeStand:
+    case AB::GameProtocol::CommandType::Stand:
         HandleStandCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeCry:
+    case AB::GameProtocol::CommandType::Cry:
         HandleCryCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeTaunt:
+    case AB::GameProtocol::CommandType::Taunt:
         HandleTauntCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypePonder:
+    case AB::GameProtocol::CommandType::Ponder:
         HandlePonderCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeWave:
+    case AB::GameProtocol::CommandType::Wave:
         HandleWaveCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeLaugh:
+    case AB::GameProtocol::CommandType::Laugh:
         HandleLaughCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeAge:
+    case AB::GameProtocol::CommandType::Age:
         HandleAgeCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeHealth:
+    case AB::GameProtocol::CommandType::Health:
         HandleHpCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeXp:
+    case AB::GameProtocol::CommandType::Xp:
         HandleXpCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypePos:
+    case AB::GameProtocol::CommandType::Pos:
         HandlePosCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeChatWhisper:
+    case AB::GameProtocol::CommandType::ChatWhisper:
         HandleWhisperCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeChatGuild:
+    case AB::GameProtocol::CommandType::ChatGuild:
         HandleChatGuildCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeChatTrade:
+    case AB::GameProtocol::CommandType::ChatTrade:
         HandleChatTradeCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeResign:
+    case AB::GameProtocol::CommandType::Resign:
         HandleResignCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeStuck:
+    case AB::GameProtocol::CommandType::Stuck:
         HandleStuckCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeServerId:
+    case AB::GameProtocol::CommandType::ServerId:
         HandleServerIdCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeDie:
+    case AB::GameProtocol::CommandType::Die:
         HandleDieCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeDeaths:
+    case AB::GameProtocol::CommandType::Deaths:
         HandleDeathsCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeInstances:
+    case AB::GameProtocol::CommandType::Instances:
         HandleInstancesCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeGodMode:
+    case AB::GameProtocol::CommandType::GodMode:
         HandleGodModeCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeGMInfo:
+    case AB::GameProtocol::CommandType::GMInfo:
         HandleGMInfoCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeEnterMap:
+    case AB::GameProtocol::CommandType::EnterMap:
         HandleEnterMapCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeEnterInstance:
+    case AB::GameProtocol::CommandType::EnterInstance:
         HandleEnterInstanceCommand(arguments, message);
         break;
-    case AB::GameProtocol::CommandTypeGotoPlayer:
+    case AB::GameProtocol::CommandType::GotoPlayer:
         HandleGotoPlayerCommand(arguments, message);
         break;
     }

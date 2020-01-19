@@ -796,7 +796,7 @@ void FwClient::SelectObject(uint32_t sourceId, uint32_t targetId)
         client_.SelectObject(sourceId, targetId);
 }
 
-void FwClient::Command(AB::GameProtocol::CommandTypes type, const String& data)
+void FwClient::Command(AB::GameProtocol::CommandType type, const String& data)
 {
     if (loggedIn_)
         client_.Command(type, std::string(data.CString(), data.Length()));

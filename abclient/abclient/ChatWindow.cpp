@@ -18,42 +18,42 @@ PRAGMA_WARNING_POP
 
 //#include <Urho3D/DebugNew.h>
 
-const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS = {
-    { "a", AB::GameProtocol::CommandTypeChatGeneral },
-    { "g", AB::GameProtocol::CommandTypeChatGuild },
-    { "p", AB::GameProtocol::CommandTypeChatParty },
-    { "trade", AB::GameProtocol::CommandTypeChatTrade },
-    { "w", AB::GameProtocol::CommandTypeChatWhisper },
-    { "roll", AB::GameProtocol::CommandTypeRoll },
-    { "sit", AB::GameProtocol::CommandTypeSit },
-    { "stand", AB::GameProtocol::CommandTypeStand },
-    { "cry", AB::GameProtocol::CommandTypeCry },
-    { "age", AB::GameProtocol::CommandTypeAge },
-    { "deaths", AB::GameProtocol::CommandTypeDeaths },
-    { "hp", AB::GameProtocol::CommandTypeHealth },
-    { "xp", AB::GameProtocol::CommandTypeXp },
-    { "taunt", AB::GameProtocol::CommandTypeTaunt },
-    { "ponder", AB::GameProtocol::CommandTypePonder },
-    { "wave", AB::GameProtocol::CommandTypeWave },
-    { "laugh", AB::GameProtocol::CommandTypeLaugh },
-    { "resign", AB::GameProtocol::CommandTypeResign },
-    { "stuck", AB::GameProtocol::CommandTypeStuck },
+const HashMap<String, AB::GameProtocol::CommandType> ChatWindow::CHAT_COMMANDS = {
+    { "a", AB::GameProtocol::CommandType::ChatGeneral },
+    { "g", AB::GameProtocol::CommandType::ChatGuild },
+    { "p", AB::GameProtocol::CommandType::ChatParty },
+    { "trade", AB::GameProtocol::CommandType::ChatTrade },
+    { "w", AB::GameProtocol::CommandType::ChatWhisper },
+    { "roll", AB::GameProtocol::CommandType::Roll },
+    { "sit", AB::GameProtocol::CommandType::Sit },
+    { "stand", AB::GameProtocol::CommandType::Stand },
+    { "cry", AB::GameProtocol::CommandType::Cry },
+    { "age", AB::GameProtocol::CommandType::Age },
+    { "deaths", AB::GameProtocol::CommandType::Deaths },
+    { "hp", AB::GameProtocol::CommandType::Health },
+    { "xp", AB::GameProtocol::CommandType::Xp },
+    { "taunt", AB::GameProtocol::CommandType::Taunt },
+    { "ponder", AB::GameProtocol::CommandType::Ponder },
+    { "wave", AB::GameProtocol::CommandType::Wave },
+    { "laugh", AB::GameProtocol::CommandType::Laugh },
+    { "resign", AB::GameProtocol::CommandType::Resign },
+    { "stuck", AB::GameProtocol::CommandType::Stuck },
     // Admin/GM
-    { "pos", AB::GameProtocol::CommandTypePos },
-    { "id", AB::GameProtocol::CommandTypeServerId },
-    { "entermap", AB::GameProtocol::CommandTypeEnterMap },
-    { "enterinstance", AB::GameProtocol::CommandTypeEnterInstance },
-    { "instances", AB::GameProtocol::CommandTypeInstances },
-    { "die", AB::GameProtocol::CommandTypeDie },
-    { "god", AB::GameProtocol::CommandTypeGodMode },
-    { "gotoplayer", AB::GameProtocol::CommandTypeGotoPlayer },
-    { "gminfo", AB::GameProtocol::CommandTypeGMInfo },
+    { "pos", AB::GameProtocol::CommandType::Pos },
+    { "id", AB::GameProtocol::CommandType::ServerId },
+    { "entermap", AB::GameProtocol::CommandType::EnterMap },
+    { "enterinstance", AB::GameProtocol::CommandType::EnterInstance },
+    { "instances", AB::GameProtocol::CommandType::Instances },
+    { "die", AB::GameProtocol::CommandType::Die },
+    { "god", AB::GameProtocol::CommandType::GodMode },
+    { "gotoplayer", AB::GameProtocol::CommandType::GotoPlayer },
+    { "gminfo", AB::GameProtocol::CommandType::GMInfo },
 
     // Internal, handled by the client
-    { "help", AB::GameProtocol::CommandTypeHelp },
-    { "ip", AB::GameProtocol::CommandTypeIp },
-    { "prefpath", AB::GameProtocol::CommandTypePrefPath },
-    { "quit", AB::GameProtocol::CommandTypeQuit }
+    { "help", AB::GameProtocol::CommandType::Help },
+    { "ip", AB::GameProtocol::CommandType::Ip },
+    { "prefpath", AB::GameProtocol::CommandType::PrefPath },
+    { "quit", AB::GameProtocol::CommandType::Quit }
 };
 
 ChatWindow::ChatWindow(Context* context) :
@@ -796,7 +796,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
 {
-    AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeUnknown;
+    AB::GameProtocol::CommandType type = AB::GameProtocol::CommandType::Unknown;
     String data;
     if (text.StartsWith("/"))
     {
@@ -825,20 +825,20 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         switch (defChannel)
         {
         case AB::GameProtocol::ChatChannelGuild:
-            type = AB::GameProtocol::CommandTypeChatGuild;
+            type = AB::GameProtocol::CommandType::ChatGuild;
             data = text;
             break;
         case AB::GameProtocol::ChatChannelParty:
-            type = AB::GameProtocol::CommandTypeChatParty;
+            type = AB::GameProtocol::CommandType::ChatParty;
             data = text;
             break;
         case AB::GameProtocol::ChatChannelTrade:
-            type = AB::GameProtocol::CommandTypeChatTrade;
+            type = AB::GameProtocol::CommandType::ChatTrade;
             data = text;
             break;
         case AB::GameProtocol::ChatChannelWhisper:
         {
-            type = AB::GameProtocol::CommandTypeChatWhisper;
+            type = AB::GameProtocol::CommandType::ChatWhisper;
             LineEdit* nameEdit = GetChildStaticCast<LineEdit>("WhisperChatNameEdit", true);
             String name = nameEdit->GetText().Trimmed();
             if (name.Empty())
@@ -850,7 +850,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             break;
         }
         default:
-            type = AB::GameProtocol::CommandTypeChatGeneral;
+            type = AB::GameProtocol::CommandType::ChatGeneral;
             data = text;
             break;
         }
@@ -858,7 +858,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
 
     switch (type)
     {
-    case AB::GameProtocol::CommandTypeHelp:
+    case AB::GameProtocol::CommandType::Help:
         AddLine("Available commands:", "ChatLogServerInfoText");
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
@@ -875,7 +875,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
         AddLine("  /quit: Exit program", "ChatLogServerInfoText");
         break;
-    case AB::GameProtocol::CommandTypeIp:
+    case AB::GameProtocol::CommandType::Ip:
     {
         FwClient* client = context_->GetSubsystem<FwClient>();
         uint32_t ip = client->GetIp();
@@ -885,18 +885,18 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine(sIp, "ChatLogServerInfoText");
         break;
     }
-    case AB::GameProtocol::CommandTypePrefPath:
+    case AB::GameProtocol::CommandType::PrefPath:
     {
         AddLine(Options::GetPrefPath(), "ChatLogServerInfoText");
         break;
     }
-    case AB::GameProtocol::CommandTypeQuit:
+    case AB::GameProtocol::CommandType::Quit:
     {
         VariantMap& e = GetEventDataMap();
         SendEvent(Events::E_SC_EXITPROGRAM, e);
         break;
     }
-    case AB::GameProtocol::CommandTypeUnknown:
+    case AB::GameProtocol::CommandType::Unknown:
         AddLine("Unknown command", "ChatLogServerInfoText");
         break;
     default:

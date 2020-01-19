@@ -385,10 +385,10 @@ void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
     SendPacket(AB::GameProtocol::ClientPacketTypes::Select, packet);
 }
 
-void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
+void ProtocolGame::Command(AB::GameProtocol::CommandType type, const std::string& data)
 {
     AB::Packets::Client::Command packet = {
-        type,
+        static_cast<uint8_t>(type),
         data
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::Command, packet);

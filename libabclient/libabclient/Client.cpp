@@ -503,7 +503,7 @@ void Client::FollowObject(uint32_t targetId, bool ping)
         protoGame_->Follow(targetId, ping);
 }
 
-void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
+void Client::Command(AB::GameProtocol::CommandType type, const std::string& data)
 {
     if (state_ == State::World)
         protoGame_->Command(type, data);

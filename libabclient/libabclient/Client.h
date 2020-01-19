@@ -198,7 +198,7 @@ public:
     void FollowObject(uint32_t targetId, bool ping);
     void UseSkill(uint32_t index, bool ping);
     void Attack(bool ping);
-    void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
+    void Command(AB::GameProtocol::CommandType type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void PartyInvitePlayer(uint32_t targetId);
     /// Kick player from party or remove invitation

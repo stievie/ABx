@@ -173,9 +173,9 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         case InputType::Command:
         {
-            AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
+            AB::GameProtocol::CommandType type = static_cast<AB::GameProtocol::CommandType>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
-            owner_.CallEvent<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(
+            owner_.CallEvent<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(
                 EVENT_ON_HANDLECOMMAND,
                 type, cmd, message);
             break;

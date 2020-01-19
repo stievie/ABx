@@ -70,7 +70,7 @@ using GameObjectEvents = sa::Events<
     void(Actor*, Skill*, bool&),                             // OnUseSkill, OnSkillTargeted
     void(Actor*, bool&),
     void(Actor*, int&),
-    void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
+    void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)
 >;
 
 static const float AVERAGE_BB_EXTENDS = 0.3f;

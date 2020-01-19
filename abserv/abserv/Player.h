@@ -34,7 +34,7 @@ private:
 
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
     void OnInventoryFull();
-    void OnHandleCommand(AB::GameProtocol::CommandTypes type,
+    void OnHandleCommand(AB::GameProtocol::CommandType type,
         const std::string& arguments, Net::NetworkMessage& message);
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
     void HandleWhisperCommand(const std::string& arguments, Net::NetworkMessage& message);

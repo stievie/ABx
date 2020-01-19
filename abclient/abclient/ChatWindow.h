@@ -11,7 +11,7 @@ class ChatWindow : public UIElement
     URHO3D_OBJECT(ChatWindow, UIElement)
 private:
     static constexpr int MAX_LINES = 100;
-    static const HashMap<String, AB::GameProtocol::CommandTypes> CHAT_COMMANDS;
+    static const HashMap<String, AB::GameProtocol::CommandType> CHAT_COMMANDS;
     SharedPtr<BorderImage> background_;
     bool firstStart_{ false };
     Vector<String> history_;
