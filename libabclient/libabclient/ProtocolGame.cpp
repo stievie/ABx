@@ -197,7 +197,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             updateTick_ = packet.tick;
             break;
         }
-        case ServerPacketType::CodeLast:
+        case ServerPacketType::__Last:
             // Padding bytes, i.e. end of message
             return;
         default:

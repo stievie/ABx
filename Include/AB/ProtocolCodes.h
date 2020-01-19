@@ -313,11 +313,12 @@ enum ChatMessageChannel : uint8_t
 /// Packets sent by the server
 enum class ServerPacketType : uint8_t
 {
+    __First = 0,                                  // Let's start with 1
 #define ENUMERATE_SERVER_PACKET_CODE(v) v,
     ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
 
-    CodeLast = 0xFF
+    __Last = 0xFF
 };
 
 enum ObjectCallType : uint8_t
@@ -440,6 +441,7 @@ enum ObjectSpawnDataFields : uint32_t
 /// Pacekts sent by the client
 enum class ClientPacketTypes : uint8_t
 {
+    __First = 0,                               // Let's start with 1
 #define ENUMERATE_CLIENT_PACKET_CODE(v) v,
     ENUMERATE_CLIENT_PACKET_CODES
 #undef ENUMERATE_CLIENT_PACKET_CODE
