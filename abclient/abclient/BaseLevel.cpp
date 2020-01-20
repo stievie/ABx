@@ -109,12 +109,12 @@ void BaseLevel::OnNetworkError(Client::ConnectionError connectionError, const st
     ShowError(msg, "Network Error");
 }
 
-void BaseLevel::OnProtocolError(uint8_t err)
+void BaseLevel::OnProtocolError(AB::ErrorCodes err)
 {
     String msg = FwClient::GetProtocolErrorMessage(err);
     URHO3D_LOGERRORF("Protocol error (%d): %s", err, msg.CString());
 
-    if (err == AB::Errors::TokenAuthFailure)
+    if (err == AB::ErrorCodes::TokenAuthFailure)
     {
         // Expired/invalid token -> re-login
         VariantMap& e = GetEventDataMap();

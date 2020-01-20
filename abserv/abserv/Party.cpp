@@ -316,7 +316,7 @@ void Party::NotifyPlayersQueued()
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypePlayerQueued,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerQueued),
         GetLeader()->GetName(),
         ""
     };
@@ -330,7 +330,7 @@ void Party::NotifyPlayersUnqueued()
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypePlayerUnqueued,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerUnqueued),
         GetLeader()->GetName(),
         ""
     };

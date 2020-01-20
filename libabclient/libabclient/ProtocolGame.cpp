@@ -123,7 +123,7 @@ void ProtocolGame::OnReceive(InputMessage& message)
     }
     catch (const std::exception&)
     {
-        ProtocolError(AB::Errors::ErrorException);
+        ProtocolError(AB::ErrorCodes::ErrorException);
     }
     if (firstRevc_)
     {
@@ -174,7 +174,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::ProtocolError>(message);
             if (packet.code != 0)
-                ProtocolError(packet.code);
+                ProtocolError(static_cast<AB::ErrorCodes>(packet.code));
             break;
         }
         case ServerPacketType::GameStart:

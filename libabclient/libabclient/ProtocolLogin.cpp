@@ -247,7 +247,7 @@ void ProtocolLogin::HandleServerList(const AB::Packets::Server::Login::ServerLis
 
 void ProtocolLogin::HandleLoginError(const AB::Packets::Server::Login::Error& packet)
 {
-    ProtocolError(packet.code);
+    ProtocolError(static_cast<AB::ErrorCodes>(packet.code));
 }
 
 void ProtocolLogin::HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet)

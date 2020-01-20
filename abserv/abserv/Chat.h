@@ -13,20 +13,20 @@ class Player;
 class Party;
 class Npc;
 
-enum class ChatType : uint8_t
+enum class ChatType
 {
     /// Returns nullptr
-    None = AB::GameProtocol::ChatChannelUnknown,
+    None = static_cast<int>(AB::GameProtocol::ChatChannel::Unknown),
     /// Local map chat
-    Map = AB::GameProtocol::ChatChannelGeneral,       // ID = GameID
+    Map = static_cast<int>(AB::GameProtocol::ChatChannel::General),     // ID = GameID
     /// Guild messages get all guild members on all servers
-    Guild = AB::GameProtocol::ChatChannelGuild,     // ID = StringHash(Guild.uuid)
-    Party = AB::GameProtocol::ChatChannelParty,     // ID = PartyID
+    Guild = static_cast<int>(AB::GameProtocol::ChatChannel::Guild),     // ID = StringHash(Guild.uuid)
+    Party = static_cast<int>(AB::GameProtocol::ChatChannel::Party),     // ID = PartyID
     /// There may be allies on the map that do not belong to the party
-    Allies = AB::GameProtocol::ChatChannelAllies,    //
+    Allies = static_cast<int>(AB::GameProtocol::ChatChannel::Allies),   //
     /// Trade messages get all players on all servers
-    Trade = AB::GameProtocol::ChatChannelTrade,     // ID = 0
-    Whisper = AB::GameProtocol::ChatChannelWhisper,   // ID = PlayerID
+    Trade = static_cast<int>(AB::GameProtocol::ChatChannel::Trade),     // ID = 0
+    Whisper = static_cast<int>(AB::GameProtocol::ChatChannel::Whisper), // ID = PlayerID
 };
 
 class ChatChannel

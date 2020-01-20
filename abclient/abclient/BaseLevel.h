@@ -47,7 +47,7 @@ protected:
     virtual void PostRenderUpdate(StringHash eventType, VariantMap& eventData);
 
     virtual void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err);
-    virtual void OnProtocolError(uint8_t err);
+    virtual void OnProtocolError(AB::ErrorCodes err);
 
     Ray GetActiveViewportScreenRay(const IntVector2& pos) const
     {

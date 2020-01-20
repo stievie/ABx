@@ -80,7 +80,7 @@ public:
     // Receiver
     void OnLog(const std::string& message) override;
     void OnNetworkError(ConnectionError connectionError, const std::error_code& err) override;
-    void OnProtocolError(uint8_t err) override;
+    void OnProtocolError(AB::ErrorCodes err) override;
     void OnPong(int lastPing) override;
 
     void OnLoggedIn(const std::string& accountUui, const std::string& authTokend) override;

@@ -17,61 +17,61 @@
 
 //#include <Urho3D/DebugNew.h>
 
-String FwClient::GetProtocolErrorMessage(uint8_t err)
+String FwClient::GetProtocolErrorMessage(AB::ErrorCodes err)
 {
     switch (err)
     {
-    case AB::Errors::IPBanned:
+    case AB::ErrorCodes::IPBanned:
         return "Your IP Address is banned.";
-    case AB::Errors::TooManyConnectionsFromThisIP:
+    case AB::ErrorCodes::TooManyConnectionsFromThisIP:
         return "Too many connection from this IP.";
-    case AB::Errors::InvalidAccountName:
+    case AB::ErrorCodes::InvalidAccountName:
         return "Invalid Account name.";
-    case AB::Errors::InvalidPassword:
+    case AB::ErrorCodes::InvalidPassword:
         return "Invalid password.";
-    case AB::Errors::NamePasswordMismatch:
+    case AB::ErrorCodes::NamePasswordMismatch:
         return "Name or password wrong.";
-    case AB::Errors::AlreadyLoggedIn:
+    case AB::ErrorCodes::AlreadyLoggedIn:
         return "You are already logged in.";
-    case AB::Errors::ErrorLoadingCharacter:
+    case AB::ErrorCodes::ErrorLoadingCharacter:
         return "Error loading character.";
-    case AB::Errors::AccountBanned:
+    case AB::ErrorCodes::AccountBanned:
         return "Your account is banned.";
-    case AB::Errors::WrongProtocolVersion:
+    case AB::ErrorCodes::WrongProtocolVersion:
         return "Outdated client. Please update the game client.";
-    case AB::Errors::InvalidEmail:
+    case AB::ErrorCodes::InvalidEmail:
         return "Invalid Email.";
-    case AB::Errors::InvalidAccountKey:
+    case AB::ErrorCodes::InvalidAccountKey:
         return "Invalid Account Key.";
-    case AB::Errors::UnknownError:
+    case AB::ErrorCodes::UnknownError:
         return "Internal Error.";
-    case AB::Errors::AccountNameExists:
+    case AB::ErrorCodes::AccountNameExists:
         return "Login Name already exists.";
-    case AB::Errors::InvalidCharacterName:
+    case AB::ErrorCodes::InvalidCharacterName:
         return "Invalid character name.";
-    case AB::Errors::InvalidProfession:
+    case AB::ErrorCodes::InvalidProfession:
         return "Invalid profession.";
-    case AB::Errors::PlayerNameExists:
+    case AB::ErrorCodes::PlayerNameExists:
         return "Character name already exists.";
-    case AB::Errors::InvalidAccount:
+    case AB::ErrorCodes::InvalidAccount:
         return "Invalid Account.";
-    case AB::Errors::InvalidPlayerSex:
+    case AB::ErrorCodes::InvalidPlayerSex:
         return "Invalid character gender.";
-    case AB::Errors::InvalidCharacter:
+    case AB::ErrorCodes::InvalidCharacter:
         return "Invalid character.";
-    case AB::Errors::InvalidCharactersInString:
+    case AB::ErrorCodes::InvalidCharactersInString:
         return "The string contains invalid characters.";
-    case AB::Errors::NoMoreCharSlots:
+    case AB::ErrorCodes::NoMoreCharSlots:
         return "You have no free character slots.";
-    case AB::Errors::InvalidGame:
+    case AB::ErrorCodes::InvalidGame:
         return "Invalid Game.";
-    case AB::Errors::AllServersFull:
+    case AB::ErrorCodes::AllServersFull:
         return "All Servers are full, please try again later.";
-    case AB::Errors::ErrorException:
+    case AB::ErrorCodes::ErrorException:
         return "Exception";
-    case AB::Errors::TokenAuthFailure:
+    case AB::ErrorCodes::TokenAuthFailure:
         return "Token authentication failure";
-    case AB::Errors::AccountKeyAlreadyAdded:
+    case AB::ErrorCodes::AccountKeyAlreadyAdded:
         return "This account key was already added to the account";
     default:
         return "";
@@ -1007,7 +1007,7 @@ void FwClient::QueueEvent(StringHash eventType, VariantMap& eventData)
         queuedEvents_.Push({ eventType, eventData });
 }
 
-void FwClient::OnProtocolError(uint8_t err)
+void FwClient::OnProtocolError(AB::ErrorCodes err)
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();

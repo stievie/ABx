@@ -438,9 +438,9 @@ void Player::CRQSendMail(const std::string recipient, const std::string subject,
     AB::Packets::Server::ServerMessage packet;
     // Can not send mails to players I ignore
     if (!IsIgnored(recipient) && IO::IOMail::SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
-        packet.type = AB::GameProtocol::ServerMessageTypeMailSent;
+        packet.type = static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailSent);
     else
-        packet.type = AB::GameProtocol::ServerMessageTypeMailNotSent;
+        packet.type = static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailNotSent);
     packet.sender = recipient;
     AB::Packets::Add(packet, *nmsg);
 
@@ -486,7 +486,7 @@ void Player::CRQDeleteMail(const std::string mailUuid)
         mailBox_->DeleteAll();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypeMailDeleted,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailDeleted),
             GetName(),
             mailUuid
         };
@@ -501,7 +501,7 @@ void Player::CRQDeleteMail(const std::string mailUuid)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypeMailDeleted,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailDeleted),
             GetName(),
             mailUuid
         };
@@ -522,7 +522,7 @@ void Player::NotifyNewMail()
         // Notify player there are new emails since last check.
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypeNewMail,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::NewMail),
             GetName(),
             std::to_string(mailBox_->GetTotalMailCount())
         };
@@ -533,7 +533,7 @@ void Player::NotifyNewMail()
         // Notify player that mailbox is full.
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypeMailboxFull,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailboxFull),
             GetName(),
             std::to_string(mailBox_->GetTotalMailCount())
         };
@@ -571,7 +571,7 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
     case FriendList::Error::PlayerNotFound:
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypePlayerNotFound,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerNotFound),
             GetName(),
             playerName
         };
@@ -646,7 +646,7 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
         // Do nothing
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
-            AB::GameProtocol::ServerMessageTypePlayerNotFound,
+            static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerNotFound),
             GetName(),
             accountUuid
         };
@@ -1299,7 +1299,7 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeServerId,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::ServerId),
         GetName(),
         Application::Instance->GetServerId()
     };
@@ -1327,7 +1327,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
                 auto nmsg = Net::NetworkMessage::GetNew();
                 nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
                 AB::Packets::Server::ServerMessage packet = {
-                    AB::GameProtocol::ServerMessageTypePlayerGotMessage,
+                    static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerGotMessage),
                     name,
                     msg
                 };
@@ -1350,14 +1350,14 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         account.uuid = character.accountUuid;
         if (cli->Read(account) && AB::Entities::IsOnline(account.onlineStatus))
         {
-            // The player may set his sttatus to offline.
+            // The player may set his status to offline.
             std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
             if (channel->Talk(*this, msg))
             {
                 auto nmsg = Net::NetworkMessage::GetNew();
                 nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
                 AB::Packets::Server::ServerMessage packet = {
-                    AB::GameProtocol::ServerMessageTypePlayerGotMessage,
+                    static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerGotMessage),
                     name,
                     msg
                 };
@@ -1372,7 +1372,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypePlayerNotOnline,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerNotOnline),
         GetName(),
         name
     };
@@ -1400,7 +1400,7 @@ void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& messag
         return;
     message.AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypePlayerResigned,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerResigned),
         GetName(),
         ""
     };
@@ -1433,7 +1433,7 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeAge,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Age),
         GetName(),
         std::to_string(age) + ":" + std::to_string(playTime)
     };
@@ -1450,7 +1450,7 @@ void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
     const int e = resourceComp_->GetEnergy();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeHp,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Hp),
         GetName(),
         std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE)
     };
@@ -1463,7 +1463,7 @@ void Player::HandleXpCommand(const std::string&, Net::NetworkMessage&)
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeXp,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Xp),
         GetName(),
         std::to_string(data_.xp) + "|" + std::to_string(data_.skillPoints)
     };
@@ -1487,7 +1487,7 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
     ss << " " << transformation_.GetYRotation();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypePos,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Pos),
         GetName(),
         ss.str()
     };
@@ -1505,7 +1505,7 @@ void Player::HandleRollCommand(const std::string& arguments, Net::NetworkMessage
             const int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * static_cast<float>(max)) + 1;
             message.AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
             AB::Packets::Server::ServerMessage packet = {
-                AB::GameProtocol::ServerMessageTypeRoll,
+                static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Roll),
                 GetName(),
                 std::to_string(res) + ":" + std::to_string(max)
             };
@@ -1600,7 +1600,7 @@ void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)
     }
 
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeInstances,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Instances),
         GetName(),
         ss.str()
     };
@@ -1649,7 +1649,7 @@ void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeGMInfo,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::GMInfo),
         GetName(),
         message
     };
@@ -1700,7 +1700,7 @@ void Player::HandleGotoPlayerCommand(const std::string& playerName, Net::Network
         return;
     }
 
-    // May need to enter this commandd twice:
+    // May need to enter this command twice:
     // 1. Change to the instance
     // 2. Teleport to player
     auto* playerMan = GetSubsystem<PlayerManager>();
@@ -1730,7 +1730,7 @@ void Player::HandleUnknownCommand()
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
-        AB::GameProtocol::ServerMessageTypeUnknownCommand,
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::UnknownCommand),
         GetName(),
         ""
     };

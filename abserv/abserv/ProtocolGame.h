@@ -75,7 +75,7 @@ private:
     void OnRecvFirstMessage(NetworkMessage& msg) override;
     void OnConnect() override;
 
-    void DisconnectClient(uint8_t error);
+    void DisconnectClient(AB::ErrorCodes error);
     void Connect();
 
     bool acceptPackets_{ false };

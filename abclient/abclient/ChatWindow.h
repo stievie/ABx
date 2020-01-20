@@ -70,8 +70,8 @@ private:
     void HandlePartyDefeated(StringHash eventType, VariantMap& eventData);
     void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
-    bool ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel);
-    void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);
+    bool ParseChatCommand(const String& text, AB::GameProtocol::ChatChannel defChannel);
+    void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatChannel channel);
     LineEdit* GetActiveLineEdit();
     LineEdit* GetLineEdit(int index);
 public:
@@ -81,10 +81,10 @@ public:
     void AddLine(const String& name, const String& text, const String& style);
     void AddLine(uint32_t id, const String& name, const String& text,
         const String& style, const String& style2 = String::EMPTY,
-        AB::GameProtocol::ChatMessageChannel channel = AB::GameProtocol::ChatChannelUnknown);
+        AB::GameProtocol::ChatChannel channel = AB::GameProtocol::ChatChannel::Unknown);
 
     void AddChatLine(uint32_t senderId, const String& name, const String& text,
-        AB::GameProtocol::ChatMessageChannel channel);
+        AB::GameProtocol::ChatChannel channel);
     void SayHello(Player* player);
 
     ChatWindow(Context* context);

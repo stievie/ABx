@@ -126,7 +126,7 @@ bool GameChatChannel::Talk(Player& player, const std::string& text)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelGeneral,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::General),
             player.id_,
             player.GetName(),
             text
@@ -150,7 +150,7 @@ bool GameChatChannel::TalkNpc(Npc& npc, const std::string& text)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelGeneral,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::General),
             npc.id_,
             npc.GetName(),
             text
@@ -189,7 +189,7 @@ bool WhisperChatChannel::Talk(Player& player, const std::string& text)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelWhisper,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Whisper),
             player.id_,
             player.GetName(),
             text
@@ -224,7 +224,7 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelWhisper,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Whisper),
             0,
             playerName,
             text
@@ -264,7 +264,7 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
     AB::Packets::Server::ChatMessage packet = {
-        AB::GameProtocol::ChatChannelGuild,
+        static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Guild),
         0,
         playerName,
         text
@@ -302,7 +302,7 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     auto* playerMngr = GetSubsystem<PlayerManager>();
     msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
     AB::Packets::Server::ChatMessage packet = {
-        AB::GameProtocol::ChatChannelTrade,
+        static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Trade),
         0,
         playerName,
         text
@@ -323,7 +323,7 @@ bool PartyChatChannel::Talk(Player& player, const std::string& text)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelParty,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
             0,
             player.GetName(),
             text
@@ -348,7 +348,7 @@ bool PartyChatChannel::TalkNpc(Npc& npc, const std::string& text)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
         AB::Packets::Server::ChatMessage packet = {
-            AB::GameProtocol::ChatChannelParty,
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
             npc.id_,
             npc.GetName(),
             text

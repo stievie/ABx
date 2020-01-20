@@ -75,31 +75,31 @@ ChatWindow::ChatWindow(Context* context) :
     {
         CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterGeneral", true);
         filterCheck->SetChecked(visibleGeneral_);
-        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGeneral);
+        filterCheck->SetVar("Channel", static_cast<unsigned>(AB::GameProtocol::ChatChannel::General));
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
         CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterGuild", true);
         filterCheck->SetChecked(visibleGuild_);
-        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGuild);
+        filterCheck->SetVar("Channel", static_cast<unsigned>(AB::GameProtocol::ChatChannel::Guild));
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
         CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterParty", true);
         filterCheck->SetChecked(visibleParty_);
-        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelParty);
+        filterCheck->SetVar("Channel", static_cast<unsigned>(AB::GameProtocol::ChatChannel::Party));
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
         CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterTrade", true);
         filterCheck->SetChecked(visibleTrade_);
-        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelTrade);
+        filterCheck->SetVar("Channel", static_cast<unsigned>(AB::GameProtocol::ChatChannel::Trade));
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
     {
         CheckBox* filterCheck = filterContainer->GetChildStaticCast<CheckBox>("ChatFilterWhisper", true);
         filterCheck->SetChecked(visibleWhisper_);
-        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelWhisper);
+        filterCheck->SetVar("Channel", static_cast<unsigned>(AB::GameProtocol::ChatChannel::Whisper));
         SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
     }
 
@@ -109,11 +109,11 @@ ChatWindow::ChatWindow(Context* context) :
     tabgroup_->SetAlignment(HA_CENTER, VA_BOTTOM);
     tabgroup_->SetColor(Color(0, 0, 0, 0));
     tabgroup_->SetStyleAuto();
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGeneral);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGuild);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelTrade);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelWhisper);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannel::General);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannel::Guild);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannel::Party);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannel::Trade);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannel::Whisper);
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(ChatWindow, HandleTabSelected));
@@ -151,7 +151,7 @@ void ChatWindow::FocusEdit()
         edit->SetFocus(true);
 }
 
-void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel)
+void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatChannel channel)
 {
     static const IntVector2 tabSize(90, 20);
     static const IntVector2 tabBodySize(500, 20);
@@ -162,19 +162,19 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     tabElement->tabText_->SetFont(cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf"), 10);
     switch (channel)
     {
-    case AB::GameProtocol::ChatChannelGeneral:
+    case AB::GameProtocol::ChatChannel::General:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATGENERAL, "General", true));
         break;
-    case AB::GameProtocol::ChatChannelParty:
+    case AB::GameProtocol::ChatChannel::Party:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATPARTY, "Party", true));
         break;
-    case AB::GameProtocol::ChatChannelGuild:
+    case AB::GameProtocol::ChatChannel::Guild:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATGUILD, "Guild", true));
         break;
-    case AB::GameProtocol::ChatChannelTrade:
+    case AB::GameProtocol::ChatChannel::Trade:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATTRADE, "Trade", true));
         break;
-    case AB::GameProtocol::ChatChannelWhisper:
+    case AB::GameProtocol::ChatChannel::Whisper:
         tabElement->tabText_->SetText(scs->GetCaption(Events::E_SC_CHATWHISPER, "Whisper", true));
         tabIndexWhisper_ = static_cast<int>(tabs->GetTabCount() - 1);
         break;
@@ -183,7 +183,7 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     }
 
     UIElement* parent = tabElement->tabBody_;
-    if (channel == AB::GameProtocol::ChatChannelWhisper)
+    if (channel == AB::GameProtocol::ChatChannel::Whisper)
     {
         UIElement* container = parent->CreateChild<UIElement>();
         container->SetSize(parent->GetSize());
@@ -210,7 +210,7 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     LineEdit* edit = parent->CreateChild<LineEdit>();
     edit->SetName("ChatLineEdit");
     edit->SetVar("Channel", static_cast<int>(channel));
-    if (channel != AB::GameProtocol::ChatChannelWhisper)
+    if (channel != AB::GameProtocol::ChatChannel::Whisper)
     {
         edit->SetPosition(0, 0);
         edit->SetSize(tabElement->tabBody_->GetSize());
@@ -260,68 +260,68 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         static_cast<AB::GameProtocol::ServerMessageType>(eventData[P_MESSAGETYPE].GetInt());
     switch (type)
     {
-    case AB::GameProtocol::ServerMessageTypeInfo:
+    case AB::GameProtocol::ServerMessageType::Info:
         HandleServerMessageInfo(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeRoll:
+    case AB::GameProtocol::ServerMessageType::Roll:
         HandleServerMessageRoll(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeAge:
+    case AB::GameProtocol::ServerMessageType::Age:
         HandleServerMessageAge(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePos:
+    case AB::GameProtocol::ServerMessageType::Pos:
         HandleServerMessagePos(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeHp:
+    case AB::GameProtocol::ServerMessageType::Hp:
         HandleServerMessageHp(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeXp:
+    case AB::GameProtocol::ServerMessageType::Xp:
         HandleServerMessageXp(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
+    case AB::GameProtocol::ServerMessageType::PlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
+    case AB::GameProtocol::ServerMessageType::PlayerGotMessage:
         HandleServerMessagePlayerGotMessage(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeNewMail:
+    case AB::GameProtocol::ServerMessageType::NewMail:
         HandleServerMessageNewMail(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeMailSent:
+    case AB::GameProtocol::ServerMessageType::MailSent:
         HandleServerMessageMailSent(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeMailNotSent:
+    case AB::GameProtocol::ServerMessageType::MailNotSent:
         HandleServerMessageMailNotSent(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeMailboxFull:
+    case AB::GameProtocol::ServerMessageType::MailboxFull:
         HandleServerMessageMailboxFull(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeMailDeleted:
+    case AB::GameProtocol::ServerMessageType::MailDeleted:
         HandleServerMessageMailDeleted(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeServerId:
+    case AB::GameProtocol::ServerMessageType::ServerId:
         HandleServerMessageServerId(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePlayerResigned:
+    case AB::GameProtocol::ServerMessageType::PlayerResigned:
         HandleServerMessagePlayerResigned(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeUnknownCommand:
+    case AB::GameProtocol::ServerMessageType::UnknownCommand:
         HandleServerMessageUnknownCommand(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeInstances:
+    case AB::GameProtocol::ServerMessageType::Instances:
         HandleServerMessageInstances(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypeGMInfo:
+    case AB::GameProtocol::ServerMessageType::GMInfo:
         HandleServerMessageGMInfo(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePlayerNotFound:
+    case AB::GameProtocol::ServerMessageType::PlayerNotFound:
         HandleServerMessagePlayerNotFound(eventData);
         break;
-    case AB::GameProtocol::ServerMessageTypePlayerQueued:
-    case AB::GameProtocol::ServerMessageTypePlayerUnqueued:
+    case AB::GameProtocol::ServerMessageType::PlayerQueued:
+    case AB::GameProtocol::ServerMessageType::PlayerUnqueued:
         // TODO:
         break;
-    case AB::GameProtocol::ServerMessageTypeUnknown:
+    case AB::GameProtocol::ServerMessageType::Unknown:
         break;
     }
 }
@@ -551,8 +551,8 @@ void ChatWindow::HandleServerMessageMailDeleted(VariantMap&)
 void ChatWindow::HandleChatMessage(StringHash, VariantMap& eventData)
 {
     using namespace Events::ChatMessage;
-    AB::GameProtocol::ChatMessageChannel channel =
-        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
+    AB::GameProtocol::ChatChannel channel =
+        static_cast<AB::GameProtocol::ChatChannel>(eventData[P_MESSAGETYPE].GetInt());
     const String& message = eventData[P_DATA].GetString();
     const String& sender = eventData[P_SENDER].GetString();
     uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
@@ -750,7 +750,7 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     default:
         break;
     }
-    AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
+    AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannel::Party);
     pinger->ShowSpeechBubble(message);
 }
 
@@ -794,7 +794,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
-bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
+bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChannel defChannel)
 {
     AB::GameProtocol::CommandType type = AB::GameProtocol::CommandType::Unknown;
     String data;
@@ -824,19 +824,19 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     {
         switch (defChannel)
         {
-        case AB::GameProtocol::ChatChannelGuild:
+        case AB::GameProtocol::ChatChannel::Guild:
             type = AB::GameProtocol::CommandType::ChatGuild;
             data = text;
             break;
-        case AB::GameProtocol::ChatChannelParty:
+        case AB::GameProtocol::ChatChannel::Party:
             type = AB::GameProtocol::CommandType::ChatParty;
             data = text;
             break;
-        case AB::GameProtocol::ChatChannelTrade:
+        case AB::GameProtocol::ChatChannel::Trade:
             type = AB::GameProtocol::CommandType::ChatTrade;
             data = text;
             break;
-        case AB::GameProtocol::ChatChannelWhisper:
+        case AB::GameProtocol::ChatChannel::Whisper:
         {
             type = AB::GameProtocol::CommandType::ChatWhisper;
             LineEdit* nameEdit = GetChildStaticCast<LineEdit>("WhisperChatNameEdit", true);
@@ -925,22 +925,22 @@ void ChatWindow::UpdateVisibleItems()
     for (unsigned i = 0; i < chatLog_->GetNumItems(); ++i)
     {
         UIElement* elem = chatLog_->GetItem(i);
-        AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(elem->GetVar("Channel").GetUInt());
+        AB::GameProtocol::ChatChannel channel = static_cast<AB::GameProtocol::ChatChannel>(elem->GetVar("Channel").GetUInt());
         switch (channel)
         {
-        case AB::GameProtocol::ChatChannelGeneral:
+        case AB::GameProtocol::ChatChannel::General:
             elem->SetVisible(visibleGeneral_);
             break;
-        case AB::GameProtocol::ChatChannelGuild:
+        case AB::GameProtocol::ChatChannel::Guild:
             elem->SetVisible(visibleGuild_);
             break;
-        case AB::GameProtocol::ChatChannelParty:
+        case AB::GameProtocol::ChatChannel::Party:
             elem->SetVisible(visibleParty_);
             break;
-        case AB::GameProtocol::ChatChannelTrade:
+        case AB::GameProtocol::ChatChannel::Trade:
             elem->SetVisible(visibleTrade_);
             break;
-        case AB::GameProtocol::ChatChannelWhisper:
+        case AB::GameProtocol::ChatChannel::Whisper:
             elem->SetVisible(visibleWhisper_);
             break;
         default:
@@ -954,22 +954,22 @@ void ChatWindow::HandleFilterClick(StringHash, VariantMap& eventData)
     using namespace Toggled;
     CheckBox* sender = dynamic_cast<CheckBox*>(eventData[P_ELEMENT].GetPtr());
     bool state = eventData[P_STATE].GetBool();
-    AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetUInt());
+    AB::GameProtocol::ChatChannel channel = static_cast<AB::GameProtocol::ChatChannel>(sender->GetVar("Channel").GetUInt());
     switch (channel)
     {
-    case AB::GameProtocol::ChatChannelGeneral:
+    case AB::GameProtocol::ChatChannel::General:
         visibleGeneral_ = state;
         break;
-    case AB::GameProtocol::ChatChannelGuild:
+    case AB::GameProtocol::ChatChannel::Guild:
         visibleGuild_ = state;
         break;
-    case AB::GameProtocol::ChatChannelParty:
+    case AB::GameProtocol::ChatChannel::Party:
         visibleParty_ = state;
         break;
-    case AB::GameProtocol::ChatChannelTrade:
+    case AB::GameProtocol::ChatChannel::Trade:
         visibleTrade_ = state;
         break;
-    case AB::GameProtocol::ChatChannelWhisper:
+    case AB::GameProtocol::ChatChannel::Whisper:
         visibleWhisper_ = state;
         break;
     default:
@@ -1015,8 +1015,8 @@ void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)
     LineEdit* sender = static_cast<LineEdit*>(eventData[P_ELEMENT].GetPtr());
     if (!line.Empty())
     {
-        AB::GameProtocol::ChatMessageChannel channel =
-            static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetInt());
+        AB::GameProtocol::ChatChannel channel =
+            static_cast<AB::GameProtocol::ChatChannel>(sender->GetVar("Channel").GetInt());
         if (ParseChatCommand(line, channel))
         {
             // Make sure the line isn't the same as the last one
@@ -1123,31 +1123,33 @@ void ChatWindow::AddLine(const String& name, const String& text, const String& s
     chatLog_->UpdateLayout();
 }
 
-void ChatWindow::AddLine(uint32_t id, const String& name, const String& text, const String& style, const String& style2 /* = String::EMPTY */, AB::GameProtocol::ChatMessageChannel channel /* = AB::GameProtocol::ChatChannelUnknown */)
+void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
+    const String& style, const String& style2 /* = String::EMPTY */,
+    AB::GameProtocol::ChatChannel channel /* = AB::GameProtocol::ChatChannel::Unknown */)
 {
     Text* nameText = chatLog_->CreateChild<Text>();
     nameText->SetVar("ID", id);
     nameText->SetVar("Name", name);
-    nameText->SetVar("Channel", channel);
-    if (channel != AB::GameProtocol::ChatChannelWhisper)
+    nameText->SetVar("Channel", static_cast<unsigned>(channel));
+    if (channel != AB::GameProtocol::ChatChannel::Whisper)
         nameText->SetText(name + ":");
     else
         nameText->SetText("{" + name + "}");
     switch (channel)
     {
-    case AB::GameProtocol::ChatChannelGeneral:
+    case AB::GameProtocol::ChatChannel::General:
         nameText->SetVisible(visibleGeneral_);
         break;
-    case AB::GameProtocol::ChatChannelGuild:
+    case AB::GameProtocol::ChatChannel::Guild:
         nameText->SetVisible(visibleGuild_);
         break;
-    case AB::GameProtocol::ChatChannelParty:
+    case AB::GameProtocol::ChatChannel::Party:
         nameText->SetVisible(visibleParty_);
         break;
-    case AB::GameProtocol::ChatChannelTrade:
+    case AB::GameProtocol::ChatChannel::Trade:
         nameText->SetVisible(visibleTrade_);
         break;
-    case AB::GameProtocol::ChatChannelWhisper:
+    case AB::GameProtocol::ChatChannel::Whisper:
         nameText->SetVisible(visibleWhisper_);
         break;
     default:
@@ -1179,25 +1181,25 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text, co
     chatLog_->UpdateLayout();
 }
 
-void ChatWindow::AddChatLine(uint32_t senderId, const String& name, const String& text, AB::GameProtocol::ChatMessageChannel channel)
+void ChatWindow::AddChatLine(uint32_t senderId, const String& name, const String& text, AB::GameProtocol::ChatChannel channel)
 {
     String style;
     String textStyle = "ChatLogChatText";
     switch (channel)
     {
-    case AB::GameProtocol::ChatChannelGeneral:
+    case AB::GameProtocol::ChatChannel::General:
         style = "ChatLogGeneralChatText";
         break;
-    case AB::GameProtocol::ChatChannelGuild:
+    case AB::GameProtocol::ChatChannel::Guild:
         style = "ChatLogGuildChatText";
         break;
-    case AB::GameProtocol::ChatChannelParty:
+    case AB::GameProtocol::ChatChannel::Party:
         style = "ChatLogPartyChatText";
         break;
-    case AB::GameProtocol::ChatChannelWhisper:
+    case AB::GameProtocol::ChatChannel::Whisper:
         style = "ChatLogWhisperChatText";
         break;
-    case AB::GameProtocol::ChatChannelTrade:
+    case AB::GameProtocol::ChatChannel::Trade:
         style = "ChatLogTradeChatText";
         textStyle = "ChatLogTradeChatText";
         break;

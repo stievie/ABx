@@ -74,7 +74,7 @@ private:
     void QueueEvent(StringHash eventType, VariantMap& eventData);
     void UpdatePlayer(const AB::Packets::Server::PlayerInfo& player);
 public:
-    static String GetProtocolErrorMessage(uint8_t err);
+    static String GetProtocolErrorMessage(AB::ErrorCodes err);
     static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
     static String GetAttackErrorMessage(AB::GameProtocol::AttackError err);
     static String GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err);
@@ -156,7 +156,7 @@ public:
     /// asio network error
     void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
-    void OnProtocolError(uint8_t err) override;
+    void OnProtocolError(AB::ErrorCodes err) override;
     void OnPong(int) override { }
 
     void OnLoggedIn(const std::string&, const std::string&) override;

@@ -50,14 +50,14 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 #ifdef DEBUG_NET
         LOG_DEBUG << "Player " << foundPlayer->GetName() << " already logged in" << std::endl;
 #endif
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        DisconnectClient(AB::ErrorCodes::AlreadyLoggedIn);
         return;
     }
 
     if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(uuids::uuid(packet.accountUuid)))
     {
         LOG_INFO << "Login attempt from banned account " << packet.accountUuid << std::endl;
-        DisconnectClient(AB::Errors::AccountBanned);
+        DisconnectClient(AB::ErrorCodes::AccountBanned);
         return;
     }
 
@@ -68,7 +68,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     if (!IO::IOPlayer::LoadPlayerByUuid(*player, packet.charUuid))
     {
         LOG_ERROR << "Error loading player " << packet.charUuid << std::endl;
-        DisconnectClient(AB::Errors::ErrorLoadingCharacter);
+        DisconnectClient(AB::ErrorCodes::ErrorLoadingCharacter);
         return;
     }
     // Account and player is loaded create the index for the player
@@ -81,7 +81,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     if (!client->Read(g))
     {
         LOG_ERROR << "Invalid game with map " << packet.mapUuid << std::endl;
-        DisconnectClient(AB::Errors::InvalidGame);
+        DisconnectClient(AB::ErrorCodes::InvalidGame);
         return;
     }
 
@@ -462,18 +462,18 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     auto packet = AB::Packets::Get<AB::Packets::Client::GameLogin>(msg);
     if (packet.protocolVersion != AB::PROTOCOL_VERSION)
     {
-        DisconnectClient(AB::Errors::WrongProtocolVersion);
+        DisconnectClient(AB::ErrorCodes::WrongProtocolVersion);
         return;
     }
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
         clientKey_[i] = packet.key[i];
-    auto keys = GetSubsystem<Crypto::DHKeys>();
+    auto* keys = GetSubsystem<Crypto::DHKeys>();
     // Switch now to the shared key
     keys->GetSharedKey(clientKey_, encKey_);
     if (Utils::Uuid::IsEmpty(packet.accountUuid))
     {
         LOG_ERROR << "Invalid account " << packet.accountUuid << std::endl;
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
 
@@ -481,13 +481,13 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     if (GetSubsystem<Auth::BanManager>()->IsIpBanned(ip))
     {
         LOG_ERROR << "Connection attempt from banned IP " << Utils::ConvertIPToString(ip, true) << std::endl;
-        DisconnectClient(AB::Errors::IPBanned);
+        DisconnectClient(AB::ErrorCodes::IPBanned);
         return;
     }
 
     if (!IO::IOAccount::GameWorldAuth(packet.accountUuid, packet.authToken, packet.charUuid))
     {
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        DisconnectClient(AB::ErrorCodes::NamePasswordMismatch);
         return;
     }
 
@@ -502,16 +502,16 @@ void ProtocolGame::OnConnect()
 {
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::KeyExchange);
-    auto keys = GetSubsystem<Crypto::DHKeys>();
+    auto* keys = GetSubsystem<Crypto::DHKeys>();
     output->AddBytes(reinterpret_cast<const char*>(&keys->GetPublickKey()), DH_KEY_LENGTH);
     Send(std::move(output));
 }
 
-void ProtocolGame::DisconnectClient(uint8_t error)
+void ProtocolGame::DisconnectClient(AB::ErrorCodes error)
 {
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::Error);
-    AB::Packets::Server::ProtocolError packet = { error };
+    AB::Packets::Server::ProtocolError packet = { static_cast<uint8_t>(error) };
     AB::Packets::Add(packet, *output);
     Send(std::move(output));
     Disconnect();
@@ -555,7 +555,7 @@ void ProtocolGame::EnterGame()
     if (!player)
     {
         LOG_ERROR << "GetPlayer returned null" << std::endl;
-        DisconnectClient(AB::Errors::CannotEnterGame);
+        DisconnectClient(AB::ErrorCodes::CannotEnterGame);
         return;
     }
     auto* gameMan = GetSubsystem<Game::GameManager>();
@@ -596,7 +596,7 @@ void ProtocolGame::EnterGame()
         Send(std::move(output));
     }
     else
-        DisconnectClient(AB::Errors::CannotEnterGame);
+        DisconnectClient(AB::ErrorCodes::CannotEnterGame);
 }
 
 void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,

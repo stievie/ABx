@@ -153,42 +153,38 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)     \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetSecProfession)
 
-namespace Errors
+enum class ErrorCodes : uint8_t
 {
-
-enum ErrorCodes : uint8_t
-{
-    IPBanned = 0x01,
-    TooManyConnectionsFromThisIP = 0x02,
-    InvalidAccountName = 0x03,
-    InvalidPassword = 0x04,
-    NamePasswordMismatch = 0x05,
-    AlreadyLoggedIn = 0x06,
-    ErrorLoadingCharacter = 0x07,
-    AccountBanned = 0x08,
-    CannotEnterGame = 0x09,
-    WrongProtocolVersion = 0x0a,
-    InvalidEmail = 0x0b,
-    InvalidAccountKey = 0x0c,
-    UnknownError = 0x0d,
-    AccountNameExists = 0x0e,
-    InvalidCharacterName = 0x0f,
-    InvalidProfession = 0x10,
-    PlayerNameExists = 0x11,
-    InvalidAccount = 0x12,
-    InvalidPlayerSex = 0x13,
-    InvalidCharacter = 0x14,
-    InvalidCharactersInString = 0x15,
-    NoMoreCharSlots = 0x16,
-    InvalidGame = 0x17,
-    AllServersFull = 0x18,
-    TokenAuthFailure = 0x19,
-    AccountKeyAlreadyAdded = 0x20,
+    NoError = 0,
+    IPBanned,
+    TooManyConnectionsFromThisIP,
+    InvalidAccountName,
+    InvalidPassword,
+    NamePasswordMismatch,
+    AlreadyLoggedIn,
+    ErrorLoadingCharacter,
+    AccountBanned,
+    CannotEnterGame,
+    WrongProtocolVersion,
+    InvalidEmail,
+    InvalidAccountKey,
+    UnknownError,
+    AccountNameExists,
+    InvalidCharacterName,
+    InvalidProfession,
+    PlayerNameExists,
+    InvalidAccount,
+    InvalidPlayerSex,
+    InvalidCharacter,
+    InvalidCharactersInString,
+    NoMoreCharSlots,
+    InvalidGame,
+    AllServersFull,
+    TokenAuthFailure,
+    AccountKeyAlreadyAdded,
 
     ErrorException = 0xff
 };
-
-}
 
 namespace LoginProtocol
 {
@@ -247,22 +243,22 @@ enum TurnDirection : uint8_t
 enum class CreatureState : uint8_t
 {
     Unknown = 0,
-    Idle = 1,
-    Moving = 2,
-    UsingSkill = 3,
-    Attacking = 4,
-    KnockedDown = 5,
-    Emote = 6,
-    EmoteSit = 7,
+    Idle,
+    Moving,
+    UsingSkill,
+    Attacking,
+    KnockedDown,
+    Emote,
+    EmoteSit,
 
-    // Emotes ------------------------------------------------------------------
-    EmoteStart,
+    // Temporal Emotes ---------------------------------------------------------
+    __EmoteStart,
     EmoteCry,
     EmoteTaunt,
     EmotePonder,
     EmoteWave,
     EmoteLaugh,
-    EmoteEnd,
+    __EmoteEnd,
     // /Emotes -----------------------------------------------------------------
 
     // Logic actors states -----------------------------------------------------
@@ -271,47 +267,47 @@ enum class CreatureState : uint8_t
     Triggered,
     // /Logic actors states ----------------------------------------------------
 
-    Dead = 255,
+    Dead = 0xFF,
 };
 
-enum ServerMessageType : uint8_t
+enum class ServerMessageType : uint8_t
 {
-    ServerMessageTypeUnknown = 0,
-    ServerMessageTypeInfo,
-    ServerMessageTypeRoll, // /roll result
-    ServerMessageTypeAge,  // /age
-    ServerMessageTypeHp,   // /hp
-    ServerMessageTypeXp,   // /xp
-    ServerMessageTypePos,  // /pos
-    ServerMessageTypePlayerNotOnline,
-    ServerMessageTypePlayerGotMessage,
-    ServerMessageTypeNewMail,
-    ServerMessageTypeMailSent,
-    ServerMessageTypeMailNotSent,
-    ServerMessageTypeMailboxFull,
-    ServerMessageTypeMailDeleted,
-    ServerMessageTypeServerId,
-    ServerMessageTypePlayerResigned,
-    ServerMessageTypePlayerQueued,
-    ServerMessageTypePlayerUnqueued,
+    Unknown = 0,
+    Info,
+    Roll, // /roll result
+    Age,  // /age
+    Hp,   // /hp
+    Xp,   // /xp
+    Pos,  // /pos
+    PlayerNotOnline,
+    PlayerGotMessage,
+    NewMail,
+    MailSent,
+    MailNotSent,
+    MailboxFull,
+    MailDeleted,
+    ServerId,
+    PlayerResigned,
+    PlayerQueued,
+    PlayerUnqueued,
 
-    ServerMessageTypeInstances,
-    ServerMessageTypeGMInfo,
+    Instances,
+    GMInfo,
 
-    ServerMessageTypePlayerNotFound,
+    PlayerNotFound,
 
-    ServerMessageTypeUnknownCommand = 0xff
+    UnknownCommand = 0xff
 };
 
-enum ChatMessageChannel : uint8_t
+enum class ChatChannel : uint8_t
 {
-    ChatChannelUnknown = 0,
-    ChatChannelGeneral,
-    ChatChannelGuild,
-    ChatChannelParty,
-    ChatChannelAllies,
-    ChatChannelTrade,
-    ChatChannelWhisper,
+    Unknown = 0,
+    General,
+    Guild,
+    Party,
+    Allies,
+    Trade,
+    Whisper,
 };
 
 /// Packets sent by the server

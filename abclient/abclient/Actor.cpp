@@ -661,8 +661,8 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
         if (!looped)
         {
             // Reset to idle when some emote animations ended
-            if (creatureState_ > AB::GameProtocol::CreatureState::EmoteStart &&
-                creatureState_ < AB::GameProtocol::CreatureState::EmoteEnd)
+            if (creatureState_ > AB::GameProtocol::CreatureState::__EmoteStart &&
+                creatureState_ < AB::GameProtocol::CreatureState::__EmoteEnd)
             {
                 FwClient* client = GetSubsystem<FwClient>();
                 client->SetPlayerState(AB::GameProtocol::CreatureState::Idle);
@@ -705,13 +705,11 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
         return;
 
     // Show what we say in a bubble for certain channels
-    AB::GameProtocol::ChatMessageChannel channel =
-        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
+    AB::GameProtocol::ChatChannel channel =
+        static_cast<AB::GameProtocol::ChatChannel>(eventData[P_MESSAGETYPE].GetInt());
 
-    if (channel == AB::GameProtocol::ChatChannelGeneral || channel == AB::GameProtocol::ChatChannelParty)
-    {
+    if (channel == AB::GameProtocol::ChatChannel::General || channel == AB::GameProtocol::ChatChannel::Party)
         ShowSpeechBubble(eventData[P_DATA].GetString());
-    }
 }
 
 void Actor::HandleSkillUse(StringHash, VariantMap& eventData)

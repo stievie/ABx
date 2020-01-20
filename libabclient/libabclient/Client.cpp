@@ -158,7 +158,7 @@ void Client::OnNetworkError(ConnectionError connectionError, const std::error_co
     receiver_.OnNetworkError(connectionError, err);
 }
 
-void Client::OnProtocolError(uint8_t err)
+void Client::OnProtocolError(AB::ErrorCodes err)
 {
     receiver_.OnProtocolError(err);
 }

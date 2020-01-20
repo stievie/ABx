@@ -47,8 +47,8 @@ void StateComp::Update(uint32_t)
         }
         return;
     }
-    if ((currentState_ > AB::GameProtocol::CreatureState::EmoteStart &&
-        currentState_ < AB::GameProtocol::CreatureState::EmoteEnd)
+    if ((currentState_ > AB::GameProtocol::CreatureState::__EmoteStart &&
+        currentState_ < AB::GameProtocol::CreatureState::__EmoteEnd)
         && lastStateChange_ + 4000 < Utils::Tick())
     {
         // Reset some emotes after 4 seconds

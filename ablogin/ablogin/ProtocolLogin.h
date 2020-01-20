@@ -26,7 +26,7 @@ public:
 
     void OnRecvFirstMessage(NetworkMessage& message) override;
 private:
-    void DisconnectClient(uint8_t error);
+    void DisconnectClient(AB::ErrorCodes error);
 
     void HandleLoginPacket(NetworkMessage& message);
     void HandleCreateAccountPacket(NetworkMessage& message);

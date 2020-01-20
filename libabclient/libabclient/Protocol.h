@@ -6,6 +6,7 @@
 #include "OutputMessage.h"
 #include <abcrypto.hpp>
 #include <AB/DHKeys.hpp>
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -13,7 +14,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 {
 public:
     typedef std::function<void(ConnectionError connectionError, const std::error_code&)> ErrorCallback;
-    typedef std::function<void(uint8_t)> ProtocolErrorCallback;
+    typedef std::function<void(AB::ErrorCodes)> ProtocolErrorCallback;
 private:
     std::shared_ptr<InputMessage> inputMessage_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
@@ -35,7 +36,7 @@ protected:
     virtual void OnError(ConnectionError connectionError, const asio::error_code& err);
     virtual void OnConnect() {}
     virtual void OnReceive(InputMessage&) { }
-    void ProtocolError(uint8_t err)
+    void ProtocolError(AB::ErrorCodes err)
     {
         if (protocolErrorCallback_)
             protocolErrorCallback_(err);

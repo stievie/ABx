@@ -30,14 +30,14 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     if (version != AB::PROTOCOL_VERSION)
     {
         LOG_ERROR << "Wrong protocol version from client " << Utils::ConvertIPToString(clientIp) << std::endl;
-        DisconnectClient(AB::Errors::WrongProtocolVersion);
+        DisconnectClient(AB::ErrorCodes::WrongProtocolVersion);
         return;
     }
 
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(clientIp))
     {
-        DisconnectClient(AB::Errors::IPBanned);
+        DisconnectClient(AB::ErrorCodes::IPBanned);
         return;
     }
 
@@ -80,7 +80,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account name " << accountName << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::ErrorCodes::InvalidAccountName);
         return;
     }
     if (packet.password.empty())
@@ -88,7 +88,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
     }
 
@@ -106,49 +106,49 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
     auto packet = AB::Packets::Get<AB::Packets::Client::Login::CreateAccount>(message);
     if (packet.accountName.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::ErrorCodes::InvalidAccountName);
         return;
     }
     if (packet.accountName.length() < ACCOUNT_NAME_MIN || packet.accountName.length() > ACCOUNT_NAME_MAX)
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::ErrorCodes::InvalidAccountName);
         return;
     }
     if (packet.password.empty())
     {
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
     }
     if (packet.password.length() < PASSWORD_LENGTH_MIN)
     {
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
     }
     if (packet.password.length() > PASSWORD_LENGTH_MAX)
     {
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
     }
 #ifdef EMAIL_MANDATORY
     if (packet.email.empty())
     {
-        DisconnectClient(AB::Errors::InvalidEmail);
+        DisconnectClient(AB::ErrorCodes::InvalidEmail);
         return;
     }
     if (packet.email.length() < 3)
     {
-        DisconnectClient(AB::Errors::InvalidEmail);
+        DisconnectClient(AB::ErrorCodes::InvalidEmail);
         return;
     }
     if (packet.email.length() > EMAIL_LENGTH_MAX)
     {
-        DisconnectClient(AB::Errors::InvalidEmail);
+        DisconnectClient(AB::ErrorCodes::InvalidEmail);
         return;
     }
 #endif
     if (packet.accountKey.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountKey);
+        DisconnectClient(AB::ErrorCodes::InvalidAccountKey);
         return;
     }
 
@@ -169,7 +169,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
     if (packet.authToken.empty())
@@ -177,34 +177,34 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
 #endif
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
     if (packet.charName.empty())
     {
-        DisconnectClient(AB::Errors::InvalidCharacterName);
+        DisconnectClient(AB::ErrorCodes::InvalidCharacterName);
         return;
     }
     if (packet.charName.length() < CHARACTER_NAME_NIM || packet.charName.length() > CHARACTER_NAME_MAX)
     {
-        DisconnectClient(AB::Errors::InvalidCharacterName);
+        DisconnectClient(AB::ErrorCodes::InvalidCharacterName);
         return;
     }
     if (packet.charName.find_first_of(RESTRICTED_NAME_CHARS) != std::string::npos)
     {
-        DisconnectClient(AB::Errors::InvalidCharacterName);
+        DisconnectClient(AB::ErrorCodes::InvalidCharacterName);
         return;
     }
 
     if (packet.sex < AB::Entities::CharacterSex::CharacterSexFemale ||
         packet.sex > AB::Entities::CharacterSex::CharacterSexMale)
     {
-        DisconnectClient(AB::Errors::InvalidPlayerSex);
+        DisconnectClient(AB::ErrorCodes::InvalidPlayerSex);
         return;
     }
     if (Utils::Uuid::IsEmpty(packet.profUuid))
     {
-        DisconnectClient(AB::Errors::InvalidProfession);
+        DisconnectClient(AB::ErrorCodes::InvalidProfession);
         return;
     }
 
@@ -225,7 +225,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
     if (packet.authToken.empty())
@@ -233,12 +233,12 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid password " << password << std::endl;
 #endif
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
     if (Utils::Uuid::IsEmpty(packet.charUuid))
     {
-        DisconnectClient(AB::Errors::InvalidCharacter);
+        DisconnectClient(AB::ErrorCodes::InvalidCharacter);
         return;
     }
 
@@ -256,17 +256,17 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     auto packet = AB::Packets::Get<AB::Packets::Client::Login::AddAccountKey>(message);
     if (packet.accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
     if (packet.authToken.empty())
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
     if (packet.accountKey.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountKey);
+        DisconnectClient(AB::ErrorCodes::InvalidAccountKey);
         return;
     }
 
@@ -287,7 +287,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
     if (packet.authToken.empty())
@@ -295,7 +295,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid token" << std::endl;
 #endif
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -319,7 +319,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
     }
     if (packet.authToken.empty())
@@ -327,7 +327,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid token" << std::endl;
 #endif
-        DisconnectClient(AB::Errors::InvalidPassword);
+        DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
     }
 
@@ -349,19 +349,19 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     switch (res)
     {
     case IO::IOAccount::PasswordAuthResult::InvalidAccount:
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::ErrorCodes::InvalidAccount);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::PasswordAuthResult::PasswordMismatch:
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        DisconnectClient(AB::ErrorCodes::NamePasswordMismatch);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::PasswordAuthResult::AlreadyLoggedIn:
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        DisconnectClient(AB::ErrorCodes::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
     case IO::IOAccount::PasswordAuthResult::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
+        DisconnectClient(AB::ErrorCodes::UnknownError);
         break;
     default:
         break;
@@ -373,7 +373,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
         gameServer,
         account.currentServerUuid))
     {
-        DisconnectClient(AB::Errors::AllServersFull);
+        DisconnectClient(AB::ErrorCodes::AllServersFull);
         return;
     }
 
@@ -382,7 +382,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
         AB::Entities::ServiceTypeFileServer,
         fileServer))
     {
-        DisconnectClient(AB::Errors::AllServersFull);
+        DisconnectClient(AB::ErrorCodes::AllServersFull);
         return;
     }
 
@@ -436,7 +436,7 @@ void ProtocolLogin::SendOutposts(AB::Packets::Client::Login::GetOutposts request
     bool res = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!res)
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -473,7 +473,7 @@ void ProtocolLogin::SendServers(AB::Packets::Client::Login::GetServers request)
     bool res = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!res)
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -519,19 +519,19 @@ void ProtocolLogin::CreateAccount(AB::Packets::Client::Login::CreateAccount requ
         switch (res)
         {
         case IO::IOAccount::CreateAccountResult::NameExists:
-            packet.code = AB::Errors::AccountNameExists;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::AccountNameExists);
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
-            packet.code = AB::Errors::InvalidAccountKey;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidAccountKey);
             break;
         case IO::IOAccount::CreateAccountResult::PasswordError:
-            packet.code = AB::Errors::InvalidPassword;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidPassword);
             break;
         case IO::IOAccount::CreateAccountResult::EmailError:
-            packet.code = AB::Errors::InvalidEmail;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidEmail);
             break;
         default:
-            packet.code = AB::Errors::UnknownError;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::UnknownError);
             break;
         }
         AB::Packets::Add(packet, *output);
@@ -548,7 +548,7 @@ void ProtocolLogin::CreatePlayer(AB::Packets::Client::Login::CreatePlayer reques
     bool ses = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!ses)
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -576,22 +576,22 @@ void ProtocolLogin::CreatePlayer(AB::Packets::Client::Login::CreatePlayer reques
         switch (res)
         {
         case IO::IOAccount::CreatePlayerResult::NameExists:
-            packet.code = AB::Errors::PlayerNameExists;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::PlayerNameExists);
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidAccount:
-            packet.code = AB::Errors::InvalidAccount;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidAccount);
             break;
         case IO::IOAccount::CreatePlayerResult::NoMoreCharSlots:
-            packet.code = AB::Errors::NoMoreCharSlots;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::NoMoreCharSlots);
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidProfession:
-            packet.code = AB::Errors::InvalidProfession;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidProfession);
             break;
         case IO::IOAccount::CreatePlayerResult::InvalidName:
-            packet.code = AB::Errors::InvalidCharacterName;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidCharacterName);
             break;
         default:
-            packet.code = AB::Errors::UnknownError;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::UnknownError);
             break;
         }
         AB::Packets::Add(packet, *output);
@@ -608,7 +608,7 @@ void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey requ
     bool authres = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!authres)
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -626,19 +626,19 @@ void ProtocolLogin::AddAccountKey(AB::Packets::Client::Login::AddAccountKey requ
         switch (res)
         {
         case IO::IOAccount::CreateAccountResult::NameExists:
-            packet.code = AB::Errors::AccountNameExists;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::AccountNameExists);
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
-            packet.code = AB::Errors::InvalidAccountKey;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidAccountKey);
             break;
         case IO::IOAccount::CreateAccountResult::InvalidAccount:
-            packet.code = AB::Errors::InvalidAccount;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::InvalidAccount);
             break;
         case IO::IOAccount::CreateAccountResult::AlreadyAdded:
-            packet.code = AB::Errors::AccountKeyAlreadyAdded;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::AccountKeyAlreadyAdded);
             break;
         default:
-            packet.code = AB::Errors::UnknownError;
+            packet.code = static_cast<uint8_t>(AB::ErrorCodes::UnknownError);
             break;
         }
         AB::Packets::Add(packet, *output);
@@ -655,7 +655,7 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     bool authRes = IO::IOAccount::TokenAuth(request.authToken, account);
     if (!authRes)
     {
-        DisconnectClient(AB::Errors::TokenAuthFailure);
+        DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
     }
 
@@ -673,7 +673,7 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     {
         output->AddByte(AB::LoginProtocol::DeletePlayerError);
         AB::Packets::Server::Login::Error packet =  {
-            AB::Errors::InvalidCharacter
+            static_cast<uint8_t>(AB::ErrorCodes::InvalidCharacter)
         };
         AB::Packets::Add(packet, *output);
     }
@@ -685,12 +685,12 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     Disconnect();
 }
 
-void ProtocolLogin::DisconnectClient(uint8_t error)
+void ProtocolLogin::DisconnectClient(AB::ErrorCodes error)
 {
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::LoginProtocol::LoginError);
     AB::Packets::Server::Login::Error packet = {
-        error
+        static_cast<uint8_t>(error)
     };
     AB::Packets::Add(packet, *output);
     Send(std::move(output));
