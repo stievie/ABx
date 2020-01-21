@@ -933,12 +933,14 @@ struct SetPlayerAttributeValue
     }
 };
 
-struct SetPlayerSecProfession
+struct ObjectSecProfessionChanged
 {
+    uint32_t objectId;
     uint32_t profIndex;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(objectId);
         ar.value(profIndex);
     }
 };

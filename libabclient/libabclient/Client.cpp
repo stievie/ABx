@@ -916,7 +916,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAt
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSecProfession& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

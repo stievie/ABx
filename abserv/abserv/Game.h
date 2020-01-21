@@ -167,6 +167,11 @@ public:
     void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
 
     ExecutionState GetState() const { return state_; }
+    Net::NetworkMessage& GetGameStatus()
+    {
+        assert(gameStatus_);
+        return *gameStatus_;
+    }
     bool IsInactive() const
     {
         if (state_ == ExecutionState::Startup)

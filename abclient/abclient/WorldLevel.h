@@ -37,10 +37,14 @@ public:
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);
-    GameObject* GetObject(uint32_t id)
+    template<typename T>
+    T* GetObject(uint32_t id)
     {
         if (objects_.Contains(id))
-            return objects_[id].Get();
+        {
+            if (Is<T>(objects_[id].Get()))
+                return To<T>(objects_[id].Get());
+        }
         return nullptr;
     }
     Actor* GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
@@ -148,6 +152,7 @@ private:
     void HandleObjectEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectRemoved(StringHash eventType, VariantMap& eventData);
     void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);
+    void HandleObjectSecProfessionChange(StringHash eventType, VariantMap& eventData);
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);

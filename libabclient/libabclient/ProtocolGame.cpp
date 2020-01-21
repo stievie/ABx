@@ -77,7 +77,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::QuestRewarded, ServerPacketType::QuestRewarded>();
     AddHandler<AB::Packets::Server::PlayerInfo, ServerPacketType::PlayerInfo>();
     AddHandler<AB::Packets::Server::SetPlayerAttributeValue, ServerPacketType::PlayerSetAttributeValue>();
-    AddHandler<AB::Packets::Server::SetPlayerSecProfession, ServerPacketType::PlayerSetSecProfession>();
+    AddHandler<AB::Packets::Server::ObjectSecProfessionChanged, ServerPacketType::ObjectSecProfessionChanged>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,

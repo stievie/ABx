@@ -151,7 +151,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(QuestRewarded)               \
     ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)                  \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)     \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerSetSecProfession)
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)
 
 enum class ErrorCodes : uint8_t
 {

@@ -38,6 +38,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_PARTYADDED, URHO3D_HANDLER(Actor, HandlePartyAdded));
     SubscribeToEvent(Events::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
+    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(Actor, HandleObjectSecProfessionChange));
 }
 
 Actor::~Actor()
@@ -490,6 +491,17 @@ void Actor::AddActorUI()
             }
         }
     }
+}
+
+void Actor::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetSecProfession;
+
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    if (objectId != gameId_)
+        return;
+    if (classLevel_)
+        classLevel_->SetText(GetClassLevel());
 }
 
 void Actor::RemoveActorUI()

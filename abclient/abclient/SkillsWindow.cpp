@@ -85,7 +85,14 @@ void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
 
 void SkillsWindow::HandleSetSecProfession(StringHash, VariantMap& eventData)
 {
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
     using namespace Events::SetSecProfession;
+    if (player->gameId_ != eventData[P_OBJECTID].GetUInt())
+        return;
     uint32_t index = eventData[P_PROFINDEX].GetUInt();
     SetProfessionIndex(index);
 }

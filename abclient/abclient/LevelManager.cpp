@@ -196,7 +196,7 @@ GameObject* LevelManager::GetObject(uint32_t objectId)
 {
     WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
-        return lvl->GetObject(objectId);
+        return lvl->GetObject<GameObject>(objectId);
     return nullptr;
 }
 

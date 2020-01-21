@@ -1142,12 +1142,13 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 
     skills_->SetSecondaryProfession(profIndex);
     // If it fails or not inform the client of the current profession
-    auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSecProfession);
-    AB::Packets::Server::SetPlayerSecProfession packet;
-    packet.profIndex = skills_->prof2_.index;
-    AB::Packets::Add(packet, *nmsg);
-    WriteToOutput(*nmsg);
+    AB::Packets::Server::ObjectSecProfessionChanged packet {
+        id_,
+        skills_->prof2_.index
+    };
+    auto& gameStatus = GetGame()->GetGameStatus();
+    gameStatus.AddByte(AB::GameProtocol::ServerPacketType::ObjectSecProfessionChanged);
+    AB::Packets::Add(packet, gameStatus);
 }
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)

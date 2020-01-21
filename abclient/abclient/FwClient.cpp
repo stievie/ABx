@@ -1910,10 +1910,11 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerAttributeVa
     QueueEvent(Events::E_SET_ATTRIBUTEVALUE, eData);
 }
 
-void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSecProfession& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSecProfessionChanged& packet)
 {
     using namespace Events::SetSecProfession;
     VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.objectId;
     eData[P_PROFINDEX] = packet.profIndex;
     QueueEvent(Events::E_SET_SECPROFESSION, eData);
 }

@@ -17,6 +17,7 @@
 #include "CreditsWindow.h"
 #include "ShortcutEvents.h"
 #include "SkillsWindow.h"
+#include "SkillManager.h"
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
@@ -57,6 +58,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
     SubscribeToEvent(Events::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
     SubscribeToEvent(Events::E_SENDMAILTO, URHO3D_HANDLER(WorldLevel, HandleSendMailTo));
+    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(WorldLevel, HandleObjectSecProfessionChange));
 
     SubscribeToEvent(Events::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -582,6 +584,19 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
     }
 }
 
+void WorldLevel::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetSecProfession;
+
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    Actor* object = GetObject<Actor>(objectId);
+    if (!object)
+        return;
+
+    auto* sm = GetSubsystem<SkillManager>();
+    object->profession2_ = sm->GetProfessionByIndex(eventData[P_PROFINDEX].GetUInt());
+}
+
 void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
 {
     using namespace Events::SkillFailure;
@@ -921,7 +936,7 @@ void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
     uint32_t itemId = eventData[P_ITEMID].GetUInt();
     uint32_t count = eventData[P_COUNT].GetUInt();
     uint32_t value = eventData[P_VALUE].GetUInt();
-    GameObject* item = GetObject(itemId);
+    GameObject* item = GetObject<GameObject>(itemId);
     if (item)
     {
         item->count_ = count;
