@@ -10,9 +10,9 @@ class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
-    void AddProfessions(const Actor& player);
-    void UpdateAttributes(const Actor& player);
-    void UpdateSkills(const Actor& player);
+    void AddProfessions(const Actor& actor);
+    void UpdateAttributes(const Actor& actor);
+    void UpdateSkills(const Actor& actor);
     Text* CreateDropdownItem(const String& text, unsigned value);
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);

@@ -169,15 +169,16 @@ void Client::OnPong(int lastPing)
     pings_.Enqueue(lastPing);
 }
 
-std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
+ProtocolLogin& Client::GetProtoLogin()
 {
     if (!protoLogin_)
     {
-        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_, *ioService_);
+        protoLogin_ = std::make_unique<ProtocolLogin>(dhKeys_, *ioService_);
         protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }
-    return protoLogin_;
+    assert(protoLogin_);
+    return *protoLogin_;
 }
 
 void Client::Login(const std::string& name, const std::string& pass)
@@ -189,7 +190,7 @@ void Client::Login(const std::string& name, const std::string& pass)
     password_ = pass;
 
     // 1. Login to login server -> get character list
-    GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
+    GetProtoLogin().Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnLoggedIn, this, std::placeholders::_1, std::placeholders::_2),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
 }
@@ -203,7 +204,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     accountName_ = name;
     password_ = pass;
 
-    GetProtoLogin()->CreateAccount(loginHost_, loginPort_, name, pass,
+    GetProtoLogin().CreateAccount(loginHost_, loginPort_, name, pass,
         email, accKey,
         std::bind(&Client::OnAccountCreated, this));
 }
@@ -218,7 +219,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     if (accountUuid_.empty() || authToken_.empty())
         return;
 
-    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
+    GetProtoLogin().CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -232,7 +233,7 @@ void Client::AddAccountKey(const std::string& newKey)
         return;
     if (newKey.empty())
         return;
-    GetProtoLogin()->AddAccountKey(loginHost_, loginPort_, accountUuid_, authToken_,
+    GetProtoLogin().AddAccountKey(loginHost_, loginPort_, accountUuid_, authToken_,
         newKey,
         std::bind(&Client::OnAccountKeyAdded, this));
 }
@@ -254,7 +255,7 @@ void Client::GetOutposts()
     if (accountUuid_.empty() || authToken_.empty())
         return;
 
-    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, authToken_,
+    GetProtoLogin().GetOutposts(loginHost_, loginPort_, accountUuid_, authToken_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
 }
 
@@ -263,7 +264,7 @@ void Client::GetServers()
     if (accountUuid_.empty() || authToken_.empty())
         return;
 
-    GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, authToken_,
+    GetProtoLogin().GetServers(loginHost_, loginPort_, accountUuid_, authToken_,
         std::bind(&Client::OnGetServices, this, std::placeholders::_1));
 }
 
@@ -291,7 +292,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
     // 2. Login to game server
     if (!protoGame_)
-        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_);
+        protoGame_ = std::make_unique<ProtocolGame>(*this, dhKeys_, *ioService_);
 
     protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);

@@ -123,13 +123,13 @@ void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void SkillsWindow::AddProfessions(const Actor& player)
+void SkillsWindow::AddProfessions(const Actor& actor)
 {
     auto* dropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     dropdown->RemoveAllItems();
 
-    uint32_t primIndex = player.profession_->index;
-    uint32_t secIndex = player.profession2_->index;
+    uint32_t primIndex = actor.profession_->index;
+    uint32_t secIndex = actor.profession2_->index;
     if (secIndex == 0)
     {
         dropdown->AddItem(CreateDropdownItem("(None)", 0));
@@ -221,7 +221,7 @@ void SkillsWindow::SetAttributeValue(uint32_t index, int value)
     spinner->SetValue(value);
 }
 
-void SkillsWindow::UpdateAttributes(const Actor& player)
+void SkillsWindow::UpdateAttributes(const Actor& actor)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
@@ -231,7 +231,7 @@ void SkillsWindow::UpdateAttributes(const Actor& player)
     auto* secAttribs = attribContainer->GetChild("SecondaryAttributes", true);
     primAttribs->RemoveAllChildren();
     secAttribs->RemoveAllChildren();
-    unsigned p1Index = player.profession_->index;
+    unsigned p1Index = actor.profession_->index;
 
     auto* sm = GetSubsystem<SkillManager>();
     auto* p1 = sm->GetProfessionByIndex(p1Index);
@@ -282,7 +282,7 @@ void SkillsWindow::UpdateAttributes(const Actor& player)
     for (const auto& attrib : p1->attributes)
         addAttribute(primAttribs, attrib);
 
-    auto* p2 = player.profession2_;
+    auto* p2 = actor.profession2_;
     if (p2)
     {
         for (const auto& attrib : p2->attributes)
@@ -297,12 +297,12 @@ void SkillsWindow::UpdateAttributes(const Actor& player)
     UpdateLayout();
 }
 
-void SkillsWindow::UpdateSkills(const Actor& player)
+void SkillsWindow::UpdateSkills(const Actor& actor)
 {
     auto* sm = GetSubsystem<SkillManager>();
     ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
     lv->RemoveAllItems();
-    sm->VisistSkillsByProfession(player.profession_->uuid, [&](const AB::Entities::Skill& skill)
+    sm->VisistSkillsByProfession(actor.profession_->uuid, [&](const AB::Entities::Skill& skill)
     {
         Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
         item->SetText(String(skill.name.c_str()));
@@ -310,9 +310,9 @@ void SkillsWindow::UpdateSkills(const Actor& player)
         lv->AddItem(item);
         return Iteration::Continue;
     });
-    if (player.profession2_)
+    if (actor.profession2_)
     {
-        sm->VisistSkillsByProfession(player.profession2_->uuid, [&](const AB::Entities::Skill& skill)
+        sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
         {
             Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
             item->SetText(String(skill.name.c_str()));
