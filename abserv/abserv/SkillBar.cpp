@@ -87,7 +87,7 @@ Skill* SkillBar::GetCurrentSkill() const
 {
     if (currentSkillIndex_ > -1 && currentSkillIndex_ < PLAYER_MAX_SKILLS)
     {
-        Skill* skill = skills_[currentSkillIndex_].get();
+        Skill* skill = skills_[static_cast<size_t>(currentSkillIndex_)].get();
         if (skill && skill->IsUsing())
             return skill;
     }
@@ -96,7 +96,7 @@ Skill* SkillBar::GetCurrentSkill() const
 
 void SkillBar::Update(uint32_t timeElapsed)
 {
-    for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
+    for (size_t i = 0; i < PLAYER_MAX_SKILLS; ++i)
     {
         if (skills_[i])
             skills_[i]->Update(timeElapsed);
@@ -129,10 +129,7 @@ void SkillBar::SetAttributes(const AB::Attributes& attributes)
     {
         if (a.index == 0)
             continue;
-        if (!SetAttributeValue(a.index, a.value))
-        {
-            LOG_ERROR << "Error setting attribute " << a.index << " to value " << a.value << std::endl;
-        }
+        SetAttributeValue(a.index, a.value);
     }
 }
 
@@ -144,7 +141,7 @@ void SkillBar::ResetAttributes()
 void SkillBar::InitAttributes()
 {
     ResetAttributes();
-    int i = 0;
+    size_t i = 0;
     for (const auto& a : prof1_.attributes)
     {
         attributes_[i].index = a.index;
@@ -174,7 +171,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
     prof2_.attributes.clear();
 
     auto dataClient = GetSubsystem<IO::DataClient>();
-    if (p2.index != AB::Entities::INVALID_INDEX)
+    if (p2.index != 0)
     {
         if (!dataClient->Read(prof2_))
         {
@@ -184,7 +181,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
     InitAttributes();
     SetAttributes(attribs);
     auto skillMan = GetSubsystem<SkillManager>();
-    for (int i = 0; i < PLAYER_MAX_SKILLS; i++)
+    for (size_t i = 0; i < PLAYER_MAX_SKILLS; i++)
     {
         skills_[i] = skillMan->Get(skills[i]);
         if (skills_[i] && skills_[i]->data_.isLocked && !locked)
@@ -192,6 +189,25 @@ bool SkillBar::Load(const std::string& str, bool locked)
             skills_[i] = skillMan->Get(0);
     }
 
+    return true;
+}
+
+bool SkillBar::SetSecondaryProfession(uint32_t index)
+{
+    AB::Entities::Profession p2;
+    p2.uuid = Utils::Uuid::EMPTY_UUID;
+    p2.index = index;
+
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    if (index != 0)
+    {
+        if (!dataClient->Read(p2))
+        {
+            LOG_WARNING << "Error loading secondary profession with index " << prof2_.index << std::endl;
+            return false;
+        }
+    }
+    prof2_ = p2;
     return true;
 }
 
@@ -221,6 +237,8 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
         return attrib.index == index;
     });
     if (it == attributes_.end())
+        return false;
+    if ((*it).value == value)
         return false;
     (*it).value = value;
     return true;

@@ -3,15 +3,16 @@
 #include <Urho3DAll.h>
 
 class Player;
+class Actor;
 class Spinner;
 
 class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
-    void AddProfessions(const Player& player);
-    void UpdateAttributes(const Player& player);
-    void UpdateSkills(const Player& player);
+    void AddProfessions(const Actor& player);
+    void UpdateAttributes(const Actor& player);
+    void UpdateSkills(const Actor& player);
     Text* CreateDropdownItem(const String& text, unsigned value);
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);

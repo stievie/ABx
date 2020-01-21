@@ -1137,15 +1137,31 @@ void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
 
 void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 {
-    (void)profIndex;
-    // TODO:
+    if (skills_->prof2_.index == profIndex)
+        return;
+
+    skills_->SetSecondaryProfession(profIndex);
+    // If it fails or not inform the client of the current profession
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSecProfession);
+    AB::Packets::Server::SetPlayerSecProfession packet;
+    packet.profIndex = skills_->prof2_.index;
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
 }
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 {
-    (void)attribIndex;
-    (void)value;
-    // TODO:
+    if (!skills_->SetAttributeValue(attribIndex, value))
+        return;
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);
+    AB::Packets::Server::SetPlayerAttributeValue packet;
+    packet.attribIndex = attribIndex;
+    packet.value = static_cast<int8_t>(value);
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
 }
 
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)

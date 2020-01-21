@@ -326,6 +326,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
         skill.icon = pro.attribute("icon").as_string();
         skill.soundEffect = pro.attribute("sound_effect").as_string();
         skill.particleEffect = pro.attribute("particle_effect").as_string();
+        skill.professionUuid = pro.attribute("profession").as_string();
 
         sm->skills_.emplace(skill.index, skill);
     }

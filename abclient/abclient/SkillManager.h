@@ -6,6 +6,7 @@
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Attribute.h>
 #include <Urho3DAll.h>
+#include <sa/Iteration.h>
 
 class SkillManager : public Object
 {
@@ -53,6 +54,19 @@ public:
         if (it == effects_.end())
             return nullptr;
         return &(*it).second;
+    }
+
+    template <typename Callable>
+    void VisistSkillsByProfession(const std::string& profUuid, const Callable& func)
+    {
+        for (const auto& s : skills_)
+        {
+            if (s.second.professionUuid.compare(profUuid) == 0)
+            {
+                if (func(s.second) == Iteration::Break)
+                    break;
+            }
+        }
     }
 
     std::map<uint32_t, AB::Entities::Skill> skills_;

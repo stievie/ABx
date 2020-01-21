@@ -158,11 +158,9 @@
 	<element type="ListView">
 		<attribute name="Name" value="SkillsList" />
 		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Mode" value="Vertical" />
 		<element type="ScrollBar" internal="true" style="none">
-			<attribute name="Min Anchor" value="0 1" />
-			<attribute name="Max Anchor" value="0 1" />
-			<attribute name="Pivot" value="0 1" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Color" value="0 0 0 0" />
 			<attribute name="Top Left Color" value="0 0 0 0" />
 			<attribute name="Top Right Color" value="0 0 0 0" />

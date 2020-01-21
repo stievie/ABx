@@ -52,6 +52,7 @@ public:
     void Update(uint32_t timeElapsed);
     std::string Encode();
     bool Load(const std::string& str, bool locked);
+    bool SetSecondaryProfession(uint32_t index);
 
     std::shared_ptr<Skill> GetSkill(int index);
     void SetSkill(int index, std::shared_ptr<Skill> skill)

@@ -7,6 +7,8 @@
 #include "LevelManager.h"
 #include "TabGroup.h"
 #include "ShortcutEvents.h"
+#include "SkillManager.h"
+#include "FwClient.h"
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
@@ -94,8 +96,19 @@ void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
     auto* player = lm->GetPlayer();
     if (!player)
         return;
-    UpdateAttributes(*player);
-    UpdateLayout();
+
+    auto* dropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
+    auto* selItem = dropdown->GetSelectedItem();
+    unsigned p2Index = selItem->GetVar("Int Value").GetUInt();
+    if (p2Index == 0)
+        return;
+
+    if (player->profession2_->index == p2Index)
+        return;
+
+    auto* client = GetSubsystem<FwClient>();
+    // If success this will call SkillsWindow::SetProfessionIndex()
+    client->SetSecondaryProfession(p2Index);
 }
 
 void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -103,7 +116,7 @@ void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void SkillsWindow::AddProfessions(const Player& player)
+void SkillsWindow::AddProfessions(const Actor& player)
 {
     auto* dropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     dropdown->RemoveAllItems();
@@ -130,6 +143,7 @@ void SkillsWindow::AddProfessions(const Player& player)
 
 void SkillsWindow::SetProfessionIndex(uint32_t index)
 {
+    // Called by the server
     auto* lm = GetSubsystem<LevelManager>();
     auto* player = lm->GetPlayer();
     if (!player)
@@ -141,15 +155,16 @@ void SkillsWindow::SetProfessionIndex(uint32_t index)
         auto* item = dropdown->GetItem(i);
         if (item->GetVar("Int Value").GetUInt() == index)
         {
-            if (dropdown->GetSelection() == i)
-                return;
-
-            dropdown->SetSelection(i);
+            if (dropdown->GetSelection() != i)
+                dropdown->SetSelection(i);
             break;
         }
     }
 
+    auto* sm = GetSubsystem<SkillManager>();
+    player->profession2_ = sm->GetProfessionByIndex(index);
     UpdateAttributes(*player);
+    UpdateSkills(*player);
     UpdateLayout();
 }
 
@@ -199,10 +214,8 @@ void SkillsWindow::SetAttributeValue(uint32_t index, int value)
     spinner->SetValue(value);
 }
 
-void SkillsWindow::UpdateAttributes(const Player& player)
+void SkillsWindow::UpdateAttributes(const Actor& player)
 {
-    (void)player;
-
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
 
@@ -211,7 +224,6 @@ void SkillsWindow::UpdateAttributes(const Player& player)
     auto* secAttribs = attribContainer->GetChild("SecondaryAttributes", true);
     primAttribs->RemoveAllChildren();
     secAttribs->RemoveAllChildren();
-    auto* pDropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     unsigned p1Index = player.profession_->index;
 
     auto* sm = GetSubsystem<SkillManager>();
@@ -263,18 +275,13 @@ void SkillsWindow::UpdateAttributes(const Player& player)
     for (const auto& attrib : p1->attributes)
         addAttribute(primAttribs, attrib);
 
-    auto* selItem = pDropdown->GetSelectedItem();
-    unsigned p2Index = selItem->GetVar("Int Value").GetUInt();
-    if (p2Index > 0)
+    auto* p2 = player.profession2_;
+    if (p2)
     {
-        auto* p2 = sm->GetProfessionByIndex(p2Index);
-        if (p2)
+        for (const auto& attrib : p2->attributes)
         {
-            for (const auto& attrib : p2->attributes)
-            {
-                if (!attrib.primary)
-                    addAttribute(secAttribs, attrib);
-            }
+            if (!attrib.primary)
+                addAttribute(secAttribs, attrib);
         }
     }
 
@@ -283,10 +290,29 @@ void SkillsWindow::UpdateAttributes(const Player& player)
     UpdateLayout();
 }
 
-void SkillsWindow::UpdateSkills(const Player& player)
+void SkillsWindow::UpdateSkills(const Actor& player)
 {
-    (void)player;
+    auto* sm = GetSubsystem<SkillManager>();
+    ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
+    lv->RemoveAllItems();
+    sm->VisistSkillsByProfession(player.profession_->uuid, [&](const AB::Entities::Skill& skill)
+    {
+        Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
+        item->SetText(String(skill.name.c_str()));
+        item->SetStyle("ListViewItemText");
+        lv->AddItem(item);
+        return Iteration::Continue;
+    });
+    sm->VisistSkillsByProfession(player.profession2_->uuid, [&](const AB::Entities::Skill& skill)
+    {
+        Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
+        item->SetText(String(skill.name.c_str()));
+        item->SetStyle("ListViewItemText");
+        lv->AddItem(item);
+        return Iteration::Continue;
+    });
 }
+
 void SkillsWindow::UpdateAll()
 {
     auto* lm = GetSubsystem<LevelManager>();
