@@ -152,7 +152,6 @@ private:
     void HandleObjectEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectRemoved(StringHash eventType, VariantMap& eventData);
     void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);
-    void HandleObjectSecProfessionChange(StringHash eventType, VariantMap& eventData);
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);

@@ -500,6 +500,10 @@ void Actor::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     if (objectId != gameId_)
         return;
+
+    auto* sm = GetSubsystem<SkillManager>();
+    profession2_ = sm->GetProfessionByIndex(eventData[P_PROFINDEX].GetUInt());
+
     if (classLevel_)
         classLevel_->SetText(GetClassLevel());
 }
