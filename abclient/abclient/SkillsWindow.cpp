@@ -303,14 +303,17 @@ void SkillsWindow::UpdateSkills(const Actor& player)
         lv->AddItem(item);
         return Iteration::Continue;
     });
-    sm->VisistSkillsByProfession(player.profession2_->uuid, [&](const AB::Entities::Skill& skill)
+    if (player.profession2_)
     {
-        Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
-        item->SetText(String(skill.name.c_str()));
-        item->SetStyle("ListViewItemText");
-        lv->AddItem(item);
-        return Iteration::Continue;
-    });
+        sm->VisistSkillsByProfession(player.profession2_->uuid, [&](const AB::Entities::Skill& skill)
+        {
+            Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
+            item->SetText(String(skill.name.c_str()));
+            item->SetStyle("ListViewItemText");
+            lv->AddItem(item);
+            return Iteration::Continue;
+        });
+    }
 }
 
 void SkillsWindow::UpdateAll()
