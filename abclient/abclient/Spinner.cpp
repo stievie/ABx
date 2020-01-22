@@ -133,4 +133,19 @@ void Spinner::Validate()
     value_ = Clamp(value_, min_, max_);
     if (auto e = edit_.Lock())
         e->SetText(String(value_));
+    SendValueChangedEvent();
+}
+
+void Spinner::SendValueChangedEvent()
+{
+    if (oldValue_ == value_)
+        return;
+
+    using namespace ValueChanged;
+    VariantMap& eventData = GetEventDataMap();
+    eventData[P_ELEMENT] = this;
+    eventData[P_VALUE] = value_;
+    eventData[P_OLDVALUE] = oldValue_;
+    oldValue_ = value_;
+    SendEvent(E_VALUECHANGED, eventData);
 }

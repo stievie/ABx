@@ -6,11 +6,14 @@ Language: Cpp
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveDeclarations: 'false'
 AlignEscapedNewlines: Left
+AlignOperands: 'false'
 AlignTrailingComments: 'true'
+AllowAllArgumentsOnNextLine: 'true'
 AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: InlineOnly
 AllowShortIfStatementsOnASingleLine: 'false'
+AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
@@ -23,6 +26,9 @@ BreakConstructorInitializers: AfterColon
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: 4
 ColumnLimit: '0'
+Cpp11BracedListStyle: 'false'
+IndentCaseLabels: 'false'
+NamespaceIndentation: None
 PointerAlignment: Left
 SortIncludes: 'false'
 SortUsingDeclarations: 'false'

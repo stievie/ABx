@@ -49,7 +49,8 @@ void Player::RegisterLua(kaguya::State& state)
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
-    client_(client), mailBox_(nullptr),
+    client_(client),
+    mailBox_(nullptr),
     party_(nullptr),
     resigned_(false),
     loginTime_(0),
@@ -1153,14 +1154,15 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 {
-    if (!skills_->SetAttributeValue(attribIndex, value))
-        return;
+    skills_->SetAttributeValue(attribIndex, value);
 
+    uint32_t newValue = skills_->GetAttributeValue(attribIndex);
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);
-    AB::Packets::Server::SetPlayerAttributeValue packet;
-    packet.attribIndex = attribIndex;
-    packet.value = static_cast<int8_t>(value);
+    AB::Packets::Server::SetPlayerAttributeValue packet {
+        attribIndex,
+        static_cast<int8_t>(newValue)
+    };
     AB::Packets::Add(packet, *nmsg);
     WriteToOutput(*nmsg);
 }

@@ -1918,3 +1918,12 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSecProfessionC
     eData[P_PROFINDEX] = packet.profIndex;
     QueueEvent(Events::E_SET_SECPROFESSION, eData);
 }
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSkill& packet)
+{
+    using namespace Events::SetSkill;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_SKILLINDEX] = packet.skillIndex;
+    eData[P_SKILLPOS] = packet.pos;
+    QueueEvent(Events::E_SET_SKILL, eData);
+}

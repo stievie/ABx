@@ -167,7 +167,7 @@
 			<attribute name="Bottom Left Color" value="0 0 0 0" />
 			<attribute name="Bottom Right Color" value="0 0 0 0" />
 			<element type="Button" internal="true" style="none">
-				<attribute name="Size" value="16 16" />
+				<attribute name="Size" value="77 77" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -175,8 +175,8 @@
 				<attribute name="Pressed Child Offset" value="-1 1" />
 			</element>
 			<element type="Slider" internal="true" style="none">
-				<attribute name="Position" value="16 0" />
-				<attribute name="Size" value="305 16" />
+				<attribute name="Position" value="77 0" />
+				<attribute name="Size" value="183 77" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
@@ -188,8 +188,8 @@
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="321 0" />
-				<attribute name="Size" value="16 16" />
+				<attribute name="Position" value="260 0" />
+				<attribute name="Size" value="77 77" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -198,6 +198,8 @@
 			</element>
 		</element>
 		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Min Anchor" value="1 0" />
+			<attribute name="Max Anchor" value="1 0" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Color" value="0 0 0 0" />
 			<attribute name="Top Left Color" value="0 0 0 0" />
@@ -205,7 +207,7 @@
 			<attribute name="Bottom Left Color" value="0 0 0 0" />
 			<attribute name="Bottom Right Color" value="0 0 0 0" />
 			<element type="Button" internal="true" style="none">
-				<attribute name="Size" value="169 169" />
+				<attribute name="Size" value="16 16" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -213,8 +215,8 @@
 				<attribute name="Pressed Child Offset" value="-1 1" />
 			</element>
 			<element type="Slider" internal="true" style="none">
-				<attribute name="Position" value="0 169" />
-				<attribute name="Size" value="169 0" />
+				<attribute name="Position" value="0 16" />
+				<attribute name="Size" value="16 148" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
@@ -226,8 +228,8 @@
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="0 169" />
-				<attribute name="Size" value="169 169" />
+				<attribute name="Position" value="0 164" />
+				<attribute name="Size" value="16 16" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -244,77 +246,6 @@
 			<element internal="true" style="none">
 				<attribute name="Pivot" value="0 0" />
 			</element>
-		</element>
-	</element>
-	<element>
-		<attribute name="Name" value="SkillsBar" />
-		<attribute name="Max Size" value="2147483647 50" />
-		<attribute name="Min Anchor" value="0.5 0" />
-		<attribute name="Max Anchor" value="0.5 0" />
-		<attribute name="Pivot" value="0.5 0" />
-		<attribute name="Layout Mode" value="Horizontal" />
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-		<element type="Button">
-			<attribute name="Max Size" value="50 50" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
 	</element>
 </element>

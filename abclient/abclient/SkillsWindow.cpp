@@ -277,6 +277,16 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         spinner->SetMax(20);
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
+        SubscribeToEvent(spinner, E_VALUECHANGED, [this, attrIndex = attr.index](StringHash, VariantMap& eventData)
+        {
+            using namespace ValueChanged;
+            int attrValue = eventData[P_VALUE].GetInt();
+            if (attrValue < 0)
+                return;
+
+            auto* client = GetSubsystem<FwClient>();
+            client->SetAttributeValue(attrIndex, static_cast<uint8_t>(attrValue));
+        });
     };
 
     for (const auto& attrib : p1->attributes)

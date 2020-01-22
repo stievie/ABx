@@ -413,4 +413,10 @@ URHO3D_EVENT(E_SET_SECPROFESSION, SetSecProfession)
     URHO3D_PARAM(P_PROFINDEX, ProfIndex);  // uint32_t
 }
 
+URHO3D_EVENT(E_SET_SKILL, SetSkill)
+{
+    URHO3D_PARAM(P_SKILLINDEX, SkillIndex);   // uint32_t
+    URHO3D_PARAM(P_SKILLPOS, Pos);            // uint8_t
+}
+
 }

@@ -225,6 +225,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet) override;
 
     void SetState(Client::State state)
     {

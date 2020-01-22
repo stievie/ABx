@@ -922,4 +922,9 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecPr
     receiver_.OnPacket(updateTick, packet);
 }
 
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
 }

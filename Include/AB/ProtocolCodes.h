@@ -151,7 +151,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(QuestRewarded)               \
     ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)                  \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)     \
-    ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)  \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerSetSkill)
 
 enum class ErrorCodes : uint8_t
 {
@@ -317,7 +318,7 @@ enum class ServerPacketType : uint8_t
 #define ENUMERATE_SERVER_PACKET_CODE(v) v,
     ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
-    __Last = 0xFF
+        __Last = 0xFF
 };
 
 enum ObjectCallType : uint8_t
@@ -477,19 +478,19 @@ enum class CommandType : uint8_t
     // Admin/GM
     Admin = 50,
     EnterMap = Admin, // /entermap <name>
-    EnterInstance,               // /enterinstance <uuid>
-    Instances,                   // /instances
-    Die,                         // /die (only GM)
-    GodMode,                     // /gm  Toggle god mode
-    GotoPlayer,                  // /gotoplayer <name>
-    GMInfo,                      // /gminfo <message>  GM info massage
+    EnterInstance,    // /enterinstance <uuid>
+    Instances,        // /instances
+    Die,              // /die (only GM)
+    GodMode,          // /gm  Toggle god mode
+    GotoPlayer,       // /gotoplayer <name>
+    GMInfo,           // /gminfo <message>  GM info massage
 
     // Internal
     Internal = 100,
     Help = Internal, // /help
-    Ip,                         // /ip
-    ServerId,                   // /id
-    PrefPath,                   // /prefpath
+    Ip,              // /ip
+    ServerId,        // /id
+    PrefPath,        // /prefpath
     Quit,
 };
 

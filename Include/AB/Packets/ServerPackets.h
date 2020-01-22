@@ -933,6 +933,18 @@ struct SetPlayerAttributeValue
     }
 };
 
+struct SetPlayerSkill
+{
+    uint32_t skillIndex;
+    uint8_t pos;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(skillIndex);
+        ar.value(pos);
+    }
+};
+
 struct ObjectSecProfessionChanged
 {
     uint32_t objectId;

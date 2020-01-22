@@ -232,7 +232,8 @@ const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 
 bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
 {
-    // This works only when professions are set, shich fill the attributes array
+    // TODO: Verify value
+    // This works only when professions are set, which fill the attributes array
     auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib) {
         return attrib.index == index;
     });
