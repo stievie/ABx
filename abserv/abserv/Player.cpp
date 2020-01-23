@@ -224,26 +224,29 @@ void Player::TriggerQuestDialog(uint32_t index)
     WriteToOutput(*msg);
 }
 
+MailBox& Player::GetMailBox()
+{
+    if (!mailBox_)
+        mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
+    return *mailBox_;
+}
+
 void Player::UpdateMailBox()
 {
-    if (!mailBox_ && !Utils::Uuid::IsEmpty(data_.accountUuid))
-        mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
-    if (mailBox_)
-        mailBox_->Update();
+    GetMailBox().Update();
 }
 
 void Player::CRQGetMailHeaders()
 {
     UpdateMailBox();
-    if (!mailBox_)
-        return;
 
+    const MailBox& mailBox = GetMailBox();
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::MailHeaders);
     AB::Packets::Server::MailHeaders packet;
-    packet.count = static_cast<uint16_t>(mailBox_->GetTotalMailCount());
+    packet.count = static_cast<uint16_t>(mailBox.GetTotalMailCount());
     packet.headers.reserve(packet.count);
-    const AB::Entities::MailList& mails = mailBox_->GetMails();
+    const AB::Entities::MailList& mails = mailBox.GetMails();
     for (const auto& mail : mails.mails)
     {
         packet.headers.push_back({
@@ -451,12 +454,10 @@ void Player::CRQSendMail(const std::string recipient, const std::string subject,
 void Player::CRQGetMail(const std::string mailUuid)
 {
     UpdateMailBox();
-    if (!mailBox_)
-        return;
 
     // mailUuid must not be a reference!
     AB::Entities::Mail m;
-    if (mailBox_->ReadMail(mailUuid, m))
+    if (GetMailBox().ReadMail(mailUuid, m))
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::MailComplete);
@@ -478,13 +479,11 @@ void Player::CRQDeleteMail(const std::string mailUuid)
 {
     // mailUuid must not be a reference!
     UpdateMailBox();
-    if (!mailBox_)
-        return;
 
     if (mailUuid.compare("all") == 0)
     {
         auto msg = Net::NetworkMessage::GetNew();
-        mailBox_->DeleteAll();
+        GetMailBox().DeleteAll();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
             static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailDeleted),
@@ -497,7 +496,7 @@ void Player::CRQDeleteMail(const std::string mailUuid)
     }
 
     AB::Entities::Mail m;
-    if (mailBox_->DeleteMail(mailUuid, m))
+    if (GetMailBox().DeleteMail(mailUuid, m))
     {
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
@@ -514,29 +513,28 @@ void Player::CRQDeleteMail(const std::string mailUuid)
 void Player::NotifyNewMail()
 {
     UpdateMailBox();
-    if (!mailBox_)
-        return;
 
+    const MailBox& mailBox = GetMailBox();
     auto msg = Net::NetworkMessage::GetNew();
-    if (mailBox_->GetTotalMailCount() > 0)
+    if (mailBox.GetTotalMailCount() > 0)
     {
         // Notify player there are new emails since last check.
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
             static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::NewMail),
             GetName(),
-            std::to_string(mailBox_->GetTotalMailCount())
+            std::to_string(mailBox.GetTotalMailCount())
         };
         AB::Packets::Add(packet, *msg);
     }
-    if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
+    if (mailBox.GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
     {
         // Notify player that mailbox is full.
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
             static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::MailboxFull),
             GetName(),
-            std::to_string(mailBox_->GetTotalMailCount())
+            std::to_string(mailBox.GetTotalMailCount())
         };
         AB::Packets::Add(packet, *msg);
     }
@@ -546,7 +544,7 @@ void Player::NotifyNewMail()
 
 void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRelation relation)
 {
-    auto res = friendList_->AddFriendByName(playerName, relation);
+    auto res = GetFriendList().AddFriendByName(playerName, relation);
 
     auto msg = Net::NetworkMessage::GetNew();
     switch (res)
@@ -554,7 +552,7 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
     case FriendList::Error::Success:
     {
         AB::Entities::Friend f;
-        friendList_->GetFriendByName(playerName, f);
+        GetFriendList().GetFriendByName(playerName, f);
         msg->AddByte(AB::GameProtocol::ServerPacketType::FriendAdded);
         AB::Packets::Server::FriendAdded packet = {
             f.friendUuid,
@@ -588,10 +586,10 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
 {
     AB::Entities::Friend f;
 
-    if (!friendList_->GetFriendByAccount(accountUuid, f))
+    if (!GetFriendList().GetFriendByAccount(accountUuid, f))
         return;
 
-    auto res = friendList_->Remove(accountUuid);
+    auto res = GetFriendList().Remove(accountUuid);
 
     auto msg = Net::NetworkMessage::GetNew();
     switch (res)
@@ -623,10 +621,10 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
 {
     AB::Entities::Friend f;
 
-    if (!friendList_->GetFriendByAccount(accountUuid, f))
+    if (!GetFriendList().GetFriendByAccount(accountUuid, f))
         return;
 
-    auto res = friendList_->ChangeNickname(accountUuid, newName);
+    auto res = GetFriendList().ChangeNickname(accountUuid, newName);
 
     auto msg = Net::NetworkMessage::GetNew();
     switch (res)
@@ -675,7 +673,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
     packet.accountUuid = ch.accountUuid;
 
     AB::Entities::Friend f;
-    bool isFriend = friendList_->GetFriendByAccount(ch.accountUuid, f);
+    bool isFriend = GetFriendList().GetFriendByAccount(ch.accountUuid, f);
     if (isFriend)
         packet.nickName = f.friendName;
     else
@@ -787,9 +785,9 @@ void Player::CRQGetFriendList()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::FriendList);
     AB::Packets::Server::FriendList packet;
-    packet.count = static_cast<uint16_t>(friendList_->Count());
+    packet.count = static_cast<uint16_t>(GetFriendList().Count());
     packet.friends.reserve(packet.count);
-    friendList_->VisitAll([&packet](const AB::Entities::Friend& current)
+    GetFriendList().VisitAll([&packet](const AB::Entities::Friend& current)
     {
         packet.friends.push_back(current.friendUuid);
         return Iteration::Continue;
@@ -1174,22 +1172,22 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
     // TODO:
 }
 
-bool Player::IsIgnored(const Player& player)
+bool Player::IsIgnored(const Player& player) const
 {
-    return friendList_->IsIgnored(player.account_.uuid);
+    return GetFriendList().IsIgnored(player.account_.uuid);
 }
 
-bool Player::IsIgnored(const std::string& name)
+bool Player::IsIgnored(const std::string& name) const
 {
-    return friendList_->IsIgnoredByName(name);
+    return GetFriendList().IsIgnoredByName(name);
 }
 
-bool Player::IsFriend(const Player& player)
+bool Player::IsFriend(const Player& player) const
 {
-    return friendList_->IsFriend(player.account_.uuid);
+    return GetFriendList().IsFriend(player.account_.uuid);
 }
 
-bool Player::IsOnline()
+bool Player::IsOnline() const
 {
     return AB::Entities::IsOnline(account_.onlineStatus);
 }

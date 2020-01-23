@@ -37,14 +37,14 @@ public:
     FriendList::Error ChangeNickname(const std::string& accountUuid, const std::string& newName);
     FriendList::Error Remove(const std::string& accountUuid);
 
-    bool Exists(const std::string& accountUuid);
-    bool IsFriend(const std::string& accountUuid);
-    bool IsIgnored(const std::string& accountUuid);
-    bool IsIgnoredByName(const std::string& name);
+    bool Exists(const std::string& accountUuid) const;
+    bool IsFriend(const std::string& accountUuid) const;
+    bool IsIgnored(const std::string& accountUuid) const;
+    bool IsIgnoredByName(const std::string& name) const;
     bool GetFriendByName(const std::string& name, AB::Entities::Friend& f);
     bool GetFriendByAccount(const std::string& accountUuid, AB::Entities::Friend& f);
     template <typename Callback>
-    void VisitAll(const Callback& callback)
+    void VisitAll(const Callback& callback) const
     {
         for (auto& f : data_.friends)
             if (callback(f) != Iteration::Continue)

@@ -31,6 +31,7 @@ private:
     bool queueing_{ false };
     Party* _LuaGetParty();
     void LoadFriendList();
+    MailBox& GetMailBox();
 
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
     void OnInventoryFull();
@@ -129,11 +130,15 @@ public:
     {
         return party_;
     }
-    FriendList* GetFriendList()
+    FriendList& GetFriendList()
     {
-        if (friendList_)
-            return friendList_.get();
-        return nullptr;
+        assert(friendList_);
+        return *friendList_;
+    }
+    const FriendList& GetFriendList() const
+    {
+        assert(friendList_);
+        return *friendList_;
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
@@ -149,13 +154,13 @@ public:
     void PartyLeave();
 
     /// This player ignores player
-    bool IsIgnored(const Player& player);
-    bool IsIgnored(const std::string& name);
-    bool IsFriend(const Player& player);
-    bool IsOnline();
+    bool IsIgnored(const Player& player) const;
+    bool IsIgnored(const std::string& name) const;
+    bool IsFriend(const Player& player) const;
+    bool IsOnline() const;
 
     //{ Client requests.
-    // These functions should not have references as arguments, because
+    // These functions must not have references as arguments, because
     // they are executed by the dispatcher and not directly. All arguments
     // must be passed by value.
     void CRQChangeMap(const std::string mapUuid);
@@ -172,7 +177,7 @@ public:
     void CRQChangeFriendNick(const std::string accountUuid, const std::string newName);
     /// We request info about accountUuid
     void CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields);
-    /// We request infor about player with name
+    /// We request inform about player with name
     void CRQGetPlayerInfoByName(const std::string name, uint32_t fields);
     void CRQGetGuildInfo();
     /// Client requested the friend list

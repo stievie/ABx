@@ -104,7 +104,7 @@ FriendList::Error FriendList::ChangeNickname(const std::string& accountUuid, con
     return FriendList::Error::Success;
 }
 
-bool FriendList::Exists(const std::string& accountUuid)
+bool FriendList::Exists(const std::string& accountUuid) const
 {
     auto it = std::find_if(data_.friends.begin(), data_.friends.end(), [&](const AB::Entities::Friend& current)
     {
@@ -113,7 +113,7 @@ bool FriendList::Exists(const std::string& accountUuid)
     return (it != data_.friends.end());
 }
 
-bool FriendList::IsFriend(const std::string& accountUuid)
+bool FriendList::IsFriend(const std::string& accountUuid) const
 {
     bool result = false;
     VisitAll([&accountUuid, &result](const AB::Entities::Friend& current)
@@ -128,7 +128,7 @@ bool FriendList::IsFriend(const std::string& accountUuid)
     return result;
 }
 
-bool FriendList::IsIgnored(const std::string& accountUuid)
+bool FriendList::IsIgnored(const std::string& accountUuid) const
 {
     bool result = false;
     VisitAll([&accountUuid, &result](const AB::Entities::Friend& current)
@@ -143,7 +143,7 @@ bool FriendList::IsIgnored(const std::string& accountUuid)
     return result;
 }
 
-bool FriendList::IsIgnoredByName(const std::string& name)
+bool FriendList::IsIgnoredByName(const std::string& name) const
 {
     AB::Entities::Character ch;
     ch.name = name;
