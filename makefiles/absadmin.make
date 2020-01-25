@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/absadmin$(SUFFIX)
 SOURDEDIR = ../absadmin/absadmin
 OBJDIR = obj/x64/$(CONFIG)/absadmin
 LIBS += -lpthread -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml -lless -luuid
-CXXFLAGS += -fexceptions
+CXXFLAGS += -fexceptions -Werror -Wimplicit-fallthrough=0
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Wimplicit-fallthrough=0
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
@@ -39,3 +38,4 @@ $(GCH): $(PCH)
 .PHONY: clean
 clean:
 	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+

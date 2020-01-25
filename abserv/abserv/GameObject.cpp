@@ -70,10 +70,8 @@ void GameObject::RegisterLua(kaguya::State& state)
 GameObject::GameObject() :
     name_("Unknown"),
     id_(GetNewId()),
-    stateComp_(*this),
-    triggerComp_(nullptr)         // By default its not a trigger
-{
-}
+    stateComp_(*this)
+{ }
 
 GameObject::~GameObject()
 {

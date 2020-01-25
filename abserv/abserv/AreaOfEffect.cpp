@@ -29,8 +29,7 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
 
 AreaOfEffect::AreaOfEffect() :
     GameObject(),
-    startTime_(Utils::Tick()),
-    lifetime_(std::numeric_limits<uint32_t>::max())
+    startTime_(Utils::Tick())
 {
     events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AreaOfEffect::OnCollide, this, std::placeholders::_1));
     events_.Subscribe<void(GameObject*)>(EVENT_ON_TRIGGER, std::bind(&AreaOfEffect::OnTrigger, this, std::placeholders::_1));

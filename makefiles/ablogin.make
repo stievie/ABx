@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/ablogin$(SUFFIX)
 SOURDEDIR = ../ablogin/ablogin
 OBJDIR = obj/x64/$(CONFIG)/ablogin
 LIBS += -lpthread -llua5.3 -labscommon -labcrypto -luuid
-CXXFLAGS += -fexceptions -Wno-unused-parameter
+CXXFLAGS += -fexceptions -Werror
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
@@ -40,3 +39,4 @@ $(GCH): $(PCH)
 .PHONY: clean
 clean:
 	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+

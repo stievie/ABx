@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/abdata$(SUFFIX)
 SOURDEDIR = ../abdata/abdata
 OBJDIR = obj/x64/$(CONFIG)/abdata
 LIBS += -lpthread -llua5.3 -labcrypto -labscommon -labdb -luuid
-CXXFLAGS += -fexceptions -Wno-unused-parameter
+CXXFLAGS += -fexceptions -Werror
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
 DEFINES += -DUSE_PGSQL
 # Database Libs
 ifneq (,$(findstring USE_PGSQL,$(DEFINES)))
@@ -52,3 +51,4 @@ $(GCH): $(PCH)
 .PHONY: clean
 clean:
 	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+

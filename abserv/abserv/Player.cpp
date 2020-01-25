@@ -50,12 +50,6 @@ void Player::RegisterLua(kaguya::State& state)
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
-    mailBox_(nullptr),
-    party_(nullptr),
-    resigned_(false),
-    loginTime_(0),
-    logoutTime_(0),
-    lastPing_(0),
     questComp_(std::make_unique<Components::QuestComp>(*this))
 {
     events_.Subscribe<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
@@ -1538,21 +1532,19 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleRollCommand(const std::string& arguments, Net::NetworkMessage& message)
 {
-    if (Utils::IsNumber(arguments))
-    {
-        const int max = std::stoi(arguments);
-        if (max >= ROLL_MIN && max <= ROLL_MAX)
-        {
-            const int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * static_cast<float>(max)) + 1;
-            message.AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
-            AB::Packets::Server::ServerMessage packet = {
-                static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Roll),
-                GetName(),
-                std::to_string(res) + ":" + std::to_string(max)
-            };
-            AB::Packets::Add(packet, message);
-        }
-    }
+    if (!Utils::IsNumber(arguments))
+        return;
+    const int max = std::stoi(arguments);
+    if (max < ROLL_MIN || max > ROLL_MAX)
+        return;
+    const int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * static_cast<float>(max)) + 1;
+    message.AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
+    AB::Packets::Server::ServerMessage packet = {
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Roll),
+        GetName(),
+        std::to_string(res) + ":" + std::to_string(max)
+    };
+    AB::Packets::Add(packet, message);
 }
 
 void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&)
@@ -1789,8 +1781,7 @@ void Player::ChangeMap(const std::string& mapUuid)
     if (!party)
         return;
 
-    auto game = GetGame();
-    if (game && !AB::Entities::IsOutpost(game->data_.type))
+    if (!IsInOutpost())
     {
         // The player leaves the party and changes the instance
         PartyLeave();
@@ -1805,9 +1796,8 @@ void Player::ChangeServerInstance(const std::string& serverUuid, const std::stri
 {
     resigned_ = false;
     if (client_)
-        client_->ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
-    else
-        LOG_ERROR << "client_ = null" << std::endl;
+        return client_->ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
+    LOG_ERROR << "client_ = null" << std::endl;
 }
 
 void Player::CRQQueueForMatch()
@@ -1877,9 +1867,8 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
 {
     resigned_ = false;
     if (client_)
-        client_->ChangeInstance(mapUuid, instanceUuid);
-    else
-        LOG_ERROR << "client_ = null" << std::endl;
+        return client_->ChangeInstance(mapUuid, instanceUuid);
+    LOG_ERROR << "client_ = null" << std::endl;
 }
 
 }

@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/$(CONFIG)/abserv
 LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -lpugixml -ldetour -lstdc++fs -luuid
-CXXFLAGS += -fexceptions -Wno-unused-parameter
+CXXFLAGS += -fexceptions -Werror -Wno-maybe-uninitialized
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror -Wno-maybe-uninitialized
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp))

@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/abfile$(SUFFIX)
 SOURDEDIR = ../abfile/abfile
 OBJDIR = obj/x64/$(CONFIG)/abfile
 LIBS += -lpthread -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml -luuid
-CXXFLAGS += -fexceptions -Wno-unused-parameter
+CXXFLAGS += -fexceptions -Werror -Wno-unused-parameter -Wimplicit-fallthrough=0
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror -Wimplicit-fallthrough=0
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
@@ -40,3 +39,4 @@ $(GCH): $(PCH)
 .PHONY: clean
 clean:
 	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+

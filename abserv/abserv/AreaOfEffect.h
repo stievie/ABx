@@ -32,7 +32,7 @@ private:
     uint32_t functions_{ FunctionNone };
     int64_t startTime_;
     // Lifetime
-    uint32_t lifetime_;
+    uint32_t lifetime_{ std::numeric_limits<uint32_t>::max() };
     uint32_t itemIndex_{ 0 };
     bool HaveFunction(Function func) const
     {
