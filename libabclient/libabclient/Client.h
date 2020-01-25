@@ -30,7 +30,7 @@ enum class State
     World
 };
 
-class Client : public Receiver
+class Client final : public Receiver
 {
 private:
     Receiver& receiver_;

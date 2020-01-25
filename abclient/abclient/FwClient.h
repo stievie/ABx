@@ -31,7 +31,7 @@ struct InventoryItem
     uint16_t value;
 };
 
-class FwClient : public Object, public Client::Receiver
+class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)
 private:
