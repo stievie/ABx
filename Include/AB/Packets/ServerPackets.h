@@ -945,6 +945,16 @@ struct SetPlayerSkill
     }
 };
 
+struct SkillTemplateLoaded
+{
+    std::string templ;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(templ);
+    }
+};
+
 struct ObjectSecProfessionChanged
 {
     uint32_t objectId;

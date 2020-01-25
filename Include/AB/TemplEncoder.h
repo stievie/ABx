@@ -29,9 +29,6 @@ public:
         return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
     }
 
-    // https://wiki.guildwars.com/wiki/Skill_template_format
-    // https://wiki.guildwars.com/wiki/Equipment_template_format
-    // OgUUcRrg1MT6WOBqGIG/aKHXi+G
     static std::string Encode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
         const Attributes& attribs, const SkillIndices& skills)
     {

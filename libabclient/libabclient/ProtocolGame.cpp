@@ -79,6 +79,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::SetPlayerAttributeValue, ServerPacketType::PlayerSetAttributeValue>();
     AddHandler<AB::Packets::Server::ObjectSecProfessionChanged, ServerPacketType::ObjectSecProfessionChanged>();
     AddHandler<AB::Packets::Server::SetPlayerSkill, ServerPacketType::PlayerSetSkill>();
+    AddHandler<AB::Packets::Server::SkillTemplateLoaded, ServerPacketType::PlayerSkillTemplLoaded>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -554,6 +555,14 @@ void ProtocolGame::EquipSkill(uint32_t skillIndex, uint8_t pos)
         skillIndex, pos
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::EquipSkill, packet);
+}
+
+void ProtocolGame::LoadSkillTemplate(const std::string& templ)
+{
+    AB::Packets::Client::LoadSkillTemplate packet {
+        templ
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::LoadSkillTemplate, packet);
 }
 
 }

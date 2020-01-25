@@ -437,6 +437,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQEquipSkill, packet.skillIndex, packet.pos);
         break;
     }
+    case ClientPacketTypes::LoadSkillTemplate:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::LoadSkillTemplate>(message);
+        AddPlayerTask(&Game::Player::CRQLoadSkillTemplate, packet.templ);
+        break;
+    }
     default:
     {
         auto player = GetPlayer();

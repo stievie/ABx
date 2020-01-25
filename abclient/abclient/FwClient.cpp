@@ -942,6 +942,12 @@ void FwClient::EquipSkill(uint32_t skillIndex, uint8_t pos)
         client_.EquipSkill(skillIndex, pos);
 }
 
+void FwClient::LoadSkillTemplate(const std::string& templ)
+{
+    if (loggedIn_ && AB::Entities::IsOutpost(currentGameType_))
+        client_.LoadSkillTemplate(templ);
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -1926,4 +1932,10 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSkill& pack
     eData[P_SKILLINDEX] = packet.skillIndex;
     eData[P_SKILLPOS] = packet.pos;
     QueueEvent(Events::E_SET_SKILL, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::SkillTemplateLoaded& packet)
+{
+    // TODO:
+    (void)packet;
 }

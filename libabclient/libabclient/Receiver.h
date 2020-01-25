@@ -104,6 +104,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) = 0;
 
 };
 

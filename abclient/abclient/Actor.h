@@ -115,6 +115,8 @@ public:
     void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
 
+    uint32_t GetAttributeValue(uint32_t index) const;
+
     Vector<String> materials_;
     Vector3 velocity_;
     bool autoRun_{ false };

@@ -9,9 +9,6 @@ uint8_t TemplateEncoder::GetSkillsTemplateHeader()
     return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
 }
 
-// https://wiki.guildwars.com/wiki/Skill_template_format
-// https://wiki.guildwars.com/wiki/Equipment_template_format
-// OgUUcRrg1MT6WOBqGIG/aKHXi+G
 std::string TemplateEncoder::Encode(const Game::SkillBar& skills)
 {
     const Game::SkillsArray& _skills = skills.GetArray();

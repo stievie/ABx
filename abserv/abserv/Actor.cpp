@@ -156,8 +156,8 @@ bool Actor::SetSpawnPoint(const std::string& group)
     auto game = GetGame();
     if (!game)
         return false;
-    auto sps = game->map_->GetSpawnPoints(group);
-    auto sp = game->map_->GetFreeSpawnPoint(sps);
+    const auto sps = game->map_->GetSpawnPoints(group);
+    const auto sp = game->map_->GetFreeSpawnPoint(sps);
     if (sp.Empty())
         return false;
 

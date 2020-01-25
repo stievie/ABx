@@ -630,6 +630,11 @@ void Client::EquipSkill(uint32_t skillIndex, uint8_t pos)
         protoGame_->EquipSkill(skillIndex, pos);
 }
 
+void Client::LoadSkillTemplate(const std::string& templ)
+{
+    if (state_ == State::World)
+        protoGame_->LoadSkillTemplate(templ);
+}
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
@@ -923,6 +928,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecPr
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

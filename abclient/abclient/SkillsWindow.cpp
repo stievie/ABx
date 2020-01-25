@@ -275,6 +275,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
 
         spinner->SetMin(0);
         spinner->SetMax(20);
+        spinner->SetValue(actor.GetAttributeValue(attr.index));
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
         SubscribeToEvent(spinner, E_VALUECHANGED, [this, attrIndex = attr.index](StringHash, VariantMap& eventData)

@@ -108,6 +108,7 @@ public:
     void SetSecondaryProfession(uint32_t profIndex);
     void SetAttributeValue(uint32_t attribIndex, uint8_t value);
     void EquipSkill(uint32_t skillIndex, uint8_t pos);
+    void LoadSkillTemplate(const std::string& templ);
 
     int64_t GetUpdateTick() const
     {

@@ -1172,6 +1172,20 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
     // TODO:
 }
 
+void Player::CRQLoadSkillTemplate(std::string templ)
+{
+    // TODO: Verify and load, send the new template back
+    (void)templ;
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSkillTemplLoaded);
+    AB::Packets::Server::SkillTemplateLoaded packet {
+        templ
+    };
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
+}
+
+
 bool Player::IsIgnored(const Player& player) const
 {
     return GetFriendList().IsIgnored(player.account_.uuid);

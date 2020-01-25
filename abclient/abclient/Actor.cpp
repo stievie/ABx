@@ -515,23 +515,23 @@ void Actor::RemoveActorUI()
     {
         UnsubscribeFromEvent(nameWindow_, E_CLICK);
         uiRoot->RemoveChild(nameWindow_);
-        nameWindow_ = SharedPtr<Window>();
-        nameLabel_ = SharedPtr<Text>();
+        nameWindow_.Reset();
+        nameLabel_.Reset();
     }
     if (hpBar_)
     {
         uiRoot->RemoveChild(hpBar_);
-        hpBar_ = SharedPtr<HealthBarPlain>();
+        hpBar_.Reset();
     }
     if (speechBubbleWindow_)
     {
         uiRoot->RemoveChild(speechBubbleWindow_);
-        speechBubbleWindow_ = SharedPtr<Window>();
+        speechBubbleWindow_.Reset();
     }
     if (classLevel_)
     {
         uiRoot->RemoveChild(classLevel_);
-        classLevel_ = SharedPtr<Text>();
+        classLevel_.Reset();
     }
 }
 
@@ -1190,4 +1190,14 @@ void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
     {
         groupId_ = 0;
     }
+}
+
+uint32_t Actor::GetAttributeValue(uint32_t index) const
+{
+    for (const auto& a : attributes_)
+    {
+        if (a.index == index)
+            return a.value;
+    }
+    return 0;
 }

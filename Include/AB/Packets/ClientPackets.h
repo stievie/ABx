@@ -466,6 +466,16 @@ struct EquipSkill
     }
 };
 
+struct LoadSkillTemplate
+{
+    std::string templ;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(templ);
+    }
+};
+
 struct GuildInfo
 {
     template<typename _Ar>

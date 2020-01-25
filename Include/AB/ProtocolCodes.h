@@ -83,7 +83,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(RemoveFriend)           \
     ENUMERATE_CLIENT_PACKET_CODE(RenameFriend)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildInfo)           \
-    ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)
+    ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)        \
+    ENUMERATE_CLIENT_PACKET_CODE(LoadSkillTemplate)
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
@@ -152,7 +153,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)                  \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSetAttributeValue)     \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)  \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerSetSkill)
+    ENUMERATE_SERVER_PACKET_CODE(PlayerSetSkill)              \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)
 
 enum class ErrorCodes : uint8_t
 {

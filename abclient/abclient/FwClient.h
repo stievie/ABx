@@ -151,6 +151,7 @@ public:
     void SetSecondaryProfession(uint32_t profIndex);
     void SetAttributeValue(uint32_t attribIndex, uint8_t value);
     void EquipSkill(uint32_t skillIndex, uint8_t pos);
+    void LoadSkillTemplate(const std::string& templ);
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -226,6 +227,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) override;
 
     void SetState(Client::State state)
     {
