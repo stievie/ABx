@@ -158,6 +158,8 @@ public:
     {
         return game_.lock();
     }
+    // Returns true when the object is currently in an outpost
+    bool IsInOutpost() const;
     virtual void SetGame(std::shared_ptr<Game> game)
     {
         RemoveFromOctree();

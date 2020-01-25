@@ -1103,7 +1103,7 @@ void Player::CRQPartyGetMembers(uint32_t partyId)
         // We also need invalid (i.e. not yet connected) members,
         // therefore we can not use Party::VisitMembers()
         const auto& members = party->GetMembers();
-        for (auto& m : members)
+        for (const auto& m : members)
         {
             if (auto sm = m.lock())
                 packet.members.push_back(sm->id_);
@@ -1136,10 +1136,8 @@ void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
 
 void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 {
-    if (skills_->prof2_.index == profIndex)
-        return;
-
-    skills_->SetSecondaryProfession(profIndex);
+    if (IsInOutpost())
+        skills_->SetSecondaryProfession(profIndex);
     // If it fails or not inform the client of the current profession
     AB::Packets::Server::ObjectSecProfessionChanged packet {
         id_,
@@ -1152,7 +1150,8 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 {
-    skills_->SetAttributeValue(attribIndex, value);
+    if (IsInOutpost())
+        skills_->SetAttributeValue(attribIndex, value);
 
     uint32_t newValue = skills_->GetAttributeValue(attribIndex);
     auto nmsg = Net::NetworkMessage::GetNew();
@@ -1167,7 +1166,8 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
-    skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
+    if (IsInOutpost())
+        skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
     const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSkill);
@@ -1181,7 +1181,8 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 
 void Player::CRQLoadSkillTemplate(std::string templ)
 {
-    skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
+    if (IsInOutpost())
+        skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
     const std::string newTempl = skills_->Encode();
 
     auto nmsg = Net::NetworkMessage::GetNew();
@@ -1849,6 +1850,9 @@ void Player::CRQUnqueueForMatch()
 
 void Player::CRQDeleteQuest(uint32_t index)
 {
+    if (!IsInOutpost())
+        return;
+
     questComp_->DeleteQuest(index);
 }
 

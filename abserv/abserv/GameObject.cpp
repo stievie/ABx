@@ -733,4 +733,11 @@ bool GameObject::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
+bool GameObject::IsInOutpost() const
+{
+    if (auto g = game_.lock())
+        return AB::Entities::IsOutpost(g->data_.type);
+    return false;
+}
+
 }
