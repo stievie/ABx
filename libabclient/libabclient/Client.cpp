@@ -173,7 +173,7 @@ ProtocolLogin& Client::GetProtoLogin()
 {
     if (!protoLogin_)
     {
-        protoLogin_ = std::make_unique<ProtocolLogin>(dhKeys_, *ioService_);
+        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_, *ioService_);
         protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }
@@ -292,7 +292,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
     // 2. Login to game server
     if (!protoGame_)
-        protoGame_ = std::make_unique<ProtocolGame>(*this, dhKeys_, *ioService_);
+        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_);
 
     protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);

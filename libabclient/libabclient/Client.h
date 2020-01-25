@@ -35,8 +35,8 @@ class Client final : public Receiver
 private:
     Receiver& receiver_;
     std::shared_ptr<asio::io_service> ioService_;
-    std::unique_ptr<ProtocolLogin> protoLogin_;
-    std::unique_ptr<ProtocolGame> protoGame_;
+    std::shared_ptr<ProtocolLogin> protoLogin_;
+    std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
     sa::CircularQueue<int, 10> pings_;
     int lastRun_{ 0 };
