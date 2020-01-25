@@ -1167,15 +1167,22 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
-    (void)skillIndex;
-    (void)pos;
-    // TODO:
+    skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
+    uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSkill);
+    AB::Packets::Server::SetPlayerSkill packet {
+        newIndex,
+        pos
+    };
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
 }
 
 void Player::CRQLoadSkillTemplate(std::string templ)
 {
     // TODO: Verify and load, send the new template back
-    (void)templ;
+
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSkillTemplLoaded);
     AB::Packets::Server::SkillTemplateLoaded packet {

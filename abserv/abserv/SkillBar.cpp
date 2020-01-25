@@ -211,13 +211,34 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
     return true;
 }
 
-std::shared_ptr<Skill> SkillBar::GetSkill(int index)
+std::shared_ptr<Skill> SkillBar::GetSkill(int pos)
 {
-    if (index < 0)
+    if (pos < 0)
         return std::shared_ptr<Skill>();
-    if (index < PLAYER_MAX_SKILLS)
-        return skills_[static_cast<size_t>(index)];
+    if (pos < PLAYER_MAX_SKILLS)
+        return skills_[static_cast<size_t>(pos)];
     return std::shared_ptr<Skill>();
+}
+
+uint32_t SkillBar::GetIndexOfSkill(int pos)
+{
+    if (pos < 0)
+        return 0;
+    if (pos >= PLAYER_MAX_SKILLS)
+        return 0;
+    auto skill = skills_[static_cast<size_t>(pos)];
+    if (!skill)
+        return 0;
+    return skill->GetIndex();
+}
+
+bool SkillBar::SetSkillByIndex(int pos, uint32_t skillIndex)
+{
+    auto* sm = GetSubsystem<SkillManager>();
+    auto skill = sm->Get(skillIndex);
+    if (!skill)
+        return false;
+    return SetSkill(pos, skill);
 }
 
 const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const

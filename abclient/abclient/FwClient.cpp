@@ -1936,6 +1936,8 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSkill& pack
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::SkillTemplateLoaded& packet)
 {
-    // TODO:
-    (void)packet;
+    using namespace Events::LoadSkillTemplate;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_TEMPLATE] = String(packet.templ.c_str());
+    QueueEvent(Events::E_SET_SKILL, eData);
 }

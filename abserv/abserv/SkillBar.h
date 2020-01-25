@@ -54,13 +54,17 @@ public:
     bool Load(const std::string& str, bool locked);
     bool SetSecondaryProfession(uint32_t index);
 
-    std::shared_ptr<Skill> GetSkill(int index);
-    void SetSkill(int index, std::shared_ptr<Skill> skill)
+    std::shared_ptr<Skill> GetSkill(int pos);
+    uint32_t GetIndexOfSkill(int pos);
+    bool SetSkill(int pos, std::shared_ptr<Skill> skill)
     {
-        if (index < 0 || index >= PLAYER_MAX_SKILLS)
-            return;
-        skills_[static_cast<size_t>(index)] = skill;
+        if (pos < 0 || pos >= PLAYER_MAX_SKILLS)
+            return false;
+        skills_[static_cast<size_t>(pos)] = skill;
+        return true;
     }
+    bool SetSkillByIndex(int pos, uint32_t skillIndex);
+
     void InitAttributes();
     /// Get an attribute
     /// @param index The index of the attribute, not the index in the array
