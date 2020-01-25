@@ -421,6 +421,7 @@ URHO3D_EVENT(E_SET_SKILL, SetSkill)
 
 URHO3D_EVENT(E_LOAD_SKILLTEMPLATE, LoadSkillTemplate)
 {
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
     URHO3D_PARAM(P_TEMPLATE, Template);   // String
 }
 

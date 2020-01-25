@@ -1938,6 +1938,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SkillTemplateLoaded&
 {
     using namespace Events::LoadSkillTemplate;
     VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.objectId;
     eData[P_TEMPLATE] = String(packet.templ.c_str());
-    QueueEvent(Events::E_SET_SKILL, eData);
+    QueueEvent(Events::E_LOAD_SKILLTEMPLATE, eData);
 }

@@ -67,12 +67,17 @@ void SkillsWindow::SubscribeEvents()
 {
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(SkillsWindow, HandleCloseClicked));
+    Button* loadButton = GetChildStaticCast<Button>("LoadButton", true);
+    SubscribeToEvent(loadButton, E_RELEASED, URHO3D_HANDLER(SkillsWindow, HandleLoadClicked));
+    Button* saveButton = GetChildStaticCast<Button>("SaveButton", true);
+    SubscribeToEvent(saveButton, E_RELEASED, URHO3D_HANDLER(SkillsWindow, HandleSaveClicked));
 
     auto* professionDropdown = GetChildStaticCast<DropDownList>("ProfessionDropdown", true);
     SubscribeToEvent(professionDropdown, E_ITEMSELECTED, URHO3D_HANDLER(SkillsWindow, HandleProfessionSelected));
 
     SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(SkillsWindow, HandleSetAttribValue));
     SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(SkillsWindow, HandleSetSecProfession));
+    SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(SkillsWindow, HandleSkillsChanged));
 }
 
 void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
@@ -81,6 +86,19 @@ void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
     SetAttributeValue(attribIndex, value);
+}
+
+void SkillsWindow::HandleSkillsChanged(StringHash, VariantMap& eventData)
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
+    using namespace Events::ActorSkillsChanged;
+    if (player->gameId_ != eventData[P_OBJECTID].GetUInt())
+        return;
+    UpdateAll();
 }
 
 void SkillsWindow::HandleSetSecProfession(StringHash, VariantMap& eventData)
@@ -121,6 +139,15 @@ void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
 void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
+}
+
+void SkillsWindow::HandleLoadClicked(StringHash, VariantMap&)
+{
+}
+
+void SkillsWindow::HandleSaveClicked(StringHash, VariantMap&)
+{
+
 }
 
 void SkillsWindow::AddProfessions(const Actor& actor)

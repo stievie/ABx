@@ -508,6 +508,27 @@ void Actor::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
         classLevel_->SetText(GetClassLevel());
 }
 
+void Actor::HandleLoadSkillTemplate(StringHash, VariantMap& eventData)
+{
+    {
+        using namespace Events::LoadSkillTemplate;
+
+        uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+        if (objectId != gameId_)
+            return;
+
+        const String& templ = eventData[P_TEMPLATE].GetString();
+        LoadSkillTemplate(std::string(templ.CString()));
+    }
+
+    {
+        using namespace Events::ActorSkillsChanged;
+        VariantMap& eData = GetEventDataMap();
+        eData[P_OBJECTID] = gameId_;
+        SendEvent(Events::E_ACTOR_SKILLS_CHANGED, eData);
+    }
+}
+
 void Actor::RemoveActorUI()
 {
     UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();

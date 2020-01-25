@@ -51,6 +51,7 @@ public:
     Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed);
     std::string Encode();
+    // Load skills from a template. if locked = true also locked skills are allowed.
     bool Load(const std::string& str, bool locked);
     bool SetSecondaryProfession(uint32_t index);
 

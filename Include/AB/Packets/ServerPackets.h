@@ -947,10 +947,12 @@ struct SetPlayerSkill
 
 struct SkillTemplateLoaded
 {
+    uint32_t objectId;
     std::string templ;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(objectId);
         ar.value(templ);
     }
 };

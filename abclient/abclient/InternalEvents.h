@@ -66,7 +66,12 @@ URHO3D_EVENT(E_AUDIOPLAYMAPMUSIC, AudioPlayMapMusic)
 /// Play style from current play list
 URHO3D_EVENT(E_AUDIOPLAYMUSICSTYLE, AudioPlayMusicStyle)
 {
-    URHO3D_PARAM(P_STYLE, Style);     // uintt32_t
+    URHO3D_PARAM(P_STYLE, Style);     // uint32_t
+}
+
+URHO3D_EVENT(E_ACTOR_SKILLS_CHANGED, ActorSkillsChanged)
+{
+    URHO3D_PARAM(P_OBJECTID, ObjectId);     // uintt32_t
 }
 
 }

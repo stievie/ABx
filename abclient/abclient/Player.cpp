@@ -22,6 +22,7 @@ Player::Player(Context* context) :
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
+    SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(Player, HandleSkillsChanged));
 }
 
 Player::~Player()
@@ -89,6 +90,20 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     }
 
     // Set skills
+    SetSkillBarSkills();
+}
+
+void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ActorSkillsChanged;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    if (objectId != gameId_)
+        return;
+    SetSkillBarSkills();
+}
+
+void Player::SetSkillBarSkills()
+{
     WindowManager* winMan = GetSubsystem<WindowManager>();
     SkillBarWindow* skillsWin = dynamic_cast<SkillBarWindow*>(winMan->GetWindow(WINDOW_SKILLBAR).Get());
     skillsWin->SetSkills(skills_);

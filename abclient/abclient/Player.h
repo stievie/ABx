@@ -65,6 +65,8 @@ private:
     uint8_t lastTurnDir_{ AB::GameProtocol::TurnDirectionNone };
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
+    void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
+    void SetSkillBarSkills();
 };
 
 template <>

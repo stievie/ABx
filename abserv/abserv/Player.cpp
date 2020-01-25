@@ -1168,7 +1168,7 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
     skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
-    uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
+    const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSkill);
     AB::Packets::Server::SetPlayerSkill packet {
@@ -1181,12 +1181,14 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 
 void Player::CRQLoadSkillTemplate(std::string templ)
 {
-    // TODO: Verify and load, send the new template back
+    skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
+    const std::string newTempl = skills_->Encode();
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSkillTemplLoaded);
     AB::Packets::Server::SkillTemplateLoaded packet {
-        templ
+        id_,
+        newTempl
     };
     AB::Packets::Add(packet, *nmsg);
     WriteToOutput(*nmsg);
