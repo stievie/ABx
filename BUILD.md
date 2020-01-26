@@ -34,9 +34,6 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 * GNU make
 * ccache
 
-It should also compile with Clang out of the box, just change `CXX` to `clang++` and `CC` to `clang`
-in `makefiles/makefile.common`. But we keep GCC for various reasons.
-
 ### Dependencies
 
 * `uuid-dev`
