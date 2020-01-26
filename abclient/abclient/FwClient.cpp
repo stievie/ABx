@@ -1913,6 +1913,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerAttributeVa
     VariantMap& eData = GetEventDataMap();
     eData[P_ATTRIBINDEX] = packet.attribIndex;
     eData[P_VALUE] = packet.value;
+    eData[P_REMAINING] = packet.remaining;
     QueueEvent(Events::E_SET_ATTRIBUTEVALUE, eData);
 }
 

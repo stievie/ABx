@@ -85,7 +85,8 @@ void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
     using namespace Events::SetAttributeValue;
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
-    SetAttributeValue(attribIndex, value);
+    unsigned remaining = eventData[P_REMAINING].GetUInt();
+    SetAttributeValue(attribIndex, value, remaining);
 }
 
 void SkillsWindow::HandleSkillsChanged(StringHash, VariantMap& eventData)
@@ -238,7 +239,15 @@ Spinner* SkillsWindow::GetAttributeSpinner(uint32_t index)
     return spinner;
 }
 
-void SkillsWindow::SetAttributeValue(uint32_t index, int value)
+void SkillsWindow::UpdateAttribsHeader()
+{
+    Text* header = GetChildStaticCast<Text>("AttributeHeaderText", true);
+    std::stringstream ss;
+    ss << "Attributes: " << remainingAttribPoints_ << " available";
+    header->SetText(String(ss.str().c_str()));
+}
+
+void SkillsWindow::SetAttributeValue(uint32_t index, int value, unsigned remaining)
 {
     auto* spinner = GetAttributeSpinner(index);
     if (!spinner)
@@ -246,6 +255,9 @@ void SkillsWindow::SetAttributeValue(uint32_t index, int value)
 
     // Should also update the edit text
     spinner->SetValue(value);
+
+    remainingAttribPoints_ = remaining;
+    UpdateAttribsHeader();
 }
 
 void SkillsWindow::UpdateAttributes(const Actor& actor)

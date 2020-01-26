@@ -116,6 +116,7 @@ public:
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
 
     uint32_t GetAttributeValue(uint32_t index) const;
+    void SetAttributeValue(uint32_t index, uint32_t value);
 
     Vector<String> materials_;
     Vector3 velocity_;
@@ -172,6 +173,7 @@ public:
     AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
+    void ResetSecondProfAttributes();
     bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();
     void SetSelectedObject(SharedPtr<GameObject> object);

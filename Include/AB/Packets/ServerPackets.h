@@ -925,11 +925,13 @@ struct SetPlayerAttributeValue
 {
     uint32_t attribIndex;
     int8_t value;
+    uint8_t remaining;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(attribIndex);
         ar.value(value);
+        ar.value(remaining);
     }
 };
 

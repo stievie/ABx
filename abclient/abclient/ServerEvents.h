@@ -405,6 +405,7 @@ URHO3D_EVENT(E_SET_ATTRIBUTEVALUE, SetAttributeValue)
 {
     URHO3D_PARAM(P_ATTRIBINDEX, AttribIndex);  // uint32_t
     URHO3D_PARAM(P_VALUE, Value);              // int8_t
+    URHO3D_PARAM(P_REMAINING, Remaining);      // uint8_t
 }
 
 URHO3D_EVENT(E_SET_SECPROFESSION, SetSecProfession)

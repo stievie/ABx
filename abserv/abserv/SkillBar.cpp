@@ -138,6 +138,16 @@ void SkillBar::ResetAttributes()
     attributes_.fill({ 99u, 0u });
 }
 
+void SkillBar::ResetSecondProfAttributes()
+{
+    // Clear all attributed exceptt for primary profession
+    for (size_t i = prof1_.attributeCount; i < PLAYER_MAX_ATTRIBUTES; ++i)
+    {
+        attributes_[i].index = 99;
+        attributes_[i].value = 0;
+    }
+}
+
 void SkillBar::InitAttributes()
 {
     ResetAttributes();
@@ -208,6 +218,7 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
         }
     }
     prof2_ = p2;
+    ResetSecondProfAttributes();
     return true;
 }
 
@@ -241,6 +252,15 @@ bool SkillBar::SetSkillByIndex(int pos, uint32_t skillIndex)
     return SetSkill(pos, skill);
 }
 
+int SkillBar::GetUsedAttributePoints() const
+{
+    int result = 0;
+    for (const auto& a : attributes_)
+        if (a.value > 0)
+            result += AB::CalcAttributeCost(static_cast<int>(a.value));
+    return result;
+}
+
 const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 {
     for (const auto& a : attributes_)
@@ -253,7 +273,6 @@ const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 
 bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
 {
-    // TODO: Verify value
     // This works only when professions are set, which fill the attributes array
     auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib) {
         return attrib.index == index;
@@ -262,6 +281,12 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
         return false;
     if ((*it).value == value)
         return false;
+    if (value > (*it).value)
+    {
+        int cost = AB::CalcAttributeCost(static_cast<int>(value));
+        if (cost > (static_cast<int>(owner_.GetAttributePoints()) - GetUsedAttributePoints()))
+            return false;
+    }
     (*it).value = value;
     return true;
 }

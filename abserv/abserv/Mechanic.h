@@ -21,6 +21,7 @@ static constexpr uint32_t MAX_ATTRIBUTES = 200;
 static constexpr uint32_t ADVANCE_ATTRIB_2_10 = 5;
 static constexpr uint32_t ADVANCE_ATTRIB_11_15 = 10;
 static constexpr uint32_t ADVANCE_ATTRIB_16_20 = 15;
+static constexpr uint32_t MAX_PLAYER_ATTRIBUTE_RANK = 12;
 
 // Resources
 static constexpr int BASE_ENERGY = 20;

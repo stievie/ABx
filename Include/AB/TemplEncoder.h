@@ -18,6 +18,22 @@ struct AttributeValue
     uint32_t value = 0;     // How many points
 };
 
+inline int CalcAttributeCost(int rank)
+{
+    static const int cost[] = {
+        1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20
+    };
+    int result = 0;
+    for (int i = 0; i < rank; ++i)
+    {
+        if (i < 12)
+            result += cost[i];
+        else
+            result += i;
+    }
+    return result;
+}
+
 typedef std::array<AttributeValue, Game::PLAYER_MAX_ATTRIBUTES> Attributes;
 typedef std::array<uint32_t, Game::PLAYER_MAX_SKILLS> SkillIndices;
 

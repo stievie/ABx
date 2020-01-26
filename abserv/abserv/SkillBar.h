@@ -67,6 +67,7 @@ public:
     bool SetSkillByIndex(int pos, uint32_t skillIndex);
 
     void InitAttributes();
+    void ResetSecondProfAttributes();
     /// Get an attribute
     /// @param index The index of the attribute, not the index in the array
     /// @return The attribute or nullptr
@@ -74,6 +75,7 @@ public:
     const AB::Attributes& GetAttributes() const { return attributes_; }
     bool SetAttributeValue(uint32_t index, uint32_t value);
     uint32_t GetAttributeValue(uint32_t index) const;
+    int GetUsedAttributePoints() const;
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
     std::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;

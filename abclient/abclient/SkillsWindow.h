@@ -10,9 +10,11 @@ class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
+    unsigned remainingAttribPoints_{ 0 };
     void AddProfessions(const Actor& actor);
     void UpdateAttributes(const Actor& actor);
     void UpdateSkills(const Actor& actor);
+    void UpdateAttribsHeader();
     Text* CreateDropdownItem(const String& text, unsigned value);
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
@@ -25,7 +27,7 @@ private:
     UIElement* GetAttributeContainer(uint32_t index);
     LineEdit* GetAttributeEdit(uint32_t index);
     Spinner* GetAttributeSpinner(uint32_t index);
-    void SetAttributeValue(uint32_t index, int value);
+    void SetAttributeValue(uint32_t index, int value, unsigned remaining);
     void SetProfessionIndex(uint32_t index);
 public:
     SkillsWindow(Context* context);

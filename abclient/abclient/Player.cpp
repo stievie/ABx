@@ -23,6 +23,7 @@ Player::Player(Context* context) :
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(Player, HandleSkillsChanged));
+    SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(Player, HandleSetAttribValue));
 }
 
 Player::~Player()
@@ -91,6 +92,14 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
 
     // Set skills
     SetSkillBarSkills();
+}
+
+void Player::HandleSetAttribValue(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetAttributeValue;
+    uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
+    int value = eventData[P_VALUE].GetInt();
+    SetAttributeValue(attribIndex, value);
 }
 
 void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)

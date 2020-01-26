@@ -503,6 +503,7 @@ void Actor::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
 
     auto* sm = GetSubsystem<SkillManager>();
     profession2_ = sm->GetProfessionByIndex(eventData[P_PROFINDEX].GetUInt());
+    ResetSecondProfAttributes();
 
     if (classLevel_)
         classLevel_->SetText(GetClassLevel());
@@ -1221,4 +1222,26 @@ uint32_t Actor::GetAttributeValue(uint32_t index) const
             return a.value;
     }
     return 0;
+}
+
+void Actor::SetAttributeValue(uint32_t index, uint32_t value)
+{
+    for (auto& a : attributes_)
+    {
+        if (a.index == index)
+        {
+            a.value = value;
+            break;
+        }
+    }
+}
+
+void Actor::ResetSecondProfAttributes()
+{
+    for (size_t i = profession_->attributeCount; i < attributes_.size(); ++i)
+    {
+        auto& a = attributes_[i];
+        a.index = profession2_->attributes[i - profession_->attributeCount].index;
+        a.value = 0;
+    }
 }
