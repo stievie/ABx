@@ -210,8 +210,8 @@ public:
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;
-    time_t loginTime_;
-    time_t logoutTime_;
+    time_t loginTime_{ 0 };
+    time_t logoutTime_{ 0 };
     int64_t lastPing_{ 0 };
     std::unique_ptr<Components::QuestComp> questComp_;
 };

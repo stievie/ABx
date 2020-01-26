@@ -1057,7 +1057,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
 
 void Player::CRQPartyRejectInvite(uint32_t inviterId)
 {
-    // We are the rejector
+    // We are the rejecter
     if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
