@@ -1133,32 +1133,14 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
     if (IsInOutpost())
         skills_->SetSecondaryProfession(profIndex);
 
-    {
-        // If it fails or not inform the client of the current profession
-        AB::Packets::Server::ObjectSecProfessionChanged packet {
-            id_,
-            skills_->prof2_.index
-        };
-        auto& gameStatus = GetGame()->GetGameStatus();
-        gameStatus.AddByte(AB::GameProtocol::ServerPacketType::ObjectSecProfessionChanged);
-        AB::Packets::Add(packet, gameStatus);
-    }
-
-    // Send the player the attribute values
-    int remaining = static_cast<int>(GetAttributePoints()) - skills_->GetUsedAttributePoints();
-    auto nmsg = Net::NetworkMessage::GetNew();
-    for (const auto& a : skills_->prof2_.attributes)
-    {
-        nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);
-        uint32_t aVal = skills_->GetAttributeValue(a.index);
-        AB::Packets::Server::SetPlayerAttributeValue packet {
-            a.index,
-            static_cast<int8_t>(aVal),
-            static_cast<uint8_t>(remaining)
-        };
-        AB::Packets::Add(packet, *nmsg);
-    }
-    WriteToOutput(*nmsg);
+    // If it fails or not inform the client of the current profession
+    AB::Packets::Server::ObjectSecProfessionChanged packet {
+        id_,
+        skills_->prof2_.index
+    };
+    auto& gameStatus = GetGame()->GetGameStatus();
+    gameStatus.AddByte(AB::GameProtocol::ServerPacketType::ObjectSecProfessionChanged);
+    AB::Packets::Add(packet, gameStatus);
 }
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
