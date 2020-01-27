@@ -26,6 +26,11 @@ second row col2           col3
 #include <sstream>
 #include <algorithm>
 
+// I'm so sick of this!
+#if defined(max)
+#undef max
+#endif
+
 namespace sa {
 namespace tab {
 
@@ -278,7 +283,7 @@ inline _Stream& operator << (_Stream& os, table& value)
         if (r.heading_)
         {
             size_t w = value.width();
-            for (size_t i = 0; i < w; ++i)
+            for (size_t sepi = 0; sepi < w; ++sepi)
                 os << '-';
             os << std::endl;
         }
