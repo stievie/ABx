@@ -15,6 +15,7 @@
 #include <sa/ArgParser.h>
 #include <streambuf>
 #include "UuidUtils.h"
+#include <sa/table.h>
 
 namespace fs = std::filesystem;
 
@@ -201,28 +202,27 @@ static void ShowVersions(DB::Database& db)
 {
     std::ostringstream query;
     query << "SELECT * FROM `versions` ORDER BY `name`";
+    sa::tab::table table;
+    table << sa::tab::head << "Name" << sa::tab::endc << "Value" << sa::tab::endr;
     for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
     {
-        std::cout << result->GetString("name");
-        std::cout << '\t';
-        std::cout << result->GetUInt("value");
-        std::cout << std::endl;
+        table << result->GetString("name") << sa::tab::endc << sa::tab::ralign << result->GetUInt("value") << sa::tab::endr;
     }
+    std::cout << table;
 }
 
 static void ShowAccountKeys(DB::Database& db)
 {
     std::ostringstream query;
     query << "SELECT * FROM `account_keys`";
+    sa::tab::table table;
+    table << sa::tab::head << "UUID" << sa::tab::endc << "Used/Total" << sa::tab::endc << "Description" << sa::tab::endr;
     for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
     {
-        std::cout << result->GetString("uuid");
-        std::cout << '\t';
-        std::cout << result->GetUInt("used") << "/" << result->GetUInt("total");
-        std::cout << '\t';
-        std::cout << result->GetString("description");
-        std::cout << std::endl;
+        table << result->GetString("uuid") << sa::tab::endc << result->GetUInt("used") << "/" << result->GetUInt("total") <<
+                 sa::tab::endc << result->GetString("description") << sa::tab::endr;
     }
+    std::cout << table;
 }
 
 static std::string GenAccKey(DB::Database& db)
