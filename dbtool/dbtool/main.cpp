@@ -65,10 +65,12 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << sa::arg_parser::get_help("dbtool", _cli);
     std::cout << std::endl;
     std::cout << "ACTIONS" << std::endl;
-    std::cout << "    update: Update the database" << std::endl;
-    std::cout << "    versions: Show database and table versions" << std::endl;
-    std::cout << "    acckeys: Show account keys" << std::endl;
-    std::cout << "    genacckey: Generate an account key" << std::endl;
+    sa::tab::table table;
+    table << "    update" << sa::tab::endc << "Update the database" << sa::tab::endr;
+    table << "    versions" << sa::tab::endc << "Show database and table versions" << sa::tab::endr;
+    table << "    acckeys" << sa::tab::endc << "Show account keys" << sa::tab::endr;
+    table << "    genacckey" << sa::tab::endc << "Generate a new account key" << sa::tab::endr;
+    std::cout << table;
 }
 
 static void InitCli(sa::arg_parser::cli& cli)
@@ -105,7 +107,7 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database",
         false, true, sa::arg_parser::option_type::string });
-    cli.push_back({ "schemadir", { "-d", "--schema-dir" }, "Directory with .sql files to import",
+    cli.push_back({ "schemadir", { "-d", "--schema-dir" }, "Directory with .sql files to import for updating",
         false, true, sa::arg_parser::option_type::string });
 }
 
