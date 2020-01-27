@@ -203,10 +203,12 @@ static void ShowVersions(DB::Database& db)
     std::ostringstream query;
     query << "SELECT * FROM `versions` ORDER BY `name`";
     sa::tab::table table;
+    table.table_sep_ = '=';
     table << sa::tab::head << "Name" << sa::tab::endc << "Value" << sa::tab::endr;
     for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
     {
-        table << result->GetString("name") << sa::tab::endc << sa::tab::ralign << result->GetUInt("value") << sa::tab::endr;
+        table << result->GetString("name") << sa::tab::endc <<
+                 sa::tab::ralign << result->GetUInt("value") << sa::tab::endr;
     }
     std::cout << table;
 }
@@ -216,11 +218,16 @@ static void ShowAccountKeys(DB::Database& db)
     std::ostringstream query;
     query << "SELECT * FROM `account_keys`";
     sa::tab::table table;
-    table << sa::tab::head << "UUID" << sa::tab::endc << "Used/Total" << sa::tab::endc << "Description" << sa::tab::endr;
+    table.table_sep_ = '=';
+    table.col_sep_ = " | ";
+    table << sa::tab::head << "UUID" << sa::tab::endc << sa::tab::ralign << "Used" <<
+             sa::tab::endc << sa::tab::ralign << "Total" << sa::tab::endc << "Description" << sa::tab::endr;
     for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
     {
-        table << result->GetString("uuid") << sa::tab::endc << result->GetUInt("used") << "/" << result->GetUInt("total") <<
-                 sa::tab::endc << result->GetString("description") << sa::tab::endr;
+        table << result->GetString("uuid") << sa::tab::endc <<
+                 sa::tab::ralign << result->GetUInt("used") << sa::tab::endc <<
+                 sa::tab::ralign << result->GetUInt("total") <<sa::tab::endc <<
+                 result->GetString("description") << sa::tab::endr;
     }
     std::cout << table;
 }

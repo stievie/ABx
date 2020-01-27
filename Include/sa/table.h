@@ -1,3 +1,24 @@
+/**
+ * Copyright 2017-2020 Stefan Ascher
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #pragma once
 
 // Table format
@@ -5,6 +26,8 @@
 // Usage:
 /*
     sa::tab::table table;
+    table.table_sep_ = '=';
+    table.col_sep_ = " | ";
     table << sa::tab::head << "head1" << sa::tab::endc << "head2" << sa::tab::endc << "head3" << sa::tab::endr;
     table << "test" << sa::tab::endc << "col2" << sa::tab::endc << sa::tab::ralign << "longer column" << sa::tab::endr;
     table << "second row" << sa::tab::endc << "col2" << sa::tab::endc << sa::tab::ralign << "col3";
@@ -14,12 +37,12 @@
   */
 // Output:
 /*
-===============================
-head1      head2 head3
--------------------------------
-test       col2  longer column
-second row col2           col3
-===============================
+==================================
+head1      | head2 | head3
+----------------------------------
+test       | col2  | longer column
+second row | col2  |          col3
+==================================
  */
 
 #include <vector>
@@ -163,7 +186,7 @@ public:
         return cols_.back();
     }
     size_t count() const { return cols_.size(); }
-    bool empty() const { return count() == 0 || (count() == 1 && cols_.front().empty()); }
+    bool empty() const { return count() == 0; }
     size_t width() const
     {
         size_t result = 0;
@@ -198,12 +221,13 @@ public:
     {
         row r(*this);
         rows_.push_back(r);
-        rows_.back().cols_.push_back(col(rows_.back()));
         return rows_.back();
     }
     template<typename T>
     col& operator << (const T& v)
     {
+        if (rows_.back().cols_.empty())
+            rows_.back().cols_.push_back(col(rows_.back()));
         return rows_.back().cols_.back() << v;
     }
     size_t count() const { return rows_.size(); }
@@ -231,12 +255,16 @@ public:
             {
                 row_width += col_width(i);
                 // Col Separator
-                ++row_width;
+                if (i < r.count() - 1)
+                    row_width += col_sep_.length();
             }
             result = std::max(result, row_width);
         }
         return result;
     }
+    std::string col_sep_{ " " };
+    char heading_sep_{ '-' };
+    char table_sep_{ '\0' };
 };
 
 inline col& col::operator << (details::end_col_type v)
@@ -257,9 +285,21 @@ inline row& row::operator << (details::end_row_type v)
 template<class _Stream>
 inline _Stream& operator << (_Stream& os, table& value)
 {
+    if (value.table_sep_ != '\0')
+    {
+        size_t w = value.width();
+        for (size_t sepi = 0; sepi < w; ++sepi)
+            os << value.table_sep_;
+        os << std::endl;
+    }
+
     for (size_t i = 0; i < value.count(); ++i)
     {
         const auto& r = value[i];
+        // Last row may be empty then we don't want to add a new line
+        if (i == value.count() - 1 && r.count() == 0)
+            continue;
+
         for (size_t j = 0; j < r.count(); ++j)
         {
             const col& c = r[j];
@@ -277,16 +317,23 @@ inline _Stream& operator << (_Stream& os, table& value)
                 os << c.content_.str();
             if (j < r.count() - 1)
                 // If not the last column add a col separator
-                os << ' ';
+                os << value.col_sep_;
         }
-        os << std::endl;
         if (r.heading_)
         {
+            os << std::endl;
             size_t w = value.width();
             for (size_t sepi = 0; sepi < w; ++sepi)
-                os << '-';
-            os << std::endl;
+                os << value.heading_sep_;
         }
+        os << std::endl;
+    }
+    if (value.table_sep_ != '\0')
+    {
+        size_t w = value.width();
+        for (size_t sepi = 0; sepi < w; ++sepi)
+            os << value.table_sep_;
+        os << std::endl;
     }
     return os;
 }
