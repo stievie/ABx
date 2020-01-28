@@ -57,19 +57,19 @@
 // Okay, let's use it, didn't see any negative effects lately.
 #define TCP_OPTION_NODELAY
 
-static constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
+inline constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
 
 namespace Game {
-static constexpr int PLAYER_MAX_SKILLS = 8;
+inline constexpr int PLAYER_MAX_SKILLS = 8;
 // Most profession have 4 attribute but Warrior and Elementarist have 5
-static constexpr int PLAYER_MAX_ATTRIBUTES = 10;
+inline constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 
 // For client prediction these values are also needed by the client.
-static constexpr float BASE_MOVE_SPEED = 150.0f;
-static constexpr float BASE_TURN_SPEED = 2000.0f;
+inline constexpr float BASE_MOVE_SPEED = 150.0f;
+inline constexpr float BASE_TURN_SPEED = 2000.0f;
 }
 
 namespace Auth {
 // Auth token expires in 1 hr of inactivity
-static constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
+inline constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
 }
