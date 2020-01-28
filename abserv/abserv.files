@@ -209,7 +209,6 @@ abserv/Maintenance.cpp
 abserv/Maintenance.h
 abserv/Map.cpp
 abserv/Map.h
-abserv/Mechanic.h
 abserv/MessageDispatcher.cpp
 abserv/MessageDispatcher.h
 abserv/Model.cpp
