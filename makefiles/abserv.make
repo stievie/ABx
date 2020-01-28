@@ -1,12 +1,12 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../Include/recastnavigation -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abai/abai
+INCLUDES += -I../Include/recastnavigation -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abshared/abshared -I../abai/abai
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/$(CONFIG)/abserv
-LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -lpugixml -ldetour -lstdc++fs -luuid
+LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -labshared -lpugixml -ldetour -lstdc++fs -luuid
 CXXFLAGS += -fexceptions -Werror -Wno-maybe-uninitialized
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes

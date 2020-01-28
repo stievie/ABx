@@ -1,18 +1,13 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../libabclient/libabclient -I../abshared/abshared -I../Include/Urho3D -I../Include/Urho3D/ThirdParty
-TARGETDIR = ../abclient/bin
-TARGET = $(TARGETDIR)/fw$(SUFFIX)
-SOURDEDIR = ../abclient/abclient
-OBJDIR = obj/x64/$(CONFIG)/abclient
-LIBS += -lpthread -lGL -lcrypto -lssl -lUrho3D -labclient -labshared -ldl -lrt -lstdc++fs -labcrypto -ltinyexpr
-CXXFLAGS += -fexceptions
+TARGETDIR = ../Lib/x64/$(CONFIG)
+TARGET = $(TARGETDIR)/libabshared.a
+SOURDEDIR = ../abshared/abshared
+OBJDIR = obj/x64/$(CONFIG)/abshared
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
-
-# Remove -Wextra
-CXXFLAGS :=$(filter-out -Wextra,$(CXXFLAGS))
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
 
@@ -24,12 +19,10 @@ GCH = $(PCH).gch
 
 all: $(TARGET)
 
-# Link
 $(TARGET): $(GCH) $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
-	$(LINKCMD_EXE) $(OBJ_FILES) $(LIBS)
+	$(LINKCMD_LIB) $(OBJ_FILES)
 
-# Compile
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
 	$(CCACHE) $(CXX) $(CXXFLAGS) -MMD -c $< -o $@

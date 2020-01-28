@@ -1,7 +1,6 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../abscommon/abscommon
 TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabai.a
 SOURDEDIR = ../abai/abai

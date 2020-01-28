@@ -17,6 +17,8 @@ all:
 	@$(MAKE) -f  abai.make
 	@echo "------------------- Building abscommon ------------------"
 	@$(MAKE) -f  abscommon.make
+	@echo "------------------- Building abshared -------------------"
+	@$(MAKE) -f  abshared.make
 	@echo "-------------------- Building absmath -------------------"
 	@$(MAKE) -f  absmath.make
 	@echo "-------------------- Building abdata --------------------"
@@ -53,6 +55,7 @@ clean:
 	@$(MAKE) -f  abdb.make clean
 	@$(MAKE) -f  abai.make clean
 	@$(MAKE) -f  abscommon.make clean
+	@$(MAKE) -f  abshared.make clean
 	@$(MAKE) -f  absmath.make clean
 	@$(MAKE) -f  abdata.make clean
 	@$(MAKE) -f  abfile.make clean
