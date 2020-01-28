@@ -22,7 +22,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <AB/CommonConfig.h>
+#include "Mechanic.h"
 #include <array>
 #include <AB/Entities/Profession.h>
 #include <string>

@@ -59,16 +59,6 @@
 
 inline constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
 
-namespace Game {
-inline constexpr int PLAYER_MAX_SKILLS = 8;
-// Most profession have 4 attribute but Warrior and Elementarist have 5
-inline constexpr int PLAYER_MAX_ATTRIBUTES = 10;
-
-// For client prediction these values are also needed by the client.
-inline constexpr float BASE_MOVE_SPEED = 150.0f;
-inline constexpr float BASE_TURN_SPEED = 2000.0f;
-}
-
 namespace Auth {
 // Auth token expires in 1 hr of inactivity
 inline constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;

@@ -4,6 +4,7 @@
 ../abscommon/abscommon
 ../absmath/absmath
 ../abai/abai
+../abshared/abshared
 abserv
 abserv/actions
 abserv/conditions

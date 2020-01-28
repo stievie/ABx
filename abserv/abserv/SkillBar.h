@@ -25,7 +25,7 @@
 #include <array>
 #include <queue>
 #include <AB/Entities/Profession.h>
-#include <AB/CommonConfig.h>
+#include "Mechanic.h"
 #include "TemplEncoder.h"
 
 namespace Game {

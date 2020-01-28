@@ -345,7 +345,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
             int attrValue = eventData[P_VALUE].GetInt();
             if (attrValue < 0)
                 return;
-            if (attrValue > Game::MAX_PLAYER_ATTRIBUTE_RANK)
+            if (static_cast<uint32_t>(attrValue) > Game::MAX_PLAYER_ATTRIBUTE_RANK)
             {
                 Spinner* control = static_cast<Spinner*>(eventData[P_ELEMENT].GetPtr());
                 control->SetValue(eventData[P_OLDVALUE].GetInt());
