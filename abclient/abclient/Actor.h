@@ -26,7 +26,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Item.h>
-#include <AB/TemplEncoder.h>
+#include "TemplEncoder.h"
 #include "HealthBarPlain.h"
 #include <Urho3DAll.h>
 

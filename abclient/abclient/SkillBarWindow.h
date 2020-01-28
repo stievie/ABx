@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <AB/TemplEncoder.h>
+#include "TemplEncoder.h"
 #include <Urho3DAll.h>
 
 class SkillBarWindow : public Window

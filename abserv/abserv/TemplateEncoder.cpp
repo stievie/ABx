@@ -34,7 +34,7 @@ std::string TemplateEncoder::Encode(const Game::SkillBar& skills)
 {
     const Game::SkillsArray& _skills = skills.GetArray();
     AB::SkillIndices sis;
-    int i = 0;
+    size_t i = 0;
     for (const auto& s : _skills)
     {
         sis[i] = (s ? s->data_.index : 0);

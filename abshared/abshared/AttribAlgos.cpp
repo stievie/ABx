@@ -19,31 +19,25 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "stdafx.h"
+#include "AttribAlgos.h"
 
-#include <AB/Entities/Profession.h>
-#include "SkillBar.h"
-#include <AB/CommonConfig.h>
-#include "TemplEncoder.h"
+namespace AB {
 
-namespace Game {
-class SkillBar;
-}
-
-namespace IO {
-
-class TemplateEncoder
+int CalcAttributeCost(int rank)
 {
-public:
-    TemplateEncoder() = delete;
-    ~TemplateEncoder() = delete;
-
-    static uint8_t GetSkillsTemplateHeader();
-    static std::string Encode(const Game::SkillBar& skills);
-
-    static bool Decode(const std::string& templ,
-        AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        AB::Attributes& attributes, AB::SkillIndices& skills);
-};
+    static const int cost[] = {
+        1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20
+    };
+    int result = 0;
+    for (int i = 0; i < rank; ++i)
+    {
+        if (i < 12)
+            result += cost[i];
+        else
+            result += i;
+    }
+    return result;
+}
 
 }

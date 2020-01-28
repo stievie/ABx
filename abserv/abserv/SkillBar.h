@@ -26,7 +26,7 @@
 #include <queue>
 #include <AB/Entities/Profession.h>
 #include <AB/CommonConfig.h>
-#include <AB/TemplEncoder.h>
+#include "TemplEncoder.h"
 
 namespace Game {
 

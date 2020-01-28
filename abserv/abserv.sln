@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abserv", "abserv\abserv.vcxproj", "{8344104E-C5F6-4998-94D0-3762C4ECD075}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abai", "..\abai\abai\abai.vcxproj", "{2BDA52B4-737D-405B-B59C-AF023D7122BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abshared", "..\abshared\abshared\abshared.vcxproj", "{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,12 @@ Global
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.ActiveCfg = Release|x64
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x64.Build.0 = Release|x64
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.Release|x86.ActiveCfg = Release|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Debug|x64.ActiveCfg = Debug|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Debug|x64.Build.0 = Debug|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Debug|x86.ActiveCfg = Debug|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x64.ActiveCfg = Release|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x64.Build.0 = Release|x64
+		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

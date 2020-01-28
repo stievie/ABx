@@ -21,29 +21,38 @@
 
 #pragma once
 
-#include <AB/Entities/Profession.h>
-#include "SkillBar.h"
+#include <stdint.h>
 #include <AB/CommonConfig.h>
-#include "TemplEncoder.h"
+#include <array>
+#include <AB/Entities/Profession.h>
+#include <string>
 
-namespace Game {
-class SkillBar;
-}
+#define SKILLS_TEMPLATE_HEADER_VERSION (0)
+#define SKILLS_TEMPLATE_HEADER_TYPE (0xe)
 
-namespace IO {
+namespace AB {
 
-class TemplateEncoder
+struct AttributeValue
+{
+    uint32_t index = 99;    // No attribute
+    uint32_t value = 0;     // How many points
+};
+
+typedef std::array<AttributeValue, Game::PLAYER_MAX_ATTRIBUTES> Attributes;
+typedef std::array<uint32_t, Game::PLAYER_MAX_SKILLS> SkillIndices;
+
+class TemplEncoder
 {
 public:
-    TemplateEncoder() = delete;
-    ~TemplateEncoder() = delete;
-
-    static uint8_t GetSkillsTemplateHeader();
-    static std::string Encode(const Game::SkillBar& skills);
-
+    static uint8_t GetSkillsTemplateHeader()
+    {
+        return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
+    }
+    static std::string Encode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
+        const Attributes& attribs, const SkillIndices& skills);
     static bool Decode(const std::string& templ,
         AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        AB::Attributes& attributes, AB::SkillIndices& skills);
+        Attributes& attribs, SkillIndices& skills);
 };
 
 }

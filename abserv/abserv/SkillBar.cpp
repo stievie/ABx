@@ -29,6 +29,7 @@
 #include "Subsystems.h"
 #include "Actor.h"
 #include "EffectsComp.h"
+#include "AttribAlgos.h"
 
 namespace Game {
 
