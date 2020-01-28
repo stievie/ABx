@@ -33,8 +33,8 @@ template <typename T, typename Tag>
 struct StrongType
 {
     static_assert(std::is_fundamental<T>::value, "T must be a fundamental type");
-    StrongType() = default;
-    StrongType(T value) :
+    constexpr StrongType() noexcept = default;
+    constexpr StrongType(T value) noexcept :
         value(value)
     { }
     operator T () const { return value; }

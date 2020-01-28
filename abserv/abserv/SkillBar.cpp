@@ -226,6 +226,9 @@ bool SkillBar::Load(const std::string& str, bool locked)
 
 bool SkillBar::SetSecondaryProfession(uint32_t index)
 {
+    if (prof2_.index == index)
+        return true;
+
     AB::Entities::Profession p2;
     p2.uuid = Utils::Uuid::EMPTY_UUID;
     p2.index = index;
@@ -302,9 +305,10 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
     if (it == attributes_.end())
         return false;
     if ((*it).value == value)
-        return false;
+        return true;
     if (value > (*it).value)
     {
+        // If increasing the rank see if there are enough free points available
         int cost = AB::CalcAttributeCost(static_cast<int>(value));
         if (cost > (static_cast<int>(owner_.GetAttributePoints()) - GetUsedAttributePoints()))
             return false;
