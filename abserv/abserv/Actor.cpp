@@ -39,6 +39,7 @@
 #include "AreaOfEffect.h"
 #include <AB/ProtocolCodes.h>
 #include "Group.h"
+#include "AttribAlgos.h"
 
 namespace Game {
 
@@ -820,17 +821,7 @@ bool Actor::Interrupt()
 
 uint32_t Actor::GetAttributePoints() const
 {
-    uint32_t level = GetLevel();
-    uint32_t result{ 0 };
-    if (level > 1)
-        result += ADVANCE_ATTRIB_2_10 * (Math::Clamp<uint32_t>(level, 2, 10) - 1);
-    if (level > 10)
-        result += ADVANCE_ATTRIB_11_15 * (Math::Clamp<uint32_t>(level, 11, 15) - 10);
-    if (level > 15)
-        result += ADVANCE_ATTRIB_16_20 * (Math::Clamp<uint32_t>(level, 16, 20) - 15);
-    if (level > LEVEL_CAP)
-        result += ADVANCE_ATTRIB_16_20 * (20 - level);
-    return result;
+    return  AB::GetAttribPoints(GetLevel());
 }
 
 void Actor::AdvanceLevel()

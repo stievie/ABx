@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AttribAlgos.h"
+#include "Mechanic.h"
 
 namespace AB {
 
@@ -37,6 +38,29 @@ int CalcAttributeCost(int rank)
         else
             result += i;
     }
+    return result;
+}
+
+uint32_t GetAttribPoints(uint32_t level)
+{
+    auto clamp = [](uint32_t v, uint32_t min, uint32_t max) -> uint32_t
+    {
+        if (v < min)
+            return min;
+        if (v > max)
+            return max;
+        return v;
+    };
+
+    uint32_t result{ 0 };
+    if (level > 1)
+        result += Game::ADVANCE_ATTRIB_2_10 * (clamp(level, 2, 10) - 1);
+    if (level > 10)
+        result += Game::ADVANCE_ATTRIB_11_15 * (clamp(level, 11, 15) - 10);
+    if (level > 15)
+        result += Game::ADVANCE_ATTRIB_16_20 * (clamp(level, 16, 20) - 15);
+    if (level > Game::LEVEL_CAP)
+        result += Game::ADVANCE_ATTRIB_16_20 * (20 - level);
     return result;
 }
 

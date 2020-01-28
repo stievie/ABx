@@ -25,7 +25,7 @@
 #include "../Npc.h"
 #include "../Item.h"
 #include "../Game.h"
-#include "../Mechanic.h"
+#include "Mechanic.h"
 
 namespace AI {
 namespace Conditions {

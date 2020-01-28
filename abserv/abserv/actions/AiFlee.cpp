@@ -25,7 +25,7 @@
 #include "../AiAgent.h"
 #include "Subsystems.h"
 #include "Random.h"
-#include "../Mechanic.h"
+#include "Mechanic.h"
 #include "Matrix4.h"
 #include "../Game.h"
 #include "VectorMath.h"

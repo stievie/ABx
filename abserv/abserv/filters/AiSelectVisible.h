@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Filter.h"
-#include "../Mechanic.h"
+#include "Mechanic.h"
 #include "../Actor.h"
 
 namespace AI {
