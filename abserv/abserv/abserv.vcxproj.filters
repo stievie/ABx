@@ -261,9 +261,6 @@
     <ClInclude Include="ItemStats.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Attributes.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="HealComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

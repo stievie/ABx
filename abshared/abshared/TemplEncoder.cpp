@@ -65,7 +65,7 @@ bool TemplEncoder::Decode(const std::string& templ, AB::Entities::Profession& pr
 
     std::string s = base64::decode(templ);
     std::vector<uint8_t> vec(s.begin(), s.end());
-    int pos = 0;
+    size_t pos = 0;
     if (vec[pos] != GetSkillsTemplateHeader())
         return false;
 

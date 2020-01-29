@@ -217,7 +217,6 @@
     <ClInclude Include="AreaOfEffect.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AttackComp.h" />
-    <ClInclude Include="Attributes.h" />
     <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />

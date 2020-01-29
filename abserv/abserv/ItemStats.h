@@ -101,7 +101,7 @@ public:
     {
         const auto it = stats_.find(index);
         if (it != stats_.end())
-            return (T)(*it).second;
+            return static_cast<T>((*it).second);
         return def;
     }
     template<typename T>

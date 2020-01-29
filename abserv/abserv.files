@@ -59,7 +59,6 @@ abserv/Asset.cpp
 abserv/Asset.h
 abserv/AttackComp.cpp
 abserv/AttackComp.h
-abserv/Attributes.h
 abserv/AutoRunComp.cpp
 abserv/AutoRunComp.h
 abserv/Chat.cpp

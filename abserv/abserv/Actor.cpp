@@ -21,10 +21,14 @@
 
 #include "stdafx.h"
 #include "Actor.h"
+#include "AreaOfEffect.h"
+#include "AttribAlgos.h"
+#include "Attributes.h"
 #include "ConfigManager.h"
 #include "EffectManager.h"
 #include "Game.h"
 #include "GameManager.h"
+#include "Group.h"
 #include "Item.h"
 #include "ItemFactory.h"
 #include "ItemsCache.h"
@@ -36,10 +40,7 @@
 #include "Scheduler.h"
 #include "ScriptManager.h"
 #include "TemplateEncoder.h"
-#include "AreaOfEffect.h"
 #include <AB/ProtocolCodes.h>
-#include "Group.h"
-#include "AttribAlgos.h"
 
 namespace Game {
 
