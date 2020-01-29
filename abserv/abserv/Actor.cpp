@@ -711,7 +711,7 @@ int32_t Actor::GetAttackDamage(bool critical)
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage, critical);
-    const uint32_t attrib = static_cast<uint32_t>(weapon->GetWeaponAttribute());
+    const Attribute attrib = weapon->GetWeaponAttribute();
     const uint32_t req = weapon->GetWeaponRequirement();
     if (GetAttributeValue(attrib) < req)
         // If requirements are not met, damage is the half
@@ -725,7 +725,7 @@ int32_t Actor::GetAttackDamage(bool critical)
 float Actor::GetArmorPenetration()
 {
     // 1. Attribute strength
-    const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
+    const float strength = static_cast<float>(GetAttributeValue(Attribute::Strength));
     float value = (strength * 0.01f);
     // 2. Weapons
     value += inventoryComp_->GetArmorPenetration();
@@ -752,8 +752,8 @@ float Actor::GetCriticalChance(const Actor* other)
     if (!weapon)
         return 0.0f;
 
-    const AttributeIndices attrib = weapon->GetWeaponAttribute();
-    const float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
+    const Attribute attrib = weapon->GetWeaponAttribute();
+    const float attribVal = static_cast<float>(GetAttributeValue(attrib));
     const float myLevel = static_cast<float>(GetLevel());
     const float otherLevel = static_cast<float>(other->GetLevel());
 
@@ -1046,7 +1046,7 @@ bool Actor::IsAlly(const Actor* other) const
     return ((GetFriendMask() & other->GetFriendMask()) != 0);
 }
 
-uint32_t Actor::GetAttributeValue(uint32_t index)
+uint32_t Actor::GetAttributeValue(Attribute index)
 {
     uint32_t result = 0;
     // Skilled points

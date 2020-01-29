@@ -34,6 +34,7 @@
 #include "EquipmentWindow.h"
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
+#include "Attributes.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -120,7 +121,7 @@ void Player::HandleSetAttribValue(StringHash, VariantMap& eventData)
     using namespace Events::SetAttributeValue;
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
-    SetAttributeValue(attribIndex, value);
+    SetAttributeValue(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
 }
 
 void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)

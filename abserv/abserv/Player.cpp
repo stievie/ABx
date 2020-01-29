@@ -1166,10 +1166,15 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 
 void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 {
-    if (IsInOutpost() && value <= MAX_PLAYER_ATTRIBUTE_RANK)
-        skills_->SetAttributeValue(attribIndex, value);
+    if (attribIndex >= static_cast<uint32_t>(Attribute::__Last))
+        return;
 
-    uint32_t newValue = skills_->GetAttributeValue(attribIndex);
+    Attribute index = static_cast<Attribute>(attribIndex);
+
+    if (IsInOutpost() && value <= MAX_PLAYER_ATTRIBUTE_RANK)
+        skills_->SetAttributeValue(index, value);
+
+    uint32_t newValue = skills_->GetAttributeValue(index);
     int remaining = static_cast<int>(GetAttributePoints()) - skills_->GetUsedAttributePoints();
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);

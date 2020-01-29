@@ -86,9 +86,9 @@ public:
     int32_t GetMinDamage() const;
     int32_t GetMaxDamage() const;
     uint32_t GetRequirement() const;
-    AttributeIndices GetAttribute() const;
+    Attribute GetAttribute() const;
     int GetArmor(DamageType damageType) const;
-    uint32_t GetAttributeIncrease(uint32_t index) const;
+    uint32_t GetAttributeIncrease(Attribute index) const;
     int GetHealth() const;
     int GetEnergy() const;
     template <typename T>

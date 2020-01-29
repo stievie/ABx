@@ -27,16 +27,7 @@
 
 namespace Game {
 
-struct AttributeValue
-{
-    uint32_t index{ 99 };    // No attribute
-    uint32_t value{ 0 };     // How many points
-};
-
-typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;
-typedef std::array<uint32_t, PLAYER_MAX_SKILLS> SkillIndices;
-
-enum class AttributeIndices : uint32_t
+enum class Attribute : uint32_t
 {
     FastCast = 0,
     Illusion,
@@ -64,8 +55,18 @@ enum class AttributeIndices : uint32_t
     Expertise,
     WildernessSurvival,
     MarkMansship,
+    __Last,
 
     None = 99
 };
+
+struct AttributeValue
+{
+    Attribute index{ Attribute::None };    // No attribute
+    uint32_t value{ 0 };     // How many points
+};
+
+typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;
+typedef std::array<uint32_t, PLAYER_MAX_SKILLS> SkillIndices;
 
 }

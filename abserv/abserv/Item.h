@@ -119,14 +119,14 @@ public:
     bool IsWeaponProjectile() const;
     void GetWeaponDamageType(DamageType& value) const;
     void GetWeaponDamage(int32_t& value, bool critical);
-    AttributeIndices GetWeaponAttribute() const;
+    Attribute GetWeaponAttribute() const;
     uint32_t GetWeaponRequirement() const;
     void GetArmor(DamageType damageType, int& value) const;
     void GetArmorPenetration(float& value) const;
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     void GetSkillRecharge(Skill* skill, uint32_t& recharge);
-    void GetAttributeValue(uint32_t index, uint32_t& value);
+    void GetAttributeValue(Attribute index, uint32_t& value);
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);
     /// Get value of this item with all mods

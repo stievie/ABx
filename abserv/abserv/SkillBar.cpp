@@ -149,7 +149,7 @@ void SkillBar::SetAttributes(const Attributes& attributes)
 {
     for (const auto& a : attributes)
     {
-        if (a.index == 0)
+        if (a.index == Attribute::None)
             continue;
         SetAttributeValue(a.index, a.value);
     }
@@ -157,15 +157,15 @@ void SkillBar::SetAttributes(const Attributes& attributes)
 
 void SkillBar::ResetAttributes()
 {
-    attributes_.fill({ 99u, 0u });
+    attributes_.fill({ Attribute::None, 0u });
 }
 
 void SkillBar::ResetSecondProfAttributes()
 {
-    // Clear all attributed exceptt for primary profession
+    // Clear all attributes except for primary profession
     for (size_t i = prof1_.attributeCount; i < PLAYER_MAX_ATTRIBUTES; ++i)
     {
-        attributes_[i].index = 99;
+        attributes_[i].index = Attribute::None;
         attributes_[i].value = 0;
     }
 }
@@ -176,14 +176,14 @@ void SkillBar::InitAttributes()
     size_t i = 0;
     for (const auto& a : prof1_.attributes)
     {
-        attributes_[i].index = a.index;
+        attributes_[i].index = static_cast<Attribute>(a.index);
         ++i;
     }
     for (const auto& a : prof2_.attributes)
     {
         if (!a.primary)
         {
-            attributes_[i].index = a.index;
+            attributes_[i].index = static_cast<Attribute>(a.index);
             ++i;
         }
     }
@@ -286,7 +286,7 @@ int SkillBar::GetUsedAttributePoints() const
     return result;
 }
 
-const AttributeValue* SkillBar::GetAttribute(uint32_t index) const
+const AttributeValue* SkillBar::GetAttribute(Attribute index) const
 {
     for (const auto& a : attributes_)
     {
@@ -296,7 +296,7 @@ const AttributeValue* SkillBar::GetAttribute(uint32_t index) const
     return nullptr;
 }
 
-bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
+bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
 {
     // This works only when professions are set, which fill the attributes array
     auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib) {
@@ -317,9 +317,9 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
     return true;
 }
 
-uint32_t SkillBar::GetAttributeValue(uint32_t index) const
+uint32_t SkillBar::GetAttributeValue(Attribute index) const
 {
-    // This works only when professions are set, shich fill the attributes array
+    // This works only when professions are set, which fill the attributes array
     auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib)
     {
         return attrib.index == index;

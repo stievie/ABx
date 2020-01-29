@@ -136,8 +136,8 @@ public:
     void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
 
-    uint32_t GetAttributeValue(uint32_t index) const;
-    void SetAttributeValue(uint32_t index, uint32_t value);
+    uint32_t GetAttributeValue(Game::Attribute index) const;
+    void SetAttributeValue(Game::Attribute index, uint32_t value);
 
     Vector<String> materials_;
     Vector3 velocity_;

@@ -78,7 +78,7 @@ bool TemplEncoder::Decode(const std::string& templ, AB::Entities::Profession& pr
     ++pos;
     for (uint8_t i = 0; i < attribCount; i++)
     {
-        attribs[i].index = vec[pos];
+        attribs[i].index = static_cast<Game::Attribute>(vec[pos]);
         ++pos;
         attribs[i].value = vec[pos];
         ++pos;

@@ -437,29 +437,29 @@ void Item::GetWeaponDamageType(DamageType& value) const
     }
 }
 
-AttributeIndices Item::GetWeaponAttribute() const
+Attribute Item::GetWeaponAttribute() const
 {
     auto ret = stats_.GetAttribute();
-    if (ret != AttributeIndices::None)
+    if (ret != Attribute::None)
         return ret;
 
     // Default weapon attributes
     switch (data_.type)
     {
     case AB::Entities::ItemTypeAxe:
-        return AttributeIndices::AxeMatery;
+        return Attribute::AxeMatery;
     case AB::Entities::ItemTypeSword:
-        return AttributeIndices::SwordsManship;
+        return Attribute::SwordsManship;
     case AB::Entities::ItemTypeHammer:
-        return AttributeIndices::HammerMastery;
+        return Attribute::HammerMastery;
     case AB::Entities::ItemTypeFlatbow:
     case AB::Entities::ItemTypeHornbow:
     case AB::Entities::ItemTypeShortbow:
     case AB::Entities::ItemTypeLongbow:
     case AB::Entities::ItemTypeRecurvebow:
-        return AttributeIndices::MarkMansship;
+        return Attribute::MarkMansship;
     default:
-        return AttributeIndices::None;
+        return Attribute::None;
     }
 }
 
@@ -549,7 +549,7 @@ void Item::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int3
     }
 }
 
-void Item::GetAttributeValue(uint32_t index, uint32_t& value)
+void Item::GetAttributeValue(Attribute index, uint32_t& value)
 {
     // Equipment (e.g. runes) may increase the attributes
     value += stats_.GetAttributeIncrease(index);

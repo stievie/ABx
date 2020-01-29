@@ -1235,7 +1235,7 @@ void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
     }
 }
 
-uint32_t Actor::GetAttributeValue(uint32_t index) const
+uint32_t Actor::GetAttributeValue(Game::Attribute index) const
 {
     for (const auto& a : attributes_)
     {
@@ -1245,7 +1245,7 @@ uint32_t Actor::GetAttributeValue(uint32_t index) const
     return 0;
 }
 
-void Actor::SetAttributeValue(uint32_t index, uint32_t value)
+void Actor::SetAttributeValue(Game::Attribute index, uint32_t value)
 {
     for (auto& a : attributes_)
     {
@@ -1262,7 +1262,7 @@ void Actor::ResetSecondProfAttributes()
     for (size_t i = profession_->attributeCount; i < attributes_.size(); ++i)
     {
         auto& a = attributes_[i];
-        a.index = profession2_->attributes[i - profession_->attributeCount].index;
+        a.index = static_cast<Game::Attribute>(profession2_->attributes[i - profession_->attributeCount].index);
         a.value = 0;
     }
 }

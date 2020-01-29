@@ -277,7 +277,7 @@ void EffectsComp::GetArmorPenetration(float& value)
     }
 }
 
-void EffectsComp::GetAttributeValue(uint32_t index, uint32_t& value)
+void EffectsComp::GetAttributeValue(Attribute index, uint32_t& value)
 {
     for (const auto& effect : effects_)
     {

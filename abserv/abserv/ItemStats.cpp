@@ -46,9 +46,9 @@ uint32_t ItemStats::GetRequirement() const
     return GetValue<uint32_t>(Stat::AttributeValue, 0);
 }
 
-AttributeIndices ItemStats::GetAttribute() const
+Attribute ItemStats::GetAttribute() const
 {
-    return static_cast<AttributeIndices>(GetValue<int>(Stat::Attribute, (int)AttributeIndices::None));
+    return static_cast<Attribute>(GetValue<int>(Stat::Attribute, (int)Attribute::None));
 }
 
 int ItemStats::GetArmor(DamageType damageType) const
@@ -108,9 +108,9 @@ int ItemStats::GetArmor(DamageType damageType) const
     return value;
 }
 
-uint32_t ItemStats::GetAttributeIncrease(uint32_t index) const
+uint32_t ItemStats::GetAttributeIncrease(Attribute index) const
 {
-    return GetValue(static_cast<size_t>(Stat::AttributeOffset) + index, 0u);
+    return GetValue(static_cast<size_t>(Stat::AttributeOffset) + static_cast<size_t>(index), 0u);
 }
 
 int ItemStats::GetHealth() const

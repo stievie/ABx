@@ -92,10 +92,10 @@ public:
     /// Get an attribute
     /// @param index The index of the attribute, not the index in the array
     /// @return The attribute or nullptr
-    const AttributeValue* GetAttribute(uint32_t index) const;
+    const AttributeValue* GetAttribute(Attribute index) const;
     const Attributes& GetAttributes() const { return attributes_; }
-    bool SetAttributeValue(uint32_t index, uint32_t value);
-    uint32_t GetAttributeValue(uint32_t index) const;
+    bool SetAttributeValue(Attribute index, uint32_t value);
+    uint32_t GetAttributeValue(Attribute index) const;
     int GetUsedAttributePoints() const;
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;

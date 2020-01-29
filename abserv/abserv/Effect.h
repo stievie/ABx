@@ -28,6 +28,7 @@
 #include <AB/Entities/Skill.h>
 #include "Script.h"
 #include "Damage.h"
+#include "Attributes.h"
 
 namespace Game {
 
@@ -137,7 +138,7 @@ public:
     void GetAttackDamageType(DamageType& type);
     void GetArmor(DamageType type, int& value);
     void GetArmorPenetration(float& value);
-    void GetAttributeValue(uint32_t index, uint32_t& value);
+    void GetAttributeValue(Attribute index, uint32_t& value);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
     void GetRecources(int& maxHealth, int& maxEnergy);
