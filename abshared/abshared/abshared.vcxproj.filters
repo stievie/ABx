@@ -41,5 +41,8 @@
     <ClCompile Include="AttribAlgos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Attributes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
