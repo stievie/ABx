@@ -86,7 +86,7 @@ SkillBarWindow::~SkillBarWindow()
     UnsubscribeFromAllEvents();
 }
 
-void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
+void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");

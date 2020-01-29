@@ -1171,9 +1171,9 @@ bool Actor::LoadSkillTemplate(const std::string& templ)
 {
     AB::Entities::Profession p1;
     AB::Entities::Profession p2;
-    AB::Attributes attribs;
-    AB::SkillIndices skills;
-    if (!AB::TemplEncoder::Decode(templ, p1, p2, attribs, skills))
+    Game::Attributes attribs;
+    Game::SkillIndices skills;
+    if (!IO::TemplEncoder::Decode(templ, p1, p2, attribs, skills))
         return false;
     attributes_ = attribs;
     skills_ = skills;

@@ -92,6 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AttribAlgos.h" />
+    <ClInclude Include="Attributes.h" />
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TemplEncoder.h" />

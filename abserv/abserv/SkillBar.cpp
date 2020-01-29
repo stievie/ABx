@@ -145,7 +145,7 @@ bool SkillBar::HaveAttribute(uint32_t index)
     return false;
 }
 
-void SkillBar::SetAttributes(const AB::Attributes& attributes)
+void SkillBar::SetAttributes(const Attributes& attributes)
 {
     for (const auto& a : attributes)
     {
@@ -193,7 +193,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
 {
     AB::Entities::Profession p1;
     AB::Entities::Profession p2;
-    AB::Attributes attribs;
+    Attributes attribs;
     std::array<uint32_t, PLAYER_MAX_SKILLS> skills;
     if (!IO::TemplateEncoder::Decode(str, p1, p2, attribs, skills))
         return false;
@@ -282,11 +282,11 @@ int SkillBar::GetUsedAttributePoints() const
     int result = 0;
     for (const auto& a : attributes_)
         if (a.value > 0)
-            result += AB::CalcAttributeCost(static_cast<int>(a.value));
+            result += CalcAttributeCost(static_cast<int>(a.value));
     return result;
 }
 
-const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
+const AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 {
     for (const auto& a : attributes_)
     {
@@ -299,7 +299,7 @@ const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
 {
     // This works only when professions are set, which fill the attributes array
-    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib) {
+    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib) {
         return attrib.index == index;
     });
     if (it == attributes_.end())
@@ -309,7 +309,7 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
     if (value > (*it).value)
     {
         // If increasing the rank see if there are enough free points available
-        int cost = AB::CalcAttributeCost(static_cast<int>(value));
+        int cost = CalcAttributeCost(static_cast<int>(value));
         if (cost > (static_cast<int>(owner_.GetAttributePoints()) - GetUsedAttributePoints()))
             return false;
     }
@@ -320,7 +320,7 @@ bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
 uint32_t SkillBar::GetAttributeValue(uint32_t index) const
 {
     // This works only when professions are set, shich fill the attributes array
-    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib)
+    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib)
     {
         return attrib.index == index;
     });

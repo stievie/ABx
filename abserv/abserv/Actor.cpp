@@ -822,7 +822,7 @@ bool Actor::Interrupt()
 
 uint32_t Actor::GetAttributePoints() const
 {
-    return  AB::GetAttribPoints(GetLevel());
+    return  GetAttribPoints(GetLevel());
 }
 
 void Actor::AdvanceLevel()
@@ -1050,7 +1050,7 @@ uint32_t Actor::GetAttributeValue(uint32_t index)
 {
     uint32_t result = 0;
     // Skilled points
-    const AB::AttributeValue* val = skills_->GetAttribute(index);
+    const AttributeValue* val = skills_->GetAttribute(index);
     if (val != nullptr)
         result = val->value;
     // Increase by equipment

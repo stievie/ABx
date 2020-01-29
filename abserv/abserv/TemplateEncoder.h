@@ -43,7 +43,7 @@ public:
 
     static bool Decode(const std::string& templ,
         AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        AB::Attributes& attributes, AB::SkillIndices& skills);
+        Game::Attributes& attributes, Game::SkillIndices& skills);
 };
 
 }

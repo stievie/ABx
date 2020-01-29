@@ -37,7 +37,7 @@ private:
     SharedPtr<Button> skill6_;
     SharedPtr<Button> skill7_;
     SharedPtr<Button> skill8_;
-    AB::SkillIndices skills_;
+    Game::SkillIndices skills_;
     void SubscribeEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleSkill1Clicked(StringHash eventType, VariantMap& eventData);
@@ -55,6 +55,6 @@ public:
     SkillBarWindow(Context* context);
     ~SkillBarWindow() override;
 
-    void SetSkills(const AB::SkillIndices& skills);
+    void SetSkills(const Game::SkillIndices& skills);
 };
 

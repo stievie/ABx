@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 
-namespace AB {
+namespace Game {
 
 int CalcAttributeCost(int rank);
 uint32_t GetAttribPoints(uint32_t level);

@@ -23,11 +23,11 @@
 #include "TemplEncoder.h"
 #include <base64.h>
 
-namespace AB {
+namespace IO {
 
 std::string TemplEncoder::Encode(const AB::Entities::Profession& prof1,
     const AB::Entities::Profession& prof2,
-    const Attributes& attribs, const SkillIndices& skills)
+    const Game::Attributes& attribs, const Game::SkillIndices& skills)
 {
     std::vector<uint8_t> buff;
     // 1 Byte: Header
@@ -58,7 +58,7 @@ std::string TemplEncoder::Encode(const AB::Entities::Profession& prof1,
 }
 
 bool TemplEncoder::Decode(const std::string& templ, AB::Entities::Profession& prof1,
-    AB::Entities::Profession& prof2, Attributes& attribs, SkillIndices& skills)
+    AB::Entities::Profession& prof2, Game::Attributes& attribs, Game::SkillIndices& skills)
 {
     if (templ.empty())
         return false;

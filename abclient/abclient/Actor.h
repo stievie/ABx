@@ -187,8 +187,8 @@ public:
     uint32_t level_{ 0 };
     AB::Entities::Profession* profession_{ nullptr };
     AB::Entities::Profession* profession2_{ nullptr };
-    AB::SkillIndices skills_;
-    AB::Attributes attributes_;
+    Game::SkillIndices skills_;
+    Game::Attributes attributes_;
     /// Model or effect (in case of AOE) index
     uint32_t itemIndex_;
     AB::Entities::ModelClass modelClass_;

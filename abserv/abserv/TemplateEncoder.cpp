@@ -33,7 +33,7 @@ uint8_t TemplateEncoder::GetSkillsTemplateHeader()
 std::string TemplateEncoder::Encode(const Game::SkillBar& skills)
 {
     const Game::SkillsArray& _skills = skills.GetArray();
-    AB::SkillIndices sis;
+    Game::SkillIndices sis;
     size_t i = 0;
     for (const auto& s : _skills)
     {
@@ -41,14 +41,14 @@ std::string TemplateEncoder::Encode(const Game::SkillBar& skills)
         ++i;
     }
 
-    return AB::TemplEncoder::Encode(skills.prof1_, skills.prof2_, skills.GetAttributes(), sis);
+    return TemplEncoder::Encode(skills.prof1_, skills.prof2_, skills.GetAttributes(), sis);
 }
 
 bool TemplateEncoder::Decode(const std::string& templ,
     AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-    AB::Attributes& attributes, AB::SkillIndices& skills)
+    Game::Attributes& attributes, Game::SkillIndices& skills)
 {
-    return AB::TemplEncoder::Decode(templ, prof1, prof2, attributes, skills);
+    return TemplEncoder::Decode(templ, prof1, prof2, attributes, skills);
 }
 
 }

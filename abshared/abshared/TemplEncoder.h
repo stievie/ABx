@@ -22,7 +22,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "Mechanic.h"
+#include "Attributes.h"
 #include <array>
 #include <AB/Entities/Profession.h>
 #include <string>
@@ -30,16 +30,7 @@
 #define SKILLS_TEMPLATE_HEADER_VERSION (0)
 #define SKILLS_TEMPLATE_HEADER_TYPE (0xe)
 
-namespace AB {
-
-struct AttributeValue
-{
-    uint32_t index = 99;    // No attribute
-    uint32_t value = 0;     // How many points
-};
-
-typedef std::array<AttributeValue, Game::PLAYER_MAX_ATTRIBUTES> Attributes;
-typedef std::array<uint32_t, Game::PLAYER_MAX_SKILLS> SkillIndices;
+namespace IO {
 
 class TemplEncoder
 {
@@ -49,10 +40,10 @@ public:
         return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
     }
     static std::string Encode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
-        const Attributes& attribs, const SkillIndices& skills);
+        const Game::Attributes& attribs, const Game::SkillIndices& skills);
     static bool Decode(const std::string& templ,
         AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        Attributes& attribs, SkillIndices& skills);
+        Game::Attributes& attribs, Game::SkillIndices& skills);
 };
 
 }

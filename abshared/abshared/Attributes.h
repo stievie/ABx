@@ -22,8 +22,19 @@
 #pragma once
 
 #include <stdint.h>
+#include <array>
+#include "Mechanic.h"
 
 namespace Game {
+
+struct AttributeValue
+{
+    uint32_t index{ 99 };    // No attribute
+    uint32_t value{ 0 };     // How many points
+};
+
+typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;
+typedef std::array<uint32_t, PLAYER_MAX_SKILLS> SkillIndices;
 
 enum class AttributeIndices : uint32_t
 {

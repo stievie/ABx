@@ -38,7 +38,7 @@ class SkillBar
 {
 private:
     SkillsArray skills_;
-    AB::Attributes attributes_;
+    Attributes attributes_;
     Actor& owner_;
     int currentSkillIndex_{ -1 };
     int _LuaAddSkill(uint32_t skillIndex);
@@ -52,7 +52,7 @@ private:
         return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillEffectTarget>(target));
     }
     Skill* _LuaGetSkill(int index);
-    void SetAttributes(const AB::Attributes& attributes);
+    void SetAttributes(const Attributes& attributes);
     void ResetAttributes();
     bool HaveAttribute(uint32_t index);
 public:
@@ -92,8 +92,8 @@ public:
     /// Get an attribute
     /// @param index The index of the attribute, not the index in the array
     /// @return The attribute or nullptr
-    const AB::AttributeValue* GetAttribute(uint32_t index) const;
-    const AB::Attributes& GetAttributes() const { return attributes_; }
+    const AttributeValue* GetAttribute(uint32_t index) const;
+    const Attributes& GetAttributes() const { return attributes_; }
     bool SetAttributeValue(uint32_t index, uint32_t value);
     uint32_t GetAttributeValue(uint32_t index) const;
     int GetUsedAttributePoints() const;
