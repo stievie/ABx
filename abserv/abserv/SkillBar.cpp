@@ -20,16 +20,16 @@
  */
 
 #include "stdafx.h"
-#include "SkillBar.h"
-#include "TemplateEncoder.h"
-#include "Subsystems.h"
+#include "Actor.h"
+#include "AttribAlgos.h"
+#include "Attributes.h"
 #include "DataClient.h"
-#include "UuidUtils.h"
+#include "EffectsComp.h"
+#include "SkillBar.h"
 #include "SkillManager.h"
 #include "Subsystems.h"
-#include "Actor.h"
-#include "EffectsComp.h"
-#include "AttribAlgos.h"
+#include "TemplateEncoder.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -160,16 +160,6 @@ void SkillBar::ResetAttributes()
     attributes_.fill({ Attribute::None, 0u });
 }
 
-void SkillBar::ResetSecondProfAttributes()
-{
-    // Clear all attributes except for primary profession
-    for (size_t i = prof1_.attributeCount; i < PLAYER_MAX_ATTRIBUTES; ++i)
-    {
-        attributes_[i].index = Attribute::None;
-        attributes_[i].value = 0;
-    }
-}
-
 void SkillBar::InitAttributes()
 {
     ResetAttributes();
@@ -229,6 +219,7 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
     if (prof2_.index == index)
         return true;
 
+    // index = 0 means no secondary profession, which is legit
     AB::Entities::Profession p2;
     p2.uuid = Utils::Uuid::EMPTY_UUID;
     p2.index = index;
@@ -243,7 +234,7 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
         }
     }
     prof2_ = p2;
-    ResetSecondProfAttributes();
+    InitProf2Attribs(attributes_, prof1_, &prof2_);
     return true;
 }
 
@@ -320,13 +311,7 @@ bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
 uint32_t SkillBar::GetAttributeValue(Attribute index) const
 {
     // This works only when professions are set, which fill the attributes array
-    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib)
-    {
-        return attrib.index == index;
-    });
-    if (it == attributes_.end())
-        return 0;
-    return (*it).value;
+    return GetAttribVal(attributes_, index);
 }
 
 std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const

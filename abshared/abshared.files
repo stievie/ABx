@@ -1,6 +1,7 @@
 README.md
 abshared/AttribAlgos.cpp
 abshared/AttribAlgos.h
+abshared/Attributes.cpp
 abshared/Attributes.h
 abshared/Mechanic.h
 abshared/TemplEncoder.cpp

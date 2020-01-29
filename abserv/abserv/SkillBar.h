@@ -88,7 +88,6 @@ public:
     bool SetSkillByIndex(int pos, uint32_t skillIndex);
 
     void InitAttributes();
-    void ResetSecondProfAttributes();
     /// Get an attribute
     /// @param index The index of the attribute, not the index in the array
     /// @return The attribute or nullptr

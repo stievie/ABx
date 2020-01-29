@@ -780,7 +780,7 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
     int skillIndex = eventData[P_SKILLINDEX].GetInt();
     if (skillIndex < 1 || skillIndex > Game::PLAYER_MAX_SKILLS)
         return;
-    uint32_t skill = skills_[skillIndex - 1];
+    uint32_t skill = skills_[static_cast<size_t>(skillIndex - 1)];
     const AB::Entities::Skill* pSkill = GetSubsystem<SkillManager>()->GetSkillByIndex(skill);
     if (pSkill)
     {
@@ -1237,32 +1237,15 @@ void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
 
 uint32_t Actor::GetAttributeValue(Game::Attribute index) const
 {
-    for (const auto& a : attributes_)
-    {
-        if (a.index == index)
-            return a.value;
-    }
-    return 0;
+    return Game::GetAttribVal(attributes_, index);
 }
 
 void Actor::SetAttributeValue(Game::Attribute index, uint32_t value)
 {
-    for (auto& a : attributes_)
-    {
-        if (a.index == index)
-        {
-            a.value = value;
-            break;
-        }
-    }
+    Game::SetAttribVal(attributes_, index, value);
 }
 
 void Actor::ResetSecondProfAttributes()
 {
-    for (size_t i = profession_->attributeCount; i < attributes_.size(); ++i)
-    {
-        auto& a = attributes_[i];
-        a.index = static_cast<Game::Attribute>(profession2_->attributes[i - profession_->attributeCount].index);
-        a.value = 0;
-    }
+    Game::InitProf2Attribs(attributes_, *profession_, profession2_);
 }
