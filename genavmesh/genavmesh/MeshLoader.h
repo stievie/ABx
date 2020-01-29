@@ -1,10 +1,12 @@
 #pragma once
 
+#include <sa/PragmaWarning.h>
 #include <string>
-#pragma warning(push)
-#pragma warning(disable: 4244 4456)
+
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 #include <stb_image.h>
-#pragma warning(pop)
+PRAGMA_WARNING_POP
 #include <vector>
 #include <assimp/vector3.h>           // Output data structure
 
