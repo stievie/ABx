@@ -32,8 +32,7 @@
     table << "test" << sa::tab::endc << "col2" << sa::tab::endc << sa::tab::ralign << "longer column" << sa::tab::endr;
     table << "second row" << sa::tab::endc << "col2" << sa::tab::endc << sa::tab::ralign << "col3";
 
-    sa::tab::padding pad(table.width(), '=');
-    std::cout << pad << std::endl << table << pad << std::endl;
+    std::cout << std::endl << table << std::endl;
   */
 // Output:
 /*
@@ -44,6 +43,7 @@ test       | col2  | longer column
 second row | col2  |          col3
 ==================================
  */
+// Requires: C++17
 
 #include <vector>
 #include <sstream>
@@ -73,22 +73,11 @@ struct escape_type
     T value_;
 };
 
-typedef escape_type<char, struct end_row> end_row_type;
-typedef escape_type<char, struct end_col> end_col_type;
+typedef escape_type<char, struct end_row_tag> end_row_type;
+typedef escape_type<char, struct end_col_tag> end_col_type;
 typedef escape_type<char, struct left_align_tag> left_align_type;
 typedef escape_type<char, struct right_align_tag> right_align_type;
 typedef escape_type<char, struct heading_tag> heading_type;
-
-}
-
-static constexpr details::end_row_type endr{ '_' };
-static constexpr details::end_col_type endc{ '|' };
-static constexpr details::left_align_type lalign{ '<' };
-static constexpr details::right_align_type ralign{ '>' };
-static constexpr details::heading_type head{ '*' };
-
-class row;
-class table;
 
 class padding
 {
@@ -103,6 +92,17 @@ public:
     size_t count_;
     char value_{ ' ' };
 };
+
+}
+
+inline constexpr details::end_row_type endr{ '_' };
+inline constexpr details::end_col_type endc{ '|' };
+inline constexpr details::left_align_type lalign{ '<' };
+inline constexpr details::right_align_type ralign{ '>' };
+inline constexpr details::heading_type head{ '*' };
+
+class row;
+class table;
 
 class col
 {
@@ -139,10 +139,10 @@ public:
     col& operator << (const T& v)
     {
         content_ << v;
-        return*this;
+        return *this;
     }
     size_t length() const { return content_.str().size(); }
-    bool empty() const { return content_.str().length() == 0; }
+    bool empty() const { return content_.str().empty(); }
     std::stringstream content_;
     align align_{ align::left };
 };
@@ -206,7 +206,6 @@ public:
     table()
     {
         rows_.push_back(row(*this));
-        rows_.back().cols_.push_back(col(rows_.back()));
     }
     table& operator << (row&& r)
     {
@@ -215,6 +214,8 @@ public:
     }
     row& operator << (details::heading_type v)
     {
+        if (rows_.back().cols_.empty())
+            rows_.back().cols_.push_back(col(rows_.back()));
         return rows_.back() << v;
     }
     row& operator << (details::end_row_type)
@@ -287,16 +288,14 @@ inline _Stream& operator << (_Stream& os, table& value)
 {
     if (value.table_sep_ != '\0')
     {
-        size_t w = value.width();
-        for (size_t sepi = 0; sepi < w; ++sepi)
-            os << value.table_sep_;
-        os << std::endl;
+        details::padding pad(value.width(), value.table_sep_);
+        os << pad << std::endl;
     }
 
     for (size_t i = 0; i < value.count(); ++i)
     {
         const auto& r = value[i];
-        // Last row may be empty then we don't want to add a new line
+        // Last row may be empty, then we don't want to add a new line
         if (i == value.count() - 1 && r.count() == 0)
             continue;
 
@@ -310,7 +309,7 @@ inline _Stream& operator << (_Stream& os, table& value)
                 os << c.content_.str();
             if (pad > 0)
             {
-                padding p(static_cast<size_t>(pad));
+                details::padding p(static_cast<size_t>(pad));
                 os << p;
             }
             if (c.align_ == col::align::right)
@@ -322,24 +321,21 @@ inline _Stream& operator << (_Stream& os, table& value)
         if (r.heading_)
         {
             os << std::endl;
-            size_t w = value.width();
-            for (size_t sepi = 0; sepi < w; ++sepi)
-                os << value.heading_sep_;
+            details::padding pad(value.width(), value.heading_sep_);
+            os << pad;
         }
         os << std::endl;
     }
     if (value.table_sep_ != '\0')
     {
-        size_t w = value.width();
-        for (size_t sepi = 0; sepi < w; ++sepi)
-            os << value.table_sep_;
-        os << std::endl;
+        details::padding pad(value.width(), value.table_sep_);
+        os << pad << std::endl;
     }
     return os;
 }
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, padding& value)
+inline _Stream& operator << (_Stream& os, details::padding& value)
 {
     for (size_t i = 0; i < value.count_; ++i)
         os << value.value_;
