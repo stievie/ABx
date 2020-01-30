@@ -28,7 +28,7 @@
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 1; i != arguments_.size(); i++)
+    for (size_t i = 1; i != arguments_.size(); i++)
     {
         const std::string& a = arguments_[i];
         if (a.compare("-hull") == 0)
@@ -115,5 +115,7 @@ void Application::Run()
             action.Execute();
         }
         break;
+    default:
+        return;
     }
 }

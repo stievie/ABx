@@ -21,10 +21,12 @@
 
 #pragma once
 
-#pragma warning(push)
-#pragma warning(disable: 4244 4456)
+#include <sa/PragmaWarning.h>
+
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 #include <stb_image.h>
-#pragma warning(pop)
+PRAGMA_WARNING_POP
 #include "Vector3.h"
 #include "Point.h"
 
@@ -42,10 +44,10 @@ private:
     std::vector<unsigned short> indices_;
     std::vector<Math::Vector3> normals_;
 
-    int width_;
-    int height_;
-    int components_;
-    stbi_uc* data_;
+    int width_{ 0 };
+    int height_{ 0 };
+    int components_{ 0 };
+    stbi_uc* data_{ nullptr };
     void SaveObj();
     void SaveHeightMap();
     void CreateGeometry();
@@ -54,9 +56,6 @@ private:
 public:
     CreateHeightMapAction(const std::string& file) :
         file_(file),
-        data_(nullptr),
-        width_(0),
-        height_(0),
         spacing_(Math::Vector3(1.0f, 0.2f, 1.0f))
     {}
     ~CreateHeightMapAction()

@@ -20,11 +20,16 @@
  */
 
 #include "stdafx.h"
+#include <sa/PragmaWarning.h>
 #include "CreateHullAction.h"
 #include "Hull.h"
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_GCC("-Wdeprecated-copy")
+PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
+PRAGMA_WARNING_POP
 #include "StringUtils.h"
 
 void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
@@ -35,7 +40,10 @@ void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
         StanHull::HullDesc desc;
         desc.SetHullFlag(StanHull::QF_TRIANGLES);
         desc.mVcount = (unsigned)vertices.size();
+        PRAGMA_WARNING_PUSH
+        PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
         desc.mVertices = &vertices[0].x;
+        PRAGMA_WARNING_POP
         desc.mVertexStride = 3 * sizeof(float);
         desc.mSkinWidth = 0.0f;
 
@@ -50,8 +58,11 @@ void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
         indexData_.resize(indexCount_);
 
         // Copy vertex data & index data
+        PRAGMA_WARNING_PUSH
+        PRAGMA_WARNING_DISABLE_GCC("-Wclass-memaccess")
         memcpy(vertexData_.data(), result.mOutputVertices, vertexCount_ * sizeof(aiVector3D));
         memcpy(indexData_.data(), result.mIndices, indexCount_ * sizeof(unsigned));
+        PRAGMA_WARNING_POP
 
         lib.ReleaseResult(result);
 

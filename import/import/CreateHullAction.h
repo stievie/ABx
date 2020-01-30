@@ -22,21 +22,21 @@
 #pragma once
 
 #include <assimp/vector3.h>
+#include <vector>
+#include <string>
 
 class CreateHullAction
 {
 private:
     std::string file_;
-    unsigned vertexCount_;
-    unsigned indexCount_;
+    unsigned vertexCount_{ 0 };
+    unsigned indexCount_{ 0 };
     std::vector<aiVector3D> vertexData_;
     std::vector<unsigned> indexData_;
     void BuildHull(const std::vector<aiVector3D>& vertices);
     void Save();
 public:
     CreateHullAction(const std::string& file) :
-        vertexCount_(0),
-        indexCount_(0),
         file_(file)
     {}
     ~CreateHullAction() = default;

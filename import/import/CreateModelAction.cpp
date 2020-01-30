@@ -20,10 +20,15 @@
  */
 
 #include "stdafx.h"
+#include <sa/PragmaWarning.h>
 #include "CreateModelAction.h"
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_GCC("-Wdeprecated-copy")
+PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
+PRAGMA_WARNING_POP
 #include "StringUtils.h"
 
 void CreateModelAction::Save()

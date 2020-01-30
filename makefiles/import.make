@@ -7,7 +7,7 @@ TARGET = $(TARGETDIR)/import$(SUFFIX)
 SOURDEDIR = ../import/import
 OBJDIR = obj/x64/$(CONFIG)/import
 LIBS += -labsmath -labscommon -lpthread -lassimp
-CXXFLAGS += 
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)

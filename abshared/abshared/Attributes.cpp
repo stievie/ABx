@@ -27,7 +27,7 @@ namespace Game {
 
 uint32_t GetAttribVal(const Attributes& attributes, Attribute index)
 {
-    // This works only when professions are set, which fill the attributes array
+    // This works only when professions are set, which fills the attributes array
     auto it = std::find_if(attributes.begin(), attributes.end(), [&](const AttributeValue& attrib)
     {
         return attrib.index == index;
@@ -56,7 +56,12 @@ void InitProf2Attribs(Attributes& attributes, const AB::Entities::Profession& pr
     {
         auto& a = attributes[i];
         if (prof2)
-            a.index = static_cast<Attribute>(prof2->attributes[i - prof1.attributeCount].index);
+        {
+            if (prof2->attributes.size() > i - prof1.attributeCount)
+                a.index = static_cast<Attribute>(prof2->attributes[i - prof1.attributeCount].index);
+            else
+                a.index = Attribute::None;
+        }
         else
             a.index = Attribute::None;
         a.value = 0;
