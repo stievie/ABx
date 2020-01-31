@@ -93,6 +93,14 @@ public:
     char value_{ ' ' };
 };
 
+template<class _Stream>
+inline _Stream& operator << (_Stream& os, const padding& value)
+{
+    for (size_t i = 0; i < value.count_; ++i)
+        os << value.value_;
+    return os;
+}
+
 }
 
 inline constexpr details::end_row_type endr{ '_' };
@@ -288,7 +296,7 @@ inline _Stream& operator << (_Stream& os, table& value)
 {
     if (value.table_sep_ != '\0')
     {
-        details::padding pad(value.width(), value.table_sep_);
+        const details::padding pad(value.width(), value.table_sep_);
         os << pad << std::endl;
     }
 
@@ -309,7 +317,7 @@ inline _Stream& operator << (_Stream& os, table& value)
                 os << c.content_.str();
             if (pad > 0)
             {
-                details::padding p(static_cast<size_t>(pad));
+                const details::padding p(static_cast<size_t>(pad));
                 os << p;
             }
             if (c.align_ == col::align::right)
@@ -321,24 +329,16 @@ inline _Stream& operator << (_Stream& os, table& value)
         if (r.heading_)
         {
             os << std::endl;
-            details::padding pad(value.width(), value.heading_sep_);
+            const details::padding pad(value.width(), value.heading_sep_);
             os << pad;
         }
         os << std::endl;
     }
     if (value.table_sep_ != '\0')
     {
-        details::padding pad(value.width(), value.table_sep_);
+        const details::padding pad(value.width(), value.table_sep_);
         os << pad << std::endl;
     }
-    return os;
-}
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, details::padding& value)
-{
-    for (size_t i = 0; i < value.count_; ++i)
-        os << value.value_;
     return os;
 }
 
