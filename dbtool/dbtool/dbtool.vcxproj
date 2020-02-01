@@ -15,7 +15,7 @@
     <ProjectGuid>{1265A2DD-79BA-411B-A2FB-943587261019}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>dbtool</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
