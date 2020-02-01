@@ -6,9 +6,9 @@ variables:
   buildPlatform: 'x64'
 
 jobs:
-  - job: 'VS2017_Win2016'
+  - job: 'VS2019_Win2019'
     pool:
-      vmImage: 'VS2017-Win2016'
+      vmImage: 'windows-2019'
 
     variables:
       solution: 'absall/*.sln'

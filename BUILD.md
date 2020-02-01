@@ -7,16 +7,13 @@ The server needs a C++17 compiler.
 The Server is  known to compile on the following platforms with the following
 tools chains:
 
-* Windows 7 with VS 2017 (don't have Windows 10)
+* Windows 7 with VS 2019
 * Debian, Ubuntu, Arch, Manjaro Linux with GCC 8 and newer.
 
 ## Windows
 
-Visual Studio 2017 required. Open `.sln` files and build. There are `.sln` files in `absall` and
+Visual Studio 2019 required. Open `.sln` files and build. There are `.sln` files in `absall` and
 in the directories of the projects.
-
-I use Visual Studio 2019 as IDE with the Visual Studio 2017 tools chain. I didn't try the Visual
-Studio 2019 tools chain yet.
 
 ### Server
 
