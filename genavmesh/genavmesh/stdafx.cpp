@@ -9,10 +9,6 @@ PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 PRAGMA_WARNING_POP
 
 #if defined(_MSC_VER)
-#pragma comment(lib, "assimp-vc140-mt.lib")
-#ifdef _DEBUG
-#pragma comment(lib, "zlibstaticd.lib")
-#else
+#pragma comment(lib, "assimp-vc142-mt.lib")
 #pragma comment(lib, "zlibstatic.lib")
-#endif
 #endif

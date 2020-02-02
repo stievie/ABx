@@ -82,7 +82,7 @@ typedef escape_type<char, struct heading_tag> heading_type;
 class padding
 {
 public:
-    constexpr padding(size_t count) noexcept :
+    constexpr explicit padding(size_t count) noexcept :
         count_(count)
     { }
     constexpr padding(size_t count, char value) noexcept :
@@ -122,7 +122,7 @@ public:
         left,
         right
     };
-    col(row& parent) :
+    explicit col(row& parent) :
         parent_(parent)
     { }
     col(const col& other) :
@@ -162,7 +162,7 @@ private:
     table& parent_;
     std::vector<col> cols_;
 public:
-    row(table& parent) :
+    explicit row(table& parent) :
         parent_(parent)
     { }
     row(const row& other) :

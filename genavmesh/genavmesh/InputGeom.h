@@ -27,7 +27,7 @@ static const int MAX_CONVEXVOL_PTS = 12;
 
 struct ConvexVolume
 {
-	float verts[MAX_CONVEXVOL_PTS*3];
+	float verts[MAX_CONVEXVOL_PTS * 3];
 	float hmin, hmax;
 	int nverts;
 	int area;
@@ -70,33 +70,33 @@ struct BuildSettings
 	// Size of the tiles in voxels
 	float tileSize;
 
-    float hmScaleX;
-    float hmScaleY;
-    float hmScaleZ;
+	float hmScaleX;
+	float hmScaleY;
+	float hmScaleZ;
 };
 
 class InputGeom
 {
 public:
-    enum MeshType
-    {
-        MeshTypeUnknown,
-        MeshTypeGeomSet,
-        MeshTypeMesh,
-        MeshTypeHeightmap
-    };
+	enum MeshType
+	{
+		MeshTypeUnknown,
+		MeshTypeGeomSet,
+		MeshTypeMesh,
+		MeshTypeHeightmap
+	};
 private:
-    rcChunkyTriMesh* m_chunkyMesh;
-    MeshLoader* m_mesh;
+	rcChunkyTriMesh* m_chunkyMesh;
+	MeshLoader* m_mesh;
 	float m_meshBMin[3], m_meshBMax[3];
 	BuildSettings m_buildSettings;
 	bool m_hasBuildSettings;
-    MeshType type_;
+	MeshType type_;
 
 	/// @name Off-Mesh connections.
 	///@{
 	static const int MAX_OFFMESH_CONNECTIONS = 256;
-	float m_offMeshConVerts[MAX_OFFMESH_CONNECTIONS*3*2];
+	float m_offMeshConVerts[MAX_OFFMESH_CONNECTIONS * 3 * 2];
 	float m_offMeshConRads[MAX_OFFMESH_CONNECTIONS];
 	unsigned char m_offMeshConDirs[MAX_OFFMESH_CONNECTIONS];
 	unsigned char m_offMeshConAreas[MAX_OFFMESH_CONNECTIONS];
@@ -112,16 +112,16 @@ private:
 	int m_volumeCount;
 	///@}
 
-    bool loadMesh(class rcContext* ctx, const std::string& filepath);
-    bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
-    bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
+	bool loadMesh(class rcContext* ctx, const std::string& filepath);
+	bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
+	bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 public:
 	InputGeom();
 	~InputGeom();
 
 	bool load(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 	bool saveGeomSet(const BuildSettings* settings);
-    bool saveObj(const BuildSettings* settings, const std::string& filename);
+	bool saveObj(const BuildSettings* settings, const std::string& filename);
 
 	/// Method to return static mesh data.
 	const MeshLoader* getMesh() const { return m_mesh; }
@@ -131,8 +131,8 @@ public:
 	const float* getNavMeshBoundsMax() const { return m_hasBuildSettings ? m_buildSettings.navMeshBMax : m_meshBMax; }
 	const rcChunkyTriMesh* getChunkyMesh() const { return m_chunkyMesh; }
 	const BuildSettings* getBuildSettings() const { return m_hasBuildSettings ? &m_buildSettings : 0; }
-    MeshType GetType() const { return type_; }
-    bool raycastMesh(float* src, float* dst, float& tmin);
+	MeshType GetType() const { return type_; }
+	bool raycastMesh(float* src, float* dst, float& tmin);
 
 	/// @name Off-Mesh connections.
 	///@{
@@ -144,7 +144,7 @@ public:
 	const unsigned short* getOffMeshConnectionFlags() const { return m_offMeshConFlags; }
 	const unsigned int* getOffMeshConnectionId() const { return m_offMeshConId; }
 	void addOffMeshConnection(const float* spos, const float* epos, const float rad,
-							  unsigned char bidir, unsigned char area, unsigned short flags);
+		unsigned char bidir, unsigned char area, unsigned short flags);
 	void deleteOffMeshConnection(int i);
 	void drawOffMeshConnections(struct duDebugDraw* dd, bool hilight = false);
 	///@}
@@ -154,15 +154,15 @@ public:
 	int getConvexVolumeCount() const { return m_volumeCount; }
 	const ConvexVolume* getConvexVolumes() const { return m_volumes; }
 	void addConvexVolume(const float* verts, const int nverts,
-						 const float minh, const float maxh, unsigned char area);
+		const float minh, const float maxh, unsigned char area);
 	void deleteConvexVolume(int i);
 	void drawConvexVolumes(struct duDebugDraw* dd, bool hilight = false);
 	///@}
 
 private:
 	// Explicitly disabled copy constructor and copy assignment operator.
-    InputGeom(const InputGeom&) = delete;
-    InputGeom& operator=(const InputGeom&) = delete;
+	InputGeom(const InputGeom&) = delete;
+	InputGeom& operator=(const InputGeom&) = delete;
 };
 
 #endif // INPUTGEOM_H
