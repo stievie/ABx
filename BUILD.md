@@ -70,8 +70,13 @@ Required lib files for the client not in this repository:
 
 Clone Urho3D from GitHub (https://github.com/urho3d/Urho3D, I think version 1.7
 should work). Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
-`/Lib/x64/Release`). Copy Urho3D header files to `Include/Urho3D`. Copy
-Urho3D assets to the `bin` directory:
+`/Lib/x64/Release`). Copy or symlink the directory with Urho3D header files to `Include/`,
+so there is a `Include/Urho3D` directory, e.g:
+~~~sh
+$ ln -s /home/sa/src/Urho3D/include/Urho3D/ /home/sa/src/ABx/Include/
+~~~
+
+Copy Urho3D assets to the `bin` directory:
 ~~~plain
 bin
   - Autoload
