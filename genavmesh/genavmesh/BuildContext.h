@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include "DebugDraw.h"
 #include "Recast.h"
 #include "RecastDump.h"

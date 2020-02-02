@@ -456,7 +456,6 @@ unsigned char* TileBuilder::buildTileMesh(InputGeom* geom, const BuildSettings& 
     m_ctx->stopTimer(RC_TIMER_TOTAL);
 
     // Show performance stats.
-    duLogBuildTimes(*m_ctx, m_ctx->getAccumulatedTime(RC_TIMER_TOTAL));
     m_ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
 
     m_tileBuildTime = m_ctx->getAccumulatedTime(RC_TIMER_TOTAL) / 1000.0f;
