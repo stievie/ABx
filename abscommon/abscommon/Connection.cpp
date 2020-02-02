@@ -188,7 +188,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     ++packetsSent_;
     if ((ConnectionManager::maxPacketsPerSec != 0) && (packetsSent_ / timePassed) > ConnectionManager::maxPacketsPerSec)
     {
-        LOG_ERROR << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
+        LOG_WARNING << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
         Close(true);
         return;
     }
@@ -202,9 +202,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     int32_t size = msg_->GetHeaderSize();
     if (size == 0 || size >= static_cast<int32_t>(NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE) - 16)
     {
-#ifdef DEBUG_NET
-        LOG_WARNING << "Invalid message size " << size << std::endl;
-#endif
+        LOG_WARNING << "Invalid message size " << size << " disconnecting client" << std::endl;
         Close(true);
         return;
     }

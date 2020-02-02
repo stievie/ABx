@@ -19,9 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// abmatch.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "stdafx.h"
 #include "Application.h"
 #include "ServiceConfig.h"

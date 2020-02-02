@@ -26,8 +26,7 @@
 namespace Game {
 
 Terrain::Terrain() :
-    IO::Asset(),
-    heightMap_(nullptr)
+    IO::Asset()
 {
 }
 

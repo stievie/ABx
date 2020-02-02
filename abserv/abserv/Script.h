@@ -38,7 +38,7 @@ public:
     Script() :
         IO::Asset()
     { }
-    ~Script() final;
+    ~Script() override;
 
     std::vector<char>& GetBuffer()
     {

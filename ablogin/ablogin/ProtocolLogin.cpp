@@ -52,7 +52,7 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     uint16_t version = message.Get<uint16_t>();
     if (version != AB::PROTOCOL_VERSION)
     {
-        LOG_ERROR << "Wrong protocol version from client " << Utils::ConvertIPToString(clientIp) << std::endl;
+        LOG_WARNING << "Wrong protocol version from client " << Utils::ConvertIPToString(clientIp) << std::endl;
         DisconnectClient(AB::ErrorCodes::WrongProtocolVersion);
         return;
     }

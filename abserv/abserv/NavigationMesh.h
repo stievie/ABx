@@ -41,7 +41,7 @@ private:
     std::unique_ptr<FindPathData> pathData_;
 public:
     NavigationMesh();
-    ~NavigationMesh() final;
+    ~NavigationMesh() override;
 
     static std::string GetStatusString(dtStatus status);
 
