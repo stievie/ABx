@@ -38,6 +38,8 @@
 #include <AB/Packets/Packet.h>
 #include <AB/CommonConfig.h>
 
+//#define DEBUG_NET
+
 namespace Net {
 
 void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
@@ -58,6 +60,9 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(clientIp))
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "IP " << clientIp << " is banned" << std::endl;
+#endif
         DisconnectClient(AB::ErrorCodes::IPBanned);
         return;
     }
@@ -99,7 +104,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     if (packet.accountName.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account name " << accountName << std::endl;
+        LOG_ERROR << "Account name is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidAccountName);
         return;
@@ -107,7 +112,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     if (packet.password.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid password " << password << std::endl;
+        LOG_ERROR << "Password is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;
@@ -188,7 +193,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+        LOG_ERROR << "Account UUID id empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
@@ -196,7 +201,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid password " << password << std::endl;
+        LOG_ERROR << "Auth token is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
@@ -244,7 +249,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+        LOG_ERROR << "Account UUID is empy" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
@@ -252,7 +257,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid password " << password << std::endl;
+        LOG_ERROR << "Auth token is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
@@ -306,7 +311,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+        LOG_ERROR << "Account UUID is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
@@ -314,7 +319,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid token" << std::endl;
+        LOG_ERROR << "Auth Token is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::TokenAuthFailure);
         return;
@@ -338,7 +343,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     if (packet.accountUuid.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+        LOG_ERROR << "Account UUID is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidAccount);
         return;
@@ -346,7 +351,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     if (packet.authToken.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid token" << std::endl;
+        LOG_ERROR << "Auth Token is empty" << std::endl;
 #endif
         DisconnectClient(AB::ErrorCodes::InvalidPassword);
         return;

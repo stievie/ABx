@@ -162,7 +162,10 @@ bool Application::LoadMain()
     {
         if (!serviceManager_->Add<Net::ProtocolLogin>(ip, serverPort_, [](uint32_t remoteIp) -> bool
         {
-            return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
+            bool ret = GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
+            if (!ret)
+                LOG_INFO << "Not accepting connection from " << Utils::ConvertIPToString(remoteIp) << std::endl;
+            return ret;
         }))
             return false;
     }
