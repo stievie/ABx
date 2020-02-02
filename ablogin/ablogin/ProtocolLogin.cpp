@@ -60,7 +60,7 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(clientIp))
     {
-        LOG_ERROR << "IP " << Utils::ConvertIPToString(clientIp) << " is banned" << std::endl;
+        LOG_WARNING << "IP " << Utils::ConvertIPToString(clientIp) << " is banned" << std::endl;
         DisconnectClient(AB::ErrorCodes::IPBanned);
         return;
     }

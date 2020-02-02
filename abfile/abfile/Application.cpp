@@ -452,7 +452,10 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(ip))
+    {
+        LOG_WARNING << "IP " << Utils::ConvertIPToString(ip) << " is banned" << std::endl;
         return false;
+    }
 
     if (!requireAuth_)
         return true;

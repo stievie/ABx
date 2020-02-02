@@ -164,7 +164,7 @@ bool Application::LoadMain()
         {
             bool ret = GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
             if (!ret)
-                LOG_INFO << "Not accepting connection from " << Utils::ConvertIPToString(remoteIp) << std::endl;
+                LOG_WARNING << "Not accepting connection from " << Utils::ConvertIPToString(remoteIp) << std::endl;
             return ret;
         }))
             return false;
