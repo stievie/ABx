@@ -16,6 +16,8 @@ abscommon/Dispatcher.cpp
 abscommon/Dispatcher.h
 abscommon/FileUtils.cpp
 abscommon/FileUtils.h
+abscommon/FileWatcher.cpp
+abscommon/FileWatcher.h
 abscommon/IpList.cpp
 abscommon/IpList.h
 abscommon/Logger.cpp
