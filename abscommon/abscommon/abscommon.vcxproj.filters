@@ -138,6 +138,9 @@
     <ClInclude Include="Logo.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="FileWatcher.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -231,6 +234,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BanManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatcher.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
