@@ -33,19 +33,19 @@ bool Application::ParseCommandLine()
         const std::string& a = arguments_[i];
         if (a.compare("-hull") == 0)
         {
-            action_ = CreateHull;
+            action_ = Action::CreateHull;
         }
         else if (a.compare("-hm") == 0)
         {
-            action_ = CreateHeightMap;
+            action_ = Action::CreateHeightMap;
         }
         else if (a.compare("-model") == 0)
         {
-            action_ = CreateModel;
+            action_ = Action::CreateModel;
         }
         else if (a.compare("-scene") == 0)
         {
-            action_ = CreateScene;
+            action_ = Action::CreateScene;
         }
         else if (a.compare("-h") == 0 || a.compare("-?") == 0)
         {
@@ -54,7 +54,7 @@ bool Application::ParseCommandLine()
         else
             files_.push_back(a);
     }
-    return action_ != Unknown;
+    return action_ != Action::Unknown;
 }
 
 void Application::ShowHelp()
@@ -87,28 +87,28 @@ void Application::Run()
 
     switch (action_)
     {
-    case CreateHull:
+    case Action::CreateHull:
         for (const auto& file : files_)
         {
             CreateHullAction action(file);
             action.Execute();
         }
         break;
-    case CreateHeightMap:
+    case Action::CreateHeightMap:
         for (const auto& file : files_)
         {
             CreateHeightMapAction action(file);
             action.Execute();
         }
         break;
-    case CreateModel:
+    case Action::CreateModel:
         for (const auto& file : files_)
         {
             CreateModelAction action(file);
             action.Execute();
         }
         break;
-    case CreateScene:
+    case Action::CreateScene:
         for (const auto& file : files_)
         {
             CreateSceneAction action(file);

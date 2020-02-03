@@ -298,26 +298,26 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     }
 
-        server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_versions_$"]["GET"] = std::bind(&Application::GetHandlerVersions, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_items_$"]["GET"] = std::bind(&Application::GetHandlerItems, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_quests_$"]["GET"] = std::bind(&Application::GetHandlerQuests, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
-        server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
-            std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_versions_$"]["GET"] = std::bind(&Application::GetHandlerVersions, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_items_$"]["GET"] = std::bind(&Application::GetHandlerItems, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_quests_$"]["GET"] = std::bind(&Application::GetHandlerQuests, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
 
     auto* dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
@@ -475,7 +475,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     const std::string token = (*it).second.substr(36);
     if (Utils::Uuid::IsEmpty(token) || Utils::Uuid::IsEmpty(accId))
     {
-        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+        LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Wrong Auth header " << (*it).second << std::endl;
         banMan->AddLoginAttempt(ip, false);
         return false;
@@ -485,7 +485,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     acc.uuid = accId;
     if (!dataClient->Read(acc))
     {
-        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+        LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Unable to read account " << accId << std::endl;
         return false;
     }
@@ -493,6 +493,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         return false;
     if (banMan->IsAccountBanned(uuids::uuid(acc.uuid)))
     {
+        LOG_WARNING << "Account " << acc.uuid << " is banned" << std::endl;
         banMan->AddLoginAttempt(ip, false);
         return false;
     }
@@ -563,7 +564,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         {
             auto length = ifs->tellg();
             ifs->seekg(0, std::ios::beg);
-            UpdateBytesSent(length);
+            UpdateBytesSent(static_cast<size_t>(length));
 
             header.emplace("Content-Length", to_string(length));
             response->write(header);
@@ -585,13 +586,14 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
                         {
                             if (maxBitsPerSec > 0)
                                 // Throttle to meet max throughput
-                                std::this_thread::sleep_for(std::chrono::milliseconds((read_length * 8 * 1000) / maxBitsPerSec));
-                            response->send([maxBitsPerSec, response, ifs](const SimpleWeb::error_code &ec)
+                                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<unsigned long>(read_length * 8 * 1000) / maxBitsPerSec));
+                            response->send([maxBitsPerSec, response, ifs](const SimpleWeb::error_code& ec)
                             {
                                 if (!ec)
                                     read_and_send(maxBitsPerSec, response, ifs);
                                 else
-                                    LOG_ERROR << "Connection interrupted" << std::endl;
+                                    LOG_ERROR << "Connection interrupted " << ec.default_error_condition().value() << " " <<
+                                              ec.default_error_condition().message() << std::endl;
                             });
                         }
                     }

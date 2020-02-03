@@ -226,7 +226,7 @@ void CreateHeightMapAction::Execute()
 
     CreateGeometry();
 
-    SaveHeightMap(),
+    SaveHeightMap();
     SaveObj();
 
 }

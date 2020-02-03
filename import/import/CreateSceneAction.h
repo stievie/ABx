@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <string>
+
 class CreateSceneAction
 {
 private:

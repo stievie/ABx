@@ -21,10 +21,13 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+
 class Application
 {
 private:
-    enum Action
+    enum class Action
     {
         Unknown,
         CreateHull,
@@ -32,7 +35,7 @@ private:
         CreateModel,
         CreateScene
     };
-    Action action_ = Unknown;
+    Action action_{ Action::Unknown };
     bool ParseCommandLine();
     std::vector<std::string> files_;
     void ShowHelp();
