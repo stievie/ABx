@@ -43,4 +43,6 @@ public:
     void Commit() { committed_ = true; }
 };
 
+template <typename T> Transaction(T&) -> Transaction<T>;
+
 }
