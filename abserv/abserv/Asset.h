@@ -27,13 +27,16 @@ namespace IO {
 
 class Asset
 {
+protected:
+    std::string fileName_;
 public:
     Asset() :
         fileName_("")
     {}
     virtual ~Asset();
 
-    std::string fileName_;
+    void SetFileName(const std::string& value);
+    const std::string& GetFileName() const { return fileName_; }
 };
 
 }

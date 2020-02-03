@@ -26,4 +26,9 @@ namespace IO {
 
 Asset::~Asset() = default;
 
+void Asset::SetFileName(const std::string& value)
+{
+    fileName_ = value;
+}
+
 }

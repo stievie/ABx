@@ -160,20 +160,22 @@ public:
     bool Import(T& asset, const std::string& name)
     {
         const std::string file = GetFile(name);
-        if (FileExists(file))
+        if (!FileExists(file))
         {
-            IOAssetImpl<T>* imp = static_cast<IOAssetImpl<T>*>(GetImporter<T>());
-            if (!imp)
-            {
-                LOG_WARNING << "No importer found for " << name << std::endl;
-                return false;
-            }
-            asset.fileName_ = file;
-            return imp->Import(asset, file);
-        }
-        else
             LOG_WARNING << "File not found " << name << std::endl;
-        return false;
+            return false;
+        }
+
+        IOAssetImpl<T>* imp = static_cast<IOAssetImpl<T>*>(GetImporter<T>());
+        if (!imp)
+        {
+            LOG_WARNING << "No importer found for " << name << std::endl;
+            return false;
+        }
+        bool r = imp->Import(asset, file);
+        if (r)
+            asset.SetFileName(file);
+        return r;
     }
 
     template<class T>
