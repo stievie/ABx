@@ -290,8 +290,10 @@ void ClientApp::Start()
     SetRandomSeed(Time::GetSystemTime());
     SetWindowTitleAndIcon();
 
-    GetSubsystem<Input>()->SetMouseVisible(true);
-    GetSubsystem<Input>()->SetMouseGrabbed(false);
+    auto* input = GetSubsystem<Input>();
+    input->SetMouseMode(MM_ABSOLUTE);
+    input->SetMouseVisible(true);
+    input->SetMouseGrabbed(false);
 
     // Let's use the default style that comes with Urho3D.
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
