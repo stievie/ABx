@@ -1055,10 +1055,23 @@ uint32_t Actor::GetAttributeRank(Attribute index)
         result = val->value;
     // Increase by equipment
     result += inventoryComp_->GetAttributeRank(index);
-    // Increase by effects
-    uint32_t value = 0;
+
+    // Effects can in- or decrease the attribute rank
+    int32_t value = 0;
     effectsComp_->GetAttributeRank(index, value);
-    result += value;
+    if (value == 0)
+        return result;
+
+    if (value < 0)
+    {
+        // It's not possible to have a negative attribute rank
+        if (static_cast<uint32_t>(abs(value)) < result)
+            result -= static_cast<uint32_t>(abs(value));
+        else
+            result = 0;
+    }
+    else
+        result += static_cast<uint32_t>(value);
     return result;
 }
 

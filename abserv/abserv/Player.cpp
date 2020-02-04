@@ -378,29 +378,28 @@ void Player::CRQDropInventoryItem(uint16_t pos)
     uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
     auto* cache = GetSubsystem<ItemsCache>();
     auto* item = cache->Get(itemId);
-    if (item)
-    {
+    if (!item)
+        return;
 
-        item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
-        item->concreteItem_.storagePos = 0;
-        auto rng = GetSubsystem<Crypto::Random>();
-        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
-        drop->transformation_.position_ = transformation_.position_;
-        // Random pos around dropper
-        drop->transformation_.position_.y_ += 0.2f;
-        drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-        drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-        drop->SetSource(GetPtr<Player>());
-        GetGame()->SpawnItemDrop(drop);
+    item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
+    item->concreteItem_.storagePos = 0;
+    auto rng = GetSubsystem<Crypto::Random>();
+    std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
+    drop->transformation_.position_ = transformation_.position_;
+    // Random pos around dropper
+    drop->transformation_.position_.y_ += 0.2f;
+    drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+    drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+    drop->SetSource(GetPtr<Actor>());
+    GetGame()->SpawnItemDrop(drop);
 
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
-        AB::Packets::Server::InventoryItemDelete packet = {
-            pos
-        };
-        AB::Packets::Add(packet, *msg);
-        WriteToOutput(*msg);
-    }
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+    AB::Packets::Server::InventoryItemDelete packet = {
+        pos
+    };
+    AB::Packets::Add(packet, *msg);
+    WriteToOutput(*msg);
 }
 
 void Player::CRQGetChest()

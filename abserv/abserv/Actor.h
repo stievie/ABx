@@ -290,6 +290,7 @@ public:
     {
         inputComp_->Add(type);
     }
+    // Get the effective attribute rank. This is attributes from Skills+Equipment+Effects
     uint32_t GetAttributeRank(Attribute index);
 
     GameObject* GetSelectedObject() const
