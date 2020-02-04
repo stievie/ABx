@@ -87,7 +87,6 @@ private:
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
     void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
-    void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
     void SetSkillBarSkills();
 };
 

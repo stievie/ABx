@@ -424,6 +424,7 @@ URHO3D_EVENT(E_GOT_GUILDMEMBERS, GotGuildMembers)
 
 URHO3D_EVENT(E_SET_ATTRIBUTEVALUE, SetAttributeValue)
 {
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
     URHO3D_PARAM(P_ATTRIBINDEX, AttribIndex);  // uint32_t
     URHO3D_PARAM(P_VALUE, Value);              // int8_t
     URHO3D_PARAM(P_REMAINING, Remaining);      // uint8_t
@@ -437,6 +438,7 @@ URHO3D_EVENT(E_SET_SECPROFESSION, SetSecProfession)
 
 URHO3D_EVENT(E_SET_SKILL, SetSkill)
 {
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
     URHO3D_PARAM(P_SKILLINDEX, SkillIndex);   // uint32_t
     URHO3D_PARAM(P_SKILLPOS, Pos);            // uint8_t
 }

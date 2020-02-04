@@ -245,9 +245,9 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::NpcHasQuest& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDeleted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewarded& packet) override;
-    void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::SetObjectAttributeValue& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) override;
-    void OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) override;
 
     void SetState(Client::State state)

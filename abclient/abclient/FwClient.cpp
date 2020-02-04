@@ -1929,10 +1929,11 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestRewa
     QueueEvent(Events::E_QUESTREWARDED, eData);
 }
 
-void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerAttributeValue& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetObjectAttributeValue& packet)
 {
     using namespace Events::SetAttributeValue;
     VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.objectId;
     eData[P_ATTRIBINDEX] = packet.attribIndex;
     eData[P_VALUE] = packet.value;
     eData[P_REMAINING] = packet.remaining;
@@ -1948,10 +1949,11 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSecProfessionC
     QueueEvent(Events::E_SET_SECPROFESSION, eData);
 }
 
-void FwClient::OnPacket(int64_t, const AB::Packets::Server::SetPlayerSkill& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSetSkill& packet)
 {
     using namespace Events::SetSkill;
     VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.objectId;
     eData[P_SKILLINDEX] = packet.skillIndex;
     eData[P_SKILLPOS] = packet.pos;
     QueueEvent(Events::E_SET_SKILL, eData);

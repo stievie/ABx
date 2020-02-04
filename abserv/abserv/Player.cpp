@@ -1177,8 +1177,9 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
     uint32_t newValue = skills_->GetAttributeRank(index);
     int remaining = static_cast<int>(GetAttributePoints()) - skills_->GetUsedAttributePoints();
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);
-    AB::Packets::Server::SetPlayerAttributeValue packet {
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetAttributeValue);
+    AB::Packets::Server::SetObjectAttributeValue packet {
+        id_,
         attribIndex,
         static_cast<int8_t>(newValue),
         static_cast<uint8_t>(remaining)
@@ -1193,8 +1194,9 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
         skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
     const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetSkill);
-    AB::Packets::Server::SetPlayerSkill packet {
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
+    AB::Packets::Server::ObjectSetSkill packet {
+        id_,
         newIndex,
         pos
     };

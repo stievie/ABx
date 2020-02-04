@@ -104,11 +104,19 @@ void SkillsWindow::SubscribeEvents()
 
 void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
 {
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
     using namespace Events::SetAttributeValue;
+    if (player->gameId_ != eventData[P_OBJECTID].GetUInt())
+        return;
+
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
     unsigned remaining = eventData[P_REMAINING].GetUInt();
-    SetAttributeValue(attribIndex, value, remaining);
+    SetAttributeValue(*player, attribIndex, value, remaining);
 }
 
 void SkillsWindow::HandleSkillsChanged(StringHash, VariantMap& eventData)
@@ -259,15 +267,15 @@ Spinner* SkillsWindow::GetAttributeSpinner(uint32_t index)
     return spinner;
 }
 
-void SkillsWindow::UpdateAttribsHeader()
+void SkillsWindow::UpdateAttribsHeader(const Actor& actor)
 {
     Text* header = GetChildStaticCast<Text>("AttributeHeaderText", true);
     std::stringstream ss;
-    ss << "Attributes: " << remainingAttribPoints_ << " available";
+    ss << "Attributes: " << actor.GetAvailableAttributePoints() << " available";
     header->SetText(String(ss.str().c_str()));
 }
 
-void SkillsWindow::SetAttributeValue(uint32_t index, int value, unsigned remaining)
+void SkillsWindow::SetAttributeValue(const Actor& actor, uint32_t index, int value, unsigned)
 {
     auto* spinner = GetAttributeSpinner(index);
     if (!spinner)
@@ -276,14 +284,8 @@ void SkillsWindow::SetAttributeValue(uint32_t index, int value, unsigned remaini
     // Should also update the edit text
     spinner->SetValue(value);
 
-    remainingAttribPoints_ = remaining;
-    UpdateAttribsHeader();
-
-    auto* lm = GetSubsystem<LevelManager>();
-    auto* player = lm->GetPlayer();
-    if (!player)
-        return;
-    spinner->SetCanIncrease(player->CanIncreaseAttributeRank(static_cast<Game::Attribute>(index)));
+    spinner->SetCanIncrease(actor.CanIncreaseAttributeRank(static_cast<Game::Attribute>(index)));
+    UpdateAttribsHeader(actor);
 }
 
 void SkillsWindow::UpdateAttributes(const Actor& actor)
@@ -366,6 +368,8 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
                 addAttribute(secAttribs, attrib);
         }
     }
+
+    UpdateAttribsHeader(actor);
 
     attribContainer->SetFixedHeight(static_cast<int>(p1->attributeCount * 22));
     attribContainer->UpdateLayout();

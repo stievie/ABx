@@ -167,6 +167,7 @@ private:
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
     void HandleObjectSecProfessionChange(StringHash eventType, VariantMap& eventData);
     void HandleLoadSkillTemplate(StringHash eventType, VariantMap& eventData);
+    void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:

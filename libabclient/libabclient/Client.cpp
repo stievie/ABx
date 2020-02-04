@@ -938,7 +938,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestReward
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerAttributeValue& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetObjectAttributeValue& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }
@@ -948,7 +948,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecPr
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SetPlayerSkill& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

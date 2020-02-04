@@ -97,9 +97,9 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::QuestDeleted, ServerPacketType::QuestDeleted>();
     AddHandler<AB::Packets::Server::QuestRewarded, ServerPacketType::QuestRewarded>();
     AddHandler<AB::Packets::Server::PlayerInfo, ServerPacketType::PlayerInfo>();
-    AddHandler<AB::Packets::Server::SetPlayerAttributeValue, ServerPacketType::PlayerSetAttributeValue>();
+    AddHandler<AB::Packets::Server::SetObjectAttributeValue, ServerPacketType::ObjectSetAttributeValue>();
     AddHandler<AB::Packets::Server::ObjectSecProfessionChanged, ServerPacketType::ObjectSecProfessionChanged>();
-    AddHandler<AB::Packets::Server::SetPlayerSkill, ServerPacketType::PlayerSetSkill>();
+    AddHandler<AB::Packets::Server::ObjectSetSkill, ServerPacketType::ObjectSetSkill>();
     AddHandler<AB::Packets::Server::SkillTemplateLoaded, ServerPacketType::PlayerSkillTemplLoaded>();
 }
 

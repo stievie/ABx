@@ -942,27 +942,31 @@ struct PartyMembersInfo
     }
 };
 
-struct SetPlayerAttributeValue
+struct SetObjectAttributeValue
 {
+    uint32_t objectId;
     uint32_t attribIndex;
     int8_t value;
     uint8_t remaining;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(objectId);
         ar.value(attribIndex);
         ar.value(value);
         ar.value(remaining);
     }
 };
 
-struct SetPlayerSkill
+struct ObjectSetSkill
 {
+    uint32_t objectId;
     uint32_t skillIndex;
     uint8_t pos;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(objectId);
         ar.value(skillIndex);
         ar.value(pos);
     }

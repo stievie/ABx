@@ -62,6 +62,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
     SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(Actor, HandleObjectSecProfessionChange));
+    SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(Actor, HandleSetAttribValue));
 }
 
 Actor::~Actor()
@@ -1274,4 +1275,15 @@ bool Actor::CanIncreaseAttributeRank(Game::Attribute index) const
         return false;
     int cost = Game::CalcAttributeCost(currRank + 1);
     return cost <= GetAvailableAttributePoints();
+}
+
+void Actor::HandleSetAttribValue(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetAttributeValue;
+    if (eventData[P_OBJECTID].GetUInt() != gameId_)
+        return;
+
+    uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
+    int value = eventData[P_VALUE].GetInt();
+    SetAttributeRank(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
 }
