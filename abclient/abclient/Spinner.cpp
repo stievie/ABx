@@ -39,17 +39,17 @@ Spinner::Spinner(Context* context) :
 
     SetLayoutMode(LM_VERTICAL);
 
-    auto* buttonIncrease = CreateChild<Button>("Increase");
-    buttonIncrease->SetInternal(true);
-    buttonIncrease->SetRepeat(DEFAULT_REPEAT_DELAY, DEFAULT_REPEAT_RATE);
-    buttonIncrease->SetFocusMode(FM_NOTFOCUSABLE);
-    SubscribeToEvent(buttonIncrease, E_RELEASED, URHO3D_HANDLER(Spinner, HandleIncreaseClicked));
+    buttonIncrease_ = CreateChild<Button>("Increase");
+    buttonIncrease_->SetInternal(true);
+    buttonIncrease_->SetRepeat(DEFAULT_REPEAT_DELAY, DEFAULT_REPEAT_RATE);
+    buttonIncrease_->SetFocusMode(FM_NOTFOCUSABLE);
+    SubscribeToEvent(buttonIncrease_, E_RELEASED, URHO3D_HANDLER(Spinner, HandleIncreaseClicked));
 
-    auto* buttonDecrease = CreateChild<Button>("Decrease");
-    buttonDecrease->SetInternal(true);
-    buttonDecrease->SetRepeat(DEFAULT_REPEAT_DELAY, DEFAULT_REPEAT_RATE);
-    buttonDecrease->SetFocusMode(FM_NOTFOCUSABLE);
-    SubscribeToEvent(buttonDecrease, E_RELEASED, URHO3D_HANDLER(Spinner, HandleDecreaseClicked));
+    buttonDecrease_ = CreateChild<Button>("Decrease");
+    buttonDecrease_->SetInternal(true);
+    buttonDecrease_->SetRepeat(DEFAULT_REPEAT_DELAY, DEFAULT_REPEAT_RATE);
+    buttonDecrease_->SetFocusMode(FM_NOTFOCUSABLE);
+    SubscribeToEvent(buttonDecrease_, E_RELEASED, URHO3D_HANDLER(Spinner, HandleDecreaseClicked));
 
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(Spinner, HandleMouseWheel));
 
@@ -154,6 +154,9 @@ void Spinner::Validate()
     value_ = Clamp(value_, min_, max_);
     if (auto e = edit_.Lock())
         e->SetText(String(value_));
+    buttonIncrease_->SetEnabled(value_ < max_);
+    buttonDecrease_->SetEnabled(value_ > min_);
+
     SendValueChangedEvent();
 }
 

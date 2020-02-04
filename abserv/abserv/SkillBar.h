@@ -96,6 +96,7 @@ public:
     bool SetAttributeValue(Attribute index, uint32_t value);
     uint32_t GetAttributeValue(Attribute index) const;
     int GetUsedAttributePoints() const;
+    int GetAvailableAttributePoints() const;
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
     std::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;

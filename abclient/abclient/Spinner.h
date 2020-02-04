@@ -40,6 +40,8 @@ private:
     int oldValue_{ 0 };
     unsigned step_{ 1 };
     WeakPtr<LineEdit> edit_;
+    SharedPtr<Button> buttonIncrease_;
+    SharedPtr<Button> buttonDecrease_;
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
     void HandleIncreaseClicked(StringHash eventType, VariantMap& eventData);
     void HandleDecreaseClicked(StringHash eventType, VariantMap& eventData);

@@ -439,6 +439,7 @@ void FwClient::LoadProfessions(uint32_t curVersion)
         prof.abbr = pro.attribute("abbr").as_string();
         prof.modelIndexFemale = pro.attribute("model_index_female").as_uint();
         prof.modelIndexMale = pro.attribute("model_index_male").as_uint();
+        prof.attributeCount = pro.attribute("num_attr").as_uint();
         for (const auto& attr : pro.children("attr"))
         {
             prof.attributes.push_back({ attr.attribute("uuid").as_string(), 0, false });

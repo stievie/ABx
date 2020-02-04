@@ -218,8 +218,6 @@ void SkillsWindow::SetProfessionIndex(uint32_t index)
         }
     }
 
-    auto* sm = GetSubsystem<SkillManager>();
-    player->profession2_ = sm->GetProfessionByIndex(index);
     UpdateAttributes(*player);
     UpdateSkills(*player);
     UpdateLayout();
@@ -303,7 +301,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
     auto addAttribute = [&](UIElement* container, const AB::Entities::AttriInfo& attr)
     {
         auto a = sm->GetAttributeByIndex(attr.index);
-        if(!a)
+        if (!a)
             return;
 
         auto* cont = container->CreateChild<UIElement>();
@@ -335,7 +333,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         spinner->SetFixedHeight(22);
 
         spinner->SetMin(0);
-        spinner->SetMax(20);
+        spinner->SetMax(Game::MAX_PLAYER_ATTRIBUTE_RANK);
         spinner->SetValue(actor.GetAttributeValue(static_cast<Game::Attribute>(attr.index)));
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
@@ -343,14 +341,6 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         {
             using namespace ValueChanged;
             int attrValue = eventData[P_VALUE].GetInt();
-            if (attrValue < 0)
-                return;
-            if (static_cast<uint32_t>(attrValue) > Game::MAX_PLAYER_ATTRIBUTE_RANK)
-            {
-                Spinner* control = static_cast<Spinner*>(eventData[P_ELEMENT].GetPtr());
-                control->SetValue(eventData[P_OLDVALUE].GetInt());
-                return;
-            }
 
             auto* client = GetSubsystem<FwClient>();
             client->SetAttributeValue(attrIndex, static_cast<uint8_t>(attrValue));

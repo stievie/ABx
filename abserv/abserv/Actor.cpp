@@ -822,7 +822,7 @@ bool Actor::Interrupt()
 
 uint32_t Actor::GetAttributePoints() const
 {
-    return  GetAttribPoints(GetLevel());
+    return GetAttribPoints(GetLevel());
 }
 
 void Actor::AdvanceLevel()

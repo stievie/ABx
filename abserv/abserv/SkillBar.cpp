@@ -30,6 +30,7 @@
 #include "Subsystems.h"
 #include "TemplateEncoder.h"
 #include "UuidUtils.h"
+#include "Logger.h"
 
 namespace Game {
 
@@ -277,6 +278,11 @@ int SkillBar::GetUsedAttributePoints() const
     return result;
 }
 
+int SkillBar::GetAvailableAttributePoints() const
+{
+    return static_cast<int>(owner_.GetAttributePoints()) - GetUsedAttributePoints();
+}
+
 const AttributeValue* SkillBar::GetAttribute(Attribute index) const
 {
     for (const auto& a : attributes_)
@@ -301,8 +307,12 @@ bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
     {
         // If increasing the rank see if there are enough free points available
         int cost = CalcAttributeCost(static_cast<int>(value));
-        if (cost > (static_cast<int>(owner_.GetAttributePoints()) - GetUsedAttributePoints()))
+        if (cost > GetAvailableAttributePoints())
+        {
+            LOG_WARNING << "Not enough attribute points available. Required: " << cost <<
+                ", available " << GetAvailableAttributePoints() << ", total " << owner_.GetAttributePoints() << std::endl;
             return false;
+        }
     }
     (*it).value = value;
     return true;

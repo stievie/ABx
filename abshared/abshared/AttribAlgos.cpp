@@ -59,6 +59,8 @@ uint32_t GetAttribPoints(uint32_t level)
         result += ADVANCE_ATTRIB_11_15 * (clamp(level, 11, 15) - 10);
     if (level > 15)
         result += ADVANCE_ATTRIB_16_20 * (clamp(level, 16, 20) - 15);
+    if (level >= LEVEL_CAP)
+        result += 30;
     if (level > LEVEL_CAP)
         result += ADVANCE_ATTRIB_16_20 * (20 - level);
     return result;
