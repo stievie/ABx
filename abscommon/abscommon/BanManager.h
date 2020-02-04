@@ -37,7 +37,7 @@ struct BanInfo
 
 struct LoginBlock
 {
-    time_t lastLoginTime;
+    int64_t lastLoginTime;
     uint32_t numberOfLogins;
 };
 
@@ -78,10 +78,10 @@ public:
     bool IsIpBanned(uint32_t clientIP, uint32_t mask = 0xFFFFFFFF) const;
     /// May happen when there are too many connections from this IP
     bool IsAccountBanned(const uuids::uuid& accountUuid);
-    bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires,
+    bool AddIpBan(uint32_t ip, uint32_t mask, int64_t expires,
         const std::string& adminUuid, const std::string& comment,
         AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
-    bool AddAccountBan(const std::string& accountUuid, int32_t expires,
+    bool AddAccountBan(const std::string& accountUuid, int64_t expires,
         const std::string& adminUuid, const std::string& comment,
         AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
 };
