@@ -126,7 +126,7 @@ public:
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     void GetSkillRecharge(Skill* skill, uint32_t& recharge);
-    void GetAttributeValue(Attribute index, uint32_t& value);
+    void GetAttributeRank(Attribute index, uint32_t& value);
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);
     /// Get value of this item with all mods

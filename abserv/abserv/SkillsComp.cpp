@@ -248,7 +248,7 @@ Skill* SkillsComp::GetCurrentSkill()
 
 void SkillsComp::GetResources(int&, int &maxEnergy)
 {
-    uint32_t estorage = owner_.GetAttributeValue(Attribute::EnergyStorage);
+    uint32_t estorage = owner_.GetAttributeRank(Attribute::EnergyStorage);
     maxEnergy += (estorage * 3);
 }
 
@@ -257,7 +257,7 @@ void SkillsComp::GetSkillRecharge(Skill* skill, uint32_t& recharge)
     if (!skill->IsType(AB::Entities::SkillTypeSpell))
         return;
     // Recharge time of all Spells is decreased by the Fastcast attribute in PvE and PvP
-    const uint32_t fastcast = owner_.GetAttributeValue(Attribute::FastCast);
+    const uint32_t fastcast = owner_.GetAttributeRank(Attribute::FastCast);
     if (fastcast == 0)
         return;
     float reduce = static_cast<float>(recharge) / 100.0f * (3.0f * static_cast<float>(fastcast));
@@ -271,7 +271,7 @@ void SkillsComp::GetSkillCost(Skill* skill,
     int32_t& activation, int32_t& energy, int32_t&, int32_t&, int32_t&)
 {
     // Expertise reduces energy cost of ranger skills
-    const uint32_t expertise = owner_.GetAttributeValue(Attribute::Expertise);
+    const uint32_t expertise = owner_.GetAttributeRank(Attribute::Expertise);
     if (expertise != 0)
     {
         // Must be a ranger
@@ -285,7 +285,7 @@ void SkillsComp::GetSkillCost(Skill* skill,
         }
     }
 
-    const uint32_t fastcast = owner_.GetAttributeValue(Attribute::FastCast);
+    const uint32_t fastcast = owner_.GetAttributeRank(Attribute::FastCast);
     if (fastcast != 0)
     {
         if (skill->IsType(AB::Entities::SkillTypeSignet))

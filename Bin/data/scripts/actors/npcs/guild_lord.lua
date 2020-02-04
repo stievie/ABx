@@ -16,8 +16,8 @@ function onInit()
   local skillBar = self:GetSkillBar()
   -- Add a heal skill
 --  skillBar:AddSkill(1)
-  skillBar:SetAttributeValue(ATTRIB_TACTICS, 12)
-  skillBar:SetAttributeValue(ATTRIB_STRENGTH, 12)
+  skillBar:SetAttributeRank(ATTRIB_TACTICS, 12)
+  skillBar:SetAttributeRank(ATTRIB_STRENGTH, 12)
   return true
 end
 

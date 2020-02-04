@@ -149,13 +149,27 @@ void Spinner::SetEdit(SharedPtr<LineEdit> value)
     Validate();
 }
 
+void Spinner::SetCanIncrease(bool value)
+{
+    if (canIncrease_ == value)
+        return;
+    buttonIncrease_->SetEnabled((value_ < max_) && canIncrease_);
+}
+
+void Spinner::SetCanDecrease(bool value)
+{
+    if (canDecrease_ == value)
+        return;
+    buttonDecrease_->SetEnabled((value_ > min_) && canDecrease_);
+}
+
 void Spinner::Validate()
 {
     value_ = Clamp(value_, min_, max_);
     if (auto e = edit_.Lock())
         e->SetText(String(value_));
-    buttonIncrease_->SetEnabled(value_ < max_);
-    buttonDecrease_->SetEnabled(value_ > min_);
+    buttonIncrease_->SetEnabled((value_ < max_) && canIncrease_);
+    buttonDecrease_->SetEnabled((value_ > min_) && canDecrease_);
 
     SendValueChangedEvent();
 }

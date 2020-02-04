@@ -277,11 +277,11 @@ void EffectsComp::GetArmorPenetration(float& value)
     }
 }
 
-void EffectsComp::GetAttributeValue(Attribute index, uint32_t& value)
+void EffectsComp::GetAttributeRank(Attribute index, uint32_t& value)
 {
     for (const auto& effect : effects_)
     {
-        effect->GetAttributeValue(index, value);
+        effect->GetAttributeRank(index, value);
     }
 }
 

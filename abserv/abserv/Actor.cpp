@@ -126,7 +126,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetClosestAlly", &Actor::GetClosestAlly)
         .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
 
-        .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
+        .addFunction("GetAttributeRank", &Actor::GetAttributeRank)
     );
 }
 
@@ -713,7 +713,7 @@ int32_t Actor::GetAttackDamage(bool critical)
     weapon->GetWeaponDamage(damage, critical);
     const Attribute attrib = weapon->GetWeaponAttribute();
     const uint32_t req = weapon->GetWeaponRequirement();
-    if (GetAttributeValue(attrib) < req)
+    if (GetAttributeRank(attrib) < req)
         // If requirements are not met, damage is the half
         damage /= 2;
 
@@ -725,7 +725,7 @@ int32_t Actor::GetAttackDamage(bool critical)
 float Actor::GetArmorPenetration()
 {
     // 1. Attribute strength
-    const float strength = static_cast<float>(GetAttributeValue(Attribute::Strength));
+    const float strength = static_cast<float>(GetAttributeRank(Attribute::Strength));
     float value = (strength * 0.01f);
     // 2. Weapons
     value += inventoryComp_->GetArmorPenetration();
@@ -753,7 +753,7 @@ float Actor::GetCriticalChance(const Actor* other)
         return 0.0f;
 
     const Attribute attrib = weapon->GetWeaponAttribute();
-    const float attribVal = static_cast<float>(GetAttributeValue(attrib));
+    const float attribVal = static_cast<float>(GetAttributeRank(attrib));
     const float myLevel = static_cast<float>(GetLevel());
     const float otherLevel = static_cast<float>(other->GetLevel());
 
@@ -1046,7 +1046,7 @@ bool Actor::IsAlly(const Actor* other) const
     return ((GetFriendMask() & other->GetFriendMask()) != 0);
 }
 
-uint32_t Actor::GetAttributeValue(Attribute index)
+uint32_t Actor::GetAttributeRank(Attribute index)
 {
     uint32_t result = 0;
     // Skilled points
@@ -1054,10 +1054,10 @@ uint32_t Actor::GetAttributeValue(Attribute index)
     if (val != nullptr)
         result = val->value;
     // Increase by equipment
-    result += inventoryComp_->GetAttributeValue(index);
+    result += inventoryComp_->GetAttributeRank(index);
     // Increase by effects
     uint32_t value = 0;
-    effectsComp_->GetAttributeValue(index, value);
+    effectsComp_->GetAttributeRank(index, value);
     result += value;
     return result;
 }

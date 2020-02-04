@@ -70,8 +70,9 @@ struct AttributeValue
 typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;
 typedef std::array<uint32_t, PLAYER_MAX_SKILLS> SkillIndices;
 
-uint32_t GetAttribVal(const Attributes& attributes, Attribute index);
-bool SetAttribVal(Attributes& attributes, Attribute index, uint32_t value);
+uint32_t GetAttribRank(const Attributes& attributes, Attribute index);
+bool SetAttribRank(Attributes& attributes, Attribute index, uint32_t value);
 void InitProf2Attribs(Attributes& attributes, const AB::Entities::Profession& prof1, const AB::Entities::Profession* prof2);
+int GetUsedAttribPoints(const Attributes& attributes);
 
 }

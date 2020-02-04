@@ -290,7 +290,7 @@ public:
     {
         inputComp_->Add(type);
     }
-    uint32_t GetAttributeValue(Attribute index);
+    uint32_t GetAttributeRank(Attribute index);
 
     GameObject* GetSelectedObject() const
     {

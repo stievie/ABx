@@ -22,9 +22,9 @@ function onInit()
   skillBar:AddSkill(42)
   skillBar:AddSkill(61)
   skillBar:AddSkill(40)
-  skillBar:SetAttributeValue(ATTRIB_FASTCAST, 10)
-  skillBar:SetAttributeValue(ATTRIB_INSPIRATION, 8)
-  skillBar:SetAttributeValue(ATTRIB_DOMINATION, 12)
+  skillBar:SetAttributeRank(ATTRIB_FASTCAST, 10)
+  skillBar:SetAttributeRank(ATTRIB_INSPIRATION, 8)
+  skillBar:SetAttributeRank(ATTRIB_DOMINATION, 12)
 
   skillBar:AddSkill(2)
 

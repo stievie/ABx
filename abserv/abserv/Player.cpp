@@ -1172,9 +1172,9 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
     Attribute index = static_cast<Attribute>(attribIndex);
 
     if (IsInOutpost() && value <= MAX_PLAYER_ATTRIBUTE_RANK)
-        skills_->SetAttributeValue(index, value);
+        skills_->SetAttributeRank(index, value);
 
-    uint32_t newValue = skills_->GetAttributeValue(index);
+    uint32_t newValue = skills_->GetAttributeRank(index);
     int remaining = static_cast<int>(GetAttributePoints()) - skills_->GetUsedAttributePoints();
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSetAttributeValue);

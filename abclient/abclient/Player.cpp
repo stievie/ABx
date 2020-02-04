@@ -121,7 +121,7 @@ void Player::HandleSetAttribValue(StringHash, VariantMap& eventData)
     using namespace Events::SetAttributeValue;
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
-    SetAttributeValue(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
+    SetAttributeRank(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
 }
 
 void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)

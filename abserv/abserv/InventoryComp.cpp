@@ -237,12 +237,12 @@ float InventoryComp::GetArmorPenetration()
     return value;
 }
 
-uint32_t InventoryComp::GetAttributeValue(Attribute index)
+uint32_t InventoryComp::GetAttributeRank(Attribute index)
 {
     uint32_t result = 0;
     VisitEquipement([&](Item& item)
     {
-        item.GetAttributeValue(index, result);
+        item.GetAttributeRank(index, result);
         return Iteration::Continue;
     });
     return result;

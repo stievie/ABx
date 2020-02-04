@@ -136,8 +136,8 @@ public:
     void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
 
-    uint32_t GetAttributeValue(Game::Attribute index) const;
-    void SetAttributeValue(Game::Attribute index, uint32_t value);
+    uint32_t GetAttributeRank(Game::Attribute index) const;
+    void SetAttributeRank(Game::Attribute index, uint32_t value);
 
     Vector<String> materials_;
     Vector3 velocity_;
@@ -216,6 +216,10 @@ public:
     void PlayIdleAnimation(float fadeTime);
     void PlayStateAnimation(float fadeTime = 0.2f);
     void ShowSpeechBubble(const String& text);
+    int GetAttributePoints() const;
+    int GetUsedAttributePoints() const;
+    int GetAvailableAttributePoints() const;
+    bool CanIncreaseAttributeRank(Game::Attribute index) const;
 
     void ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value);
 

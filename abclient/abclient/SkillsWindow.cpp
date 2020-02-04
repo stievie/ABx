@@ -278,6 +278,12 @@ void SkillsWindow::SetAttributeValue(uint32_t index, int value, unsigned remaini
 
     remainingAttribPoints_ = remaining;
     UpdateAttribsHeader();
+
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+    spinner->SetCanIncrease(player->CanIncreaseAttributeRank(static_cast<Game::Attribute>(index)));
 }
 
 void SkillsWindow::UpdateAttributes(const Actor& actor)
@@ -334,7 +340,8 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
 
         spinner->SetMin(0);
         spinner->SetMax(Game::MAX_PLAYER_ATTRIBUTE_RANK);
-        spinner->SetValue(actor.GetAttributeValue(static_cast<Game::Attribute>(attr.index)));
+        spinner->SetValue(actor.GetAttributeRank(static_cast<Game::Attribute>(attr.index)));
+        spinner->SetCanIncrease(actor.CanIncreaseAttributeRank(static_cast<Game::Attribute>(attr.index)));
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
         SubscribeToEvent(spinner, E_VALUECHANGED, [this, attrIndex = attr.index](StringHash, VariantMap& eventData)

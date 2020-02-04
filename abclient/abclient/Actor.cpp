@@ -35,6 +35,8 @@
 #include <AB/Entities/Skill.h>
 #include "HealthBar.h"
 #include "SkillManager.h"
+#include "AttribAlgos.h"
+#include "Mechanic.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -1235,17 +1237,41 @@ void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
     }
 }
 
-uint32_t Actor::GetAttributeValue(Game::Attribute index) const
+uint32_t Actor::GetAttributeRank(Game::Attribute index) const
 {
-    return Game::GetAttribVal(attributes_, index);
+    return Game::GetAttribRank(attributes_, index);
 }
 
-void Actor::SetAttributeValue(Game::Attribute index, uint32_t value)
+void Actor::SetAttributeRank(Game::Attribute index, uint32_t value)
 {
-    Game::SetAttribVal(attributes_, index, value);
+    Game::SetAttribRank(attributes_, index, value);
 }
 
 void Actor::ResetSecondProfAttributes()
 {
     Game::InitProf2Attribs(attributes_, *profession_, profession2_);
+}
+
+int Actor::GetAttributePoints() const
+{
+    return Game::GetAttribPoints(level_);
+}
+
+int Actor::GetUsedAttributePoints() const
+{
+    return GetUsedAttribPoints(attributes_);
+}
+
+int Actor::GetAvailableAttributePoints() const
+{
+    return GetAttributePoints() - GetUsedAttributePoints();
+}
+
+bool Actor::CanIncreaseAttributeRank(Game::Attribute index) const
+{
+    uint32_t currRank = GetAttributeRank(index);
+    if (currRank >= Game::MAX_PLAYER_ATTRIBUTE_RANK)
+        return false;
+    int cost = Game::CalcAttributeCost(currRank + 1);
+    return cost <= GetAvailableAttributePoints();
 }

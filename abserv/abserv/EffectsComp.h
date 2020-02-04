@@ -95,7 +95,7 @@ public:
     void GetAttackDamage(int32_t& value);
     void GetArmor(DamageType type, int& value);
     void GetArmorPenetration(float& value);
-    void GetAttributeValue(Attribute index, uint32_t& value);
+    void GetAttributeRank(Attribute index, uint32_t& value);
     void GetResources(int& maxHealth, int& maxEnergy);
 
     EffectList effects_;

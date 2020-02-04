@@ -549,7 +549,7 @@ void Item::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int3
     }
 }
 
-void Item::GetAttributeValue(Attribute index, uint32_t& value)
+void Item::GetAttributeRank(Attribute index, uint32_t& value)
 {
     // Equipment (e.g. runes) may increase the attributes
     value += stats_.GetAttributeIncrease(index);
@@ -559,7 +559,7 @@ void Item::GetAttributeValue(Attribute index, uint32_t& value)
     {
         auto* item = cache->Get(i.second);
         if (item)
-            item->GetAttributeValue(index, value);
+            item->GetAttributeRank(index, value);
     }
 }
 

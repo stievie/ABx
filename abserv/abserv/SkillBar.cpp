@@ -45,8 +45,8 @@ void SkillBar::RegisterLua(kaguya::State& state)
         .addFunction("GetSkillsWithEffectTarget", &SkillBar::_LuaGetSkillsWithEffectTarget)
         .addFunction("AddSkill", &SkillBar::_LuaAddSkill)
         .addFunction("HaveAttribute", &SkillBar::HaveAttribute)
-        .addFunction("SetAttributeValue", &SkillBar::SetAttributeValue)
-        .addFunction("GetAttributeValue", &SkillBar::GetAttributeValue)
+        .addFunction("SetAttributeRank", &SkillBar::SetAttributeRank)
+        .addFunction("GetAttributeRank", &SkillBar::GetAttributeRank)
         .addFunction("Load", &SkillBar::Load)
     );
 }
@@ -152,7 +152,7 @@ void SkillBar::SetAttributes(const Attributes& attributes)
     {
         if (a.index == Attribute::None)
             continue;
-        SetAttributeValue(a.index, a.value);
+        SetAttributeRank(a.index, a.value);
     }
 }
 
@@ -271,11 +271,7 @@ bool SkillBar::SetSkillByIndex(int pos, uint32_t skillIndex)
 
 int SkillBar::GetUsedAttributePoints() const
 {
-    int result = 0;
-    for (const auto& a : attributes_)
-        if (a.value > 0)
-            result += CalcAttributeCost(static_cast<int>(a.value));
-    return result;
+    return GetUsedAttribPoints(attributes_);
 }
 
 int SkillBar::GetAvailableAttributePoints() const
@@ -293,7 +289,7 @@ const AttributeValue* SkillBar::GetAttribute(Attribute index) const
     return nullptr;
 }
 
-bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
+bool SkillBar::SetAttributeRank(Attribute index, uint32_t value)
 {
     // This works only when professions are set, which fill the attributes array
     auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AttributeValue& attrib) {
@@ -310,7 +306,7 @@ bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
         if (cost > GetAvailableAttributePoints())
         {
             LOG_WARNING << "Not enough attribute points available. Required: " << cost <<
-                ", available " << GetAvailableAttributePoints() << ", total " << owner_.GetAttributePoints() << std::endl;
+                ", available: " << GetAvailableAttributePoints() << ", total: " << owner_.GetAttributePoints() << std::endl;
             return false;
         }
     }
@@ -318,10 +314,10 @@ bool SkillBar::SetAttributeValue(Attribute index, uint32_t value)
     return true;
 }
 
-uint32_t SkillBar::GetAttributeValue(Attribute index) const
+uint32_t SkillBar::GetAttributeRank(Attribute index) const
 {
     // This works only when professions are set, which fill the attributes array
-    return GetAttribVal(attributes_, index);
+    return GetAttribRank(attributes_, index);
 }
 
 std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const

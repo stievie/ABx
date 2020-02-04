@@ -93,8 +93,8 @@ public:
     /// @return The attribute or nullptr
     const AttributeValue* GetAttribute(Attribute index) const;
     const Attributes& GetAttributes() const { return attributes_; }
-    bool SetAttributeValue(Attribute index, uint32_t value);
-    uint32_t GetAttributeValue(Attribute index) const;
+    bool SetAttributeRank(Attribute index, uint32_t value);
+    uint32_t GetAttributeRank(Attribute index) const;
     int GetUsedAttributePoints() const;
     int GetAvailableAttributePoints() const;
     const SkillsArray& GetArray() const { return skills_; }

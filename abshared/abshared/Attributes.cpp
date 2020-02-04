@@ -22,10 +22,11 @@
 #include "stdafx.h"
 #include "Attributes.h"
 #include <algorithm>
+#include "AttribAlgos.h"
 
 namespace Game {
 
-uint32_t GetAttribVal(const Attributes& attributes, Attribute index)
+uint32_t GetAttribRank(const Attributes& attributes, Attribute index)
 {
     // This works only when professions are set, which fills the attributes array
     auto it = std::find_if(attributes.begin(), attributes.end(), [&](const AttributeValue& attrib)
@@ -37,7 +38,7 @@ uint32_t GetAttribVal(const Attributes& attributes, Attribute index)
     return (*it).value;
 }
 
-bool SetAttribVal(Attributes& attributes, Attribute index, uint32_t value)
+bool SetAttribRank(Attributes& attributes, Attribute index, uint32_t value)
 {
     auto it = std::find_if(attributes.begin(), attributes.end(), [&](const AttributeValue& attrib) {
         return attrib.index == index;
@@ -66,6 +67,15 @@ void InitProf2Attribs(Attributes& attributes, const AB::Entities::Profession& pr
             a.index = Attribute::None;
         a.value = 0;
     }
+}
+
+int GetUsedAttribPoints(const Attributes& attributes)
+{
+    int result = 0;
+    for (const auto& a : attributes)
+        if (a.value > 0)
+            result += CalcAttributeCost(static_cast<int>(a.value));
+    return result;
 }
 
 }

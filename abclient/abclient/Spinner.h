@@ -39,6 +39,8 @@ private:
     int value_{ 0 };
     int oldValue_{ 0 };
     unsigned step_{ 1 };
+    bool canIncrease_{ true };
+    bool canDecrease_{ true };
     WeakPtr<LineEdit> edit_;
     SharedPtr<Button> buttonIncrease_;
     SharedPtr<Button> buttonDecrease_;
@@ -65,4 +67,6 @@ public:
     void Decrease();
     void SetEdit(SharedPtr<LineEdit> value);
     bool HaveFocus() const;
+    void SetCanIncrease(bool value);
+    void SetCanDecrease(bool value);
 };

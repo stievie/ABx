@@ -220,7 +220,7 @@ void Effect::GetArmorPenetration(float& value)
     value = luaState_["getArmorPenetration"](value);
 }
 
-void Effect::GetAttributeValue(Attribute index, uint32_t& value)
+void Effect::GetAttributeRank(Attribute index, uint32_t& value)
 {
     if (!HaveFunction(FunctionGetAttributeValue))
         return;
