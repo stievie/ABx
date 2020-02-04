@@ -30,9 +30,7 @@ class Asset
 protected:
     std::string fileName_;
 public:
-    Asset() :
-        fileName_("")
-    {}
+    Asset() = default;
     virtual ~Asset();
 
     void SetFileName(const std::string& value);

@@ -173,7 +173,7 @@ bool Queue::SendEnterMessage(const MatchTeams& teams)
     std::string server = FindServerForMatch(teams);
     if (server.empty())
     {
-        // This sould really not happen
+        // This should really not happen
         LOG_ERROR << "Did not find any suitable server" << std::endl;
         return false;
     }
