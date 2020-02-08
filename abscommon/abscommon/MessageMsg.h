@@ -92,7 +92,7 @@ public:
     {
         return data_;
     }
-    size_t Length()
+    size_t Length() const
     {
         return HeaderLength + bodyLength_;
     }
