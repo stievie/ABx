@@ -52,7 +52,8 @@ void ServerConnection::HandleRead(const asio::error_code& error)
         asio::buffer(readBuffer_.Body(), readBuffer_.BodyLength()));
 
     // Client sent a message
-    server_.HandleMessage(readBuffer_);
+    if (readBuffer_.DecodeHeader())
+        server_.HandleMessage(readBuffer_);
 
     asio::async_read(socket_,
         asio::buffer(readBuffer_.Data(), MessageBuffer::HeaderLength),

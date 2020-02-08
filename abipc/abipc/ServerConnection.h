@@ -23,6 +23,8 @@
 
 #include <sa/Noncopyable.h>
 #include "MessageBuffer.h"
+#include <memory>
+#include <asio.hpp>
 
 namespace IPC {
 
