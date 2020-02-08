@@ -25,6 +25,7 @@
 #include "MessageBuffer.h"
 #include "MessageHandlers.h"
 #include "Message.h"
+#include <asio.hpp>
 
 namespace IPC {
 
@@ -72,6 +73,7 @@ public:
         MessageBuffer buff;
         buff.type_ = _Msg::MessageType;
         Add(msg, buff);
+        buff.EncodeHeader();
         InternalSend(buff);
     }
     MessageHandlers handlers_;

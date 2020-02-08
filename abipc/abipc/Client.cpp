@@ -75,7 +75,7 @@ void Client::HandleRead(const asio::error_code& error, size_t)
         return;
     }
 
-    if (!readBuffer_.IsEmpty())
+    if (!readBuffer_.IsEmpty() && readBuffer_.DecodeHeader())
         HandleMessage(readBuffer_);
     readBuffer_.Empty();
     AsyncReceive(&readBuffer_,
