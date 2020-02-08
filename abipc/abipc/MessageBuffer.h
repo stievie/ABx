@@ -23,6 +23,7 @@
 
 #include <deque>
 #include <string>
+#include <cstring>
 
 namespace IPC {
 
@@ -49,7 +50,6 @@ private:
 public:
     MessageBuffer() :
         bodyLength_(0),
-        type_(0),
         data_{}
     { }
     size_t Length() const
@@ -114,7 +114,7 @@ public:
         bodyLength_ += sizeof(T);
     }
 
-    size_t type_;
+    size_t type_{ 0 };
 };
 
 template <>
