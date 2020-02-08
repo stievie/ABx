@@ -13,6 +13,8 @@ all:
 	@$(MAKE) -f  libless.make
 	@echo "--------------------- Building abdb ---------------------"
 	@$(MAKE) -f  abdb.make
+	@echo "--------------------- Building abipc --------------------"
+	@$(MAKE) -f  abipc.make
 	@echo "--------------------- Building abai ---------------------"
 	@$(MAKE) -f  abai.make
 	@echo "------------------- Building abscommon ------------------"
@@ -53,6 +55,7 @@ clean:
 	@$(MAKE) -f  detour.make clean
 	@$(MAKE) -f  libless.make clean
 	@$(MAKE) -f  abdb.make clean
+	@$(MAKE) -f  abipc.make clean
 	@$(MAKE) -f  abai.make clean
 	@$(MAKE) -f  abscommon.make clean
 	@$(MAKE) -f  abshared.make clean
