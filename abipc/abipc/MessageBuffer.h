@@ -31,7 +31,7 @@ class MessageBuffer
 {
 public:
     enum { HeaderLength = 2 + sizeof(size_t) };
-    enum { MaxBodyLength = 512 };
+    enum { MaxBodyLength = 1024 - HeaderLength };
 private:
     static constexpr size_t BufferSize = HeaderLength + MaxBodyLength;
     size_t bodyLength_;

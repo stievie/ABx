@@ -2,6 +2,24 @@
 
 Simple IPC Server and Client.
 
+## Start server
+
+~~~cpp
+asio::io_service io;
+asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), 1234);
+IPC::Server server(io, endpoint);
+io.run();
+~~~
+
+## Connecting to server
+
+~~~cpp
+asio::io_service io;
+IPC::Client client(io);
+client.Connect("localhost", 1234);
+io.run();
+~~~
+
 ## Defining messages
 
 ~~~cpp
