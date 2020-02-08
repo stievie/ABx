@@ -23,6 +23,7 @@
 
 #include <unordered_map>
 #include <functional>
+#include <cassert>
 
 namespace sa {
 
