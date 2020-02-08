@@ -57,7 +57,7 @@ public:
         resolver_(io_service),
         socket_(io_service)
     { }
-    void Connect(const std::string& host, uint16_t port);
+    bool Connect(const std::string& host, uint16_t port);
     void Close()
     {
         connected_ = false;

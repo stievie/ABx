@@ -124,11 +124,12 @@ void Client::HandleMessage(const MessageBuffer& msg)
         handlers_.Call(msg.type_, msg);
 }
 
-void Client::Connect(const std::string& host, uint16_t port)
+bool Client::Connect(const std::string& host, uint16_t port)
 {
     host_ = host;
     port_ = port;
     InternalConnect();
+    return connected_;
 }
 
 bool Client::InternalSend(const MessageBuffer& msg)

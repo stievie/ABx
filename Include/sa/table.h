@@ -271,6 +271,7 @@ public:
         }
         return result;
     }
+    std::vector<std::string> to_array();
     std::string col_sep_{ " " };
     char heading_sep_{ '-' };
     char table_sep_{ '\0' };
@@ -340,6 +341,17 @@ inline _Stream& operator << (_Stream& os, table& value)
         os << pad << std::endl;
     }
     return os;
+}
+
+inline std::vector<std::string> table::to_array()
+{
+    std::vector<std::string> result;
+    std::stringstream ss;
+    ss << *this;
+    std::string line;
+    while (std::getline(ss, line))
+        result.push_back(line);
+    return result;
 }
 
 }

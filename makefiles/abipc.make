@@ -7,6 +7,7 @@ SOURDEDIR = ../abipc/abipc
 OBJDIR = obj/x64/$(CONFIG)/abipc
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
+DEFINES += -DUSE_STANDALONE_ASIO
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

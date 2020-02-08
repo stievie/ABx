@@ -39,6 +39,8 @@ all:
 	@$(MAKE) -f  absadmin.make
 	@echo "-------------------- Building abserv --------------------"
 	@$(MAKE) -f  abserv.make
+	@echo "------------------ Building dbgclient -------------------"
+	@$(MAKE) -f  dbgclient.make
 	@echo "-------------------- Building dbtool --------------------"
 	@$(MAKE) -f  dbtool.make
 	@echo "-------------------- Building keygen --------------------"
@@ -68,6 +70,7 @@ clean:
 	@$(MAKE) -f  abmatch.make clean
 	@$(MAKE) -f  absadmin.make clean
 	@$(MAKE) -f  abserv.make clean
+	@$(MAKE) -f  dbgclient.make clean
 	@$(MAKE) -f  dbtool.make clean
 	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
