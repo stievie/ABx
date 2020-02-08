@@ -1,6 +1,10 @@
 # abipc
 
-Simple IPC Server and Client.
+Simple IPC Server and Client using TCP sockets.
+
+## Dependencies
+
+* asio https://think-async.com/Asio/AsioStandalone
 
 ## Start server
 
@@ -20,7 +24,7 @@ client.Connect("localhost", 1234);
 io.run();
 ~~~
 
-## Defining messages
+## Messages
 
 ~~~cpp
 struct MyMessage : public Message<MyMessage>
@@ -45,6 +49,8 @@ client_.Send(msg);
 ~~~
 
 ## Handling messages
+
+Client and server have a `handlers_` member.
 
 ~~~cpp
 handlers_.Add<MyMessage>([](const MyMessage& msg)

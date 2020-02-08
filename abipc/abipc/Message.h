@@ -86,7 +86,7 @@ template<typename T>
 struct Message
 {
 public:
-    static constexpr size_t MessageType = sa::StringHash(sa::TypeName<T>::Get());
+    static constexpr size_t message_type = sa::StringHash(sa::TypeName<T>::Get());
     typedef T value_type;
 };
 

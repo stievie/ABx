@@ -52,7 +52,7 @@ public:
     void Send(const _Msg& msg)
     {
         MessageBuffer buff;
-        buff.type_ = _Msg::MessageType;
+        buff.type_ = _Msg::message_type;
         Add(msg, buff);
         buff.EncodeHeader();
         InternalSend(buff);
