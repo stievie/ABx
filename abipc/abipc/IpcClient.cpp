@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "Client.h"
+#include "IpcClient.h"
 
 namespace IPC {
 

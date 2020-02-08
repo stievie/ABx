@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "ServerConnection.h"
-#include "Server.h"
+#include "IpcServer.h"
 
 namespace IPC {
 

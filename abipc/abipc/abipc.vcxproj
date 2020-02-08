@@ -90,19 +90,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Client.h" />
+    <ClInclude Include="IpcClient.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuffer.h" />
     <ClInclude Include="MessageHandlers.h" />
-    <ClInclude Include="Server.h" />
+    <ClInclude Include="IpcServer.h" />
     <ClInclude Include="ServerConnection.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="IpcClient.cpp" />
     <ClCompile Include="MessageBuffer.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="IpcServer.cpp" />
     <ClCompile Include="ServerConnection.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "Server.h"
+#include "IpcServer.h"
 #include "ServerConnection.h"
 #include "MessageBuffer.h"
 

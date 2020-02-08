@@ -1,12 +1,12 @@
 README.md
-abipc/Client.cpp
-abipc/Client.h
+abipc/IpcClient.cpp
+abipc/IpcClient.h
 abipc/Message.h
 abipc/MessageBuffer.cpp
 abipc/MessageBuffer.h
 abipc/MessageHandlers.h
-abipc/Server.cpp
-abipc/Server.h
+abipc/IpcServer.cpp
+abipc/IpcServer.h
 abipc/ServerConnection.cpp
 abipc/ServerConnection.h
 abipc/stdafx.cpp
