@@ -25,6 +25,7 @@
 #include <memory>
 #include <sa/Noncopyable.h>
 #include <vector>
+#include <AB/IPC/AI/ClientMessages.h>
 
 namespace Game {
 class Game;
@@ -42,6 +43,7 @@ private:
     void BroadcastGame(const Game::Game& game);
     void BroadcastGameAdded(const Game::Game& game);
     void BroadcastGameRemoved(const Game::Game& game);
+    void HandleGetGames(const GetGames&);
 public:
     explicit DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);
     DebugServer() = default;

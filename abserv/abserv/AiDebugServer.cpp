@@ -24,13 +24,22 @@
 #include "Game.h"
 #include <AB/IPC/AI/ServerMessages.h>
 #include "Npc.h"
+#include <functional>
 
 namespace AI {
 
 DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port) :
     server_(std::make_unique<IPC::Server>(ioService, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port))),
     active_{ true }
-{ }
+{
+    server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1));
+}
+
+void DebugServer::HandleGetGames(const GetGames&)
+{
+
+}
+
 
 void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
 {
@@ -85,10 +94,11 @@ void DebugServer::Update()
 
 void DebugServer::BroadcastGame(const Game::Game& game)
 {
-    game.VisitObjects<Game::Npc>([this](const Game::Npc& current)
+    game.VisitObjects<Game::Npc>([this, &game](const Game::Npc& current)
     {
         NpcUpdate msg;
         msg.id = current.id_;
+        msg.gameId = game.id_;
         msg.name = current.GetName();
         server_->Send(msg);
         return Iteration::Continue;
