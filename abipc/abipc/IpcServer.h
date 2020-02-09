@@ -23,14 +23,35 @@
 
 #include <stdint.h>
 #include <set>
-#include "MessageHandlers.h"
+#include <sa/CallableTable.h>
 #include <asio.hpp>
 #include <AB/IPC/Message.h>
+#include "MessageBuffer.h"
 
 namespace IPC {
 
 class ServerConnection;
-class MessageBuffer;
+
+class ServerMessageHandlers
+{
+private:
+    sa::CallableTable<size_t, void, ServerConnection&, const MessageBuffer&> handlers_;
+public:
+    template<typename _Msg>
+    void Add(std::function<void(ServerConnection&, const _Msg & msg)>&& func)
+    {
+        handlers_.Add(_Msg::message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
+        {
+            auto packet = Get<_Msg>(buffer);
+            handler(client, packet);
+        });
+    }
+    bool Exists(size_t type) const { return handlers_.Exists(type); }
+    void Call(size_t type, ServerConnection& client, const MessageBuffer& buffer)
+    {
+        handlers_.Call(type, client, buffer);
+    }
+};
 
 class Server
 {

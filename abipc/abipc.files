@@ -4,7 +4,6 @@ abipc/IpcClient.h
 abipc/Message.h
 abipc/MessageBuffer.cpp
 abipc/MessageBuffer.h
-abipc/MessageHandlers.h
 abipc/IpcServer.cpp
 abipc/IpcServer.h
 abipc/ServerConnection.cpp
