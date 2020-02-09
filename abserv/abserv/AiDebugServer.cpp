@@ -16,15 +16,17 @@ void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
     if (!active_)
         return;
 
-    const auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current) {
+    const auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
+    {
         if (auto c = current.lock())
             return c->id_ == game->id_;
         return false;
     });
     if (it != games_.end())
         return;
-    BroadcastGameAdded(*game);
+    const Game::Game& g = *game;
     games_.push_back(game);
+    BroadcastGameAdded(g);
 }
 
 void DebugServer::RemoveGame(std::shared_ptr<Game::Game> game)
@@ -39,9 +41,10 @@ void DebugServer::RemoveGame(std::shared_ptr<Game::Game> game)
     });
     if (it != games_.end())
     {
-        if (auto sg = (*it).lock())
-            BroadcastGameRemoved(*sg);
+        auto sg = (*it).lock();
         games_.erase(it);
+        if (sg)
+            BroadcastGameRemoved(*sg);
     }
 }
 
