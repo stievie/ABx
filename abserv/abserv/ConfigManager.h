@@ -51,6 +51,9 @@ public:
         MaxPacketsPerSecond,
 
         Behaviours,
+        AiServer,
+        AiServerIp,
+        AiServerPort
     };
 public:
     ConfigManager();

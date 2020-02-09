@@ -39,6 +39,7 @@ private:
     void CleanChatsTask();
     void UpdateServerLoadTask();
     void CheckAutoTerminate();
+    void UpdateAiServer();
 public:
     Maintenance() :
         status_(MaintenanceStatus::Terminated)

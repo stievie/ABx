@@ -210,14 +210,26 @@ public:
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
 
-    template<typename Callback>
+    template<typename O = GameObject, typename Callback>
     inline void VisitObjects(const Callback& callback)
     {
         for (auto& object : objects_)
         {
-            if (object.second)
+            if (object.second && Is<O>(*object.second))
             {
-                if (callback(*object.second) != Iteration::Continue)
+                if (callback(To<O>(*object.second)) != Iteration::Continue)
+                    break;
+            }
+        }
+    }
+    template<typename O = GameObject, typename Callback>
+    inline void VisitObjects(const Callback& callback) const
+    {
+        for (auto& object : objects_)
+        {
+            if (object.second && Is<O>(*object.second))
+            {
+                if (callback(To<O>(*object.second)) != Iteration::Continue)
                     break;
             }
         }

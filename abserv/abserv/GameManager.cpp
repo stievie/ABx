@@ -27,6 +27,8 @@
 #include "Npc.h"
 #include "IOGame.h"
 #include "Group.h"
+#include "AiDebugServer.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -65,6 +67,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
         game->id_ = GetNewGameId();
         games_[game->id_] = game;
         maps_[mapUuid].push_back(game.get());
+        GetSubsystem<AI::DebugServer>()->AddGame(game);
     }
     game->instanceData_.number = static_cast<uint16_t>(maps_[mapUuid].size());
     game->Load(mapUuid);
@@ -82,6 +85,7 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     {
         // games_.size() may be called from another thread so lock it
         std::lock_guard<std::mutex> lockClass(lock_);
+        GetSubsystem<AI::DebugServer>()->AddGame((*it).second);
         maps_.erase((*it).second->data_.uuid);
         games_.erase(it);
     }

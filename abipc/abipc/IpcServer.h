@@ -24,8 +24,8 @@
 #include <stdint.h>
 #include <set>
 #include "MessageHandlers.h"
-#include "Message.h"
 #include <asio.hpp>
+#include <AB/IPC/Message.h>
 
 namespace IPC {
 
@@ -49,7 +49,7 @@ public:
     void AddConnection(std::shared_ptr<ServerConnection> conn);
     void HandleMessage(const MessageBuffer& msg);
     template <typename _Msg>
-    void Send(const _Msg& msg)
+    void Send(_Msg& msg)
     {
         MessageBuffer buff;
         buff.type_ = _Msg::message_type;

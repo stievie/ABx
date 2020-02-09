@@ -59,6 +59,7 @@
 #include <AB/Entities/ServiceList.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/ConditionSleep.h>
+#include "AiDebugServer.h"
 
 Application* Application::Instance = nullptr;
 
@@ -380,6 +381,16 @@ bool Application::LoadMain()
             LOG_WARNING << "Failed to load behavior trees from file " << behaviors << std::endl;
         }
     }
+    // AI Debug Server
+    if ((*config)[ConfigManager::Key::AiServer])
+    {
+        const std::string& sAiIp = (*config)[ConfigManager::Key::AiServerIp].GetString();
+        uint32_t aiIp = Utils::ConvertStringToIP(sAiIp);
+        uint16_t aiPort = static_cast<uint16_t>((*config)[ConfigManager::Key::AiServerPort].GetInt());
+        Subsystems::Instance.CreateSubsystem<AI::DebugServer>(ioService_, aiIp, aiPort);
+    }
+    else
+        Subsystems::Instance.CreateSubsystem<AI::DebugServer>();
 
     // Data server ------------------------------------------------------------
     LOG_INFO << "Connecting to data server...";
@@ -508,9 +519,20 @@ void Application::PrintServerInfo()
     const std::string& recDir = (*config)[ConfigManager::Key::RecordingsDir].GetString();
     LOG_INFO << "  Recording directory: " << (recDir.empty() ? "(empty)" : recDir) << std::endl;
     LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
+    if ((*config)[ConfigManager::Key::AiServer])
+    {
+        const std::string& sAiIp = (*config)[ConfigManager::Key::AiServerIp].GetString();
+        uint16_t aiPort = static_cast<uint16_t>((*config)[ConfigManager::Key::AiServerPort].GetInt());
+        LOG_INFO << "  AI Server: " << sAiIp << ":" << aiPort << std::endl;
+    }
+    else
+    {
+        LOG_INFO << "  AI Server: (not running)" << std::endl;
+    }
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
+
 }
 
 void Application::Run()

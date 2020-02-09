@@ -23,8 +23,8 @@
 
 #include <sa/CallableTable.h>
 #include "MessageBuffer.h"
-#include "Message.h"
 #include <functional>
+#include <AB/IPC/Message.h>
 
 namespace IPC {
 

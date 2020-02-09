@@ -24,9 +24,6 @@
     <ClInclude Include="ServerConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessageBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>

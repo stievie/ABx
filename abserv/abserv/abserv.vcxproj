@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;$(SolutionDir)..\abipc\abipc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -118,7 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;$(SolutionDir)..\abipc\abipc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;$(SolutionDir)..\abipc\abipc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -173,7 +173,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abshared\abshared;$(SolutionDir)..\abipc\abipc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
@@ -211,6 +211,7 @@
     <ClInclude Include="actions\SkillAction.h" />
     <ClInclude Include="AiAgent.h" />
     <ClInclude Include="AiComp.h" />
+    <ClInclude Include="AiDebugServer.h" />
     <ClInclude Include="AiLoader.h" />
     <ClInclude Include="AiRegistry.h" />
     <ClInclude Include="Application.h" />
@@ -350,6 +351,7 @@
     <ClCompile Include="actions\SkillAction.cpp" />
     <ClCompile Include="AiAgent.cpp" />
     <ClCompile Include="AiComp.cpp" />
+    <ClCompile Include="AiDebugServer.cpp" />
     <ClCompile Include="AiLoader.cpp" />
     <ClCompile Include="AiRegistry.cpp" />
     <ClCompile Include="Application.cpp" />
@@ -471,6 +473,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\abai\abai\abai.vcxproj">
       <Project>{2bda52b4-737d-405b-b59c-af023d7122ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\abipc\abipc\abipc.vcxproj">
+      <Project>{222c878e-3a32-410e-b11b-247f18572e33}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
       <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>

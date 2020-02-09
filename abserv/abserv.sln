@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abai", "..\abai\abai\abai.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abshared", "..\abshared\abshared\abshared.vcxproj", "{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abipc", "..\abipc\abipc\abipc.vcxproj", "{222C878E-3A32-410E-B11B-247F18572E33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,12 @@ Global
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x64.ActiveCfg = Release|x64
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x64.Build.0 = Release|x64
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x86.ActiveCfg = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Debug|x64.ActiveCfg = Debug|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Debug|x64.Build.0 = Debug|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Debug|x86.ActiveCfg = Debug|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Release|x64.ActiveCfg = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Release|x64.Build.0 = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

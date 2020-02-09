@@ -34,5 +34,8 @@ public:
     char GetChar() const;
     void Loop();
     void Print(int x, int y, const std::string& text);
+    void Goto(int x, int y);
+    void Clear();
+    void ShowCursor(bool visible);
 };
 

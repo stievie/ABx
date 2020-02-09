@@ -37,6 +37,7 @@
 #include "ThreadPool.h"
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
+#include "AiDebugServer.h"
 
 void Maintenance::CleanCacheTask()
 {
@@ -137,6 +138,17 @@ void Maintenance::CheckAutoTerminate()
     }
 }
 
+void Maintenance::UpdateAiServer()
+{
+    GetSubsystem<AI::DebugServer>()->Update();
+    if (status_ == MaintenanceStatus::Runnig)
+    {
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(AI_SERVER_UPDATE_INTERVAL, std::bind(&Maintenance::UpdateAiServer, this))
+        );
+    }
+}
+
 void Maintenance::Run()
 {
     {
@@ -162,6 +174,9 @@ void Maintenance::Run()
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
         );
     }
+    shed->Add(
+        Asynch::CreateScheduledTask(AI_SERVER_UPDATE_INTERVAL, std::bind(&Maintenance::UpdateAiServer, this))
+    );
 }
 
 void Maintenance::Stop()

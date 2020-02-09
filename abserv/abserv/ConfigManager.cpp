@@ -62,6 +62,9 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::MaxPacketsPerSecond] = static_cast<int>(GetGlobalInt("max_packets_per_second", 25ll));
 
     config_[Key::Behaviours] = GetGlobalString("behaviours", "/scripts/behaviors/behaviors.lua");
+    config_[Key::AiServer] = GetGlobalBool("ai_server", false);
+    config_[Key::AiServerIp] = GetGlobalString("ai_server_ip", "127.0.0.1");
+    config_[Key::AiServerPort] = static_cast<int>(GetGlobalInt("ai_server_port", 12345ll));
 
     Close();
     return true;

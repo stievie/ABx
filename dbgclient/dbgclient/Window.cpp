@@ -24,6 +24,8 @@
 #if defined(AB_UNIX)
 #include <ncurses.h>
 #elif defined(AB_WINDOWS)
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <conio.h>
 #endif
 #include <thread>
@@ -35,8 +37,8 @@ Window::Window()
     noecho();
     curs_set(FALSE);
 #else
-    clrscr();
-    cursoroff();
+    Clear();
+    ShowCursor(false);
 #endif
 }
 
@@ -44,6 +46,8 @@ Window::~Window()
 {
 #ifdef AB_UNIX
     endwin();
+#else
+    ShowCursor(true);
 #endif
 }
 
@@ -53,8 +57,8 @@ char Window::GetChar() const
     int c = getch();
 #else
     int c = 0;
-    if (kbhit())
-        c = fgetc(stdin);
+    if (_kbhit())
+        c = _getch();
 #endif
     return static_cast<char>(c);
 }
@@ -78,7 +82,7 @@ void Window::Loop()
         if (c == 0)
         {
             using namespace std::chrono_literals;
-            std::this_thread::sleep_for(100ms);
+            std::this_thread::sleep_for(10ms);
             continue;
         }
 
@@ -91,8 +95,52 @@ void Window::Print(int x, int y, const std::string& text)
 #ifdef AB_UNIX
     mvprintw(x, y, text.c_str());
 #else
-    gotoxy(x, y);
-    cprintf(text.c_str());
+    Goto(x, y);
+    _cprintf(text.c_str());
 #endif
+}
 
+void Window::Goto(int x, int y)
+{
+#ifdef AB_UNIX
+    move(x, y);
+#else
+    COORD c = { static_cast<short>(x), static_cast<short>(y) };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
+#endif
+}
+
+void Window::Clear()
+{
+#ifdef AB_UNIX
+    clear();
+#else
+    COORD topLeft = { 0, 0 };
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO screen;
+    DWORD written;
+
+    GetConsoleScreenBufferInfo(console, &screen);
+    FillConsoleOutputCharacterA(
+        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    );
+    FillConsoleOutputAttribute(
+        console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
+        screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    );
+    SetConsoleCursorPosition(console, topLeft);
+#endif
+}
+
+void Window::ShowCursor(bool visible)
+{
+#ifdef AB_UNIX
+    curs_set(visible ? TRUE : FALSE);
+#else
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = visible;
+    SetConsoleCursorInfo(out, &cursorInfo);
+#endif
 }

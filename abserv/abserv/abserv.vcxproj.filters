@@ -444,6 +444,9 @@
     <ClInclude Include="conditions\AiHaveSkill.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="AiDebugServer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -841,6 +844,9 @@
     </ClCompile>
     <ClCompile Include="conditions\AiHaveSkill.cpp">
       <Filter>Quelldateien\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="AiDebugServer.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

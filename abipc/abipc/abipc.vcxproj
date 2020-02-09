@@ -15,7 +15,7 @@
     <ProjectGuid>{222C878E-3A32-410E-B11B-247F18572E33}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>abipc</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -91,7 +91,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IpcClient.h" />
-    <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuffer.h" />
     <ClInclude Include="MessageHandlers.h" />
     <ClInclude Include="IpcServer.h" />

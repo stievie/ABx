@@ -24,7 +24,7 @@
 #include <functional>
 #include "MessageBuffer.h"
 #include "MessageHandlers.h"
-#include "Message.h"
+#include <AB/IPC/Message.h>
 #include <asio.hpp>
 
 namespace IPC {
@@ -68,7 +68,7 @@ public:
         return connected_;
     }
     template <typename _Msg>
-    void Send(const _Msg& msg)
+    void Send(_Msg& msg)
     {
         MessageBuffer buff;
         buff.type_ = _Msg::message_type;
