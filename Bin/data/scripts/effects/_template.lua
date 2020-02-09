@@ -50,7 +50,7 @@ function getArmorPenetration(value)
   return value
 end
 
-function getAttributeValue(index, value)
+function getAttributeRank(index, value)
   return value
 end
 

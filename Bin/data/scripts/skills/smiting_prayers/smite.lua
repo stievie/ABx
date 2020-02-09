@@ -49,7 +49,7 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_SMITING)
+  local attribVal = source:GetAttributeRank(ATTRIB_SMITING)
   local damage = 10 + (attribVal * 3)
   if (target:IsHitting()) then
     damage = damage + (10 + (attribVal * 1.5))

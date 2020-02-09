@@ -16,7 +16,7 @@ function onInit()
     return false
   end
   
-  local attribVal = source:GetAttributeValue(ATTRIB_FIRE)
+  local attribVal = source:GetAttributeRank(ATTRIB_FIRE)
   damage = 7 * attribVal
   lastDamage = Tick()
   self:SetRange(RANGE_ADJECENT)

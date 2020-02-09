@@ -96,8 +96,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetArmor;
     if (Lua::IsFunction(luaState_, "getArmorPenetration"))
         functions_ |= FunctionGetArmorPenetration;
-    if (Lua::IsFunction(luaState_, "getAttributeValue"))
-        functions_ |= FunctionGetAttributeValue;
+    if (Lua::IsFunction(luaState_, "getAttributeRank"))
+        functions_ |= FunctionGetAttributeRank;
     if (Lua::IsFunction(luaState_, "getResources"))
         functions_ |= FunctionGetResources;
     if (Lua::IsFunction(luaState_, "getSkillRecharge"))
@@ -222,9 +222,9 @@ void Effect::GetArmorPenetration(float& value)
 
 void Effect::GetAttributeRank(Attribute index, int32_t& value)
 {
-    if (!HaveFunction(FunctionGetAttributeValue))
+    if (!HaveFunction(FunctionGetAttributeRank))
         return;
-    value = luaState_["getAttributeValue"](static_cast<uint32_t>(index), value);
+    value = luaState_["getAttributeRank"](static_cast<uint32_t>(index), value);
 }
 
 void Effect::GetAttackDamage(int32_t& value)

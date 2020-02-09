@@ -22,7 +22,7 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
-  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local attribVal = source:GetAttributeRank(ATTRIB_HEALING)
   local hp = math.floor(30 + (attribVal * 3))
   local bonus = math.floor(getDevineFavorHealBonus(source))
 

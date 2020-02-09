@@ -24,7 +24,7 @@ function onInit()
   self:SetRange(RANGE_ADJECENT)
   self:SetLifetime(lifeTime)
   self:SetTrigger(true)
-  local attribVal = source:GetAttributeValue(ATTRIB_WILDERNESS_SURVIVAL)
+  local attribVal = source:GetAttributeRank(ATTRIB_WILDERNESS_SURVIVAL)
   damage = 10 + (attribVal * 2)
   crippledTime = 3 + math.floor(attribVal * 1.5)
   return true

@@ -85,7 +85,7 @@ function onSuccess(source, target)
 
   if (target:Interrupt()) then
     if (skill:IsType(SkillTypeSpell)) then
-      local attribVal = source:GetAttributeValue(ATTRIB_INSPIRATION)
+      local attribVal = source:GetAttributeRank(ATTRIB_INSPIRATION)
       local energy = math.floor(attribVal)
       source:AddEnergy(energy)
     end

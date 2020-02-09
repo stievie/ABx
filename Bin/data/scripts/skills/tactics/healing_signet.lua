@@ -20,7 +20,7 @@ function onSuccess(source, target)
   if (source:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_TACTICS)
+  local attribVal = source:GetAttributeRank(ATTRIB_TACTICS)
   local hp = 82 + (attribVal * 6)
   source:Healing(source, self:Index(), hp)
   return SkillErrorNone

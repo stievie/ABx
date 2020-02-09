@@ -69,7 +69,7 @@ private:
         FunctionOnGetCriticalHit = 1 << 15,
         FunctionGetArmor = 1 << 16,
         FunctionGetArmorPenetration = 1 << 17,
-        FunctionGetAttributeValue = 1 << 18,
+        FunctionGetAttributeRank = 1 << 18,
         FunctionGetResources = 1 << 19,
         FunctionGetSkillRecharge = 1 << 20,
         FunctionOnRemoved = 1 << 21,

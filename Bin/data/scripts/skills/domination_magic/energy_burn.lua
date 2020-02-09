@@ -49,7 +49,7 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_DOMINATION)
+  local attribVal = source:GetAttributeRank(ATTRIB_DOMINATION)
   local energy = attribVal;
   local dEnergy = target:DrainEnergy(energy)
   local damage = dEnergy * 9

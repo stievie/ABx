@@ -50,12 +50,12 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
 
-  local fireAttrib = source:GetAttributeValue(ATTRIB_FIRE)
+  local fireAttrib = source:GetAttributeRank(ATTRIB_FIRE)
   local damage = math.floor((fireAttrib * 6) + 10)
 
   target:Damage(source, self:Index(), damageType, damage)
   if (target:HasEffect(10004)) then
-    local esAttrib = source:GetAttributeValue(ATTRIB_ENERGY_STORAGE)
+    local esAttrib = source:GetAttributeRank(ATTRIB_ENERGY_STORAGE)
     local energy = 5 + math.floor(1 + (esAttrib / 2))
     source:AddEnergy(energy)
   end

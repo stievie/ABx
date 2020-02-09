@@ -21,7 +21,7 @@ function onEnd(source, target)
   if (target:IsDead()) then
     return
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local attribVal = source:GetAttributeRank(ATTRIB_HEALING)
   local hp = math.floor(30 + (attribVal * 6))
   target:Healing(source, self:Index(), hp)
   local bonus = math.floor(getDevineFavorHealBonus(source))

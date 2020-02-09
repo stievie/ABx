@@ -51,7 +51,7 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_INSPIRATION)
+  local attribVal = source:GetAttributeRank(ATTRIB_INSPIRATION)
   local energy = target:DrainEnergy(3)
   local health = energy * ((attribVal * 3) + 20)
   source:Healing(source, self:Index(), health)

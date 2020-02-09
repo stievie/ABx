@@ -11,7 +11,7 @@ function getDuration(source, target)
 end
 
 function onStart(source, target)
-  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local attribVal = source:GetAttributeRank(ATTRIB_HEALING)
   regen = math.floor((attribVal / 4) + 4)
   target:SetHealthRegen(regen)
   return true

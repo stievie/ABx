@@ -45,7 +45,7 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local attribVal = source:GetAttributeRank(ATTRIB_HEALING)
   local hp = math.floor(20 + (attribVal * 3.2))
   target:Healing(source, self:Index(), hp)
   local bonus = math.floor(getDevineFavorHealBonus(source))

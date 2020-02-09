@@ -50,7 +50,7 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
 
-  local attribVal = source:GetAttributeValue(ATTRIB_FIRE)
+  local attribVal = source:GetAttributeRank(ATTRIB_FIRE)
   local damage = math.floor((attribVal * 4) + 20)
   local burning = math.floor(attribVal / 4) + 1
 
