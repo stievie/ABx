@@ -11,4 +11,3 @@ abipc/ServerConnection.cpp
 abipc/ServerConnection.h
 abipc/stdafx.cpp
 abipc/stdafx.h
-abipc/targetver.h

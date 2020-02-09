@@ -1,4 +1,6 @@
 README.md
+abserv/AiDebugServer.cpp
+abserv/AiDebugServer.h
 abserv/ConfigManager.cpp
 abserv/Crowd.cpp
 abserv/Crowd.h

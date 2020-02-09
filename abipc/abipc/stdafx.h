@@ -23,7 +23,6 @@
 #pragma once
 #endif
 
-#include "targetver.h"
 #include <sa/PragmaWarning.h>
 
 #ifdef _WIN32

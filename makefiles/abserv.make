@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../Include/recastnavigation -I../Include/DirectXMath -I../abipc/abipc -I../absmath/absmath -I../abscommon/abscommon -I../abshared/abshared -I../abai/abai
+INCLUDES += -I../Include/recastnavigation -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abshared/abshared -I../abai/abai -I../abipc/abipc
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
