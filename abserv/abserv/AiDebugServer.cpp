@@ -32,14 +32,22 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
     server_(std::make_unique<IPC::Server>(ioService, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port))),
     active_{ true }
 {
-    server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1));
+    server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void DebugServer::HandleGetGames(const GetGames&)
+void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
 {
-
+    for (auto weakGame : games_)
+    {
+        if (auto sGame = weakGame.lock())
+        {
+            GameAdd msg;
+            msg.id = sGame->id_;
+            msg.name = sGame->GetName();
+            server_->SendTo(client, msg);
+        }
+    }
 }
-
 
 void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
 {

@@ -76,7 +76,7 @@ public:
         buff.EncodeHeader();
         InternalSend(buff);
     }
-    MessageHandlers handlers_;
+    ClientMessageHandlers handlers_;
 };
 
 }

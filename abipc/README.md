@@ -53,7 +53,15 @@ client_.Send(msg);
 Client and server have a `handlers_` member.
 
 ~~~cpp
+// Client
 handlers_.Add<MyMessage>([](const MyMessage& msg)
+{
+    std::cout << "intValue = " << msg.intValue << std::endl;
+    std::cout << "strValue = " << msg.strValue << std::endl;
+});
+
+// Server
+handlers_.Add<MyMessage>([](IPC::ServerConnection& client, const MyMessage& msg)
 {
     std::cout << "intValue = " << msg.intValue << std::endl;
     std::cout << "strValue = " << msg.strValue << std::endl;

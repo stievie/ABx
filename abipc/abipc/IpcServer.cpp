@@ -49,10 +49,15 @@ void Server::InternalSend(const MessageBuffer& msg)
         std::bind(&ServerConnection::Send, std::placeholders::_1, msg));
 }
 
-void Server::HandleMessage(const MessageBuffer& msg)
+void Server::InternalSendTo(ServerConnection& client, const MessageBuffer& msg)
+{
+    client.Send(msg);
+}
+
+void Server::HandleMessage(ServerConnection& client, const MessageBuffer& msg)
 {
     if (handlers_.Exists(msg.type_))
-        handlers_.Call(msg.type_, msg);
+        handlers_.Call(msg.type_, client, msg);
 }
 
 void Server::StartAccept()

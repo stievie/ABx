@@ -29,7 +29,7 @@ namespace AI {
 struct GetGames : public IPC::Message<GetGames>
 {
     template<typename _Ar>
-    void Serialize(_Ar& ar)
+    void Serialize(_Ar&)
     {
     }
 };

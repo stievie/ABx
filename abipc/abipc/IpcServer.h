@@ -42,12 +42,13 @@ private:
     void HandleAccept(std::shared_ptr<ServerConnection> connection, const asio::error_code& error);
     // Send a message to all clients
     void InternalSend(const MessageBuffer& msg);
+    void InternalSendTo(ServerConnection& client, const MessageBuffer& msg);
 public:
     Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpoint);
     ~Server() = default;
     void RemoveConnection(std::shared_ptr<ServerConnection> conn);
     void AddConnection(std::shared_ptr<ServerConnection> conn);
-    void HandleMessage(const MessageBuffer& msg);
+    void HandleMessage(ServerConnection& client, const MessageBuffer& msg);
     template <typename _Msg>
     void Send(_Msg& msg)
     {
@@ -57,7 +58,16 @@ public:
         buff.EncodeHeader();
         InternalSend(buff);
     }
-    MessageHandlers handlers_;
+    template <typename _Msg>
+    void SendTo(ServerConnection& client, _Msg& msg)
+    {
+        MessageBuffer buff;
+        buff.type_ = _Msg::message_type;
+        Add(msg, buff);
+        buff.EncodeHeader();
+        InternalSendTo(client, buff);
+    }
+    ServerMessageHandlers handlers_;
 };
 
 }

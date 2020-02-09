@@ -28,17 +28,19 @@
 
 namespace IPC {
 
-class MessageHandlers
+class ServerConnection;
+
+class ClientMessageHandlers
 {
 private:
     sa::CallableTable<size_t, void, const MessageBuffer&> handlers_;
 public:
-    template<typename _Msg, typename _MsgType = typename _Msg::value_type>
-    void Add(std::function<void(const _MsgType& msg)>&& func)
+    template<typename _Msg>
+    void Add(std::function<void(const _Msg& msg)>&& func)
     {
         handlers_.Add(_Msg::message_type, [handler = std::move(func)](const MessageBuffer& buffer)
         {
-            auto packet = Get<_Msg::value_type>(buffer);
+            auto packet = Get<_Msg>(buffer);
             handler(packet);
         });
     }
@@ -46,6 +48,27 @@ public:
     void Call(size_t type, const MessageBuffer& buffer)
     {
         handlers_.Call(type, buffer);
+    }
+};
+
+class ServerMessageHandlers
+{
+private:
+    sa::CallableTable<size_t, void, ServerConnection&, const MessageBuffer&> handlers_;
+public:
+    template<typename _Msg>
+    void Add(std::function<void(ServerConnection&, const _Msg & msg)>&& func)
+    {
+        handlers_.Add(_Msg::message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
+        {
+            auto packet = Get<_Msg>(buffer);
+            handler(client, packet);
+        });
+    }
+    bool Exists(size_t type) const { return handlers_.Exists(type); }
+    void Call(size_t type, ServerConnection& client, const MessageBuffer& buffer)
+    {
+        handlers_.Call(type, client, buffer);
     }
 };
 
