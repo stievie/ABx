@@ -38,7 +38,7 @@ $(GCH): $(PCH)
 
 .PHONY: clean
 clean:
-	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+	rm -f $(GCH) $(OBJ_FILES) $(TARGET) $(OBJDIR)/*.d
 
 .PHONY: run
 run:

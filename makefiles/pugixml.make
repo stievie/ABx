@@ -29,4 +29,4 @@ $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 
 .PHONY: clean
 clean:
-	rm -f $(OBJ_FILES) $(TARGET)
+	rm -f $(OBJ_FILES) $(TARGET) $(OBJDIR)/*.d

@@ -43,6 +43,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 * `libkrb5-dev` for PostgreSQL, when building with `USE_PGSQL`
 * `lua5.3`
 * `lua5.3-dev`
+* `libncurses-dev`
 
 Your distribution may have different names for these libraries.
 
@@ -98,6 +99,3 @@ If you have built it before and it doesn't build anymore, try to clean it before
 ~~~sh
 $ make clean && make
 ~~~
-
-If it still doesn't compile, then maybe some header files were deleted or moved,
-then you should `cd makefiles/obj` and delete all `.d` files.
