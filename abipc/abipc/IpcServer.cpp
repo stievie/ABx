@@ -35,11 +35,13 @@ Server::Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpo
 
 void Server::RemoveConnection(std::shared_ptr<ServerConnection> conn)
 {
+    std::lock_guard<std::mutex> lock(lock_);
     clients_.erase(conn);
 }
 
 void Server::AddConnection(std::shared_ptr<ServerConnection> conn)
 {
+    std::lock_guard<std::mutex> lock(lock_);
     clients_.emplace(conn);
 }
 
@@ -71,6 +73,7 @@ void Server::HandleAccept(std::shared_ptr<ServerConnection> connection, const as
 {
     if (!error)
     {
+        AddConnection(connection);
         connection->Start();
     }
     StartAccept();
