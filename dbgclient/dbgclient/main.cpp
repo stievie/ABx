@@ -64,8 +64,8 @@ int main(int argc, char** argv)
     uint16_t port = sa::arg_parser::get_value<uint16_t>(parsedArgs, "port", 0);
     if (!client.Connect(host, port))
     {
-//        std::cerr << "Unable to connect to " << host << ":" << port << std::endl;
-//        return EXIT_FAILURE;
+        std::cerr << "Unable to connect to " << host << ":" << port << std::endl;
+        return EXIT_FAILURE;
     }
 
     GetSubsystem<Asynch::Dispatcher>()->Start();

@@ -32,7 +32,6 @@ ServerConnection::ServerConnection(asio::io_service& ioService, Server& server) 
 
 void ServerConnection::Start()
 {
-    server_.AddConnection(shared_from_this());
     asio::async_read(socket_,
         asio::buffer(readBuffer_.Data(), MessageBuffer::HeaderLength),
         std::bind(

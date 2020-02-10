@@ -27,6 +27,7 @@
 #include <asio.hpp>
 #include <AB/IPC/Message.h>
 #include "MessageBuffer.h"
+#include <mutex>
 
 namespace IPC {
 
@@ -59,16 +60,17 @@ private:
     asio::io_service& ioService_;
     asio::ip::tcp::acceptor acceptor_;
     std::set<std::shared_ptr<ServerConnection>> clients_;
+    std::mutex lock_;
     void StartAccept();
     void HandleAccept(std::shared_ptr<ServerConnection> connection, const asio::error_code& error);
     // Send a message to all clients
     void InternalSend(const MessageBuffer& msg);
     void InternalSendTo(ServerConnection& client, const MessageBuffer& msg);
+    void AddConnection(std::shared_ptr<ServerConnection> conn);
 public:
     Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpoint);
     ~Server() = default;
     void RemoveConnection(std::shared_ptr<ServerConnection> conn);
-    void AddConnection(std::shared_ptr<ServerConnection> conn);
     void HandleMessage(ServerConnection& client, const MessageBuffer& msg);
     template <typename _Msg>
     void Send(_Msg& msg)

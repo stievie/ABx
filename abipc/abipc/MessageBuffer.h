@@ -30,12 +30,15 @@ namespace IPC {
 class MessageBuffer
 {
 public:
+    // First 2 byte Body length, the rest is the message type
     enum { HeaderLength = 2 + sizeof(size_t) };
-    enum { MaxBodyLength = 1024 - HeaderLength };
+    // Make the size 1kb
+    enum { MaxBodyLength = 1024 - HeaderLength  - (sizeof(size_t) * 3) };
 private:
     static constexpr size_t BufferSize = HeaderLength + MaxBodyLength;
-    size_t bodyLength_;
+    size_t bodyLength_{ 0 };
     uint8_t data_[BufferSize];
+    // Read/write position
     size_t pos_{ 0 };
     bool CanRead(size_t size) const
     {
@@ -49,7 +52,6 @@ private:
     std::string GetString();
 public:
     MessageBuffer() :
-        bodyLength_(0),
         data_{}
     { }
     size_t Length() const
