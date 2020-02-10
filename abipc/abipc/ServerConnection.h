@@ -30,7 +30,7 @@ namespace IPC {
 
 class Server;
 
-class ServerConnection : std::enable_shared_from_this<ServerConnection>
+class ServerConnection : public std::enable_shared_from_this<ServerConnection>
 {
     NON_COPYABLE(ServerConnection)
 private:
