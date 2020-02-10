@@ -25,6 +25,7 @@
 #include "MessageBuffer.h"
 #include <memory>
 #include <asio.hpp>
+#include <sa/IdGenerator.h>
 
 namespace IPC {
 
@@ -34,20 +35,23 @@ class ServerConnection : public std::enable_shared_from_this<ServerConnection>
 {
     NON_COPYABLE(ServerConnection)
 private:
+    static sa::IdGenerator<uint32_t> sIdGen;
     asio::ip::tcp::socket socket_;
     Server& server_;
+    uint32_t id_;
     MessageBuffer readBuffer_;
     BufferQueue writeBuffers_;
     void HandleRead(const asio::error_code& error);
     void HandleWrite(const asio::error_code& error);
 public:
-    explicit ServerConnection(asio::io_service& ioService, Server& server);
+    ServerConnection(asio::io_service& ioService, Server& server);
     ~ServerConnection() = default;
     asio::ip::tcp::socket& GetSocket() { return socket_; }
 
     void Start();
     // Send a message to this client
     void Send(const MessageBuffer& msg);
+    uint32_t GetId() const { return id_; }
 };
 
 }

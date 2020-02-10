@@ -23,6 +23,7 @@
 #include "IpcServer.h"
 #include "ServerConnection.h"
 #include "MessageBuffer.h"
+#include <algorithm>
 
 namespace IPC {
 
@@ -36,6 +37,9 @@ Server::Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpo
 void Server::RemoveConnection(std::shared_ptr<ServerConnection> conn)
 {
     std::lock_guard<std::mutex> lock(lock_);
+    if (onClientDisconnect)
+        onClientDisconnect(*conn);
+
     clients_.erase(conn);
 }
 
@@ -43,6 +47,21 @@ void Server::AddConnection(std::shared_ptr<ServerConnection> conn)
 {
     std::lock_guard<std::mutex> lock(lock_);
     clients_.emplace(conn);
+
+    if (onClientConnect)
+        onClientConnect(*conn);
+}
+
+ServerConnection* Server::GetConnection(uint32_t id)
+{
+    auto it = std::find_if(clients_.begin(), clients_.end(), [&](const std::shared_ptr<ServerConnection>& current)
+    {
+        return id == current->GetId();
+    });
+    if (it == clients_.end())
+        return nullptr;
+
+    return it->get();
 }
 
 void Server::InternalSend(const MessageBuffer& msg)
@@ -56,7 +75,7 @@ void Server::InternalSendTo(ServerConnection& client, const MessageBuffer& msg)
     client.Send(msg);
 }
 
-void Server::HandleMessage(ServerConnection& client, const MessageBuffer& msg)
+void Server::HandleMessage(ServerConnection& client, MessageBuffer& msg)
 {
     if (handlers_.Exists(msg.type_))
         handlers_.Call(msg.type_, client, msg);

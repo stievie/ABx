@@ -174,9 +174,12 @@ void Maintenance::Run()
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
         );
     }
-    shed->Add(
-        Asynch::CreateScheduledTask(AI_SERVER_UPDATE_INTERVAL, std::bind(&Maintenance::UpdateAiServer, this))
-    );
+    if (GetSubsystem<AI::DebugServer>()->IsActive())
+    {
+        shed->Add(
+            Asynch::CreateScheduledTask(AI_SERVER_UPDATE_INTERVAL, std::bind(&Maintenance::UpdateAiServer, this))
+        );
+    }
 }
 
 void Maintenance::Stop()

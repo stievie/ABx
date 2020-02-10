@@ -39,7 +39,8 @@ public:
     {
         handlers_.Add(_Msg::message_type, [handler = std::move(func)](const MessageBuffer& buffer)
         {
-            auto packet = Get<_Msg>(buffer);
+            // See IpcServer.h why const_cast
+            auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));
             handler(packet);
         });
     }

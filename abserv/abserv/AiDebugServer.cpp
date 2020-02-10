@@ -24,7 +24,9 @@
 #include "Game.h"
 #include <AB/IPC/AI/ServerMessages.h>
 #include "Npc.h"
+#include "Player.h"
 #include <functional>
+#include "ServerConnection.h"
 
 namespace AI {
 
@@ -33,6 +35,11 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
     active_{ true }
 {
     server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1, std::placeholders::_2));
+    server_->handlers_.Add<SelectGame>(std::bind(&DebugServer::HandleSelectGame, this, std::placeholders::_1, std::placeholders::_2));
+    server_->onClientDisconnect = [this](IPC::ServerConnection& client)
+    {
+        selectedGames_.erase(client.GetId());
+    };
 }
 
 void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
@@ -47,6 +54,47 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
             server_->SendTo(client, msg);
         }
     }
+}
+
+void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGame& msg)
+{
+    auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
+    {
+        if (auto c = current.lock())
+            return c->id_ == msg.gameId;
+        return false;
+    });
+    if (it != games_.end())
+        return;
+    auto game = (*it).lock();
+    if (!game)
+        return;
+
+    selectedGames_.emplace(client.GetId(), msg.gameId);
+    game->VisitObjects<Game::Actor>([this, &game](const Game::Actor& current)
+    {
+        ObjectUpdate msg;
+        msg.id = current.id_;
+        msg.gameId = game->id_;
+        if (Game::Is<Game::Npc>(current))
+            msg.objectType = ObjectUpdate::ObjectType::Npc;
+        else if (Game::Is<Game::Player>(current))
+            msg.objectType = ObjectUpdate::ObjectType::Player;
+        msg.name = current.GetName();
+        server_->Send(msg);
+        return Iteration::Continue;
+    });
+}
+
+std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
+{
+    std::set<uint32_t> result;
+    for (const auto& i : selectedGames_)
+    {
+        if (i.second == gameId)
+            result.emplace(i.first);
+    }
+    return result;
 }
 
 void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
@@ -71,19 +119,25 @@ void DebugServer::RemoveGame(std::shared_ptr<Game::Game> game)
 {
     if (!active_)
         return;
-    auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
+    auto it = std::find_if(games_.begin(), games_.end(), [id = game->id_](const std::weak_ptr<Game::Game>& current) -> bool
     {
         if (auto c = current.lock())
-            return c->id_ == game->id_;
+            return c->id_ == id;
         return false;
     });
     if (it != games_.end())
     {
-        auto sg = (*it).lock();
         games_.erase(it);
-        if (sg)
-            BroadcastGameRemoved(*sg);
+        BroadcastGameRemoved(*game);
     }
+
+    // Unsubscribe all from this game
+    auto i = selectedGames_.begin();
+    while ((i = std::find_if(i, selectedGames_.end(), [id = game->id_](const auto& current) -> bool
+    {
+        return current.second == id;
+    })) != selectedGames_.end())
+        selectedGames_.erase(i++);
 }
 
 void DebugServer::Update()
@@ -102,13 +156,16 @@ void DebugServer::Update()
 
 void DebugServer::BroadcastGame(const Game::Game& game)
 {
-    game.VisitObjects<Game::Npc>([this, &game](const Game::Npc& current)
+    auto clients = GetSubscribedClients(game.id_);
+    if (clients.size() == 0)
+        return;
+
+    game.VisitObjects<Game::Actor>([this, &clients](const Game::Actor& current)
     {
-        NpcUpdate msg;
+        ObjectUpdate msg;
         msg.id = current.id_;
-        msg.gameId = game.id_;
-        msg.name = current.GetName();
-        server_->Send(msg);
+        for (const auto& i : clients)
+            server_->SendTo(i, msg);
         return Iteration::Continue;
     });
 }
@@ -118,6 +175,8 @@ void DebugServer::BroadcastGameAdded(const Game::Game& game)
     GameAdd msg;
     msg.id = game.id_;
     msg.name = game.GetName();
+    msg.mapUuid = game.data_.uuid;
+    msg.instanceUuid = game.instanceData_.uuid;
     server_->Send(msg);
 }
 

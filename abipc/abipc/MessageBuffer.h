@@ -91,7 +91,7 @@ public:
     T Get()
     {
         if (!CanRead(sizeof(T)))
-            return 0;
+            return {};
         T v;
 #ifdef _MSC_VER
         memcpy_s(&v, sizeof(T), data_ + pos_, sizeof(T));

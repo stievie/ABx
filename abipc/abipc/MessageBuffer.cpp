@@ -29,7 +29,7 @@ bool MessageBuffer::DecodeHeader()
     bodyLength_ = static_cast<size_t>(data_[0] | data_[1] << 8);
     if (bodyLength_ > MaxBodyLength)
         return false;
-    type_ = *reinterpret_cast<uint32_t*>(data_ + 2);
+    type_ = *reinterpret_cast<size_t*>(data_ + 2);
     return true;
 }
 

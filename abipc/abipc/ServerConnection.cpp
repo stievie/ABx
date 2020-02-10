@@ -25,9 +25,12 @@
 
 namespace IPC {
 
+sa::IdGenerator<uint32_t> ServerConnection::sIdGen;
+
 ServerConnection::ServerConnection(asio::io_service& ioService, Server& server) :
     socket_(ioService),
-    server_(server)
+    server_(server),
+    id_(sIdGen.Next())
 { }
 
 void ServerConnection::Start()

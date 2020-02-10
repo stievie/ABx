@@ -68,11 +68,11 @@
 #define CHECK_AUTOTERMINATE_IDLE_MS (1000 * 60 * 10)
 // Remove player from PlayerManager after this time. Inactive means not Ping.
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
-// Game is inactive and will be stopped when it didnt have a player for this time.
+// Game is inactive and will be stopped when it didn't have a player for this time.
 #define GAME_INACTIVE_TIME (1000 * 60)
 // Time after a party is teleported back to the outpost after it was defeated/resigned in ms
 #define PARTY_TELEPORT_BACK_TIME (2000u)
-#define AI_SERVER_UPDATE_INTERVAL (500)
+#define AI_SERVER_UPDATE_INTERVAL (100)
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

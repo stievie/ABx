@@ -34,4 +34,14 @@ struct GetGames : public IPC::Message<GetGames>
     }
 };
 
+struct SelectGame : public IPC::Message<SelectGame>
+{
+    uint32_t gameId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(gameId);
+    }
+};
+
 }

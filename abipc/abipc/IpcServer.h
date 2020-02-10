@@ -39,11 +39,12 @@ private:
     sa::CallableTable<size_t, void, ServerConnection&, const MessageBuffer&> handlers_;
 public:
     template<typename _Msg>
-    void Add(std::function<void(ServerConnection&, const _Msg & msg)>&& func)
+    void Add(std::function<void(ServerConnection&, const _Msg& msg)>&& func)
     {
         handlers_.Add(_Msg::message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
         {
-            auto packet = Get<_Msg>(buffer);
+            // Get() doesn't take const stuff, but the buffer isn't modified by it so just cast it away.
+            auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));
             handler(client, packet);
         });
     }
@@ -67,11 +68,12 @@ private:
     void InternalSend(const MessageBuffer& msg);
     void InternalSendTo(ServerConnection& client, const MessageBuffer& msg);
     void AddConnection(std::shared_ptr<ServerConnection> conn);
+    ServerConnection* GetConnection(uint32_t id);
 public:
     Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpoint);
     ~Server() = default;
     void RemoveConnection(std::shared_ptr<ServerConnection> conn);
-    void HandleMessage(ServerConnection& client, const MessageBuffer& msg);
+    void HandleMessage(ServerConnection& client, MessageBuffer& msg);
     template <typename _Msg>
     void Send(_Msg& msg)
     {
@@ -90,7 +92,21 @@ public:
         buff.EncodeHeader();
         InternalSendTo(client, buff);
     }
+    template <typename _Msg>
+    void SendTo(uint32_t clientId, _Msg& msg)
+    {
+        auto* client = GetConnection(clientId);
+        if (client == nullptr)
+            return;
+        MessageBuffer buff;
+        buff.type_ = _Msg::message_type;
+        Add(msg, buff);
+        buff.EncodeHeader();
+        InternalSendTo(*client, buff);
+    }
     ServerMessageHandlers handlers_;
+    std::function<void(ServerConnection&)> onClientConnect;
+    std::function<void(ServerConnection&)> onClientDisconnect;
 };
 
 }

@@ -13,7 +13,7 @@ PRAGMA_WARNING_POP
 #include "Dispatcher.h"
 #include <thread>
 #include <atomic>
-#include "IpcClient.h"
+#include "DebugClient.h"
 #include "Window.h"
 
 static asio::io_service io;
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
 
-    IPC::Client client(io);
+    DebugClient client(io);
 
     std::string host = sa::arg_parser::get_value<std::string>(parsedArgs, "host", "");
     uint16_t port = sa::arg_parser::get_value<uint16_t>(parsedArgs, "port", 0);
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
     running = true;
-    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(500, std::bind(&RunIo)));
+    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&RunIo)));
 
     Window wnd;
     wnd.Loop();

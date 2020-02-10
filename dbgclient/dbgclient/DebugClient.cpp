@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,60 +19,46 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "DebugClient.h"
+#include <AB/IPC/AI/ClientMessages.h>
 
-#include <AB/IPC/Message.h>
-#include <string>
-
-namespace AI {
-
-struct GameAdd : public IPC::Message<GameAdd>
+DebugClient::DebugClient(asio::io_service& io) :
+    client_(io)
 {
-    uint32_t id;
-    std::string name;
-    std::string mapUuid;
-    std::string instanceUuid;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-        ar.value(name);
-        ar.value(mapUuid);
-        ar.value(instanceUuid);
-    }
-};
+    client_.handlers_.Add<AI::GameAdd>(std::bind(&DebugClient::HandleGameAdd, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::GameRemove>(std::bind(&DebugClient::HandleGameRemove, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::ObjectUpdate>(std::bind(&DebugClient::HandleObjectUpdate, this, std::placeholders::_1));
+}
 
-struct GameRemove : public IPC::Message<GameRemove>
+bool DebugClient::Connect(const std::string& host, uint16_t port)
 {
-    uint32_t id;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-    }
-};
+    return client_.Connect(host, port);
+}
 
-struct ObjectUpdate : public IPC::Message<ObjectUpdate>
+void DebugClient::HandleGameAdd(const AI::GameAdd& message)
 {
-    enum class ObjectType : uint8_t
-    {
-        Unknown,
-        Npc,
-        Player
-    };
+    (void)message;
+}
 
-    uint32_t id;
-    uint32_t gameId{ 0 };
-    ObjectType objectType{ ObjectType::Unknown };
-    std::string name;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-        ar.value(objectType);
-        ar.value(gameId);
-        ar.value(name);
-    }
-};
+void DebugClient::HandleGameRemove(const AI::GameRemove& message)
+{
+    (void)message;
+}
 
+void DebugClient::HandleObjectUpdate(const AI::ObjectUpdate& message)
+{
+    (void)message;
+}
+
+void DebugClient::GetGames()
+{
+    AI::GetGames msg;
+    client_.Send(msg);
+}
+
+void DebugClient::SelectGame(uint32_t id)
+{
+    AI::SelectGame msg;
+    msg.gameId = id;
+    client_.Send(msg);
 }

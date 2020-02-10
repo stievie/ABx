@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,58 +21,21 @@
 
 #pragma once
 
-#include <AB/IPC/Message.h>
-#include <string>
+#include "IpcClient.h"
+#include <asio.hpp>
+#include <AB/IPC/AI/ServerMessages.h>
 
-namespace AI {
-
-struct GameAdd : public IPC::Message<GameAdd>
+class DebugClient
 {
-    uint32_t id;
-    std::string name;
-    std::string mapUuid;
-    std::string instanceUuid;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-        ar.value(name);
-        ar.value(mapUuid);
-        ar.value(instanceUuid);
-    }
+private:
+    IPC::Client client_;
+    void HandleGameAdd(const AI::GameAdd& message);
+    void HandleGameRemove(const AI::GameRemove& message);
+    void HandleObjectUpdate(const AI::ObjectUpdate& message);
+public:
+    explicit DebugClient(asio::io_service& io);
+    bool Connect(const std::string& host, uint16_t port);
+    void GetGames();
+    void SelectGame(uint32_t id);
 };
 
-struct GameRemove : public IPC::Message<GameRemove>
-{
-    uint32_t id;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-    }
-};
-
-struct ObjectUpdate : public IPC::Message<ObjectUpdate>
-{
-    enum class ObjectType : uint8_t
-    {
-        Unknown,
-        Npc,
-        Player
-    };
-
-    uint32_t id;
-    uint32_t gameId{ 0 };
-    ObjectType objectType{ ObjectType::Unknown };
-    std::string name;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(id);
-        ar.value(objectType);
-        ar.value(gameId);
-        ar.value(name);
-    }
-};
-
-}
