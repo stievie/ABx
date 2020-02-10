@@ -10,7 +10,7 @@ game_host = ""     -- emtpy use same host as for login
 --game_host = "stievie.mooo.com"
 
 ai_server = true
-ai_server_ip = "127.0.0.1"
+ai_server_ip = "0.0.0.0"
 ai_server_port = 12345
 
 -- DOS prevention
