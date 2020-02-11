@@ -50,3 +50,39 @@ TEST_CASE("IPC Message serialize")
     REQUIRE(msg.intValue == msg2.intValue);
     REQUIRE(msg.strValue == msg2.strValue);
 }
+
+struct MyMessage2
+{
+    // Count of members elements
+    uint8_t count;
+    std::vector<uint32_t> members;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        members.resize(count);
+        for (uint8_t i = 0; i < count; ++i)
+        {
+            auto& member = members[i];
+            ar.value(member);
+        }
+    }
+};
+
+TEST_CASE("IPC Message serialize 2")
+{
+    IPC::MessageBuffer buffer;
+    MyMessage2 msg;
+    msg.count = 5;
+    for (uint8_t i = 0; i < msg.count; ++i)
+        msg.members.push_back(i);
+    IPC::Add(msg, buffer);
+
+    // Because we are reading it from the same buffer we must seek to the beginning of the buffer.
+    buffer.SetPos(0);
+
+    MyMessage2 msg2 = IPC::Get<MyMessage2>(buffer);
+    REQUIRE(msg.count == msg2.count);
+    for (uint8_t i = 0; i < msg.count; ++i)
+        REQUIRE(msg.members[i] == msg2.members[i]);
+}
