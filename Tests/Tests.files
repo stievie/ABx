@@ -4,6 +4,7 @@ Tests/AI.Mockup.h
 Tests/AI.Parallel.cpp
 Tests/AI.Sequence.cpp
 Tests/AI.Zone.cpp
+Tests/IPC.Mesagge.cpp
 Tests/Math.BoundingBox.cpp
 Tests/Math.Collisions.cpp
 Tests/Math.Hull.cpp

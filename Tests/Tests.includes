@@ -3,4 +3,5 @@
 ../absmath/absmath
 ../abscommon/abscommon
 ../abai/abai
+../abipc/abipc
 Tests

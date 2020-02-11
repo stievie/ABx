@@ -22,22 +22,28 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "LuaLoader.h"
-#include "Registry.h"
+#include "Message.h"
+#include "MessageBuffer.h"
 
-TEST_CASE("Load")
+struct MyMessage
 {
-    AI::Registry reg;
-    reg.Initialize();
-    AI::LuaLoader loader(reg);
-    // I thought we call a lua function which adds nodes or whatever to the
-    // root node, but I'm not sure...
-    std::string script = R"lua(
-function init(root)
-    local nd = node("Parallel", {1, "xx"})
-    root:AddNode(nd)
-end
-)lua";
-    auto root = loader.LoadString(script);
-    REQUIRE(root);
+    int intValue;
+    std::string strValue;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(intValue);
+        ar.value(strValue);
+    }
+};
+
+TEST_CASE("IPC Message serialize")
+{
+    IPC::MessageBuffer buffer;
+    MyMessage msg { 42, "Hello world" };
+    IPC::Add(msg, buffer);
+
+    MyMessage msg2 = IPC::Get<MyMessage>(buffer);
+    REQUIRE(msg.intValue == msg2.intValue);
+    REQUIRE(msg.strValue == msg2.strValue);
 }

@@ -1,12 +1,12 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abai/abai
+INCLUDES += -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abai/abai -I../abipc/abipc
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/Tests$(SUFFIX)
 SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/$(CONFIG)/Tests
-LIBS += -labscommon -labsmath -labai -llua5.3
+LIBS += -labscommon -labsmath -labai -labipc -llua5.3 -lpthread
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror -Wno-maybe-uninitialized
