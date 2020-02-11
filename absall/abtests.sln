@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tests", "..\Tests\Tests\Tests.vcxproj", "{9F15DE15-257A-4A5B-A8FB-F2DDF64B127F}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abai", "..\abai\abai\abai.vcxproj", "{2BDA52B4-737D-405B-B59C-AF023D7122BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abipc", "..\abipc\abipc\abipc.vcxproj", "{222C878E-3A32-410E-B11B-247F18572E33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelNoProfiling|x64.Build.0 = Release|x64
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{2BDA52B4-737D-405B-B59C-AF023D7122BA}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Debug|x64.ActiveCfg = Debug|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Debug|x64.Build.0 = Debug|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Release|x64.ActiveCfg = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.Release|x64.Build.0 = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.RelNoProfiling|x64.Build.0 = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{222C878E-3A32-410E-B11B-247F18572E33}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
