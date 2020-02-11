@@ -43,6 +43,9 @@ TEST_CASE("IPC Message serialize")
     MyMessage msg { 42, "Hello world" };
     IPC::Add(msg, buffer);
 
+    // Because we are reading it from the same buffer we must seek to the beginning of the buffer.
+    buffer.SetPos(0);
+
     MyMessage msg2 = IPC::Get<MyMessage>(buffer);
     REQUIRE(msg.intValue == msg2.intValue);
     REQUIRE(msg.strValue == msg2.strValue);

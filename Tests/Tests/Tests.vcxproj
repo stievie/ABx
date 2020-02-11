@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\abipc\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
@@ -87,7 +87,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\Include\ai;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\abipc\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
@@ -113,6 +113,7 @@
     <ClCompile Include="AI.Parallel.cpp" />
     <ClCompile Include="AI.Sequence.cpp" />
     <ClCompile Include="AI.Zone.cpp" />
+    <ClCompile Include="IPC.Mesagge.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.BoundingBox.cpp" />
     <ClCompile Include="Math.Collisions.cpp" />
@@ -138,6 +139,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\abai\abai\abai.vcxproj">
       <Project>{2bda52b4-737d-405b-b59c-af023d7122ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\abipc\abipc\abipc.vcxproj">
+      <Project>{222c878e-3a32-410e-b11b-247f18572e33}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
       <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>

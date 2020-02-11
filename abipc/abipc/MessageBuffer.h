@@ -118,6 +118,12 @@ public:
         bodyLength_ += sizeof(T);
     }
 
+    void SetPos(size_t pos)
+    {
+        // DO NOT USE. No need to manually set the position. This is just here for the Tests.
+        pos_ = pos;
+    }
+
     size_t type_{ 0 };
 };
 
