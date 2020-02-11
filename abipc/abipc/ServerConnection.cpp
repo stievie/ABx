@@ -44,14 +44,11 @@ void ServerConnection::Start()
 
 void ServerConnection::HandleRead(const asio::error_code& error)
 {
-    if (error)
+    if (error || !readBuffer_.DecodeHeader())
     {
         server_.RemoveConnection(shared_from_this());
         return;
     }
-
-    if (!readBuffer_.DecodeHeader())
-        return;
 
     asio::read(socket_,
         asio::buffer(readBuffer_.Body(), readBuffer_.BodyLength()));
