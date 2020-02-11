@@ -44,11 +44,14 @@ void Client::InternalConnect()
 
 void Client::HandleReadHeader(MessageBuffer* msg, const ReadHandler& handler, const asio::error_code& error, size_t bytes_transferred)
 {
-    if (!error && msg->DecodeHeader())
+    if (!error)
     {
-        asio::async_read(socket_,
-            asio::buffer(msg->Body(), msg->BodyLength()),
-            handler);
+        if (msg->DecodeHeader())
+        {
+            asio::async_read(socket_,
+                asio::buffer(msg->Body(), msg->BodyLength()),
+                handler);
+        }
     }
     else
     {
@@ -75,7 +78,7 @@ void Client::HandleRead(const asio::error_code& error, size_t)
         return;
     }
 
-    if (!readBuffer_.IsEmpty() && readBuffer_.DecodeHeader())
+    if (!readBuffer_.IsEmpty())
         HandleMessage(readBuffer_);
     readBuffer_.Empty();
     AsyncReceive(&readBuffer_,

@@ -213,7 +213,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     };
 
     const auto* hit = raycast(destination);
-    if (!hit)
+    if (!hit || !hit->object_)
         // Nothing or only TerrainPatches on the way
         return destination;
 

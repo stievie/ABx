@@ -88,7 +88,7 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     {
         // games_.size() may be called from another thread so lock it
         std::lock_guard<std::mutex> lockClass(lock_);
-        GetSubsystem<AI::DebugServer>()->AddGame((*it).second);
+        GetSubsystem<AI::DebugServer>()->RemoveGame(gameId);
         maps_.erase((*it).second->data_.uuid);
         games_.erase(it);
     }

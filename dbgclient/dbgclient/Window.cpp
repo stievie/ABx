@@ -34,9 +34,15 @@ Window::Window()
 {
 #ifdef AB_UNIX
     initscr();
+    start_color();
     noecho();
     curs_set(FALSE);
 #else
+    // Get default console font color on Windows
+    CONSOLE_SCREEN_BUFFER_INFO Info;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
+    defForeColor_ = static_cast<ForeColor>(Info.wAttributes);
+    defBackColor_ = static_cast<BackColor>(Info.wAttributes);
     Clear();
     ShowCursor(false);
 #endif
@@ -65,6 +71,9 @@ char Window::GetChar() const
 
 void Window::HandleInput(char c)
 {
+    if (onKey_)
+        onKey_(c);
+
     switch (c)
     {
     case 'q':
@@ -90,24 +99,31 @@ void Window::Loop()
     }
 }
 
-void Window::Print(int x, int y, const std::string& text)
+void Window::Print(const Point& pos, const std::string& text)
 {
 #ifdef AB_UNIX
-    mvprintw(x, y, text.c_str());
+    pos_ = pos;
+    mvprintw(pos.x, pos.y, text.c_str());
 #else
-    Goto(x, y);
+    Goto(pos);
     _cprintf(text.c_str());
 #endif
 }
 
-void Window::Goto(int x, int y)
+void Window::Goto(const Point& pos)
 {
+    pos_ = pos;
 #ifdef AB_UNIX
-    move(x, y);
+    move(pos.x, pos.y);
 #else
-    COORD c = { static_cast<short>(x), static_cast<short>(y) };
+    COORD c = { static_cast<short>(pos.x), static_cast<short>(pos.y) };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 #endif
+}
+
+Point Window::GetPosition() const
+{
+    return pos_;
 }
 
 void Window::Clear()
@@ -143,4 +159,17 @@ void Window::ShowCursor(bool visible)
     cursorInfo.bVisible = visible;
     SetConsoleCursorInfo(out, &cursorInfo);
 #endif
+}
+
+void Window::SetColor(ForeColor foreColor, BackColor backColor)
+{
+#ifdef AB_UNIX
+#else
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foreColor | backColor);
+#endif
+}
+
+void Window::RestColor()
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), defForeColor_ | defBackColor_);
 }

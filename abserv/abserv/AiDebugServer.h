@@ -45,7 +45,7 @@ private:
     std::map<uint32_t, uint32_t> selectedGames_;
     void BroadcastGame(const Game::Game& game);
     void BroadcastGameAdded(const Game::Game& game);
-    void BroadcastGameRemoved(const Game::Game& game);
+    void BroadcastGameRemoved(uint32_t id);
     void HandleGetGames(IPC::ServerConnection& client, const GetGames&);
     void HandleSelectGame(IPC::ServerConnection& client, const SelectGame&);
     std::set<uint32_t> GetSubscribedClients(uint32_t gameId);
@@ -53,7 +53,7 @@ public:
     explicit DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);
     DebugServer() = default;
     void AddGame(std::shared_ptr<Game::Game> game);
-    void RemoveGame(std::shared_ptr<Game::Game> game);
+    void RemoveGame(uint32_t id);
     void Update();
     bool IsActive() const { return active_; }
 };

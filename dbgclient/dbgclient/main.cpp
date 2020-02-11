@@ -27,7 +27,7 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 
 static void RunIo()
 {
-    io.run();
+    io.poll();
     if (running)
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(500, std::bind(&RunIo)));
 }
@@ -58,7 +58,11 @@ int main(int argc, char** argv)
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
 
-    DebugClient client(io);
+    GetSubsystem<Asynch::Dispatcher>()->Start();
+    GetSubsystem<Asynch::Scheduler>()->Start();
+
+    Window wnd;
+    DebugClient client(io, wnd);
 
     std::string host = sa::arg_parser::get_value<std::string>(parsedArgs, "host", "");
     uint16_t port = sa::arg_parser::get_value<uint16_t>(parsedArgs, "port", 0);
@@ -68,12 +72,9 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    GetSubsystem<Asynch::Dispatcher>()->Start();
-    GetSubsystem<Asynch::Scheduler>()->Start();
     running = true;
     GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&RunIo)));
 
-    Window wnd;
     wnd.Loop();
     running = false;
 

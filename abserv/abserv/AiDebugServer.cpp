@@ -51,6 +51,8 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
             GameAdd msg;
             msg.id = sGame->id_;
             msg.name = sGame->GetName();
+            msg.mapUuid = sGame->data_.uuid;
+            msg.instanceUuid = sGame->instanceData_.uuid;
             server_->SendTo(client, msg);
         }
     }
@@ -64,7 +66,7 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
             return c->id_ == msg.gameId;
         return false;
     });
-    if (it != games_.end())
+    if (it == games_.end())
         return;
     auto game = (*it).lock();
     if (!game)
@@ -115,11 +117,11 @@ void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
     BroadcastGameAdded(g);
 }
 
-void DebugServer::RemoveGame(std::shared_ptr<Game::Game> game)
+void DebugServer::RemoveGame(uint32_t id)
 {
     if (!active_)
         return;
-    auto it = std::find_if(games_.begin(), games_.end(), [id = game->id_](const std::weak_ptr<Game::Game>& current) -> bool
+    auto it = std::find_if(games_.begin(), games_.end(), [&id](const std::weak_ptr<Game::Game>& current) -> bool
     {
         if (auto c = current.lock())
             return c->id_ == id;
@@ -128,12 +130,12 @@ void DebugServer::RemoveGame(std::shared_ptr<Game::Game> game)
     if (it != games_.end())
     {
         games_.erase(it);
-        BroadcastGameRemoved(*game);
+        BroadcastGameRemoved(id);
     }
 
     // Unsubscribe all from this game
     auto i = selectedGames_.begin();
-    while ((i = std::find_if(i, selectedGames_.end(), [id = game->id_](const auto& current) -> bool
+    while ((i = std::find_if(i, selectedGames_.end(), [&id](const auto& current) -> bool
     {
         return current.second == id;
     })) != selectedGames_.end())
@@ -180,10 +182,10 @@ void DebugServer::BroadcastGameAdded(const Game::Game& game)
     server_->Send(msg);
 }
 
-void DebugServer::BroadcastGameRemoved(const Game::Game& game)
+void DebugServer::BroadcastGameRemoved(uint32_t id)
 {
     GameRemove msg;
-    msg.id = game.id_;
+    msg.id = id;
     server_->Send(msg);
 }
 

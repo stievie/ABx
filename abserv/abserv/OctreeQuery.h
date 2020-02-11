@@ -111,11 +111,8 @@ public:
 struct RayQueryResult
 {
     /// Construct with defaults.
-    RayQueryResult() :
-        distance_(0.0f),
-        object_(nullptr)
-    {}
-    RayQueryResult(const RayQueryResult& other) :
+    RayQueryResult() noexcept = default;
+    RayQueryResult(const RayQueryResult& other) noexcept :
         position_(other.position_),
         normal_(other.normal_),
         distance_(other.distance_),
@@ -124,13 +121,11 @@ struct RayQueryResult
     RayQueryResult(RayQueryResult&& other) noexcept :
         position_(std::move(other.position_)),
         normal_(std::move(other.normal_)),
-        distance_(other.distance_),
-        object_(other.object_)
-    {
-        other.object_ = nullptr;
-    }
+        distance_(std::move(other.distance_)),
+        object_(std::move(other.object_))
+    { }
 
-    RayQueryResult& operator= (const RayQueryResult& other)
+    RayQueryResult& operator= (const RayQueryResult& other) noexcept
     {
         if (this != &other)
         {
@@ -168,9 +163,9 @@ struct RayQueryResult
     /// Hit normal in world space. Negation of ray direction if per-triangle data not available.
     Vector3 normal_;
     /// Distance from ray origin.
-    float distance_;
+    float distance_{ 0.0f };
     /// Drawable.
-    Game::GameObject* object_;
+    Game::GameObject* object_{ nullptr };
 };
 
 class RayOctreeQuery

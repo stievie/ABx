@@ -42,7 +42,7 @@ private:
     size_t pos_{ 0 };
     bool CanRead(size_t size) const
     {
-        return pos_ + size < bodyLength_;
+        return pos_ + size <= bodyLength_;
     }
     bool CanWrite(size_t size) const
     {
@@ -50,6 +50,7 @@ private:
     }
     void AddString(const std::string& value);
     std::string GetString();
+    size_t GetBodyPos() { return pos_ + HeaderLength; }
 public:
     MessageBuffer() :
         data_{}
@@ -84,6 +85,7 @@ public:
     void Empty()
     {
         bodyLength_ = 0;
+        pos_ = 0;
         type_ = 0;
     }
 
@@ -94,9 +96,9 @@ public:
             return {};
         T v;
 #ifdef _MSC_VER
-        memcpy_s(&v, sizeof(T), data_ + pos_, sizeof(T));
+        memcpy_s(&v, sizeof(T), data_ + GetBodyPos(), sizeof(T));
 #else
-        memcpy(&v, data_ + pos_, sizeof(T));
+        memcpy(&v, data_ + GetBodyPos(), sizeof(T));
 #endif
         pos_ += sizeof(T);
         return v;
@@ -108,9 +110,9 @@ public:
             return;
 
 #ifdef _MSC_VER
-        memcpy_s(data_ + pos_, sizeof(T), &value, sizeof(T));
+        memcpy_s(data_ + GetBodyPos(), sizeof(T), &value, sizeof(T));
 #else
-        memcpy(data_ + pos_, &value, sizeof(T));
+        memcpy(data_ + GetBodyPos(), &value, sizeof(T));
 #endif
         pos_ += sizeof(T);
         bodyLength_ += sizeof(T);

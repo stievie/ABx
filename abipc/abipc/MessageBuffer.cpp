@@ -48,14 +48,14 @@ void MessageBuffer::EncodeHeader()
 void MessageBuffer::AddString(const std::string& value)
 {
     uint16_t len = static_cast<uint16_t>(value.length());
-    if (!CanWrite(len + 2) || len > 8192)
+    if (!CanWrite(static_cast<size_t>(len) + 2) || len > 8192)
         return;
     Add<uint16_t>(len);
     // Allows also \0
 #ifdef _MSC_VER
-    memcpy_s(data_ + pos_, MaxBodyLength, value.data(), len);
+    memcpy_s(data_ + GetBodyPos(), MaxBodyLength, value.data(), len);
 #else
-    memcpy(data_ + pos_, value.data(), len);
+    memcpy(data_ + GetBodyPos(), value.data(), len);
 #endif
     pos_ += static_cast<size_t>(len);
     bodyLength_ += static_cast<size_t>(len);
@@ -70,7 +70,7 @@ std::string MessageBuffer::GetString()
     if (!CanRead(len))
         return std::string();
 
-    char* v = reinterpret_cast<char*>(data_) + pos_;
+    char* v = reinterpret_cast<char*>(data_) + GetBodyPos();
     pos_ += len;
     return std::string(v, len);
 }

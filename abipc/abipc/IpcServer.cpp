@@ -54,7 +54,7 @@ void Server::AddConnection(std::shared_ptr<ServerConnection> conn)
 
 ServerConnection* Server::GetConnection(uint32_t id)
 {
-    auto it = std::find_if(clients_.begin(), clients_.end(), [&](const std::shared_ptr<ServerConnection>& current)
+    auto it = std::find_if(clients_.begin(), clients_.end(), [&id](const std::shared_ptr<ServerConnection>& current)
     {
         return id == current->GetId();
     });
@@ -66,8 +66,8 @@ ServerConnection* Server::GetConnection(uint32_t id)
 
 void Server::InternalSend(const MessageBuffer& msg)
 {
-    std::for_each(clients_.begin(), clients_.end(),
-        std::bind(&ServerConnection::Send, std::placeholders::_1, msg));
+    for (auto& c : clients_)
+        c->Send(msg);
 }
 
 void Server::InternalSendTo(ServerConnection& client, const MessageBuffer& msg)

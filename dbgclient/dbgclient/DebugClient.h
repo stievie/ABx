@@ -24,18 +24,36 @@
 #include "IpcClient.h"
 #include <asio.hpp>
 #include <AB/IPC/AI/ServerMessages.h>
+#include <map>
+#include "Window.h"
 
 class DebugClient
 {
 private:
+    enum class Screen
+    {
+        SelectGame,
+        Game
+    };
     IPC::Client client_;
+    Window& window_;
+    Screen screen_{ Screen::SelectGame };
+    std::map<uint32_t, AI::GameAdd> games_;
+    std::vector<uint32_t> gameIds_;
+    bool gamesDirty_{ false };
     void HandleGameAdd(const AI::GameAdd& message);
     void HandleGameRemove(const AI::GameRemove& message);
     void HandleObjectUpdate(const AI::ObjectUpdate& message);
-public:
-    explicit DebugClient(asio::io_service& io);
-    bool Connect(const std::string& host, uint16_t port);
+    void HandleOnKey(char& c);
+    void HandleSelectGameOnKey(char& c);
+    void HandleGameOnKey(char& c);
+    void UpdateScreen();
+    void DrawSelectGame();
+    void DrawGame();
     void GetGames();
     void SelectGame(uint32_t id);
+public:
+    DebugClient(asio::io_service& io, Window& window);
+    bool Connect(const std::string& host, uint16_t port);
 };
 
