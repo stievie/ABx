@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IpcClient.h" />
+    <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBuffer.h" />
     <ClInclude Include="MessageHandlers.h" />
     <ClInclude Include="IpcServer.h" />

@@ -82,17 +82,11 @@ void Add(T& value, _Msg& msg)
     value.Serialize(writer);
 }
 
-template<typename T>
-struct Message
-{
-    static constexpr size_t message_type = sa::StringHash(sa::TypeName<T>::Get());
-};
-
 /*
 
 Example:
 
-struct MyMessage : public Message<MyMessage>
+struct MyMessage
 {
     int intValue;
     std::string strValue;

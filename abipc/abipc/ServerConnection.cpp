@@ -50,13 +50,16 @@ void ServerConnection::HandleRead(const asio::error_code& error)
         return;
     }
 
+    if (!readBuffer_.DecodeHeader())
+        return;
+
     asio::read(socket_,
         asio::buffer(readBuffer_.Body(), readBuffer_.BodyLength()));
 
     // Client sent a message
-    if (readBuffer_.DecodeHeader())
-        server_.HandleMessage(*this, readBuffer_);
+    server_.HandleMessage(*this, readBuffer_);
 
+    readBuffer_.Empty();
     asio::async_read(socket_,
         asio::buffer(readBuffer_.Data(), MessageBuffer::HeaderLength),
         std::bind(

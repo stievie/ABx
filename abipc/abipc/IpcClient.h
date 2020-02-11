@@ -24,8 +24,10 @@
 #include <functional>
 #include "MessageBuffer.h"
 #include <sa/CallableTable.h>
-#include <AB/IPC/Message.h>
+#include "Message.h"
 #include <asio.hpp>
+#include <sa/TypeName.h>
+#include <sa/StringHash.h>
 
 namespace IPC {
 
@@ -37,7 +39,8 @@ public:
     template<typename _Msg>
     void Add(std::function<void(const _Msg& msg)>&& func)
     {
-        handlers_.Add(_Msg::message_type, [handler = std::move(func)](const MessageBuffer& buffer)
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
+        handlers_.Add(message_type, [handler = std::move(func)](const MessageBuffer& buffer)
         {
             // See IpcServer.h why const_cast
             auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));
@@ -92,8 +95,9 @@ public:
     template <typename _Msg>
     void Send(_Msg& msg)
     {
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         MessageBuffer buff;
-        buff.type_ = _Msg::message_type;
+        buff.type_ = message_type;
         Add(msg, buff);
         buff.EncodeHeader();
         InternalSend(buff);

@@ -21,12 +21,11 @@
 
 #pragma once
 
-#include <AB/IPC/Message.h>
 #include <string>
 
 namespace AI {
 
-struct GetGames : public IPC::Message<GetGames>
+struct GetGames
 {
     template<typename _Ar>
     void Serialize(_Ar&)
@@ -34,7 +33,7 @@ struct GetGames : public IPC::Message<GetGames>
     }
 };
 
-struct SelectGame : public IPC::Message<SelectGame>
+struct SelectGame
 {
     uint32_t gameId;
     template<typename _Ar>

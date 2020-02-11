@@ -25,9 +25,11 @@
 #include <set>
 #include <sa/CallableTable.h>
 #include <asio.hpp>
-#include <AB/IPC/Message.h>
+#include "Message.h"
 #include "MessageBuffer.h"
 #include <mutex>
+#include <sa/TypeName.h>
+#include <sa/StringHash.h>
 
 namespace IPC {
 
@@ -41,7 +43,8 @@ public:
     template<typename _Msg>
     void Add(std::function<void(ServerConnection&, const _Msg& msg)>&& func)
     {
-        handlers_.Add(_Msg::message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
+        handlers_.Add(message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
         {
             // Get() doesn't take const stuff, but the buffer isn't modified by it so just cast it away.
             auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));
@@ -77,8 +80,9 @@ public:
     template <typename _Msg>
     void Send(_Msg& msg)
     {
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         MessageBuffer buff;
-        buff.type_ = _Msg::message_type;
+        buff.type_ = message_type;
         Add(msg, buff);
         buff.EncodeHeader();
         InternalSend(buff);
@@ -86,8 +90,9 @@ public:
     template <typename _Msg>
     void SendTo(ServerConnection& client, _Msg& msg)
     {
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         MessageBuffer buff;
-        buff.type_ = _Msg::message_type;
+        buff.type_ = message_type;
         Add(msg, buff);
         buff.EncodeHeader();
         InternalSendTo(client, buff);
@@ -95,11 +100,12 @@ public:
     template <typename _Msg>
     void SendTo(uint32_t clientId, _Msg& msg)
     {
+        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         auto* client = GetConnection(clientId);
         if (client == nullptr)
             return;
         MessageBuffer buff;
-        buff.type_ = _Msg::message_type;
+        buff.type_ = message_type;
         Add(msg, buff);
         buff.EncodeHeader();
         InternalSendTo(*client, buff);

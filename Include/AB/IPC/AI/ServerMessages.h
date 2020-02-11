@@ -21,12 +21,11 @@
 
 #pragma once
 
-#include <AB/IPC/Message.h>
 #include <string>
 
 namespace AI {
 
-struct GameAdd : public IPC::Message<GameAdd>
+struct GameAdd
 {
     uint32_t id;
     std::string name;
@@ -42,7 +41,7 @@ struct GameAdd : public IPC::Message<GameAdd>
     }
 };
 
-struct GameRemove : public IPC::Message<GameRemove>
+struct GameRemove
 {
     uint32_t id;
     template<typename _Ar>
@@ -52,7 +51,7 @@ struct GameRemove : public IPC::Message<GameRemove>
     }
 };
 
-struct ObjectUpdate : public IPC::Message<ObjectUpdate>
+struct ObjectUpdate
 {
     enum class ObjectType : uint8_t
     {

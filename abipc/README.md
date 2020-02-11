@@ -27,7 +27,7 @@ io.run();
 ## Messages
 
 ~~~cpp
-struct MyMessage : public Message<MyMessage>
+struct MyMessage
 {
     int intValue;
     std::string strValue;
