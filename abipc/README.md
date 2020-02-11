@@ -37,10 +37,17 @@ asio::io_service io;
 IPC::Client client(io);
 client.Connect("localhost", 1234);
 io.run();
-// Or .poll() or whatever fits the application.
+// Or io.poll() or whatever fits the application.
 ~~~
 
 ## Messages
+
+Client and server communicate with so called "Messages". These can be
+`struct`s or `class`es which must satisfy some requirements.
+
+All messages to be sent must have a public `Serialize()` function template.
+For each member of the Message `ar.value()` must be called. That's all
+to make a `struct` useable by the IPC server and client.
 
 ~~~cpp
 struct MyMessage
