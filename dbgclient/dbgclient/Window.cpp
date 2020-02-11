@@ -164,6 +164,8 @@ void Window::ShowCursor(bool visible)
 void Window::SetColor(ForeColor foreColor, BackColor backColor)
 {
 #ifdef AB_UNIX
+    (void)foreColor;
+    (void)backColor;
 #else
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foreColor | backColor);
 #endif
@@ -171,5 +173,8 @@ void Window::SetColor(ForeColor foreColor, BackColor backColor)
 
 void Window::RestColor()
 {
+#ifdef AB_UNIX
+#else
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), defForeColor_ | defBackColor_);
+#endif
 }

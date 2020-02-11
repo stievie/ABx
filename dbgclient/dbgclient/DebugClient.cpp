@@ -53,9 +53,9 @@ void DebugClient::HandleSelectGameOnKey(char& c)
     if (isdigit(c))
     {
         int index = c - 48;
-        if (index >= 0 && index < gameIds_.size())
+        if (index >= 0 && static_cast<size_t>(index) < gameIds_.size())
         {
-            SelectGame(gameIds_[index]);
+            SelectGame(gameIds_[static_cast<size_t>(index)]);
         }
     }
 }
