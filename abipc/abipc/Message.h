@@ -24,6 +24,32 @@
 #include <sa/TypeName.h>
 #include <sa/StringHash.h>
 
+/*
+IPC Message serialization.
+
+Example:
+
+struct MyMessage
+{
+    int intValue;
+    std::string strValue;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(intValue);
+        ar.value(strValue);
+    }
+};
+
+Add handlers for Server and/or Client:
+
+handlers_.Add<MyMessage>([](const MyMessage& msg)
+{
+    std::cout << "intValue = " << msg.intValue << std::endl;
+    std::cout << "strValue = " << msg.strValue << std::endl;
+});
+*/
+
 namespace IPC {
 
 namespace detail {
@@ -82,29 +108,4 @@ void Add(T& value, _Msg& msg)
     value.Serialize(writer);
 }
 
-/*
-
-Example:
-
-struct MyMessage
-{
-    int intValue;
-    std::string strValue;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(intValue);
-        ar.value(strValue);
-    }
-};
-
-Add handlers for Server and/or Client:
-
-handlers_.Add<MyMessage>([](const MyMessage& msg)
-{
-    std::cout << "intValue = " << msg.intValue << std::endl;
-    std::cout << "strValue = " << msg.strValue << std::endl;
-});
-
-*/
 }
