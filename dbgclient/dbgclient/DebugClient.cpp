@@ -130,15 +130,6 @@ void DebugClient::DrawSelectGameScreen()
         return;
 
     gamesDirty_ = false;
-    window_.Clear();
-    if (games_.size() == 0)
-    {
-        window_.Print({ 0, 0 }, "It seems there are no games running");
-        return;
-    }
-
-    window_.Print({ 0, 0 }, "Select a game");
-    Point p = { 0, 2 };
     int i = 0;
     gameIds_.clear();
     for (const auto& game : games_)
@@ -147,8 +138,7 @@ void DebugClient::DrawSelectGameScreen()
         ss << "[" << i << "] " << game.second.name << " " << game.second.instanceUuid;
         gameIds_.push_back(game.second.id);
         ++i;
-        window_.Print({ p.x, p.y }, ss.str());
-        ++p.y;
+        window_.PrintGame(ss.str(), i);
     }
 }
 

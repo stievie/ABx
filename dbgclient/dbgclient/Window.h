@@ -33,6 +33,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4005)
 #include <curses.h>
 PRAGMA_WARNING_POP
 #endif
+#include <panel.h>
 
 struct Point
 {
@@ -40,13 +41,18 @@ struct Point
     int y;
 };
 
+#define DEFAULT_BORDER_COLOR 1
+#define ACTIVE_BORDER_COLOR 2
+
 class Window
 {
 private:
     bool running_{ false };
-    Point pos_{ 0, 0 };
-
+    WINDOW* wins_[3];
+    PANEL* panels_[3];
+    PANEL* topPanel_{ nullptr };
     void HandleInput(char c);
+    void ActivatePanel(PANEL* newTop);
 public:
     Window();
     ~Window();
@@ -54,9 +60,12 @@ public:
     void Loop();
     void Print(const Point& pos, const std::string& text);
     void Goto(const Point& pos);
+    void PrintStatusLine(const std::string& txt);
     void Clear();
+    void PrintGame(const std::string& txt, int index);
     void ShowCursor(bool visible);
     Point GetPosition() const;
+    Point GetSize() const;
     bool IsRunning() const { return running_; }
 
     std::function<void(char& c)> onKey_;

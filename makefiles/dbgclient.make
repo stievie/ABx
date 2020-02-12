@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/dbgclient$(SUFFIX)
 SOURDEDIR = ../dbgclient/dbgclient
 OBJDIR = obj/x64/$(CONFIG)/dbgclient
-LIBS += -llua5.3 -labscommon -lpthread -lncurses -labipc
+LIBS += -llua5.3 -labscommon -lpthread -lncurses -lpanel -labipc
 CXXFLAGS += -Werror
 DEFINES += -DUSE_STANDALONE_ASIO
 # End changes
