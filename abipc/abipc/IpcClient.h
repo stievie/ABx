@@ -42,8 +42,8 @@ public:
         static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         handlers_.Add(message_type, [handler = std::move(func)](const MessageBuffer& buffer)
         {
-            static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
-            if (message_type != buffer.type_)
+            static constexpr size_t message_type2 = sa::StringHash(sa::TypeName<_Msg>::Get());
+            if (message_type2 != buffer.type_)
                 return;
             // See IpcServer.h why const_cast
             auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));

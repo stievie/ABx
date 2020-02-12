@@ -46,8 +46,8 @@ public:
         static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         handlers_.Add(message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
         {
-            static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
-            if (message_type != buffer.type_)
+            static constexpr size_t message_type2 = sa::StringHash(sa::TypeName<_Msg>::Get());
+            if (message_type2 != buffer.type_)
                 return;
             // Get() doesn't take const stuff, but the buffer isn't modified by it so just cast it away.
             auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));

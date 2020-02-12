@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "..\ThirdParty\lz4\lz
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyexpr", "..\ThirdParty\tinyexpr\tinyexpr.vcxproj", "{886848EA-B761-4383-8ABE-879FAD8414AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PDCurses", "..\ThirdParty\PDCurses\vs\PDCurses.vcxproj", "{B8619E4D-FD86-498F-8A85-2BD0A79306F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -109,6 +111,12 @@ Global
 		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x64.ActiveCfg = Release|x64
 		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x64.Build.0 = Release|x64
 		{886848EA-B761-4383-8ABE-879FAD8414AC}.Release|x86.ActiveCfg = Release|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Debug|x64.ActiveCfg = Debug|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Debug|x64.Build.0 = Debug|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Debug|x86.ActiveCfg = Debug|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Release|x64.ActiveCfg = Release|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Release|x64.Build.0 = Release|x64
+		{B8619E4D-FD86-498F-8A85-2BD0A79306F1}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,51 +21,24 @@
 
 #include "Window.h"
 #include <AB/CommonConfig.h>
-#if defined(AB_UNIX)
-#include <ncurses.h>
-#elif defined(AB_WINDOWS)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <conio.h>
-#endif
 #include <thread>
 
 Window::Window()
 {
-#ifdef AB_UNIX
     initscr();
     start_color();
     noecho();
     curs_set(FALSE);
-#else
-    // Get default console font color on Windows
-    CONSOLE_SCREEN_BUFFER_INFO Info;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
-    defForeColor_ = static_cast<ForeColor>(Info.wAttributes);
-    defBackColor_ = static_cast<BackColor>(Info.wAttributes);
-    Clear();
-    ShowCursor(false);
-#endif
 }
 
 Window::~Window()
 {
-#ifdef AB_UNIX
     endwin();
-#else
-    ShowCursor(true);
-#endif
 }
 
 char Window::GetChar() const
 {
-#ifdef AB_UNIX
     int c = getch();
-#else
-    int c = 0;
-    if (_kbhit())
-        c = _getch();
-#endif
     return static_cast<char>(c);
 }
 
@@ -101,24 +74,14 @@ void Window::Loop()
 
 void Window::Print(const Point& pos, const std::string& text)
 {
-#ifdef AB_UNIX
     pos_ = pos;
     mvprintw(pos.x, pos.y, text.c_str());
-#else
-    Goto(pos);
-    _cprintf(text.c_str());
-#endif
 }
 
 void Window::Goto(const Point& pos)
 {
     pos_ = pos;
-#ifdef AB_UNIX
     move(pos.x, pos.y);
-#else
-    COORD c = { static_cast<short>(pos.x), static_cast<short>(pos.y) };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
-#endif
 }
 
 Point Window::GetPosition() const
@@ -128,53 +91,10 @@ Point Window::GetPosition() const
 
 void Window::Clear()
 {
-#ifdef AB_UNIX
     clear();
-#else
-    COORD topLeft = { 0, 0 };
-    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO screen;
-    DWORD written;
-
-    GetConsoleScreenBufferInfo(console, &screen);
-    FillConsoleOutputCharacterA(
-        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-    );
-    FillConsoleOutputAttribute(
-        console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
-        screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-    );
-    SetConsoleCursorPosition(console, topLeft);
-#endif
 }
 
 void Window::ShowCursor(bool visible)
 {
-#ifdef AB_UNIX
     curs_set(visible ? TRUE : FALSE);
-#else
-    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(out, &cursorInfo);
-    cursorInfo.bVisible = visible;
-    SetConsoleCursorInfo(out, &cursorInfo);
-#endif
-}
-
-void Window::SetColor(ForeColor foreColor, BackColor backColor)
-{
-#ifdef AB_UNIX
-    (void)foreColor;
-    (void)backColor;
-#else
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), foreColor | backColor);
-#endif
-}
-
-void Window::RestColor()
-{
-#ifdef AB_UNIX
-#else
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), defForeColor_ | defBackColor_);
-#endif
 }

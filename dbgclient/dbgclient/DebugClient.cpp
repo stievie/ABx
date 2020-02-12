@@ -137,9 +137,7 @@ void DebugClient::DrawSelectGameScreen()
         return;
     }
 
-    window_.SetColor(Window::FG_BLACK, Window::BG_WHITE);
     window_.Print({ 0, 0 }, "Select a game");
-    window_.RestColor();
     Point p = { 0, 2 };
     int i = 0;
     gameIds_.clear();

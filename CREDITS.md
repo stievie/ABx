@@ -28,6 +28,7 @@ Creator: sa 2017-2019
 * https://github.com/BramvdKroef/clessc
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server
 * DirectXMath https://github.com/Microsoft/DirectXMath
+* PDCurses https://pdcurses.org/
 
 ## Client
 
