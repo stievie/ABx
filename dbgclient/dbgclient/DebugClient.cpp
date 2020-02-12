@@ -39,7 +39,7 @@ bool DebugClient::Connect(const std::string& host, uint16_t port)
     bool r = client_.Connect(host, port);
     if (r)
     {
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(1000, std::bind(&DebugClient::GetGames, this)));
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::GetGames, this)));
     }
     return r;
 }

@@ -15,21 +15,12 @@ PRAGMA_WARNING_POP
 #include <atomic>
 #include "DebugClient.h"
 #include "Window.h"
-
-static asio::io_service io;
-static std::atomic<bool> running = false;
+#include <thread>
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
     std::cout << std::endl;
     std::cout << sa::arg_parser::get_help("dbgclient", _cli);
-}
-
-static void RunIo()
-{
-    io.poll();
-    if (running)
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(500, std::bind(&RunIo)));
 }
 
 int main(int argc, char** argv)
@@ -61,6 +52,7 @@ int main(int argc, char** argv)
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
 
+    asio::io_service io;
     Window wnd;
     DebugClient client(io, wnd);
 
@@ -72,11 +64,10 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    running = true;
-    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&RunIo)));
-
+    std::thread thread([&io]() { io.run(); });
     wnd.Loop();
-    running = false;
+    io.stop();
+    thread.join();
 
     GetSubsystem<Asynch::Dispatcher>()->Stop();
     GetSubsystem<Asynch::Scheduler>()->Stop();
