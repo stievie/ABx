@@ -43,6 +43,8 @@ struct Point
 
 #define DEFAULT_BORDER_COLOR 1
 #define ACTIVE_BORDER_COLOR 2
+#define DEFAULT_LISTITEM_COLOR 3
+#define SELECTED_LISTITEM_COLOR 4
 
 class Window
 {

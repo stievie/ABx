@@ -23,54 +23,15 @@
 #include <AB/IPC/AI/ClientMessages.h>
 #include "Scheduler.h"
 #include "Subsystems.h"
+#include <iostream>
 
 DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_(io),
     window_(window)
 {
-    window_.onKey_ = [this](char& c)
-    {
-        return HandleOnKey(c);
-    };
     client_.handlers_.Add<AI::GameAdd>(std::bind(&DebugClient::HandleGameAdd, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameRemove>(std::bind(&DebugClient::HandleGameRemove, this, std::placeholders::_1));
     client_.handlers_.Add<AI::ObjectUpdate>(std::bind(&DebugClient::HandleObjectUpdate, this, std::placeholders::_1));
-}
-
-void DebugClient::HandleOnKey(char& c)
-{
-    switch (screen_)
-    {
-    case Screen::SelectGame:
-        return HandleSelectGameOnKey(c);
-    case Screen::Game:
-        return HandleGameOnKey(c);
-    }
-}
-
-void DebugClient::HandleSelectGameOnKey(char& c)
-{
-    if (isdigit(c))
-    {
-        int index = c - 48;
-        if (index >= 0 && static_cast<size_t>(index) < gameIds_.size())
-        {
-            SelectGame(gameIds_[static_cast<size_t>(index)]);
-        }
-    }
-}
-
-void DebugClient::HandleGameOnKey(char& c)
-{
-    switch (c)
-    {
-    case 8:
-        // Backspace
-        screen_ = Screen::SelectGame;
-        gamesDirty_ = true;
-        break;
-    }
-    (void)c;
 }
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
@@ -79,57 +40,24 @@ bool DebugClient::Connect(const std::string& host, uint16_t port)
     if (r)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(1000, std::bind(&DebugClient::GetGames, this)));
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(1000, std::bind(&DebugClient::UpdateScreen, this)));
     }
-    gamesDirty_ = true;
     return r;
 }
 
 void DebugClient::HandleGameAdd(const AI::GameAdd& message)
 {
     games_[message.id] = message;
-    gamesDirty_ = true;
+    UpdateGmes();
 }
 
 void DebugClient::HandleGameRemove(const AI::GameRemove& message)
 {
     games_.erase(message.id);
-    gamesDirty_ = true;
+    UpdateGmes();
 }
 
-void DebugClient::HandleObjectUpdate(const AI::ObjectUpdate& message)
+void DebugClient::UpdateGmes()
 {
-    if (screen_ == Screen::SelectGame)
-    {
-        screen_ = Screen::Game;
-        window_.Clear();
-    }
-
-
-    (void)message;
-}
-
-void DebugClient::UpdateScreen()
-{
-    switch (screen_)
-    {
-    case Screen::SelectGame:
-        DrawSelectGameScreen();
-        break;
-    case Screen::Game:
-        DrawGameScreen();
-        break;
-    }
-    if (window_.IsRunning())
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::UpdateScreen, this)));
-}
-
-void DebugClient::DrawSelectGameScreen()
-{
-    if (!gamesDirty_)
-        return;
-
-    gamesDirty_ = false;
     int i = 0;
     gameIds_.clear();
     for (const auto& game : games_)
@@ -142,8 +70,9 @@ void DebugClient::DrawSelectGameScreen()
     }
 }
 
-void DebugClient::DrawGameScreen()
+void DebugClient::HandleObjectUpdate(const AI::ObjectUpdate& message)
 {
+    (void)message;
 }
 
 void DebugClient::GetGames()

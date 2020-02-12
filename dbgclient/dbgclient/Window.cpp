@@ -33,6 +33,8 @@ Window::Window()
 
     init_pair(DEFAULT_BORDER_COLOR, COLOR_WHITE, COLOR_BLACK);
     init_pair(ACTIVE_BORDER_COLOR, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(DEFAULT_LISTITEM_COLOR, COLOR_WHITE, COLOR_BLACK);
+    init_pair(SELECTED_LISTITEM_COLOR, COLOR_BLACK, COLOR_WHITE);
 
     Point size = GetSize();
     int halfWidth = size.x / 2;
@@ -129,6 +131,7 @@ void Window::Loop()
 void Window::PrintGame(const std::string& txt, int index)
 {
     mvwprintw(wins_[0], index + 1, 1, txt.c_str());
+    refresh();
 }
 
 void Window::PrintStatusLine(const std::string& txt)

@@ -44,12 +44,7 @@ private:
     void HandleGameAdd(const AI::GameAdd& message);
     void HandleGameRemove(const AI::GameRemove& message);
     void HandleObjectUpdate(const AI::ObjectUpdate& message);
-    void HandleOnKey(char& c);
-    void HandleSelectGameOnKey(char& c);
-    void HandleGameOnKey(char& c);
-    void UpdateScreen();
-    void DrawSelectGameScreen();
-    void DrawGameScreen();
+    void UpdateGmes();
     void GetGames();
     void SelectGame(uint32_t id);
 public:
