@@ -131,7 +131,7 @@ void Window::Loop()
 void Window::PrintGame(const std::string& txt, int index)
 {
     mvwprintw(wins_[0], index + 1, 1, txt.c_str());
-    refresh();
+    wrefresh(wins_[0]);
 }
 
 void Window::PrintStatusLine(const std::string& txt)

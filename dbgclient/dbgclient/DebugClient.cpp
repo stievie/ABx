@@ -63,10 +63,10 @@ void DebugClient::UpdateGmes()
     for (const auto& game : games_)
     {
         std::stringstream ss;
-        ss << "[" << i << "] " << game.second.name << " " << game.second.instanceUuid;
+        ss << "[" << i << "] " << game.second.name;
         gameIds_.push_back(game.second.id);
-        ++i;
         window_.PrintGame(ss.str(), i);
+        ++i;
     }
 }
 
