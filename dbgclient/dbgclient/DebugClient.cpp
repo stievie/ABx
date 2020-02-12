@@ -114,17 +114,17 @@ void DebugClient::UpdateScreen()
     switch (screen_)
     {
     case Screen::SelectGame:
-        DrawSelectGame();
+        DrawSelectGameScreen();
         break;
     case Screen::Game:
-        DrawGame();
+        DrawGameScreen();
         break;
     }
     if (window_.IsRunning())
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::UpdateScreen, this)));
 }
 
-void DebugClient::DrawSelectGame()
+void DebugClient::DrawSelectGameScreen()
 {
     if (!gamesDirty_)
         return;
@@ -138,7 +138,7 @@ void DebugClient::DrawSelectGame()
     }
 
     window_.SetColor(Window::FG_BLACK, Window::BG_WHITE);
-    window_.Print({ 0, 0 }, "Select game");
+    window_.Print({ 0, 0 }, "Select a game");
     window_.RestColor();
     Point p = { 0, 2 };
     int i = 0;
@@ -154,7 +154,7 @@ void DebugClient::DrawSelectGame()
     }
 }
 
-void DebugClient::DrawGame()
+void DebugClient::DrawGameScreen()
 {
 }
 
@@ -166,7 +166,6 @@ void DebugClient::GetGames()
 
 void DebugClient::SelectGame(uint32_t id)
 {
-    AI::SelectGame msg;
-    msg.gameId = id;
+    AI::SelectGame msg { id };
     client_.Send(msg);
 }

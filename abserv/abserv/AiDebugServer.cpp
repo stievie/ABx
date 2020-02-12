@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include "AiDebugServer.h"
 #include "Game.h"
-#include <AB/IPC/AI/ServerMessages.h>
 #include "Npc.h"
 #include "Player.h"
-#include <functional>
 #include "ServerConnection.h"
+#include <AB/IPC/AI/ServerMessages.h>
+#include <functional>
 
 namespace AI {
 
@@ -121,6 +121,7 @@ void DebugServer::RemoveGame(uint32_t id)
 {
     if (!active_)
         return;
+
     auto it = std::find_if(games_.begin(), games_.end(), [&id](const std::weak_ptr<Game::Game>& current) -> bool
     {
         if (auto c = current.lock())
@@ -146,6 +147,7 @@ void DebugServer::Update()
 {
     if (!active_)
         return;
+
     if (games_.size() == 0)
         return;
 

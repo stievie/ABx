@@ -22,12 +22,12 @@
 #pragma once
 
 #include "IpcServer.h"
-#include <memory>
-#include <sa/Noncopyable.h>
-#include <vector>
 #include <AB/IPC/AI/ClientMessages.h>
 #include <map>
+#include <memory>
+#include <sa/Noncopyable.h>
 #include <set>
+#include <vector>
 
 namespace Game {
 class Game;

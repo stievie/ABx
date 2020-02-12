@@ -48,8 +48,8 @@ private:
     void HandleSelectGameOnKey(char& c);
     void HandleGameOnKey(char& c);
     void UpdateScreen();
-    void DrawSelectGame();
-    void DrawGame();
+    void DrawSelectGameScreen();
+    void DrawGameScreen();
     void GetGames();
     void SelectGame(uint32_t id);
 public:

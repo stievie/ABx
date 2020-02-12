@@ -21,15 +21,15 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <set>
-#include <sa/CallableTable.h>
-#include <asio.hpp>
 #include "Message.h"
 #include "MessageBuffer.h"
+#include <asio.hpp>
 #include <mutex>
-#include <sa/TypeName.h>
+#include <sa/CallableTable.h>
 #include <sa/StringHash.h>
+#include <sa/TypeName.h>
+#include <set>
+#include <stdint.h>
 
 namespace IPC {
 
@@ -46,6 +46,9 @@ public:
         static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
         handlers_.Add(message_type, [handler = std::move(func)](ServerConnection& client, const MessageBuffer& buffer)
         {
+            static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
+            if (message_type != buffer.type_)
+                return;
             // Get() doesn't take const stuff, but the buffer isn't modified by it so just cast it away.
             auto packet = Get<_Msg>(const_cast<MessageBuffer&>(buffer));
             handler(client, packet);

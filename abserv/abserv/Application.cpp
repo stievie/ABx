@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "AiDebugServer.h"
 #include "AiLoader.h"
 #include "AiRegistry.h"
 #include "Application.h"
@@ -59,7 +60,6 @@
 #include <AB/Entities/ServiceList.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/ConditionSleep.h>
-#include "AiDebugServer.h"
 
 Application* Application::Instance = nullptr;
 

@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include <sa/Noncopyable.h>
 #include "MessageBuffer.h"
-#include <memory>
 #include <asio.hpp>
+#include <memory>
 #include <sa/IdGenerator.h>
+#include <sa/Noncopyable.h>
 
 namespace IPC {
 
