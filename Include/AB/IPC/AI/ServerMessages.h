@@ -51,6 +51,16 @@ struct GameRemove
     }
 };
 
+struct GameSelected
+{
+    uint32_t id;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+    }
+};
+
 struct ObjectUpdate
 {
     enum class ObjectType : uint8_t

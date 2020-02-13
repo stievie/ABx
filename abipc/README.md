@@ -117,6 +117,34 @@ struct MyMessage3
 };
 ~~~
 
+### Inheritance
+
+There is no special supports for inheritance, just call the `Serialize()` function
+of the base class.
+
+~~~cpp
+struct A
+{
+    int ax;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(ax);
+    }
+};
+
+struct B : A
+{
+    int bx;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        A::Serialize(ar);
+        ar.value(bx);
+    }
+};
+~~~
+
 ## Sending messages
 
 Client to server:
@@ -162,6 +190,9 @@ handlers_.Add<MyMessage>([](IPC::ServerConnection& client, const MyMessage& msg)
 ## Limitations
 
 This whole thing relies on the assumption that [`sa::TypeName<MyMessage>::Get()`](../Include/sa/TypeName.h)
-return exactly the same value for the server and the client. If you compile the server and
+returns exactly the same value for the server and the client. If you compile the server and the
 client with different compilers, make sure this works. The current implementation
-of [`TypeName.h`](../Include/sa/TypeName.h) works with GCC and MSVC.
+of [`TypeName.h`](../Include/sa/TypeName.h) returns the same value when compiled with GCC and MSVC.
+Clang is not supported.
+
+Test: `sa.TypeName.cpp`

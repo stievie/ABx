@@ -60,6 +60,7 @@ public:
 
 class Server
 {
+    friend class ServerConnection;
 private:
     asio::io_service& ioService_;
     asio::ip::tcp::acceptor acceptor_;
@@ -72,11 +73,12 @@ private:
     void InternalSendTo(ServerConnection& client, const MessageBuffer& msg);
     void AddConnection(std::shared_ptr<ServerConnection> conn);
     ServerConnection* GetConnection(uint32_t id);
+    void RemoveConnection(std::shared_ptr<ServerConnection> conn);
+    void HandleMessage(ServerConnection& client, MessageBuffer& msg);
 public:
     Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpoint);
     ~Server() = default;
-    void RemoveConnection(std::shared_ptr<ServerConnection> conn);
-    void HandleMessage(ServerConnection& client, MessageBuffer& msg);
+    // Send the message to all connected clients
     template <typename _Msg>
     void Send(_Msg& msg)
     {
@@ -87,6 +89,7 @@ public:
         buff.EncodeHeader();
         InternalSend(buff);
     }
+    // Send the message to the given client
     template <typename _Msg>
     void SendTo(ServerConnection& client, _Msg& msg)
     {
@@ -97,6 +100,7 @@ public:
         buff.EncodeHeader();
         InternalSendTo(client, buff);
     }
+    // Send the message to the given client identified by the clients ID.
     template <typename _Msg>
     void SendTo(uint32_t clientId, _Msg& msg)
     {

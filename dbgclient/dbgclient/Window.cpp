@@ -128,10 +128,38 @@ void Window::Loop()
     }
 }
 
-void Window::PrintGame(const std::string& txt, int index)
+void Window::BeginWindowUpdate(WINDOW* wnd)
 {
+    char s[128] = {};
+    sprintf(s, "%*c", wnd->_begx - 2, ' ');
+    for (int i = 1; i < wnd->_begy - 1; ++i)
+    {
+        mvwprintw(wnd, i, 1, s);
+    }
+}
+
+void Window::EndWindowUpdate(WINDOW* wnd)
+{
+    wrefresh(wnd);
+}
+
+void Window::BeginGameWindowUpdate()
+{
+    BeginWindowUpdate(wins_[0]);
+}
+
+void Window::EndGameWindowUpdate()
+{
+    EndWindowUpdate(wins_[0]);
+}
+
+void Window::PrintGame(const std::string& txt, int index, bool selected)
+{
+    if (selected)
+        wattron(wins_[0], COLOR_PAIR(SELECTED_LISTITEM_COLOR));
     mvwprintw(wins_[0], index + 1, 1, txt.c_str());
-    wrefresh(wins_[0]);
+    if (selected)
+        wattroff(wins_[0], COLOR_PAIR(SELECTED_LISTITEM_COLOR));
 }
 
 void Window::PrintStatusLine(const std::string& txt)

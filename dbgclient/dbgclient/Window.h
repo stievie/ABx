@@ -55,6 +55,8 @@ private:
     PANEL* topPanel_{ nullptr };
     void HandleInput(char c);
     void ActivatePanel(PANEL* newTop);
+    void BeginWindowUpdate(WINDOW* wnd);
+    void EndWindowUpdate(WINDOW* wnd);
 public:
     Window();
     ~Window();
@@ -64,7 +66,9 @@ public:
     void Goto(const Point& pos);
     void PrintStatusLine(const std::string& txt);
     void Clear();
-    void PrintGame(const std::string& txt, int index);
+    void BeginGameWindowUpdate();
+    void EndGameWindowUpdate();
+    void PrintGame(const std::string& txt, int index, bool selected);
     void ShowCursor(bool visible);
     Point GetPosition() const;
     Point GetSize() const;

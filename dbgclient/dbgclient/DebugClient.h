@@ -30,20 +30,16 @@
 class DebugClient
 {
 private:
-    enum class Screen
-    {
-        SelectGame,
-        Game
-    };
     IPC::Client client_;
     Window& window_;
-    Screen screen_{ Screen::SelectGame };
     std::map<uint32_t, AI::GameAdd> games_;
     std::vector<uint32_t> gameIds_;
+    int selectedGameIndex_{ - 1 };
     bool gamesDirty_{ false };
     void HandleGameAdd(const AI::GameAdd& message);
     void HandleGameRemove(const AI::GameRemove& message);
     void HandleObjectUpdate(const AI::ObjectUpdate& message);
+    void HandleGameSelected(const AI::GameSelected& message);
     void UpdateGmes();
     void GetGames();
     void SelectGame(uint32_t id);

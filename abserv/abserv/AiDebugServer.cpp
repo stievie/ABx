@@ -72,8 +72,12 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
     if (!game)
         return;
 
+    GameSelected gmsg { game->id_ };
+    server_->SendTo(client, gmsg);
     selectedGames_.emplace(client.GetId(), msg.gameId);
-    game->VisitObjects<Game::Actor>([this, &game](const Game::Actor& current)
+
+    // Send initial update to the client
+    game->VisitObjects<Game::Actor>([this, &game, &client](const Game::Actor& current)
     {
         ObjectUpdate msg;
         msg.id = current.id_;
@@ -83,7 +87,7 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
         else if (Game::Is<Game::Player>(current))
             msg.objectType = ObjectUpdate::ObjectType::Player;
         msg.name = current.GetName();
-        server_->Send(msg);
+        server_->SendTo(client, msg);
         return Iteration::Continue;
     });
 }
