@@ -25,24 +25,23 @@
 
 namespace sa {
 
+namespace details {
 constexpr int first_char_pos(const char* str, const char n)
 {
     return (*str && *str != n) ? 1 + first_char_pos(str + 1, n) : 0;
 }
-
 constexpr int str_length(const char* str)
 {
     return *str ? 1 + str_length(str + 1) : 0;
 }
-
 constexpr int last_char_pos(const char* str, const char n, int len)
 {
     return (len && *(str + len) != n) ? 1 + last_char_pos(str, n, len - 1) : 0;
 }
-
 constexpr int is_char(const char* str, const char n)
 {
     return *str == n;
+}
 }
 
 /// Compile time typeid(T).name()
@@ -57,17 +56,18 @@ struct TypeName
         // GCC will set __PRETTY_FUNCTION__ to something like:
         // sa::TypeName<T>::Get() [with T = Foo::Bar]
         constexpr const char* name = __PRETTY_FUNCTION__;
-        constexpr int begin = first_char_pos(name, '=') + 2;
-        constexpr int end = first_char_pos(name, ']');
+        constexpr int begin = details::first_char_pos(name, '=') + 2;
+        constexpr int end = details::first_char_pos(name, ']');
 #elif defined(_MSC_VER)
         // MSVC:
         // sa::TypeName<class Foo::Bar>::Get()
+        // sa::TypeName<class Foo::Bar<Baz> >::Get()
         constexpr const char* name = __FUNCTION__;
-        constexpr int ab = first_char_pos(name, '<') + 1;
-        constexpr int begin = first_char_pos(name + ab, ' ') + ab + 1;
-        constexpr int len = str_length(name);
-        constexpr int lab = len - last_char_pos(name, '>', len);
-        constexpr int end = is_char(name + lab - 1, ' ') ? lab - 1 : lab;
+        constexpr int ab = details::first_char_pos(name, '<') + 1;
+        constexpr int begin = details::first_char_pos(name + ab, ' ') + ab + 1;
+        constexpr int len = details::str_length(name);
+        constexpr int lab = len - details::last_char_pos(name, '>', len);
+        constexpr int end = details::is_char(name + lab - 1, ' ') ? lab - 1 : lab;
 #endif
 
         static_assert(end > begin);
