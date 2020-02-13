@@ -161,7 +161,7 @@ handlers_.Add<MyMessage>([](IPC::ServerConnection& client, const MyMessage& msg)
 
 ## Limitations
 
-This whole thing rely on the assumption that [`sa::TypeName<MyMessage>::Get()`](../Include/sa/TypeMame.h)
+This whole thing relies on the assumption that [`sa::TypeName<MyMessage>::Get()`](../Include/sa/TypeMame.h)
 return exactly the same value for the server and the client. If you compile the server and
 client with different compilers, make sure this works. The current implementation
-of [`TypeMame.h`)](../Include/sa/TypeMame.h) works with GCC and MSVC.
+of [`TypeMame.h`](../Include/sa/TypeMame.h) works with GCC and MSVC.
