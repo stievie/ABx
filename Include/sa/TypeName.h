@@ -40,12 +40,17 @@ constexpr int last_char_pos(const char* str, const char n, int len)
     return (len && *(str + len) != n) ? 1 + last_char_pos(str, n, len - 1) : 0;
 }
 
+constexpr int is_char(const char* str, const char n)
+{
+    return *str == n;
+}
+
 /// Compile time typeid(T).name()
 /// constexpr auto res = sa::TypeName<Foo::Bar>::Get();
 template<typename T>
 struct TypeName
 {
-    /// GCC will return "Foo::Bar", MSVC "class Foo::Bar"
+    /// Will return "Foo::Bar"
     static constexpr auto Get()
     {
 #if defined(__GNUC__)
@@ -58,9 +63,11 @@ struct TypeName
         // MSVC:
         // sa::TypeName<class Foo::Bar>::Get()
         constexpr const char* name = __FUNCTION__;
-        constexpr int begin = first_char_pos(name, '<') + 1;
+        constexpr int ab = first_char_pos(name, '<') + 1;
+        constexpr int begin = first_char_pos(name + ab, ' ') + ab + 1;
         constexpr int len = str_length(name);
-        constexpr int end = len - last_char_pos(name, '>', len);
+        constexpr int lab = len - last_char_pos(name, '>', len);
+        constexpr int end = is_char(name + lab - 1, ' ') ? lab - 1 : lab;
 #endif
 
         static_assert(end > begin);
