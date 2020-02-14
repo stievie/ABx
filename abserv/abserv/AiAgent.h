@@ -36,8 +36,8 @@ using target_id_type = sa::StrongType<Id, struct TargetType>;
 using distance_type = sa::StrongType<float, struct DistanceType>;
 
 using AiAgentContext = Context<
-    skill_index_type,    // Skill index
-    target_id_type,         // Target ID
+    skill_index_type,
+    target_id_type,
     distance_type,
     Math::Vector3
 >;

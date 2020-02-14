@@ -29,6 +29,7 @@
 #include "Matrix4.h"
 #include "../Game.h"
 #include "VectorMath.h"
+#include "Vector3.h"
 
 namespace AI {
 namespace Actions {

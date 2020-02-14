@@ -24,6 +24,7 @@
 #include "DataProvider.h"
 #include "Subsystems.h"
 #include "Script.h"
+#include "Logger.h"
 
 namespace AI {
 

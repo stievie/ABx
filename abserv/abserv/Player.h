@@ -21,14 +21,14 @@
 
 #pragma once
 
-#include "ProtocolGame.h"
-#include "GameObject.h"
-#include "Game.h"
-#include "Effect.h"
 #include "Actor.h"
-#include <AB/Entities/Character.h>
-#include <AB/Entities/Account.h>
+#include "Effect.h"
+#include "Game.h"
+#include "GameObject.h"
+#include "ProtocolGame.h"
 #include "QuestComp.h"
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
 #include <set>
 

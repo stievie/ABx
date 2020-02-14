@@ -23,6 +23,7 @@
 #include "AiAttackSelection.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
+#include "../Game.h"
 
 namespace AI {
 namespace Actions {

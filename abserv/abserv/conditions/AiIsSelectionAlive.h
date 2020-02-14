@@ -24,9 +24,6 @@
 #include "Condition.h"
 
 namespace AI {
-
-class Agent;
-
 namespace Conditions {
 
 class IsSelectionAlive final : public Condition

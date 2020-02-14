@@ -22,8 +22,6 @@
 #pragma once
 
 #include "Action.h"
-#include "../Npc.h"
-#include "../Game.h"
 
 namespace AI {
 namespace Actions {

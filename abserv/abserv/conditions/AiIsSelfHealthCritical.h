@@ -22,7 +22,6 @@
 #pragma once
 
 #include "Condition.h"
-#include "Agent.h"
 
 namespace AI {
 namespace Conditions {

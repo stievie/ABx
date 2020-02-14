@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "Logger.h"
 #include "LuaLoader.h"
 
 namespace AI {

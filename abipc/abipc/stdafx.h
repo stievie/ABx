@@ -37,3 +37,19 @@ PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_GCC("-Wpadded")
 #   include <asio.hpp>
 PRAGMA_WARNING_POP
+
+#include "Message.h"
+#include "MessageBuffer.h"
+#include <cstring>
+#include <deque>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <sa/CallableTable.h>
+#include <sa/IdGenerator.h>
+#include <sa/StringHash.h>
+#include <sa/TypeName.h>
+#include <set>
+#include <stdint.h>
+#include <string>
+#include <vector>
