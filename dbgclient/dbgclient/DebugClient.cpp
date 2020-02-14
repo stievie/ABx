@@ -29,6 +29,7 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_(io),
     window_(window)
 {
+    window_.onKey_ = std::bind(&DebugClient::OnKey, this, std::placeholders::_1, std::placeholders::_2);
     client_.handlers_.Add<AI::GameAdd>(std::bind(&DebugClient::HandleGameAdd, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameRemove>(std::bind(&DebugClient::HandleGameRemove, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameSelected>(std::bind(&DebugClient::HandleGameSelected, this, std::placeholders::_1));
@@ -37,9 +38,18 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
 {
+    std::string status = "q: Quit; Tab: Focus window; Up/Down: Select";
     bool r = client_.Connect(host, port);
     if (r)
+    {
+        std::stringstream ss;
+        ss << "; Connected to: " << host << ":" << port;
+        status += ss.str();
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::GetGames, this)));
+    }
+    else
+        status += "; Not connected";
+    window_.SetStatusText(status);
     return r;
 }
 
@@ -72,13 +82,14 @@ void DebugClient::HandleGameSelected(const AI::GameSelected &message)
     }
     auto index = std::distance(gameIds_.begin(), it);
     selectedGameIndex_ = static_cast<int>(index);
+    UpdateGmes();
 }
 
 void DebugClient::UpdateGmes()
 {
     int i = 0;
     gameIds_.clear();
-    window_.BeginGameWindowUpdate();
+    window_.BeginWindowUpdate(Window::WindowGames);
     for (const auto& game : games_)
     {
         std::stringstream ss;
@@ -87,12 +98,60 @@ void DebugClient::UpdateGmes()
         window_.PrintGame(ss.str(), i, selectedGameIndex_ == i);
         ++i;
     }
-    window_.EndGameWindowUpdate();
+    window_.EndWindowUpdate(Window::WindowGames);
 }
 
 void DebugClient::HandleObjectUpdate(const AI::ObjectUpdate& message)
 {
     (void)message;
+}
+
+void DebugClient::OnKey(Window::Windows window, int c)
+{
+    (void)window;
+
+    switch (c)
+    {
+    case KEY_UP:
+        switch (window)
+        {
+        case Window::Windows::WindowGames:
+            if (selectedGameIndex_ > 0)
+            {
+                SelectGame(gameIds_[selectedGameIndex_ - 1]);
+            }
+            break;
+        case Window::Windows::WindowActors:
+            break;
+        case Window::Windows::WindowBehavior:
+        default:
+            break;
+        }
+        break;
+    case KEY_DOWN:
+        switch (window)
+        {
+        case Window::Windows::WindowGames:
+        {
+            if (selectedGameIndex_ >= static_cast<int>(games_.size()) - 1)
+                return;
+            int i = selectedGameIndex_;
+            if (i == -1)
+                i = 0;
+            else if (i < static_cast<int>(games_.size()) - 1)
+                ++i;
+            SelectGame(gameIds_[i]);
+            break;
+        }
+        case Window::Windows::WindowActors:
+            break;
+        case Window::Windows::WindowBehavior:
+            break;
+        default:
+            break;
+        }
+        break;
+    }
 }
 
 void DebugClient::GetGames()

@@ -42,11 +42,17 @@ void ServerConnection::Start()
         ));
 }
 
+void ServerConnection::Close()
+{
+    socket_.close();
+    server_.RemoveConnection(shared_from_this());
+}
+
 void ServerConnection::HandleRead(const asio::error_code& error)
 {
     if (error || !readBuffer_.DecodeHeader())
     {
-        server_.RemoveConnection(shared_from_this());
+        Close();
         return;
     }
 

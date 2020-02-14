@@ -78,6 +78,8 @@ private:
 public:
     Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpoint);
     ~Server() = default;
+    void DisconnectClient(ServerConnection& client);
+    void DisconnectClient(uint32_t id);
     // Send the message to all connected clients
     template <typename _Msg>
     void Send(_Msg& msg)

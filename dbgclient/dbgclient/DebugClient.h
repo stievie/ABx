@@ -40,6 +40,7 @@ private:
     void HandleGameRemove(const AI::GameRemove& message);
     void HandleObjectUpdate(const AI::ObjectUpdate& message);
     void HandleGameSelected(const AI::GameSelected& message);
+    void OnKey(Window::Windows window, int c);
     void UpdateGmes();
     void GetGames();
     void SelectGame(uint32_t id);

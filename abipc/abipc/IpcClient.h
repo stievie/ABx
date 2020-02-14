@@ -82,9 +82,12 @@ public:
         resolver_(io_service),
         socket_(io_service)
     { }
+    ~Client() { Close(); }
     bool Connect(const std::string& host, uint16_t port);
     void Close()
     {
+        if (!connected_)
+            return;
         connected_ = false;
         socket_.close();
     }

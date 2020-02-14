@@ -35,6 +35,8 @@ PRAGMA_WARNING_POP
 #endif
 #include <panel.h>
 
+// http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/
+
 struct Point
 {
     int x;
@@ -48,32 +50,39 @@ struct Point
 
 class Window
 {
+public:
+    enum Windows : size_t
+    {
+        WindowGames,
+        WindowActors,
+        WindowBehavior,
+        __WindowsCount
+    };
 private:
     bool running_{ false };
-    WINDOW* wins_[3];
-    PANEL* panels_[3];
+    WINDOW* wins_[__WindowsCount];
+    PANEL* panels_[__WindowsCount];
     PANEL* topPanel_{ nullptr };
-    void HandleInput(char c);
+    std::string statusText_;
     void ActivatePanel(PANEL* newTop);
-    void BeginWindowUpdate(WINDOW* wnd);
-    void EndWindowUpdate(WINDOW* wnd);
 public:
     Window();
     ~Window();
-    char GetChar() const;
     void Loop();
     void Print(const Point& pos, const std::string& text);
     void Goto(const Point& pos);
     void PrintStatusLine(const std::string& txt);
     void Clear();
-    void BeginGameWindowUpdate();
-    void EndGameWindowUpdate();
+    void BeginWindowUpdate(Windows window);
+    void EndWindowUpdate(Windows window);
     void PrintGame(const std::string& txt, int index, bool selected);
     void ShowCursor(bool visible);
     Point GetPosition() const;
     Point GetSize() const;
     bool IsRunning() const { return running_; }
+    Windows GetActiveWindow() const;
+    void SetStatusText(const std::string& value);
 
-    std::function<void(char& c)> onKey_;
+    std::function<void(Windows window, int c)> onKey_;
 };
 

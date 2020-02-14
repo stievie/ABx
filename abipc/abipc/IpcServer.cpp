@@ -64,6 +64,19 @@ ServerConnection* Server::GetConnection(uint32_t id)
     return it->get();
 }
 
+void Server::DisconnectClient(ServerConnection& client)
+{
+    client.Close();
+}
+
+void Server::DisconnectClient(uint32_t id)
+{
+    auto* client = GetConnection(id);
+    if (!client)
+        return;
+    DisconnectClient(*client);
+}
+
 void Server::InternalSend(const MessageBuffer& msg)
 {
     for (auto& c : clients_)

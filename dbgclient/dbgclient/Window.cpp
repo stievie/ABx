@@ -61,8 +61,6 @@ Window::Window()
 
     ActivatePanel(panels_[0]);
 
-    PrintStatusLine("q: Quit; Tab: Focus panel; Up/Down: Select");
-
     curs_set(FALSE);
 }
 
@@ -76,10 +74,13 @@ Window::~Window()
     endwin();
 }
 
-char Window::GetChar() const
+void Window::SetStatusText(const std::string& value)
 {
-    int c = getch();
-    return static_cast<char>(c);
+    if (statusText_.compare(value) == 0)
+        return;
+
+    statusText_ = value;
+    PrintStatusLine(statusText_);
 }
 
 void Window::ActivatePanel(PANEL* newTop)
@@ -101,20 +102,12 @@ void Window::ActivatePanel(PANEL* newTop)
     doupdate();
 }
 
-void Window::HandleInput(char c)
+Window::Windows Window::GetActiveWindow() const
 {
-    if (onKey_)
-        onKey_(c);
-
-    switch (c)
-    {
-    case 'q':
-        running_ = false;
-        break;
-    case 9:
-        ActivatePanel((PANEL*)panel_userptr(topPanel_));
-        break;
-    }
+    for (size_t i = WindowGames; i < __WindowsCount; ++i)
+        if (topPanel_ == panels_[i])
+            return static_cast<Windows>(i);
+    return __WindowsCount;
 }
 
 void Window::Loop()
@@ -122,14 +115,28 @@ void Window::Loop()
     running_ = true;
     while (running_)
     {
-        char c = GetChar();
+        int c = getch();
 
-        HandleInput(c);
+        switch (c)
+        {
+        case 'q':
+            running_ = false;
+            break;
+        case 9:
+            ActivatePanel((PANEL*)panel_userptr(topPanel_));
+            break;
+        default:
+            if (onKey_)
+                onKey_(GetActiveWindow(), c);
+        }
     }
 }
 
-void Window::BeginWindowUpdate(WINDOW* wnd)
+void Window::BeginWindowUpdate(Windows window)
 {
+    if (window == __WindowsCount)
+        return;
+    WINDOW* wnd = wins_[window];
     char s[128] = {};
     sprintf(s, "%*c", wnd->_begx - 2, ' ');
     for (int i = 1; i < wnd->_begy - 1; ++i)
@@ -138,19 +145,12 @@ void Window::BeginWindowUpdate(WINDOW* wnd)
     }
 }
 
-void Window::EndWindowUpdate(WINDOW* wnd)
+void Window::EndWindowUpdate(Windows window)
 {
+    if (window == __WindowsCount)
+        return;
+    WINDOW* wnd = wins_[window];
     wrefresh(wnd);
-}
-
-void Window::BeginGameWindowUpdate()
-{
-    BeginWindowUpdate(wins_[0]);
-}
-
-void Window::EndGameWindowUpdate()
-{
-    EndWindowUpdate(wins_[0]);
 }
 
 void Window::PrintGame(const std::string& txt, int index, bool selected)

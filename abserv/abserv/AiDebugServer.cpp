@@ -48,11 +48,12 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
     {
         if (auto sGame = weakGame.lock())
         {
-            GameAdd msg;
-            msg.id = sGame->id_;
-            msg.name = sGame->GetName();
-            msg.mapUuid = sGame->data_.uuid;
-            msg.instanceUuid = sGame->instanceData_.uuid;
+            GameAdd msg {
+                sGame->id_,
+                sGame->GetName(),
+                sGame->data_.uuid,
+                sGame->instanceData_.uuid
+            };
             server_->SendTo(client, msg);
         }
     }
@@ -180,18 +181,18 @@ void DebugServer::BroadcastGame(const Game::Game& game)
 
 void DebugServer::BroadcastGameAdded(const Game::Game& game)
 {
-    GameAdd msg;
-    msg.id = game.id_;
-    msg.name = game.GetName();
-    msg.mapUuid = game.data_.uuid;
-    msg.instanceUuid = game.instanceData_.uuid;
+    GameAdd msg {
+        game.id_,
+        game.GetName(),
+        game.data_.uuid,
+        game.instanceData_.uuid
+    };
     server_->Send(msg);
 }
 
 void DebugServer::BroadcastGameRemoved(uint32_t id)
 {
-    GameRemove msg;
-    msg.id = id;
+    GameRemove msg { id };
     server_->Send(msg);
 }
 

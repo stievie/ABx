@@ -53,6 +53,7 @@ public:
     void Send(const MessageBuffer& msg);
     // This ID can be used with the IPC::Server SendTo() function
     uint32_t GetId() const { return id_; }
+    void Close();
 };
 
 }
