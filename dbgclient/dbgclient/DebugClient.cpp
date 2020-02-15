@@ -33,7 +33,8 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_.handlers_.Add<AI::GameAdd>(std::bind(&DebugClient::HandleGameAdd, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameRemove>(std::bind(&DebugClient::HandleGameRemove, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameSelected>(std::bind(&DebugClient::HandleGameSelected, this, std::placeholders::_1));
-    client_.handlers_.Add<AI::ObjectUpdate>(std::bind(&DebugClient::HandleObjectUpdate, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::GameUpdate>(std::bind(&DebugClient::HandleGameUpdate, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::GameObject>(std::bind(&DebugClient::HandleGameObject, this, std::placeholders::_1));
 }
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
@@ -56,7 +57,7 @@ bool DebugClient::Connect(const std::string& host, uint16_t port)
 void DebugClient::HandleGameAdd(const AI::GameAdd& message)
 {
     games_[message.id] = message;
-    UpdateGmes();
+    UpdateGames();
 }
 
 void DebugClient::HandleGameRemove(const AI::GameRemove& message)
@@ -69,7 +70,7 @@ void DebugClient::HandleGameRemove(const AI::GameRemove& message)
             selectedGameIndex_ = -1;
     }
     games_.erase(message.id);
-    UpdateGmes();
+    UpdateGames();
 }
 
 void DebugClient::HandleGameSelected(const AI::GameSelected &message)
@@ -82,10 +83,14 @@ void DebugClient::HandleGameSelected(const AI::GameSelected &message)
     }
     auto index = std::distance(gameIds_.begin(), it);
     selectedGameIndex_ = static_cast<int>(index);
-    UpdateGmes();
+    UpdateGames();
+    updatedObjectCount_ = 0;
+
+    window_.BeginWindowUpdate(Window::WindowActors);
+    window_.EndWindowUpdate(Window::WindowActors);
 }
 
-void DebugClient::UpdateGmes()
+void DebugClient::UpdateGames()
 {
     int i = 0;
     gameIds_.clear();
@@ -101,9 +106,52 @@ void DebugClient::UpdateGmes()
     window_.EndWindowUpdate(Window::WindowGames);
 }
 
-void DebugClient::HandleObjectUpdate(const AI::ObjectUpdate& message)
+void DebugClient::UpdateObjects()
 {
-    (void)message;
+    updatedObjectCount_ = 0;
+
+    int i = 0;
+    window_.BeginWindowUpdate(Window::WindowActors);
+    for (const auto& object : objects_)
+    {
+        std::stringstream ss;
+        ss << "[" << object.second.id << "] " << object.second.name;
+        window_.PrintObject(ss.str(), i, object.second.id == selectedObjectId_);
+        ++i;
+    }
+    window_.EndWindowUpdate(Window::WindowActors);
+}
+
+void DebugClient::UpdateBehavior()
+{
+    if (selectedObjectId_ == 0)
+        return;
+}
+
+void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)
+{
+    objects_.clear();
+    updatedObjectCount_ = 0;
+    for (const auto& o : message.objects)
+    {
+        objects_.emplace(o, AI::GameObject());
+    }
+}
+
+void DebugClient::HandleGameObject(const AI::GameObject& message)
+{
+    const auto it = objects_.find(message.id);
+    if (it == objects_.end())
+        return;
+
+    objects_[message.id] = message;
+    ++updatedObjectCount_;
+
+    if (updatedObjectCount_ == objects_.size())
+    {
+        UpdateObjects();
+        UpdateBehavior();
+    }
 }
 
 void DebugClient::OnKey(Window::Windows window, int c)
@@ -118,10 +166,11 @@ void DebugClient::OnKey(Window::Windows window, int c)
         case Window::Windows::WindowGames:
             if (selectedGameIndex_ > 0)
             {
-                SelectGame(gameIds_[selectedGameIndex_ - 1]);
+                SelectGame(gameIds_[static_cast<size_t>(selectedGameIndex_ - 1)]);
             }
             break;
         case Window::Windows::WindowActors:
+            SelectPrevObject();
             break;
         case Window::Windows::WindowBehavior:
         default:
@@ -140,10 +189,11 @@ void DebugClient::OnKey(Window::Windows window, int c)
                 i = 0;
             else if (i < static_cast<int>(games_.size()) - 1)
                 ++i;
-            SelectGame(gameIds_[i]);
+            SelectGame(gameIds_[static_cast<size_t>(i)]);
             break;
         }
         case Window::Windows::WindowActors:
+            SelectNextObject();
             break;
         case Window::Windows::WindowBehavior:
             break;
@@ -158,6 +208,45 @@ void DebugClient::GetGames()
 {
     AI::GetGames msg;
     client_.Send(msg);
+}
+
+void DebugClient::SelectPrevObject()
+{
+    if (selectedObjectId_ == 0)
+        return;
+    auto it = objects_.find(selectedObjectId_);
+    if (it == objects_.end())
+    {
+        selectedObjectId_ = 0;
+        return;
+    }
+    if (it == objects_.begin())
+    {
+        return;
+    }
+    it--;
+    selectedObjectId_ = (*it).second.id;
+}
+
+void DebugClient::SelectNextObject()
+{
+    if (selectedObjectId_ == 0)
+    {
+        if (objects_.size() == 0 || (*objects_.begin()).second.id == 0)
+            return;
+        selectedObjectId_ = (*objects_.begin()).second.id;
+        return;
+    }
+    auto it = objects_.find(selectedObjectId_);
+    if (it == objects_.end())
+    {
+        selectedObjectId_ = 0;
+        return;
+    }
+    it++;
+    if (it == objects_.end())
+        return;
+    selectedObjectId_ = (*it).second.id;
 }
 
 void DebugClient::SelectGame(uint32_t id)

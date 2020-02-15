@@ -22,6 +22,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <stdint.h>
 
 namespace AI {
 
@@ -61,7 +63,7 @@ struct GameSelected
     }
 };
 
-struct ObjectUpdate
+struct GameObject
 {
     enum class ObjectType : uint8_t
     {
@@ -70,17 +72,40 @@ struct ObjectUpdate
         Player
     };
 
-    uint32_t id;
+    uint32_t id{ 0 };
     uint32_t gameId{ 0 };
     ObjectType objectType{ ObjectType::Unknown };
     std::string name;
+    std::array<float, 3> position;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(id);
-        ar.value(objectType);
         ar.value(gameId);
+        ar.value(objectType);
         ar.value(name);
+        ar.value(position[0]);
+        ar.value(position[1]);
+        ar.value(position[2]);
+    }
+};
+
+struct GameUpdate
+{
+    uint32_t id;
+    size_t count;
+    std::vector<uint32_t> objects;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(count);
+        objects.resize(count);
+        for (size_t i = 0; i < count; ++i)
+        {
+            auto& oid = objects[i];
+            ar.value(oid);
+        }
     }
 };
 

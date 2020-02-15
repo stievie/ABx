@@ -76,6 +76,7 @@ public:
     void BeginWindowUpdate(Windows window);
     void EndWindowUpdate(Windows window);
     void PrintGame(const std::string& txt, int index, bool selected);
+    void PrintObject(const std::string& txt, int index, bool selected);
     void ShowCursor(bool visible);
     Point GetPosition() const;
     Point GetSize() const;

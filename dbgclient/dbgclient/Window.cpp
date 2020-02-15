@@ -30,6 +30,7 @@ Window::Window()
     initscr();
     start_color();
     noecho();
+    keypad(stdscr, TRUE);
 
     init_pair(DEFAULT_BORDER_COLOR, COLOR_WHITE, COLOR_BLACK);
     init_pair(ACTIVE_BORDER_COLOR, COLOR_YELLOW, COLOR_BLACK);
@@ -136,13 +137,19 @@ void Window::BeginWindowUpdate(Windows window)
 {
     if (window == __WindowsCount)
         return;
+    // clear the window
     WINDOW* wnd = wins_[window];
-    char s[128] = {};
-    sprintf(s, "%*c", wnd->_begx - 2, ' ');
-    for (int i = 1; i < wnd->_begy - 1; ++i)
-    {
-        mvwprintw(wnd, i, 1, s);
-    }
+    wclear(wnd);
+    PANEL* pnl = panels_[window];
+    if (topPanel_ != pnl)
+        wattron(wnd, COLOR_PAIR(DEFAULT_BORDER_COLOR));
+    else
+        wattron(wnd, COLOR_PAIR(ACTIVE_BORDER_COLOR));
+    box(wnd, 0, 0);
+    if (topPanel_ != pnl)
+        wattroff(wnd, COLOR_PAIR(DEFAULT_BORDER_COLOR));
+    else
+        wattroff(wnd, COLOR_PAIR(ACTIVE_BORDER_COLOR));
 }
 
 void Window::EndWindowUpdate(Windows window)
@@ -155,11 +162,28 @@ void Window::EndWindowUpdate(Windows window)
 
 void Window::PrintGame(const std::string& txt, int index, bool selected)
 {
+    WINDOW* wnd = wins_[Windows::WindowGames];
+    std::string text = txt;
+    if (text.length() > wnd->_begx - 2)
+        text = text.substr(0, wnd->_begx - 2);
     if (selected)
-        wattron(wins_[0], COLOR_PAIR(SELECTED_LISTITEM_COLOR));
-    mvwprintw(wins_[0], index + 1, 1, txt.c_str());
+        wattron(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+    mvwprintw(wnd, index + 1, 1, text.c_str());
     if (selected)
-        wattroff(wins_[0], COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+        wattroff(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+}
+
+void Window::PrintObject(const std::string& txt, int index, bool selected)
+{
+    WINDOW* wnd = wins_[Windows::WindowActors];
+    std::string text = txt;
+    if (text.length() > wnd->_begx - 2)
+        text = text.substr(0, wnd->_begx - 2);
+    if (selected)
+        wattron(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+    mvwprintw(wnd, index + 1, 1, text.c_str());
+    if (selected)
+        wattroff(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
 }
 
 void Window::PrintStatusLine(const std::string& txt)

@@ -23,14 +23,17 @@
 
 #include "IpcServer.h"
 #include <AB/IPC/AI/ClientMessages.h>
+#include <AB/IPC/AI/ServerMessages.h>
 #include <map>
 #include <memory>
 #include <sa/Noncopyable.h>
 #include <set>
 #include <vector>
+#include <mutex>
 
 namespace Game {
 class Game;
+class Actor;
 }
 
 namespace AI {
@@ -43,6 +46,7 @@ private:
     bool active_{ false };
     std::vector<std::weak_ptr<Game::Game>> games_;
     std::map<uint32_t, uint32_t> selectedGames_;
+    std::mutex lock_;
     void BroadcastGame(const Game::Game& game);
     void BroadcastGameAdded(const Game::Game& game);
     void BroadcastGameRemoved(uint32_t id);
@@ -50,7 +54,7 @@ private:
     void HandleSelectGame(IPC::ServerConnection& client, const SelectGame&);
     std::set<uint32_t> GetSubscribedClients(uint32_t gameId);
 public:
-    explicit DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);
+    DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);
     DebugServer() = default;
     void AddGame(std::shared_ptr<Game::Game> game);
     void RemoveGame(uint32_t id);

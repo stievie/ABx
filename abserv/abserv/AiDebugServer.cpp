@@ -25,7 +25,6 @@
 #include "Npc.h"
 #include "Player.h"
 #include "ServerConnection.h"
-#include <AB/IPC/AI/ServerMessages.h>
 #include <functional>
 
 namespace AI {
@@ -38,6 +37,7 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
     server_->handlers_.Add<SelectGame>(std::bind(&DebugServer::HandleSelectGame, this, std::placeholders::_1, std::placeholders::_2));
     server_->onClientDisconnect = [this](IPC::ServerConnection& client)
     {
+        std::lock_guard<std::mutex> loock(lock_);
         selectedGames_.erase(client.GetId());
     };
 }
@@ -73,24 +73,10 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
     if (!game)
         return;
 
-    GameSelected gmsg { game->id_ };
-    server_->SendTo(client, gmsg);
+    std::lock_guard<std::mutex> loock(lock_);
     selectedGames_.emplace(client.GetId(), msg.gameId);
-
-    // Send initial update to the client
-    game->VisitObjects<Game::Actor>([this, &game, &client](const Game::Actor& current)
-    {
-        ObjectUpdate msg;
-        msg.id = current.id_;
-        msg.gameId = game->id_;
-        if (Game::Is<Game::Npc>(current))
-            msg.objectType = ObjectUpdate::ObjectType::Npc;
-        else if (Game::Is<Game::Player>(current))
-            msg.objectType = ObjectUpdate::ObjectType::Player;
-        msg.name = current.GetName();
-        server_->SendTo(client, msg);
-        return Iteration::Continue;
-    });
+    GameSelected gmsg{ game->id_ };
+    server_->SendTo(client, gmsg);
 }
 
 std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
@@ -167,12 +153,42 @@ void DebugServer::BroadcastGame(const Game::Game& game)
 {
     auto clients = GetSubscribedClients(game.id_);
     if (clients.size() == 0)
+    {
+//        LOG_DEBUG << "No clients subscribed to " << game.id_ << std::endl;
         return;
+    }
 
+    // First tell the client how many objects we have
+    GameUpdate msg;
+    msg.id = game.id_;
+    msg.count = 0;
+    game.VisitObjects<Game::Actor>([this, &msg](const Game::Actor& current)
+    {
+        if (!Game::Is<Game::Npc>(current) && !Game::Is<Game::Player>(current))
+            return Iteration::Continue;
+
+        ++msg.count;
+        msg.objects.push_back(current.id_);
+        return Iteration::Continue;
+    });
+    for (const auto& i : clients)
+        server_->SendTo(i, msg);
+
+    // Then send the details
     game.VisitObjects<Game::Actor>([this, &clients](const Game::Actor& current)
     {
-        ObjectUpdate msg;
+        GameObject msg;
+        if (Game::Is<Game::Npc>(current))
+            msg.objectType = GameObject::ObjectType::Npc;
+        else if (Game::Is<Game::Player>(current))
+            msg.objectType = GameObject::ObjectType::Player;
+        else
+            return Iteration::Continue;
+
         msg.id = current.id_;
+        msg.gameId = current.GetGame()->id_;
+        msg.name = current.GetName();
+        msg.position = current.GetPosition();
         for (const auto& i : clients)
             server_->SendTo(i, msg);
         return Iteration::Continue;
