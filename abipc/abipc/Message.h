@@ -52,7 +52,7 @@ handlers_.Add<MyMessage>([](const MyMessage& msg)
 
 namespace IPC {
 
-namespace detail {
+namespace details {
 
 template <typename _Msg>
 class Reader
@@ -93,7 +93,7 @@ template<typename T, typename _Msg>
 T Get(_Msg& msg)
 {
     T result;
-    detail::Reader<_Msg> reader(msg);
+    details::Reader<_Msg> reader(msg);
     result.Serialize(reader);
     return result;
 }
@@ -104,7 +104,7 @@ void Add(T& value, _Msg& msg)
 {
     // Can not be const T& value because we are using the same function for reading
     // and writing which is not const
-    detail::Writer<_Msg> writer(msg);
+    details::Writer<_Msg> writer(msg);
     value.Serialize(writer);
 }
 

@@ -19,3 +19,5 @@ require("config/server")
 require("config/login")
 require("config/mechanics")
 require("config/msg_server")
+
+ai_server = false

@@ -208,8 +208,8 @@ bool ServerApp::ParseCommandLine()
         return false;
     }
 
-    configFile_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "conf", configFile_);
-    logDir_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "log", logDir_);
+    configFile_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "config", configFile_);
+    logDir_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "logdir", logDir_);
     auto idval = sa::arg_parser::get_value<std::string>(parsedArgs_, "id");
     if (idval.has_value())
     {

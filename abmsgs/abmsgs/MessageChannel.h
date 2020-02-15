@@ -52,11 +52,12 @@ class MessageSession : public MessageParticipant, public std::enable_shared_from
 {
 private:
     asio::ip::tcp::socket socket_;
+    asio::io_service::strand strand_;
     MessageChannel& channel_;
     Net::MessageMsg readMsg_;
     Net::MessageQueue writeMsgs_;
     void HandleRead(const asio::error_code& error);
-    void HandleWrite(const asio::error_code& error);
+    void HandleWrite(const asio::error_code& error, size_t);
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleWhisperMessage(const Net::MessageMsg& msg);
     void HandleNewMailMessage(const Net::MessageMsg& msg);
@@ -70,9 +71,12 @@ private:
     MessageParticipant* GetServerWidthAccount(const std::string& accountUuid);
     MessageParticipant* GetServer(const std::string& serverUuid);
     MessageParticipant* GetServerByType(AB::Entities::ServiceType type);
+    void WriteImpl(const Net::MessageMsg& msg);
+    void Write();
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :
         socket_(io_service),
+        strand_(io_service),
         channel_(channel)
     { }
 

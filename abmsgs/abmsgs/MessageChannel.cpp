@@ -78,25 +78,6 @@ void MessageSession::HandleRead(const asio::error_code& error)
     }
 }
 
-void MessageSession::HandleWrite(const asio::error_code& error)
-{
-    if (!error)
-    {
-        writeMsgs_.pop_front();
-        if (!writeMsgs_.empty())
-        {
-            asio::async_write(socket_,
-                asio::buffer(writeMsgs_.front().Data(), writeMsgs_.front().Length()),
-                std::bind(&MessageSession::HandleWrite, shared_from_this(), std::placeholders::_1));
-        }
-    }
-    else
-    {
-        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
-        channel_.Leave(shared_from_this());
-    }
-}
-
 void MessageSession::HandleMessage(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -441,14 +422,48 @@ void MessageSession::Start()
         ));
 }
 
+void MessageSession::HandleWrite(const asio::error_code& error, size_t)
+{
+    if (!error)
+    {
+        writeMsgs_.pop_front();
+        if (!writeMsgs_.empty())
+            Write();
+    }
+    else
+    {
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
+        channel_.Leave(shared_from_this());
+    }
+}
+
+void MessageSession::WriteImpl(const Net::MessageMsg& msg)
+{
+    writeMsgs_.push_back(msg);
+    if (writeMsgs_.size() > 1)
+        // Write in progress
+        return;
+    Write();
+}
+
+void MessageSession::Write()
+{
+    const Net::MessageMsg& msg = writeMsgs_[0];
+    asio::async_write(
+        socket_,
+        asio::buffer(msg.Data(), msg.Length()),
+        strand_.wrap(
+            std::bind(
+                &MessageSession::HandleWrite,
+                shared_from_this(),
+                std::placeholders::_1,
+                std::placeholders::_2
+            )
+        )
+    );
+}
+
 void MessageSession::Deliver(const Net::MessageMsg& msg)
 {
-    bool writeInProgress = !writeMsgs_.empty();
-    writeMsgs_.push_back(msg);
-    if (!writeInProgress)
-    {
-        asio::async_write(socket_,
-            asio::buffer(writeMsgs_.front().Data(), writeMsgs_.front().Length()),
-            std::bind(&MessageSession::HandleWrite, shared_from_this(), std::placeholders::_1));
-    }
+    strand_.post(std::bind(&MessageSession::WriteImpl, shared_from_this(), msg));
 }
