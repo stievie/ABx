@@ -86,20 +86,6 @@ void Client::HandleRead(const asio::error_code& error, size_t)
             this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void Client::DoWrite(MessageBuffer msg)
-{
-    bool write_in_progress = !writeBuffers_.empty();
-    writeBuffers_.push_back(msg);
-    if (!write_in_progress)
-    {
-        asio::async_write(socket_,
-            asio::buffer(writeBuffers_.front().Data(),
-                writeBuffers_.front().Length()),
-            std::bind(&Client::HandleWrite, this,
-                std::placeholders::_1));
-    }
-}
-
 void Client::HandleWrite(const asio::error_code& error)
 {
     if (!connected_)
@@ -111,14 +97,10 @@ void Client::HandleWrite(const asio::error_code& error)
     }
 
     writeBuffers_.pop_front();
+    if (error)
+        return;
     if (!writeBuffers_.empty())
-    {
-        asio::async_write(socket_,
-            asio::buffer(writeBuffers_.front().Data(),
-                writeBuffers_.front().Length()),
-            std::bind(&Client::HandleWrite, this,
-                std::placeholders::_1));
-    }
+        Write();
 }
 
 void Client::HandleMessage(const MessageBuffer& msg)
@@ -139,10 +121,35 @@ bool Client::InternalSend(const MessageBuffer& msg)
 {
     if (connected_)
     {
-        ioService_.post(std::bind(&Client::DoWrite, this, msg));
+        strand_.post(std::bind(&Client::WriteImpl, this, msg));
         return true;
     }
     return false;
+}
+
+void Client::WriteImpl(const MessageBuffer& msg)
+{
+    writeBuffers_.push_back(msg);
+    if (writeBuffers_.size() > 1)
+        // Write in progress
+        return;
+    Write();
+}
+
+void Client::Write()
+{
+    const MessageBuffer& msg = writeBuffers_[0];
+    asio::async_write(
+        socket_,
+        asio::buffer(msg.Data(), msg.Length()),
+        strand_.wrap(
+            std::bind(
+                &Client::HandleWrite,
+                this,
+                std::placeholders::_1
+            )
+        )
+    );
 }
 
 }

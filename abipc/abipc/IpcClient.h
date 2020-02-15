@@ -62,6 +62,7 @@ private:
     asio::io_service& ioService_;
     asio::ip::tcp::resolver resolver_;
     asio::ip::tcp::socket socket_;
+    asio::io_service::strand strand_;
     bool connected_{ false };
     std::string host_;
     uint16_t port_{ 0 };
@@ -72,15 +73,17 @@ private:
         const asio::error_code& error, size_t bytes_transferred);
     void AsyncReceive(MessageBuffer* msg, const ReadHandler& handler);
     void HandleRead(const asio::error_code& error, size_t);
-    void DoWrite(MessageBuffer msg);
     void HandleWrite(const asio::error_code& error);
     void HandleMessage(const MessageBuffer& msg);
     bool InternalSend(const MessageBuffer& msg);
+    void WriteImpl(const MessageBuffer& msg);
+    void Write();
 public:
     Client(asio::io_service& io_service) :
         ioService_(io_service),
         resolver_(io_service),
-        socket_(io_service)
+        socket_(io_service),
+        strand_(io_service)
     { }
     ~Client() { Close(); }
     bool Connect(const std::string& host, uint16_t port);
