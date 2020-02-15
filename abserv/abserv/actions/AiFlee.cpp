@@ -21,15 +21,16 @@
 
 #include "stdafx.h"
 #include "AiFlee.h"
-#include "../Npc.h"
 #include "../AiAgent.h"
-#include "Subsystems.h"
-#include "Random.h"
-#include "Mechanic.h"
-#include "Matrix4.h"
+#include "../DamageComp.h"
 #include "../Game.h"
-#include "VectorMath.h"
+#include "../Npc.h"
+#include "Matrix4.h"
+#include "Mechanic.h"
+#include "Random.h"
+#include "Subsystems.h"
 #include "Vector3.h"
+#include "VectorMath.h"
 
 namespace AI {
 namespace Actions {

@@ -22,22 +22,16 @@
 #pragma once
 
 #include "BoundingBox.h"
-#include "CollisionComp.h"
 #include "CollisionShape.h"
 #include "Damage.h"
-#include "InputComp.h"
 #include "Matrix4.h"
 #include "Mechanic.h"
-#include "MoveComp.h"
 #include "NetworkMessage.h"
 #include "Octree.h"
 #include "PropStream.h"
-#include "Quaternion.h"
 #include "StateComp.h"
 #include "Transformation.h"
-#include "TriggerComp.h"
 #include "Variant.h"
-#include "Vector3.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
@@ -48,10 +42,14 @@
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
 #include <sa/StringHash.h>
-#include <type_traits>
 #include <sa/Noncopyable.h>
 
 namespace Game {
+
+namespace Components {
+class TriggerComp;
+class CollisionComp;
+}
 
 enum ObjerctAttr : uint8_t
 {
@@ -334,28 +332,10 @@ public:
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
-    uint32_t GetRetriggerTimout() const
-    {
-        if (!triggerComp_)
-            return 0;
-        return triggerComp_->retriggerTimeout_;
-    }
-    void SetRetriggerTimout(uint32_t value)
-    {
-        if (!triggerComp_)
-            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
-        triggerComp_->retriggerTimeout_ = value;
-    }
-    bool IsTrigger() const
-    {
-        return triggerComp_ && triggerComp_->trigger_;
-    }
-    void SetTrigger(bool value)
-    {
-        if (!triggerComp_)
-            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
-        triggerComp_->trigger_ = value;
-    }
+    uint32_t GetRetriggerTimout() const;
+    void SetRetriggerTimout(uint32_t value);
+    bool IsTrigger() const;
+    void SetTrigger(bool value);
 
     virtual void WriteSpawnData(Net::NetworkMessage& msg);
 };

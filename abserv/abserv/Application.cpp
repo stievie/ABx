@@ -41,6 +41,8 @@
 #include "Logger.h"
 #include "Logo.h"
 #include "Maintenance.h"
+#include "MessageClient.h"
+#include "MessageDispatcher.h"
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
 #include "PartyManager.h"
@@ -48,9 +50,11 @@
 #include "ProtocolGame.h"
 #include "Random.h"
 #include "Scheduler.h"
+#include "Service.h"
 #include "Skill.h"
 #include "SkillManager.h"
 #include "StringUtils.h"
+#include "Subsystems.h"
 #include "Task.h"
 #include "ThreadPool.h"
 #include "UuidUtils.h"
@@ -106,6 +110,8 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<AI::BevaviorCache>();
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
+
+    maintenance_ = std::make_unique<Maintenance>();
 
     cli_.push_back({ "autoterm", { "-autoterm", "--auto-terminate" }, "Automatic stop application", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "temp", { "-temp", "--temporary" }, "Temporary application", false, false, sa::arg_parser::option_type::none });
@@ -468,7 +474,7 @@ bool Application::LoadMain()
         LOG_INFO << (loadingTime / 1000) << " s";
     LOG_INFO << std::endl;
 
-    maintenance_.Run();
+    maintenance_->Run();
     GetSubsystem<Game::GameManager>()->Start();
 
     return true;
@@ -647,7 +653,7 @@ void Application::Stop()
     std::this_thread::sleep_for(50ms);
 
     // Before serviceManager_.Stop()
-    maintenance_.Stop();
+    maintenance_->Stop();
 
     msgClient->Close();
     ioService_.stop();

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Actor.h"
 #include "AreaOfEffect.h"
+#include "CollisionComp.h"
 #include "ConfigManager.h"
 #include "ConvexHull.h"
 #include "Game.h"
@@ -31,6 +32,7 @@
 #include "Npc.h"
 #include "Player.h"
 #include "Scheduler.h"
+#include "TriggerComp.h"
 
 namespace Game {
 
@@ -759,4 +761,29 @@ bool GameObject::IsInOutpost() const
     return false;
 }
 
+uint32_t GameObject::GetRetriggerTimout() const
+{
+    if (!triggerComp_)
+        return 0;
+    return triggerComp_->retriggerTimeout_;
+}
+
+void GameObject::SetRetriggerTimout(uint32_t value)
+{
+    if (!triggerComp_)
+        triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+    triggerComp_->retriggerTimeout_ = value;
+}
+
+bool GameObject::IsTrigger() const
+{
+    return triggerComp_ && triggerComp_->trigger_;
+}
+
+void GameObject::SetTrigger(bool value)
+{
+    if (!triggerComp_)
+        triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+    triggerComp_->trigger_ = value;
+}
 }

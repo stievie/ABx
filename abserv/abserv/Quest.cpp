@@ -25,6 +25,7 @@
 #include "ItemFactory.h"
 #include "NetworkMessage.h"
 #include "Player.h"
+#include "ProgressComp.h"
 #include "PropStream.h"
 #include "Script.h"
 #include "ScriptManager.h"

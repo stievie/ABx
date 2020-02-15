@@ -21,11 +21,12 @@
 
 #include "stdafx.h"
 #include "ResourceComp.h"
-#include <AB/ProtocolCodes.h>
 #include "Actor.h"
+#include "DamageComp.h"
 #include "Skill.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 namespace Components {

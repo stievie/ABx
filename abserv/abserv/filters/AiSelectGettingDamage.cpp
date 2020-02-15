@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AiSelectGettingDamage.h"
+#include "../DamageComp.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
 

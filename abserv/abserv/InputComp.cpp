@@ -24,6 +24,7 @@
 #include "Actor.h"
 #include "Game.h"
 #include "NetworkMessage.h"
+#include "SelectionComp.h"
 
 namespace Game {
 namespace Components {

@@ -23,16 +23,17 @@
 #include "Npc.h"
 #include "BevaviorCache.h"
 #include "Crowd.h"
+#include "DamageComp.h"
 #include "DataProvider.h"
 #include "GameManager.h"
-#include "MathUtils.h"
 #include "Group.h"
+#include "MathUtils.h"
+#include "Player.h"
+#include "QuestComp.h"
 #include "Random.h"
 #include "ScriptManager.h"
 #include "Subsystems.h"
 #include <Mustache/mustache.hpp>
-#include "Player.h"
-#include "QuestComp.h"
 
 namespace Game {
 

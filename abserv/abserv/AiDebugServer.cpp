@@ -159,7 +159,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
     GameUpdate msg;
     msg.id = game.id_;
     msg.count = 0;
-    game.VisitObjects<Game::Actor>([this, &msg](const Game::Actor& current)
+    game.VisitObjects<Game::Actor>([&msg](const Game::Actor& current)
     {
         if (!Game::Is<Game::Npc>(current) && !Game::Is<Game::Player>(current))
             return Iteration::Continue;
@@ -184,6 +184,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
 
         msg.id = current.id_;
         msg.gameId = current.GetGame()->id_;
+        msg.objectState = static_cast<uint8_t>(current.stateComp_.GetState());
         msg.name = current.GetName();
         msg.position = current.GetPosition();
         for (const auto& i : clients)

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AiIsAttacked.h"
+#include "../DamageComp.h"
 #include "../Game.h"
 #include "../Npc.h"
 

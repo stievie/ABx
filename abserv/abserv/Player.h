@@ -24,9 +24,7 @@
 #include "Actor.h"
 #include "Effect.h"
 #include "Game.h"
-#include "GameObject.h"
 #include "ProtocolGame.h"
-#include "QuestComp.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
@@ -38,6 +36,10 @@ class PlayerManager;
 class MailBox;
 class FriendList;
 class Party;
+
+namespace Components {
+class QuestComp;
+}
 
 class Player final : public Actor
 {

@@ -25,6 +25,7 @@
 #include "Subsystems.h"
 #include "Random.h"
 #include "Game.h"
+#include "DamageComp.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 

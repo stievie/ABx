@@ -32,27 +32,30 @@
 #include "IOPlayer.h"
 #include "Item.h"
 #include "ItemDrop.h"
+#include "ItemFactory.h"
 #include "ItemsCache.h"
 #include "Logger.h"
 #include "MailBox.h"
-#include "PartyManager.h"
+#include "MessageClient.h"
+#include "Npc.h"
 #include "Party.h"
+#include "PartyManager.h"
 #include "Player.h"
 #include "PlayerManager.h"
 #include "Profiler.h"
+#include "ProtocolGame.h"
+#include "QuestComp.h"
 #include "Random.h"
 #include "Scheduler.h"
 #include "StringUtils.h"
 #include "UuidUtils.h"
-#include "ItemFactory.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/PlayerItemList.h>
-#include <AB/ProtocolCodes.h>
-#include <sa/StringTempl.h>
-#include "Npc.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <AB/ProtocolCodes.h>
+#include <sa/StringTempl.h>
 
 namespace Game {
 

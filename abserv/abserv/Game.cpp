@@ -33,6 +33,7 @@
 #include "ItemDrop.h"
 #include "ItemFactory.h"
 #include "Logger.h"
+#include "MessageClient.h"
 #include "Npc.h"
 #include "Player.h"
 #include "PlayerManager.h"

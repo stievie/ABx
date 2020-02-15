@@ -24,11 +24,14 @@
 #include "AreaOfEffect.h"
 #include "AttribAlgos.h"
 #include "Attributes.h"
+#include "CollisionComp.h"
 #include "ConfigManager.h"
+#include "DamageComp.h"
 #include "EffectManager.h"
 #include "Game.h"
 #include "GameManager.h"
 #include "Group.h"
+#include "HealComp.h"
 #include "Item.h"
 #include "ItemFactory.h"
 #include "ItemsCache.h"
@@ -37,7 +40,9 @@
 #include "OctreeQuery.h"
 #include "PartyManager.h"
 #include "Player.h"
+#include "ProgressComp.h"
 #include "Scheduler.h"
+#include "SelectionComp.h"
 #include "ScriptManager.h"
 #include "TemplateEncoder.h"
 #include <AB/ProtocolCodes.h>
@@ -1113,6 +1118,21 @@ bool Actor::DecreaseMorale()
 unsigned Actor::GetDeaths() const
 {
     return progressComp_->GetDeaths();
+}
+
+DamagePos Actor::GetDamagePos() const
+{
+    return damageComp_->GetDamagePos();
+}
+
+GameObject* Actor::GetSelectedObject() const
+{
+    return selectionComp_->GetSelectedObject();
+}
+
+uint32_t Actor::GetSelectedObjectId() const
+{
+    return selectionComp_->GetSelectedObjectId();
 }
 
 }

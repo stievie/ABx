@@ -22,17 +22,22 @@
 #pragma once
 
 #include "Version.h"
-#include "Service.h"
 #include "ServerApp.h"
-#include "MessageClient.h"
-#include "MessageDispatcher.h"
-#include "Maintenance.h"
-#include "Subsystems.h"
 #if defined(SCENE_VIEWER)
 #include "SceneViewer.h"
 #endif
 #include <numeric>
 #include <sa/CircularQueue.h>
+#include <asio.hpp>
+#include <mutex>
+
+namespace Net {
+class MessageMsg;
+class ServiceManager;
+}
+
+class MessageDispatcher;
+class Maintenance;
 
 class Application final : public ServerApp
 {
@@ -43,7 +48,7 @@ private:
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     sa::CircularQueue<unsigned, 10> loads_;
     int64_t lastLoadCalc_{ 0 };
-    Maintenance maintenance_;
+    std::unique_ptr<Maintenance> maintenance_;
 #if defined(SCENE_VIEWER)
     std::shared_ptr<Debug::SceneViewer> sceneViewer_;
 #endif

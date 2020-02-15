@@ -27,6 +27,7 @@
 #include "GameManager.h"
 #include "PlayerManager.h"
 #include "Application.h"
+#include "MessageClient.h"
 #include "MessageMsg.h"
 #include <AB/Entities/GuildMembers.h>
 #include "DataClient.h"

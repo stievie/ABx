@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AiIsFighting.h"
+#include "../DamageComp.h"
 #include "../Npc.h"
 #include "../Crowd.h"
 #include "Utils.h"

@@ -23,25 +23,28 @@
 
 #include "AttackComp.h"
 #include "AutoRunComp.h"
-#include "CollisionComp.h"
-#include "DamageComp.h"
 #include "Effect.h"
 #include "EffectsComp.h"
 #include "GameObject.h"
-#include "HealComp.h"
 #include "InputComp.h"
 #include "InputQueue.h"
 #include "InventoryComp.h"
 #include "MoveComp.h"
-#include "ProgressComp.h"
 #include "ResourceComp.h"
-#include "SelectionComp.h"
 #include "SkillBar.h"
 #include "SkillsComp.h"
 #include "UuidUtils.h"
 #include <AB/ProtocolCodes.h>
 
 namespace Game {
+
+namespace Components {
+class CollisionComp;
+class DamageComp;
+class HealComp;
+class ProgressComp;
+class SelectionComp;
+}
 
 enum class TargetClass
 {
@@ -198,7 +201,7 @@ public:
     float GetArmorPenetration();
     /// Get chance for a critical hit. Value between 0..1
     float GetCriticalChance(const Actor* other);
-    DamagePos GetDamagePos() const { return damageComp_->GetDamagePos(); }
+    DamagePos GetDamagePos() const;
     int GetResource(Components::ResourceType type) const { return resourceComp_->GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
     /// Steal life from this actor. The source must add the returned value to its life.
@@ -293,14 +296,8 @@ public:
     // Get the effective attribute rank. This is attributes from Skills+Equipment+Effects
     uint32_t GetAttributeRank(Attribute index);
 
-    GameObject* GetSelectedObject() const
-    {
-        return selectionComp_->GetSelectedObject();
-    }
-    uint32_t GetSelectedObjectId() const
-    {
-        return selectionComp_->GetSelectedObjectId();
-    }
+    GameObject* GetSelectedObject() const;
+    uint32_t GetSelectedObjectId() const;
     bool SelectedObject(GameObject* object);
     bool SelectedObjectById(uint32_t id);
     void GotoPosition(const Math::Vector3& pos);

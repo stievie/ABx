@@ -20,19 +20,20 @@
  */
 
 #include "stdafx.h"
-#include "MessageDispatcher.h"
 #include "Chat.h"
-#include "StringUtils.h"
-#include "PlayerManager.h"
-#include "Player.h"
-#include "PropStream.h"
-#include <AB/ProtocolCodes.h>
-#include "Subsystems.h"
-#include "IOPlayer.h"
-#include <AB/Entities/Character.h>
 #include "IOAccount.h"
-#include <AB/Packets/ServerPackets.h>
+#include "IOPlayer.h"
+#include "MessageClient.h"
+#include "MessageDispatcher.h"
+#include "Player.h"
+#include "PlayerManager.h"
+#include "PropStream.h"
+#include "StringUtils.h"
+#include "Subsystems.h"
+#include <AB/Entities/Character.h>
 #include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
+#include <AB/ProtocolCodes.h>
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
