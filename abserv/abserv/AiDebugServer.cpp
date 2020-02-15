@@ -153,10 +153,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
 {
     auto clients = GetSubscribedClients(game.id_);
     if (clients.size() == 0)
-    {
-//        LOG_DEBUG << "No clients subscribed to " << game.id_ << std::endl;
         return;
-    }
 
     // First tell the client how many objects we have
     GameUpdate msg;
