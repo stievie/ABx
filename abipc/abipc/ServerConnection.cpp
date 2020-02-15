@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "ServerConnection.h"
 #include "IpcServer.h"
+#include <iostream>
 
 namespace IPC {
 
@@ -29,6 +30,7 @@ sa::IdGenerator<uint32_t> ServerConnection::sIdGen;
 
 ServerConnection::ServerConnection(asio::io_service& ioService, Server& server) :
     socket_(ioService),
+    strand_(ioService),
     server_(server),
     id_(sIdGen.Next())
 { }
@@ -56,8 +58,7 @@ void ServerConnection::HandleRead(const asio::error_code& error)
         return;
     }
 
-    asio::read(socket_,
-        asio::buffer(readBuffer_.Body(), readBuffer_.BodyLength()));
+    asio::read(socket_, asio::buffer(readBuffer_.Body(), readBuffer_.BodyLength()));
 
     // Client sent a message
     server_.HandleMessage(*this, readBuffer_);
@@ -70,30 +71,44 @@ void ServerConnection::HandleRead(const asio::error_code& error)
         ));
 }
 
-void ServerConnection::HandleWrite(const asio::error_code& error)
+void ServerConnection::HandleWrite(const asio::error_code& error, size_t)
 {
+    writeBuffers_.pop_front();
     if (error)
         return;
-
-    writeBuffers_.pop_front();
     if (!writeBuffers_.empty())
-    {
-        asio::async_write(socket_,
-            asio::buffer(writeBuffers_.front().Data(), writeBuffers_.front().Length()),
-            std::bind(&ServerConnection::HandleWrite, shared_from_this(), std::placeholders::_1));
-    }
+        Write();
+}
+
+void ServerConnection::WriteImpl(const MessageBuffer& msg)
+{
+    writeBuffers_.push_back(msg);
+    if (writeBuffers_.size() > 1)
+        // Write in progress
+        return;
+    Write();
+}
+
+void ServerConnection::Write()
+{
+    const MessageBuffer& msg = writeBuffers_[0];
+    asio::async_write(
+        socket_,
+        asio::buffer(msg.Data(), msg.Length()),
+        strand_.wrap(
+            std::bind(
+                &ServerConnection::HandleWrite,
+                shared_from_this(),
+                std::placeholders::_1,
+                std::placeholders::_2
+            )
+        )
+    );
 }
 
 void ServerConnection::Send(const MessageBuffer& msg)
 {
-    bool writeInProgress = !writeBuffers_.empty();
-    writeBuffers_.push_back(msg);
-    if (!writeInProgress)
-    {
-        asio::async_write(socket_,
-            asio::buffer(writeBuffers_.front().Data(), writeBuffers_.front().Length()),
-            std::bind(&ServerConnection::HandleWrite, shared_from_this(), std::placeholders::_1));
-    }
+    strand_.post(std::bind(&ServerConnection::WriteImpl, this, msg));
 }
 
 }

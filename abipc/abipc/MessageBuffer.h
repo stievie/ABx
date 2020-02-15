@@ -32,8 +32,8 @@ class MessageBuffer
 public:
     // First 2 byte Body length, the rest is the message type
     enum { HeaderLength = 2 + sizeof(size_t) };
-    // Make the size 1kb
-    enum { MaxBodyLength = 1024 - HeaderLength  - (sizeof(size_t) * 3) };
+    // Make the size 4kb
+    enum { MaxBodyLength = 4096 - HeaderLength  - (sizeof(size_t) * 3) };
 private:
     static constexpr size_t BufferSize = HeaderLength + MaxBodyLength;
     size_t bodyLength_{ 0 };
@@ -80,7 +80,7 @@ public:
     void EncodeHeader();
     bool IsEmpty() const
     {
-        return bodyLength_ == 0;
+        return bodyLength_ == 0 && type_ == 0;
     }
     void Empty()
     {

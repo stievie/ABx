@@ -26,6 +26,7 @@
 #include <memory>
 #include <sa/IdGenerator.h>
 #include <sa/Noncopyable.h>
+#include <mutex>
 
 namespace IPC {
 
@@ -37,12 +38,15 @@ class ServerConnection : public std::enable_shared_from_this<ServerConnection>
 private:
     static sa::IdGenerator<uint32_t> sIdGen;
     asio::ip::tcp::socket socket_;
+    asio::io_service::strand strand_;
     Server& server_;
     uint32_t id_;
     MessageBuffer readBuffer_;
     BufferQueue writeBuffers_;
     void HandleRead(const asio::error_code& error);
-    void HandleWrite(const asio::error_code& error);
+    void HandleWrite(const asio::error_code& error, size_t bytesTransferred);
+    void WriteImpl(const MessageBuffer& msg);
+    void Write();
 public:
     ServerConnection(asio::io_service& ioService, Server& server);
     ~ServerConnection() = default;

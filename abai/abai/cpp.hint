@@ -1,0 +1,4 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define NODE_FACTORY(NodeName) class Factory : public NodeFactory { public: std::shared_ptr<Node> Create(const ArgumentsType& arguments) const override { auto res = std::make_shared<NodeName>(arguments); res->SetType(ABAI_STRINGIFY(NodeName)); return res; } }; static const Factory& GetFactory() { static Factory sFactory; return sFactory; }
