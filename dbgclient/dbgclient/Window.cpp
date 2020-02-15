@@ -164,8 +164,8 @@ void Window::PrintGame(const std::string& txt, int index, bool selected)
 {
     WINDOW* wnd = wins_[Windows::WindowGames];
     std::string text = txt;
-    if (text.length() > wnd->_begx - 2)
-        text = text.substr(0, wnd->_begx - 2);
+    if (text.length() > static_cast<size_t>(wnd->_begx - 2))
+        text = text.substr(0, static_cast<size_t>(wnd->_begx - 2));
     if (selected)
         wattron(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
     mvwprintw(wnd, index + 1, 1, text.c_str());
@@ -177,8 +177,8 @@ void Window::PrintObject(const std::string& txt, int index, bool selected)
 {
     WINDOW* wnd = wins_[Windows::WindowActors];
     std::string text = txt;
-    if (text.length() > wnd->_begx - 2)
-        text = text.substr(0, wnd->_begx - 2);
+    if (text.length() > static_cast<size_t>(wnd->_begx - 2))
+        text = text.substr(0, static_cast<size_t>(wnd->_begx - 2));
     if (selected)
         wattron(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
     mvwprintw(wnd, index + 1, 1, text.c_str());
