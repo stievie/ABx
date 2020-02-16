@@ -72,7 +72,7 @@
 #define GAME_INACTIVE_TIME (1000 * 60)
 // Time after a party is teleported back to the outpost after it was defeated/resigned in ms
 #define PARTY_TELEPORT_BACK_TIME (2000u)
-#define AI_SERVER_UPDATE_INTERVAL (100)
+#define AI_SERVER_UPDATE_INTERVAL (1000)
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

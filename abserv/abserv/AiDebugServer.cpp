@@ -27,6 +27,7 @@
 #include "ServerConnection.h"
 #include <functional>
 #include "AiAgent.h"
+#include "Mechanic.h"
 
 namespace AI {
 
@@ -188,11 +189,30 @@ void DebugServer::BroadcastGame(const Game::Game& game)
         msg.objectState = static_cast<uint8_t>(current.stateComp_.GetState());
         msg.name = current.GetName();
         msg.position = current.GetPosition();
+        msg.health = current.resourceComp_->GetHealth();
+        msg.maxHealth = current.resourceComp_->GetMaxHealth();
+        msg.energy = current.resourceComp_->GetEnergy();
+        msg.maxEnergy = current.resourceComp_->GetMaxEnergy();
+        msg.morale = current.resourceComp_->GetMorale();
         if (Game::Is<Game::Npc>(current) && Game::To<Game::Npc>(current).aiComp_)
         {
             const AiAgent& agent = Game::To<Game::Npc>(current).aiComp_->GetAgent();
             msg.currentNodeStatus = static_cast<int>(agent.GetCurrentStatus());
 
+            if (agent.selectedSkill_ > -1 && agent.selectedSkill_ < Game::PLAYER_MAX_SKILLS)
+            {
+                msg.selectedSkillIndex = agent.selectedSkill_;
+                auto skill = current.skills_->GetSkill(agent.selectedSkill_);
+                if (skill)
+                    msg.selectedSkillName = skill->GetName();
+                else
+                    msg.selectedSkillName = "None";
+            }
+            else
+            {
+                msg.selectedSkillIndex = -1;
+                msg.selectedSkillName = "None";
+            }
             if (auto ca = agent.context_.currentAction_.lock())
             {
                 msg.currActionId = ca->GetId();

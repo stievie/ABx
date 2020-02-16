@@ -144,7 +144,7 @@ void Maintenance::UpdateAiServer()
     if (status_ == MaintenanceStatus::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(AI_SERVER_UPDATE_INTERVAL, std::bind(&Maintenance::UpdateAiServer, this))
+            Asynch::CreateScheduledTask(aiUpdateInterval_, std::bind(&Maintenance::UpdateAiServer, this))
         );
     }
 }

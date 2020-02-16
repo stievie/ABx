@@ -397,6 +397,7 @@ bool Application::LoadMain()
     }
     else
         Subsystems::Instance.CreateSubsystem<AI::DebugServer>();
+    maintenance_->aiUpdateInterval_ = static_cast<uint32_t>((*config)[ConfigManager::Key::AiUpdateInterval].GetInt());
 
     // Data server ------------------------------------------------------------
     LOG_INFO << "Connecting to data server...";

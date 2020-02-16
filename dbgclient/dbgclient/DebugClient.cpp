@@ -186,6 +186,12 @@ void DebugClient::UpdateObjectDetails()
         ss << "State: " << GetObjectStateString(obj.objectState);
         window_.PrintObjectDetails(ss.str(), line++);
     }
+    {
+        std::stringstream ss;
+        ss << "HP: " << obj.health << "/" << obj.maxHealth << "; E: " <<
+            obj.energy << "/" << obj.maxEnergy << "; M: " << obj.morale;
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
     line++;
 
     window_.PrintObjectDetails("AI", line++, false, true);
@@ -197,6 +203,11 @@ void DebugClient::UpdateObjectDetails()
     {
         std::stringstream ss;
         ss << "Node status: " << GetNodeStatusString(static_cast<AI::Node::Status>(obj.currentNodeStatus));
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
+    {
+        std::stringstream ss;
+        ss << "Skill: " << "[" << obj.selectedSkillIndex << "] " << obj.selectedSkillName;
         window_.PrintObjectDetails(ss.str(), line++);
     }
     {
