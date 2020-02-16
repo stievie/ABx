@@ -22,6 +22,7 @@
 #pragma once
 
 #include <mutex>
+#include "Config.h"
 
 class Maintenance
 {
@@ -48,5 +49,6 @@ public:
 
     void Run();
     void Stop();
+    uint32_t aiUpdateInterval_{ AI_SERVER_UPDATE_INTERVAL };
 };
 

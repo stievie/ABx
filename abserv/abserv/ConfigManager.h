@@ -53,7 +53,8 @@ public:
         Behaviours,
         AiServer,
         AiServerIp,
-        AiServerPort
+        AiServerPort,
+        AiUpdateInterval
     };
 public:
     ConfigManager();
