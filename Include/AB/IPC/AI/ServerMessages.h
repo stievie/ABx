@@ -86,6 +86,7 @@ struct GameObject
     int maxEnergy{ 0 };
     int morale{ 0 };
     int currentNodeStatus{ 0 };
+    uint32_t behaviorId{ 0 };
     std::string currAction;
     uint32_t currActionId{ 0 };
     int selectedSkillIndex{ -1 };
@@ -111,6 +112,7 @@ struct GameObject
         ar.value(maxEnergy);
         ar.value(morale);
         ar.value(currentNodeStatus);
+        ar.value(behaviorId);
         ar.value(currAction);
         ar.value(currActionId);
         ar.value(selectedSkillIndex);
@@ -153,5 +155,31 @@ struct GameUpdate
         }
     }
 };
+
+struct Tree
+{
+    struct Node
+    {
+        uint32_t parentId{ 0 };
+        uint32_t id;
+        std::string name;
+    };
+    uint32_t id;
+    size_t nodeCount{ 0 };
+    std::vector<Node> nodes;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(nodeCount);
+        nodes.resize(nodeCount);
+        for (size_t i = 0; i < nodeCount; ++i)
+        {
+            auto& nd = nodes[i];
+            ar.value(nd.parentId);
+            ar.value(nd.id);
+            ar.value(nd.name);
+        }
+    }};
 
 }

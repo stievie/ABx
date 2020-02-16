@@ -52,6 +52,7 @@ private:
     void BroadcastGameRemoved(uint32_t id);
     void HandleGetGames(IPC::ServerConnection& client, const GetGames&);
     void HandleSelectGame(IPC::ServerConnection& client, const SelectGame&);
+    void HandleGetTrees(IPC::ServerConnection& client, const GetTrees&);
     std::set<uint32_t> GetSubscribedClients(uint32_t gameId);
 public:
     DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);

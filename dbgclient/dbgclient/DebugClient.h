@@ -44,11 +44,13 @@ private:
     void HandleGameUpdate(const AI::GameUpdate& message);
     void HandleGameObject(const AI::GameObject& message);
     void HandleGameSelected(const AI::GameSelected& message);
+    void HandleTree(const AI::Tree& message);
     void OnKey(Window::Windows window, int c);
     void UpdateGames();
     void UpdateObjects();
     void UpdateObjectDetails();
     void GetGames();
+    void GetTrees();
     void SelectPrevObject();
     void SelectNextObject();
     void SelectGame(uint32_t id);

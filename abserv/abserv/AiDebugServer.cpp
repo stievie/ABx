@@ -28,13 +28,16 @@
 #include <functional>
 #include "AiAgent.h"
 #include "Mechanic.h"
+#include "Root.h"
 
-namespace AI {
+namespace AI
+{
 
 DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port) :
     server_(std::make_unique<IPC::Server>(ioService, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port))),
     active_{ true }
 {
+    server_->handlers_.Add<GetTrees>(std::bind(&DebugServer::HandleGetTrees, this, std::placeholders::_1, std::placeholders::_2));
     server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1, std::placeholders::_2));
     server_->handlers_.Add<SelectGame>(std::bind(&DebugServer::HandleSelectGame, this, std::placeholders::_1, std::placeholders::_2));
     server_->onClientDisconnect = [this](IPC::ServerConnection& client)
@@ -50,7 +53,7 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
     {
         if (auto sGame = weakGame.lock())
         {
-            GameAdd msg {
+            GameAdd msg{
                 sGame->id_,
                 sGame->GetName(),
                 sGame->data_.uuid,
@@ -79,6 +82,12 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
     selectedGames_.emplace(client.GetId(), msg.gameId);
     GameSelected gmsg{ game->id_ };
     server_->SendTo(client, gmsg);
+}
+
+void DebugServer::HandleGetTrees(IPC::ServerConnection& client, const GetTrees&)
+{
+    (void)client;
+
 }
 
 std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
@@ -198,6 +207,11 @@ void DebugServer::BroadcastGame(const Game::Game& game)
         {
             const AiAgent& agent = Game::To<Game::Npc>(current).aiComp_->GetAgent();
             msg.currentNodeStatus = static_cast<int>(agent.GetCurrentStatus());
+            if (auto b = agent.GetBehavior())
+            {
+                // The ID of the root node
+                msg.behaviorId = b->GetId();
+            }
 
             if (agent.selectedSkill_ > -1 && agent.selectedSkill_ < Game::PLAYER_MAX_SKILLS)
             {
@@ -241,7 +255,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
 
 void DebugServer::BroadcastGameAdded(const Game::Game& game)
 {
-    GameAdd msg {
+    GameAdd msg{
         game.id_,
         game.GetName(),
         game.data_.uuid,
@@ -252,7 +266,7 @@ void DebugServer::BroadcastGameAdded(const Game::Game& game)
 
 void DebugServer::BroadcastGameRemoved(uint32_t id)
 {
-    GameRemove msg { id };
+    GameRemove msg{ id };
     server_->Send(msg);
 }
 

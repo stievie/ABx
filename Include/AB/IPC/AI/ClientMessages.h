@@ -43,4 +43,12 @@ struct SelectGame
     }
 };
 
+struct GetTrees
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    {
+    }
+};
+
 }

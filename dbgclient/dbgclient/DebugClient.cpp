@@ -32,7 +32,9 @@ static std::string GetObjectStateString(uint8_t state)
 {
     switch (static_cast<AB::GameProtocol::CreatureState>(state))
     {
-#define ENUMERATE_CREATURE_STATE(v) case AB::GameProtocol::CreatureState::v: return #v;
+#define ENUMERATE_CREATURE_STATE(v)          \
+    case AB::GameProtocol::CreatureState::v: \
+        return #v;
         ENUMERATE_CREATURE_STATES
 #undef ENUMERATE_CREATURE_STATE
     }
@@ -43,12 +45,18 @@ static std::string GetNodeStatusString(AI::Node::Status status)
 {
     switch (status)
     {
-    case AI::Node::Status::Unknown: return "Unknown";
-    case AI::Node::Status::CanNotExecute: return "CanNotExecute";
-    case AI::Node::Status::Running: return "Running";
-    case AI::Node::Status::Finished: return "Finished";
-    case AI::Node::Status::Failed: return "Failed";
-    default: return "???";
+    case AI::Node::Status::Unknown:
+        return "Unknown";
+    case AI::Node::Status::CanNotExecute:
+        return "CanNotExecute";
+    case AI::Node::Status::Running:
+        return "Running";
+    case AI::Node::Status::Finished:
+        return "Finished";
+    case AI::Node::Status::Failed:
+        return "Failed";
+    default:
+        return "???";
     }
 }
 
@@ -62,6 +70,7 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_.handlers_.Add<AI::GameSelected>(std::bind(&DebugClient::HandleGameSelected, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameUpdate>(std::bind(&DebugClient::HandleGameUpdate, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameObject>(std::bind(&DebugClient::HandleGameObject, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::Tree>(std::bind(&DebugClient::HandleTree, this, std::placeholders::_1));
 }
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
@@ -106,7 +115,7 @@ void DebugClient::HandleGameRemove(const AI::GameRemove& message)
     UpdateGames();
 }
 
-void DebugClient::HandleGameSelected(const AI::GameSelected &message)
+void DebugClient::HandleGameSelected(const AI::GameSelected& message)
 {
     const auto it = std::find_if(gameIds_.begin(), gameIds_.end(), [&message](auto current) { return message.id == current; });
     if (it == gameIds_.end())
@@ -123,6 +132,11 @@ void DebugClient::HandleGameSelected(const AI::GameSelected &message)
 
     window_.BeginWindowUpdate(Window::WindowActors);
     window_.EndWindowUpdate(Window::WindowActors);
+}
+
+void DebugClient::HandleTree(const AI::Tree& message)
+{
+    (void)message;
 }
 
 void DebugClient::UpdateGames()
@@ -188,8 +202,7 @@ void DebugClient::UpdateObjectDetails()
     }
     {
         std::stringstream ss;
-        ss << "HP: " << obj.health << "/" << obj.maxHealth << "; E: " <<
-            obj.energy << "/" << obj.maxEnergy << "; M: " << obj.morale;
+        ss << "HP: " << obj.health << "/" << obj.maxHealth << "; E: " << obj.energy << "/" << obj.maxEnergy << "; M: " << obj.morale;
         window_.PrintObjectDetails(ss.str(), line++);
     }
     line++;
@@ -197,7 +210,8 @@ void DebugClient::UpdateObjectDetails()
     window_.PrintObjectDetails("AI", line++, false, true);
     {
         std::stringstream ss;
-        ss << "Action: " << "[" << obj.currActionId << "] " << obj.currAction;
+        ss << "Action: "
+           << "[" << obj.currActionId << "] " << obj.currAction;
         window_.PrintObjectDetails(ss.str(), line++);
     }
     {
@@ -207,7 +221,8 @@ void DebugClient::UpdateObjectDetails()
     }
     {
         std::stringstream ss;
-        ss << "Skill: " << "[" << obj.selectedSkillIndex << "] " << obj.selectedSkillName;
+        ss << "Skill: "
+           << "[" << obj.selectedSkillIndex << "] " << obj.selectedSkillName;
         window_.PrintObjectDetails(ss.str(), line++);
     }
     {
@@ -218,14 +233,16 @@ void DebugClient::UpdateObjectDetails()
         std::string str = sa::Trim(ss.str(), std::string(","));
         window_.PrintObjectDetails(str, line++);
     }
+
+    std::stringstream ss;
+    ss << "[" << obj.behaviorId << "]: Root";
+    window_.PrintObjectDetails(ss.str(), line++);
+    for (const auto& ns : obj.nodeStatus)
     {
-        window_.PrintObjectDetails("Nodes:", line++);
-        for (const auto& ns : obj.nodeStatus)
-        {
-            std::stringstream ss;
-            ss << "  " << "[" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
-            window_.PrintObjectDetails(ss.str(), line++, false, ns.first == obj.currActionId);
-        }
+        std::stringstream ss;
+        ss << "  "
+           << "[" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
+        window_.PrintObjectDetails(ss.str(), line++, false, ns.first == obj.currActionId);
     }
 
     window_.EndWindowUpdate(Window::WindowBehavior);
@@ -313,6 +330,12 @@ void DebugClient::GetGames()
     client_.Send(msg);
 }
 
+void DebugClient::GetTrees()
+{
+    AI::GetTrees msg;
+    client_.Send(msg);
+}
+
 void DebugClient::SelectPrevObject()
 {
     if (selectedObjectId_ == 0)
@@ -354,7 +377,7 @@ void DebugClient::SelectNextObject()
 
 void DebugClient::SelectGame(uint32_t id)
 {
-    AI::SelectGame msg { id };
+    AI::SelectGame msg{ id };
     client_.Send(msg);
 }
 
