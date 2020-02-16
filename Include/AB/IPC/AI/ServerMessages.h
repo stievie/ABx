@@ -25,6 +25,7 @@
 #include <vector>
 #include <array>
 #include <stdint.h>
+#include <map>
 
 namespace AI {
 
@@ -91,6 +92,8 @@ struct GameObject
     std::string selectedSkillName;
     size_t selectedAgentsCount{ 0 };
     std::vector<uint32_t> selectedAgents;
+    size_t nodeStatusCount{ 0 };
+    std::vector<std::pair<uint32_t, int>> nodeStatus;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -118,6 +121,16 @@ struct GameObject
         {
             auto& oid = selectedAgents[i];
             ar.value(oid);
+        }
+        ar.value(nodeStatusCount);
+        nodeStatus.resize(nodeStatusCount);
+        for (size_t i = 0; i < nodeStatusCount; ++i)
+        {
+            auto& statusPair = nodeStatus[i];
+            auto& statusId = statusPair.first;
+            auto& statusStatus = statusPair.second;
+            ar.value(statusId);
+            ar.value(statusStatus);
         }
     }
 };

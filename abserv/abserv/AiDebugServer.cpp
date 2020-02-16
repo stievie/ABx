@@ -222,6 +222,15 @@ void DebugServer::BroadcastGame(const Game::Game& game)
                 msg.currAction = "None";
             msg.selectedAgentsCount = agent.filteredAgents_.size();
             msg.selectedAgents = agent.filteredAgents_;
+            size_t statusCount = 0;
+            agent.context_.VisitTypes<AI::node_status_type>([&](const AI::Id& id, const AI::Node::Status& value)
+            {
+                auto st = std::make_pair(static_cast<uint32_t>(id), static_cast<int>(value));
+                msg.nodeStatus.push_back(st);
+                ++statusCount;
+                return Iteration::Continue;
+            });
+            msg.nodeStatusCount = statusCount;
         }
         else
             msg.currAction = "No AI";

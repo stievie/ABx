@@ -24,6 +24,7 @@
 #include "AiDefines.h"
 #include <unordered_map>
 #include <tuple>
+#include <sa/Iteration.h>
 
 namespace AI {
 
@@ -96,6 +97,17 @@ public:
         auto it = vals.find(id);
         if (it != vals.end())
             vals.erase(it);
+    }
+    template <typename T, typename Callback>
+    void VisitTypes(const Callback callback) const
+    {
+        const auto& vals = GetValuesT<T>().values;
+        for (const auto& val : vals)
+        {
+            // Iteration callback(Id id, T value)
+            if (callback(val.first, val.second) == Iteration::Break)
+                break;
+        }
     }
 };
 

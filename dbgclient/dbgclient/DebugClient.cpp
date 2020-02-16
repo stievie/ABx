@@ -218,6 +218,15 @@ void DebugClient::UpdateObjectDetails()
         std::string str = sa::Trim(ss.str(), std::string(","));
         window_.PrintObjectDetails(str, line++);
     }
+    {
+        window_.PrintObjectDetails("Nodes:", line++);
+        for (const auto& ns : obj.nodeStatus)
+        {
+            std::stringstream ss;
+            ss << "  " << "[" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
+            window_.PrintObjectDetails(ss.str(), line++);
+        }
+    }
 
     window_.EndWindowUpdate(Window::WindowBehavior);
 }
