@@ -192,7 +192,6 @@ handlers_.Add<MyMessage>([](IPC::ServerConnection& client, const MyMessage& msg)
 This whole thing relies on the assumption that [`sa::TypeName<MyMessage>::Get()`](../Include/sa/TypeName.h)
 returns exactly the same value for the server and the client. If you compile the server and the
 client with different compilers, make sure this works. The current implementation
-of [`TypeName.h`](../Include/sa/TypeName.h) returns the same value when compiled with GCC and MSVC.
-Clang is not supported.
+of [`TypeName.h`](../Include/sa/TypeName.h) returns the same value when compiled with GCC, Clang and MSVC.
 
 Test: `sa.TypeName.cpp`

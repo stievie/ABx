@@ -52,9 +52,10 @@ struct TypeName
     /// Will return "Foo::Bar"
     static constexpr auto Get()
     {
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
         // GCC will set __PRETTY_FUNCTION__ to something like:
         // sa::TypeName<T>::Get() [with T = Foo::Bar]
+        // Clang: sa::TypeName<Foo::Bar>::Get() [T = Foo::Bar]
         constexpr const char* name = __PRETTY_FUNCTION__;
         constexpr int begin = details::first_char_pos(name, '=') + 2;
         constexpr int end = details::first_char_pos(name, ']');
