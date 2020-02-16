@@ -83,7 +83,7 @@ protected:
     Id id_;
     std::string name_;
     std::shared_ptr<Condition> condition_;
-    Node::Status ReturnValue(Agent& agent, Node::Status value);
+    Node::Status ReturnStatus(Agent& agent, Node::Status value);
 public:
     explicit Node(const ArgumentsType& arguments);
     virtual ~Node();

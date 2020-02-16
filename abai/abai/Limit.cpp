@@ -35,22 +35,22 @@ Limit::Limit(const ArgumentsType& arguments) :
 Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
-        return ReturnValue(agent, Node::Status::CanNotExecute);
+        return ReturnStatus(agent, Node::Status::CanNotExecute);
 
     size_t executions = 0;
     if (agent.context_.Has<limit_type>(id_))
         executions = agent.context_.Get<limit_type>(id_);
 
     if (executions >= limit_)
-        return ReturnValue(agent, Node::Status::Finished);
+        return ReturnStatus(agent, Node::Status::Finished);
 
     auto status = child_->Execute(agent, timeElapsed);
 
     agent.context_.Set<limit_type>(id_, executions + 1);
     if (status == Node::Status::Running)
-        return ReturnValue(agent, Node::Status::Running);
+        return ReturnStatus(agent, Node::Status::Running);
 
-    return ReturnValue(agent, Node::Status::Failed);
+    return ReturnStatus(agent, Node::Status::Failed);
 }
 
 }

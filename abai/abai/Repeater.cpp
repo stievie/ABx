@@ -27,11 +27,11 @@ namespace AI {
 Node::Status AI::Repeater::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
-        return ReturnValue(agent, Node::Status::CanNotExecute);
+        return ReturnStatus(agent, Node::Status::CanNotExecute);
     if (!child_)
-        return ReturnValue(agent, Node::Status::CanNotExecute);
+        return ReturnStatus(agent, Node::Status::CanNotExecute);
     child_->Execute(agent, timeElapsed);
-    return ReturnValue(agent, Status::Running);
+    return ReturnStatus(agent, Status::Running);
 }
 
 }

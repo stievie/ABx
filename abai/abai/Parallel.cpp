@@ -33,7 +33,7 @@ Parallel::~Parallel() = default;
 Node::Status Parallel::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnValue(agent, Status::CanNotExecute);
+        return ReturnStatus(agent, Status::CanNotExecute);
 
     bool totalRunning = false;
     for (auto& child : children_)
@@ -41,7 +41,7 @@ Node::Status Parallel::Execute(Agent& agent, uint32_t timeElapsed)
         const bool isRunning = child->Execute(agent, timeElapsed) == Status::Running;
         totalRunning |= isRunning;
     }
-    return ReturnValue(agent, totalRunning ? Status::Running : Status::Finished);
+    return ReturnStatus(agent, totalRunning ? Status::Running : Status::Finished);
 }
 
 }

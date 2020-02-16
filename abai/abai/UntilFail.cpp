@@ -27,13 +27,13 @@ namespace AI {
 Node::Status UntilFail::Execute(Agent & agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Node::Status::CanNotExecute)
-        return ReturnValue(agent, Node::Status::CanNotExecute);
+        return ReturnStatus(agent, Node::Status::CanNotExecute);
     if (!child_)
-        return ReturnValue(agent, Node::Status::CanNotExecute);
+        return ReturnStatus(agent, Node::Status::CanNotExecute);
     auto status = child_->Execute(agent, timeElapsed);
     if (status == Status::Failed)
-        return ReturnValue(agent, Status::Finished);
-    return ReturnValue(agent, Status::Running);
+        return ReturnStatus(agent, Status::Finished);
+    return ReturnStatus(agent, Status::Running);
 }
 
 }

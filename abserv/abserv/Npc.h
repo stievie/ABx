@@ -28,6 +28,7 @@
 #include "TriggerComp.h"
 #include "AiComp.h"
 #include "WanderComp.h"
+#include <set>
 
 namespace Game {
 
@@ -109,7 +110,7 @@ public:
     bool CanAttack() const override { return true; }
     bool CanUseSkill() const override { return true; }
     void SetLevel(uint32_t value) override;
-    uint32_t GetItemIndex() const final override
+    uint32_t GetItemIndex() const override
     {
         return itemIndex_;
     }

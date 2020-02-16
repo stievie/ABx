@@ -34,7 +34,7 @@ Sequence::~Sequence() = default;
 Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return ReturnValue(agent, Status::CanNotExecute);
+        return ReturnStatus(agent, Status::CanNotExecute);
 
     Nodes::iterator nIt = agent.context_.Has<Nodes::iterator>(id_) ? agent.context_.Get<Nodes::iterator>(id_) : children_.begin();
 
@@ -43,12 +43,12 @@ Node::Status Sequence::Execute(Agent& agent, uint32_t timeElapsed)
         // Call until one failed
         Status status = (*nIt)->Execute(agent, timeElapsed);
         if (status != Status::Finished)
-            return ReturnValue(agent, status);
+            return ReturnStatus(agent, status);
         ++nIt;
         agent.context_.Set(id_, nIt);
     }
     agent.context_.Delete<Nodes::iterator>(id_);
-    return ReturnValue(agent, Status::Finished);
+    return ReturnStatus(agent, Status::Finished);
 }
 
 }

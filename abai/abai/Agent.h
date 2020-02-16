@@ -24,10 +24,8 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
-#include <unordered_map>
 #include "AiDefines.h"
 #include "Node.h"
-#include <set>
 #include "Context.h"
 #include <sa/StrongType.h>
 #include "Action.h"
