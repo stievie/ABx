@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <stdint.h>
 
 namespace AI {
@@ -75,6 +76,7 @@ struct GameObject
     uint32_t id{ 0 };
     uint32_t gameId{ 0 };
     ObjectType objectType{ ObjectType::Unknown };
+    uint8_t objectState{ 0 };
     std::string name;
     std::array<float, 3> position;
     template<typename _Ar>

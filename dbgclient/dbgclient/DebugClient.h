@@ -52,6 +52,7 @@ private:
     void SelectPrevObject();
     void SelectNextObject();
     void SelectGame(uint32_t id);
+    uint32_t GetSelectedGameId() const;
 public:
     DebugClient(asio::io_service& io, Window& window);
     bool Connect(const std::string& host, uint16_t port);

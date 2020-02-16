@@ -126,6 +126,13 @@ void DebugClient::UpdateBehavior()
 {
     if (selectedObjectId_ == 0)
         return;
+
+    const auto it = objects_.find(selectedObjectId_);
+    if (it == objects_.end())
+        return;
+
+    const AI::GameObject& obj = objects_[selectedObjectId_];
+    (void)obj;
 }
 
 void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)
@@ -140,6 +147,8 @@ void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)
 
 void DebugClient::HandleGameObject(const AI::GameObject& message)
 {
+    if (message.gameId != GetSelectedGameId())
+        return;
     const auto it = objects_.find(message.id);
     if (it == objects_.end())
         return;
@@ -156,8 +165,6 @@ void DebugClient::HandleGameObject(const AI::GameObject& message)
 
 void DebugClient::OnKey(Window::Windows window, int c)
 {
-    (void)window;
-
     switch (c)
     {
     case KEY_UP:
@@ -253,4 +260,11 @@ void DebugClient::SelectGame(uint32_t id)
 {
     AI::SelectGame msg { id };
     client_.Send(msg);
+}
+
+uint32_t DebugClient::GetSelectedGameId() const
+{
+    if (selectedGameIndex_ < 0 || selectedGameIndex_ >= static_cast<int>(gameIds_.size()))
+        return 0;
+    return gameIds_[static_cast<size_t>(selectedGameIndex_)];
 }
