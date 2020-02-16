@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abshared", "..\abshared\abs
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abipc", "..\abipc\abipc\abipc.vcxproj", "{222C878E-3A32-410E-B11B-247F18572E33}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbgclient", "..\dbgclient\dbgclient\dbgclient.vcxproj", "{4E1E2190-34E9-4BA9-B59D-1A79026364E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -171,6 +173,14 @@ Global
 		{222C878E-3A32-410E-B11B-247F18572E33}.RelNoProfiling|x64.Build.0 = Release|x64
 		{222C878E-3A32-410E-B11B-247F18572E33}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{222C878E-3A32-410E-B11B-247F18572E33}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.Debug|x64.ActiveCfg = Debug|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.Debug|x64.Build.0 = Debug|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.Release|x64.ActiveCfg = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.Release|x64.Build.0 = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelNoProfiling|x64.Build.0 = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
