@@ -224,7 +224,7 @@ void DebugClient::UpdateObjectDetails()
         {
             std::stringstream ss;
             ss << "  " << "[" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
-            window_.PrintObjectDetails(ss.str(), line++);
+            window_.PrintObjectDetails(ss.str(), line++, false, ns.first == obj.currActionId);
         }
     }
 
