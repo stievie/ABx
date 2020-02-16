@@ -48,8 +48,8 @@ static std::string GetNodeStatusString(AI::Node::Status status)
     case AI::Node::Status::Running: return "Running";
     case AI::Node::Status::Finished: return "Finished";
     case AI::Node::Status::Failed: return "Failed";
+    default: return "???";
     }
-    return "???";
 }
 
 DebugClient::DebugClient(asio::io_service& io, Window& window) :
