@@ -39,10 +39,10 @@ Node::Status Priority::Execute(Agent& agent, uint32_t timeElapsed)
     {
         Status status = child->Execute(agent, timeElapsed);
         if (status != Status::Failed && status != Status::CanNotExecute)
-            return status;
+            return ReturnValue(agent, status);
         // If failed try the next
     }
-    return Status::Failed;
+    return ReturnValue(agent, Status::Failed);
 }
 
 }

@@ -55,7 +55,7 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
     if (Node::Execute(agent, timeElapsed) == Status::CanNotExecute)
     {
         UnsetCurrentAction(agent);
-        return Status::CanNotExecute;
+        return ReturnValue(agent, Status::CanNotExecute);
     }
     const auto status = DoAction(agent, timeElapsed);
     switch (status)
@@ -70,7 +70,7 @@ Node::Status Action::Execute(Agent& agent, uint32_t timeElapsed)
     default:
         break;
     }
-    return status;
+    return ReturnValue(agent, status);
 }
 
 }

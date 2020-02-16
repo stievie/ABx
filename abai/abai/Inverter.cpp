@@ -31,19 +31,19 @@ Inverter::Inverter(const ArgumentsType& arguments) :
 Node::Status Inverter::Execute(Agent& agent, uint32_t timeElapsed)
 {
     if (Decorator::Execute(agent, timeElapsed) == Status::CanNotExecute)
-        return Status::CanNotExecute;
+        return ReturnValue(agent, Status::CanNotExecute);
 
     auto status = child_->Execute(agent, timeElapsed);
     switch (status)
     {
     case Status::CanNotExecute:
-        return Status::Finished;
+        return ReturnValue(agent, Status::Finished);
     case Status::Finished:
-        return Status::Failed;
+        return ReturnValue(agent, Status::Failed);
     case Status::Failed:
-        return Status::Finished;
+        return ReturnValue(agent, Status::Finished);
     default:
-        return Status::Running;
+        return ReturnValue(agent, Status::Running);
     }
 }
 

@@ -47,7 +47,7 @@ using AgentIds = std::vector<Id>;
 // Once the BT is loaded it must not be modified, so the iterators are not invalidated.
 // This is a bit unflexible when an application needs to store other types, but
 // you could create a second context in the subclass.
-class AgentContext : public Context<id_type, limit_type, timer_type, counter_type, Nodes::iterator>
+class AgentContext : public Context<id_type, Node::Status, limit_type, timer_type, counter_type, Nodes::iterator>
 {
 public:
     std::weak_ptr<Action> currentAction_;

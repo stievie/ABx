@@ -46,8 +46,15 @@ void Node::SetCondition(std::shared_ptr<Condition> condition)
 Node::Status Node::Execute(Agent& agent, uint32_t)
 {
     if (condition_ && !condition_->Evaluate(agent, *this))
-        return Status::CanNotExecute;
-    return Status::Finished;
+        return ReturnValue(agent, Status::CanNotExecute);
+    return ReturnValue(agent, Status::Finished);
 }
+
+Node::Status Node::ReturnValue(Agent& agent, Node::Status value)
+{
+    agent.context_.Set(id_, value);
+    return value;
+}
+
 
 }
