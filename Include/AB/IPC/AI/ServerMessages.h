@@ -79,16 +79,32 @@ struct GameObject
     uint8_t objectState{ 0 };
     std::string name;
     std::array<float, 3> position;
+    int currentNodeStatus{ 0 };
+    std::string currAction;
+    uint32_t currActionId{ 0 };
+    size_t selectedAgentsCount{ 0 };
+    std::vector<uint32_t> selectedAgents;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(id);
         ar.value(gameId);
         ar.value(objectType);
+        ar.value(objectState);
         ar.value(name);
         ar.value(position[0]);
         ar.value(position[1]);
         ar.value(position[2]);
+        ar.value(currentNodeStatus);
+        ar.value(currAction);
+        ar.value(currActionId);
+        ar.value(selectedAgentsCount);
+        selectedAgents.resize(selectedAgentsCount);
+        for (size_t i = 0; i < selectedAgentsCount; ++i)
+        {
+            auto& oid = selectedAgents[i];
+            ar.value(oid);
+        }
     }
 };
 

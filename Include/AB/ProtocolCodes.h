@@ -177,6 +177,27 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetSkill)              \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)
 
+#define ENUMERATE_CREATURE_STATES          \
+    ENUMERATE_CREATURE_STATE(Unknown)      \
+    ENUMERATE_CREATURE_STATE(Idle)         \
+    ENUMERATE_CREATURE_STATE(Moving)       \
+    ENUMERATE_CREATURE_STATE(UsingSkill)   \
+    ENUMERATE_CREATURE_STATE(Attacking)    \
+    ENUMERATE_CREATURE_STATE(KnockedDown)  \
+    ENUMERATE_CREATURE_STATE(Emote)        \
+    ENUMERATE_CREATURE_STATE(EmoteSit)     \
+    ENUMERATE_CREATURE_STATE(__EmoteStart) \
+    ENUMERATE_CREATURE_STATE(EmoteCry)     \
+    ENUMERATE_CREATURE_STATE(EmoteTaunt)   \
+    ENUMERATE_CREATURE_STATE(EmotePonder)  \
+    ENUMERATE_CREATURE_STATE(EmoteWave)    \
+    ENUMERATE_CREATURE_STATE(EmoteLaugh)   \
+    ENUMERATE_CREATURE_STATE(__EmoteEnd)   \
+    ENUMERATE_CREATURE_STATE(ChestClosed)  \
+    ENUMERATE_CREATURE_STATE(ChestOpen)    \
+    ENUMERATE_CREATURE_STATE(Triggered)    \
+    ENUMERATE_CREATURE_STATE(Dead)
+
 enum class ErrorCodes : uint8_t
 {
     NoError = 0,
@@ -266,32 +287,9 @@ enum TurnDirection : uint8_t
 
 enum class CreatureState : uint8_t
 {
-    Unknown = 0,
-    Idle,
-    Moving,
-    UsingSkill,
-    Attacking,
-    KnockedDown,
-    Emote,
-    EmoteSit,
-
-    // Temporal Emotes ---------------------------------------------------------
-    __EmoteStart,
-    EmoteCry,
-    EmoteTaunt,
-    EmotePonder,
-    EmoteWave,
-    EmoteLaugh,
-    __EmoteEnd,
-    // /Emotes -----------------------------------------------------------------
-
-    // Logic actors states -----------------------------------------------------
-    ChestClosed,
-    ChestOpen,
-    Triggered,
-    // /Logic actors states ----------------------------------------------------
-
-    Dead = 0xFF,
+#define ENUMERATE_CREATURE_STATE(v) v,
+    ENUMERATE_CREATURE_STATES
+#undef ENUMERATE_CREATURE_STATE
 };
 
 enum class ServerMessageType : uint8_t
@@ -341,7 +339,7 @@ enum class ServerPacketType : uint8_t
 #define ENUMERATE_SERVER_PACKET_CODE(v) v,
     ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
-        __Last = 0xFF
+    __Last = 0xFF
 };
 
 enum ObjectCallType : uint8_t

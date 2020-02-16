@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "ServerConnection.h"
 #include <functional>
+#include "AiAgent.h"
 
 namespace AI {
 
@@ -187,6 +188,24 @@ void DebugServer::BroadcastGame(const Game::Game& game)
         msg.objectState = static_cast<uint8_t>(current.stateComp_.GetState());
         msg.name = current.GetName();
         msg.position = current.GetPosition();
+        if (Game::Is<Game::Npc>(current) && Game::To<Game::Npc>(current).aiComp_)
+        {
+            const AiAgent& agent = Game::To<Game::Npc>(current).aiComp_->GetAgent();
+            msg.currentNodeStatus = static_cast<int>(agent.GetCurrentStatus());
+
+            if (auto ca = agent.context_.currentAction_.lock())
+            {
+                msg.currActionId = ca->GetId();
+                msg.currAction = ca->GetClassName();
+            }
+            else
+                msg.currAction = "None";
+            msg.selectedAgentsCount = agent.filteredAgents_.size();
+            msg.selectedAgents = agent.filteredAgents_;
+        }
+        else
+            msg.currAction = "No AI";
+
         for (const auto& i : clients)
             server_->SendTo(i, msg);
         return Iteration::Continue;

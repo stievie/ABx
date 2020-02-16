@@ -24,6 +24,33 @@
 #include "Scheduler.h"
 #include "Subsystems.h"
 #include <iostream>
+#include <AB/ProtocolCodes.h>
+#include <sa/StringTempl.h>
+#include "Node.h"
+
+static std::string GetObjectStateString(uint8_t state)
+{
+    switch (static_cast<AB::GameProtocol::CreatureState>(state))
+    {
+#define ENUMERATE_CREATURE_STATE(v) case AB::GameProtocol::CreatureState::v: return #v;
+        ENUMERATE_CREATURE_STATES
+#undef ENUMERATE_CREATURE_STATE
+    }
+    return "???";
+}
+
+static std::string GetNodeStatusString(AI::Node::Status status)
+{
+    switch (status)
+    {
+    case AI::Node::Status::Unknown: return "Unknown";
+    case AI::Node::Status::CanNotExecute: return "CanNotExecute";
+    case AI::Node::Status::Running: return "Running";
+    case AI::Node::Status::Finished: return "Finished";
+    case AI::Node::Status::Failed: return "Failed";
+    }
+    return "???";
+}
 
 DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_(io),
@@ -65,9 +92,15 @@ void DebugClient::HandleGameRemove(const AI::GameRemove& message)
     if (selectedGameIndex_ > -1)
     {
         if (static_cast<size_t>(selectedGameIndex_) >= gameIds_.size())
+        {
             selectedGameIndex_ = -1;
+            selectedObjectId_ = 0;
+        }
         else if (gameIds_[static_cast<size_t>(selectedGameIndex_)] == message.id)
+        {
             selectedGameIndex_ = -1;
+            selectedObjectId_ = 0;
+        }
     }
     games_.erase(message.id);
     UpdateGames();
@@ -79,8 +112,10 @@ void DebugClient::HandleGameSelected(const AI::GameSelected &message)
     if (it == gameIds_.end())
     {
         selectedGameIndex_ = -1;
+        selectedObjectId_ = 0;
         return;
     }
+    selectedObjectId_ = 0;
     auto index = std::distance(gameIds_.begin(), it);
     selectedGameIndex_ = static_cast<int>(index);
     UpdateGames();
@@ -122,7 +157,7 @@ void DebugClient::UpdateObjects()
     window_.EndWindowUpdate(Window::WindowActors);
 }
 
-void DebugClient::UpdateBehavior()
+void DebugClient::UpdateObjectDetails()
 {
     if (selectedObjectId_ == 0)
         return;
@@ -131,8 +166,49 @@ void DebugClient::UpdateBehavior()
     if (it == objects_.end())
         return;
 
+    window_.BeginWindowUpdate(Window::WindowBehavior);
+
+    int line = 0;
     const AI::GameObject& obj = objects_[selectedObjectId_];
-    (void)obj;
+    {
+        std::stringstream ss;
+        ss << "[" << obj.id << "] " << obj.name;
+        window_.PrintObjectDetails(ss.str(), line++, false, true);
+    }
+    {
+        std::stringstream ss;
+        ss << "Position: " << obj.position[0] << "," << obj.position[1] << "," << obj.position[2];
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
+
+    {
+        std::stringstream ss;
+        ss << "State: " << GetObjectStateString(obj.objectState);
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
+    line++;
+
+    window_.PrintObjectDetails("AI", line++, false, true);
+    {
+        std::stringstream ss;
+        ss << "Action: " << "[" << obj.currActionId << "] " << obj.currAction;
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
+    {
+        std::stringstream ss;
+        ss << "Node status: " << GetNodeStatusString(static_cast<AI::Node::Status>(obj.currentNodeStatus));
+        window_.PrintObjectDetails(ss.str(), line++);
+    }
+    {
+        std::stringstream ss;
+        ss << "Selection: ";
+        for (uint32_t a : obj.selectedAgents)
+            ss << a << ",";
+        std::string str = sa::Trim(ss.str(), std::string(","));
+        window_.PrintObjectDetails(str, line++);
+    }
+
+    window_.EndWindowUpdate(Window::WindowBehavior);
 }
 
 void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)
@@ -159,7 +235,7 @@ void DebugClient::HandleGameObject(const AI::GameObject& message)
     if (updatedObjectCount_ == objects_.size())
     {
         UpdateObjects();
-        UpdateBehavior();
+        UpdateObjectDetails();
     }
 }
 

@@ -186,6 +186,24 @@ void Window::PrintObject(const std::string& txt, int index, bool selected)
         wattroff(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
 }
 
+void Window::PrintObjectDetails(const std::string& txt, int line,
+    bool selected, bool bold)
+{
+    WINDOW* wnd = wins_[Windows::WindowBehavior];
+    std::string text = txt;
+    if (text.length() > static_cast<size_t>(wnd->_begx - 2))
+        text = text.substr(0, static_cast<size_t>(wnd->_begx - 2));
+    if (selected)
+        wattron(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+    if (bold)
+        wattron(wnd, A_BOLD);
+    mvwprintw(wnd, line + 1, 1, text.c_str());
+    if (bold)
+        wattroff(wnd, A_BOLD);
+    if (selected)
+        wattroff(wnd, COLOR_PAIR(SELECTED_LISTITEM_COLOR));
+}
+
 void Window::PrintStatusLine(const std::string& txt)
 {
     Point size = GetSize();

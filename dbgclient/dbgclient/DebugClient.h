@@ -37,7 +37,7 @@ private:
     std::vector<uint32_t> gameIds_;
     size_t updatedObjectCount_{ 0 };
     int selectedGameIndex_{ - 1 };
-    uint32_t selectedObjectId_{ 9 };
+    uint32_t selectedObjectId_{ 0 };
     bool gamesDirty_{ false };
     void HandleGameAdd(const AI::GameAdd& message);
     void HandleGameRemove(const AI::GameRemove& message);
@@ -47,7 +47,7 @@ private:
     void OnKey(Window::Windows window, int c);
     void UpdateGames();
     void UpdateObjects();
-    void UpdateBehavior();
+    void UpdateObjectDetails();
     void GetGames();
     void SelectPrevObject();
     void SelectNextObject();
