@@ -4,4 +4,4 @@ AI Debug client.
 
 ## Screenshot
 
-![Screenshot](/dbgclient/dbgclient.png?raw=true)
+![Screenshot](dbgclient.png?raw=true)
