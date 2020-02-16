@@ -79,9 +79,16 @@ struct GameObject
     uint8_t objectState{ 0 };
     std::string name;
     std::array<float, 3> position;
+    int health{ 0 };
+    int maxHealth{ 0 };
+    int energy{ 0 };
+    int maxEnergy{ 0 };
+    int morale{ 0 };
     int currentNodeStatus{ 0 };
     std::string currAction;
     uint32_t currActionId{ 0 };
+    int selectedSkillIndex{ -1 };
+    std::string selectedSkillName;
     size_t selectedAgentsCount{ 0 };
     std::vector<uint32_t> selectedAgents;
     template<typename _Ar>
@@ -95,9 +102,16 @@ struct GameObject
         ar.value(position[0]);
         ar.value(position[1]);
         ar.value(position[2]);
+        ar.value(health);
+        ar.value(maxHealth);
+        ar.value(energy);
+        ar.value(maxEnergy);
+        ar.value(morale);
         ar.value(currentNodeStatus);
         ar.value(currAction);
         ar.value(currActionId);
+        ar.value(selectedSkillIndex);
+        ar.value(selectedSkillName);
         ar.value(selectedAgentsCount);
         selectedAgents.resize(selectedAgentsCount);
         for (size_t i = 0; i < selectedAgentsCount; ++i)

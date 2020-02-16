@@ -205,6 +205,8 @@ public:
 
     void AddRecharge(int32_t ms);
 
+    const std::string& GetName() const { return data_.name; }
+
     int32_t energy_{ 0 };
     int32_t adrenaline_{ 0 };
     int32_t activation_{ 0 };
