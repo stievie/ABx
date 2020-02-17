@@ -23,11 +23,11 @@
 
 #include <memory>
 #include <uuid.h>
-#include "Protocol.h"
-#include "Connection.h"
-#include "Dispatcher.h"
+#include <abscommon/Protocol.h>
+#include <abscommon/Connection.h>
+#include <abscommon/Dispatcher.h>
 #include <AB/ProtocolCodes.h>
-#include "Subsystems.h"
+#include <abscommon/Subsystems.h>
 #include "InputQueue.h"
 #include <AB/Packets/ClientPackets.h>
 

@@ -50,9 +50,9 @@
 #include <pugixml.hpp>
 #include <abcrypto.hpp>
 #include <AB/CommonConfig.h>
-#include "DebugConfig.h"
-#include "Utils.h"
-#include "Profiler.h"
+#include <abscommon/DebugConfig.h>
+#include <abscommon/Utils.h>
+#include <abscommon/Profiler.h>
 
 #define WRITE_MINIBUMP
 #define PROFILING

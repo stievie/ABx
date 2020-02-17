@@ -34,7 +34,7 @@
 #include "EquipmentWindow.h"
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
-#include "Attributes.h"
+#include <abshared/Attributes.h>
 
 //#include <Urho3D/DebugNew.h>
 

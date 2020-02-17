@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ServerApp.h"
+#include <abscommon/ServerApp.h>
 #include <AB/Entities/Account.h>
 #if __cplusplus < 201703L
 #   if !defined(__clang__) && !defined(__GNUC__)
@@ -33,7 +33,7 @@
 #   include <filesystem>
 #endif
 #include <map>
-#include "MessageClient.h"
+#include <abscommon/MessageClient.h>
 #include "Servers.h"
 
 #if __cplusplus < 201703L

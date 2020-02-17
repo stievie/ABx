@@ -21,14 +21,11 @@
 
 #include "stdafx.h"
 #include "GameManager.h"
-#include "Scheduler.h"
-#include "Dispatcher.h"
 #include "Player.h"
 #include "Npc.h"
 #include "IOGame.h"
 #include "Group.h"
 #include "AiDebugServer.h"
-#include "Subsystems.h"
 
 namespace Game {
 

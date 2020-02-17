@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Filter.h"
+#include <abai/Filter.h>
 
 namespace AI {
 namespace Filters {

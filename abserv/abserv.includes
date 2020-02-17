@@ -1,11 +1,11 @@
 ../Include
 ../Include/recastnavigation
 ../Include/DirectXMath
-../abscommon/abscommon
-../absmath/absmath
-../abai/abai
-../abipc/abipc
-../abshared/abshared
+../abscommon
+../absmath
+../abai
+../abipc
+../abshared
 abserv
 abserv/actions
 abserv/conditions

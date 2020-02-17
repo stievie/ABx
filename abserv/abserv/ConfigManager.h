@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Variant.h"
-#include "SimpleConfigManager.h"
+#include <abscommon/Variant.h>
+#include <abscommon/SimpleConfigManager.h>
 
 class ConfigManager : public IO::SimpleConfigManager
 {

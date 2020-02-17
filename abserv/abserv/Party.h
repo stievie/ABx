@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include "DataClient.h"
 #include "Group.h"
-#include "Mechanic.h"
-#include "NetworkMessage.h"
-#include "Subsystems.h"
-#include "Variant.h"
 #include <AB/Entities/Party.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/NetworkMessage.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/Variant.h>
+#include <abshared/Mechanic.h>
 #include <kaguya/kaguya.hpp>
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>

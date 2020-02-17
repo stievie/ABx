@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "IOModel.h"
-#include "Profiler.h"
-#include "Shape.h"
 
 namespace IO {
 

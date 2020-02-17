@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon -I../abai/abai -I../abipc/abipc
+INCLUDES += -I../Include/DirectXMath -I../absmath -I../abscommon -I../abai -I../abipc
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/Tests$(SUFFIX)
 SOURDEDIR = ../Tests/Tests

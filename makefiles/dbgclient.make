@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../abscommon/abscommon -I../abai/abai -I../abipc/abipc
+INCLUDES += -I../abscommon -I../abai -I../abipc
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/dbgclient$(SUFFIX)
 SOURDEDIR = ../dbgclient/dbgclient

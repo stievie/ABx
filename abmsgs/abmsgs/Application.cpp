@@ -22,15 +22,15 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
-#include "Logo.h"
-#include "Dispatcher.h"
-#include "Scheduler.h"
-#include "SimpleConfigManager.h"
-#include "StringUtils.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
-#include "Subsystems.h"
-#include "UuidUtils.h"
+#include <abscommon/Dispatcher.h>
+#include <abscommon/Logo.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
 
 Application::Application() :
     ServerApp::ServerApp(),

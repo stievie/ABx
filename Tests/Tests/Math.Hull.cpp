@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include <catch.hpp>
-#include "ConvexHull.h"
-#include "Sphere.h"
-#include "Shape.h"
-#include "MathDefs.h"
+#include <absmath/ConvexHull.h>
+#include <absmath/Sphere.h>
+#include <absmath/Shape.h>
+#include <absmath/MathDefs.h>
 
 TEST_CASE("Hull")
 {

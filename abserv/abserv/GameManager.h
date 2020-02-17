@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "Service.h"
 #include "Game.h"
 #include <limits>
+#include <abscommon/Service.h>
 #include <sa/IdGenerator.h>
 #include <AB/Entities/Game.h>
 

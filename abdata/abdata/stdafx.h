@@ -19,11 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
@@ -40,7 +35,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <string>
 
 #include <AB/CommonConfig.h>
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
@@ -57,8 +52,12 @@ PRAGMA_WARNING_POP
 #define WRITE_MINIBUMP
 #define PROFILING
 
-#include "Logger.h"
-#include "UuidUtils.h"
+#include <abscommon/Logger.h>
+#include <abscommon/UuidUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/Utils.h>
+#include <abscommon/StringUtils.h>
+#include <abdb/Database.h>
 
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256

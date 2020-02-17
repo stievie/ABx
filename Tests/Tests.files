@@ -11,6 +11,7 @@ Tests/Math.Hull.cpp
 Tests/Math.Matrix.cpp
 Tests/Math.Quaternion.cpp
 Tests/Math.Ray.cpp
+Tests/Math.Shape.cpp
 Tests/Math.Sphere.cpp
 Tests/Math.Transformation.cpp
 Tests/Math.Utils.cpp

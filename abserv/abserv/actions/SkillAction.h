@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Action.h"
+#include <abai/Action.h>
 
 namespace Game {
 class Actor;

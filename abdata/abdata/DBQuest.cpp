@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "DBQuest.h"
-#include "Database.h"
-#include "Subsystems.h"
-#include "StringUtils.h"
 #include <sa/StringTempl.h>
 
 namespace DB {

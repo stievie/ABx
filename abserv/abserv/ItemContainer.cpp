@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "ItemContainer.h"
 #include "ItemFactory.h"
-#include "UuidUtils.h"
 
 namespace Game {
 

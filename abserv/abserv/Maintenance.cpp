@@ -21,23 +21,16 @@
 
 #include "stdafx.h"
 #include "Maintenance.h"
-#include "Scheduler.h"
+#include "AiDebugServer.h"
+#include "Application.h"
+#include "Chat.h"
+#include "ConfigManager.h"
 #include "DataProvider.h"
 #include "GameManager.h"
 #include "PlayerManager.h"
-#include "Logger.h"
-#include "CpuUsage.h"
-#include "Application.h"
 #include <AB/Entities/Service.h>
-#include "ConfigManager.h"
-#include "DataClient.h"
-#include "Chat.h"
-#include "Dispatcher.h"
-#include "Subsystems.h"
-#include "ThreadPool.h"
-#include "NetworkMessage.h"
-#include "OutputMessage.h"
-#include "AiDebugServer.h"
+#include <abscommon/CpuUsage.h>
+#include <abscommon/ThreadPool.h>
 
 void Maintenance::CleanCacheTask()
 {

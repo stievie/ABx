@@ -23,13 +23,8 @@
 #include "AiMoveOutAOE.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
-#include "Subsystems.h"
-#include "Random.h"
-#include "Mechanic.h"
-#include "Matrix4.h"
 #include "../Game.h"
 #include "../AreaOfEffect.h"
-#include "VectorMath.h"
 
 //#define DEBUG_AI
 

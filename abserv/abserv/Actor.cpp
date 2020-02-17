@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "Actor.h"
 #include "AreaOfEffect.h"
-#include "AttribAlgos.h"
-#include "Attributes.h"
 #include "CollisionComp.h"
 #include "ConfigManager.h"
 #include "DamageComp.h"
@@ -35,17 +33,16 @@
 #include "Item.h"
 #include "ItemFactory.h"
 #include "ItemsCache.h"
-#include "Logger.h"
-#include "MathUtils.h"
 #include "OctreeQuery.h"
 #include "PartyManager.h"
 #include "Player.h"
 #include "ProgressComp.h"
-#include "Scheduler.h"
-#include "SelectionComp.h"
 #include "ScriptManager.h"
+#include "SelectionComp.h"
 #include "TemplateEncoder.h"
 #include <AB/ProtocolCodes.h>
+#include <abshared/AttribAlgos.h>
+#include <abshared/Attributes.h>
 
 namespace Game {
 

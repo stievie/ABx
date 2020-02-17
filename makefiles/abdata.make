@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../abscommon/abscommon -I../abdb/abdb
+INCLUDES += -I../abscommon -I../abdb
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abdata$(SUFFIX)
 SOURDEDIR = ../abdata/abdata

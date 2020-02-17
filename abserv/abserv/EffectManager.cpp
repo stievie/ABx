@@ -23,8 +23,6 @@
 #include "EffectManager.h"
 #include "Effect.h"
 #include "DataProvider.h"
-#include "DataClient.h"
-#include "Subsystems.h"
 
 namespace Game {
 

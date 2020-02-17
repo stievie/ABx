@@ -22,17 +22,10 @@
 #include "stdafx.h"
 #include "TemplateResource.h"
 #include "Application.h"
-#include "Logger.h"
-#include "FileUtils.h"
-#include "StringUtils.h"
-#include "Subsystems.h"
 #include "ContentTypes.h"
-#include "Profiler.h"
 #include "Version.h"
 #include <sa/StringHash.h>
-#include "StringUtils.h"
 #include <AB/Entities/Account.h>
-#include "Xml.h"
 
 namespace Resources {
 

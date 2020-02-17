@@ -23,7 +23,7 @@
 
 #include <memory>
 #include <asio.hpp>
-#include "MessageMsg.h"
+#include <abscommon/MessageMsg.h>
 #include <set>
 #include <AB/Entities/Service.h>
 

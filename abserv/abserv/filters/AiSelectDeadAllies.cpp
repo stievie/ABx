@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "AiSelectDeadAllies.h"
 #include "../Npc.h"
-#include "Subsystems.h"
-#include "Random.h"
 
 //#define DEBUG_AI
 

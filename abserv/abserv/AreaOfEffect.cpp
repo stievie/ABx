@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "AreaOfEffect.h"
-#include "Subsystems.h"
 #include "DataProvider.h"
 #include "ScriptManager.h"
 #include "Actor.h"

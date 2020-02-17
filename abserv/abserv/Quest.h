@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Variant.h"
+#include <abscommon/Variant.h>
 #include <stdint.h>
 #include <kaguya/kaguya.hpp>
 #include <AB/Entities/Quest.h>

@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Shape.h"
-#include "BoundingBox.h"
-#include "Sphere.h"
+#include <absmath/Shape.h>
+#include <absmath/BoundingBox.h>
+#include <absmath/Sphere.h>
 
 TEST_CASE("IsTriangles")
 {

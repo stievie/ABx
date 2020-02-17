@@ -23,8 +23,7 @@
 #include "AiGoHome.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
-#include "Mechanic.h"
-#include "Logger.h"
+#include <abshared/Mechanic.h>
 
 //#define DEBUG_AI
 

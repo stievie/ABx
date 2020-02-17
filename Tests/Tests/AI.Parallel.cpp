@@ -23,10 +23,10 @@
 #include <catch.hpp>
 
 #include "AI.Mockup.h"
-#include "LuaLoader.h"
-#include "Registry.h"
-#include "Zone.h"
-#include "Agent.h"
+#include <abai/LuaLoader.h>
+#include <abai/Registry.h>
+#include <abai/Zone.h>
+#include <abai/Agent.h>
 
 TEST_CASE("Parallel")
 {

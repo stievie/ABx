@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "LuaLoader.h"
+#include <abai/LuaLoader.h>
 
 namespace AI {
 

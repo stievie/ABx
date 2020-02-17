@@ -41,7 +41,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <iostream>
 
 #include <AB/CommonConfig.h>
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #define ASIO_STANDALONE
 PRAGMA_WARNING_PUSH
@@ -51,8 +51,8 @@ PRAGMA_WARNING_POP
 
 #include <uuid.h>
 
-#include "Utils.h"
-#include "Logger.h"
+#include <abscommon/Utils.h>
+#include <abscommon/Logger.h>
 
 #define WRITE_MINIBUMP
 #define PROFILING

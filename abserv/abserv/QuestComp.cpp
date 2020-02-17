@@ -22,9 +22,6 @@
 #include "stdafx.h"
 #include "QuestComp.h"
 #include "Player.h"
-#include "DataClient.h"
-#include "Subsystems.h"
-#include "Dispatcher.h"
 
 namespace Game {
 namespace Components {

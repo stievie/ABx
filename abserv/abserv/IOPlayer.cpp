@@ -22,15 +22,10 @@
 #include "stdafx.h"
 #include "IOPlayer.h"
 #include "ConfigManager.h"
-#include "DataClient.h"
 #include "IOGame.h"
-#include "Logger.h"
-#include "Profiler.h"
-#include "PropStream.h"
 #include "SkillManager.h"
-#include "Subsystems.h"
-#include "UuidUtils.h"
 #include "QuestComp.h"
+#include "Player.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/FriendList.h>

@@ -21,10 +21,10 @@
 
 #pragma once
 
-#include "ServerApp.h"
-#include "Service.h"
-#include "DataClient.h"
-#include "MessageClient.h"
+#include <abscommon/DataClient.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/ServerApp.h>
+#include <abscommon/Service.h>
 
 constexpr int64_t QUEUE_UPDATE_INTERVAL_MS = 1000;
 

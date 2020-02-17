@@ -22,10 +22,10 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Quaternion.h"
-#include "Matrix4.h"
-#include "MathUtils.h"
-#include "MathDefs.h"
+#include <absmath/Quaternion.h>
+#include <absmath/Matrix4.h>
+#include <absmath/MathUtils.h>
+#include <absmath/MathDefs.h>
 
 // https://github.com/gareth-cross/quat/blob/master/test/quaternion_test.cpp
 

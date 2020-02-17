@@ -22,10 +22,10 @@
 #pragma once
 
 #include "Asset.h"
-#include "FileUtils.h"
 #include "IOAsset.h"
-#include "Logger.h"
-#include "StringUtils.h"
+#include <abscommon/FileUtils.h>
+#include <abscommon/Logger.h>
+#include <abscommon/StringUtils.h>
 #include <map>
 #include <memory>
 #include <sa/StringHash.h>

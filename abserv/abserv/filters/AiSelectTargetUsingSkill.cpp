@@ -22,9 +22,6 @@
 #include "stdafx.h"
 #include "AiSelectTargetUsingSkill.h"
 #include "../Npc.h"
-#include "Logger.h"
-#include "Subsystems.h"
-#include "Random.h"
 
 //#define DEBUG_AI
 

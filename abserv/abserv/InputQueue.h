@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Variant.h"
+#include <abscommon/Variant.h>
 #include <queue>
 #include <mutex>
 

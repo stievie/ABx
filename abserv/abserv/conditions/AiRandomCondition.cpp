@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "AiRandomCondition.h"
-#include "Random.h"
-#include "Subsystems.h"
 
 namespace AI {
 namespace Conditions {

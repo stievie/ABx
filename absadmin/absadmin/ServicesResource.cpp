@@ -23,12 +23,8 @@
 #include "ServicesResource.h"
 #include "Application.h"
 #include "Version.h"
-#include "Subsystems.h"
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Service.h>
-#include "DataClient.h"
-#include "StringUtils.h"
-#include "Xml.h"
 
 namespace Resources {
 

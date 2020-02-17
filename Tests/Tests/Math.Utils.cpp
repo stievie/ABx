@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "MathUtils.h"
+#include <absmath/MathUtils.h>
 
 TEST_CASE("NormalizeAngle")
 {

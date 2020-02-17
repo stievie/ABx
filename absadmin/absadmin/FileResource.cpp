@@ -22,12 +22,7 @@
 #include "stdafx.h"
 #include "FileResource.h"
 #include "Application.h"
-#include "Logger.h"
-#include "FileUtils.h"
 #include "ContentTypes.h"
-#include "Subsystems.h"
-#include "StringUtils.h"
-#include "Profiler.h"
 
 namespace Resources {
 

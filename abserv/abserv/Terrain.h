@@ -23,10 +23,10 @@
 
 #include <memory>
 #include "Asset.h"
-#include "Vector3.h"
-#include "HeightMap.h"
-#include "Transformation.h"
-#include "Point.h"
+#include <absmath/Vector3.h>
+#include <absmath/HeightMap.h>
+#include <absmath/Transformation.h>
+#include <absmath/Point.h>
 
 namespace Game {
 

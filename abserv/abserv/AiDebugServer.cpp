@@ -21,14 +21,14 @@
 
 #include "stdafx.h"
 #include "AiDebugServer.h"
+#include "AiAgent.h"
 #include "Game.h"
 #include "Npc.h"
 #include "Player.h"
-#include "ServerConnection.h"
+#include <abai/Root.h>
+#include <abipc/ServerConnection.h>
+#include <abshared/Mechanic.h>
 #include <functional>
-#include "AiAgent.h"
-#include "Mechanic.h"
-#include "Root.h"
 
 namespace AI
 {

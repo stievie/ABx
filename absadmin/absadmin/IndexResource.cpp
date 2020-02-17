@@ -22,16 +22,11 @@
 #include "stdafx.h"
 #include "IndexResource.h"
 #include "Application.h"
-#include "Logger.h"
-#include "FileUtils.h"
-#include "Variant.h"
 #include <sa/StringHash.h>
 #include "Version.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/AccountList.h>
 #include <AB/Entities/CharacterList.h>
-#include "Subsystems.h"
-#include "DataClient.h"
 
 namespace Resources {
 

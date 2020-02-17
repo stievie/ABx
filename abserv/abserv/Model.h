@@ -23,8 +23,8 @@
 
 #include <memory>
 #include "Asset.h"
-#include "Shape.h"
-#include "BoundingBox.h"
+#include <absmath/Shape.h>
+#include <absmath/BoundingBox.h>
 
 namespace Game {
 

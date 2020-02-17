@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Transformation.h"
-#include "Matrix4.h"
+#include <absmath/Transformation.h>
+#include <absmath/Matrix4.h>
 
 TEST_CASE("Transformation Basic")
 {

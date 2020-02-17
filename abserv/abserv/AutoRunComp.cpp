@@ -23,9 +23,7 @@
 #include "Actor.h"
 #include "AutoRunComp.h"
 #include "Game.h"
-#include "MathUtils.h"
 #include "Player.h"
-#include "VectorMath.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 

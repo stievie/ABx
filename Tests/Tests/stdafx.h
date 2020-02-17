@@ -23,7 +23,6 @@
 #pragma once
 #endif
 
-#include "targetver.h"
 #include <sa/PragmaWarning.h>
 
 PRAGMA_WARNING_DISABLE_MSVC(4307)
@@ -37,7 +36,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <stdint.h>
 #include <initializer_list>
 
-#include "MathConfig.h"
+#include <absmath/MathConfig.h>
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
 #   include <lua.hpp>

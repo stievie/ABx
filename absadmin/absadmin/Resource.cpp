@@ -22,10 +22,8 @@
 #include "stdafx.h"
 #include "Resource.h"
 #include <uuid.h>
-#include "Subsystems.h"
 #include "Application.h"
 #include <sa/StringHash.h>
-#include "UuidUtils.h"
 
 namespace Resources {
 

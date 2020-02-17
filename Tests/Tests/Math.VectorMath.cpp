@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "VectorMath.h"
+#include <absmath/VectorMath.h>
 
 TEST_CASE("IsPointInTriangle")
 {

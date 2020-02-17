@@ -21,13 +21,8 @@
 
 #include "stdafx.h"
 #include "FriendList.h"
-#include "Subsystems.h"
-#include "DataClient.h"
-#include "UuidUtils.h"
-#include "StringUtils.h"
 #include <sa/Transaction.h>
 #include "IOPlayer.h"
-#include "Dispatcher.h"
 #include <AB/Entities/FriendedMe.h>
 
 namespace Game {

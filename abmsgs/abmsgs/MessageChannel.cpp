@@ -21,18 +21,18 @@
 
 #include "stdafx.h"
 #include "MessageChannel.h"
-#include <functional>
-#include "Logger.h"
 #include "Application.h"
-#include "PropStream.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
-#include "Subsystems.h"
-#include "UuidUtils.h"
 #include <AB/Entities/FriendList.h>
-#include <AB/Entities/GuildMembers.h>
 #include <AB/Entities/FriendedMe.h>
-#include "UuidUtils.h"
+#include <AB/Entities/GuildMembers.h>
+#include <abscommon/Logger.h>
+#include <abscommon/PropStream.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
+#include <abscommon/UuidUtils.h>
+#include <functional>
 
 MessageParticipant::~MessageParticipant() = default;
 

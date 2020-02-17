@@ -27,7 +27,7 @@
 #include <multi_index/member.hpp>
 #include <multi_index/identity.hpp>
 #include <multi_index/ordered_index.hpp>
-#include "DataKey.h"
+#include <abscommon/DataKey.h>
 
 class DataItem
 {

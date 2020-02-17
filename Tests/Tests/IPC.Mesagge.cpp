@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Message.h"
-#include "MessageBuffer.h"
+#include <abipc/Message.h>
+#include <abipc/MessageBuffer.h>
 
 struct MyMessage
 {

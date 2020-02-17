@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../abscommon/abscommon
+INCLUDES += -I../abscommon
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abmatch$(SUFFIX)
 SOURDEDIR = ../abmatch/abmatch

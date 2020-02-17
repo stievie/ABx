@@ -21,15 +21,9 @@
 
 #include "stdafx.h"
 #include "SceneViewer.h"
-#include "UuidUtils.h"
-#include "Subsystems.h"
 #include "GameManager.h"
-#include "Scheduler.h"
-#include "Dispatcher.h"
 #include <cassert>
 #include "Player.h"
-#include "MathUtils.h"
-#include "CollisionShape.h"
 
 // http://www.alecjacobson.com/weblog/?p=4307
 

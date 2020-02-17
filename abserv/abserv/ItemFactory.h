@@ -23,8 +23,8 @@
 
 #include <mutex>
 #include "Item.h"
-#include "UuidUtils.h"
-#include "Mechanic.h"
+#include <abscommon/UuidUtils.h>
+#include <abshared/Mechanic.h>
 #include <sa/WeightedSelector.h>
 
 namespace Game {

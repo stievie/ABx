@@ -21,12 +21,12 @@
 
 #include "stdafx.h"
 #include "IOGame.h"
-#include "DataClient.h"
-#include <AB/Entities/GameList.h>
-#include "Logger.h"
 #include "Application.h"
-#include "UuidUtils.h"
-#include "Subsystems.h"
+#include <AB/Entities/GameList.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/Logger.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
 
 namespace IO {
 

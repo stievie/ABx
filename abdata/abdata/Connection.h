@@ -24,10 +24,10 @@
 #include <stdint.h>
 #include <vector>
 #include "StorageProvider.h"
-#include "Dispatcher.h"
-#include "DataKey.h"
-#include "Subsystems.h"
-#include "DataCodes.h"
+#include <abscommon/Dispatcher.h>
+#include <abscommon/DataKey.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/DataCodes.h>
 #include <asio.hpp>
 
 class ConnectionManager;
@@ -35,11 +35,11 @@ class ConnectionManager;
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
-	explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
+    explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
         StorageProvider& storage, size_t maxData, uint16_t maxKeySize_);
     asio::ip::tcp::socket& socket();
-	void Start();
-	void Stop();
+    void Start();
+    void Stop();
 private:
     template <typename Callable, typename... Args>
     void AddTask(Callable&& function, Args&&... args)

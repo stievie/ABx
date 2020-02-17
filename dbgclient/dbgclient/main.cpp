@@ -8,9 +8,9 @@ PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_GCC("-Wpadded")
 #   include <asio.hpp>
 PRAGMA_WARNING_POP
-#include "Subsystems.h"
-#include "Scheduler.h"
-#include "Dispatcher.h"
+#include <abscommon/Subsystems.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/Dispatcher.h>
 #include <thread>
 #include <atomic>
 #include "DebugClient.h"

@@ -22,13 +22,9 @@
 #include "stdafx.h"
 #include "ServiceResource.h"
 #include "Application.h"
-#include "Subsystems.h"
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Service.h>
-#include "DataClient.h"
 #include <uuid.h>
-#include "TimeUtils.h"
-#include "Xml.h"
 
 namespace Resources {
 

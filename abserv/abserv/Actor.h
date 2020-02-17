@@ -33,7 +33,7 @@
 #include "ResourceComp.h"
 #include "SkillBar.h"
 #include "SkillsComp.h"
-#include "UuidUtils.h"
+#include <abscommon/UuidUtils.h>
 #include <AB/ProtocolCodes.h>
 
 namespace Game {

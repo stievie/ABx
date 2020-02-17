@@ -23,10 +23,6 @@
 #include "AccountLogoutResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
-#include "StringUtils.h"
-#include "DataClient.h"
-#include "Subsystems.h"
-#include "MessageClient.h"
 
 namespace Resources {
 

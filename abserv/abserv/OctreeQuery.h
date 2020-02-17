@@ -21,10 +21,10 @@
 
 #pragma once
 
-#include "BoundingBox.h"
-#include "Vector3.h"
-#include "Sphere.h"
-#include "Ray.h"
+#include <absmath/BoundingBox.h>
+#include <absmath/Vector3.h>
+#include <absmath/Sphere.h>
+#include <absmath/Ray.h>
 
 namespace Game {
 class GameObject;

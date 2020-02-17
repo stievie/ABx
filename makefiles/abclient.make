@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../libabclient/libabclient -I../abshared/abshared -I../Include/Urho3D -I../Include/Urho3D/ThirdParty
+INCLUDES += -I../libabclient/libabclient -I../abshared -I../Include/Urho3D -I../Include/Urho3D/ThirdParty
 TARGETDIR = ../abclient/bin
 TARGET = $(TARGETDIR)/fw$(SUFFIX)
 SOURDEDIR = ../abclient/abclient

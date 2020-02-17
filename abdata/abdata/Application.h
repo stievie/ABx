@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "ServerApp.h"
 #include "Server.h"
-#include "IpList.h"
+#include <abscommon/IpList.h>
+#include <abscommon/ServerApp.h>
 
 class Application final : public ServerApp
 {

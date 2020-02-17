@@ -23,15 +23,10 @@
 #include "IOMap.h"
 #include "DataProvider.h"
 #include <pugixml.hpp>
-#include "Logger.h"
-#include "CollisionShape.h"
 #include "GameObject.h"
 #include "TerrainPatch.h"
-#include "Profiler.h"
-#include "Subsystems.h"
 #include "Model.h"
 #include "Game.h"
-#include "FileUtils.h"
 
 namespace IO {
 namespace IOMap {

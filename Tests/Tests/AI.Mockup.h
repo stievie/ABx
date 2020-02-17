@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "Action.h"
-#include "Registry.h"
-#include "Filter.h"
+#include <abai/Action.h>
+#include <abai/Registry.h>
+#include <abai/Filter.h>
 
 namespace AI {
 

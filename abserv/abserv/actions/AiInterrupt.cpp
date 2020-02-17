@@ -24,7 +24,6 @@
 #include "../AiAgent.h"
 #include "../Npc.h"
 #include "../Game.h"
-#include "Logger.h"
 
 //#define DEBUG_AI
 

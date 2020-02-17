@@ -23,7 +23,7 @@
 
 #include <unordered_map>
 #include <memory>
-#include "Variant.h"
+#include <abscommon/Variant.h>
 
 namespace HTTP {
 

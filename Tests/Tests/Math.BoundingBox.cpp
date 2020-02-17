@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "BoundingBox.h"
-#include "Matrix4.h"
-#include "Transformation.h"
-#include "Plane.h"
-#include "Line.h"
+#include <absmath/BoundingBox.h>
+#include <absmath/Matrix4.h>
+#include <absmath/Transformation.h>
+#include <absmath/Plane.h>
+#include <absmath/Line.h>
 
 TEST_CASE("BoundingBox Basic", "[boundingbox]")
 {

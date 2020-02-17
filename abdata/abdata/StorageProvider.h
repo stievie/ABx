@@ -38,7 +38,7 @@ PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_POP
 
 #include <sa/StringHash.h>
-#include "DataKey.h"
+#include <abscommon/DataKey.h>
 #include <sa/CallableTable.h>
 
 // Clean cache every 10min

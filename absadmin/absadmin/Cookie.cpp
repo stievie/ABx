@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "Cookie.h"
 #include <sa/StringTempl.h>
-#include "StringUtils.h"
 
 namespace HTTP {
 

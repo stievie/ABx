@@ -58,7 +58,7 @@ not work.
 
 If you run make with `CCACHE=""` it doesn't use ccache and therefore it doesn't need to be installed.
 ~~~sh
-$ make CCACHE=""
+$ make CCACHE=""q
 ~~~
 
 ### Client

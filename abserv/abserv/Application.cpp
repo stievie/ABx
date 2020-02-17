@@ -20,49 +20,34 @@
  */
 
 #include "stdafx.h"
+#include "Application.h"
 #include "AiDebugServer.h"
 #include "AiLoader.h"
 #include "AiRegistry.h"
-#include "Application.h"
-#include "BanManager.h"
-#include "BevaviorCache.h"
 #include "ConfigManager.h"
-#include "Connection.h"
-#include "CpuUsage.h"
-#include "DataClient.h"
 #include "DataProvider.h"
-#include "Dispatcher.h"
-#include "Dump.h"
 #include "EffectManager.h"
 #include "GameManager.h"
 #include "GuildManager.h"
 #include "ItemFactory.h"
 #include "ItemsCache.h"
-#include "Logger.h"
-#include "Logo.h"
 #include "Maintenance.h"
-#include "MessageClient.h"
 #include "MessageDispatcher.h"
-#include "NetworkMessage.h"
-#include "OutputMessage.h"
 #include "PartyManager.h"
 #include "PlayerManager.h"
 #include "ProtocolGame.h"
-#include "Random.h"
-#include "Scheduler.h"
-#include "Service.h"
 #include "Skill.h"
 #include "SkillManager.h"
-#include "StringUtils.h"
-#include "Subsystems.h"
-#include "Task.h"
-#include "ThreadPool.h"
-#include "UuidUtils.h"
 #include "Version.h"
 #include <AB/DHKeys.hpp>
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include <AB/ProtocolCodes.h>
+#include <abai/BevaviorCache.h>
+#include <abai/Dump.h>
+#include <abscommon/Logo.h>
+#include <abscommon/Service.h>
+#include <abscommon/Task.h>
 #include <sa/ConditionSleep.h>
 
 Application* Application::Instance = nullptr;

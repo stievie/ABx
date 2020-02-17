@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Action.h"
-#include "Vector3.h"
+#include <abai/Action.h>
+#include <absmath/Vector3.h>
 
 namespace Game {
 class Npc;

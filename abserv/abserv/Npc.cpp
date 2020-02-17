@@ -21,18 +21,15 @@
 
 #include "stdafx.h"
 #include "Npc.h"
-#include "BevaviorCache.h"
 #include "Crowd.h"
 #include "DamageComp.h"
 #include "DataProvider.h"
 #include "GameManager.h"
 #include "Group.h"
-#include "MathUtils.h"
 #include "Player.h"
 #include "QuestComp.h"
-#include "Random.h"
 #include "ScriptManager.h"
-#include "Subsystems.h"
+#include <abai/BevaviorCache.h>
 #include <Mustache/mustache.hpp>
 
 namespace Game {

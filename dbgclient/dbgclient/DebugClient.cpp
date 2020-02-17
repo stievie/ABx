@@ -21,12 +21,12 @@
 
 #include "DebugClient.h"
 #include <AB/IPC/AI/ClientMessages.h>
-#include "Scheduler.h"
-#include "Subsystems.h"
-#include <iostream>
 #include <AB/ProtocolCodes.h>
+#include <abai/Node.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/Subsystems.h>
+#include <iostream>
 #include <sa/StringTempl.h>
-#include "Node.h"
 
 static std::string GetObjectStateString(uint8_t state)
 {
@@ -239,10 +239,9 @@ void DebugClient::UpdateObjectDetails()
     window_.PrintObjectDetails(ss.str(), line++);
     for (const auto& ns : obj.nodeStatus)
     {
-        std::stringstream ss;
-        ss << "  "
-           << "[" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
-        window_.PrintObjectDetails(ss.str(), line++, false, ns.first == obj.currActionId);
+        std::stringstream ss2;
+        ss2 << "  [" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
+        window_.PrintObjectDetails(ss2.str(), line++, false, ns.first == obj.currActionId);
     }
 
     window_.EndWindowUpdate(Window::WindowBehavior);

@@ -22,8 +22,8 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Point.h"
-#include "BoundingBox.h"
+#include <absmath/Point.h>
+#include <absmath/BoundingBox.h>
 
 namespace Game {
 

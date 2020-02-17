@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "AiSelectLowHealth.h"
 #include "../Npc.h"
-#include "Random.h"
-#include "Subsystems.h"
 
 namespace AI {
 namespace Filters {

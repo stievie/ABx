@@ -26,7 +26,7 @@
 #include <sa/Iteration.h>
 #include <sa/IdGenerator.h>
 #include <kaguya/kaguya.hpp>
-#include "Mechanic.h"
+#include <abshared/Mechanic.h>
 
 namespace Game {
 

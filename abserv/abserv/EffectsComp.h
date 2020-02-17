@@ -24,7 +24,7 @@
 #include "Effect.h"
 #include "Damage.h"
 #include <sa/Noncopyable.h>
-#include "Attributes.h"
+#include <abshared/Attributes.h>
 
 namespace Net {
 class NetworkMessage;

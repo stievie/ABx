@@ -24,14 +24,10 @@
 #include "AreaOfEffect.h"
 #include "CollisionComp.h"
 #include "ConfigManager.h"
-#include "ConvexHull.h"
 #include "Game.h"
 #include "GameObject.h"
-#include "Logger.h"
-#include "MathUtils.h"
 #include "Npc.h"
 #include "Player.h"
-#include "Scheduler.h"
 #include "TriggerComp.h"
 
 namespace Game {

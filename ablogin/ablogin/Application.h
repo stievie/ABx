@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "ServerApp.h"
-#include "Service.h"
+#include <abscommon/ServerApp.h>
+#include <abscommon/Service.h>
 
 class Application final : public ServerApp
 {

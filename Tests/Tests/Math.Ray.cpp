@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Ray.h"
-#include "BoundingBox.h"
-#include "Sphere.h"
+#include <absmath/Ray.h>
+#include <absmath/BoundingBox.h>
+#include <absmath/Sphere.h>
 
 TEST_CASE("Ray", "[ray]")
 {

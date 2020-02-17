@@ -28,7 +28,7 @@
 #include "Script.h"
 #include "Damage.h"
 #include "ItemStats.h"
-#include "Attributes.h"
+#include <abshared/Attributes.h>
 
 namespace Game {
 

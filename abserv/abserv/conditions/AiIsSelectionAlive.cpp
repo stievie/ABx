@@ -24,7 +24,6 @@
 #include "../Game.h"
 #include "../Npc.h"
 #include "../GameObject.h"
-#include "Agent.h"
 
 namespace AI {
 namespace Conditions {

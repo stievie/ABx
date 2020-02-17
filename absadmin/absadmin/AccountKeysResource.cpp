@@ -25,11 +25,6 @@
 #include <AB/Entities/AccountKey.h>
 #include "Application.h"
 #include "Version.h"
-#include "Subsystems.h"
-#include "DataClient.h"
-#include "StringUtils.h"
-#include "Xml.h"
-#include "UuidUtils.h"
 
 namespace Resources {
 

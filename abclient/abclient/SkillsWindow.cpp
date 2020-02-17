@@ -30,7 +30,7 @@
 #include "ShortcutEvents.h"
 #include "SkillManager.h"
 #include "FwClient.h"
-#include "Mechanic.h"
+#include <abshared/Mechanic.h>
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)

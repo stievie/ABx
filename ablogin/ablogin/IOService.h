@@ -22,7 +22,8 @@
 #pragma once
 
 #include <AB/Entities/Service.h>
-#include "UuidUtils.h"
+#include <abscommon/UuidUtils.h>
+#include <vector>
 
 namespace IO {
 

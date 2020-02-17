@@ -19,11 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
@@ -44,7 +39,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <iostream>
 
 #include <AB/CommonConfig.h>
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
@@ -59,8 +54,8 @@ PRAGMA_WARNING_POP
 #define WRITE_MINIBUMP
 #define AB_UNUSED(P) (void)(P)
 
-#include "Utils.h"
-#include "Logger.h"
+#include <abscommon/Utils.h>
+#include <abscommon/Logger.h>
 
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.
 // https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256

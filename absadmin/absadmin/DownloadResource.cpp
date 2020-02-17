@@ -21,10 +21,7 @@
 
 #include "stdafx.h"
 #include "DownloadResource.h"
-#include "DataClient.h"
 #include <AB/Entities/Account.h>
-#include "Subsystems.h"
-#include "Xml.h"
 
 namespace Resources {
 

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Sphere.h"
+#include <absmath/Sphere.h>
 
 TEST_CASE("Sphere", "[sphere]")
 {

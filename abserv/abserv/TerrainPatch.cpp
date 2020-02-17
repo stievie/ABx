@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "TerrainPatch.h"
-#include "Ray.h"
-#include "Vector3.h"
 #include "Terrain.h"
 
 namespace Game {

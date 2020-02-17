@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "IpcServer.h"
+#include <abipc/IpcServer.h>
 #include <AB/IPC/AI/ClientMessages.h>
 #include <AB/IPC/AI/ServerMessages.h>
 #include <map>

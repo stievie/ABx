@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Condition.h"
+#include <abai/Condition.h>
 
 namespace AI {
 namespace Conditions {

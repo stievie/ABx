@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "AttackComp.h"
 #include "Actor.h"
-#include "Subsystems.h"
-#include "Random.h"
 #include "Game.h"
 #include "DamageComp.h"
 #include <AB/Packets/Packet.h>

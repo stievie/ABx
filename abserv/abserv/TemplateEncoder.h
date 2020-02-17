@@ -24,7 +24,7 @@
 #include <AB/Entities/Profession.h>
 #include "SkillBar.h"
 #include <AB/CommonConfig.h>
-#include "TemplEncoder.h"
+#include <abshared/TemplEncoder.h>
 
 namespace Game {
 class SkillBar;

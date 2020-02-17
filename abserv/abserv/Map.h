@@ -24,7 +24,7 @@
 #include "NavigationMesh.h"
 #include "Octree.h"
 #include "Terrain.h"
-#include "Vector3.h"
+#include <absmath/Vector3.h>
 #include <pugixml.hpp>
 #include "TerrainPatch.h"
 

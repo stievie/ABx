@@ -23,8 +23,6 @@
 #include "InventoryComp.h"
 #include "ItemFactory.h"
 #include "Actor.h"
-#include "DataClient.h"
-#include "MathUtils.h"
 #include "Skill.h"
 #include <sa/Transaction.h>
 #include <AB/Packets/Packet.h>

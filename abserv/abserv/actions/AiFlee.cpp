@@ -25,12 +25,10 @@
 #include "../DamageComp.h"
 #include "../Game.h"
 #include "../Npc.h"
-#include "Matrix4.h"
-#include "Mechanic.h"
-#include "Random.h"
-#include "Subsystems.h"
-#include "Vector3.h"
-#include "VectorMath.h"
+#include <absmath/Matrix4.h>
+#include <abshared/Mechanic.h>
+#include <absmath/Vector3.h>
+#include <absmath/VectorMath.h>
 
 namespace AI {
 namespace Actions {

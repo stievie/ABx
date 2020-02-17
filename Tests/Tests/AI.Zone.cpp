@@ -22,10 +22,10 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "LuaLoader.h"
-#include "Registry.h"
-#include "Zone.h"
-#include "Agent.h"
+#include <abai/LuaLoader.h>
+#include <abai/Registry.h>
+#include <abai/Zone.h>
+#include <abai/Agent.h>
 
 TEST_CASE("Zone")
 {

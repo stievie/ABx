@@ -21,18 +21,11 @@
 
 #include "stdafx.h"
 #include "ItemFactory.h"
-#include "Subsystems.h"
-#include "DataClient.h"
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
 #include <AB/Entities/ItemChanceList.h>
-#include "Random.h"
-#include "MathUtils.h"
 #include <AB/Entities/TypedItemList.h>
 #include "Player.h"
-#include "Profiler.h"
-#include "Scheduler.h"
-#include "ThreadPool.h"
 #include "ItemsCache.h"
 
 namespace Game {

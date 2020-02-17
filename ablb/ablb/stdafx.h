@@ -38,7 +38,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #define WRITE_MINIBUMP
 
 #include <AB/CommonConfig.h>
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #define ASIO_STANDALONE
 
@@ -47,5 +47,5 @@ PRAGMA_WARNING_PUSH
 #   include <asio.hpp>
 PRAGMA_WARNING_POP
 
-#include "Utils.h"
-#include "Logger.h"
+#include <abscommon/Utils.h>
+#include <abscommon/Logger.h>

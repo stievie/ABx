@@ -21,10 +21,10 @@
 
 #pragma once
 
-#include "Variant.h"
 #include "Damage.h"
-#include "PropStream.h"
-#include "Attributes.h"
+#include <abscommon/PropStream.h>
+#include <abscommon/Variant.h>
+#include <abshared/Attributes.h>
 
 namespace Game {
 

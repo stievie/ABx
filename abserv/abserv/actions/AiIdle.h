@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "TimedNode.h"
+#include <abai/TimedNode.h>
 
 namespace AI {
 namespace Actions {

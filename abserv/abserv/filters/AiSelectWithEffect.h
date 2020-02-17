@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Filter.h"
+#include <abai/Filter.h>
 #include <AB/Entities/Effect.h>
 #include "../Actor.h"
 

@@ -21,13 +21,13 @@
 
 #include "stdafx.h"
 #include "Application.h"
-#include "ServiceConfig.h"
+#include <abscommon/ServiceConfig.h>
 #if !defined(WIN_SERVICE)
 #include <functional>
 #include <mutex>
 #include <condition_variable>
 #include <csignal>
-#include "MiniDump.h"
+#include <abscommon/MiniDump.h>
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC

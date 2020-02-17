@@ -23,7 +23,6 @@
 #include "SkillsComp.h"
 #include "Actor.h"
 #include "Skill.h"
-#include "Attributes.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 

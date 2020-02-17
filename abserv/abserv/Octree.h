@@ -21,10 +21,10 @@
 
 #pragma once
 
-#include <limits>
-#include "BoundingBox.h"
-#include "Vector3.h"
 #include "OctreeQuery.h"
+#include <absmath/BoundingBox.h>
+#include <absmath/Vector3.h>
+#include <limits>
 
 namespace Game {
 class GameObject;

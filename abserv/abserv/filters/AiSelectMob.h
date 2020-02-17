@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Filter.h"
-#include "Mechanic.h"
+#include <abai/Filter.h>
+#include <abshared/Mechanic.h>
 
 namespace AI {
 namespace Filters {

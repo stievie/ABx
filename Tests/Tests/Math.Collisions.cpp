@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Quaternion.h"
+#include <absmath/Quaternion.h>
 
 TEST_CASE("Collisions")
 {

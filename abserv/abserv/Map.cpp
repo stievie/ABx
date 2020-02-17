@@ -23,12 +23,8 @@
 #include "Map.h"
 #include "DataProvider.h"
 #include "Game.h"
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "Profiler.h"
 #include "IOMap.h"
 #include "Model.h"
-#include "StringUtils.h"
 
 namespace Game {
 

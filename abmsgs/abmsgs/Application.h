@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include "ServerApp.h"
-#include "Service.h"
-#include "DataClient.h"
 #include "MessageServer.h"
-#include "IpList.h"
+#include <abscommon/DataClient.h>
+#include <abscommon/IpList.h>
+#include <abscommon/ServerApp.h>
+#include <abscommon/Service.h>
 
 class Application final : public ServerApp
 {

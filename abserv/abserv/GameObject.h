@@ -21,28 +21,31 @@
 
 #pragma once
 
-#include "BoundingBox.h"
-#include "CollisionShape.h"
 #include "Damage.h"
-#include "Matrix4.h"
-#include "Mechanic.h"
-#include "NetworkMessage.h"
 #include "Octree.h"
-#include "PropStream.h"
 #include "StateComp.h"
-#include "Transformation.h"
-#include "Variant.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
 #include <AB/ProtocolCodes.h>
+#include <abscommon/PropStream.h>
+#include <abscommon/Variant.h>
+#include <abshared/Mechanic.h>
+#include <absmath/BoundingBox.h>
+#include <absmath/CollisionShape.h>
+#include <absmath/Matrix4.h>
+#include <absmath/Transformation.h>
 #include <kaguya/kaguya.hpp>
 #include <mutex>
 #include <sa/Events.h>
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
-#include <sa/StringHash.h>
 #include <sa/Noncopyable.h>
+#include <sa/StringHash.h>
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

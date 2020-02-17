@@ -21,10 +21,13 @@
 
 #pragma once
 
-#include "Vector3.h"
+#include <absmath/Vector3.h>
 #include <AB/ProtocolCodes.h>
-#include "NetworkMessage.h"
 #include <sa/Noncopyable.h>
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

@@ -21,16 +21,11 @@
 
 #include "stdafx.h"
 #include "Actor.h"
-#include "AttribAlgos.h"
-#include "Attributes.h"
-#include "DataClient.h"
+#include <abshared/AttribAlgos.h>
 #include "EffectsComp.h"
 #include "SkillBar.h"
 #include "SkillManager.h"
-#include "Subsystems.h"
 #include "TemplateEncoder.h"
-#include "UuidUtils.h"
-#include "Logger.h"
 
 namespace Game {
 

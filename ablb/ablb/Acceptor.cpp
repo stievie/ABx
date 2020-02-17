@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include "Acceptor.h"
 #include <functional>
-#include "Subsystems.h"
-#include "BanManager.h"
+#include <abscommon/Subsystems.h>
+#include <abscommon/BanManager.h>
 
 void Acceptor::HandleAccept(const std::error_code& error)
 {

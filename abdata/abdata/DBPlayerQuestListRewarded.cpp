@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "DBPlayerQuestListRewarded.h"
-#include "Database.h"
-#include "Subsystems.h"
 
 namespace DB {
 

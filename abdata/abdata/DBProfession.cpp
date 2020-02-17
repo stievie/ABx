@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "DBProfession.h"
-#include "Database.h"
-#include "Subsystems.h"
 
 namespace DB {
 

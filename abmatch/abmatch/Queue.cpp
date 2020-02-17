@@ -21,15 +21,15 @@
 
 #include "stdafx.h"
 #include "Queue.h"
-#include "Subsystems.h"
-#include "DataClient.h"
-#include <AB/Entities/Game.h>
-#include <algorithm>
-#include <AB/Entities/Character.h>
-#include "MessageClient.h"
 #include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
+#include <AB/Entities/Game.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
+#include <algorithm>
 #include <sa/Transaction.h>
-#include "UuidUtils.h"
 
 AB::Entities::ProfessionPosition Queue::GetPlayerPosition(const std::string& uuid)
 {

@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "AiHaveHome.h"
 #include "../Npc.h"
-#include "Vector3.h"
 
 namespace AI {
 namespace Conditions {

@@ -21,14 +21,10 @@
 
 #include "stdafx.h"
 #include "ServicesJsonResource.h"
-#include "Subsystems.h"
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Service.h>
-#include "DataClient.h"
-#include "Subsystems.h"
 #include "ContentTypes.h"
 #include "Application.h"
-#include "StringUtils.h"
 
 namespace Resources {
 

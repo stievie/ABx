@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Version.h"
-#include "ServerApp.h"
+#include <abscommon/ServerApp.h>
 #if defined(SCENE_VIEWER)
 #include "SceneViewer.h"
 #endif

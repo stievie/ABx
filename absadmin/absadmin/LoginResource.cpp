@@ -22,14 +22,10 @@
 #include "stdafx.h"
 #include "LoginResource.h"
 #include "Application.h"
-#include "Subsystems.h"
-#include "StringUtils.h"
 #include "ContentTypes.h"
-#include "Logger.h"
-#include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include <abcrypto.hpp>
-#include "BanManager.h"
+#include <abscommon/BanManager.h>
 #include <sa/StringHash.h>
 
 namespace Resources {

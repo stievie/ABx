@@ -35,8 +35,8 @@
 #include <AB/Entities/Skill.h>
 #include "HealthBar.h"
 #include "SkillManager.h"
-#include "AttribAlgos.h"
-#include "Mechanic.h"
+#include <abshared/AttribAlgos.h>
+#include <abshared/Mechanic.h>
 
 //#include <Urho3D/DebugNew.h>
 

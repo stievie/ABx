@@ -22,9 +22,6 @@
 #include "stdafx.h"
 #include "IOTerrain.h"
 #include <fstream>
-#include "HeightMap.h"
-#include "Shape.h"
-#include "Profiler.h"
 
 namespace IO {
 

@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include "Mechanic.h"
+#include <abshared/Mechanic.h>
 #include "Item.h"
 #include "ItemsCache.h"
 #include <sa/Iteration.h>
-#include "Subsystems.h"
+#include <abscommon/Subsystems.h>
 
 namespace Game {
 

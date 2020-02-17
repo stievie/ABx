@@ -22,10 +22,7 @@
 #include "stdafx.h"
 #include "ProfileResource.h"
 #include <sa/StringHash.h>
-#include "DataClient.h"
 #include <AB/Entities/Account.h>
-#include "Subsystems.h"
-#include "Xml.h"
 
 namespace Resources {
 

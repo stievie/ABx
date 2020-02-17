@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Agent.h"
-#include "Vector3.h"
+#include <abai/Agent.h>
+#include <absmath/Vector3.h>
 #include <sa/StrongType.h>
 
 namespace Game {

@@ -22,8 +22,8 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "LuaLoader.h"
-#include "Registry.h"
+#include <abai/LuaLoader.h>
+#include <abai/Registry.h>
 
 TEST_CASE("Load")
 {

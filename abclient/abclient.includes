@@ -1,6 +1,6 @@
 ../Include
 ../libabclient/libabclient
-../abshared/abshared
+../abshared
 ../Include/Urho3D
 ../Include/Urho3D/ThirdParty
 abclient

@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "ConfigManager.h"
-#include "Logger.h"
-#include "StringUtils.h"
-#include "UuidUtils.h"
 
 ConfigManager::ConfigManager() :
     IO::SimpleConfigManager()

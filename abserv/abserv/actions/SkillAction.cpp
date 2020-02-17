@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "SkillAction.h"
 #include "../Actor.h"
-#include "Agent.h"
 #include "../Game.h"
 #include "../AiAgent.h"
 #include "../Npc.h"

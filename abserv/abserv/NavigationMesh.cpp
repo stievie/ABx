@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "NavigationMesh.h"
-#include "Profiler.h"
 
 namespace Navigation {
 

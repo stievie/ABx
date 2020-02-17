@@ -22,7 +22,7 @@
 #pragma once
 
 #include "MessageChannel.h"
-#include "IpList.h"
+#include <abscommon/IpList.h>
 
 class MessageServer
 {

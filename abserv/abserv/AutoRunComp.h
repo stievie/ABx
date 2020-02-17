@@ -22,9 +22,9 @@
 #pragma once
 
 #include <memory>
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "Mechanic.h"
+#include <absmath/Vector3.h>
+#include <absmath/Quaternion.h>
+#include <abshared/Mechanic.h>
 #include <sa/Noncopyable.h>
 
 namespace Game {

@@ -22,9 +22,13 @@
 #pragma once
 
 #include <cassert>
-#include "NetworkMessage.h"
-#include "MathUtils.h"
+#include <stdint.h>
+#include <absmath/MathUtils.h>
 #include <sa/Noncopyable.h>
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

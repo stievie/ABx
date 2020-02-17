@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Matrix4.h"
+#include <absmath/Matrix4.h>
 
 TEST_CASE("Matrix4 Construct")
 {

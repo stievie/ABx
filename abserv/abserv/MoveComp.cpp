@@ -23,9 +23,7 @@
 #include "MoveComp.h"
 #include "Actor.h"
 #include "CollisionComp.h"
-#include "MathUtils.h"
 #include "Game.h"
-#include "MathUtils.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 

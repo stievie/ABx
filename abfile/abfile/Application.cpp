@@ -21,18 +21,6 @@
 
 #include "stdafx.h"
 #include "Application.h"
-#include "BanManager.h"
-#include "DataClient.h"
-#include "Dispatcher.h"
-#include "FileUtils.h"
-#include "Logger.h"
-#include "Logo.h"
-#include "Scheduler.h"
-#include "Service.h"
-#include "SimpleConfigManager.h"
-#include "StringUtils.h"
-#include "Subsystems.h"
-#include "UuidUtils.h"
 #include "Version.h"
 #include "sa/StringTempl.h"
 #include <AB/Entities/AccountBan.h>
@@ -58,6 +46,18 @@
 #include <AB/Entities/SkillList.h>
 #include <AB/Entities/Version.h>
 #include <AB/Entities/VersionList.h>
+#include <abscommon/BanManager.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/Dispatcher.h>
+#include <abscommon/FileUtils.h>
+#include <abscommon/Logger.h>
+#include <abscommon/Logo.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/Service.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
 #include <fstream>
 #include <sstream>
 

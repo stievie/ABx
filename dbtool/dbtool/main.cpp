@@ -19,24 +19,24 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <AB/CommonConfig.h>
-#include "Database.h"
-#include "FileUtils.h"
-#include "Logger.h"
-#include "Logo.h"
-#include "SimpleConfigManager.h"
 #include "SqlReader.h"
-#include "StringUtils.h"
-#include "Utils.h"
+#include <AB/CommonConfig.h>
+#include <abdb/Database.h>
+#include <abscommon/FileUtils.h>
+#include <abscommon/Logger.h>
+#include <abscommon/Logo.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Utils.h>
+#include <abscommon/UuidUtils.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <sa/ArgParser.h>
-#include <streambuf>
-#include "UuidUtils.h"
 #include <sa/table.h>
+#include <streambuf>
 
 namespace fs = std::filesystem;
 

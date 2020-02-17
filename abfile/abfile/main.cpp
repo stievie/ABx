@@ -22,15 +22,15 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
-#include "Logo.h"
-#include "ServiceConfig.h"
+#include <abscommon/Logo.h>
+#include <abscommon/ServiceConfig.h>
 #if !defined(WIN_SERVICE)
 
 #include <sstream>
 #include <fstream>
-#include "SimpleConfigManager.h"
-#include "Logger.h"
-#include "MiniDump.h"
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/Logger.h>
+#include <abscommon/MiniDump.h>
 #include <csignal>
 
 #if defined(_MSC_VER) && defined(_DEBUG)

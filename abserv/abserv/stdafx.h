@@ -43,9 +43,9 @@
 #include <cassert>
 #include <AB/CommonConfig.h>
 #include <sa/PragmaWarning.h>
-#include "ServiceConfig.h"
+#include <abscommon/ServiceConfig.h>
 #include "Config.h"
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #include <cmath>
 
@@ -77,7 +77,7 @@
 
 #define WRITE_MINIBUMP
 
-#include "MathConfig.h"
+#include <absmath/MathConfig.h>
 #include <pugixml.hpp>
 
 PRAGMA_WARNING_PUSH
@@ -93,41 +93,20 @@ PRAGMA_WARNING_PUSH
 #   include <kaguya/kaguya.hpp>
 PRAGMA_WARNING_POP
 
-#include "BoundingBox.h"
-#include "CollisionComp.h"
-#include "HeightMap.h"
-#include "Matrix4.h"
-#include "Point.h"
-#include "Quaternion.h"
-#include "Transformation.h"
-#include "Vector3.h"
-#include "VectorMath.h"
+#include <abshared/Mechanic.h>
+#include <abshared/Attributes.h>
 
-#include "Agent.h"
-#include "AiAgent.h"
 #include "Actor.h"
+#include "AiAgent.h"
 #include "Application.h"
-#include "Attributes.h"
+#include "CollisionComp.h"
 #include "Damage.h"
-#include "DataClient.h"
 #include "Game.h"
 #include "GameObject.h"
-#include "Logger.h"
 #include "Map.h"
-#include "MathUtils.h"
-#include "Mechanic.h"
-#include "NetworkMessage.h"
-#include "OutputMessage.h"
 #include "Player.h"
 #include "PlayerManager.h"
-#include "Profiler.h"
-#include "PropStream.h"
 #include "Script.h"
-#include "StringUtils.h"
-#include "Subsystems.h"
-#include "Utils.h"
-#include "UuidUtils.h"
-#include "Variant.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
@@ -137,11 +116,47 @@ PRAGMA_WARNING_POP
 #include <AB/Entities/MailList.h>
 #include <AB/Packets/ClientPackets.h>
 #include <AB/ProtocolCodes.h>
+#include <abai/Agent.h>
+#include <abscommon/BanManager.h>
+#include <abscommon/Connection.h>
+#include <abscommon/CpuUsage.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/Dispatcher.h>
+#include <abscommon/FileUtils.h>
+#include <abscommon/Logger.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/MessageMsg.h>
+#include <abscommon/NetworkMessage.h>
+#include <abscommon/OutputMessage.h>
+#include <abscommon/Profiler.h>
+#include <abscommon/PropStream.h>
+#include <abscommon/Random.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/ThreadPool.h>
+#include <abscommon/Utils.h>
+#include <abscommon/UuidUtils.h>
+#include <abscommon/Variant.h>
+#include <absmath/BoundingBox.h>
+#include <absmath/CollisionShape.h>
+#include <absmath/ConvexHull.h>
+#include <absmath/HeightMap.h>
+#include <absmath/MathUtils.h>
+#include <absmath/Matrix4.h>
+#include <absmath/Plane.h>
+#include <absmath/Point.h>
+#include <absmath/Quaternion.h>
+#include <absmath/Ray.h>
+#include <absmath/Shape.h>
+#include <absmath/Transformation.h>
+#include <absmath/Vector3.h>
+#include <absmath/VectorMath.h>
 #include <base64.h>
-#include <multi_index_container.hpp>
 #include <multi_index/hashed_index.hpp>
-#include <multi_index/ordered_index.hpp>
 #include <multi_index/member.hpp>
+#include <multi_index/ordered_index.hpp>
+#include <multi_index_container.hpp>
 #include <sa/CallableTable.h>
 #include <sa/CircularQueue.h>
 #include <sa/Events.h>

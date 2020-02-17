@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "MessageMsg.h"
+#include <abscommon/MessageMsg.h>
 
 TEST_CASE("MessageMsg Copy")
 {

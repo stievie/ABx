@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Registry.h"
+#include <abai/Registry.h>
 
 namespace AI {
 

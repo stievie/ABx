@@ -23,6 +23,7 @@
 
 #include <AB/Entities/Game.h>
 #include <set>
+#include <vector>
 
 namespace IO {
 

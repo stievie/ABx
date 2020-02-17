@@ -21,12 +21,8 @@
 
 #include "stdafx.h"
 #include "AccountsJsonResource.h"
-#include "Subsystems.h"
-#include "DataClient.h"
-#include "Subsystems.h"
 #include "ContentTypes.h"
 #include "Application.h"
-#include "StringUtils.h"
 #include <AB/Entities/AccountList.h>
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
@@ -34,7 +30,6 @@
 #include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Game.h>
 #include <uuid.h>
-#include "Xml.h"
 
 namespace Resources {
 

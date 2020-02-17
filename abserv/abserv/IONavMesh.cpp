@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "IONavMesh.h"
 #include "DetourNavMesh.h"
-#include "Profiler.h"
 
 namespace IO {
 

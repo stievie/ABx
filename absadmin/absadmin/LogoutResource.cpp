@@ -21,10 +21,8 @@
 
 #include "stdafx.h"
 #include "LogoutResource.h"
-#include "Subsystems.h"
 #include "Application.h"
 #include "ContentTypes.h"
-#include "StringUtils.h"
 #include <sa/StringHash.h>
 
 namespace Resources {

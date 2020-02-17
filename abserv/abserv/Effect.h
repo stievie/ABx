@@ -23,12 +23,12 @@
 
 #include <memory>
 #include <kaguya/kaguya.hpp>
-#include "PropStream.h"
+#include <abscommon/PropStream.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Skill.h>
 #include "Script.h"
 #include "Damage.h"
-#include "Attributes.h"
+#include <abshared/Attributes.h>
 
 namespace Game {
 

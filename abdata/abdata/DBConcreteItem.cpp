@@ -21,10 +21,8 @@
 
 #include "stdafx.h"
 #include "DBConcreteItem.h"
-#include "Database.h"
-#include "Subsystems.h"
 #include "StorageProvider.h"
-#include "AB/Entities/GameInstance.h"
+#include <AB/Entities/GameInstance.h>
 
 namespace DB {
 

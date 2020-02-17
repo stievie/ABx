@@ -25,8 +25,7 @@
 #include "Application.h"
 
 #if !defined(WIN_SERVICE)
-#include "Dispatcher.h"
-#include "MiniDump.h"
+#include <abscommon/MiniDump.h>
 #include <csignal>
 
 #if defined(_MSC_VER) && defined(_DEBUG)

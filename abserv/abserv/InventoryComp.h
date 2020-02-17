@@ -24,7 +24,7 @@
 #include <memory>
 #include "Item.h"
 #include "Damage.h"
-#include "Mechanic.h"
+#include <abshared/Mechanic.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
 #include "ItemContainer.h"

@@ -24,7 +24,6 @@
 #include "../DamageComp.h"
 #include "../Npc.h"
 #include "../Crowd.h"
-#include "Utils.h"
 
 namespace AI {
 namespace Conditions {

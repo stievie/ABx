@@ -21,24 +21,24 @@
 
 #include "stdafx.h"
 #include "Application.h"
-#include "Version.h"
-#include "Logo.h"
-#include "Dispatcher.h"
-#include "Scheduler.h"
-#include "SimpleConfigManager.h"
-#include "Connection.h"
-#include "StringUtils.h"
 #include "ProtocolLogin.h"
+#include "Version.h"
+#include <AB/DHKeys.hpp>
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
-#include "BanManager.h"
-#include "Subsystems.h"
-#include "Random.h"
-#include <AB/DHKeys.hpp>
-#include "FileUtils.h"
-#include "DataClient.h"
-#include "UuidUtils.h"
-#include "OutputMessage.h"
+#include <abscommon/BanManager.h>
+#include <abscommon/Connection.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/Dispatcher.h>
+#include <abscommon/FileUtils.h>
+#include <abscommon/Logo.h>
+#include <abscommon/OutputMessage.h>
+#include <abscommon/Random.h>
+#include <abscommon/Scheduler.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
 
 
 Application::Application() :

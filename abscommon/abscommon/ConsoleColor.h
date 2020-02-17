@@ -115,7 +115,7 @@ namespace Color {
         friend std::ostream&
         operator << (std::ostream& os, const Modifier& mod)
         {
-            return os << "\033[" << mod.code_ << "m";
+            return os << "\033[" << static_cast<int>(mod.code_) << "m";
         }
         Code code_;
     };

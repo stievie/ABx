@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "GuildManager.h"
-#include "DataClient.h"
-#include "Subsystems.h"
-#include "StringUtils.h"
 
 namespace Game {
 

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "AiSelectAttackTarget.h"
 #include "../Npc.h"
-#include "Mechanic.h"
+#include <abshared/Mechanic.h>
 #include "../Game.h"
 #include "../Group.h"
 

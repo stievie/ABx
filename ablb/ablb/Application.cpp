@@ -21,16 +21,16 @@
 
 #include "stdafx.h"
 #include "Application.h"
-#include "Version.h"
-#include "Logo.h"
 #include "Bridge.h"
-#include "SimpleConfigManager.h"
+#include "Version.h"
 #include <AB/Entities/ServiceList.h>
+#include <abscommon/BanManager.h>
+#include <abscommon/Logo.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
+#include <abscommon/UuidUtils.h>
 #include <sa/StringTempl.h>
-#include "StringUtils.h"
-#include "Subsystems.h"
-#include "BanManager.h"
-#include "UuidUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
