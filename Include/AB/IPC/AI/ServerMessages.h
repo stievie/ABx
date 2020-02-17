@@ -180,6 +180,7 @@ struct Tree
             ar.value(nd.id);
             ar.value(nd.name);
         }
-    }};
+    }
+};
 
 }
