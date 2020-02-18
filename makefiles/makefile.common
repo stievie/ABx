@@ -10,7 +10,6 @@ endif
 CC = gcc
 CXX = g++
 AR = ar
-CCACHE = ccache
 # Utils
 MKDIR_P = mkdir -p
 # Linker Static libs

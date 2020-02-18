@@ -29,7 +29,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 * GCC
 * GNU make
-* ccache
+* ccache (optional)
 
 ### Dependencies
 
@@ -56,9 +56,9 @@ not work.
 2. `cd` to `./makefiles`
 3. Type `make`.
 
-If you run make with `CCACHE=""` it doesn't use ccache and therefore it doesn't need to be installed.
+It can use ccache to speedup compilation. Export the `PRE_CXX` environment variable.
 ~~~sh
-$ make CCACHE=""q
+export PRE_CXX = ccache
 ~~~
 
 ### Client
