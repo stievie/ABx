@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\abipc\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
@@ -87,7 +87,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb;$(SolutionDir)..\abipc\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
