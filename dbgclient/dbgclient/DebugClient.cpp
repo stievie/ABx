@@ -282,9 +282,9 @@ std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tr
     }
     for (const auto& tc : tree.nodes)
     {
-        int in = indent[tc.parentId];
+        int in = indent[tc.id];
         std::stringstream ss;
-        char s[128] = {};
+        char s[32] = {};
         sprintf(s, "%*c", in, ' ');
         ss << s;
         ss << "[" << tc.id << "] " << tc.name;
