@@ -23,13 +23,13 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "StringUtils.h"
-#include "SimpleConfigManager.h"
-#include "FileUtils.h"
-#include "Random.h"
+#include <abscommon/StringUtils.h>
+#include <abscommon/SimpleConfigManager.h>
+#include <abscommon/FileUtils.h>
+#include <abscommon/Random.h>
 #include <AB/DHKeys.hpp>
-#include "Utils.h"
-#include "Logo.h"
+#include <abscommon/Utils.h>
+#include <abscommon/Logo.h>
 #include <sa/ArgParser.h>
 
 static bool GenerateKeys(const std::string& outFile)

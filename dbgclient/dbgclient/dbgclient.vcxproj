@@ -61,7 +61,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0601;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\PDCurses;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abipc\abipc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\PDCurses;$(SolutionDir)..\abscommon;$(SolutionDir)..\abai;$(SolutionDir)..\abipc</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -82,7 +82,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0601;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\PDCurses;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abai\abai;$(SolutionDir)..\abipc\abipc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\PDCurses;$(SolutionDir)..\abscommon;$(SolutionDir)..\abai;$(SolutionDir)..\abipc</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>

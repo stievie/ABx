@@ -82,7 +82,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -149,7 +149,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -210,7 +210,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>

@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -119,7 +119,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -144,7 +144,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -169,7 +169,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
