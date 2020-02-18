@@ -33,6 +33,7 @@ private:
     Window& window_;
     std::map<uint32_t, AI::GameAdd> games_;
     std::map<uint32_t, AI::GameObject> objects_;
+    std::map<uint32_t, AI::BehaviorTree> trees_;
     std::vector<uint32_t> gameIds_;
     size_t updatedObjectCount_{ 0 };
     int selectedGameIndex_{ - 1 };
@@ -43,11 +44,13 @@ private:
     void HandleGameUpdate(const AI::GameUpdate& message);
     void HandleGameObject(const AI::GameObject& message);
     void HandleGameSelected(const AI::GameSelected& message);
-    void HandleTree(const AI::Tree& message);
+    void HandleTree(const AI::BehaviorTree& message);
+    std::vector<std::string> PrintTreeStatus(const AI::BehaviorTree& tree, const std::vector<std::pair<uint32_t, int>>& status);
     void OnKey(Window::Windows window, int c);
     void UpdateGames();
     void UpdateObjects();
     void UpdateObjectDetails();
+    void Initialize();
     void GetGames();
     void GetTrees();
     void SelectPrevObject();

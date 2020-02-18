@@ -156,21 +156,24 @@ struct GameUpdate
     }
 };
 
-struct Tree
+struct BehaviorTree
 {
     struct Node
     {
         uint32_t parentId{ 0 };
         uint32_t id;
         std::string name;
+        std::string condition;
     };
     uint32_t id;
+    std::string name;
     size_t nodeCount{ 0 };
     std::vector<Node> nodes;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(id);
+        ar.value(name);
         ar.value(nodeCount);
         nodes.resize(nodeCount);
         for (size_t i = 0; i < nodeCount; ++i)
@@ -179,6 +182,7 @@ struct Tree
             ar.value(nd.parentId);
             ar.value(nd.id);
             ar.value(nd.name);
+            ar.value(nd.condition);
         }
     }
 };

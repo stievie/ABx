@@ -56,5 +56,14 @@ Node::Status Node::ReturnStatus(Agent& agent, Node::Status value)
     return value;
 }
 
+void ForEachChildNode(const Node& parent, const std::function<Iteration(const Node& parent, const Node& child)>& callback)
+{
+    parent.VisitChildren([&](const Node& node)
+    {
+        callback(parent, node);
+        ForEachChildNode(node, callback);
+        return Iteration::Continue;
+    });
+}
 
 }

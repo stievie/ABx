@@ -99,4 +99,6 @@ public:
     virtual Node::Status Execute(Agent& agent, uint32_t timeElapsed);
 };
 
+void ForEachChildNode(const Node& parent, const std::function<Iteration(const Node& parent, const Node& child)>&);
+
 }

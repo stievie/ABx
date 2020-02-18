@@ -70,7 +70,7 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_.handlers_.Add<AI::GameSelected>(std::bind(&DebugClient::HandleGameSelected, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameUpdate>(std::bind(&DebugClient::HandleGameUpdate, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameObject>(std::bind(&DebugClient::HandleGameObject, this, std::placeholders::_1));
-    client_.handlers_.Add<AI::Tree>(std::bind(&DebugClient::HandleTree, this, std::placeholders::_1));
+    client_.handlers_.Add<AI::BehaviorTree>(std::bind(&DebugClient::HandleTree, this, std::placeholders::_1));
 }
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
@@ -82,7 +82,7 @@ bool DebugClient::Connect(const std::string& host, uint16_t port)
         std::stringstream ss;
         ss << "; Connected to: " << host << ":" << port;
         status += ss.str();
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::GetGames, this)));
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(100, std::bind(&DebugClient::Initialize, this)));
     }
     else
         status += "; Not connected";
@@ -134,9 +134,9 @@ void DebugClient::HandleGameSelected(const AI::GameSelected& message)
     window_.EndWindowUpdate(Window::WindowActors);
 }
 
-void DebugClient::HandleTree(const AI::Tree& message)
+void DebugClient::HandleTree(const AI::BehaviorTree& message)
 {
-    (void)message;
+    trees_.emplace(message.id, message);
 }
 
 void DebugClient::UpdateGames()
@@ -234,17 +234,75 @@ void DebugClient::UpdateObjectDetails()
         window_.PrintObjectDetails(str, line++);
     }
 
-    std::stringstream ss;
-    ss << "[" << obj.behaviorId << "]: Root";
-    window_.PrintObjectDetails(ss.str(), line++);
-    for (const auto& ns : obj.nodeStatus)
+    const auto treeit = trees_.find(obj.behaviorId);
+    if (treeit != trees_.end())
     {
-        std::stringstream ss2;
-        ss2 << "  [" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
-        window_.PrintObjectDetails(ss2.str(), line++, false, ns.first == obj.currActionId);
+        const auto& tree = (*treeit).second;
+        std::vector<std::string> treeStatus = PrintTreeStatus(tree, obj.nodeStatus);
+
+        for (const auto& s : treeStatus)
+        {
+            window_.PrintObjectDetails(s, line++);
+        }
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << "[" << obj.behaviorId << "]: UNKNOWN ROOT NODE";
+        window_.PrintObjectDetails(ss.str(), line++);
+        for (const auto& ns : obj.nodeStatus)
+        {
+            std::stringstream ss2;
+            ss2 << "  [" << ns.first << "] " << GetNodeStatusString(static_cast<AI::Node::Status>(ns.second));
+            window_.PrintObjectDetails(ss2.str(), line++, false, ns.first == obj.currActionId);
+        }
     }
 
     window_.EndWindowUpdate(Window::WindowBehavior);
+}
+
+std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tree,
+    const std::vector<std::pair<uint32_t, int>>& status)
+{
+    std::vector<std::string> result;
+
+    std::map<uint32_t, int> indent;
+
+    indent.emplace(tree.id, 0);
+
+    for (const auto& tc : tree.nodes)
+    {
+        int in = indent[tc.parentId];
+        indent.emplace(tc.id, in + 1);
+    }
+    {
+        std::stringstream ss;
+        ss << "[" << tree.id << "] " << tree.name;
+        result.push_back(ss.str());
+    }
+    for (const auto& tc : tree.nodes)
+    {
+        int in = indent[tc.parentId];
+        std::stringstream ss;
+        char s[128] = {};
+        sprintf(s, "%*c", in, ' ');
+        ss << s;
+        ss << "[" << tc.id << "] " << tc.name;
+        const auto it = std::find_if(status.begin(), status.end(), [&](const std::pair<uint32_t, int>& current)
+        {
+            return current.first == tc.id;
+        });
+        if (it != status.end())
+            ss << ": " << GetNodeStatusString(static_cast<AI::Node::Status>((*it).second));
+        result.push_back(ss.str());
+    }
+    return result;
+}
+
+void DebugClient::Initialize()
+{
+    GetTrees();
+    GetGames();
 }
 
 void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)

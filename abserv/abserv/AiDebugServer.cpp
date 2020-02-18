@@ -25,6 +25,7 @@
 #include "Game.h"
 #include "Npc.h"
 #include "Player.h"
+#include <abai/BevaviorCache.h>
 #include <abai/Root.h>
 #include <abipc/ServerConnection.h>
 #include <abshared/Mechanic.h>
@@ -86,8 +87,28 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
 
 void DebugServer::HandleGetTrees(IPC::ServerConnection& client, const GetTrees&)
 {
-    (void)client;
+    auto* cache = GetSubsystem<AI::BevaviorCache>();
+    cache->VisitBehaviors([&](const std::string& name, const Root& root)
+    {
+        BehaviorTree tree;
+        tree.id = root.GetId();
+        tree.name = name;
 
+        ForEachChildNode(root, [&](const Node& parent, const Node& child)
+        {
+            BehaviorTree::Node nd;
+            nd.parentId = parent.GetId();
+            nd.id = child.GetId();
+            nd.name = child.GetClassName();
+            if (auto* cond = child.GetCondition())
+                nd.condition = cond->GetClassName();
+            tree.nodes.push_back(std::move(nd));
+            return Iteration::Continue;
+        });
+        tree.nodeCount = tree.nodes.size();
+        server_->SendTo(client, tree);
+        return Iteration::Continue;
+    });
 }
 
 std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
