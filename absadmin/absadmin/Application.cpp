@@ -180,7 +180,6 @@ void Application::InitRoutes()
 void Application::ShowVersion()
 {
     std::cout << SERVER_PRODUCT_NAME << " " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR << std::endl;
-    std::cout << __DATE__ << " " << __TIME__;
 #ifdef _DEBUG
     std::cout << " DEBUG";
 #endif
@@ -190,8 +189,7 @@ void Application::ShowVersion()
 void Application::ShowLogo()
 {
     std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
-    std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR <<
-        " (" << __DATE__ << " " << __TIME__ << ")";
+    std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR;
 #ifdef _DEBUG
     std::cout << " DEBUG";
 #endif
