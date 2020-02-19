@@ -24,6 +24,7 @@
 #include "Root.h"
 #include "Condition.h"
 #include "Filter.h"
+#include "Registry.h"
 #include <sa/StringTempl.h>
 #include "BevaviorCache.h"
 

@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "LogicConditions.h"
 #include "Node.h"
+#include <sstream>
+#include <sa/StringTempl.h>
 
 namespace AI {
 namespace Conditions {
@@ -35,6 +37,11 @@ bool FalseCondition::Evaluate(Agent&, const Node&)
     return false;
 }
 
+std::string FalseCondition::GetFriendlyName() const
+{
+    return "False";
+}
+
 TrueCondition::TrueCondition(const ArgumentsType& arguments) :
     Condition(arguments)
 { }
@@ -42,6 +49,11 @@ TrueCondition::TrueCondition(const ArgumentsType& arguments) :
 bool TrueCondition::Evaluate(Agent&, const Node&)
 {
     return true;
+}
+
+std::string TrueCondition::GetFriendlyName() const
+{
+    return "True";
 }
 
 AndCondition::AndCondition(const ArgumentsType& arguments) :
@@ -54,6 +66,17 @@ bool AndCondition::AddCondition(std::shared_ptr<Condition> condition)
     return true;
 }
 
+std::string AndCondition::GetFriendlyName() const
+{
+    std::vector<std::string> conds;
+    VisitConditions([&](const Condition& current)
+    {
+        conds.push_back(current.GetFriendlyName());
+        return Iteration::Continue;
+    });
+    return sa::CombineString(conds, std::string(" And "));
+}
+
 bool AndCondition::Evaluate(Agent& agent, const Node& node)
 {
     for (auto& condition : conditions_)
@@ -62,6 +85,13 @@ bool AndCondition::Evaluate(Agent& agent, const Node& node)
             return false;
     }
     return true;
+}
+
+void AndCondition::VisitConditions(const std::function<Iteration(const Condition&)>& callback) const
+{
+    for (const auto& c : conditions_)
+        if (callback(*c) == Iteration::Break)
+            break;
 }
 
 OrCondition::OrCondition(const ArgumentsType& arguments) :
@@ -84,6 +114,24 @@ bool OrCondition::Evaluate(Agent& agent, const Node& node)
     return false;
 }
 
+std::string OrCondition::GetFriendlyName() const
+{
+    std::vector<std::string> conds;
+    VisitConditions([&](const Condition& current)
+    {
+        conds.push_back(current.GetFriendlyName());
+        return Iteration::Continue;
+    });
+    return sa::CombineString(conds, std::string(" Or "));
+}
+
+void OrCondition::VisitConditions(const std::function<Iteration(const Condition&)>& callback) const
+{
+    for (const auto& c : conditions_)
+        if (callback(*c) == Iteration::Break)
+            break;
+}
+
 NotCondition::NotCondition(const ArgumentsType& arguments) :
     Condition(arguments)
 { }
@@ -101,6 +149,19 @@ bool NotCondition::Evaluate(Agent& agent, const Node& node)
     // A Not condition must have a condition assigned.
     assert(condition_);
     return !condition_->Evaluate(agent, node);
+}
+
+std::string NotCondition::GetFriendlyName() const
+{
+    if (!condition_)
+        return "";
+    return "Not " + condition_->GetFriendlyName();
+}
+
+void NotCondition::VisitConditions(const std::function<Iteration(const Condition&)>& callback) const
+{
+    if (condition_)
+        callback(*condition_);
 }
 
 }

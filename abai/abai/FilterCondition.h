@@ -41,6 +41,8 @@ public:
     explicit FilterCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
     bool SetFilter(std::shared_ptr<AI::Filter> filter) override;
+    const Filter* GetFilter() const override;
+    std::string GetFriendlyName() const override;
 };
 
 }

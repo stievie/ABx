@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Node.h"
 #include "Agent.h"
+#include "Condition.h"
 
 namespace AI {
 

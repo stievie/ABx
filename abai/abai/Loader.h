@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "Registry.h"
 #include <memory>
 #include <string>
 #include <CleanupNs.h>
@@ -30,6 +29,7 @@ namespace AI {
 
 class Root;
 class BevaviorCache;
+class Registry;
 
 class Loader
 {

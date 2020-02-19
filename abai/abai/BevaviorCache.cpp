@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "BevaviorCache.h"
+#include "Root.h"
 
 namespace AI {
 

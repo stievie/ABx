@@ -288,6 +288,8 @@ std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tr
         sprintf(s, "%*c", in, ' ');
         ss << s;
         ss << "[" << tc.id << "] " << tc.name;
+        if (!tc.condition.empty())
+            ss << " " << tc.condition;
         const auto it = std::find_if(status.begin(), status.end(), [&](const std::pair<uint32_t, int>& current)
         {
             return current.first == tc.id;

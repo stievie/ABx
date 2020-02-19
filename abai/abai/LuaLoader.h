@@ -23,8 +23,14 @@
 
 #include "Loader.h"
 #include <kaguya/kaguya.hpp>
+#include "AiDefines.h"
 
 namespace AI {
+
+class Node;
+class Condition;
+class Filter;
+class Root;
 
 class LuaLoader : public Loader
 {

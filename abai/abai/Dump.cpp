@@ -21,6 +21,10 @@
 
 #include "stdafx.h"
 #include "Dump.h"
+#include "Root.h"
+#include "BevaviorCache.h"
+#include "Filter.h"
+#include "Condition.h"
 
 namespace AI {
 

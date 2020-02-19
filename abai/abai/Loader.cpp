@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Loader.h"
+#include "Registry.h"
 
 namespace AI {
 

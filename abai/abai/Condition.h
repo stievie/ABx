@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <functional>
+#include <sa/Iteration.h>
 #include "Factory.h"
 #include <CleanupNs.h>
 
@@ -69,9 +71,13 @@ public:
     virtual const char* GetClassName() const = 0;
     const std::string& GetName() const { return name_; }
     void SetName(const std::string& value) { name_ = value; }
+    virtual std::string GetFriendlyName() const { return GetClassName(); }
 
     virtual bool AddCondition(std::shared_ptr<Condition>);
+    // Visit first level conditions (not a whole condition tree)
+    virtual void VisitConditions(const std::function<Iteration(const Condition&)>&) const { }
     virtual bool SetFilter(std::shared_ptr<Filter>);
+    virtual const Filter* GetFilter() const { return nullptr; }
     /// Evaluate the condition
     /// @param agent
     /// @param node The calling node

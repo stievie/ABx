@@ -50,5 +50,19 @@ bool FilterCondition::SetFilter(std::shared_ptr<AI::Filter> filter)
     return true;
 }
 
+const Filter* FilterCondition::GetFilter() const
+{
+    if (filter_)
+        return filter_.get();
+    return nullptr;
+}
+
+std::string FilterCondition::GetFriendlyName() const
+{
+    if (!filter_)
+        return "";
+    return "Filter(" + std::string(filter_->GetClassName()) + ")";
+}
+
 }
 }

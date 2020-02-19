@@ -23,11 +23,12 @@
 
 #include <map>
 #include <memory>
-#include "Root.h"
 #include <functional>
 #include <sa/Iteration.h>
 
 namespace AI {
+
+class Root;
 
 class BevaviorCache
 {

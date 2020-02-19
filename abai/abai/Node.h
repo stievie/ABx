@@ -25,7 +25,6 @@
 #include <memory>
 #include <stdint.h>
 #include <string>
-#include "Condition.h"
 #include "AiDefines.h"
 #include "Factory.h"
 #include <functional>
@@ -36,6 +35,9 @@
 namespace AI {
 
 class Node;
+class Condition;
+class Agent;
+
 typedef std::vector<std::shared_ptr<Node>> Nodes;
 
 using NodeFactory = AbstractFactory<Node>;

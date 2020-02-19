@@ -32,6 +32,7 @@ class FalseCondition : public Condition
 public:
     explicit FalseCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
+    std::string GetFriendlyName() const override;
 };
 
 class TrueCondition : public Condition
@@ -40,6 +41,7 @@ class TrueCondition : public Condition
 public:
     explicit TrueCondition(const ArgumentsType& arguments);
     bool Evaluate(Agent&, const Node&) override;
+    std::string GetFriendlyName() const override;
 };
 
 class AndCondition : public Condition
@@ -50,6 +52,8 @@ private:
 public:
     explicit AndCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
+    void VisitConditions(const std::function<Iteration(const Condition&)>& callback) const override;
+    std::string GetFriendlyName() const override;
 
     bool Evaluate(Agent&, const Node&) override;
 };
@@ -62,6 +66,8 @@ private:
 public:
     explicit OrCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
+    void VisitConditions(const std::function<Iteration(const Condition&)>& callback) const override;
+    std::string GetFriendlyName() const override;
 
     bool Evaluate(Agent&, const Node&) override;
 };
@@ -74,6 +80,8 @@ private:
 public:
     explicit NotCondition(const ArgumentsType& arguments);
     bool AddCondition(std::shared_ptr<Condition> condition) override;
+    void VisitConditions(const std::function<Iteration(const Condition&)>& callback) const override;
+    std::string GetFriendlyName() const override;
 
     bool Evaluate(Agent&, const Node&) override;
 };

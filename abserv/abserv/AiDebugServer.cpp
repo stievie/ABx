@@ -27,6 +27,7 @@
 #include "Player.h"
 #include <abai/BevaviorCache.h>
 #include <abai/Root.h>
+#include <abai/Condition.h>
 #include <abipc/ServerConnection.h>
 #include <abshared/Mechanic.h>
 #include <functional>
@@ -101,7 +102,7 @@ void DebugServer::HandleGetTrees(IPC::ServerConnection& client, const GetTrees&)
             nd.id = child.GetId();
             nd.name = child.GetClassName();
             if (auto* cond = child.GetCondition())
-                nd.condition = cond->GetClassName();
+                nd.condition = cond->GetFriendlyName();
             tree.nodes.push_back(std::move(nd));
             return Iteration::Continue;
         });
