@@ -100,7 +100,7 @@ public:
 };
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const Ray& value)
+inline _Stream& operator << (_Stream& os, Ray& value)
 {
     return os << value.origin_ << " -> " << value.direction_;
 }

@@ -164,7 +164,7 @@ public:
 };
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const Quaternion& value)
+inline _Stream& operator << (_Stream& os, Quaternion& value)
 {
     return os << value.ToString();
 }

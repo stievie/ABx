@@ -115,7 +115,7 @@ public:
     friend Vector4 operator/(const Vector4& v, float n);
     friend Vector4 operator/(float n, const Vector4& v);
 
-    inline bool Equals(const Vector4& rhs) const
+    bool Equals(const Vector4& rhs) const
     {
         return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_) && Math::Equals(w_, rhs.w_);
     }
@@ -146,7 +146,7 @@ public:
 };
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const Vector4& value)
+inline _Stream& operator << (_Stream& os, Vector4& value)
 {
     return os << value.ToString();
 }

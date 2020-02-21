@@ -57,7 +57,7 @@ public:
         vertexCount_(static_cast<unsigned>(vertexData_.size())),
         indexCount_(0)
     { }
-    explicit Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
+    Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
         vertexData_(vertices),
         indexData_(indices),
         vertexCount_(static_cast<unsigned>(vertexData_.size())),

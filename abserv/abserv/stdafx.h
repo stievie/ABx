@@ -19,20 +19,14 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// stdafx.h: Includedatei für Standardsystem-Includedateien
-// oder häufig verwendete projektspezifische Includedateien,
-// die nur in unregelmäßigen Abständen geändert werden.
-//
-
 #if defined(_MSC_VER)
 #pragma once
 #endif
 
 #include "targetver.h"
+#include <sa/PragmaWarning.h>
 
-#if defined(_MSC_VER)
-#pragma warning(disable: 4307)
-#endif
+PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #include <stdio.h>
 
@@ -42,7 +36,6 @@
 
 #include <cassert>
 #include <AB/CommonConfig.h>
-#include <sa/PragmaWarning.h>
 #include <abscommon/ServiceConfig.h>
 #include "Config.h"
 #include <abscommon/DebugConfig.h>

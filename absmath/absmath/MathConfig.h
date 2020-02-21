@@ -23,6 +23,8 @@
 
 // DirectXMath also works on Windows on ARM and it should also compile on Linux now.
 
+#include <initializer_list>
+
 #if defined(__ARM_ARCH) || defined(_M_ARM) || defined(_M_ARM64)
 #   define BUILD_ARCH_ARM 1
 #elif defined(_MSC_VER)

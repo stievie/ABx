@@ -159,7 +159,7 @@ public:
 };
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const Sphere& value)
+inline _Stream& operator << (_Stream& os, Sphere& value)
 {
     os << value.center_.ToString() << " +/- " << value.radius_;
     return os;

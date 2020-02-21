@@ -214,7 +214,7 @@ inline bool Vector3::Equals(const Vector3& rhs, float epsilon) const
 }
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const Vector3& value)
+inline _Stream& operator << (_Stream& os, Vector3& value)
 {
     return os << value.ToString();
 }
