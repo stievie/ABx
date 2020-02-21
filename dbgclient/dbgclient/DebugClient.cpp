@@ -411,6 +411,7 @@ void DebugClient::SelectPrevObject()
     if (it == objects_.end())
     {
         selectedObjectId_ = 0;
+        gameObjectsDirty_ = true;
         return;
     }
     if (it == objects_.begin())
@@ -419,6 +420,7 @@ void DebugClient::SelectPrevObject()
     }
     it--;
     selectedObjectId_ = (*it).second.id;
+    gameObjectsDirty_ = true;
 }
 
 void DebugClient::SelectNextObject()
@@ -428,18 +430,21 @@ void DebugClient::SelectNextObject()
         if (objects_.size() == 0 || (*objects_.begin()).second.id == 0)
             return;
         selectedObjectId_ = (*objects_.begin()).second.id;
+        gameObjectsDirty_ = true;
         return;
     }
     auto it = objects_.find(selectedObjectId_);
     if (it == objects_.end())
     {
         selectedObjectId_ = 0;
+        gameObjectsDirty_ = true;
         return;
     }
     it++;
     if (it == objects_.end())
         return;
     selectedObjectId_ = (*it).second.id;
+    gameObjectsDirty_ = true;
 }
 
 void DebugClient::SelectGame(uint32_t id)
