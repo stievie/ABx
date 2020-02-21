@@ -157,7 +157,8 @@ void DebugClient::UpdateGames()
 
 void DebugClient::UpdateObjects()
 {
-    updatedObjectCount_ = 0;
+    if (!gameObjectsDirty_)
+        return;
 
     int i = 0;
     window_.BeginWindowUpdate(Window::WindowActors);
@@ -169,6 +170,7 @@ void DebugClient::UpdateObjects()
         ++i;
     }
     window_.EndWindowUpdate(Window::WindowActors);
+    gameObjectsDirty_ = false;
 }
 
 void DebugClient::UpdateObjectDetails()
@@ -183,7 +185,7 @@ void DebugClient::UpdateObjectDetails()
     window_.BeginWindowUpdate(Window::WindowBehavior);
 
     int line = 0;
-    const AI::GameObject& obj = objects_[selectedObjectId_];
+    const AI::GameObject& obj = (*it).second;
     {
         std::stringstream ss;
         ss << "[" << obj.id << "] " << obj.name;
@@ -238,11 +240,11 @@ void DebugClient::UpdateObjectDetails()
     if (treeit != trees_.end())
     {
         const auto& tree = (*treeit).second;
-        std::vector<std::string> treeStatus = PrintTreeStatus(tree, obj.nodeStatus);
+        auto treeStatus = PrintTreeStatus(tree, obj.nodeStatus);
 
         for (const auto& s : treeStatus)
         {
-            window_.PrintObjectDetails(s, line++);
+            window_.PrintObjectDetails(s.second, line++, false, s.first == obj.currActionId);
         }
     }
     else
@@ -261,10 +263,10 @@ void DebugClient::UpdateObjectDetails()
     window_.EndWindowUpdate(Window::WindowBehavior);
 }
 
-std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tree,
+std::vector<std::pair<uint32_t, std::string>> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tree,
     const std::vector<std::pair<uint32_t, int>>& status)
 {
-    std::vector<std::string> result;
+    std::vector<std::pair<uint32_t, std::string>> result;
 
     std::map<uint32_t, int> indent;
 
@@ -278,14 +280,14 @@ std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tr
     {
         std::stringstream ss;
         ss << "[" << tree.id << "] " << tree.name;
-        result.push_back(ss.str());
+        result.push_back({ 0, ss.str() });
     }
     for (const auto& tc : tree.nodes)
     {
         int in = indent[tc.id];
         std::stringstream ss;
         char s[32] = {};
-        sprintf(s, "%*c", in, ' ');
+        snprintf(s, 31, "%*c", in, ' ');
         ss << s;
         ss << "[" << tc.id << "] " << tc.name;
         if (!tc.condition.empty())
@@ -296,7 +298,8 @@ std::vector<std::string> DebugClient::PrintTreeStatus(const AI::BehaviorTree& tr
         });
         if (it != status.end())
             ss << ": " << GetNodeStatusString(static_cast<AI::Node::Status>((*it).second));
-        result.push_back(ss.str());
+        std::pair<uint32_t, std::string> line = std::make_pair(tc.id, ss.str());
+        result.push_back(std::move(line));
     }
     return result;
 }
@@ -309,11 +312,12 @@ void DebugClient::Initialize()
 
 void DebugClient::HandleGameUpdate(const AI::GameUpdate& message)
 {
-    objects_.clear();
+    gameObjectCount_ = message.count;
     updatedObjectCount_ = 0;
-    for (const auto& o : message.objects)
+    for (auto o : message.objects)
     {
-        objects_.emplace(o, AI::GameObject());
+        if (objects_.find(o) == objects_.end())
+            objects_.emplace(o, AI::GameObject());
     }
 }
 
@@ -325,11 +329,15 @@ void DebugClient::HandleGameObject(const AI::GameObject& message)
     if (it == objects_.end())
         return;
 
+    if ((*it).second.name.compare(message.name) != 0)
+        gameObjectsDirty_ = true;
+
     objects_[message.id] = message;
     ++updatedObjectCount_;
 
-    if (updatedObjectCount_ == objects_.size())
+    if (updatedObjectCount_ == gameObjectCount_)
     {
+        // Redraw the window now that we got all objects
         UpdateObjects();
         UpdateObjectDetails();
     }
