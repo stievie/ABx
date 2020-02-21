@@ -43,7 +43,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 * `libkrb5-dev` for PostgreSQL, when building with `USE_PGSQL`
 * `lua5.3`
 * `lua5.3-dev`
-* `libncurses-dev`
+* `libncurses-dev` for the Debug client (`dbgclient`).
 
 Your distribution may have different names for these libraries.
 
@@ -58,7 +58,7 @@ not work.
 
 It can use ccache to speedup compilation. Export the `PRE_CXX` environment variable.
 ~~~sh
-export PRE_CXX = ccache
+export PRE_CXX=ccache
 ~~~
 
 ### Client
