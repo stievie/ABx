@@ -29,6 +29,8 @@
 #include <abai/Root.h>
 #include <abai/Condition.h>
 #include <abipc/ServerConnection.h>
+#include <abscommon/Logger.h>
+#include <abscommon/StringUtils.h>
 #include <abshared/Mechanic.h>
 #include <functional>
 
@@ -42,9 +44,14 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
     server_->handlers_.Add<GetTrees>(std::bind(&DebugServer::HandleGetTrees, this, std::placeholders::_1, std::placeholders::_2));
     server_->handlers_.Add<GetGames>(std::bind(&DebugServer::HandleGetGames, this, std::placeholders::_1, std::placeholders::_2));
     server_->handlers_.Add<SelectGame>(std::bind(&DebugServer::HandleSelectGame, this, std::placeholders::_1, std::placeholders::_2));
+    server_->onClientConnect = [](IPC::ServerConnection& client)
+    {
+        LOG_INFO << "Debug server: Client " << client.GetId() << " connected from " << Utils::ConvertIPToString(client.GetIP()) << ":" << client.GetPort() << std::endl;
+    };
     server_->onClientDisconnect = [this](IPC::ServerConnection& client)
     {
         std::lock_guard<std::mutex> loock(lock_);
+        LOG_INFO << "Debug server: Client " << client.GetId() << " disconnected" << std::endl;
         selectedGames_.erase(client.GetId());
     };
 }

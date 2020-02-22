@@ -53,11 +53,13 @@ public:
     asio::ip::tcp::socket& GetSocket() { return socket_; }
 
     void Start();
+    void Close();
     // Send a message to this client
     void Send(const MessageBuffer& msg);
     // This ID can be used with the IPC::Server SendTo() function
     uint32_t GetId() const { return id_; }
-    void Close();
+    uint32_t GetIP() const;
+    uint16_t GetPort() const;
 };
 
 }

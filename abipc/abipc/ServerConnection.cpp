@@ -111,4 +111,22 @@ void ServerConnection::Send(const MessageBuffer& msg)
     strand_.post(std::bind(&ServerConnection::WriteImpl, this, msg));
 }
 
+uint32_t ServerConnection::GetIP() const
+{
+    asio::error_code err;
+    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
+    if (!err)
+        return endpoint.address().to_v4().to_uint();
+    return 0;
+}
+
+uint16_t ServerConnection::GetPort() const
+{
+    asio::error_code err;
+    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
+    if (!err)
+        return endpoint.port();
+    return 0;
+}
+
 }
