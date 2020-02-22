@@ -68,6 +68,10 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
 
 void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGame& msg)
 {
+    {
+        std::lock_guard<std::mutex> loock(lock_);
+        selectedGames_.erase(client.GetId());
+    }
     auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
     {
         if (auto c = current.lock())

@@ -122,6 +122,8 @@ void DebugClient::HandleGameSelected(const AI::GameSelected& message)
     {
         selectedGameIndex_ = -1;
         selectedObjectId_ = 0;
+        gameObjectsDirty_ = true;
+        objects_.clear();
         return;
     }
     selectedObjectId_ = 0;
@@ -129,6 +131,8 @@ void DebugClient::HandleGameSelected(const AI::GameSelected& message)
     selectedGameIndex_ = static_cast<int>(index);
     UpdateGames();
     updatedObjectCount_ = 0;
+    gameObjectsDirty_ = true;
+    objects_.clear();
 
     window_.BeginWindowUpdate(Window::WindowActors);
     window_.EndWindowUpdate(Window::WindowActors);
