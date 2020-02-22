@@ -12,6 +12,8 @@ https://www.gamedev.net/projects/1587-abx
 
 The source code is licensed under the MIT License.
 
+Assets, Data, Art made by me is licensed under the [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+
 ## ETA
 
 Christmas 2117 +/- some years. That's still a negative stardate so I think we are fine.
