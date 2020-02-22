@@ -29,7 +29,7 @@ You may need to subclass the following classes:
 * Some `Condition`s
 * Some `Action`s
 
-Your game object which should act somehow "intelligent" should have am `Agent`
+Your game object which should act somehow "intelligent" should have an `Agent`
 member, and in each game update `Agent::Update()` should be called with the time
 passed since the last call of the `Update()` method in milliseconds. Since most
 game engines uses seconds as floats you must multiply this value by 1000, then
@@ -202,7 +202,7 @@ end
 ~~~
 
 * `node("type")`, `node("type", { <arguments> })` creates a new node of type `type`.
-* `nondition("type")`, `nondition("type", { <arguments> })` creates a new condition of type `type`.
+* `condition("type")`, `condition("type", { <arguments> })` creates a new condition of type `type`.
 * `filter("type")`, `filter("type", { <arguments> })` creates a new filter of type `type`.
 
 ### Cache
