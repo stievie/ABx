@@ -183,7 +183,7 @@ void DebugServer::Update()
     if (!active_)
         return;
 
-    if (games_.size() == 0)
+    if (games_.size() == 0 || selectedGames_.size() == 0)
         return;
 
     for (auto weakGame : games_)
