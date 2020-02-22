@@ -148,6 +148,7 @@ public:
 
     std::unique_ptr<Map> map_;
 
+    int64_t GetUpdateTick() const { return lastUpdate_; }
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::TimeElapsed(startTime_); }
     std::string GetName() const { return map_->data_.name; }

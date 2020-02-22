@@ -202,6 +202,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
     // First tell the client how many objects we have
     GameUpdate msg;
     msg.id = game.id_;
+    msg.tick = game.GetUpdateTick();
     msg.count = 0;
     game.VisitObjects<Game::Actor>([&msg](const Game::Actor& current)
     {

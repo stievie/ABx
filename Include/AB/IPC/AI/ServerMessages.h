@@ -140,12 +140,14 @@ struct GameObject
 struct GameUpdate
 {
     uint32_t id;
+    int64_t tick;
     size_t count;
     std::vector<uint32_t> objects;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(id);
+        ar.value(tick);
         ar.value(count);
         objects.resize(count);
         for (size_t i = 0; i < count; ++i)
