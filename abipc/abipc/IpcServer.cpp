@@ -105,8 +105,17 @@ void Server::HandleAccept(std::shared_ptr<ServerConnection> connection, const as
 {
     if (!error)
     {
-        AddConnection(connection);
-        connection->Start();
+        bool accept = true;
+        if (onAccept)
+        {
+            if (!onAccept(*connection))
+                accept = false;
+        }
+        if (accept)
+        {
+            AddConnection(connection);
+            connection->Start();
+        }
     }
     StartAccept();
 }

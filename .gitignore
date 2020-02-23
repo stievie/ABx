@@ -46,6 +46,12 @@ compile_flags.txt
 
 # QtCreator
 *.creator.user.*
+sql.cflags
+sql.config
+sql.creator
+sql.cxxflags
+sql.files
+sql.includes
 
 # Misc.
 configure*
