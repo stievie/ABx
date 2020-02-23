@@ -117,6 +117,8 @@ public:
         InternalSendTo(*client, buff);
     }
     ServerMessageHandlers handlers_;
+    // Client attempts to connect. Return false to refuse connection.
+    std::function<bool(const ServerConnection&)> onAccept;
     std::function<void(ServerConnection&)> onClientConnect;
     std::function<void(ServerConnection&)> onClientDisconnect;
 };
