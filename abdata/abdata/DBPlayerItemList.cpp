@@ -46,7 +46,7 @@ bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `concrete_items` WHERE `player_uuid` = " << db->EscapeString(il.uuid);
+    query << "SELECT `uuid` FROM `concrete_items` WHERE `player_uuid` = " << db->EscapeString(il.uuid) << " AND `deleted` = 0";
     if (il.storagePlace != AB::Entities::StoragePlaceNone)
     {
         query << " AND `storage_place` = " << static_cast<int>(il.storagePlace);

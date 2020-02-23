@@ -61,6 +61,7 @@ struct ConcreteItem : Entity
         s.value2b(storagePos);
         s.value4b(count);
         s.value8b(creation);
+        s.value8b(deleted);
         s.value2b(value);
         s.text1b(instanceUuid, Limits::MAX_UUID);
         s.text1b(mapUuid, Limits::MAX_UUID);
@@ -77,6 +78,7 @@ struct ConcreteItem : Entity
     std::string itemStats;
     uint32_t count = 0;
     timestamp_t creation = 0;
+    timestamp_t deleted = 0;
     uint16_t value = 0;
     std::string instanceUuid = EMPTY_GUID;
     std::string mapUuid = EMPTY_GUID;

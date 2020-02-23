@@ -23,6 +23,7 @@
 #include "DBConcreteItem.h"
 #include "StorageProvider.h"
 #include <AB/Entities/GameInstance.h>
+#include <abscommon/Utils.h>
 
 namespace DB {
 
@@ -37,7 +38,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `concrete_items` (`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, " <<
-        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `value`, `instance_uuid`, `map_uuid`";
+        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, `map_uuid`";
     query << ") VALUES (";
 
     query << db->EscapeString(item.uuid) << ", ";
@@ -52,6 +53,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     query << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
     query << static_cast<int>(item.count) << ", ";
     query << item.creation << ", ";
+    query << item.deleted << ", ";
     query << static_cast<int>(item.value) << ", ";
     query << db->EscapeString(item.instanceUuid) << ", ";
     query << db->EscapeString(item.mapUuid);
@@ -102,6 +104,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.itemStats = result->GetStream("stats");
     item.count = static_cast<uint16_t>(result->GetUInt("count"));
     item.creation = result->GetLong("creation");
+    item.deleted = result->GetLong("deleted");
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
     item.instanceUuid = result->GetString("instance_uuid");
     item.mapUuid = result->GetString("map_uuid");
@@ -134,6 +137,7 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     query << " `stats` = " << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
     query << " `count` = " << static_cast<int>(item.count) << ", ";
     query << " `creation` = " << item.creation << ", ";
+    query << " `deleted` = " << item.deleted << ", ";
     query << " `value` = " << static_cast<int>(item.value) << ", ";
     query << " `instance_uuid` = " << db->EscapeString(item.instanceUuid) << ", ";
     query << " `map_uuid` = " << db->EscapeString(item.mapUuid);
@@ -185,7 +189,7 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE ";
-    query << "`uuid` = " << db->EscapeString(item.uuid);
+    query << "`uuid` = " << db->EscapeString(item.uuid) << " AND `deleted` = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -198,7 +202,8 @@ void DBConcreteItem::Clean(StorageProvider* sp)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid`, `instance_uuid` FROM `concrete_items` WHERE storage_place = " << static_cast<int>(AB::Entities::StoragePlaceScene);
+    query << "SELECT `uuid`, `instance_uuid` FROM `concrete_items` WHERE storage_place = " <<
+        static_cast<int>(AB::Entities::StoragePlaceScene) << " AND `deleted` = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -226,10 +231,13 @@ void DBConcreteItem::Clean(StorageProvider* sp)
             // Still must check if the item is really in the scene, because
             // DB and cache may have different data.
             if (item.storagePlace == AB::Entities::StoragePlaceScene)
-                sp->EntityDelete(item);
+            {
+                item.deleted = Utils::Tick();
+                sp->EntityUpdate(item);
+                sp->EntityInvalidate(item);
+            }
         }
     }
-
 }
 
 }

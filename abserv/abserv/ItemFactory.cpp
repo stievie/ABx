@@ -267,6 +267,12 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
         LOG_ERROR << "Error loading concrete item " << concreteUuid << std::endl;
         return std::unique_ptr<Item>();
     }
+    if (ci.deleted != 0)
+    {
+        LOG_INFO << "Item " << concreteUuid << " was deleted" << std::endl;
+        return std::unique_ptr<Item>();
+    }
+
     AB::Entities::Item gameItem;
     gameItem.uuid = ci.itemUuid;
     if (!client->Read(gameItem))
@@ -410,7 +416,13 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     AB::Entities::ConcreteItem ci;
     auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
-    if (client->Delete(ci))
+    if (!client->Read(ci))
+    {
+        LOG_WARNING << "Unable to  read concrete item " << uuid << std::endl;
+        return;
+    }
+    ci.deleted = Utils::Tick();
+    if (client->Update(ci))
     {
         auto* cache = GetSubsystem<ItemsCache>();
         cache->RemoveConcrete(uuid);
