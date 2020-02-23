@@ -280,6 +280,8 @@ bool Application::CheckDatabaseVersion()
 
     std::string schemasDir = path_ + "/../sql";
 
+    LOG_INFO << "Checking Database version...";
+
     int expectedVer = -1;
     for (const auto& entry : fs::directory_iterator(schemasDir))
     {
@@ -300,15 +302,18 @@ bool Application::CheckDatabaseVersion()
     int currVer = GetDatabaseVersion();
     if (currVer == -1)
     {
+        LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Database is not initialized. Run `dbtool -a update`" << std::endl;
         return false;
     }
     if (currVer != expectedVer)
     {
+        LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Database has wrong version. Expected " << expectedVer << " but got " << currVer <<
             ". Please run `dbtool -a update`" << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
 
     return true;
 }
