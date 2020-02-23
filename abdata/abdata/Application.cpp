@@ -306,6 +306,13 @@ bool Application::CheckDatabaseVersion()
         LOG_ERROR << "Database is not initialized. Run `dbtool -a update`" << std::endl;
         return false;
     }
+    if (expectedVer == -1)
+    {
+        LOG_INFO << "[WARN]" << std::endl;
+        LOG_WARNING << "No *.sql files found in " << schemasDir << std::endl;
+        // Do not fail when there is no sql directory
+        return true;
+    }
     if (currVer != expectedVer)
     {
         LOG_INFO << "[FAIL]" << std::endl;
