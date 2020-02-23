@@ -1,7 +1,8 @@
 # SQL
 
 Directory for Database updates. The `dbtool` program takes this as default directory
-for updates.
+for updates. aLSO THE DATA server is using this directory to check if the Database
+is up to date.
 
 *Note* All statements in a file must be terminated with a semicolon (`;`), even
 when a file contains just one statement.

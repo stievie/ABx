@@ -34,6 +34,7 @@
 #include <abscommon/Subsystems.h>
 #include <abscommon/ThreadPool.h>
 #include <abscommon/UuidUtils.h>
+#include <filesystem>
 #include <sa/StringTempl.h>
 
 Application::Application() :
@@ -252,6 +253,66 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
 }
 
+int Application::GetDatabaseVersion()
+{
+    auto* db = GetSubsystem<DB::Database>();
+    std::ostringstream query;
+#ifdef USE_PGSQL
+    if (DB::Database::driver_ == "pgsql")
+        query << "SET search_path TO schema, public; ";
+#endif
+    query << "SELECT `value` FROM `versions` WHERE ";
+    query << "`name` = " << db->EscapeString("schema");
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+    {
+        // No such record means not even the first file (file 0) was imported
+        return -1;
+    }
+
+    return static_cast<int>(result->GetUInt("value"));
+}
+
+bool Application::CheckDatabaseVersion()
+{
+    namespace fs = std::filesystem;
+
+    std::string schemasDir = path_ + "/../sql";
+
+    int expectedVer = -1;
+    for (const auto& entry : fs::directory_iterator(schemasDir))
+    {
+        const auto path = entry.path().string();
+        const std::string filename = Utils::ExtractFileName(path);
+        unsigned int version;
+#ifdef _MSC_VER
+        if (sscanf_s(filename.c_str(), "schema.%u.sql", &version) != 1)
+            continue;
+#else
+        if (sscanf(filename.c_str(), "schema.%u.sql", &version) != 1)
+            continue;
+#endif
+        if (expectedVer < static_cast<int>(version))
+            expectedVer = static_cast<int>(version);
+    }
+
+    int currVer = GetDatabaseVersion();
+    if (currVer == -1)
+    {
+        LOG_ERROR << "Database is not initialized. Run `dbtool -a update`" << std::endl;
+        return false;
+    }
+    if (currVer != expectedVer)
+    {
+        LOG_ERROR << "Database has wrong version. Expected " << expectedVer << " but got " << currVer <<
+            ". Please run `dbtool -a update`" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
@@ -287,6 +348,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     }
     Subsystems::Instance.RegisterSubsystem<DB::Database>(db);
     LOG_INFO << "[done]" << std::endl;
+    if (!CheckDatabaseVersion())
+        return false;
 
     PrintServerInfo();
 

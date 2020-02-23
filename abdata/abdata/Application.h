@@ -39,6 +39,8 @@ private:
     bool LoadConfig();
     void PrintServerInfo();
     void ShowLogo();
+    bool CheckDatabaseVersion();
+    int GetDatabaseVersion();
 protected:
     bool ParseCommandLine() override;
     void ShowVersion() override;
