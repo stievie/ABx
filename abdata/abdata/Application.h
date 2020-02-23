@@ -21,9 +21,11 @@
 
 #pragma once
 
-#include "Server.h"
 #include <abscommon/IpList.h>
 #include <abscommon/ServerApp.h>
+#include <asio.hpp>
+
+class Server;
 
 class Application final : public ServerApp
 {
