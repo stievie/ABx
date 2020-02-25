@@ -54,6 +54,7 @@ private:
 
 class Connection : public std::enable_shared_from_this<Connection>
 {
+    NON_COPYABLE(Connection)
 public:
     enum { WriteTimeout = 30 };
     enum { ReadTimeout = 30 };
@@ -63,9 +64,6 @@ public:
         Closed = 3
     };
 public:
-    Connection(const Connection&) = delete;
-    Connection& operator=(const Connection&) = delete;
-
     Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort);
     ~Connection();
 

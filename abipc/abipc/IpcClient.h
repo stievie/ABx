@@ -56,9 +56,8 @@ public:
 
 class Client
 {
-public:
-    typedef std::function<void(const asio::error_code& error, size_t bytes_transferred)> ReadHandler;
 private:
+    typedef std::function<void(const asio::error_code& error, size_t bytes_transferred)> ReadHandler;
     asio::io_service& ioService_;
     asio::ip::tcp::resolver resolver_;
     asio::ip::tcp::socket socket_;

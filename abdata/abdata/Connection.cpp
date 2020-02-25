@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Connection.h"
 #include <iostream>
+#include <algorithm>
 #include "ConnectionManager.h"
 #include "StorageProvider.h"
 
@@ -35,7 +36,7 @@ Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     opcode_(IO::OpCodes::None)
 { }
 
-asio::ip::tcp::socket& Connection::socket()
+asio::ip::tcp::socket& Connection::GetSocket()
 {
     return socket_;
 }
@@ -50,7 +51,7 @@ void Connection::Start()
         if (!error)
         {
             opcode_ = static_cast<IO::OpCodes>(data_->at(0));
-            uint16_t keySize = ToInt16(*data_, 1);
+            const uint16_t keySize = ToInt16(*data_, 1);
             if (keySize <= maxKeySize_)
                 StartReadKey(keySize);
             else
@@ -64,7 +65,7 @@ void Connection::Start()
     });
 }
 
-void Connection::StartReadKey(uint16_t& keySize)
+void Connection::StartReadKey(uint16_t keySize)
 {
     key_.resize(keySize);
     auto self = shared_from_this();
@@ -325,11 +326,11 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
     }
 
     uint8_t header[] = {
-        (uint8_t)IO::OpCodes::Data,
-        (uint8_t)data_->size(),
-        (uint8_t)(data_->size() >> 8),
-        (uint8_t)(data_->size() >> 16),
-        (uint8_t)(data_->size() >> 24)
+        static_cast<uint8_t>(IO::OpCodes::Data),
+        static_cast<uint8_t>(data_->size()),
+        static_cast<uint8_t>(data_->size() >> 8),
+        static_cast<uint8_t>(data_->size() >> 16),
+        static_cast<uint8_t>(data_->size() >> 24)
     };
 
     std::vector<asio::mutable_buffer> bufs = {
@@ -426,10 +427,14 @@ void Connection::SendStatusAndRestart(IO::ErrorCodes code, const std::string& me
     data_->push_back(0);
 
     //push message length
-    data_->push_back((unsigned char)message.length());
+    data_->push_back(std::min(static_cast<uint8_t>(255), static_cast<uint8_t>(message.length())));
+    size_t len = 0;
     for (const auto& letter : message)
     {
-        data_->push_back(letter);
+        data_->push_back(static_cast<uint8_t>(letter));
+        ++len;
+        if (len >= 255)
+            break;
     }
     std::vector<asio::mutable_buffer> bufs = { asio::buffer(*data_) };
     SendResponseAndStart(bufs, data_->size());

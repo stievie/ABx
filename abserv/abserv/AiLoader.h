@@ -34,6 +34,7 @@ public:
     explicit AiLoader(Registry& reg) :
         LuaLoader(reg)
     { }
+    ~AiLoader() override;
 };
 
 }

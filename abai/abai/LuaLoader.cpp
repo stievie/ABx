@@ -30,6 +30,8 @@
 
 namespace AI {
 
+LuaLoader::~LuaLoader() = default;
+
 bool LuaLoader::ExecuteScript(kaguya::State& state, const std::string& file)
 {
     const std::string filename = GetScriptFile(file);

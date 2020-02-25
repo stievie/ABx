@@ -406,7 +406,7 @@ inline std::shared_ptr<T> GameObject::GetPtr()
 }
 
 template<class _Stream>
-inline _Stream& operator << (_Stream& os, const GameObject& value)
+inline _Stream& operator << (_Stream& os, GameObject& value)
 {
     return os << "GameObject{" << static_cast<int>(value.GetType()) << "} id " << value.id_ << ": " << value.GetName();
 }

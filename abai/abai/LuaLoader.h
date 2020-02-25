@@ -55,6 +55,7 @@ public:
     explicit LuaLoader(Registry& reg) :
         Loader(reg)
     { }
+    ~LuaLoader() override;
     std::shared_ptr<Root> LoadFile(const std::string& fileName) override;
     std::shared_ptr<Root> LoadString(const std::string& value) override;
     // Initialize the cache from an init script

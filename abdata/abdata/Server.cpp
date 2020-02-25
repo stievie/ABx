@@ -65,7 +65,7 @@ void Server::Shutdown()
 void Server::StartAccept()
 {
     newConnection_.reset(new Connection(io_service_, connectionManager_, storageProvider_, maxDataSize_, maxKeySize_));
-    acceptor_.async_accept(newConnection_->socket(),
+    acceptor_.async_accept(newConnection_->GetSocket(),
         std::bind(&Server::HandleAccept, this,
             std::placeholders::_1));
 }
@@ -74,7 +74,7 @@ void Server::HandleAccept(const asio::error_code& error)
 {
     if (!error)
     {
-        const auto endp = newConnection_->socket().remote_endpoint();
+        const auto endp = newConnection_->GetSocket().remote_endpoint();
         if (IsIpAllowed(endp))
         {
             LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;

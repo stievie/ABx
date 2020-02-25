@@ -31,6 +31,8 @@ static void LuaErrorHandler(int errCode, const char* message)
     LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
 }
 
+AiLoader::~AiLoader() = default;
+
 bool AiLoader::ExecuteScript(kaguya::State& state, const std::string& file)
 {
     // The AI library does not set an error handler

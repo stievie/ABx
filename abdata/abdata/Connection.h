@@ -37,7 +37,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 public:
     explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
         StorageProvider& storage, size_t maxData, uint16_t maxKeySize_);
-    asio::ip::tcp::socket& socket();
+    asio::ip::tcp::socket& GetSocket();
     void Start();
     void Stop();
 private:
@@ -64,7 +64,7 @@ private:
     void HandleWriteReqResponse(const asio::error_code& error);
     void HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void StartClientRequestedOp();
-    void StartReadKey(uint16_t& keySize);
+    void StartReadKey(uint16_t keySize);
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
     void SendStatusAndRestart(IO::ErrorCodes code, const std::string& message);
 
