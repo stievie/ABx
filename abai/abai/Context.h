@@ -99,7 +99,7 @@ public:
             vals.erase(it);
     }
     template <typename T, typename Callback>
-    void VisitTypes(const Callback& callback) const
+    void VisitTypes(Callback&& callback) const
     {
         const auto& vals = GetValuesT<T>().values;
         for (const auto& val : vals)

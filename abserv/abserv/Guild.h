@@ -41,7 +41,7 @@ public:
     bool GetMember(const std::string& accountUuid, AB::Entities::GuildMember& member) const;
 
     template <typename Callback>
-    void VisitAll(const Callback& callback) const
+    void VisitAll(Callback&& callback) const
     {
         AB::Entities::GuildMembers members;
         if (!GetMembers(members))

@@ -90,11 +90,11 @@ public:
         return count;
     }
     template<typename Func>
-    void VisitItems(const Func& func);
+    void VisitItems(Func&& func);
 };
 
 template<typename Func>
-inline void ItemContainer::VisitItems(const Func& func)
+inline void ItemContainer::VisitItems(Func&& func)
 {
     auto* cache = GetSubsystem<ItemsCache>();
     for (auto& i : items_)

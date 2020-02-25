@@ -210,7 +210,7 @@ public:
     void PlayerLeave(uint32_t playerId);
 
     template<typename O = GameObject, typename Callback>
-    inline void VisitObjects(const Callback& callback)
+    inline void VisitObjects(Callback&& callback)
     {
         for (auto& object : objects_)
         {
@@ -222,7 +222,7 @@ public:
         }
     }
     template<typename O = GameObject, typename Callback>
-    inline void VisitObjects(const Callback& callback) const
+    inline void VisitObjects(Callback&& callback) const
     {
         for (auto& object : objects_)
         {
@@ -234,7 +234,7 @@ public:
         }
     }
     template<typename Callback>
-    inline void VisitPlayers(const Callback& callback)
+    inline void VisitPlayers(Callback&& callback)
     {
         for (auto& player : players_)
         {
@@ -243,10 +243,10 @@ public:
         }
     }
     template <typename Callback>
-    void VisitParties(const Callback& callback)
+    void VisitParties(Callback&& callback)
     {
         auto* partyMngr = GetSubsystem<PartyManager>();
-        partyMngr->VisitGameParties(id_, callback);
+        partyMngr->VisitGameParties(id_, std::forward(callback));
     }
 };
 

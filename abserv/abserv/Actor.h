@@ -138,7 +138,7 @@ public:
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
     template<typename Func>
-    void VisitEnemiesInRange(Ranges range, const Func& func) const
+    void VisitEnemiesInRange(Ranges range, Func&& func) const
     {
         VisitInRange(range, [&](const GameObject& o)
         {
@@ -154,7 +154,7 @@ public:
     size_t GetEnemyCountInRange(Ranges range) const;
     /// Ally is always without self
     template<typename Func>
-    void VisitAlliesInRange(Ranges range, const Func& func) const
+    void VisitAlliesInRange(Ranges range, Func&& func) const
     {
         VisitInRange(range, [&](const GameObject& o)
         {

@@ -65,7 +65,7 @@ public:
     bool GetFriendByName(const std::string& name, AB::Entities::Friend& f);
     bool GetFriendByAccount(const std::string& accountUuid, AB::Entities::Friend& f);
     template <typename Callback>
-    void VisitAll(const Callback& callback) const
+    void VisitAll(Callback&& callback) const
     {
         for (auto& f : data_.friends)
             if (callback(f) != Iteration::Continue)

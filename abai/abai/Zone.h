@@ -48,11 +48,11 @@ public:
     std::string name_;
 
     template<typename Callback>
-    inline void VisitAgents(Callback callback);
+    inline void VisitAgents(Callback&& callback);
 };
 
 template<typename Callback>
-inline void Zone::VisitAgents(Callback callback)
+inline void Zone::VisitAgents(Callback&& callback)
 {
     for (auto agent : agents_)
     {

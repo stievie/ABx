@@ -78,7 +78,7 @@ public:
     /// Get all parties in a game. Used by Lua.
     std::vector<Party*> GetByGame(uint32_t gameId) const;
     template <typename Callback>
-    void VisitGameParties(uint32_t gameId, const Callback& callback) const
+    void VisitGameParties(uint32_t gameId, Callback&& callback) const
     {
         if (gameId == 0)
             return;

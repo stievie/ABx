@@ -34,7 +34,7 @@ public:
     bool Read(const std::string& filename);
     bool IsEmpty() const { return lines_.size() == 0; }
     template <typename Callback>
-    void VisitStatements(const Callback& callback)
+    void VisitStatements(Callback&& callback)
     {
         std::string statement;
         for (const auto& s : lines_)

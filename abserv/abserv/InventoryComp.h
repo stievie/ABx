@@ -135,21 +135,21 @@ public:
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     void GetSkillRecharge(Skill* skill, uint32_t& recharge);
     template<typename Func>
-    void VisitEquipement(const Func& func);
+    void VisitEquipement(Func&& func);
     template<typename Func>
-    void VisitInventory(const Func& func)
+    void VisitInventory(Func&& func)
     {
-        inventory_->VisitItems(func);
+        inventory_->VisitItems(std::forward<Func>(func));
     }
     template<typename Func>
-    void VisitChest(const Func& func)
+    void VisitChest(Func&& func)
     {
-        chest_->VisitItems(func);
+        chest_->VisitItems(std::forward<Func>(func));
     }
 };
 
 template<typename Func>
-inline void InventoryComp::VisitEquipement(const Func& func)
+inline void InventoryComp::VisitEquipement(Func&& func)
 {
     auto* cache = GetSubsystem<ItemsCache>();
     for (auto& i : equipment_)

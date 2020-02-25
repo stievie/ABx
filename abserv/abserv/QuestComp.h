@@ -73,7 +73,7 @@ public:
     const Quest* Get(uint32_t index) const;
 
     template<typename Callback>
-    void VisitQuests(const Callback& callback)
+    void VisitQuests(Callback&& callback)
     {
         for (const auto& q : doneQuests_)
         {
@@ -87,7 +87,7 @@ public:
         }
     }
     template<typename Callback>
-    void VisitActiveQuests(const Callback& callback)
+    void VisitActiveQuests(Callback&& callback)
     {
         for (const auto& q : activeQuests_)
         {

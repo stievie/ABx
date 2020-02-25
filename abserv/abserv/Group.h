@@ -85,7 +85,7 @@ public:
     Actor* GetRandomMemberInRange(const Actor* actor, Ranges range) const;
 
     template <typename Callback>
-    void VisitMembers(const Callback callback) const
+    void VisitMembers(Callback&& callback) const
     {
         for (auto& m : members_)
         {

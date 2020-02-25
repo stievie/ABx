@@ -38,7 +38,8 @@ void ZoneFilter::Execute(Agent& agent)
         return;
 
     auto& entities = GetFiltered(agent);
-    zone->VisitAgents([&](const Agent& agent) {
+    zone->VisitAgents([&](const Agent& agent)
+    {
         entities.push_back(agent.GetId());
         return Iteration::Continue;
     });

@@ -219,7 +219,7 @@ public:
     bool IsCloserThan(float maxDist, const GameObject* object) const;
     /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
-    void VisitInRange(Ranges range, const Func& func) const
+    void VisitInRange(Ranges range, Func&& func) const
     {
         const auto r = ranges_.find(range);
         if (r == ranges_.end())

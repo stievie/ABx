@@ -107,7 +107,7 @@ public:
         return skills_[index].get();
     }
     template <typename Callback>
-    void VisitSkills(Callback callback) const
+    void VisitSkills(Callback&& callback) const
     {
         int index = 0;
         for (const auto& skill : skills_)

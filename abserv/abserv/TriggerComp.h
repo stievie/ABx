@@ -50,7 +50,7 @@ public:
     void Update(uint32_t timeElapsed);
     /// Get all object IDs inside the collision shape
     template <typename Callback>
-    void VisitObjectInside(const Callback& callback)
+    void VisitObjectInside(Callback&& callback)
     {
         for (const auto& i : triggered_)
         {
