@@ -45,7 +45,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 
 The only Computer Game I play is [Guild Wars](https://www.guildwars.com/) and I play it for
 well over 12 years now. With my main account I played for over 12,000 hours, and I still
-enjoy to play it. But the game is old, and does not get much love anymore. So maybe
+enjoy it. But the game is old, and does not get much love anymore. So maybe
 it's time to create something like it.
 
 However, the main motivation for me is, I think Guild Wars is an awesome piece of technology,
