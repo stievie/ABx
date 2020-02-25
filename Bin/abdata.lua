@@ -8,6 +8,8 @@ server_name = "abdata"
 
 -- If true it doesn't write to the DB
 read_only = false
+-- Set to false to skip database version check
+db_version_check = true
 
 data_port = 2770
 -- IP it listens on

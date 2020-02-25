@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include "Server.h"
 #include <abscommon/Logo.h>
 #include <abdb/Database.h>
 #include <abscommon/StringUtils.h>
@@ -151,7 +152,7 @@ bool Application::LoadConfig()
 #endif
     }
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     if (Utils::FileExists(configFile_))
     {
         if (!config->Load(configFile_))
@@ -278,10 +279,22 @@ bool Application::CheckDatabaseVersion()
 {
     namespace fs = std::filesystem;
 
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
+    if (!config->GetGlobalBool("db_version_check", true))
+    {
+        return true;
+    }
+
     std::string schemasDir = path_ + "/../sql";
 
     LOG_INFO << "Checking Database version...";
 
+    if (!fs::is_directory(schemasDir))
+    {
+        LOG_INFO << "[WARN]" << std::endl;
+        LOG_WARNING << "SQL directory " << schemasDir << " does not exist" << std::endl;
+        return true;
+    }
     int expectedVer = -1;
     for (const auto& entry : fs::directory_iterator(schemasDir))
     {
