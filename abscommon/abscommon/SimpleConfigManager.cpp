@@ -22,8 +22,15 @@
 #include "stdafx.h"
 #include "SimpleConfigManager.h"
 #include "Logger.h"
+#include "FileUtils.h"
+#include "StringUtils.h"
 
 namespace IO {
+
+SimpleConfigManager::~SimpleConfigManager()
+{
+    Close();
+}
 
 std::string SimpleConfigManager::GetGlobalString(const std::string& ident, const std::string& def)
 {
@@ -35,7 +42,7 @@ std::string SimpleConfigManager::GetGlobalString(const std::string& ident, const
         return def;
     }
 
-    int len = (int)luaL_len(L, -1);
+    size_t len = static_cast<size_t>(luaL_len(L, -1));
     std::string ret(lua_tostring(L, -1), len);
     lua_pop(L, 1);
 
@@ -90,6 +97,12 @@ bool SimpleConfigManager::GetGlobalBool(const std::string& ident, bool def)
     return val;
 }
 
+void SimpleConfigManager::RegisterString(const std::string& name, const std::string& value)
+{
+    lua_pushstring(L, value.c_str());
+    lua_setglobal(L, name.c_str());
+}
+
 bool SimpleConfigManager::Load(const std::string& file)
 {
     if (L)
@@ -99,18 +112,34 @@ bool SimpleConfigManager::Load(const std::string& file)
         return false;
     luaL_openlibs(L);
 
+    const std::string exeFile = Utils::GetExeName();
+    const std::string exePath = Utils::ExtractFileDir(exeFile);
+    RegisterString("EXE_FILE", exeFile);
+    RegisterString("EXE_PATH", exePath);
+    RegisterString("SCRIPT_FILE", file);
+
     if (luaL_dofile(L, file.c_str()) != 0)
     {
-        int len = (int)luaL_len(L, -1);
-        std::string err(lua_tostring(L, -1), len);
+        size_t len = static_cast<size_t>(luaL_len(L, -1));
+        const std::string err(lua_tostring(L, -1), len);
         LOG_ERROR << err << std::endl;
         lua_close(L);
         L = nullptr;
         return false;
     }
 
-    isLoaded = true;
+    loaded_ = true;
     return true;
+}
+
+void SimpleConfigManager::Close()
+{
+    if (L)
+    {
+        lua_close(L);
+        L = nullptr;
+        loaded_ = false;
+    }
 }
 
 }

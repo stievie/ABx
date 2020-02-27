@@ -24,6 +24,7 @@
 #include <memory>
 #include <string>
 #include <CleanupNs.h>
+#include <sa/Noncopyable.h>
 
 namespace AI {
 
@@ -33,6 +34,7 @@ class Registry;
 
 class Loader
 {
+    NON_COPYABLE(Loader)
 protected:
     Registry& registry_;
 public:
