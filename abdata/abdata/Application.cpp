@@ -285,7 +285,12 @@ bool Application::CheckDatabaseVersion()
         return true;
     }
 
-    std::string schemasDir = path_ + "/../sql";
+    std::string schemasDir = config->GetGlobalString("db_schema_dir", "");
+    if (schemasDir.empty())
+    {
+        LOG_WARNING << "Schemas directory is empty, skillping database check" << std::endl;
+        return true;
+    }
 
     LOG_INFO << "Checking Database version...";
 

@@ -302,7 +302,6 @@ int main(int argc, char** argv)
 
     const std::string exeFile = Utils::GetExeName();
     const std::string path = Utils::ExtractFileDir(exeFile);
-    std::string schemasDir = path + "/../sql";
 
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none }
@@ -398,7 +397,10 @@ int main(int argc, char** argv)
 
     if (action == Action::Update)
     {
-        schemasDir = sa::arg_parser::get_value<std::string>(parsedArgs, "schemadir", schemasDir);
+        std::string schemasDir = sa::arg_parser::get_value<std::string>(parsedArgs, "schemadir", "");
+        if (schemasDir.empty())
+            schemasDir = cfg.GetGlobalString("db_schema_dir", "");
+
         if (schemasDir.empty())
         {
             std::cerr << "Schema directory is empty" << std::endl;
