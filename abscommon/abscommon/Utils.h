@@ -25,6 +25,7 @@
 #include <time.h>
 #include <random>
 #include <iterator>
+#include <chrono>
 
 namespace Utils {
 
@@ -60,9 +61,11 @@ constexpr size_t CountOf(T(&)[N])
 
 inline int64_t Tick()
 {
-    timeb t;
-    ftime(&t);
-    return int64_t(t.millitm) + int64_t(t.time) * 1000;
+    using namespace std::chrono;
+    milliseconds ms = duration_cast<milliseconds>(
+        system_clock::now().time_since_epoch()
+    );
+    return ms.count();
 }
 
 inline bool IsExpired(int64_t expiresAt)

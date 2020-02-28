@@ -25,7 +25,7 @@
 #include <unordered_map>
 #include <vector>
 #include <sa/PragmaWarning.h>
-#include "EvictionStrategy.h"
+#include "CacheIndex.h"
 
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4310 4100)
@@ -300,6 +300,6 @@ private:
     std::mutex lock_;
     /// Player name -> Cache Key
     std::unordered_map<std::string, IO::DataKey> playerNames_;
-    OldestInsertionEviction evictor_;
+    CacheIndex index_;
 };
 

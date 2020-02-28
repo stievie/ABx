@@ -31,6 +31,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abscommon/BanManager.h>
 #include <abscommon/Dispatcher.h>
+#include <abscommon/Connection.h>
 #include <abscommon/OutputMessage.h>
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>

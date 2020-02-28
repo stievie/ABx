@@ -20,28 +20,23 @@
  */
 
 #include "stdafx.h"
-#include "EvictionStrategy.h"
-#include <multi_index_container.hpp>
-#include <multi_index/ordered_index.hpp>
+#include "CacheIndex.h"
 
-using namespace multi_index;
-
-IO::DataKey OldestInsertionEviction::NextEviction()
+IO::DataKey CacheIndex::Next()
 {
-    DataItemContainer::nth_index<1>::type& rankIndex = dataItems_.get<1>();
-
+    auto& rankIndex = dataItems_.get<1>();
     auto first = rankIndex.begin();
     const IO::DataKey& retVal = first->key;
     dataItems_.erase(retVal);
     return retVal;
 }
 
-void OldestInsertionEviction::AddKey(const IO::DataKey& key)
+void CacheIndex::Add(const IO::DataKey& key)
 {
-    dataItems_.insert(DataItem(key, GetNextRank()));
+    dataItems_.insert({ key, GetNextRank() });
 }
 
-void OldestInsertionEviction::RefreshKey(const IO::DataKey& key)
+void CacheIndex::Refresh(const IO::DataKey& key)
 {
     uint64_t next = GetNextRank();
     auto keyItr = dataItems_.find(key);
@@ -51,7 +46,7 @@ void OldestInsertionEviction::RefreshKey(const IO::DataKey& key)
     });
 }
 
-void OldestInsertionEviction::DeleteKey(const IO::DataKey& key)
+void CacheIndex::Delete(const IO::DataKey& key)
 {
     auto keyItr = dataItems_.find(key);
     if (keyItr != dataItems_.end())
@@ -60,7 +55,7 @@ void OldestInsertionEviction::DeleteKey(const IO::DataKey& key)
     }
 }
 
-void OldestInsertionEviction::Clear()
+void CacheIndex::Clear()
 {
     dataItems_.clear();
     currentRank_ = 0;

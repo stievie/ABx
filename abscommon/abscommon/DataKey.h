@@ -24,6 +24,7 @@
 #include <vector>
 #include <sa/StringHash.h>
 #include <uuid.h>
+#include <string_view>
 
 namespace IO {
 
@@ -63,24 +64,30 @@ public:
         return *this;
     }
 
-    inline size_t size() const noexcept
+    size_t size() const noexcept
     {
         return data_.size();
     }
-    inline const uint8_t* data() const noexcept
+    const uint8_t* data() const noexcept
     {
         return data_.data();
     }
-    inline uint8_t* data() noexcept
+    uint8_t* data() noexcept
     {
         return data_.data();
     }
 
-    inline void resize(size_t new_size)
+    void resize(size_t new_size)
     {
         data_.resize(new_size);
     }
-
+    std::string_view table() const
+    {
+        if (data_.size() <= uuids::uuid::state_size)
+            return {};
+        return std::string_view(reinterpret_cast<const char*>(data_.data()),
+            static_cast<size_t>(data_.end() - data_.begin()) - uuids::uuid::state_size);
+    }
     bool decode(std::string& table, uuids::uuid& id) const
     {
         // key = <tablename><guid>

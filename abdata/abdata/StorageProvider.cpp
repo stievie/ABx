@@ -236,12 +236,12 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     // we check if its already in cache
     if (cache_.find(key) == cache_.end())
     {
-        evictor_.AddKey(key);
+        index_.Add(key);
         currentSize_ += data->size();
     }
     else
     {
-        evictor_.RefreshKey(key);
+        index_.Refresh(key);
         currentSize_ = (currentSize_ - cache_[key].second->size()) + data->size();
     }
 
@@ -431,7 +431,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
     for (const auto& k : toDelete)
     {
         cache_.erase(k);
-        evictor_.DeleteKey(k);
+        index_.Delete(k);
     }
     playerNames_.clear();
     LOG_INFO << "Cleared cache, removed " << toDelete.size() << " items" << std::endl;
@@ -474,7 +474,7 @@ void StorageProvider::CleanCache()
             // Remove from players cache
             RemovePlayerFromCache(key);
             currentSize_ -= (*i).second.second->size();
-            evictor_.DeleteKey(key);
+            index_.Delete(key);
             cache_.erase(i++);
             ++removed;
         }
@@ -578,7 +578,7 @@ void StorageProvider::CreateSpace(size_t size)
     const size_t sizeNeeded = size * 2;
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
-        const IO::DataKey key = evictor_.NextEviction();
+        const IO::DataKey key = index_.Next();
         if (FlushData(key))
             RemoveData(key);
         else
@@ -595,7 +595,7 @@ bool StorageProvider::RemoveData(const IO::DataKey& key)
 
         currentSize_ -= (*data).second.second->size();
         cache_.erase(key);
-        evictor_.DeleteKey(key);
+        index_.Delete(key);
 
         return true;
     }

@@ -30,7 +30,6 @@
 Server::Server(asio::io_service& io_service, uint32_t ip,
     uint16_t port, size_t maxCacheSize, bool readonly,
     Net::IpList& whiteList) :
-    running_(false),
     io_service_(io_service),
     acceptor_(
         io_service,

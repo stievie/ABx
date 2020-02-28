@@ -42,7 +42,7 @@ private:
     void StartAccept();
     void HandleAccept(const asio::error_code& error);
     bool IsIpAllowed(const asio::ip::tcp::endpoint& ep);
-    bool running_;
+    bool running_{ false };
     asio::io_service& io_service_;
     asio::ip::tcp::acceptor acceptor_;
     std::shared_ptr<Connection> newConnection_;

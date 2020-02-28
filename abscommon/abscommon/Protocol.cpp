@@ -31,6 +31,15 @@
 
 namespace Net {
 
+Protocol::Protocol(std::shared_ptr<Connection> connection) :
+    connection_(connection),
+    checksumEnabled_(false),
+    compressionEnabled_(false),
+    encryptionEnabled_(false)
+{ }
+
+Protocol::~Protocol() = default;
+
 void Protocol::Disconnect() const
 {
     if (auto conn = GetConnection())

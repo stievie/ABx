@@ -25,6 +25,7 @@
 #include <sys/timeb.h>
 #include <time.h>
 #include <string>
+#include <chrono>
 
 namespace Client {
 
@@ -47,7 +48,7 @@ public:
     {
         restart();
     }
-    float elapsed_seconds() { return (float)((micros() - start_) / 1000000.0); }
+    float elapsed_seconds() { return static_cast<float>(micros() - start_) / 1000000.0f; }
     ticks_t elapsed_millis() { return (micros() - start_) / 1000; }
     ticks_t elapsed_micros() { return micros() - start_; }
     void restart() { start_ = micros(); }
@@ -55,9 +56,11 @@ public:
 
 inline int64_t AbTick()
 {
-    timeb t;
-    ftime(&t);
-    return int64_t(t.millitm) + int64_t(t.time) * 1000;
+    using namespace std::chrono;
+    milliseconds ms = duration_cast<milliseconds>(
+        system_clock::now().time_since_epoch()
+    );
+    return ms.count();
 }
 
 struct TimeSpan

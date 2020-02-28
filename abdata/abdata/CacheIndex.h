@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <string>
 #include <multi_index_container.hpp>
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/member.hpp>
@@ -29,53 +28,36 @@
 #include <multi_index/ordered_index.hpp>
 #include <abscommon/DataKey.h>
 
-class DataItem
+class CacheIndex
 {
-public:
-    IO::DataKey key;
-    uint64_t rank;
-    DataItem(const IO::DataKey& k, uint64_t r) :
-        key(k),
-        rank(r)
-    { }
-    bool operator<(const DataItem& e) const
+private:
+    struct DataItem
     {
-        return rank < e.rank;
-    }
-};
-
-typedef multi_index::multi_index_container
-<
-    DataItem,
-    multi_index::indexed_by
+        IO::DataKey key;
+        uint64_t rank;
+        bool operator<(const DataItem& e) const
+        {
+            return rank < e.rank;
+        }
+    };
+    using DataItemContainer = multi_index::multi_index_container
     <
-        multi_index::hashed_unique<multi_index::member<DataItem, IO::DataKey, &DataItem::key>>,
-        multi_index::ordered_unique<multi_index::member<DataItem, uint64_t, &DataItem::rank>>
-    >
-> DataItemContainer;
-
-class  EvictionStrategy
-{
+        DataItem,
+        multi_index::indexed_by
+        <
+            multi_index::hashed_unique<multi_index::member<DataItem, IO::DataKey, &DataItem::key>>,
+            multi_index::ordered_unique<multi_index::member<DataItem, uint64_t, &DataItem::rank>>
+        >
+    >;
 public:
-    virtual ~EvictionStrategy() = default;
-    virtual IO::DataKey NextEviction() = 0;
-    virtual void AddKey(const IO::DataKey&) = 0;
-    virtual void RefreshKey(const IO::DataKey&) = 0;
-    virtual void DeleteKey(const IO::DataKey&) = 0;
-    virtual void Clear() = 0;
-};
-
-class OldestInsertionEviction : public EvictionStrategy
-{
-public:
-    OldestInsertionEviction() :
+    CacheIndex() :
         currentRank_(0)
     { }
-    IO::DataKey NextEviction() override;
-    void AddKey(const IO::DataKey&) override;
-    void RefreshKey(const IO::DataKey&) override;
-    void DeleteKey(const IO::DataKey&) override;
-    void Clear() override;
+    IO::DataKey Next();
+    void Add(const IO::DataKey&);
+    void Refresh(const IO::DataKey&);
+    void Delete(const IO::DataKey&);
+    void Clear();
 private:
     uint64_t GetNextRank()
     {

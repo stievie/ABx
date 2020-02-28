@@ -24,14 +24,18 @@
 #include "Logger.h"
 #include <abcrypto.hpp>
 #include <cstring>
-#include "OutputMessage.h"
+#include <sa/SmartPtr.h>
+#include <sa/Noncopyable.h>
 
 namespace Net {
 
 class Connection;
+class OutputMessage;
+class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
+    NON_COPYABLE(Protocol)
 protected:
     std::weak_ptr<Connection> connection_;
     sa::SharedPtr<OutputMessage> outputBuffer_;
@@ -47,16 +51,8 @@ protected:
 
     friend class Connection;
 public:
-    explicit Protocol(std::shared_ptr<Connection> connection) :
-        connection_(connection),
-        checksumEnabled_(false),
-        compressionEnabled_(false),
-        encryptionEnabled_(false)
-    { }
-    virtual ~Protocol() = default;
-
-    Protocol(const Protocol&) = delete;
-    Protocol& operator=(const Protocol&) = delete;
+    explicit Protocol(std::shared_ptr<Connection> connection);
+    virtual ~Protocol();
 
     void SetEncKey(const uint32_t* key)
     {

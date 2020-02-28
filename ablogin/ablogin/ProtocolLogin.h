@@ -24,7 +24,6 @@
 #include <AB/Entities/Character.h>
 #include <AB/Packets/LoginPackets.h>
 #include <AB/ProtocolCodes.h>
-#include <abscommon/Connection.h>
 #include <abscommon/Protocol.h>
 
 namespace Net {

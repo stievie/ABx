@@ -1,6 +1,8 @@
 README.md
 abdata/Application.cpp
 abdata/Application.h
+abdata/CacheIndex.cpp
+abdata/CacheIndex.h
 abdata/Connection.cpp
 abdata/Connection.h
 abdata/ConnectionManager.cpp
@@ -98,9 +100,7 @@ abdata/DBVersion.cpp
 abdata/DBVersion.h
 abdata/DBVersionList.cpp
 abdata/DBVersionList.h
-abdata/EvictionStrategy.h
 abdata/main.cpp
-abdata/OldestInsertionEviction.cpp
 abdata/Server.cpp
 abdata/Server.h
 abdata/stdafx.cpp

@@ -205,7 +205,7 @@ bool Application::GetServiceCallbackList(AB::Entities::Service& svc)
         return false;
     }
 
-    const auto& item = Utils::SelectRandomly(serviceList_.begin(), serviceList_.end());
+    const auto item = Utils::SelectRandomly(serviceList_.begin(), serviceList_.end());
     svc.host = (*item).first;
     svc.port = (*item).second;
     return true;
