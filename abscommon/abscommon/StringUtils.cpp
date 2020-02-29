@@ -27,6 +27,8 @@
 
 namespace Utils {
 
+static const std::locale locale_utf8("en_US.UTF-8");
+
 bool StringEquals(const std::string& l, const std::string& r)
 {
     return l.size() == r.size()
@@ -43,7 +45,7 @@ bool StringEquals(const std::wstring& l, const std::wstring& r)
         && std::equal(l.cbegin(), l.cend(), r.cbegin(),
             [](std::wstring::value_type l1, std::wstring::value_type r1)
     {
-        return towupper(l1) == towupper(r1);
+        return std::tolower<wchar_t>(l1, locale_utf8) == std::tolower<wchar_t>(r1, locale_utf8);
     });
 }
 
@@ -72,7 +74,7 @@ std::string Utf8ToLower(const std::string& str)
 {
     std::wstring result = Utf8ToWString(str);
     std::transform(result.begin(), result.end(), result.begin(),
-        [](wchar_t c) { return std::tolower<wchar_t>(c, std::locale()); });
+        [](wchar_t c) { return std::tolower<wchar_t>(c, locale_utf8); });
     return WStringToUtf8(result);
 }
 
