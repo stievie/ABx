@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/absadmin$(SUFFIX)
 SOURDEDIR = ../absadmin/absadmin
 OBJDIR = obj/x64/$(CONFIG)/absadmin
-LIBS += -lpthread -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml -lless -luuid
+LIBS += -lpthread -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml -lless -luuid -llua5.3
 CXXFLAGS += -fexceptions -Werror -Wimplicit-fallthrough=0
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
