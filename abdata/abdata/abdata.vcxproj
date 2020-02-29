@@ -236,6 +236,7 @@
     <ClInclude Include="DBSkillList.h" />
     <ClInclude Include="DBVersion.h" />
     <ClInclude Include="DBVersionList.h" />
+    <ClInclude Include="NameIndex.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StorageProvider.h" />
@@ -294,6 +295,7 @@
     <ClCompile Include="DBVersion.cpp" />
     <ClCompile Include="DBVersionList.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NameIndex.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

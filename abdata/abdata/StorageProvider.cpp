@@ -253,7 +253,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     {
         AB::Entities::Character ch;
         if (GetEntity(*data, ch))
-            playerNames_[Utils::Utf8ToLower(ch.name)] = key;
+            namesCache_.Add(key, ch.name);
     }
 }
 
@@ -287,11 +287,10 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
         AB::Entities::Character ch;
         if (GetEntity(*data, ch) && !ch.name.empty())
         {
-            auto playerIt = playerNames_.find(Utils::Utf8ToLower(ch.name));
-            if (playerIt != playerNames_.end())
+            auto* nameKey = namesCache_.LookupName(KEY_CHARACTERS_HASH, ch.name);
+            if (nameKey != nullptr)
             {
-                const auto& playerKey = (*playerIt).second;
-                _data = cache_.find(playerKey);
+                _data = cache_.find(*nameKey);
                 if (_data != cache_.end())
                 {
                     if ((*_data).second.first.deleted)
@@ -433,7 +432,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
         cache_.erase(k);
         index_.Delete(k);
     }
-    playerNames_.clear();
+    namesCache_.Clear();
     LOG_INFO << "Cleared cache, removed " << toDelete.size() << " items" << std::endl;
     return true;
 }
@@ -744,13 +743,6 @@ void StorageProvider::RemovePlayerFromCache(const IO::DataKey& key)
         auto _data = cache_.find(key);
         if (_data == cache_.end())
             return;
-
-        AB::Entities::Character ch;
-        if (GetEntity(*(*_data).second.second, ch))
-        {
-            auto it = playerNames_.find(Utils::Utf8ToLower(ch.name));
-            if (it != playerNames_.end())
-                playerNames_.erase(it);
-        }
+        namesCache_.Delete(key);
     }
 }

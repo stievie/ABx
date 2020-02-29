@@ -26,6 +26,7 @@
 #include <vector>
 #include <sa/PragmaWarning.h>
 #include "CacheIndex.h"
+#include "NameIndex.h"
 
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4310 4100)
@@ -298,8 +299,8 @@ private:
 
     std::unordered_map<IO::DataKey, CacheItem> cache_;
     std::mutex lock_;
-    /// Player name -> Cache Key
-    std::unordered_map<std::string, IO::DataKey> playerNames_;
+    /// Name -> Cache Key
+    NameIndex namesCache_;
     CacheIndex index_;
 };
 

@@ -183,6 +183,9 @@
     <ClInclude Include="CacheIndex.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="NameIndex.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -345,6 +348,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CacheIndex.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="NameIndex.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
