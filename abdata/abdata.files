@@ -100,6 +100,8 @@ abdata/DBVersion.cpp
 abdata/DBVersion.h
 abdata/DBVersionList.cpp
 abdata/DBVersionList.h
+abdata/NameIndex.cpp
+abdata/NameIndex.h
 abdata/main.cpp
 abdata/Server.cpp
 abdata/Server.h

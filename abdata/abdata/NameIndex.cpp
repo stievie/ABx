@@ -6,7 +6,7 @@
 
 void NameIndex::Add(const IO::DataKey& key, const std::string& name)
 {
-    // Names are alway case insensitive
+    // Names are always case insensitive
     IndexItem item{ key, sa::StringHash(key.table()), Utils::Utf8ToLower(name) };
     index_.insert(std::move(item));
 }
