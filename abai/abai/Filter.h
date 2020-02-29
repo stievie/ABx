@@ -47,6 +47,7 @@ public:                                                                         
         static Factory sFactory;                                                      \
         return sFactory;                                                              \
     }                                                                                 \
+private:                                                                              \
     FilterName(const FilterName&) = delete;                                           \
     FilterName& operator=(const FilterName&) = delete;                                \
     FilterName(FilterName&&) = delete;                                                \

@@ -27,9 +27,6 @@
     <ClInclude Include="ConnectionManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="EvictionStrategy.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Server.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -183,6 +180,9 @@
     <ClInclude Include="DBPlayerQuestListRewarded.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CacheIndex.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -195,9 +195,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ConnectionManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="OldestInsertionEviction.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Server.cpp">
@@ -345,6 +342,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBPlayerQuestListRewarded.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CacheIndex.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -58,6 +58,7 @@ public:                                                                         
         static Factory sFactory;                                                    \
         return sFactory;                                                            \
     }                                                                               \
+private:                                                                            \
     NodeName(const NodeName&) = delete;                                             \
     NodeName& operator=(const NodeName&) = delete;                                  \
     NodeName(NodeName&&) = delete;                                                  \

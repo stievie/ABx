@@ -54,6 +54,7 @@ public:                                                                         
         static Factory sFactory;                                                         \
         return sFactory;                                                                 \
     }                                                                                    \
+private:                                                                                 \
     ConditionName(const ConditionName&) = delete;                                        \
     ConditionName& operator=(const ConditionName&) = delete;                             \
     ConditionName(ConditionName&&) = delete;                                             \

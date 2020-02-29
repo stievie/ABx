@@ -186,6 +186,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="CacheIndex.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="DBAccount.h" />
@@ -235,7 +236,6 @@
     <ClInclude Include="DBSkillList.h" />
     <ClInclude Include="DBVersion.h" />
     <ClInclude Include="DBVersionList.h" />
-    <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StorageProvider.h" />
@@ -244,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CacheIndex.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="DBAccount.cpp" />
@@ -293,7 +294,6 @@
     <ClCompile Include="DBVersion.cpp" />
     <ClCompile Include="DBVersionList.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OldestInsertionEviction.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
