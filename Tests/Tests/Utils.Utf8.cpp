@@ -46,3 +46,17 @@ TEST_CASE("UTF-8 ci equls 2")
 {
     REQUIRE(Utils::SameName("Άρθουρ Ντεντ", "άρθουρ ντεντ"));
 }
+
+TEST_CASE("Wide to UTF-8")
+{
+    std::wstring wstr = L"Άρθουρ Ντεντ";
+    std::string utf8 = Utils::WStringToUtf8(wstr);
+    REQUIRE(utf8.compare("Άρθουρ Ντεντ") == 0);
+}
+
+TEST_CASE("UTF-8 to Wide")
+{
+    std::string utf8 = "Άρθουρ Ντεντ";
+    std::wstring wstr = Utils::Utf8ToWString(utf8);
+    REQUIRE(wstr.compare(L"Άρθουρ Ντεντ") == 0);
+}

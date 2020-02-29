@@ -33,7 +33,7 @@ using FilterFactory = AbstractFactory<Filter>;
 
 #define FILTER_CLASS(FilterName)                                                      \
 public:                                                                               \
-    class Factory : public FilterFactory                                              \
+    class Factory final : public FilterFactory                                        \
     {                                                                                 \
     public:                                                                           \
         std::shared_ptr<Filter> Create(const ArgumentsType& arguments) const override \

@@ -44,7 +44,7 @@ using NodeFactory = AbstractFactory<Node>;
 
 #define NODE_CLASS(NodeName)                                                        \
 public:                                                                             \
-    class Factory : public NodeFactory                                              \
+    class Factory final : public NodeFactory                                        \
     {                                                                               \
     public:                                                                         \
         std::shared_ptr<Node> Create(const ArgumentsType& arguments) const override \

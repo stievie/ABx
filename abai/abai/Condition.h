@@ -40,7 +40,7 @@ using ConditionFactory = AbstractFactory<Condition>;
 
 #define CONDITON_CLASS(ConditionName)                                                    \
 public:                                                                                  \
-    class Factory : public ConditionFactory                                              \
+    class Factory final: public ConditionFactory                                         \
     {                                                                                    \
     public:                                                                              \
         std::shared_ptr<Condition> Create(const ArgumentsType& arguments) const override \
