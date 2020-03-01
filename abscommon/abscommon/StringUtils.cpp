@@ -27,7 +27,11 @@
 
 namespace Utils {
 
+#ifdef AB_WINDOWS
+static const std::locale locale_utf8("");
+#else
 static const std::locale locale_utf8("en_US.UTF-8");
+#endif
 
 bool StringEquals(const std::string& l, const std::string& r)
 {
