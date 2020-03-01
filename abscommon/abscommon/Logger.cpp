@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Logger.h"
+#include "StringUtils.h"
 
 namespace IO {
 
@@ -42,7 +43,7 @@ Logger& Logger::Instance()
             char chr[50] = { 0 };
             strftime(chr, 50, "%g-%m-%d-%H-%M-%S", p);
 
-            std::string logFile = logDir_ + "/" + std::string(chr) + ".log";
+            std::string logFile = Utils::ConcatPath(logDir_, std::string(chr), ".log");
             instance_ = std::make_unique<Logger>(logFile);
         }
         else

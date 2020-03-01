@@ -41,6 +41,7 @@ std::string ChangeFileExt(const std::string& fn, const std::string& ext);
 std::string GetFileExt(const std::string& fn);
 std::string ExtractFileDir(const std::string& fn);
 std::string ExtractFileName(const std::string& fn);
+std::string ConcatPath(const std::string& path, const std::string& name, const std::string& ext = "");
 
 std::vector<std::string> Split(const std::string& str, const std::string& delim);
 bool IsNumber(const std::string& s);

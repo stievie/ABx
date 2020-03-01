@@ -82,9 +82,9 @@ bool Application::LoadMain()
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "ablogin_svc.lua";
+        configFile_ = Utils::ConcatPath(path_, "ablogin_svc.lua");
 #else
-        configFile_ = path_ + "/" + "ablogin.lua";
+        configFile_ = Utils::ConcatPath(path_, "ablogin.lua");
 #endif
     }
 

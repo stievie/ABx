@@ -55,9 +55,9 @@ bool Application::LoadMain()
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "abmsgs_svc.lua";
+        configFile_ = Utils::ConcatPath(path_, "abmsgs_svc.lua");
 #else
-        configFile_ = path_ + "/" + "abmsgs.lua";
+        configFile_ = Utils::ConcatPath(path_, "abmsgs.lua");
 #endif
     }
 

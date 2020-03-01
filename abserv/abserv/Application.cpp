@@ -47,6 +47,7 @@
 #include <abai/Dump.h>
 #include <abscommon/Logo.h>
 #include <abscommon/Service.h>
+#include <abscommon/StringUtils.h>
 #include <abscommon/Task.h>
 #include <sa/ConditionSleep.h>
 
@@ -283,9 +284,9 @@ bool Application::LoadMain()
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "abserv_svc.lua";
+        configFile_ = Utils::ConcatPath(path_, "abserv_svc.lua");
 #else
-        configFile_ = path_ + "/" + CONFIG_FILE;
+        configFile_ = Utils::ConcatPath(path_, + CONFIG_FILE);
 #endif
     }
 

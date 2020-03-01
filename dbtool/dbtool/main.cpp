@@ -349,7 +349,7 @@ int main(int argc, char** argv)
     sReadOnly = sa::arg_parser::get_value<bool>(parsedArgs, "readonly", false);
     sVerbose = sa::arg_parser::get_value<bool>(parsedArgs, "verbose", false);
 
-    std::string cfgFile = path + "/config/db.lua";
+    std::string cfgFile = Utils::ConcatPath(path, "config/db.lua");
     IO::SimpleConfigManager cfg;
     if (!cfg.Load(cfgFile))
     {

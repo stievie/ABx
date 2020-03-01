@@ -89,7 +89,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    std::string cfgFile = path + "/abserv.lua";
+    std::string cfgFile = Utils::ConcatPath(path, "abserv.lua");
     IO::SimpleConfigManager cfg;
     if (!cfg.Load(cfgFile))
     {
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
     }
     std::string keyFile = cfg.GetGlobalString("server_keys", "");
     if (keyFile.empty())
-        keyFile = Utils::AddSlash(path) + "abserver.dh";
+        keyFile = Utils::ConcatPath(path, "abserver.dh");
     keyFile = sa::arg_parser::get_value<std::string>(parsedArgs, "file", keyFile);
 
     if (Utils::FileExists(keyFile))

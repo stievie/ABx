@@ -53,6 +53,7 @@
 #include <abscommon/BanManager.h>
 #include <abscommon/Logo.h>
 #include <abscommon/SimpleConfigManager.h>
+#include <abscommon/StringUtils.h>
 
 Application* Application::Instance = nullptr;
 
@@ -218,9 +219,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "absadmin_svc.lua";
+        configFile_ = Utils::ConcatPath(path_, "absadmin_svc.lua");
 #else
-        configFile_ = path_ + "/" + "absadmin.lua";
+        configFile_ = Utils::ConcatPath(path_, "absadmin.lua");
 #endif
     }
 

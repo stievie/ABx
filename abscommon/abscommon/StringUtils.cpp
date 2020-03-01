@@ -121,6 +121,17 @@ std::string ExtractFileName(const std::string& fn)
     return fn;
 }
 
+std::string ConcatPath(const std::string& path, const std::string& name, const std::string& ext /* = "" */)
+{
+    std::string result = path;
+    if (result.back() != '/' && result.back() != '\\' && name.front() != '/' && name.front() != '\\')
+        result += '/';
+    result += name;
+    if (!ext.empty())
+        result += ext;
+    return result;
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;

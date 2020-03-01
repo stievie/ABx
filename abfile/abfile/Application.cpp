@@ -215,9 +215,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "abfile_svc.lua";
+        configFile_ = Utils::ConcatPath(path_, "abfile_svc.lua");
 #else
-        configFile_ = path_ + "/" + "abfile.lua";
+        configFile_ = Utils::ConcatPath(path_, "abfile.lua");
 #endif
     }
 
