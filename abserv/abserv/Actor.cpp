@@ -822,6 +822,18 @@ bool Actor::Interrupt()
     return InterruptSkill(AB::Entities::SkillTypeSkill);
 }
 
+std::string Actor::GetClassLevel() const
+{
+    if (!skills_)
+        return "Lvl" + std::to_string(GetLevel());
+    std::string classes = skills_->GetClasses();
+    if (classes.empty())
+        return "Lvl" + std::to_string(GetLevel());
+
+    classes += std::to_string(GetLevel());
+    return classes;
+}
+
 uint32_t Actor::GetAttributePoints() const
 {
     return GetAttribPoints(GetLevel());

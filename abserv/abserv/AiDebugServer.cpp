@@ -231,6 +231,7 @@ void DebugServer::BroadcastGame(const Game::Game& game)
         msg.gameId = current.GetGame()->id_;
         msg.objectState = static_cast<uint8_t>(current.stateComp_.GetState());
         msg.name = current.GetName();
+        msg.classLevel = current.GetClassLevel();
         msg.position = current.GetPosition();
         msg.health = current.resourceComp_->GetHealth();
         msg.maxHealth = current.resourceComp_->GetMaxHealth();

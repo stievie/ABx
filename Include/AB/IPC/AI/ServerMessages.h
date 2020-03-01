@@ -79,6 +79,7 @@ struct GameObject
     ObjectType objectType{ ObjectType::Unknown };
     uint8_t objectState{ 0 };
     std::string name;
+    std::string classLevel;
     std::array<float, 3> position;
     int health{ 0 };
     int maxHealth{ 0 };
@@ -103,6 +104,7 @@ struct GameObject
         ar.value(objectType);
         ar.value(objectState);
         ar.value(name);
+        ar.value(classLevel);
         ar.value(position[0]);
         ar.value(position[1]);
         ar.value(position[2]);

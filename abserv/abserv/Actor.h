@@ -222,6 +222,7 @@ public:
     virtual bool CanAttack() const { return false; }
     virtual bool CanUseSkill() const { return false; }
     virtual uint32_t GetLevel() const { return 0; }
+    std::string GetClassLevel() const;
     virtual void SetLevel(uint32_t) { }
     virtual void AddXp(int) { }
     virtual uint32_t GetXp() const { return 0; }

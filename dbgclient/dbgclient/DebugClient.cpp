@@ -169,7 +169,7 @@ void DebugClient::UpdateObjects()
     for (const auto& object : objects_)
     {
         std::stringstream ss;
-        ss << "[" << object.second.id << "] " << object.second.name;
+        ss << "[" << object.second.id << "] " << object.second.classLevel << " " << object.second.name;
         window_.PrintObject(ss.str(), i, object.second.id == selectedObjectId_);
         ++i;
     }
@@ -192,7 +192,7 @@ void DebugClient::UpdateObjectDetails()
     const AI::GameObject& obj = (*it).second;
     {
         std::stringstream ss;
-        ss << "[" << obj.id << "] " << obj.name;
+        ss << "[" << obj.id << "] " << obj.classLevel << " " << obj.name;
         window_.PrintObjectDetails(ss.str(), line++, false, true);
     }
     {
@@ -334,6 +334,8 @@ void DebugClient::HandleGameObject(const AI::GameObject& message)
         return;
 
     if ((*it).second.name.compare(message.name) != 0)
+        gameObjectsDirty_ = true;
+    if ((*it).second.classLevel.compare(message.classLevel) != 0)
         gameObjectsDirty_ = true;
 
     objects_[message.id] = message;

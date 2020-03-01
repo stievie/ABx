@@ -354,4 +354,16 @@ std::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, Sk
     return result;
 }
 
+std::string SkillBar::GetClasses() const
+{
+    if (prof1_.index == 0)
+        return "";
+
+    std::string result = prof1_.abbr;
+    if (prof2_.index != 0)
+        result += "/" + prof2_.abbr;
+
+    return result;
+}
+
 }

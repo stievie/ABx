@@ -102,6 +102,8 @@ public:
     std::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;
     std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly = false) const;
 
+    std::string GetClasses() const;
+
     Skill* operator[](uint32_t index)
     {
         return skills_[index].get();
