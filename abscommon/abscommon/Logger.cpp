@@ -62,6 +62,11 @@ Logger::Logger(std::ostream& stream /* = std::cout */) :
     CONSOLE_SCREEN_BUFFER_INFO Info;
     GetConsoleScreenBufferInfo(hConsole_, &Info);
     foregroundDefault_ = Info.wAttributes;
+    if (&stream_ == &std::cout)
+    {
+        isConsole_ = true;
+        SetConsoleOutputCP(CP_UTF8);
+    }
 #endif
 }
 
@@ -80,6 +85,10 @@ Logger& Logger::operator << (EndlType endl)
 #endif
     }
     stream_ << endl;
+#if defined(AB_WINDOWS)
+    if (isConsole_)
+        stream_ << std::flush;
+#endif
     return *this;
 }
 

@@ -55,6 +55,7 @@ private:
 #if defined(AB_WINDOWS)
     HANDLE hConsole_{ 0 };
     short foregroundDefault_{ 0 };
+    bool isConsole_{ false };
 #endif
     bool nextIsBegin_{ true };
     std::ofstream fstream_;
