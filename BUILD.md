@@ -27,7 +27,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 ### Prerequisites
 
-* GCC
+* GCC 8 or later
 * GNU make
 * ccache (optional)
 
@@ -49,6 +49,21 @@ Your distribution may have different names for these libraries.
 
 I didn't try any other database backend than PostgreSQL since some time, so the others may or may
 not work.
+
+### Install GCC and Dependencies on Ubuntu
+
+The following works for Ubuntu 18.04:
+
+~~~sh
+# Install GCC 8
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update -qq
+sudo apt-get install g++-8
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 90
+# Install Dependencies
+sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
+~~~
 
 ### Build
 
