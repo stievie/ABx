@@ -25,7 +25,7 @@
 #include "EffectsComp.h"
 #include "SkillBar.h"
 #include "SkillManager.h"
-#include "TemplateEncoder.h"
+#include <abshared/TemplEncoder.h>
 
 namespace Game {
 
@@ -123,7 +123,16 @@ void SkillBar::Update(uint32_t timeElapsed)
 
 std::string SkillBar::Encode()
 {
-    return IO::TemplateEncoder::Encode(*this);
+    const SkillsArray& _skills = GetArray();
+    SkillIndices sis;
+    size_t i = 0;
+    for (const auto& s : _skills)
+    {
+        sis[i] = (s ? s->data_.index : 0);
+        ++i;
+    }
+
+    return IO::SkillTEmplateEncode(prof1_, prof2_, GetAttributes(), sis);
 }
 
 bool SkillBar::HaveAttribute(uint32_t index)
@@ -181,7 +190,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
     AB::Entities::Profession p2;
     Attributes attribs;
     std::array<uint32_t, PLAYER_MAX_SKILLS> skills;
-    if (!IO::TemplateEncoder::Decode(str, p1, p2, attribs, skills))
+    if (!IO::SkillTemplateDecode(str, p1, p2, attribs, skills))
         return false;
 
     prof2_.uuid = Utils::Uuid::EMPTY_UUID;

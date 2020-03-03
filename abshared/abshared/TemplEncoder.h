@@ -32,18 +32,11 @@
 
 namespace IO {
 
-class TemplEncoder
-{
-public:
-    static uint8_t GetSkillsTemplateHeader()
-    {
-        return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
-    }
-    static std::string Encode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
-        const Game::Attributes& attribs, const Game::SkillIndices& skills);
-    static bool Decode(const std::string& templ,
-        AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        Game::Attributes& attribs, Game::SkillIndices& skills);
-};
+uint8_t GetSkillsTemplateHeader();
+std::string SkillTEmplateEncode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
+    const Game::Attributes& attribs, const Game::SkillIndices& skills);
+bool SkillTemplateDecode(const std::string& templ,
+    AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
+    Game::Attributes& attribs, Game::SkillIndices& skills);
 
 }

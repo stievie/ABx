@@ -39,7 +39,7 @@
 #include "ProgressComp.h"
 #include "ScriptManager.h"
 #include "SelectionComp.h"
-#include "TemplateEncoder.h"
+#include <abshared/TemplEncoder.h>
 #include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Attributes.h>
@@ -560,7 +560,7 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProfIndex()));
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProf2Index()));
     stream.Write<uint32_t>(GetItemIndex());
-    const std::string skills = IO::TemplateEncoder::Encode(*skills_);
+    const std::string skills = skills_->Encode();
     stream.WriteString(skills);
     return true;
 }

@@ -25,7 +25,12 @@
 
 namespace IO {
 
-std::string TemplEncoder::Encode(const AB::Entities::Profession& prof1,
+uint8_t GetSkillsTemplateHeader()
+{
+    return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
+}
+
+std::string SkillTEmplateEncode(const AB::Entities::Profession& prof1,
     const AB::Entities::Profession& prof2,
     const Game::Attributes& attribs, const Game::SkillIndices& skills)
 {
@@ -57,7 +62,7 @@ std::string TemplEncoder::Encode(const AB::Entities::Profession& prof1,
     return base64::encode(buff.data(), buff.size());
 }
 
-bool TemplEncoder::Decode(const std::string& templ, AB::Entities::Profession& prof1,
+bool SkillTemplateDecode(const std::string& templ, AB::Entities::Profession& prof1,
     AB::Entities::Profession& prof2, Game::Attributes& attribs, Game::SkillIndices& skills)
 {
     if (templ.empty())
