@@ -65,6 +65,7 @@
 #if defined(__linux__)
 #include <linux/version.h>
 #endif
+#include <sa/PragmaWarning.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -84,14 +85,10 @@
 * > return function;
 * > }
 */
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning( disable : 4701 4100)
-#endif
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4701 4100)
 URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
-#if defined(_MSC_VER)
-#pragma warning( pop )
-#endif // defined
+PRAGMA_WARNING_POP
 
 bool gNoClientPrediction = false;
 

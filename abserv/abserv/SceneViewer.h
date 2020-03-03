@@ -23,13 +23,14 @@
 
 #if defined(SCENE_VIEWER)
 
+#include <sa/PragmaWarning.h>
 extern "C" {
 #include <GL/glew.h>
 }
-#pragma warning(push)
-#pragma warning(disable: 4505)
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4505)
 #include <GL/freeglut.h>
-#pragma warning(pop)
+PRAGMA_WARNING_POP
 
 #include "Vector3.h"
 #include "Game.h"
