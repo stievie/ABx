@@ -263,8 +263,6 @@ abserv/StateComp.h
 abserv/stdafx.cpp
 abserv/stdafx.h
 abserv/targetver.h
-abserv/TemplateEncoder.cpp
-abserv/TemplateEncoder.h
 abserv/Terrain.cpp
 abserv/Terrain.h
 abserv/TerrainPatch.cpp
