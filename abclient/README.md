@@ -4,7 +4,7 @@
 
 Extract the archive to a location of your choice.
 
-If it doesn't run download the Visual C++ Redistributable for Visual Studio 2017
+If it doesn't run download the Visual C++ Redistributable for Visual Studio 2019
 package (https://visualstudio.microsoft.com/downloads/ -> Other Tools and Frameworks)
 from Microsoft and install it.
 

@@ -50,7 +50,7 @@ Header file:
 
 #include "Filter.h"
 
-class SelectAggro : public AI::Filter
+class SelectAggro final : public AI::Filter
 {
     FILTER_CLASS(SelectAggro)
 public:
@@ -105,7 +105,7 @@ Header file:
 
 #include "Action.h"
 
-class AttackSelection : public AI::Action
+class AttackSelection final : public AI::Action
 {
     NODE_CLASS(AttackSelection)
 protected:
@@ -126,7 +126,7 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
-        return Status::Failed;
+        return ReturnStatus(Status::Failed);
     for (auto id : selection)
     {
         auto target = npc.GetGame()->GetObjectById(id);
@@ -136,13 +136,15 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
             continue;
 
         if (target->IsDead())
-            return Status::Finished;
+            return ReturnStatus(Status::Finished);
         if (npc.IsAttacking(target))
-            return Status::Running;
+            return ReturnStatus(Status::Running);
         if (npc.Attack(target))
-            return Status::Running;
+            return ReturnStatus(Status::Running);
     }
-    return Status::Finished;
+    // The ReturnStatus() function stores the result in the Agent's
+    // context and returns it.
+    return ReturnStatus(Status::Finished);
 }
 ~~~
 
