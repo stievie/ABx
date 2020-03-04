@@ -118,36 +118,36 @@ public:
 class DBTransaction
 {
 private:
-    enum TransactionState
+    enum class State
     {
-        StateNoStart,
-        StateStart,
-        StateCommit
+        Unknown,
+        Started,
+        Committed
     };
     Database* db_;
-    TransactionState state_;
+    State state_;
 public:
     explicit DBTransaction(Database* db) :
         db_(db),
-        state_(StateNoStart)
+        state_(State::Unknown)
     {}
     ~DBTransaction()
     {
-        if (state_ == StateStart)
+        if (state_ == State::Started)
         {
             db_->Rollback();
         }
     }
     bool Begin()
     {
-        state_ = StateStart;
+        state_ = State::Started;
         return db_->BeginTransaction();
     }
     bool Commit()
     {
-        if (state_ == StateStart)
+        if (state_ == State::Started)
         {
-            state_ = StateCommit;
+            state_ = State::Committed;
             return db_->Commit();
         }
         return false;

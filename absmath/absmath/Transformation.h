@@ -35,8 +35,8 @@ public:
     Quaternion oriention_;
 
     Transformation() :
-        position_(Vector3(0.0f, 0.0f, 0.0f)),
-        scale_(Vector3(1.0f, 1.0f, 1.0f)),
+        position_(Vector3::Zero),
+        scale_(Vector3::One),
         oriention_(Quaternion::Identity)
     {}
     Transformation(const Vector3& pos, const Vector3& scale, float rot) :
