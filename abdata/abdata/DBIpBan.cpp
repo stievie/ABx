@@ -33,10 +33,10 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
     }
 
     Database* db = GetSubsystem<Database>();
-    DB::DBQuery dbQuery;
+    std::ostringstream dbQuery;
     dbQuery << "SELECT COUNT(*) as `count` FROM `ip_bans` WHERE ";
     dbQuery << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(dbQuery);
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(dbQuery.str());
     if (result && result->GetInt("count") != 0)
     {
         LOG_ERROR << "There is already a record matching this IP and mask" << std::endl;

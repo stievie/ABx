@@ -33,8 +33,6 @@ DatabaseSqlite::DatabaseSqlite(const std::string& file) :
 {
     connected_ = false;
 
-    // test for existence of database file;
-    // sqlite3_open will create a new one if it isn't there (which we don't want)
     std::fstream fin(file.c_str(), std::ios::in | std::ios::binary);
     if (fin.fail()) {
         LOG_ERROR << "Failed to initialize SQLite connection. File " << file <<
@@ -43,7 +41,6 @@ DatabaseSqlite::DatabaseSqlite(const std::string& file) :
     }
     fin.close();
 
-    // Initialize sqlite
     if (sqlite3_open(file.c_str(), &handle_) != SQLITE_OK)
     {
         LOG_ERROR << "Failed to initialize SQLite connection." << std::endl;
@@ -125,7 +122,6 @@ bool DatabaseSqlite::InternalQuery(const std::string &query)
 
     std::string buf = Parse(query);
     sqlite3_stmt* stmt;
-    // prepares statement
     if (sqlite3_prepare_v2(handle_, buf.c_str(), (int)buf.length(), &stmt, NULL) != SQLITE_OK)
     {
         sqlite3_finalize(stmt);
@@ -133,7 +129,6 @@ bool DatabaseSqlite::InternalQuery(const std::string &query)
         return false;
     }
 
-    // executes it once
     int ret = sqlite3_step(stmt);
     if (ret != SQLITE_OK && ret != SQLITE_DONE && ret != SQLITE_ROW)
     {
@@ -142,8 +137,6 @@ bool DatabaseSqlite::InternalQuery(const std::string &query)
         return false;
     }
 
-    // closes statement
-    // at all not sure if it should be debugged - query was executed correctly...
     sqlite3_finalize(stmt);
 
     return true;
@@ -162,7 +155,6 @@ std::shared_ptr<DBResult> DatabaseSqlite::InternalSelectQuery(const std::string 
 
     std::string buf = Parse(query);
     sqlite3_stmt* stmt;
-    // prepares statement
     if (sqlite3_prepare_v2(handle_, buf.c_str(), (int)buf.length(), &stmt, NULL) != SQLITE_OK)
     {
         sqlite3_finalize(stmt);
@@ -182,14 +174,10 @@ uint64_t DatabaseSqlite::GetLastInsertId()
 
 std::string DatabaseSqlite::EscapeString(const std::string &s)
 {
-    // remember about quoiting even an empty string!
     if (!s.size())
         return std::string("''");
 
-    // the worst case is 2n + 1
     char* output = new char[s.length() * 2 + 3];
-
-    // quotes escaped string and frees temporary buffer
     sqlite3_snprintf((int)s.length() * 2 + 3, output, "%Q", s.c_str());
     std::string r(output);
     delete[] output;

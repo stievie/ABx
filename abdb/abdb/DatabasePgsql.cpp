@@ -138,7 +138,6 @@ uint64_t DatabasePgsql::GetLastInsertId()
         return 0;
     }
 
-    // everything went fine
     uint64_t id = strtoul(PQgetvalue(res, 0, PQfnumber(res, "last")), nullptr, 0);
     PQclear(res);
     return id;
@@ -146,15 +145,12 @@ uint64_t DatabasePgsql::GetLastInsertId()
 
 std::string DatabasePgsql::EscapeString(const std::string& s)
 {
-    // remember to quote even empty string!
     if (!s.size())
         return std::string("''");
 
-    // the worst case is 2n + 1
     int32_t error;
     char* output = new char[s.length() * 2 + 1];
 
-    // quotes escaped string and frees temporary buffer
     PQescapeStringConn(handle_, output, s.c_str(), s.length(), reinterpret_cast<int*>(&error));
     std::stringstream r;
     r << "'" << output << "'";
@@ -164,22 +160,12 @@ std::string DatabasePgsql::EscapeString(const std::string& s)
 
 std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
 {
-    // remember to quote even empty stream!
     if (!s || length == 0)
         return std::string("''");
 
     std::stringstream r;
     r << "'" << base64::encode((const unsigned char*)s, length) << "'";
     return r.str();
-/*
-    // quotes escaped string and frees temporary buffer
-    size_t len;
-    char* output = (char*)PQescapeByteaConn(handle_, (unsigned char*)s, length, &len);
-    std::stringstream r;
-    r << "E'" << std::string(output, len - 1) << "'";
-    PQfreemem(output);
-    return r.str();
-    */
 }
 
 void DatabasePgsql::FreeResult(DBResult* res)
@@ -213,7 +199,6 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
     LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
 #endif
 
-    // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
 
@@ -224,7 +209,6 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
         return false;
     }
 
-    // everything went fine
     PQclear(res);
     return true;
 }
@@ -328,14 +312,6 @@ std::string PgsqlResult::GetStream(const std::string& col)
     size_t size = PQgetlength(handle_, cursor_, PQfnumber(handle_, col.c_str()));
     char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
     return base64::decode(buf, size);
-    /*
-    size_t size;
-    char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
-    unsigned char* temp = PQunescapeBytea((const unsigned char*)buf, &size);
-    std::string result((char*)temp, size);
-    PQfreemem(temp);
-    return result;
-    */
 }
 
 bool PgsqlResult::IsNull(const std::string& col)

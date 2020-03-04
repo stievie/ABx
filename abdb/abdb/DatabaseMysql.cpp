@@ -142,14 +142,10 @@ std::string DatabaseMysql::EscapeString(const std::string& s)
 
 std::string DatabaseMysql::EscapeBlob(const char* s, size_t length)
 {
-    // remember about quoting even an empty string!
     if (!s)
         return std::string("''");
 
-    // the worst case is 2n + 1
     char* output = new char[length * 2 + 1];
-
-    // quotes escaped string and frees temporary buffer
     mysql_real_escape_string(&handle_, output, s, (unsigned long)length);
     std::stringstream r;
     r << "'" << output << "'";
@@ -173,7 +169,6 @@ bool DatabaseMysql::InternalQuery(const std::string& query)
 
     bool state = true;
 
-    // executes the query
     if (mysql_real_query(&handle_, query.c_str(), static_cast<unsigned long>(query.length())) != 0)
     {
         LOG_ERROR << "mysql_real_query(): " << query.substr(0, 256) << ": MYSQL ERROR: " << mysql_error(&handle_) << std::endl;
@@ -187,10 +182,7 @@ bool DatabaseMysql::InternalQuery(const std::string& query)
         state = false;
     }
 
-    // we should call that every time as someone would call executeQuery('SELECT...')
-    // as it is described in MySQL manual: "it doesn't hurt" :P
     MYSQL_RES* m_res = mysql_store_result(&handle_);
-
     if (m_res)
         mysql_free_result(m_res);
 
@@ -206,7 +198,6 @@ std::shared_ptr<DBResult> DatabaseMysql::InternalSelectQuery(const std::string& 
     LOG_DEBUG << "MYSQL QUERY: " << query << std::endl;
 #endif
 
-    // executes the query
     if (mysql_real_query(&handle_, query.c_str(), static_cast<unsigned long>(query.length())) != 0)
     {
         LOG_ERROR << "mysql_real_query(): " << query << ": MYSQL ERROR: " << mysql_error(&handle_) << std::endl;
@@ -218,11 +209,7 @@ std::shared_ptr<DBResult> DatabaseMysql::InternalSelectQuery(const std::string& 
         }
     }
 
-    // we should call that every time as someone would call executeQuery('SELECT...')
-    // as it is described in MySQL manual: "it doesn't hurt" :P
     MYSQL_RES* m_res = mysql_store_result(&handle_);
-
-    // error occurred
     if (!m_res)
     {
         LOG_ERROR << "mysql_store_result(): " << query.substr(0, 256) << ": MYSQL ERROR: " << mysql_error(&handle_) << std::endl;
@@ -236,7 +223,6 @@ std::shared_ptr<DBResult> DatabaseMysql::InternalSelectQuery(const std::string& 
         return std::shared_ptr<DBResult>();
     }
 
-    // retrieving results of query
     std::shared_ptr<DBResult> res(new MysqlResult(m_res), std::bind(&Database::FreeResult, this, std::placeholders::_1));
     return VerifyResult(res);
 }
