@@ -57,7 +57,7 @@
 // Okay, let's use it, didn't see any negative effects lately.
 #define TCP_OPTION_NODELAY
 
-inline constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
+inline constexpr auto RESTRICTED_NAME_CHARS = R"(1234567890<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
 
 namespace Auth {
 // Auth token expires in 1 hr of inactivity
