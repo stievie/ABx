@@ -126,7 +126,7 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())
-        return ReturnStatus(Status::Failed);
+        return ReturnStatus(agent, Status::Failed);
     for (auto id : selection)
     {
         auto target = npc.GetGame()->GetObjectById(id);
@@ -136,15 +136,15 @@ Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
             continue;
 
         if (target->IsDead())
-            return ReturnStatus(Status::Finished);
+            return ReturnStatus(agent, Status::Finished);
         if (npc.IsAttacking(target))
-            return ReturnStatus(Status::Running);
+            return ReturnStatus(agent, Status::Running);
         if (npc.Attack(target))
-            return ReturnStatus(Status::Running);
+            return ReturnStatus(agent, Status::Running);
     }
     // The ReturnStatus() function stores the result in the Agent's
     // context and returns it.
-    return ReturnStatus(Status::Finished);
+    return ReturnStatus(agent, Status::Finished);
 }
 ~~~
 
