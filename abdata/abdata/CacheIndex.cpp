@@ -26,7 +26,7 @@ IO::DataKey CacheIndex::Next()
 {
     auto& rankIndex = dataItems_.get<1>();
     auto first = rankIndex.begin();
-    const IO::DataKey& retVal = first->key;
+    const IO::DataKey retVal = first->key;
     dataItems_.erase(retVal);
     return retVal;
 }
