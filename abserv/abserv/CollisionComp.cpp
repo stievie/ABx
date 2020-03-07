@@ -37,13 +37,13 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 {
     AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
-    const Math::Vector3& oldPos = mc.GetOldPosition();
+    const Math::Vector3& safePos = mc.GetSafePosition();
 
     // That's us
     Math::CollisionManifold manifold;
     manifold.velocity = mc.velocity_;
     // Center of body
-    manifold.position = GetBodyCenter(oldPos);
+    manifold.position = GetBodyCenter(safePos);
     manifold.radius = myBB.Extends();
     // Since we collide with `other` let's get some more information from `other`
     bool foundSolution = other.GetCollisionShape()->GetManifold(manifold, other.transformation_.GetMatrix());
@@ -54,7 +54,7 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
             LOG_DEBUG << "Stuck! ";
-        LOG_DEBUG << "going back to " << oldPos.ToString() << std::endl;
+        LOG_DEBUG << "going back to " << safePos.ToString() << std::endl;
 #endif
         GotoSafePosition();
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
@@ -71,16 +71,16 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
     }
 
     const Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
-    const Math::Vector3 slidingPlaneNormal = (oldPos - manifold.intersectionPoint).Normal();
+    const Math::Vector3 slidingPlaneNormal = (safePos - manifold.intersectionPoint).Normal();
     const Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
 
     const Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
     const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
 
-    const Math::Vector3 newPos = oldPos + newVelocityVector;
+    const Math::Vector3 newPos = safePos + newVelocityVector;
 
 #ifdef DEBUG_COLLISION
-    LOG_DEBUG << "Sliding from " << oldPos.ToString() << " to "
+    LOG_DEBUG << "Sliding from " << safePos.ToString() << " to "
         << newPos.ToString() <<
         " intersection at " << manifold.intersectionPoint.ToString() << std::endl;
 #endif
@@ -101,8 +101,9 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 void CollisionComp::GotoSafePosition()
 {
     MoveComp& mc = *owner_.moveComp_;
-    owner_.transformation_.position_ = mc.GetOldPosition();
+    owner_.transformation_.position_ = mc.GetSafePosition();
     mc.moved_ = false;
+    mc.forcePosition_ = true;
 }
 
 Math::Vector3 CollisionComp::GetBodyCenter(const Math::Vector3& pos)
@@ -176,7 +177,11 @@ void CollisionComp::Update(uint32_t)
 {
     assert(owner_.moveComp_);
     if (owner_.moveComp_->moved_)
+    {
         ResolveCollisions();
+        // Store last safe position
+        owner_.moveComp_->StoreSafePosition();
+    }
 }
 
 }

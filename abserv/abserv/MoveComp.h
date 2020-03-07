@@ -42,6 +42,7 @@ private:
     Actor& owner_;
     float speedFactor_{ 1.0f };
     Math::Vector3 oldPosition_;
+    Math::Vector3 safePosition_;
     /// Move to moveDir_
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
@@ -92,9 +93,14 @@ public:
     {
         return oldPosition_;
     }
+    const Math::Vector3& GetSafePosition() const
+    {
+        return safePosition_;
+    }
     bool IsMoving() const { return !velocity_.Equals(Math::Vector3::Zero); }
     void Write(Net::NetworkMessage& message);
     void StoreOldPosition();
+    void StoreSafePosition();
     Math::Vector3& CalculateVelocity(uint32_t timeElapsed);
 
     uint32_t moveDir_{ AB::GameProtocol::MoveDirectionNone };

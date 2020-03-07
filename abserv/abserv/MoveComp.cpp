@@ -226,6 +226,12 @@ void MoveComp::Write(Net::NetworkMessage& message)
 void MoveComp::StoreOldPosition()
 {
     oldPosition_ = owner_.transformation_.position_;
+    safePosition_ = owner_.transformation_.position_;
+}
+
+void MoveComp::StoreSafePosition()
+{
+    safePosition_ = owner_.transformation_.position_;
 }
 
 Math::Vector3& MoveComp::CalculateVelocity(uint32_t timeElapsed)
