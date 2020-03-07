@@ -9,6 +9,8 @@ function onInit()
   -- Player collides with BB. Make it a bit larget than the default BB.
   self:SetBoundingSize({1.0, 2.0, 2.0})
   self:SetUndestroyable(true)
+  -- Even when the collision mask is zero, it still calls the trigger even
+  self:SetCollisionMask(0)
   -- Will call onTrigger() when it collides
   self:SetTrigger(true)
   return true

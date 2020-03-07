@@ -26,6 +26,7 @@
 #include "Player.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <optional>
 
 //#define DEBUG_NAVIGATION
 
@@ -179,22 +180,22 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     const Math::Vector3& pos = owner_.transformation_.position_;
 
     // Raycast to the point and see if there is a hit.
-    const auto raycast = [&pos, this](const Math::Vector3& dest) -> Math::RayQueryResult*
+    const auto raycast = [&pos, this](const Math::Vector3& dest) -> std::optional<Math::RayQueryResult>
     {
         std::vector<Math::RayQueryResult> result;
         float dist = pos.Distance(dest);
         if (!owner_.RaycastWithResult(result, pos, dest - pos, dist))
             // No Octree (shouldn't happen)
-            return nullptr;
+            return {};
         if (result.size() == 0)
             // Lucky, no obstacles
-            return nullptr;
+            return {};
 
         // The first non-TerrainPatch hit
         Math::RayQueryResult* hit = nullptr;
         for (auto& r : result)
         {
-            if (!Is<TerrainPatch>(r.object_))
+            if (!Is<TerrainPatch>(r.object_) && owner_.CollisionMaskMatches(r.object_->GetCollisionMask()))
             {
                 hit = &r;
                 break;
@@ -205,13 +206,16 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
             // May be the object we are moving to.
             // A bit more than the approx. extends of an average creature BB.
             if (hit->object_->transformation_.position_.Distance(dest) < AVERAGE_BB_EXTENDS * 2.0f)
-                return nullptr;
+                return {};
+            // We need a copy of the hit, because when result runs out of scope the hit becomes invalid,
+            // so we can't return just a pointer to the hit.
+            return *hit;
         }
-        return hit;
+        return {};
     };
 
-    const auto* hit = raycast(destination);
-    if (!hit || !hit->object_)
+    const auto hit = raycast(destination);
+    if (!hit.has_value() || !hit->object_)
         // Nothing or only TerrainPatches on the way
         return destination;
 
@@ -223,8 +227,8 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     const Math::Vector3 size = bb.Size() * 2.0f;
     const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
     const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
-    const auto* newHit = raycast(newDest);
-    if (newHit)
+    const auto newHit = raycast(newDest);
+    if (newHit.has_value())
         return AvoidObstaclesInternal(newDest, recursionLevel + 1);
 #ifdef DEBUG_NAVIGATION
     LOG_DEBUG << "New destination " << newDest.ToString() << std::endl;

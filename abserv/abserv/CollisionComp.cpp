@@ -123,7 +123,7 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
             return Iteration::Continue;
     }
 
-    if ((other.collisionMask_ != 0) && (owner_.collisionMask_ != 0))
+    if (owner_.CollisionMaskMatches(other.GetCollisionMask()))
     {
         // Don't move the character when the object actually does not collide,
         // but we may still need the trigger stuff.

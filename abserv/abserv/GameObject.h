@@ -196,6 +196,7 @@ public:
         collisionMask_ = mask;
     }
     uint32_t GetCollisionMask() const { return collisionMask_; }
+    bool CollisionMaskMatches(uint32_t otherMask) const { return (collisionMask_ != 0) && (otherMask != 0) && (collisionMask_ & otherMask) != 0; }
     Math::AbstractCollisionShape* GetCollisionShape() const
     {
         if (!collisionShape_)
