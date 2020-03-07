@@ -30,8 +30,8 @@ class Decorator : public Node
 {
 protected:
     std::shared_ptr<Node> child_;
-public:
     explicit Decorator(const ArgumentsType& arguments);
+public:
     bool AddNode(std::shared_ptr<Node> node) override;
     void VisitChildren(const std::function<Iteration(const Node&)>&) const override;
 };

@@ -37,8 +37,8 @@ class Loader
     NON_COPYABLE(Loader)
 protected:
     Registry& registry_;
-public:
     explicit Loader(Registry& reg);
+public:
     virtual ~Loader();
     virtual std::shared_ptr<Root> LoadFile(const std::string& fileName) = 0;
     virtual std::shared_ptr<Root> LoadString(const std::string& value) = 0;

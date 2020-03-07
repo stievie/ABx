@@ -42,7 +42,7 @@ using AiAgentContext = Context<
     Math::Vector3
 >;
 
-class AiAgent : public Agent
+class AiAgent final : public Agent
 {
 private:
     Game::Npc& npc_;

@@ -88,8 +88,8 @@ protected:
     std::shared_ptr<Condition> condition_;
     // Store the result in the Agent's context and return it.
     Node::Status ReturnStatus(Agent& agent, Node::Status value);
-public:
     explicit Node(const ArgumentsType& arguments);
+public:
     virtual ~Node();
     Id GetId() const { return id_; }
 

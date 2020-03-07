@@ -26,7 +26,7 @@
 namespace AI {
 namespace Filters {
 
-class FirstFilter : public Filter
+class FirstFilter final : public Filter
 {
     FILTER_CLASS(FirstFilter)
 public:

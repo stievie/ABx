@@ -37,8 +37,8 @@ protected:
     void SetCurrentAction(Agent& agent);
     void UnsetCurrentAction(Agent& agent);
     virtual Status DoAction(Agent& agent, uint32_t timeElapsed) = 0;
-public:
     explicit Action(const ArgumentsType& arguments);
+public:
     ~Action() override;
 
     bool MustComplete() const { return mustComplete_; }
