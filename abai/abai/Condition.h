@@ -65,8 +65,8 @@ class Condition
 {
 protected:
     std::string name_;
-public:
     explicit Condition(const ArgumentsType& arguments);
+public:
     virtual ~Condition();
 
     virtual const char* GetClassName() const = 0;

@@ -25,7 +25,7 @@
 
 namespace AI {
 
-class AiLoader : public LuaLoader
+class AiLoader final : public LuaLoader
 {
 protected:
     bool ExecuteScript(kaguya::State& state, const std::string& file) override;

@@ -50,7 +50,7 @@ class AgentContext : public Context<id_type, node_status_type, limit_type, timer
 {
 public:
     std::weak_ptr<Action> currentAction_;
-    inline bool IsActionRunning(Id id) const
+    bool IsActionRunning(Id id) const
     {
         if (auto ca = currentAction_.lock())
             return ca->GetId() == id;

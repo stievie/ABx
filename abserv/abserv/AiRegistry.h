@@ -25,7 +25,7 @@
 
 namespace AI {
 
-class AiRegistry : public Registry
+class AiRegistry final : public Registry
 {
 public:
     AiRegistry();

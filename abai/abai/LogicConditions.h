@@ -26,7 +26,7 @@
 namespace AI {
 namespace Conditions {
 
-class FalseCondition : public Condition
+class FalseCondition final : public Condition
 {
     CONDITON_CLASS(FalseCondition)
 public:
@@ -35,7 +35,7 @@ public:
     std::string GetFriendlyName() const override;
 };
 
-class TrueCondition : public Condition
+class TrueCondition final : public Condition
 {
     CONDITON_CLASS(TrueCondition)
 public:
@@ -44,7 +44,7 @@ public:
     std::string GetFriendlyName() const override;
 };
 
-class AndCondition : public Condition
+class AndCondition final : public Condition
 {
     CONDITON_CLASS(AndCondition)
 private:
@@ -58,7 +58,7 @@ public:
     bool Evaluate(Agent&, const Node&) override;
 };
 
-class OrCondition : public Condition
+class OrCondition final : public Condition
 {
     CONDITON_CLASS(OrCondition)
 private:
@@ -72,7 +72,7 @@ public:
     bool Evaluate(Agent&, const Node&) override;
 };
 
-class NotCondition : public Condition
+class NotCondition final : public Condition
 {
     CONDITON_CLASS(NotCondition)
 private:

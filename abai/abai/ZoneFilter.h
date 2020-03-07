@@ -27,7 +27,7 @@ namespace AI {
 namespace Filters {
 
 // Selects all agents in the Zone
-class ZoneFilter : public Filter
+class ZoneFilter final : public Filter
 {
     FILTER_CLASS(ZoneFilter)
 public:

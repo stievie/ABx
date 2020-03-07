@@ -26,6 +26,7 @@
 #include <AB/Entities/Service.h>
 #include "UuidUtils.h"
 #include <sa/ArgParser.h>
+#include <sa/Noncopyable.h>
 
 namespace IO {
 class DataClient;
@@ -37,6 +38,7 @@ class MessageClient;
 
 class ServerApp
 {
+    NON_COPYABLE(ServerApp)
 private:
     void Init();
     static std::string GetMachineName();
@@ -61,16 +63,14 @@ protected:
     virtual void ShowVersion() = 0;
     void ShowCommandlineError(const sa::arg_parser::result& err);
     void UpdateService(AB::Entities::Service& service);
-public:
     ServerApp();
+public:
     virtual ~ServerApp() = default;
     bool InitializeW(int argc, wchar_t** argv);
     bool InitializeA(int argc, char** argv);
     virtual bool Initialize(const std::vector<std::string>& args);
-    virtual void Run()
-    { }
-    virtual void Stop()
-    { }
+    virtual void Run() { }
+    virtual void Stop() { }
     /// Returns the Server UUID from the config file
     const std::string& GetServerId() const
     {

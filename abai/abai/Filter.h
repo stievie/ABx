@@ -57,13 +57,13 @@ private:                                                                        
 class Filter
 {
 protected:
+    std::string name_;
+    explicit Filter(const ArgumentsType& arguments);
     AgentIds& GetFiltered(Agent& agent)
     {
         return agent.filteredAgents_;
     }
-    std::string name_;
 public:
-    explicit Filter(const ArgumentsType& arguments);
     virtual ~Filter();
 
     virtual const char* GetClassName() const = 0;
