@@ -60,7 +60,7 @@ bool Connection::Send(sa::SharedPtr<OutputMessage>&& message)
 
     OutputMessage& msg = *message;
     bool noPendingWrite = messageQueue_.empty();
-    std::lock_guard<std::mutex> lockClass(lock_);
+    std::scoped_lock<std::mutex> lockClass(lock_);
     messageQueue_.emplace_back(std::move(message));
     if (noPendingWrite)
         InternalSend(msg);
@@ -89,7 +89,7 @@ void Connection::InternalSend(OutputMessage& message)
 
 void Connection::OnWriteOperation(const asio::error_code& error)
 {
-    std::lock_guard<std::mutex> lockClass(lock_);
+    std::scoped_lock<std::mutex> lockClass(lock_);
     writeTimer_.cancel();
     messageQueue_.pop_front();
 
@@ -352,10 +352,7 @@ void Connection::CloseSocket()
         if (err)
             LOG_ERROR << "Network " << err.default_error_condition().value() << " " << err.default_error_condition().message() << std::endl;
 
-        asio::error_code err2;
-        socket_.close(err2);
-        if (err2)
-            LOG_ERROR << "Network " << err2.default_error_condition().value() << " " << err2.default_error_condition().message() << std::endl;
+        socket_.close();
     }
 }
 
@@ -370,7 +367,7 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
 
     std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock<std::mutex> lock(lock_);
         connections_.insert(connection);
     }
 
@@ -379,13 +376,13 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
 
 void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection)
 {
-    std::lock_guard<std::mutex> lockClass(lock_);
+    std::scoped_lock<std::mutex> lockClass(lock_);
     connections_.erase(connection);
 }
 
 void ConnectionManager::CloseAll()
 {
-    std::lock_guard<std::mutex> lockClass(lock_);
+    std::scoped_lock<std::mutex> lockClass(lock_);
     for (const auto& conn : connections_)
         conn->CloseSocket();
     connections_.clear();

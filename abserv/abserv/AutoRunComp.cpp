@@ -168,7 +168,7 @@ Math::Vector3 AutoRunComp::Next()
 
 Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destination, unsigned recursionLevel)
 {
-    if (recursionLevel > 2)
+    if (recursionLevel >= MAX_OBSTACLE_AVOID_RECURSION_LEVEL)
     {
 #ifdef DEBUG_NAVIGATION
     LOG_DEBUG << "Stuck: new destination " << newDest.ToString() << std::endl;

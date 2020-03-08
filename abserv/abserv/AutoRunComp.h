@@ -34,6 +34,8 @@ class GameObject;
 
 namespace Components {
 
+#define MAX_OBSTACLE_AVOID_RECURSION_LEVEL 3
+
 class AutoRunComp
 {
     NON_COPYABLE(AutoRunComp)
