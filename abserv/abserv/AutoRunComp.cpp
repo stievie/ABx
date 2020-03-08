@@ -224,7 +224,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
 #endif
 
     const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
-    const Math::Vector3 size = bb.Size() * 2.0f;
+    const Math::Vector3 size = (hit->object_->transformation_.oriention_ * bb.Size()) + 0.5f;
     const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
     const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
     const auto newHit = raycast(newDest);
