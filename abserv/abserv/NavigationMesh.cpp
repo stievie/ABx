@@ -151,7 +151,7 @@ bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& 
     if (dtStatusFailed(status))
     {
 #ifdef DEBUG_NAVIGATION
-        LOG_WARNING << "findNearestPoly() Failed with startStatus " << status <<
+        LOG_WARNING << "CanStepOn() Failed with status " << status <<
             GetStatusString(status) << std::endl;
 #endif
         return false;

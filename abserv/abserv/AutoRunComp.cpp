@@ -226,10 +226,14 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
     const Math::Vector3 size = (hit->object_->transformation_.oriention_ * bb.Size()) + 0.5f;
     const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
-    const Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
+    Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
 
     if (!owner_.GetGame()->map_->CanStepOn(newDest))
-        return AvoidObstaclesInternal(newDest, recursionLevel + 1);
+    {
+        newDest = hit->position_ + (sign ? -size : size);
+        if (!owner_.GetGame()->map_->CanStepOn(newDest))
+            return AvoidObstaclesInternal(hit->position_ + (sign ? size : -size), recursionLevel + 1);
+    }
 
     const auto newHit = raycast(newDest);
     if (newHit.has_value())
