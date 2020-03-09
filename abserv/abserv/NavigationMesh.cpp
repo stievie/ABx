@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "NavigationMesh.h"
+#include <abscommon/Random.h>
+#include <abscommon/Subsystems.h>
 
 namespace Navigation {
 
@@ -52,6 +54,15 @@ NavigationMesh::~NavigationMesh()
     dtFreeNavMeshQuery(navQuery_);
     if (navMesh_)
         dtFreeNavMesh(navMesh_);
+}
+
+void NavigationMesh::SetNavMesh(dtNavMesh* value)
+{
+    if (navMesh_)
+        dtFreeNavMesh(navMesh_);
+
+    navMesh_ = value;
+    navQuery_->init(navMesh_, MAX_POLYS);
 }
 
 bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
@@ -128,6 +139,61 @@ Math::Vector3 NavigationMesh::FindNearestPoint(const Math::Vector3& point,
         nearestRef = &pointRef;
     navQuery_->findNearestPoly(&point.x_, &extents.x_, filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
     return *nearestRef ? nearestPoint : point;
+}
+
+bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef)
+{
+    dtPolyRef pointRef;
+    if (!nearestRef)
+        nearestRef = &pointRef;
+    dtStatus status = navQuery_->findNearestPoly(&point.x_, extents.Data(), filter ? filter : queryFilter_.get(), nearestRef, nullptr);
+    if (dtStatusFailed(status))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "findNearestPoly() Failed with startStatus " << status <<
+            GetStatusString(status) << std::endl;
+#endif
+        return false;
+    }
+    return *nearestRef ? true : false;
+}
+
+bool NavigationMesh::FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents,
+    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+{
+    dtPolyRef pointRef;
+    if (!nearestRef)
+        nearestRef = &pointRef;
+
+    const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
+    dtPolyRef startRef = 0;
+    dtStatus startStatus = navQuery_->findNearestPoly(point.Data(), extents.Data(), queryFilter, &startRef, nullptr);
+    if (dtStatusFailed(startStatus))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "findNearestPoly() Failed with startStatus " << startStatus <<
+            GetStatusString(startStatus) << std::endl;
+#endif
+        return false;
+    }
+
+    auto frng = []() -> float
+    {
+        auto* rng = GetSubsystem<Crypto::Random>();
+        return rng->GetFloat();
+    };
+
+    dtPolyRef randomRef;
+    startStatus = navQuery_->findRandomPointAroundCircle(startRef, point.Data(), radius, queryFilter, frng, &randomRef, &result.x_);
+    if (dtStatusFailed(startStatus))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "findRandomPointAroundCircle() Failed with startStatus " << startStatus <<
+            GetStatusString(startStatus) << std::endl;
+#endif
+        return false;
+    }
+    return true;
 }
 
 std::string NavigationMesh::GetStatusString(dtStatus status)
