@@ -104,6 +104,8 @@ public:
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+    bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 
     MapData data_;
     std::vector<SpawnPoint> spawnPoints_;
