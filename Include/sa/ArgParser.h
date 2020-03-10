@@ -29,6 +29,7 @@
 #include <cctype>
 #include <sstream>
 #include <memory>
+#include <sa/PragmaWarning.h>
 
 namespace sa {
 namespace arg_parser {
@@ -66,11 +67,15 @@ typedef std::map<std::string, std::unique_ptr<value_base>> values;
 template <typename T>
 inline std::optional<T> get_value(const values& vals, const std::string& name)
 {
+PRAGMA_WARNING_PUSH
+    // GCC: This warning is wrong
+PRAGMA_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
     const auto it = vals.find(name);
     if (it == vals.end())
         return {};
     const auto* v = static_cast<value<T>*>((*it).second.get());
     return v->value;
+PRAGMA_WARNING_POP
 }
 
 template <typename T>

@@ -9,7 +9,7 @@ OBJDIR = obj/x64/$(CONFIG)/Tests
 LIBS += -labscommon -labsmath -labai -labipc -ltinyexpr -llua5.3 -lpthread
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror -Wno-maybe-uninitialized
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

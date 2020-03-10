@@ -47,11 +47,19 @@ private:
 public:
     ~TinyExpr()
     {
+        Reset();
+    }
+    void Reset()
+    {
         if (expr_)
+        {
             te_free(expr_);
+            expr_ = nullptr;
+        }
         for (auto& n : names_)
             free(n);
         names_.clear();
+        variables_.clear();
     }
     void AddVariable(const std::string& name, double* value)
     {
