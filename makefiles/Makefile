@@ -11,6 +11,8 @@ all:
 	@$(MAKE) -f  detour.make
 	@echo "-------------------- Building libless -------------------"
 	@$(MAKE) -f  libless.make
+	@echo "------------------- Building tinyexpr -------------------"
+	@$(MAKE) -f  tinyexpr.make
 	@echo "--------------------- Building abdb ---------------------"
 	@$(MAKE) -f  abdb.make
 	@echo "--------------------- Building abipc --------------------"
@@ -56,6 +58,7 @@ clean:
 	@$(MAKE) -f  recast.make clean
 	@$(MAKE) -f  detour.make clean
 	@$(MAKE) -f  libless.make clean
+	@$(MAKE) -f  tinyexpr.make clean
 	@$(MAKE) -f  abdb.make clean
 	@$(MAKE) -f  abipc.make clean
 	@$(MAKE) -f  abai.make clean
