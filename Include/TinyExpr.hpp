@@ -23,6 +23,8 @@
 
 #include <tinyexpr.h>
 #include <vector>
+#include <string>
+#include <string.h>
 
 class TinyExpr
 {

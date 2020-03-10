@@ -38,7 +38,7 @@ TEST_CASE("TinyExpr variables")
 {
     TinyExpr expr;
     double x = 3;
-    double y = 4.0f;
+    double y = 4.0;
     expr.AddVariable("x", &x);
     expr.AddVariable("y", &y);
 
