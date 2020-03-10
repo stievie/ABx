@@ -67,7 +67,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -98,7 +98,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(OutDir)$(TargetFileName)</Command>
@@ -131,6 +131,7 @@
     <ClCompile Include="sa.PoolAllocator.cpp" />
     <ClCompile Include="sa.SharedPtr.cpp" />
     <ClCompile Include="sa.TypeName.cpp" />
+    <ClCompile Include="TinyExpr.cpp" />
     <ClCompile Include="Utils.CallableTable.cpp" />
     <ClCompile Include="Utils.Events.cpp" />
     <ClCompile Include="Utils.Transaction.cpp" />
