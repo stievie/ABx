@@ -178,9 +178,12 @@ void MoveComp::Write(Net::NetworkMessage& message)
         AB::Packets::Add(packet, message);
     }
 
-    if (moved_)
+    if (moved_ || forcePosition_)
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectPositionChange);
+        if (forcePosition_)
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetPosition);
+        else
+            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectPositionChange);
         AB::Packets::Server::ObjectPosUpdate packet = {
             owner_.id_,
             {
@@ -191,20 +194,6 @@ void MoveComp::Write(Net::NetworkMessage& message)
         };
         AB::Packets::Add(packet, message);
         moved_ = false;
-    }
-
-    if (forcePosition_)
-    {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetPosition);
-        AB::Packets::Server::ObjectPosUpdate packet = {
-            owner_.id_,
-            {
-                owner_.transformation_.position_.x_,
-                owner_.transformation_.position_.y_,
-                owner_.transformation_.position_.z_
-            }
-        };
-        AB::Packets::Add(packet, message);
         forcePosition_ = false;
     }
 
