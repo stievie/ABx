@@ -32,7 +32,7 @@ private:
     std::vector<te_variable> variables_;
     std::vector<char*> names_;
     te_expr* expr_{ nullptr };
-    void AddFunc(const std::string& name, const void* ptr, int type)
+    void AddVar(const std::string& name, const void* ptr, int type)
     {
 #ifdef _MSC_VER
         char* n = _strdup(name.c_str());
@@ -63,46 +63,39 @@ public:
     }
     void AddVariable(const std::string& name, double* value)
     {
-#ifdef _MSC_VER
-        char* n = _strdup(name.c_str());
-#else
-        char* n = strdup(name.c_str());
-#endif
-        names_.push_back(n);
-        te_variable var = { n, value, TE_VARIABLE, nullptr };
-        variables_.push_back(std::move(var));
+        AddVar(name, value, TE_VARIABLE);
     }
     void AddFunction(const std::string& name, double(*callback)())
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION0);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION0);
     }
     void AddFunction(const std::string& name, double(*callback)(double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION1);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION1);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION2);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION2);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION3);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION3);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double, double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION4);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION4);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double, double, double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION5);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION5);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double, double, double, double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION6);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION6);
     }
     void AddFunction(const std::string& name, double(*callback)(double, double, double, double, double, double, double))
     {
-        AddFunc(name, reinterpret_cast<const void*>(callback), TE_FUNCTION7);
+        AddVar(name, reinterpret_cast<const void*>(callback), TE_FUNCTION7);
     }
     int Compile(const std::string& expr)
     {
