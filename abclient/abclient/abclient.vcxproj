@@ -322,6 +322,7 @@
     </ClCompile>
     <ClCompile Include="TabGroup.cpp" />
     <ClCompile Include="TargetWindow.cpp" />
+    <ClCompile Include="TemplateEvaluator.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="AccountChestDialog.h" />
@@ -388,6 +389,7 @@
     <ClInclude Include="TabGroup.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TargetWindow.h" />
+    <ClInclude Include="TemplateEvaluator.h" />
     <ClInclude Include="WindowManager.h" />
     <ClInclude Include="WorldLevel.h" />
   </ItemGroup>
