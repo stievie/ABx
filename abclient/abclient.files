@@ -107,6 +107,8 @@ abclient/SkillManager.cpp
 abclient/SkillManager.h
 abclient/Spinner.cpp
 abclient/Spinner.h
+abclient/TemplateEvaluator.cpp
+abclient/TemplateEvaluator.h
 abclient/stdafx.cpp
 abclient/stdafx.h
 abclient/TabGroup.cpp

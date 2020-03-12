@@ -112,4 +112,15 @@ public:
             return 0.0;
         return te_eval(expr_);
     }
+    double Evaluate(const std::string& source)
+    {
+        if (expr_)
+        {
+            te_free(expr_);
+        }
+        int ret = Compile(source);
+        if (ret != 0)
+            return 0.0;
+        return te_eval(expr_);
+    }
 };

@@ -26,36 +26,42 @@
 #include "Mechanic.h"
 #include <AB/Entities/Profession.h>
 
-namespace Game {
+namespace Game
+{
+
+#define ENUMERATE_ATTRIBUTES                \
+    ENUMERATE_ATTRIBUTE(FastCast)           \
+    ENUMERATE_ATTRIBUTE(Illusion)           \
+    ENUMERATE_ATTRIBUTE(Domination)         \
+    ENUMERATE_ATTRIBUTE(Inspiration)        \
+    ENUMERATE_ATTRIBUTE(Blood)              \
+    ENUMERATE_ATTRIBUTE(Death)              \
+    ENUMERATE_ATTRIBUTE(SoulReaping)        \
+    ENUMERATE_ATTRIBUTE(Curses)             \
+    ENUMERATE_ATTRIBUTE(Air)                \
+    ENUMERATE_ATTRIBUTE(Earth)              \
+    ENUMERATE_ATTRIBUTE(Fire)               \
+    ENUMERATE_ATTRIBUTE(Water)              \
+    ENUMERATE_ATTRIBUTE(EnergyStorage)      \
+    ENUMERATE_ATTRIBUTE(Healing)            \
+    ENUMERATE_ATTRIBUTE(Smiting)            \
+    ENUMERATE_ATTRIBUTE(Protection)         \
+    ENUMERATE_ATTRIBUTE(DevineFavour)       \
+    ENUMERATE_ATTRIBUTE(Strength)           \
+    ENUMERATE_ATTRIBUTE(AxeMatery)          \
+    ENUMERATE_ATTRIBUTE(HammerMastery)      \
+    ENUMERATE_ATTRIBUTE(SwordsManship)      \
+    ENUMERATE_ATTRIBUTE(Tactics)            \
+    ENUMERATE_ATTRIBUTE(BeastMastery)       \
+    ENUMERATE_ATTRIBUTE(Expertise)          \
+    ENUMERATE_ATTRIBUTE(WildernessSurvival) \
+    ENUMERATE_ATTRIBUTE(MarkMansship)
 
 enum class Attribute : uint32_t
 {
-    FastCast = 0,
-    Illusion,
-    Domination,
-    Inspiration,
-    Blood,
-    Death,
-    SoulReaping,
-    Curses,
-    Air,
-    Earth,
-    Fire,
-    Water,
-    EnergyStorage,
-    Healing,
-    Smiting,
-    Protection,
-    DevineFavour,
-    Strength,
-    AxeMatery,
-    HammerMastery,
-    SwordsManship,
-    Tactics,
-    BeastMastery,
-    Expertise,
-    WildernessSurvival,
-    MarkMansship,
+#define ENUMERATE_ATTRIBUTE(v) v,
+    ENUMERATE_ATTRIBUTES
+#undef ENUMERATE_ATTRIBUTE
     __Last,
 
     None = 99
@@ -63,8 +69,8 @@ enum class Attribute : uint32_t
 
 struct AttributeValue
 {
-    Attribute index{ Attribute::None };    // No attribute
-    uint32_t value{ 0 };     // How many points
+    Attribute index{ Attribute::None }; // No attribute
+    uint32_t value{ 0 };                // How many points
 };
 
 typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;

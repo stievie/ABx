@@ -53,8 +53,8 @@ std::string SkillTEmplateEncode(const AB::Entities::Profession& prof1,
     for (const auto& s : skills)
     {
         const uint16_t skillIndex = static_cast<uint16_t>(s);
-        const uint8_t partA = (uint8_t)((skillIndex & 0xFF00) >> 8);
-        const uint8_t partB = (uint8_t)(skillIndex & 0x00FF);
+        const uint8_t partA = static_cast<uint8_t>((skillIndex & 0xFF00) >> 8);
+        const uint8_t partB = static_cast<uint8_t>(skillIndex & 0x00FF);
         buff.push_back(partA);
         buff.push_back(partB);
     }
@@ -89,13 +89,13 @@ bool SkillTemplateDecode(const std::string& templ, AB::Entities::Profession& pro
         ++pos;
     }
 
-    for (int i = 0; i < Game::PLAYER_MAX_SKILLS; i++)
+    for (size_t i = 0; i < Game::PLAYER_MAX_SKILLS; i++)
     {
         const uint8_t partA = vec[pos];
         ++pos;
         const uint8_t partB = vec[pos];
         ++pos;
-        skills[i] = (partA << 8) | partB;
+        skills[i] = static_cast<uint32_t>((partA << 8) | partB);
     }
     return true;
 }
