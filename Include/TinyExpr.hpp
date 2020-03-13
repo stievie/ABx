@@ -36,6 +36,7 @@ private:
     te_expr* expr_{ nullptr };
     void AddVar(const std::string& name, const void* ptr, int type)
     {
+        // NOTE: Variables must be in lower case.
         std::string lowerName;
         lowerName.resize(name.length());
 PRAGMA_WARNING_PUSH

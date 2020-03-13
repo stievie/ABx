@@ -48,18 +48,6 @@ TEST_CASE("TinyExpr variables")
     REQUIRE(res == Approx(5.0));
 }
 
-TEST_CASE("TinyExpr variable 2")
-{
-    TinyExpr expr;
-    double Smiting = 11;
-    expr.AddVariable("smiting", &Smiting);
-
-    int err = expr.Compile("10 + (smiting * 3)");
-    REQUIRE(err == 0);
-    double res = expr.Evaluate();
-    REQUIRE(res == Approx(5.0));
-}
-
 static double func1(double arg)
 {
     return arg;
