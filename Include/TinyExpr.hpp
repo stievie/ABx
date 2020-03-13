@@ -34,6 +34,7 @@ private:
     std::vector<te_variable> variables_;
     std::vector<char*> names_;
     te_expr* expr_{ nullptr };
+    int error_{ 0 };
     void AddVar(const std::string& name, const void* ptr, int type)
     {
         // NOTE: Variables must be in lower case.
@@ -72,7 +73,9 @@ public:
             free(n);
         names_.clear();
         variables_.clear();
+        error_ = 0;
     }
+    int GetError() const { return error_; }
     void AddVariable(const std::string& name, double* value)
     {
         AddVar(name, value, TE_VARIABLE);
@@ -114,9 +117,8 @@ public:
         if (expr_)
             te_free(expr_);
 
-        int err;
-        expr_ = te_compile(expr.c_str(), variables_.data(), static_cast<int>(variables_.size()), &err);
-        return err;
+        expr_ = te_compile(expr.c_str(), variables_.data(), static_cast<int>(variables_.size()), &error_);
+        return error_;
     }
     double Evaluate()
     {
