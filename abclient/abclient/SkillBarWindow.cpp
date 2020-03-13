@@ -23,6 +23,9 @@
 #include "SkillBarWindow.h"
 #include "FwClient.h"
 #include "SkillManager.h"
+#include "TemplateEvaluator.h"
+#include "LevelManager.h"
+#include "Actor.h"
 
 void SkillBarWindow::RegisterObject(Context* context)
 {
@@ -86,11 +89,23 @@ SkillBarWindow::~SkillBarWindow()
     UnsubscribeFromAllEvents();
 }
 
+void SkillBarWindow::SetActor(SharedPtr<Actor> actor)
+{
+    actor_ = actor;
+}
+
 void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
 {
+    auto actor = actor_.Lock();
+    if (!actor)
+        return;
+
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
     SkillManager* sm = GetSubsystem<SkillManager>();
+
+    TemplateEvaluator templEval(*actor);
+
     skills_ = skills;
     uint32_t i = 1;
     for (const auto& s : skills_)
@@ -110,7 +125,7 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
                 btn->SetPressedOffset(IntVector2(-4, -4));
                 Text* tooltip = btn->GetChildStaticCast<Text>("SkillTooltipText", true);
                 String tip = String(skill->name.c_str());
-                tip += "\n" + String(skill->shortDescription.c_str());
+                tip += "\n" + String(templEval.Evaluate(skill->description).c_str());
                 tooltip->SetText(tip);
                 ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
                 tt->SetPosition(IntVector2(0, -(tooltip->GetHeight() + 10)));

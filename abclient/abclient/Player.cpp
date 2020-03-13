@@ -60,20 +60,12 @@ void Player::RegisterObject(Context* context)
     URHO3D_ATTRIBUTE("Controls Pitch", float, controls_.pitch_, 0.0f, AM_DEFAULT);
 }
 
-Player* Player::CreatePlayer(uint32_t id, Scene* scene,
-    const Vector3& position, const Quaternion& rotation,
-    AB::GameProtocol::CreatureState state,
-    PropReadStream& data)
+Player* Player::CreatePlayer(uint32_t id, Scene* scene)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
     node->CreateComponent<ClientPrediction>();
     result->gameId_ = id;
-
-    result->Unserialize(data);
-    result->Init(scene, position, rotation, state);
-
-    result->PlayAnimation(ANIM_IDLE, true, 0.0f);
     return result;
 }
 

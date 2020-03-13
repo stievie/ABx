@@ -996,11 +996,15 @@ void WorldLevel::CreatePlayer(uint32_t id,
     AB::GameProtocol::CreatureState state,
     PropReadStream& data)
 {
-    player_ = Player::CreatePlayer(id, scene_, position, direction, state, data);
+    player_ = Player::CreatePlayer(id, scene_);
+    skillBar_->SetActor(player_);
     player_->moveToPos_ = position;
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);
     player_->UpdateYaw();
+    player_->Unserialize(data);
+    player_->Init(scene_, position, direction, state);
+    player_->PlayAnimation(ANIM_IDLE, true, 0.0f);
 
     cameraNode_ = player_->cameraNode_;
     // Add sound listener to camera node, also Guild Wars does it so.

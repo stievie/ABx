@@ -107,14 +107,14 @@ ClientApp::ClientApp(Context* context) :
     char buff[MAX_PATH];
     GetModuleFileNameA(NULL, buff, MAX_PATH);
     exeName_ = String(buff);
-    unsigned pos = exeName_.FindLast('\\', 0, false);
+    unsigned pos = exeName_.FindLast('\\', String::NPOS, false);
     if  (pos != String::NPOS)
         appPath_ = exeName_.Substring(0, pos);
 #else
     char buff[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
     exeName_ = String(buff, (count > 0) ? static_cast<unsigned>(count) : 0);
-    unsigned pos = exeName_.FindLast('/', 0, false);
+    unsigned pos = exeName_.FindLast('/', String::NPOS, false);
     if  (pos != String::NPOS)
         appPath_ = exeName_.Substring(0, pos);
 #endif

@@ -24,6 +24,8 @@
 #include <abshared/TemplEncoder.h>
 #include <Urho3DAll.h>
 
+class Actor;
+
 class SkillBarWindow : public Window
 {
     URHO3D_OBJECT(SkillBarWindow, Window)
@@ -37,6 +39,7 @@ private:
     SharedPtr<Button> skill6_;
     SharedPtr<Button> skill7_;
     SharedPtr<Button> skill8_;
+    WeakPtr<Actor> actor_;
     Game::SkillIndices skills_;
     void SubscribeEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -55,6 +58,7 @@ public:
     SkillBarWindow(Context* context);
     ~SkillBarWindow() override;
 
+    void SetActor(SharedPtr<Actor> actor);
     void SetSkills(const Game::SkillIndices& skills);
 };
 

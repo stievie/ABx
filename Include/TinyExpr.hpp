@@ -25,6 +25,8 @@
 #include <vector>
 #include <string>
 #include <string.h>
+#include <algorithm>
+#include <sa/PragmaWarning.h>
 
 class TinyExpr
 {
@@ -34,10 +36,19 @@ private:
     te_expr* expr_{ nullptr };
     void AddVar(const std::string& name, const void* ptr, int type)
     {
+        std::string lowerName;
+        lowerName.resize(name.length());
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4244)
+        std::transform(name.begin(),
+            name.end(),
+            lowerName.begin(),
+            ::tolower);
+PRAGMA_WARNING_POP
 #ifdef _MSC_VER
-        char* n = _strdup(name.c_str());
+        char* n = _strdup(lowerName.c_str());
 #else
-        char* n = strdup(name.c_str());
+        char* n = strdup(lowerName.c_str());
 #endif
         names_.push_back(n);
 
@@ -117,6 +128,7 @@ public:
         if (expr_)
         {
             te_free(expr_);
+            expr_ = nullptr;
         }
         int ret = Compile(source);
         if (ret != 0)

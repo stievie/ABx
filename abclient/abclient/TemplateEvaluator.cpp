@@ -25,6 +25,7 @@
 #include <abshared/Attributes.h>
 #include "Actor.h"
 #include <sstream>
+#include <algorithm>
 
 TemplateEvaluator::TemplateEvaluator(Actor& actor) :
     actor_(actor)
@@ -33,6 +34,9 @@ TemplateEvaluator::TemplateEvaluator(Actor& actor) :
 
 std::string TemplateEvaluator::Evaluate(const std::string& source)
 {
+    if (source.empty())
+        return "";
+
     // Syntax:
     // This awesome skill heals by ${Healing * 2 + 3} and makes ${Death * 3} damage.
     TinyExpr expr;
@@ -53,6 +57,8 @@ std::string TemplateEvaluator::Evaluate(const std::string& source)
         {
         case TemplateParser::TokenType::Expression:
         {
+            std::string lowerExpr;
+            lowerExpr.reserve(token.value.length());
             double val = expr.Evaluate(token.value);
             // FIXME: Should we round instead of just truncating?
             result << static_cast<int>(val);
@@ -98,9 +104,13 @@ TemplateParser::Token TemplateParser::GetNextToken()
             break;
         }
         case '}':
-            result.end = index_ - 1;
-            result.value = std::string(&source_[result.start], result.end - result.start);
-            return result;
+            if (result.type == TokenType::Expression)
+            {
+                result.end = index_ - 1;
+                result.value = std::string(&source_[result.start], result.end - result.start);
+                return result;
+            }
+            break;
         case '\0':
             result.end = index_;
             result.value = std::string(&source_[result.start], result.end - result.start);
