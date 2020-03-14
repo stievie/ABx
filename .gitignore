@@ -80,6 +80,7 @@ build/*
 Design/*
 Tools/*
 Doc/*
+gtkdbgclient/*
 
 backup.cmd
 *.pdb
