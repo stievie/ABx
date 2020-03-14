@@ -56,6 +56,7 @@ struct AttriInfo
 };
 
 static constexpr auto KEY_PROFESSIONS = "game_professions";
+inline constexpr auto PROFESSION_NONE_UUID = "79b75ff4-92f0-11e8-a7ca-02100700d6f0";
 
 struct Profession : Entity
 {

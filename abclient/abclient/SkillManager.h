@@ -80,15 +80,32 @@ public:
     template <typename Callable>
     void VisistSkillsByProfession(const std::string& profUuid, const Callable& func)
     {
+        std::vector<const AB::Entities::Skill*> sorted;
         for (const auto& s : skills_)
         {
-            if (s.second.professionUuid.compare(profUuid) == 0)
+            if (s.second.index != 0 && s.second.professionUuid.compare(profUuid) == 0)
+                sorted.push_back(&s.second);
+        }
+        std::sort(sorted.begin(), sorted.end(), [this](const auto* lhs, const auto* rhs)
+        {
+            const AB::Entities::Attribute* a1 = GetAttribute(lhs->attributeUuid);
+            const AB::Entities::Attribute* a2 = GetAttribute(rhs->attributeUuid);
+            if (a1 && a2)
             {
-                if (func(s.second) == Iteration::Break)
-                    break;
+                int c = a1->name.compare(a2->name);
+                if (c != 0)
+                    return c < 0;
+                return lhs->name.compare(rhs->name) < 0;
             }
+            return lhs->attributeUuid.compare(rhs->attributeUuid) < 0;
+        });
+        for (const auto& s : sorted)
+        {
+            if (func(*s) == Iteration::Break)
+                break;
         }
     }
+    const AB::Entities::Attribute* GetAttribute(const std::string& uuid) const;
 
     std::map<uint32_t, AB::Entities::Skill> skills_;
     std::map<std::string, AB::Entities::Profession> professions_;

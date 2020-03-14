@@ -48,3 +48,13 @@ AB::Entities::AttriInfo* SkillManager::GetAttrInfo(AB::Entities::Profession& pro
         return nullptr;
     return &(*it);
 }
+
+const AB::Entities::Attribute* SkillManager::GetAttribute(const std::string& uuid) const
+{
+    for (const auto& attrib : attributes_)
+    {
+        if (attrib.second.uuid.compare(uuid) == 0)
+            return &attrib.second;
+    }
+    return nullptr;
+}

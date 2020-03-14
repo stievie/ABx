@@ -428,11 +428,13 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
     };
 
     lv->RemoveAllItems();
+    // All Players have a primary profession
     sm->VisistSkillsByProfession(actor.profession_->uuid, [&](const AB::Entities::Skill& skill)
     {
         createItem(skill);
         return Iteration::Continue;
     });
+    // And may have a secoondary profession
     if (actor.profession2_)
     {
         sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
@@ -441,6 +443,12 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
             return Iteration::Continue;
         });
     }
+    // Lastly add skills that all professions can have
+    sm->VisistSkillsByProfession(AB::Entities::PROFESSION_NONE_UUID, [&](const AB::Entities::Skill& skill)
+    {
+        createItem(skill);
+        return Iteration::Continue;
+    });
 }
 
 void SkillsWindow::UpdateAll()
