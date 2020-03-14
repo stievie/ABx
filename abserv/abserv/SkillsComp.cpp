@@ -78,6 +78,13 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         lastError_ = AB::GameProtocol::SkillErrorInvalidSkill;
         return lastError_;
     }
+    SkillBar* sb = owner_.GetSkillBar();
+    auto skill = sb->GetSkill(index);
+    if (!skill || skill->data_.index == 0)
+    {
+        lastError_ = AB::GameProtocol::SkillErrorInvalidSkill;
+        return lastError_;
+    }
     std::shared_ptr<Actor> target;
     if (auto selObj = owner_.GetSelectedObject())
         target = selObj->GetPtr<Actor>();
@@ -85,9 +92,6 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     // Can use skills only on Creatures not all GameObjects.
     // But a target is not mandatory, the Skill script will decide
     // if it needs a target, and may fail.
-    SkillBar* sb = owner_.GetSkillBar();
-    auto skill = sb->GetSkill(index);
-    assert(skill);
     lastError_ = sb->UseSkill(index, target);
     usingSkill_ = lastError_ == AB::GameProtocol::SkillErrorNone;
     lastSkillIndex_ = index;
@@ -107,7 +111,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
     {
         LOG_DEBUG << owner_.GetName() << " using invalid skill " <<
-                     skill->data_.name <<
+                     (skill ? skill->data_.name : "(none)") <<
                      " on target " << (target ? target->GetName() : "(none)") <<
                      " error = " <<
                      static_cast<int>(lastError_) << std::endl;

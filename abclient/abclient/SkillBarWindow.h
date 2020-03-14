@@ -52,6 +52,7 @@ private:
     void HandleSkill7Clicked(StringHash eventType, VariantMap& eventData);
     void HandleSkill8Clicked(StringHash eventType, VariantMap& eventData);
     Button* GetButtonFromIndex(uint32_t index);
+    void ResetSkillButtons();
 public:
     static void RegisterObject(Context* context);
 

@@ -73,6 +73,8 @@ SkillBarWindow::SkillBarWindow(Context* context) :
     skill7_ = GetChildStaticCast<Button>("Skill7", true);
     skill8_ = GetChildStaticCast<Button>("Skill8", true);
 
+    ResetSkillButtons();
+
     SubscribeToEvent(skill1_, E_RELEASED, URHO3D_HANDLER(SkillBarWindow, HandleSkill1Clicked));
     SubscribeToEvent(skill2_, E_RELEASED, URHO3D_HANDLER(SkillBarWindow, HandleSkill2Clicked));
     SubscribeToEvent(skill3_, E_RELEASED, URHO3D_HANDLER(SkillBarWindow, HandleSkill3Clicked));
@@ -96,6 +98,7 @@ void SkillBarWindow::SetActor(SharedPtr<Actor> actor)
 
 void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
 {
+    ResetSkillButtons();
     auto actor = actor_.Lock();
     if (!actor)
         return;
@@ -113,7 +116,7 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
         bool iconSet = false;
         Button* btn = GetButtonFromIndex(i);
         const AB::Entities::Skill* skill = sm->GetSkillByIndex(s);
-        if (skill)
+        if (skill && skill->index != 0)
         {
             Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
             if (icon)
@@ -123,26 +126,33 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
                 btn->SetBorder(IntRect(4, 4, 4, 4));
                 btn->SetHoverOffset(IntVector2(4, 4));
                 btn->SetPressedOffset(IntVector2(-4, -4));
-                Text* tooltip = btn->GetChildStaticCast<Text>("SkillTooltipText", true);
-                String tip = String(skill->name.c_str());
-                tip += "\n" + String(templEval.Evaluate(skill->description).c_str());
-                tooltip->SetText(tip);
-                ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
-                tt->SetPosition(IntVector2(0, -(tooltip->GetHeight() + 10)));
                 iconSet = true;
             }
+            Text* skillName = btn->GetChildStaticCast<Text>("SkillName", true);
+            skillName->SetText(String(skill->name.c_str()));
+            Text* skillDescription = btn->GetChildStaticCast<Text>("SkillDescription", true);
+            skillDescription->SetText(String(templEval.Evaluate(skill->description).c_str()));
+            Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
+            ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
+            tt->SetPosition(IntVector2(0, -(tooltipWindow->GetHeight() + 10)));
+            tt->SetEnabled(true);
             btn->SetEnabled(true);
+            tooltipWindow->SetVisible(true);
         }
         else
+        {
+            ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
+            tt->SetEnabled(false);
             btn->SetEnabled(false);
+            Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
+            tooltipWindow->SetVisible(false);
+        }
         if (!iconSet)
         {
             btn->SetTexture(defTexture);
             btn->SetImageRect(IntRect(16, 0, 32, 16));
             btn->SetBorder(IntRect(4, 4, 4, 4));
             btn->SetHoverOffset(IntVector2(0, 0));
-            Text* tooltip = btn->GetChildStaticCast<Text>("SkillTooltipText", true);
-            tooltip->SetText(String::EMPTY);
         }
         ++i;
     }
@@ -227,5 +237,24 @@ Button* SkillBarWindow::GetButtonFromIndex(uint32_t index)
         return skill8_;
     default:
         return nullptr;
+    }
+}
+
+void SkillBarWindow::ResetSkillButtons()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
+    for (uint32_t i = 1; i <= Game::PLAYER_MAX_SKILLS; ++i)
+    {
+        Button* btn = GetButtonFromIndex(i);
+        ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
+        Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
+        tooltipWindow->SetVisible(false);
+        tt->SetEnabled(false);
+        btn->SetTexture(defTexture);
+        btn->SetImageRect(IntRect(16, 0, 32, 16));
+        btn->SetBorder(IntRect(4, 4, 4, 4));
+        btn->SetHoverOffset(IntVector2(0, 0));
+        btn->SetEnabled(false);
     }
 }
