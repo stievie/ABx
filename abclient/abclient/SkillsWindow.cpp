@@ -342,7 +342,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
 
         spinner->SetMin(0);
         spinner->SetMax(Game::MAX_PLAYER_ATTRIBUTE_RANK);
-        spinner->SetValue(actor.GetAttributeRank(static_cast<Game::Attribute>(attr.index)));
+        spinner->SetValue(static_cast<int>(actor.GetAttributeRank(static_cast<Game::Attribute>(attr.index))));
         spinner->SetCanIncrease(actor.CanIncreaseAttributeRank(static_cast<Game::Attribute>(attr.index)));
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
@@ -434,7 +434,7 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         createItem(skill);
         return Iteration::Continue;
     });
-    // And may have a secoondary profession
+    // And may have a secondary profession
     if (actor.profession2_)
     {
         sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
