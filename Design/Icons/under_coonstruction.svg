@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="350"
+   height="350"
+   viewBox="0 0 92.604164 92.604173"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="under_coonstruction.svg"
+   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\Icons\under_construction.png"
+   inkscape:export-xdpi="70.220001"
+   inkscape:export-ydpi="70.220001">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.4910156"
+     inkscape:cx="132.02693"
+     inkscape:cy="171.16566"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     units="px"
+     showguides="false" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-204.39583)">
+    <rect
+       style="fill:#ebb531;fill-opacity:1;fill-rule:nonzero;stroke:#ebb531;stroke-width:5.00001001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect823"
+       width="58.457951"
+       height="58.191822"
+       x="-172.88246"
+       y="181.61601"
+       transform="matrix(0.71021769,-0.70398213,0.70492536,0.70928149,0,0)" />
+    <rect
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:5.00159693;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect821"
+       width="50.300476"
+       height="49.908398"
+       x="-171.96829"
+       y="188.57529"
+       transform="matrix(0.72357622,-0.69024448,0.71566911,0.69843949,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.31408596px;line-height:125%;font-family:Sans;-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="27.061712"
+       y="252.48318"
+       id="text827"
+       transform="scale(1.0024607,0.99754535)"><tspan
+         sodipodi:role="line"
+         id="tspan825"
+         x="27.061712"
+         y="252.48318"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.31408596px;font-family:Sans;-inkscape-font-specification:'Sans Bold';stroke-width:0.26458332px">Coming</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.31821012px;line-height:125%;font-family:Sans;-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="36.4352"
+       y="260.2529"
+       id="text831"
+       transform="scale(1.0024607,0.99754535)"><tspan
+         sodipodi:role="line"
+         id="tspan829"
+         x="36.4352"
+         y="260.2529"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.31821012px;font-family:Sans;-inkscape-font-specification:'Sans Bold';stroke-width:0.26458332px">soon</tspan></text>
+  </g>
+</svg>
