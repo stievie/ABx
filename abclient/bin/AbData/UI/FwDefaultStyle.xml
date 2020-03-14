@@ -392,6 +392,25 @@
         <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
         <attribute name="Color" value="0.95 0.95 0.95" />
     </element>
+    <element type="SkillListItem" auto="false">
+        <attribute name="Min Size" value="0 44" />
+        <attribute name="Max Size" value="2147483647 44" />
+        <attribute name="Layout Mode" value="Horizontal" />
+        <attribute name="Hover Color" value="0.3 0.4 0.32 1" />
+        <attribute name="Selection Color" value="0.3 0.4 0.32 1" />
+        <element type="BorderImage" internal="true">
+            <attribute name="Min Size" value="40 40" />
+            <attribute name="Max Size" value="40 40" />
+        </element>
+        <element type="UIElement" internal="true">
+            <element type="Text" internal="true">
+                <attribute name="Font Size" value="10" />
+            </element>
+            <element type="Text" internal="true">
+                <attribute name="Font Size" value="8" />
+            </element>
+        </element>
+    </element>
 
     <element type="GameMessageError" style="Text" auto="false">
         <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />

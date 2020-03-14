@@ -378,25 +378,66 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
 
 void SkillsWindow::UpdateSkills(const Actor& actor)
 {
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
+
     auto* sm = GetSubsystem<SkillManager>();
     ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
+
+    auto createItem = [&](const AB::Entities::Skill& skill)
+    {
+        UISelectable* item = lv->CreateChild<UISelectable>(String(skill.uuid.c_str()));
+        item->SetLayout(LM_HORIZONTAL);
+        item->SetLayoutSpacing(4);
+        BorderImage* skillIcon = item->CreateChild<BorderImage>();
+        skillIcon->SetInternal(true);
+        skillIcon->SetMinSize(40, 40);
+        skillIcon->SetMaxSize(40, 40);
+        UIElement* textContainer = item->CreateChild<UIElement>();
+        textContainer->SetLayout(LM_VERTICAL);
+        textContainer->SetInternal(true);
+
+        Text* name = textContainer->CreateChild<Text>();
+        name->SetText(String(skill.name.c_str()));
+        name->SetStyleAuto();
+        name->SetInternal(true);
+        Text* descr = textContainer->CreateChild<Text>();
+        descr->SetText(String(skill.shortDescription.c_str()));
+        descr->SetStyleAuto();
+        descr->SetFontSize(8);
+        descr->SetInternal(true);
+        item->SetStyle("SkillListItem");
+
+        Texture2D* icon = cache->GetResource<Texture2D>(String(skill.icon.c_str()));
+        if (icon)
+        {
+            skillIcon->SetTexture(icon);
+            skillIcon->SetImageRect(IntRect(0, 0, 256, 256));
+            skillIcon->SetBorder(IntRect(4, 4, 4, 4));
+            skillIcon->SetHoverOffset(IntVector2(4, 4));
+        }
+        else
+        {
+            skillIcon->SetTexture(defTexture);
+            skillIcon->SetImageRect(IntRect(16, 0, 32, 16));
+            skillIcon->SetBorder(IntRect(4, 4, 4, 4));
+            skillIcon->SetHoverOffset(IntVector2(0, 0));
+        }
+
+        lv->AddItem(item);
+    };
+
     lv->RemoveAllItems();
     sm->VisistSkillsByProfession(actor.profession_->uuid, [&](const AB::Entities::Skill& skill)
     {
-        Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
-        item->SetText(String(skill.name.c_str()));
-        item->SetStyle("ListViewItemText");
-        lv->AddItem(item);
+        createItem(skill);
         return Iteration::Continue;
     });
     if (actor.profession2_)
     {
         sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
         {
-            Text* item = lv->CreateChild<Text>(String(skill.uuid.c_str()));
-            item->SetText(String(skill.name.c_str()));
-            item->SetStyle("ListViewItemText");
-            lv->AddItem(item);
+            createItem(skill);
             return Iteration::Continue;
         });
     }
