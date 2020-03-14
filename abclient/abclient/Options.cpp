@@ -807,7 +807,13 @@ void Options::LoadWindow(UIElement* window)
         return;
 
     window->SetPosition(elem.GetIntVector2("position"));
-    window->SetSize(elem.GetIntVector2("size"));
+    if (auto* wnd = dynamic_cast<Window*>(window))
+    {
+        if (wnd->IsResizable())
+            wnd->SetSize(elem.GetIntVector2("size"));
+    }
+    else
+        window->SetSize(elem.GetIntVector2("size"));
     window->SetVisible(elem.GetBool("visible"));
 }
 
@@ -825,7 +831,13 @@ void Options::SaveWindow(UIElement* window)
     winNode.RemoveChild(window->GetName());
     XMLElement param = winNode.CreateChild(window->GetName());
     param.SetIntVector2("position", window->GetPosition());
-    param.SetIntVector2("size", window->GetSize());
+    if (auto* wnd = dynamic_cast<Window*>(window))
+    {
+        if (wnd->IsResizable())
+            param.SetIntVector2("size", wnd->GetSize());
+    }
+    else
+        param.SetIntVector2("size", window->GetSize());
     param.SetBool("visible", window->IsVisible());
 
     xml->SaveFile(fileName);

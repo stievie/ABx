@@ -47,7 +47,6 @@ SkillsWindow::SkillsWindow(Context* context) :
     SetLayoutBorder(IntRect(4, 4, 4, 4));
     SetPivot(0, 0);
     SetOpacity(0.9f);
-    SetResizable(true);
     SetMovable(true);
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
     SetTexture(tex);
@@ -57,13 +56,20 @@ SkillsWindow::SkillsWindow(Context* context) :
     SetResizeBorder(IntRect(8, 8, 8, 8));
     SetBringToFront(true);
     SetBringToBack(true);
+    SetSize(450, 600);
+    SetMinSize(450, 600);
+    SetMaxSize(450, 600);
+    SetPosition(10, 30);
+
+    auto* attribContainer = GetChild("AttributesContanier", true);
+    attribContainer->SetFixedHeight(100);
+    ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
+    lv->SetStyleAuto();
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLESKILLSWINDOW, "Skills", true));
 
-    SetSize(330, 420);
-    SetPosition(10, 30);
     SetVisible(true);
 
     SetStyleAuto();
@@ -370,10 +376,6 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
     }
 
     UpdateAttribsHeader(actor);
-
-    attribContainer->SetFixedHeight(static_cast<int>(p1->attributeCount * 22));
-    attribContainer->UpdateLayout();
-    UpdateLayout();
 }
 
 void SkillsWindow::UpdateSkills(const Actor& actor)

@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Name" value="SkillsWindow" />
-	<attribute name="Position" value="669 176" />
-	<attribute name="Size" value="345 450" />
+	<attribute name="Position" value="699 161" />
+	<attribute name="Size" value="450 600" />
+	<attribute name="Min Size" value="450 600" />
+	<attribute name="Max Size" value="450 600" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Layout Mode" value="Vertical" />
@@ -12,7 +14,6 @@
 	<attribute name="Border" value="4 4 4 4" />
 	<attribute name="Resize Border" value="8 8 8 8" />
 	<attribute name="Is Movable" value="true" />
-	<attribute name="Is Resizable" value="true" />
 	<element>
 		<attribute name="Name" value="TitleBar" />
 		<attribute name="Min Size" value="0 23" />
@@ -142,6 +143,8 @@
 	</element>
 	<element>
 		<attribute name="Name" value="AttributesContanier" />
+		<attribute name="Min Size" value="0 100" />
+		<attribute name="Max Size" value="2147483647 100" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Border" value="2 2 2 2" />
@@ -159,8 +162,15 @@
 	<element type="ListView">
 		<attribute name="Name" value="SkillsList" />
 		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Is Editable" value="false" />
+		<attribute name="Drag And Drop Mode" value="Source" />
+		<attribute name="Layout Border" value="2 2 2 2" />
+		<attribute name="Auto Show/Hide Scrollbars" value="false" />
 		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Position" value="2 2" />
+			<attribute name="Size" value="16 84" />
+			<attribute name="Min Anchor" value="0 1" />
+			<attribute name="Max Anchor" value="0 1" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Color" value="0 0 0 0" />
 			<attribute name="Top Left Color" value="0 0 0 0" />
@@ -168,7 +178,7 @@
 			<attribute name="Bottom Left Color" value="0 0 0 0" />
 			<attribute name="Bottom Right Color" value="0 0 0 0" />
 			<element type="Button" internal="true" style="none">
-				<attribute name="Size" value="90 90" />
+				<attribute name="Size" value="84 84" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -176,9 +186,10 @@
 				<attribute name="Pressed Child Offset" value="-1 1" />
 			</element>
 			<element type="Slider" internal="true" style="none">
-				<attribute name="Position" value="90 0" />
-				<attribute name="Size" value="157 90" />
+				<attribute name="Position" value="84 0" />
+				<attribute name="Size" value="0 84" />
 				<attribute name="Pivot" value="0 0" />
+				<attribute name="Is Selected" value="true" />
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<element type="BorderImage" internal="true" style="none">
@@ -189,8 +200,8 @@
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="247 0" />
-				<attribute name="Size" value="90 90" />
+				<attribute name="Position" value="84 0" />
+				<attribute name="Size" value="84 84" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -199,6 +210,8 @@
 			</element>
 		</element>
 		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Position" value="2 86" />
+			<attribute name="Size" value="438 327" />
 			<attribute name="Min Anchor" value="1 0" />
 			<attribute name="Max Anchor" value="1 0" />
 			<attribute name="Pivot" value="0 0" />
@@ -208,7 +221,7 @@
 			<attribute name="Bottom Left Color" value="0 0 0 0" />
 			<attribute name="Bottom Right Color" value="0 0 0 0" />
 			<element type="Button" internal="true" style="none">
-				<attribute name="Size" value="16 16" />
+				<attribute name="Size" value="438 438" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -216,8 +229,8 @@
 				<attribute name="Pressed Child Offset" value="-1 1" />
 			</element>
 			<element type="Slider" internal="true" style="none">
-				<attribute name="Position" value="0 16" />
-				<attribute name="Size" value="16 148" />
+				<attribute name="Position" value="0 438" />
+				<attribute name="Size" value="438 0" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
@@ -229,8 +242,8 @@
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="0 164" />
-				<attribute name="Size" value="16 16" />
+				<attribute name="Position" value="0 438" />
+				<attribute name="Size" value="438 438" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -239,6 +252,7 @@
 			</element>
 		</element>
 		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Position" value="2 169" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Clip Border" value="2 2 2 2" />
 			<attribute name="Image Rect" value="48 0 64 16" />

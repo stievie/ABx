@@ -248,9 +248,11 @@
     <element type="ScrollView">
         <element type="ScrollBar" internal="true">
             <attribute name="Size" value="0 16" />
+            <attribute name="Max Size" value="2147483647 16" />
         </element>
         <element type="ScrollBar" internal="true">
             <attribute name="Size" value="16 0" />
+            <attribute name="Max Size" value="16 2147483647" />
         </element>
         <element type="BorderImage" internal="true">
             <attribute name="Image Rect" value="48 0 64 16" />
