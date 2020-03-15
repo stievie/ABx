@@ -422,6 +422,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     AB::Packets::Server::Login::CharacterList packet;
     packet.accountUuid = account.uuid;
     packet.authToken = account.authToken;
+    packet.accountType = static_cast<uint8_t>(account.type);
     packet.serverHost = gameServer.host;
     packet.serverPort = gameServer.port;
     packet.fileHost = fileServer.host;

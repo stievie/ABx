@@ -69,6 +69,7 @@ SkillsWindow::SkillsWindow(Context* context) :
     lv->SetPosition(IntVector2(4, 180));
     lv->SetSize(IntVector2(GetWidth() - 8, GetHeight() - 184));
     lv->SetStyleAuto();
+    lv->SetDragDropMode(DD_SOURCE);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = GetChildStaticCast<Text>("CaptionText", true);
@@ -386,6 +387,8 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
+    auto* client = GetSubsystem<FwClient>();
+    bool haveLocked = client->GetAccountType() >= AB::Entities::AccountTypeGamemaster;
 
     auto* sm = GetSubsystem<SkillManager>();
     ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
@@ -433,11 +436,25 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         lv->AddItem(item);
     };
 
+    auto haveAccess = [&](const AB::Entities::Skill& skill)
+    {
+        if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessPlayer))
+            return true;
+        if (haveLocked)
+        {
+            // This player can have GM locked skills
+            if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessGM))
+                return true;
+        }
+        return false;
+    };
+
     lv->RemoveAllItems();
     // All Players have a primary profession
     sm->VisistSkillsByProfession(actor.profession_->uuid, [&](const AB::Entities::Skill& skill)
     {
-        createItem(skill);
+        if (haveAccess(skill))
+            createItem(skill);
         return Iteration::Continue;
     });
     // And may have a secondary profession
@@ -445,14 +462,16 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
     {
         sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
         {
-            createItem(skill);
+            if (haveAccess(skill))
+                createItem(skill);
             return Iteration::Continue;
         });
     }
     // Lastly add skills that all professions can have
     sm->VisistSkillsByProfession(AB::Entities::PROFESSION_NONE_UUID, [&](const AB::Entities::Skill& skill)
     {
-        createItem(skill);
+        if (haveAccess(skill))
+            createItem(skill);
         return Iteration::Continue;
     });
 }

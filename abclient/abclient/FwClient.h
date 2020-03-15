@@ -80,6 +80,7 @@ private:
     Mutex mutex_;
     HashMap<String, uint32_t> versions_;
     bool loggedIn_{ false };
+    AB::Entities::AccountType accType_{ AB::Entities::AccountTypeUnknown };
     void LoadData();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
     void LoadGames(uint32_t curVersion);
@@ -117,6 +118,7 @@ public:
             return client_.GetClockDiff();
         return 0;
     }
+    AB::Entities::AccountType GetAccountType() const { return accType_; }
     void UpdateServers();
     void AddAccountKey(const String& newKey);
     bool Start();
@@ -181,7 +183,7 @@ public:
     void OnProtocolError(AB::ErrorCodes err) override;
     void OnPong(int) override { }
 
-    void OnLoggedIn(const std::string&, const std::string&) override;
+    void OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType accType) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;

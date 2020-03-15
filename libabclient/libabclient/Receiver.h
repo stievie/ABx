@@ -27,6 +27,7 @@
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
+#include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
 #include <AB/Entities/MailList.h>
@@ -58,7 +59,7 @@ public:
     virtual void OnProtocolError(AB::ErrorCodes err) = 0;
     virtual void OnPong(int lastPing) = 0;
 
-    virtual void OnLoggedIn(const std::string& accountUuid, const std::string& authToken) = 0;
+    virtual void OnLoggedIn(const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType accType) = 0;
     virtual void OnGetCharlist(const AB::Entities::CharList& chars) = 0;
     virtual void OnGetOutposts(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnGetServices(const std::vector<AB::Entities::Service>& services) = 0;

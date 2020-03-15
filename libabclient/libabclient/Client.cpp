@@ -105,7 +105,7 @@ void Client::Terminate()
     Connection::Terminate();
 }
 
-void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authToken)
+void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType accType)
 {
     accountUuid_ = accountUuid;
     authToken_ = authToken;
@@ -130,7 +130,7 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
         httpClient_ = new HttpsClient(ss.str(), false);
     }
 
-    receiver_.OnLoggedIn(accountUuid_, authToken_);
+    receiver_.OnLoggedIn(accountUuid_, authToken_, accType);
 }
 
 void Client::OnGetCharlist(const AB::Entities::CharList& chars)
@@ -212,7 +212,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     GetProtoLogin().Login(loginHost_, loginPort_, name, pass,
-        std::bind(&Client::OnLoggedIn, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&Client::OnLoggedIn, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
 }
 

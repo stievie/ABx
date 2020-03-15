@@ -207,11 +207,25 @@ bool SkillBar::Load(const std::string& str, bool locked)
     }
     InitAttributes();
     SetAttributes(attribs);
-    auto skillMan = GetSubsystem<SkillManager>();
+    auto* skillMan = GetSubsystem<SkillManager>();
+
+    auto hasAccess = [&](const AB::Entities::Skill& skill)
+    {
+        if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessPlayer))
+            return true;
+        if (locked)
+        {
+            // This player can have GM locked skills
+            if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessGM))
+                return true;
+        }
+        return false;
+    };
+
     for (size_t i = 0; i < PLAYER_MAX_SKILLS; i++)
     {
         skills_[i] = skillMan->Get(skills[i]);
-        if (skills_[i] && skills_[i]->data_.isLocked && !locked)
+        if (skills_[i] && !hasAccess(skills_[i]->data_))
             // This player can not have locked skills
             skills_[i] = skillMan->Get(0);
     }

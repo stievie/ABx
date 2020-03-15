@@ -342,6 +342,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
         skill.attributeUuid = pro.attribute("attribute").as_string();
         skill.type = static_cast<AB::Entities::SkillType>(pro.attribute("type").as_uint());
         skill.isElite = pro.attribute("elite").as_bool();
+        skill.access = pro.attribute("access").as_uint();
         skill.description = pro.attribute("description").as_string();
         skill.shortDescription = pro.attribute("short_description").as_string();
         skill.icon = pro.attribute("icon").as_string();
@@ -703,6 +704,7 @@ void FwClient::Logout()
     client_.ResetPoll();
     client_.Run();
     loggedIn_ = false;
+    accType_ = AB::Entities::AccountTypeUnknown;
     currentGameType_ = AB::Entities::GameTypeUnknown;
 }
 
@@ -976,8 +978,9 @@ void FwClient::OnLog(const std::string& message)
     URHO3D_LOGINFO(msg);
 }
 
-void FwClient::OnLoggedIn(const std::string&, const std::string&)
+void FwClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType accType)
 {
+    accType_ = accType;
     LoadData();
 }
 

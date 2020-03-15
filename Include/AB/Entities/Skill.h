@@ -71,6 +71,14 @@ enum SkillType : uint64_t
     SkillTypeAll = 0xFFFFFFFFFFFFFFFF
 };
 
+enum SkillAccess : uint32_t
+{
+    SkillAccessNone = 0,
+    SkillAccessPlayer = 1,
+    SkillAccessGM = 1 << 1,
+    SkillAccessMonster = 1 << 2
+};
+
 struct Skill : Entity
 {
     static constexpr const char* KEY()
@@ -91,25 +99,30 @@ struct Skill : Entity
         s.text1b(shortDescription, Limits::MAX_SKILL_SHORT_DESCRIPTION);
         s.text1b(icon, Limits::MAX_FILENAME);
         s.text1b(script, Limits::MAX_FILENAME);
-        s.value1b(isLocked);
+        s.value4b(access);
         s.text1b(soundEffect, Limits::MAX_FILENAME);
         s.text1b(particleEffect, Limits::MAX_FILENAME);
     }
 
     uint32_t index = 0;
     std::string name;
-    std::string attributeUuid = EMPTY_GUID;
-    std::string professionUuid = EMPTY_GUID;
-    SkillType type = SkillTypeSkill;
-    bool isElite = false;
+    std::string attributeUuid{ EMPTY_GUID };
+    std::string professionUuid{ EMPTY_GUID };
+    SkillType type{ SkillTypeSkill };
+    bool isElite{ false };
     std::string description;
     std::string shortDescription;
     std::string icon;
     std::string script;
-    bool isLocked = false;
+    uint32_t access{ SkillAccessNone };
     std::string soundEffect;
     std::string particleEffect;
 };
+
+inline bool HasSkillAccess(const Skill& skill, SkillAccess access)
+{
+    return (skill.access & access) == access;
+}
 
 }
 }

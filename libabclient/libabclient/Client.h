@@ -104,7 +104,7 @@ public:
     void OnProtocolError(AB::ErrorCodes err) override;
     void OnPong(int lastPing) override;
 
-    void OnLoggedIn(const std::string& accountUui, const std::string& authTokend) override;
+    void OnLoggedIn(const std::string& accountUui, const std::string& authTokend, AB::Entities::AccountType accType) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;

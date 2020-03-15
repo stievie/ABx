@@ -177,6 +177,7 @@ struct CharacterList
 
     std::string accountUuid;
     std::string authToken;
+    uint8_t accountType;
     std::string serverHost;
     uint16_t serverPort;
     std::string fileHost;
@@ -189,6 +190,7 @@ struct CharacterList
     {
         ar.value_enc(accountUuid);
         ar.value_enc(authToken);
+        ar.value(accountType);
         ar.value_enc(serverHost);
         ar.value(serverPort);
         ar.value_enc(fileHost);

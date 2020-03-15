@@ -723,6 +723,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("profession").set_value(s.professionUuid.c_str());
         gNd.append_attribute("type").set_value(static_cast<unsigned long long>(s.type));
         gNd.append_attribute("elite").set_value(s.isElite);
+        gNd.append_attribute("access").set_value(s.access);
         gNd.append_attribute("description").set_value(s.description.c_str());
         gNd.append_attribute("short_description").set_value(s.shortDescription.c_str());
         gNd.append_attribute("icon").set_value(s.icon.c_str());

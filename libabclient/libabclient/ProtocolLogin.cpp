@@ -210,7 +210,7 @@ void ProtocolLogin::HandleCharList(const AB::Packets::Server::Login::CharacterLi
     if (!packet.fileHost.empty())
         fileHost_ = packet.fileHost;
     filePort_ = packet.filePort;
-    loggedInCallback_(packet.accountUuid, packet.authToken);
+    loggedInCallback_(packet.accountUuid, packet.authToken, static_cast<AB::Entities::AccountType>(packet.accountType));
 
     AB::Entities::CharList chars;
     for (const auto& c : packet.characters)
