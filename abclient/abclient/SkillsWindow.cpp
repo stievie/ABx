@@ -63,7 +63,11 @@ SkillsWindow::SkillsWindow(Context* context) :
 
     auto* attribContainer = GetChild("AttributesContanier", true);
     attribContainer->SetFixedHeight(100);
-    ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
+
+    DisableLayoutUpdate();
+    ListView* lv = CreateChild<ListView>("SkillsList");
+    lv->SetPosition(IntVector2(4, 180));
+    lv->SetSize(IntVector2(GetWidth() - 8, GetHeight() - 184));
     lv->SetStyleAuto();
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
