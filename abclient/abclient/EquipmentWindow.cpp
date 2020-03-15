@@ -83,9 +83,6 @@ EquipmentWindow::EquipmentWindow(Context* context) :
 
 EquipmentWindow::~EquipmentWindow()
 {
-    auto* pp = GetSubsystem<PostProcessController>();
-    if (pp)
-        pp->RemoveViewport(modelViewer_->GetViewport());
     UnsubscribeFromAllEvents();
 }
 
