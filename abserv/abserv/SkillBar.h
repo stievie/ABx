@@ -85,7 +85,6 @@ public:
         skills_[static_cast<size_t>(pos)] = skill;
         return true;
     }
-    bool SetSkillByIndex(int pos, uint32_t skillIndex);
 
     void InitAttributes();
     /// Get an attribute

@@ -42,6 +42,7 @@
 #include "PlayerManager.h"
 #include "ProtocolGame.h"
 #include "QuestComp.h"
+#include "SkillManager.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/PlayerItemList.h>
@@ -1186,7 +1187,21 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
     if (IsInOutpost())
-        skills_->SetSkillByIndex(static_cast<int>(pos), skillIndex);
+    {
+        auto* sm = GetSubsystem<SkillManager>();
+        auto skill = sm->Get(skillIndex);
+        if (skill)
+        {
+            AB::Entities::SkillAccess access;
+            if (account_.type >= AB::Entities::AccountTypeGamemaster)
+                access = AB::Entities::SkillAccessGM;
+            else
+                access = AB::Entities::SkillAccessPlayer;
+            if (AB::Entities::HasSkillAccess(skill->data_, access))
+                skills_->SetSkill(static_cast<int>(pos), skill);
+        }
+    }
+    // Always send a response, so the client can update its UI
     const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);

@@ -278,15 +278,6 @@ uint32_t SkillBar::GetIndexOfSkill(int pos)
     return skill->GetIndex();
 }
 
-bool SkillBar::SetSkillByIndex(int pos, uint32_t skillIndex)
-{
-    auto* sm = GetSubsystem<SkillManager>();
-    auto skill = sm->Get(skillIndex);
-    if (!skill)
-        return false;
-    return SetSkill(pos, skill);
-}
-
 int SkillBar::GetUsedAttributePoints() const
 {
     return GetUsedAttribPoints(attributes_);
