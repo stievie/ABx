@@ -104,7 +104,7 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
         return;
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill.png");
+    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill_disabled.png");
     SkillManager* sm = GetSubsystem<SkillManager>();
 
     TemplateEvaluator templEval(*actor);
