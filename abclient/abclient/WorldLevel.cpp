@@ -336,6 +336,9 @@ void WorldLevel::SetupViewport()
 //    postProcess_->SetAutoExposureAdaptRate(0.5f);
 //    postProcess_->SetAutoExposureMidGrey(1.0f);
 //    postProcess_->SetUseAutoExposure(true);
+
+    if (equipWindow_ && equipWindow_->IsVisible())
+        equipWindow_->Initialize(*postProcess_);
 }
 
 void WorldLevel::CreateScene()
@@ -779,6 +782,7 @@ void WorldLevel::HandleToggleEquipWindow(StringHash, VariantMap&)
     equipWindow_->SetVisible(!equipWindow_->IsVisible());
     if (equipWindow_->IsVisible())
     {
+        equipWindow_->Initialize(*postProcess_);
         equipWindow_->BringToFront();
     }
 }

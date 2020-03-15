@@ -24,6 +24,7 @@
 #include <Urho3DAll.h>
 
 class Player;
+class PostProcessController;
 
 class EquipmentWindow : public Window
 {
@@ -32,7 +33,9 @@ private:
     bool modelLoaded_{ false };
     SharedPtr<Scene> modelScene_;
     SharedPtr<Node> characterNode_;
+    SharedPtr<View3D> modelViewer_;
     SharedPtr<AnimationController> animController_;
+    bool initialized_{ false };
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     bool LoadObject(uint32_t itemIndex, Node* node);
@@ -41,4 +44,5 @@ public:
     ~EquipmentWindow() override;
 
     void UpdateEquipment(Player* player);
+    void Initialize(PostProcessController& pp);
 };

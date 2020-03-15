@@ -26,6 +26,8 @@
 #include "LevelManager.h"
 #include "Player.h"
 #include "ItemsCache.h"
+#include "PostProcessController.h"
+#include "BaseLevel.h"
 
 EquipmentWindow::EquipmentWindow(Context* context) :
     Window(context)
@@ -69,8 +71,8 @@ EquipmentWindow::EquipmentWindow(Context* context) :
     {
         modelScene_->LoadXML(sceneFile->GetRoot());
         Camera* camera = modelScene_->GetComponent<Camera>(true);
-        View3D* modelViewer = GetChildStaticCast<View3D>("Model", true);
-        modelViewer->SetView(modelScene_, camera, false);
+        modelViewer_ = GetChildStaticCast<View3D>("Model", true);
+        modelViewer_->SetView(modelScene_, camera, false);
         characterNode_ = modelScene_->CreateChild(0, LOCAL);
     }
     else
@@ -81,6 +83,9 @@ EquipmentWindow::EquipmentWindow(Context* context) :
 
 EquipmentWindow::~EquipmentWindow()
 {
+    auto* pp = GetSubsystem<PostProcessController>();
+    if (pp)
+        pp->RemoveViewport(modelViewer_->GetViewport());
     UnsubscribeFromAllEvents();
 }
 
@@ -144,5 +149,14 @@ void EquipmentWindow::UpdateEquipment(Player* player)
     {
         if  (LoadObject(player->itemIndex_, characterNode_))
             modelLoaded_ = true;
+    }
+}
+
+void EquipmentWindow::Initialize(PostProcessController& pp)
+{
+    if (!initialized_)
+    {
+        pp.AddViewport(modelViewer_->GetViewport());
+        initialized_ = true;
     }
 }
