@@ -1255,7 +1255,7 @@ void Actor::ResetSecondProfAttributes()
 
 int Actor::GetAttributePoints() const
 {
-    return Game::GetAttribPoints(level_);
+    return static_cast<int>(Game::GetAttribPoints(level_));
 }
 
 int Actor::GetUsedAttributePoints() const

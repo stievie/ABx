@@ -95,9 +95,8 @@ public:
                 int c = a1->name.compare(a2->name);
                 if (c != 0)
                     return c < 0;
-                return lhs->name.compare(rhs->name) < 0;
             }
-            return lhs->attributeUuid.compare(rhs->attributeUuid) < 0;
+            return lhs->name.compare(rhs->name) < 0;
         });
         for (const auto& s : sorted)
         {
@@ -111,6 +110,5 @@ public:
     std::map<std::string, AB::Entities::Profession> professions_;
     std::map<uint32_t, AB::Entities::Attribute> attributes_;
     std::map<uint32_t, AB::Entities::Effect> effects_;
-
 };
 
