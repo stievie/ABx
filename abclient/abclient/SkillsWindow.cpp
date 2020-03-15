@@ -393,8 +393,27 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
     auto* sm = GetSubsystem<SkillManager>();
     ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);
 
+    std::string lastAttribUuid;
+
     auto createItem = [&](const AB::Entities::Skill& skill)
     {
+        if (lastAttribUuid.compare(skill.attributeUuid) != 0)
+        {
+            // Add separator
+            const AB::Entities::Attribute* attrib = sm->GetAttribute(skill.attributeUuid);
+            String sepText;
+            if (attrib)
+                sepText = String(attrib->name.c_str());
+            else
+                sepText = "No Attribute";
+            Text* sep = lv->CreateChild<Text>();
+            sep->SetInternal(true);
+            sep->SetText(sepText);
+            lastAttribUuid = skill.attributeUuid;
+            sep->SetStyle("SkillListAttributeHeaderText");
+            lv->AddItem(sep);
+        }
+
         UISelectable* item = lv->CreateChild<UISelectable>(String(skill.uuid.c_str()));
         item->SetLayout(LM_HORIZONTAL);
         item->SetLayoutSpacing(4);

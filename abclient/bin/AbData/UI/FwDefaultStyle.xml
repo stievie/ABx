@@ -413,6 +413,11 @@
             </element>
         </element>
     </element>
+    <element type="SkillListAttributeHeaderText" style="Text">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
+        <attribute name="Font Size" value="12" />
+        <attribute name="Color" value="0.85 0.85 0.85" />
+    </element>
 
     <element type="GameMessageError" style="Text" auto="false">
         <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
