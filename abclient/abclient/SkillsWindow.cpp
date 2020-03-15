@@ -386,7 +386,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
 void SkillsWindow::UpdateSkills(const Actor& actor)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
+    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill.png");
     auto* client = GetSubsystem<FwClient>();
     bool haveLocked = client->GetAccountType() >= AB::Entities::AccountTypeGamemaster;
 
@@ -428,7 +428,7 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         else
         {
             skillIcon->SetTexture(defTexture);
-            skillIcon->SetImageRect(IntRect(16, 0, 32, 16));
+            skillIcon->SetImageRect(IntRect(0, 0, 256, 256));
             skillIcon->SetBorder(IntRect(4, 4, 4, 4));
             skillIcon->SetHoverOffset(IntVector2(0, 0));
         }

@@ -104,7 +104,7 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
         return;
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
+    Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill.png");
     SkillManager* sm = GetSubsystem<SkillManager>();
 
     TemplateEvaluator templEval(*actor);
@@ -150,7 +150,7 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
         if (!iconSet)
         {
             btn->SetTexture(defTexture);
-            btn->SetImageRect(IntRect(16, 0, 32, 16));
+            btn->SetImageRect(IntRect(0, 0, 256, 256));
             btn->SetBorder(IntRect(4, 4, 4, 4));
             btn->SetHoverOffset(IntVector2(0, 0));
         }
