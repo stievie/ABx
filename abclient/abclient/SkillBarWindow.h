@@ -51,8 +51,12 @@ private:
     void HandleSkill6Clicked(StringHash eventType, VariantMap& eventData);
     void HandleSkill7Clicked(StringHash eventType, VariantMap& eventData);
     void HandleSkill8Clicked(StringHash eventType, VariantMap& eventData);
+    void HandleSetSkill(StringHash eventType, VariantMap& eventData);
     Button* GetButtonFromIndex(uint32_t index);
     void ResetSkillButtons();
+    IntVector2 GetButtonSize() const;
+    unsigned GetSkillPosFromClientPos(const IntVector2& clientPos);
+    void UpdateSkill(unsigned pos, uint32_t index);
 public:
     static void RegisterObject(Context* context);
 
@@ -61,5 +65,6 @@ public:
 
     void SetActor(SharedPtr<Actor> actor);
     void SetSkills(const Game::SkillIndices& skills);
+    void DropSkill(const IntVector2& pos, uint32_t skillIndex);
 };
 

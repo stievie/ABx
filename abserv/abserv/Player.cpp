@@ -1188,18 +1188,28 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
     if (IsInOutpost())
     {
+        auto haveAccess = [&](const AB::Entities::Skill& skill, bool haveLocked)
+        {
+            if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessPlayer))
+                return true;
+            if (haveLocked)
+            {
+                // This player can have GM locked skills
+                if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessGM))
+                    return true;
+            }
+            return false;
+        };
+
         auto* sm = GetSubsystem<SkillManager>();
         auto skill = sm->Get(skillIndex);
         if (skill)
         {
-            AB::Entities::SkillAccess access;
-            if (account_.type >= AB::Entities::AccountTypeGamemaster)
-                access = AB::Entities::SkillAccessGM;
-            else
-                access = AB::Entities::SkillAccessPlayer;
-            if (AB::Entities::HasSkillAccess(skill->data_, access))
+            if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster))
                 skills_->SetSkill(static_cast<int>(pos), skill);
         }
+        else
+            LOG_WARNING << "No skill with index " << skillIndex << " found" << std::endl;
     }
     // Always send a response, so the client can update its UI
     const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));

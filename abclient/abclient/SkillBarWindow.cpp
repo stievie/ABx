@@ -96,9 +96,8 @@ void SkillBarWindow::SetActor(SharedPtr<Actor> actor)
     actor_ = actor;
 }
 
-void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
+void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
 {
-    ResetSkillButtons();
     auto actor = actor_.Lock();
     if (!actor)
         return;
@@ -109,58 +108,83 @@ void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
 
     TemplateEvaluator templEval(*actor);
 
+    bool iconSet = false;
+    Button* btn = GetButtonFromIndex(pos);
+    const AB::Entities::Skill* skill = sm->GetSkillByIndex(index);
+    if (skill && skill->index != 0)
+    {
+        Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
+        if (icon)
+        {
+            btn->SetTexture(icon);
+            btn->SetImageRect(IntRect(0, 0, 256, 256));
+            btn->SetBorder(IntRect(4, 4, 4, 4));
+            btn->SetHoverOffset(IntVector2(4, 4));
+            btn->SetPressedOffset(IntVector2(-4, -4));
+            iconSet = true;
+        }
+        Text* skillName = btn->GetChildStaticCast<Text>("SkillName", true);
+        skillName->SetText(String(skill->name.c_str()));
+        Text* skillDescription = btn->GetChildStaticCast<Text>("SkillDescription", true);
+        skillDescription->SetText(String(templEval.Evaluate(skill->description).c_str()));
+        Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
+        ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
+        tt->SetPosition(IntVector2(0, -(tooltipWindow->GetHeight() + 10)));
+        tt->SetEnabled(true);
+        btn->SetEnabled(true);
+        tooltipWindow->SetVisible(true);
+    }
+    else
+    {
+        ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
+        tt->SetEnabled(false);
+        btn->SetEnabled(false);
+        Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
+        tooltipWindow->SetVisible(false);
+    }
+    if (!iconSet)
+    {
+        btn->SetTexture(defTexture);
+        btn->SetImageRect(IntRect(0, 0, 256, 256));
+        btn->SetBorder(IntRect(4, 4, 4, 4));
+        btn->SetHoverOffset(IntVector2(0, 0));
+    }
+}
+
+void SkillBarWindow::SetSkills(const Game::SkillIndices& skills)
+{
+    ResetSkillButtons();
+    auto actor = actor_.Lock();
+    if (!actor)
+        return;
+
     skills_ = skills;
     uint32_t i = 1;
     for (const auto& s : skills_)
     {
-        bool iconSet = false;
-        Button* btn = GetButtonFromIndex(i);
-        const AB::Entities::Skill* skill = sm->GetSkillByIndex(s);
-        if (skill && skill->index != 0)
-        {
-            Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
-            if (icon)
-            {
-                btn->SetTexture(icon);
-                btn->SetImageRect(IntRect(0, 0, 256, 256));
-                btn->SetBorder(IntRect(4, 4, 4, 4));
-                btn->SetHoverOffset(IntVector2(4, 4));
-                btn->SetPressedOffset(IntVector2(-4, -4));
-                iconSet = true;
-            }
-            Text* skillName = btn->GetChildStaticCast<Text>("SkillName", true);
-            skillName->SetText(String(skill->name.c_str()));
-            Text* skillDescription = btn->GetChildStaticCast<Text>("SkillDescription", true);
-            skillDescription->SetText(String(templEval.Evaluate(skill->description).c_str()));
-            Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
-            ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
-            tt->SetPosition(IntVector2(0, -(tooltipWindow->GetHeight() + 10)));
-            tt->SetEnabled(true);
-            btn->SetEnabled(true);
-            tooltipWindow->SetVisible(true);
-        }
-        else
-        {
-            ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
-            tt->SetEnabled(false);
-            btn->SetEnabled(false);
-            Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
-            tooltipWindow->SetVisible(false);
-        }
-        if (!iconSet)
-        {
-            btn->SetTexture(defTexture);
-            btn->SetImageRect(IntRect(0, 0, 256, 256));
-            btn->SetBorder(IntRect(4, 4, 4, 4));
-            btn->SetHoverOffset(IntVector2(0, 0));
-        }
+        UpdateSkill(i, s);
         ++i;
     }
+}
+
+void SkillBarWindow::DropSkill(const IntVector2& pos, uint32_t skillIndex)
+{
+    IntRect screenRect(GetScreenPosition(), GetScreenPosition() + GetSize());
+    if (!screenRect.IsInside(pos))
+        return;
+
+    IntVector2 clientPos = pos - GetScreenPosition();
+    unsigned skillPos = GetSkillPosFromClientPos(clientPos);
+    if (skillPos > Game::PLAYER_MAX_SKILLS - 1)
+        return;
+    auto* client = GetSubsystem<FwClient>();
+    client->EquipSkill(skillIndex, static_cast<uint8_t>(skillPos));
 }
 
 void SkillBarWindow::SubscribeEvents()
 {
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(SkillBarWindow, HandleUpdate));
+    SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(SkillBarWindow, HandleSetSkill));
 }
 
 void SkillBarWindow::HandleUpdate(StringHash, VariantMap&)
@@ -215,6 +239,17 @@ void SkillBarWindow::HandleSkill8Clicked(StringHash, VariantMap&)
     client->UseSkill(8);
 }
 
+void SkillBarWindow::HandleSetSkill(StringHash, VariantMap& eventData)
+{
+    using namespace Events::SetSkill;
+    uint32_t id = eventData[P_OBJECTID].GetUInt();
+    if (id != actor_->gameId_)
+        return;
+    uint32_t skillIndex = eventData[P_SKILLINDEX].GetUInt();
+    unsigned skillPos = eventData[P_SKILLPOS].GetUInt();
+    UpdateSkill(skillPos + 1, skillIndex);
+}
+
 Button* SkillBarWindow::GetButtonFromIndex(uint32_t index)
 {
     switch (index)
@@ -257,4 +292,14 @@ void SkillBarWindow::ResetSkillButtons()
         btn->SetHoverOffset(IntVector2(0, 0));
         btn->SetEnabled(false);
     }
+}
+
+IntVector2 SkillBarWindow::GetButtonSize() const
+{
+    return skill1_->GetSize();
+}
+
+unsigned SkillBarWindow::GetSkillPosFromClientPos(const IntVector2& clientPos)
+{
+    return clientPos.x_ / GetButtonSize().x_;
 }

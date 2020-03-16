@@ -31,6 +31,8 @@
 #include "SkillManager.h"
 #include "FwClient.h"
 #include <abshared/Mechanic.h>
+#include "SkillBarWindow.h"
+#include "WindowManager.h"
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
@@ -216,6 +218,7 @@ void SkillsWindow::AddProfessions(const Actor& actor)
         }
     }
     dropdown->SetSelection(selection);
+    dropdown->SetEnabled(IsChangeable());
 }
 
 void SkillsWindow::SetProfessionIndex(uint32_t index)
@@ -241,6 +244,14 @@ void SkillsWindow::SetProfessionIndex(uint32_t index)
     UpdateAttributes(*player);
     UpdateSkills(*player);
     UpdateLayout();
+}
+
+bool SkillsWindow::IsChangeable() const
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    if (!lm)
+        return false;
+    return AB::Entities::IsOutpost(lm->GetMapType());
 }
 
 UIElement* SkillsWindow::GetAttributeContainer(uint32_t index)
@@ -356,6 +367,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         spinner->SetMax(Game::MAX_PLAYER_ATTRIBUTE_RANK);
         spinner->SetValue(static_cast<int>(actor.GetAttributeRank(static_cast<Game::Attribute>(attr.index))));
         spinner->SetCanIncrease(actor.CanIncreaseAttributeRank(static_cast<Game::Attribute>(attr.index)));
+        spinner->SetCanDecrease(IsChangeable());
         spinner->SetStyleAuto();
         spinner->SetAlignment(HA_RIGHT, VA_CENTER);
         SubscribeToEvent(spinner, E_VALUECHANGED, [this, attrIndex = attr.index](StringHash, VariantMap& eventData)
@@ -382,6 +394,78 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
     }
 
     UpdateAttribsHeader(actor);
+}
+
+void SkillsWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
+{
+    using namespace DragBegin;
+
+    auto* element = reinterpret_cast<UISelectable*>(eventData[P_ELEMENT].GetVoidPtr());
+    auto* item = element->GetChildStaticCast<BorderImage>("SkillIcon", true);
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+    dragSkill_ = root->CreateChild<BorderImage>();
+    dragSkill_->SetMinSize(40, 40);
+    dragSkill_->SetMaxSize(40, 40);
+    dragSkill_->SetTexture(item->GetTexture());
+    dragSkill_->SetPosition(item->GetPosition());
+    dragSkill_->SetVar("SkillIndex", element->GetVar("SkillIndex"));
+
+    int lx = eventData[P_X].GetInt();
+    int ly = eventData[P_Y].GetInt();
+    dragSkill_->SetPosition(IntVector2(lx, ly) - dragSkill_->GetSize() / 2);
+
+    int buttons = eventData[P_BUTTONS].GetInt();
+    element->SetVar("BUTTONS", buttons);
+    dragSkill_->BringToFront();
+}
+
+void SkillsWindow::HandleSkillDragMove(StringHash, VariantMap& eventData)
+{
+    if (!dragSkill_)
+        return;
+    using namespace DragMove;
+    dragSkill_->BringToFront();
+
+    int buttons = eventData[P_BUTTONS].GetInt();
+    auto* element = reinterpret_cast<UISelectable*>(eventData[P_ELEMENT].GetVoidPtr());
+    int X = eventData[P_X].GetInt();
+    int Y = eventData[P_Y].GetInt();
+    int BUTTONS = element->GetVar("BUTTONS").GetInt();
+
+    if (buttons == BUTTONS)
+        dragSkill_->SetPosition(IntVector2(X, Y) - dragSkill_->GetSize() / 2);
+}
+
+void SkillsWindow::HandleSkillDragCancel(StringHash, VariantMap&)
+{
+    using namespace DragCancel;
+    if (!dragSkill_)
+        return;
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+    root->RemoveChild(dragSkill_.Get());
+    dragSkill_ = SharedPtr<BorderImage>();
+}
+
+void SkillsWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
+{
+    using namespace DragEnd;
+    if (!dragSkill_)
+        return;
+    uint32_t skillIndex = dragSkill_->GetVar("SkillIndex").GetUInt();
+
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+    WindowManager* wm = GetSubsystem<WindowManager>();
+
+    auto ssb = wm->GetWindow(WINDOW_SKILLBAR);
+    if (auto* sb = dynamic_cast<SkillBarWindow*>(ssb.Get()))
+    {
+        int X = eventData[P_X].GetInt();
+        int Y = eventData[P_Y].GetInt();
+        sb->DropSkill(IntVector2(X, Y), skillIndex);
+    }
+
+    root->RemoveChild(dragSkill_.Get());
+    dragSkill_ = SharedPtr<BorderImage>();
 }
 
 void SkillsWindow::UpdateSkills(const Actor& actor)
@@ -416,9 +500,18 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         }
 
         UISelectable* item = lv->CreateChild<UISelectable>(String(skill.uuid.c_str()));
+        item->SetVar("SkillIndex", skill.index);
+        if (IsChangeable())
+        {
+            item->SetDragDropMode(DD_SOURCE);
+            SubscribeToEvent(item, E_DRAGMOVE, URHO3D_HANDLER(SkillsWindow, HandleSkillDragMove));
+            SubscribeToEvent(item, E_DRAGBEGIN, URHO3D_HANDLER(SkillsWindow, HandleSkillDragBegin));
+            SubscribeToEvent(item, E_DRAGCANCEL, URHO3D_HANDLER(SkillsWindow, HandleSkillDragCancel));
+            SubscribeToEvent(item, E_DRAGEND, URHO3D_HANDLER(SkillsWindow, HandleSkillDragEnd));
+        }
         item->SetLayout(LM_HORIZONTAL);
         item->SetLayoutSpacing(4);
-        BorderImage* skillIcon = item->CreateChild<BorderImage>();
+        BorderImage* skillIcon = item->CreateChild<BorderImage>("SkillIcon");
         skillIcon->SetInternal(true);
         skillIcon->SetMinSize(40, 40);
         skillIcon->SetMaxSize(40, 40);

@@ -31,6 +31,7 @@ class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
+    SharedPtr<BorderImage> dragSkill_;
     void AddProfessions(const Actor& actor);
     void UpdateAttributes(const Actor& actor);
     void UpdateSkills(const Actor& actor);
@@ -49,6 +50,11 @@ private:
     Spinner* GetAttributeSpinner(uint32_t index);
     void SetAttributeValue(const Actor& actor, uint32_t index, int value, unsigned remaining);
     void SetProfessionIndex(uint32_t index);
+    bool IsChangeable() const;
+    void HandleSkillDragBegin(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragMove(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragCancel(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragEnd(StringHash eventType, VariantMap& eventData);
 public:
     SkillsWindow(Context* context);
     ~SkillsWindow() override;
