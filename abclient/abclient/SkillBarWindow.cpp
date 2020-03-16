@@ -26,6 +26,7 @@
 #include "TemplateEvaluator.h"
 #include "LevelManager.h"
 #include "Actor.h"
+#include "WindowManager.h"
 
 void SkillBarWindow::RegisterObject(Context* context)
 {
@@ -193,50 +194,90 @@ void SkillBarWindow::HandleUpdate(StringHash, VariantMap&)
 
 void SkillBarWindow::HandleSkill1Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(1);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(1);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill2Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(2);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(2);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill3Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(3);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(3);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill4Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(4);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(4);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill5Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(5);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(5);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill6Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(6);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(6);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill7Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(7);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(7);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill8Clicked(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UseSkill(8);
+    if (!IsChangeable())
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->UseSkill(8);
+    }
+    else
+        ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSetSkill(StringHash, VariantMap& eventData)
@@ -302,4 +343,24 @@ IntVector2 SkillBarWindow::GetButtonSize() const
 unsigned SkillBarWindow::GetSkillPosFromClientPos(const IntVector2& clientPos)
 {
     return clientPos.x_ / GetButtonSize().x_;
+}
+
+bool SkillBarWindow::IsChangeable() const
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    if (!lm)
+        return false;
+    return AB::Entities::IsOutpost(lm->GetMapType());
+}
+
+void SkillBarWindow::ShowSkillsWindow()
+{
+    auto* wm = GetSubsystem<WindowManager>();
+    auto s = wm->GetWindow(WINDOW_SKILLS);
+    if (!s->IsVisible())
+    {
+        VariantMap& e = GetEventDataMap();
+        SendEvent(Events::E_SC_TOGGLESKILLSWINDOW, e);
+    }
+    s->BringToFront();
 }

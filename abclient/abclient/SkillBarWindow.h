@@ -57,6 +57,8 @@ private:
     IntVector2 GetButtonSize() const;
     unsigned GetSkillPosFromClientPos(const IntVector2& clientPos);
     void UpdateSkill(unsigned pos, uint32_t index);
+    bool IsChangeable() const;
+    void ShowSkillsWindow();
 public:
     static void RegisterObject(Context* context);
 
