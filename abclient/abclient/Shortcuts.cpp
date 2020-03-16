@@ -24,6 +24,8 @@
 #include "Shortcuts.h"
 #include "ShortcutEvents.h"
 #include <Urho3D/Container/Sort.h>
+#include <Urho3D/UI/LineEdit.h>
+#include "MultiLineEdit.h"
 
 const Shortcut Shortcut::EMPTY;
 unsigned Shortcuts::shortcutIds = 0;
@@ -504,8 +506,13 @@ void Shortcuts::HandleUpdate(StringHash, VariantMap&)
 void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement())
-        return;
+    auto* focusElem = ui->GetFocusElement();
+    if (focusElem)
+    {
+        // Don't allow keyboard shortcuts only when an editor has the focus
+        if (dynamic_cast<LineEdit*>(focusElem) || dynamic_cast<MultiLineEdit*>(focusElem))
+            return;
+    }
 
     using namespace KeyDown;
     bool repeat = eventData[P_REPEAT].GetBool();
