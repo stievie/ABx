@@ -198,10 +198,11 @@ void SkillsWindow::AddProfessions(const Actor& actor)
     dropdown->RemoveAllItems();
 
     uint32_t primIndex = actor.profession_->index;
+    String priName = String(actor.profession_->name.c_str());
     uint32_t secIndex = actor.profession2_->index;
     if (secIndex == 0)
     {
-        dropdown->AddItem(CreateDropdownItem("(None)", 0));
+        dropdown->AddItem(CreateDropdownItem(priName +  "/(None)", 0));
     }
     unsigned selection = 0;
     const auto& profs = GetSubsystem<SkillManager>()->GetProfessions();
@@ -211,7 +212,7 @@ void SkillsWindow::AddProfessions(const Actor& actor)
         {
             if (prof.second.index == secIndex)
                 selection = dropdown->GetNumItems();
-            dropdown->AddItem(CreateDropdownItem(String(prof.second.name.c_str()), prof.second.index));
+            dropdown->AddItem(CreateDropdownItem(priName + "/" + String(prof.second.name.c_str()), prof.second.index));
         }
     }
     dropdown->SetSelection(selection);
