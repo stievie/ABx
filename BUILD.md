@@ -27,7 +27,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 ### Prerequisites
 
-* GCC 8 or later
+* GCC 9 or later
 * GNU make
 * ccache (optional)
 
@@ -55,12 +55,12 @@ not work.
 The following works for Ubuntu 18.04:
 
 ~~~sh
-# Install GCC 8
+# Install GCC 9
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update -qq
-sudo apt-get install g++-8
-sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 90
+sudo apt-get install g++-9
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 # Install Dependencies
 sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
 ~~~

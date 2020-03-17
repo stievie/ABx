@@ -57,7 +57,7 @@ bin
     * `d3dcompiler_47.dll`
     * `libeay32.dll` (OpenSSL)
     * `ssleay32.dll` (OpenSSL)
-4. Copy `ablicnent/Setup/config.xml` to `ablicnent/bin/config.xml` and enter the Host and Port of the Login server:
+4. Copy `abclient/Setup/config.xml` to `abclient/bin/config.xml` and enter the Host and Port of the Login server:
 ~~~xml
 <config>
   <parameter name="LoginHost" type="string" value="127.0.0.1" />
