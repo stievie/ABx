@@ -1186,6 +1186,13 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
 
 void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 {
+    if (pos >= PLAYER_MAX_SKILLS)
+    {
+        LOG_WARNING << "Invalid skill position " << static_cast<int>(pos) << std::endl;
+        return;
+    }
+
+    auto nmsg = Net::NetworkMessage::GetNew();
     if (IsInOutpost())
     {
         auto haveAccess = [&](const AB::Entities::Skill& skill, bool haveLocked)
@@ -1201,19 +1208,64 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
             return false;
         };
 
-        auto* sm = GetSubsystem<SkillManager>();
-        auto skill = sm->Get(skillIndex);
-        if (skill)
+        auto validateSetSkill = [&](int pos, std::shared_ptr<Skill> skill) -> bool
         {
-            if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster))
-                skills_->SetSkill(static_cast<int>(pos), skill);
+            if (skill)
+            {
+                for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
+                {
+                    auto _skill = skills_->GetSkill(i);
+                    if (!_skill)
+                        continue;
+
+                    if (_skill->GetIndex() == skill->GetIndex())
+                    {
+                        skills_->RemoveSkill(i);
+                        // No duplicate skills
+                        nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
+                        AB::Packets::Server::ObjectSetSkill packet{
+                            id_,
+                            0,
+                            static_cast<uint8_t>(pos)
+                        };
+                        AB::Packets::Add(packet, *nmsg);
+                    }
+                    if (skill->data_.isElite)
+                    {
+                        // Only one elite skill
+                        if (_skill->data_.isElite)
+                        {
+                            nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
+                            AB::Packets::Server::ObjectSetSkill packet{
+                                id_,
+                                0,
+                                static_cast<uint8_t>(pos)
+                            };
+                            AB::Packets::Add(packet, *nmsg);
+                        }
+                    }
+                }
+            }
+            return skills_->SetSkill(pos, skill);
+        };
+
+        if (skillIndex != 0)
+        {
+            auto* sm = GetSubsystem<SkillManager>();
+            auto skill = sm->Get(skillIndex);
+            if (skill)
+            {
+                if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster))
+                    validateSetSkill(static_cast<int>(pos), skill);
+            }
+            else
+                LOG_WARNING << "No skill with index " << skillIndex << " found" << std::endl;
         }
         else
-            LOG_WARNING << "No skill with index " << skillIndex << " found" << std::endl;
+            skills_->RemoveSkill(static_cast<int>(pos));
     }
     // Always send a response, so the client can update its UI
     const uint32_t newIndex = skills_->GetIndexOfSkill(static_cast<int>(pos));
-    auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
     AB::Packets::Server::ObjectSetSkill packet {
         id_,

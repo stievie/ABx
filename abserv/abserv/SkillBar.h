@@ -42,6 +42,7 @@ private:
     Actor& owner_;
     int currentSkillIndex_{ -1 };
     int _LuaAddSkill(uint32_t skillIndex);
+    bool _LuaSetSkill(int pos, uint32_t skillIndex);
     std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const {
         return GetSkillsWithEffect(static_cast<SkillEffect>(effect));
     }
@@ -51,7 +52,7 @@ private:
     std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const {
         return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillEffectTarget>(target));
     }
-    Skill* _LuaGetSkill(int index);
+    Skill* _LuaGetSkill(int pos);
     void SetAttributes(const Attributes& attributes);
     void ResetAttributes();
     bool HaveAttribute(uint32_t index);
@@ -78,11 +79,12 @@ public:
 
     std::shared_ptr<Skill> GetSkill(int pos);
     uint32_t GetIndexOfSkill(int pos);
-    bool SetSkill(int pos, std::shared_ptr<Skill> skill)
+    bool SetSkill(int pos, std::shared_ptr<Skill> skill);
+    bool RemoveSkill(int pos)
     {
         if (pos < 0 || pos >= PLAYER_MAX_SKILLS)
             return false;
-        skills_[static_cast<size_t>(pos)] = skill;
+        skills_[static_cast<size_t>(pos)].reset();
         return true;
     }
 

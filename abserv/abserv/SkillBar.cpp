@@ -33,6 +33,8 @@ void SkillBar::RegisterLua(kaguya::State& state)
 {
     state["SkillBar"].setClass(kaguya::UserdataMetatable<SkillBar>()
         .addFunction("GetSkill", &SkillBar::_LuaGetSkill)
+        .addFunction("SetSkill", &SkillBar::_LuaSetSkill)
+        .addFunction("RemoveSkill", &SkillBar::RemoveSkill)
         .addFunction("GetCurrentSkill", &SkillBar::GetCurrentSkill)
         .addFunction("UseSkill", &SkillBar::UseSkill)
         .addFunction("GetSkillsWithEffect", &SkillBar::_LuaGetSkillsWithEffect)
@@ -46,11 +48,11 @@ void SkillBar::RegisterLua(kaguya::State& state)
     );
 }
 
-Skill* SkillBar::_LuaGetSkill(int index)
+Skill* SkillBar::_LuaGetSkill(int pos)
 {
-    if (index < 0)
+    if (pos < 0)
         return nullptr;
-    auto s = GetSkill(index);
+    auto s = GetSkill(pos);
     if (s)
         return s.get();
     return nullptr;
@@ -74,6 +76,23 @@ int SkillBar::_LuaAddSkill(uint32_t skillIndex)
         ++i;
     }
     return -1;
+}
+
+bool SkillBar::_LuaSetSkill(int pos, uint32_t skillIndex)
+{
+    auto* sm = GetSubsystem<SkillManager>();
+    auto skill = sm->Get(skillIndex);
+    if (skill)
+    {
+        if (!SetSkill(static_cast<int>(pos), skill))
+            return false;
+    }
+    else
+        LOG_WARNING << "No skill with index " << skillIndex << " found" << std::endl;
+
+    const uint32_t newIndex = GetIndexOfSkill(static_cast<int>(pos));
+
+    return skillIndex == newIndex;
 }
 
 AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
@@ -276,6 +295,14 @@ uint32_t SkillBar::GetIndexOfSkill(int pos)
     if (!skill)
         return 0;
     return skill->GetIndex();
+}
+
+bool SkillBar::SetSkill(int pos, std::shared_ptr<Skill> skill)
+{
+    if (pos < 0 || pos >= PLAYER_MAX_SKILLS)
+        return false;
+    skills_[static_cast<size_t>(pos)] = skill;
+    return true;
 }
 
 int SkillBar::GetUsedAttributePoints() const
