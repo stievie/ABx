@@ -191,22 +191,7 @@ static bool LoadPlayer(Game::Player& player)
     }
     // After loading professions we can load the skills
     if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountTypeGamemaster))
-    {
         LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
-        // TODO: Remove
-        if (player.account_.type >= AB::Entities::AccountTypeGamemaster)
-        {
-            LOG_INFO << "Adding GM skills" << std::endl;
-            auto skillsMan = GetSubsystem<Game::SkillManager>();
-            player.skills_->SetSkill(0, skillsMan->Get(9998));
-            player.skills_->SetSkill(1, skillsMan->Get(9997));
-            player.skills_->SetSkill(2, skillsMan->Get(9996));
-            player.skills_->SetSkill(3, skillsMan->Get(312));
-            player.skills_->SetSkill(4, skillsMan->Get(240));
-            player.skills_->SetSkill(5, skillsMan->Get(281));
-            player.skills_->SetSkill(7, skillsMan->Get(1043));
-        }
-    }
 
     player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
