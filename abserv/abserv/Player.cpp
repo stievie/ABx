@@ -1226,20 +1226,20 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
                         AB::Packets::Server::ObjectSetSkill packet{
                             id_,
                             0,
-                            static_cast<uint8_t>(pos)
+                            static_cast<uint8_t>(i)
                         };
                         AB::Packets::Add(packet, *nmsg);
                     }
                     if (skill->data_.isElite)
                     {
                         // Only one elite skill
-                        if (_skill->data_.isElite)
+                        if (_skill->data_.isElite && skill->data_.index != _skill->data_.index)
                         {
                             nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
                             AB::Packets::Server::ObjectSetSkill packet{
                                 id_,
                                 0,
-                                static_cast<uint8_t>(pos)
+                                static_cast<uint8_t>(i)
                             };
                             AB::Packets::Add(packet, *nmsg);
                         }
