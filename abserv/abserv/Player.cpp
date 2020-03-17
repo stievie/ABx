@@ -579,6 +579,7 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
         // Do nothing
         break;
     case FriendList::Error::PlayerNotFound:
+    {
         msg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
         AB::Packets::Server::ServerMessage packet = {
             static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::PlayerNotFound),
@@ -588,9 +589,9 @@ void Player::CRQAddFriend(const std::string playerName, AB::Entities::FriendRela
         AB::Packets::Add(packet, *msg);
         break;
     }
+    }
 
-    if (msg->GetSize() != 0)
-        WriteToOutput(*msg);
+    WriteToOutput(*msg);
 }
 
 void Player::CRQRemoveFriend(const std::string accountUuid)
@@ -624,8 +625,7 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
         break;
     }
 
-    if (msg->GetSize() != 0)
-        WriteToOutput(*msg);
+    WriteToOutput(*msg);
 }
 
 void Player::CRQChangeFriendNick(const std::string accountUuid, const std::string newName)
@@ -671,8 +671,7 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
         break;
     }
 
-    if (msg->GetSize() != 0)
-        WriteToOutput(*msg);
+    WriteToOutput(*msg);
 }
 
 void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
@@ -809,7 +808,7 @@ void Player::CRQGetFriendList()
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)
 {
-    if (client_)
+    if (client_ && message.GetSize() != 0)
         client_->WriteToOutput(message);
     else
         LOG_ERROR << "client_ expired" << std::endl;
