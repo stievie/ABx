@@ -1153,9 +1153,9 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
         std::string current = skills_->prof2_.uuid;
         if (skills_->SetSecondaryProfession(profIndex))
         {
-            // The player may be equipped skills from the previous secondary profession that are not
+            // The player may have equipped skills from the previous secondary profession that are not
             // available anymore, so we must validate the whole skillbar and remove all skills from the
-            // current secondary profession.
+            // old secondary profession.
             for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
             {
                 auto _skill = skills_->GetSkill(i);
