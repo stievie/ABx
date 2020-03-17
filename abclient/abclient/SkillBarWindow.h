@@ -59,6 +59,10 @@ private:
     void UpdateSkill(unsigned pos, uint32_t index);
     bool IsChangeable() const;
     void ShowSkillsWindow();
+    void HandleSkillDragBegin(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragMove(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragCancel(StringHash eventType, VariantMap& eventData);
+    void HandleSkillDragEnd(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 

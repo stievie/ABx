@@ -120,8 +120,16 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
             btn->SetTexture(icon);
             btn->SetImageRect(IntRect(0, 0, 256, 256));
             btn->SetBorder(IntRect(4, 4, 4, 4));
-            btn->SetHoverOffset(IntVector2(4, 4));
-            btn->SetPressedOffset(IntVector2(-4, -4));
+            if (!IsChangeable())
+            {
+                btn->SetHoverOffset(IntVector2(4, 4));
+                btn->SetPressedOffset(IntVector2(-4, -4));
+            }
+            else
+            {
+                btn->SetHoverOffset(IntVector2(0, 0));
+                btn->SetPressedOffset(IntVector2(0, 0));
+            }
             iconSet = true;
         }
         Text* skillName = btn->GetChildStaticCast<Text>("SkillName", true);
@@ -149,6 +157,7 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
         btn->SetImageRect(IntRect(0, 0, 256, 256));
         btn->SetBorder(IntRect(4, 4, 4, 4));
         btn->SetHoverOffset(IntVector2(0, 0));
+        btn->SetPressedOffset(IntVector2(0, 0));
     }
 }
 
@@ -186,6 +195,17 @@ void SkillBarWindow::SubscribeEvents()
 {
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(SkillBarWindow, HandleUpdate));
     SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(SkillBarWindow, HandleSetSkill));
+    if (IsChangeable())
+    {
+        for (unsigned i = 1; i <= Game::PLAYER_MAX_SKILLS; ++i)
+        {
+            auto* button = GetButtonFromIndex(i);
+            SubscribeToEvent(button, E_DRAGMOVE, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragMove));
+            SubscribeToEvent(button, E_DRAGBEGIN, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragBegin));
+            SubscribeToEvent(button, E_DRAGCANCEL, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragCancel));
+            SubscribeToEvent(button, E_DRAGEND, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragEnd));
+        }
+    }
 }
 
 void SkillBarWindow::HandleUpdate(StringHash, VariantMap&)
@@ -363,4 +383,20 @@ void SkillBarWindow::ShowSkillsWindow()
         SendEvent(Events::E_SC_TOGGLESKILLSWINDOW, e);
     }
     s->BringToFront();
+}
+
+void SkillBarWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
+{
+}
+
+void SkillBarWindow::HandleSkillDragMove(StringHash, VariantMap& eventData)
+{
+}
+
+void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap& eventData)
+{
+}
+
+void SkillBarWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
+{
 }
