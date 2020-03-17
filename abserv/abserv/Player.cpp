@@ -1148,7 +1148,34 @@ void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
 void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 {
     if (IsInOutpost())
-        skills_->SetSecondaryProfession(profIndex);
+    {
+        auto nmsg = Net::NetworkMessage::GetNew();
+        std::string current = skills_->prof2_.uuid;
+        if (skills_->SetSecondaryProfession(profIndex))
+        {
+            // The player may be equipped skills from the previous secondary profession that are not
+            // available anymore, so we must validate the whole skillbar and remove all skills from the
+            // current secondary profession.
+            for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
+            {
+                auto _skill = skills_->GetSkill(i);
+                if (!_skill)
+                    continue;
+
+                if (_skill->data_.professionUuid.compare(current) == 0)
+                {
+                    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
+                    AB::Packets::Server::ObjectSetSkill packet{
+                        id_,
+                        0,
+                        static_cast<uint8_t>(i)
+                    };
+                    AB::Packets::Add(packet, *nmsg);
+                }
+            }
+            WriteToOutput(*nmsg);
+        }
+    }
 
     // If it fails or not inform the client of the current profession
     AB::Packets::Server::ObjectSecProfessionChanged packet {
