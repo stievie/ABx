@@ -31,7 +31,7 @@ class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
-    SharedPtr<BorderImage> dragSkill_;
+    SharedPtr<Window> dragSkill_;
     void AddProfessions(const Actor& actor);
     void UpdateAttributes(const Actor& actor);
     void UpdateSkills(const Actor& actor);

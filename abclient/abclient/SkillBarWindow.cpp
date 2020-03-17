@@ -111,9 +111,11 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
 
     bool iconSet = false;
     Button* btn = GetButtonFromIndex(pos);
+    btn->SetVar("SkillPos", pos);
     const AB::Entities::Skill* skill = sm->GetSkillByIndex(index);
     if (skill && skill->index != 0)
     {
+        btn->SetVar("SkillIndex", skill->index);
         Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
         if (icon)
         {
@@ -145,6 +147,7 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
     }
     else
     {
+        btn->SetVar("SkillIndex", 0);
         ToolTip* tt = btn->GetChildStaticCast<ToolTip>("SkillTooltip", true);
         tt->SetEnabled(false);
         btn->SetEnabled(false);
@@ -387,16 +390,85 @@ void SkillBarWindow::ShowSkillsWindow()
 
 void SkillBarWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
 {
+    using namespace DragBegin;
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    auto* element = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
+    dragSkill_ = root->CreateChild<Window>();
+    dragSkill_->SetLayout(LM_HORIZONTAL);
+    dragSkill_->SetLayoutBorder(IntRect(4, 4, 4, 4));
+    dragSkill_->SetTexture(tex);
+    dragSkill_->SetImageRect(IntRect(48, 0, 64, 16));
+    dragSkill_->SetBorder(IntRect(4, 4, 4, 4));
+    dragSkill_->SetMinSize(40, 40);
+    dragSkill_->SetMaxSize(40, 40);
+    BorderImage* icon = dragSkill_->CreateChild<BorderImage>();
+    icon->SetTexture(element->GetTexture());
+    dragSkill_->SetPosition(element->GetPosition());
+    dragSkill_->SetVar("SkillIndex", element->GetVar("SkillIndex"));
+    dragSkill_->SetVar("SkillPos", element->GetVar("SkillPos"));
+
+    int lx = eventData[P_X].GetInt();
+    int ly = eventData[P_Y].GetInt();
+    dragSkill_->SetPosition(IntVector2(lx, ly) - dragSkill_->GetSize() / 2);
+
+    int buttons = eventData[P_BUTTONS].GetInt();
+    element->SetVar("BUTTONS", buttons);
+    dragSkill_->BringToFront();
 }
 
 void SkillBarWindow::HandleSkillDragMove(StringHash, VariantMap& eventData)
 {
+    if (!dragSkill_)
+        return;
+    using namespace DragMove;
+    dragSkill_->BringToFront();
+
+    int buttons = eventData[P_BUTTONS].GetInt();
+    auto* element = reinterpret_cast<UISelectable*>(eventData[P_ELEMENT].GetVoidPtr());
+    int X = eventData[P_X].GetInt();
+    int Y = eventData[P_Y].GetInt();
+    int BUTTONS = element->GetVar("BUTTONS").GetInt();
+
+    if (buttons == BUTTONS)
+        dragSkill_->SetPosition(IntVector2(X, Y) - dragSkill_->GetSize() / 2);
 }
 
-void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap& eventData)
+void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap&)
 {
+    using namespace DragCancel;
+    if (!dragSkill_)
+        return;
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+    root->RemoveChild(dragSkill_.Get());
+    dragSkill_ = SharedPtr<Window>();
 }
 
 void SkillBarWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
 {
+    using namespace DragEnd;
+    if (!dragSkill_)
+        return;
+    uint32_t skillIndex = dragSkill_->GetVar("SkillIndex").GetUInt();
+
+    int X = eventData[P_X].GetInt();
+    int Y = eventData[P_Y].GetInt();
+    IntVector2 pos = IntVector2(X, Y);
+    IntRect screenRect(GetScreenPosition(), GetScreenPosition() + GetSize());
+    if (!screenRect.IsInside(pos))
+    {
+        // Dropping anywhere -> remove skill
+        uint32_t skillPos = dragSkill_->GetVar("SkillPos").GetUInt() - 1;
+        auto* client = GetSubsystem<FwClient>();
+        client->EquipSkill(0, static_cast<uint8_t>(skillPos));
+    }
+    else
+        DropSkill(pos, skillIndex);
+
+    UIElement* root = GetSubsystem<UI>()->GetRoot();
+    root->RemoveChild(dragSkill_.Get());
+    dragSkill_ = SharedPtr<Window>();
 }

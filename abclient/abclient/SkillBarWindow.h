@@ -41,6 +41,7 @@ private:
     SharedPtr<Button> skill8_;
     WeakPtr<Actor> actor_;
     Game::SkillIndices skills_;
+    SharedPtr<Window> dragSkill_;
     void SubscribeEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleSkill1Clicked(StringHash eventType, VariantMap& eventData);

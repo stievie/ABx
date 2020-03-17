@@ -400,13 +400,22 @@ void SkillsWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
 {
     using namespace DragBegin;
 
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
     auto* element = reinterpret_cast<UISelectable*>(eventData[P_ELEMENT].GetVoidPtr());
     auto* item = element->GetChildStaticCast<BorderImage>("SkillIcon", true);
     UIElement* root = GetSubsystem<UI>()->GetRoot();
-    dragSkill_ = root->CreateChild<BorderImage>();
+
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
+    dragSkill_ = root->CreateChild<Window>();
+    dragSkill_->SetLayout(LM_HORIZONTAL);
+    dragSkill_->SetLayoutBorder(IntRect(4, 4, 4, 4));
+    dragSkill_->SetTexture(tex);
+    dragSkill_->SetImageRect(IntRect(48, 0, 64, 16));
+    dragSkill_->SetBorder(IntRect(4, 4, 4, 4));
     dragSkill_->SetMinSize(40, 40);
     dragSkill_->SetMaxSize(40, 40);
-    dragSkill_->SetTexture(item->GetTexture());
+    BorderImage* icon = dragSkill_->CreateChild<BorderImage>();
+    icon->SetTexture(item->GetTexture());
     dragSkill_->SetPosition(item->GetPosition());
     dragSkill_->SetVar("SkillIndex", element->GetVar("SkillIndex"));
 
@@ -443,7 +452,7 @@ void SkillsWindow::HandleSkillDragCancel(StringHash, VariantMap&)
         return;
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<BorderImage>();
+    dragSkill_ = SharedPtr<Window>();
 }
 
 void SkillsWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
@@ -465,7 +474,7 @@ void SkillsWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
     }
 
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<BorderImage>();
+    dragSkill_ = SharedPtr<Window>();
 }
 
 void SkillsWindow::UpdateSkills(const Actor& actor)
