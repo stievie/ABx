@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2415.64" />
-	<attribute name="Next Replicated Node ID" value="42" />
+	<attribute name="Next Replicated Node ID" value="51" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787029" />
-	<attribute name="Next Local Component ID" value="16788485" />
+	<attribute name="Next Local Node ID" value="16787079" />
+	<attribute name="Next Local Component ID" value="16788573" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -1130,6 +1130,182 @@
 		<component type="CollisionShape" id="16788484">
 			<attribute name="Size" value="0.230128 0.141163 0.223866" />
 			<attribute name="Offset Position" value="0.000737593 0.0685208 0.0076894" />
+		</component>
+	</node>
+	<node id="42">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.67915 26.5676 22.8689" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788546">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788547">
+			<attribute name="Physics Position" value="4.67915 26.5676 22.8689" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788548">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="43">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.64659 26.4374 23.0113" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788549">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788550">
+			<attribute name="Physics Position" value="4.64659 26.4374 23.0113" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788551">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="45">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.79962 26.4374 23.0113" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788555">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788556">
+			<attribute name="Physics Position" value="4.79962 26.4374 23.0113" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788557">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="46">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.75141 26.4374 22.8652" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788558">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788559">
+			<attribute name="Physics Position" value="4.75141 26.4374 22.8652" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788560">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="47">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.57223 26.4374 22.8652" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788561">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788562">
+			<attribute name="Physics Position" value="4.57223 26.4374 22.8652" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788563">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="48">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.49261 26.4374 23.0113" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788564">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788565">
+			<attribute name="Physics Position" value="4.49261 26.4374 23.0113" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788566">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="49">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.75188 26.5682 23.0113" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788567">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788568">
+			<attribute name="Physics Position" value="4.75188 26.5682 23.0113" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788569">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="50">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ToiletPaper" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.58377 26.5682 23.0113" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788570">
+			<attribute name="Model" value="Model;Models/ToiletPaper.mdl" />
+			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
+		</component>
+		<component type="RigidBody" id="16788571">
+			<attribute name="Physics Position" value="4.58377 26.5682 23.0113" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788572">
+			<attribute name="Size" value="0.144287 0.129792 0.144287" />
+			<attribute name="Offset Position" value="0 0.0654316 0" />
 		</component>
 	</node>
 </scene>
