@@ -1,5 +1,7 @@
 # FW Client
 
+This is the game client you should use to play this game.
+
 ## Install
 
 Extract the archive to a location of your choice.

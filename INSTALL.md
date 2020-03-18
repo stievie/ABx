@@ -57,14 +57,15 @@ bin
     * `d3dcompiler_47.dll`
     * `libeay32.dll` (OpenSSL)
     * `ssleay32.dll` (OpenSSL)
-4. Copy `abclient/Setup/config.xml` to `abclient/bin/config.xml` and enter the Host and Port of the Login server:
+4. Copy the configuration file for the Game client from `abclient/Setup/config.xml` to `abclient/bin/config.xml` and enter the Host and Port of the Login server:
 ~~~xml
+<!-- Example when your run the server and client on the same machine -->
 <config>
-  <parameter name="LoginHost" type="string" value="127.0.0.1" />
+  <parameter name="LoginHost" type="string" value="localhost" />
   <parameter name="LoginPort" type="int" value="2748" />
 </config>
 ~~~
-5. Run `fw.exe` in `abclient/bin`.
+5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && .fw`.
 6. Create an account using the `random_guid()` value of your previously created account key. To find out what GUID was created, run:
 ~~~sql
 SELECT uuid FROM public.account_keys;
