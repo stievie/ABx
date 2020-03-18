@@ -452,7 +452,7 @@ void SkillsWindow::HandleSkillDragCancel(StringHash, VariantMap&)
         return;
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<Window>();
+    dragSkill_.Reset();
 }
 
 void SkillsWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
@@ -474,7 +474,7 @@ void SkillsWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
     }
 
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<Window>();
+    dragSkill_.Reset();
 }
 
 void SkillsWindow::UpdateSkills(const Actor& actor)

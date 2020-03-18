@@ -450,7 +450,7 @@ void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap&)
         return;
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<Window>();
+    dragSkill_.Reset();
 }
 
 void SkillBarWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
@@ -479,5 +479,5 @@ void SkillBarWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragSkill_.Get());
-    dragSkill_ = SharedPtr<Window>();
+    dragSkill_.Reset();
 }
