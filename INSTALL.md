@@ -65,7 +65,7 @@ bin
   <parameter name="LoginPort" type="int" value="2748" />
 </config>
 ~~~
-5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && .fw`.
+5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && ./fw`.
 6. Create an account using the `random_guid()` value of your previously created account key. To find out what GUID was created, run:
 ~~~sql
 SELECT uuid FROM public.account_keys;
