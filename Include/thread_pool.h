@@ -19,7 +19,7 @@ public:
     thread_pool(size_t);
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args)
-        ->std::future<typename std::result_of<F(Args...)>::type>;
+        ->std::future<typename std::invoke_result<F, Args...>::type>;
     ~thread_pool();
 private:
     // need to keep track of threads so we can join them
@@ -67,9 +67,9 @@ inline thread_pool::thread_pool(size_t threads)
 // add new work item to the pool
 template<class F, class... Args>
 auto thread_pool::enqueue(F&& f, Args&&... args)
--> std::future<typename std::result_of<F(Args...)>::type>
+-> std::future<typename std::invoke_result<F, Args...>::type>
 {
-    using return_type = typename std::result_of<F(Args...)>::type;
+    using return_type = typename std::invoke_result<F, Args...>::type;
 
     auto task = std::make_shared< std::packaged_task<return_type()> >(
         std::bind(std::forward<F>(f), std::forward<Args>(args)...)

@@ -53,14 +53,14 @@ public:
     {
         if (!pool_)
             return;
-        pool_->enqueue(f, args...);
+        pool_->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
     }
     template<class F, class... Args>
     inline auto EnqueueWithResult(F&& f, Args&&... args)
     {
         if (!pool_)
             throw std::runtime_error("ThreadPool not running");
-        return pool_->enqueue(f, args...);
+        return pool_->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
     }
 };
 
