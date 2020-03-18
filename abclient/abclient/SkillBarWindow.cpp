@@ -198,16 +198,13 @@ void SkillBarWindow::SubscribeEvents()
 {
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(SkillBarWindow, HandleUpdate));
     SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(SkillBarWindow, HandleSetSkill));
-    if (IsChangeable())
+    for (unsigned i = 1; i <= Game::PLAYER_MAX_SKILLS; ++i)
     {
-        for (unsigned i = 1; i <= Game::PLAYER_MAX_SKILLS; ++i)
-        {
-            auto* button = GetButtonFromIndex(i);
-            SubscribeToEvent(button, E_DRAGMOVE, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragMove));
-            SubscribeToEvent(button, E_DRAGBEGIN, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragBegin));
-            SubscribeToEvent(button, E_DRAGCANCEL, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragCancel));
-            SubscribeToEvent(button, E_DRAGEND, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragEnd));
-        }
+        auto* button = GetButtonFromIndex(i);
+        SubscribeToEvent(button, E_DRAGMOVE, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragMove));
+        SubscribeToEvent(button, E_DRAGBEGIN, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragBegin));
+        SubscribeToEvent(button, E_DRAGCANCEL, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragCancel));
+        SubscribeToEvent(button, E_DRAGEND, URHO3D_HANDLER(SkillBarWindow, HandleSkillDragEnd));
     }
 }
 
@@ -390,6 +387,9 @@ void SkillBarWindow::ShowSkillsWindow()
 
 void SkillBarWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
 {
+    if (!IsChangeable())
+        return;
+
     using namespace DragBegin;
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -422,6 +422,9 @@ void SkillBarWindow::HandleSkillDragBegin(StringHash, VariantMap& eventData)
 
 void SkillBarWindow::HandleSkillDragMove(StringHash, VariantMap& eventData)
 {
+    if (!IsChangeable())
+        return;
+
     if (!dragSkill_)
         return;
     using namespace DragMove;
@@ -439,6 +442,9 @@ void SkillBarWindow::HandleSkillDragMove(StringHash, VariantMap& eventData)
 
 void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap&)
 {
+    if (!IsChangeable())
+        return;
+
     using namespace DragCancel;
     if (!dragSkill_)
         return;
@@ -449,6 +455,9 @@ void SkillBarWindow::HandleSkillDragCancel(StringHash, VariantMap&)
 
 void SkillBarWindow::HandleSkillDragEnd(StringHash, VariantMap& eventData)
 {
+    if (!IsChangeable())
+        return;
+
     using namespace DragEnd;
     if (!dragSkill_)
         return;
