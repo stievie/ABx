@@ -1,3 +1,2 @@
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
 The client says "Unknown packet code..." Maybe some messages out of order.
-~ Do not delete concrete items from DB, just mark them as deleted, should fix some chaching problems
