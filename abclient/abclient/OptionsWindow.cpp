@@ -528,7 +528,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             result->SetVar("Mode", static_cast<unsigned>(mode));
             return result;
         };
-        dropdown->AddItem(getItem("Node", AntiAliasingMode::None));
+        dropdown->AddItem(getItem("None", AntiAliasingMode::None));
         dropdown->AddItem(getItem("FXAA3", AntiAliasingMode::FXAA3));
         dropdown->AddItem(getItem("MSAA x 2", AntiAliasingMode::MSAAx2));
         dropdown->AddItem(getItem("MSAA x 4", AntiAliasingMode::MSAAx4));
