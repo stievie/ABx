@@ -37,6 +37,20 @@ Window::Window()
     init_pair(DEFAULT_LISTITEM_COLOR, COLOR_WHITE, COLOR_BLACK);
     init_pair(SELECTED_LISTITEM_COLOR, COLOR_BLACK, COLOR_WHITE);
 
+    CreateWindows();
+
+    curs_set(FALSE);
+}
+
+Window::~Window()
+{
+    DestroyWindows();
+    endwin();
+}
+
+void Window::CreateWindows()
+{
+    topPanel_ = nullptr;
     Point size = GetSize();
     int halfWidth = size.x / 2;
 
@@ -62,17 +76,18 @@ Window::Window()
 
     ActivatePanel(panels_[0]);
 
-    curs_set(FALSE);
+    if (!statusText_.empty())
+        PrintStatusLine(statusText_);
 }
 
-Window::~Window()
+void Window::DestroyWindows()
 {
+    clear();
     for (int i = 0; i < 3; ++i)
     {
         del_panel(panels_[i]);
         delwin(wins_[i]);
     }
-    endwin();
 }
 
 void Window::SetStatusText(const std::string& value)
@@ -125,6 +140,12 @@ void Window::Loop()
             break;
         case 9:
             ActivatePanel((PANEL*)panel_userptr(topPanel_));
+            break;
+        case KEY_RESIZE:
+            DestroyWindows();
+            CreateWindows();
+            if (onResized_)
+                onResized_();
             break;
         default:
             if (onKey_)

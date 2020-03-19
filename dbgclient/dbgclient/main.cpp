@@ -16,6 +16,7 @@ PRAGMA_WARNING_POP
 #include "DebugClient.h"
 #include "Window.h"
 #include <thread>
+#include <csignal>
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
@@ -53,6 +54,7 @@ int main(int argc, char** argv)
     GetSubsystem<Asynch::Scheduler>()->Start();
 
     asio::io_service io;
+
     Window wnd;
     DebugClient client(io, wnd);
 

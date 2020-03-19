@@ -65,6 +65,8 @@ private:
     PANEL* topPanel_{ nullptr };
     std::string statusText_;
     void ActivatePanel(PANEL* newTop);
+    void CreateWindows();
+    void DestroyWindows();
 public:
     Window();
     ~Window();
@@ -87,5 +89,6 @@ public:
     void SetStatusText(const std::string& value);
 
     std::function<void(Windows window, int c)> onKey_;
+    std::function<void()> onResized_;
 };
 

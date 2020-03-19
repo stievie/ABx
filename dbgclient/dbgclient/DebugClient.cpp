@@ -71,6 +71,11 @@ DebugClient::DebugClient(asio::io_service& io, Window& window) :
     client_.handlers_.Add<AI::GameUpdate>(std::bind(&DebugClient::HandleGameUpdate, this, std::placeholders::_1));
     client_.handlers_.Add<AI::GameObject>(std::bind(&DebugClient::HandleGameObject, this, std::placeholders::_1));
     client_.handlers_.Add<AI::BehaviorTree>(std::bind(&DebugClient::HandleTree, this, std::placeholders::_1));
+    window_.onResized_ = [this]() {
+        UpdateGames();
+        gameObjectsDirty_ = true;
+        UpdateObjects();
+    };
 }
 
 bool DebugClient::Connect(const std::string& host, uint16_t port)
