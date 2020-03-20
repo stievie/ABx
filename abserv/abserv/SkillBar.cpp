@@ -70,6 +70,7 @@ int SkillBar::_LuaAddSkill(uint32_t skillIndex)
     {
         if (!s)
         {
+            // Use first free slot
             skills_[i] = skill;
             return static_cast<int>(i);
         }
@@ -197,6 +198,7 @@ void SkillBar::InitAttributes()
     {
         if (!a.primary)
         {
+            // Can not have a rank of the primary attribute of the 2nd profession
             attributes_[i].index = static_cast<Attribute>(a.index);
             ++i;
         }

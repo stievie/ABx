@@ -61,7 +61,6 @@ OptionsWindow::OptionsWindow(Context* context) :
     CreatePageGraphics(CreateTab(tabgroup_, "Graphics"));
     CreatePageAudio(CreateTab(tabgroup_, "Audio"));
     CreatePageInput(CreateTab(tabgroup_, "Input"));
-    CreatePageInterface(CreateTab(tabgroup_, "Interface"));
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
@@ -106,6 +105,7 @@ void OptionsWindow::HandleCloseClicked(StringHash, VariantMap&)
 
 void OptionsWindow::HandleTabSelected(StringHash, VariantMap&)
 {
+    // Nothing to do here (yet)
 }
 
 void OptionsWindow::HandleFovSliderChanged(StringHash, VariantMap& eventData)
@@ -776,14 +776,4 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
             hkLvw->RemoveAllItems();
         });
     }
-}
-
-void OptionsWindow::CreatePageInterface(TabElement* tabElement)
-{
-    BorderImage* page = tabElement->tabBody_;
-
-    Window* wnd = page->CreateChild<Window>();
-    LoadWindow(wnd, "UI/OptionPageInterface.xml");
-    wnd->SetPosition(0, 0);
-    wnd->UpdateLayout();
 }

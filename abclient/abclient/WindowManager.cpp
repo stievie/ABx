@@ -146,14 +146,12 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         {
             SharedPtr<GameMessagesWindow> wnd = SharedPtr<GameMessagesWindow>(new GameMessagesWindow(context_));
             wnd->SetVisible(false);
-//            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_EFFECTS)
         {
             SharedPtr<EffectsWindow> wnd = SharedPtr<EffectsWindow>(new EffectsWindow(context_));
             wnd->SetVisible(true);
-            //            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_MISSIONMAP)
@@ -167,7 +165,6 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         {
             SharedPtr<SkillBarWindow> wnd = SharedPtr<SkillBarWindow>(new SkillBarWindow(context_));
             wnd->SetVisible(true);
-//            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
     }
