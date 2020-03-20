@@ -85,3 +85,50 @@ Other shortcuts are shown in `[` `]`.
 
 It saves the settings on exit to the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7)
 or if the `-prefpath` command line argument is given, to this directory.
+
+## Config file
+
+Basic configuration is read from the configuration file `config.xml` in the program
+directory.
+
+### Required entries
+
+LoginHost and LoginPort tells the game client where to connect to.
+~~~xml
+  <parameter name="LoginHost" type="string" value="localhost" />
+  <parameter name="LoginPort" type="int" value="2748" />
+~~~
+
+### Optional entries
+
+If you don't want to enter your username and password every time you login you
+can create a `Username` and `Password` entry:
+~~~xml
+  <parameter name="Username" type="string" value="the_username"/>
+  <parameter name="Password" type="string" value="the_password"/>
+~~~
+
+If you run different instances of the server (e.g. Test and Production) you can
+create so called Environments:
+~~~xml
+  <parameter name="Environment">
+    <name type="string" value="Production" />
+    <host type="string" value="192.168.1.135" />
+    <port type="int" value="2748" />
+  </parameter>
+  <parameter name="Environment">
+    <name type="string" value="Test" />
+    <host type="string" value="192.168.1.113" />
+    <port type="int" value="2748" />
+  </parameter>
+  <parameter name="Environment">
+    <name type="string" value="Development" />
+    <host type="string" value="localhost" />
+    <port type="int" value="2748" />
+  </parameter>
+~~~
+This will create a dropdown list on the Login screen, which lets you chose the
+server to connect to.
+
+If you have such Environments, the `LogginHost` and `LoginPort` entries mentioned
+above, are ignored.
