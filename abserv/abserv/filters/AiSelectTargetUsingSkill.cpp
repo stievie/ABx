@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "AiSelectTargetUsingSkill.h"
 #include "../Npc.h"
+#include <abscommon/Random.h>
 
 //#define DEBUG_AI
 
