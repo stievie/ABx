@@ -26,7 +26,7 @@ private:                               \
     t(const t&) = delete;              \
     t& operator=(const t&) = delete;
 
-#define NON_MOVEABLE                  \
+#define NON_MOVEABLE(t)               \
 private:                              \
     t(t&&) = delete;                  \
     t& operator=(t&&) = delete;

@@ -27,6 +27,7 @@
 #include <AB/Entities/Profession.h>
 #include <abshared/Mechanic.h>
 #include <abshared/TemplEncoder.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -36,6 +37,8 @@ typedef std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> SkillsArray;
 
 class SkillBar
 {
+    NON_COPYABLE(SkillBar)
+    NON_MOVEABLE(SkillBar)
 private:
     SkillsArray skills_;
     Attributes attributes_;
@@ -59,13 +62,9 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    SkillBar() = delete;
     explicit SkillBar(Actor& owner) :
         owner_(owner)
     { }
-    // non-copyable
-    SkillBar(const SkillBar&) = delete;
-    SkillBar& operator=(const SkillBar&) = delete;
     ~SkillBar() = default;
 
     /// 0 Based

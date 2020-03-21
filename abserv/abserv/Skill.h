@@ -25,6 +25,7 @@
 #include "Script.h"
 #include "GameObject.h"
 #include <AB/ProtocolCodes.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -76,6 +77,7 @@ enum class CostType
 
 class Skill
 {
+    NON_COPYABLE(Skill)
     friend class SkillBar;
 private:
     kaguya::State luaState_;
@@ -113,15 +115,12 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Skill() = delete;
     explicit Skill(const AB::Entities::Skill& skill) :
         data_(skill)
     {
         InitializeLua();
     }
     // non-copyable
-    Skill(const Skill&) = delete;
-    Skill& operator=(const Skill&) = delete;
     ~Skill() = default;
 
     bool LoadScript(const std::string& fileName);
