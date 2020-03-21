@@ -58,8 +58,9 @@ enum SkillEffectTarget : uint32_t
 enum SkillTargetType : uint32_t
 {
     SkillTargetTypeNone = 0,
-    SkillTargetTypeAlly = 1,
-    SkillTargetTypeFoe = 2,
+    SkillTargetTypeSelf = 1,
+    SkillTargetTypeAlly = 2,
+    SkillTargetTypeFoe = 3,
 };
 
 enum class CostType

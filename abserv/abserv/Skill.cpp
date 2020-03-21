@@ -127,7 +127,8 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
         return false;
     }
-    if (HasTarget(SkillTargetTarget))
+
+    if (targetType_ != SkillTargetTypeNone)
     {
         if (!target)
         {
@@ -139,6 +140,33 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
             lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
             return false;
         }
+
+        if (targetType_ == SkillTargetTypeSelf)
+        {
+            if (target->id_ != source.id_)
+            {
+                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                return false;
+            }
+        }
+        else if (targetType_ == SkillTargetTypeAlly)
+        {
+            if (!source.IsAlly(target))
+            {
+                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                return false;
+            }
+        }
+        else if (targetType_ == SkillTargetTypeFoe)
+        {
+            if (!source.IsEnemy(target))
+            {
+                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                return false;
+            }
+        }
+
+        // Finally check the target is not immune or something
         bool targetSuccess = true;
         target->CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, &source, this, targetSuccess);
         if (!targetSuccess)
