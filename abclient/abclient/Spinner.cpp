@@ -127,9 +127,9 @@ void Spinner::HandleMouseWheel(StringHash, VariantMap& eventData)
 
     using namespace MouseWheel;
     int v = eventData[P_WHEEL].GetInt();
-    if (v > 0)
+    if (v > 0 && canIncrease_)
         Increase();
-    else if (v < 0)
+    else if (v < 0 && canDecrease_)
         Decrease();
 }
 
