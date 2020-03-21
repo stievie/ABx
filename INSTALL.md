@@ -1,5 +1,10 @@
 # Install and run
 
+All binaries of the *Server* are located in `./Bin`.
+
+The binary of the *Client* is located in `./abclient/bin` and has the name
+`fw`, `fw_d` (Debug), `fw.exe` (Windows) or `fw_d.exe` (Windows Debug).
+
 ## Server
 
 1. Build the server, see [BUILD.md](BUILD.md)
