@@ -344,14 +344,16 @@ bool Skill::IsInRange(const Actor* target) const
 void Skill::AddRecharge(int32_t ms)
 {
     if (ms > 0)
-        recharge_ += static_cast<uint32_t>(ms);
-    else if (ms < 0)
     {
-        if (static_cast<uint32_t>(ms) < recharge_)
-            recharge_ -= static_cast<uint32_t>(ms);
-        else
-            recharge_ = 0;
+        recharge_ += static_cast<uint32_t>(ms);
+        return;
     }
+
+    const uint32_t absms = static_cast<uint32_t>(abs(ms));
+    if (absms < recharge_)
+        recharge_ -= absms;
+    else
+        recharge_ = 0;
 }
 
 bool Skill::CanUseOnTarget(const Actor& source, const Actor* target) const
