@@ -130,5 +130,5 @@ create so called Environments:
 This will create a dropdown list on the Login screen, which lets you chose the
 server to connect to.
 
-If you have such Environments, the `LogginHost` and `LoginPort` entries mentioned
+If you have such Environments, the `LoginHost` and `LoginPort` entries mentioned
 above, are ignored.
