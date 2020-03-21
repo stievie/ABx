@@ -60,6 +60,11 @@ it is moving fast, but does not break things.
 
 See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for more
+informations.
+
 ## Credits
 
 See [CREDITS.md](CREDITS.md).
