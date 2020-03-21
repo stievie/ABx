@@ -28,12 +28,12 @@ namespace Game {
 int CalcAttributeCost(int rank)
 {
     static const int cost[] = {
-        1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20
+        0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20
     };
     int result = 0;
-    for (int i = 0; i < rank; ++i)
+    for (int i = 1; i <= rank; ++i)
     {
-        if (i < 12)
+        if (i <= 12)
             result += cost[i];
         else
             result += i;

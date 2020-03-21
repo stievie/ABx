@@ -69,12 +69,16 @@ void InitProf2Attribs(Attributes& attributes, const AB::Entities::Profession& pr
     }
 }
 
-int GetUsedAttribPoints(const Attributes& attributes)
+int GetUsedAttribPoints(const Attributes& attributes, int without)
 {
     int result = 0;
     for (const auto& a : attributes)
+    {
+        if (static_cast<int>(a.index) == without)
+            continue;
         if (a.value > 0)
             result += CalcAttributeCost(static_cast<int>(a.value));
+    }
     return result;
 }
 

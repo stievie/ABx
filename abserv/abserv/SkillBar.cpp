@@ -340,11 +340,14 @@ bool SkillBar::SetAttributeRank(Attribute index, uint32_t value)
     if (value > (*it).value)
     {
         // If increasing the rank see if there are enough free points available
-        int cost = CalcAttributeCost(static_cast<int>(value));
-        if (cost > GetAvailableAttributePoints())
+        const int cost = CalcAttributeCost(static_cast<int>(value));
+        const int used = GetUsedAttribPoints(attributes_, static_cast<int>(index));
+        const int total = owner_.GetAttributePoints();
+        const int avail = total - used;
+        if (cost > avail)
         {
             LOG_WARNING << "Not enough attribute points available. Required: " << cost <<
-                ", available: " << GetAvailableAttributePoints() << ", total: " << owner_.GetAttributePoints() << std::endl;
+                ", available: " << avail << ", total: " << owner_.GetAttributePoints() << std::endl;
             return false;
         }
     }

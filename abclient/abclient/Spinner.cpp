@@ -151,15 +151,13 @@ void Spinner::SetEdit(SharedPtr<LineEdit> value)
 
 void Spinner::SetCanIncrease(bool value)
 {
-    if (canIncrease_ == value)
-        return;
+    canIncrease_ = value;
     buttonIncrease_->SetEnabled((value_ < max_) && canIncrease_);
 }
 
 void Spinner::SetCanDecrease(bool value)
 {
-    if (canDecrease_ == value)
-        return;
+    canDecrease_ = value;
     buttonDecrease_->SetEnabled((value_ > min_) && canDecrease_);
 }
 

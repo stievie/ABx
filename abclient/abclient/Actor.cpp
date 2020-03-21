@@ -1273,8 +1273,12 @@ bool Actor::CanIncreaseAttributeRank(Game::Attribute index) const
     uint32_t currRank = GetAttributeRank(index);
     if (currRank >= Game::MAX_PLAYER_ATTRIBUTE_RANK)
         return false;
+
     int cost = Game::CalcAttributeCost(currRank + 1);
-    return cost <= GetAvailableAttributePoints();
+    int used = GetUsedAttribPoints(attributes_, static_cast<int>(index));
+    int total = GetAttributePoints();
+
+    return cost <= total - used;
 }
 
 void Actor::HandleSetAttribValue(StringHash, VariantMap& eventData)
