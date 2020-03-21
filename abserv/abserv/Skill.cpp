@@ -362,6 +362,8 @@ bool Skill::CanUseOnTarget(const Actor& source, const Actor* target) const
         return true;
     case SkillTargetTypeFoe:
         return source.IsEnemy(target);
+    case SkillTargetTypeSelf:
+        return target && source.id_ == target->id_;
     case SkillTargetTypeAllyAndSelf:
         if (!target)
             return false;
