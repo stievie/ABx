@@ -28,8 +28,7 @@ namespace Conditions {
 RandomCondition::RandomCondition(const ArgumentsType& arguments) :
     Condition(arguments)
 {
-    if (arguments.size() != 0)
-        weight_ = static_cast<float>(atof(arguments[0].c_str()));
+    GetArgument<float>(arguments, 0, weight_);
 }
 
 bool RandomCondition::Evaluate(Agent&, const Node&)

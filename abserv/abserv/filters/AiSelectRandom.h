@@ -30,7 +30,7 @@ class SelectRandom final : public Filter
 {
     FILTER_CLASS(SelectRandom)
 private:
-    uint32_t count_;
+    uint32_t count_{ 1 };
 public:
     explicit SelectRandom(const ArgumentsType& arguments);
     void Execute(Agent& agent) override;

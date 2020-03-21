@@ -30,15 +30,17 @@ namespace Filters {
 SelectWithEffect::SelectWithEffect(const ArgumentsType& arguments) :
     Filter(arguments)
 {
-    if (arguments.size() > 0)
-        effectCat_ = Game::EffectCatNameToEffectCat(arguments[0]);
-
-    if (arguments.size() > 1)
+    std::string eff;
+    if (GetArgument<std::string>(arguments, 0, eff))
     {
-        const std::string& value = arguments.at(1);
-        if (value.compare("friend") == 0)
+        effectCat_ = Game::EffectCatNameToEffectCat(eff);
+    }
+    std::string ff;
+    if (GetArgument<std::string>(arguments, 1, ff))
+    {
+        if (ff.compare("friend") == 0)
             class_ = Game::TargetClass::Friend;
-        else if (value.compare("foe") == 0)
+        else if (ff.compare("foe") == 0)
             class_ = Game::TargetClass::Foe;
     }
 }

@@ -31,19 +31,15 @@ namespace Filters {
 SelectGettingDamage::SelectGettingDamage(const ArgumentsType& arguments) :
     Filter(arguments)
 {
-    if (arguments.size() > 0)
+    GetArgument<Game::DamageTypeCategory>(arguments, 0, category_);
+    std::string ff;
+    if (GetArgument<std::string>(arguments, 1, ff))
     {
-        category_ = static_cast<Game::DamageTypeCategory>(atoi(arguments[0].c_str()));
-    }
-    if (arguments.size() > 1)
-    {
-        const std::string& value = arguments.at(1);
-        if (value.compare("friend") == 0)
+        if (ff.compare("friend") == 0)
             class_ = Game::TargetClass::Friend;
-        else if (value.compare("foe") == 0)
+        else if (ff.compare("foe") == 0)
             class_ = Game::TargetClass::Foe;
     }
-
 }
 
 void SelectGettingDamage::Execute(Agent& agent)

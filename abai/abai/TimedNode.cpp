@@ -28,8 +28,7 @@ namespace AI {
 TimedNode::TimedNode(const ArgumentsType& arguments) :
     Action(arguments)
 {
-    if (arguments.size() != 0)
-        millis_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
+    GetArgument<uint32_t>(arguments, 0, millis_);
 }
 
 TimedNode::~TimedNode() = default;

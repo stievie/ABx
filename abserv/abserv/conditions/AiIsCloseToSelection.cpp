@@ -31,8 +31,7 @@ namespace Conditions {
 IsCloseToSelection::IsCloseToSelection(const ArgumentsType& arguments) :
     Condition(arguments)
 {
-    if (arguments.size() == 1)
-        distance_ = static_cast<float>(atof(arguments[0].c_str()));
+    GetArgument<float>(arguments, 0, distance_);
 }
 
 bool IsCloseToSelection::Evaluate(Agent& agent, const Node&)

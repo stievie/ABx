@@ -29,8 +29,7 @@ namespace Conditions {
 FilterCondition::FilterCondition(const ArgumentsType& arguments) :
     Condition(arguments)
 {
-    if (arguments.size() != 0)
-        min_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
+    GetArgument<uint32_t>(arguments, 0, min_);
 }
 
 bool FilterCondition::Evaluate(Agent& agent, const Node&)

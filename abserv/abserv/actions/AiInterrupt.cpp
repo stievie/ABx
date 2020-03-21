@@ -33,8 +33,7 @@ namespace Actions {
 Interrupt::Interrupt(const ArgumentsType& arguments) :
     SkillAction(arguments)
 {
-    if (arguments.size() > 0)
-        type_ = static_cast<AB::Entities::SkillType>(atoi(arguments[0].c_str()));
+    GetArgument<AB::Entities::SkillType>(arguments, 0, type_);
 }
 
 Node::Status Interrupt::DoAction(Agent& agent, uint32_t)

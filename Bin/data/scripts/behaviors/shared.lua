@@ -29,7 +29,7 @@ local function _interruptSpell()
   local result = node("Interrupt", { SkillTypeSpell })
 
     local cond = condition("Filter")
-      cond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeSpell, "foe" }))
+      cond:SetFilter(filter("SelectTargetUsingSkill", { SkillTypeSpell, "foe", 250 }))
 
     result:SetCondition(cond)
   return result

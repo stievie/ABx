@@ -31,23 +31,16 @@ namespace Filters {
 SelectTargetUsingSkill::SelectTargetUsingSkill(const ArgumentsType& arguments) :
     Filter(arguments)
 {
-    if (arguments.size() > 0)
-        type_ = static_cast<AB::Entities::SkillType>(atoi(arguments[0].c_str()));
-
-    if (arguments.size() > 1)
+    GetArgument<AB::Entities::SkillType>(arguments, 0, type_);
+    std::string ff;
+    if (GetArgument<std::string>(arguments, 1, ff))
     {
-        const std::string& value = arguments.at(1);
-        if (value.compare("friend") == 0)
+        if (ff.compare("friend") == 0)
             class_ = Game::TargetClass::Friend;
-        else if (value.compare("foe") == 0)
+        else if (ff.compare("foe") == 0)
             class_ = Game::TargetClass::Foe;
     }
-
-    if (arguments.size() > 2)
-    {
-        const std::string& value = arguments.at(2);
-        minActivationTime_ = atoi(value.c_str());
-    }
+    GetArgument<int32_t>(arguments, 2, minActivationTime_);
 }
 
 void SelectTargetUsingSkill::Execute(Agent& agent)

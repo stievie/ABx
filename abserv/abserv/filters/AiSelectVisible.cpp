@@ -29,17 +29,15 @@ namespace Filters {
 SelectVisible::SelectVisible(const ArgumentsType& arguments) :
     Filter(arguments)
 {
-    if (arguments.size() > 0)
+    std::string ff;
+    if (GetArgument<std::string>(arguments, 0, ff))
     {
-        const std::string& value = arguments.at(0);
-        if (value.compare("friend") == 0)
+        if (ff.compare("friend") == 0)
             class_ = Game::TargetClass::Friend;
-        else if (value.compare("foe") == 0)
+        else if (ff.compare("foe") == 0)
             class_ = Game::TargetClass::Foe;
     }
-
-    if (arguments.size() > 1)
-        range_ = static_cast<Game::Ranges>(atoi(arguments[1].c_str()));
+    GetArgument<Game::Ranges>(arguments, 1, range_);
 }
 
 void SelectVisible::Execute(Agent& agent)

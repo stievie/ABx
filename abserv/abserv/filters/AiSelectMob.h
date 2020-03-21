@@ -37,8 +37,7 @@ public:
     explicit SelectMob(const ArgumentsType& arguments) :
         Filter(arguments)
     {
-        if (arguments.size() > 0)
-            range_ = static_cast<Game::Ranges>(atoi(arguments[0].c_str()));
+        GetArgument<Game::Ranges>(arguments, 0, range_);
     }
     void Execute(Agent& agent) override;
 };

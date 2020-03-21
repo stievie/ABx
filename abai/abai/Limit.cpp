@@ -28,8 +28,7 @@ namespace AI {
 Limit::Limit(const ArgumentsType& arguments) :
     Decorator(arguments)
 {
-    if (arguments.size() != 0)
-        limit_ = static_cast<uint32_t>(atoi(arguments[0].c_str()));
+    GetArgument<uint32_t>(arguments, 0, limit_);
 }
 
 Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)

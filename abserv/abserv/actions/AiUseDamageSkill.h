@@ -39,10 +39,7 @@ public:
     explicit UseDamageSkill(const ArgumentsType& arguments) :
         SkillAction(arguments)
     {
-        if (arguments.size() > 0)
-        {
-            targetType_ = static_cast<Game::SkillEffectTarget>(atoi(arguments[0].c_str()));
-        }
+        GetArgument<Game::SkillEffectTarget>(arguments, 0, targetType_);
     }
 };
 
