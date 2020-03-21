@@ -47,6 +47,7 @@ private:
     bool _LuaRemove(Actor* actor);
     Actor* _LuaGetMember(int index);
     int _LuaGetMemberCount();
+    std::vector<Actor*> _LuaGetMembers();
 protected:
     std::vector<std::weak_ptr<Actor>> members_;
     TeamColor color_{ TeamColor::Default };

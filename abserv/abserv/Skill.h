@@ -55,12 +55,14 @@ enum SkillEffectTarget : uint32_t
     SkillTargetParty   = 1 << 4,
 };
 
+// Skills may or may not require a target
 enum SkillTargetType : uint32_t
 {
     SkillTargetTypeNone = 0,
     SkillTargetTypeSelf = 1,
-    SkillTargetTypeAlly = 2,
-    SkillTargetTypeFoe = 3,
+    SkillTargetTypeAllyAndSelf = 2,
+    SkillTargetTypeAllyWithoutSelf = 3,
+    SkillTargetTypeFoe = 4,
 };
 
 enum class CostType
@@ -151,7 +153,7 @@ public:
     }
     bool CanUseOnAlly() const
     {
-        return targetType_ == SkillTargetTypeNone || targetType_ == SkillTargetTypeAlly;
+        return targetType_ == SkillTargetTypeNone || targetType_ == SkillTargetTypeAllyAndSelf || targetType_ == SkillTargetTypeAllyWithoutSelf;
     }
     bool CanUseOnFoe() const
     {

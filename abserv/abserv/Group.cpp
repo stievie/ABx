@@ -46,6 +46,7 @@ void Group::RegisterLua(kaguya::State& state)
         .addFunction("Resurrect", &Group::Resurrect)
         .addFunction("KillAll", &Group::KillAll)
         .addFunction("GetMember", &Group::_LuaGetMember)
+        .addFunction("GetMembers", &Group::_LuaGetMembers)
         .addFunction("GetMemberCount", &Group::_LuaGetMemberCount)
         .addFunction("GetRandomMember", &Group::GetRandomMember)
         .addFunction("GetRandomMemberInRange", &Group::GetRandomMemberInRange)
@@ -187,6 +188,18 @@ Actor* Group::_LuaGetMember(int index)
 int Group::_LuaGetMemberCount()
 {
     return static_cast<int>(members_.size());
+}
+
+std::vector<Actor*> Group::_LuaGetMembers()
+{
+    std::vector<Actor*> result;
+    result.reserve(members_.size());
+    for (auto m : members_)
+    {
+        if (auto sm = m.lock())
+            result.push_back(sm.get());
+    }
+    return result;
 }
 
 int Group::GetMorale() const

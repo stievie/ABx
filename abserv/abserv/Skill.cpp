@@ -135,11 +135,6 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
             lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
             return false;
         }
-        if (target->IsUndestroyable())
-        {
-            lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
-            return false;
-        }
 
         if (targetType_ == SkillTargetTypeSelf)
         {
@@ -149,9 +144,17 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
                 return false;
             }
         }
-        else if (targetType_ == SkillTargetTypeAlly)
+        else if (targetType_ == SkillTargetTypeAllyAndSelf)
         {
-            if (!source.IsAlly(target))
+            if (!source.IsAlly(target) && source.id_ != target->id_)
+            {
+                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                return false;
+            }
+        }
+        else if (targetType_ == SkillTargetTypeAllyWithoutSelf)
+        {
+            if (!source.IsAlly(target) || source.id_ == target->id_)
             {
                 lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
                 return false;
@@ -166,6 +169,11 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
             }
         }
 
+        if (target->IsUndestroyable())
+        {
+            lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
+            return false;
+        }
         // Finally check the target is not immune or something
         bool targetSuccess = true;
         target->CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, &source, this, targetSuccess);
@@ -354,8 +362,14 @@ bool Skill::CanUseOnTarget(const Actor& source, const Actor* target) const
         return true;
     case SkillTargetTypeFoe:
         return source.IsEnemy(target);
-    case SkillTargetTypeAlly:
-        return source.IsAlly(target);
+    case SkillTargetTypeAllyAndSelf:
+        if (!target)
+            return false;
+        return source.IsAlly(target) || source.id_ == target->id_;
+    case SkillTargetTypeAllyWithoutSelf:
+        if (!target)
+            return false;
+        return source.IsAlly(target) && source.id_ != target->id_;
     }
     return false;
 }

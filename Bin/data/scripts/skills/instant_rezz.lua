@@ -10,7 +10,7 @@ hp = 0
 range = RANGE_ADJECENT
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget
-targetType = SkillTargetTypeAlly
+targetType = SkillTargetTypeAllyWithoutSelf
 
 function onStartUse(source, target)
   if (target == nil) then

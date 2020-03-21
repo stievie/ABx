@@ -9,7 +9,7 @@ overcast = 0
 range = RANGE_CASTING
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget
-targetType = SkillTargetTypeAlly
+targetType = SkillTargetTypeAllyWithoutSelf
 
 function onStartUse(source, target)
   if (target == nil) then

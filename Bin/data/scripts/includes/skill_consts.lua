@@ -59,8 +59,9 @@ SkillTargetParty        = 1 << 4
 -- Needed target for the skill
 SkillTargetTypeNone = 0
 SkillTargetTypeSelf = 1
-SkillTargetTypeAlly = 2
-SkillTargetTypeFoe = 3
+SkillTargetTypeAllyAndSelf = 2
+SkillTargetTypeAllyWithoutSelf = 3
+SkillTargetTypeFoe = 4
 -- Error codes
 SkillErrorNone          = 0
 SkillErrorInvalidSkill  = 1

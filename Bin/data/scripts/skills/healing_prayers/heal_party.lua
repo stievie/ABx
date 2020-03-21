@@ -25,10 +25,12 @@ function onSuccess(source, target)
   local attribVal = source:GetAttributeRank(ATTRIB_HEALING)
   local hp = math.floor(30 + (attribVal * 3))
   local bonus = math.floor(getDevineFavorHealBonus(source))
-
---  target:Healing(source, self:Index(), hp)
---  if (bonus ~= 0) then
---    target:Healing(source, self:Index(), bonus)
---  end
+  local group = source:GetGroup();
+  local members = group:GetMembers()
+  
+  for i, member in ipairs(members) do
+    member:Healing(source, self:Index(), hp)
+    member:Healing(source, self:Index(), bonus)
+  end
   return SkillErrorNone
 end
