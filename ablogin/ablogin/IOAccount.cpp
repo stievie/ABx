@@ -304,6 +304,14 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         return false;
     if (!Utils::Uuid::IsEqual(ch.accountUuid, accountUuid))
         return false;
+    AB::Entities::Account account;
+    account.uuid = accountUuid;
+    if (!client->Read(account))
+    {
+        LOG_ERROR << "Error reading account " << accountUuid << std::endl;
+        return false;
+    }
+
     bool succ = client->Delete(ch);
     if (!succ)
     {
@@ -353,6 +361,9 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         rn.expires = Utils::Tick() + NAME_RESERVATION_EXPIRES_MS;
         client->Create(rn);
     }
+    // Update character list
+    client->Invalidate(ch);
+    client->Invalidate(account);
     return succ;
 }
 

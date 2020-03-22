@@ -694,6 +694,10 @@ void ProtocolLogin::DeletePlayer(AB::Packets::Client::Login::DeleteCharacter req
     if (res)
     {
         output->AddByte(AB::LoginProtocol::DeletePlayerSuccess);
+        AB::Packets::Server::Login::CharacterDeleted packet = {
+            request.charUuid
+        };
+        AB::Packets::Add(packet, *output);
     }
     else
     {

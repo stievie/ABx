@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "ConfirmDeleteCharacter.h"
+#include "FwClient.h"
 
 ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& uuid, const String& name) :
     DialogWindow(context),
@@ -80,6 +81,7 @@ void ConfirmDeleteCharacter::HandleDeleteClicked(StringHash, VariantMap&)
     newEventData[P_UUID] = uuid_;
     newEventData[P_NAME] = name_;
     SendEvent(E_CONFIRMDELETECHAR, newEventData);
+    DeleteCharacter();
     Close();
 }
 
@@ -93,4 +95,10 @@ void ConfirmDeleteCharacter::HandleCancelClicked(StringHash, VariantMap&)
     newEventData[P_NAME] = name_;
     SendEvent(E_CONFIRMDELETECHAR, newEventData);
     Close();
+}
+
+void ConfirmDeleteCharacter::DeleteCharacter()
+{
+    auto* client = GetSubsystem<FwClient>();
+    client->DeleteCharacter(uuid_);
 }

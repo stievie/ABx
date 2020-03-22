@@ -169,6 +169,11 @@ void Client::OnAccountKeyAdded()
     receiver_.OnAccountKeyAdded();
 }
 
+void Client::OnCharacterDeleted(const std::string& uuid)
+{
+    receiver_.OnCharacterDeleted(uuid);;
+}
+
 void Client::OnLog(const std::string& message)
 {
     receiver_.OnLog(message);
@@ -243,6 +248,15 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     GetProtoLogin().CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+void Client::DeleteCharacter(const std::string& uuid)
+{
+    if (accountUuid_.empty() || authToken_.empty())
+        return;
+    GetProtoLogin().DeleteCharacter(loginHost_, loginPort_, accountUuid_, authToken_,
+        uuid,
+        std::bind(&Client::OnCharacterDeleted, this, std::placeholders::_1));
 }
 
 void Client::AddAccountKey(const std::string& newKey)

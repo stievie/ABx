@@ -47,6 +47,7 @@ public:
     typedef std::function<void()> CreateAccountCallback;
     typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
     typedef std::function<void()> AccountKeyAddedCallback;
+    typedef std::function<void(const std::string& uuid)> CharacterDeletedCallback;
 private:
     LoggedInCallback loggedInCallback_;
     CharlistCallback charlistCallback_;
@@ -55,6 +56,7 @@ private:
     CreateAccountCallback createAccCallback_;
     CreatePlayerCallback createPlayerCallback_;
     AccountKeyAddedCallback accountKeyAddedCallback_;
+    CharacterDeletedCallback characterDeletedCallback_;
     bool firstRecv_;
     void ParseMessage(InputMessage& message);
 
@@ -62,6 +64,7 @@ private:
     void HandleOutpostList(const AB::Packets::Server::Login::OutpostList& packet);
     void HandleServerList(const AB::Packets::Server::Login::ServerList& packet);
     void HandleLoginError(const AB::Packets::Server::Login::Error& packet);
+    void HandleCharacterDeleted(const AB::Packets::Server::Login::CharacterDeleted& packet);
     void HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet);
 protected:
     void OnReceive(InputMessage& message) override;
@@ -83,6 +86,10 @@ public:
         uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
+    void DeleteCharacter(std::string& host, uint16_t port,
+        const std::string& accountUuid, const std::string& token,
+        const std::string& uuid,
+        const CharacterDeletedCallback& callback);
     void AddAccountKey(std::string& host, uint16_t port,
         const std::string& accountUuid, const std::string& token,
         const std::string& newAccountKey,

@@ -121,6 +121,7 @@ public:
     AB::Entities::AccountType GetAccountType() const { return accType_; }
     void UpdateServers();
     void AddAccountKey(const String& newKey);
+    void DeleteCharacter(const String& uuid);
     bool Start();
     void Stop();
     void Update(float timeStep);
@@ -190,6 +191,7 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
     void OnAccountKeyAdded() override;
+    void OnCharacterDeleted(const std::string& uuid) override;
 
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;

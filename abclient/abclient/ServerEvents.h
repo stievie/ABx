@@ -45,6 +45,11 @@ URHO3D_EVENT(E_GOTSERVICES, GotServices)
 {
 }
 
+URHO3D_EVENT(E_CHARACTERDELETED, CharacterDeleted)
+{
+    URHO3D_PARAM(P_UUID, Uuid);        // String
+}
+
 URHO3D_EVENT(E_CHANGINGINSTANCE, ChangingInstance)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

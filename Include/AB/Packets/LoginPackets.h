@@ -161,6 +161,16 @@ struct CreateCharacterSuccess
     }
 };
 
+struct CharacterDeleted
+{
+    std::string uuid;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value_enc(uuid);
+    }
+};
+
 struct CharacterList
 {
     struct Character

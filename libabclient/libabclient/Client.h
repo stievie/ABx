@@ -86,6 +86,7 @@ public:
     void CreatePlayer(const std::string& charName, const std::string& profUuid,
         uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp);
+    void DeleteCharacter(const std::string& uuid);
     void AddAccountKey(const std::string& newKey);
 
     /// Connect to game server -> authenticate -> enter game
@@ -111,6 +112,7 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
     void OnAccountKeyAdded() override;
+    void OnCharacterDeleted(const std::string& uuid) override;
 
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerLeft& packet) override;

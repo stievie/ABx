@@ -60,6 +60,7 @@ void CharSelectLevel::SubscribeToEvents()
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CharSelectLevel, HandleUpdate));
     SubscribeToEvent(Events::E_ACCOUNTKEYADDED, URHO3D_HANDLER(CharSelectLevel, HandleAccountKeyAdded));
+    SubscribeToEvent(Events::E_CHARACTERDELETED, URHO3D_HANDLER(CharSelectLevel, HandleCharacterDeleted));
 }
 
 void CharSelectLevel::CreateUI()
@@ -70,28 +71,28 @@ void CharSelectLevel::CreateUI()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* deleteTexture = cache->GetResource<Texture2D>("Textures/Icons/delete_button.png");
 
-    Window* window = new Window(context_);
-    uiRoot_->AddChild(window);
-    window->SetSize(400, 300);
-    window->SetPosition(0, -40);
-    window->SetLayoutMode(LM_VERTICAL);
-    window->SetLayoutSpacing(10);
-    window->SetLayoutBorder(IntRect(10, 10, 10, 10));
-    window->SetAlignment(HA_CENTER, VA_CENTER);
-    window->SetName("Select Character");
-    window->SetStyleAuto();
+    window_ = uiRoot_->CreateChild<Window>();
+    window_->SetSize(400, 300);
+    window_->SetPosition(0, -40);
+    window_->SetLayoutMode(LM_VERTICAL);
+    window_->SetLayoutSpacing(10);
+    window_->SetLayoutBorder(IntRect(10, 10, 10, 10));
+    window_->SetAlignment(HA_CENTER, VA_CENTER);
+    window_->SetName("Select Character");
+    window_->SetStyleAuto();
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const AB::Entities::CharList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
     {
-        auto* contaner = window->CreateChild<UIElement>();
-        contaner->SetLayoutMode(LM_HORIZONTAL);
-        contaner->SetMinHeight(40);
-        contaner->SetLayoutSpacing(8);
+        auto* container = window_->CreateChild<UIElement>();
+        container->SetLayoutMode(LM_HORIZONTAL);
+        container->SetMinHeight(40);
+        container->SetLayoutSpacing(8);
+        container->SetName(String(ch.uuid.c_str()));    // not required
 
-        Button* button = contaner->CreateChild<Button>();
+        Button* button = container->CreateChild<Button>();
         button->SetName(String(ch.uuid.c_str()));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
@@ -114,7 +115,7 @@ void CharSelectLevel::CreateUI()
             t->SetStyle("Text");
         }
 
-        Button* deleteButton = contaner->CreateChild<Button>();
+        Button* deleteButton = container->CreateChild<Button>();
         deleteButton->SetMinWidth(40);
         deleteButton->SetMaxWidth(40);
         deleteButton->SetStyleAuto();
@@ -133,13 +134,13 @@ void CharSelectLevel::CreateUI()
     {
         if (i != 0)
         {
-            UIElement* sep = window->CreateChild<UIElement>();
+            UIElement* sep = window_->CreateChild<UIElement>();
             sep->SetMinHeight(5);
             sep->SetStyleAuto();
             sep->SetLayoutMode(LM_FREE);
         }
 
-        Button* button = window->CreateChild<Button>();
+        Button* button = window_->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
@@ -155,7 +156,7 @@ void CharSelectLevel::CreateUI()
         }
     }
     {
-        Button* button = window->CreateChild<Button>();
+        Button* button = window_->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
@@ -274,6 +275,18 @@ void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)
     using MsgBox = Urho3D::MessageBox;
     /* MsgBox* msgBox = */ new MsgBox(context_, "The key was successfully added to your account",
         "Account key added");
+}
+
+void CharSelectLevel::HandleCharacterDeleted(StringHash, VariantMap& eventData)
+{
+    using namespace Events::CharacterDeleted;
+    const String& uuid = eventData[P_UUID].GetString();
+
+    auto* container = window_->GetChild(uuid, true);
+    if (!container)
+        return;
+
+    container->Remove();
 }
 
 void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)

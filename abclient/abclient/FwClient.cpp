@@ -635,6 +635,12 @@ void FwClient::AddAccountKey(const String& newKey)
     }
 }
 
+void FwClient::DeleteCharacter(const String& uuid)
+{
+    if (loggedIn_)
+        client_.DeleteCharacter(std::string(uuid.CString()));;
+}
+
 void FwClient::CreateAccount(const String& name, const String& pass, const String& email, const String& accKey)
 {
     if (!loggedIn_)
@@ -1063,6 +1069,20 @@ void FwClient::OnAccountKeyAdded()
     using namespace Events::AccountKeyAdded;
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_ACCOUNTKEYADDED, eData);
+}
+
+void FwClient::OnCharacterDeleted(const std::string& uuid)
+{
+    auto it = std::find_if(characters_.begin(), characters_.end(), [&uuid](const AB::Entities::Character& current) {
+        return current.uuid.compare(uuid) == 0;
+    });
+    if (it != characters_.end())
+        characters_.erase(it);
+
+    using namespace Events::CharacterDeleted;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UUID] = String(uuid.c_str());
+    SendEvent(Events::E_CHARACTERDELETED, eData);
 }
 
 const std::string& FwClient::GetAccountUuid() const

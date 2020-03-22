@@ -36,6 +36,7 @@ class ConfirmDeleteCharacter : public DialogWindow
 private:
     void HandleDeleteClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
+    void DeleteCharacter();
     String uuid_;
     String name_;
     SharedPtr<LineEdit> nameEdit_;

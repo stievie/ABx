@@ -31,6 +31,7 @@ class CharSelectLevel : public BaseLevel
 public:
     CharSelectLevel(Context* context);
     void CreateCamera();
+    SharedPtr<Window> window_;
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
@@ -44,5 +45,6 @@ private:
     void HandleAddAccountKeyClicked(StringHash eventType, VariantMap& eventData);
     void HandleOptionsClicked(StringHash eventType, VariantMap& eventData);
     void HandleAccountKeyAdded(StringHash eventType, VariantMap& eventData);
+    void HandleCharacterDeleted(StringHash eventType, VariantMap& eventData);
 };
 

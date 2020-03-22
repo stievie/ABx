@@ -125,6 +125,32 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     });
 }
 
+void ProtocolLogin::DeleteCharacter(std::string& host, uint16_t port,
+    const std::string& accountUuid, const std::string& token,
+    const std::string& uuid,
+    const CharacterDeletedCallback& callback)
+{
+    characterDeletedCallback_ = callback;
+    Connect(host, port, [=]()
+    {
+        firstRecv_ = true;
+
+        OutputMessage msg;
+        msg.Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+        msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+        msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+        msg.Add<uint8_t>(AB::LoginProtocol::LoginDeleteCharacter);
+        AB::Packets::Client::Login::DeleteCharacter packet = {
+            accountUuid,
+            token,
+            uuid
+        };
+        AB::Packets::Add(packet, msg);
+        Send(msg);
+
+        Receive();
+    });}
+
 void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
     const std::string& accountUuid, const std::string& token,
     const std::string& newAccountKey,
@@ -271,6 +297,12 @@ void ProtocolLogin::HandleLoginError(const AB::Packets::Server::Login::Error& pa
     ProtocolError(static_cast<AB::ErrorCodes>(packet.code));
 }
 
+void ProtocolLogin::HandleCharacterDeleted(const AB::Packets::Server::Login::CharacterDeleted& packet)
+{
+    if (characterDeletedCallback_)
+        characterDeletedCallback_(packet.uuid);
+}
+
 void ProtocolLogin::HandleCreatePlayerSuccess(const AB::Packets::Server::Login::CreateCharacterSuccess& packet)
 {
     if (createPlayerCallback_)
@@ -318,6 +350,12 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         if (accountKeyAddedCallback_)
             accountKeyAddedCallback_();
         break;
+    case AB::LoginProtocol::DeletePlayerSuccess:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Server::Login::CharacterDeleted>(message);
+        HandleCharacterDeleted(packet);
+        break;
+    }
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
         auto packet = AB::Packets::Get<AB::Packets::Server::Login::CreateCharacterSuccess>(message);
