@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,26 @@
 
 #pragma once
 
-#include "BaseLevel.h"
-#include "AddAccountKeyDialog.h"
+#include "DialogWindow.h"
 
-/// Character select
-class CharSelectLevel : public BaseLevel
+URHO3D_EVENT(E_CONFIRMDELETECHAR, ConfirmDeleteChar)
 {
-    URHO3D_OBJECT(CharSelectLevel, BaseLevel)
-public:
-    CharSelectLevel(Context* context);
-    void CreateCamera();
-protected:
-    void SubscribeToEvents() override;
-    void CreateUI() override;
+    URHO3D_PARAM(P_OK, Ok);              // bool
+    URHO3D_PARAM(P_UUID, Uuid);              // String
+    URHO3D_PARAM(P_NAME, Name);              // String
+}
+
+class ConfirmDeleteCharacter : public DialogWindow
+{
+    URHO3D_OBJECT(ConfirmDeleteCharacter, DialogWindow)
 private:
-    SharedPtr<AddAccountKeyDialog> addAccountKeyDialog_;
-    void CreateScene() override;
-    void HandleCharClicked(StringHash eventType, VariantMap& eventData);
-    void HandleDeleteCharClicked(StringHash eventType, VariantMap& eventData);
-    void HandleCreateCharClicked(StringHash eventType, VariantMap& eventData);
-    void HandleBackClicked(StringHash eventType, VariantMap& eventData);
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleAddAccountKeyClicked(StringHash eventType, VariantMap& eventData);
-    void HandleOptionsClicked(StringHash eventType, VariantMap& eventData);
-    void HandleAccountKeyAdded(StringHash eventType, VariantMap& eventData);
+    void HandleDeleteClicked(StringHash eventType, VariantMap& eventData);
+    void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
+    String uuid_;
+    String name_;
+    SharedPtr<LineEdit> nameEdit_;
+public:
+    ConfirmDeleteCharacter(Context* context, const String& uuid, const String& name);
+    ~ConfirmDeleteCharacter() override;
 };
 

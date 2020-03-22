@@ -24,6 +24,7 @@
 #include "FwClient.h"
 #include "AudioManager.h"
 #include "ShortcutEvents.h"
+#include "ConfirmDeleteCharacter.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -66,6 +67,9 @@ void CharSelectLevel::CreateUI()
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* deleteTexture = cache->GetResource<Texture2D>("Textures/Icons/delete_button.png");
+
     Window* window = new Window(context_);
     uiRoot_->AddChild(window);
     window->SetSize(400, 300);
@@ -82,8 +86,12 @@ void CharSelectLevel::CreateUI()
     int i = 0;
     for (const auto& ch : chars)
     {
-        Button* button = new Button(context_);
-        button->SetMinHeight(40);
+        auto* contaner = window->CreateChild<UIElement>();
+        contaner->SetLayoutMode(LM_HORIZONTAL);
+        contaner->SetMinHeight(40);
+        contaner->SetLayoutSpacing(8);
+
+        Button* button = contaner->CreateChild<Button>();
         button->SetName(String(ch.uuid.c_str()));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
@@ -94,7 +102,7 @@ void CharSelectLevel::CreateUI()
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
-            Text* t = new Text(context_);
+            Text* t = button->CreateChild<Text>();
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetName("CharacterName");
             String text = String(ch.profession.c_str());
@@ -104,51 +112,60 @@ void CharSelectLevel::CreateUI()
             text += " " + String(ch.name.c_str());
             t->SetText(text);
             t->SetStyle("Text");
-            button->AddChild(t);
         }
-        window->AddChild(button);
+
+        Button* deleteButton = contaner->CreateChild<Button>();
+        deleteButton->SetMinWidth(40);
+        deleteButton->SetMaxWidth(40);
+        deleteButton->SetStyleAuto();
+        deleteButton->SetLayout(LM_HORIZONTAL);
+        deleteButton->SetLayoutBorder({ 4, 4, 4, 4 });
+        deleteButton->SetVar("uuid", String(ch.uuid.c_str()));
+        deleteButton->SetVar("char_name", String(ch.name.c_str()));
+        auto* deleteButtonIcon = deleteButton->CreateChild<BorderImage>();
+        deleteButtonIcon->SetTexture(deleteTexture);
+        deleteButtonIcon->SetImageRect(IntRect(0, 0, 256, 256));
+        deleteButtonIcon->SetBorder(IntRect(4, 4, 4, 4));
+        SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleDeleteCharClicked));
+
         i++;
     }
     {
         if (i != 0)
         {
-            UIElement* sep = new UIElement(context_);
+            UIElement* sep = window->CreateChild<UIElement>();
             sep->SetMinHeight(5);
             sep->SetStyleAuto();
             sep->SetLayoutMode(LM_FREE);
-            window->AddChild(sep);
         }
 
-        Button* button = new Button(context_);
+        Button* button = window->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
-        window->AddChild(button);
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCreateCharClicked));
 
         {
             // buttons don't have a text by itself, a text needs to be added as a child
-            Text* t = new Text(context_);
+            Text* t = button->CreateChild<Text>();
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetText("Create Character");
             t->SetStyle("Text");
-            button->AddChild(t);
         }
     }
     {
-        Button* button = new Button(context_);
+        Button* button = window->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
         button->SetStyle("BackButton");
-        window->AddChild(button);
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleBackClicked));
 
         {
             // buttons don't have a text by itself, a text needs to be added as a child
-            Text* t = new Text(context_);
+            Text* t = button->CreateChild<Text>();
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetText("Back");
             t->SetStyle("Text");
@@ -203,12 +220,23 @@ void CharSelectLevel::CreateScene()
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
 {
-    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
+    using namespace Urho3D::Released;
+    Button* sender = static_cast<Button*>(eventData[P_ELEMENT].GetPtr());
     String uuid = sender->GetVar("uuid").GetString();
     String mapUuid = sender->GetVar("map_uuid").GetString();
 
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->EnterWorld(uuid, mapUuid);
+}
+
+void CharSelectLevel::HandleDeleteCharClicked(StringHash, VariantMap& eventData)
+{
+    using namespace Urho3D::Released;
+    Button* sender = static_cast<Button*>(eventData[P_ELEMENT].GetPtr());
+    String uuid = sender->GetVar("uuid").GetString();
+    String name = sender->GetVar("char_name").GetString();
+
+    new ConfirmDeleteCharacter(context_, uuid, name);
 }
 
 void CharSelectLevel::HandleCreateCharClicked(StringHash, VariantMap&)

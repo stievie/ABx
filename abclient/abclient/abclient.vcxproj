@@ -275,6 +275,7 @@
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="ClientPrediction.cpp" />
+    <ClCompile Include="ConfirmDeleteCharacter.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DialogWindow.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
+    <ClInclude Include="ConfirmDeleteCharacter.h" />
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="SkillsWindow.h" />
     <ClInclude Include="GuildWindow.h" />

@@ -213,6 +213,9 @@
     <ClInclude Include="TemplateEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConfirmDeleteCharacter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -381,6 +384,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TemplateEvaluator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfirmDeleteCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
