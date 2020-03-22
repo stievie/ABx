@@ -11,6 +11,8 @@ my profile.
 * The license is MIT and submitted code must not be incompatible with it.
 * This project is written in C++ using the C++17 standard, and may switch to C++20
 one time.
+* The code must compile without warnings, or the CI build fails. The CI build also
+fails when a test fails.
 * You are encouraged to use new C++ features. Partly this project is also a playground
 to explore modern C++.
 * The code should be readable and it should be obvious what it does. Don't waste 
