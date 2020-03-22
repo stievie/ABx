@@ -36,7 +36,13 @@ AddAccountKeyDialog::AddAccountKeyDialog(Context* context) :
     SetMinSize(320, 160);
     SetLayoutSpacing(10);
     UpdateLayout();
+    SetMovable(false);
+    SetFocusMode(FM_FOCUSABLE);
 
+    SetPriority(200);
+    auto* overlay = EnsureOverlay();
+    overlay->AddChild(this);
+    this->BringToFront();
     accountKeyEdit_ = GetChildStaticCast<LineEdit>("AccountKeyEdit", true);
     SubscribeEvents();
 }
@@ -73,9 +79,10 @@ void AddAccountKeyDialog::HandleAddClicked(StringHash, VariantMap&)
 
     auto* client = GetSubsystem<FwClient>();
     client->AddAccountKey(accKey);
+    Close();
 }
 
 void AddAccountKeyDialog::HandleCloseClicked(StringHash, VariantMap&)
 {
-    SetVisible(false);
+    Close();
 }

@@ -35,7 +35,6 @@ protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
 private:
-    SharedPtr<AddAccountKeyDialog> addAccountKeyDialog_;
     void CreateScene() override;
     void HandleCharClicked(StringHash eventType, VariantMap& eventData);
     void HandleDeleteCharClicked(StringHash eventType, VariantMap& eventData);

@@ -27,7 +27,6 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     uuid_(uuid),
     name_(name)
 {
-    SetName("ConfirmDeleteCharacter");
     LoadLayout("UI/DeleteCharacterConfirmation.xml");
     SetStyleAuto();
 
@@ -36,6 +35,8 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     SetMaxSize(400, 230);
     SetLayoutSpacing(10);
     SetLayoutBorder({ 10, 10, 10, 10 });
+    SetMovable(false);
+    SetFocusMode(FM_FOCUSABLE);
 
     auto* deleteButton = GetChildDynamicCast<Button>("DeleteButton", true);
     SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(ConfirmDeleteCharacter, HandleDeleteClicked));
@@ -49,22 +50,16 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     message.AppendWithFormat("If you are sure that you want to delete %s enter %s:", name_.CString(), name_.CString());
     messageText->SetText(message);
 
-    auto* ui = GetSubsystem<UI>();
-    UIElement* root = ui->GetRoot();
-    root->AddChild(this);
-    const IntVector2& size = GetSize();
-    SetPosition((root->GetWidth() - size.x_) / 2, (root->GetHeight() - size.y_) / 2);
+    auto* overlay = EnsureOverlay();
+    overlay->AddChild(this);
+    Center();
 
-    SetModal(true);
     SubscribeToEvent(this, E_MODALCHANGED, URHO3D_HANDLER(ConfirmDeleteCharacter, HandleCancelClicked));
     nameEdit_->SetFocus(true);
-
-    AddRef();
 }
 
 ConfirmDeleteCharacter::~ConfirmDeleteCharacter()
 {
-    Remove();
 }
 
 void ConfirmDeleteCharacter::HandleDeleteClicked(StringHash, VariantMap&)
@@ -72,7 +67,7 @@ void ConfirmDeleteCharacter::HandleDeleteClicked(StringHash, VariantMap&)
     using namespace ConfirmDeleteChar;
 
     String name = nameEdit_->GetText();
-    if (!name.Compare(name_))
+    if (name.Compare(name_) != 0)
     {
         using MsgBox = Urho3D::MessageBox;
         /* MsgBox* msgBox = */ new MsgBox(context_, "The entered name does not match the Character name.",
@@ -85,7 +80,7 @@ void ConfirmDeleteCharacter::HandleDeleteClicked(StringHash, VariantMap&)
     newEventData[P_UUID] = uuid_;
     newEventData[P_NAME] = name_;
     SendEvent(E_CONFIRMDELETECHAR, newEventData);
-    ReleaseRef();
+    Close();
 }
 
 void ConfirmDeleteCharacter::HandleCancelClicked(StringHash, VariantMap&)
@@ -97,5 +92,5 @@ void ConfirmDeleteCharacter::HandleCancelClicked(StringHash, VariantMap&)
     newEventData[P_UUID] = uuid_;
     newEventData[P_NAME] = name_;
     SendEvent(E_CONFIRMDELETECHAR, newEventData);
-    ReleaseRef();
+    Close();
 }

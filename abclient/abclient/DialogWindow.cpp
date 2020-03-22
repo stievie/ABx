@@ -34,6 +34,13 @@ DialogWindow::~DialogWindow()
     UnsubscribeFromAllEvents();
 }
 
+void DialogWindow::Close()
+{
+    SetVisible(false);
+    if (overlay_)
+        overlay_->Remove();
+}
+
 void DialogWindow::SubscribeEvents()
 {
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
@@ -74,5 +81,30 @@ void DialogWindow::Center()
 
 void DialogWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
-    SetVisible(false);
+    Close();
+}
+
+Window* DialogWindow::EnsureOverlay()
+{
+    // Ugly Hack to make a pseudo modal window :/
+    if (!overlay_)
+    {
+        auto* ui = GetSubsystem<UI>();
+        UIElement* root = ui->GetRoot();
+
+        overlay_ = root->CreateChild<Window>();
+
+        auto* graphics = GetSubsystem<Graphics>();
+        overlay_->SetSize(graphics->GetWidth() * 2, graphics->GetHeight() * 2);
+        overlay_->SetLayoutMode(LM_FREE);
+        overlay_->SetAlignment(HA_LEFT, VA_TOP);
+        // Black color
+        overlay_->SetColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+        overlay_->SetOpacity(0.8f);
+        overlay_->SetPriority(100);
+    }
+    // Make it top most
+    overlay_->SetBringToBack(false);
+    overlay_->BringToFront();
+    return overlay_.Get();
 }

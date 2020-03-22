@@ -43,4 +43,3 @@ public:
     ConfirmDeleteCharacter(Context* context, const String& uuid, const String& name);
     ~ConfirmDeleteCharacter() override;
 };
-

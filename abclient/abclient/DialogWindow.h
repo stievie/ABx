@@ -27,15 +27,18 @@ class DialogWindow : public Window
 {
     URHO3D_OBJECT(DialogWindow, Window)
 private:
+    SharedPtr<Window> overlay_;
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
 protected:
     UIElement* uiRoot_;
     virtual void SubscribeEvents();
     void LoadLayout(const String& fileName);
-    void Center();
+    Window* EnsureOverlay();
 public:
     DialogWindow(Context* context);
     ~DialogWindow() override;
     virtual void Initialize() { }
+    void Close();
+    void Center();
 };
 

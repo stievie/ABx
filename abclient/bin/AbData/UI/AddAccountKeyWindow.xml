@@ -2,9 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="AddAccountKeyWindow" />
 	<attribute name="Size" value="320 160" />
-	<attribute name="Min Anchor" value="0.5 0.5" />
-	<attribute name="Max Anchor" value="0.5 0.5" />
-	<attribute name="Pivot" value="0.5 0.5" />
+	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Spacing" value="10" />
 	<attribute name="Layout Border" value="10 10 10 10" />

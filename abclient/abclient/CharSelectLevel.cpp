@@ -257,15 +257,10 @@ void CharSelectLevel::HandleBackClicked(StringHash, VariantMap&)
 
 void CharSelectLevel::HandleAddAccountKeyClicked(StringHash, VariantMap&)
 {
-    if (!addAccountKeyDialog_)
-    {
-        addAccountKeyDialog_ = new AddAccountKeyDialog(context_);
-        uiRoot_->AddChild(addAccountKeyDialog_);
-        addAccountKeyDialog_->SetAlignment(HA_LEFT, VA_BOTTOM);
-        addAccountKeyDialog_->SetPosition(8, -8);
-    }
-    addAccountKeyDialog_->SetVisible(true);
-    addAccountKeyDialog_->accountKeyEdit_->SetFocus(true);
+    auto* dialog = new AddAccountKeyDialog(context_);
+    dialog->Center();
+    dialog->SetVisible(true);
+    dialog->accountKeyEdit_->SetFocus(true);
 }
 
 void CharSelectLevel::HandleOptionsClicked(StringHash, VariantMap&)
@@ -276,11 +271,6 @@ void CharSelectLevel::HandleOptionsClicked(StringHash, VariantMap&)
 
 void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)
 {
-    if (addAccountKeyDialog_)
-    {
-        addAccountKeyDialog_->SetVisible(false);
-        addAccountKeyDialog_->accountKeyEdit_->SetText("");
-    }
     using MsgBox = Urho3D::MessageBox;
     /* MsgBox* msgBox = */ new MsgBox(context_, "The key was successfully added to your account",
         "Account key added");
