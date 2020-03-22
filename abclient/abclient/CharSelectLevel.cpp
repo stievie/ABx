@@ -25,6 +25,7 @@
 #include "AudioManager.h"
 #include "ShortcutEvents.h"
 #include "ConfirmDeleteCharacter.h"
+#include "ServerEvents.h"
 
 //#include <Urho3D/DebugNew.h>
 
