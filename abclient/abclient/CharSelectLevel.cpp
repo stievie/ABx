@@ -23,6 +23,7 @@
 #include "CharSelectLevel.h"
 #include "FwClient.h"
 #include "AudioManager.h"
+#include "ShortcutEvents.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -155,21 +156,36 @@ void CharSelectLevel::CreateUI()
         }
     }
 
+    auto* buttonsContainer = uiRoot_->CreateChild<UIElement>();
+    buttonsContainer->SetLayoutMode(LM_HORIZONTAL);
+    buttonsContainer->SetAlignment(HA_LEFT, VA_BOTTOM);
+    buttonsContainer->SetLayoutBorder({ 4, 4, 4, 4 });
+    buttonsContainer->SetLayoutSpacing(4);
+    buttonsContainer->SetPosition(8, -8);
+
     // Add account key button
-    auto accKeyButton = uiRoot_->CreateChild<Button>("AddAccountKeyButton");
+    auto* accKeyButton = buttonsContainer->CreateChild<Button>("AddAccountKeyButton");
+    accKeyButton->SetPosition(0, 0);
     accKeyButton->SetStyleAuto();
-    accKeyButton->SetLayoutMode(LM_FREE);
-    accKeyButton->SetAlignment(HA_LEFT, VA_BOTTOM);
-    accKeyButton->SetPosition(8, -8);
-    accKeyButton->SetStyleAuto();
-    auto accKeyText = accKeyButton->CreateChild<Text>("AddAccountKeyText");
-    accKeyText->SetText("Add Account Key");
+    auto* accKeyText = accKeyButton->CreateChild<Text>("AddAccountKeyText");
+    accKeyText->SetText("Add Account Key...");
     accKeyText->SetAlignment(HA_CENTER, VA_CENTER);
-    accKeyText->SetStyle("Text");
-    accKeyText->SetFontSize(10);
-    accKeyButton->SetMinWidth(accKeyText->GetWidth() + 20);
-    accKeyButton->SetMinHeight(accKeyText->GetHeight() + 8);
+    accKeyText->SetStyleAuto();
+    accKeyText->SetFontSize(9);
     SubscribeToEvent(accKeyButton, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleAddAccountKeyClicked));
+
+    auto* optionsKeyButton = buttonsContainer->CreateChild<Button>();
+    optionsKeyButton->SetPosition(0, 0);
+    optionsKeyButton->SetStyleAuto();
+    auto* optionsKeyText = optionsKeyButton->CreateChild<Text>();
+    optionsKeyText->SetText("Options...");
+    optionsKeyText->SetAlignment(HA_CENTER, VA_CENTER);
+    optionsKeyText->SetStyleAuto();
+    optionsKeyText->SetFontSize(9);
+    SubscribeToEvent(optionsKeyButton, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleOptionsClicked));
+
+    buttonsContainer->SetHeight(30);
+    buttonsContainer->SetWidth(300);
 }
 
 void CharSelectLevel::CreateScene()
@@ -222,6 +238,12 @@ void CharSelectLevel::HandleAddAccountKeyClicked(StringHash, VariantMap&)
     }
     addAccountKeyDialog_->SetVisible(true);
     addAccountKeyDialog_->accountKeyEdit_->SetFocus(true);
+}
+
+void CharSelectLevel::HandleOptionsClicked(StringHash, VariantMap&)
+{
+    VariantMap& e = GetEventDataMap();
+    SendEvent(Events::E_SC_TOGGLEOPTIONS, e);
 }
 
 void CharSelectLevel::HandleAccountKeyAdded(StringHash, VariantMap&)

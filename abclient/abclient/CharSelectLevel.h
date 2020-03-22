@@ -42,6 +42,7 @@ private:
     void HandleBackClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleAddAccountKeyClicked(StringHash eventType, VariantMap& eventData);
+    void HandleOptionsClicked(StringHash eventType, VariantMap& eventData);
     void HandleAccountKeyAdded(StringHash eventType, VariantMap& eventData);
 };
 
