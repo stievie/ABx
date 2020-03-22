@@ -31,6 +31,7 @@
 #include <kaguya/kaguya.hpp>
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -39,6 +40,7 @@ class Player;
 
 class Party final : public Group, public std::enable_shared_from_this<Party>
 {
+    NON_COPYABLE(Party)
 private:
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
@@ -64,10 +66,6 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     Party();
-    // non-copyable
-    Party(const Party&) = delete;
-    Party& operator=(const Party&) = delete;
-
     ~Party();
 
     /// Append player
