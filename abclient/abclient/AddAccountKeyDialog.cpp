@@ -39,10 +39,10 @@ AddAccountKeyDialog::AddAccountKeyDialog(Context* context) :
     SetMovable(false);
     SetFocusMode(FM_FOCUSABLE);
 
+    EnsureOverlay();
+    SetBringToBack(false);
+    BringToFront();
     SetPriority(200);
-    auto* overlay = EnsureOverlay();
-    overlay->AddChild(this);
-    this->BringToFront();
     accountKeyEdit_ = GetChildStaticCast<LineEdit>("AccountKeyEdit", true);
     SubscribeEvents();
 }

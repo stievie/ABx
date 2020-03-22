@@ -21,6 +21,8 @@ abclient/ClientApp.h
 abclient/ClientPrediction.cpp
 abclient/ClientPrediction.h
 abclient/Config.h
+abclient/ConfirmDeleteCharacter.cpp
+abclient/ConfirmDeleteCharacter.h
 abclient/CreateAccountLevel.cpp
 abclient/CreateAccountLevel.h
 abclient/CreditsWindow.cpp

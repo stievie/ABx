@@ -27,6 +27,7 @@ DialogWindow::DialogWindow(Context* context) :
 {
     UI* ui = GetSubsystem<UI>();
     uiRoot_ = ui->GetRoot();
+    uiRoot_->AddChild(this);
 }
 
 DialogWindow::~DialogWindow()
@@ -69,8 +70,6 @@ void DialogWindow::LoadLayout(const String& fileName)
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
-    SetBringToFront(true);
-    SetBringToBack(true);
 }
 
 void DialogWindow::Center()
@@ -100,11 +99,11 @@ Window* DialogWindow::EnsureOverlay()
         overlay_->SetAlignment(HA_LEFT, VA_TOP);
         // Black color
         overlay_->SetColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
-        overlay_->SetOpacity(0.8f);
+        overlay_->SetOpacity(0.5f);
         overlay_->SetPriority(100);
+        // Make it top most
+        overlay_->SetBringToBack(false);
     }
-    // Make it top most
-    overlay_->SetBringToBack(false);
     overlay_->BringToFront();
     return overlay_.Get();
 }

@@ -197,7 +197,7 @@ void CharSelectLevel::CreateUI()
     optionsKeyButton->SetPosition(0, 0);
     optionsKeyButton->SetStyleAuto();
     auto* optionsKeyText = optionsKeyButton->CreateChild<Text>();
-    optionsKeyText->SetText("Options...");
+    optionsKeyText->SetText("Options");
     optionsKeyText->SetAlignment(HA_CENTER, VA_CENTER);
     optionsKeyText->SetStyleAuto();
     optionsKeyText->SetFontSize(9);

@@ -51,8 +51,11 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     message.AppendWithFormat("If you are sure that you want to delete %s enter %s:", name_.CString(), name_.CString());
     messageText->SetText(message);
 
-    auto* overlay = EnsureOverlay();
-    overlay->AddChild(this);
+    EnsureOverlay();
+    SetBringToBack(false);
+    BringToFront();
+    SetPriority(200);
+
     Center();
 
     SubscribeToEvent(this, E_MODALCHANGED, URHO3D_HANDLER(ConfirmDeleteCharacter, HandleCancelClicked));
