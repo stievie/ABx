@@ -28,9 +28,38 @@ namespace DB {
 // Player names are case insensitive. The DB needs a proper index for that:
 // CREATE INDEX reserved_names_name_ci_index ON reserved_names USING btree (lower(name))
 
-bool DBReservedName::Create(AB::Entities::ReservedName&)
+bool DBReservedName::Create(AB::Entities::ReservedName& rn)
 {
-    // Do nothing
+    if (Utils::Uuid::IsEmpty(rn.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "INSERT INTO `reserved_names` (`uuid`, `name`, `is_reserved`, `reserved_for_account_uuid`, `expires`";
+    query << ") VALUES (";
+
+    query << db->EscapeString(rn.uuid) << ", ";
+    query << db->EscapeString(rn.name) << ", ";
+    query << (rn.isReserved ? 1 : 0) << ", ";
+    query << db->EscapeString(rn.reservedForAccountUuid) << ", ";
+    query << rn.expires;
+
+    query << ")";
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    if (!transaction.Commit())
+        return false;
+
     return true;
 }
 
@@ -63,16 +92,56 @@ bool DBReservedName::Load(AB::Entities::ReservedName& n)
     return true;
 }
 
-bool DBReservedName::Save(const AB::Entities::ReservedName&)
+bool DBReservedName::Save(const AB::Entities::ReservedName& rn)
 {
-    // Do nothing
-    return true;
+    if (Utils::Uuid::IsEmpty(rn.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+
+    query << "UPDATE `reserved_names` SET ";
+
+    // Only these may be changed
+    query << " `is_reserved` = " << (rn.isReserved ? 1 : 0) << ", ";
+    query << " `expires` = " << rn.expires;
+
+    query << " WHERE `uuid` = " << db->EscapeString(rn.uuid);
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
 }
 
-bool DBReservedName::Delete(const AB::Entities::ReservedName&)
+bool DBReservedName::Delete(const AB::Entities::ReservedName& rn)
 {
-    // Do nothing
-    return true;
+    if (Utils::Uuid::IsEmpty(rn.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "DELETE FROM `reserved_names` WHERE `uuid` = " << db->EscapeString(rn.uuid);
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
 }
 
 bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
@@ -101,6 +170,7 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
 
 void DBReservedName::DeleteExpired(StorageProvider* sp)
 {
+    // When expires == 0 it does not expire, otherwise it's the time stamp
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT `uuid` FROM `reserved_names` WHERE ";

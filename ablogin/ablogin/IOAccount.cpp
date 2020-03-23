@@ -354,6 +354,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         AB::Entities::ReservedName rn;
         rn.name = ch.name;
         client->DeleteIfExists(rn);
+        client->Invalidate(rn);
         rn.uuid = Utils::Uuid::New();
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
