@@ -12,7 +12,7 @@ https://www.gamedev.net/projects/1587-abx
 
 The source code is licensed under the MIT License.
 
-Assets, Data, Art made by me is licensed under the [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+Assets, Data, Art made by me is licensed under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## ETA
 
