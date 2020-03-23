@@ -90,11 +90,30 @@ void EquipmentWindow::SubscribeEvents()
 {
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleCloseClicked));
+    Button* loadButton = GetChildStaticCast<Button>("LoadButton", true);
+    SubscribeToEvent(loadButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleLoadClicked));
+    Button* saveButton = GetChildStaticCast<Button>("SaveButton", true);
+    SubscribeToEvent(saveButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleSaveClicked));
+
+    Button* createButton = GetChildStaticCast<Button>("CreateButton", true);
+    createButton->SetVisible(false);
 }
 
 void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
+}
+
+void EquipmentWindow::HandleLoadClicked(StringHash, VariantMap&)
+{
+}
+
+void EquipmentWindow::HandleSaveClicked(StringHash, VariantMap&)
+{
+}
+
+void EquipmentWindow::HandleCreateClicked(StringHash, VariantMap&)
+{
 }
 
 bool EquipmentWindow::LoadObject(uint32_t itemIndex, Node* node)
@@ -141,6 +160,17 @@ void EquipmentWindow::UpdateEquipment(Player* player)
 {
     if (!player)
         return;
+
+    Button* createButton = GetChildStaticCast<Button>("CreateButton", true);
+    if (player->pvpCharacter_)
+    {
+        createButton->SetVisible(true);
+        SubscribeToEvent(createButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleCreateClicked));
+    }
+    else
+    {
+        createButton->SetVisible(false);
+    }
 
     if (!modelLoaded_)
     {

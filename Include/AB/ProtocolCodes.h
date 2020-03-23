@@ -457,6 +457,7 @@ enum ObjectSpawnDataFields : uint32_t
     ObjectSpawnDataFieldProf = 1 << 3,
     ObjectSpawnDataFieldModelIndex = 1 << 4,
     ObjectSpawnDataFieldSkills = 1 << 5,
+    ObjectSpawnDataFieldPvpCharacter = 1 << 6,
 };
 
 /// Packets sent by the client

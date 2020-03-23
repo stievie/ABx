@@ -1089,6 +1089,12 @@ void Actor::Unserialize(PropReadStream& data)
 
     if (validFields & ObjectSpawnDataFieldLevel)
         data.Read(level_);
+    if (validFields & ObjectSpawnDataFieldPvpCharacter)
+    {
+        uint8_t isPvp;
+        if (data.Read(isPvp))
+            pvpCharacter_ = isPvp != 0;
+    }
 
     if (validFields & ObjectSpawnDataFieldSex)
     {

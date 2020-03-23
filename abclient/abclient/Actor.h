@@ -142,6 +142,7 @@ public:
     Vector<String> materials_;
     Vector3 velocity_;
     bool autoRun_{ false };
+    bool pvpCharacter_{ false };
 private:
     /// Player hovers
     bool hovered_{ false };

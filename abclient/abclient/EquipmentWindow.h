@@ -38,6 +38,9 @@ private:
     bool initialized_{ false };
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
+    void HandleLoadClicked(StringHash eventType, VariantMap& eventData);
+    void HandleSaveClicked(StringHash eventType, VariantMap& eventData);
+    void HandleCreateClicked(StringHash eventType, VariantMap& eventData);
     bool LoadObject(uint32_t itemIndex, Node* node);
 public:
     EquipmentWindow(Context* context);

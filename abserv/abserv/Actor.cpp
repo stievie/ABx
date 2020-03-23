@@ -548,14 +548,23 @@ Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
 bool Actor::Serialize(IO::PropWriteStream& stream)
 {
     using namespace AB::GameProtocol;
-    static constexpr uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldLevel |
+    uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldLevel |
         ObjectSpawnDataFieldSex | ObjectSpawnDataFieldProf | ObjectSpawnDataFieldModelIndex |
         ObjectSpawnDataFieldSkills;
+    if (Is<Player>(*this))
+    {
+        validFields |= ObjectSpawnDataFieldPvpCharacter;
+    }
+
     stream.Write<uint32_t>(validFields);
 
     if (!GameObject::Serialize(stream))
         return false;
     stream.Write<uint32_t>(GetLevel());
+    if (Is<Player>(*this))
+    {
+        stream.Write<uint8_t>(To<Player>(*this).data_.pvp ? 1 : 0);
+    }
     stream.Write<uint8_t>(GetSex());
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProfIndex()));
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProf2Index()));
@@ -570,9 +579,10 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     GameObject::WriteSpawnData(msg);
 
     using namespace AB::GameProtocol;
-    const uint32_t validFields = ObjectSpawnFieldPos | ObjectSpawnFieldRot | ObjectSpawnFieldScale |
+    uint32_t validFields = ObjectSpawnFieldPos | ObjectSpawnFieldRot | ObjectSpawnFieldScale |
         ObjectSpawnFieldUndestroyable | ObjectSpawnFieldSelectable | ObjectSpawnFieldState |
         ObjectSpawnFieldSpeed | ObjectSpawnFieldGroupId | ObjectSpawnFieldGroupPos;
+
     msg.Add<uint32_t>(validFields);
 
     msg.Add<float>(transformation_.position_.x_);
