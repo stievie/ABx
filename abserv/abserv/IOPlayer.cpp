@@ -189,9 +189,13 @@ static bool LoadPlayer(Game::Player& player)
             return false;
         }
     }
-    // After loading professions we can load the skills
-    if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountTypeGamemaster))
-        LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
+
+    if (!player.data_.skillTemplate.empty())
+    {
+        // After loading professions we can load the skills
+        if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountTypeGamemaster))
+            LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
+    }
 
     player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
