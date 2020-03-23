@@ -77,6 +77,7 @@ void CharCreateLevel::CreateUI()
     nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_CHARACTER_NAME);
     professionDropdown_ = uiRoot_->GetChildStaticCast<DropDownList>("ProfessionDropDown", true);
     sexDropdown_ = uiRoot_->GetChildStaticCast<DropDownList>("GenderDropDown", true);
+    pvpCheckbox_ = uiRoot_->GetChildStaticCast<CheckBox>("PvpCharacterCheckbox", true);
     createButton_ = uiRoot_->GetChildStaticCast<Button>("CreateButton", true);
     cancelButton_ = uiRoot_->GetChildStaticCast<Button>("CancelButton", true);
     SubscribeToEvent(createButton_, E_RELEASED, URHO3D_HANDLER(CharCreateLevel, HandleCreateClicked));
@@ -164,6 +165,7 @@ void CharCreateLevel::DoCreateCharacter()
         ShowError("Please select the gender of your character.");
         return;
     }
+    bool pvp = pvpCheckbox_->IsChecked();
 
     FwClient* client = GetSubsystem<FwClient>();
     SkillManager* sm = GetSubsystem<SkillManager>();
@@ -181,7 +183,7 @@ void CharCreateLevel::DoCreateCharacter()
     if (modelIndex == 0)
         modelIndex = 1;
 
-    client->CreatePlayer(name, prof, modelIndex, _sex, true);
+    client->CreatePlayer(name, prof, modelIndex, _sex, pvp);
 }
 
 void CharCreateLevel::DoCancel()

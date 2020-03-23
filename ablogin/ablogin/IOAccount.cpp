@@ -34,6 +34,7 @@
 #include <abscommon/Profiler.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <abshared/Mechanic.h>
 
 namespace IO {
 
@@ -258,7 +259,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     ch.professionUuid = pro.uuid;
     ch.sex = sex;
     ch.pvp = isPvp;
-    ch.level = 1;
+    ch.level = isPvp ? Game::LEVEL_CAP : 1;
     ch.creation = Utils::Tick();
     ch.inventory_size = AB::Entities::DEFAULT_INVENTORY_SIZE;
     ch.accountUuid = accountUuid;

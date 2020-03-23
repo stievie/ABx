@@ -37,6 +37,7 @@ private:
     SharedPtr<LineEdit> nameEdit_;
     SharedPtr<DropDownList> professionDropdown_;
     SharedPtr<DropDownList> sexDropdown_;
+    SharedPtr<CheckBox> pvpCheckbox_;
     SharedPtr<Button> createButton_;
     SharedPtr<Button> cancelButton_;
     void DoCreateCharacter();
