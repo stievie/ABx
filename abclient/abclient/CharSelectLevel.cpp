@@ -90,13 +90,14 @@ void CharSelectLevel::CreateUI()
         auto* container = window_->CreateChild<UIElement>();
         container->SetLayoutMode(LM_HORIZONTAL);
         container->SetMinHeight(40);
+        container->SetMaxHeight(40);
         container->SetLayoutSpacing(8);
-        container->SetName(String(ch.uuid.c_str()));    // not required
+        container->SetName(String(ch.uuid.c_str()));
 
         Button* button = container->CreateChild<Button>();
-        button->SetName(String(ch.uuid.c_str()));    // not required
+        button->SetName(String(ch.uuid.c_str()));
         button->SetStyleAuto();
-        button->SetOpacity(1.0f);     // transparency
+        button->SetOpacity(1.0f);
         button->SetLayoutMode(LM_FREE);
         button->SetVar("uuid", String(ch.uuid.c_str()));
         button->SetVar("char_name", String(ch.name.c_str()));
@@ -137,14 +138,16 @@ void CharSelectLevel::CreateUI()
         {
             UIElement* sep = window_->CreateChild<UIElement>();
             sep->SetMinHeight(5);
+            sep->SetMaxHeight(5);
             sep->SetStyleAuto();
             sep->SetLayoutMode(LM_FREE);
         }
 
         Button* button = window_->CreateChild<Button>();
         button->SetMinHeight(40);
+        button->SetMaxHeight(40);
         button->SetStyleAuto();
-        button->SetOpacity(1.0f);     // transparency
+        button->SetOpacity(1.0f);
         button->SetLayoutMode(LM_FREE);
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCreateCharClicked));
 
@@ -159,6 +162,7 @@ void CharSelectLevel::CreateUI()
     {
         Button* button = window_->CreateChild<Button>();
         button->SetMinHeight(40);
+        button->SetMaxHeight(40);
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
@@ -288,6 +292,7 @@ void CharSelectLevel::HandleCharacterDeleted(StringHash, VariantMap& eventData)
         return;
 
     container->Remove();
+    window_->UpdateLayout();
 }
 
 void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)
