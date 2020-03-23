@@ -18,6 +18,16 @@ Assets, Data, Art made by me is licensed under the [CC BY 2.0](https://creativec
 
 Christmas 2117 +/- some years. That's still a negative stardate so I think we are fine.
 
+## The Goals
+
+* Instanced world
+* Primary and secondary professions (classes)
+* Big skill pool
+* Diverse skill builds and team builds
+* Focus on tactics rather than kill everything that moves
+* Cooperative and competitive game formats
+* PvP and PvE
+
 ## Current features
 
 * Uses a single TCP stream for the game protocol. This is not a shooter or action game, more like a classical online RPG.
