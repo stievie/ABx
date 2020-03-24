@@ -76,6 +76,7 @@ public:
     bool Load(const std::string& str, bool locked);
     bool SetSecondaryProfession(uint32_t index);
 
+    void ResetSkills();
     std::shared_ptr<Skill> GetSkill(int pos);
     uint32_t GetIndexOfSkill(int pos);
     bool SetSkill(int pos, std::shared_ptr<Skill> skill);

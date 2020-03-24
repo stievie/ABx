@@ -126,7 +126,7 @@ public:
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     void PlaySoundEffect(const StringHash& type, bool loop = false);
     void PlaySoundEffect(const String& fileName, const String& name = String::EMPTY);
-    virtual bool LoadSkillTemplate(const std::string& templ);
+    bool LoadSkillTemplate(const std::string& templ);
     std::string SaveSkillTemplate();
     void OnSkillError(AB::GameProtocol::SkillError error) override;
 
@@ -170,7 +170,6 @@ private:
     void HandleObjectSecProfessionChange(StringHash eventType, VariantMap& eventData);
     void HandleLoadSkillTemplate(StringHash eventType, VariantMap& eventData);
     void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
-    void HandleSkillTemplateLoaded(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:

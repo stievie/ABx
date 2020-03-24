@@ -373,18 +373,6 @@ void Player::UpdateUI()
         w->UpdateEquipment(this);
 }
 
-bool Player::LoadSkillTemplate(const std::string& templ)
-{
-    if (!Actor::LoadSkillTemplate(templ))
-        return false;
-
-    WindowManager* winMan = GetSubsystem<WindowManager>();
-    SkillBarWindow* skillsWin = dynamic_cast<SkillBarWindow*>(winMan->GetWindow(WINDOW_SKILLBAR).Get());
-    skillsWin->SetSkills(skills_);
-
-    return true;
-}
-
 void Player::UpdateMumbleContext()
 {
     auto* mumble = GetSubsystem<Mumble>();

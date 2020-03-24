@@ -278,6 +278,14 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
     return true;
 }
 
+void SkillBar::ResetSkills()
+{
+    for (size_t i = 0; i < PLAYER_MAX_SKILLS; i++)
+    {
+        skills_[i].reset();
+    }
+}
+
 std::shared_ptr<Skill> SkillBar::GetSkill(int pos)
 {
     if (pos < 0)

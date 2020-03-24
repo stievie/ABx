@@ -808,10 +808,14 @@ void Player::CRQGetFriendList()
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)
 {
-    if (client_ && message.GetSize() != 0)
-        client_->WriteToOutput(message);
-    else
+    if (!client_)
+    {
         LOG_ERROR << "client_ expired" << std::endl;
+        return;
+    }
+
+    if (message.GetSize() != 0)
+        client_->WriteToOutput(message);
 }
 
 void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
@@ -1304,13 +1308,29 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
 
 void Player::CRQLoadSkillTemplate(std::string templ)
 {
-    if (IsInOutpost())
-        skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
-    const std::string newTempl = skills_->Encode();
+    bool success = false;
+    uint32_t oldProf = skills_->prof2_.index;
 
+    if (IsInOutpost())
+        success = skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
+
+    if (success && oldProf != skills_->prof2_.index)
+    {
+        // Loading a skill template may also change the secondary profession.
+        // We need ot inform all players.
+        AB::Packets::Server::ObjectSecProfessionChanged packet{
+            id_,
+            skills_->prof2_.index
+        };
+        auto& gameStatus = GetGame()->GetGameStatus();
+        gameStatus.AddByte(AB::GameProtocol::ServerPacketType::ObjectSecProfessionChanged);
+        AB::Packets::Add(packet, gameStatus);
+    }
+
+    const std::string newTempl = skills_->Encode();
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSkillTemplLoaded);
-    AB::Packets::Server::SkillTemplateLoaded packet {
+    AB::Packets::Server::SkillTemplateLoaded packet{
         id_,
         newTempl
     };

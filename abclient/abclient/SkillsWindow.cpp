@@ -245,6 +245,9 @@ void SkillsWindow::HandleSaveFileSelected(StringHash, VariantMap& eventData)
 
     using namespace FilePicked;
     const String& fileName = eventData[P_FILENAME].GetString();
+    auto* fileSystem = GetSubsystem<FileSystem>();
+    if (fileSystem->FileExists(fileName))
+        fileSystem->Delete(fileName);
     std::string templ = player->SaveSkillTemplate();
     File file(context_, fileName, FILE_WRITE);
     file.WriteLine(String(templ.c_str()));
