@@ -26,18 +26,23 @@
 class Player;
 class Actor;
 class Spinner;
+class FilePicker;
 
 class SkillsWindow : public Window
 {
     URHO3D_OBJECT(SkillsWindow, Window)
 private:
     SharedPtr<Window> dragSkill_;
+    SharedPtr<FilePicker> filePicker_;
     void AddProfessions(const Actor& actor);
     void UpdateAttributes(const Actor& actor);
     void UpdateSkills(const Actor& actor);
     void UpdateAttribsHeader(const Actor& actor);
     Text* CreateDropdownItem(const String& text, unsigned value);
     void SubscribeEvents();
+    void HandleFilePickerClosed(StringHash eventType, VariantMap& eventData);
+    void HandleLoadFileSelected(StringHash eventType, VariantMap& eventData);
+    void HandleSaveFileSelected(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleLoadClicked(StringHash eventType, VariantMap& eventData);
     void HandleSaveClicked(StringHash eventType, VariantMap& eventData);

@@ -71,6 +71,7 @@ public:
     void SelectObject(uint32_t objectId);
     void UpdateMumbleContext();
     void UpdateUI();
+    bool LoadSkillTemplate(const std::string& templ) override;
     uint8_t GetMoveDir();
     uint8_t GetTurnDir();
     void MoveTo(int64_t time, const Vector3& newPos) override;

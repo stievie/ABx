@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,35 @@
 
 #pragma once
 
-#include <stdint.h>
-#include "Attributes.h"
-#include <array>
-#include <AB/Entities/Profession.h>
-#include <string>
+#include "DialogWindow.h"
 
-#define SKILLS_TEMPLATE_HEADER_VERSION (0)
-#define SKILLS_TEMPLATE_HEADER_TYPE (0xe)
-
-namespace IO {
-
-uint8_t GetSkillsTemplateHeader();
-std::string SkillTemplateEncode(const AB::Entities::Profession& prof1, const AB::Entities::Profession& prof2,
-    const Game::Attributes& attribs, const Game::SkillIndices& skills);
-bool SkillTemplateDecode(const std::string& templ,
-    AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-    Game::Attributes& attribs, Game::SkillIndices& skills);
-
+URHO3D_EVENT(E_FILEPICKED, FilePicked)
+{
+    URHO3D_PARAM(P_FILENAME, FileName);              // String
 }
+
+class FilePicker : public DialogWindow
+{
+    URHO3D_OBJECT(FilePicker, DialogWindow)
+public:
+    enum class Mode
+    {
+        Save,
+        Load
+    };
+    FilePicker(Context* context, const String& root, Mode mode);
+    void SetPath(const String& path);
+private:
+    void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
+    void HandleOkClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFileSelected(StringHash eventType, VariantMap& eventData);
+    void HandleFileDoubleClicked(StringHash eventType, VariantMap& eventData);
+    void ScanPath();
+    bool EnterFile();
+    String root_;
+    String path_;
+    Mode mode_;
+    ListView* fileList_{ nullptr };
+    LineEdit* fileNameEdit_;
+    Vector<FileSelectorEntry> fileEntries_;
+};

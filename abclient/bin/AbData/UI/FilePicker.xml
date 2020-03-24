@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Name" value="FileSelector" />
-	<attribute name="Position" value="500 121" />
-	<attribute name="Size" value="430 320" />
-	<attribute name="Min Size" value="0 320" />
-	<attribute name="Max Size" value="2147483647 320" />
+	<attribute name="Name" value="FilePicker" />
+	<attribute name="Position" value="650 89" />
+	<attribute name="Size" value="430 400" />
+	<attribute name="Min Size" value="430 400" />
+	<attribute name="Max Size" value="2147483647 400" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="4 4 4 4" />
@@ -42,6 +42,21 @@
 			<attribute name="Border" value="4 4 4 4" />
 			<attribute name="Hover Image Offset" value="0 16" />
 			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="NewFolderButton" />
+			<attribute name="Size" value="20 20" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="20 20" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="160 80 176 96" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="16 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
 	</element>
@@ -95,7 +110,7 @@
 				</element>
 			</element>
 			<element type="ScrollBar" internal="true" style="none">
-				<attribute name="Size" value="16 235" />
+				<attribute name="Size" value="16 315" />
 				<attribute name="Min Anchor" value="1 0" />
 				<attribute name="Max Anchor" value="1 0" />
 				<attribute name="Pivot" value="1 0" />
@@ -114,7 +129,7 @@
 				</element>
 				<element type="Slider" internal="true" style="none">
 					<attribute name="Position" value="0 16" />
-					<attribute name="Size" value="16 203" />
+					<attribute name="Size" value="16 283" />
 					<attribute name="Pivot" value="0 0" />
 					<attribute name="Image Rect" value="48 0 64 16" />
 					<attribute name="Border" value="4 4 4 4" />
@@ -126,7 +141,7 @@
 					</element>
 				</element>
 				<element type="Button" internal="true" style="none">
-					<attribute name="Position" value="0 219" />
+					<attribute name="Position" value="0 299" />
 					<attribute name="Size" value="16 16" />
 					<attribute name="Pivot" value="0 0" />
 					<attribute name="Border" value="4 4 4 4" />

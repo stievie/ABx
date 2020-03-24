@@ -281,6 +281,7 @@
     <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="EquipmentWindow.cpp" />
+    <ClCompile Include="FilePicker.cpp" />
     <ClCompile Include="SkillsWindow.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
@@ -338,6 +339,7 @@
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="ConfirmDeleteCharacter.h" />
     <ClInclude Include="EquipmentWindow.h" />
+    <ClInclude Include="FilePicker.h" />
     <ClInclude Include="SkillsWindow.h" />
     <ClInclude Include="GuildWindow.h" />
     <ClInclude Include="InternalEvents.h" />

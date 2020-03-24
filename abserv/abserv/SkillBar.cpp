@@ -152,7 +152,7 @@ std::string SkillBar::Encode()
         ++i;
     }
 
-    return IO::SkillTEmplateEncode(prof1_, prof2_, GetAttributes(), sis);
+    return IO::SkillTemplateEncode(prof1_, prof2_, GetAttributes(), sis);
 }
 
 bool SkillBar::HaveAttribute(uint32_t index)

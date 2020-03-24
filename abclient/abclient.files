@@ -34,6 +34,8 @@ abclient/EffectsWindow.cpp
 abclient/EffectsWindow.h
 abclient/EquipmentWindow.cpp
 abclient/EquipmentWindow.h
+abclient/FilePicker.cpp
+abclient/FilePicker.h
 abclient/SkillsWindow.cpp
 abclient/SkillsWindow.h
 abclient/Extrapolator.h

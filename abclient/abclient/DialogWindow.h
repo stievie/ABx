@@ -23,6 +23,11 @@
 
 #include <Urho3DAll.h>
 
+URHO3D_EVENT(E_DIALOGCLOSE, DialogClose)
+{
+    URHO3D_PARAM(P_ELEMENT, Element);
+}
+
 class DialogWindow : public Window
 {
     URHO3D_OBJECT(DialogWindow, Window)

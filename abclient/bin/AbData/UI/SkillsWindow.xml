@@ -20,7 +20,8 @@
 		<attribute name="Max Size" value="2147483647 23" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Button">
-			<attribute name="Name" value="LoadButton" />
+			<attribute name="Name" value="SaveButton" />
+			<attribute name="Position" value="22 0" />
 			<attribute name="Size" value="20 20" />
 			<attribute name="Min Size" value="16 16" />
 			<attribute name="Max Size" value="20 20" />
@@ -35,8 +36,7 @@
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
 		<element type="Button">
-			<attribute name="Name" value="SaveButton" />
-			<attribute name="Position" value="22 0" />
+			<attribute name="Name" value="LoadButton" />
 			<attribute name="Size" value="20 20" />
 			<attribute name="Min Size" value="16 16" />
 			<attribute name="Max Size" value="20 20" />

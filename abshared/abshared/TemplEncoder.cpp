@@ -30,7 +30,7 @@ uint8_t GetSkillsTemplateHeader()
     return (SKILLS_TEMPLATE_HEADER_TYPE << 4) | SKILLS_TEMPLATE_HEADER_VERSION;
 }
 
-std::string SkillTEmplateEncode(const AB::Entities::Profession& prof1,
+std::string SkillTemplateEncode(const AB::Entities::Profession& prof1,
     const AB::Entities::Profession& prof2,
     const Game::Attributes& attribs, const Game::SkillIndices& skills)
 {

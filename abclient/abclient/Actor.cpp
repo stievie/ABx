@@ -63,6 +63,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
     SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(Actor, HandleObjectSecProfessionChange));
     SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(Actor, HandleSetAttribValue));
+    SubscribeToEvent(Events::E_LOAD_SKILLTEMPLATE, URHO3D_HANDLER(Actor, HandleSkillTemplateLoaded));
 }
 
 Actor::~Actor()
@@ -1190,6 +1191,17 @@ bool Actor::LoadSkillTemplate(const std::string& templ)
     return true;
 }
 
+std::string Actor::SaveSkillTemplate()
+{
+    AB::Entities::Profession prof1;
+    if (profession_)
+        prof1 = *profession_;
+    AB::Entities::Profession prof2;
+    if (profession2_)
+        prof2 = *profession2_;
+    return IO::SkillTemplateEncode(prof1, prof2, attributes_, skills_);
+}
+
 void Actor::OnSkillError(AB::GameProtocol::SkillError)
 {
     PlaySoundEffect(SOUND_SKILLFAILURE);
@@ -1296,4 +1308,14 @@ void Actor::HandleSetAttribValue(StringHash, VariantMap& eventData)
     uint32_t attribIndex = eventData[P_ATTRIBINDEX].GetUInt();
     int value = eventData[P_VALUE].GetInt();
     SetAttributeRank(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
+}
+
+void Actor::HandleSkillTemplateLoaded(StringHash, VariantMap& eventData)
+{
+    using namespace Events::LoadSkillTemplate;
+    if (eventData[P_OBJECTID].GetUInt() != gameId_)
+        return;
+
+    const String& templ = eventData[P_TEMPLATE].GetString();
+    LoadSkillTemplate(std::string(templ.CString()));
 }

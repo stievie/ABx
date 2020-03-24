@@ -37,6 +37,12 @@ DialogWindow::~DialogWindow()
 
 void DialogWindow::Close()
 {
+    using namespace DialogClose;
+
+    VariantMap& eventData = GetEventDataMap();
+    eventData[P_ELEMENT] = this;
+    SendEvent(E_DIALOGCLOSE, eventData);
+
     SetVisible(false);
     if (overlay_)
         overlay_->Remove();

@@ -33,6 +33,7 @@
 #include <abshared/Mechanic.h>
 #include "SkillBarWindow.h"
 #include "WindowManager.h"
+#include "FilePicker.h"
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
@@ -115,6 +116,12 @@ void SkillsWindow::SubscribeEvents()
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(SkillsWindow, HandleSkillsChanged));
 }
 
+void SkillsWindow::HandleFilePickerClosed(StringHash, VariantMap&)
+{
+    if (filePicker_)
+        filePicker_.Reset();
+}
+
 void SkillsWindow::HandleSetAttribValue(StringHash, VariantMap& eventData)
 {
     auto* lm = GetSubsystem<LevelManager>();
@@ -185,13 +192,83 @@ void SkillsWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
+void SkillsWindow::HandleLoadFileSelected(StringHash, VariantMap& eventData)
+{
+    if (!IsChangeable())
+        return;
+
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
+    using namespace FilePicked;
+    const String& fileName = eventData[P_FILENAME].GetString();
+
+    File file(context_, fileName);
+    String templ = file.ReadLine().Trimmed();
+
+    FwClient* client = GetSubsystem<FwClient>();
+    client->LoadSkillTemplate(std::string(templ.CString()));
+}
+
 void SkillsWindow::HandleLoadClicked(StringHash, VariantMap&)
 {
+    if (!IsChangeable())
+        return;
+
+    if (filePicker_)
+        filePicker_->Close();
+
+    String path = AddTrailingSlash(Options::GetPrefPath()) + "skills/";
+
+    if (!Options::CreateDir(path))
+    {
+        URHO3D_LOGERRORF("Failed to create directory %s", path.CString());
+        return;
+    }
+
+    filePicker_ = new FilePicker(context_, path, FilePicker::Mode::Load);
+    SubscribeToEvent(filePicker_, E_DIALOGCLOSE, URHO3D_HANDLER(SkillsWindow, HandleFilePickerClosed));
+    SubscribeToEvent(filePicker_, E_FILEPICKED, URHO3D_HANDLER(SkillsWindow, HandleLoadFileSelected));
+}
+
+void SkillsWindow::HandleSaveFileSelected(StringHash, VariantMap& eventData)
+{
+    if (!IsChangeable())
+        return;
+
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return;
+
+    using namespace FilePicked;
+    const String& fileName = eventData[P_FILENAME].GetString();
+    std::string templ = player->SaveSkillTemplate();
+    File file(context_, fileName, FILE_WRITE);
+    file.WriteLine(String(templ.c_str()));
 }
 
 void SkillsWindow::HandleSaveClicked(StringHash, VariantMap&)
 {
+    if (!IsChangeable())
+        return;
 
+    if (filePicker_)
+        filePicker_->Close();
+
+    String path = AddTrailingSlash(Options::GetPrefPath()) + "skills/";
+
+    if (!Options::CreateDir(path))
+    {
+        URHO3D_LOGERRORF("Failed to create directory %s", path.CString());
+        return;
+    }
+
+    filePicker_ = new FilePicker(context_, path, FilePicker::Mode::Save);
+    SubscribeToEvent(filePicker_, E_DIALOGCLOSE, URHO3D_HANDLER(SkillsWindow, HandleFilePickerClosed));
+    SubscribeToEvent(filePicker_, E_FILEPICKED, URHO3D_HANDLER(SkillsWindow, HandleSaveFileSelected));
 }
 
 void SkillsWindow::AddProfessions(const Actor& actor)
