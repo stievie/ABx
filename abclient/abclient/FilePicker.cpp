@@ -189,11 +189,11 @@ void FilePicker::ScanPath()
     listContent->UpdateLayout();
 }
 
-bool FilePicker::EnterFile()
+void FilePicker::EnterFile()
 {
     unsigned index = fileList_->GetSelection();
     if (index >= fileEntries_.Size())
-        return false;
+        return;
 
     if (fileEntries_[index].directory_)
     {
@@ -207,17 +207,13 @@ bool FilePicker::EnterFile()
             SetPath(parentPath);
         }
 
-        return true;
-    }
-    else
-    {
-        using namespace FilePicked;
-
-        VariantMap& eventData = GetEventDataMap();
-        eventData[P_FILENAME] = path_ + fileEntries_[index].name_;
-        SendEvent(E_FILEPICKED, eventData);
-        Close();
+        return;
     }
 
-    return false;
+    using namespace FilePicked;
+
+    VariantMap& eventData = GetEventDataMap();
+    eventData[P_FILENAME] = path_ + fileEntries_[index].name_;
+    SendEvent(E_FILEPICKED, eventData);
+    Close();
 }

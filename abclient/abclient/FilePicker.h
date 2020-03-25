@@ -45,7 +45,7 @@ private:
     void HandleFileSelected(StringHash eventType, VariantMap& eventData);
     void HandleFileDoubleClicked(StringHash eventType, VariantMap& eventData);
     void ScanPath();
-    bool EnterFile();
+    void EnterFile();
     String root_;
     String path_;
     Mode mode_;

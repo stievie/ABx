@@ -92,8 +92,8 @@ URHO3D_EVENT(E_AUDIOPLAYMUSICSTYLE, AudioPlayMusicStyle)
 
 URHO3D_EVENT(E_ACTOR_SKILLS_CHANGED, ActorSkillsChanged)
 {
-    URHO3D_PARAM(P_OBJECTID, ObjectId);     // uintt32_t
-    URHO3D_PARAM(P_UPDATEALL, UpdateAll);     // uintt32_t
+    URHO3D_PARAM(P_OBJECTID, ObjectId);     // uint32_t
+    URHO3D_PARAM(P_UPDATEALL, UpdateAll);   // uint32_t
 }
 
 }

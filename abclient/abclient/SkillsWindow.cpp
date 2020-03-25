@@ -193,7 +193,6 @@ void SkillsWindow::HandleLoadFileSelected(StringHash, VariantMap& eventData)
 
     File file(context_, fileName);
     String templ = file.ReadLine().Trimmed();
-    URHO3D_LOGINFOF("Loading skill from %s: %s", fileName.CString(), templ.CString());
 
     FwClient* client = GetSubsystem<FwClient>();
     client->LoadSkillTemplate(std::string(templ.CString()));
@@ -237,7 +236,6 @@ void SkillsWindow::HandleSaveFileSelected(StringHash, VariantMap& eventData)
         fileSystem->Delete(fileName);
     std::string templ = player->SaveSkillTemplate();
     File file(context_, fileName, FILE_WRITE);
-    URHO3D_LOGINFOF("Saving skill to %s: %s", fileName.CString(), templ.c_str());
     file.WriteLine(String(templ.c_str()));
 }
 
