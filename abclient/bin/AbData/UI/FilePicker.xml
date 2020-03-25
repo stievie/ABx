@@ -12,6 +12,7 @@
 	<attribute name="Border" value="4 4 4 4" />
 	<attribute name="Resize Border" value="8 8 8 8" />
 	<attribute name="Is Movable" value="true" />
+	<attribute name="Is Resizable" value="true" />
 	<element>
 		<attribute name="Name" value="TitleBar" />
 		<attribute name="Min Size" value="0 23" />

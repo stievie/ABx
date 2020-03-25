@@ -40,11 +40,8 @@ std::string SkillTemplateEncode(const AB::Entities::Profession& prof1,
     // 2 Byte: Professions
     buff.push_back(static_cast<uint8_t>(prof1.index));
     buff.push_back(static_cast<uint8_t>(prof2.index));
-    // 1 Byte: Attributes count
-    const uint8_t attribCount = static_cast<uint8_t>(prof1.attributeCount + prof2.attributeCount);
-    buff.push_back(attribCount);
     // Attributes
-    for (uint8_t i = 0; i < attribCount; i++)
+    for (uint8_t i = 0; i < Game::PLAYER_MAX_ATTRIBUTES; i++)
     {
         buff.push_back(static_cast<uint8_t>(attribs[i].index));
         buff.push_back(static_cast<uint8_t>(attribs[i].value));
@@ -74,14 +71,15 @@ bool SkillTemplateDecode(const std::string& templ, AB::Entities::Profession& pro
     if (vec[pos] != GetSkillsTemplateHeader())
         return false;
 
+    if (vec.size() != 39)
+        return false;
+
     ++pos;
     prof1.index = vec[pos];
     ++pos;
     prof2.index = vec[pos];
     ++pos;
-    const uint8_t attribCount = vec[pos];
-    ++pos;
-    for (uint8_t i = 0; i < attribCount; i++)
+    for (uint8_t i = 0; i < Game::PLAYER_MAX_ATTRIBUTES; i++)
     {
         attribs[i].index = static_cast<Game::Attribute>(vec[pos]);
         ++pos;

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "FilePicker.h"
+#include <AB/CommonConfig.h>
 
 static bool CompareEntries(const FileSelectorEntry& lhs, const FileSelectorEntry& rhs)
 {
@@ -28,7 +29,11 @@ static bool CompareEntries(const FileSelectorEntry& lhs, const FileSelectorEntry
         return true;
     if (!lhs.directory_ && rhs.directory_)
         return false;
+#if defined(AB_WINDOWS)
     return lhs.name_.Compare(rhs.name_, false) < 0;
+#elif defined(AB_UNIX)
+    return lhs.name_.Compare(rhs.name_, true) < 0;
+#endif
 }
 
 FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
@@ -43,10 +48,19 @@ FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
     SetSize(430, 400);
     SetMinSize(430, 400);
     SetMaxSize(430, 400);
-    SetLayoutSpacing(10);
-    SetLayoutBorder({ 10, 10, 10, 10 });
     SetMovable(true);
     SetFocusMode(FM_FOCUSABLE);
+
+    auto* caption = GetChildDynamicCast<Text>("Caption", true);
+    if (mode_ == Mode::Load)
+        caption->SetText("Load file");
+    else
+        caption->SetText("Save file");
+
+    SubscribeEvents();
+
+    auto* newFolder = GetChildDynamicCast<Button>("NewFolderButton", true);
+    newFolder->SetVisible(false);
 
     auto* okButton = GetChildDynamicCast<Button>("OkButton", true);
     SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(FilePicker, HandleOkClicked));
@@ -60,9 +74,12 @@ FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
     SetBringToBack(false);
     uiRoot_->AddChild(this);
     SetVisible(true);
+    MakeModal();
     Center();
+    SetPriority(200);
     BringToFront();
     SetPath(root_);
+    fileNameEdit_->SetFocus(true);
 }
 
 void FilePicker::SetPath(const String& path)
@@ -126,6 +143,18 @@ void FilePicker::ScanPath()
     for (unsigned i = 0; i < directories.Size(); ++i)
     {
         FileSelectorEntry newEntry;
+        if (directories[i] == ".")
+            continue;
+        if (directories[i] == "..")
+        {
+#if defined(AB_WINDOWS)
+            if (path_.Compare(root_, false) == 0)
+                continue;
+#elif defined(AB_UNIX)
+            if (path_.Compare(root_, true) == 0)
+                continue;
+#endif
+        }
         newEntry.name_ = directories[i];
         newEntry.directory_ = true;
         fileEntries_.Push(newEntry);
@@ -151,7 +180,7 @@ void FilePicker::ScanPath()
         else
             displayName = fileEntries_[i].name_;
 
-        auto* entryText = new Text(context_);
+        Text* entryText = fileList_->CreateChild<Text>();
         fileList_->AddItem(entryText);
         entryText->SetText(displayName);
         entryText->SetStyle("FileSelectorListText");

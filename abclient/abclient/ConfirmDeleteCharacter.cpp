@@ -51,7 +51,7 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     message.AppendWithFormat("If you are sure that you want to delete %s enter %s:", name_.CString(), name_.CString());
     messageText->SetText(message);
 
-    EnsureOverlay();
+    MakeModal();
     SetBringToBack(false);
     BringToFront();
     SetPriority(200);

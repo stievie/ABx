@@ -112,7 +112,6 @@ void SkillsWindow::SubscribeEvents()
     SubscribeToEvent(professionDropdown, E_ITEMSELECTED, URHO3D_HANDLER(SkillsWindow, HandleProfessionSelected));
 
     SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(SkillsWindow, HandleSetAttribValue));
-    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(SkillsWindow, HandleSetSecProfession));
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(SkillsWindow, HandleSkillsChanged));
 }
 
@@ -149,21 +148,9 @@ void SkillsWindow::HandleSkillsChanged(StringHash, VariantMap& eventData)
     using namespace Events::ActorSkillsChanged;
     if (player->gameId_ != eventData[P_OBJECTID].GetUInt())
         return;
-    UpdateAll();
-}
 
-void SkillsWindow::HandleSetSecProfession(StringHash, VariantMap& eventData)
-{
-    auto* lm = GetSubsystem<LevelManager>();
-    auto* player = lm->GetPlayer();
-    if (!player)
-        return;
-
-    using namespace Events::SetSecProfession;
-    if (player->gameId_ != eventData[P_OBJECTID].GetUInt())
-        return;
-    uint32_t index = eventData[P_PROFINDEX].GetUInt();
-    SetProfessionIndex(index);
+    if (eventData[P_UPDATEALL].GetBool())
+        UpdateAll();
 }
 
 void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
@@ -183,7 +170,6 @@ void SkillsWindow::HandleProfessionSelected(StringHash, VariantMap&)
         return;
 
     auto* client = GetSubsystem<FwClient>();
-    // If success this will call SkillsWindow::SetProfessionIndex()
     client->SetSecondaryProfession(p2Index);
 }
 
@@ -207,6 +193,7 @@ void SkillsWindow::HandleLoadFileSelected(StringHash, VariantMap& eventData)
 
     File file(context_, fileName);
     String templ = file.ReadLine().Trimmed();
+    URHO3D_LOGINFOF("Loading skill from %s: %s", fileName.CString(), templ.CString());
 
     FwClient* client = GetSubsystem<FwClient>();
     client->LoadSkillTemplate(std::string(templ.CString()));
@@ -250,6 +237,7 @@ void SkillsWindow::HandleSaveFileSelected(StringHash, VariantMap& eventData)
         fileSystem->Delete(fileName);
     std::string templ = player->SaveSkillTemplate();
     File file(context_, fileName, FILE_WRITE);
+    URHO3D_LOGINFOF("Saving skill to %s: %s", fileName.CString(), templ.c_str());
     file.WriteLine(String(templ.c_str()));
 }
 
