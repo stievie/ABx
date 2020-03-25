@@ -39,7 +39,7 @@ AddAccountKeyDialog::AddAccountKeyDialog(Context* context) :
     SetMovable(false);
     SetFocusMode(FM_FOCUSABLE);
 
-    EnsureOverlay();
+    MakeModal();
     SetBringToBack(false);
     BringToFront();
     SetPriority(200);

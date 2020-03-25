@@ -48,7 +48,6 @@ private:
     void HandleSaveClicked(StringHash eventType, VariantMap& eventData);
     void HandleProfessionSelected(StringHash eventType, VariantMap& eventData);
     void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
-    void HandleSetSecProfession(StringHash eventType, VariantMap& eventData);
     void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
     UIElement* GetAttributeContainer(uint32_t index);
     LineEdit* GetAttributeEdit(uint32_t index);

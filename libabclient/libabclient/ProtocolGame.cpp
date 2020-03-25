@@ -580,9 +580,8 @@ void ProtocolGame::EquipSkill(uint32_t skillIndex, uint8_t pos)
 
 void ProtocolGame::LoadSkillTemplate(const std::string& templ)
 {
-    AB::Packets::Client::LoadSkillTemplate packet {
-        templ
-    };
+    AB::Packets::Client::LoadSkillTemplate packet;
+    packet.templ = templ;
     SendPacket(AB::GameProtocol::ClientPacketTypes::LoadSkillTemplate, packet);
 }
 

@@ -219,6 +219,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
     prof2_.index = p2.index;
     prof2_.attributes.clear();
 
+
     auto dataClient = GetSubsystem<IO::DataClient>();
     if (p2.index != 0)
     {
@@ -233,7 +234,17 @@ bool SkillBar::Load(const std::string& str, bool locked)
 
     auto professionsMatch = [&](const AB::Entities::Skill& skill)
     {
-        return SkillProfessionMatches(skill, prof1_, &prof2_);
+        bool result = SkillProfessionMatches(skill, prof1_, &prof2_);
+#if 0
+        if (!result)
+        {
+            LOG_INFO << "Professions do not match " << skill.name << ", " << skill.professionUuid;
+            LOG_INFO << "  Prof1 " << prof1_.uuid;
+            LOG_INFO << "  Prof2 " << prof2_.uuid;
+            LOG_INFO << std::endl;
+        }
+#endif
+        return result;
     };
 
     auto hasAccess = [&](const AB::Entities::Skill& skill)
@@ -246,6 +257,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
             if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessGM))
                 return true;
         }
+        LOG_INFO << "No access to " << skill.name << std::endl;
         return false;
     };
 

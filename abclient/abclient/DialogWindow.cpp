@@ -89,7 +89,7 @@ void DialogWindow::HandleCloseClicked(StringHash, VariantMap&)
     Close();
 }
 
-Window* DialogWindow::EnsureOverlay()
+void DialogWindow::MakeModal()
 {
     // Ugly Hack to make a pseudo modal window :/
     if (!overlay_)
@@ -111,5 +111,4 @@ Window* DialogWindow::EnsureOverlay()
         overlay_->SetBringToBack(false);
     }
     overlay_->BringToFront();
-    return overlay_.Get();
 }

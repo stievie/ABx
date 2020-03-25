@@ -43,10 +43,10 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     query << "SELECT * FROM `game_professions` WHERE ";
     if (!Utils::Uuid::IsEmpty(prof.uuid))
         query << "`uuid` = " << db->EscapeString(prof.uuid);
-    else if (!prof.name.empty())
-        query << "`name` = " << db->EscapeString(prof.name);
     else if (prof.index != 0)
         query << "`idx` = " << prof.index;
+    else if (!prof.name.empty())
+        query << "`name` = " << db->EscapeString(prof.name);
     else if (!prof.abbr.empty())
         query << "`abbr` = " << db->EscapeString(prof.abbr);
     else

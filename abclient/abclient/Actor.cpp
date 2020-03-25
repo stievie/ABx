@@ -64,6 +64,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(Actor, HandleObjectSecProfessionChange));
     SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(Actor, HandleSetAttribValue));
     SubscribeToEvent(Events::E_LOAD_SKILLTEMPLATE, URHO3D_HANDLER(Actor, HandleLoadSkillTemplate));
+    SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(Actor, HandleSetSkill));
 }
 
 Actor::~Actor()
@@ -520,18 +521,31 @@ void Actor::AddActorUI()
 
 void Actor::HandleObjectSecProfessionChange(StringHash, VariantMap& eventData)
 {
-    using namespace Events::SetSecProfession;
+    {
+        using namespace Events::SetSecProfession;
 
-    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
-    if (objectId != gameId_)
-        return;
+        uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+        if (objectId != gameId_)
+            return;
 
-    auto* sm = GetSubsystem<SkillManager>();
-    profession2_ = sm->GetProfessionByIndex(eventData[P_PROFINDEX].GetUInt());
-    ResetSecondProfAttributes();
+        uint32_t profIndex = eventData[P_PROFINDEX].GetUInt();
+        if (profession2_->index == profIndex)
+            return;
 
-    if (classLevel_)
-        classLevel_->SetText(GetClassLevel());
+        auto* sm = GetSubsystem<SkillManager>();
+        profession2_ = sm->GetProfessionByIndex(profIndex);
+        ResetSecondProfAttributes();
+
+        if (classLevel_)
+            classLevel_->SetText(GetClassLevel());
+    }
+    {
+        using namespace Events::ActorSkillsChanged;
+        VariantMap& eData = GetEventDataMap();
+        eData[P_OBJECTID] = gameId_;
+        eData[P_UPDATEALL] = true;
+        SendEvent(Events::E_ACTOR_SKILLS_CHANGED, eData);
+    }
 }
 
 void Actor::HandleLoadSkillTemplate(StringHash, VariantMap& eventData)
@@ -551,6 +565,7 @@ void Actor::HandleLoadSkillTemplate(StringHash, VariantMap& eventData)
         using namespace Events::ActorSkillsChanged;
         VariantMap& eData = GetEventDataMap();
         eData[P_OBJECTID] = gameId_;
+        eData[P_UPDATEALL] = true;
         SendEvent(Events::E_ACTOR_SKILLS_CHANGED, eData);
     }
 }
@@ -1200,7 +1215,6 @@ std::string Actor::SaveSkillTemplate()
     if (profession2_)
         prof2 = *profession2_;
     std::string result = IO::SkillTemplateEncode(prof1, prof2, attributes_, skills_);
-    URHO3D_LOGINFOF("Template %s", result.c_str());
     return result;
 }
 
@@ -1312,3 +1326,28 @@ void Actor::HandleSetAttribValue(StringHash, VariantMap& eventData)
     SetAttributeRank(static_cast<Game::Attribute>(attribIndex), static_cast<unsigned>(value));
 }
 
+void Actor::HandleSetSkill(StringHash, VariantMap& eventData)
+{
+    bool update = false;
+    {
+        using namespace Events::SetSkill;
+        if (eventData[P_OBJECTID].GetUInt() != gameId_)
+            return;
+
+        uint32_t skillIndex = eventData[P_SKILLINDEX].GetUInt();
+        unsigned skillPos = eventData[P_SKILLPOS].GetUInt();
+        if (skillPos < Game::PLAYER_MAX_SKILLS)
+        {
+            skills_[skillPos] = skillIndex;
+            update = true;
+        }
+    }
+    if (update)
+    {
+        using namespace Events::ActorSkillsChanged;
+        VariantMap& eData = GetEventDataMap();
+        eData[P_OBJECTID] = gameId_;
+        eData[P_UPDATEALL] = false;
+        SendEvent(Events::E_ACTOR_SKILLS_CHANGED, eData);
+    }
+}

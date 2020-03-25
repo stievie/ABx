@@ -38,7 +38,7 @@ protected:
     UIElement* uiRoot_;
     virtual void SubscribeEvents();
     void LoadLayout(const String& fileName);
-    Window* EnsureOverlay();
+    void MakeModal();
 public:
     DialogWindow(Context* context);
     ~DialogWindow() override;
