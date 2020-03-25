@@ -26,6 +26,7 @@
 #include "SkillBar.h"
 #include "SkillManager.h"
 #include <abshared/TemplEncoder.h>
+#include <abshared/SkillsHelper.h>
 
 namespace Game {
 
@@ -230,6 +231,11 @@ bool SkillBar::Load(const std::string& str, bool locked)
     SetAttributes(attribs);
     auto* skillMan = GetSubsystem<SkillManager>();
 
+    auto professionsMatch = [&](const AB::Entities::Skill& skill)
+    {
+        return SkillProfessionMatches(skill, prof1_, &prof2_);
+    };
+
     auto hasAccess = [&](const AB::Entities::Skill& skill)
     {
         if (AB::Entities::HasSkillAccess(skill, AB::Entities::SkillAccessPlayer))
@@ -246,7 +252,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
     for (size_t i = 0; i < PLAYER_MAX_SKILLS; i++)
     {
         skills_[i] = skillMan->Get(skills[i]);
-        if (skills_[i] && !hasAccess(skills_[i]->data_))
+        if (skills_[i] && (!hasAccess(skills_[i]->data_) || !professionsMatch(skills_[i]->data_)))
             // This player can not have locked skills
             skills_[i] = skillMan->Get(0);
     }

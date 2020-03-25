@@ -30,6 +30,9 @@
     <ClInclude Include="Attributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkillsHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Attributes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillsHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

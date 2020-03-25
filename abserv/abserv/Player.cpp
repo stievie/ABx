@@ -50,6 +50,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/StringTempl.h>
+#include <abshared/SkillsHelper.h>
 
 namespace Game {
 
@@ -1238,6 +1239,11 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
             return false;
         };
 
+        auto professionsMatch = [&](const AB::Entities::Skill& skill)
+        {
+            return SkillProfessionMatches(skill, skills_->prof1_, &skills_->prof2_);
+        };
+
         auto validateSetSkill = [&](int pos, std::shared_ptr<Skill> skill) -> bool
         {
             if (skill)
@@ -1285,7 +1291,8 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
             auto skill = sm->Get(skillIndex);
             if (skill)
             {
-                if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster))
+                if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster) &&
+                    professionsMatch(skill->data_))
                     validateSetSkill(static_cast<int>(pos), skill);
             }
             else

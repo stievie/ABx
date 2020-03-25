@@ -97,12 +97,14 @@
     <ClInclude Include="AttribAlgos.h" />
     <ClInclude Include="Attributes.h" />
     <ClInclude Include="Mechanic.h" />
+    <ClInclude Include="SkillsHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TemplEncoder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AttribAlgos.cpp" />
     <ClCompile Include="Attributes.cpp" />
+    <ClCompile Include="SkillsHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
