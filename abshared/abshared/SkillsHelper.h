@@ -26,6 +26,7 @@
 
 namespace Game {
 
+// Check if this skill is available for the given combination of professions.
 bool SkillProfessionMatches(const AB::Entities::Skill& skill, const AB::Entities::Profession& prof1,
     const AB::Entities::Profession* prof2);
 

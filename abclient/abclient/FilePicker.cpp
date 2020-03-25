@@ -29,9 +29,9 @@ static bool CompareEntries(const FileSelectorEntry& lhs, const FileSelectorEntry
         return true;
     if (!lhs.directory_ && rhs.directory_)
         return false;
-#ifdef AB_WINDOWS
+#if defined(AB_WINDOWS)
     return lhs.name_.Compare(rhs.name_, false) < 0;
-#elif AB_UNIX
+#elif defined(AB_UNIX)
     return lhs.name_.Compare(rhs.name_, true) < 0;
 #endif
 }
@@ -147,10 +147,10 @@ void FilePicker::ScanPath()
             continue;
         if (directories[i] == "..")
         {
-#ifdef AB_WINDOWS
+#if defined(AB_WINDOWS)
             if (path_.Compare(root_, false) == 0)
                 continue;
-#elif AB_UNIX
+#elif defined(AB_UNIX)
             if (path_.Compare(root_, true) == 0)
                 continue;
 #endif
