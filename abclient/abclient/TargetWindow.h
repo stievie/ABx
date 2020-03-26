@@ -35,6 +35,7 @@ private:
     SharedPtr<HealthBarPlain> healthBar_;
     void HandleClearTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleActorSkillsChanged(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 

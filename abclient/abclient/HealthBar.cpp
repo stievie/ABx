@@ -46,6 +46,7 @@ HealthBar::HealthBar(Context* context) :
     SetStyle("HealthBar");
 
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(HealthBar, HandleUpdate));
+    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(HealthBar, HandleActorSkillsChanged));
 }
 
 HealthBar::~HealthBar()
@@ -81,5 +82,16 @@ void HealthBar::HandleUpdate(StringHash, VariantMap&)
     if (SharedPtr<Actor> a = actor_.Lock())
     {
         SetValues(a->stats_.maxHealth, a->stats_.health);
+    }
+}
+
+void HealthBar::HandleActorSkillsChanged(StringHash, VariantMap& eventData)
+{
+    if (auto a = actor_.Lock())
+    {
+        using namespace Events::ActorSkillsChanged;
+        if (a->gameId_ != eventData[P_OBJECTID].GetUInt())
+            return;
+        nameText_->SetText(a->GetClassLevelName());
     }
 }

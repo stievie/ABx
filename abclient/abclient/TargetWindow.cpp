@@ -45,6 +45,7 @@ TargetWindow::TargetWindow(Context* context) :
     Button* clearTarget = GetChildStaticCast<Button>("ClearTargetButton", true);
     SubscribeToEvent(clearTarget, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleClearTargetClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(TargetWindow, HandleUpdate));
+    SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(TargetWindow, HandleActorSkillsChanged));
 }
 
 TargetWindow::~TargetWindow()
@@ -63,6 +64,17 @@ void TargetWindow::HandleUpdate(StringHash, VariantMap&)
     if (SharedPtr<Actor> a = target_.Lock())
     {
         healthBar_->SetValues(a->stats_.maxHealth, a->stats_.health);
+    }
+}
+
+void TargetWindow::HandleActorSkillsChanged(StringHash, VariantMap& eventData)
+{
+    if (auto a = target_.Lock())
+    {
+        using namespace Events::ActorSkillsChanged;
+        if (a->gameId_ != eventData[P_OBJECTID].GetUInt())
+            return;
+        targetText_->SetText(a->GetClassLevelName());
     }
 }
 

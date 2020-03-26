@@ -33,6 +33,7 @@ private:
     SharedPtr<Text> nameText_;
     bool showName_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleActorSkillsChanged(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 
