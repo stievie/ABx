@@ -27,7 +27,6 @@ namespace AI {
 
 Node::Status TestAction::DoAction(Agent&, uint32_t)
 {
-    std::cout << "TextAction::DoAction()" << std::endl;
     return Status::Finished;
 }
 

@@ -10,4 +10,11 @@ Instead of `require()` we must use the custom function `include()`.
 * `Random()` returns a random number between 0..1
 * `ServerId()`
 * `include(string)`
-* `include_dir(string)` (should be avoided)
+
+## Skills
+
+Whenever Skill stats (energy cost, activation time etc) change, the database table
+must be updated. Run in the `Bin` directory:
+~~~sh
+$ ./dbtool -a updateskills
+~~~
