@@ -43,7 +43,9 @@ static void InitState(kaguya::State& state)
         if (!state.dofile(scriptFile.c_str()))
         {
             std::cerr << lua_tostring(state.state(), -1) << std::endl;
+            return;
         }
+        state[ident] = true;
     });
 }
 
