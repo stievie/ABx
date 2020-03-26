@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include "HealthBarPlain.h"
+#include "ValueBar.h"
 #include "Actor.h"
 #include <Urho3DAll.h>
 
-class HealthBar : public HealthBarPlain
+class HealthBar : public ValueBar
 {
-    URHO3D_OBJECT(HealthBar, HealthBarPlain)
+    URHO3D_OBJECT(HealthBar, ValueBar)
 private:
     WeakPtr<Actor> actor_;
     SharedPtr<Text> nameText_;

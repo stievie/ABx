@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Actor.h"
-#include "HealthBarPlain.h"
+#include "ValueBar.h"
 
 static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unselect object");
 
@@ -32,7 +32,7 @@ class TargetWindow : public UIElement
 private:
     WeakPtr<Actor> target_;
     SharedPtr<Text> targetText_;
-    SharedPtr<HealthBarPlain> healthBar_;
+    SharedPtr<ValueBar> healthBar_;
     void HandleClearTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleActorSkillsChanged(StringHash eventType, VariantMap& eventData);

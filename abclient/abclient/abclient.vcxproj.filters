@@ -165,9 +165,6 @@
     <ClInclude Include="PartyItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HealthBarPlain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SkillManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -217,6 +214,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FilePicker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ValueBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -350,9 +350,6 @@
     <ClCompile Include="PartyItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HealthBarPlain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SkillManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -393,6 +390,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FilePicker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ValueBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

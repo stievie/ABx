@@ -27,7 +27,7 @@
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Item.h>
 #include <abshared/TemplEncoder.h>
-#include "HealthBarPlain.h"
+#include "ValueBar.h"
 #include <Urho3DAll.h>
 
 using namespace Urho3D;
@@ -151,7 +151,7 @@ private:
     SharedPtr<Window> nameWindow_;
     SharedPtr<Window> speechBubbleWindow_;
     SharedPtr<Text> speechBubbleText_;
-    SharedPtr<HealthBarPlain> hpBar_;
+    SharedPtr<ValueBar> hpBar_;
     SharedPtr<Text> classLevel_;
     float speechBubbleVisible_{ false };
     void UpdateTransformation();

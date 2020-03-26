@@ -39,7 +39,7 @@ TargetWindow::TargetWindow(Context* context) :
 
     targetText_ = GetChildStaticCast<Text>("TargetText", true);
     SetAlignment(HA_CENTER, VA_TOP);
-    healthBar_ = GetChildStaticCast<HealthBarPlain>("TargetHealthBar", true);
+    healthBar_ = GetChildStaticCast<ValueBar>("TargetHealthBar", true);
     healthBar_->SetStyle("HealthBar");
 
     Button* clearTarget = GetChildStaticCast<Button>("ClearTargetButton", true);

@@ -55,8 +55,8 @@ abclient/GuildWindow.cpp
 abclient/GuildWindow.h
 abclient/HealthBar.cpp
 abclient/HealthBar.h
-abclient/HealthBarPlain.cpp
-abclient/HealthBarPlain.h
+abclient/ValueBar.cpp
+abclient/ValueBar.h
 abclient/HotkeyEdit.cpp
 abclient/HotkeyEdit.h
 abclient/InternalEvents.h

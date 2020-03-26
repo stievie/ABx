@@ -498,7 +498,7 @@ void Actor::AddActorUI()
         if (!AB::Entities::IsOutpost(lm->GetMapType()))
         {
             // No HP bar in outposts
-            hpBar_ = uiRoot->CreateChild<HealthBarPlain>();
+            hpBar_ = uiRoot->CreateChild<ValueBar>();
             hpBar_->SetRange(100.0f);
             hpBar_->SetStyle("HealthBarGreen");
             hpBar_->SetSize(100, 20);

@@ -28,7 +28,7 @@ void HealthBar::RegisterObject(Context* context)
 }
 
 HealthBar::HealthBar(Context* context) :
-    HealthBarPlain(context),
+    ValueBar(context),
     showName_(false)
 {
     SetMinHeight(23);

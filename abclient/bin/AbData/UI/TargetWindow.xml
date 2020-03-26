@@ -11,7 +11,7 @@
 	<attribute name="Image Rect" value="48 0 64 16" />
 	<attribute name="Border" value="4 4 4 4" />
 	<attribute name="Resize Border" value="8 8 8 8" />
-	<element type="HealthBarPlain" style="HealthBar">
+	<element type="ValueBar" style="HealthBar">
 		<attribute name="Name" value="TargetHealthBar" />
 		<attribute name="Min Size" value="0 24" />
 		<attribute name="Pivot" value="0 0" />

@@ -23,14 +23,14 @@
 
 #include <Urho3DAll.h>
 
-class HealthBarPlain : public ProgressBar
+class ValueBar : public ProgressBar
 {
-    URHO3D_OBJECT(HealthBarPlain, ProgressBar)
+    URHO3D_OBJECT(ValueBar, ProgressBar)
 public:
     static void RegisterObject(Context* context);
 
-    HealthBarPlain(Context* context);
-    ~HealthBarPlain() override = default;
+    ValueBar(Context* context);
+    ~ValueBar() override = default;
     void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
     void UpdateKnob();
     void SetValues(unsigned max, unsigned value);
