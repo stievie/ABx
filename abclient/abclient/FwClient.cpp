@@ -349,6 +349,13 @@ void FwClient::LoadSkills(uint32_t curVersion)
         skill.soundEffect = pro.attribute("sound_effect").as_string();
         skill.particleEffect = pro.attribute("particle_effect").as_string();
         skill.professionUuid = pro.attribute("profession").as_string();
+        skill.activation = pro.attribute("activation").as_int();
+        skill.recharge = pro.attribute("recharge").as_int();
+        skill.costEnergy = pro.attribute("const_energy").as_int();
+        skill.costEnergyRegen = pro.attribute("const_energy_regen").as_int();
+        skill.costAdrenaline = pro.attribute("const_adrenaline").as_int();
+        skill.costOvercast = pro.attribute("const_overcast").as_int();
+        skill.costHp = pro.attribute("const_hp").as_int();
 
         sm->skills_.emplace(skill.index, skill);
     }

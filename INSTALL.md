@@ -28,7 +28,7 @@ db_pass = "password"
 ~~~sh
 $ createdb forgottenwars
 ~~~
-6. Create the DB structure with importing `sql/schema.*.sql` one by one in the proper order. Instead of importing the files manually, you can run `Bin/dbtool -a update`. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
+6. Run `Bin/dbtool -a update` to create the database structure. Then run `Bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run the `Bin/keygen` tool to create the DH server keys.
 9. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.

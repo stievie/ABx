@@ -19,6 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <sa/PragmaWarning.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
+#   include <lua.hpp>
+#   include <kaguya/kaguya.hpp>
+PRAGMA_WARNING_POP
 #include "SqlReader.h"
 #include <AB/CommonConfig.h>
 #include <abdb/Database.h>
@@ -37,6 +43,8 @@
 #include <sa/ArgParser.h>
 #include <sa/table.h>
 #include <streambuf>
+#include "LuaSkill.h"
+
 
 namespace fs = std::filesystem;
 
@@ -70,6 +78,7 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     table << "    versions" << sa::tab::endc << "Show database and table versions" << sa::tab::endr;
     table << "    acckeys" << sa::tab::endc << "Show account keys" << sa::tab::endr;
     table << "    genacckey" << sa::tab::endc << "Generate a new account key" << sa::tab::endr;
+    table << "    updateskills" << sa::tab::endc << "Update skills stats in DB" << sa::tab::endr;
     std::cout << table;
 }
 
@@ -286,6 +295,102 @@ static std::string GenAccKey(DB::Database& db)
     return uuid;
 }
 
+struct SkillStruct
+{
+    std::string uuid;
+    std::string filename;
+};
+
+static bool UpdateSkill(DB::Database& db, const SkillStruct& skill)
+{
+    if (!Utils::FileExists(skill.filename))
+    {
+        std::cerr << "File " << skill.filename << " not found" << std::endl;
+        return false;
+    }
+    LuaSkill lSkill;
+    if (!lSkill.Execute(skill.filename))
+        return false;
+
+    if (sVerbose)
+        std::cout << "Updating: " << skill.filename << std::endl;
+
+    std::ostringstream query;
+    query << "UPDATE `game_skills` SET ";
+    query << " `activation` = " << lSkill.GetActivation() << ", ";
+    query << " `recharge` = " << lSkill.GetRecharge() << ", ";
+    query << " `const_energy` = " << lSkill.GetEnergy() << ", ";
+    query << " `const_energy_regen` = " << lSkill.GetEnergyRegen() << ", ";
+    query << " `const_adrenaline` = " << lSkill.GetAdrenaline() << ", ";
+    query << " `const_overcast` = " << lSkill.GetOvercast() << ", ";
+    query << " `const_hp` = " << lSkill.GetHp();
+
+    query << " WHERE `uuid` = " << db.EscapeString(skill.uuid);
+    if (sVerbose)
+        std::cout << query.str() << std::endl;
+
+    if (!sReadOnly)
+    {
+        if (!db.ExecuteQuery(query.str()))
+            return false;
+    }
+    return true;
+}
+
+std::string gDataDir;
+
+static bool UpdateSkills(DB::Database& db)
+{
+    const std::string exeFile = Utils::GetExeName();
+    const std::string path = Utils::ExtractFileDir(exeFile);
+    std::vector<SkillStruct> skills;
+
+    std::string cfgFile = Utils::ConcatPath(path, "abserv.lua");
+    IO::SimpleConfigManager cfg;
+    if (!cfg.Load(cfgFile))
+    {
+        std::cerr << "Failed to load config file " << cfgFile << std::endl;
+        return false;
+    }
+    gDataDir = cfg.GetGlobalString("data_dir", "");
+    if (sVerbose)
+        std::cout << "Data directory: " << gDataDir << std::endl;
+
+    std::ostringstream query;
+    query << "SELECT * FROM `game_skills`";
+    for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
+    {
+        std::string file = result->GetString("script");
+        if (file.empty())
+            continue;
+
+        skills.push_back({
+            result->GetString("uuid"),
+            Utils::ConcatPath(gDataDir, file)
+        });
+    }
+
+    DB::DBTransaction transaction(&db);
+    if (!transaction.Begin())
+        return false;
+
+    for (const auto& skill : skills)
+    {
+        if (!UpdateSkill(db, skill))
+            return false;
+    }
+
+    if (!sReadOnly)
+    {
+        std::ostringstream queryVersion;
+        queryVersion << "UPDATE public.versions SET value = value + 1 WHERE name = 'game_skills';";
+        if (!db.ExecuteQuery(queryVersion.str()))
+            return false;
+    }
+
+    return transaction.Commit();
+}
+
 /// What should we do.
 /// At the moment we can only update the DB
 enum class Action
@@ -294,6 +399,7 @@ enum class Action
     Versions,
     AccountKeys,
     GenAccKey,
+    UpdateSkills,
 };
 
 int main(int argc, char** argv)
@@ -340,6 +446,8 @@ int main(int argc, char** argv)
         action = Action::AccountKeys;
     else if (sActval.compare("genacckey") == 0)
         action = Action::GenAccKey;
+    else if (sActval.compare("updateskills") == 0)
+        action = Action::UpdateSkills;
     else
     {
         std::cerr << "Unknown action " << sActval << std::endl;
@@ -421,6 +529,10 @@ int main(int argc, char** argv)
     {
         std::string key = GenAccKey(*db);
         std::cout << key << std::endl;
+    }
+    else if (action == Action::UpdateSkills)
+    {
+        UpdateSkills(*db);
     }
     else
         return EXIT_FAILURE;

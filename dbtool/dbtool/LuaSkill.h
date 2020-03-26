@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,22 @@
 
 #pragma once
 
-#include <Urho3DAll.h>
+#include <kaguya/kaguya.hpp>
+#include <stdint.h>
 
-class ValueBar : public ProgressBar
+class LuaSkill
 {
-    URHO3D_OBJECT(ValueBar, ProgressBar)
+private:
+    kaguya::State state_;
 public:
-    static void RegisterObject(Context* context);
-
-    ValueBar(Context* context);
-    ~ValueBar() override = default;
-    void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
-    void UpdateKnob();
-    void SetValues(unsigned max, unsigned value);
-
-    bool selectable_{ true };
+    explicit LuaSkill();
+    bool Execute(const std::string& script);
+    int32_t GetEnergy();
+    int32_t GetEnergyRegen();
+    int32_t GetAdrenaline();
+    int32_t GetActivation();
+    int32_t GetOvercast();
+    int32_t GetHp();
+    int32_t GetRecharge();
 };
+

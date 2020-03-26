@@ -102,6 +102,13 @@ struct Skill : Entity
         s.value4b(access);
         s.text1b(soundEffect, Limits::MAX_FILENAME);
         s.text1b(particleEffect, Limits::MAX_FILENAME);
+        s.value4b(activation);
+        s.value4b(recharge);
+        s.value4b(costEnergy);
+        s.value4b(costEnergyRegen);
+        s.value4b(costAdrenaline);
+        s.value4b(costOvercast);
+        s.value4b(costHp);
     }
 
     uint32_t index = 0;
@@ -117,6 +124,13 @@ struct Skill : Entity
     uint32_t access{ SkillAccessNone };
     std::string soundEffect;
     std::string particleEffect;
+    int32_t activation{ 0 };
+    int32_t recharge{ 0 };
+    int32_t costEnergy{ 0 };
+    int32_t costEnergyRegen{ 0 };
+    int32_t costAdrenaline{ 0 };
+    int32_t costOvercast{ 0 };
+    int32_t costHp{ 0 };
 };
 
 inline bool HasSkillAccess(const Skill& skill, SkillAccess access)

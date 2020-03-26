@@ -65,6 +65,13 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     skill.access = result->GetUInt("access");
     skill.soundEffect = result->GetString("sound_effect");
     skill.particleEffect = result->GetString("particle_effect");
+    skill.activation = result->GetInt("activation");
+    skill.recharge = result->GetInt("recharge");
+    skill.costEnergy = result->GetInt("const_energy");
+    skill.costEnergyRegen = result->GetInt("const_energy_regen");
+    skill.costAdrenaline = result->GetInt("const_adrenaline");
+    skill.costOvercast = result->GetInt("const_overcast");
+    skill.costHp = result->GetInt("const_hp");
 
     return true;
 }

@@ -21,9 +21,15 @@
     <ClCompile Include="SqlReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LuaSkill.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SqlReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaSkill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

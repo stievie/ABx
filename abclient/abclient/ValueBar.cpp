@@ -48,7 +48,10 @@ ValueBar::ValueBar(Context* context) :
 void ValueBar::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
 {
     static const IntVector2 selOffset(0, 16);
-    ProgressBar::GetBatches(batches, vertexData, currentScissor, selected_ ? selOffset : IntVector2::ZERO);
+    if (selectable_)
+        return ProgressBar::GetBatches(batches, vertexData, currentScissor, selected_ ? selOffset : IntVector2::ZERO);
+
+    return ProgressBar::GetBatches(batches, vertexData, currentScissor, IntVector2::ZERO);
 }
 
 void ValueBar::UpdateKnob()
