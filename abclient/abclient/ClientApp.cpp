@@ -56,6 +56,7 @@
 #include "SkillBarWindow.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
+#include "SkillCostElement.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
 #include <chrono>
@@ -190,6 +191,7 @@ ClientApp::ClientApp(Context* context) :
     HotkeyEdit::RegisterObject(context);
     Spinner::RegisterObject(context);
     PartyItem::RegisterObject(context);
+    SkillCostElement::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

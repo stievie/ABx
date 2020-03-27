@@ -124,5 +124,7 @@ abclient/WindowManager.cpp
 abclient/WindowManager.h
 abclient/WorldLevel.cpp
 abclient/WorldLevel.h
+abclient/SkillCostElement.cpp
+abclient/SkillCostElement.h
 LICENSE.txt
 README.md

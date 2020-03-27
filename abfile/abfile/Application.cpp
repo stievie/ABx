@@ -729,7 +729,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("icon").set_value(s.icon.c_str());
         gNd.append_attribute("sound_effect").set_value(s.soundEffect.c_str());
         gNd.append_attribute("particle_effect").set_value(s.particleEffect.c_str());
-        gNd.append_attribute("activation").set_value(s.access);
+        gNd.append_attribute("activation").set_value(s.activation);
         gNd.append_attribute("recharge").set_value(s.recharge);
         gNd.append_attribute("const_energy").set_value(s.costEnergy);
         gNd.append_attribute("const_energy_regen").set_value(s.costEnergyRegen);

@@ -405,8 +405,18 @@
             <attribute name="Max Size" value="40 40" />
         </element>
         <element type="UIElement" internal="true">
-            <element type="Text" internal="true">
-                <attribute name="Font Size" value="10" />
+            <!-- Text container -->
+            <attribute name="Layout Mode" value="Vertical" />
+            <element type="UIElement" internal="true">
+                <!-- Header container -->
+                <attribute name="Layout Mode" value="Horizontal" />
+                <element type="Text" internal="true">
+                    <attribute name="Text Alignment" value="Left" />
+                    <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
+                    <attribute name="Font Size" value="10" />
+                </element>
+                <element type="SkillCostElement" internal="true">
+                </element>
             </element>
             <element type="Text" internal="true">
                 <attribute name="Font Size" value="8" />

@@ -35,14 +35,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -81,14 +90,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -127,14 +145,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -173,14 +200,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -219,14 +255,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -265,14 +310,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -311,14 +365,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />
@@ -358,14 +421,23 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Resize Border" value="0 0 0 0" />
-				<element type="Text">
-					<attribute name="Name" value="SkillName" />
+				<element>
+					<attribute name="Name" value="NameContainer" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="Test" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<element type="Text">
+						<attribute name="Name" value="SkillName" />
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Test" />
+					</element>
+					<element>
+						<attribute name="Name" value="SkillCost" />
+						<attribute name="Pivot" value="0 0" />
+					</element>
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="SkillDescription" />

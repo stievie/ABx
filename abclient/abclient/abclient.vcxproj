@@ -282,6 +282,7 @@
     <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="EquipmentWindow.cpp" />
     <ClCompile Include="FilePicker.cpp" />
+    <ClCompile Include="SkillCostElement.cpp" />
     <ClCompile Include="SkillsWindow.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="ConfirmDeleteCharacter.h" />
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="FilePicker.h" />
+    <ClInclude Include="SkillCostElement.h" />
     <ClInclude Include="SkillsWindow.h" />
     <ClInclude Include="GuildWindow.h" />
     <ClInclude Include="InternalEvents.h" />

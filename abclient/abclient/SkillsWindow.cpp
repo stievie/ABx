@@ -34,6 +34,7 @@
 #include "SkillBarWindow.h"
 #include "WindowManager.h"
 #include "FilePicker.h"
+#include "SkillCostElement.h"
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)
@@ -586,18 +587,33 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         }
         item->SetLayout(LM_HORIZONTAL);
         item->SetLayoutSpacing(4);
+        item->SetLayoutBorder({ 4, 4, 4, 4 });
         BorderImage* skillIcon = item->CreateChild<BorderImage>("SkillIcon");
         skillIcon->SetInternal(true);
         skillIcon->SetMinSize(40, 40);
         skillIcon->SetMaxSize(40, 40);
-        UIElement* textContainer = item->CreateChild<UIElement>();
-        textContainer->SetLayout(LM_VERTICAL);
-        textContainer->SetInternal(true);
 
-        Text* name = textContainer->CreateChild<Text>();
+        UIElement* textContainer = item->CreateChild<UIElement>();
+        textContainer->SetInternal(true);
+        textContainer->SetLayoutSpacing(0);
+
+        UIElement* headerContainer = textContainer->CreateChild<UIElement>();
+        headerContainer->SetInternal(true);
+        headerContainer->SetLayoutMode(LM_HORIZONTAL);
+        headerContainer->SetFixedWidth(lv->GetWidth() - 60);
+
+        Text* name = headerContainer->CreateChild<Text>();
         name->SetText(String(skill.name.c_str()));
-        name->SetStyleAuto();
         name->SetInternal(true);
+        name->SetAlignment(HA_LEFT, VA_TOP);
+        name->SetStyleAuto();
+        SkillCostElement* cost = headerContainer->CreateChild<SkillCostElement>();
+        cost->SetSkill(skill);
+        cost->SetInternal(true);
+        cost->SetAlignment(HA_RIGHT, VA_TOP);
+        cost->SetPosition({ 0, 0 });
+        headerContainer->UpdateLayout();
+
         Text* descr = textContainer->CreateChild<Text>();
         descr->SetText(String(skill.shortDescription.c_str()));
         descr->SetStyleAuto();

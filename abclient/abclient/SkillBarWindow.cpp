@@ -27,6 +27,7 @@
 #include "LevelManager.h"
 #include "Actor.h"
 #include "WindowManager.h"
+#include "SkillCostElement.h"
 
 void SkillBarWindow::RegisterObject(Context* context)
 {
@@ -136,6 +137,11 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
         }
         Text* skillName = btn->GetChildStaticCast<Text>("SkillName", true);
         skillName->SetText(String(skill->name.c_str()));
+        UIElement* skillCostContainer = btn->GetChildStaticCast<UIElement>("SkillCost", true);
+        skillCostContainer->RemoveAllChildren();
+        SkillCostElement* skillCost = skillCostContainer->CreateChild<SkillCostElement>();
+        skillCost->SetSkill(*skill);
+
         Text* skillDescription = btn->GetChildStaticCast<Text>("SkillDescription", true);
         skillDescription->SetText(String(templEval.Evaluate(skill->description).c_str()));
         Window* tooltipWindow = btn->GetChildStaticCast<Window>("TooltipWindow", true);
@@ -143,6 +149,7 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
         tt->SetPosition(IntVector2(0, -(tooltipWindow->GetHeight() + 10)));
         tt->SetEnabled(true);
         btn->SetEnabled(true);
+        btn->UpdateLayout();
         tooltipWindow->SetVisible(true);
     }
     else
