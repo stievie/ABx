@@ -1064,6 +1064,12 @@ void WorldLevel::CreateUI()
 
     skillBar_.DynamicCast(wm->GetWindow(WINDOW_SKILLBAR));
     uiRoot_->AddChild(skillBar_);
+    healthBar_.DynamicCast(wm->GetWindow(WINDOW_HEALTHBAR));
+    healthBar_->SetActor(player_);
+    uiRoot_->AddChild(healthBar_);
+    energyBar_.DynamicCast(wm->GetWindow(WINDOW_ENERGYBAR));
+    energyBar_->SetActor(player_);
+    uiRoot_->AddChild(energyBar_);
 
     effectsWindow_.DynamicCast(wm->GetWindow(WINDOW_EFFECTS));
     effectsWindow_->Clear();

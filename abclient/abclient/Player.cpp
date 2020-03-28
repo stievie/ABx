@@ -35,6 +35,7 @@
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <abshared/Attributes.h>
+#include "ActorResourceBar.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -368,9 +369,12 @@ void Player::HandleSelectSelf(StringHash, VariantMap&)
 void Player::UpdateUI()
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    EquipmentWindow* w = dynamic_cast<EquipmentWindow*>(wm->GetWindow(WINDOW_EQUIPMENT).Get());
-    if (w)
+    if (auto* w = dynamic_cast<EquipmentWindow*>(wm->GetWindow(WINDOW_EQUIPMENT).Get()))
         w->UpdateEquipment(this);
+    if (auto* w = dynamic_cast<ActorHealthBar*>(wm->GetWindow(WINDOW_HEALTHBAR).Get()))
+        w->SetActor(SharedPtr<Actor>(this));
+    if (auto* w = dynamic_cast<ActorEnergyBar*>(wm->GetWindow(WINDOW_ENERGYBAR).Get()))
+        w->SetActor(SharedPtr<Actor>(this));
 }
 
 void Player::UpdateMumbleContext()

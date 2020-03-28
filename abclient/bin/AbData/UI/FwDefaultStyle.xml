@@ -271,6 +271,17 @@
             <attribute name="Hover Image Offset" value="0 16" />
         </element>
     </element>
+    <element type="EnergyBar" style="BorderImage">
+        <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+        <attribute name="Image Rect" value="0 16 16 32" />
+        <attribute name="Border" value="4 4 4 4" />
+        <attribute name="Layout Border" value="4 4 4 4" />
+        <element type="BorderImage" internal="true">
+            <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+            <attribute name="Image Rect" value="144 32 160 48" />
+            <attribute name="Border" value="4 4 4 4" />
+        </element>
+    </element>
     <element type="HealthBar" style="BorderImage">
         <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
         <attribute name="Image Rect" value="0 16 16 32" />

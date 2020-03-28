@@ -41,6 +41,7 @@
 #include "GuildWindow.h"
 #include "SkillsWindow.h"
 #include "EquipmentWindow.h"
+#include "ActorResourceBar.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -54,35 +55,35 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
     {
         if (hash == WINDOW_OPTIONS)
         {
-            SharedPtr<OptionsWindow> wnd = SharedPtr<OptionsWindow>(new OptionsWindow(context_));
+            SharedPtr<OptionsWindow> wnd = MakeShared<OptionsWindow>(context_);
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_CHAT)
         {
-            SharedPtr<ChatWindow> wnd = SharedPtr<ChatWindow>(new ChatWindow(context_));
+            SharedPtr<ChatWindow> wnd = MakeShared<ChatWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_MAIL)
         {
-            SharedPtr<MailWindow> wnd = SharedPtr<MailWindow>(new MailWindow(context_));
+            SharedPtr<MailWindow> wnd = MakeShared<MailWindow>(context_);
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_NEWMAIL)
         {
-            SharedPtr<NewMailWindow> wnd = SharedPtr<NewMailWindow>(new NewMailWindow(context_));
+            SharedPtr<NewMailWindow> wnd = MakeShared<NewMailWindow>(context_);
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_INVENTORY)
         {
-            SharedPtr<InventoryWindow> wnd = SharedPtr<InventoryWindow>(new InventoryWindow(context_));
+            SharedPtr<InventoryWindow> wnd = MakeShared<InventoryWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
@@ -91,28 +92,28 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         }
         else if (hash == WINDOW_EQUIPMENT)
         {
-            SharedPtr<EquipmentWindow> wnd = SharedPtr<EquipmentWindow>(new EquipmentWindow(context_));
+            SharedPtr<EquipmentWindow> wnd = MakeShared<EquipmentWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_SKILLS)
         {
-            SharedPtr<SkillsWindow> wnd = SharedPtr<SkillsWindow>(new SkillsWindow(context_));
+            SharedPtr<SkillsWindow> wnd = MakeShared<SkillsWindow>(context_);
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_PARTY)
         {
-            SharedPtr<PartyWindow> wnd = SharedPtr<PartyWindow>(new PartyWindow(context_));
+            SharedPtr<PartyWindow> wnd = MakeShared<PartyWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_FRIENDLIST)
         {
-            SharedPtr<FriendListWindow> wnd = SharedPtr<FriendListWindow>(new FriendListWindow(context_));
+            SharedPtr<FriendListWindow> wnd = MakeShared<FriendListWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
@@ -121,7 +122,7 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         }
         else if (hash == WINDOW_GUILD)
         {
-            SharedPtr<GuildWindow> wnd = SharedPtr<GuildWindow>(new GuildWindow(context_));
+            SharedPtr<GuildWindow> wnd = MakeShared<GuildWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
@@ -130,40 +131,54 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         }
         else if (hash == WINDOW_PINGDOT)
         {
-            SharedPtr<PingDot> wnd = SharedPtr<PingDot>(new PingDot(context_));
+            SharedPtr<PingDot> wnd = MakeShared<PingDot>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_TARGET)
         {
-            SharedPtr<TargetWindow> wnd = SharedPtr<TargetWindow>(new TargetWindow(context_));
+            SharedPtr<TargetWindow> wnd = MakeShared<TargetWindow>(context_);
             wnd->SetVisible(false);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_GAMEMESSAGES)
         {
-            SharedPtr<GameMessagesWindow> wnd = SharedPtr<GameMessagesWindow>(new GameMessagesWindow(context_));
+            SharedPtr<GameMessagesWindow> wnd = MakeShared<GameMessagesWindow>(context_);
             wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_EFFECTS)
         {
-            SharedPtr<EffectsWindow> wnd = SharedPtr<EffectsWindow>(new EffectsWindow(context_));
+            SharedPtr<EffectsWindow> wnd = MakeShared<EffectsWindow>(context_);
             wnd->SetVisible(true);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_MISSIONMAP)
         {
-            SharedPtr<MissionMapWindow> wnd = SharedPtr<MissionMapWindow>(new MissionMapWindow(context_));
+            SharedPtr<MissionMapWindow> wnd = MakeShared<MissionMapWindow>(context_);
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_SKILLBAR)
         {
-            SharedPtr<SkillBarWindow> wnd = SharedPtr<SkillBarWindow>(new SkillBarWindow(context_));
+            SharedPtr<SkillBarWindow> wnd = MakeShared<SkillBarWindow>(context_);
+            wnd->SetVisible(true);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_HEALTHBAR)
+        {
+            SharedPtr<ActorHealthBar> wnd = MakeShared<ActorHealthBar>(context_);
+            opts->LoadWindow(wnd);
+            wnd->SetVisible(true);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_ENERGYBAR)
+        {
+            SharedPtr<ActorEnergyBar> wnd = MakeShared<ActorEnergyBar>(context_);
+            opts->LoadWindow(wnd);
             wnd->SetVisible(true);
             windows_[hash] = wnd;
         }

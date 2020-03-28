@@ -57,6 +57,7 @@
 #include "TabGroup.h"
 #include "TargetWindow.h"
 #include "SkillCostElement.h"
+#include "ActorResourceBar.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
 #include <chrono>
@@ -209,6 +210,7 @@ ClientApp::ClientApp(Context* context) :
     OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
     SkillBarWindow::RegisterObject(context);
+    ActorResourceBar::RegisterObject(context);
     FriendListWindow::RegisterObject(context);
     GameMessagesWindow::RegisterObject(context);
     EffectsWindow::RegisterObject(context);
