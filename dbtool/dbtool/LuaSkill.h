@@ -29,7 +29,7 @@ class LuaSkill
 private:
     kaguya::State state_;
 public:
-    explicit LuaSkill();
+    LuaSkill();
     bool Execute(const std::string& script);
     int32_t GetEnergy();
     int32_t GetEnergyRegen();
@@ -39,4 +39,3 @@ public:
     int32_t GetHp();
     int32_t GetRecharge();
 };
-
