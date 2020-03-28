@@ -63,7 +63,6 @@ bool DamageWindowItem::Initialize()
         skillIcon->SetTexture(icon);
         skillIcon->SetImageRect(IntRect(0, 0, 256, 256));
         skillIcon->SetBorder(IntRect(4, 4, 4, 4));
-        skillIcon->SetHoverOffset(IntVector2(4, 4));
         skillIcon->SetMinSize(ICON_SIZE, ICON_SIZE);
         skillIcon->SetMaxSize(ICON_SIZE, ICON_SIZE);
     }
@@ -78,7 +77,7 @@ bool DamageWindowItem::Initialize()
     return true;
 }
 
-void DamageWindowItem::Add()
+void DamageWindowItem::Touch()
 {
     ++count_;
     auto* sm = GetSubsystem<SkillManager>();
@@ -142,6 +141,7 @@ void DamageWindow::HandleUpdate(StringHash, VariantMap&)
             return;
     }
 
+    bool changed = false;
     for (int i = static_cast<int>(items_.Size()) - 1; i >= 0; --i)
     {
         auto& item = items_.At(static_cast<unsigned>(i));
@@ -149,9 +149,14 @@ void DamageWindow::HandleUpdate(StringHash, VariantMap&)
         {
             RemoveChild(item.Get());
             items_.Erase(static_cast<unsigned>(i), 1);
+            changed = true;
         }
     }
-    SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
+    if (changed)
+    {
+        SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
+        UpdateLayout();
+    }
 }
 
 void DamageWindow::HandleObjectDamaged(StringHash, VariantMap& eventData)
@@ -166,19 +171,35 @@ void DamageWindow::HandleObjectDamaged(StringHash, VariantMap& eventData)
         return;
 
     uint32_t index = eventData[P_INDEX].GetUInt();
+    bool changed = false;
     auto* item = FindItem(index);
     if (item == nullptr)
     {
         item = CreateChild<DamageWindowItem>();
         item->index_ = eventData[P_INDEX].GetUInt();
         if (item->Initialize())
+        {
             items_.Push(SharedPtr<DamageWindowItem>(item));
+            changed = true;
+        }
+        else
+        {
+            RemoveChild(item);
+            item = nullptr;
+        }
     }
-    item->value_ = eventData[P_DAMAGEVALUE].GetUInt();
-    item->Add();
-    item->damageTick_ = Client::AbTick();
+    if (item)
+    {
+        item->value_ = eventData[P_DAMAGEVALUE].GetUInt();
+        item->Touch();
+        item->damageTick_ = Client::AbTick();
+    }
 
-    SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
+    if (changed)
+    {
+        SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
+        UpdateLayout();
+    }
 }
 
 DamageWindowItem* DamageWindow::FindItem(uint32_t index)

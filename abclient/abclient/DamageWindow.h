@@ -33,7 +33,7 @@ public:
     DamageWindowItem(Context* context);
     ~DamageWindowItem() override;
     bool Initialize();
-    void Add();
+    void Touch();
     unsigned count_{ 0 };
     int64_t damageTick_{ 0 };
     uint32_t index_{ 0 };
@@ -44,7 +44,7 @@ class DamageWindow final : public Window
 {
     URHO3D_OBJECT(DamageWindow, Window)
 private:
-    static const int KEEP_ITEMS_MS = 5000;
+    static const int KEEP_ITEMS_MS = 7500;
     Vector<SharedPtr<DamageWindowItem>> items_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectDamaged(StringHash eventType, VariantMap& eventData);
