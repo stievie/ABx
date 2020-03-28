@@ -64,8 +64,8 @@ bool DamageWindowItem::Initialize()
         skillIcon->SetImageRect(IntRect(0, 0, 256, 256));
         skillIcon->SetBorder(IntRect(4, 4, 4, 4));
         skillIcon->SetHoverOffset(IntVector2(4, 4));
-        skillIcon->SetMinSize(40, 40);
-        skillIcon->SetMaxSize(40, 40);
+        skillIcon->SetMinSize(ICON_SIZE, ICON_SIZE);
+        skillIcon->SetMaxSize(ICON_SIZE, ICON_SIZE);
     }
 
     text_ = CreateChild<Text>();
@@ -142,16 +142,16 @@ void DamageWindow::HandleUpdate(StringHash, VariantMap&)
             return;
     }
 
-    for (int i = items_.Size() - 1; i >= 0; --i)
+    for (int i = static_cast<int>(items_.Size()) - 1; i >= 0; --i)
     {
         auto& item = items_.At(static_cast<unsigned>(i));
-        if (item->damageTick_ + 5000 < Client::AbTick())
+        if (item->damageTick_ + KEEP_ITEMS_MS < Client::AbTick())
         {
             RemoveChild(item.Get());
             items_.Erase(static_cast<unsigned>(i), 1);
         }
     }
-    SetHeight(items_.Size() * 32);
+    SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
 }
 
 void DamageWindow::HandleObjectDamaged(StringHash, VariantMap& eventData)
@@ -178,7 +178,7 @@ void DamageWindow::HandleObjectDamaged(StringHash, VariantMap& eventData)
     item->Add();
     item->damageTick_ = Client::AbTick();
 
-    SetHeight(items_.Size() * 40);
+    SetHeight(static_cast<int>(items_.Size() * DamageWindowItem::ICON_SIZE));
 }
 
 DamageWindowItem* DamageWindow::FindItem(uint32_t index)

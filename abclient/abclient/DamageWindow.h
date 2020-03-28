@@ -29,6 +29,7 @@ class DamageWindowItem final : public UIElement
 private:
     SharedPtr<Text> text_;
 public:
+    static const int ICON_SIZE = 32;
     DamageWindowItem(Context* context);
     ~DamageWindowItem() override;
     bool Initialize();
@@ -43,6 +44,7 @@ class DamageWindow final : public Window
 {
     URHO3D_OBJECT(DamageWindow, Window)
 private:
+    static const int KEEP_ITEMS_MS = 5000;
     Vector<SharedPtr<DamageWindowItem>> items_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectDamaged(StringHash eventType, VariantMap& eventData);
