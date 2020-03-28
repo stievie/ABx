@@ -132,6 +132,16 @@ void DamageWindow::HandleUpdate(StringHash, VariantMap&)
     if (items_.Size() == 0)
         return;
 
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (player)
+    {
+        // Don't clear damage window when the player is dead. The Player may
+        // want to know what killed him/her.
+        if (player->IsDead())
+            return;
+    }
+
     for (int i = items_.Size() - 1; i >= 0; --i)
     {
         auto& item = items_.At(static_cast<unsigned>(i));
