@@ -3,6 +3,8 @@ abclient/AccountChestDialog.cpp
 abclient/AccountChestDialog.h
 abclient/Actor.cpp
 abclient/Actor.h
+abclient/ActorResourceBar.cpp
+abclient/ActorResourceBar.h
 abclient/AddAccountKeyDialog.cpp
 abclient/AddAccountKeyDialog.h
 abclient/AntiRE.h
