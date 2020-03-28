@@ -42,6 +42,7 @@
 #include "SkillsWindow.h"
 #include "EquipmentWindow.h"
 #include "ActorResourceBar.h"
+#include "DamageWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -178,6 +179,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         else if (hash == WINDOW_ENERGYBAR)
         {
             SharedPtr<ActorEnergyBar> wnd = MakeShared<ActorEnergyBar>(context_);
+            opts->LoadWindow(wnd);
+            wnd->SetVisible(true);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_DAMAGE)
+        {
+            SharedPtr<DamageWindow> wnd = MakeShared<DamageWindow>(context_);
             opts->LoadWindow(wnd);
             wnd->SetVisible(true);
             windows_[hash] = wnd;

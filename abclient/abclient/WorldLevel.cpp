@@ -1070,6 +1070,9 @@ void WorldLevel::CreateUI()
     energyBar_.DynamicCast(wm->GetWindow(WINDOW_ENERGYBAR));
     energyBar_->SetActor(player_);
     uiRoot_->AddChild(energyBar_);
+    damageWindow_.DynamicCast(wm->GetWindow(WINDOW_DAMAGE));
+    damageWindow_->Clear();
+    uiRoot_->AddChild(damageWindow_);
 
     effectsWindow_.DynamicCast(wm->GetWindow(WINDOW_EFFECTS));
     effectsWindow_->Clear();

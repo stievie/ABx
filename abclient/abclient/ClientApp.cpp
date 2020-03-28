@@ -58,6 +58,7 @@
 #include "TargetWindow.h"
 #include "SkillCostElement.h"
 #include "ActorResourceBar.h"
+#include "DamageWindow.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
 #include <chrono>
@@ -216,6 +217,7 @@ ClientApp::ClientApp(Context* context) :
     EffectsWindow::RegisterObject(context);
     CreditsWindow::RegisterObject(context);
     InventoryWindow::RegisterObject(context);
+    DamageWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(Events::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

@@ -42,6 +42,7 @@ static const StringHash WINDOW_SKILLS("SkillsWindow");
 static const StringHash WINDOW_EQUIPMENT("EquipmentWindow");
 static const StringHash WINDOW_HEALTHBAR("HealthBarWindow");
 static const StringHash WINDOW_ENERGYBAR("EnergyBarWindow");
+static const StringHash WINDOW_DAMAGE("DamageWindow");
 
 class WindowManager : public Object
 {

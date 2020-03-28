@@ -128,5 +128,7 @@ abclient/WorldLevel.cpp
 abclient/WorldLevel.h
 abclient/SkillCostElement.cpp
 abclient/SkillCostElement.h
+abclient/DamageWindow.cpp
+abclient/DamageWindow.h
 LICENSE.txt
 README.md

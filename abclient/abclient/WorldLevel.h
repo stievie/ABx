@@ -41,6 +41,7 @@
 #include "GuildWindow.h"
 #include "EquipmentWindow.h"
 #include "ActorResourceBar.h"
+#include "DamageWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -83,6 +84,7 @@ protected:
     SharedPtr<ActorHealthBar> healthBar_;
     SharedPtr<ActorEnergyBar> energyBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
+    SharedPtr<DamageWindow> damageWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
     SharedPtr<EquipmentWindow> equipWindow_;
     SharedPtr<FriendListWindow> friendsWindow_;
