@@ -22,6 +22,7 @@
 #pragma once
 
 #include "Actor.h"
+#include <abscommon/Utils.h>
 
 namespace Game {
 
@@ -32,6 +33,7 @@ class Item;
 class Projectile final : public Actor
 {
 private:
+    static const uint32_t DEFAULT_LIFETIME = 1000;
     std::unique_ptr<Item> item_;
     enum Function : uint32_t
     {
@@ -54,6 +56,8 @@ private:
     bool started_{ false };
     uint32_t itemIndex_{ 0 };
     std::string itemUuid_;
+    int64_t startTick_{ 0 };
+    uint32_t lifeTime_{ DEFAULT_LIFETIME };
     uint32_t functions_{ FunctionNone };
     AB::GameProtocol::AttackError error_{ AB::GameProtocol::AttackErrorNone };
     void InitializeLua();
@@ -66,6 +70,12 @@ private:
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
     bool DoStart();
+    bool IsExpired() const
+    {
+        if (startTick_ == 0)
+            return false;
+        return Utils::IsExpired(startTick_ + lifeTime_);
+    }
 private:
     void OnCollide(GameObject* other);
 public:
@@ -88,6 +98,8 @@ public:
 
     uint32_t GetItemIndex() const override { return itemIndex_; }
     uint32_t GetLevel() const override;
+    void SetLifeTime(uint32_t value) { lifeTime_ = value; }
+    uint32_t GetLifeTime() const { return lifeTime_; }
 };
 
 template <>

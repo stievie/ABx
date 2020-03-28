@@ -33,7 +33,9 @@ void Projectile::RegisterLua(kaguya::State& state)
     state["Projectile"].setClass(kaguya::UserdataMetatable<Projectile, Actor>()
         .addFunction("GetSource", &Projectile::_LuaGetSource)
         .addFunction("GetTarget", &Projectile::_LuaGetTarget)
-    );
+        .addFunction("GetLifeTime", &Projectile::GetLifeTime)
+        .addFunction("SetLifeTime", &Projectile::SetLifeTime)
+        );
 }
 
 Projectile::Projectile(const std::string& itemUuid) :
@@ -186,6 +188,11 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     if (!started_)
         return;
 
+    if (IsExpired())
+    {
+        Remove();
+        return;
+    }
     if (auto target = target_.lock())
     {
         if (targetMoveDir_ == target->moveComp_->moveDir_)
@@ -281,11 +288,11 @@ bool Projectile::DoStart()
 {
     auto t = target_.lock();
     assert(t);
+    bool ret = true;
     if (HaveFunction(FunctionOnStart))
-    {
-        bool ret = luaState_["onStart"](t.get());
-        return ret;
-    }
+        ret = luaState_["onStart"](t.get());
+    if (ret)
+        startTick_ = Utils::Tick();
     return true;
 }
 
