@@ -28,6 +28,7 @@ class EffectsWindow : public UIElement
     URHO3D_OBJECT(EffectsWindow, UIElement)
 private:
     unsigned effectCount_;
+    void UpdatePosition();
 public:
     static void RegisterObject(Context* context);
 

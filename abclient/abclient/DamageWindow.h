@@ -44,7 +44,7 @@ class DamageWindow final : public Window
 {
     URHO3D_OBJECT(DamageWindow, Window)
 private:
-    static const int KEEP_ITEMS_MS = 7500;
+    static const int KEEP_ITEMS_MS = 10000;
     Vector<SharedPtr<DamageWindowItem>> items_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectDamaged(StringHash eventType, VariantMap& eventData);

@@ -40,7 +40,7 @@ EffectsWindow::EffectsWindow(Context* context) :
     LoadChildXML(file->GetRoot(), nullptr);
 
     SetAlignment(HA_CENTER, VA_BOTTOM);
-    SetPosition(0, -100);
+    SetPosition(0, -120);
     // It seems this isn't loaded from the XML file
     SetLayoutMode(LM_HORIZONTAL);
     SetLayoutBorder(IntRect(4, 4, 4, 4));
@@ -79,11 +79,10 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
     effectIcon->SetTexture(icon);
     effectIcon->SetImageRect(IntRect(0, 0, 256, 256));
     effectIcon->SetBorder(IntRect(4, 4, 4, 4));
-//    effectIcon->SetPosition((effectCount_ - 1) * 50, 0);
     SetWidth(50 * effectCount_);
-//    SetHeight(50);
     SetVisible(effectCount_ != 0);
     UpdateLayout();
+    UpdatePosition();
 }
 
 void EffectsWindow::EffectRemoved(uint32_t effectIndex)
@@ -97,6 +96,7 @@ void EffectsWindow::EffectRemoved(uint32_t effectIndex)
         SetWidth(50 * effectCount_);
         SetVisible(effectCount_ != 0);
         UpdateLayout();
+        UpdatePosition();
     }
 }
 
@@ -106,4 +106,16 @@ void EffectsWindow::Clear()
     RemoveAllChildren();
     effectCount_ = 0;
     SetWidth(0);
+}
+
+void EffectsWindow::UpdatePosition()
+{
+    if (!IsVisible())
+        return;
+//    if (GetHorizontalAlignment() == HA_CENTER)
+    {
+        IntVector2 pos = GetPosition();
+        pos.x_ = -200;
+        SetPosition(pos);
+    }
 }
