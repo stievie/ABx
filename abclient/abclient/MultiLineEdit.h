@@ -1,24 +1,3 @@
-/**
- * Copyright 2017-2020 Stefan Ascher
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 //
 // Copyright (c) 2008-2015 the Urho3D project.
 //
@@ -82,19 +61,7 @@ public:
     void OnDragMove
     (const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons, int qualifiers,
         Cursor* cursor) override;
-    /// React to drag and drop test. Return true to signal that the drop is acceptable.
-    bool OnDragDropTest(UIElement* source) override;
-    /// React to drag and drop finish. Return true to signal that the drop was accepted.
-    bool OnDragDropFinish(UIElement* source) override;
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
-#endif // __clang__
-    /// React to a key press.
-    virtual void OnKey(int key, int buttons, int qualifiers);
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif // __clang__
+    void OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qualifiers) override;
     /// React to text input event.
     void OnTextInput(const String& text) override;
 
@@ -120,6 +87,12 @@ public:
     void SetMaxNumLines(int maxNumber);
     /// Enable Multiline to on.
     void SetMultiLine(bool enable);
+    /// Set wordwrap. In wordwrap mode the text element will respect its current width. Otherwise it resizes itself freely.
+    void SetWordwrap(bool enable);
+    /// Return wordwrap mode.
+    bool GetWordwrap() const;
+    void SetEnableLinebreak(bool enable) { enabledLinebreak_ = enable; }
+    bool GetEnableLinebreak() const { return enabledLinebreak_; }
     /// Set font size.
     void SetFontSize(int size);
     /// Set font color.
@@ -204,29 +177,31 @@ protected:
     /// Text line.
     String line_;
     /// Last used text font.
-    Font* lastFont_;
+    Font* lastFont_{ nullptr };
     /// Last used text size.
-    int lastFontSize_;
+    int lastFontSize_{ 0 };
     /// Text edit cursor position.
-    unsigned cursorPosition_;
+    unsigned cursorPosition_{ 0 };
     /// Drag begin cursor position.
-    unsigned dragBeginCursor_;
+    unsigned dragBeginCursor_{ M_MAX_UNSIGNED };
     /// Cursor blink rate.
-    float cursorBlinkRate_;
+    float cursorBlinkRate_{ 1.0f };
     /// Cursor blink timer.
-    float cursorBlinkTimer_;
+    float cursorBlinkTimer_{ 0.0f };
     /// Maximum text length.
-    unsigned maxLength_;
+    unsigned maxLength_{ 0 };
     /// Echo character.
-    unsigned echoCharacter_;
+    unsigned echoCharacter_{ 0 };
     /// Cursor movable flag.
-    bool cursorMovable_;
+    bool cursorMovable_{ true };
     /// Text selectable flag.
-    bool textSelectable_;
+    bool textSelectable_{ true };
     /// Copy-paste enable flag.
-    bool textCopyable_;
+    bool textCopyable_{ true };
     /// Ability to write several lines enabled flag.
-    bool multiLine_;
+    bool multiLine_{ true };
+    /// Entering returns adds a new line
+    bool enabledLinebreak_{ true };
 
 private:
     /// Handle being focused.
@@ -235,7 +210,5 @@ private:
     void HandleDefocused(StringHash eventType, VariantMap& eventData);
     /// Handle the element layout having been updated.
     void HandleLayoutUpdated(StringHash eventType, VariantMap& eventData);
-    /// Handle key down.
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 };
 }

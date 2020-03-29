@@ -36,6 +36,7 @@ PRAGMA_WARNING_POP
 #include "SkillManager.h"
 #include "ItemsCache.h"
 #include "FormatText.h"
+#include "MultiLineEdit.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -591,6 +592,15 @@ void ChatWindow::HandleTabSelected(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleKeyDown(StringHash, VariantMap& eventData)
 {
+    UI* ui = GetSubsystem<UI>();
+    auto* focusElem = ui->GetFocusElement();
+    if (focusElem)
+    {
+        // Don't allow keyboard shortcuts only when an editor has the focus
+        if (dynamic_cast<LineEdit*>(focusElem) || dynamic_cast<MultiLineEdit*>(focusElem))
+            return;
+    }
+
     using namespace KeyDown;
 
     int key = eventData[P_KEY].GetInt();

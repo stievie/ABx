@@ -72,6 +72,7 @@ NewMailWindow::NewMailWindow(Context* context) :
     mailBody_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     mailBody_->SetStyle("MultiLineEdit");
     mailBody_->SetPosition(0, 0);
+    mailBody_->SetClipBorder({ 4, 4, 4, 4 });
     mailBody_->SetSize(container->GetSize());
     mailBody_->SetEditable(true);
     mailBody_->SetMultiLine(true);

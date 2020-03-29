@@ -26,6 +26,7 @@
 #include <AB/Entities/Limits.h>
 #include "WindowManager.h"
 #include "PartyWindow.h"
+#include "MultiLineEdit.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -158,6 +159,18 @@ void LoginLevel::CreateUI()
         passEdit_->SetText(options->password_);
     }
     button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
+
+#if 0
+    auto e = uiRoot_->CreateChild<MultiLineEdit>();
+    e->SetPosition({ 0, 0 });
+    e->SetSize({ 200, 200 });
+    e->SetMinSize({ 200, 200 });
+    e->SetAlignment(HA_LEFT, VA_TOP);
+    e->SetStyleAuto();
+    e->SetClipBorder({ 4, 4, 4, 4 });
+    e->SetWordwrap(true);
+//    e->SetEnableLinebreak(false);
+#endif
 
     CreateEnvironmentsList();
 }

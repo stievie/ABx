@@ -1,24 +1,3 @@
-/**
- * Copyright 2017-2020 Stefan Ascher
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- * of the Software, and to permit persons to whom the Software is furnished to do
- * so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 //
 // Copyright (c) 2008-2015 the Urho3D project.
 //
@@ -62,29 +41,15 @@ StringHash VAR_ML_DRAGDROPCONTENT("DragDropContent");
 extern const char* UI_CATEGORY;
 
 MultiLineEdit::MultiLineEdit(Context* context) :
-    BorderImage(context),
-    lastFont_(0),
-    lastFontSize_(0),
-    cursorPosition_(0),
-    dragBeginCursor_(M_MAX_UNSIGNED),
-    cursorBlinkRate_(1.0f),
-    cursorBlinkTimer_(0.0f),
-    maxLength_(0),
-    echoCharacter_(0),
-    cursorMovable_(true),
-    textSelectable_(true),
-    textCopyable_(true),
-    multiLine_(true)
+    BorderImage(context)
 {
     clipChildren_ = true;
     SetEnabled(true);
     focusMode_ = FM_FOCUSABLE_DEFOCUSABLE;
-
-    SetLayoutMode(LM_FREE);
+    SetLayoutMode(LM_VERTICAL);
     text_ = CreateChild<Text>("LE_Text");
-    text_->SetAlignment(HA_LEFT, VA_TOP);
     text_->SetInternal(true);
-    text_->SetPosition(0, 0);
+    text_->SetWordwrap(false);
     cursor_ = CreateChild<BorderImage>("LE_Cursor");
     cursor_->SetBorder(IntRect(0, 0, 0, 0));
     cursor_->SetClipBorder(IntRect(0, 0, 0, 0));
@@ -97,7 +62,6 @@ MultiLineEdit::MultiLineEdit(Context* context) :
     SubscribeToEvent(this, E_FOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleFocused));
     SubscribeToEvent(this, E_DEFOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleDefocused));
     SubscribeToEvent(this, E_LAYOUTUPDATED, URHO3D_HANDLER(MultiLineEdit, HandleLayoutUpdated));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(MultiLineEdit, HandleKeyDown));
 
     hasMaxLines = false;
     maxLines = 0;
@@ -143,9 +107,7 @@ void MultiLineEdit::SetMaxNumLines(int maxNumber)
         hasMaxLines = true;
     }
     else
-    {
         hasMaxLines = false;
-    }
 };
 
 void MultiLineEdit::ApplyAttributes()
@@ -161,7 +123,6 @@ void MultiLineEdit::ApplyAttributes()
 
 void MultiLineEdit::Update(float timeStep)
 {
-    //cursor_->SetFont(text_->GetFont(), text_->GetFontSize());
     if (cursorBlinkRate_ > 0.0f)
         cursorBlinkTimer_ = fmodf(cursorBlinkTimer_ + cursorBlinkRate_ * timeStep, 1.0f);
 
@@ -175,7 +136,6 @@ void MultiLineEdit::Update(float timeStep)
 
     bool cursorVisible = HasFocus() ? cursorBlinkTimer_ < 0.5f : false;
     cursor_->SetVisible(cursorVisible);
-    //cursor_->SetVisible(true);
 }
 
 void MultiLineEdit::OnClickBegin(const IntVector2& position,
@@ -227,63 +187,15 @@ void MultiLineEdit::OnDragMove(const IntVector2& position,
             SetCursorPosition(current);
         }
     }
-
 }
 
-bool MultiLineEdit::OnDragDropTest(UIElement* /* source */)
+void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qualifiers)
 {
-    //if (source && editable_)
-    //{
-    //	if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
-    //		return true;
-    //	StringHash sourceType = source->GetType();
-    //	return sourceType == MultiLineEdit::GetTypeStatic() || sourceType == Text::GetTypeStatic();
-    //}
-
-    //return false;
-
-    return true;
-}
-
-bool MultiLineEdit::OnDragDropFinish(UIElement* /* source */)
-{
-    //if (source && editable_)
-    //{
-    //	// If the UI element in question has a drag-and-drop content string defined, use it instead of element text
-    //	if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
-    //	{
-    //		SetText(source->GetVar(VAR_ML_DRAGDROPCONTENT).GetString());
-    //		return true;
-    //	}
-
-    //	StringHash sourceType = source->GetType();
-    //	if (sourceType == MultiLineEdit::GetTypeStatic())
-    //	{
-    //		MultiLineEdit* sourceMultiLineEdit = static_cast<MultiLineEdit*>(source);
-    //		SetText(sourceMultiLineEdit->GetText());
-    //		return true;
-    //	}
-    //	else if (sourceType == Text::GetTypeStatic())
-    //	{
-    //		Text* sourceText = static_cast<Text*>(source);
-    //		SetText(sourceText->GetText());
-    //		return true;
-    //	}
-    //}
-
-    //return false;
-
-    return true;
-}
-
-void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
-{
+    if (!editable_)
+        return;
 
     bool changed = false;
     bool cursorMoved = false;
-
-    if (!editable_)
-        return;
 
     switch (key)
     {
@@ -340,7 +252,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_HOME:
         qualifiers |= QUAL_CTRL;
-        // Fallthru
+        [[fallthrough]];
 
     case KEY_LEFT:
         if (cursorMovable_ && cursorPosition_ > 0)
@@ -372,7 +284,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_END:
         qualifiers |= QUAL_CTRL;
-        // Fallthru
+        [[fallthrough]];
 
     case KEY_RIGHT:
         if (cursorMovable_ && cursorPosition_ < line_.LengthUTF8())
@@ -449,7 +361,6 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             {
                 cursorPosition_ = lastlinepos;
             }
-
         }
 
         if (editable_ && qualifiers & QUAL_CTRL)
@@ -510,6 +421,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
         changed = true;
         break;
+
     case KEY_PAGEUP:
     case KEY_PAGEDOWN:
     {
@@ -518,11 +430,11 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         VariantMap& eventData = GetEventDataMap();
         eventData[P_ELEMENT] = this;
         eventData[P_KEY] = key;
-        eventData[P_BUTTONS] = buttons;
-        eventData[P_QUALIFIERS] = qualifiers;
+        eventData[P_BUTTONS] = static_cast<int>(buttons);
+        eventData[P_QUALIFIERS] = static_cast<int>(qualifiers);
         SendEvent(E_UNHANDLEDKEY, eventData);
+        return;
     }
-    return;
 
     case KEY_BACKSPACE:
         if (editable_)
@@ -556,11 +468,12 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         break;
 
     case KEY_RETURN:
-        if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
+    case KEY_RETURN2:
+        if (enabledLinebreak_ && editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
 
         {
             line_.Insert(cursorPosition_, "\n");
-            cursorPosition_ += 1;
+            ++cursorPosition_;
         }
         changed = true;
         break;
@@ -571,15 +484,6 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         {
             line_.Insert(cursorPosition_, "    ");
             cursorPosition_ += 4;
-        }
-        changed = true;
-        break;
-
-    case KEY_RETURN2:
-        if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
-        {
-            line_.Insert(cursorPosition_, "\n");
-            cursorPosition_ += 1;
         }
         changed = true;
         break;
@@ -618,10 +522,6 @@ void MultiLineEdit::OnTextInput(const String& text)
         return;
 
     bool changed = false;
-
-    // If only CTRL is held down, do not edit
-    //if ((qualifiers & (QUAL_CTRL | QUAL_ALT)) == QUAL_CTRL)
-    //    return;
 
     // Send char as an event to allow changing it
     using namespace TextEntry;
@@ -678,6 +578,16 @@ void MultiLineEdit::SetText(const String& text)
 void MultiLineEdit::SetMultiLine(bool enable)
 {
     multiLine_ = enable;
+}
+
+void MultiLineEdit::SetWordwrap(bool enable)
+{
+    text_->SetWordwrap(enable);
+}
+
+bool MultiLineEdit::GetWordwrap() const
+{
+    return text_->GetWordwrap();
 }
 
 void MultiLineEdit::SetCursorPosition(unsigned position)
@@ -784,15 +694,15 @@ void MultiLineEdit::UpdateText()
 void MultiLineEdit::UpdateCursor()
 {
     const Vector2 charPos = text_->GetCharPosition(cursorPosition_);
-    int x = static_cast<int>(charPos.x_) + 1;
-    int y = static_cast<int>(charPos.y_) - clipBorder_.top_;
+    int x = static_cast<int>(charPos.x_) + clipBorder_.left_;
+    int y = static_cast<int>(charPos.y_) + clipBorder_.top_;
 
 
     text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_);
     cursor_->SetPosition(IntVector2(x, y));
-    //cursor_->SetSize(cursor_->GetWidth(), text_->GetRowHeight());
     cursor_->SetFixedSize(4, static_cast<int>(text_->GetRowHeight()));
     cursor_->SetSize(4, static_cast<int>(text_->GetRowHeight()));
+
     // Scroll if necessary
     int sx = -GetChildOffset().x_;
     int left = clipBorder_.left_;
@@ -848,18 +758,6 @@ void MultiLineEdit::HandleDefocused(StringHash, VariantMap&)
         GetSubsystem<Input>()->SetScreenKeyboardVisible(false);
 }
 
-void MultiLineEdit::HandleKeyDown(StringHash, VariantMap& eventData)
-{
-    using namespace KeyDown;
-    int key = eventData[P_KEY].GetInt();
-    int mouseButtons_ = eventData[P_BUTTONS].GetInt();
-    int qualifiers_ = eventData[P_QUALIFIERS].GetInt();
-    bool repeat = eventData[P_REPEAT].GetBool();
-
-    //manually ensure that only one key press is handled per frame.
-    if (repeat)
-        OnKey(key, mouseButtons_, qualifiers_);
-}
 void MultiLineEdit::SetFontColor(Color color)
 {
     text_->SetColor(color);

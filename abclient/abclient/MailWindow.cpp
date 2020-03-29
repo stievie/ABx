@@ -80,6 +80,7 @@ MailWindow::MailWindow(Context* context) :
     mailBody_->SetTextCopyable(true);
     mailBody_->SetTextSelectable(true);
     mailBody_->SetPosition(0, 0);
+    mailBody_->SetClipBorder({ 4, 4, 4, 4 });
     mailBody_->SetSize(container->GetSize());
 
     SetStyleAuto();
