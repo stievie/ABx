@@ -31,7 +31,7 @@ namespace Urho3D
 class Font;
 class BorderImage;
 
-/// Single-line text editor %UI element.
+/// Multi-line text editor %UI element.
 class  MultiLineEdit : public BorderImage
 {
     URHO3D_OBJECT(MultiLineEdit, BorderImage)

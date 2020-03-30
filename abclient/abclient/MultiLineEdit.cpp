@@ -126,7 +126,7 @@ void MultiLineEdit::Update(float timeStep)
         cursorBlinkTimer_ = fmodf(cursorBlinkTimer_ + cursorBlinkRate_ * timeStep, 1.0f);
 
     // Update cursor position if font has changed
-    if (text_->GetFont() != lastFont_ || text_->GetFontSize() != lastFontSize_)
+    if (text_->GetFont() != lastFont_ || static_cast<int>(text_->GetFontSize()) != lastFontSize_)
     {
         lastFont_ = text_->GetFont();
         lastFontSize_ = static_cast<int>(text_->GetFontSize());
@@ -744,7 +744,7 @@ unsigned MultiLineEdit::GetCharIndex(const IntVector2& position)
     if (textPosition.x_ < 0)
         return 0;
 
-    for (int i = text_->GetNumChars(); i >= 0; --i)
+    for (int i = static_cast<int>(text_->GetNumChars()); i >= 0; --i)
     {
         if (textPosition.x_ >= text_->GetCharPosition(static_cast<unsigned>(i)).x_ &&
             textPosition.y_ >= text_->GetCharPosition(static_cast<unsigned>(i)).y_)
