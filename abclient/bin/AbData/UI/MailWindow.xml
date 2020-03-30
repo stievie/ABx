@@ -24,6 +24,114 @@
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="4" />
 		<attribute name="Layout Border" value="4 4 4 4" />
+		<element type="Button">
+			<attribute name="Name" value="NewMailButton" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="16 16" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="192 80 208 96" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="16 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<element type="ToolTip" style="ToolTip">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Priority" value="2147483647" />
+				<attribute name="Is Visible" value="false" />
+				<element type="Window">
+					<attribute name="Position" value="20 -20" />
+					<attribute name="Size" value="80 23" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Opacity" value="0.8" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Border" value="4 4 4 4" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Resize Border" value="8 8 8 8" />
+					<element type="Text">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="New Mail" />
+					</element>
+				</element>
+			</element>
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="DeleteMailButton" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="16 16" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="96 48 112 64" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="16 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<element type="ToolTip" style="ToolTip">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Priority" value="2147483647" />
+				<attribute name="Is Visible" value="false" />
+				<element type="Window">
+					<attribute name="Position" value="20 -20" />
+					<attribute name="Size" value="96 23" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Opacity" value="0.8" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Border" value="4 4 4 4" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Resize Border" value="8 8 8 8" />
+					<element type="Text">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Delete Mail" />
+					</element>
+				</element>
+			</element>
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="ReplyMailButton" />
+			<attribute name="Min Size" value="16 16" />
+			<attribute name="Max Size" value="16 16" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+			<attribute name="Image Rect" value="64 96 80 112" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="16 0" />
+			<attribute name="Pressed Image Offset" value="0 -1" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<element type="ToolTip" style="ToolTip">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Priority" value="2147483647" />
+				<attribute name="Is Visible" value="false" />
+				<element type="Window">
+					<attribute name="Position" value="20 -20" />
+					<attribute name="Size" value="112 23" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Opacity" value="0.8" />
+					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Border" value="4 4 4 4" />
+					<attribute name="Image Rect" value="48 0 64 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Resize Border" value="8 8 8 8" />
+					<element type="Text">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Text" value="Reply to Mail" />
+					</element>
+				</element>
+			</element>
+		</element>
 		<element type="Text">
 			<attribute name="Name" value="CaptionText" />
 			<attribute name="Min Anchor" value="0 0.5" />
@@ -52,77 +160,6 @@
 			<attribute name="Hover Image Offset" value="0 16" />
 			<attribute name="Pressed Image Offset" value="16 0" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
-	</element>
-	<element>
-		<attribute name="Max Size" value="2147483647 30" />
-		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Border" value="2 2 2 2" />
-		<element type="Button">
-			<attribute name="Name" value="NewMailButton" />
-			<attribute name="Position" value="2 2" />
-			<attribute name="Size" value="60 26" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-			<element type="Text">
-				<attribute name="Name" value="NewMailText" />
-				<attribute name="Min Anchor" value="0.5 0.5" />
-				<attribute name="Max Anchor" value="0.5 0.5" />
-				<attribute name="Pivot" value="0.5 0.5" />
-				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Text" value="New" />
-			</element>
-		</element>
-		<element type="Button">
-			<attribute name="Name" value="DeleteMailButton" />
-			<attribute name="Position" value="64 2" />
-			<attribute name="Size" value="60 26" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-			<element type="Text">
-				<attribute name="Name" value="DeleteMailText" />
-				<attribute name="Min Anchor" value="0.5 0.5" />
-				<attribute name="Max Anchor" value="0.5 0.5" />
-				<attribute name="Pivot" value="0.5 0.5" />
-				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Text" value="Delete" />
-			</element>
-		</element>
-		<element type="Button">
-			<attribute name="Name" value="ReplyMailButton" />
-			<attribute name="Position" value="126 2" />
-			<attribute name="Size" value="60 26" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Image Rect" value="16 0 32 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-			<element type="Text">
-				<attribute name="Name" value="ReplyMailText" />
-				<attribute name="Min Anchor" value="0.5 0.5" />
-				<attribute name="Max Anchor" value="0.5 0.5" />
-				<attribute name="Pivot" value="0.5 0.5" />
-				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Text" value="Reply" />
-			</element>
 		</element>
 	</element>
 	<element type="ListView">
@@ -170,7 +207,7 @@
 			</element>
 		</element>
 		<element type="ScrollBar" internal="true" style="none">
-			<attribute name="Size" value="16 168" />
+			<attribute name="Size" value="16 183" />
 			<attribute name="Min Anchor" value="1 0" />
 			<attribute name="Max Anchor" value="1 0" />
 			<attribute name="Pivot" value="1 0" />
@@ -189,7 +226,7 @@
 			</element>
 			<element type="Slider" internal="true" style="none">
 				<attribute name="Position" value="0 16" />
-				<attribute name="Size" value="16 136" />
+				<attribute name="Size" value="16 151" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
@@ -201,7 +238,7 @@
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="0 152" />
+				<attribute name="Position" value="0 167" />
 				<attribute name="Size" value="16 16" />
 				<attribute name="Pivot" value="0 0" />
 				<attribute name="Border" value="4 4 4 4" />
