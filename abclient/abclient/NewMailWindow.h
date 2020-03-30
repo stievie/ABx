@@ -35,6 +35,7 @@ public:
     void SetRecipient(const String& value);
     void SetSubject(const String& value);
     const String& GetSubject() const;
+    void FocusBody();
 private:
     SharedPtr<MultiLineEdit> mailBody_;
     SharedPtr<LineEdit> recipient_;

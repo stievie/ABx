@@ -203,6 +203,8 @@ void MailWindow::HandleDeleteClicked(StringHash, VariantMap&)
 void MailWindow::HandleItemSelected(StringHash, VariantMap&)
 {
     Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
+    Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
+    Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
     if (sel)
     {
         String uuid = sel->GetVar("uuid").GetString();
@@ -210,10 +212,13 @@ void MailWindow::HandleItemSelected(StringHash, VariantMap&)
         net->ReadMail(std::string(uuid.CString()));
         // Mark read
         sel->SetStyle("MailListItem");
-        Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
         delButton->SetEnabled(true);
-        Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
         repButton->SetEnabled(true);
+    }
+    else
+    {
+        delButton->SetEnabled(false);
+        repButton->SetEnabled(false);
     }
 }
 

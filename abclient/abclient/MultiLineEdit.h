@@ -157,6 +157,11 @@ public:
         return cursor_;
     }
 
+    void CopySelection();
+    bool CutSelection();
+    bool Paste();
+    bool DeleteSelection();
+    void SelectAll();
 protected:
     /// Filter implicit attributes in serialization process.
     bool FilterImplicitAttributes(XMLElement& dest) const override;
@@ -204,11 +209,13 @@ protected:
     bool enabledLinebreak_{ true };
 
 private:
+    void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
     /// Handle being focused.
     void HandleFocused(StringHash eventType, VariantMap& eventData);
     /// Handle being defocused.
     void HandleDefocused(StringHash eventType, VariantMap& eventData);
     /// Handle the element layout having been updated.
     void HandleLayoutUpdated(StringHash eventType, VariantMap& eventData);
+    bool HandleEnterKey();
 };
 }

@@ -36,8 +36,6 @@
 namespace Urho3D
 {
 
-StringHash VAR_ML_DRAGDROPCONTENT("DragDropContent");
-
 extern const char* UI_CATEGORY;
 
 MultiLineEdit::MultiLineEdit(Context* context) :
@@ -62,6 +60,7 @@ MultiLineEdit::MultiLineEdit(Context* context) :
     SubscribeToEvent(this, E_FOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleFocused));
     SubscribeToEvent(this, E_DEFOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleDefocused));
     SubscribeToEvent(this, E_LAYOUTUPDATED, URHO3D_HANDLER(MultiLineEdit, HandleLayoutUpdated));
+    SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(MultiLineEdit, HandleMouseWheel));
 
     hasMaxLines = false;
     maxLines = 0;
@@ -191,63 +190,33 @@ void MultiLineEdit::OnDragMove(const IntVector2& position,
 
 void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qualifiers)
 {
-    if (!editable_)
-        return;
-
     bool changed = false;
     bool cursorMoved = false;
 
     switch (key)
     {
     case KEY_X:
+        if (editable_ && textCopyable_ && qualifiers & QUAL_CTRL)
+        {
+            if (CutSelection())
+                changed = true;
+        }
+        break;
     case KEY_C:
         if (textCopyable_ && qualifiers & QUAL_CTRL)
-        {
-            unsigned start = text_->GetSelectionStart();
-            unsigned length = text_->GetSelectionLength();
-
-            if (text_->GetSelectionLength())
-                GetSubsystem<UI>()->SetClipboardText(line_.SubstringUTF8(start, length));
-
-            if (key == KEY_X && editable_)
-            {
-                if (start + length < line_.LengthUTF8())
-                    line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
-                else
-                    line_ = line_.SubstringUTF8(0, start);
-                text_->ClearSelection();
-                cursorPosition_ = start;
-                changed = true;
-            }
-        }
+            CopySelection();
         break;
 
     case KEY_V:
         if (editable_ && textCopyable_ && qualifiers & QUAL_CTRL)
         {
-            const String& clipBoard = GetSubsystem<UI>()->GetClipboardText();
-            if (!clipBoard.Empty())
-            {
-                // Remove selected text first
-                if (text_->GetSelectionLength() > 0)
-                {
-                    unsigned start = text_->GetSelectionStart();
-                    unsigned length = text_->GetSelectionLength();
-                    if (start + length < line_.LengthUTF8())
-                        line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
-                    else
-                        line_ = line_.SubstringUTF8(0, start);
-                    text_->ClearSelection();
-                    cursorPosition_ = start;
-                }
-                if (cursorPosition_ < line_.LengthUTF8())
-                    line_ = line_.SubstringUTF8(0, cursorPosition_) + clipBoard + line_.SubstringUTF8(cursorPosition_);
-                else
-                    line_ += clipBoard;
-                cursorPosition_ += clipBoard.LengthUTF8();
+            if (Paste())
                 changed = true;
-            }
         }
+        break;
+    case KEY_A:
+        if (qualifiers & QUAL_CTRL)
+            SelectAll();
         break;
 
     case KEY_HOME:
@@ -278,7 +247,7 @@ void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qual
                     text_->SetSelection(current, start - current);
             }
         }
-        if (!(qualifiers & QUAL_SHIFT))
+        if (editable_ && !(qualifiers & QUAL_SHIFT))
             text_->ClearSelection();
         break;
 
@@ -310,34 +279,15 @@ void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qual
                     text_->SetSelection(current, start - current);
             }
         }
-        if (!(qualifiers & QUAL_SHIFT))
+        if (editable_ && !(qualifiers & QUAL_SHIFT))
             text_->ClearSelection();
         break;
 
     case KEY_DELETE:
         if (editable_)
         {
-            if (!text_->GetSelectionLength())
-            {
-                if (cursorPosition_ < line_.LengthUTF8())
-                {
-                    line_ = line_.SubstringUTF8(0, cursorPosition_) + line_.SubstringUTF8(cursorPosition_ + 1);
-                    changed = true;
-                }
-            }
-            else
-            {
-                // If a selection exists, erase it
-                unsigned start = text_->GetSelectionStart();
-                unsigned length = text_->GetSelectionLength();
-                if (start + length < line_.LengthUTF8())
-                    line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
-                else
-                    line_ = line_.SubstringUTF8(0, start);
-                text_->ClearSelection();
-                cursorPosition_ = start;
+            if (DeleteSelection())
                 changed = true;
-            }
         }
         break;
 
@@ -347,79 +297,51 @@ void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qual
             // get substring from start to cursor position
             String substring = line_.SubstringUTF8(0, cursorPosition_);
             // find nearest new line before cursor position
-            unsigned lastlinepos = substring.FindLast("\n");
+            unsigned lastlinepos = substring.FindLast('\n');
             // get substring from start to above new line
-            String substring2 = substring.SubstringUTF8(0, (lastlinepos - 1));
+            String substring2 = substring.SubstringUTF8(0, lastlinepos);
             // find position of new line directly before previous
-            unsigned lastlinepos2 = substring2.FindLast("\n");
+            unsigned lastlinepos2 = substring2.FindLast('\n');
             // move cursor to above position depending on width of above line
             if (lastlinepos - lastlinepos2 >= cursorPosition_ - lastlinepos)
-            {
                 cursorPosition_ = lastlinepos2 + (cursorPosition_ - lastlinepos);
-            }
             else
-            {
                 cursorPosition_ = lastlinepos;
-            }
+            cursorMoved = true;
         }
 
-        if (editable_ && qualifiers & QUAL_CTRL)
-        {
-            int currSize = static_cast<int>(text_->GetFontSize());
-            currSize += 2;
-            text_->SetFontSize((float)currSize);
-        }
-
-        changed = true;
         break;
 
     case KEY_DOWN:
-        if (multiLine_ && cursorMovable_ && cursorPosition_ > 0)
+        if (multiLine_ && cursorMovable_)
         {
             // get substring from start to cursor position
             String substring = line_.SubstringUTF8(0, cursorPosition_);
             // find nearest new line before cursor position
-            unsigned lastlinepos = substring.FindLast("\n");
+            unsigned lastlinepos = substring.FindLast('\n');
             // get substring from cursor position to end
             String substring2 = line_.SubstringUTF8(cursorPosition_);
             // find position of new line after cursor postion
-            unsigned nextlinepos = substring2.Find("\n") + cursorPosition_;
+            unsigned nextlinepos = substring2.Find('\n') + cursorPosition_;
             // get substring from new line after cursor to end
             String substring3 = line_.SubstringUTF8(nextlinepos + 1);
             // find position of new line after previous new line (width of line below cursor)
-            unsigned widthofbelow = substring3.Find("\n") + 1;
+            unsigned widthofbelow = substring3.Find('\n') + 1;
             // move cursor according to cursor position and width of below line
-            if (substring3.Find("\n") == 0xffffffff)
+            if (substring3.Find('\n') == String::NPOS)
             {
                 if (line_.Length() - nextlinepos >= cursorPosition_ - lastlinepos)
-                {
                     cursorPosition_ = nextlinepos + (cursorPosition_ - lastlinepos);
-                }
                 else
-                {
                     cursorPosition_ = line_.Length();
-                }
             }
             else if (cursorPosition_ - lastlinepos >= widthofbelow)
-            {
                 cursorPosition_ = nextlinepos + widthofbelow;
-            }
             else
-            {
                 cursorPosition_ = nextlinepos + (cursorPosition_ - lastlinepos);
-            }
-
+            cursorMoved = true;
         }
 
-        if (editable_ && qualifiers & QUAL_CTRL)
-        {
-            int currSize = static_cast<int>(text_->GetFontSize());
-            currSize -= 2;
-            currSize = Clamp(currSize, 6, 1000);
-            text_->SetFontSize((float)currSize);
-        }
-
-        changed = true;
         break;
 
     case KEY_PAGEUP:
@@ -469,13 +391,8 @@ void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qual
 
     case KEY_RETURN:
     case KEY_RETURN2:
-        if (enabledLinebreak_ && editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
-
-        {
-            line_.Insert(cursorPosition_, "\n");
-            ++cursorPosition_;
-        }
-        changed = true;
+        if (HandleEnterKey())
+            changed = true;
         break;
 
     case KEY_TAB:
@@ -484,23 +401,29 @@ void MultiLineEdit::OnKey(Key key, MouseButtonFlags buttons, QualifierFlags qual
         {
             line_.Insert(cursorPosition_, "    ");
             cursorPosition_ += 4;
+            changed = true;
         }
-        changed = true;
         break;
 
     case KEY_KP_ENTER:
     {
         // If using the on-screen keyboard, defocus this element to hide it now
         if (GetSubsystem<UI>()->GetUseScreenKeyboard() && HasFocus())
+        {
             SetFocus(false);
 
-        using namespace TextFinished;
+            using namespace TextFinished;
 
-        VariantMap& eventData = GetEventDataMap();
-        eventData[P_ELEMENT] = this;
-        eventData[P_TEXT] = line_;
-        SendEvent(E_TEXTFINISHED, eventData);
-        return;
+            VariantMap& eventData = GetEventDataMap();
+            eventData[P_ELEMENT] = this;
+            eventData[P_TEXT] = line_;
+            SendEvent(E_TEXTFINISHED, eventData);
+            return;
+        }
+
+        if (HandleEnterKey())
+            changed = true;
+        break;
     }
 
     default:
@@ -636,6 +559,100 @@ void MultiLineEdit::SetTextCopyable(bool enable)
     textCopyable_ = enable;
 }
 
+void MultiLineEdit::CopySelection()
+{
+    unsigned start = text_->GetSelectionStart();
+    unsigned length = text_->GetSelectionLength();
+
+    if (text_->GetSelectionLength())
+        GetSubsystem<UI>()->SetClipboardText(line_.SubstringUTF8(start, length));
+}
+
+bool MultiLineEdit::CutSelection()
+{
+    unsigned start = text_->GetSelectionStart();
+    unsigned length = text_->GetSelectionLength();
+
+    if (text_->GetSelectionLength())
+        GetSubsystem<UI>()->SetClipboardText(line_.SubstringUTF8(start, length));
+
+    if (editable_)
+    {
+        if (start + length < line_.LengthUTF8())
+            line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
+        else
+            line_ = line_.SubstringUTF8(0, start);
+        text_->ClearSelection();
+        cursorPosition_ = start;
+        return true;
+    }
+    return false;
+}
+
+bool MultiLineEdit::Paste()
+{
+    if (!editable_)
+        return false;
+
+    const String& clipBoard = GetSubsystem<UI>()->GetClipboardText();
+    if (!clipBoard.Empty())
+    {
+        // Remove selected text first
+        if (text_->GetSelectionLength() > 0)
+        {
+            unsigned start = text_->GetSelectionStart();
+            unsigned length = text_->GetSelectionLength();
+            if (start + length < line_.LengthUTF8())
+                line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
+            else
+                line_ = line_.SubstringUTF8(0, start);
+            text_->ClearSelection();
+            cursorPosition_ = start;
+        }
+        if (cursorPosition_ < line_.LengthUTF8())
+            line_ = line_.SubstringUTF8(0, cursorPosition_) + clipBoard + line_.SubstringUTF8(cursorPosition_);
+        else
+            line_ += clipBoard;
+        cursorPosition_ += clipBoard.LengthUTF8();
+        return true;
+    }
+    return false;
+}
+
+bool MultiLineEdit::DeleteSelection()
+{
+    if (!editable_)
+        return false;
+
+    if (!text_->GetSelectionLength())
+    {
+        if (cursorPosition_ < line_.LengthUTF8())
+        {
+            line_ = line_.SubstringUTF8(0, cursorPosition_) + line_.SubstringUTF8(cursorPosition_ + 1);
+            return true;
+        }
+    }
+    else
+    {
+        // If a selection exists, erase it
+        unsigned start = text_->GetSelectionStart();
+        unsigned length = text_->GetSelectionLength();
+        if (start + length < line_.LengthUTF8())
+            line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
+        else
+            line_ = line_.SubstringUTF8(0, start);
+        text_->ClearSelection();
+        cursorPosition_ = start;
+        return true;
+    }
+    return false;
+}
+
+void MultiLineEdit::SelectAll()
+{
+    text_->SetSelection(0);
+}
+
 bool MultiLineEdit::FilterImplicitAttributes(XMLElement& dest) const
 {
     if (!BorderImage::FilterImplicitAttributes(dest))
@@ -713,7 +730,7 @@ void MultiLineEdit::UpdateCursor()
         sx = x - left;
     if (sx < 0)
         sx = 0;
-    SetChildOffset(IntVector2(-sx, 0));
+    SetChildOffset({ -sx, 0 });
 
     // Restart blinking
     cursorBlinkTimer_ = 0.0f;
@@ -729,12 +746,33 @@ unsigned MultiLineEdit::GetCharIndex(const IntVector2& position)
 
     for (int i = text_->GetNumChars(); i >= 0; --i)
     {
-        if (textPosition.x_ >= text_->GetCharPosition((unsigned)i).x_ &&
-            textPosition.y_ >= text_->GetCharPosition((unsigned)i).y_)
-            return (unsigned)i;
+        if (textPosition.x_ >= text_->GetCharPosition(static_cast<unsigned>(i)).x_ &&
+            textPosition.y_ >= text_->GetCharPosition(static_cast<unsigned>(i)).y_)
+            return static_cast<unsigned>(i);
     }
 
     return M_MAX_UNSIGNED;
+}
+
+void MultiLineEdit::HandleMouseWheel(StringHash, VariantMap& eventData)
+{
+    UI* ui = GetSubsystem<UI>();
+    if (ui->GetFocusElement() != this)
+        return;
+
+    using namespace MouseWheel;
+    QualifierFlags qualifiers = static_cast<QualifierFlags>(eventData[P_QUALIFIERS].GetUInt());
+    if (qualifiers & QUAL_CTRL)
+    {
+        int delta = eventData[P_WHEEL].GetInt();
+        int currSize = static_cast<int>(text_->GetFontSize());
+        if (delta < 0)
+            currSize -= 2;
+        else
+            currSize += 2;
+        currSize = Clamp(currSize, 6, 40);
+        text_->SetFontSize(static_cast<float>(currSize));
+    }
 }
 
 void MultiLineEdit::HandleFocused(StringHash, VariantMap& eventData)
@@ -764,11 +802,23 @@ void MultiLineEdit::SetFontColor(Color color)
 }
 void MultiLineEdit::SetFontSize(int size)
 {
-    text_->SetFont(text_->GetFont(), (float)size);
+    text_->SetFont(text_->GetFont(), static_cast<float>(size));
 }
 void MultiLineEdit::HandleLayoutUpdated(StringHash, VariantMap&)
 {
     UpdateCursor();
+}
+
+bool MultiLineEdit::HandleEnterKey()
+{
+    if (enabledLinebreak_ && editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
+
+    {
+        line_.Insert(cursorPosition_, '\n');
+        ++cursorPosition_;
+        return true;
+    }
+    return false;
 }
 
 }

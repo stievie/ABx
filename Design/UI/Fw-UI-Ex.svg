@@ -16,7 +16,7 @@
    viewBox="0 0 256.00001 127.99999"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="Fw-UI-Ex.svg"
    inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\UI\Fw-UI-Ex.png"
    inkscape:export-xdpi="96.000008"
@@ -30,9 +30,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="40.260892"
-     inkscape:cx="232.04172"
-     inkscape:cy="52.130664"
+     inkscape:zoom="14.526304"
+     inkscape:cx="242.84399"
+     inkscape:cy="46.690424"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -41,11 +41,11 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      units="px"
-     inkscape:window-width="1916"
-     inkscape:window-height="1041"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="0"
+     inkscape:window-width="1280"
+     inkscape:window-height="1002"
+     inkscape:window-x="3192"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
      inkscape:object-nodes="true"
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="false"
@@ -3708,5 +3708,17 @@
          y="897.64795"
          ry="0.99999148" />
     </g>
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1047.1773,944.68191 -12.0506,4.69517 3.0908,1.80977 3.5876,-1.92145 -2.6367,3.35143 0.817,3.98538 z"
+       id="path4983"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="display:inline;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1063.2053,944.69908 -12.0506,4.69517 3.0908,1.80977 3.5876,-1.92145 -2.6367,3.35143 0.817,3.98538 z"
+       id="path4983-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
   </g>
 </svg>

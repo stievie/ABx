@@ -149,3 +149,8 @@ const String& NewMailWindow::GetSubject() const
 {
     return subject_->GetText();
 }
+
+void NewMailWindow::FocusBody()
+{
+    mailBody_->SetFocus(true);
+}

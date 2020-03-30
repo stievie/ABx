@@ -39,7 +39,7 @@ const float CAMERA_INITIAL_DIST = 10.0f;
 const float CAMERA_MAX_DIST = 40.0f;
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
-class Player : public Actor
+class Player final : public Actor
 {
     URHO3D_OBJECT(Player, Actor)
 public:

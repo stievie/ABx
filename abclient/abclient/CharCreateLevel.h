@@ -24,7 +24,7 @@
 #include "BaseLevel.h"
 
 /// Character creation
-class CharCreateLevel : public BaseLevel
+class CharCreateLevel final : public BaseLevel
 {
     URHO3D_OBJECT(CharCreateLevel, BaseLevel)
 public:

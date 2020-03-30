@@ -859,6 +859,7 @@ void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
         wnd->SetSubject(subj);
     wnd->SetVisible(true);
     wnd->BringToFront();
+    wnd->FocusBody();
 }
 
 void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)

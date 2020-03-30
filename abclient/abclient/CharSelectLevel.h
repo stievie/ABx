@@ -25,7 +25,7 @@
 #include "AddAccountKeyDialog.h"
 
 /// Character select
-class CharSelectLevel : public BaseLevel
+class CharSelectLevel final : public BaseLevel
 {
     URHO3D_OBJECT(CharSelectLevel, BaseLevel)
 public:

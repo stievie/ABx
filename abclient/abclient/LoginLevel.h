@@ -23,7 +23,7 @@
 
 #include "BaseLevel.h"
 
-class LoginLevel : public BaseLevel
+class LoginLevel final : public BaseLevel
 {
     URHO3D_OBJECT(LoginLevel, BaseLevel)
 public:
