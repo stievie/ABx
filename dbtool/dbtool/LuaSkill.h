@@ -21,7 +21,12 @@
 
 #pragma once
 
-#include <kaguya/kaguya.hpp>
+#include <sa/PragmaWarning.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
+#   include <lua.hpp>
+#   include <kaguya/kaguya.hpp>
+PRAGMA_WARNING_POP
 #include <stdint.h>
 
 class LuaSkill
