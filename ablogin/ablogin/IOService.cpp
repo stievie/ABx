@@ -149,7 +149,7 @@ bool IOService::SpawnService(AB::Entities::ServiceType type)
         return false;
 
     // To be able to spawn a service, there must be one already running of the same type.
-    // We tell this service then to spawn anoter instance.
+    // We tell this service then to spawn another instance.
     std::vector<AB::Entities::Service> services;
     if (GetServices(type, services) == 0)
         return false;
@@ -162,10 +162,10 @@ bool IOService::SpawnService(AB::Entities::ServiceType type)
 
     bool success = false;
     // Wait for it
-    sa::ConditionSleep([oldCount = services.size(), &type, &success]()
+    sa::ConditionSleep([&services, &type, &success]()
     {
         std::vector<AB::Entities::Service> services2;
-        if (GetServices(type, services2) > oldCount)
+        if (GetServices(type, services2) > static_cast<int>(services.size()))
         {
             success = true;
             return true;
