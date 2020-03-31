@@ -26,6 +26,7 @@
 #include "Game.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abshared/Mechanic.h>
 
 namespace Game {
 namespace Components {
@@ -55,6 +56,12 @@ bool SelectionComp::SelectObject(uint32_t targetId)
         return false;
     if (currObjectId_ == targetId)
         return true;
+
+    if (targetId != 0)
+    {
+        if (owner_.GetDistance(target) > RANGE_SELECT)
+            return false;
+    }
 
     currObjectId_ = targetId;
     if (target)
