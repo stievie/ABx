@@ -41,10 +41,10 @@
 				<attribute name="Is Visible" value="false" />
 				<element type="Window">
 					<attribute name="Position" value="20 -20" />
-					<attribute name="Size" value="80 23" />
+					<attribute name="Size" value="80 20" />
 					<attribute name="Pivot" value="0 0" />
 					<attribute name="Opacity" value="0.8" />
-					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Mode" value="Vertical" />
 					<attribute name="Layout Border" value="4 4 4 4" />
 					<attribute name="Image Rect" value="48 0 64 16" />
 					<attribute name="Border" value="4 4 4 4" />
@@ -55,6 +55,7 @@
 						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Font Size" value="9" />
 						<attribute name="Text" value="New Mail" />
 					</element>
 				</element>
@@ -77,10 +78,10 @@
 				<attribute name="Is Visible" value="false" />
 				<element type="Window">
 					<attribute name="Position" value="20 -20" />
-					<attribute name="Size" value="96 23" />
+					<attribute name="Size" value="96 20" />
 					<attribute name="Pivot" value="0 0" />
 					<attribute name="Opacity" value="0.8" />
-					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Mode" value="Vertical" />
 					<attribute name="Layout Border" value="4 4 4 4" />
 					<attribute name="Image Rect" value="48 0 64 16" />
 					<attribute name="Border" value="4 4 4 4" />
@@ -91,6 +92,7 @@
 						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Font Size" value="9" />
 						<attribute name="Text" value="Delete Mail" />
 					</element>
 				</element>
@@ -113,10 +115,10 @@
 				<attribute name="Is Visible" value="false" />
 				<element type="Window">
 					<attribute name="Position" value="20 -20" />
-					<attribute name="Size" value="112 23" />
+					<attribute name="Size" value="112 20" />
 					<attribute name="Pivot" value="0 0" />
 					<attribute name="Opacity" value="0.8" />
-					<attribute name="Layout Mode" value="Horizontal" />
+					<attribute name="Layout Mode" value="Vertical" />
 					<attribute name="Layout Border" value="4 4 4 4" />
 					<attribute name="Image Rect" value="48 0 64 16" />
 					<attribute name="Border" value="4 4 4 4" />
@@ -127,6 +129,7 @@
 						<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 						<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+						<attribute name="Font Size" value="9" />
 						<attribute name="Text" value="Reply to Mail" />
 					</element>
 				</element>

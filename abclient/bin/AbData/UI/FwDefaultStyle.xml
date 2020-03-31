@@ -629,16 +629,19 @@
         <attribute name="Image Rect" value="224 32 240 48" />
     </element>
     <element type="EditorAttributeEdit" style="LineEdit" auto="false" />
+    <element type="ToolTipText" style="Text">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
+        <attribute name="Font Size" value="9" />
+    </element>
+    <element type="ToolTipWindow" style="Window">
+        <attribute name="Opacity" value="0.8" />
+    </element>
     <element type="ToolTipBorderImage" style="BorderImage">
         <attribute name="Layout Mode" value="Horizontal" />
         <attribute name="Layout Border" value="6 2 6 2" />
         <attribute name="Image Rect" value="48 0 64 16" />
         <attribute name="Border" value="4 4 4 4" />
         <attribute name="Color" value="0.1 0.1 0.1" />
-    </element>
-    <element type="ToolTipText" style="Text">
-        <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
-        <attribute name="Font Size" value="10" />
     </element>
     <element type="ViewportBorder" style="BorderImage">
         <attribute name="Image Rect" value="50 5 51 6" />

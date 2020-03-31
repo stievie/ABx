@@ -183,6 +183,7 @@ void MailWindow::HandleReplyClicked(StringHash, VariantMap&)
         VariantMap& e = GetEventDataMap();
         e[P_RECIPIENT] = from;
         e[P_SUBJECT] = subject;
+        e[P_BODY] = mailBody_->GetText();
         SendEvent(Events::E_SC_REPLYMAIL, e);
     }
 }

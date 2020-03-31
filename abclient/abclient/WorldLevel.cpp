@@ -857,6 +857,17 @@ void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
         wnd->SetSubject("Re: " + subj);
     else
         wnd->SetSubject(subj);
+
+    const String& body = eventData[P_BODY].GetString();
+    if (!body.Empty())
+    {
+        Vector<String> bodyLines = body.Split('\n', true);
+        String newBody = "\n\n";
+        for (auto& l : bodyLines)
+            newBody += "> " + l + "\n";
+        wnd->SetBody(newBody);
+    }
+
     wnd->SetVisible(true);
     wnd->BringToFront();
     wnd->FocusBody();
@@ -875,10 +886,13 @@ void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)
 void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
+    NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
     wnd->SetVisible(!wnd->IsVisible());
     if (wnd->IsVisible())
+    {
         wnd->BringToFront();
+        wnd->FocusRecipient();
+    }
 }
 
 void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)

@@ -154,3 +154,14 @@ void NewMailWindow::FocusBody()
 {
     mailBody_->SetFocus(true);
 }
+
+void NewMailWindow::SetBody(const String& value)
+{
+    mailBody_->SetText(value);
+}
+
+void NewMailWindow::FocusRecipient()
+{
+    recipient_->GetTextElement()->SetSelection(0);
+    recipient_->SetFocus(true);
+}
