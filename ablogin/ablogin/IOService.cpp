@@ -160,19 +160,34 @@ bool IOService::SpawnService(AB::Entities::ServiceType type)
     if (!msgClient->Write(msg))
         return false;
 
-    bool success = false;
-    // Wait for it
-    sa::ConditionSleep([&services, &type, &success]()
+    auto isNew = [&](const std::vector<AB::Entities::Service>& _services)
     {
-        std::vector<AB::Entities::Service> services2;
-        if (GetServices(type, services2) > static_cast<int>(services.size()))
+        for (const auto& s : _services)
         {
-            success = true;
-            return true;
+            const auto it = std::find_if(services.begin(), services.end(), [&s](const AB::Entities::Service& current)
+            {
+                return s.uuid.compare(current.uuid) == 0;
+            });
+            if (it == services.end())
+                return true;
         }
         return false;
-    }, 5000);
-    return success;
+    };
+
+    // Wait for it
+    return sa::ConditionSleep([&]()
+    {
+        std::vector<AB::Entities::Service> services2;
+        if (GetServices(type, services2) > 0)
+        {
+            // If there is a service previously not in the services list,
+            // assume we spawned it and return success.
+            if (isNew(services2))
+                return true;
+            return false;
+        }
+        return false;
+    }, 2000);
 }
 
 }

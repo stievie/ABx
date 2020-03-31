@@ -26,9 +26,9 @@
 
 namespace sa {
 
-/// This thread sleeps until pred returns true
+/// This thread sleeps until pred returns true. Returns true when pred returned true, and false when timed out.
 template<typename Predicate>
-void ConditionSleep(Predicate&& pred, unsigned maxWait = 0)
+bool ConditionSleep(Predicate&& pred, unsigned maxWait = 0)
 {
     using namespace std::chrono_literals;
     unsigned waited = 0;
@@ -37,8 +37,9 @@ void ConditionSleep(Predicate&& pred, unsigned maxWait = 0)
         std::this_thread::sleep_for(100ms);
         waited += 100;
         if (maxWait != 0 && waited >= maxWait)
-            break;
+            return false;
     }
+    return true;
 }
 
 }
