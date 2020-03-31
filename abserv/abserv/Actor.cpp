@@ -365,7 +365,7 @@ void Actor::_LuaSetHomePos(const Math::STLVector3& pos)
 {
     homePos_ = pos;
     if (Math::Equals(homePos_.y_, 0.0f))
-        homePos_.y_ = GetGame()->map_->GetTerrainHeight(homePos_);
+        GetGame()->map_->UpdatePointHeight(homePos_);
 }
 
 void Actor::_LuaHeadTo(const Math::STLVector3& pos)
@@ -922,7 +922,7 @@ void Actor::_LuaGotoPosition(const Math::STLVector3& pos)
 
     Math::Vector3 _pos(pos);
     if (Math::Equals(_pos.y_, 0.0f))
-        _pos.y_ = GetGame()->map_->GetTerrainHeight(_pos);
+        GetGame()->map_->UpdatePointHeight(_pos);
     GotoPosition(_pos);
 }
 
