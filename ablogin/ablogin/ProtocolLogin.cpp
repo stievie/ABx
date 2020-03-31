@@ -393,7 +393,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     }
 
     AB::Entities::Service gameServer;
-    if (!IO::IOService::GetService(
+    if (!IO::IOService::EnsureService(
         AB::Entities::ServiceTypeGameServer,
         gameServer,
         account.currentServerUuid))
@@ -403,7 +403,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     }
 
     AB::Entities::Service fileServer;
-    if (!IO::IOService::GetService(
+    if (!IO::IOService::EnsureService(
         AB::Entities::ServiceTypeFileServer,
         fileServer))
     {

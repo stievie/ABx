@@ -16,3 +16,4 @@ max_packets_per_second = 60
 
 require("config/data_server")
 require("config/login")
+require("config/msg_server")

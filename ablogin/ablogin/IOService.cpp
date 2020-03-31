@@ -27,6 +27,8 @@
 #include <abscommon/Logger.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <abscommon/MessageClient.h>
+#include <sa/ConditionSleep.h>
 
 namespace IO {
 
@@ -95,6 +97,17 @@ bool IOService::GetService(AB::Entities::ServiceType type,
     return false;
 }
 
+bool IOService::EnsureService(AB::Entities::ServiceType type,
+    AB::Entities::Service& service,
+    const std::string& preferredUuid)
+{
+    if (GetService(type, service, preferredUuid))
+        return true;
+    if (!SpawnService(type))
+        return false;
+    return GetService(type, service, preferredUuid);
+}
+
 int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entities::Service>& services)
 {
     DataClient* dc = GetSubsystem<IO::DataClient>();
@@ -127,6 +140,39 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
         }
     }
     return result;
+}
+
+bool IOService::SpawnService(AB::Entities::ServiceType type)
+{
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
+    if (!msgClient)
+        return false;
+
+    // To be able to spawn a service, there must be one already running of the same type.
+    // We tell this service then to spawn anoter instance.
+    std::vector<AB::Entities::Service> services;
+    if (GetServices(type, services) == 0)
+        return false;
+
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::Spawn;
+    msg.SetBodyString(services[0].uuid);
+    if (!msgClient->Write(msg))
+        return false;
+
+    bool success = false;
+    // Wait for it
+    sa::ConditionSleep([oldCount = services.size(), &type, &success]()
+    {
+        std::vector<AB::Entities::Service> services2;
+        if (GetServices(type, services2) > oldCount)
+        {
+            success = true;
+            return true;
+        }
+        return false;
+    }, 5000);
+    return success;
 }
 
 }

@@ -23,6 +23,7 @@
 
 #include <abscommon/ServerApp.h>
 #include <abscommon/Service.h>
+#include <abscommon/MessageClient.h>
 
 class Application final : public ServerApp
 {
@@ -33,6 +34,7 @@ private:
     void PrintServerInfo();
     void HeartBeatTask();
     void ShowLogo();
+    void HandleMessage(const Net::MessageMsg& msg);
 protected:
     void ShowVersion() override;
 public:

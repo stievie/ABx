@@ -37,8 +37,12 @@ public:
     static bool GetService(AB::Entities::ServiceType type,
         AB::Entities::Service& service,
         const std::string& preferredUuid = Utils::Uuid::EMPTY_UUID);
+    static bool EnsureService(AB::Entities::ServiceType type,
+        AB::Entities::Service& service,
+        const std::string& preferredUuid = Utils::Uuid::EMPTY_UUID);
     static int GetServices(AB::Entities::ServiceType type,
         std::vector<AB::Entities::Service>& services);
+    static bool SpawnService(AB::Entities::ServiceType type);
 };
 
 }

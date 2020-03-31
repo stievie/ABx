@@ -40,7 +40,6 @@
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
 
-
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
@@ -62,6 +61,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     Subsystems::Instance.CreateSubsystem<Crypto::Random>();
     Subsystems::Instance.CreateSubsystem<Crypto::DHKeys>();
@@ -144,6 +144,21 @@ bool Application::LoadMain()
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Connecting to message server...";
+    const std::string& msgHost = config->GetGlobalString("message_host", "");
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobalInt("message_port", 0ll));
+
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
+    msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    if (msgClient->IsConnected())
+        LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to connect to message server" << std::endl;
+    }
+
     if (serverName_.empty() || serverName_.compare("generic") == 0)
     {
         serverName_ = GetFreeName(dataClient);
@@ -182,6 +197,7 @@ bool Application::LoadMain()
 void Application::PrintServerInfo()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
@@ -200,6 +216,7 @@ void Application::PrintServerInfo()
     LOG_INFO << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
+    LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
 }
 
 void Application::HeartBeatTask()
@@ -259,6 +276,10 @@ void Application::ShowLogo()
     std::cout << std::endl;
 }
 
+void Application::HandleMessage(const Net::MessageMsg&)
+{
+}
+
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
@@ -308,6 +329,8 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(AB::Entities::HEARTBEAT_INTERVAL, std::bind(&Application::HeartBeatTask, this))
     );
+    // If we want to receive messages, we need to send our ServerID to the message server.
+    SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -332,6 +355,9 @@ void Application::Stop()
         serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+
+        SendServerLeft(GetSubsystem<Net::MessageClient>(), serv);
+
         dataClient->Update(serv);
 
         AB::Entities::ServiceList sl;
