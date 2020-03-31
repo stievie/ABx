@@ -44,6 +44,7 @@ private:
     AB::GameProtocol::CreatureState newState_{ AB::GameProtocol::CreatureState::Idle };
     int64_t lastStateChange_;
     int64_t knockdownEndTime_{ 0 };
+    bool groupMaskChanged_{ false };
 public:
     StateComp() = delete;
     explicit StateComp(GameObject& owner) :
@@ -68,6 +69,7 @@ public:
     void Apply();
     /// Reset to idle state
     void Reset();
+    void GroupMaskChanged();
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
 };

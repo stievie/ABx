@@ -1238,6 +1238,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpa
     eData[P_SPEEDFACTOR] = packet.speed;
     eData[P_GROUPID] = packet.groupId;
     eData[P_GROUPPOS] = packet.groupPos;
+    eData[P_GROUPMASK] = packet.groupMask;
     eData[P_SCALE] = Vector3(packet.scale[0], packet.scale[1], packet.scale[2]);
 
     String d(packet.data.c_str(), static_cast<unsigned>(packet.data.length()));
@@ -1671,6 +1672,16 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSet
     eData[P_OBJECTID] = packet.id;
     eData[P_POSITION] = Vector3(packet.pos[0], packet.pos[1], packet.pos[2]);
     QueueEvent(Events::E_OBJECTSETPOSITION, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet)
+{
+    using namespace Events::ObjectGroupMaskChanged;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_GROUPMASK] = packet.groupMask;
+    QueueEvent(Events::E_OBJECTGROUPMASKCHAGED, eData);
 }
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)

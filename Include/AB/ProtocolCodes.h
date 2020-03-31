@@ -146,6 +146,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(GameObjectPingTarget)        \
     ENUMERATE_SERVER_PACKET_CODE(GameObjectDropItem)          \
     ENUMERATE_SERVER_PACKET_CODE(GameObjectSetPosition)       \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectGroupMaskChanged)  \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerRemoved)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerAdded)            \
@@ -446,6 +447,7 @@ enum ObjectSpawnFields : uint32_t
     ObjectSpawnFieldSpeed = 1 << 6,
     ObjectSpawnFieldGroupId = 1 << 7,
     ObjectSpawnFieldGroupPos = 1 << 8,
+    ObjectSpawnFieldGroupMask = 1 << 9,
 };
 
 /// What fields contains the data PropStream

@@ -171,6 +171,7 @@ private:
     void HandleLoadSkillTemplate(StringHash eventType, VariantMap& eventData);
     void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
     void HandleSetSkill(StringHash eventType, VariantMap& eventData);
+    void HandleGroupMaskChanged(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:
@@ -227,11 +228,32 @@ public:
 
     void ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value);
 
+    /// Get lower 16 bits of the group mask
+    uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
+    /// Get upper 16 bits of the group mask
+    uint32_t GetFoeMask() const { return groupMask_ >> 16; }
+
     bool IsEnemy(Actor* other) const
+    {
+
+        if (!other || other->undestroyable_)
+            return false;
+
+        if (groupId_ != 0 && groupId_ == other->groupId_)
+            // Return true if we have a matching bit of our foe mask in their friend mask
+            return false;
+        // Return true if we have a matching bit of our foe mask in their friend mask
+        return ((GetFoeMask() & other->GetFriendMask()) != 0);
+    }
+    bool IsAlly(Actor* other) const
     {
         if (!other || other->undestroyable_)
             return false;
-        return (other->groupId_ != groupId_);
+        if (groupId_ != 0 && groupId_ == other->groupId_)
+            // Same group members are always friends
+            return true;
+        // Return true if we have a matching bit of our foe mask in their friend mask
+        return ((GetFriendMask() & other->GetFriendMask()) != 0);
     }
     void HoverBegin() { hovered_ = true; }
     void HoverEnd() { hovered_ = false; }

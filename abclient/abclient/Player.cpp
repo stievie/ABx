@@ -36,6 +36,10 @@
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <abshared/Attributes.h>
 #include "ActorResourceBar.h"
+#include "TimeUtils.h"
+#include <abshared/Mechanic.h>
+#include <Urho3D/Container/Sort.h>
+#include "WorldLevel.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -46,6 +50,10 @@ Player::Player(Context* context) :
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(Player, HandleSkillsChanged));
+    SubscribeToEvent(Events::E_SC_SELECTNEXTFOE, URHO3D_HANDLER(Player, HandleSelectNextFoe));
+    SubscribeToEvent(Events::E_SC_SELECTPREVFOE, URHO3D_HANDLER(Player, HandleSelectPrevFoe));
+    SubscribeToEvent(Events::E_SC_SELECTNEXTALLY, URHO3D_HANDLER(Player, HandleSelectNextAlly));
+    SubscribeToEvent(Events::E_SC_SELECTPREVALLY, URHO3D_HANDLER(Player, HandleSelectPrevAlly));
 }
 
 Player::~Player()
@@ -115,6 +123,147 @@ void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)
     if (objectId != gameId_)
         return;
     SetSkillBarSkills();
+}
+
+void Player::GetFoeSelectionCandidates()
+{
+    foeSelectionCandidates_.Clear();
+    foeSelectedIndex_ = -1;
+    Octree* world = GetScene()->GetComponent<Octree>();
+    if (!world)
+        return;
+
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* level = lm->GetCurrentLevel<WorldLevel>();
+    if (!level)
+        return;
+
+    PODVector<Drawable*> result;
+    SphereOctreeQuery query(result, { node_->GetWorldPosition(), Game::RANGE_COMPASS });
+    world->GetDrawables(query);
+    const Vector3 pos = GetNode()->GetWorldPosition();
+    for (auto* drawable : result)
+    {
+        auto* object = level->GetObjectFromNode(drawable->GetNode());
+        if (!object || object == this)
+            continue;
+
+        if (!Is<Actor>(object))
+            continue;
+
+        if (object->gameId_ != 0 && IsEnemy(To<Actor>(object)))
+        {
+            float dist = pos.DistanceToPoint(object->GetNode()->GetWorldPosition());
+            foeSelectionCandidates_.Push({ dist, object->gameId_ });
+        }
+    }
+    Sort(foeSelectionCandidates_.Begin(), friendSelectionCandidates_.End(), [](const DistanceId& a, const DistanceId& b)
+    {
+        return a.distance < b.distance;
+    });
+}
+
+void Player::GetFriendSelectionCandidates()
+{
+    friendSelectionCandidates_.Clear();
+    friendSelectedIndex_ = -1;
+    Octree* world = GetScene()->GetComponent<Octree>();
+    if (!world)
+        return;
+
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* level = lm->GetCurrentLevel<WorldLevel>();
+    if (!level)
+        return;
+
+    PODVector<Drawable*> result;
+    SphereOctreeQuery query(result, { node_->GetWorldPosition(), Game::RANGE_COMPASS });
+    world->GetDrawables(query);
+    const Vector3 pos = GetNode()->GetWorldPosition();
+    for (auto* drawable : result)
+    {
+        auto* object = level->GetObjectFromNode(drawable->GetNode());
+        if (!object || object == this)
+            continue;
+
+        if (!Is<Actor>(object))
+            continue;
+
+        if (object->gameId_ != 0 && IsAlly(To<Actor>(object)))
+        {
+            float dist = pos.DistanceToPoint(object->GetNode()->GetWorldPosition());
+            friendSelectionCandidates_.Push({ dist, object->gameId_ });
+        }
+    }
+    Sort(friendSelectionCandidates_.Begin(), friendSelectionCandidates_.End(), [](const DistanceId& a, const DistanceId& b)
+    {
+        return a.distance < b.distance;
+    });
+}
+
+void Player::HandleSelectNextFoe(StringHash, VariantMap&)
+{
+    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.Empty() || foeSelectedIndex_ == -1)
+        GetFoeSelectionCandidates();
+    if (foeSelectionCandidates_.Size() == 0)
+        return;
+
+    lastFoeSelect_ = Client::AbTick();
+    ++foeSelectedIndex_;
+    if (static_cast<unsigned>(foeSelectedIndex_) > foeSelectionCandidates_.Size() - 1)
+        foeSelectedIndex_ = 0;
+
+    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    SelectObject(id);
+}
+
+void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
+{
+    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.Empty() || foeSelectedIndex_ == -1)
+        GetFoeSelectionCandidates();
+    if (foeSelectionCandidates_.Size() == 0)
+        return;
+
+    lastFoeSelect_ = Client::AbTick();
+
+    --foeSelectedIndex_;
+    if (foeSelectedIndex_ < 0)
+        foeSelectedIndex_ = foeSelectionCandidates_.Size() - 1;
+
+    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    SelectObject(id);
+}
+
+void Player::HandleSelectNextAlly(StringHash, VariantMap&)
+{
+    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.Empty() || friendSelectedIndex_ == -1)
+        GetFriendSelectionCandidates();
+    if (friendSelectionCandidates_.Size() == 0)
+        return;
+
+    lastFriendSelect_ = Client::AbTick();
+    ++friendSelectedIndex_;
+    if (static_cast<unsigned>(friendSelectedIndex_) > friendSelectionCandidates_.Size() - 1)
+        friendSelectedIndex_ = 0;
+
+    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    SelectObject(id);
+}
+
+void Player::HandleSelectPrevAlly(StringHash, VariantMap&)
+{
+    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.Empty() || friendSelectedIndex_ == -1)
+        GetFriendSelectionCandidates();
+    if (friendSelectionCandidates_.Size() == 0)
+        return;
+
+    lastFriendSelect_ = Client::AbTick();
+    --friendSelectedIndex_;
+    if (friendSelectedIndex_ < 0)
+        friendSelectedIndex_ = friendSelectionCandidates_.Size() - 1;
+
+    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    SelectObject(id);
 }
 
 void Player::SetSkillBarSkills()

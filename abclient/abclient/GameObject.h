@@ -71,6 +71,7 @@ public:
     bool playerSelected_{ false };
     uint32_t groupId_{ 0 };
     uint8_t groupPos_{ 0 };
+    uint32_t groupMask_{ 0 };
     SharedPtr<SoundSource3D> soundSource_;
 
     virtual void Unserialize(PropReadStream&) {}

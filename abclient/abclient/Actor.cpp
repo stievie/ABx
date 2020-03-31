@@ -65,6 +65,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_SET_ATTRIBUTEVALUE, URHO3D_HANDLER(Actor, HandleSetAttribValue));
     SubscribeToEvent(Events::E_LOAD_SKILLTEMPLATE, URHO3D_HANDLER(Actor, HandleLoadSkillTemplate));
     SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(Actor, HandleSetSkill));
+    SubscribeToEvent(Events::E_OBJECTGROUPMASKCHAGED, URHO3D_HANDLER(Actor, HandleGroupMaskChanged));
 }
 
 Actor::~Actor()
@@ -1350,4 +1351,13 @@ void Actor::HandleSetSkill(StringHash, VariantMap& eventData)
         eData[P_UPDATEALL] = false;
         SendEvent(Events::E_ACTOR_SKILLS_CHANGED, eData);
     }
+}
+
+void Actor::HandleGroupMaskChanged(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ObjectGroupMaskChanged;
+    if (eventData[P_OBJECTID].GetUInt() != gameId_)
+        return;
+
+    groupMask_ = eventData[P_GROUPMASK].GetUInt();
 }

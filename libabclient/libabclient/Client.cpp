@@ -842,6 +842,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPo
     receiver_.OnPacket(updateTick, packet);
 }
 
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)
 {
     receiver_.OnPacket(updateTick, packet);

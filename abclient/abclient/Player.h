@@ -81,9 +81,26 @@ private:
     SharedPtr<SoundSource3D> footstepsSource_;
     uint8_t lastMoveDir_{ AB::GameProtocol::MoveDirectionNone };
     uint8_t lastTurnDir_{ AB::GameProtocol::TurnDirectionNone };
+    int64_t lastFriendSelect_{ 0 };
+    int64_t lastFoeSelect_{ 0 };
+    int friendSelectedIndex_{ -1 };
+    int foeSelectedIndex_{ -1 };
+    struct DistanceId
+    {
+        float distance;
+        uint32_t id;
+    };
+    Vector<DistanceId> friendSelectionCandidates_;
+    Vector<DistanceId> foeSelectionCandidates_;
+    void GetFoeSelectionCandidates();
+    void GetFriendSelectionCandidates();
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
     void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
+    void HandleSelectNextFoe(StringHash eventType, VariantMap& eventData);
+    void HandleSelectPrevFoe(StringHash eventType, VariantMap& eventData);
+    void HandleSelectNextAlly(StringHash eventType, VariantMap& eventData);
+    void HandleSelectPrevAlly(StringHash eventType, VariantMap& eventData);
     void SetSkillBarSkills();
 };
 

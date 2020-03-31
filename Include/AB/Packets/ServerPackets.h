@@ -414,6 +414,7 @@ struct ObjectSpawn
     float speed { 0.0f };
     uint32_t groupId { 0 };
     uint8_t groupPos { 0 };
+    uint32_t groupMask{ 0 };
     std::string data;
 
     template<typename _Ar>
@@ -449,6 +450,8 @@ struct ObjectSpawn
             ar.value(groupId);
         if (validFields & ObjectSpawnFieldGroupPos)
             ar.value(groupPos);
+        if (validFields & ObjectSpawnFieldGroupMask)
+            ar.value(groupMask);
 
         ar.value(data);
     }
@@ -463,6 +466,18 @@ struct ObjectDespawn
     void Serialize(_Ar& ar)
     {
         ar.value(id);
+    }
+};
+
+struct ObjectGroupMaskChanged
+{
+    uint32_t id;
+    uint32_t groupMask;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(groupMask);
     }
 };
 

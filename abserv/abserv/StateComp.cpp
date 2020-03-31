@@ -24,6 +24,7 @@
 #include "GameObject.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include "Actor.h"
 
 namespace Game {
 namespace Components {
@@ -56,6 +57,11 @@ void StateComp::Apply()
 void StateComp::Reset()
 {
     SetState(AB::GameProtocol::CreatureState::Idle);
+}
+
+void StateComp::GroupMaskChanged()
+{
+    groupMaskChanged_ = true;
 }
 
 void StateComp::Update(uint32_t)
@@ -91,6 +97,16 @@ void StateComp::Write(Net::NetworkMessage& message)
             static_cast<uint8_t>(GetState())
         };
         AB::Packets::Add(packet, message);
+    }
+    if (groupMaskChanged_ && Is<Actor>(owner_))
+    {
+        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectGroupMaskChanged);
+        AB::Packets::Server::ObjectGroupMaskChanged packet = {
+            owner_.id_,
+            To<Actor>(owner_).groupMask_
+        };
+        AB::Packets::Add(packet, message);
+        groupMaskChanged_ = false;
     }
 }
 

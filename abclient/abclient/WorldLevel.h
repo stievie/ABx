@@ -71,6 +71,20 @@ public:
         return nullptr;
     }
     Actor* GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
+    /// Local Node IDs are not the same as Object IDs on the server.
+    GameObject* GetObjectFromNode(Node* node)
+    {
+        unsigned id = node->GetID();
+        uint32_t objectId = nodeIds_[id];
+        if (objectId == 0 && node->GetParent())
+        {
+            id = node->GetParent()->GetID();
+            objectId = nodeIds_[id];
+        }
+        if (objectId != 0)
+            return objects_[objectId].Get();
+        return nullptr;
+    }
 protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;
@@ -110,20 +124,6 @@ protected:
 private:
     IntVector2 mouseDownPos_;
     bool rmbDown_ { false };
-    /// Local Node IDs are not the same as Object IDs on the server.
-    GameObject* GetObjectFromNode(Node* node)
-    {
-        unsigned id = node->GetID();
-        uint32_t objectId = nodeIds_[id];
-        if (objectId == 0 && node->GetParent())
-        {
-            id = node->GetParent()->GetID();
-            objectId = nodeIds_[id];
-        }
-        if (objectId != 0)
-            return objects_[objectId].Get();
-        return nullptr;
-    }
     template<typename T>
     T* GetObjectAt(const IntVector2& pos)
     {
@@ -145,7 +145,7 @@ private:
                     if (auto* obj = GetObjectFromNode(nd))
                     {
                         if (Is<T>(obj))
-                        return To<T>(obj);
+                            return To<T>(obj);
                     }
                 }
             }
@@ -206,7 +206,7 @@ private:
     void SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::GameObjectType objectType, bool existing,
         const Vector3& position, const Vector3& scale, const Quaternion& rot,
         bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
-        uint32_t groupId, uint8_t groupPos,
+        uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
         PropReadStream& data);
 };
 

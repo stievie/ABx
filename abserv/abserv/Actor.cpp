@@ -405,11 +405,13 @@ void Actor::_LuaRemoveEffect(uint32_t index)
 void Actor::AddFriendFoe(uint32_t frnd, uint32_t foe)
 {
     groupMask_ |= (frnd | (foe << 16));
+    stateComp_.GroupMaskChanged();
 }
 
 void Actor::RemoveFriendFoe(uint32_t frnd, uint32_t foe)
 {
     groupMask_ &= ~(frnd | (foe << 16));
+    stateComp_.GroupMaskChanged();
 }
 
 Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
@@ -583,6 +585,9 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
         ObjectSpawnFieldUndestroyable | ObjectSpawnFieldSelectable | ObjectSpawnFieldState |
         ObjectSpawnFieldSpeed | ObjectSpawnFieldGroupId | ObjectSpawnFieldGroupPos;
 
+    if (groupMask_ != 0)
+        validFields |= ObjectSpawnFieldGroupMask;
+
     msg.Add<uint32_t>(validFields);
 
     msg.Add<float>(transformation_.position_.x_);
@@ -598,6 +603,8 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(GetSpeed());
     msg.Add<uint32_t>(GetGroupId());
     msg.Add<uint8_t>(static_cast<uint8_t>(GetGroupPos()));
+    if (groupMask_ != 0)
+        msg.Add<uint32_t>(groupMask_);
     IO::PropWriteStream data;
     size_t dataSize;
     Serialize(data);
