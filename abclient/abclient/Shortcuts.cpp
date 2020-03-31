@@ -243,6 +243,8 @@ void Shortcuts::Init()
     // Select
     shortcuts_[Events::E_SC_SELECTSELF] = ShortcutEvent(Events::E_SC_SELECTSELF, "Select Self", Trigger::Down);
     shortcuts_[Events::E_SC_SELECTTARGET] = ShortcutEvent(Events::E_SC_SELECTTARGET, "Select Target", Trigger::Down, "Select called target");
+    shortcuts_[Events::E_SC_SELECTCLOSESTFOE] = ShortcutEvent(Events::E_SC_SELECTCLOSESTFOE, "Select closest Foe", Trigger::Down);
+    shortcuts_[Events::E_SC_SELECTCLOSESTFRIEND] = ShortcutEvent(Events::E_SC_SELECTCLOSESTFRIEND, "Select closest Ally", Trigger::Down);
     shortcuts_[Events::E_SC_SELECTNEXTFOE] = ShortcutEvent(Events::E_SC_SELECTNEXTFOE, "Select next Foe", Trigger::Down);
     shortcuts_[Events::E_SC_SELECTPREVFOE] = ShortcutEvent(Events::E_SC_SELECTPREVFOE, "Select previous Foe", Trigger::Down);
     shortcuts_[Events::E_SC_SELECTNEXTALLY] = ShortcutEvent(Events::E_SC_SELECTNEXTALLY, "Select next Ally", Trigger::Down);

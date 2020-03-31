@@ -97,6 +97,8 @@ private:
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
     void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
+    void HandleSelectClosestFoe(StringHash eventType, VariantMap& eventData);
+    void HandleSelectClosestAlly(StringHash eventType, VariantMap& eventData);
     void HandleSelectNextFoe(StringHash eventType, VariantMap& eventData);
     void HandleSelectPrevFoe(StringHash eventType, VariantMap& eventData);
     void HandleSelectNextAlly(StringHash eventType, VariantMap& eventData);

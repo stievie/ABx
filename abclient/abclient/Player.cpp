@@ -50,6 +50,8 @@ Player::Player(Context* context) :
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(Player, HandleSkillsChanged));
+    SubscribeToEvent(Events::E_SC_SELECTCLOSESTFOE, URHO3D_HANDLER(Player, HandleSelectClosestFoe));
+    SubscribeToEvent(Events::E_SC_SELECTCLOSESTFRIEND, URHO3D_HANDLER(Player, HandleSelectClosestAlly));
     SubscribeToEvent(Events::E_SC_SELECTNEXTFOE, URHO3D_HANDLER(Player, HandleSelectNextFoe));
     SubscribeToEvent(Events::E_SC_SELECTPREVFOE, URHO3D_HANDLER(Player, HandleSelectPrevFoe));
     SubscribeToEvent(Events::E_SC_SELECTNEXTALLY, URHO3D_HANDLER(Player, HandleSelectNextAlly));
@@ -199,6 +201,30 @@ void Player::GetFriendSelectionCandidates()
     {
         return a.distance < b.distance;
     });
+}
+
+void Player::HandleSelectClosestAlly(StringHash, VariantMap&)
+{
+    friendSelectionCandidates_.Clear();
+    GetFriendSelectionCandidates();
+    lastFriendSelect_ = Client::AbTick();
+    if (friendSelectionCandidates_.Size() == 0)
+        return;
+    friendSelectedIndex_ = 0;
+    uint32_t id = friendSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    SelectObject(id);
+}
+
+void Player::HandleSelectClosestFoe(StringHash, VariantMap&)
+{
+    foeSelectionCandidates_.Clear();
+    GetFoeSelectionCandidates();
+    lastFoeSelect_ = Client::AbTick();
+    if (foeSelectionCandidates_.Size() == 0)
+        return;
+    foeSelectedIndex_ = 0;
+    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    SelectObject(id);
 }
 
 void Player::HandleSelectNextFoe(StringHash, VariantMap&)
