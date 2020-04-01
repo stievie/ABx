@@ -144,9 +144,6 @@
     <ClInclude Include="FriendListWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AntiRE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameMessagesWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>

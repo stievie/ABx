@@ -334,7 +334,6 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorResourceBar.h" />
     <ClInclude Include="AddAccountKeyDialog.h" />
-    <ClInclude Include="AntiRE.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />

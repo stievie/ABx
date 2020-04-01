@@ -22,7 +22,6 @@
 #include "stdafx.h"
 
 #include "ClientApp.h"
-#include "AntiRE.h"
 #include "CharCreateLevel.h"
 #include "CharSelectLevel.h"
 #include "ChatWindow.h"
@@ -282,12 +281,6 @@ void ClientApp::Setup()
 */
 void ClientApp::Start()
 {
-#if defined(_WIN32) && !defined(_DEBUG)
-    if (AntiRE::IsDebuggee())
-    {
-        ErrorExit("Please don't debug this program.");
-    }
-#endif
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     SetRandomSeed(Time::GetSystemTime());

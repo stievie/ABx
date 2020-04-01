@@ -400,11 +400,11 @@ void Actor::Update(float timeStep)
     if (hpBar_ && !undestroyable_)
     {
         hpBar_->SetValues(stats_.maxHealth, stats_.health);
-        hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
+        hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_ || highlight);
     }
     else if (classLevel_)
     {
-        classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
+        classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_ || highlight);
     }
     if (IsSpeechBubbleVisible())
     {
