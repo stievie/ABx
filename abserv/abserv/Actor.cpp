@@ -934,6 +934,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     stateComp_.Update(timeElapsed);
     resourceComp_->Update(timeElapsed);
     inputComp_->Update(timeElapsed, message);
+    selectionComp_->Update(timeElapsed);
 
     attackComp_->Update(timeElapsed);
     skillsComp_->Update(timeElapsed);

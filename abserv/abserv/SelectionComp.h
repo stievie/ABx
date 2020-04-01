@@ -53,6 +53,7 @@ public:
     bool SelectObject(uint32_t targetId);
     bool ClickObject(uint32_t targetId);
 
+    void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
     uint32_t GetSelectedObjectId() const { return currObjectId_; }
     GameObject* GetSelectedObject() const;

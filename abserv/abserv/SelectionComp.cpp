@@ -33,6 +33,16 @@ namespace Components {
 
 SelectionComp::~SelectionComp() = default;
 
+void SelectionComp::Update(uint32_t)
+{
+    auto* object = GetSelectedObject();
+    if (object)
+    {
+        if (owner_.GetDistance(object) > RANGE_SELECT)
+            SelectObject(0);
+    }
+}
+
 void SelectionComp::Write(Net::NetworkMessage& message)
 {
     if (prevObjectId_ == currObjectId_)
