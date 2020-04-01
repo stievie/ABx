@@ -38,6 +38,9 @@
 #endif
 
 // Configurations shared by the server and client
+#define AB_VERSION_CREATE(major, minor) (((major) << 8) | (minor))
+#define AB_VERSION_GET_MAJOR(version) (((version) >> 8) & 0xFF)
+#define AB_VERSION_GET_MINOR(version) ((version) & 0xFF)
 
 #define CURRENT_YEAR 2020
 
