@@ -388,6 +388,7 @@ void Application::Run()
     serv.startTime = startTime_;
     serv.temporary = temporary_;
     serv.heartbeat = Utils::Tick();
+    serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;

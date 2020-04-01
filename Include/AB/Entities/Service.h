@@ -62,6 +62,7 @@ struct Service : Entity
     {
         s.ext(*this, BaseClass<Entity>{});
         s.text1b(name, Limits::MAX_SERVICE_NAME);
+        s.value4b(version);
         s.value1b(type);
         s.text1b(location, Limits::MAX_SERVICE_LOCATION);
         s.text1b(host, Limits::MAX_SERVICE_HOST);
@@ -81,6 +82,7 @@ struct Service : Entity
     }
 
     std::string name;
+    uint32_t version{ 0 };
     ServiceType type = ServiceTypeUnknown;
     std::string location;
     std::string host;

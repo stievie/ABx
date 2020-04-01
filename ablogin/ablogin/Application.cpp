@@ -321,6 +321,7 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.startTime = Utils::Tick();
     serv.heartbeat = Utils::Tick();
+    serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;

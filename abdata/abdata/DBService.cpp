@@ -37,7 +37,7 @@ bool DBService::Create(AB::Entities::Service& s)
 
     query << "INSERT INTO `services` (`uuid`, `name`, `type`, `location`, `host`, `port`, " <<
         "`status`, `start_time`, `stop_time`, `run_time`, " <<
-        " `machine`, `file`, `path`, `arguments`) VALUES(";
+        " `machine`, `file`, `path`, `arguments`, `version`) VALUES(";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
@@ -52,7 +52,8 @@ bool DBService::Create(AB::Entities::Service& s)
     query << db->EscapeString(s.machine) << ", ";
     query << db->EscapeString(s.file) << ", ";
     query << db->EscapeString(s.path) << ", ";
-    query << db->EscapeString(s.arguments);
+    query << db->EscapeString(s.arguments) << ", ";
+    query << s.version;
 
     query << ")";
 
@@ -102,6 +103,7 @@ bool DBService::Load(AB::Entities::Service& s)
     s.file = result->GetString("file");
     s.path = result->GetString("path");
     s.arguments = result->GetString("arguments");
+    s.version = result->GetUInt("version");
 
     return true;
 }
@@ -130,7 +132,8 @@ bool DBService::Save(const AB::Entities::Service& s)
     query << " `machine` = " << db->EscapeString(s.machine) << ", ";
     query << " `file` = " << db->EscapeString(s.file) << ", ";
     query << " `path` = " << db->EscapeString(s.path) << ", ";
-    query << " `arguments` = " << db->EscapeString(s.arguments);
+    query << " `arguments` = " << db->EscapeString(s.arguments) << ", ";
+    query << " `version` = " << s.version;
 
     query << " WHERE `uuid` = " << db->EscapeString(s.uuid);
 
