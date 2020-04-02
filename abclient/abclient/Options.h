@@ -64,7 +64,6 @@ public:
     String username_;
     String password_;
     Vector<Environment> environments_;
-    String dataPath_;
 
     bool stickCameraToHead_{ true };
     bool disableMouseWalking_{ false };

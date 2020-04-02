@@ -120,7 +120,6 @@ ClientApp::ClientApp(Context* context) :
     if  (pos != String::NPOS)
         appPath_ = exeName_.Substring(0, pos);
 #endif
-    options_->dataPath_ = appPath_;
 
     const Vector<String>& args = GetArguments();
     decltype(args.Size()) i = 0;
@@ -237,6 +236,13 @@ ClientApp::ClientApp(Context* context) :
 void ClientApp::Setup()
 {
     Options* options = GetSubsystem<Options>();
+    // The directory for data files downloaded from the server.
+    String gameDataDir = AddTrailingSlash(options->GetPrefPath()) + "GameData";
+    if (!Options::CreateDir(gameDataDir))
+    {
+        ErrorExit("Unable to create directory " + gameDataDir);
+    }
+
     // These parameters should be self-explanatory.
     // See http://urho3d.github.io/documentation/1.5/_main_loop.html
     // for a more complete list.
@@ -257,6 +263,7 @@ void ClientApp::Setup()
     engineParameters_[EP_TEXTURE_ANISOTROPY] = options->GetTextureAnisotropyLevel();
     engineParameters_[EP_SHADOWS] = options->GetShadows();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
+    engineParameters_[EP_RESOURCE_PREFIX_PATHS] = "./;" + options->GetPrefPath();
     engineParameters_[EP_RESOURCE_PATHS] = "AbData;SoundData;GameData;CoreData;Data";
     engineParameters_[EP_LOG_NAME] = "fw.log";
 #if defined(AB_CLIENT_LOGGING)

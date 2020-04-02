@@ -879,7 +879,7 @@ bool Options::CreateDir(const String& path)
 
 String Options::GetDataFile(const String& file) const
 {
-    String result = dataPath_;
+    String result = GetPrefPath();
     if (result.Back() != '/' && result.Back() != '\\' &&
         file.Front() != '/' && file.Front() != '\\')
         result += "/";
