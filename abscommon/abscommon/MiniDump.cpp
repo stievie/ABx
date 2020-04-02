@@ -23,12 +23,17 @@
 #include "stdafx.h"
 #include "Logger.h"
 #include <filesystem>
+#include "MiniDump.h"
+
+namespace System {
 
 std::string GetDumpDir()
 {
     if (!IO::Logger::logDir_.empty())
         return IO::Logger::logDir_;
     return std::filesystem::temp_directory_path().string();
+}
+
 }
 
 #if defined(AB_WINDOWS)
@@ -45,8 +50,6 @@ PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4091)
 #include <DbgHelp.h>
 PRAGMA_WARNING_POP
-#include "Logger.h"
-#include "MiniDump.h"
 
 namespace System {
 
