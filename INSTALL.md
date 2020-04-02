@@ -55,7 +55,6 @@ bin
   - Autoload
   - CoreData
   - Data
-  - GameData
   - SoundData
 ~~~
 3. On Windows copy the required libraries to the `abclient/bin` directory:

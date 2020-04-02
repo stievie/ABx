@@ -170,29 +170,6 @@ StdOut.
 Install the services with the `-install` command line switch. Use `-remove` to
 uninstall it.
 
-### MySQL
-
-You may want to increase `max_allowed_packet` in `my.cnf` / `my.ini`  in the `[mysqld]`
-section to e.g. `32M`, if the data server loses connection from time to time.
-
-~~~ini
-[mysqld]
-# ...
-max_allowed_packet = 32M
-~~~
-
-Also adding `skip-name-resolve` to `[mysqld]` may be a good idea.
-
-~~~ini
-[mysqld]
-# ...
-skip-name-resolve
-~~~
-
-### PostgreSQL
-
-Doesn't need any special attention. Works with PostreSQL 9 to 11.
-
 ### Structure of `Bin/data` directory
 
 ~~~plain
