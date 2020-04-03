@@ -165,6 +165,7 @@ public:
 
 }
 
+#define LOG_PLAIN (IO::Logger::Instance())
 #define LOG_INFO (IO::Logger::Instance().Info())
 #define LOG_WARNING (IO::Logger::Instance().Warning() << AB_PRETTY_FUNCTION << ": ")
 #define LOG_ERROR (IO::Logger::Instance().Error() << AB_PRETTY_FUNCTION << ": ")

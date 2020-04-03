@@ -566,7 +566,7 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
             if (attrib)
                 sepText = String(attrib->name.c_str());
             else
-                sepText = "No Attribute";
+                sepText = "None";
             Text* sep = lv->CreateChild<Text>();
             sep->SetInternal(true);
             sep->SetText(sepText);
@@ -654,11 +654,17 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
     };
 
     lv->RemoveAllItems();
+    std::vector<AB::Entities::Skill> noAttributeSkills;
     // All Players have a primary profession
     sm->VisistSkillsByProfession(actor.profession_->uuid, [&](const AB::Entities::Skill& skill)
     {
         if (haveAccess(skill))
-            createItem(skill);
+        {
+            if (skill.attributeUuid.compare(AB::Entities::ATTRIBUTE_NONE_UUID) != 0)
+                createItem(skill);
+            else
+                noAttributeSkills.push_back(skill);
+        }
         return Iteration::Continue;
     });
     // And may have a secondary profession
@@ -667,9 +673,18 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
         sm->VisistSkillsByProfession(actor.profession2_->uuid, [&](const AB::Entities::Skill& skill)
         {
             if (haveAccess(skill))
-                createItem(skill);
+            {
+                if (skill.attributeUuid.compare(AB::Entities::ATTRIBUTE_NONE_UUID) != 0)
+                    createItem(skill);
+                else
+                    noAttributeSkills.push_back(skill);
+            }
             return Iteration::Continue;
         });
+    }
+    for (const auto& skill : noAttributeSkills)
+    {
+        createItem(skill);
     }
     // Lastly add skills that all professions can have
     sm->VisistSkillsByProfession(AB::Entities::PROFESSION_NONE_UUID, [&](const AB::Entities::Skill& skill)

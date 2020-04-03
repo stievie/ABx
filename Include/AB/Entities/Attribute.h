@@ -28,6 +28,7 @@ namespace AB {
 namespace Entities {
 
 static constexpr auto KEY_ATTRIBUTES = "game_attributes";
+inline constexpr auto ATTRIBUTE_NONE_UUID = "4e8d25fe-50f7-11e8-a7ca-02100700d6f0";
 
 struct Attribute : Entity
 {

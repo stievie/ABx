@@ -161,7 +161,7 @@ void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionP
     DWORD disp;
     IMAGEHLP_LINE64 *line;
 
-    std::ofstream out(fileName);
+    std::stringstream out;
     out << "*** Exception 0x" << std::hex << exceptionPointers->ExceptionRecord->ExceptionCode <<
         " " << GetExceptionDescription(exceptionPointers->ExceptionRecord->ExceptionCode) <<
         " at 0x" << std::hex << exceptionPointers->ExceptionRecord->ExceptionAddress <<
@@ -264,6 +264,14 @@ void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionP
 
         free(line);
         line = NULL;
+    }
+
+    LOG_PLAIN << out.str();
+
+    if (!fileName.empty())
+    {
+        std::ofstream fileout(fileName);
+        fileout << out.str();
     }
 }
 

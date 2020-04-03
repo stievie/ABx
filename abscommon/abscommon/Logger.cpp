@@ -139,15 +139,15 @@ Logger& Logger::Warning()
 #if defined(PROFILING)
 Logger& Logger::Profile()
 {
-    static Color::Modifier blue(Color::FG_LIGHTBLUE);
+    static Color::Modifier green(Color::FG_LIGHTGREEN);
     if (nextIsBegin_)
     {
         if (mode_ == Mode::Stream)
         {
 #if !defined(AB_WINDOWS)
-            stream_ << blue;
+            stream_ << green;
 #else
-            SetConsoleTextAttribute(hConsole_, blue.code_);
+            SetConsoleTextAttribute(hConsole_, green.code_);
 #endif
         }
         (*this) << "[Profile] ";
