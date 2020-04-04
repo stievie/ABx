@@ -208,7 +208,10 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SKILL_ERROR_CODE(SkillErrorNoAdrenaline)                \
     ENUMERATE_SKILL_ERROR_CODE(SkillErrorRecharging)                  \
     ENUMERATE_SKILL_ERROR_CODE(SkillErrorTargetUndestroyable)         \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorCannotUseSkill)
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorCannotUseSkill)              \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNotAppropriate)
+// SkillErrorNotAppropriate is not really an error, using the skill succeeds,
+// but it doesn't make sense to use it.
 
 enum class ErrorCodes : uint8_t
 {
@@ -388,7 +391,6 @@ enum SkillError : uint8_t
 #define ENUMERATE_SKILL_ERROR_CODE(v) v,
     ENUMERATE_SKILL_ERROR_CODES
 #undef ENUMERATE_SKILL_ERROR_CODE
-    SkillErrorNotAppropriate = 255, // not an error but does not make sense to use it
 };
 
 enum AttackError : uint8_t

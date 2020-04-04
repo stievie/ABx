@@ -898,6 +898,8 @@ void Actor::UpdateMoveSpeed()
             PlayAnimation(ANIM_WALK, true, 0.0f, WALK_ANIM_SPEED(speedFactor_));
         break;
     }
+    default:
+        break;
     }
 
     // Change speed of currently running animations

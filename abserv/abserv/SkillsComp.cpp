@@ -39,8 +39,6 @@ static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
         ENUMERATE_SKILL_ERROR_CODES
 #undef ENUMERATE_SKILL_ERROR_CODE
     }
-    if (error == AB::GameProtocol::SkillErrorNotAppropriate)
-        return "SkillErrorNotAppropriate";
     return "(Unknown)";
 }
 
