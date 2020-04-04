@@ -183,6 +183,7 @@ protected:
     /// Footsteps etc.
     HashMap<StringHash, String> sounds_;
     WeakPtr<GameObject> selectedObject_;
+    StringHash currentAnimation_;
 public:
     static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
     Vector3 moveToPos_;

@@ -887,6 +887,19 @@ void Actor::UpdateMoveSpeed()
     if (!animController_)
         return;
 
+    switch (creatureState_)
+    {
+    case AB::GameProtocol::CreatureState::Moving:
+    {
+        if (speedFactor_ > 0.5f && currentAnimation_ != ANIM_RUN)
+            PlayAnimation(ANIM_RUN, true, 0.0f, RUN_ANIM_SPEED(speedFactor_));
+        else if (currentAnimation_ != ANIM_WALK)
+            // speed / 2 -> walk animation -> playing at normal speed = speed * 2
+            PlayAnimation(ANIM_WALK, true, 0.0f, WALK_ANIM_SPEED(speedFactor_));
+        break;
+    }
+    }
+
     // Change speed of currently running animations
     const String& aniRun = animations_[ANIM_RUN];
     if (!aniRun.Empty())
@@ -905,12 +918,16 @@ void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float 
     const String& ani = animations_[animation];
     if (!ani.Empty())
     {
+        currentAnimation_ = animation;
         animController_->PlayExclusive(ani, 0, looped, fadeTime);
         // Play adds the animation then we can set the speed of it
         animController_->SetSpeed(ani, speed);
     }
     else
+    {
         animController_->StopAll();
+        currentAnimation_ = StringHash::ZERO;
+    }
 }
 
 void Actor::PlayObjectAnimation(bool looped, float fadeTime, float speed)
