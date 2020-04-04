@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="51" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787129" />
-	<attribute name="Next Local Component ID" value="16788634" />
+	<attribute name="Next Local Node ID" value="16787180" />
+	<attribute name="Next Local Component ID" value="16788698" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -230,31 +230,6 @@
 			<attribute name="Size" value="6.5 4 8.4" />
 			<attribute name="Offset Position" value="0 2.3 1" />
 			<attribute name="Model" value="Model;Models/Tend1.mdl" />
-		</component>
-	</node>
-	<node id="16">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Pier1" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="-24.3243 24.3612 -1.18003" />
-		<attribute name="Rotation" value="0.996163 0 -0.0875206 0" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-		<component type="StaticModel" id="16781982">
-			<attribute name="Model" value="Model;Models/Pier1.mdl" />
-			<attribute name="Material" value="Material;Materials/Pier1_Wood.xml;Materials/Pier1_Rope.xml" />
-			<attribute name="Is Occluder" value="true" />
-			<attribute name="Cast Shadows" value="true" />
-		</component>
-		<component type="RigidBody" id="16781983">
-			<attribute name="Physics Rotation" value="0.996163 0 -0.0875205 0" />
-			<attribute name="Physics Position" value="-24.3243 24.3612 -1.18003" />
-			<attribute name="Use Gravity" value="false" />
-		</component>
-		<component type="CollisionShape" id="16781984">
-			<attribute name="Size" value="6.6 1 2" />
-			<attribute name="Offset Position" value="0 0.5 0" />
-			<attribute name="Model" value="Model;Models/Pier1.mdl" />
 		</component>
 	</node>
 	<node id="16781792">
@@ -1306,6 +1281,29 @@
 		<component type="CollisionShape" id="16788572">
 			<attribute name="Size" value="0.144287 0.129792 0.144287" />
 			<attribute name="Offset Position" value="0 0.0654316 0" />
+		</component>
+	</node>
+	<node id="16787179">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Pier1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-23.8135 24.5639 -1.25349" />
+		<attribute name="Rotation" value="0.993268 0 -0.115819 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788695">
+			<attribute name="Model" value="Model;Models/Pier1.mdl" />
+			<attribute name="Material" value="Material;Materials/Pier1_Wood.xml;Materials/Pier1_Rope.xml" />
+		</component>
+		<component type="RigidBody" id="16788696">
+			<attribute name="Physics Rotation" value="0.99327 0 -0.115819 0" />
+			<attribute name="Physics Position" value="-23.8135 24.5639 -1.25349" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788697">
+			<attribute name="Size" value="6.43429 2.73037 2.22014" />
+			<attribute name="Offset Position" value="0.164626 0.497159 0.178073" />
 		</component>
 	</node>
 </scene>
