@@ -199,6 +199,17 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CREATURE_STATE(Triggered)    \
     ENUMERATE_CREATURE_STATE(Dead)
 
+#define ENUMERATE_SKILL_ERROR_CODES                                   \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNone)                        \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorInvalidSkill)                \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorInvalidTarget)               \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorOutOfRange)                  \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNoEnergy)                    \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNoAdrenaline)                \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorRecharging)                  \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorTargetUndestroyable)         \
+    ENUMERATE_SKILL_ERROR_CODE(SkillErrorCannotUseSkill)
+
 enum class ErrorCodes : uint8_t
 {
     NoError = 0,
@@ -374,15 +385,9 @@ enum ResourceType : uint8_t
 
 enum SkillError : uint8_t
 {
-    SkillErrorNone = 0,
-    SkillErrorInvalidSkill,
-    SkillErrorInvalidTarget,
-    SkillErrorOutOfRange,
-    SkillErrorNoEnergy,
-    SkillErrorNoAdrenaline,
-    SkillErrorRecharging,
-    SkillErrorTargetUndestroyable,
-    SkillErrorCannotUseSkill,
+#define ENUMERATE_SKILL_ERROR_CODE(v) v,
+    ENUMERATE_SKILL_ERROR_CODES
+#undef ENUMERATE_SKILL_ERROR_CODE
     SkillErrorNotAppropriate = 255, // not an error but does not make sense to use it
 };
 

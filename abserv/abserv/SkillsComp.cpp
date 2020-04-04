@@ -31,6 +31,19 @@
 namespace Game {
 namespace Components {
 
+static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
+{
+    switch (error)
+    {
+#define ENUMERATE_SKILL_ERROR_CODE(v) case AB::GameProtocol::v: return #v;
+        ENUMERATE_SKILL_ERROR_CODES
+#undef ENUMERATE_SKILL_ERROR_CODE
+    }
+    if (error == AB::GameProtocol::SkillErrorNotAppropriate)
+        return "SkillErrorNotAppropriate";
+    return "(Unknown)";
+}
+
 SkillsComp::SkillsComp(Actor& owner) :
     owner_(owner),
     lastError_(AB::GameProtocol::SkillErrorNone),
@@ -113,8 +126,8 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         LOG_DEBUG << owner_.GetName() << " using invalid skill " <<
                      (skill ? skill->data_.name : "(none)") <<
                      " on target " << (target ? target->GetName() : "(none)") <<
-                     " error = " <<
-                     static_cast<int>(lastError_) << std::endl;
+                     " error (" <<
+                     static_cast<int>(lastError_) << ") " << GetSkillErrorString(lastError_) << std::endl;
     }
 #endif
     return lastError_;

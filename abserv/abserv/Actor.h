@@ -80,7 +80,7 @@ static constexpr sa::event_t EVENT_ON_INCMORALE = sa::StringHash("OnIncMorale");
 static constexpr sa::event_t EVENT_ON_DECMORALE = sa::StringHash("OnDecMorale");
 static constexpr sa::event_t EVENT_ON_KILLEDFOE = sa::StringHash("OnKilledFoe");
 
-// This BB is really small foor an Actor, but the Actor should stuck just when there is really no way.
+// This BB is really small for an Actor, but the Actor should stuck only when there is really no way.
 static constexpr Math::Vector3 CREATURTE_BB_MIN { -0.1f, 0.0f, -0.1f };
 static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.1f, 1.7f, 0.1f };
 
