@@ -113,7 +113,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 object->collisionMask_ = colisionMask;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
                 {
-                    std::lock_guard<std::mutex> lock(loadNodeLock);
+                    std::scoped_lock lock(loadNodeLock);
                     game->AddObjectInternal(object);
                 }
                 for (const auto& attr : comp.children())

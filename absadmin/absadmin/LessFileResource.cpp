@@ -154,7 +154,7 @@ void LessFileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
         if (createNew)
         {
-            std::lock_guard<std::mutex> lock(mutex_);
+            std::scoped_lock lock(mutex_);
             AB_PROFILE;
             CompileFile(path.string(), output);
         }

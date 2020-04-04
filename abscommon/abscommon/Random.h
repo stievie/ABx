@@ -45,13 +45,13 @@ public:
     {
         T r;
         // Random pool must be locked
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         arc4random_buf(&r, sizeof(T));
         return r;
     }
     void GetBuff(void* buff, size_t len)
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         arc4random_buf(buff, len);
     }
     /// Get value from 0..max

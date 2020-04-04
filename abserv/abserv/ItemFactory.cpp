@@ -487,7 +487,7 @@ void ItemFactory::LoadDropChances(const std::string mapUuid)
     selector->Update();
 
     {
-        std::lock_guard<std::mutex> lockClass(lock_);
+        std::scoped_lock lock(lock_);
         dropChances_.emplace(mapUuid, std::move(selector));
     }
 }

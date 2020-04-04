@@ -647,7 +647,7 @@ void Game::PlayerJoin(uint32_t playerId)
     if (player)
     {
         {
-            std::lock_guard<std::mutex> lockClass(lock_);
+            std::scoped_lock lock(lock_);
             players_[player->id_] = player.get();
             if (AB::Entities::IsOutpost(data_.type))
                 player->data_.lastOutpostUuid = data_.uuid;
@@ -695,7 +695,7 @@ void Game::PlayerLeave(uint32_t playerId)
     Player* player = GetPlayerById(playerId);
     if (player)
     {
-        std::lock_guard<std::mutex> lockClass(lock_);
+        std::scoped_lock lock(lock_);
         player->SetGame(std::shared_ptr<Game>());
         auto it = players_.find(playerId);
         if (it != players_.end())

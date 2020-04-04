@@ -145,7 +145,7 @@ void Maintenance::UpdateAiServer()
 void Maintenance::Run()
 {
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         status_ = MaintenanceStatus::Runnig;
     }
     auto* shed = GetSubsystem<Asynch::Scheduler>();
@@ -177,6 +177,6 @@ void Maintenance::Run()
 
 void Maintenance::Stop()
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     status_ = MaintenanceStatus::Runnig;
 }

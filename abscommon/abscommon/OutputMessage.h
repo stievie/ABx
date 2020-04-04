@@ -111,7 +111,7 @@ struct DefaultDelete<::Net::OutputMessage>
         auto* pool = Net::PoolWrapper::GetOutputMessagePool();
         if (!pool)
             return;
-        std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
+        std::scoped_lock lock(Net::PoolWrapper::lock_);
         pool->deallocate(p, 1);
     }
 };
@@ -122,7 +122,7 @@ inline SharedPtr<::Net::OutputMessage> MakeShared()
     auto* pool = Net::PoolWrapper::GetOutputMessagePool();
     if (!pool)
         return sa::SharedPtr<::Net::OutputMessage>();
-    std::lock_guard<std::mutex> lock(Net::PoolWrapper::lock_);
+    std::scoped_lock lock(Net::PoolWrapper::lock_);
     auto* ptr = pool->allocate(1, nullptr);
     assert(ptr);
     ptr->Reset();

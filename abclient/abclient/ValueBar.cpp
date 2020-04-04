@@ -32,8 +32,8 @@ void ValueBar::RegisterObject(Context* context)
 ValueBar::ValueBar(Context* context) :
     ProgressBar(context)
 {
-    SetRange(0.0f);
-    SetValue(0.0f);
+    SetRange(0.1f);
+    SetValue(0.1f);
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
 

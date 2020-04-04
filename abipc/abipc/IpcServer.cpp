@@ -36,7 +36,7 @@ Server::Server(asio::io_service& ioService, const asio::ip::tcp::endpoint& endpo
 
 void Server::RemoveConnection(std::shared_ptr<ServerConnection> conn)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     if (onClientDisconnect)
         onClientDisconnect(*conn);
 
@@ -45,7 +45,7 @@ void Server::RemoveConnection(std::shared_ptr<ServerConnection> conn)
 
 void Server::AddConnection(std::shared_ptr<ServerConnection> conn)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     clients_.emplace(conn);
 
     if (onClientConnect)

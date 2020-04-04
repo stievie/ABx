@@ -32,7 +32,7 @@ namespace Game {
 void GameManager::Start()
 {
     // Main Thread
-    std::lock_guard<std::mutex> lockClass(lock_);
+    std::scoped_lock lock(lock_);
     state_ = State::ManagerStateRunning;
 }
 
@@ -42,7 +42,7 @@ void GameManager::Stop()
     if (state_ == State::ManagerStateRunning)
     {
         {
-            std::lock_guard<std::mutex> lockClass(lock_);
+            std::scoped_lock lock(lock_);
             state_ = State::ManagerStateTerminated;
         }
         for (const auto& g : games_)
@@ -60,7 +60,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 #endif
     std::shared_ptr<Game> game = std::make_shared<Game>();
     {
-        std::lock_guard<std::mutex> lockClass(lock_);
+        std::scoped_lock lock(lock_);
         game->id_ = GetNewGameId();
         games_[game->id_] = game;
         maps_[mapUuid].push_back(game.get());
@@ -68,7 +68,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
     game->instanceData_.number = static_cast<uint16_t>(maps_[mapUuid].size());
     game->Load(mapUuid);
     {
-        std::lock_guard<std::mutex> lockClass(lock_);
+        std::scoped_lock lock(lock_);
         GetSubsystem<AI::DebugServer>()->AddGame(game);
     }
     return game;
@@ -84,7 +84,7 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     if (it != games_.end())
     {
         // games_.size() may be called from another thread so lock it
-        std::lock_guard<std::mutex> lockClass(lock_);
+        std::scoped_lock lock(lock_);
         GetSubsystem<AI::DebugServer>()->RemoveGame(gameId);
         maps_.erase((*it).second->data_.uuid);
         games_.erase(it);

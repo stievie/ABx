@@ -440,7 +440,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
 void StorageProvider::Shutdown()
 {
     // The only thing that not called from the dispatcher thread, so lock it.
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     running_ = false;
     for (const auto& c : cache_)
         FlushData(c.first);
@@ -528,7 +528,7 @@ void StorageProvider::FlushCache()
         auto res = tp->EnqueueWithResult(&StorageProvider::FlushData, this, key);
         bool bRes = false;
         {
-            std::lock_guard<std::mutex> lock(lock_);
+            std::scoped_lock lock(lock_);
             bRes = res.get();
         }
         if (!bRes)

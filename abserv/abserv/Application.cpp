@@ -668,7 +668,7 @@ unsigned Application::GetLoad()
 
         {
             // Get memory pool usage
-            std::lock_guard<std::mutex> lock(lock_);    // Memory pool must always be locked!
+            std::scoped_lock lock(lock_);    // Memory pool must always be locked!
             load = std::max(load, Net::OutputMessagePool::GetPoolUsage());
             load = std::max(load, Net::NetworkMessage::GetPoolUsage());
         }

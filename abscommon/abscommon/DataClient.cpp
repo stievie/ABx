@@ -51,7 +51,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data)
     const uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
     // All data must be sent at once. Multiple threads must not send different requests at the same time.
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     if (!TryWrite(asio::buffer(header)))
         return false;
 
@@ -97,7 +97,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     const uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
     // All data must be sent at once. Multiple threads must not send different requests at the same time.
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     if (!TryWrite(asio::buffer(header)))
         return false;
 

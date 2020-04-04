@@ -50,7 +50,7 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
     };
     server_->onClientDisconnect = [this](IPC::ServerConnection& client)
     {
-        std::lock_guard<std::mutex> loock(lock_);
+        std::scoped_lock lock(lock_);
         LOG_INFO << "Debug server: Client " << client.GetId() << " disconnected" << std::endl;
         selectedGames_.erase(client.GetId());
     };
@@ -76,7 +76,7 @@ void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
 void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGame& msg)
 {
     {
-        std::lock_guard<std::mutex> loock(lock_);
+        std::scoped_lock lock(lock_);
         selectedGames_.erase(client.GetId());
     }
     auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
@@ -91,7 +91,7 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
     if (!game)
         return;
 
-    std::lock_guard<std::mutex> loock(lock_);
+    std::scoped_lock lock(lock_);
     selectedGames_.emplace(client.GetId(), msg.gameId);
     GameSelected gmsg{ game->id_ };
     server_->SendTo(client, gmsg);

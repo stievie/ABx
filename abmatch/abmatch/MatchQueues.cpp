@@ -24,7 +24,7 @@
 
 void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     Queue* queue = GetQueue(mapUuid);
     if (!queue)
     {
@@ -37,7 +37,7 @@ void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
 
 void MatchQueues::Remove(const std::string& playerUuid)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     auto it = players_.find(playerUuid);
     if (it == players_.end())
     {
@@ -74,7 +74,7 @@ Queue* MatchQueues::GetQueue(const std::string& mapUuid)
 
 void MatchQueues::Update(uint32_t timeElapsed)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    std::scoped_lock lock(lock_);
     // Delete empty queues
     auto i = queues_.begin();
     while ((i = std::find_if(i, queues_.end(), [](const auto& current) -> bool

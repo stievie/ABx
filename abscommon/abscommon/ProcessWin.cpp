@@ -102,7 +102,7 @@ Process::id_type Process::open(const string_type& command, const string_type& pa
     security_attributes.bInheritHandle = TRUE;
     security_attributes.lpSecurityDescriptor = nullptr;
 
-    std::lock_guard<std::mutex> lock(create_process_mutex);
+    std::scoped_lock lock(create_process_mutex);
     if (stdin_fd)
     {
         if (!CreatePipe(&stdin_rd_p, &stdin_wr_p, &security_attributes, 0) ||
@@ -226,7 +226,7 @@ int Process::get_exit_status() noexcept
     if (!GetExitCodeProcess(data.handle, &exit_status))
         exit_status = static_cast<DWORD>(-1);
     {
-        std::lock_guard<std::mutex> lock(close_mutex);
+        std::scoped_lock lock(close_mutex);
         CloseHandle(data.handle);
         closed = true;
     }
@@ -249,7 +249,7 @@ bool Process::try_get_exit_status(int& exit_status) noexcept
     if (!GetExitCodeProcess(data.handle, &exit_status_win))
         exit_status_win = static_cast<DWORD>(-1);
     {
-        std::lock_guard<std::mutex> lock(close_mutex);
+        std::scoped_lock lock(close_mutex);
         CloseHandle(data.handle);
         closed = true;
     }
@@ -287,7 +287,7 @@ bool Process::write(const char* bytes, size_t n)
     if (!open_stdin)
         throw std::invalid_argument("Can't write to an unopened stdin pipe. Please set open_stdin=true when constructing the process.");
 
-    std::lock_guard<std::mutex> lock(stdin_mutex);
+    std::scoped_lock lock(stdin_mutex);
     if (stdin_fd)
     {
         DWORD written;
@@ -306,7 +306,7 @@ bool Process::write(const char* bytes, size_t n)
 
 void Process::close_stdin() noexcept
 {
-    std::lock_guard<std::mutex> lock(stdin_mutex);
+    std::scoped_lock lock(stdin_mutex);
     if (stdin_fd)
     {
         if (*stdin_fd != NULL)
@@ -318,7 +318,7 @@ void Process::close_stdin() noexcept
 //Based on http://stackoverflow.com/a/1173396
 void Process::kill(bool /* force */) noexcept
 {
-    std::lock_guard<std::mutex> lock(close_mutex);
+    std::scoped_lock lock(close_mutex);
     if (data.id > 0 && !closed)
     {
         HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);

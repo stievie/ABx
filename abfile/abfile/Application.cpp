@@ -146,7 +146,7 @@ bool Application::ParseCommandLine()
 
 void Application::UpdateBytesSent(size_t bytes)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::scoped_lock lock(mutex_);
     if (Utils::WouldExceed(bytesSent_, bytes, std::numeric_limits<uint64_t>::max()))
     {
         bytesSent_ = 0;

@@ -49,14 +49,14 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     std::map<uint32_t, ConnectBlock>::iterator it = ipConnects_.find(clientIP);
     if (it == ipConnects_.end())
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         ipConnects_.emplace(clientIP, ConnectBlock(currentTime, 0, 1));
         return true;
     }
 
     ConnectBlock& cb = it->second;
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         ++cb.count;
     }
     if (cb.blockTime > currentTime)
@@ -64,7 +64,7 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
 
     if (currentTime - cb.startTime > 1000)
     {
-        std::lock_guard<std::mutex> lock(lock_);
+        std::scoped_lock lock(lock_);
         uint32_t connectionsPerSec = cb.count;
         cb.startTime = currentTime;
         cb.count = 0;
@@ -149,7 +149,7 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
         return;
 
     int64_t currentTime = Utils::Tick();
-    std::lock_guard<std::mutex> lockGuard(lock_);
+    std::scoped_lock lock(lock_);
     auto it = ipLogins_.find(clientIP);
     if (it == ipLogins_.end())
     {

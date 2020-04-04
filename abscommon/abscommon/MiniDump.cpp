@@ -266,7 +266,7 @@ void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionP
         line = NULL;
     }
 
-    LOG_PLAIN << out.str();
+    LOG_PLAIN << out.str() << std::endl;
 
     if (!fileName.empty())
     {
