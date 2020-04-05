@@ -159,7 +159,7 @@ public:
     /// Let's make the head 1.7m above the ground
     static constexpr Math::Vector3 HeadOffset{ 0.0f, 1.7f, 0.0f };
     /// Center of body
-    static constexpr Math::Vector3 BodyOffset{ 0.0f, 1.0f, 0.0f };
+    static constexpr Math::Vector3 BodyOffset{ 0.0f, 0.8f, 0.0f };
 
     GameObject();
     virtual ~GameObject();

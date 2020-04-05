@@ -223,17 +223,11 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
 //    LOG_DEBUG << "Obstacle " << hit->object_->GetName() << " on the way to " << destination.ToString() << std::endl;
 #endif
 
-    const Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
-    const Math::Vector3 size = (hit->object_->transformation_.oriention_ * bb.Size()) + 0.5f;
-    const bool sign = (bb.Center() - hit->position_).LengthSqr() > 0.0f;
-    Math::Vector3 newDest = hit->position_ + (sign ? size : -size);
-
+    Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
+    bb.AddSize(1.0f);
+    Math::Vector3 newDest = bb.GetClosestCorner2D(hit->position_);
     if (!owner_.GetGame()->map_->CanStepOn(newDest))
-    {
-        newDest = hit->position_ + (sign ? -size : size);
-        if (!owner_.GetGame()->map_->CanStepOn(newDest))
-            return AvoidObstaclesInternal(hit->position_ + (sign ? size : -size), recursionLevel + 1);
-    }
+        return AvoidObstaclesInternal(newDest, recursionLevel + 1);
 
     const auto newHit = raycast(newDest);
     if (newHit.has_value())

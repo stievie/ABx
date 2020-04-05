@@ -53,8 +53,8 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
         if (!foundSolution)
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
-            LOG_DEBUG << "Stuck! ";
-        LOG_DEBUG << "going back to " << safePos.ToString() << std::endl;
+            LOG_DEBUG << "Stuck! Distance: " << manifold.distance << " ";
+        LOG_DEBUG << "Going back to " << safePos.ToString() << std::endl;
 #endif
         GotoSafePosition();
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);

@@ -63,6 +63,35 @@ std::array<Vector3, 8> BoundingBox::GetCorners() const
     return result;
 }
 
+std::array<Vector3, 4> BoundingBox::GetCorners2D() const
+{
+    std::array<Vector3, 4> result;
+    result[0] = min_;
+    result[1] = { min_.x_, min_.y_, max_.z_ };
+    result[2] = { max_.x_, min_.y_, max_.z_ };
+    result[3] = { max_.x_, min_.y_, min_.z_ };
+
+    return result;
+}
+
+Vector3 BoundingBox::GetClosestCorner2D(const Vector3& pos) const
+{
+    const auto corners = GetCorners2D();
+    float dist = std::numeric_limits<float>::max();
+    size_t index = 0;
+    for (size_t i = 0; i < 4; ++i)
+    {
+        const auto& c = corners[i];
+        float d = c.Distance(pos);
+        if (c.Distance(pos) < dist)
+        {
+            dist = d;
+            index = i;
+        }
+    }
+    return corners[index];
+}
+
 std::vector<Plane> BoundingBox::GetPlanes() const
 {
     // Transformed (OBB)
@@ -160,6 +189,36 @@ void BoundingBox::Reset()
     min_ = { Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE };
     max_ = { -Math::M_INFINITE, -Math::M_INFINITE, -Math::M_INFINITE };
     orientation_ = Quaternion::Identity;
+}
+
+void BoundingBox::AddSize(float value)
+{
+    auto center = Center();
+    if (min_.x_ - center.x_ < 0.0f)
+        min_.x_ -= value;
+    else
+        min_.x_ += value;
+    if (min_.y_ - center.y_ < 0.0f)
+        min_.y_ -= value;
+    else
+        min_.y_ += value;
+    if (min_.z_ - center.z_ < 0.0f)
+        min_.z_ -= value;
+    else
+        min_.z_ += value;
+
+    if (max_.x_ - center.x_ < 0.0f)
+        max_.x_ -= value;
+    else
+        max_.x_ += value;
+    if (max_.y_ - center.y_ < 0.0f)
+        max_.y_ -= value;
+    else
+        max_.y_ += value;
+    if (max_.z_ - center.z_ < 0.0f)
+        max_.z_ -= value;
+    else
+        max_.z_ += value;
 }
 
 BoundingBox BoundingBox::Transformed(const Matrix4& transform) const

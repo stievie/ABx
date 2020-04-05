@@ -112,12 +112,15 @@ public:
         return *this;
     }
     std::array<Vector3, 8> GetCorners() const;
+    std::array<Vector3, 4> GetCorners2D() const;
+    Vector3 GetClosestCorner2D(const Vector3& pos) const;
     std::vector<Plane> GetPlanes() const;
     std::vector<Line> GetEdges() const;
     void Merge(float x, float y, float z);
     void Merge(const Vector3& vertex);
     void Merge(const Vector3* vertices, unsigned count);
     void Reset();
+    void AddSize(float value);
 
     float Width() const
     {
