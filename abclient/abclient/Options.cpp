@@ -487,7 +487,7 @@ void Options::SetMaxFps(int value)
 {
     if (maxFps_ != value)
     {
-        Engine* engine = context_->GetSubsystem<Engine>();
+        Engine* engine = GetSubsystem<Engine>();
         engine->SetMaxFps(value);
         maxFps_ = value;
     }

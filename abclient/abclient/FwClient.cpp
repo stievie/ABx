@@ -1029,7 +1029,7 @@ void FwClient::OnGetServices(const std::vector<AB::Entities::Service>& services)
 void FwClient::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
     loggedIn_ = false;
-    LevelManager* lm = context_->GetSubsystem<LevelManager>();
+    LevelManager* lm = GetSubsystem<LevelManager>();
     BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
     if (cl)
         cl->OnNetworkError(connectionError, err);
@@ -1054,7 +1054,7 @@ void FwClient::QueueEvent(StringHash eventType, VariantMap& eventData)
 
 void FwClient::OnProtocolError(AB::ErrorCodes err)
 {
-    LevelManager* lm = context_->GetSubsystem<LevelManager>();
+    LevelManager* lm = GetSubsystem<LevelManager>();
     BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
     if (cl)
         cl->OnProtocolError(err);

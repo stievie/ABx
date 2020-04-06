@@ -248,7 +248,7 @@ void InventoryWindow::SetItem(Item* item, const InventoryItem& iItem)
 void InventoryWindow::HandleInventory(StringHash, VariantMap&)
 {
     Clear();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     const auto& items = net->GetInventoryItems();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();
 
@@ -274,7 +274,7 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
 {
     using namespace Events::InventoryItemUpdate;
 
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();
 
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());

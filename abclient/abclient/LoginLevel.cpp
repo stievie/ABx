@@ -44,7 +44,7 @@ LoginLevel::LoginLevel(Context* context) :
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->SetState(Client::State::Disconnected);
 }
 
@@ -146,7 +146,7 @@ void LoginLevel::CreateUI()
     createAccountButton_ = uiRoot_->GetChildStaticCast<Button>("CreateAccountButton", true);
     SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
 
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     if (!net->accountName_.Empty() && !net->accountPass_.Empty())
     {
         nameEdit_->SetText(net->accountName_);
@@ -229,7 +229,7 @@ void LoginLevel::DoLogin()
     Options* opts = GetSubsystem<Options>();
     auto& envs = opts->environments_;
     unsigned selEnv = environmentsList_->GetSelection();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     if (selEnv < envs.Size())
     {
         Environment* env = &envs[selEnv];

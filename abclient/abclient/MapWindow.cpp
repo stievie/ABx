@@ -59,7 +59,7 @@ MapWindow::MapWindow(Context* context) :
     mapSprite_->SetPosition(0, 0);
     mapSprite_->SetFullImageRect();
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     const std::map<std::string, AB::Entities::Game>& games = client->GetOutposts();
     int i = 0;
     for (const auto& game : games)
@@ -112,7 +112,7 @@ void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)
     LevelManager* lm = GetSubsystem<LevelManager>();
     if (lm->GetMapUuid().Compare(uuid) != 0)
     {
-        FwClient* net = context_->GetSubsystem<FwClient>();
+        FwClient* net = GetSubsystem<FwClient>();
         net->ChangeMap(uuid);
     }
 }
@@ -154,7 +154,7 @@ void MapWindow::FitMap()
 
 void MapWindow::SetButtonsPos()
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     const std::map<std::string, AB::Entities::Game>& games = client->GetOutposts();
     auto children = GetChildren();
     for (const auto& child : children)

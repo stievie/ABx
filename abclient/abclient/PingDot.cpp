@@ -68,8 +68,8 @@ void PingDot::Update(float timeStep)
     lastUpdate_ += timeStep;
     if (lastUpdate_ >= 1.0f)
     {
-        FwClient* c = context_->GetSubsystem<FwClient>();
-        Time* t = context_->GetSubsystem<Time>();
+        FwClient* c = GetSubsystem<FwClient>();
+        Time* t = GetSubsystem<Time>();
         int fps = static_cast<int>(1.0f / t->GetTimeStep());
         int lastPing = c->GetLastPing();
         if (lastPing < 110)

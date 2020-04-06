@@ -40,6 +40,7 @@
 #include <abshared/Mechanic.h>
 #include <Urho3D/Container/Sort.h>
 #include "WorldLevel.h"
+#include <algorithm>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -129,7 +130,7 @@ void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)
 
 void Player::GetFoeSelectionCandidates()
 {
-    foeSelectionCandidates_.Clear();
+    foeSelectionCandidates_.clear();
     foeSelectedIndex_ = -1;
     Octree* world = GetScene()->GetComponent<Octree>();
     if (!world)
@@ -155,11 +156,11 @@ void Player::GetFoeSelectionCandidates()
 
         if (object->gameId_ != 0 && IsEnemy(To<Actor>(object)))
         {
-            float dist = pos.DistanceToPoint(object->GetNode()->GetWorldPosition());
-            foeSelectionCandidates_.Push({ dist, object->gameId_ });
+            float dist = pos.DistanceToPoint(object->GetNode()->GetPosition());
+            foeSelectionCandidates_.push_back({ dist, object->gameId_ });
         }
     }
-    Sort(foeSelectionCandidates_.Begin(), friendSelectionCandidates_.End(), [](const DistanceId& a, const DistanceId& b)
+    std::sort(foeSelectionCandidates_.begin(), foeSelectionCandidates_.end(), [](DistanceId& a, DistanceId& b)
     {
         return a.distance < b.distance;
     });
@@ -167,7 +168,7 @@ void Player::GetFoeSelectionCandidates()
 
 void Player::GetFriendSelectionCandidates()
 {
-    friendSelectionCandidates_.Clear();
+    friendSelectionCandidates_.clear();
     friendSelectedIndex_ = -1;
     Octree* world = GetScene()->GetComponent<Octree>();
     if (!world)
@@ -193,11 +194,11 @@ void Player::GetFriendSelectionCandidates()
 
         if (object->gameId_ != 0 && IsAlly(To<Actor>(object)))
         {
-            float dist = pos.DistanceToPoint(object->GetNode()->GetWorldPosition());
-            friendSelectionCandidates_.Push({ dist, object->gameId_ });
+            float dist = pos.DistanceToPoint(object->GetNode()->GetPosition());
+            friendSelectionCandidates_.push_back({ dist, object->gameId_ });
         }
     }
-    Sort(friendSelectionCandidates_.Begin(), friendSelectionCandidates_.End(), [](const DistanceId& a, const DistanceId& b)
+    std::sort(friendSelectionCandidates_.begin(), friendSelectionCandidates_.end(), [](DistanceId& a, DistanceId& b)
     {
         return a.distance < b.distance;
     });
@@ -205,90 +206,90 @@ void Player::GetFriendSelectionCandidates()
 
 void Player::HandleSelectClosestAlly(StringHash, VariantMap&)
 {
-    friendSelectionCandidates_.Clear();
+    friendSelectionCandidates_.clear();
     GetFriendSelectionCandidates();
     lastFriendSelect_ = Client::AbTick();
-    if (friendSelectionCandidates_.Size() == 0)
+    if (friendSelectionCandidates_.size() == 0)
         return;
     friendSelectedIndex_ = 0;
-    uint32_t id = friendSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    uint32_t id = friendSelectionCandidates_.at(static_cast<unsigned>(friendSelectedIndex_)).id;
     SelectObject(id);
 }
 
 void Player::HandleSelectClosestFoe(StringHash, VariantMap&)
 {
-    foeSelectionCandidates_.Clear();
+    foeSelectionCandidates_.clear();
     GetFoeSelectionCandidates();
     lastFoeSelect_ = Client::AbTick();
-    if (foeSelectionCandidates_.Size() == 0)
+    if (foeSelectionCandidates_.size() == 0)
         return;
     foeSelectedIndex_ = 0;
-    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    uint32_t id = foeSelectionCandidates_.at(static_cast<unsigned>(foeSelectedIndex_)).id;
     SelectObject(id);
 }
 
 void Player::HandleSelectNextFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.Empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
-    if (foeSelectionCandidates_.Size() == 0)
+    if (foeSelectionCandidates_.size() == 0)
         return;
 
     lastFoeSelect_ = Client::AbTick();
     ++foeSelectedIndex_;
-    if (static_cast<unsigned>(foeSelectedIndex_) > foeSelectionCandidates_.Size() - 1)
+    if (static_cast<unsigned>(foeSelectedIndex_) > foeSelectionCandidates_.size() - 1)
         foeSelectedIndex_ = 0;
 
-    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    uint32_t id = foeSelectionCandidates_.at(static_cast<unsigned>(foeSelectedIndex_)).id;
     SelectObject(id);
 }
 
 void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.Empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
-    if (foeSelectionCandidates_.Size() == 0)
+    if (foeSelectionCandidates_.size() == 0)
         return;
 
     lastFoeSelect_ = Client::AbTick();
 
     --foeSelectedIndex_;
     if (foeSelectedIndex_ < 0)
-        foeSelectedIndex_ = foeSelectionCandidates_.Size() - 1;
+        foeSelectedIndex_ = static_cast<int>(foeSelectionCandidates_.size()) - 1;
 
-    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(foeSelectedIndex_)).id;
+    uint32_t id = foeSelectionCandidates_.at(static_cast<size_t>(foeSelectedIndex_)).id;
     SelectObject(id);
 }
 
 void Player::HandleSelectNextAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.Empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
-    if (friendSelectionCandidates_.Size() == 0)
+    if (friendSelectionCandidates_.size() == 0)
         return;
 
     lastFriendSelect_ = Client::AbTick();
     ++friendSelectedIndex_;
-    if (static_cast<unsigned>(friendSelectedIndex_) > friendSelectionCandidates_.Size() - 1)
+    if (static_cast<unsigned>(friendSelectedIndex_) > friendSelectionCandidates_.size() - 1)
         friendSelectedIndex_ = 0;
 
-    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    uint32_t id = foeSelectionCandidates_.at(static_cast<unsigned>(friendSelectedIndex_)).id;
     SelectObject(id);
 }
 
 void Player::HandleSelectPrevAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.Empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
-    if (friendSelectionCandidates_.Size() == 0)
+    if (friendSelectionCandidates_.size() == 0)
         return;
 
     lastFriendSelect_ = Client::AbTick();
     --friendSelectedIndex_;
     if (friendSelectedIndex_ < 0)
-        friendSelectedIndex_ = friendSelectionCandidates_.Size() - 1;
+        friendSelectedIndex_ = static_cast<int>(friendSelectionCandidates_.size()) - 1;
 
-    uint32_t id = foeSelectionCandidates_.At(static_cast<unsigned>(friendSelectedIndex_)).id;
+    uint32_t id = foeSelectionCandidates_.at(static_cast<size_t>(friendSelectedIndex_)).id;
     SelectObject(id);
 }
 
@@ -343,16 +344,13 @@ void Player::MoveTo(int64_t time, const Vector3& newPos)
         return;
     }
 
-//        if (GetMoveDir() == 0)
-//            Actor::MoveTo(time, newPos);
-
     ClientPrediction* cp = GetComponent<ClientPrediction>();
     cp->CheckServerPosition(time, newPos);
 }
 
 void Player::FixedUpdate(float timeStep)
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
 
     uint8_t moveDir = GetMoveDir();
 
@@ -434,26 +432,26 @@ void Player::FollowSelected()
 {
     if (auto so = selectedObject_.Lock())
     {
-        FwClient* client = context_->GetSubsystem<FwClient>();
+        FwClient* client = GetSubsystem<FwClient>();
         client->FollowObject(so->gameId_);
     }
 }
 
 void Player::Attack()
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->Attack();
 }
 
 void Player::GotoPosition(const Vector3& pos)
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->GotoPos(pos);
 }
 
 void Player::ClickObject(uint32_t objectId)
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->ClickObject(gameId_, objectId);
 }
 
@@ -461,7 +459,7 @@ void Player::SelectObject(uint32_t objectId)
 {
     if (objectId == GetSelectedObjectId())
         return;
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->SelectObject(gameId_, objectId);
 }
 

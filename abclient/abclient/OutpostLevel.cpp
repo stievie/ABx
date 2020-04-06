@@ -30,11 +30,11 @@
 OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)
 {
-    LevelManager* lm = context_->GetSubsystem<LevelManager>();
+    LevelManager* lm = GetSubsystem<LevelManager>();
     mapUuid_ = lm->GetMapUuid();
     mapType_ = lm->GetMapType();
     partySize_ = lm->GetPartySize();
-    FwClient* cli = context_->GetSubsystem<FwClient>();
+    FwClient* cli = GetSubsystem<FwClient>();
     mapName_ = cli->GetGameName(mapUuid_);
     // Create the scene content
     CreateScene();

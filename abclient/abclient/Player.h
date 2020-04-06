@@ -23,6 +23,7 @@
 
 #include "Actor.h"
 #include <AB/ProtocolCodes.h>
+#include <vector>
 
 using namespace Urho3D;
 
@@ -90,8 +91,8 @@ private:
         float distance;
         uint32_t id;
     };
-    Vector<DistanceId> friendSelectionCandidates_;
-    Vector<DistanceId> foeSelectionCandidates_;
+    std::vector<DistanceId> friendSelectionCandidates_;
+    std::vector<DistanceId> foeSelectionCandidates_;
     void GetFoeSelectionCandidates();
     void GetFriendSelectionCandidates();
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);

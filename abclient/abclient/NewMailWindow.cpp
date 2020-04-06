@@ -124,7 +124,7 @@ void NewMailWindow::HandleSendClicked(StringHash, VariantMap&)
     if (body.Length() > AB::Entities::Limits::MAX_MAIL_MESSAGE)
         body.Resize(AB::Entities::Limits::MAX_MAIL_MESSAGE);
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->SendMail(std::string(recipient.CString(), recipient.Length()),
         std::string(subject.CString(), subject.Length()),
         std::string(body.CString(), body.Length()));

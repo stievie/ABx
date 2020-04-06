@@ -82,7 +82,7 @@ void CharSelectLevel::CreateUI()
     window_->SetName("Select Character");
     window_->SetStyleAuto();
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     const AB::Entities::CharList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
@@ -231,7 +231,7 @@ void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
     String uuid = sender->GetVar("uuid").GetString();
     String mapUuid = sender->GetVar("map_uuid").GetString();
 
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->EnterWorld(uuid, mapUuid);
 }
 

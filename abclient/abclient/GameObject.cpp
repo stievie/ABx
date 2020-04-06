@@ -38,7 +38,7 @@ GameObject::~GameObject()
 
 double GameObject::GetClientTime() const
 {
-    FwClient* c = context_->GetSubsystem<FwClient>();
+    FwClient* c = GetSubsystem<FwClient>();
     return static_cast<double>(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
 }
 

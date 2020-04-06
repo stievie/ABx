@@ -271,7 +271,7 @@ void Actor::UpdateTransformation()
         // Interpolate when:
         // 1. Creature is moving
         // 2. Player: no client prediction is used or auto running
-        FwClient* c = context_->GetSubsystem<FwClient>();
+        FwClient* c = GetSubsystem<FwClient>();
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5
         const double rtt = (static_cast<double>(c->GetLastPing()) * 0.5);
@@ -892,10 +892,16 @@ void Actor::UpdateMoveSpeed()
     case AB::GameProtocol::CreatureState::Moving:
     {
         if (speedFactor_ > 0.5f && currentAnimation_ != ANIM_RUN)
+        {
             PlayAnimation(ANIM_RUN, true, 0.0f, RUN_ANIM_SPEED(speedFactor_));
+            return;
+        }
         else if (currentAnimation_ != ANIM_WALK)
+        {
             // speed / 2 -> walk animation -> playing at normal speed = speed * 2
             PlayAnimation(ANIM_WALK, true, 0.0f, WALK_ANIM_SPEED(speedFactor_));
+            return;
+        }
         break;
     }
     default:

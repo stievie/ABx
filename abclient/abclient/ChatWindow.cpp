@@ -908,7 +908,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         break;
     case AB::GameProtocol::CommandType::Ip:
     {
-        FwClient* client = context_->GetSubsystem<FwClient>();
+        FwClient* client = GetSubsystem<FwClient>();
         uint32_t ip = client->GetIp();
         char buffer[20];
         sprintf(buffer, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
@@ -934,7 +934,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
     {
         if (data.Length() <= MAX_CHAT_MESSAGE)
         {
-            FwClient* client = context_->GetSubsystem<FwClient>();
+            FwClient* client = GetSubsystem<FwClient>();
             client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
         }
         else

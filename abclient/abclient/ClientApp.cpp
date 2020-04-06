@@ -319,7 +319,7 @@ void ClientApp::Start()
     renderer->SetSpecularLighting(options->GetSpecularLightning());
     // https://discourse.urho3d.io/t/shadow-on-slopes/4629/5
     renderer->SetShadowMapSize(4096);
-    Engine* engine = context_->GetSubsystem<Engine>();
+    Engine* engine = GetSubsystem<Engine>();
     engine->SetMaxFps(options->GetMaxFps());
 
 #ifdef DEBUG_HUD
@@ -370,7 +370,7 @@ void ClientApp::Start()
 */
 void ClientApp::Stop()
 {
-    FwClient* cli = context_->GetSubsystem<FwClient>();
+    FwClient* cli = GetSubsystem<FwClient>();
     cli->Stop();
     Options* options = GetSubsystem<Options>();
     options->Save();
@@ -472,7 +472,7 @@ void ClientApp::HandleTakeScreenshot(StringHash, VariantMap&)
 
 void ClientApp::HandleExitProgram(StringHash, VariantMap&)
 {
-    Engine* engine = context_->GetSubsystem<Engine>();
+    Engine* engine = GetSubsystem<Engine>();
     engine->Exit();
 }
 

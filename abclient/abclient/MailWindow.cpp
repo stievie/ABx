@@ -97,7 +97,7 @@ MailWindow::MailWindow(Context* context) :
 
 void MailWindow::GetHeaders()
 {
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->GetMailHeaders();
 }
 
@@ -144,7 +144,7 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
 {
     mailList_->RemoveAllItems();
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
     kainjow::mustache::mustache tpl{ "<{{from}}> on {{date}}: {{subject}}" };
     for (const auto& header : headers)
@@ -161,7 +161,7 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
 
 void MailWindow::HandleMailReadMessage(StringHash, VariantMap&)
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     const AB::Entities::Mail mail = client->GetCurrentMail();
     mailBody_->SetText(String(mail.message.c_str()));
 }
@@ -194,7 +194,7 @@ void MailWindow::HandleDeleteClicked(StringHash, VariantMap&)
     if (sel)
     {
         String uuid = sel->GetVar("uuid").GetString();
-        FwClient* net = context_->GetSubsystem<FwClient>();
+        FwClient* net = GetSubsystem<FwClient>();
         net->DeleteMail(std::string(uuid.CString()));
         net->GetMailHeaders();
         mailBody_->SetText(String::EMPTY);
@@ -209,7 +209,7 @@ void MailWindow::HandleItemSelected(StringHash, VariantMap&)
     if (sel)
     {
         String uuid = sel->GetVar("uuid").GetString();
-        FwClient* net = context_->GetSubsystem<FwClient>();
+        FwClient* net = GetSubsystem<FwClient>();
         net->ReadMail(std::string(uuid.CString()));
         // Mark read
         sel->SetStyle("MailListItem");
@@ -234,6 +234,6 @@ void MailWindow::HandleItemUnselected(StringHash, VariantMap&)
 
 void MailWindow::HandleNewMail(StringHash, VariantMap&)
 {
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->GetMailHeaders();
 }

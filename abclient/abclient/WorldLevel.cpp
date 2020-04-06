@@ -394,7 +394,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
     uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
     PropReadStream& data)
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
     GameObject* object = nullptr;
     switch (objectType)
@@ -729,7 +729,7 @@ void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
 void WorldLevel::HandleLogout(StringHash, VariantMap&)
 {
     RemoveUIWindows();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
     VariantMap& e = GetEventDataMap();
@@ -741,7 +741,7 @@ void WorldLevel::HandleLogout(StringHash, VariantMap&)
 void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
 {
     RemoveUIWindows();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
     net->Login(net->accountName_, net->accountPass_);

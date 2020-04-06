@@ -40,7 +40,7 @@ CreateAccountLevel::CreateAccountLevel(Context* context) :
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
-    FwClient* net = context_->GetSubsystem<FwClient>();
+    FwClient* net = GetSubsystem<FwClient>();
     net->SetState(Client::State::CreateAccount);
 }
 
@@ -124,7 +124,7 @@ void CreateAccountLevel::DoCreateAccount()
         return;
     }
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
+    FwClient* client = GetSubsystem<FwClient>();
     client->CreateAccount(name, pass, email, accKey);
 }
 
