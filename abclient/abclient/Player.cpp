@@ -400,15 +400,16 @@ void Player::SetYRotation(int64_t time, float rad, bool updateYaw)
     extern bool gNoClientPrediction;
 
     if (gNoClientPrediction || autoRun_)
-        Actor::SetYRotation(time, rad, updateYaw);
-    else
     {
-        if (GetTurnDir() == 0)
-            Actor::SetYRotation(time, rad, updateYaw);
-
-        ClientPrediction* cp = GetComponent<ClientPrediction>();
-        cp->CheckServerRotation(time, rad);
+        Actor::SetYRotation(time, rad, updateYaw);
+        return;
     }
+
+    if (GetTurnDir() == 0)
+        Actor::SetYRotation(time, rad, updateYaw);
+
+    ClientPrediction* cp = GetComponent<ClientPrediction>();
+    cp->CheckServerRotation(time, rad);
 }
 
 void Player::CameraZoom(bool increase)
