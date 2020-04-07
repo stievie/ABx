@@ -36,6 +36,7 @@ private:
     SharedPtr<BorderImage> background_;
     bool firstStart_{ false };
     Vector<String> history_;
+    Vector<String> filterPatterns_;
     /// Command auto complete current position.
     unsigned historyRows_{ 20 };
     /// Store the original line which is being auto-completed
@@ -97,6 +98,8 @@ private:
     LineEdit* GetLineEdit(int index);
     void LoadHistory();
     void SaveHistory();
+    void LoadFilters();
+    bool MatchesFilter(const String& value);
 public:
     static void RegisterObject(Context* context);
 

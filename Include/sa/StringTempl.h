@@ -114,4 +114,65 @@ std::basic_string<charType> CombinePath(const std::basic_string<charType>& path,
     return result;
 }
 
+template <typename charType>
+bool PatternMatch(const std::basic_string<charType>& str,
+    const std::basic_string<charType>& pattern)
+{
+    enum class State
+    {
+        Exact,
+        Any,
+        AnyRepeat
+    };
+
+    const charType* s = str.c_str();
+    const charType* p = pattern.c_str();
+    const charType* q = 0;
+    State state = State::Exact;
+
+    bool match = true;
+
+    while (match && *p)
+    {
+        if (*p == '*')
+        {
+            state = State::AnyRepeat;
+            q = p + 1;
+        }
+        else if (*p == '?')
+            state = State::Any;
+        else
+            state = State::Exact;
+
+        if (*s == 0)
+            break;
+
+        switch (state)
+        {
+        case State::Exact:
+            match = *s == *p;
+            s++;
+            p++;;
+            break;
+        case State::Any:
+            match = true;
+            s++;
+            p++;
+            break;
+        case State::AnyRepeat:
+            match = true;
+            s++;
+            if (*s == *q)
+                p++;
+            break;
+        }
+    }
+
+    if (state == State::AnyRepeat)
+        return *s == *q;
+    if (state == State::Any)
+        return *s == *p;
+    return match && (*s == *p);
+}
+
 }

@@ -38,6 +38,7 @@ PRAGMA_WARNING_POP
 #include "FormatText.h"
 #include "MultiLineEdit.h"
 #include <fstream>
+#include <sa/StringTempl.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -306,6 +307,36 @@ void ChatWindow::SaveHistory()
     {
         file << line.CString() << std::endl;
     }
+}
+
+void ChatWindow::LoadFilters()
+{
+    auto* options = GetSubsystem<Options>();
+    String filename = AddTrailingSlash(options->GetPrefPath()) + "chat_filter.txt";
+    std::ifstream file(filename.CString());
+    if (!file.is_open())
+        return;
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+            continue;
+        filterPatterns_.Push(String(line.c_str()));
+    }
+}
+
+bool ChatWindow::MatchesFilter(const String& value)
+{
+    if (filterPatterns_.Size() == 0)
+        return false;
+
+    const std::string str(value.CString());
+    for (const auto& pattern : filterPatterns_)
+    {
+        if (sa::PatternMatch(str, std::string(pattern.CString())))
+            return true;
+    }
+    return false;
 }
 
 void ChatWindow::RegisterObject(Context* context)
@@ -616,7 +647,8 @@ void ChatWindow::HandleChatMessage(StringHash, VariantMap& eventData)
     const String& message = eventData[P_DATA].GetString();
     const String& sender = eventData[P_SENDER].GetString();
     uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
-    AddChatLine(senderId, sender, message, channel);
+    if (!MatchesFilter(sender) && !MatchesFilter(message))
+        AddChatLine(senderId, sender, message, channel);
 }
 
 void ChatWindow::HandleTabSelected(StringHash, VariantMap& eventData)
