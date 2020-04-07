@@ -37,6 +37,7 @@ PRAGMA_WARNING_POP
 #include "ItemsCache.h"
 #include "FormatText.h"
 #include "MultiLineEdit.h"
+#include <fstream>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -73,6 +74,8 @@ const HashMap<String, AB::GameProtocol::CommandType> ChatWindow::CHAT_COMMANDS =
 
     // Internal, handled by the client
     { "help", AB::GameProtocol::CommandType::Help },
+    { "clear", AB::GameProtocol::CommandType::Clear },
+    { "history", AB::GameProtocol::CommandType::History },
     { "ip", AB::GameProtocol::CommandType::Ip },
     { "prefpath", AB::GameProtocol::CommandType::PrefPath },
     { "quit", AB::GameProtocol::CommandType::Quit }
@@ -159,10 +162,15 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
+
+    auto* options = GetSubsystem<Options>();
+    historyRows_ = options->GetChatInputHistorySize();
+    LoadHistory();
 }
 
 ChatWindow::~ChatWindow()
 {
+    SaveHistory();
     UnsubscribeFromAllEvents();
 }
 
@@ -268,6 +276,36 @@ LineEdit* ChatWindow::GetLineEdit(int index)
         return nullptr;
     LineEdit* edit = elem->tabBody_->GetChildStaticCast<LineEdit>("ChatLineEdit", true);
     return edit;
+}
+
+void ChatWindow::LoadHistory()
+{
+    auto* options = GetSubsystem<Options>();
+    String filename = AddTrailingSlash(options->GetPrefPath()) + "history.txt";
+    std::ifstream file(filename.CString());
+    if (!file.is_open())
+        return;
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+            continue;
+        history_.Push(String(line.c_str()));
+    }
+    while (history_.Size() > historyRows_)
+        history_.Erase(history_.Begin());
+    historyPosition_ = history_.Size(); // Reset
+}
+
+void ChatWindow::SaveHistory()
+{
+    auto* options = GetSubsystem<Options>();
+    String filename = AddTrailingSlash(options->GetPrefPath()) + "history.txt";
+    std::fstream file(filename.CString(), std::fstream::out);
+    for (const auto& line : history_)
+    {
+        file << line.CString() << std::endl;
+    }
 }
 
 void ChatWindow::RegisterObject(Context* context)
@@ -904,6 +942,8 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
         AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
+        AddLine("  /clear: Clear chat log", "ChatLogServerInfoText");
+        AddLine("  /history: Show chat input history", "ChatLogServerInfoText");
         AddLine("  /quit: Exit program", "ChatLogServerInfoText");
         break;
     case AB::GameProtocol::CommandType::Ip:
@@ -919,6 +959,17 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
     case AB::GameProtocol::CommandType::PrefPath:
     {
         AddLine(Options::GetPrefPath(), "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandType::Clear:
+    {
+        chatLog_->RemoveAllItems();
+        break;
+    }
+    case AB::GameProtocol::CommandType::History:
+    {
+        for (const auto& h : history_)
+            AddLine(h, "ChatLogServerInfoText");
         break;
     }
     case AB::GameProtocol::CommandType::Quit:
@@ -1252,4 +1303,14 @@ void ChatWindow::SayHello(Player* player)
         AddLine(String(t.c_str()), "ChatLogServerInfoText");
         firstStart_ = false;
     }
+}
+
+void ChatWindow::SetHistorySize(unsigned value)
+{
+    if (historyRows_ == value)
+        return;
+
+    historyRows_ = value;
+    while (history_.Size() > historyRows_)
+        history_.Erase(history_.Begin());
 }

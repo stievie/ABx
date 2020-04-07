@@ -95,6 +95,8 @@ private:
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatChannel channel);
     LineEdit* GetActiveLineEdit();
     LineEdit* GetLineEdit(int index);
+    void LoadHistory();
+    void SaveHistory();
 public:
     static void RegisterObject(Context* context);
 
@@ -107,6 +109,7 @@ public:
     void AddChatLine(uint32_t senderId, const String& name, const String& text,
         AB::GameProtocol::ChatChannel channel);
     void SayHello(Player* player);
+    void SetHistorySize(unsigned value);
 
     ChatWindow(Context* context);
     ~ChatWindow() override;

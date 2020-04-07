@@ -26,6 +26,9 @@
 #include "LevelManager.h"
 #include "BaseLevel.h"
 #include "Mumble.h"
+#include "Spinner.h"
+#include "WindowManager.h"
+#include "ChatWindow.h"
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -149,6 +152,8 @@ TabElement* OptionsWindow::CreateTab(TabGroup* tabs, const String& page)
 void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
 {
     BorderImage* page = tabElement->tabBody_;
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
 
     Window* wnd = page->CreateChild<Window>();
     LoadWindow(wnd, "UI/OptionPageGeneral.xml");
@@ -238,6 +243,36 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
             if (mumble->IsInitialized())
                 mumble->Shutdown();
         }
+    });
+
+    UIElement* historySizeContainer = wnd->GetChild("ChatHistorySizeContainer", true);
+    auto* edit = historySizeContainer->GetChildStaticCast<LineEdit>("ChatHistorySizeEdit", true);
+    edit->SetEditable(false);
+    auto* spinner = historySizeContainer->CreateChild<Spinner>("ChatHistorySizeSpinner");
+    spinner->SetTexture(tex);
+    spinner->SetImageRect(IntRect(48, 0, 64, 16));
+    spinner->SetEdit(SharedPtr<LineEdit>(edit));
+    spinner->SetFixedWidth(22);
+    spinner->SetFixedHeight(edit->GetHeight());
+
+    spinner->SetMin(0);
+    spinner->SetMax(100);
+    spinner->SetValue(opts->GetChatInputHistorySize());
+    spinner->SetStyleAuto();
+    spinner->SetAlignment(HA_RIGHT, VA_CENTER);
+    edit->SetChildOffset({ 0, 0 });
+    SubscribeToEvent(spinner, E_VALUECHANGED, [this](StringHash, VariantMap& eventData)
+    {
+        using namespace ValueChanged;
+        unsigned value = eventData[P_VALUE].GetUInt();
+
+        auto* wm = GetSubsystem<WindowManager>();
+        auto* cw = dynamic_cast<ChatWindow*>(wm->GetWindow(WINDOW_CHAT).Get());
+        if (cw)
+            cw->SetHistorySize(value);
+
+        Options* opt = GetSubsystem<Options>();
+        opt->SetChatInputHistorySize(value);
     });
 }
 

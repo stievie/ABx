@@ -142,9 +142,9 @@ void Player::GetFoeSelectionCandidates()
         return;
 
     PODVector<Drawable*> result;
-    SphereOctreeQuery query(result, { node_->GetWorldPosition(), Game::RANGE_COMPASS });
+    SphereOctreeQuery query(result, { node_->GetPosition(), Game::RANGE_COMPASS });
     world->GetDrawables(query);
-    const Vector3 pos = GetNode()->GetWorldPosition();
+    const Vector3 pos = GetNode()->GetPosition();
     for (auto* drawable : result)
     {
         auto* object = level->GetObjectFromNode(drawable->GetNode());
@@ -154,13 +154,14 @@ void Player::GetFoeSelectionCandidates()
         if (!Is<Actor>(object))
             continue;
 
-        if (object->gameId_ != 0 && IsEnemy(To<Actor>(object)))
+        const auto* actor = To<Actor>(object);
+        if (actor->gameId_ != 0 && IsEnemy(actor) && !actor->IsDead())
         {
             float dist = pos.DistanceToPoint(object->GetNode()->GetPosition());
             foeSelectionCandidates_.push_back({ dist, object->gameId_ });
         }
     }
-    std::sort(foeSelectionCandidates_.begin(), foeSelectionCandidates_.end(), [](DistanceId& a, DistanceId& b)
+    std::sort(foeSelectionCandidates_.begin(), foeSelectionCandidates_.end(), [](const DistanceId& a, const DistanceId& b)
     {
         return a.distance < b.distance;
     });
@@ -180,9 +181,9 @@ void Player::GetFriendSelectionCandidates()
         return;
 
     PODVector<Drawable*> result;
-    SphereOctreeQuery query(result, { node_->GetWorldPosition(), Game::RANGE_COMPASS });
+    SphereOctreeQuery query(result, { node_->GetPosition(), Game::RANGE_COMPASS });
     world->GetDrawables(query);
-    const Vector3 pos = GetNode()->GetWorldPosition();
+    const Vector3 pos = GetNode()->GetPosition();
     for (auto* drawable : result)
     {
         auto* object = level->GetObjectFromNode(drawable->GetNode());
@@ -192,13 +193,14 @@ void Player::GetFriendSelectionCandidates()
         if (!Is<Actor>(object))
             continue;
 
-        if (object->gameId_ != 0 && IsAlly(To<Actor>(object)))
+        const auto* actor = To<Actor>(object);
+        if (actor->gameId_ != 0 && IsAlly(actor) && !actor->IsDead())
         {
             float dist = pos.DistanceToPoint(object->GetNode()->GetPosition());
             friendSelectionCandidates_.push_back({ dist, object->gameId_ });
         }
     }
-    std::sort(friendSelectionCandidates_.begin(), friendSelectionCandidates_.end(), [](DistanceId& a, DistanceId& b)
+    std::sort(friendSelectionCandidates_.begin(), friendSelectionCandidates_.end(), [](const DistanceId& a, const DistanceId& b)
     {
         return a.distance < b.distance;
     });

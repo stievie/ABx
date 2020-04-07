@@ -215,6 +215,14 @@ public:
     {
         return windowPos_;
     }
+    unsigned GetChatInputHistorySize() const
+    {
+        return chatInputHistorySize_;
+    }
+    void SetChatInputHistorySize(unsigned value)
+    {
+        chatInputHistorySize_ = value;
+    }
 
     const String& GetRenderPath() const;
 
@@ -231,6 +239,7 @@ private:
     static String prefPath_;
     IntVector2 oldWindowPos_;
     IntVector2 windowPos_;
+    unsigned chatInputHistorySize_{ 20 };
     int width_{ 0 };
     int height_{ 0 };
     bool fullscreen_{ true };

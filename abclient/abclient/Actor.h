@@ -234,7 +234,7 @@ public:
     /// Get upper 16 bits of the group mask
     uint32_t GetFoeMask() const { return groupMask_ >> 16; }
 
-    bool IsEnemy(Actor* other) const
+    bool IsEnemy(const Actor* other) const
     {
 
         if (!other || other->undestroyable_)
@@ -246,7 +246,7 @@ public:
         // Return true if we have a matching bit of our foe mask in their friend mask
         return ((GetFoeMask() & other->GetFriendMask()) != 0);
     }
-    bool IsAlly(Actor* other) const
+    bool IsAlly(const Actor* other) const
     {
         if (!other || other->undestroyable_)
             return false;

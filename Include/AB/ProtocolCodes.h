@@ -519,6 +519,8 @@ enum class CommandType : uint8_t
     // Internal
     Internal = 100,
     Help = Internal, // /help
+    Clear,
+    History,         // /history show chat input history
     Ip,              // /ip
     ServerId,        // /id
     PrefPath,        // /prefpath

@@ -138,6 +138,12 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "InputHistorySize");
+        param.SetString("type", "int");
+        param.SetUInt("value", chatInputHistorySize_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "HighDPI");
         param.SetString("type", "bool");
         param.SetBool("value", highDPI_);
@@ -627,6 +633,10 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("Maximized") == 0)
         {
             maximized_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("InputHistorySize") == 0)
+        {
+            chatInputHistorySize_ = paramElem.GetUInt("value");
         }
         else if (name.Compare("HighDPI") == 0)
         {

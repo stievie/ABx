@@ -1388,6 +1388,8 @@ void Player::OnHandleCommand(AB::GameProtocol::CommandType type,
     case AB::GameProtocol::CommandType::Ip:
     case AB::GameProtocol::CommandType::PrefPath:
     case AB::GameProtocol::CommandType::Help:
+    case AB::GameProtocol::CommandType::Clear:
+    case AB::GameProtocol::CommandType::History:
     case AB::GameProtocol::CommandType::Quit:
         // Client side only
         break;
