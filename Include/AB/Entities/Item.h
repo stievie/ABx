@@ -99,8 +99,8 @@ enum ModelClass : uint32_t
     ModelClassMesmerMale,
     ModelClassNecromancerFemale,
     ModelClassNecromancerMale,
-    ModelClassMonkFemale,
-    ModelClassMonkMale,
+    ModelClassPriestFemale,
+    ModelClassPriestMale,
     ModelClassRangerFemale,
     ModelClassRangerMale,
 

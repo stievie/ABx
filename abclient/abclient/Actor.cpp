@@ -640,10 +640,10 @@ String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
     case AB::Entities::ModelClassNecromancerMale:
         result += "N/M/";
         break;
-    case AB::Entities::ModelClassMonkFemale:
+    case AB::Entities::ModelClassPriestFemale:
         result += "Mo/F/";
         break;
-    case AB::Entities::ModelClassMonkMale:
+    case AB::Entities::ModelClassPriestMale:
         result += "Mo/M/";
         break;
     case AB::Entities::ModelClassRangerFemale:
