@@ -707,11 +707,48 @@ String Actor::GetSoundEffect(const StringHash& hash)
         return String::EMPTY;
 
     result += "Characters/";
-    result += String(profession_->abbr.c_str()) + "/";
-    if (sex_ == AB::Entities::CharacterSexFemale)
-        result += "F/";
-    else
-        result += "M/";
+
+    switch (modelClass_)
+    {
+    case AB::Entities::ModelClassWarriorFemale:
+        result += "W/F/";
+        break;
+    case AB::Entities::ModelClassWarriorMale:
+        result += "W/M/";
+        break;
+    case AB::Entities::ModelClassElementaristFemale:
+        result += "E/F/";
+        break;
+    case AB::Entities::ModelClassElementaristMale:
+        result += "E/M/";
+        break;
+    case AB::Entities::ModelClassMesmerFemale:
+        result += "Me/F/";
+        break;
+    case AB::Entities::ModelClassMesmerMale:
+        result += "Me/M/";
+        break;
+    case AB::Entities::ModelClassNecromancerFemale:
+        result += "N/F/";
+        break;
+    case AB::Entities::ModelClassNecromancerMale:
+        result += "N/M/";
+        break;
+    case AB::Entities::ModelClassPriestFemale:
+        result += "Mo/F/";
+        break;
+    case AB::Entities::ModelClassPriestMale:
+        result += "Mo/M/";
+        break;
+    case AB::Entities::ModelClassRangerFemale:
+        result += "R/F/";
+        break;
+    case AB::Entities::ModelClassRangerMale:
+        result += "R/M/";
+        break;
+    default:
+        return String::EMPTY;
+    }
 
     if (hash == SOUND_DIE)
         result += "Dying.wav";
