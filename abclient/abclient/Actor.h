@@ -184,6 +184,7 @@ protected:
     HashMap<StringHash, String> sounds_;
     WeakPtr<GameObject> selectedObject_;
     StringHash currentAnimation_;
+    static String GetClassSubdir(AB::Entities::ModelClass cls);
 public:
     static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
     Vector3 moveToPos_;

@@ -600,6 +600,39 @@ void Actor::RemoveActorUI()
     }
 }
 
+String Actor::GetClassSubdir(AB::Entities::ModelClass cls)
+{
+    switch (cls)
+    {
+    case AB::Entities::ModelClassWarriorFemale:
+        return "W/F/";
+    case AB::Entities::ModelClassWarriorMale:
+        return "W/M/";
+    case AB::Entities::ModelClassElementaristFemale:
+        return "E/F/";
+    case AB::Entities::ModelClassElementaristMale:
+        return "E/M/";
+    case AB::Entities::ModelClassMesmerFemale:
+        return "Me/F/";
+    case AB::Entities::ModelClassMesmerMale:
+        return "Me/M/";
+    case AB::Entities::ModelClassNecromancerFemale:
+        return "N/F/";
+    case AB::Entities::ModelClassNecromancerMale:
+        return "N/M/";
+    case AB::Entities::ModelClassPriestFemale:
+        return "Mo/F/";
+    case AB::Entities::ModelClassPriestMale:
+        return "Mo/M/";
+    case AB::Entities::ModelClassRangerFemale:
+        return "R/F/";
+    case AB::Entities::ModelClassRangerMale:
+        return "R/M/";
+    default:
+        return String::EMPTY;
+    }
+}
+
 String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
 {
     String result;
@@ -616,48 +649,7 @@ String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
         }
     }
 
-    switch (cls)
-    {
-    case AB::Entities::ModelClassWarriorFemale:
-        result += "W/F/";
-        break;
-    case AB::Entities::ModelClassWarriorMale:
-        result += "W/M/";
-        break;
-    case AB::Entities::ModelClassElementaristFemale:
-        result += "E/F/";
-        break;
-    case AB::Entities::ModelClassElementaristMale:
-        result += "E/M/";
-        break;
-    case AB::Entities::ModelClassMesmerFemale:
-        result += "Me/F/";
-        break;
-    case AB::Entities::ModelClassMesmerMale:
-        result += "Me/M/";
-        break;
-    case AB::Entities::ModelClassNecromancerFemale:
-        result += "N/F/";
-        break;
-    case AB::Entities::ModelClassNecromancerMale:
-        result += "N/M/";
-        break;
-    case AB::Entities::ModelClassPriestFemale:
-        result += "Mo/F/";
-        break;
-    case AB::Entities::ModelClassPriestMale:
-        result += "Mo/M/";
-        break;
-    case AB::Entities::ModelClassRangerFemale:
-        result += "R/F/";
-        break;
-    case AB::Entities::ModelClassRangerMale:
-        result += "R/M/";
-        break;
-    default:
-        return String::EMPTY;
-    }
-
+    result += GetClassSubdir(cls);
     if (hash == ANIM_IDLE)
         result += "Idle.ani";
     else if (hash == ANIM_DYING)
@@ -708,49 +700,7 @@ String Actor::GetSoundEffect(const StringHash& hash)
     if (!profession_ || profession_->abbr.empty())
         return String::EMPTY;
 
-    result += "Characters/";
-
-    switch (modelClass_)
-    {
-    case AB::Entities::ModelClassWarriorFemale:
-        result += "W/F/";
-        break;
-    case AB::Entities::ModelClassWarriorMale:
-        result += "W/M/";
-        break;
-    case AB::Entities::ModelClassElementaristFemale:
-        result += "E/F/";
-        break;
-    case AB::Entities::ModelClassElementaristMale:
-        result += "E/M/";
-        break;
-    case AB::Entities::ModelClassMesmerFemale:
-        result += "Me/F/";
-        break;
-    case AB::Entities::ModelClassMesmerMale:
-        result += "Me/M/";
-        break;
-    case AB::Entities::ModelClassNecromancerFemale:
-        result += "N/F/";
-        break;
-    case AB::Entities::ModelClassNecromancerMale:
-        result += "N/M/";
-        break;
-    case AB::Entities::ModelClassPriestFemale:
-        result += "Mo/F/";
-        break;
-    case AB::Entities::ModelClassPriestMale:
-        result += "Mo/M/";
-        break;
-    case AB::Entities::ModelClassRangerFemale:
-        result += "R/F/";
-        break;
-    case AB::Entities::ModelClassRangerMale:
-        result += "R/M/";
-        break;
-    default:
-        return String::EMPTY;
-    }
+    result += "Characters/" + GetClassSubdir(modelClass_);
 
     if (hash == SOUND_DIE)
         result += "Dying.wav";
