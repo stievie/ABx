@@ -23,6 +23,7 @@
 #include <catch.hpp>
 
 #include <sa/StringTempl.h>
+#include <string>
 
 TEST_CASE("PatternMatch simple")
 {
@@ -33,15 +34,31 @@ TEST_CASE("PatternMatch simple")
 
 TEST_CASE("PatternMatch *")
 {
-    std::string s1 = "foobarsnstuff";
+    std::string s1 = "foobarnstuff";
     std::string s2 = "foo*";
     REQUIRE(sa::PatternMatch(s1, s2));
 }
 
 TEST_CASE("PatternMatch * 2")
 {
-    std::string s1 = "foobarsbaz";
+    std::string s1 = "foobarbaz";
     std::string s2 = "foo*baz";
+    REQUIRE(sa::PatternMatch(s1, s2));
+}
+
+TEST_CASE("PatternMatch * 3")
+{
+    std::string s1 = "foobarbaz";
+    std::string s2 = "*bar*";
+    std::string s3 = "bar*";
+    REQUIRE(sa::PatternMatch(s1, s2));
+    REQUIRE(!sa::PatternMatch(s1, s3));
+}
+
+TEST_CASE("PatternMatch wchar_t *")
+{
+    std::wstring s1 = L"foobarbaz";
+    std::wstring s2 = L"*bar*";
     REQUIRE(sa::PatternMatch(s1, s2));
 }
 

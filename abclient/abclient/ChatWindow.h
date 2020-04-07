@@ -99,7 +99,6 @@ private:
     void LoadHistory();
     void SaveHistory();
     void LoadFilters();
-    bool MatchesFilter(const String& value);
 public:
     static void RegisterObject(Context* context);
 
@@ -113,6 +112,7 @@ public:
         AB::GameProtocol::ChatChannel channel);
     void SayHello(Player* player);
     void SetHistorySize(unsigned value);
+    bool MatchesFilter(const String& value);
 
     ChatWindow(Context* context);
     ~ChatWindow() override;

@@ -164,6 +164,7 @@ ChatWindow::ChatWindow(Context* context) :
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
 
+    LoadFilters();
     auto* options = GetSubsystem<Options>();
     historyRows_ = options->GetChatInputHistorySize();
     LoadHistory();
@@ -321,7 +322,9 @@ void ChatWindow::LoadFilters()
     {
         if (line.empty())
             continue;
-        filterPatterns_.Push(String(line.c_str()));
+        String pattern;
+        pattern.AppendWithFormat("*%s*", line.c_str());
+        filterPatterns_.Push(std::move(pattern));
     }
 }
 
@@ -330,7 +333,7 @@ bool ChatWindow::MatchesFilter(const String& value)
     if (filterPatterns_.Size() == 0)
         return false;
 
-    const std::string str(value.CString());
+    const std::string str = "_" + std::string(value.CString()) + "_";
     for (const auto& pattern : filterPatterns_)
     {
         if (sa::PatternMatch(str, std::string(pattern.CString())))

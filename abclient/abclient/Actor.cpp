@@ -37,6 +37,8 @@
 #include "SkillManager.h"
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
+#include "WindowManager.h"
+#include "ChatWindow.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -825,7 +827,17 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
         static_cast<AB::GameProtocol::ChatChannel>(eventData[P_MESSAGETYPE].GetInt());
 
     if (channel == AB::GameProtocol::ChatChannel::General || channel == AB::GameProtocol::ChatChannel::Party)
-        ShowSpeechBubble(eventData[P_DATA].GetString());
+    {
+        const String& message = eventData[P_DATA].GetString();
+        auto* wm = GetSubsystem<WindowManager>();
+        auto* cw = dynamic_cast<ChatWindow*>(wm->GetWindow(WINDOW_CHAT).Get());
+        if (cw)
+        {
+            if (cw->MatchesFilter(message))
+                return;
+        }
+        ShowSpeechBubble(message);
+    }
 }
 
 void Actor::HandleSkillUse(StringHash, VariantMap& eventData)

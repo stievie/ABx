@@ -134,15 +134,19 @@ bool PatternMatch(const std::basic_string<charType>& str,
 
     while (match && *p)
     {
-        if (*p == '*')
+        switch (*p)
         {
+        case '*':
             state = State::AnyRepeat;
             q = p + 1;
-        }
-        else if (*p == '?')
+            break;
+        case '?':
             state = State::Any;
-        else
+            break;
+        default:
             state = State::Exact;
+            break;
+        }
 
         if (*s == 0)
             break;
@@ -151,19 +155,19 @@ bool PatternMatch(const std::basic_string<charType>& str,
         {
         case State::Exact:
             match = *s == *p;
-            s++;
-            p++;;
+            ++s;
+            ++p;
             break;
         case State::Any:
             match = true;
-            s++;
-            p++;
+            ++s;
+            ++p;
             break;
         case State::AnyRepeat:
             match = true;
-            s++;
+            ++s;
             if (*s == *q)
-                p++;
+                ++p;
             break;
         }
     }
