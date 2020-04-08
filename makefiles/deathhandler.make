@@ -5,7 +5,7 @@ TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libdeathhandler.a
 SOURDEDIR = ../ThirdParty/DeathHandler
 OBJDIR = obj/x64/$(CONFIG)/DeathHandler
-CXXFLAGS += -Werror
+CXXFLAGS += -Werror -Wno-unused-result
 # End changes
 
 SRC_FILES = \
