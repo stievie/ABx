@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/$(CONFIG)/abserv
-LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -labipc -labshared -lpugixml -ldetour -lstdc++fs -luuid
+LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -labipc -labshared -lpugixml -ldetour -lstdc++fs -luuid -ldl -ldeathhandler
 CXXFLAGS += -fexceptions -Werror -Wno-maybe-uninitialized
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes

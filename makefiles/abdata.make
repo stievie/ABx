@@ -6,13 +6,13 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abdata$(SUFFIX)
 SOURDEDIR = ../abdata/abdata
 OBJDIR = obj/x64/$(CONFIG)/abdata
-LIBS += -lpthread -labcrypto -labscommon -labdb -luuid -lstdc++fs -llua5.3
+LIBS += -lpthread -labcrypto -labscommon -labdb -luuid -lstdc++fs -llua5.3 -ldl -ldeathhandler
 CXXFLAGS += -fexceptions -Werror
 PCH = $(SOURDEDIR)/stdafx.h
 DEFINES += -DUSE_PGSQL
 # Database Libs
 ifneq (,$(findstring USE_PGSQL,$(DEFINES)))
-LIBS += -ldl -lpq -lldap -lssl -lcrypto -lz -lgssapi_krb5
+LIBS += -lpq -lldap -lssl -lcrypto -lz -lgssapi_krb5
 endif
 ifneq (,$(findstring USE_SQLITE,$(DEFINES)))
 LIBS += -lsqlite3

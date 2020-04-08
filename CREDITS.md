@@ -10,6 +10,7 @@ Creator: sa 2017-2019
 * Catch2 https://github.com/catchorg/Catch2
 * stb https://github.com/nothings/stb
 * LZ4 https://github.com/lz4/lz4
+* DeathHandler https://github.com/vmarkovtsev/DeathHandler
 
 ## Server
 

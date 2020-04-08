@@ -28,6 +28,9 @@
 #include <condition_variable>
 #include <csignal>
 #include <abscommon/MiniDump.h>
+#if defined(AB_UNIX) && defined(WRITE_MINIBUMP)
+#include <death_handler.h>
+#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -55,6 +58,14 @@ int main(int argc, char** argv)
 #endif
 #if defined(AB_WINDOWS) && defined(WRITE_MINIBUMP)
     SetUnhandledExceptionFilter(System::UnhandledHandler);
+#endif
+#if defined(AB_UNIX) && defined(WRITE_MINIBUMP)
+    Debug::DeathHandler dh;
+    dh.set_output_callback([](const char* message, size_t size) -> ssize_t
+    {
+        LOG_PLAIN << message << std::endl;
+        return static_cast<ssize_t>(size);
+    });
 #endif
 
     std::signal(SIGINT, signal_handler);              // Ctrl+C
