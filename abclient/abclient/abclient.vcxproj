@@ -274,6 +274,7 @@
     <ClCompile Include="BaseLevel.cpp" />
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
+    <ClCompile Include="ChatFilter.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="ClientPrediction.cpp" />
     <ClCompile Include="ConfirmDeleteCharacter.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />
+    <ClInclude Include="ChatFilter.h" />
     <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />

@@ -53,6 +53,7 @@
 #include "PostProcessController.h"
 #include "PvpCombatLevel.h"
 #include "SkillBarWindow.h"
+#include "ChatFilter.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
 #include "SkillCostElement.h"
@@ -170,6 +171,10 @@ ClientApp::ClientApp(Context* context) :
 
     windowManager_ = new WindowManager(context);
     context->RegisterSubsystem(windowManager_);
+
+    auto* chatFilter = new ChatFilter(context);
+    chatFilter->Load();
+    context->RegisterSubsystem(chatFilter);
 
     client_ = new FwClient(context);
     context->RegisterSubsystem(client_);

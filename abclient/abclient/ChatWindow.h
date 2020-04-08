@@ -36,7 +36,6 @@ private:
     SharedPtr<BorderImage> background_;
     bool firstStart_{ false };
     Vector<String> history_;
-    Vector<String> filterPatterns_;
     /// Command auto complete current position.
     unsigned historyRows_{ 20 };
     /// Store the original line which is being auto-completed
@@ -98,9 +97,11 @@ private:
     LineEdit* GetLineEdit(int index);
     void LoadHistory();
     void SaveHistory();
-    void LoadFilters();
 public:
     static void RegisterObject(Context* context);
+
+    ChatWindow(Context* context);
+    ~ChatWindow() override;
 
     void AddLine(const String& text, const String& style);
     void AddLine(const String& name, const String& text, const String& style);
@@ -113,9 +114,6 @@ public:
     void SayHello(Player* player);
     void SetHistorySize(unsigned value);
     bool MatchesFilter(const String& value);
-
-    ChatWindow(Context* context);
-    ~ChatWindow() override;
 
     void FocusEdit();
     SharedPtr<ListView> chatLog_;

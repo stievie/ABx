@@ -38,7 +38,7 @@ PRAGMA_WARNING_POP
 #include "FormatText.h"
 #include "MultiLineEdit.h"
 #include <fstream>
-#include <sa/StringTempl.h>
+#include "ChatFilter.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -164,7 +164,6 @@ ChatWindow::ChatWindow(Context* context) :
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
 
-    LoadFilters();
     auto* options = GetSubsystem<Options>();
     historyRows_ = options->GetChatInputHistorySize();
     LoadHistory();
@@ -310,36 +309,10 @@ void ChatWindow::SaveHistory()
     }
 }
 
-void ChatWindow::LoadFilters()
-{
-    auto* options = GetSubsystem<Options>();
-    String filename = AddTrailingSlash(options->GetPrefPath()) + "chat_filter.txt";
-    std::ifstream file(filename.CString());
-    if (!file.is_open())
-        return;
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.empty())
-            continue;
-        String pattern;
-        pattern.AppendWithFormat("*%s*", line.c_str());
-        filterPatterns_.Push(std::move(pattern));
-    }
-}
-
 bool ChatWindow::MatchesFilter(const String& value)
 {
-    if (filterPatterns_.Size() == 0)
-        return false;
-
-    const std::string str = "_" + std::string(value.CString()) + "_";
-    for (const auto& pattern : filterPatterns_)
-    {
-        if (sa::PatternMatch(str, std::string(pattern.CString())))
-            return true;
-    }
-    return false;
+    auto* chatFilter = GetSubsystem<ChatFilter>();
+    return chatFilter->Matches(value);
 }
 
 void ChatWindow::RegisterObject(Context* context)
@@ -455,11 +428,23 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         }
         break;
     }
+    case AB::GameProtocol::ObjectProgressLevelAdvance:
+    {
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        Actor* actor = To<Actor>(lm->GetObject(objectId));
+        if (actor)
+        {
+            kainjow::mustache::mustache tpl{ "{{name}} advanced to level {{level}}" };
+            kainjow::mustache::data data;
+            data.set("name", std::string(actor->name_.CString(), actor->name_.Length()));
+            data.set("level", std::to_string(eventData[P_VALUE].GetInt()));
+            std::string t = tpl.render(data);
+            AddLine(String(t.c_str()), "ChatLogServerInfoText");
+        }
+        break;
+    }
     case AB::GameProtocol::ObjectProgressXPIncreased:
         // Do nothing
-        break;
-    case AB::GameProtocol::ObjectProgressLevelAdvance:
-        // TODO:
         break;
     }
 }
@@ -766,8 +751,12 @@ void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
 void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
-    const String& data = eventData[P_DATA].GetString();
-    AddLine("A Player with name " + data + " does not exist.", "ChatLogServerInfoText");
+    const String& name = eventData[P_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "A Player with name {{name}} does not exist." };
+    kainjow::mustache::data data;
+    data.set("name", std::string(name.CString(), name.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleShortcutChatParty(StringHash, VariantMap&)

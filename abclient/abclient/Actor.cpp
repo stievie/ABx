@@ -38,7 +38,7 @@
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
 #include "WindowManager.h"
-#include "ChatWindow.h"
+#include "ChatFilter.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -779,13 +779,9 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
     if (channel == AB::GameProtocol::ChatChannel::General || channel == AB::GameProtocol::ChatChannel::Party)
     {
         const String& message = eventData[P_DATA].GetString();
-        auto* wm = GetSubsystem<WindowManager>();
-        auto* cw = dynamic_cast<ChatWindow*>(wm->GetWindow(WINDOW_CHAT).Get());
-        if (cw)
-        {
-            if (cw->MatchesFilter(message))
-                return;
-        }
+        auto* chatFilter = GetSubsystem<ChatFilter>();
+        if (chatFilter->Matches(message))
+            return;
         ShowSpeechBubble(message);
     }
 }

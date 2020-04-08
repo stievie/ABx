@@ -16,6 +16,8 @@ abclient/CharCreateLevel.cpp
 abclient/CharCreateLevel.h
 abclient/CharSelectLevel.cpp
 abclient/CharSelectLevel.h
+abclient/ChatFilter.cpp
+abclient/ChatFilter.h
 abclient/ChatWindow.cpp
 abclient/ChatWindow.h
 abclient/ClientApp.cpp

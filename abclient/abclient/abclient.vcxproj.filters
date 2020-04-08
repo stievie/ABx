@@ -225,6 +225,9 @@
     <ClInclude Include="DamageWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ChatFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -408,6 +411,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DamageWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
