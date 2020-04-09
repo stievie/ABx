@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     Debug::DeathHandler dh;
     dh.set_output_callback([](const char* message, size_t size) -> ssize_t
     {
-        LOG_PLAIN << message << std::endl;
+        LOG_PLAIN << std::string(message, size) << std::endl;
         return static_cast<ssize_t>(size);
     });
 #endif
