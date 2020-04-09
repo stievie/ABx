@@ -1330,7 +1330,7 @@ bool Actor::CanIncreaseAttributeRank(Game::Attribute index) const
     if (currRank >= Game::MAX_PLAYER_ATTRIBUTE_RANK)
         return false;
 
-    int cost = Game::CalcAttributeCost(currRank + 1);
+    int cost = Game::CalcAttributeCost(static_cast<int>(currRank) + 1);
     int used = GetUsedAttribPoints(attributes_, static_cast<int>(index));
     int total = GetAttributePoints();
 
@@ -1390,4 +1390,7 @@ void Actor::HandleSetAttackSpeed(StringHash, VariantMap& eventData)
         return;
 
     attackSpeed_ = eventData[P_SPEED].GetFloat();
+    const String& ani = animations_[ANIM_ATTACK];
+    if (!ani.Empty())
+        animController_->SetSpeed(ani, attackSpeed_);
 }
