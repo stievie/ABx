@@ -22,6 +22,7 @@
 #pragma once
 
 #include <absmath/Vector3.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -31,6 +32,8 @@ namespace Components {
 
 class WanderComp
 {
+    NON_COPYABLE(WanderComp)
+    NON_MOVEABLE(WanderComp)
 private:
     enum class Direction
     {
@@ -52,9 +55,6 @@ private:
 public:
     WanderComp() = delete;
     explicit WanderComp(Npc& owner);
-    // non-copyable
-    WanderComp(const WanderComp&) = delete;
-    WanderComp& operator=(const WanderComp&) = delete;
     ~WanderComp() = default;
 
     void AddRoutePoint(const Math::Vector3& point);

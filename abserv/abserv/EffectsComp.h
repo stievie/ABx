@@ -41,6 +41,7 @@ namespace Components {
 class EffectsComp
 {
     NON_COPYABLE(EffectsComp)
+    NON_MOVEABLE(EffectsComp)
 private:
     static constexpr AB::Entities::EffectCategory SINGLEEFFECT_START = AB::Entities::EffectPreparation;
     static constexpr AB::Entities::EffectCategory SINGLEEFFECT_END = AB::Entities::EffectWeaponSpell;

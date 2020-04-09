@@ -750,6 +750,18 @@ struct ObjectAttackFailure
     }
 };
 
+struct ObjectSetAttackSpeed
+{
+    uint32_t id;
+    float factor;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(factor);
+    }
+};
+
 struct ObjectPingTarget
 {
     uint32_t id;

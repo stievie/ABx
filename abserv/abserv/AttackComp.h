@@ -39,6 +39,7 @@ namespace Components {
 class AttackComp
 {
     NON_COPYABLE(AttackComp)
+    NON_MOVEABLE(AttackComp)
 private:
     Actor& owner_;
     /// Also includes running to the target
@@ -47,6 +48,8 @@ private:
     bool pause_{ false };
     int64_t lastAttackTime_{ 0 };
     uint32_t attackSpeed_{ 0 };
+    uint32_t lastAttackSpeed_{ 0 };
+    bool attackSpeedDirty_{ false };
     DamageType damageType_{ DamageType::Unknown };
     AB::GameProtocol::AttackError lastError_{ AB::GameProtocol::AttackErrorNone };
     bool interrupted_{ false };

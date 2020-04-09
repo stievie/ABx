@@ -36,6 +36,7 @@ namespace Components {
 class TriggerComp
 {
     NON_COPYABLE(TriggerComp)
+    NON_MOVEABLE(TriggerComp)
 private:
     GameObject& owner_;
     std::map<uint32_t, int64_t> triggered_;

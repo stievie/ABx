@@ -172,11 +172,13 @@ private:
     void HandleSetAttribValue(StringHash eventType, VariantMap& eventData);
     void HandleSetSkill(StringHash eventType, VariantMap& eventData);
     void HandleGroupMaskChanged(StringHash eventType, VariantMap& eventData);
+    void HandleSetAttackSpeed(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:
     AnimatedModel* animatedModel_{ nullptr };
     Actor::ModelType type_{ ModelType::Static };
+    float attackSpeed_{ 1.0f };
     SharedPtr<AnimationController> animController_;
     SharedPtr<StaticModel> model_;
     HashMap<StringHash, String> animations_;

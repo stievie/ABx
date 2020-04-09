@@ -42,6 +42,7 @@ namespace Components {
 class DamageComp
 {
     NON_COPYABLE(DamageComp)
+    NON_MOVEABLE(DamageComp)
 private:
     // Keep some history
     static constexpr uint32_t DAMAGEHISTORY_TOKEEP = 25;

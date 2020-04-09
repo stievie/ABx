@@ -76,6 +76,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ObjectDroppedItem, ServerPacketType::GameObjectDropItem>();
     AddHandler<AB::Packets::Server::ObjectSetPosition, ServerPacketType::GameObjectSetPosition>();
     AddHandler<AB::Packets::Server::ObjectGroupMaskChanged, ServerPacketType::GameObjectGroupMaskChanged>();
+    AddHandler<AB::Packets::Server::ObjectSetAttackSpeed, ServerPacketType::GameObjectSetAttackSpeed>();
     AddHandler<AB::Packets::Server::ServerMessage, ServerPacketType::ServerMessage>();
     AddHandler<AB::Packets::Server::ChatMessage, ServerPacketType::ChatMessage>();
     AddHandler<AB::Packets::Server::PartyPlayerInvited, ServerPacketType::PartyPlayerInvited>();

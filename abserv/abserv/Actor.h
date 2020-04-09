@@ -196,7 +196,10 @@ public:
     /// Get effect of armor. Armor is influenced by the equipment and effects
     /// Damage multiplier.
     float GetArmorEffect(DamageType damageType, DamagePos pos, float penetration);
+    /// Attack speed in ms. One attack cycle (start hit -> hit -> apply damage) takes this ms to complete.
     uint32_t GetAttackSpeed();
+    /// Get increased attack speed relative to normal weapon attack speed. > 0 = faster, < 0 slower
+    float GetAttackSpeedIncrease(uint32_t speed);
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage(bool critical);
     float GetArmorPenetration();

@@ -77,6 +77,7 @@ enum class ResourceType
 class ResourceComp
 {
     NON_COPYABLE(ResourceComp)
+    NON_MOVEABLE(ResourceComp)
 private:
     Actor& owner_;
     float energy_{ 0.0f };

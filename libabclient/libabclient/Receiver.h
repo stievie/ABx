@@ -103,6 +103,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet) = 0;

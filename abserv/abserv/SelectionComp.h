@@ -39,6 +39,7 @@ namespace Components {
 class SelectionComp
 {
     NON_COPYABLE(SelectionComp)
+    NON_MOVEABLE(SelectionComp)
 private:
     Actor& owner_;
     uint32_t prevObjectId_{ 0 };

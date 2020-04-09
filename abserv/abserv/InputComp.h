@@ -37,6 +37,7 @@ namespace Components {
 class InputComp
 {
     NON_COPYABLE(InputComp)
+    NON_MOVEABLE(InputComp)
 private:
     Actor& owner_;
     InputQueue inputs_;

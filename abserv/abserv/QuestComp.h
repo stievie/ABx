@@ -41,6 +41,7 @@ namespace Components {
 class QuestComp
 {
     NON_COPYABLE(QuestComp)
+    NON_MOVEABLE(QuestComp)
 private:
     Player& owner_;
     std::map<uint32_t, std::unique_ptr<Quest>> activeQuests_;

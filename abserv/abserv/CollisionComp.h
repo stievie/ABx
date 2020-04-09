@@ -41,6 +41,7 @@ namespace Components {
 class CollisionComp
 {
     NON_COPYABLE(CollisionComp)
+    NON_MOVEABLE(CollisionComp)
 private:
     Actor& owner_;
     bool isCollidingWithPlayers_{ true };

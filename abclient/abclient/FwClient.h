@@ -228,6 +228,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ChatMessage& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PartyPlayerInvited& packet) override;

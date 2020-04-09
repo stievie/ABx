@@ -46,6 +46,7 @@ namespace Components {
 class InventoryComp
 {
     NON_COPYABLE(InventoryComp)
+    NON_MOVEABLE(InventoryComp)
 private:
     Actor& owner_;
     EquipmentMap equipment_;

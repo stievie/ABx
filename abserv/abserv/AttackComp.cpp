@@ -50,6 +50,11 @@ void AttackComp::StartHit(Actor& target)
 {
     // New attack
     attackSpeed_ = owner_.GetAttackSpeed();
+    if (attackSpeed_ != lastAttackSpeed_)
+    {
+        attackSpeedDirty_ = true;
+        lastAttackSpeed_ = attackSpeed_;
+    }
     interrupted_ = false;
     owner_.FaceObject(&target);
     if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_ / 2)
@@ -187,6 +192,16 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
 
 void AttackComp::Write(Net::NetworkMessage& message)
 {
+    if (attackSpeedDirty_)
+    {
+        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetAttackSpeed);
+        AB::Packets::Server::ObjectSetAttackSpeed packet = {
+            owner_.id_,
+            owner_.GetAttackSpeedIncrease(attackSpeed_)
+        };
+        AB::Packets::Add(packet, message);
+        attackSpeedDirty_ = false;
+    }
     if (lastError_ != AB::GameProtocol::AttackErrorNone)
     {
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectAttackFailure);

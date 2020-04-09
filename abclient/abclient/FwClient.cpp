@@ -1684,6 +1684,16 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGro
     QueueEvent(Events::E_OBJECTGROUPMASKCHAGED, eData);
 }
 
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet)
+{
+    using namespace Events::ObjectSetAttackSpeed;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = packet.id;
+    eData[P_SPEED] = packet.factor;
+    QueueEvent(Events::E_OBJECTSETATTACKSPEED, eData);
+}
+
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)
 {
     VariantMap& eData = GetEventDataMap();

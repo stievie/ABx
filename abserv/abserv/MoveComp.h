@@ -38,6 +38,7 @@ namespace Components {
 class MoveComp
 {
     NON_COPYABLE(MoveComp)
+    NON_MOVEABLE(MoveComp)
 private:
     Actor& owner_;
     float speedFactor_{ 1.0f };

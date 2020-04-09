@@ -39,6 +39,7 @@ namespace Components {
 class HealComp
 {
     NON_COPYABLE(HealComp)
+    NON_MOVEABLE(HealComp)
 private:
     struct HealItem
     {

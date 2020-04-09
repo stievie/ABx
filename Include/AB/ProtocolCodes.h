@@ -147,6 +147,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(GameObjectDropItem)          \
     ENUMERATE_SERVER_PACKET_CODE(GameObjectSetPosition)       \
     ENUMERATE_SERVER_PACKET_CODE(GameObjectGroupMaskChanged)  \
+    ENUMERATE_SERVER_PACKET_CODE(GameObjectSetAttackSpeed)    \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerRemoved)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerAdded)            \

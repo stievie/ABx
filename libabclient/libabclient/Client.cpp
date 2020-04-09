@@ -847,6 +847,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroup
     receiver_.OnPacket(updateTick, packet);
 }
 
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet)
 {
     receiver_.OnPacket(updateTick, packet);

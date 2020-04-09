@@ -68,6 +68,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_LOAD_SKILLTEMPLATE, URHO3D_HANDLER(Actor, HandleLoadSkillTemplate));
     SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(Actor, HandleSetSkill));
     SubscribeToEvent(Events::E_OBJECTGROUPMASKCHAGED, URHO3D_HANDLER(Actor, HandleGroupMaskChanged));
+    SubscribeToEvent(Events::E_OBJECTSETATTACKSPEED, URHO3D_HANDLER(Actor, HandleSetAttackSpeed));
 }
 
 Actor::~Actor()
@@ -979,7 +980,7 @@ void Actor::PlayStateAnimation(float fadeTime)
         PlayAnimation(ANIM_CASTING, true, fadeTime);
         break;
     case AB::GameProtocol::CreatureState::Attacking:
-        PlayAnimation(ANIM_ATTACK, true, fadeTime);
+        PlayAnimation(ANIM_ATTACK, true, fadeTime, attackSpeed_);
         break;
     case AB::GameProtocol::CreatureState::Emote:
         break;
@@ -1380,4 +1381,13 @@ void Actor::HandleGroupMaskChanged(StringHash, VariantMap& eventData)
         return;
 
     groupMask_ = eventData[P_GROUPMASK].GetUInt();
+}
+
+void Actor::HandleSetAttackSpeed(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ObjectSetAttackSpeed;
+    if (eventData[P_OBJECTID].GetUInt() != gameId_)
+        return;
+
+    attackSpeed_ = eventData[P_SPEED].GetFloat();
 }

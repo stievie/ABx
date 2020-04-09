@@ -33,6 +33,7 @@ namespace Components {
 class AiComp
 {
     NON_COPYABLE(AiComp)
+    NON_MOVEABLE(AiComp)
 private:
     Npc& owner_;
     AI::AiAgent agent_;

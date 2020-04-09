@@ -705,6 +705,13 @@ uint32_t Actor::GetAttackSpeed()
     return modSpeed;
 }
 
+float Actor::GetAttackSpeedIncrease(uint32_t speed)
+{
+    Item* weapon = GetWeapon();
+    const uint32_t normalSpeed = weapon ? weapon->GetWeaponAttackSpeed() : ATTACK_SPEED_STAFF;
+    return static_cast<float>(normalSpeed) / static_cast<float>(speed);
+}
+
 DamageType Actor::GetAttackDamageType()
 {
     Item* weapon = GetWeapon();

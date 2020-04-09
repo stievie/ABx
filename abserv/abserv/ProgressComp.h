@@ -38,6 +38,7 @@ namespace Components {
 class ProgressComp
 {
     NON_COPYABLE(ProgressComp)
+    NON_MOVEABLE(ProgressComp)
 private:
     enum class ProgressType
     {

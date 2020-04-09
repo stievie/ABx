@@ -40,6 +40,7 @@ namespace Components {
 class SkillsComp
 {
     NON_COPYABLE(SkillsComp)
+    NON_MOVEABLE(SkillsComp)
 private:
     Actor& owner_;
     AB::GameProtocol::SkillError lastError_;

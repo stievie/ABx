@@ -38,6 +38,7 @@ namespace Components {
 class StateComp
 {
     NON_COPYABLE(StateComp)
+    NON_MOVEABLE(StateComp)
 private:
     GameObject& owner_;
     AB::GameProtocol::CreatureState currentState_{ AB::GameProtocol::CreatureState::Idle };

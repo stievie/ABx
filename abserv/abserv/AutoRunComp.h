@@ -39,6 +39,7 @@ namespace Components {
 class AutoRunComp
 {
     NON_COPYABLE(AutoRunComp)
+    NON_MOVEABLE(AutoRunComp)
 private:
     static constexpr uint32_t RECALCULATE_PATH_TIME = 1000;
     Actor& owner_;
