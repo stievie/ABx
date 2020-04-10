@@ -753,7 +753,8 @@ struct ObjectAttackFailure
 struct ObjectSetAttackSpeed
 {
     uint32_t id;
-    float factor;
+    // float factor * 100
+    uint8_t factor;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {

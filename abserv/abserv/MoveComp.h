@@ -78,14 +78,17 @@ public:
     }
     void SetSpeedFactor(float value)
     {
-        if (!Math::Equals(speedFactor_, value))
-        {
-            speedFactor_ = value;
-            speedDirty_ = true;
-        }
+        if (Math::Equals(speedFactor_, value))
+            return;
+
+        speedFactor_ = value;
+        speedDirty_ = true;
     }
     void AddSpeed(float value)
     {
+        if (Math::Equals(value, 0.0f))
+            return;
+
         speedFactor_ += value;
         speedDirty_ = true;
     }

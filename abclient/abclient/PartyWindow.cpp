@@ -878,7 +878,7 @@ void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t 
         if (object->objectType_ == ObjectTypeSelf)
             groupId_ = groupId;
 
-        URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->gameId_, groupId, groupPos, groupId_);
+//        URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->gameId_, groupId, groupPos, groupId_);
         if (groupId == groupId_)
             AddMember(SharedPtr<Actor>(To<Actor>(object)), groupPos);
     }

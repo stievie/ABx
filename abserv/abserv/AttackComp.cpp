@@ -197,7 +197,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetAttackSpeed);
         AB::Packets::Server::ObjectSetAttackSpeed packet = {
             owner_.id_,
-            owner_.GetAttackSpeedIncrease(attackSpeed_)
+            static_cast<uint8_t>(owner_.GetAttackSpeedIncrease(attackSpeed_) * 100.0f)
         };
         AB::Packets::Add(packet, message);
         attackSpeedDirty_ = false;

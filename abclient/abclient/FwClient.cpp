@@ -38,6 +38,8 @@
 
 //#include <Urho3D/DebugNew.h>
 
+//#define LOG_ACTIONS
+
 String FwClient::GetProtocolErrorMessage(AB::ErrorCodes err)
 {
     switch (err)
@@ -243,19 +245,6 @@ void FwClient::LoadData()
     LoadEffects(versions_["game_effects"]);
     LoadItems(versions_["game_items"]);
     LoadMusic(versions_["game_music"]);
-/*    WorkQueue* queue = GetSubsystem<WorkQueue>();
-    SharedPtr<WorkItem> item = queue->GetFreeItem();
-    item->aux_ = const_cast<FwClient*>(this);
-    item->workFunction_ = [](const WorkItem* item, unsigned threadIndex)
-    {
-        FwClient& self = *(reinterpret_cast<FwClient*>(item->aux_));
-        self.LoadSkills();
-        self.LoadAttributes();
-        self.LoadProfessions();
-        self.LoadSkills();
-        self.LoadEffects();
-    };
-    queue->AddWorkItem(item);*/
 }
 
 bool FwClient::IsOldData(uint32_t curVersion, XMLFile* file)
@@ -1522,7 +1511,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::GameError
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet)
 {
     String errorMsg = GetSkillErrorMessage(static_cast<AB::GameProtocol::SkillError>(packet.errorCode));
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d skill error %d: %s", packet.id, packet.skillIndex, errorMsg.CString());
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::SkillFailure;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1535,8 +1526,10 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSki
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d using skill %d: Energy = %d, Adrenaline = %d, Activation = %d, Overcast = %d, HP = %d",
         packet.id, packet.skillIndex, packet.energy, packet.adrenaline, packet.activation, packet.overcast, packet.hp);
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectUseSkill;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1552,7 +1545,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUse
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %u used skill %u: Recharge = %u", packet.id, packet.skillIndex, packet.recharge);
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectEndUseSkill;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1576,7 +1571,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectAtt
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPingTarget& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d pings Target %d, Skill %d", packet.id, packet.targetId, packet.skillIndex);
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectPingTarget;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1589,7 +1586,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPin
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectAdded& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %u", packet.effectIndex, packet.id, packet.ticks);
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectEffectAdded;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1601,7 +1600,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEff
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEffectRemoved& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Effect %d removed: Object %d", packet.effectIndex, packet.id);
+#endif
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectEffectRemoved;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1612,7 +1613,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectEff
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDamaged& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d was damaged by %d: value %d", packet.id, packet.sourceId, packet.damageValue);
+#endif
     using namespace Events::ObjectDamaged;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1626,7 +1629,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDam
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d was healed by %d: HP %d", packet.id, packet.sourceId, packet.healValue);
+#endif
     using namespace Events::ObjectHealed;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1639,8 +1644,9 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHea
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet)
 {
+#ifdef LOG_ACTIONS
     URHO3D_LOGINFOF("Object %d progress type %d, value %d", packet.id, static_cast<int>(packet.type), packet.value);
-
+#endif
     using namespace Events::ObjectProgress;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
@@ -1690,7 +1696,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSet
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_OBJECTID] = packet.id;
-    eData[P_SPEED] = packet.factor;
+    eData[P_SPEED] = static_cast<float>(packet.factor) / 100.0f;
     QueueEvent(Events::E_OBJECTSETATTACKSPEED, eData);
 }
 

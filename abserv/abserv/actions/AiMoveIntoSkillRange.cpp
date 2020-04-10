@@ -60,7 +60,11 @@ Node::Status MoveIntoSkillRange::DoAction(Agent& agent, uint32_t)
     }
 
     if (npc.FollowObjectById(actor.GetId(), false))
+    {
+        if (npc.GetSpeed() < 1.0f)
+            npc.SetSpeed(1.0f);
         return Status::Running;
+    }
     return Status::Failed;
 }
 

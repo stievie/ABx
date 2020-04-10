@@ -40,6 +40,8 @@
 #include "SkillsWindow.h"
 #include "SkillManager.h"
 
+//#define LOG_OBJECTSPAWN
+
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
     mailWindow_(nullptr),
@@ -456,8 +458,9 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         nodeIds_[object->GetNode()->GetID()] = id;
         actor->AddActorUI();
 
+#ifdef LOG_OBJECTSPAWN
         URHO3D_LOGINFOF("Spawned object %d: %s", actor->gameId_, actor->name_.CString());
-
+#endif
         switch (object->objectType_)
         {
         case ObjectTypePlayer:
@@ -486,7 +489,9 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
     GameObject* object = objects_[objectId];
     if (object)
     {
+#ifdef LOG_OBJECTSPAWN
         URHO3D_LOGINFOF("Despawn object %d", object->gameId_);
+#endif
         GameObject* selO = player_->GetSelectedObject();
         if (selO && selO->gameId_ == object->gameId_)
         {
