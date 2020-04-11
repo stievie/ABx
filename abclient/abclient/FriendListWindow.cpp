@@ -192,6 +192,9 @@ void FriendListWindow::SubscribeEvents()
     SubscribeToEvent(addIgnoreButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleAddIgnoreClicked));
     SubscribeToEvent(statusDropdown_, E_ITEMSELECTED, URHO3D_HANDLER(FriendListWindow, HandleStatusDropdownSelected));
 
+    SubscribeToEvent(addFriendEdit_, E_TEXTFINISHED, URHO3D_HANDLER(FriendListWindow, HandleAddFriendClicked));
+    SubscribeToEvent(addIgnoreEdit_, E_TEXTFINISHED, URHO3D_HANDLER(FriendListWindow, HandleAddIgnoreClicked));
+
     SubscribeToEvent(Events::E_GOT_PLAYERINFO, URHO3D_HANDLER(FriendListWindow, HandleGotPlayerInfo));
     SubscribeToEvent(Events::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
     SubscribeToEvent(Events::E_FRIENDADDED, URHO3D_HANDLER(FriendListWindow, HandleFriendAdded));
@@ -245,6 +248,24 @@ void FriendListWindow::UpdateSelf(const AB::Packets::Server::PlayerInfo& acc)
             }
         }
     }
+}
+
+void FriendListWindow::AddFriend()
+{
+    const String& name = addFriendEdit_->GetText();
+    if (name.Empty())
+        return;
+    auto* client = GetSubsystem<FwClient>();
+    client->AddFriend(name, AB::Entities::FriendRelationFriend);
+}
+
+void FriendListWindow::AddIgnore()
+{
+    const String& name = addIgnoreEdit_->GetText();
+    if (name.Empty())
+        return;
+    auto* client = GetSubsystem<FwClient>();
+    client->AddFriend(name, AB::Entities::FriendRelationIgnore);
 }
 
 void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
@@ -392,20 +413,12 @@ void FriendListWindow::HandleCloseClicked(StringHash, VariantMap&)
 
 void FriendListWindow::HandleAddFriendClicked(StringHash, VariantMap&)
 {
-    const String& name = addFriendEdit_->GetText();
-    if (name.Empty())
-        return;
-    auto* client = GetSubsystem<FwClient>();
-    client->AddFriend(name, AB::Entities::FriendRelationFriend);
+    AddFriend();
 }
 
 void FriendListWindow::HandleAddIgnoreClicked(StringHash, VariantMap&)
 {
-    const String& name = addIgnoreEdit_->GetText();
-    if (name.Empty())
-        return;
-    auto* client = GetSubsystem<FwClient>();
-    client->AddFriend(name, AB::Entities::FriendRelationIgnore);
+    AddIgnore();
 }
 
 void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)

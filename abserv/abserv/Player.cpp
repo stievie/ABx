@@ -599,10 +599,11 @@ void Player::CRQRemoveFriend(const std::string accountUuid)
 {
     AB::Entities::Friend f;
 
-    if (!GetFriendList().GetFriendByAccount(accountUuid, f))
+    auto& fl = GetFriendList();
+    if (!fl.GetFriendByAccount(accountUuid, f))
         return;
 
-    auto res = GetFriendList().Remove(accountUuid);
+    auto res = fl.Remove(accountUuid);
 
     auto msg = Net::NetworkMessage::GetNew();
     switch (res)

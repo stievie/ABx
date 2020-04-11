@@ -57,6 +57,8 @@ private:
     void UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f);
     void UpdateAll();
     void UpdateSelf(const AB::Packets::Server::PlayerInfo& acc);
+    void AddFriend();
+    void AddIgnore();
 public:
     static void RegisterObject(Context* context);
 

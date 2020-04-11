@@ -53,7 +53,7 @@ public:
     FriendList& operator=(const FriendList&) = delete;
 
     void Load();
-    void Save();
+    void Save(bool flush = false);
     FriendList::Error AddFriendByName(const std::string& playerName, AB::Entities::FriendRelation relation);
     FriendList::Error ChangeNickname(const std::string& accountUuid, const std::string& newName);
     FriendList::Error Remove(const std::string& accountUuid);

@@ -44,11 +44,14 @@ void FriendList::Load()
     // If we can't read it this guy has no friends :/
 }
 
-void FriendList::Save()
+void FriendList::Save(bool flush)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(data_))
         LOG_ERROR << "Error saving friend list for account " << data_.uuid << std::endl;
+
+    if (flush)
+        client->Invalidate(data_);
 }
 
 FriendList::Error FriendList::AddFriendAccount(const AB::Entities::Character& ch,
@@ -67,10 +70,9 @@ FriendList::Error FriendList::AddFriendAccount(const AB::Entities::Character& ch
         Utils::Tick()
     });
 
+    Save(true);
     InvalidateList(accountUuid_);
     InvalidateList(ch.accountUuid);
-
-    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
@@ -98,10 +100,10 @@ FriendList::Error FriendList::Remove(const std::string& accountUuid)
         return FriendList::Error::NoFriend;
     data_.friends.erase(it);
 
+    Save(true);
     InvalidateList(accountUuid_);
     InvalidateList(accountUuid);
 
-    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
@@ -115,8 +117,8 @@ FriendList::Error FriendList::ChangeNickname(const std::string& accountUuid, con
         return FriendList::Error::PlayerNotFound;
 
     (*it).friendName = newName;
+    Save();
 
-    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&FriendList::Save, this)));
     return FriendList::Error::Success;
 }
 
