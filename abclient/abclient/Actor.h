@@ -32,20 +32,11 @@
 
 using namespace Urho3D;
 
-static const float MOVE_FORCE = 0.7f;
-static const float INAIR_MOVE_FORCE = 0.02f;
-static const float BRAKE_FORCE = 0.2f;
-static const float JUMP_FORCE = 6.0f;
-static const float INAIR_THRESHOLD_TIME = 0.1f;
-
 static const StringHash ANIM_IDLE("Idle");
 static const StringHash ANIM_WALK("Walk");
 static const StringHash ANIM_RUN("Run");
 static const StringHash ANIM_JUMP("Jump");
 static const StringHash ANIM_SIT("Sit");
-static const StringHash ANIM_ATTACK_MELEE("Melee");
-static const StringHash ANIM_ATTACK_PISTOL("Shoot Pistol");
-static const StringHash ANIM_ATTACK_GUN("Shoot Gun");
 static const StringHash ANIM_HURT("Hurt");
 static const StringHash ANIM_DYING("Dying");
 static const StringHash ANIM_DEAD("Dead");
@@ -65,11 +56,6 @@ static const StringHash SOUND_FOOTSTEPS("Footsteps");
 static const StringHash SOUND_JUMP("Jump");
 static const StringHash SOUND_SKILLFAILURE("SkillFailure");
 static const StringHash SOUND_DIE("Die");
-
-static const StringHash COLLADJ_ADD("add");
-static const StringHash COLLADJ_SUB("sub");
-static const StringHash COLLADJ_MUL("mul");
-static const StringHash COLLADJ_DIV("div");
 
 struct ActorStats
 {
