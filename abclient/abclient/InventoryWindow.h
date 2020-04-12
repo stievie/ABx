@@ -22,8 +22,13 @@
 #pragma once
 
 #include "FwClient.h"
+#include "AB/Entities/ConcreteItem.h"
 
 class Item;
+
+static const unsigned INVENTORY_COLS_PER_ROW = 5;
+static const int INVENTORY_ITEM_SIZE_X = 48;
+static const int INVENTORY_ITEM_SIZE_Y = 48;
 
 class InventoryWindow : public Window
 {
@@ -31,6 +36,7 @@ class InventoryWindow : public Window
 private:
     bool initializted_;
     SharedPtr<Menu> itemPopup_;
+    SharedPtr<Window> dragItem_;
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleInventory(StringHash eventType, VariantMap& eventData);
@@ -40,8 +46,13 @@ private:
     void HandleItemStoreSelected(StringHash eventType, VariantMap& eventData);
     void HandleItemDestroySelected(StringHash eventType, VariantMap& eventData);
     void HandleItemDropSelected(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragMove(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const InventoryItem& iItem);
+    uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
 public:
     static void RegisterObject(Context* context);
 
@@ -50,5 +61,6 @@ public:
 
     void GetInventory();
     void Clear();
+    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
 };
 

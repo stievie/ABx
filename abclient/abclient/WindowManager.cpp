@@ -206,7 +206,7 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
     return SharedPtr<UIElement>();
 }
 
-SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog)
+SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog, bool canCreate)
 {
     SharedPtr<DialogWindow> result;
     switch (dialog)
@@ -217,9 +217,10 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog)
     {
         UIElement* root = GetSubsystem<UI>()->GetRoot();
         UIElement* wnd = root->GetChild(AccountChestDialog::GetTypeNameStatic());
-        if (!wnd)
+        if (!wnd && canCreate)
         {
             wnd = new AccountChestDialog(context_);
+            static_cast<AccountChestDialog*>(wnd)->Initialize();
             root->AddChild(wnd);
         }
         result = dynamic_cast<DialogWindow*>(wnd);

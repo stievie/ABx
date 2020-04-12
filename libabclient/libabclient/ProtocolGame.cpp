@@ -286,14 +286,6 @@ void ProtocolGame::GetInventory()
     SendPacket(AB::GameProtocol::ClientPacketTypes::GetInventory, packet);
 }
 
-void ProtocolGame::InventoryStoreItem(uint16_t pos)
-{
-    AB::Packets::Client::InventoryStoreItem packet = {
-        pos
-    };
-    SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryStoreInChest, packet);
-}
-
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
 {
     AB::Packets::Client::InventoryDestroyItem packet = {
@@ -308,6 +300,13 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
         pos
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryDropItem, packet);
+}
+
+void ProtocolGame::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+    AB::Entities::StoragePlace place, uint16_t newPos)
+{
+    AB::Packets::Client::SetItemPos packet{ currentPlace, currentPos, place, newPos };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SetItemPos, packet);
 }
 
 void ProtocolGame::GetChest()

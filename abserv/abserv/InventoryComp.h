@@ -72,7 +72,8 @@ public:
     /// Swap inventory - equipment
     EquipPos EquipInventoryItem(ItemPos pos);
 
-    bool SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message);
+    bool SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message,
+        uint16_t newPos = 0);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyInventoryItem(ItemPos pos)
     {
@@ -98,7 +99,8 @@ public:
         return inventory_->GetCount();
     }
 
-    bool SetChestItem(uint32_t itemId, Net::NetworkMessage* message);
+    bool SetChestItem(uint32_t itemId, Net::NetworkMessage* message,
+        uint16_t newPos = 0);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyChestItem(ItemPos pos)
     {

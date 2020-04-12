@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Name" value="Chest" />
-	<attribute name="Size" value="260 540" />
-	<attribute name="Max Size" value="260 2147483647" />
+	<attribute name="Size" value="510 530" />
+	<attribute name="Max Size" value="510 2147483647" />
 	<attribute name="Min Anchor" value="0.5 0.5" />
 	<attribute name="Max Anchor" value="0.5 0.5" />
 	<attribute name="Pivot" value="0.5 0.5" />
@@ -183,6 +183,46 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 		</element>
 		<element>
 			<attribute name="Name" value="ItemRow2" />
@@ -190,6 +230,46 @@
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Layout Mode" value="Horizontal" />
 			<attribute name="Layout Spacing" value="2" />
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 			<element type="BorderImage">
 				<attribute name="Min Size" value="48 48" />
 				<attribute name="Max Size" value="48 48" />
@@ -277,6 +357,46 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 		</element>
 		<element>
 			<attribute name="Name" value="ItemRow4" />
@@ -284,6 +404,46 @@
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Layout Mode" value="Horizontal" />
 			<attribute name="Layout Spacing" value="2" />
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 			<element type="BorderImage">
 				<attribute name="Min Size" value="48 48" />
 				<attribute name="Max Size" value="48 48" />
@@ -371,6 +531,46 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 		</element>
 		<element>
 			<attribute name="Name" value="ItemRow6" />
@@ -378,6 +578,46 @@
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Layout Mode" value="Horizontal" />
 			<attribute name="Layout Spacing" value="2" />
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 			<element type="BorderImage">
 				<attribute name="Min Size" value="48 48" />
 				<attribute name="Max Size" value="48 48" />
@@ -465,6 +705,46 @@
 				<attribute name="Image Rect" value="48 0 64 16" />
 				<attribute name="Border" value="4 4 4 4" />
 			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 		</element>
 		<element>
 			<attribute name="Name" value="ItemRow8" />
@@ -472,6 +752,46 @@
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Layout Mode" value="Horizontal" />
 			<attribute name="Layout Spacing" value="2" />
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
+			<element type="BorderImage">
+				<attribute name="Min Size" value="48 48" />
+				<attribute name="Max Size" value="48 48" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Border" value="4 4 4 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+			</element>
 			<element type="BorderImage">
 				<attribute name="Min Size" value="48 48" />
 				<attribute name="Max Size" value="48 48" />

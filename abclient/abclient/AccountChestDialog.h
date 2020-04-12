@@ -22,21 +22,39 @@
 #pragma once
 
 #include "DialogWindow.h"
+#include "AB/Entities/ConcreteItem.h"
+#include "FwClient.h"
+
+static const unsigned CHEST_COLS_PER_ROW = 10;
+static const int CHEST_ITEM_SIZE_X = 48;
+static const int CHEST_ITEM_SIZE_Y = 48;
+
+class Item;
 
 class AccountChestDialog : public DialogWindow
 {
     URHO3D_OBJECT(AccountChestDialog, DialogWindow)
 private:
     bool initializted_;
+    SharedPtr<Window> dragItem_;
     void HandleChest(StringHash eventType, VariantMap& eventData);
     void HandleChestItemUpdate(StringHash eventType, VariantMap& eventData);
     void HandleChestItemRemove(StringHash eventType, VariantMap& eventData);
     void HandleItemClicked(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragMove(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
+    uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
+    BorderImage* GetItemContainer(uint16_t pos);
+    void SetItem(Item* item, const InventoryItem& iItem);
 protected:
     void SubscribeEvents() override;
 public:
     AccountChestDialog(Context* context);
     ~AccountChestDialog() override;
     void Initialize() override;
+    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
+    void Clear();
 };
 

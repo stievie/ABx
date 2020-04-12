@@ -58,6 +58,7 @@ private:
 
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
     void OnInventoryFull();
+    void OnChestFull();
     void OnHandleCommand(AB::GameProtocol::CommandType type,
         const std::string& arguments, Net::NetworkMessage& message);
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
@@ -211,8 +212,8 @@ public:
     void CRQGetInventory();
     void CRQDropInventoryItem(uint16_t pos);
     void CRQDestroyInventoryItem(uint16_t pos);
-    /// Move an inventory item to the chest
-    void CRQStoreInChest(uint16_t pos);
+    void CRQSetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+        AB::Entities::StoragePlace newPlace, uint16_t newPos);
     void CRQGetChest();
     void CRQDestroyChestItem(uint16_t pos);
     void CRQPartyInvitePlayer(uint32_t playerId);

@@ -96,7 +96,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(GetInventory)           \
     ENUMERATE_CLIENT_PACKET_CODE(InventoryDestroyItem)   \
     ENUMERATE_CLIENT_PACKET_CODE(InventoryDropItem)      \
-    ENUMERATE_CLIENT_PACKET_CODE(InventoryStoreInChest)  \
+    ENUMERATE_CLIENT_PACKET_CODE(SetItemPos)             \
     ENUMERATE_CLIENT_PACKET_CODE(GetChest)               \
     ENUMERATE_CLIENT_PACKET_CODE(ChestDestroyItem)       \
     ENUMERATE_CLIENT_PACKET_CODE(GetFriendList)          \
@@ -409,7 +409,8 @@ enum AttackError : uint8_t
 enum PlayerErrorValue : uint8_t
 {
     PlayerErrorNone = 0,
-    PlayerErrorInventoryFull
+    PlayerErrorInventoryFull,
+    PlayerErrorChestFull
 };
 
 enum GameObjectType : uint8_t

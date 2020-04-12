@@ -983,7 +983,7 @@ void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
     using namespace Events::DialogTrigger;
     AB::Dialogs dialog = static_cast<AB::Dialogs>(eventData[P_DIALOGID].GetUInt());
     WindowManager* wm = GetSubsystem<WindowManager>();
-    DialogWindow* wnd = wm->GetDialog(dialog);
+    DialogWindow* wnd = wm->GetDialog(dialog, true);
     if (wnd)
     {
         wnd->Initialize();

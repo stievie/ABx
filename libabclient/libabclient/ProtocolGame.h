@@ -91,9 +91,10 @@ public:
     void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetInventory();
-    void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
+    void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+        AB::Entities::StoragePlace place, uint16_t newPos);
     void GetChest();
     void ChestDestroyItem(uint16_t pos);
     void GetMail(const std::string& mailUuid);

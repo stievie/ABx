@@ -449,12 +449,6 @@ void Client::GetInventory()
         protoGame_->GetInventory();
 }
 
-void Client::InventoryStoreItem(uint16_t pos)
-{
-    if (state_ == State::World)
-        protoGame_->InventoryStoreItem(pos);
-}
-
 void Client::InventoryDestroyItem(uint16_t pos)
 {
     if (state_ == State::World)
@@ -465,6 +459,13 @@ void Client::InventoryDropItem(uint16_t pos)
 {
     if (state_ == State::World)
         protoGame_->InventoryDropItem(pos);
+}
+
+void Client::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+    AB::Entities::StoragePlace place, uint16_t newPos)
+{
+    if (state_ == State::World)
+        protoGame_->SetItemPos(currentPlace, currentPos, place, newPos);
 }
 
 void Client::GetChest()

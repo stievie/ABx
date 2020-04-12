@@ -97,13 +97,20 @@ struct GetInventory
     { }
 };
 
-struct InventoryStoreItem
+struct SetItemPos
 {
-    uint16_t pos;
+    uint8_t currentPlace;
+    uint16_t currentPos;
+    uint8_t soragePlace;
+    // If 0 use first free slot
+    uint16_t storagePos;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
-        ar.value(pos);
+        ar.value(currentPlace);
+        ar.value(currentPos);
+        ar.value(soragePlace);
+        ar.value(storagePos);
     }
 };
 

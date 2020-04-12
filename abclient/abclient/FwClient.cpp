@@ -156,7 +156,9 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
     switch (err)
     {
     case AB::GameProtocol::PlayerErrorInventoryFull:
-        return "Inventory full";
+        return "your inventory is full";
+    case AB::GameProtocol::PlayerErrorChestFull:
+        return "The chest is full";
     default:
         return String::EMPTY;
     }
@@ -763,12 +765,6 @@ void FwClient::UpdateInventory()
         client_.GetInventory();
 }
 
-void FwClient::InventoryStoreItem(uint16_t pos)
-{
-    if (loggedIn_)
-        client_.InventoryStoreItem(pos);
-}
-
 void FwClient::InventoryDestroyItem(uint16_t pos)
 {
     if (loggedIn_)
@@ -779,6 +775,13 @@ void FwClient::InventoryDropItem(uint16_t pos)
 {
     if (loggedIn_)
         client_.InventoryDropItem(pos);
+}
+
+void FwClient::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+    AB::Entities::StoragePlace place, uint16_t newPos)
+{
+    if (loggedIn_)
+        client_.SetItemPos(currentPlace, currentPos, place, newPos);
 }
 
 void FwClient::UpdateChest()

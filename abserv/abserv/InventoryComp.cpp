@@ -122,7 +122,7 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
     AB::Packets::Add(packet, *message);
 }
 
-bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message)
+bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message, uint16_t newPos)
 {
     auto* cache = GetSubsystem<ItemsCache>();
     auto* item = cache->Get(itemId);
@@ -131,6 +131,8 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
 
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
+    if (newPos != 0)
+        item->concreteItem_.storagePos = newPos;
     const bool ret = inventory_->SetItem(itemId, [message](const Item* const item)
     {
         InventoryComp::WriteItemUpdate(item, message, false);
@@ -140,7 +142,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
     return ret;
 }
 
-bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message)
+bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message, uint16_t newPos)
 {
     auto* cache = GetSubsystem<ItemsCache>();
     auto* item = cache->Get(itemId);
@@ -149,12 +151,14 @@ bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message)
 
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
+    if (newPos != 0)
+        item->concreteItem_.storagePos = newPos;
     const bool ret = chest_->SetItem(itemId, [message](const Item* const item)
     {
         InventoryComp::WriteItemUpdate(item, message, true);
     });
     if (!ret)
-        owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        owner_.CallEvent<void(void)>(EVENT_ON_CHESTFULL);
     return ret;
 }
 

@@ -75,6 +75,7 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
         std::bind(&Player::OnHandleCommand, this,
             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     events_.Subscribe<void(void)>(EVENT_ON_INVENTORYFULL, std::bind(&Player::OnInventoryFull, this));
+    events_.Subscribe<void(void)>(EVENT_ON_CHESTFULL, std::bind(&Player::OnChestFull, this));
     events_.Subscribe<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
         std::bind(
             &Player::OnPingObject, this,
@@ -346,28 +347,78 @@ void Player::EquipInventoryItem(uint16_t pos)
     cli->Invalidate(equ);
 }
 
-void Player::CRQStoreInChest(uint16_t pos)
+void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
+    uint16_t currentPos, AB::Entities::StoragePlace newPlace, uint16_t newPos)
 {
-    if (inventoryComp_->IsChestFull())
+    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
+        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
+    // TODO:
+    (void)currentPlace;
+    (void)currentPos;
+    (void)newPos;
+
+    if (newPlace == AB::Entities::StoragePlaceChest)
     {
-        OnInventoryFull();
+        if (inventoryComp_->IsChestFull())
+        {
+            OnChestFull();
+            return;
+        }
+        if (inventoryComp_->GetChestItem(newPos) != nullptr)
+        {
+            // TODO: If there is arelady some item, exchange it
+            return;
+        }
+    }
+    else if (newPlace == AB::Entities::StoragePlaceInventory)
+    {
+        if (inventoryComp_->IsInventoryFull())
+        {
+            OnInventoryFull();
+            return;
+        }
+        if (inventoryComp_->GetInventoryItem(newPos) != nullptr)
+        {
+            // TODO: If there is arelady some item, exchange it
+            return;
+        }
+    }
+    else
+    {
+        //TODO: Maybe another storage place is possible, e.g. as Mail attachment.
         return;
     }
 
-    uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
+    if (currentPlace != AB::Entities::StoragePlaceChest && currentPlace != AB::Entities::StoragePlaceInventory)
+        return;
+
+    auto removeItem = [&]() -> uint32_t
+    {
+        if (currentPlace == AB::Entities::StoragePlaceInventory)
+            return inventoryComp_->RemoveInventoryItem(currentPos);
+        return inventoryComp_->RemoveChestItem(currentPos);
+    };
+
+    uint32_t itemId = removeItem();
     if (itemId == 0)
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
-    // Remove from inventory
-    msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+    // Remove from current
+    if (currentPlace == AB::Entities::StoragePlaceChest)
+        msg->AddByte(AB::GameProtocol::ServerPacketType::ChestItemDelete);
+    else
+        msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
     AB::Packets::Server::InventoryItemDelete packet = {
-        pos
+        currentPos
     };
     AB::Packets::Add(packet, *msg);
 
-    // Add to chest
-    inventoryComp_->SetChestItem(itemId, msg.get());
+    // Add to new
+    if (newPlace == AB::Entities::StoragePlaceChest)
+        inventoryComp_->SetChestItem(itemId, msg.get(), newPos);
+    else
+        inventoryComp_->SetInventoryItem(itemId, msg.get(), newPos);
     WriteToOutput(*msg);
 }
 
@@ -430,21 +481,21 @@ void Player::CRQGetChest()
 
 void Player::CRQDestroyChestItem(uint16_t pos)
 {
-    if (inventoryComp_->DestroyChestItem(pos))
-    {
-        AB::Entities::ChestItems inv;
-        inv.uuid = account_.uuid;
-        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
-        cli->Invalidate(inv);
+    if (!inventoryComp_->DestroyChestItem(pos))
+        return;
 
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::ChestItemDelete);
-        AB::Packets::Server::InventoryItemDelete packet = {
-            pos
-        };
-        AB::Packets::Add(packet, *msg);
-        WriteToOutput(*msg);
-    }
+    AB::Entities::ChestItems inv;
+    inv.uuid = account_.uuid;
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+    cli->Invalidate(inv);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::ChestItemDelete);
+    AB::Packets::Server::InventoryItemDelete packet = {
+        pos
+    };
+    AB::Packets::Add(packet, *msg);
+    WriteToOutput(*msg);
 }
 
 void Player::CRQSendMail(const std::string recipient, const std::string subject, const std::string body)
@@ -840,6 +891,17 @@ void Player::OnInventoryFull()
     msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
     AB::Packets::Server::GameError packet = {
         static_cast<uint8_t>(AB::GameProtocol::PlayerErrorInventoryFull)
+    };
+    AB::Packets::Add(packet, *msg);
+    WriteToOutput(*msg);
+}
+
+void Player::OnChestFull()
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+    AB::Packets::Server::GameError packet = {
+        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorChestFull)
     };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);

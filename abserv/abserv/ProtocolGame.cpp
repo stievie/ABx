@@ -205,10 +205,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQDropInventoryItem, packet.pos);
         break;
     }
-    case ClientPacketTypes::InventoryStoreInChest:
+    case ClientPacketTypes::SetItemPos:
     {
-        auto packet = AB::Packets::Get<AB::Packets::Client::InventoryStoreItem>(message);
-        AddPlayerTask(&Game::Player::CRQStoreInChest, packet.pos);
+        auto packet = AB::Packets::Get<AB::Packets::Client::SetItemPos>(message);
+        AddPlayerTask(&Game::Player::CRQSetItemPos,
+            static_cast<AB::Entities::StoragePlace>(packet.currentPlace),
+            packet.currentPos,
+            static_cast<AB::Entities::StoragePlace>(packet.soragePlace),
+            packet.storagePos);
         break;
     }
     case ClientPacketTypes::GetChest:

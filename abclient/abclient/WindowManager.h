@@ -63,7 +63,7 @@ public:
     }
 
     SharedPtr<UIElement> GetWindow(const StringHash& hash, bool addToUi = false);
-    SharedPtr<DialogWindow> GetDialog(AB::Dialogs dialog);
+    SharedPtr<DialogWindow> GetDialog(AB::Dialogs dialog, bool canCreate = false);
 
     void SaveWindows();
 };

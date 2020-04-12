@@ -32,7 +32,7 @@ namespace Entities {
 static constexpr auto KEY_ACCOUNTS = "accounts";
 static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 // Account chest size
-static constexpr size_t DEFAULT_CHEST_SIZE = 120;
+static constexpr size_t DEFAULT_CHEST_SIZE = 80;
 
 enum AccountType : uint8_t
 {

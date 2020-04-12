@@ -142,9 +142,10 @@ public:
     void GetPlayerInfoByName(const std::string& name, uint32_t fields);
     void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields);
     void UpdateInventory();
-    void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
+    void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+        AB::Entities::StoragePlace place, uint16_t newPos);
     void UpdateChest();
     void ChestDestroyItem(uint16_t pos);
     void Move(uint8_t direction);
@@ -321,6 +322,24 @@ public:
     const InventoryItem& GetInventoryItem(uint16_t pos) const
     {
         const auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const InventoryItem& current) -> bool
+        {
+            return current.pos == pos;
+        });
+        if (it == inventory_.end())
+        {
+            static InventoryItem empty;
+            return empty;
+        }
+
+        return (*it);
+    }
+    const std::vector<InventoryItem>& GetChestItems() const
+    {
+        return chest_;
+    }
+    const InventoryItem& GetChestItem(uint16_t pos) const
+    {
+        const auto it = std::find_if(chest_.begin(), chest_.end(), [pos](const InventoryItem& current) -> bool
         {
             return current.pos == pos;
         });

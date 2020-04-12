@@ -62,6 +62,7 @@ static constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");
 static constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
 static constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
 static constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
+static constexpr sa::event_t EVENT_ON_CHESTFULL = sa::StringHash("OnChestFull");
 static constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
 static constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
 static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
