@@ -1817,6 +1817,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::DialogTri
     VariantMap& eData = GetEventDataMap();
     using namespace Events::DialogTrigger;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_TIGGERERID] = packet.triggererId;
     eData[P_DIALOGID] = packet.dialogId;
     QueueEvent(Events::E_DIALOGGTRIGGER, eData);
 }
@@ -1946,6 +1947,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSele
     for (auto i : packet.quests)
         q.Push(i);
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_TIGGERERID] = packet.triggererId;
     eData[P_QUESTS] = q;
     QueueEvent(Events::E_QUESTSELECTIONDIALOGGTRIGGER, eData);
 }
@@ -1955,6 +1957,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::QuestDial
     using namespace Events::QuestDialogTrigger;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_TIGGERERID] = packet.triggererId;
     eData[P_QUESTINDEX] = packet.questIndex;
     QueueEvent(Events::E_QUESTDIALOGGTRIGGER, eData);
 }

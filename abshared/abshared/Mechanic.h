@@ -103,6 +103,7 @@ inline constexpr float RANGE_TOUCH        = 1.5f;
 inline constexpr float RANGE_ADJECENT     = GetPercent(RANGE_BASE, 3.0f);
 inline constexpr float RANGE_VISIBLE      = RANGE_AGGRO;
 inline constexpr float RANGE_SELECT       = RANGE_COMPASS + 2.0f;
+inline constexpr float RANGE_PICK_UP      = 2.5f;
 
 enum class Ranges : uint8_t
 {

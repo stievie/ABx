@@ -77,17 +77,19 @@ const Item* ItemDrop::GetItem() const
 
 void ItemDrop::PickUp(Actor* actor)
 {
+    if (!actor)
+        return;
     // if actorId_ == 0 all can pick it up
     if (actorId_ != 0 && actorId_ != actor->GetId())
         return;
-    if (IsInRange(Ranges::Adjecent, actor))
+    if (GetDistance(actor) > RANGE_PICK_UP)
+        return;
+
+    if (actor->AddToInventory(itemId_))
     {
-        if (actor->AddToInventory(itemId_))
-        {
-            pickedUp_ = true;
-            actor->SelectedObjectById(0);
-            Remove();
-        }
+        pickedUp_ = true;
+        actor->SelectedObjectById(0);
+        Remove();
     }
 }
 

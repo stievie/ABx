@@ -24,7 +24,7 @@ function onClicked(creature)
     end
     local player = creature:AsPlayer()
     if (player ~= nil) then
-      player:TriggerDialog(DIALOG_ACCOUNTCHEST)
+      player:TriggerDialog(self:GetId(), DIALOG_ACCOUNTCHEST)
     end
   end
 end

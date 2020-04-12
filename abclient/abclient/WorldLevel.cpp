@@ -39,6 +39,7 @@
 #include "ShortcutEvents.h"
 #include "SkillsWindow.h"
 #include "SkillManager.h"
+#include <abshared/Mechanic.h>
 
 //#define LOG_OBJECTSPAWN
 
@@ -981,6 +982,17 @@ void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
 void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
 {
     using namespace Events::DialogTrigger;
+
+    uint32_t id = eventData[P_TIGGERERID].GetUInt();
+    if (id != 0)
+    {
+        auto* actor = GetObject<Actor>(id);
+        if (!actor)
+            return;
+        float dist = player_->GetNode()->GetPosition().DistanceToPoint(actor->GetNode()->GetPosition());
+        if (dist > Game::RANGE_PICK_UP)
+            return;
+    }
     AB::Dialogs dialog = static_cast<AB::Dialogs>(eventData[P_DIALOGID].GetUInt());
     WindowManager* wm = GetSubsystem<WindowManager>();
     DialogWindow* wnd = wm->GetDialog(dialog, true);

@@ -617,11 +617,14 @@ struct ChestItemDelete : InventoryItemDelete { };
 
 struct QuestSelectionDialogTrigger
 {
+    // Who triggered the Dialog
+    uint32_t triggererId;
     uint8_t count;
     std::vector<uint32_t> quests;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(triggererId);
         ar.value(count);
         quests.resize(count);
         for (uint8_t i = 0; i < count; ++i)
@@ -634,10 +637,13 @@ struct QuestSelectionDialogTrigger
 
 struct QuestDialogTrigger
 {
-    uint32_t questIndex;;
+    // Who triggered the Dialog
+    uint32_t triggererId;
+    uint32_t questIndex;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(triggererId);
         ar.value(questIndex);
     }
 };
@@ -680,10 +686,13 @@ struct QuestRewarded
 
 struct DialogTrigger
 {
+    // Who triggered the Dialog
+    uint32_t triggererId;
     uint32_t dialogId;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(triggererId);
         ar.value(dialogId);
     }
 };

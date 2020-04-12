@@ -424,7 +424,7 @@ void Npc::OnClicked(Actor* selector)
         // Get quests for this player
         auto& player = To<Player>(*selector);
         const auto quests = GetQuestsForPlayer(player);
-        player.TriggerQuestSelectionDialog(quests);
+        player.TriggerQuestSelectionDialog(id_, quests);
     }
 }
 

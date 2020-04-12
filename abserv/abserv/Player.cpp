@@ -196,29 +196,50 @@ void Player::CRQPing(int64_t clientTick)
     WriteToOutput(*msg);
 }
 
-void Player::TriggerDialog(uint32_t dialogIndex)
+void Player::TriggerDialog(uint32_t triggererId, uint32_t dialogIndex)
 {
+    if (triggererId != 0)
+    {
+        auto* object = GetGame()->GetObject<GameObject>(triggererId);
+        if (!object)
+            return;
+        float dist = GetDistance(object);
+        if (dist > RANGE_PICK_UP)
+            return;
+    }
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::DialogTrigger);
     AB::Packets::Server::DialogTrigger packet = {
+        triggererId,
         dialogIndex
     };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 
-void Player::TriggerQuestSelectionDialog(const std::set<uint32_t>& quests)
+void Player::TriggerQuestSelectionDialog(uint32_t triggererId, const std::set<uint32_t>& quests)
 {
+    if (triggererId != 0)
+    {
+        auto* object = GetGame()->GetObject<GameObject>(triggererId);
+        if (!object)
+            return;
+        float dist = GetDistance(object);
+        if (dist > RANGE_PICK_UP)
+            return;
+    }
+
     if (quests.size() == 0)
         return;
     if (quests.size() == 1)
     {
-        TriggerQuestDialog(*quests.begin());
+        TriggerQuestDialog(triggererId, *quests.begin());
         return;
     }
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::QuestSelectionDialogTrigger);
     AB::Packets::Server::QuestSelectionDialogTrigger packet;
+    packet.triggererId = triggererId;
     packet.count = static_cast<uint8_t>(quests.size());
     packet.quests.reserve(packet.count);
     for (auto i : quests)
@@ -227,11 +248,22 @@ void Player::TriggerQuestSelectionDialog(const std::set<uint32_t>& quests)
     WriteToOutput(*msg);
 }
 
-void Player::TriggerQuestDialog(uint32_t index)
+void Player::TriggerQuestDialog(uint32_t triggererId, uint32_t index)
 {
+    if (triggererId != 0)
+    {
+        auto* object = GetGame()->GetObject<GameObject>(triggererId);
+        if (!object)
+            return;
+        float dist = GetDistance(object);
+        if (dist > RANGE_PICK_UP)
+            return;
+    }
+
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::QuestDialogTrigger);
     AB::Packets::Server::QuestDialogTrigger packet = {
+        triggererId,
         index
     };
     AB::Packets::Add(packet, *msg);
@@ -350,12 +382,8 @@ void Player::EquipInventoryItem(uint16_t pos)
 void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
     uint16_t currentPos, AB::Entities::StoragePlace newPlace, uint16_t newPos)
 {
-    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
-        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
-    // TODO:
-    (void)currentPlace;
-    (void)currentPos;
-    (void)newPos;
+//    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
+//        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
 
     if (newPlace == AB::Entities::StoragePlaceChest)
     {

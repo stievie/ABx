@@ -133,9 +133,9 @@ public:
 
     void Initialize() override;
     void Logout();
-    void TriggerDialog(uint32_t dialogIndex);
-    void TriggerQuestSelectionDialog(const std::set<uint32_t>& quests);
-    void TriggerQuestDialog(uint32_t index);
+    void TriggerDialog(uint32_t triggererId, uint32_t dialogIndex);
+    void TriggerQuestSelectionDialog(uint32_t triggererId, const std::set<uint32_t>& quests);
+    void TriggerQuestDialog(uint32_t triggererId, uint32_t index);
     void ChangeMap(const std::string& mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
