@@ -215,7 +215,7 @@ void SkillsWindow::HandleLoadClicked(StringHash, VariantMap&)
         return;
     }
 
-    filePicker_ = new FilePicker(context_, path, FilePicker::Mode::Load);
+    filePicker_ = MakeShared<FilePicker>(context_, path, FilePicker::Mode::Load);
     SubscribeToEvent(filePicker_, E_DIALOGCLOSE, URHO3D_HANDLER(SkillsWindow, HandleFilePickerClosed));
     SubscribeToEvent(filePicker_, E_FILEPICKED, URHO3D_HANDLER(SkillsWindow, HandleLoadFileSelected));
 }
@@ -256,7 +256,7 @@ void SkillsWindow::HandleSaveClicked(StringHash, VariantMap&)
         return;
     }
 
-    filePicker_ = new FilePicker(context_, path, FilePicker::Mode::Save);
+    filePicker_ = MakeShared<FilePicker>(context_, path, FilePicker::Mode::Save);
     SubscribeToEvent(filePicker_, E_DIALOGCLOSE, URHO3D_HANDLER(SkillsWindow, HandleFilePickerClosed));
     SubscribeToEvent(filePicker_, E_FILEPICKED, URHO3D_HANDLER(SkillsWindow, HandleSaveFileSelected));
 }

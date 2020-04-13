@@ -205,9 +205,6 @@ void AccountChestDialog::HandleDepositClicked(StringHash, VariantMap&)
     if (inputBox_)
         inputBox_->Close();
 
-    if (inputBox_)
-        inputBox_->Close();
-
     inputBox_ = MakeShared<NumberInputBox>(context_, "Deposit Money");
     SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleDepositDone));
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
