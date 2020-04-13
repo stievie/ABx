@@ -31,6 +31,16 @@
 namespace Game {
 namespace Components {
 
+InventoryComp::InventoryComp(Actor& owner) :
+    owner_(owner),
+    inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE,
+        AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY,
+        AB::Entities::StoragePlaceInventory)),
+    chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE,
+        AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY,
+        AB::Entities::StoragePlaceChest))
+{ }
+
 void InventoryComp::Update(uint32_t timeElapsed)
 {
     VisitEquipement([&](Item& item)
@@ -172,7 +182,7 @@ uint32_t InventoryComp::AddChestMoney(uint32_t amount, Net::NetworkMessage* mess
     auto* money = chest_->GetItem(0);
     if (money)
     {
-        uint32_t maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - money->concreteItem_.count);
+        uint32_t maxadd = std::min(amount, static_cast<uint32_t>(chest_->GetMaxMoney()) - money->concreteItem_.count);
         money->concreteItem_.count += maxadd;
         InventoryComp::WriteItemUpdate(money, message, true);
         return maxadd;
@@ -238,6 +248,76 @@ uint32_t InventoryComp::RemoveInventoryMoney(uint32_t amount, Net::NetworkMessag
         return remove;
     }
     return 0;
+}
+
+uint32_t InventoryComp::DespositMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+    if (amount > static_cast<uint32_t>(chest_->GetMaxMoney()))
+        return 0;
+    auto* invmoney = inventory_->GetItem(0);
+    if (!invmoney)
+        return 0;
+
+    uint32_t maxadd = std::min(static_cast<uint32_t>(chest_->GetMaxMoney()), amount);
+    if (maxadd > inventory_->GetMoney())
+        maxadd = inventory_->GetMoney();
+
+    auto* chestmoney = chest_->GetItem(0);
+    if (!chestmoney)
+    {
+        auto* factory = GetSubsystem<ItemFactory>();
+        uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), maxadd);
+        if (!SetChestItem(moneyId, message))
+            return 0;
+        chestmoney = chest_->GetItem(0);
+    }
+    else
+    {
+        maxadd = std::min(amount, static_cast<uint32_t>(chest_->GetMaxMoney()) - chestmoney->concreteItem_.count);
+        chestmoney->concreteItem_.count += maxadd;
+        InventoryComp::WriteItemUpdate(chestmoney, message, true);
+    }
+    invmoney->concreteItem_.count -= maxadd;
+    InventoryComp::WriteItemUpdate(invmoney, message, false);
+
+    return maxadd;
+}
+
+uint32_t InventoryComp::WidthdrawMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+    if (amount > static_cast<uint32_t>(inventory_->GetMaxMoney()))
+        return 0;
+    auto* chestmoney = chest_->GetItem(0);
+    if (!chestmoney)
+        return 0;
+
+    uint32_t maxadd = std::min(static_cast<uint32_t>(inventory_->GetMaxMoney()), amount);
+    if (maxadd > chest_->GetMoney())
+        maxadd = chest_->GetMoney();
+
+    auto* invmoney = inventory_->GetItem(0);
+    if (!invmoney)
+    {
+        auto* factory = GetSubsystem<ItemFactory>();
+        uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), maxadd);
+        if (!SetInventoryItem(moneyId, message))
+            return 0;
+        invmoney = inventory_->GetItem(0);
+    }
+    else
+    {
+        maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - invmoney->concreteItem_.count);
+        invmoney->concreteItem_.count += maxadd;
+        InventoryComp::WriteItemUpdate(invmoney, message, false);
+    }
+    chestmoney->concreteItem_.count -= maxadd;
+    InventoryComp::WriteItemUpdate(chestmoney, message, true);
+
+    return maxadd;
 }
 
 uint32_t InventoryComp::GetChestMoney() const

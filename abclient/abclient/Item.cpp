@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Item.h"
+#include <string>
 
 Item::Item(Context* context) :
     Object(context)
@@ -29,4 +30,24 @@ Item::Item(Context* context) :
 
 Item::~Item()
 {
+}
+
+String FormatMoney(uint32_t amount)
+{
+    auto src = std::to_string(amount);
+    std::string result;
+
+    auto count = 3;
+    for (auto i = src.crbegin(); i != src.crend(); ++i)
+    {
+        if (count == 0)
+        {
+            result.push_back(',');
+            count = 3;
+        }
+        if (count--)
+            result.push_back(*i);
+    }
+    std::reverse(result.begin(), result.end());
+    return String(result.c_str());
 }

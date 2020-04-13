@@ -1007,12 +1007,8 @@ void Player::CRQDepositMoney(uint32_t amount)
     if (amount > inventoryComp_->GetInventoryMoney())
         return;
 
-    // TODO: Do some checking
     auto msg = Net::NetworkMessage::GetNew();
-    uint32_t ramount = inventoryComp_->RemoveInventoryMoney(amount, msg.get());
-    LOG_INFO << "Removed " << ramount << " current " << inventoryComp_->GetInventoryMoney() << std::endl;
-    uint32_t added = inventoryComp_->AddChestMoney(ramount, msg.get());
-    LOG_INFO << "Added " << added << " current " << inventoryComp_->GetChestMoney() << std::endl;
+    inventoryComp_->DespositMoney(amount, msg.get());
     WriteToOutput(*msg);
 }
 
@@ -1023,8 +1019,7 @@ void Player::CRQWithdrawMoney(uint32_t amount)
 
     // TODO: Do some checking
     auto msg = Net::NetworkMessage::GetNew();
-    uint32_t ramount = inventoryComp_->RemoveChestMoney(amount, msg.get());
-    inventoryComp_->AddInventoryMoney(ramount, msg.get());
+    inventoryComp_->WidthdrawMoney(amount, msg.get());
     WriteToOutput(*msg);
 }
 

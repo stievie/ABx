@@ -56,7 +56,8 @@ public:
     /// UI icon file, somewhere in /Textures
     String iconFile_;
     AB::Entities::ItemType type_{ AB::Entities::ItemTypeUnknown };
-    AB::Entities::ModelClass modelClass_;
+    AB::Entities::ModelClass modelClass_{ AB::Entities::ModelClassUnknown };
     bool stackAble_{ false };
 };
 
+String FormatMoney(uint32_t amount);

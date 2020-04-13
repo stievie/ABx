@@ -57,11 +57,7 @@ private:
     static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest);
 public:
     InventoryComp() = delete;
-    explicit InventoryComp(Actor& owner) :
-        owner_(owner),
-        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY, AB::Entities::StoragePlaceInventory)),
-        chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE, AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY, AB::Entities::StoragePlaceChest))
-    { }
+    explicit InventoryComp(Actor& owner);
     ~InventoryComp() = default;
 
     void Update(uint32_t timeElapsed);
@@ -130,6 +126,8 @@ public:
     uint32_t RemoveChestMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t AddInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t RemoveInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t DespositMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t WidthdrawMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t GetChestMoney() const;
     uint32_t GetInventoryMoney() const;
 
