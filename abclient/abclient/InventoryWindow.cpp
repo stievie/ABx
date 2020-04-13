@@ -85,23 +85,6 @@ InventoryWindow::InventoryWindow(Context* context) :
     int height = 0;
 
     {
-        // Store
-        Menu* item = popup->CreateChild<Menu>();
-        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-        item->SetStyleAuto();
-        Text* menuText = item->CreateChild<Text>();
-        menuText->SetText("Store");
-        menuText->SetStyle("EditorMenuText");
-        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
-        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
-        item->SetSize(item->GetMinSize());
-        if (item->GetWidth() > width)
-            width = item->GetWidth();
-        if (item->GetHeight() > height)
-            height = item->GetHeight();
-        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(InventoryWindow, HandleItemStoreSelected));
-    }
-    {
         // Destroy
         Menu* item = popup->CreateChild<Menu>();
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -327,20 +310,6 @@ void InventoryWindow::HandleItemClicked(StringHash, VariantMap& eventData)
         itemPopup_->ShowPopup(true);
         itemPopup_->SetVar("ItemPos", elem->GetVar("POS").GetUInt());
     }
-}
-
-void InventoryWindow::HandleItemStoreSelected(StringHash, VariantMap& eventData)
-{
-    itemPopup_->ShowPopup(false);
-    using namespace MenuSelected;
-    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
-    if (!sender)
-        return;
-    unsigned pos = itemPopup_->GetVar("ItemPos").GetUInt();
-    if (pos > std::numeric_limits<uint16_t>::max())
-        return;
-    FwClient* cli = GetSubsystem<FwClient>();
-    cli->SetItemPos(AB::Entities::StoragePlaceInventory, static_cast<uint16_t>(pos), AB::Entities::StoragePlaceChest, 0);
 }
 
 void InventoryWindow::HandleItemDestroySelected(StringHash, VariantMap& eventData)
