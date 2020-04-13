@@ -126,8 +126,8 @@ public:
     uint32_t RemoveChestMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t AddInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t RemoveInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
-    uint32_t DespositMoney(uint32_t amount, Net::NetworkMessage* message);
-    uint32_t WidthdrawMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t DepositMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t WithdrawMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t GetChestMoney() const;
     uint32_t GetInventoryMoney() const;
 

@@ -250,7 +250,7 @@ uint32_t InventoryComp::RemoveInventoryMoney(uint32_t amount, Net::NetworkMessag
     return 0;
 }
 
-uint32_t InventoryComp::DespositMoney(uint32_t amount, Net::NetworkMessage* message)
+uint32_t InventoryComp::DepositMoney(uint32_t amount, Net::NetworkMessage* message)
 {
     if (!Is<Player>(owner_))
         return 0;
@@ -271,7 +271,6 @@ uint32_t InventoryComp::DespositMoney(uint32_t amount, Net::NetworkMessage* mess
         uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), maxadd);
         if (!SetChestItem(moneyId, message))
             return 0;
-        chestmoney = chest_->GetItem(0);
     }
     else
     {
@@ -285,7 +284,7 @@ uint32_t InventoryComp::DespositMoney(uint32_t amount, Net::NetworkMessage* mess
     return maxadd;
 }
 
-uint32_t InventoryComp::WidthdrawMoney(uint32_t amount, Net::NetworkMessage* message)
+uint32_t InventoryComp::WithdrawMoney(uint32_t amount, Net::NetworkMessage* message)
 {
     if (!Is<Player>(owner_))
         return 0;
@@ -306,7 +305,6 @@ uint32_t InventoryComp::WidthdrawMoney(uint32_t amount, Net::NetworkMessage* mes
         uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), maxadd);
         if (!SetInventoryItem(moneyId, message))
             return 0;
-        invmoney = inventory_->GetItem(0);
     }
     else
     {

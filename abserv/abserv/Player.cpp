@@ -1008,7 +1008,7 @@ void Player::CRQDepositMoney(uint32_t amount)
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
-    inventoryComp_->DespositMoney(amount, msg.get());
+    inventoryComp_->DepositMoney(amount, msg.get());
     WriteToOutput(*msg);
 }
 
@@ -1019,7 +1019,7 @@ void Player::CRQWithdrawMoney(uint32_t amount)
 
     // TODO: Do some checking
     auto msg = Net::NetworkMessage::GetNew();
-    inventoryComp_->WidthdrawMoney(amount, msg.get());
+    inventoryComp_->WithdrawMoney(amount, msg.get());
     WriteToOutput(*msg);
 }
 
