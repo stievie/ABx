@@ -26,6 +26,7 @@
 #include "ItemsCache.h"
 #include <sa/Iteration.h>
 #include <abscommon/Subsystems.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -34,6 +35,7 @@ typedef uint16_t ItemPos;
 /// Inventory or account chest
 class ItemContainer
 {
+    NON_COPYABLE(ItemContainer)
 public:
     typedef std::function<void(const Item* const item)> ItemUpdatedCallback;
 private:
@@ -57,9 +59,6 @@ public:
         // Money
         items_.resize(1);
     }
-    // non-copyable
-    ItemContainer(const ItemContainer&) = delete;
-    ItemContainer& operator=(const ItemContainer&) = delete;
     ~ItemContainer() = default;
 
     void InternalSetItem(uint32_t itemId);
@@ -68,8 +67,9 @@ public:
     bool DestroyItem(ItemPos pos);
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item ID for further anything.
     uint32_t RemoveItem(ItemPos pos);
-    Item* GetItem(ItemPos pos);
+    Item* GetItem(ItemPos pos) const;
     Item* FindItem(const std::string& uuid);
+    uint32_t GetMoney() const;
 
     bool IsFull() const { return GetCount() >= size_; }
     void SetSize(size_t value)
@@ -89,6 +89,7 @@ public:
         }
         return count;
     }
+    size_t GetMaxMoney() const { return maxMoney_; }
     template<typename Func>
     void VisitItems(Func&& func);
 };

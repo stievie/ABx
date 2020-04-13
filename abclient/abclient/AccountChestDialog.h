@@ -30,6 +30,7 @@ static const int CHEST_ITEM_SIZE_X = 48;
 static const int CHEST_ITEM_SIZE_Y = 48;
 
 class Item;
+class NumberInputBox;
 
 class AccountChestDialog : public DialogWindow
 {
@@ -37,6 +38,7 @@ class AccountChestDialog : public DialogWindow
 private:
     bool initializted_;
     SharedPtr<Window> dragItem_;
+    SharedPtr<NumberInputBox> inputBox_;
     void HandleChest(StringHash eventType, VariantMap& eventData);
     void HandleChestItemUpdate(StringHash eventType, VariantMap& eventData);
     void HandleChestItemRemove(StringHash eventType, VariantMap& eventData);
@@ -45,6 +47,11 @@ private:
     void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
     void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
+    void HandleDepositClicked(StringHash eventType, VariantMap& eventData);
+    void HandleWithdrawClicked(StringHash eventType, VariantMap& eventData);
+    void HandleWithdrawDone(StringHash eventType, VariantMap& eventData);
+    void HandleDepositDone(StringHash eventType, VariantMap& eventData);
+    void HandleDialogClosed(StringHash eventType, VariantMap& eventData);
     uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const InventoryItem& iItem);

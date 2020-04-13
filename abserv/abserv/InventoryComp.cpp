@@ -162,6 +162,94 @@ bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message, 
     return ret;
 }
 
+uint32_t InventoryComp::AddChestMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+    if (amount > static_cast<uint32_t>(chest_->GetMaxMoney()))
+        return 0;
+
+    auto* money = chest_->GetItem(0);
+    if (money)
+    {
+        uint32_t maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - money->concreteItem_.count);
+        money->concreteItem_.count += maxadd;
+        InventoryComp::WriteItemUpdate(money, message, true);
+        return maxadd;
+    }
+
+    auto* factory = GetSubsystem<ItemFactory>();
+    uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), amount);
+    if (!SetChestItem(moneyId, message))
+        return 0;
+    return amount;
+}
+
+uint32_t InventoryComp::RemoveChestMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+
+    auto* money = chest_->GetItem(0);
+    if (money)
+    {
+        uint32_t remove = std::min(amount, money->concreteItem_.count);
+        money->concreteItem_.count -= remove;
+        InventoryComp::WriteItemUpdate(money, message, true);
+        return remove;
+    }
+    return 0;
+}
+
+uint32_t InventoryComp::AddInventoryMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+    if (amount > static_cast<uint32_t>(inventory_->GetMaxMoney()))
+        return 0;
+
+    auto* money = inventory_->GetItem(0);
+    if (money)
+    {
+        uint32_t maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - money->concreteItem_.count);
+        money->concreteItem_.count += maxadd;
+        InventoryComp::WriteItemUpdate(money, message, false);
+        return maxadd;
+    }
+
+    auto* factory = GetSubsystem<ItemFactory>();
+    uint32_t moneyId = factory->CreatePlayerMoneyItem(To<Player>(owner_), amount);
+    if (!SetInventoryItem(moneyId, message))
+        return 0;
+    return amount;
+}
+
+uint32_t InventoryComp::RemoveInventoryMoney(uint32_t amount, Net::NetworkMessage* message)
+{
+    if (!Is<Player>(owner_))
+        return 0;
+
+    auto* money = inventory_->GetItem(0);
+    if (money)
+    {
+        uint32_t remove = std::min(amount, money->concreteItem_.count);
+        money->concreteItem_.count -= remove;
+        InventoryComp::WriteItemUpdate(money, message, false);
+        return remove;
+    }
+    return 0;
+}
+
+uint32_t InventoryComp::GetChestMoney() const
+{
+    return chest_->GetMoney();
+}
+
+uint32_t InventoryComp::GetInventoryMoney() const
+{
+    return inventory_->GetMoney();
+}
+
 void InventoryComp::SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId)
 {
     const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;

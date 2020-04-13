@@ -480,6 +480,18 @@ void Client::ChestDestroyItem(uint16_t pos)
         protoGame_->ChestDestroyItem(pos);
 }
 
+void Client::DepositMoney(uint32_t amount)
+{
+    if (state_ == State::World)
+        protoGame_->DepositMoney(amount);
+}
+
+void Client::WithdrawMoney(uint32_t amount)
+{
+    if (state_ == State::World)
+        protoGame_->WithdrawMoney(amount);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == State::World)

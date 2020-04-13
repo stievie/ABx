@@ -114,6 +114,16 @@ struct SetItemPos
     }
 };
 
+struct DespositWithdrawMoney
+{
+    uint32_t amount;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(amount);
+    }
+};
+
 struct InventoryDestroyItem
 {
     uint16_t pos;

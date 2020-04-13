@@ -22,6 +22,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -30,6 +31,7 @@ class Actor;
 
 class ItemDrop final : public GameObject
 {
+    NON_COPYABLE(ItemDrop)
 private:
     uint32_t itemId_;
     uint32_t itemIndex_{ 0 };
@@ -46,9 +48,6 @@ public:
 
     explicit ItemDrop(uint32_t itemId);
     ItemDrop() = delete;
-    // non-copyable
-    ItemDrop(const ItemDrop&) = delete;
-    ItemDrop& operator=(const ItemDrop&) = delete;
 
     ~ItemDrop() override;
 

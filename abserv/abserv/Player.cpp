@@ -975,17 +975,18 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Player::RemoveMoney(uint32_t count)
 {
-    (void)count;
-    return true;
+    auto msg = Net::NetworkMessage::GetNew();
+    uint32_t amount = inventoryComp_->RemoveChestMoney(count, msg.get());
+    WriteToOutput(*msg);
+    return amount != 0;
 }
 
 bool Player::AddMoney(uint32_t count)
 {
-    auto* factory = GetSubsystem<ItemFactory>();
-    uint32_t id = factory->CreatePlayerMoneyItem(*this, count);
-    if (id == 0)
-        return false;
-    return AddToInventory(id);
+    auto msg = Net::NetworkMessage::GetNew();
+    uint32_t amount = inventoryComp_->AddInventoryMoney(count, msg.get());
+    WriteToOutput(*msg);
+    return amount != 0;
 }
 
 bool Player::AddToInventory(uint32_t itemId)
@@ -997,9 +998,34 @@ bool Player::AddToInventory(uint32_t itemId)
     }
     auto msg = Net::NetworkMessage::GetNew();
     const bool ret = inventoryComp_->SetInventoryItem(itemId, msg.get());
-    if (msg->GetSize() != 0)
-        WriteToOutput(*msg);
+    WriteToOutput(*msg);
     return ret;
+}
+
+void Player::CRQDepositMoney(uint32_t amount)
+{
+    if (amount > inventoryComp_->GetInventoryMoney())
+        return;
+
+    // TODO: Do some checking
+    auto msg = Net::NetworkMessage::GetNew();
+    uint32_t ramount = inventoryComp_->RemoveInventoryMoney(amount, msg.get());
+    LOG_INFO << "Removed " << ramount << " current " << inventoryComp_->GetInventoryMoney() << std::endl;
+    uint32_t added = inventoryComp_->AddChestMoney(ramount, msg.get());
+    LOG_INFO << "Added " << added << " current " << inventoryComp_->GetChestMoney() << std::endl;
+    WriteToOutput(*msg);
+}
+
+void Player::CRQWithdrawMoney(uint32_t amount)
+{
+    if (amount > inventoryComp_->GetChestMoney())
+        return;
+
+    // TODO: Do some checking
+    auto msg = Net::NetworkMessage::GetNew();
+    uint32_t ramount = inventoryComp_->RemoveChestMoney(amount, msg.get());
+    inventoryComp_->AddInventoryMoney(ramount, msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::CRQPartyInvitePlayer(uint32_t playerId)

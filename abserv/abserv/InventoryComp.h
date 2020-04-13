@@ -125,6 +125,13 @@ public:
     {
         return chest_->GetCount();
     }
+    uint32_t AddChestMoney(uint32_t amount, Net::NetworkMessage* message);
+    // Return how much money was removed
+    uint32_t RemoveChestMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t AddInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t RemoveInventoryMoney(uint32_t amount, Net::NetworkMessage* message);
+    uint32_t GetChestMoney() const;
+    uint32_t GetInventoryMoney() const;
 
     void SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId);
     void RemoveUpgrade(Item& item, ItemUpgrade type);

@@ -92,7 +92,7 @@ uint32_t ItemContainer::RemoveItem(ItemPos pos)
     return 0;
 }
 
-Item* ItemContainer::GetItem(ItemPos pos)
+Item* ItemContainer::GetItem(ItemPos pos) const
 {
     if (items_.size() >= pos && items_[pos])
     {
@@ -102,6 +102,14 @@ Item* ItemContainer::GetItem(ItemPos pos)
 
     }
     return nullptr;
+}
+
+uint32_t ItemContainer::GetMoney() const
+{
+    auto* item = GetItem(0);
+    if (!item)
+        return 0;
+    return item->concreteItem_.count;
 }
 
 Item* ItemContainer::FindItem(const std::string& uuid)

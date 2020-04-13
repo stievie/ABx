@@ -97,6 +97,8 @@ public:
         AB::Entities::StoragePlace place, uint16_t newPos);
     void GetChest();
     void ChestDestroyItem(uint16_t pos);
+    void DepositMoney(uint32_t amount);
+    void WithdrawMoney(uint32_t amount);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

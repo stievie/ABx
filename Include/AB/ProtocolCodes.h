@@ -99,6 +99,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(SetItemPos)             \
     ENUMERATE_CLIENT_PACKET_CODE(GetChest)               \
     ENUMERATE_CLIENT_PACKET_CODE(ChestDestroyItem)       \
+    ENUMERATE_CLIENT_PACKET_CODE(WithdrawMoney)          \
+    ENUMERATE_CLIENT_PACKET_CODE(DepositMoney)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetFriendList)          \
     ENUMERATE_CLIENT_PACKET_CODE(AddFriend)              \
     ENUMERATE_CLIENT_PACKET_CODE(RemoveFriend)           \

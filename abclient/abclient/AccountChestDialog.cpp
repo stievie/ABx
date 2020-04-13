@@ -26,6 +26,7 @@
 #include "ItemsCache.h"
 #include "WindowManager.h"
 #include "InventoryWindow.h"
+#include "NumberInputBox.h"
 
 AccountChestDialog::AccountChestDialog(Context* context) :
     DialogWindow(context),
@@ -109,7 +110,7 @@ void AccountChestDialog::HandleChestItemRemove(StringHash, VariantMap& eventData
 
 void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
 {
-    // TODO:
+    // TODO: What???
     (void)eventData;
 }
 
@@ -199,6 +200,55 @@ void AccountChestDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
     dragItem_.Reset();
 }
 
+void AccountChestDialog::HandleDepositClicked(StringHash, VariantMap&)
+{
+    if (inputBox_)
+        inputBox_->Close();
+
+    if (inputBox_)
+        inputBox_->Close();
+
+    inputBox_ = MakeShared<NumberInputBox>(context_, "Deposit Money");
+    SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleDepositDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
+}
+
+void AccountChestDialog::HandleWithdrawClicked(StringHash, VariantMap&)
+{
+    if (inputBox_)
+        inputBox_->Close();
+
+    inputBox_ = MakeShared<NumberInputBox>(context_, "Withdraw Money");
+    SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleWithdrawDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
+}
+
+void AccountChestDialog::HandleWithdrawDone(StringHash, VariantMap& eventData)
+{
+    using namespace NumberInputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    auto* client = GetSubsystem<FwClient>();
+    client->WithdrawMoney(eventData[P_VALUE].GetUInt());
+}
+
+void AccountChestDialog::HandleDepositDone(StringHash, VariantMap& eventData)
+{
+    using namespace NumberInputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    auto* client = GetSubsystem<FwClient>();
+    client->DepositMoney(eventData[P_VALUE].GetUInt());
+}
+
+void AccountChestDialog::HandleDialogClosed(StringHash, VariantMap&)
+{
+    if (inputBox_)
+        inputBox_.Reset();
+}
+
 uint16_t AccountChestDialog::GetItemPosFromClientPos(const IntVector2& clientPos)
 {
     auto* container = GetChild("Container", true);
@@ -218,6 +268,10 @@ void AccountChestDialog::SubscribeEvents()
     SubscribeToEvent(Events::E_CHEST, URHO3D_HANDLER(AccountChestDialog, HandleChest));
     SubscribeToEvent(Events::E_CHESTITEMUPDATE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemUpdate));
     SubscribeToEvent(Events::E_CHESTITEMDELETE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemRemove));
+    Button* depositButton = GetChildStaticCast<Button>("DespositButton", true);
+    SubscribeToEvent(depositButton, E_RELEASED, URHO3D_HANDLER(AccountChestDialog, HandleDepositClicked));
+    Button* withdrawButton = GetChildStaticCast<Button>("WithdrawButton", true);
+    SubscribeToEvent(withdrawButton, E_RELEASED, URHO3D_HANDLER(AccountChestDialog, HandleWithdrawClicked));
 }
 
 void AccountChestDialog::Initialize()

@@ -45,7 +45,11 @@ void DialogWindow::Close()
 
     SetVisible(false);
     if (overlay_)
+    {
         overlay_->Remove();
+        overlay_.Reset();
+    }
+    this->Remove();
 }
 
 void DialogWindow::SubscribeEvents()
@@ -99,8 +103,7 @@ void DialogWindow::MakeModal()
 
         overlay_ = root->CreateChild<Window>();
 
-        auto* graphics = GetSubsystem<Graphics>();
-        overlay_->SetSize(graphics->GetWidth() * 2, graphics->GetHeight() * 2);
+        overlay_->SetSize(M_MAX_INT, M_MAX_INT);
         overlay_->SetLayoutMode(LM_FREE);
         overlay_->SetAlignment(HA_LEFT, VA_TOP);
         // Black color

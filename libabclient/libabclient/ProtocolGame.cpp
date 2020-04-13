@@ -323,6 +323,18 @@ void ProtocolGame::ChestDestroyItem(uint16_t pos)
     SendPacket(AB::GameProtocol::ClientPacketTypes::ChestDestroyItem, packet);
 }
 
+void ProtocolGame::DepositMoney(uint32_t amount)
+{
+    AB::Packets::Client::DespositWithdrawMoney packet{ amount };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::DepositMoney, packet);
+}
+
+void ProtocolGame::WithdrawMoney(uint32_t amount)
+{
+    AB::Packets::Client::DespositWithdrawMoney packet{ amount };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::WithdrawMoney, packet);
+}
+
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
     AB::Packets::Client::GetMail packet = {

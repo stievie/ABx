@@ -215,6 +215,18 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
             packet.storagePos);
         break;
     }
+    case ClientPacketTypes::WithdrawMoney:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::DespositWithdrawMoney>(message);
+        AddPlayerTask(&Game::Player::CRQWithdrawMoney, packet.amount);
+        break;
+    }
+    case ClientPacketTypes::DepositMoney:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::DespositWithdrawMoney>(message);
+        AddPlayerTask(&Game::Player::CRQDepositMoney, packet.amount);
+        break;
+    }
     case ClientPacketTypes::GetChest:
     {
         /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);

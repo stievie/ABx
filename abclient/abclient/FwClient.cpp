@@ -796,6 +796,18 @@ void FwClient::ChestDestroyItem(uint16_t pos)
         client_.ChestDestroyItem(pos);
 }
 
+void FwClient::DepositMoney(uint32_t amount)
+{
+    if (loggedIn_)
+        client_.DepositMoney(amount);
+}
+
+void FwClient::WithdrawMoney(uint32_t amount)
+{
+    if (loggedIn_)
+        client_.WithdrawMoney(amount);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)

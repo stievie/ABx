@@ -148,6 +148,8 @@ public:
         AB::Entities::StoragePlace place, uint16_t newPos);
     void UpdateChest();
     void ChestDestroyItem(uint16_t pos);
+    void DepositMoney(uint32_t amount);
+    void WithdrawMoney(uint32_t amount);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

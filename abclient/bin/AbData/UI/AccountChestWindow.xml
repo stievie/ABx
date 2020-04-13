@@ -95,8 +95,10 @@
 			<element type="Button">
 				<attribute name="Name" value="DespositButton" />
 				<attribute name="Min Size" value="0 20" />
-				<attribute name="Max Size" value="2147483647 20" />
-				<attribute name="Pivot" value="0 0" />
+				<attribute name="Max Size" value="200 20" />
+				<attribute name="Min Anchor" value="0.5 0" />
+				<attribute name="Max Anchor" value="0.5 0" />
+				<attribute name="Pivot" value="0.5 0" />
 				<attribute name="Image Rect" value="16 0 32 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />
@@ -117,8 +119,10 @@
 			<element type="Button">
 				<attribute name="Name" value="WithdrawButton" />
 				<attribute name="Min Size" value="0 20" />
-				<attribute name="Max Size" value="2147483647 20" />
-				<attribute name="Pivot" value="0 0" />
+				<attribute name="Max Size" value="200 20" />
+				<attribute name="Min Anchor" value="0.5 0" />
+				<attribute name="Max Anchor" value="0.5 0" />
+				<attribute name="Pivot" value="0.5 0" />
 				<attribute name="Image Rect" value="16 0 32 16" />
 				<attribute name="Border" value="4 4 4 4" />
 				<attribute name="Hover Image Offset" value="0 16" />

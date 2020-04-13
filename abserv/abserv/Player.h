@@ -216,6 +216,8 @@ public:
         AB::Entities::StoragePlace newPlace, uint16_t newPos);
     void CRQGetChest();
     void CRQDestroyChestItem(uint16_t pos);
+    void CRQDepositMoney(uint32_t amount);
+    void CRQWithdrawMoney(uint32_t amount);
     void CRQPartyInvitePlayer(uint32_t playerId);
     void CRQPartyKickPlayer(uint32_t playerId);
     void CRQPartyLeave();

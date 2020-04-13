@@ -238,11 +238,11 @@ uint32_t ItemFactory::CreatePlayerItem(Player& forPlayer, const std::string& ite
     ci.instanceUuid = forPlayer.GetGame()->instanceData_.uuid;
     ci.mapUuid = forPlayer.GetGame()->data_.uuid;
     ci.creation = Utils::Tick();
+    ci.count = count;
 
     // Create item stats for this drop
     if (!result->GenerateConcrete(ci, forPlayer.data_.level, true))
         return 0;
-    ci.count = count;
 
     // Save the created stats
     GetSubsystem<Asynch::Scheduler>()->Add(

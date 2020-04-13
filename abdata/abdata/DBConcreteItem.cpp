@@ -102,7 +102,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.accountUuid = result->GetString("account_uuid");
     item.itemUuid = result->GetString("item_uuid");
     item.itemStats = result->GetStream("stats");
-    item.count = static_cast<uint16_t>(result->GetUInt("count"));
+    item.count = static_cast<uint32_t>(result->GetUInt("count"));
     item.creation = result->GetLong("creation");
     item.deleted = result->GetLong("deleted");
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
