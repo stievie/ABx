@@ -128,6 +128,7 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         message->AddByte(AB::GameProtocol::ServerPacketType::ChestItemUpdate);
         break;
     default:
+        LOG_ERROR << "Unexpected storage place " << static_cast<int>(item->concreteItem_.storagePlace) << std::endl;
         return;
     }
     AB::Packets::Server::InventoryItemUpdate packet = {
