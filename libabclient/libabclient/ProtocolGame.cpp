@@ -605,4 +605,10 @@ void ProtocolGame::TradeRequest(uint32_t targetId)
     SendPacket(AB::GameProtocol::ClientPacketTypes::TradeRequest, packet);
 }
 
+void ProtocolGame::TradeCancel()
+{
+    AB::Packets::Client::TradeCancel packet = { };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::TradeCancel, packet);
+}
+
 }

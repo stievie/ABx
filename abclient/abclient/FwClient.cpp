@@ -1001,6 +1001,12 @@ void FwClient::TradeRequest(uint32_t targetId)
         client_.TradeRequest(targetId);
 }
 
+void FwClient::TradeCancel()
+{
+    if (loggedIn_)
+        client_.TradeCancel();
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -2055,7 +2061,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SkillTemplateLoaded&
     QueueEvent(Events::E_LOAD_SKILLTEMPLATE, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet)
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeDialogTrigger& packet)
 {
     using namespace Events::TradeDialogTrigger;
     VariantMap& eData = GetEventDataMap();

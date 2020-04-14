@@ -690,6 +690,12 @@ void Client::TradeRequest(uint32_t targetId)
         protoGame_->TradeRequest(targetId);
 }
 
+void Client::TradeCancel()
+{
+    if (state_ == State::World)
+        protoGame_->TradeCancel();
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);

@@ -283,6 +283,13 @@ struct TradeRequest
     }
 };
 
+struct TradeCancel
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
+};
+
 struct Command
 {
     uint8_t type;

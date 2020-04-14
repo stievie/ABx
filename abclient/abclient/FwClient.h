@@ -180,6 +180,7 @@ public:
     void EquipSkill(uint32_t skillIndex, uint8_t pos);
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
+    void TradeCancel();
 
     void OnLog(const std::string& message) override;
     /// asio network error

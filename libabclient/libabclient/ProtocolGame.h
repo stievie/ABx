@@ -134,6 +134,7 @@ public:
     void EquipSkill(uint32_t skillIndex, uint8_t pos);
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
+    void TradeCancel();
 
     int64_t GetUpdateTick() const
     {

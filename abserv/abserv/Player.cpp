@@ -1519,7 +1519,8 @@ void Player::CRQTradeRequest(uint32_t targetId)
 
 void Player::CRQTradeCancel()
 {
-    tradeComp_->Cancel();
+    if (tradeComp_->IsTrading())
+        tradeComp_->Cancel();
 }
 
 bool Player::IsIgnored(const Player& player) const

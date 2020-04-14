@@ -108,7 +108,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildInfo)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)        \
     ENUMERATE_CLIENT_PACKET_CODE(LoadSkillTemplate)      \
-    ENUMERATE_CLIENT_PACKET_CODE(TradeRequest)
+    ENUMERATE_CLIENT_PACKET_CODE(TradeRequest)           \
+    ENUMERATE_CLIENT_PACKET_CODE(TradeCancel)
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
