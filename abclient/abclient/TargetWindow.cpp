@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "TargetWindow.h"
 #include "Actor.h"
+#include "FwClient.h"
 
 void TargetWindow::RegisterObject(Context* context)
 {
@@ -42,10 +43,16 @@ TargetWindow::TargetWindow(Context* context) :
     healthBar_ = GetChildStaticCast<ValueBar>("TargetHealthBar", true);
     healthBar_->SetStyle("HealthBar");
 
+    tradeButton_ = GetChildStaticCast<Button>("TradeButton", true);
+    tradeButton_->SetVisible(false);
+    tradeButton_->SetFocusMode(FM_NOTFOCUSABLE);
+
     Button* clearTarget = GetChildStaticCast<Button>("ClearTargetButton", true);
     SubscribeToEvent(clearTarget, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleClearTargetClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(TargetWindow, HandleUpdate));
     SubscribeToEvent(Events::E_SET_SECPROFESSION, URHO3D_HANDLER(TargetWindow, HandleActorSkillsChanged));
+
+    SubscribeToEvent(tradeButton_, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleTradeClicked));
 }
 
 TargetWindow::~TargetWindow()
@@ -59,12 +66,26 @@ void TargetWindow::HandleClearTargetClicked(StringHash, VariantMap&)
     SendEvent(E_TARGETWINDOW_UNSELECT, e);
 }
 
+void TargetWindow::HandleTradeClicked(StringHash, VariantMap&)
+{
+    if (!tradeButton_->IsVisible())
+        return;
+    if (SharedPtr<Actor> a = target_.Lock())
+    {
+        if (a->objectType_ != ObjectTypePlayer)
+            return;
+
+        auto* client = GetSubsystem<FwClient>();
+        client->TradeRequest(a->gameId_);
+    }
+}
+
 void TargetWindow::HandleUpdate(StringHash, VariantMap&)
 {
     if (SharedPtr<Actor> a = target_.Lock())
-    {
         healthBar_->SetValues(a->stats_.maxHealth, a->stats_.health);
-    }
+    else
+        SetTarget(SharedPtr<Actor>());
 }
 
 void TargetWindow::HandleActorSkillsChanged(StringHash, VariantMap& eventData)
@@ -84,10 +105,12 @@ void TargetWindow::SetTarget(SharedPtr<Actor> target)
     if (target.NotNull())
     {
         targetText_->SetText(target->GetClassLevelName());
+        if (target->objectType_ == ObjectTypePlayer)
+            tradeButton_->SetVisible(true);
+        else
+            tradeButton_->SetVisible(false);
         SetVisible(true);
     }
     else
-    {
         SetVisible(false);
-    }
 }

@@ -444,6 +444,9 @@
     <ClInclude Include="AiDebugServer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="TradeComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -840,6 +843,9 @@
       <Filter>Quelldateien\Conditions</Filter>
     </ClCompile>
     <ClCompile Include="AiDebugServer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TradeComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

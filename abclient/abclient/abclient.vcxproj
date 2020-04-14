@@ -296,6 +296,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GuildWindow.cpp" />
     <ClCompile Include="HealthBar.cpp" />
+    <ClCompile Include="TradeDialog.cpp" />
     <ClCompile Include="ValueBar.cpp" />
     <ClCompile Include="HotkeyEdit.cpp" />
     <ClCompile Include="InventoryWindow.cpp" />
@@ -368,6 +369,7 @@
     <ClInclude Include="GameMessagesWindow.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
+    <ClInclude Include="TradeDialog.h" />
     <ClInclude Include="ValueBar.h" />
     <ClInclude Include="HotkeyEdit.h" />
     <ClInclude Include="InventoryWindow.h" />

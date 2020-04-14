@@ -49,7 +49,6 @@ FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
     SetMinSize(430, 400);
     SetMaxSize(430, 400);
     SetMovable(true);
-    SetFocusMode(FM_FOCUSABLE);
 
     auto* caption = GetChildDynamicCast<Text>("Caption", true);
     if (mode_ == Mode::Load)
@@ -71,12 +70,9 @@ FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
     SubscribeToEvent(fileList_, E_ITEMSELECTED, URHO3D_HANDLER(FilePicker, HandleFileSelected));
     SubscribeToEvent(fileList_, E_ITEMDOUBLECLICKED, URHO3D_HANDLER(FilePicker, HandleFileDoubleClicked));
     fileNameEdit_ = GetChildDynamicCast<LineEdit>("FilenameEdit", true);
-    SetBringToBack(false);
-    uiRoot_->AddChild(this);
     SetVisible(true);
     MakeModal();
     Center();
-    SetPriority(200);
     BringToFront();
     SetPath(root_);
     fileNameEdit_->SetFocus(true);

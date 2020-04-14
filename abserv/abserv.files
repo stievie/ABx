@@ -267,6 +267,8 @@ abserv/Terrain.cpp
 abserv/Terrain.h
 abserv/TerrainPatch.cpp
 abserv/TerrainPatch.h
+abserv/TradeComp.cpp
+abserv/TradeComp.h
 abserv/TriggerComp.cpp
 abserv/TriggerComp.h
 abserv/Version.h

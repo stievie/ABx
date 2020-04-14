@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,15 @@
 
 #pragma once
 
-#include "Actor.h"
-#include "ValueBar.h"
+#include "DialogWindow.h"
 
-static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unselect object");
-
-class TargetWindow : public UIElement
+class TradeDialog : public DialogWindow
 {
-    URHO3D_OBJECT(TargetWindow, UIElement)
+    URHO3D_OBJECT(TradeDialog, DialogWindow)
 private:
-    WeakPtr<Actor> target_;
-    SharedPtr<Text> targetText_;
-    SharedPtr<ValueBar> healthBar_;
-    SharedPtr<Button> tradeButton_;
-    void HandleClearTargetClicked(StringHash eventType, VariantMap& eventData);
-    void HandleTradeClicked(StringHash eventType, VariantMap& eventData);
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleActorSkillsChanged(StringHash eventType, VariantMap& eventData);
+    void HandleOkClicked(StringHash eventType, VariantMap& eventData);
+    void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
 public:
-    static void RegisterObject(Context* context);
-
-    TargetWindow(Context* context);
-    ~TargetWindow() override;
-
-    void SetTarget(SharedPtr<Actor> target);
+    TradeDialog(Context* context, const String& title);
+    ~TradeDialog() override;
 };
-

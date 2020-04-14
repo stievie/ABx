@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,31 +19,42 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "stdafx.h"
+#include "TradeDialog.h"
 
-#include "Actor.h"
-#include "ValueBar.h"
-
-static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unselect object");
-
-class TargetWindow : public UIElement
+TradeDialog::TradeDialog(Context* context, const String& title) :
+    DialogWindow(context)
 {
-    URHO3D_OBJECT(TargetWindow, UIElement)
-private:
-    WeakPtr<Actor> target_;
-    SharedPtr<Text> targetText_;
-    SharedPtr<ValueBar> healthBar_;
-    SharedPtr<Button> tradeButton_;
-    void HandleClearTargetClicked(StringHash eventType, VariantMap& eventData);
-    void HandleTradeClicked(StringHash eventType, VariantMap& eventData);
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleActorSkillsChanged(StringHash eventType, VariantMap& eventData);
-public:
-    static void RegisterObject(Context* context);
+    LoadLayout("UI/TradeWindow.xml");
+    SetStyleAuto();
 
-    TargetWindow(Context* context);
-    ~TargetWindow() override;
+    SetSize(368, 230);
+    SetMinSize(368, 230);
+    SetMaxSize(368, 230);
+    SetLayoutSpacing(10);
+    SetLayoutBorder({ 10, 10, 10, 10 });
+    SetMovable(true);
 
-    void SetTarget(SharedPtr<Actor> target);
-};
+    auto* caption = GetChildDynamicCast<Text>("Caption", true);
+    caption->SetText(title);
 
+    auto* okButton = GetChildDynamicCast<Button>("OkButton", true);
+    SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOkClicked));
+    auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
+    SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleCancelClicked));
+
+    BringToFront();
+}
+
+TradeDialog::~TradeDialog()
+{ }
+
+void TradeDialog::HandleOkClicked(StringHash, VariantMap&)
+{
+    Close();
+}
+
+void TradeDialog::HandleCancelClicked(StringHash, VariantMap&)
+{
+    Close();
+}

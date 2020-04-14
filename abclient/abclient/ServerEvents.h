@@ -472,4 +472,10 @@ URHO3D_EVENT(E_LOAD_SKILLTEMPLATE, LoadSkillTemplate)
     URHO3D_PARAM(P_TEMPLATE, Template);   // String
 }
 
+URHO3D_EVENT(E_TRADEDIALOG_TRIGGER, TradeDialogTrigger)
+{
+    URHO3D_PARAM(P_SOURDEID, SourceId);
+    URHO3D_PARAM(P_TARGETID, TargetId);
+}
+
 }

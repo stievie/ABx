@@ -37,12 +37,9 @@ AddAccountKeyDialog::AddAccountKeyDialog(Context* context) :
     SetLayoutSpacing(10);
     UpdateLayout();
     SetMovable(false);
-    SetFocusMode(FM_FOCUSABLE);
 
     MakeModal();
-    SetBringToBack(false);
     BringToFront();
-    SetPriority(200);
     accountKeyEdit_ = GetChildStaticCast<LineEdit>("AccountKeyEdit", true);
     SubscribeEvents();
 }

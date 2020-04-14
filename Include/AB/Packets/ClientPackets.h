@@ -273,6 +273,16 @@ struct SelectObject
     }
 };
 
+struct TradeRequest
+{
+    uint32_t targetId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(targetId);
+    }
+};
+
 struct Command
 {
     uint8_t type;

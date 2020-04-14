@@ -103,6 +103,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ObjectSecProfessionChanged, ServerPacketType::ObjectSecProfessionChanged>();
     AddHandler<AB::Packets::Server::ObjectSetSkill, ServerPacketType::ObjectSetSkill>();
     AddHandler<AB::Packets::Server::SkillTemplateLoaded, ServerPacketType::PlayerSkillTemplLoaded>();
+    AddHandler<AB::Packets::Server::TradeDialogTrigger, ServerPacketType::TradeDialogTrigger>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -596,6 +597,12 @@ void ProtocolGame::LoadSkillTemplate(const std::string& templ)
     AB::Packets::Client::LoadSkillTemplate packet;
     packet.templ = templ;
     SendPacket(AB::GameProtocol::ClientPacketTypes::LoadSkillTemplate, packet);
+}
+
+void ProtocolGame::TradeRequest(uint32_t targetId)
+{
+    AB::Packets::Client::TradeRequest packet{ targetId };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::TradeRequest, packet);
 }
 
 }

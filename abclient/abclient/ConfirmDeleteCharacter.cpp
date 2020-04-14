@@ -37,7 +37,6 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     SetLayoutSpacing(10);
     SetLayoutBorder({ 10, 10, 10, 10 });
     SetMovable(false);
-    SetFocusMode(FM_FOCUSABLE);
 
     auto* deleteButton = GetChildDynamicCast<Button>("DeleteButton", true);
     SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(ConfirmDeleteCharacter, HandleDeleteClicked));
@@ -52,9 +51,7 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     messageText->SetText(message);
 
     MakeModal();
-    SetBringToBack(false);
     BringToFront();
-    SetPriority(200);
 
     Center();
 

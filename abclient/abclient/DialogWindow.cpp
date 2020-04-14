@@ -22,12 +22,15 @@
 #include "stdafx.h"
 #include "DialogWindow.h"
 
+static unsigned backdropCount = 0;
+
 DialogWindow::DialogWindow(Context* context) :
     Window(context)
 {
     UI* ui = GetSubsystem<UI>();
     uiRoot_ = ui->GetRoot();
     uiRoot_->AddChild(this);
+    SetFocusMode(FM_FOCUSABLE);
 }
 
 DialogWindow::~DialogWindow()
@@ -48,6 +51,7 @@ void DialogWindow::Close()
     {
         overlay_->Remove();
         overlay_.Reset();
+        --backdropCount;
     }
     this->Remove();
 }
@@ -103,15 +107,18 @@ void DialogWindow::MakeModal()
 
         overlay_ = root->CreateChild<Window>();
 
+        ++backdropCount;
         overlay_->SetSize(M_MAX_INT, M_MAX_INT);
         overlay_->SetLayoutMode(LM_FREE);
         overlay_->SetAlignment(HA_LEFT, VA_TOP);
         // Black color
         overlay_->SetColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
         overlay_->SetOpacity(0.5f);
-        overlay_->SetPriority(100);
+        overlay_->SetPriority(100 + backdropCount);
         // Make it top most
         overlay_->SetBringToBack(false);
     }
     overlay_->BringToFront();
+    this->SetPriority(overlay_->GetPriority() + 1);
+    this->SetBringToBack(false);
 }

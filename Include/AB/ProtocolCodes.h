@@ -107,7 +107,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(RenameFriend)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildInfo)           \
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)        \
-    ENUMERATE_CLIENT_PACKET_CODE(LoadSkillTemplate)
+    ENUMERATE_CLIENT_PACKET_CODE(LoadSkillTemplate)      \
+    ENUMERATE_CLIENT_PACKET_CODE(TradeRequest)
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
@@ -179,7 +180,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetAttributeValue)     \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)  \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetSkill)              \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)
+    ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)      \
+    ENUMERATE_SERVER_PACKET_CODE(TradeDialogTrigger)
 
 #define ENUMERATE_CREATURE_STATES          \
     ENUMERATE_CREATURE_STATE(Unknown)      \
@@ -412,7 +414,10 @@ enum PlayerErrorValue : uint8_t
 {
     PlayerErrorNone = 0,
     PlayerErrorInventoryFull,
-    PlayerErrorChestFull
+    PlayerErrorChestFull,
+    PlayerErrorTradingPartnerInvalid,
+    PlayerErrorTradingPartnerQueueing,
+    PlayerErrorTradingPartnerTrading
 };
 
 enum GameObjectType : uint8_t

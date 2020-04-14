@@ -383,6 +383,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQUnqueueForMatch);
         break;
     }
+    case ClientPacketTypes::TradeRequest:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::TradeRequest>(message);
+        AddPlayerTask(&Game::Player::CRQTradeRequest, packet.targetId);
+        break;
+    }
     case ClientPacketTypes::Command:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::Command>(message);

@@ -130,6 +130,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) = 0;
 
 };
 

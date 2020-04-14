@@ -51,6 +51,7 @@
 #include <AB/ProtocolCodes.h>
 #include <sa/StringTempl.h>
 #include <abshared/SkillsHelper.h>
+#include "TradeComp.h"
 
 namespace Game {
 
@@ -69,7 +70,8 @@ void Player::RegisterLua(kaguya::State& state)
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
-    questComp_(std::make_unique<Components::QuestComp>(*this))
+    questComp_(std::make_unique<Components::QuestComp>(*this)),
+    tradeComp_(std::make_unique<Components::TradeComp>(*this))
 {
     events_.Subscribe<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
         std::bind(&Player::OnHandleCommand, this,
@@ -268,6 +270,31 @@ void Player::TriggerQuestDialog(uint32_t triggererId, uint32_t index)
     };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
+}
+
+void Player::TriggerTradeDialog(uint32_t targetId)
+{
+    // We initiated the trade operation so we are the source id
+    if (targetId == 0)
+        return;
+
+    auto* target = GetGame()->GetObject<Player>(targetId);
+    if (!target)
+        return;
+    float dist = GetDistance(target);
+    if (dist > RANGE_PICK_UP)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::TradeDialogTrigger);
+    AB::Packets::Server::TradeDialogTrigger packet = {
+        id_,
+        targetId
+    };
+    AB::Packets::Add(packet, *msg);
+    // Send both parties the message
+    WriteToOutput(*msg);
+    target->WriteToOutput(*msg);
 }
 
 MailBox& Player::GetMailBox()
@@ -966,7 +993,9 @@ void Player::SetParty(std::shared_ptr<Party> party)
 void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
+    tradeComp_->Update(timeElapsed);
     questComp_->Update(timeElapsed);
+    tradeComp_->Write(message);
     questComp_->Write(message);
     auto party = GetParty();
     if (party->IsLeader(*this))
@@ -1457,6 +1486,41 @@ void Player::CRQLoadSkillTemplate(std::string templ)
     WriteToOutput(*nmsg);
 }
 
+void Player::CRQTradeRequest(uint32_t targetId)
+{
+    auto* target = GetGame()->GetObject<Player>(targetId);
+    if (!target)
+        return;
+
+    auto error = tradeComp_->TradeWith(target->GetPtr<Player>());
+    if (error != Components::TradeComp::TradeError::None)
+    {
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::GameError packet;
+        switch (error)
+        {
+        case Components::TradeComp::TradeError::None:
+            break;
+        case Components::TradeComp::TradeError::TargetInvalid:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerInvalid;
+            break;
+        case Components::TradeComp::TradeError::TargetQueing:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerQueueing;
+            break;
+        case Components::TradeComp::TradeError::TargetTrading:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerTrading;
+            break;
+        }
+        AB::Packets::Add(packet, *msg);
+        WriteToOutput(*msg);
+    }
+}
+
+void Player::CRQTradeCancel()
+{
+    tradeComp_->Cancel();
+}
 
 bool Player::IsIgnored(const Player& player) const
 {

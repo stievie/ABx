@@ -684,6 +684,12 @@ void Client::LoadSkillTemplate(const std::string& templ)
         protoGame_->LoadSkillTemplate(templ);
 }
 
+void Client::TradeRequest(uint32_t targetId)
+{
+    if (state_ == State::World)
+        protoGame_->TradeRequest(targetId);
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);
@@ -991,6 +997,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSk
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

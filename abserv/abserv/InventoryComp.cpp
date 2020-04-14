@@ -115,11 +115,21 @@ EquipPos InventoryComp::EquipInventoryItem(ItemPos pos)
     return EquipPos::None;
 }
 
-void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest)
+void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message)
 {
     if (!item || !message)
         return;
-    message->AddByte((!isChest) ? AB::GameProtocol::ServerPacketType::InventoryItemUpdate : AB::GameProtocol::ServerPacketType::ChestItemUpdate);
+    switch (item->concreteItem_.storagePlace)
+    {
+    case AB::Entities::StoragePlaceInventory:
+        message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemUpdate);
+        break;
+    case AB::Entities::StoragePlaceChest:
+        message->AddByte(AB::GameProtocol::ServerPacketType::ChestItemUpdate);
+        break;
+    default:
+        return;
+    }
     AB::Packets::Server::InventoryItemUpdate packet = {
         static_cast<uint16_t>(item->data_.type),
         item->data_.index,
@@ -145,7 +155,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
         item->concreteItem_.storagePos = newPos;
     const bool ret = inventory_->SetItem(itemId, [message](const Item* const item)
     {
-        InventoryComp::WriteItemUpdate(item, message, false);
+        InventoryComp::WriteItemUpdate(item, message);
     });
     if (!ret)
         owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
@@ -165,7 +175,7 @@ bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message, 
         item->concreteItem_.storagePos = newPos;
     const bool ret = chest_->SetItem(itemId, [message](const Item* const item)
     {
-        InventoryComp::WriteItemUpdate(item, message, true);
+        InventoryComp::WriteItemUpdate(item, message);
     });
     if (!ret)
         owner_.CallEvent<void(void)>(EVENT_ON_CHESTFULL);
@@ -184,7 +194,7 @@ uint32_t InventoryComp::AddChestMoney(uint32_t amount, Net::NetworkMessage* mess
     {
         uint32_t maxadd = std::min(amount, static_cast<uint32_t>(chest_->GetMaxMoney()) - money->concreteItem_.count);
         money->concreteItem_.count += maxadd;
-        InventoryComp::WriteItemUpdate(money, message, true);
+        InventoryComp::WriteItemUpdate(money, message);
         return maxadd;
     }
 
@@ -205,7 +215,7 @@ uint32_t InventoryComp::RemoveChestMoney(uint32_t amount, Net::NetworkMessage* m
     {
         uint32_t remove = std::min(amount, money->concreteItem_.count);
         money->concreteItem_.count -= remove;
-        InventoryComp::WriteItemUpdate(money, message, true);
+        InventoryComp::WriteItemUpdate(money, message);
         return remove;
     }
     return 0;
@@ -223,7 +233,7 @@ uint32_t InventoryComp::AddInventoryMoney(uint32_t amount, Net::NetworkMessage* 
     {
         uint32_t maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - money->concreteItem_.count);
         money->concreteItem_.count += maxadd;
-        InventoryComp::WriteItemUpdate(money, message, false);
+        InventoryComp::WriteItemUpdate(money, message);
         return maxadd;
     }
 
@@ -244,7 +254,7 @@ uint32_t InventoryComp::RemoveInventoryMoney(uint32_t amount, Net::NetworkMessag
     {
         uint32_t remove = std::min(amount, money->concreteItem_.count);
         money->concreteItem_.count -= remove;
-        InventoryComp::WriteItemUpdate(money, message, false);
+        InventoryComp::WriteItemUpdate(money, message);
         return remove;
     }
     return 0;
@@ -276,10 +286,10 @@ uint32_t InventoryComp::DepositMoney(uint32_t amount, Net::NetworkMessage* messa
     {
         maxadd = std::min(amount, static_cast<uint32_t>(chest_->GetMaxMoney()) - chestmoney->concreteItem_.count);
         chestmoney->concreteItem_.count += maxadd;
-        InventoryComp::WriteItemUpdate(chestmoney, message, true);
+        InventoryComp::WriteItemUpdate(chestmoney, message);
     }
     invmoney->concreteItem_.count -= maxadd;
-    InventoryComp::WriteItemUpdate(invmoney, message, false);
+    InventoryComp::WriteItemUpdate(invmoney, message);
 
     return maxadd;
 }
@@ -310,10 +320,10 @@ uint32_t InventoryComp::WithdrawMoney(uint32_t amount, Net::NetworkMessage* mess
     {
         maxadd = std::min(amount, static_cast<uint32_t>(inventory_->GetMaxMoney()) - invmoney->concreteItem_.count);
         invmoney->concreteItem_.count += maxadd;
-        InventoryComp::WriteItemUpdate(invmoney, message, false);
+        InventoryComp::WriteItemUpdate(invmoney, message);
     }
     chestmoney->concreteItem_.count -= maxadd;
-    InventoryComp::WriteItemUpdate(chestmoney, message, true);
+    InventoryComp::WriteItemUpdate(chestmoney, message);
 
     return maxadd;
 }

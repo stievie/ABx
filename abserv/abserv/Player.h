@@ -39,6 +39,7 @@ class Party;
 
 namespace Components {
 class QuestComp;
+class TradeComp;
 }
 
 class Player final : public Actor
@@ -130,12 +131,14 @@ public:
             return 0;
         return Utils::TimeElapsed(lastPing_);
     }
+    bool IsQueueing() const { return queueing_; }
 
     void Initialize() override;
     void Logout();
     void TriggerDialog(uint32_t triggererId, uint32_t dialogIndex);
     void TriggerQuestSelectionDialog(uint32_t triggererId, const std::set<uint32_t>& quests);
     void TriggerQuestDialog(uint32_t triggererId, uint32_t index);
+    void TriggerTradeDialog(uint32_t targetId);
     void ChangeMap(const std::string& mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
@@ -232,6 +235,8 @@ public:
     void CRQSetAttributeValue(uint32_t attribIndex, uint8_t value);
     void CRQEquipSkill(uint32_t skillIndex, uint8_t pos);
     void CRQLoadSkillTemplate(std::string templ);
+    void CRQTradeRequest(uint32_t targetId);
+    void CRQTradeCancel();
     //}
 
     AB::Entities::Character data_;
@@ -240,6 +245,7 @@ public:
     time_t logoutTime_{ 0 };
     int64_t lastPing_{ 0 };
     std::unique_ptr<Components::QuestComp> questComp_;
+    std::unique_ptr<Components::TradeComp> tradeComp_;
 };
 
 template <>

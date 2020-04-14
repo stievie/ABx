@@ -697,6 +697,18 @@ struct DialogTrigger
     }
 };
 
+struct TradeDialogTrigger
+{
+    uint32_t sourceId;
+    uint32_t targetId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(sourceId);
+        ar.value(targetId);
+    }
+};
+
 struct ObjectSkillFailure
 {
     uint32_t id;

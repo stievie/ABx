@@ -325,6 +325,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainPatch.h" />
+    <ClInclude Include="TradeComp.h" />
     <ClInclude Include="TriggerComp.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="WanderComp.h" />
@@ -465,6 +466,7 @@
     </ClCompile>
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainPatch.cpp" />
+    <ClCompile Include="TradeComp.cpp" />
     <ClCompile Include="TriggerComp.cpp" />
     <ClCompile Include="WanderComp.cpp" />
   </ItemGroup>

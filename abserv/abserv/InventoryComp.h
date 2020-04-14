@@ -54,7 +54,7 @@ private:
     std::unique_ptr<ItemContainer> inventory_;
     /// Account chest
     std::unique_ptr<ItemContainer> chest_;
-    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest);
+    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
 public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner);

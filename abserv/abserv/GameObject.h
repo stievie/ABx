@@ -27,7 +27,6 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
-#include <AB/ProtocolCodes.h>
 #include <abscommon/PropStream.h>
 #include <abscommon/Variant.h>
 #include <abshared/Mechanic.h>
@@ -74,12 +73,14 @@ static constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
 static constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
 static constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
 static constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
+static constexpr sa::event_t EVENT_ON_STATECHANGE = sa::StringHash("OnStateChange");
 
 using GameObjectEvents = sa::Events<
     void(void),
     void(uint32_t),
     void(int),
     void(bool&),
+    void(AB::GameProtocol::CreatureState, AB::GameProtocol::CreatureState),                   // OnStateChange(old,new)
     void(int, int),
     void(GameObject*),
     void(Actor*),

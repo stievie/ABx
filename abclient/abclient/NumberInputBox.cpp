@@ -34,7 +34,6 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
     SetLayoutSpacing(10);
     SetLayoutBorder({ 10, 10, 10, 10 });
     SetMovable(false);
-    SetFocusMode(FM_FOCUSABLE);
 
     auto* caption = GetChildDynamicCast<Text>("Caption", true);
     caption->SetText(title);
@@ -49,7 +48,6 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
 
     MakeModal();
     Center();
-    SetPriority(300);
     BringToFront();
     edit->SetFocus(true);
 }

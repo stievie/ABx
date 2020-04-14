@@ -159,6 +159,12 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "your inventory is full";
     case AB::GameProtocol::PlayerErrorChestFull:
         return "The chest is full";
+    case AB::GameProtocol::PlayerErrorTradingPartnerInvalid:
+        return "Invalid trading partner";
+    case AB::GameProtocol::PlayerErrorTradingPartnerQueueing:
+        return "Trading partner is queueing for a match";
+    case AB::GameProtocol::PlayerErrorTradingPartnerTrading:
+        return "The trading partner is trading with another player";
     default:
         return String::EMPTY;
     }
@@ -987,6 +993,12 @@ void FwClient::LoadSkillTemplate(const std::string& templ)
 {
     if (loggedIn_ && AB::Entities::IsOutpost(currentGameType_))
         client_.LoadSkillTemplate(templ);
+}
+
+void FwClient::TradeRequest(uint32_t targetId)
+{
+    if (loggedIn_)
+        client_.TradeRequest(targetId);
 }
 
 void FwClient::OnLog(const std::string& message)
@@ -2041,4 +2053,13 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::SkillTemplateLoaded&
     eData[P_OBJECTID] = packet.objectId;
     eData[P_TEMPLATE] = String(packet.templ.c_str());
     QueueEvent(Events::E_LOAD_SKILLTEMPLATE, eData);
+}
+
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet)
+{
+    using namespace Events::TradeDialogTrigger;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_SOURDEID] = packet.sourceId;
+    eData[P_TARGETID] = packet.targetId;
+    QueueEvent(Events::E_TRADEDIALOG_TRIGGER, eData);
 }

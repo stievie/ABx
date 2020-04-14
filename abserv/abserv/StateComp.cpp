@@ -33,9 +33,11 @@ void StateComp::SetState(AB::GameProtocol::CreatureState state, bool apply /* = 
 {
     if (state != newState_)
     {
+        auto oldState = newState_;
         newState_ = state;
         if (apply)
             Apply();
+        owner_.CallEvent<void(AB::GameProtocol::CreatureState, AB::GameProtocol::CreatureState)>(EVENT_ON_STATECHANGE, oldState, newState_);
     }
 }
 

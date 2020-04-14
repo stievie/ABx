@@ -179,6 +179,7 @@ public:
     void SetAttributeValue(uint32_t attribIndex, uint8_t value);
     void EquipSkill(uint32_t skillIndex, uint8_t pos);
     void LoadSkillTemplate(const std::string& templ);
+    void TradeRequest(uint32_t targetId);
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -258,6 +259,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSecProfessionChanged& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) override;
 
     void SetState(Client::State state)
     {
