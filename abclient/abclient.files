@@ -40,6 +40,8 @@ abclient/EquipmentWindow.cpp
 abclient/EquipmentWindow.h
 abclient/FilePicker.cpp
 abclient/FilePicker.h
+abclient/NumberInputBox.cpp
+abclient/NumberInputBox.h
 abclient/SkillsWindow.cpp
 abclient/SkillsWindow.h
 abclient/Extrapolator.h
@@ -59,6 +61,8 @@ abclient/GuildWindow.cpp
 abclient/GuildWindow.h
 abclient/HealthBar.cpp
 abclient/HealthBar.h
+abclient/TradeDialog.cpp
+abclient/TradeDialog.h
 abclient/ValueBar.cpp
 abclient/ValueBar.h
 abclient/HotkeyEdit.cpp

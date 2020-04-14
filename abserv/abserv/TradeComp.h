@@ -22,6 +22,8 @@
 #pragma once
 
 #include <sa/Noncopyable.h>
+#include <memory>
+#include <AB/ProtocolCodes.h>
 
 namespace Net {
 class NetworkMessage;

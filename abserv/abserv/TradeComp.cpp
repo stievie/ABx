@@ -76,11 +76,15 @@ void TradeComp::Reset()
 
 void TradeComp::Cancel()
 {
-    if (auto target = target_.lock())
+    if (state_ > TradeState::Idle)
     {
-        target->tradeComp_->Cancel();
+        state_ = TradeState::Idle;
+        if (auto target = target_.lock())
+        {
+            target->tradeComp_->Cancel();
+        }
+        target_.reset();
     }
-    Reset();
 }
 
 TradeComp::TradeError TradeComp::TradeWith(std::shared_ptr<Player> target)

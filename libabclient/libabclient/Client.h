@@ -35,7 +35,7 @@
 #include <asio.hpp>
 #include <sa/CircularQueue.h>
 #include <numeric>
-#include <AB\Packets\ServerPackets.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Client {
 
