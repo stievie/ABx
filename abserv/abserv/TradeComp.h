@@ -39,6 +39,14 @@ class TradeComp
 {
     NON_COPYABLE(TradeComp)
     NON_MOVEABLE(TradeComp)
+public:
+    enum class TradeError
+    {
+        None,
+        TargetInvalid,
+        TargetTrading,
+        TargetQueing,
+    };
 private:
     enum class TradeState
     {
@@ -54,14 +62,9 @@ private:
     void StartTrading();
     void OnStuck();
     void OnStateChange(AB::GameProtocol::CreatureState oldState, AB::GameProtocol::CreatureState newState);
+    TradeError TestTarget(const Player& target);
+    void TradeReqeust(Player& source);
 public:
-    enum class TradeError
-    {
-        None,
-        TargetInvalid,
-        TargetTrading,
-        TargetQueing,
-    };
     TradeComp() = delete;
     explicit TradeComp(Player& owner);
     ~TradeComp() = default;
@@ -69,10 +72,10 @@ public:
     void Write(Net::NetworkMessage& message);
 
     TradeError TradeWith(std::shared_ptr<Player> target);
-    void TradeReqeust(std::shared_ptr<Player> source);
     void Reset();
     // One player requested to cancel the trading
     void Cancel();
+    void WriteError(TradeError error, Net::NetworkMessage& message);
 
     bool IsTrading() const { return state_ > TradeState::Idle; }
 };

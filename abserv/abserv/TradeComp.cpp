@@ -87,18 +87,38 @@ void TradeComp::Cancel()
     }
 }
 
+void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
+{
+    if (error != TradeError::None)
+    {
+        message.AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::GameError packet;
+        switch (error)
+        {
+        case Components::TradeComp::TradeError::None:
+            break;
+        case Components::TradeComp::TradeError::TargetInvalid:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerInvalid;
+            break;
+        case Components::TradeComp::TradeError::TargetQueing:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerQueueing;
+            break;
+        case Components::TradeComp::TradeError::TargetTrading:
+            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerTrading;
+            break;
+        }
+        AB::Packets::Add(packet, message);
+    }
+}
+
 TradeComp::TradeError TradeComp::TradeWith(std::shared_ptr<Player> target)
 {
-    // Target is in a queue for a match -> not possible to trade with.
     if (!target)
-    {
-        if (state_ == TradeState::Idle)
-            return TradeError::TargetInvalid;
-    }
-    if (target && target->IsQueueing())
-        return TradeError::TargetQueing;
-    if (target->tradeComp_->IsTrading())
-        return TradeError::TargetTrading;
+        return TradeError::TargetInvalid;
+
+    TradeError error = TestTarget(*target);
+    if (error != TradeError::None)
+        return error;
 
     target_ = target;
     if (target)
@@ -116,9 +136,9 @@ TradeComp::TradeError TradeComp::TradeWith(std::shared_ptr<Player> target)
     return TradeError::None;
 }
 
-void TradeComp::TradeReqeust(std::shared_ptr<Player> source)
+void TradeComp::TradeReqeust(Player& source)
 {
-    target_ = source;
+    target_ = source.GetPtr<Player>();
     state_ = TradeState::Trading;
 }
 
@@ -150,21 +170,19 @@ void TradeComp::StartTrading()
 {
     if (auto target = target_.lock())
     {
-        if (!target->tradeComp_->IsTrading())
-        {
-            state_ = TradeState::Trading;
-            target->tradeComp_->TradeReqeust(owner_.GetPtr<Player>());
-            owner_.TriggerTradeDialog(target->id_);
-        }
-        else
+        TradeError error = TestTarget(*target);
+        if (error != TradeError::None)
         {
             auto msg = Net::NetworkMessage::GetNew();
-            msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-            AB::Packets::Server::GameError packet{ AB::GameProtocol::PlayerErrorTradingPartnerTrading };
-            AB::Packets::Add(packet, *msg);
+            WriteError(error, *msg);
             owner_.WriteToOutput(*msg);
             Reset();
+            return;
         }
+
+        state_ = TradeState::Trading;
+        target->tradeComp_->TradeReqeust(owner_);
+        owner_.TriggerTradeDialog(target->id_);
     }
     else
         Reset();
@@ -188,6 +206,16 @@ void TradeComp::OnStateChange(AB::GameProtocol::CreatureState, AB::GameProtocol:
         if (newState != AB::GameProtocol::CreatureState::Moving)
             Reset();
     }
+}
+
+TradeComp::TradeError TradeComp::TestTarget(const Player& target)
+{
+    if (target.IsQueueing())
+        return TradeError::TargetQueing;
+    if (target.tradeComp_->IsTrading())
+        return TradeError::TargetTrading;
+
+    return TradeError::None;
 }
 
 }

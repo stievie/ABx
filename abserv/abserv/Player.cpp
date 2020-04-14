@@ -1496,23 +1496,7 @@ void Player::CRQTradeRequest(uint32_t targetId)
     if (error != Components::TradeComp::TradeError::None)
     {
         auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::GameError packet;
-        switch (error)
-        {
-        case Components::TradeComp::TradeError::None:
-            break;
-        case Components::TradeComp::TradeError::TargetInvalid:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerInvalid;
-            break;
-        case Components::TradeComp::TradeError::TargetQueing:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerQueueing;
-            break;
-        case Components::TradeComp::TradeError::TargetTrading:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerTrading;
-            break;
-        }
-        AB::Packets::Add(packet, *msg);
+        tradeComp_->WriteError(error, *msg);
         WriteToOutput(*msg);
     }
 }
