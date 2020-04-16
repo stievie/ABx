@@ -56,7 +56,7 @@ struct AccountItemList : Entity
         });
     }
 
-    StoragePlace storagePlace = StoragePlaceNone;
+    StoragePlace storagePlace = StoragePlace::None;
     std::vector<std::string> itemUuids;
 };
 
@@ -69,7 +69,7 @@ struct ChestItems : AccountItemList
     ChestItems() :
         AccountItemList()
     {
-        storagePlace = StoragePlaceChest;
+        storagePlace = StoragePlace::Chest;
     }
 };
 

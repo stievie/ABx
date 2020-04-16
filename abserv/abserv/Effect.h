@@ -23,12 +23,13 @@
 
 #include <memory>
 #include <kaguya/kaguya.hpp>
-#include <abscommon/PropStream.h>
+#include <sa/PropStream.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Skill.h>
 #include "Script.h"
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include <abshared/Attributes.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -47,6 +48,7 @@ enum EffectAttr : uint8_t
 
 class Effect
 {
+    NON_COPYABLE(Effect)
 private:
     enum Function : uint32_t
     {
@@ -82,7 +84,7 @@ private:
     uint32_t functions_{ FunctionNone };
     /// Internal effects are not visible to the player, e.g. Effects from the equipments (+armor from Armor, Shield...).
     bool internal_{ false };
-    bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
+    bool UnserializeProp(EffectAttr attr, sa::PropReadStream& stream);
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
@@ -104,9 +106,6 @@ public:
     {
         InitializeLua();
     }
-    // non-copyable
-    Effect(const Effect&) = delete;
-    Effect& operator=(const Effect&) = delete;
     ~Effect() = default;
 
     /// Gets saved to the DB when player logs out, e.g. Dishonored.
@@ -156,8 +155,8 @@ public:
     /// Targets gets healed by source
     void OnHealing(Actor* source, Actor* target, int& value);
 
-    bool Serialize(IO::PropWriteStream& stream);
-    bool Unserialize(IO::PropReadStream& stream);
+    bool Serialize(sa::PropWriteStream& stream);
+    bool Unserialize(sa::PropReadStream& stream);
 
     AB::Entities::Effect data_;
 

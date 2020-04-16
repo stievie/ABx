@@ -102,7 +102,7 @@ public:
     uint32_t GetItemIndex() const;
     void SetItemIndex(uint32_t value) { itemIndex_ = value; }
 
-    bool Serialize(IO::PropWriteStream& stream) override;
+    bool Serialize(sa::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 

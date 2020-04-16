@@ -709,6 +709,57 @@ struct TradeDialogTrigger
     }
 };
 
+struct TradeCancel
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
+};
+
+struct TradeOffer
+{
+    struct Item
+    {
+        uint32_t index;
+        uint8_t type;
+        uint32_t count;
+        uint16_t value;
+        std::string stats;
+    };
+    struct OfferedItem : public Item
+    {
+        std::array<Item, 3> mods;
+    };
+    uint32_t money;
+    uint8_t itemCount;
+    std::vector<OfferedItem> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(money);
+        ar.value(itemCount);
+        items.resize(itemCount);
+        for (uint8_t i = 0; i < itemCount; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item.index);
+            ar.value(item.type);
+            ar.value(item.count);
+            ar.value(item.value);
+            ar.value(item.stats);
+            for (size_t mi = 0; mi < 3; ++mi)
+            {
+                auto& mod = item.mods[mi];
+                ar.value(mod.index);
+                ar.value(mod.type);
+                ar.value(mod.count);
+                ar.value(mod.value);
+                ar.value(mod.stats);
+            }
+        }
+    }
+};
+
 struct ObjectSkillFailure
 {
     uint32_t id;

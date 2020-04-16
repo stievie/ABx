@@ -135,7 +135,6 @@
     <ClInclude Include="Errors.h" />
     <ClInclude Include="InputMessage.h" />
     <ClInclude Include="OutputMessage.h" />
-    <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolLogin.h" />

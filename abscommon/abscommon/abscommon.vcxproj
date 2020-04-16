@@ -189,7 +189,6 @@
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Process.hpp" />
-    <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="ServerApp.h" />

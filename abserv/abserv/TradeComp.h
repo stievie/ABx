@@ -69,7 +69,6 @@ public:
     explicit TradeComp(Player& owner);
     ~TradeComp() = default;
     void Update(uint32_t timeElapsed);
-    void Write(Net::NetworkMessage& message);
 
     TradeError TradeWith(std::shared_ptr<Player> target);
     void Reset();
@@ -77,7 +76,7 @@ public:
     void Cancel();
     void WriteError(TradeError error, Net::NetworkMessage& message);
 
-    bool IsTrading() const { return state_ > TradeState::Idle; }
+    bool IsTrading() const { return state_ >= TradeState::Trading; }
 };
 
 }

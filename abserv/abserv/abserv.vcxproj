@@ -241,7 +241,6 @@
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="conditions\AiRandomCondition.h" />
     <ClInclude Include="Crowd.h" />
-    <ClInclude Include="Damage.h" />
     <ClInclude Include="DamageComp.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />

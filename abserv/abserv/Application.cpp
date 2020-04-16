@@ -188,7 +188,7 @@ void Application::SpawnServer()
 
 void Application::HandleCreateInstanceMessage(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream createInstStream;
+    sa::PropReadStream createInstStream;
     if (!msg.GetPropStream(createInstStream))
     {
         return;
@@ -244,7 +244,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::ServerJoined:
     case Net::MessageType::ServerLeft:
     {
-        IO::PropReadStream prop;
+        sa::PropReadStream prop;
         if (msg.GetPropStream(prop))
         {
             AB::Entities::Service s;

@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include "Octree.h"
 #include "StateComp.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
-#include <abscommon/PropStream.h>
+#include <sa/PropStream.h>
 #include <abscommon/Variant.h>
 #include <abshared/Mechanic.h>
 #include <absmath/BoundingBox.h>
@@ -304,7 +304,7 @@ public:
         return events_.CallAll<Signature, _CArgs...>(id, std::forward<_CArgs>(_Args)...);
     }
 
-    virtual bool Serialize(IO::PropWriteStream& stream);
+    virtual bool Serialize(sa::PropWriteStream& stream);
 
     virtual const std::string& GetName() const { return name_; }
     virtual void SetName(const std::string& name) { name_ = name; }

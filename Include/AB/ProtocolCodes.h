@@ -109,7 +109,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(GetGuildMembers)        \
     ENUMERATE_CLIENT_PACKET_CODE(LoadSkillTemplate)      \
     ENUMERATE_CLIENT_PACKET_CODE(TradeRequest)           \
-    ENUMERATE_CLIENT_PACKET_CODE(TradeCancel)
+    ENUMERATE_CLIENT_PACKET_CODE(TradeCancel)            \
+    ENUMERATE_CLIENT_PACKET_CODE(TradeOffer)
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
@@ -182,7 +183,9 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)  \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetSkill)              \
     ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)      \
-    ENUMERATE_SERVER_PACKET_CODE(TradeDialogTrigger)
+    ENUMERATE_SERVER_PACKET_CODE(TradeDialogTrigger)          \
+    ENUMERATE_SERVER_PACKET_CODE(TradeCancel)                 \
+    ENUMERATE_SERVER_PACKET_CODE(TradeGotOffer)
 
 #define ENUMERATE_CREATURE_STATES          \
     ENUMERATE_CREATURE_STATE(Unknown)      \

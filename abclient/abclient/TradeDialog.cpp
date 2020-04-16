@@ -21,40 +21,92 @@
 
 #include "stdafx.h"
 #include "TradeDialog.h"
+#include "Player.h"
+#include "FwClient.h"
 
-TradeDialog::TradeDialog(Context* context, const String& title) :
-    DialogWindow(context)
+TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner) :
+    DialogWindow(context),
+    player_(player),
+    partner_(partner)
 {
     LoadLayout("UI/TradeWindow.xml");
     SetStyleAuto();
+    SetName("TradeDialog");
 
-    SetSize(368, 230);
-    SetMinSize(368, 230);
-    SetMaxSize(368, 230);
     SetLayoutSpacing(10);
     SetLayoutBorder({ 10, 10, 10, 10 });
+    SetPosition({ 10, 10 });
     SetMovable(true);
+    SetResizable(false);
 
     auto* caption = GetChildDynamicCast<Text>("Caption", true);
+    String title = "Trade with ";
+    title.AppendWithFormat("%s", partner->name_.CString());
     caption->SetText(title);
 
-    auto* okButton = GetChildDynamicCast<Button>("OkButton", true);
-    SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOkClicked));
+    auto* partnerText = GetChildDynamicCast<Text>("PartnersOfferText", true);
+    String partnersOfferText;
+    partnersOfferText.AppendWithFormat("%s's Offer", partner->name_.CString());
+    partnerText->SetText(partnersOfferText);
+
+    auto* okButton = GetChildDynamicCast<Button>("OfferButton", true);
+    SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOfferClicked));
+    auto* acceptButton = GetChildDynamicCast<Button>("AcceptButton", true);
+    SubscribeToEvent(acceptButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleAcceptClicked));
     auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleCancelClicked));
+    auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    SubscribeToEvent(moneyEdit, E_TEXTENTRY, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextEntry));
+
+    UpdateLayout();
 
     BringToFront();
 }
 
 TradeDialog::~TradeDialog()
-{ }
-
-void TradeDialog::HandleOkClicked(StringHash, VariantMap&)
 {
-    Close();
+}
+
+bool TradeDialog::DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos)
+{
+    if (currentPlace != AB::Entities::StoragePlace::Inventory)
+        return false;
+
+    if (ourOffer_.size() >= 7)
+        return false;
+
+    auto* container = GetChild("OfferItems", true);
+    if (!container->IsInside(screenPos, true))
+        return false;
+
+    ourOffer_.emplace(currItemPos);
+    return true;
+}
+
+void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
+{
+}
+
+void TradeDialog::HandleAcceptClicked(StringHash, VariantMap&)
+{
 }
 
 void TradeDialog::HandleCancelClicked(StringHash, VariantMap&)
 {
+    auto* client = GetSubsystem<FwClient>();
+    client->TradeCancel();
     Close();
+}
+
+void TradeDialog::HandleMoneyEditTextEntry(StringHash, VariantMap& eventData)
+{
+    using namespace TextEntry;
+    String text = eventData[P_TEXT].GetString();
+    String newText;
+    for (auto it = text.Begin(); it != text.End(); it++)
+    {
+        if (isdigit(*it))
+            newText += (*it);
+    }
+    eventData[P_TEXT] = newText;
 }

@@ -84,7 +84,7 @@ void Actor::RegisterObject(Context* context)
 Actor* Actor::CreateActor(uint32_t id, Scene* scene,
     const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state,
-    PropReadStream& data)
+    sa::PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Actor* result = node->CreateComponent<Actor>();
@@ -122,7 +122,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
 
-    if (modelClass_ == AB::Entities::ModelClassAoe)
+    if (modelClass_ == AB::Entities::ModelClass::Aoe)
     {
         ParticleEmitter* pe = node_->GetComponent<ParticleEmitter>(true);
         if (pe)
@@ -605,29 +605,29 @@ String Actor::GetClassSubdir(AB::Entities::ModelClass cls)
 {
     switch (cls)
     {
-    case AB::Entities::ModelClassWarriorFemale:
+    case AB::Entities::ModelClass::WarriorFemale:
         return "W/F/";
-    case AB::Entities::ModelClassWarriorMale:
+    case AB::Entities::ModelClass::WarriorMale:
         return "W/M/";
-    case AB::Entities::ModelClassElementaristFemale:
+    case AB::Entities::ModelClass::ElementaristFemale:
         return "E/F/";
-    case AB::Entities::ModelClassElementaristMale:
+    case AB::Entities::ModelClass::ElementaristMale:
         return "E/M/";
-    case AB::Entities::ModelClassMesmerFemale:
+    case AB::Entities::ModelClass::MesmerFemale:
         return "Me/F/";
-    case AB::Entities::ModelClassMesmerMale:
+    case AB::Entities::ModelClass::MesmerMale:
         return "Me/M/";
-    case AB::Entities::ModelClassNecromancerFemale:
+    case AB::Entities::ModelClass::NecromancerFemale:
         return "N/F/";
-    case AB::Entities::ModelClassNecromancerMale:
+    case AB::Entities::ModelClass::NecromancerMale:
         return "N/M/";
-    case AB::Entities::ModelClassPriestFemale:
+    case AB::Entities::ModelClass::PriestFemale:
         return "Mo/F/";
-    case AB::Entities::ModelClassPriestMale:
+    case AB::Entities::ModelClass::PriestMale:
         return "Mo/M/";
-    case AB::Entities::ModelClassRangerFemale:
+    case AB::Entities::ModelClass::RangerFemale:
         return "R/F/";
-    case AB::Entities::ModelClassRangerMale:
+    case AB::Entities::ModelClass::RangerMale:
         return "R/M/";
     default:
         return String::EMPTY;
@@ -638,7 +638,7 @@ String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
 {
     String result;
     result = "Animations/";
-    if (cls == AB::Entities::ModelClassAccountChest)
+    if (cls == AB::Entities::ModelClass::AccountChest)
     {
         if (hash == ANIM_CHEST_OPENING)
         {
@@ -1110,7 +1110,7 @@ void Actor::SetSpeedFactor(int64_t time, float value)
     UpdateMoveSpeed();
 }
 
-void Actor::Unserialize(PropReadStream& data)
+void Actor::Unserialize(sa::PropReadStream& data)
 {
     using namespace AB::GameProtocol;
 

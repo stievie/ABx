@@ -37,7 +37,6 @@ abscommon/Process.hpp
 abscommon/ProcessUnix.cpp
 abscommon/ProcessWin.cpp
 abscommon/Profiler.h
-abscommon/PropStream.h
 abscommon/Protocol.cpp
 abscommon/Protocol.h
 abscommon/Random.cpp

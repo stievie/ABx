@@ -34,87 +34,87 @@ namespace Entities {
  */
 static constexpr auto KEY_ITEMS = "game_items";
 
-enum ItemType : uint16_t
+enum class ItemType : uint16_t
 {
-    ItemTypeUnknown = 0,
-    ItemTypeCharacterModel = 1,
-    ItemTypeCharacterHair,
-    ItemTypePortal,
-    ItemTypeAreaOfEffect,
-    ItemTypeAccountChest,
+    Unknown = 0,
+    CharacterModel = 1,
+    CharacterHair,
+    Portal,
+    AreaOfEffect,
+    AccountChest,
 
     // Equipments
-    ItemTypeArmorHead = 10,
-    ItemTypeArmorChest,
-    ItemTypeArmorHands,
-    ItemTypeArmorLegs,
-    ItemTypeArmorFeet,
-    ItemTypeModifierInsignia,
-    ItemTypeModifierRune,
-    ItemTypeModifierWeaponPrefix,
-    ItemTypeModifierWeaponSuffix,
-    ItemTypeModifierWeaponInscription,
+    ArmorHead = 10,
+    ArmorChest,
+    ArmorHands,
+    ArmorLegs,
+    ArmorFeet,
+    ModifierInsignia,
+    ModifierRune,
+    ModifierWeaponPrefix,
+    ModifierWeaponSuffix,
+    ModifierWeaponInscription,
     // Weapons
-    ItemTypeWeaponFirst = 30,
-    ItemTypeAxe = ItemTypeWeaponFirst,
-    ItemTypeSword,
-    ItemTypeHammer,
-    ItemTypeFlatbow,
-    ItemTypeHornbow,
-    ItemTypeShortbow,
-    ItemTypeLongbow,
-    ItemTypeRecurvebow,
-    ItemTypeStaff,
-    ItemTypeWand,
-    ItemTypeDaggers,
-    ItemTypeScyte,
-    ItemTypeSpear,
-    ItemTypeFocus,
-    ItemTypeShield,
-    ItemTypeWeaponLast = ItemTypeShield,
+    WeaponFirst = 30,
+    Axe = WeaponFirst,
+    Sword,
+    Hammer,
+    Flatbow,
+    Hornbow,
+    Shortbow,
+    Longbow,
+    Recurvebow,
+    Staff,
+    Wand,
+    Daggers,
+    Scyte,
+    Spear,
+    Focus,
+    Shield,
+    WeaponLast = Shield,
     // Items that are spawned by weapons
-    ItemTypeSpawnArrow,
-    ItemTypeSpawnSpear,
-    ItemTypeSpawnWandStaff,
-    ItemTypeSpawnSkill,                            // E.g. Meteor
-    ItemTypeParticle,
+    SpawnArrow,
+    SpawnSpear,
+    SpawnWandStaff,
+    SpawnSkill,                            // E.g. Meteor
+    Particle,
 
     // Other
-    ItemTypeMaterial = 1000,                       // Material, e.g. Iron
-    ItemTypeTropy,                                 // Nothing useful
+    Material = 1000,                       // Material, e.g. Iron
+    Tropy,                                 // Nothing useful
 
-    ItemTypeMoney = 65534
+    Money = 65534
 };
 
-enum ModelClass : uint32_t
+enum class ModelClass : uint32_t
 {
-    ModelClassUnknown = 0,
+    Unknown = 0,
 
     // Character models
-    ModelClassWarriorFemale,
-    ModelClassWarriorMale,
-    ModelClassElementaristFemale,
-    ModelClassElementaristMale,
-    ModelClassMesmerFemale,
-    ModelClassMesmerMale,
-    ModelClassNecromancerFemale,
-    ModelClassNecromancerMale,
-    ModelClassPriestFemale,
-    ModelClassPriestMale,
-    ModelClassRangerFemale,
-    ModelClassRangerMale,
+    WarriorFemale,
+    WarriorMale,
+    ElementaristFemale,
+    ElementaristMale,
+    MesmerFemale,
+    MesmerMale,
+    NecromancerFemale,
+    NecromancerMale,
+    PriestFemale,
+    PriestMale,
+    RangerFemale,
+    RangerMale,
 
-    ModelClassLogicStart = 100,
-    ModelClassPortal,
-    ModelClassAccountChest,
+    LogicStart = 100,
+    Portal,
+    AccountChest,
     // Doesn't do anything visual, e.g. no animations
-    ModelClassStaticNpc,
+    StaticNpc,
 
-    ModelClassItemSpawns = 500,
-    ModelClassArrow,
+    ItemSpawns = 500,
+    Arrow,
 
     // AOE may have an animation and particles
-    ModelClassAoe = 1000,
+    Aoe = 1000,
 };
 
 struct Item : Entity
@@ -142,13 +142,13 @@ struct Item : Entity
     }
 
     uint32_t index = INVALID_INDEX;
-    ModelClass model_class = ModelClassUnknown;
+    ModelClass model_class{ ModelClass::Unknown };
     std::string name;
     std::string script;
     std::string iconFile;
     std::string objectFile;
-    ItemType type = ItemTypeUnknown;
-    ItemType belongsTo = ItemTypeUnknown;
+    ItemType type{ ItemType::Unknown };
+    ItemType belongsTo{ ItemType::Unknown };
     bool stackAble = false;
     uint16_t value = 0;
     std::string spawnItemUuid = EMPTY_GUID;

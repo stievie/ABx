@@ -744,7 +744,7 @@ void GameObject::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<uint8_t>(static_cast<uint8_t>(GetType()));
 }
 
-bool GameObject::Serialize(IO::PropWriteStream& stream)
+bool GameObject::Serialize(sa::PropWriteStream& stream)
 {
     stream.WriteString(GetName());
     return true;

@@ -30,7 +30,7 @@ ItemsCache::ItemsCache(Context* context) :
     item->uuid_ = "00000000-0000-0000-0000-000000000000";
     item->index_ = 0;
     item->name_ = "Placeholder";
-    item->type_ = AB::Entities::ItemTypeUnknown;
+    item->type_ = AB::Entities::ItemType::Unknown;
     item->objectFile_ = "/Objects/Placeholder.xml";
     item->iconFile_ = "/Textures/Icons/placeholder.png";
     item->stackAble_ = false;
@@ -41,7 +41,7 @@ ItemsCache::~ItemsCache() = default;
 
 SharedPtr<Item> ItemsCache::Create()
 {
-    return SharedPtr<Item>(new Item(context_));
+    return MakeShared<Item>(context_);
 }
 
 bool ItemsCache::Add(SharedPtr<Item> item)

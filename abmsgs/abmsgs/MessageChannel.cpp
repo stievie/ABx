@@ -28,7 +28,7 @@
 #include <AB/Entities/FriendedMe.h>
 #include <AB/Entities/GuildMembers.h>
 #include <abscommon/Logger.h>
-#include <abscommon/PropStream.h>
+#include <sa/PropStream.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
 #include <abscommon/UuidUtils.h>
@@ -87,7 +87,7 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         break;
     case Net::MessageType::ServerJoined:
     {
-        IO::PropReadStream prop;
+        sa::PropReadStream prop;
         if (msg.GetPropStream(prop))
         {
             // Get type and UUID of server
@@ -155,7 +155,7 @@ void MessageSession::HandleQueueTeamEnterMessage(const Net::MessageMsg& msg)
     std::string mapUuid;
     std::string instanceUuid;
     std::string hostingServer;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
     if (!stream.ReadString(queueUuid))
@@ -169,7 +169,7 @@ void MessageSession::HandleQueueTeamEnterMessage(const Net::MessageMsg& msg)
 
     Net::MessageMsg createInstMsg;
     createInstMsg.type_ = Net::MessageType::CreateGameInstance;
-    IO::PropWriteStream createInstStream;
+    sa::PropWriteStream createInstStream;
     createInstStream.WriteString(hostingServer);
     createInstStream.WriteString(mapUuid);
     createInstStream.WriteString(instanceUuid);
@@ -213,7 +213,7 @@ void MessageSession::HandleQueueMessage(const Net::MessageMsg& msg)
 
 void MessageSession::HandlePlayerChangedMessage(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
     {
         LOG_ERROR << "Unable to get property stream" << std::endl;
@@ -323,7 +323,7 @@ void MessageSession::HandlePlayerChangedMessage(const Net::MessageMsg& msg)
 void MessageSession::HandleQueuePlayerMessage(const Net::MessageMsg& msg)
 {
     std::string playerUuid;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
     if (!stream.ReadString(playerUuid))
@@ -335,7 +335,7 @@ void MessageSession::HandleQueuePlayerMessage(const Net::MessageMsg& msg)
 void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
 {
     std::string receiverUuid;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
     if (!stream.ReadString(receiverUuid))
@@ -347,7 +347,7 @@ void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
 void MessageSession::HandleNewMailMessage(const Net::MessageMsg& msg)
 {
     std::string recvAccUuid;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
     if (!stream.ReadString(recvAccUuid))

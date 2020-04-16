@@ -129,7 +129,7 @@ void Game::BroadcastPlayerChanged(const Player& player, uint32_t fields)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerChanged;
 
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.Write<uint32_t>(fields);              // What has changed
     stream.WriteString(player.account_.uuid);    // Account
     msg.SetPropStream(stream);

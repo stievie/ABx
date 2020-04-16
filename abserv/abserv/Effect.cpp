@@ -300,7 +300,7 @@ void Effect::OnHealing(Actor* source, Actor* target, int& value)
         value = luaState_["onHealing"](source, target, value);
 }
 
-bool Effect::Serialize(IO::PropWriteStream& stream)
+bool Effect::Serialize(sa::PropWriteStream& stream)
 {
     stream.Write<uint8_t>(EffectAttrId);
     stream.Write<uint32_t>(data_.index);
@@ -311,7 +311,7 @@ bool Effect::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
-bool Effect::Unserialize(IO::PropReadStream& stream)
+bool Effect::Unserialize(sa::PropReadStream& stream)
 {
     uint8_t attr;
     while (stream.Read<uint8_t>(attr) && attr != EffectAttrEnd)
@@ -322,7 +322,7 @@ bool Effect::Unserialize(IO::PropReadStream& stream)
     return true;
 }
 
-bool Effect::UnserializeProp(EffectAttr attr, IO::PropReadStream& stream)
+bool Effect::UnserializeProp(EffectAttr attr, sa::PropReadStream& stream)
 {
     switch (attr)
     {

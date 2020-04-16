@@ -28,7 +28,7 @@ TEST_CASE("MessageMsg Copy")
 {
     Net::MessageMsg msg1;
     msg1.type_ = Net::MessageType::Last;
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString("Stuff");
     stream.Write<unsigned>(10);
     msg1.SetPropStream(stream);
@@ -52,14 +52,14 @@ TEST_CASE("MessageMsg PropStream")
 {
     Net::MessageMsg msg1;
     msg1.type_ = Net::MessageType::Last;
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString("Stuff");
     stream.Write<unsigned>(10);
     REQUIRE(msg1.SetPropStream(stream));
 
     Net::MessageMsg msg2 = msg1;
     msg1.Empty();
-    IO::PropReadStream readStream;
+    sa::PropReadStream readStream;
     REQUIRE(msg2.GetPropStream(readStream));
     std::string str;
     REQUIRE(readStream.ReadString(str));

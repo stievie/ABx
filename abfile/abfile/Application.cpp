@@ -979,7 +979,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         auto gNd = root.append_child("item");
         gNd.append_attribute("uuid").set_value(s.uuid.c_str());
         gNd.append_attribute("index").set_value(s.index);
-        gNd.append_attribute("model_class").set_value(s.model_class);
+        gNd.append_attribute("model_class").set_value(static_cast<uint32_t>(s.model_class));
         gNd.append_attribute("name").set_value(s.name.c_str());
         gNd.append_attribute("type").set_value(static_cast<int>(s.type));
         gNd.append_attribute("object").set_value(s.objectFile.c_str());

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,51 @@
 
 #pragma once
 
-#include <abai/Filter.h>
-#include <abshared/Damage.h>
-#include "../Actor.h"
+namespace Game {
 
-namespace AI {
-namespace Filters {
-
-// Select actors that got damage of certain type.
-class SelectGettingDamage final : public Filter
+enum class ItemStatIndex : size_t
 {
-    FILTER_CLASS(SelectGettingDamage)
-private:
-    Game::TargetClass class_{ Game::TargetClass::All };
-    Game::DamageTypeCategory category_{ Game::DamageTypeCategory::Any };
-public:
-    explicit SelectGettingDamage(const ArgumentsType& arguments);
-    void Execute(Agent& agent) override;
+    None = 0,
+    MinDamage = 1,
+    MaxDamage,
+    DamageType,
+    Attribute,           // Weapon requires this attribute
+    AttributeValue,
+    Armor,               // General armor
+    HealthRegen,
+    EnergyRegen,
+    Health,              // +/- Health
+    Energy,              // +/- Energy
+
+    PhysicalDamageReduction,
+    HexDurationReduction,
+    ConditionDurationReduction,
+    BlindnessDurationReduction,
+    WeaknessDurationReduction,
+    DeseaseDurationReduction,
+    PoisionDurationReduction,
+    DazedDurationReduction,
+    DeepWoundDurationReduction,
+    BleedingDurationReduction,
+    CrippledDurationReduction,
+
+    // Type specific armor
+    ArmorElemental,
+    ArmorFire,
+    ArmorCold,
+    ArmorLightning,
+    ArmorEarth,
+    ArmorPhysical,
+    // Special
+    ArmorHoly,
+    ArmorShadow,
+    ArmorTypeless,
+    // Other
+    ArmorDark,
+    ArmorChaos,
+
+    // Attributes
+    AttributeOffset = 1000
 };
 
-}
 }

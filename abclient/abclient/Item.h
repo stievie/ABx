@@ -23,6 +23,8 @@
 
 #include <AB/Entities/Item.h>
 #include <Urho3DAll.h>
+#include <abshared/Items.h>
+#include <sa/PropStream.h>
 
 class Item : public Object
 {
@@ -47,6 +49,7 @@ public:
         ResourceCache* cache = GetSubsystem<ResourceCache>();
         return cache->GetResource<T>(iconFile_);
     }
+    void LoadStatsFromString(const String& value);
 
     String uuid_;
     uint32_t index_{ 0 };
@@ -55,9 +58,19 @@ public:
     String objectFile_;
     /// UI icon file, somewhere in /Textures
     String iconFile_;
-    AB::Entities::ItemType type_{ AB::Entities::ItemTypeUnknown };
-    AB::Entities::ModelClass modelClass_{ AB::Entities::ModelClassUnknown };
+    AB::Entities::ItemType type_{ AB::Entities::ItemType::Unknown };
+    AB::Entities::ModelClass modelClass_{ AB::Entities::ModelClass::Unknown };
+    HashMap<Game::ItemStatIndex, Variant> stats_;
     bool stackAble_{ false };
 };
 
 String FormatMoney(uint32_t amount);
+bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream);
+
+namespace Urho3D {
+template <>
+inline unsigned MakeHash<Game::ItemStatIndex>(const Game::ItemStatIndex& value)
+{
+    return static_cast<unsigned>(value);
+}
+}

@@ -59,7 +59,7 @@ void AccountChestDialog::HandleChest(StringHash, VariantMap&)
 
     for (const auto& item : items)
     {
-        if (item.type == AB::Entities::ItemTypeMoney)
+        if (item.type == AB::Entities::ItemType::Money)
         {
             moneyText->SetText(FormatMoney(item.count) + " Drachma");
             continue;
@@ -82,11 +82,11 @@ void AccountChestDialog::HandleChestItemUpdate(StringHash, VariantMap& eventData
 
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
 
-    const InventoryItem& iItem = net->GetChestItem(pos);
-    if (iItem.type == AB::Entities::ItemTypeUnknown)
+    const ConcreteItem& iItem = net->GetChestItem(pos);
+    if (iItem.type == AB::Entities::ItemType::Unknown)
         return;
 
-    if (iItem.type == AB::Entities::ItemTypeMoney)
+    if (iItem.type == AB::Entities::ItemType::Money)
     {
         Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
         moneyText->SetText(FormatMoney(iItem.count) + " Drachma");
@@ -102,8 +102,8 @@ void AccountChestDialog::HandleChestItemRemove(StringHash, VariantMap& eventData
 {
     using namespace Events::ChestItemDelete;
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
-    InventoryItem item;
-    item.type = AB::Entities::ItemTypeUnknown;
+    ConcreteItem item;
+    item.type = AB::Entities::ItemType::Unknown;
     item.pos = pos;
     SetItem(nullptr, item);
 }
@@ -182,7 +182,7 @@ void AccountChestDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     if (IsInside({ X, Y }, true))
-        DropItem({ X, Y }, AB::Entities::StoragePlaceChest, pos);
+        DropItem({ X, Y }, AB::Entities::StoragePlace::Chest, pos);
     else
     {
         // If dropping on the players inventory move it there
@@ -191,7 +191,7 @@ void AccountChestDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
         if (inv && inv->IsVisible())
         {
             if (inv->IsInside({ X, Y }, true))
-                static_cast<InventoryWindow*>(inv.Get())->DropItem({ X, Y }, AB::Entities::StoragePlaceChest, pos);
+                static_cast<InventoryWindow*>(inv.Get())->DropItem({ X, Y }, AB::Entities::StoragePlace::Chest, pos);
         }
     }
 
@@ -292,7 +292,7 @@ bool AccountChestDialog::DropItem(const IntVector2& screenPos, AB::Entities::Sto
 
     auto* client = GetSubsystem<FwClient>();
     client->SetItemPos(currentPlace, currItemPos,
-        AB::Entities::StoragePlaceChest, itemPos);
+        AB::Entities::StoragePlace::Chest, itemPos);
 
     return true;
 }
@@ -311,7 +311,7 @@ BorderImage* AccountChestDialog::GetItemContainer(uint16_t pos)
     return result;
 }
 
-void AccountChestDialog::SetItem(Item* item, const InventoryItem& iItem)
+void AccountChestDialog::SetItem(Item* item, const ConcreteItem& iItem)
 {
     BorderImage* container = GetItemContainer(iItem.pos);
     if (!container)

@@ -58,14 +58,7 @@ void TradeComp::Update(uint32_t)
         }
     }
     else
-    {
-        target_.reset();
-        state_ = TradeState::Idle;
-    }
-}
-
-void TradeComp::Write(Net::NetworkMessage&)
-{
+        Cancel();
 }
 
 void TradeComp::Reset()
@@ -79,10 +72,15 @@ void TradeComp::Cancel()
     if (state_ > TradeState::Idle)
     {
         state_ = TradeState::Idle;
+
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ServerPacketType::TradeCancel);
+        AB::Packets::Server::TradeCancel packet;
+        AB::Packets::Add(packet, *msg);
+        owner_.WriteToOutput(*msg);
+
         if (auto target = target_.lock())
-        {
             target->tradeComp_->Cancel();
-        }
         target_.reset();
     }
 }
@@ -153,7 +151,7 @@ void TradeComp::MoveToTarget(std::shared_ptr<Player> target)
         }
         else
             // No way to get to the target
-            state_ = TradeState::Idle;
+            Reset();
     }
 }
 
@@ -194,8 +192,7 @@ void TradeComp::OnStuck()
     {
         owner_.autorunComp_->Reset();
         owner_.stateComp_.Reset();
-        target_.reset();
-        state_ = TradeState::Idle;
+        Reset();
     }
 }
 

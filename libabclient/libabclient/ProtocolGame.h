@@ -22,7 +22,6 @@
 #pragma once
 
 #include "Protocol.h"
-#include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/FriendList.h>
@@ -135,6 +134,7 @@ public:
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
+    void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
 
     int64_t GetUpdateTick() const
     {

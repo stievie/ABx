@@ -1007,6 +1007,12 @@ void FwClient::TradeCancel()
         client_.TradeCancel();
 }
 
+void FwClient::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
+{
+    if (loggedIn_)
+        client_.TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -1375,7 +1381,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::InventoryContent& pa
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemUpdate& packet)
 {
-    const auto it = std::find_if(inventory_.begin(), inventory_.end(), [&packet](const InventoryItem& current) -> bool
+    const auto it = std::find_if(inventory_.begin(), inventory_.end(), [&packet](const ConcreteItem& current) -> bool
     {
         return current.pos == packet.pos;
     });
@@ -1411,7 +1417,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemDelete& packet)
 {
-    auto it = std::find_if(inventory_.begin(), inventory_.end(), [packet](const InventoryItem& current)
+    auto it = std::find_if(inventory_.begin(), inventory_.end(), [packet](const ConcreteItem& current)
     {
         return current.pos == packet.pos;
     });
@@ -1448,7 +1454,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ChestContent& packet
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemUpdate& packet)
 {
-    const auto it = std::find_if(chest_.begin(), chest_.end(), [&packet](const InventoryItem& current) -> bool
+    const auto it = std::find_if(chest_.begin(), chest_.end(), [&packet](const ConcreteItem& current) -> bool
     {
         return current.pos == packet.pos;
     });
@@ -1484,7 +1490,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItem
 
 void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItemDelete& packet)
 {
-    auto it = std::find_if(chest_.begin(), chest_.end(), [packet](const InventoryItem& current)
+    auto it = std::find_if(chest_.begin(), chest_.end(), [packet](const ConcreteItem& current)
     {
         return current.pos == packet.pos;
     });
@@ -2068,4 +2074,16 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeDialogTrigger& 
     eData[P_SOURDEID] = packet.sourceId;
     eData[P_TARGETID] = packet.targetId;
     QueueEvent(Events::E_TRADEDIALOG_TRIGGER, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeCancel&)
+{
+    using namespace Events::TradeCancel;
+    VariantMap& eData = GetEventDataMap();
+    QueueEvent(Events::E_TRADECANCEL, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeOffer& packet)
+{
+    (void)packet;
 }

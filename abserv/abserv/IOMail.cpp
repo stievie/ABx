@@ -92,7 +92,7 @@ bool SendMailToAccount(const std::string& accountUuid, const std::string& fromAc
         Net::MessageClient* msgCli = GetSubsystem<Net::MessageClient>();
         Net::MessageMsg msg;
         msg.type_ = Net::MessageType::NewMail;
-        IO::PropWriteStream stream;
+        sa::PropWriteStream stream;
         stream.WriteString(accountUuid);
         msg.SetPropStream(stream);
         msgCli->Write(msg);

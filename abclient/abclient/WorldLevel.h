@@ -23,26 +23,29 @@
 
 #include "BaseLevel.h"
 #include "GameObject.h"
-#include "ChatWindow.h"
-#include "GameMenu.h"
 #include <stdint.h>
-#include "PropStream.h"
+#include <sa/PropStream.h>
 #include "Actor.h"
 #include "PingDot.h"
-#include "TargetWindow.h"
-#include "MailWindow.h"
-#include "MapWindow.h"
-#include "PartyWindow.h"
-#include "MissionMapWindow.h"
-#include "SkillBarWindow.h"
-#include "EffectsWindow.h"
-#include "InventoryWindow.h"
-#include "FriendListWindow.h"
-#include "GuildWindow.h"
-#include "EquipmentWindow.h"
-#include "ActorResourceBar.h"
-#include "DamageWindow.h"
 #include <AB/Entities/Game.h>
+
+class ActorEnergyBar;
+class ActorHealthBar;
+class ChatWindow;
+class DamageWindow;
+class EffectsWindow;
+class EquipmentWindow;
+class FriendListWindow;
+class GameMenu;
+class GuildWindow;
+class InventoryWindow;
+class MailWindow;
+class MapWindow;
+class MissionMapWindow;
+class PartyWindow;
+class SkillBarWindow;
+class TargetWindow;
+class TradeDialog;
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
@@ -55,11 +58,11 @@ public:
     void CreatePlayer(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
-        PropReadStream& data);
+        sa::PropReadStream& data);
     Actor* CreateActor(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
-        PropReadStream& data);
+        sa::PropReadStream& data);
     template<typename T>
     T* GetObject(uint32_t id)
     {
@@ -85,6 +88,7 @@ public:
             return objects_[objectId].Get();
         return nullptr;
     }
+    TradeDialog* GetTradeDialog() const;
 protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;
@@ -103,6 +107,7 @@ protected:
     SharedPtr<EquipmentWindow> equipWindow_;
     SharedPtr<FriendListWindow> friendsWindow_;
     SharedPtr<GuildWindow> guildWindow_;
+    SharedPtr<TradeDialog> tradeDialog_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
     String mapUuid_;
     String mapName_;
@@ -202,11 +207,14 @@ private:
     void HandleCancel(StringHash eventType, VariantMap& eventData);
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
     void HandleDialogTrigger(StringHash eventType, VariantMap& eventData);
+    void HandleTradeDialogTrigger(StringHash eventType, VariantMap& eventData);
+    void HandleTradeCancel(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::GameObjectType objectType, bool existing,
         const Vector3& position, const Vector3& scale, const Quaternion& rot,
         bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
         uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
-        PropReadStream& data);
+        sa::
+  PropReadStream& data);
 };
 

@@ -85,7 +85,7 @@ void Quest::LoadProgress()
 {
     internalRewarded_ = playerQuest_.rewarded;
     internalDeleted_ = playerQuest_.deleted;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     stream.Init(playerQuest_.progress.data(), playerQuest_.progress.length());
     if (!Utils::VariantMapRead(variables_, stream))
     {
@@ -95,7 +95,7 @@ void Quest::LoadProgress()
 
 void Quest::SaveProgress()
 {
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     Utils::VariantMapWrite(variables_, stream);
     size_t ssize = 0;
     const char* s = stream.GetStream(ssize);

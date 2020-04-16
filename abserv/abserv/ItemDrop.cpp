@@ -120,7 +120,7 @@ void ItemDrop::SetSource(std::shared_ptr<Actor> source)
     source_ = source;
 }
 
-bool ItemDrop::Serialize(IO::PropWriteStream& stream)
+bool ItemDrop::Serialize(sa::PropWriteStream& stream)
 {
     using namespace AB::GameProtocol;
 
@@ -156,7 +156,7 @@ void ItemDrop::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<bool>(true);                                  // not destroyable
     msg.Add<bool>(selectable_);
     msg.Add<uint8_t>(static_cast<uint8_t>(stateComp_.GetState()));
-    IO::PropWriteStream data;
+    sa::PropWriteStream data;
     size_t dataSize;
     Serialize(data);
     const char* cData = data.GetStream(dataSize);

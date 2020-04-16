@@ -47,7 +47,7 @@ void ItemFactory::Initialize()
             {
                 values.push_back(std::make_pair(i.uuid, i.belongsTo));
             }
-            typedItems_.emplace(AB::Entities::ItemTypeModifierInsignia, values);
+            typedItems_.emplace(AB::Entities::ItemType::ModifierInsignia, values);
         }
     }
 
@@ -62,7 +62,7 @@ void ItemFactory::Initialize()
             {
                 values.push_back(std::make_pair(i.uuid, i.belongsTo));
             }
-            typedItems_.emplace(AB::Entities::ItemTypeModifierRune, values);
+            typedItems_.emplace(AB::Entities::ItemType::ModifierRune, values);
         }
     }
 
@@ -77,7 +77,7 @@ void ItemFactory::Initialize()
             {
                 values.push_back(std::make_pair(i.uuid, i.belongsTo));
             }
-            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponPrefix, values);
+            typedItems_.emplace(AB::Entities::ItemType::ModifierWeaponPrefix, values);
         }
     }
 
@@ -92,7 +92,7 @@ void ItemFactory::Initialize()
             {
                 values.push_back(std::make_pair(i.uuid, i.belongsTo));
             }
-            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponSuffix, values);
+            typedItems_.emplace(AB::Entities::ItemType::ModifierWeaponSuffix, values);
         }
     }
 
@@ -107,7 +107,7 @@ void ItemFactory::Initialize()
             {
                 values.push_back(std::make_pair(i.uuid, i.belongsTo));
             }
-            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponInscription, values);
+            typedItems_.emplace(AB::Entities::ItemType::ModifierWeaponInscription, values);
         }
     }
 }
@@ -118,7 +118,7 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     const uint32_t l = (LEVEL_CAP + 1) - level;
 
     auto* rng = GetSubsystem<Crypto::Random>();
-    if (item.type != AB::Entities::ItemTypeMoney && item.type != AB::Entities::ItemTypeMaterial)
+    if (item.type != AB::Entities::ItemType::Money && item.type != AB::Entities::ItemType::Material)
     {
         result.count = 1;
         if (item.value == 0)
@@ -130,7 +130,7 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     else
     {
         // Money or Material
-        if (item.type == AB::Entities::ItemTypeMoney)
+        if (item.type == AB::Entities::ItemType::Money)
             // Money
             result.value = 1;
         else
@@ -303,11 +303,11 @@ uint32_t ItemFactory::GetConcreteId(const std::string& concreteUuid)
 
 void ItemFactory::IdentifyArmor(Item* item, Player* player)
 {
-    uint32_t insignia = CreateModifier(AB::Entities::ItemTypeModifierInsignia, item,
+    uint32_t insignia = CreateModifier(AB::Entities::ItemType::ModifierInsignia, item,
         player->GetLevel(), false, player->data_.uuid);
     if (insignia != 0)
         item->SetUpgrade(ItemUpgrade::Pefix, insignia);
-    uint32_t rune = CreateModifier(AB::Entities::ItemTypeModifierRune, item,
+    uint32_t rune = CreateModifier(AB::Entities::ItemType::ModifierRune, item,
         player->GetLevel(), false, player->data_.uuid);
     if (rune != 0)
         item->SetUpgrade(ItemUpgrade::Suffix, rune);
@@ -315,15 +315,15 @@ void ItemFactory::IdentifyArmor(Item* item, Player* player)
 
 void ItemFactory::IdentifyWeapon(Item* item, Player* player)
 {
-    uint32_t prefix = CreateModifier(AB::Entities::ItemTypeModifierWeaponPrefix, item,
+    uint32_t prefix = CreateModifier(AB::Entities::ItemType::ModifierWeaponPrefix, item,
         player->GetLevel(), false, player->data_.uuid);
     if (prefix != 0)
         item->SetUpgrade(ItemUpgrade::Pefix, prefix);
-    uint32_t suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
+    uint32_t suffix = CreateModifier(AB::Entities::ItemType::ModifierWeaponSuffix, item,
         player->GetLevel(), false, player->data_.uuid);
     if (suffix != 0)
         item->SetUpgrade(ItemUpgrade::Suffix, suffix);
-    uint32_t inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
+    uint32_t inscr = CreateModifier(AB::Entities::ItemType::ModifierWeaponInscription, item,
         player->GetLevel(), false, player->data_.uuid);
     if (inscr != 0)
         item->SetUpgrade(ItemUpgrade::Inscription, inscr);
@@ -332,11 +332,11 @@ void ItemFactory::IdentifyWeapon(Item* item, Player* player)
 void ItemFactory::IdentifyOffHandWeapon(Item* item, Player* player)
 {
     // Offhead weapons do not have a prefix
-    uint32_t suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
+    uint32_t suffix = CreateModifier(AB::Entities::ItemType::ModifierWeaponSuffix, item,
         player->GetLevel(), false, player->data_.uuid);
     if (suffix != 0)
         item->SetUpgrade(ItemUpgrade::Suffix, suffix);
-    uint32_t inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
+    uint32_t inscr = CreateModifier(AB::Entities::ItemType::ModifierWeaponInscription, item,
         player->GetLevel(), false, player->data_.uuid);
     if (inscr != 0)
         item->SetUpgrade(ItemUpgrade::Inscription, inscr);
@@ -356,8 +356,8 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forIt
         if (!forItem->IsArmor())
             return (current.second == forItem->data_.type);
         // Armor can have only runes and insignias
-        return current.second == AB::Entities::ItemTypeModifierRune ||
-            current.second == AB::Entities::ItemTypeModifierInsignia;
+        return current.second == AB::Entities::ItemType::ModifierRune ||
+            current.second == AB::Entities::ItemType::ModifierInsignia;
     });
 
     if (result.size() == 0)
@@ -376,33 +376,33 @@ void ItemFactory::IdentiyItem(Item* item, Player* player)
     assert(item);
     switch (item->data_.type)
     {
-    case AB::Entities::ItemTypeArmorHead:
-    case AB::Entities::ItemTypeArmorChest:
-    case AB::Entities::ItemTypeArmorHands:
-    case AB::Entities::ItemTypeArmorLegs:
-    case AB::Entities::ItemTypeArmorFeet:
+    case AB::Entities::ItemType::ArmorHead:
+    case AB::Entities::ItemType::ArmorChest:
+    case AB::Entities::ItemType::ArmorHands:
+    case AB::Entities::ItemType::ArmorLegs:
+    case AB::Entities::ItemType::ArmorFeet:
         // Armor
         IdentifyArmor(item, player);
         break;
-    case AB::Entities::ItemTypeAxe:
-    case AB::Entities::ItemTypeSword:
-    case AB::Entities::ItemTypeHammer:
-    case AB::Entities::ItemTypeWand:
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Axe:
+    case AB::Entities::ItemType::Sword:
+    case AB::Entities::ItemType::Hammer:
+    case AB::Entities::ItemType::Wand:
+    case AB::Entities::ItemType::Spear:
         // Lead hand weapon
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
-    case AB::Entities::ItemTypeDaggers:
-    case AB::Entities::ItemTypeScyte:
-    case AB::Entities::ItemTypeStaff:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
+    case AB::Entities::ItemType::Daggers:
+    case AB::Entities::ItemType::Scyte:
+    case AB::Entities::ItemType::Staff:
         // Two handed
         IdentifyWeapon(item, player);
         break;
-    case AB::Entities::ItemTypeFocus:
-    case AB::Entities::ItemTypeShield:
+    case AB::Entities::ItemType::Focus:
+    case AB::Entities::ItemType::Shield:
         // Off hand
         IdentifyOffHandWeapon(item, player);
         break;

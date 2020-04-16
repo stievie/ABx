@@ -547,7 +547,7 @@ Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
     });
 }
 
-bool Actor::Serialize(IO::PropWriteStream& stream)
+bool Actor::Serialize(sa::PropWriteStream& stream)
 {
     using namespace AB::GameProtocol;
     uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldLevel |
@@ -605,7 +605,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<uint8_t>(static_cast<uint8_t>(GetGroupPos()));
     if (groupMask_ != 0)
         msg.Add<uint32_t>(groupMask_);
-    IO::PropWriteStream data;
+    sa::PropWriteStream data;
     size_t dataSize;
     Serialize(data);
     const char* cData = data.GetStream(dataSize);

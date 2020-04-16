@@ -22,14 +22,26 @@
 #pragma once
 
 #include "DialogWindow.h"
+#include "AB/Entities/ConcreteItem.h"
+#include <set>
+
+class Actor;
+class Player;
 
 class TradeDialog : public DialogWindow
 {
     URHO3D_OBJECT(TradeDialog, DialogWindow)
 private:
-    void HandleOkClicked(StringHash eventType, VariantMap& eventData);
+    WeakPtr<Player> player_;
+    WeakPtr<Actor> partner_;
+    std::set<uint16_t> ourOffer_;
+    std::set<uint32_t> partnerOffer_;
+    void HandleOfferClicked(StringHash eventType, VariantMap& eventData);
+    void HandleAcceptClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
+    void HandleMoneyEditTextEntry(StringHash eventType, VariantMap& eventData);
 public:
-    TradeDialog(Context* context, const String& title);
+    TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner);
     ~TradeDialog() override;
+    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
 };

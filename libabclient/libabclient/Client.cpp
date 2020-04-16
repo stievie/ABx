@@ -696,6 +696,12 @@ void Client::TradeCancel()
         protoGame_->TradeCancel();
 }
 
+void Client::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
+{
+    if (state_ == State::World)
+        protoGame_->TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);
@@ -1008,6 +1014,16 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTempla
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

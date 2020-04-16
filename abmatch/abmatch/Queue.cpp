@@ -134,7 +134,7 @@ void Queue::Add(const std::string& uuid)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerAddedToQueue;
 
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(uuid);
     stream.WriteString(uuid_);
     msg.SetPropStream(stream);
@@ -154,7 +154,7 @@ void Queue::Remove(const std::string& uuid)
         Net::MessageMsg msg;
         msg.type_ = Net::MessageType::PlayerRemovedFromQueue;
 
-        IO::PropWriteStream stream;
+        sa::PropWriteStream stream;
         stream.WriteString(uuid);
         stream.WriteString(uuid_);
         msg.SetPropStream(stream);
@@ -168,7 +168,7 @@ bool Queue::SendEnterMessage(const MatchTeams& teams)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::TeamsEnterMatch;
 
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     // This server will host the game
     std::string server = FindServerForMatch(teams);
     if (server.empty())

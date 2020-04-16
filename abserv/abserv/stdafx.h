@@ -93,7 +93,7 @@ PRAGMA_WARNING_POP
 #include "AiAgent.h"
 #include "Application.h"
 #include "CollisionComp.h"
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include "Game.h"
 #include "GameObject.h"
 #include "Map.h"
@@ -122,7 +122,6 @@ PRAGMA_WARNING_POP
 #include <abscommon/NetworkMessage.h>
 #include <abscommon/OutputMessage.h>
 #include <abscommon/Profiler.h>
-#include <abscommon/PropStream.h>
 #include <abscommon/Random.h>
 #include <abscommon/Scheduler.h>
 #include <abscommon/StringUtils.h>
@@ -155,6 +154,7 @@ PRAGMA_WARNING_POP
 #include <sa/Events.h>
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
+#include <sa/PropStream.h>
 #include <sa/StringHash.h>
 #include <sa/StrongType.h>
 #include <sa/TypeName.h>

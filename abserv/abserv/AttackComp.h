@@ -22,7 +22,7 @@
 #pragma once
 
 #include <memory>
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/Noncopyable.h>
 

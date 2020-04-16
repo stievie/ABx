@@ -33,7 +33,7 @@
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
 
@@ -55,7 +55,7 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
     std::string name;
@@ -73,7 +73,7 @@ void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
 
@@ -99,7 +99,7 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
 
@@ -114,7 +114,7 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchPlayerChanged(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     if (!msg.GetPropStream(stream))
     {
         LOG_ERROR << "Unable to get property stream" << std::endl;
@@ -171,7 +171,7 @@ void MessageDispatcher::DispatchPlayerChanged(const Net::MessageMsg& msg)
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
     auto nmsg = Net::NetworkMessage::GetNew();
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
         return;
 
@@ -212,7 +212,7 @@ void MessageDispatcher::DispatchTeamsEnterMatch(const Net::MessageMsg& msg)
     // If it's a party only the leader gets informed of this. So we just can get the
     // party and call Party::ChangeServerInstance()
 
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
         return;
 
@@ -257,7 +257,7 @@ void MessageDispatcher::DispatchQueueAdded(const Net::MessageMsg& msg)
     // If it's a party the leader gets informed of this.
     // The game server is sesponsible to inform all party memebers
 
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
         return;
 
@@ -273,7 +273,7 @@ void MessageDispatcher::DispatchQueueAdded(const Net::MessageMsg& msg)
 void MessageDispatcher::DispatchQueueRemoved(const Net::MessageMsg& msg)
 {
     // Notify players they were removed to the queue
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
         return;
 

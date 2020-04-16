@@ -23,7 +23,7 @@
 
 #include <memory>
 #include "Item.h"
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include <abshared/Mechanic.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>

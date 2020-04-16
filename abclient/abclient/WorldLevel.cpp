@@ -21,24 +21,39 @@
 
 #include "stdafx.h"
 #include "WorldLevel.h"
-#include "PropStream.h"
-#include <AB/ProtocolCodes.h>
-#include "InternalEvents.h"
-#include "ServerEvents.h"
-#include "FwClient.h"
-#include "LevelManager.h"
-#include "MathUtils.h"
-#include "TimeUtils.h"
-#include "Options.h"
-#include "Shortcuts.h"
-#include "WindowManager.h"
-#include "NewMailWindow.h"
-#include "GameMessagesWindow.h"
+#include "ActorResourceBar.h"
 #include "AudioManager.h"
+#include "ChatWindow.h"
 #include "CreditsWindow.h"
+#include "DamageWindow.h"
+#include "EffectsWindow.h"
+#include "EquipmentWindow.h"
+#include "FriendListWindow.h"
+#include "FwClient.h"
+#include "GameMenu.h"
+#include "GameMessagesWindow.h"
+#include "GuildWindow.h"
+#include "InternalEvents.h"
+#include "InventoryWindow.h"
+#include "LevelManager.h"
+#include "MailWindow.h"
+#include "MapWindow.h"
+#include "MathUtils.h"
+#include "MissionMapWindow.h"
+#include "NewMailWindow.h"
+#include "Options.h"
+#include "PartyWindow.h"
+#include "ServerEvents.h"
 #include "ShortcutEvents.h"
-#include "SkillsWindow.h"
+#include "Shortcuts.h"
+#include "SkillBarWindow.h"
 #include "SkillManager.h"
+#include "SkillsWindow.h"
+#include "TargetWindow.h"
+#include "TimeUtils.h"
+#include "TradeDialog.h"
+#include "WindowManager.h"
+#include <AB/ProtocolCodes.h>
 #include <abshared/Mechanic.h>
 
 //#define LOG_OBJECTSPAWN
@@ -82,6 +97,8 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
     SubscribeToEvent(Events::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
     SubscribeToEvent(Events::E_SENDMAILTO, URHO3D_HANDLER(WorldLevel, HandleSendMailTo));
+    SubscribeToEvent(Events::E_TRADEDIALOG_TRIGGER, URHO3D_HANDLER(WorldLevel, HandleTradeDialogTrigger));
+    SubscribeToEvent(Events::E_TRADECANCEL, URHO3D_HANDLER(WorldLevel, HandleTradeCancel));
 
     SubscribeToEvent(Events::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(Events::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -385,7 +402,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     bool existing = eventData[P_EXISTING].GetBool();
     bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
     bool selectable = eventData[P_SELECTABLE].GetBool();
-    PropReadStream data(d.CString(), d.Length());
+    sa::PropReadStream data(d.CString(), d.Length());
     SpawnObject(tick, objectId, type, existing, pos, scale, direction,
         undestroyable, selectable,
         state, speed, groupId, groupPos, groupMask, data);
@@ -395,7 +412,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
     const Vector3& position, const Vector3& scale, const Quaternion& rot,
     bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
     uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
-    PropReadStream& data)
+    sa::PropReadStream& data)
 {
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
@@ -1004,10 +1021,55 @@ void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
     }
 }
 
+void WorldLevel::HandleTradeDialogTrigger(StringHash, VariantMap& eventData)
+{
+    using namespace Events::TradeDialogTrigger;
+    uint32_t sourceId = eventData[P_SOURDEID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    if (sourceId == 0 || targetId == 0)
+        return;
+    if (sourceId == targetId)
+        return;
+    // That's we. If we are not a player, something is wrong.
+    auto* source = GetObject<Actor>(sourceId);
+    if (!source)
+        return;
+    if (source->objectType_ != ObjectTypePlayer && source->objectType_ != ObjectTypeSelf)
+        return;
+    auto* target = GetObject<Actor>(targetId);
+    if (!target)
+        return;
+    if (target->objectType_ != ObjectTypePlayer && target->objectType_ != ObjectTypeSelf)
+        return;
+
+    SharedPtr<Player> player;
+    SharedPtr<Actor> partner;
+    if (source->objectType_ == ObjectTypeSelf)
+    {
+        player.StaticCast(SharedPtr<Actor>(source));
+        partner = target;
+    }
+    else if (target->objectType_ == ObjectTypeSelf)
+    {
+        player.StaticCast(SharedPtr<Actor>(target));
+        partner = source;
+    }
+    else
+        return;
+
+    tradeDialog_ = MakeShared<TradeDialog>(context_, player, partner);
+}
+
+void WorldLevel::HandleTradeCancel(StringHash, VariantMap&)
+{
+    if (tradeDialog_)
+        tradeDialog_->Close();
+}
+
 Actor* WorldLevel::CreateActor(uint32_t id,
     const Vector3& position, const Vector3& scale, const Quaternion& direction,
     AB::GameProtocol::CreatureState state,
-    PropReadStream& data)
+    sa::PropReadStream& data)
 {
     Actor* result = Actor::CreateActor(id, scene_, position, direction, state, data);
     result->moveToPos_ = position;
@@ -1030,10 +1092,17 @@ Actor* WorldLevel::GetActorByName(const String& name, ObjectType type /* = Objec
     return nullptr;
 }
 
+TradeDialog* WorldLevel::GetTradeDialog() const
+{
+    if (tradeDialog_)
+        return tradeDialog_.Get();
+    return nullptr;
+}
+
 void WorldLevel::CreatePlayer(uint32_t id,
     const Vector3& position, const Vector3& scale, const Quaternion& direction,
     AB::GameProtocol::CreatureState state,
-    PropReadStream& data)
+    sa::PropReadStream& data)
 {
     player_ = Player::CreatePlayer(id, scene_);
     skillBar_->SetActor(player_);

@@ -203,7 +203,7 @@ void DBConcreteItem::Clean(StorageProvider* sp)
 
     std::ostringstream query;
     query << "SELECT `uuid`, `instance_uuid` FROM `concrete_items` WHERE storage_place = " <<
-        static_cast<int>(AB::Entities::StoragePlaceScene) << " AND `deleted` = 0";
+        static_cast<int>(AB::Entities::StoragePlace::Scene) << " AND `deleted` = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -230,7 +230,7 @@ void DBConcreteItem::Clean(StorageProvider* sp)
         {
             // Still must check if the item is really in the scene, because
             // DB and cache may have different data.
-            if (item.storagePlace == AB::Entities::StoragePlaceScene)
+            if (item.storagePlace == AB::Entities::StoragePlace::Scene)
             {
                 item.deleted = Utils::Tick();
                 sp->EntityUpdate(item);

@@ -89,7 +89,7 @@ public:
     static Actor* CreateActor(uint32_t id, Scene* scene,
         const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state,
-        PropReadStream& data);
+        sa::PropReadStream& data);
     /// Handle physics world update. Called by LogicComponent base class.
     void Update(float timeStep) override;
     void MoveTo(int64_t time, const Vector3& newPos) override;
@@ -99,7 +99,7 @@ public:
     void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState) override;
     void SetSpeedFactor(int64_t time, float value) override;
 
-    void Unserialize(PropReadStream& data) override;
+    void Unserialize(sa::PropReadStream& data) override;
     /// Get position of head or to of the model in world coordinates.
     Vector3 GetHeadPos() const;
 

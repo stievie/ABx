@@ -42,7 +42,7 @@ static constexpr auto KEY_TYPED_ITEMLIST = "typed_item_list";
 struct TypedListItem
 {
     std::string uuid;
-    ItemType belongsTo = ItemTypeUnknown;
+    ItemType belongsTo = ItemType::Unknown;
     float chance = 0.0f;
 };
 
@@ -66,7 +66,7 @@ struct TypedItemList : Entity
         });
     }
 
-    ItemType type = ItemTypeUnknown;
+    ItemType type = ItemType::Unknown;
     std::vector<TypedListItem> items;
 };
 
@@ -80,7 +80,7 @@ struct TypedItemsInsignia : TypedItemList
     TypedItemsInsignia() :
         TypedItemList()
     {
-        type = ItemTypeModifierInsignia;
+        type = ItemType::ModifierInsignia;
     }
 };
 
@@ -94,7 +94,7 @@ struct TypedItemsRunes : TypedItemList
     TypedItemsRunes() :
         TypedItemList()
     {
-        type = ItemTypeModifierRune;
+        type = ItemType::ModifierRune;
     }
 };
 
@@ -107,7 +107,7 @@ struct TypedItemsWeaponPrefix : TypedItemList
     TypedItemsWeaponPrefix() :
         TypedItemList()
     {
-        type = ItemTypeModifierWeaponPrefix;
+        type = ItemType::ModifierWeaponPrefix;
     }
 };
 
@@ -120,7 +120,7 @@ struct TypedItemsWeaponSuffix : TypedItemList
     TypedItemsWeaponSuffix() :
         TypedItemList()
     {
-        type = ItemTypeModifierWeaponSuffix;
+        type = ItemType::ModifierWeaponSuffix;
     }
 };
 
@@ -133,7 +133,7 @@ struct TypedItemsWeaponInscription : TypedItemList
     TypedItemsWeaponInscription() :
         TypedItemList()
     {
-        type = ItemTypeModifierWeaponInscription;
+        type = ItemType::ModifierWeaponInscription;
     }
 };
 

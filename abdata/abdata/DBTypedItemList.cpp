@@ -43,7 +43,7 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
     if (!Utils::Uuid::IsEmpty(il.uuid))
         query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
     query << ")";
-    if (il.type != AB::Entities::ItemTypeUnknown)
+    if (il.type != AB::Entities::ItemType::Unknown)
     {
         query << " AND `type` = " << static_cast<int>(il.type);
     }

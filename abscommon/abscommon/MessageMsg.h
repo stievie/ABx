@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <queue>
-#include "PropStream.h"
+#include <sa/PropStream.h>
 
 namespace Net {
 
@@ -133,7 +133,7 @@ public:
         if (bodyLength_ > MaxBodyLength)
             bodyLength_ = MaxBodyLength;
     }
-    bool SetPropStream(const IO::PropWriteStream& stream)
+    bool SetPropStream(const sa::PropWriteStream& stream)
     {
         size_t size = 0;
         const char* data = stream.GetStream(size);
@@ -144,7 +144,7 @@ public:
         EncodeHeader();
         return true;
     }
-    bool GetPropStream(IO::PropReadStream& stream) const
+    bool GetPropStream(sa::PropReadStream& stream) const
     {
         stream.Init(reinterpret_cast<char const*>(Body()), bodyLength_);
         return true;

@@ -35,10 +35,10 @@ InventoryComp::InventoryComp(Actor& owner) :
     owner_(owner),
     inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE,
         AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY,
-        AB::Entities::StoragePlaceInventory)),
+        AB::Entities::StoragePlace::Inventory)),
     chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE,
         AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY,
-        AB::Entities::StoragePlaceChest))
+        AB::Entities::StoragePlace::Chest))
 { }
 
 void InventoryComp::Update(uint32_t timeElapsed)
@@ -121,10 +121,10 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         return;
     switch (item->concreteItem_.storagePlace)
     {
-    case AB::Entities::StoragePlaceInventory:
+    case AB::Entities::StoragePlace::Inventory:
         message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemUpdate);
         break;
-    case AB::Entities::StoragePlaceChest:
+    case AB::Entities::StoragePlace::Chest:
         message->AddByte(AB::GameProtocol::ServerPacketType::ChestItemUpdate);
         break;
     default:
@@ -341,7 +341,7 @@ uint32_t InventoryComp::GetInventoryMoney() const
 
 void InventoryComp::SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId)
 {
-    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
+    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlace::Equipped;
     if (isEquipped)
     {
         Item* old = item.GetUpgrade(type);
@@ -355,7 +355,7 @@ void InventoryComp::SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId)
 
 void InventoryComp::RemoveUpgrade(Item& item, ItemUpgrade type)
 {
-    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
+    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlace::Equipped;
     Item* old = item.GetUpgrade(type);
     if (old)
     {

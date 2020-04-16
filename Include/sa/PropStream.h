@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
 #include <limits>
 #include <iterator>
-#include <stdint.h>
 #include <cstring>
+#include <vector>
 #include <sa/Noncopyable.h>
+
+namespace sa {
 
 class PropReadStream
 {
@@ -97,7 +97,7 @@ public:
         p_ += n;
         return true;
     }
-};
+    };
 
 class PropWriteStream
 {
@@ -134,3 +134,5 @@ public:
         std::copy(add.begin(), add.end(), std::back_inserter(buffer_));
     }
 };
+
+}

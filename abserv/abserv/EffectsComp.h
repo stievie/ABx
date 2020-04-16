@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Effect.h"
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include <sa/Noncopyable.h>
 #include <abshared/Attributes.h>
 

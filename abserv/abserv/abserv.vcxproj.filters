@@ -240,9 +240,6 @@
     <ClInclude Include="DamageComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Damage.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

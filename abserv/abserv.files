@@ -113,7 +113,6 @@ abserv/conditions/AiRandomCondition.cpp
 abserv/conditions/AiRandomCondition.h
 abserv/Config.h
 abserv/ConfigManager.h
-abserv/Damage.h
 abserv/DamageComp.cpp
 abserv/DamageComp.h
 abserv/DataProvider.cpp

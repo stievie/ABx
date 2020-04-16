@@ -50,7 +50,7 @@ private:
     void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
     void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
     BorderImage* GetItemContainer(uint16_t pos);
-    void SetItem(Item* item, const InventoryItem& iItem);
+    void SetItem(Item* item, const ConcreteItem& iItem);
     uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
 public:
     static void RegisterObject(Context* context);

@@ -3,6 +3,8 @@ abshared/AttribAlgos.cpp
 abshared/AttribAlgos.h
 abshared/Attributes.cpp
 abshared/Attributes.h
+abshared/Damage.h
+abshared/Items.h
 abshared/Mechanic.h
 abshared/SkillsHelper.cpp
 abshared/SkillsHelper.h

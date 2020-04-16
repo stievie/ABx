@@ -61,7 +61,7 @@ public:
     uint32_t GetSourceId();
 
     void SetSource(std::shared_ptr<Actor> source);
-    bool Serialize(IO::PropWriteStream& stream) override;
+    bool Serialize(sa::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
 

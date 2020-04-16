@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Item.h"
 #include <string>
+#include <base64.h>
 
 Item::Item(Context* context) :
     Object(context)
@@ -30,6 +31,14 @@ Item::Item(Context* context) :
 
 Item::~Item()
 {
+}
+
+void Item::LoadStatsFromString(const String& value)
+{
+    sa::PropReadStream stream;
+    stream.Init(value.CString(), value.Length());
+    if (!VariantMapRead(stats_, stream))
+        URHO3D_LOGERROR("Error loading item stats");
 }
 
 String FormatMoney(uint32_t amount)
@@ -50,4 +59,73 @@ String FormatMoney(uint32_t amount)
     }
     std::reverse(result.begin(), result.end());
     return String(result.c_str());
+}
+
+bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream)
+{
+    vMap.Clear();
+    if (stream.GetSize() == 0)
+        // Empty but OK
+        return true;
+
+    uint16_t count = 0;
+    if (!stream.Read<uint16_t>(count))
+        return false;
+
+    for (uint16_t i = 0; i < count; ++i)
+    {
+        uint64_t stat = 0;
+        if (!stream.Read<uint64_t>(stat))
+            return false;
+
+        uint8_t bt = 0;
+        if (!stream.Read<uint8_t>(bt))
+            return false;
+        VariantType t = static_cast<VariantType>(bt);
+
+        if (t == VAR_NONE || t == VAR_VOIDPTR)
+            continue;
+
+        switch (t)
+        {
+        case VAR_INT:
+        {
+            int value = 0;
+            if (stream.Read<int>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_INT64:
+        {
+            long long value = 0;
+            if (stream.Read<long long>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_BOOL:
+        {
+            uint8_t value = 0;
+            if (stream.Read<uint8_t>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value == 0 ? false : true;
+            break;
+        }
+        case VAR_FLOAT:
+        {
+            float value = 0.0f;
+            if (stream.Read<float>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_STRING:
+        {
+            std::string value;
+            if (stream.ReadString(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = String(value.c_str(), static_cast<unsigned>(value.length()));
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return true;
 }

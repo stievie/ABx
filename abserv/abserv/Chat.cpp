@@ -219,7 +219,7 @@ bool WhisperChatChannel::Talk(Player& player, const std::string& text)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::Whipser;
     Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(playerUuid_);
     stream.WriteString(player.GetName());
     stream.WriteString(text);
@@ -256,7 +256,7 @@ bool GuildChatChannel::Talk(Player& player, const std::string& text)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::GuildChat;
     Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(guildUuid_);
     stream.WriteString(player.GetName());
     stream.WriteString(text);
@@ -304,7 +304,7 @@ bool TradeChatChannel::Talk(Player& player, const std::string& text)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::TradeChat;
     Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(player.GetName());
     stream.WriteString(text);
     msg.SetPropStream(stream);

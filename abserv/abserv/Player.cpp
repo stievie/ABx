@@ -412,7 +412,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
 //    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
 //        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
 
-    if (newPlace == AB::Entities::StoragePlaceChest)
+    if (newPlace == AB::Entities::StoragePlace::Chest)
     {
         if (inventoryComp_->IsChestFull())
         {
@@ -425,7 +425,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
             return;
         }
     }
-    else if (newPlace == AB::Entities::StoragePlaceInventory)
+    else if (newPlace == AB::Entities::StoragePlace::Inventory)
     {
         if (inventoryComp_->IsInventoryFull())
         {
@@ -444,12 +444,12 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
         return;
     }
 
-    if (currentPlace != AB::Entities::StoragePlaceChest && currentPlace != AB::Entities::StoragePlaceInventory)
+    if (currentPlace != AB::Entities::StoragePlace::Chest && currentPlace != AB::Entities::StoragePlace::Inventory)
         return;
 
     auto removeItem = [&]() -> uint32_t
     {
-        if (currentPlace == AB::Entities::StoragePlaceInventory)
+        if (currentPlace == AB::Entities::StoragePlace::Inventory)
             return inventoryComp_->RemoveInventoryItem(currentPos);
         return inventoryComp_->RemoveChestItem(currentPos);
     };
@@ -460,7 +460,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
 
     auto msg = Net::NetworkMessage::GetNew();
     // Remove from current
-    if (currentPlace == AB::Entities::StoragePlaceChest)
+    if (currentPlace == AB::Entities::StoragePlace::Chest)
         msg->AddByte(AB::GameProtocol::ServerPacketType::ChestItemDelete);
     else
         msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
@@ -470,7 +470,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
     AB::Packets::Add(packet, *msg);
 
     // Add to new
-    if (newPlace == AB::Entities::StoragePlaceChest)
+    if (newPlace == AB::Entities::StoragePlace::Chest)
         inventoryComp_->SetChestItem(itemId, msg.get(), newPos);
     else
         inventoryComp_->SetInventoryItem(itemId, msg.get(), newPos);
@@ -485,7 +485,7 @@ void Player::CRQDropInventoryItem(uint16_t pos)
     if (!item)
         return;
 
-    item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
+    item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
     item->concreteItem_.storagePos = 0;
     auto rng = GetSubsystem<Crypto::Random>();
     std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
@@ -520,7 +520,7 @@ void Player::CRQGetChest()
     inventoryComp_->VisitChest([&packet](const Item& current)
     {
         packet.items.push_back({
-            current.data_.type,
+            static_cast<uint16_t>(current.data_.type),
             current.data_.index,
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
             current.concreteItem_.storagePos,
@@ -995,11 +995,10 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     tradeComp_->Update(timeElapsed);
     questComp_->Update(timeElapsed);
-    tradeComp_->Write(message);
-    questComp_->Write(message);
     auto party = GetParty();
     if (party->IsLeader(*this))
         party->Update(timeElapsed, message);
+    questComp_->Write(message);
 }
 
 bool Player::RemoveMoney(uint32_t count)
@@ -1505,6 +1504,13 @@ void Player::CRQTradeCancel()
 {
     if (tradeComp_->IsTrading())
         tradeComp_->Cancel();
+}
+
+void Player::CRQTradeOffer(uint32_t money, std::vector<uint16_t> items)
+{
+    // We offer our trade partner the given items in our inventory
+    (void)money;
+    (void)items;
 }
 
 bool Player::IsIgnored(const Player& player) const
@@ -2133,7 +2139,7 @@ void Player::CRQQueueForMatch()
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::QueueAdd;
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(data_.uuid);
     stream.WriteString(game->data_.queueMapUuid);
     msg.SetPropStream(stream);
@@ -2150,7 +2156,7 @@ void Player::CRQUnqueueForMatch()
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::QueueRemove;
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.WriteString(data_.uuid);
     msg.SetPropStream(stream);
     client->Write(msg);

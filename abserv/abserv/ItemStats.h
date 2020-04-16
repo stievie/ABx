@@ -21,65 +21,20 @@
 
 #pragma once
 
-#include "Damage.h"
-#include <abscommon/PropStream.h>
+#include <abshared/Damage.h>
+#include <sa/PropStream.h>
 #include <abscommon/Variant.h>
 #include <abshared/Attributes.h>
+#include <sa/Noncopyable.h>
+#include <abshared/Items.h>
 
 namespace Game {
 
-enum class Stat : size_t
-{
-    None = 0,
-    MinDamage = 1,
-    MaxDamage,
-    DamageType,
-    Attribute,           // Weapon requires this attribute
-    AttributeValue,
-    Armor,               // General armor
-    HealthRegen,
-    EnergyRegen,
-    Health,              // +/- Health
-    Energy,              // +/- Energy
-
-    PhysicalDamageReduction,
-    HexDurationReduction,
-    ConditionDurationReduction,
-    BlindnessDurationReduction,
-    WeaknessDurationReduction,
-    DeseaseDurationReduction,
-    PoisionDurationReduction,
-    DazedDurationReduction,
-    DeepWoundDurationReduction,
-    BleedingDurationReduction,
-    CrippledDurationReduction,
-
-    // Type specific armor
-    ArmorElemental,
-    ArmorFire,
-    ArmorCold,
-    ArmorLightning,
-    ArmorEarth,
-    ArmorPhysical,
-    // Special
-    ArmorHoly,
-    ArmorShadow,
-    ArmorTypeless,
-    // Other
-    ArmorDark,
-    ArmorChaos,
-
-    // Attributes
-    AttributeOffset = 1000
-};
-
 class ItemStats
 {
+    NON_COPYABLE(ItemStats)
 public:
     ItemStats();
-    // non-copyable
-    ItemStats(const ItemStats&) = delete;
-    ItemStats& operator=(const ItemStats&) = delete;
     ~ItemStats() = default;
 
     DamageType GetDamageType() const;
@@ -92,7 +47,7 @@ public:
     int GetHealth() const;
     int GetEnergy() const;
     template <typename T>
-    T GetValue(Stat index, T def) const
+    T GetValue(ItemStatIndex index, T def) const
     {
         return GetValue<T>(static_cast<size_t>(index), def);
     }
@@ -105,7 +60,7 @@ public:
         return def;
     }
     template<typename T>
-    void SetValue(Stat index, T value)
+    void SetValue(ItemStatIndex index, T value)
     {
         SetValue(static_cast<size_t>(index), value);
     }
@@ -115,8 +70,8 @@ public:
         stats_[index] = value;
     }
 
-    bool Load(IO::PropReadStream& stream);
-    void Save(IO::PropWriteStream& stream);
+    bool Load(sa::PropReadStream& stream);
+    void Save(sa::PropWriteStream& stream);
 
     Utils::VariantMap stats_;
 };

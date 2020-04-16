@@ -56,7 +56,7 @@ struct PlayerItemList : Entity
         });
     }
 
-    StoragePlace storagePlace = StoragePlaceNone;
+    StoragePlace storagePlace = StoragePlace::None;
     std::vector<std::string> itemUuids;
 };
 
@@ -69,7 +69,7 @@ struct EquippedItems : PlayerItemList
     EquippedItems() :
         PlayerItemList()
     {
-        storagePlace = StoragePlaceEquipped;
+        storagePlace = StoragePlace::Equipped;
     }
 };
 
@@ -82,7 +82,7 @@ struct InventoryItems : PlayerItemList
     InventoryItems() :
         PlayerItemList()
     {
-        storagePlace = StoragePlaceInventory;
+        storagePlace = StoragePlace::Inventory;
     }
 };
 

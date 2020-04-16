@@ -22,6 +22,7 @@
 #pragma once
 
 #include <map>
+#include <sa/PropStream.h>
 
 namespace IO {
 class PropReadStream;
@@ -240,7 +241,7 @@ typedef std::map<size_t, Variant> VariantMap;
 /// Empty variant map
 const VariantMap VariantMapEmpty;
 
-bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream);
-void VariantMapWrite(const VariantMap& vMap, IO::PropWriteStream& stream);
+bool VariantMapRead(VariantMap& vMap, sa::PropReadStream& stream);
+void VariantMapWrite(const VariantMap& vMap, sa::PropWriteStream& stream);
 
 }

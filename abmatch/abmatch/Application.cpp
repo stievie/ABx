@@ -162,7 +162,7 @@ void Application::MainLoop()
 
 void Application::HandleQueueAdd(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
     {
         LOG_ERROR << "Error reading property stream from message" << std::endl;
@@ -180,7 +180,7 @@ void Application::HandleQueueAdd(const Net::MessageMsg& msg)
 
 void Application::HandleQueueRemove(const Net::MessageMsg& msg)
 {
-    IO::PropReadStream prop;
+    sa::PropReadStream prop;
     if (!msg.GetPropStream(prop))
     {
         LOG_ERROR << "Error reading property stream from message" << std::endl;

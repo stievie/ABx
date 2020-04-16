@@ -27,14 +27,14 @@
 namespace AB {
 namespace Entities {
 
-enum StoragePlace : uint8_t
+enum class StoragePlace : uint8_t
 {
-    StoragePlaceNone = 0,
-    StoragePlaceScene = 1,      // On ground
-    StoragePlaceInventory,      // In players inventory
-    StoragePlaceChest,          // Account chest
-    StoragePlaceEquipped,       // A player has equipped this item
-    StoragePlaceMerchant,       // Merchant has this item and may be bought by a player
+    None = 0,
+    Scene = 1,      // On ground
+    Inventory,      // In players inventory
+    Chest,          // Account chest
+    Equipped,       // A player has equipped this item
+    Merchant,       // Merchant has this item and may be bought by a player
 };
 
 static constexpr auto KEY_CONCRETE_ITEMS = "concrete_items";
@@ -69,7 +69,7 @@ struct ConcreteItem : Entity
 
     std::string playerUuid = EMPTY_GUID;
     std::string accountUuid = EMPTY_GUID;
-    StoragePlace storagePlace = StoragePlaceScene;
+    StoragePlace storagePlace = StoragePlace::Scene;
     uint16_t storagePos = 0;
     std::string upgrade1Uuid = EMPTY_GUID;
     std::string upgrade2Uuid = EMPTY_GUID;

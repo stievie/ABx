@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "Variant.h"
-#include "PropStream.h"
 
 namespace Utils {
 
@@ -92,7 +91,7 @@ std::string Variant::ToString() const
     }
 }
 
-bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
+bool VariantMapRead(VariantMap& vMap, sa::PropReadStream& stream)
 {
     vMap.clear();
     if (stream.GetSize() == 0)
@@ -161,7 +160,7 @@ bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
     return true;
 }
 
-void VariantMapWrite(const VariantMap& vMap, IO::PropWriteStream& stream)
+void VariantMapWrite(const VariantMap& vMap, sa::PropWriteStream& stream)
 {
     stream.Write<uint16_t>(static_cast<uint16_t>(vMap.size()));
     for (const auto& s : vMap)

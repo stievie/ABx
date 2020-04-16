@@ -26,7 +26,7 @@
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
 #include "Script.h"
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include "ItemStats.h"
 #include <abshared/Attributes.h>
 
@@ -136,11 +136,11 @@ public:
     bool IsStackAble() const;
     bool IsArmor() const
     {
-        return data_.type == AB::Entities::ItemTypeArmorHead ||
-            data_.type == AB::Entities::ItemTypeArmorChest ||
-            data_.type == AB::Entities::ItemTypeArmorHands ||
-            data_.type == AB::Entities::ItemTypeArmorLegs ||
-            data_.type == AB::Entities::ItemTypeArmorFeet;
+        return data_.type == AB::Entities::ItemType::ArmorHead ||
+            data_.type == AB::Entities::ItemType::ArmorChest ||
+            data_.type == AB::Entities::ItemType::ArmorHands ||
+            data_.type == AB::Entities::ItemType::ArmorLegs ||
+            data_.type == AB::Entities::ItemType::ArmorFeet;
     }
 
     uint32_t id_{ std::numeric_limits<uint32_t>::min() };

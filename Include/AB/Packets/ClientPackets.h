@@ -290,6 +290,25 @@ struct TradeCancel
     { }
 };
 
+struct TradeOffer
+{
+    uint32_t money;
+    uint8_t itemCount;
+    std::vector<uint16_t> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(money);
+        ar.value(itemCount);
+        items.resize(itemCount);
+        for (uint8_t i = 0; i < itemCount; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item);
+        }
+    }
+};
+
 struct Command
 {
     uint8_t type;

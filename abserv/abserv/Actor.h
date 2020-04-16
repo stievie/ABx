@@ -342,7 +342,7 @@ public:
     /// and (4) in theory, both but that would be silly.
     uint32_t groupMask_{ 0 };
 
-    bool Serialize(IO::PropWriteStream& stream) override;
+    bool Serialize(sa::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 

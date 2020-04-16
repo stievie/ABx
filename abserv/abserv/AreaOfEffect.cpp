@@ -286,7 +286,7 @@ uint32_t AreaOfEffect::GetItemIndex() const
     return itemIndex_;
 }
 
-bool AreaOfEffect::Serialize(IO::PropWriteStream& stream)
+bool AreaOfEffect::Serialize(sa::PropWriteStream& stream)
 {
     using namespace AB::GameProtocol;
     static constexpr uint32_t validFields = ObjectSpawnDataFieldName | ObjectSpawnDataFieldModelIndex;
@@ -319,7 +319,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<bool>(selectable_);
     msg.Add<uint8_t>(static_cast<uint8_t>(stateComp_.GetState()));
     msg.Add<uint32_t>(GetGroupId());                      // Group id
-    IO::PropWriteStream data;
+    sa::PropWriteStream data;
     size_t dataSize;
     Serialize(data);
     const char* cData = data.GetStream(dataSize);

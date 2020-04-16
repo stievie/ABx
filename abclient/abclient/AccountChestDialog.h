@@ -54,7 +54,7 @@ private:
     void HandleDialogClosed(StringHash eventType, VariantMap& eventData);
     uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
     BorderImage* GetItemContainer(uint16_t pos);
-    void SetItem(Item* item, const InventoryItem& iItem);
+    void SetItem(Item* item, const ConcreteItem& iItem);
 protected:
     void SubscribeEvents() override;
 public:

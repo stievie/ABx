@@ -22,7 +22,7 @@
 #pragma once
 
 #include <AB/ProtocolCodes.h>
-#include "PropStream.h"
+#include <sa/PropStream.h>
 #include <Urho3DAll.h>
 
 enum ObjectType
@@ -74,7 +74,7 @@ public:
     uint32_t groupMask_{ 0 };
     SharedPtr<SoundSource3D> soundSource_;
 
-    virtual void Unserialize(PropReadStream&) {}
+    virtual void Unserialize(sa::PropReadStream&) {}
 
     double GetServerTime(int64_t tick) const
     {

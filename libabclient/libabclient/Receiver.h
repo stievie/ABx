@@ -24,7 +24,6 @@
 #include <system_error>
 #include <stdint.h>
 #include <string>
-#include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Account.h>
@@ -131,6 +130,8 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) = 0;
 
 };
 

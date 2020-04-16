@@ -40,7 +40,7 @@ bool ItemContainer::SetItem(uint32_t itemId, const ItemUpdatedCallback& callback
     if (!item)
         return false;
 
-    if (item->data_.type == AB::Entities::ItemTypeMoney)
+    if (item->data_.type == AB::Entities::ItemType::Money)
     {
         if (items_[0] == 0)
         {

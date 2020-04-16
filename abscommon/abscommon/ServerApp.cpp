@@ -36,6 +36,7 @@
 #include <codecvt>
 #include <sa/StringTempl.h>
 #include "FileUtils.h"
+#include <sa/PropStream.h>
 
 ServerApp::ServerApp() :
     running_(false),
@@ -130,7 +131,7 @@ bool ServerApp::SendServerJoined(Net::MessageClient* client, const AB::Entities:
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerJoined;
 
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.Write<AB::Entities::ServiceType>(service.type);
     stream.WriteString(service.uuid);
     stream.WriteString(service.host);
@@ -149,7 +150,7 @@ bool ServerApp::SendServerLeft(Net::MessageClient* client, const AB::Entities::S
 
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerLeft;
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stream.Write<AB::Entities::ServiceType>(service.type);
     stream.WriteString(service.uuid);
     stream.WriteString(service.host);

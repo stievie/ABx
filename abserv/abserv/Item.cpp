@@ -51,7 +51,7 @@ void Item::InitializeLua()
 bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
 {
     concreteItem_ = item;
-    IO::PropReadStream stream;
+    sa::PropReadStream stream;
     stream.Init(item.itemStats.data(), item.itemStats.length());
     if (!stats_.Load(stream))
         LOG_WARNING << "Error loading item stats" << std::endl;
@@ -103,7 +103,7 @@ void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
     if (Lua::IsFunction(luaState_, "getHealthStats"))
     {
         int32_t health = luaState_["getHealthStats"](level, maxStats);
-        stats_.SetValue(Stat::Health, health);
+        stats_.SetValue(ItemStatIndex::Health, health);
     }
 }
 
@@ -114,8 +114,8 @@ void Item::CreateWeaponStats(uint32_t level, bool maxStats)
         int32_t minDamage = 0;
         int32_t maxDamage = 0;
         kaguya::tie(minDamage, maxDamage) = luaState_["getDamageStats"](level, maxStats);
-        stats_.SetValue(Stat::MinDamage, minDamage);
-        stats_.SetValue(Stat::MaxDamage, maxDamage);
+        stats_.SetValue(ItemStatIndex::MinDamage, minDamage);
+        stats_.SetValue(ItemStatIndex::MaxDamage, maxDamage);
     }
 }
 
@@ -124,7 +124,7 @@ void Item::CreateFocusStats(uint32_t level, bool maxStats)
     if (Lua::IsFunction(luaState_, "getEnergyStats"))
     {
         int32_t energy = luaState_["getEnergyStats"](level, maxStats);
-        stats_.SetValue(Stat::Energy, energy);
+        stats_.SetValue(ItemStatIndex::Energy, energy);
     }
 }
 
@@ -133,7 +133,7 @@ void Item::CreateShieldStats(uint32_t level, bool maxStats)
     if (Lua::IsFunction(luaState_, "getArmorStats"))
     {
         int32_t armor = luaState_["getArmorStats"](level, maxStats);
-        stats_.SetValue(Stat::Armor, armor);
+        stats_.SetValue(ItemStatIndex::Armor, armor);
     }
 }
 
@@ -143,35 +143,35 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
 
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeModifierInsignia:
+    case AB::Entities::ItemType::ModifierInsignia:
         CreateInsigniaStats(level, maxStats);
         break;
-    case AB::Entities::ItemTypeAxe:
-    case AB::Entities::ItemTypeSword:
-    case AB::Entities::ItemTypeWand:
-    case AB::Entities::ItemTypeSpear:
-    case AB::Entities::ItemTypeHammer:
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
-    case AB::Entities::ItemTypeStaff:
-    case AB::Entities::ItemTypeDaggers:
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Axe:
+    case AB::Entities::ItemType::Sword:
+    case AB::Entities::ItemType::Wand:
+    case AB::Entities::ItemType::Spear:
+    case AB::Entities::ItemType::Hammer:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Daggers:
+    case AB::Entities::ItemType::Scyte:
         CreateWeaponStats(level, maxStats);
         break;
-    case AB::Entities::ItemTypeFocus:
+    case AB::Entities::ItemType::Focus:
         CreateFocusStats(level, maxStats);
         break;
-    case AB::Entities::ItemTypeShield:
+    case AB::Entities::ItemType::Shield:
         CreateShieldStats(level, maxStats);
         break;
     default:
         break;
     }
 
-    IO::PropWriteStream stream;
+    sa::PropWriteStream stream;
     stats_.Save(stream);
     size_t ssize = 0;
     const char* s = stream.GetStream(ssize);
@@ -259,33 +259,33 @@ EquipPos Item::GetEquipPos() const
 {
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
-    case AB::Entities::ItemTypeSword:
-    case AB::Entities::ItemTypeWand:
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Axe:
+    case AB::Entities::ItemType::Sword:
+    case AB::Entities::ItemType::Wand:
+    case AB::Entities::ItemType::Spear:
         return EquipPos::WeaponLeadHand;
-    case AB::Entities::ItemTypeHammer:
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
-    case AB::Entities::ItemTypeStaff:
-    case AB::Entities::ItemTypeDaggers:
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Hammer:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Daggers:
+    case AB::Entities::ItemType::Scyte:
         return EquipPos::WeaponTwoHanded;
-    case AB::Entities::ItemTypeFocus:
-    case AB::Entities::ItemTypeShield:
+    case AB::Entities::ItemType::Focus:
+    case AB::Entities::ItemType::Shield:
         return EquipPos::WeaponOffHand;
-    case AB::Entities::ItemTypeArmorHead:
+    case AB::Entities::ItemType::ArmorHead:
         return EquipPos::ArmorHead;
-    case AB::Entities::ItemTypeArmorChest:
+    case AB::Entities::ItemType::ArmorChest:
         return EquipPos::ArmorChest;
-    case AB::Entities::ItemTypeArmorHands:
+    case AB::Entities::ItemType::ArmorHands:
         return EquipPos::ArmorHands;
-    case AB::Entities::ItemTypeArmorLegs:
+    case AB::Entities::ItemType::ArmorLegs:
         return EquipPos::ArmorFeet;
-    case AB::Entities::ItemTypeArmorFeet:
+    case AB::Entities::ItemType::ArmorFeet:
         return EquipPos::ArmorFeet;
     default:
         return EquipPos::None;
@@ -296,28 +296,28 @@ float Item::GetWeaponRange() const
 {
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
-    case AB::Entities::ItemTypeSword:
-    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemType::Axe:
+    case AB::Entities::ItemType::Sword:
+    case AB::Entities::ItemType::Hammer:
         return RANGE_TOUCH;
-    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemType::Flatbow:
         return RANGE_FLATBOW;
-    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemType::Hornbow:
         return RANGE_HORNBOW;
-    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemType::Shortbow:
         return RANGE_SHORTBOW;
-    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemType::Longbow:
         return RANGE_LONGBOW;
-    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemType::Recurvebow:
         return RANGE_RECURVEBOW;
-    case AB::Entities::ItemTypeStaff:
-    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Wand:
         return RANGE_PROJECTILE;
-    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemType::Daggers:
         return RANGE_TOUCH;
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Scyte:
         return RANGE_TOUCH;
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Spear:
         return RANGE_SPEAR;
     default:
         return 0.0f;
@@ -328,31 +328,31 @@ uint32_t Item::GetWeaponAttackSpeed() const
 {
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemType::Axe:
         return ATTACK_SPEED_AXE;
-    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemType::Sword:
         return ATTACK_SPEED_SWORD;
-    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemType::Hammer:
         return ATTACK_SPEED_HAMMER;
-    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemType::Flatbow:
         return ATTACK_SPEED_FLATBOW;
-    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemType::Hornbow:
         return ATTACK_SPEED_HORNBOW;
-    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemType::Shortbow:
         return ATTACK_SPEED_SHORTBOW;
-    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemType::Longbow:
         return ATTACK_SPEED_LONGBOW;
-    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemType::Recurvebow:
         return ATTACK_SPEED_RECURVEBOW;
-    case AB::Entities::ItemTypeStaff:
+    case AB::Entities::ItemType::Staff:
         return ATTACK_SPEED_STAFF;
-    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemType::Wand:
         return ATTACK_SPEED_WAND;
-    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemType::Daggers:
         return ATTACK_SPEED_DAGGERS;
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Scyte:
         return ATTACK_SPEED_SCYTE;
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Spear:
         return ATTACK_SPEED_SPEAR;
     default:
         return 0;
@@ -363,20 +363,20 @@ bool Item::IsWeaponProjectile() const
 {
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
-    case AB::Entities::ItemTypeSword:
-    case AB::Entities::ItemTypeHammer:
-    case AB::Entities::ItemTypeDaggers:
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Axe:
+    case AB::Entities::ItemType::Sword:
+    case AB::Entities::ItemType::Hammer:
+    case AB::Entities::ItemType::Daggers:
+    case AB::Entities::ItemType::Scyte:
         return false;
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
-    case AB::Entities::ItemTypeStaff:
-    case AB::Entities::ItemTypeWand:
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Wand:
+    case AB::Entities::ItemType::Spear:
         return true;
     default:
         return false;
@@ -400,33 +400,33 @@ void Item::GetWeaponDamageType(DamageType& value) const
     // Default weapon damage type
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemType::Axe:
         value = DamageType::Piercing;
         break;
-    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemType::Sword:
         value = DamageType::Slashing;
         break;
-    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemType::Hammer:
         value = DamageType::Blunt;
         break;
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
         value = DamageType::Piercing;
         break;
-    case AB::Entities::ItemTypeStaff:
-    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Wand:
         value = DamageType::Slashing;
         break;
-    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemType::Daggers:
         value = DamageType::Piercing;
         break;
-    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemType::Scyte:
         value = DamageType::Slashing;
         break;
-    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemType::Spear:
         value = DamageType::Piercing;
         break;
     default:
@@ -444,17 +444,17 @@ Attribute Item::GetWeaponAttribute() const
     // Default weapon attributes
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemType::Axe:
         return Attribute::AxeMatery;
-    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemType::Sword:
         return Attribute::SwordsManship;
-    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemType::Hammer:
         return Attribute::HammerMastery;
-    case AB::Entities::ItemTypeFlatbow:
-    case AB::Entities::ItemTypeHornbow:
-    case AB::Entities::ItemTypeShortbow:
-    case AB::Entities::ItemTypeLongbow:
-    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
         return Attribute::MarkMansship;
     default:
         return Attribute::None;
@@ -483,7 +483,7 @@ void Item::GetArmorPenetration(float& value) const
 {
     switch (data_.type)
     {
-    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemType::Hornbow:
         // Hornbow adds 10% armor penetration
         value += 0.1f;
         break;

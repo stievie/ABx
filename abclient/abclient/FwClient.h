@@ -42,7 +42,7 @@ struct EventItem
     VariantMap eventData;
 };
 
-struct InventoryItem
+struct ConcreteItem
 {
     AB::Entities::ItemType type;
     uint32_t index;
@@ -69,8 +69,8 @@ private:
     std::map<std::string, AB::Entities::Game> games_;
     std::map<std::string, AB::Entities::Service> services_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
-    std::vector<InventoryItem> inventory_;
-    std::vector<InventoryItem> chest_;
+    std::vector<ConcreteItem> inventory_;
+    std::vector<ConcreteItem> chest_;
     std::vector<std::string> friendList_;
     std::vector<std::string> guildMembers_;
     std::map<std::string, AB::Packets::Server::PlayerInfo> relatedAccounts_;
@@ -181,6 +181,7 @@ public:
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
+    void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -261,6 +262,8 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
 
     void SetState(Client::State state)
     {
@@ -320,37 +323,37 @@ public:
     {
         return currentMail_;
     }
-    const std::vector<InventoryItem>& GetInventoryItems() const
+    const std::vector<ConcreteItem>& GetInventoryItems() const
     {
         return inventory_;
     }
-    const InventoryItem& GetInventoryItem(uint16_t pos) const
+    const ConcreteItem& GetInventoryItem(uint16_t pos) const
     {
-        const auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const InventoryItem& current) -> bool
+        const auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const ConcreteItem& current) -> bool
         {
             return current.pos == pos;
         });
         if (it == inventory_.end())
         {
-            static InventoryItem empty;
+            static ConcreteItem empty;
             return empty;
         }
 
         return (*it);
     }
-    const std::vector<InventoryItem>& GetChestItems() const
+    const std::vector<ConcreteItem>& GetChestItems() const
     {
         return chest_;
     }
-    const InventoryItem& GetChestItem(uint16_t pos) const
+    const ConcreteItem& GetChestItem(uint16_t pos) const
     {
-        const auto it = std::find_if(chest_.begin(), chest_.end(), [pos](const InventoryItem& current) -> bool
+        const auto it = std::find_if(chest_.begin(), chest_.end(), [pos](const ConcreteItem& current) -> bool
         {
             return current.pos == pos;
         });
         if (it == inventory_.end())
         {
-            static InventoryItem empty;
+            static ConcreteItem empty;
             return empty;
         }
 

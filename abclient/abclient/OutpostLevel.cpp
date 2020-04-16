@@ -21,9 +21,11 @@
 
 #include "stdafx.h"
 #include "OutpostLevel.h"
+#include "ChatWindow.h"
 #include "FwClient.h"
 #include "LevelManager.h"
 #include "WindowManager.h"
+#include "PartyWindow.h"
 
 //#include <Urho3D/DebugNew.h>
 

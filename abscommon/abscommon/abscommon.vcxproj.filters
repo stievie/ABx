@@ -81,9 +81,6 @@
     <ClInclude Include="MessageClient.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="PropStream.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Process.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>

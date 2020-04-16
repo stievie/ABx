@@ -25,7 +25,6 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
 #include "Receiver.h"
-#include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
@@ -178,6 +177,8 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetSkill& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::SkillTemplateLoaded& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -253,6 +254,7 @@ public:
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
+    void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
 };
 
 }

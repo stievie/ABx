@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
-#include "Damage.h"
+#include <abshared/Damage.h>
 #include <sa/CircularQueue.h>
 #include <sa/Noncopyable.h>
 

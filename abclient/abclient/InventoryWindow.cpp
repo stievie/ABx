@@ -27,6 +27,9 @@
 #include "Item.h"
 #include "WindowManager.h"
 #include "AccountChestDialog.h"
+#include "TradeDialog.h"
+#include "LevelManager.h"
+#include "WorldLevel.h"
 
 void InventoryWindow::RegisterObject(Context* context)
 {
@@ -168,7 +171,7 @@ void InventoryWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void InventoryWindow::SetItem(Item* item, const InventoryItem& iItem)
+void InventoryWindow::SetItem(Item* item, const ConcreteItem& iItem)
 {
     BorderImage* container = GetItemContainer(iItem.pos);
     if (!container)
@@ -246,7 +249,7 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
 
     for (const auto& item : items)
     {
-        if (item.type == AB::Entities::ItemTypeMoney)
+        if (item.type == AB::Entities::ItemType::Money)
         {
             moneyText->SetText(FormatMoney(item.count) + " Drachma");
             continue;
@@ -269,11 +272,11 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
 
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
 
-    const InventoryItem& iItem = net->GetInventoryItem(pos);
-    if (iItem.type == AB::Entities::ItemTypeUnknown)
+    const ConcreteItem& iItem = net->GetInventoryItem(pos);
+    if (iItem.type == AB::Entities::ItemType::Unknown)
         return;
 
-    if (iItem.type == AB::Entities::ItemTypeMoney)
+    if (iItem.type == AB::Entities::ItemType::Money)
     {
         Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
         moneyText->SetText(FormatMoney(iItem.count) + " Drachma");
@@ -289,8 +292,8 @@ void InventoryWindow::HandleInventoryItemRemove(StringHash, VariantMap& eventDat
 {
     using namespace Events::InventoryItemDelete;
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
-    InventoryItem item;
-    item.type = AB::Entities::ItemTypeUnknown;
+    ConcreteItem item;
+    item.type = AB::Entities::ItemType::Unknown;
     item.pos = pos;
     SetItem(nullptr, item);
 }
@@ -404,22 +407,27 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     if (!dragItem_)
         return;
     uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("POS").GetUInt());
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    auto dialog = wm->GetDialog(AB::DialogAccountChest);
+    AccountChestDialog* chest = dynamic_cast<AccountChestDialog*>(dialog.Get());
+    TradeDialog* tradeDialog = nullptr;
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* level = lm->GetCurrentLevel<WorldLevel>();
+    if (level)
+        tradeDialog = level->GetTradeDialog();
 
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     if (IsInside({ X, Y }, true))
-        DropItem({ X, Y }, AB::Entities::StoragePlaceInventory, pos);
-    else
+        DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
+    else if (chest && chest->IsInside({ X, Y }, true))
     {
         // If dropping on the account chest it is store in the chest
-        WindowManager* wm = GetSubsystem<WindowManager>();
-        auto dialog = wm->GetDialog(AB::DialogAccountChest);
-        AccountChestDialog* chest = dynamic_cast<AccountChestDialog*>(dialog.Get());
-        if (chest)
-        {
-            if (chest->IsInside({ X, Y }, true))
-                chest->DropItem({ X, Y }, AB::Entities::StoragePlaceInventory, pos);
-        }
+        chest->DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
+    }
+    else if (tradeDialog && tradeDialog->IsInside({ X, Y }, true))
+    {
+        tradeDialog->DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();
@@ -439,7 +447,7 @@ bool InventoryWindow::DropItem(const IntVector2& screenPos, AB::Entities::Storag
 
     auto* client = GetSubsystem<FwClient>();
     client->SetItemPos(currentPlace, currItemPos,
-        AB::Entities::StoragePlaceInventory, itemPos);
+        AB::Entities::StoragePlace::Inventory, itemPos);
 
     return true;
 }
