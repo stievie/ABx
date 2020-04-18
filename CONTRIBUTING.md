@@ -13,7 +13,7 @@ my profile.
 fails when a test fails.
 * You are encouraged to use new C++ features. Partly this project is also a playground
 to explore modern C++.
-* The code should be readable and it should be obvious what it does. 
+* The code should be readable and it should be obvious what it does.
 * Please stick to the coding style.
 
 ## Windows
@@ -27,3 +27,21 @@ a solution file (`absall/absall.sln`) which contains all server projects.
 As C++ IDE on Linux I prefer QtCreator. There are QtCreator project
 files `.creator` in the subdirectories of the projects. You can also setup
 QtCreator to build the projects with the makefiles in the `makefiles` directory.
+
+## If you don't want to code
+
+That's also great, because a game doesn't need only code, in fact coding is the
+smallest problem. It also needs people who do:
+
+* 3D Modeling
+* Animations
+* Story writing
+* Creating maps
+* Creating skills
+* Music
+* Sound effects
+* Particle effects
+* Icons
+* Concept art
+
+and a whole lot more.
