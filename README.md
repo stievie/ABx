@@ -76,6 +76,11 @@ See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for more
 informations.
 
+## Chat
+
+If you want to chat about this project, join the `#abxgameserver` IRC channel
+on the Freenode network.
+
 ## Credits
 
 See [CREDITS.md](CREDITS.md).
