@@ -401,6 +401,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQTradeOffer, packet.money, packet.items);
         break;
     }
+    case ClientPacketTypes::TradeAccept:
+    {
+        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::TradeAccept>(message);
+        AddPlayerTask(&Game::Player::CRQTradeAccept);
+        break;
+    }
     case ClientPacketTypes::Command:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::Command>(message);

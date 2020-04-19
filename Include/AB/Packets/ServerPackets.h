@@ -557,6 +557,7 @@ struct InventoryContent
         uint16_t pos;
         uint32_t count;
         uint16_t value;
+        std::string stats;
     };
 
     uint16_t count;
@@ -575,6 +576,7 @@ struct InventoryContent
             ar.value(item.pos);
             ar.value(item.count);
             ar.value(item.value);
+            ar.value(item.stats);
         }
     }
 };
@@ -589,6 +591,7 @@ struct InventoryItemUpdate
     uint16_t pos;
     uint32_t count;
     uint16_t value;
+    std::string stats;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -598,6 +601,7 @@ struct InventoryItemUpdate
         ar.value(pos);
         ar.value(count);
         ar.value(value);
+        ar.value(stats);
     }
 };
 
@@ -730,8 +734,8 @@ struct TradeOffer
     {
         std::array<Item, 3> mods;
     };
-    uint32_t money;
-    uint8_t itemCount;
+    uint32_t money{ 0 };
+    uint8_t itemCount{ 0 };
     std::vector<OfferedItem> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
@@ -758,6 +762,13 @@ struct TradeOffer
             }
         }
     }
+};
+
+struct TradeAccepted
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
 };
 
 struct ObjectSkillFailure

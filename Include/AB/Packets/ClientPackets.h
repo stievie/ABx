@@ -290,6 +290,13 @@ struct TradeCancel
     { }
 };
 
+struct TradeAccept
+{
+    template<typename _Ar>
+    void Serialize(_Ar&)
+    { }
+};
+
 struct TradeOffer
 {
     uint32_t money;

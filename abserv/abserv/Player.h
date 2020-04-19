@@ -238,6 +238,7 @@ public:
     void CRQTradeRequest(uint32_t targetId);
     void CRQTradeCancel();
     void CRQTradeOffer(uint32_t money, std::vector<uint16_t> items);
+    void CRQTradeAccept();
     //}
 
     AB::Entities::Character data_;

@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "TradeDialog.h"
 #include "Player.h"
-#include "FwClient.h"
 
 TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner) :
     DialogWindow(context),
@@ -56,7 +55,10 @@ TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<A
     auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleCancelClicked));
     auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    moneyEdit->SetText("0");
     SubscribeToEvent(moneyEdit, E_TEXTENTRY, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextEntry));
+
+    SubscribeToEvent(Events::E_TRADEOFFER, URHO3D_HANDLER(TradeDialog, HandlePartnersOffer));
 
     UpdateLayout();
 
@@ -67,9 +69,9 @@ TradeDialog::~TradeDialog()
 {
 }
 
-bool TradeDialog::DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos)
+bool TradeDialog::DropItem(const IntVector2& screenPos, ConcreteItem&& ci)
 {
-    if (currentPlace != AB::Entities::StoragePlace::Inventory)
+    if (ci.place != AB::Entities::StoragePlace::Inventory)
         return false;
 
     if (ourOffer_.size() >= 7)
@@ -79,16 +81,29 @@ bool TradeDialog::DropItem(const IntVector2& screenPos, AB::Entities::StoragePla
     if (!container->IsInside(screenPos, true))
         return false;
 
-    ourOffer_.emplace(currItemPos);
+    auto pos = ci.pos;
+    ourOffer_.emplace(pos, std::move(ci));
     return true;
 }
 
 void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
 {
+    uint32_t money = GetOfferedMoney();
+    if (money == 0 && ourOffer_.size() == 0)
+        return;
+
+    std::vector<uint16_t> ourItems;
+    for (auto i : ourOffer_)
+        ourItems.push_back(i.first);
+
+    auto* client = GetSubsystem<FwClient>();
+    client->TradeOffer(money, std::move(ourItems));
 }
 
 void TradeDialog::HandleAcceptClicked(StringHash, VariantMap&)
 {
+    auto* client = GetSubsystem<FwClient>();
+    client->TradeAccept();
 }
 
 void TradeDialog::HandleCancelClicked(StringHash, VariantMap&)
@@ -109,4 +124,21 @@ void TradeDialog::HandleMoneyEditTextEntry(StringHash, VariantMap& eventData)
             newText += (*it);
     }
     eventData[P_TEXT] = newText;
+}
+
+void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
+{
+    auto* client = GetSubsystem<FwClient>();
+    const auto& offer = client->GetCurrentPartnersOffer();
+    (void)offer;
+}
+
+uint32_t TradeDialog::GetOfferedMoney() const
+{
+    auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    const String& text = moneyEdit->GetText();
+    const char* pVal = text.CString();
+    char* pEnd;
+    int iValue = strtol(pVal, &pEnd, 10);
+    return static_cast<uint32_t>(iValue);
 }

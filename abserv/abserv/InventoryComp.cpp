@@ -138,7 +138,7 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         item->concreteItem_.storagePos,
         item->concreteItem_.count,
         item->concreteItem_.value,
-
+        item->concreteItem_.itemStats
     };
     AB::Packets::Add(packet, *message);
 }

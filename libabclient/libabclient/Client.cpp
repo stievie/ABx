@@ -702,6 +702,12 @@ void Client::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
         protoGame_->TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
 }
 
+void Client::TradeAccept()
+{
+    if (state_ == State::World)
+        protoGame_->TradeAccept();
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);
@@ -1024,6 +1030,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

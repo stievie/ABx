@@ -24,6 +24,7 @@
 #include "DialogWindow.h"
 #include "AB/Entities/ConcreteItem.h"
 #include <set>
+#include "FwClient.h"
 
 class Actor;
 class Player;
@@ -34,14 +35,16 @@ class TradeDialog : public DialogWindow
 private:
     WeakPtr<Player> player_;
     WeakPtr<Actor> partner_;
-    std::set<uint16_t> ourOffer_;
+    std::map<uint16_t, ConcreteItem> ourOffer_;
     std::set<uint32_t> partnerOffer_;
     void HandleOfferClicked(StringHash eventType, VariantMap& eventData);
     void HandleAcceptClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleMoneyEditTextEntry(StringHash eventType, VariantMap& eventData);
+    void HandlePartnersOffer(StringHash eventType, VariantMap& eventData);
+    uint32_t GetOfferedMoney() const;
 public:
     TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner);
     ~TradeDialog() override;
-    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
+    bool DropItem(const IntVector2& screenPos, ConcreteItem&& ci);
 };

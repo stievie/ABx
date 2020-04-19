@@ -67,21 +67,21 @@ struct ConcreteItem : Entity
         s.text1b(mapUuid, Limits::MAX_UUID);
     }
 
-    std::string playerUuid = EMPTY_GUID;
-    std::string accountUuid = EMPTY_GUID;
-    StoragePlace storagePlace = StoragePlace::Scene;
-    uint16_t storagePos = 0;
-    std::string upgrade1Uuid = EMPTY_GUID;
-    std::string upgrade2Uuid = EMPTY_GUID;
-    std::string upgrade3Uuid = EMPTY_GUID;
-    std::string itemUuid = EMPTY_GUID;
+    std::string playerUuid{ EMPTY_GUID };
+    std::string accountUuid{ EMPTY_GUID };
+    StoragePlace storagePlace{ StoragePlace::Scene };
+    uint16_t storagePos{ 0 };
+    std::string upgrade1Uuid{ EMPTY_GUID };
+    std::string upgrade2Uuid{ EMPTY_GUID };
+    std::string upgrade3Uuid{ EMPTY_GUID };
+    std::string itemUuid{ EMPTY_GUID };
     std::string itemStats;
-    uint32_t count = 0;
-    timestamp_t creation = 0;
-    timestamp_t deleted = 0;
-    uint16_t value = 0;
-    std::string instanceUuid = EMPTY_GUID;
-    std::string mapUuid = EMPTY_GUID;
+    uint32_t count{ 0 };
+    timestamp_t creation{ 0 };
+    timestamp_t deleted{ 0 };
+    uint16_t value{ 0 };
+    std::string instanceUuid{ EMPTY_GUID };
+    std::string mapUuid{ EMPTY_GUID };
 };
 
 }

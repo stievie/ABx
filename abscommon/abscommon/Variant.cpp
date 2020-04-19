@@ -32,7 +32,7 @@ Variant& Variant::operator =(const Variant& other)
 
     switch (type_)
     {
-    case VAR_STRING:
+    case VariantType::String:
         stringValue_.assign(other.stringValue_);
         break;
     default:
@@ -48,18 +48,18 @@ bool Variant::operator ==(const Variant& other) const
         return false;
     switch (type_)
     {
-    case VAR_INT:
+    case VariantType::Int:
         return value_.intValue == other.value_.intValue;
-    case VAR_BOOL:
+    case VariantType::Boolean:
         return value_.boolValue == other.value_.boolValue;
-    case VAR_FLOAT:
+    case VariantType::Float:
         return value_.floatValue + std::numeric_limits<float>::epsilon() >= other.value_.floatValue &&
             value_.floatValue - std::numeric_limits<float>::epsilon() <= other.value_.floatValue;
-    case VAR_INT64:
+    case VariantType::Int64:
         return value_.int64Value == other.value_.int64Value;
-    case VAR_STRING:
+    case VariantType::String:
         return stringValue_.compare(other.stringValue_) == 0;
-    case VAR_VOIDPTR:
+    case VariantType::VoidPtr:
         return value_.ptrValue == other.value_.ptrValue;
     default:
         return true;
@@ -70,17 +70,17 @@ std::string Variant::ToString() const
 {
     switch (type_)
     {
-    case VAR_INT:
+    case VariantType::Int:
         return std::to_string(value_.intValue);
-    case VAR_BOOL:
+    case VariantType::Boolean:
         return std::to_string(value_.boolValue);
-    case VAR_FLOAT:
+    case VariantType::Float:
         return std::to_string(value_.floatValue);
-    case VAR_INT64:
+    case VariantType::Int64:
         return std::to_string(value_.int64Value);
-    case VAR_STRING:
+    case VariantType::String:
         return stringValue_;
-    case VAR_VOIDPTR:
+    case VariantType::VoidPtr:
     {
         char buff[100];
         int len = snprintf(buff, 100, "0x%p", value_.ptrValue);
@@ -113,40 +113,40 @@ bool VariantMapRead(VariantMap& vMap, sa::PropReadStream& stream)
             return false;
         VariantType t = static_cast<VariantType>(bt);
 
-        if (t == Utils::VAR_NONE || t == Utils::VAR_VOIDPTR)
+        if (t == VariantType::None || t == VariantType::VoidPtr)
             continue;
 
         switch (t)
         {
-        case Utils::VAR_INT:
+        case VariantType::Int:
         {
             int value = 0;
             if (stream.Read<int>(value))
                 vMap[static_cast<size_t>(stat)] = value;
             break;
         }
-        case Utils::VAR_INT64:
+        case VariantType::Int64:
         {
             long long value = 0;
             if (stream.Read<long long>(value))
                 vMap[static_cast<size_t>(stat)] = value;
             break;
         }
-        case Utils::VAR_BOOL:
+        case VariantType::Boolean:
         {
             uint8_t value = 0;
             if (stream.Read<uint8_t>(value))
                 vMap[static_cast<size_t>(stat)] = value == 0 ? false : true;
             break;
         }
-        case Utils::VAR_FLOAT:
+        case VariantType::Float:
         {
             float value = 0.0f;
             if (stream.Read<float>(value))
                 vMap[static_cast<size_t>(stat)] = value;
             break;
         }
-        case Utils::VAR_STRING:
+        case VariantType::String:
         {
             std::string value;
             if (stream.ReadString(value))
@@ -166,7 +166,7 @@ void VariantMapWrite(const VariantMap& vMap, sa::PropWriteStream& stream)
     for (const auto& s : vMap)
     {
         Utils::VariantType t = s.second.GetType();
-        if (t == Utils::VAR_NONE || t == Utils::VAR_VOIDPTR)
+        if (t == VariantType::None || t == VariantType::VoidPtr)
             continue;
 
         stream.Write<uint64_t>(static_cast<uint64_t>(s.first));
@@ -174,19 +174,19 @@ void VariantMapWrite(const VariantMap& vMap, sa::PropWriteStream& stream)
         stream.Write<uint8_t>(bt);
         switch (t)
         {
-        case Utils::VAR_INT:
+        case VariantType::Int:
             stream.Write<int>(s.second.GetInt());
             break;
-        case Utils::VAR_INT64:
+        case VariantType::Int64:
             stream.Write<long long>(s.second.GetInt64());
             break;
-        case Utils::VAR_BOOL:
+        case VariantType::Boolean:
             stream.Write<uint8_t>(s.second.GetBool() ? 1 : 0);
             break;
-        case Utils::VAR_FLOAT:
+        case VariantType::Float:
             stream.Write<float>(s.second.GetFloat());
             break;
-        case Utils::VAR_STRING:
+        case VariantType::String:
             stream.WriteString(s.second.GetString());
             break;
         default:

@@ -40,6 +40,132 @@
 
 //#define LOG_ACTIONS
 
+bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream)
+{
+    vMap.Clear();
+    if (stream.GetSize() == 0)
+        // Empty but OK
+        return true;
+
+    uint16_t count = 0;
+    if (!stream.Read<uint16_t>(count))
+        return false;
+
+    for (uint16_t i = 0; i < count; ++i)
+    {
+        uint64_t stat = 0;
+        if (!stream.Read<uint64_t>(stat))
+            return false;
+
+        uint8_t bt = 0;
+        if (!stream.Read<uint8_t>(bt))
+            return false;
+        VariantType t = static_cast<VariantType>(bt);
+
+        if (t == VAR_NONE || t == VAR_VOIDPTR)
+            continue;
+
+        switch (t)
+        {
+        case VAR_INT:
+        {
+            int value = 0;
+            if (stream.Read<int>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_INT64:
+        {
+            long long value = 0;
+            if (stream.Read<long long>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_BOOL:
+        {
+            uint8_t value = 0;
+            if (stream.Read<uint8_t>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value == 0 ? false : true;
+            break;
+        }
+        case VAR_FLOAT:
+        {
+            float value = 0.0f;
+            if (stream.Read<float>(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = value;
+            break;
+        }
+        case VAR_STRING:
+        {
+            std::string value;
+            if (stream.ReadString(value))
+                vMap[static_cast<Game::ItemStatIndex>(stat)] = String(value.c_str(), static_cast<unsigned>(value.length()));
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return true;
+}
+
+void VariantMapWrite(const HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropWriteStream& stream)
+{
+    stream.Write<uint16_t>(static_cast<uint16_t>(vMap.Size()));
+    for (const auto& s : vMap)
+    {
+        VariantType t = s.second_.GetType();
+        if (t == VAR_NONE || t == VAR_VOIDPTR)
+            continue;
+
+        stream.Write<uint64_t>(static_cast<uint64_t>(s.first_));
+        uint8_t bt = static_cast<uint8_t>(t);
+        stream.Write<uint8_t>(bt);
+        switch (t)
+        {
+        case VAR_INT:
+            stream.Write<int>(s.second_.GetInt());
+            break;
+        case VAR_INT64:
+            stream.Write<long long>(s.second_.GetInt64());
+            break;
+        case VAR_BOOL:
+            stream.Write<uint8_t>(s.second_.GetBool() ? 1 : 0);
+            break;
+        case VAR_FLOAT:
+            stream.Write<float>(s.second_.GetFloat());
+            break;
+        case VAR_STRING:
+            stream.WriteString(std::string(s.second_.GetString().CString(), static_cast<size_t>(s.second_.GetString().Length())));
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std::string& value)
+{
+    sa::PropReadStream stream;
+    stream.Init(value.data(), value.length());
+    if (!VariantMapRead(stats, stream))
+        URHO3D_LOGERROR("Error loading item stats");
+}
+
+void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const String& value)
+{
+    return LoadStatsFromString(stats, std::string(value.CString(), static_cast<unsigned>(value.Length())));
+}
+
+String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats)
+{
+    sa::PropWriteStream stream;
+    VariantMapWrite(stats, stream);
+    size_t ssize = 0;
+    const char* s = stream.GetStream(ssize);
+    return String(s, static_cast<unsigned>(ssize));
+}
+
 String FwClient::GetProtocolErrorMessage(AB::ErrorCodes err)
 {
     switch (err)
@@ -1013,6 +1139,12 @@ void FwClient::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
         client_.TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
 }
 
+void FwClient::TradeAccept()
+{
+    if (loggedIn_)
+        client_.TradeAccept();
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -1366,14 +1498,15 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::InventoryContent& pa
     inventory_.reserve(packet.count);
     for (const auto& item : packet.items)
     {
-        inventory_.push_back({
-            static_cast<AB::Entities::ItemType>(item.type),
-            item.index,
-            static_cast<AB::Entities::StoragePlace>(item.place),
-            item.pos,
-            item.count,
-            item.value
-        });
+        ConcreteItem ci;
+        ci.type = static_cast<AB::Entities::ItemType>(item.type);
+        ci.index = item.index;
+        ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
+        ci.pos = item.pos;
+        ci.count = item.count;
+        ci.value = item.value;
+        LoadStatsFromString(ci.stats, item.stats);
+        inventory_.push_back(std::move(ci));
     }
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_INVENTORY, eData);
@@ -1394,18 +1527,20 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
         it->pos = packet.pos;
         it->count = packet.count;
         it->value = packet.value;
+        LoadStatsFromString(it->stats, packet.stats);
     }
     else
     {
         // Append
-        inventory_.push_back({
-            static_cast<AB::Entities::ItemType>(packet.type),
-            packet.index,
-            static_cast<AB::Entities::StoragePlace>(packet.place),
-            packet.pos,
-            packet.count,
-            packet.value
-        });
+        ConcreteItem item;
+        item.type = static_cast<AB::Entities::ItemType>(packet.type);
+        item.index = packet.index;
+        item.place = static_cast<AB::Entities::StoragePlace>(packet.place);
+        item.pos = packet.pos;
+        item.count = packet.count;
+        item.value = packet.value;
+        LoadStatsFromString(item.stats, packet.stats);
+        inventory_.push_back(std::move(item));
     }
 
     using namespace Events::InventoryItemUpdate;
@@ -1439,14 +1574,15 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ChestContent& packet
     chest_.reserve(packet.count);
     for (const auto& item : packet.items)
     {
-        chest_.push_back({
-            static_cast<AB::Entities::ItemType>(item.type),
-            item.index,
-            static_cast<AB::Entities::StoragePlace>(item.place),
-            item.pos,
-            item.count,
-            item.value
-        });
+        ConcreteItem ci;
+        ci.type = static_cast<AB::Entities::ItemType>(item.type);
+        ci.index = item.index;
+        ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
+        ci.pos = item.pos;
+        ci.count = item.count;
+        ci.value = item.value;
+        LoadStatsFromString(ci.stats, item.stats);
+        chest_.push_back(std::move(ci));
     }
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_CHEST, eData);
@@ -1467,18 +1603,20 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItem
         it->pos = packet.pos;
         it->count = packet.count;
         it->value = packet.value;
+        LoadStatsFromString(it->stats, packet.stats);
     }
     else
     {
         // Append
-        chest_.push_back({
-            static_cast<AB::Entities::ItemType>(packet.type),
-            packet.index,
-            static_cast<AB::Entities::StoragePlace>(packet.place),
-            packet.pos,
-            packet.count,
-            packet.value
-            });
+        ConcreteItem item;
+        item.type = static_cast<AB::Entities::ItemType>(packet.type);
+        item.index = packet.index;
+        item.place = static_cast<AB::Entities::StoragePlace>(packet.place);
+        item.pos = packet.pos;
+        item.count = packet.count;
+        item.value = packet.value;
+        LoadStatsFromString(item.stats, packet.stats);
+        chest_.push_back(std::move(item));
     }
 
     using namespace Events::ChestItemUpdate;
@@ -2078,6 +2216,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeDialogTrigger& 
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeCancel&)
 {
+    currentPartnerOffer_ = AB::Packets::Server::TradeOffer();
     using namespace Events::TradeCancel;
     VariantMap& eData = GetEventDataMap();
     QueueEvent(Events::E_TRADECANCEL, eData);
@@ -2085,5 +2224,16 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeCancel&)
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeOffer& packet)
 {
-    (void)packet;
+    currentPartnerOffer_ = packet;
+    using namespace Events::TradeOffer;
+    VariantMap& eData = GetEventDataMap();
+    QueueEvent(Events::E_TRADEOFFER, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
+{
+    currentPartnerOffer_ = AB::Packets::Server::TradeOffer();
+    using namespace Events::TradeAccepted;
+    VariantMap& eData = GetEventDataMap();
+    QueueEvent(Events::E_TRADEACCEPTED, eData);
 }

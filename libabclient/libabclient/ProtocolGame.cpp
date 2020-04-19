@@ -106,6 +106,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::TradeDialogTrigger, ServerPacketType::TradeDialogTrigger>();
     AddHandler<AB::Packets::Server::TradeCancel, ServerPacketType::TradeCancel>();
     AddHandler<AB::Packets::Server::TradeOffer, ServerPacketType::TradeGotOffer>();
+    AddHandler<AB::Packets::Server::TradeAccepted, ServerPacketType::TradeAccepted>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -618,6 +619,12 @@ void ProtocolGame::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
     uint8_t count = static_cast<uint8_t>(items.size());
     AB::Packets::Client::TradeOffer packet{ money, count, std::move(items) };
     SendPacket(AB::GameProtocol::ClientPacketTypes::TradeOffer, packet);
+}
+
+void ProtocolGame::TradeAccept()
+{
+    AB::Packets::Client::TradeAccept packet = { };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::TradeAccept, packet);
 }
 
 }

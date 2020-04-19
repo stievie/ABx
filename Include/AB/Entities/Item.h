@@ -55,8 +55,8 @@ enum class ItemType : uint16_t
     ModifierWeaponSuffix,
     ModifierWeaponInscription,
     // Weapons
-    WeaponFirst = 30,
-    Axe = WeaponFirst,
+    __WeaponFirst = 30,
+    Axe = __WeaponFirst,
     Sword,
     Hammer,
     Flatbow,
@@ -71,7 +71,7 @@ enum class ItemType : uint16_t
     Spear,
     Focus,
     Shield,
-    WeaponLast = Shield,
+    __WeaponLast = Shield,
     // Items that are spawned by weapons
     SpawnArrow,
     SpawnSpear,
@@ -154,6 +154,20 @@ struct Item : Entity
     std::string spawnItemUuid = EMPTY_GUID;
     std::string actorScript;
 };
+
+inline bool IsArmorItem(ItemType type)
+{
+    return type == ItemType::ArmorHead ||
+        type == ItemType::ArmorChest ||
+        type == ItemType::ArmorHands ||
+        type == ItemType::ArmorLegs ||
+        type == ItemType::ArmorFeet;
+}
+
+inline bool IsWeaponItem(ItemType type)
+{
+    return type >= ItemType::__WeaponFirst && type <= ItemType::__WeaponLast;
+}
 
 }
 }

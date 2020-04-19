@@ -35,6 +35,8 @@
 #include <map>
 #include "Options.h"
 #include <AB/Packets/ServerPackets.h>
+#include <sa/PropStream.h>
+#include <abshared/Items.h>
 
 struct EventItem
 {
@@ -50,7 +52,22 @@ struct ConcreteItem
     uint16_t pos;
     uint32_t count;
     uint16_t value;
+    HashMap<Game::ItemStatIndex, Variant> stats;
 };
+
+bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream);
+void VariantMapWrite(const HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropWriteStream& stream);
+void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std::string& value);
+void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const String& value);
+String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats);
+
+namespace Urho3D {
+template <>
+inline unsigned MakeHash<Game::ItemStatIndex>(const Game::ItemStatIndex& value)
+{
+    return static_cast<unsigned>(value);
+}
+}
 
 class FwClient final : public Object, public Client::Receiver
 {
@@ -73,6 +90,7 @@ private:
     std::vector<ConcreteItem> chest_;
     std::vector<std::string> friendList_;
     std::vector<std::string> guildMembers_;
+    AB::Packets::Server::TradeOffer currentPartnerOffer_;
     std::map<std::string, AB::Packets::Server::PlayerInfo> relatedAccounts_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
@@ -182,6 +200,7 @@ public:
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
     void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
+    void TradeAccept();
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -264,6 +283,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
 
     void SetState(Client::State state)
     {
@@ -315,6 +335,10 @@ public:
         return (*it).second.partySize;
     }
 
+    const AB::Packets::Server::TradeOffer& GetCurrentPartnersOffer() const
+    {
+        return currentPartnerOffer_;
+    }
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
     {
         return mailHeaders_;
@@ -386,4 +410,3 @@ public:
     String accountName_;
     String accountPass_;
 };
-

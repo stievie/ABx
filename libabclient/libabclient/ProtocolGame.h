@@ -135,6 +135,7 @@ public:
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
     void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
+    void TradeAccept();
 
     int64_t GetUpdateTick() const
     {

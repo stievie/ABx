@@ -136,11 +136,11 @@ public:
     bool IsStackAble() const;
     bool IsArmor() const
     {
-        return data_.type == AB::Entities::ItemType::ArmorHead ||
-            data_.type == AB::Entities::ItemType::ArmorChest ||
-            data_.type == AB::Entities::ItemType::ArmorHands ||
-            data_.type == AB::Entities::ItemType::ArmorLegs ||
-            data_.type == AB::Entities::ItemType::ArmorFeet;
+        return AB::Entities::IsArmorItem(data_.type);
+    }
+    bool IsWeapon() const
+    {
+        return AB::Entities::IsWeaponItem(data_.type);
     }
 
     uint32_t id_{ std::numeric_limits<uint32_t>::min() };

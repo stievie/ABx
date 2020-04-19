@@ -482,4 +482,12 @@ URHO3D_EVENT(E_TRADECANCEL, TradeCancel)
 {
 }
 
+URHO3D_EVENT(E_TRADEOFFER, TradeOffer)
+{
+}
+
+URHO3D_EVENT(E_TRADEACCEPTED, TradeAccepted)
+{
+}
+
 }

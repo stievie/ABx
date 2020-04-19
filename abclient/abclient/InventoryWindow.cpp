@@ -193,6 +193,11 @@ void InventoryWindow::SetItem(Item* item, const ConcreteItem& iItem)
     icon->SetFullImageRect();
     icon->SetLayoutMode(LM_FREE);
     icon->SetVar("POS", iItem.pos);
+    icon->SetVar("Index", iItem.index);
+    icon->SetVar("Count", iItem.count);
+    icon->SetVar("Value", iItem.value);
+    icon->SetVar("Stats", SaveStatsToString(iItem.stats));
+
     SubscribeToEvent(icon, E_CLICKEND, URHO3D_HANDLER(InventoryWindow, HandleItemClicked));
     SubscribeToEvent(icon, E_DRAGMOVE, URHO3D_HANDLER(InventoryWindow, HandleItemDragMove));
     SubscribeToEvent(icon, E_DRAGBEGIN, URHO3D_HANDLER(InventoryWindow, HandleItemDragBegin));
@@ -381,6 +386,10 @@ void InventoryWindow::HandleItemDragBegin(StringHash, VariantMap& eventData)
     icon->SetTexture(item->GetTexture());
     dragItem_->SetPosition(item->GetPosition());
     dragItem_->SetVar("POS", item->GetVar("POS"));
+    dragItem_->SetVar("Index", item->GetVar("Index"));
+    dragItem_->SetVar("Count", item->GetVar("Count"));
+    dragItem_->SetVar("Value", item->GetVar("Value"));
+    dragItem_->SetVar("Stats", item->GetVar("Stats"));
 
     int lx = eventData[P_X].GetInt();
     int ly = eventData[P_Y].GetInt();
@@ -427,7 +436,15 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     }
     else if (tradeDialog && tradeDialog->IsInside({ X, Y }, true))
     {
-        tradeDialog->DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
+        ConcreteItem ci;
+        ci.pos = pos;
+        ci.place = AB::Entities::StoragePlace::Inventory;
+        ci.index = dragItem_->GetVar("Index").GetUInt();
+        ci.count = dragItem_->GetVar("Count").GetUInt();
+        ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
+        LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
+
+        tradeDialog->DropItem({ X, Y }, std::move(ci));
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();

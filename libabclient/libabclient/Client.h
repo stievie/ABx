@@ -179,6 +179,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeDialogTrigger& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -255,6 +256,7 @@ public:
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
     void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
+    void TradeAccept();
 };
 
 }

@@ -349,7 +349,8 @@ void Player::CRQGetInventory()
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
             current.concreteItem_.storagePos,
             current.concreteItem_.count,
-            current.concreteItem_.value
+            current.concreteItem_.value,
+            current.concreteItem_.itemStats
         });
         return Iteration::Continue;
     });
@@ -525,7 +526,8 @@ void Player::CRQGetChest()
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
             current.concreteItem_.storagePos,
             current.concreteItem_.count,
-            current.concreteItem_.value
+            current.concreteItem_.value,
+            current.concreteItem_.itemStats
         });
         return Iteration::Continue;
     });
@@ -1511,6 +1513,10 @@ void Player::CRQTradeOffer(uint32_t money, std::vector<uint16_t> items)
     // We offer our trade partner the given items in our inventory
     (void)money;
     (void)items;
+}
+
+void Player::CRQTradeAccept()
+{
 }
 
 bool Player::IsIgnored(const Player& player) const

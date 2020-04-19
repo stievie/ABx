@@ -30,7 +30,7 @@ enum class ItemStatIndex : size_t
     MaxDamage,
     DamageType,
     Attribute,           // Weapon requires this attribute
-    AttributeValue,
+    AttributeValue,      // Weapon requires this Rank of the attribute
     Armor,               // General armor
     HealthRegen,
     EnergyRegen,
