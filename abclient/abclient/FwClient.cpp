@@ -2216,7 +2216,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeDialogTrigger& 
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeCancel&)
 {
-    currentPartnerOffer_ = AB::Packets::Server::TradeOffer();
+    currentPartnerOffer_ = {};
     using namespace Events::TradeCancel;
     VariantMap& eData = GetEventDataMap();
     QueueEvent(Events::E_TRADECANCEL, eData);
@@ -2232,7 +2232,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeOffer& packet)
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
 {
-    currentPartnerOffer_ = AB::Packets::Server::TradeOffer();
+    currentPartnerOffer_ = {};
     using namespace Events::TradeAccepted;
     VariantMap& eData = GetEventDataMap();
     QueueEvent(Events::E_TRADEACCEPTED, eData);
