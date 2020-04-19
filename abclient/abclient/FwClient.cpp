@@ -154,7 +154,7 @@ void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std
 
 void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const String& value)
 {
-    return LoadStatsFromString(stats, std::string(value.CString(), static_cast<unsigned>(value.Length())));
+    return LoadStatsFromString(stats, std::string(value.CString(), static_cast<size_t>(value.Length())));
 }
 
 String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats)
