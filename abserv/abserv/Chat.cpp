@@ -26,7 +26,6 @@
 #include "Npc.h"
 #include "GameManager.h"
 #include "PlayerManager.h"
-#include "Application.h"
 #include <AB/Entities/GuildMembers.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
@@ -38,7 +37,7 @@ ChatChannel::~ChatChannel() = default;
 Chat::Chat()
 {
     // Keep a reference to this chat so it doesn't get deleted.
-    tradeChat_ = std::dynamic_pointer_cast<ChatChannel>(std::make_shared<TradeChatChannel>());
+    tradeChat_ = std::make_shared<TradeChatChannel>();
     static const std::pair<ChatType, uint64_t> tradeChannelId = { ChatType::Trade, 0ULL };
     channels_.emplace(tradeChannelId, tradeChat_);
 }
@@ -333,49 +332,47 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
 
 bool PartyChatChannel::Talk(Player& player, const std::string& text)
 {
-    if (party_)
-    {
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
-        AB::Packets::Server::ChatMessage packet = {
-            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
-            0,
-            player.GetName(),
-            text
-        };
-        AB::Packets::Add(packet, *msg);
+    if (!party_)
+        return false;
 
-        party_->VisitPlayers([&player, &msg](Player& _player) {
-            if (_player.IsIgnored(player))
-                return Iteration::Continue;
-            _player.WriteToOutput(*msg);
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
+    AB::Packets::Server::ChatMessage packet = {
+        static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
+        0,
+        player.GetName(),
+        text
+    };
+    AB::Packets::Add(packet, *msg);
+
+    party_->VisitPlayers([&player, &msg](Player& _player) {
+        if (_player.IsIgnored(player))
             return Iteration::Continue;
-        });
-        return true;
-    }
-    return false;
+        _player.WriteToOutput(*msg);
+        return Iteration::Continue;
+    });
+    return true;
 }
 
 bool PartyChatChannel::TalkNpc(Npc& npc, const std::string& text)
 {
-    if (party_)
-    {
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
-        AB::Packets::Server::ChatMessage packet = {
-            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
-            npc.id_,
-            npc.GetName(),
-            text
-        };
-        AB::Packets::Add(packet, *msg);
-        party_->VisitPlayers([&msg](auto& player) {
-            player.WriteToOutput(*msg);
-            return Iteration::Continue;
-        });
-        return true;
-    }
-    return false;
+    if (!party_)
+        return false;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
+    AB::Packets::Server::ChatMessage packet = {
+        static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Party),
+        npc.id_,
+        npc.GetName(),
+        text
+    };
+    AB::Packets::Add(packet, *msg);
+    party_->VisitPlayers([&msg](auto& player) {
+        player.WriteToOutput(*msg);
+        return Iteration::Continue;
+    });
+    return true;
 }
 
 }
