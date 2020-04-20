@@ -110,5 +110,5 @@ private:
 template <>
 inline bool Is<Player>(const GameObject& obj)
 {
-    return obj.objectType_ == ObjectTypeSelf;
+    return obj.objectType_ == ObjectType::Self;
 }

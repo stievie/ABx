@@ -151,7 +151,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 
     if (obstructed)
     {
-        SetError(AB::GameProtocol::AttackErrorTargetObstructed);
+        SetError(AB::GameProtocol::AttackError::TargetObstructed);
     }
     started_ = DoStart();
     if (started_)
@@ -233,19 +233,19 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             // We may not really collide because of the low game update rate, so let's
             // approximate if we would collide
-            if (error_ == AB::GameProtocol::AttackErrorNone)
+            if (error_ == AB::GameProtocol::AttackError::None)
                 CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
         }
         else if (dist < currentDistance_)
             currentDistance_ = dist;
         else if (dist > currentDistance_)
         {
-            SetError(AB::GameProtocol::AttackErrorTargetDodge);
+            SetError(AB::GameProtocol::AttackError::TargetDodge);
         }
         else if (dist > distance_ * 2.0f)
         {
-            if (error_ == AB::GameProtocol::AttackErrorNone)
-                SetError(AB::GameProtocol::AttackErrorTargetMissed);
+            if (error_ == AB::GameProtocol::AttackError::None)
+                SetError(AB::GameProtocol::AttackError::TargetMissed);
             Remove();
         }
     }

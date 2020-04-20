@@ -231,21 +231,21 @@ String FwClient::GetSkillErrorMessage(AB::GameProtocol::SkillError err)
 {
     switch (err)
     {
-    case AB::GameProtocol::SkillErrorInvalidSkill:
+    case AB::GameProtocol::SkillError::InvalidSkill:
         return "Invalid Skill";
-    case AB::GameProtocol::SkillErrorInvalidTarget:
+    case AB::GameProtocol::SkillError::InvalidTarget:
         return "Invalid Skill Target";
-    case AB::GameProtocol::SkillErrorOutOfRange:
+    case AB::GameProtocol::SkillError::OutOfRange:
         return "Target out of reach";
-    case AB::GameProtocol::SkillErrorNoEnergy:
+    case AB::GameProtocol::SkillError::NoEnergy:
         return "Not enough Energy";
-    case AB::GameProtocol::SkillErrorNoAdrenaline:
+    case AB::GameProtocol::SkillError::NoAdrenaline:
         return "Not enough Adrenaline";
-    case AB::GameProtocol::SkillErrorRecharging:
+    case AB::GameProtocol::SkillError::Recharging:
         return "Skill is recharging";
-    case AB::GameProtocol::SkillErrorTargetUndestroyable:
+    case AB::GameProtocol::SkillError::TargetUndestroyable:
         return "The target is undestroyable";
-    case AB::GameProtocol::SkillErrorCannotUseSkill:
+    case AB::GameProtocol::SkillError::CannotUseSkill:
         return "Can not use skill";
     default:
         return String::EMPTY;
@@ -256,19 +256,19 @@ String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
 {
     switch (err)
     {
-    case AB::GameProtocol::AttackErrorInvalidTarget:
+    case AB::GameProtocol::AttackError::InvalidTarget:
         return "Invalid Target";
-    case AB::GameProtocol::AttackErrorTargetUndestroyable:
+    case AB::GameProtocol::AttackError::TargetUndestroyable:
         return "Target is undestroyable";
-    case AB::GameProtocol::AttackErrorNoTarget:
+    case AB::GameProtocol::AttackError::NoTarget:
         return "No Target";
-    case AB::GameProtocol::AttackErrorTargetObstructed:
+    case AB::GameProtocol::AttackError::TargetObstructed:
         return "Target is obstructed";
-    case AB::GameProtocol::AttackErrorTargetDodge:
+    case AB::GameProtocol::AttackError::TargetDodge:
         return "Target dodged";
-    case AB::GameProtocol::AttackErrorTargetMissed:
+    case AB::GameProtocol::AttackError::TargetMissed:
         return "Target missed";
-    case AB::GameProtocol::AttackErrorInterrupted:
+    case AB::GameProtocol::AttackError::Interrupted:
         // Happens when the attack is interrupted, due to some hex or something.
         // No need to show an error message
         return String::EMPTY;
@@ -281,15 +281,15 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
 {
     switch (err)
     {
-    case AB::GameProtocol::PlayerErrorInventoryFull:
-        return "your inventory is full";
-    case AB::GameProtocol::PlayerErrorChestFull:
+    case AB::GameProtocol::PlayerErrorValue::InventoryFull:
+        return "Your inventory is full";
+    case AB::GameProtocol::PlayerErrorValue::ChestFull:
         return "The chest is full";
-    case AB::GameProtocol::PlayerErrorTradingPartnerInvalid:
+    case AB::GameProtocol::PlayerErrorValue::TradingPartnerInvalid:
         return "Invalid trading partner";
-    case AB::GameProtocol::PlayerErrorTradingPartnerQueueing:
+    case AB::GameProtocol::PlayerErrorValue::TradingPartnerQueueing:
         return "Trading partner is queueing for a match";
-    case AB::GameProtocol::PlayerErrorTradingPartnerTrading:
+    case AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading:
         return "The trading partner is trading with another player";
     default:
         return String::EMPTY;

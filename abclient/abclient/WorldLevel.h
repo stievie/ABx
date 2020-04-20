@@ -73,7 +73,7 @@ public:
         }
         return nullptr;
     }
-    Actor* GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
+    Actor* GetActorByName(const String& name, ObjectType type = ObjectType::Player);
     /// Local Node IDs are not the same as Object IDs on the server.
     GameObject* GetObjectFromNode(Node* node)
     {

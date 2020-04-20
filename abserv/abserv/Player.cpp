@@ -947,7 +947,7 @@ void Player::OnInventoryFull()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
     AB::Packets::Server::GameError packet = {
-        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorInventoryFull)
+        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::InventoryFull)
     };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
@@ -958,7 +958,7 @@ void Player::OnChestFull()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
     AB::Packets::Server::GameError packet = {
-        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorChestFull)
+        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::ChestFull)
     };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);

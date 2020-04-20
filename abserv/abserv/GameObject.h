@@ -241,13 +241,13 @@ public:
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {
-        return AB::GameProtocol::ObjectTypeStatic;
+        return AB::GameProtocol::GameObjectType::Static;
     }
-    bool IsActorType() const { return GetType() >= AB::GameProtocol::ObjectTypeProjectile; }
+    bool IsActorType() const { return GetType() >= AB::GameProtocol::GameObjectType::Projectile; }
     bool IsPlayerOrNpcType() const
     {
         const auto t = GetType();
-        return t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer;
+        return t == AB::GameProtocol::GameObjectType::Npc || t == AB::GameProtocol::GameObjectType::Player;
     }
     const Math::Vector3& GetPosition() const
     {

@@ -57,7 +57,7 @@ bool SkillAction::TestSkill(int index, Game::Actor& source, Game::Actor* target)
         LOG_DEBUG << skill->data_.name << "::CanUse() returned " << static_cast<int>(res) << std::endl;
 #endif
     // Out of range is okay we will move to the target
-    return res == AB::GameProtocol::SkillErrorNone || res == AB::GameProtocol::SkillErrorOutOfRange;
+    return res == AB::GameProtocol::SkillError::None || res == AB::GameProtocol::SkillError::OutOfRange;
 }
 
 int SkillAction::GetSkillIndex(std::vector<int>& candidates, Game::Actor& source, Game::Actor* target)

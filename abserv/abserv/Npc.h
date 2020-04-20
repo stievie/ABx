@@ -101,7 +101,7 @@ public:
     bool LoadScript(const std::string& fileName);
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypeNpc;
+        return AB::GameProtocol::GameObjectType::Npc;
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
@@ -149,7 +149,7 @@ public:
 template <>
 inline bool Is<Npc>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypeNpc;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::Npc;
 }
 
 }

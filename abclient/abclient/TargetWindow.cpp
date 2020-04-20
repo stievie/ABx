@@ -72,7 +72,7 @@ void TargetWindow::HandleTradeClicked(StringHash, VariantMap&)
         return;
     if (SharedPtr<Actor> a = target_.Lock())
     {
-        if (a->objectType_ != ObjectTypePlayer)
+        if (a->objectType_ != ObjectType::Player)
             return;
 
         auto* client = GetSubsystem<FwClient>();
@@ -105,7 +105,7 @@ void TargetWindow::SetTarget(SharedPtr<Actor> target)
     if (target.NotNull())
     {
         targetText_->SetText(target->GetClassLevelName());
-        if (target->objectType_ == ObjectTypePlayer)
+        if (target->objectType_ == ObjectType::Player)
             tradeButton_->SetVisible(true);
         else
             tradeButton_->SetVisible(false);

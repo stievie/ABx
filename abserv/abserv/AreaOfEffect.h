@@ -76,7 +76,7 @@ public:
     bool LoadScript(const std::string& fileName);
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypeAreaOfEffect;
+        return AB::GameProtocol::GameObjectType::AreaOfEffect;
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
@@ -109,7 +109,7 @@ public:
 template <>
 inline bool Is<AreaOfEffect>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypeAreaOfEffect;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::AreaOfEffect;
 }
 
 }

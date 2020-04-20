@@ -102,7 +102,7 @@ void Skill::Update(uint32_t)
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
             lastError_ = luaState_["onSuccess"](source.get(), target.get());
             startUse_ = 0;
-            if (lastError_ != AB::GameProtocol::SkillErrorNone)
+            if (lastError_ != AB::GameProtocol::SkillError::None)
                 recharged_ = 0;
             else
             {
@@ -124,7 +124,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
     source.CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_USESKILL, target, this, success);
     if (!success)
     {
-        lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
+        lastError_ = AB::GameProtocol::SkillError::CannotUseSkill;
         return false;
     }
 
@@ -132,7 +132,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
     {
         if (!target)
         {
-            lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+            lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
             return false;
         }
 
@@ -140,7 +140,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         {
             if (target->id_ != source.id_)
             {
-                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
                 return false;
             }
         }
@@ -148,7 +148,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         {
             if (!source.IsAlly(target) && source.id_ != target->id_)
             {
-                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
                 return false;
             }
         }
@@ -156,7 +156,7 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         {
             if (!source.IsAlly(target) || source.id_ == target->id_)
             {
-                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
                 return false;
             }
         }
@@ -164,14 +164,14 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         {
             if (!source.IsEnemy(target))
             {
-                lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+                lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
                 return false;
             }
         }
 
         if (target->IsUndestroyable())
         {
-            lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
+            lastError_ = AB::GameProtocol::SkillError::TargetUndestroyable;
             return false;
         }
         // Finally check the target is not immune or something
@@ -179,14 +179,14 @@ bool Skill::CanUseSkill(Actor& source, Actor* target)
         target->CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, &source, this, targetSuccess);
         if (!targetSuccess)
         {
-            lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+            lastError_ = AB::GameProtocol::SkillError::InvalidTarget;
             return false;
         }
     }
 
     if (IsUsing() || !IsRecharged())
-        lastError_ = AB::GameProtocol::SkillErrorRecharging;
-    return (lastError_ == AB::GameProtocol::SkillErrorNone);
+        lastError_ = AB::GameProtocol::SkillError::Recharging;
+    return (lastError_ == AB::GameProtocol::SkillError::None);
 }
 
 uint32_t Skill::GetRecharge(uint32_t recharge)
@@ -205,7 +205,7 @@ AB::GameProtocol::SkillError Skill::CanUse(Actor* source, Actor* target)
 
 AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
-    lastError_ = AB::GameProtocol::SkillErrorNone;
+    lastError_ = AB::GameProtocol::SkillError::None;
     if (!CanUseSkill(*source, target.get()))
         return lastError_;
 
@@ -218,12 +218,12 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     GetSkillCost(*source, this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
     if (source->resourceComp_->GetEnergy() < realEnergy_)
-        lastError_ = AB::GameProtocol::SkillErrorNoEnergy;
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        lastError_ = AB::GameProtocol::SkillError::NoEnergy;
+    if (lastError_ != AB::GameProtocol::SkillError::None)
         return lastError_;
     if (source->resourceComp_->GetAdrenaline() < realAdrenaline_)
-        lastError_ = AB::GameProtocol::SkillErrorNoAdrenaline;
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        lastError_ = AB::GameProtocol::SkillError::NoAdrenaline;
+    if (lastError_ != AB::GameProtocol::SkillError::None)
         return lastError_;
 
     startUse_ = Utils::Tick();
@@ -232,7 +232,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     target_ = target;
 
     lastError_ = luaState_["onStartUse"](source.get(), target.get());
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+    if (lastError_ != AB::GameProtocol::SkillError::None)
     {
         startUse_ = 0;
         recharged_ = 0;

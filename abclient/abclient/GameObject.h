@@ -25,15 +25,15 @@
 #include <sa/PropStream.h>
 #include <Urho3DAll.h>
 
-enum ObjectType
+enum class ObjectType
 {
-    ObjectTypeStatic = 0,
-    ObjectTypeNpc = 1,
-    ObjectTypePlayer = 2,
-    ObjectTypeSelf = 3,
-    ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
-    ObjectTypeItemDrop,
-    ObjectTypeProjectile,
+    Static = 0,
+    Npc,
+    Player,
+    Self,
+    AreaOfEffect,          // Area that affects actors in it, e.g. a well
+    ItemDrop,
+    Projectile,
 };
 
 class GameObject : public LogicComponent
@@ -44,12 +44,12 @@ protected:
     float speedFactor_{ 1.0f };
     bool HasHealthBar() const
     {
-        return selectable_ && (objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf);
+        return selectable_ && (objectType_ == ObjectType::Npc || objectType_ == ObjectType::Player || objectType_ == ObjectType::Self);
     }
     // A real player, not an NPC or such
     bool IsPlayingCharacter() const
     {
-        return objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
+        return objectType_ == ObjectType::Player || objectType_ == ObjectType::Self;
     }
 public:
     GameObject(Context* context);
@@ -61,7 +61,7 @@ public:
 
     uint32_t gameId_{ 0 };
     unsigned index_{ 0 };
-    ObjectType objectType_{ ObjectTypeStatic };
+    ObjectType objectType_{ ObjectType::Static };
     bool undestroyable_{ false };
     bool selectable_{ false };
     uint32_t count_ = 1;

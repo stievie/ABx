@@ -400,7 +400,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
     AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(eventData[P_TYPE].GetUInt());
     switch (type)
     {
-    case AB::GameProtocol::ObjectProgressGotSkillPoint:
+    case AB::GameProtocol::ObjectProgressType::GotSkillPoint:
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         Actor* actor = To<Actor>(lm->GetObject(objectId));
@@ -414,7 +414,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         }
         break;
     }
-    case AB::GameProtocol::ObjectProgressAttribPointsGain:
+    case AB::GameProtocol::ObjectProgressType::AttribPointsGain:
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         auto player = lm->GetPlayer();
@@ -428,7 +428,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         }
         break;
     }
-    case AB::GameProtocol::ObjectProgressLevelAdvance:
+    case AB::GameProtocol::ObjectProgressType::LevelAdvance:
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         Actor* actor = To<Actor>(lm->GetObject(objectId));
@@ -443,7 +443,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         }
         break;
     }
-    case AB::GameProtocol::ObjectProgressXPIncreased:
+    case AB::GameProtocol::ObjectProgressType::XPIncreased:
         // Do nothing
         break;
     }
@@ -820,17 +820,17 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 
     switch (type)
     {
-    case AB::GameProtocol::ObjectCallTypeFollow:
+    case AB::GameProtocol::ObjectCallType::Follow:
         if (!target)
             return;
         message += " following " + target->name_;
         break;
-    case AB::GameProtocol::ObjectCallTypeAttack:
+    case AB::GameProtocol::ObjectCallType::Attack:
         if (!target)
             return;
         message += " attacking " + target->name_;
         break;
-    case AB::GameProtocol::ObjectCallTypeUseSkill:
+    case AB::GameProtocol::ObjectCallType::UseSkill:
     {
         if (skillIndex <= 0)
             return;

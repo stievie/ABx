@@ -50,7 +50,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
-                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressXPIncreased),
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressType::XPIncreased),
                 static_cast<int16_t>(i.value)
             };
             AB::Packets::Add(packet, message);
@@ -61,7 +61,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
-                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressGotSkillPoint),
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressType::GotSkillPoint),
                 static_cast<int16_t>(i.value)
             };
             AB::Packets::Add(packet, message);
@@ -72,7 +72,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
-                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressLevelAdvance),
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressType::LevelAdvance),
                 static_cast<int16_t>(i.value)
             };
             AB::Packets::Add(packet, message);
@@ -85,7 +85,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectProgress);
             AB::Packets::Server::ObjectProgress packet = {
                 owner_.id_,
-                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressAttribPointsGain),
+                static_cast<uint8_t>(AB::GameProtocol::ObjectProgressType::AttribPointsGain),
                 static_cast<int16_t>(i.value)
             };
             AB::Packets::Add(packet, message);

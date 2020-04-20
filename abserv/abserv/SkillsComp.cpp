@@ -35,7 +35,7 @@ static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
 {
     switch (error)
     {
-#define ENUMERATE_SKILL_ERROR_CODE(v) case AB::GameProtocol::v: return #v;
+#define ENUMERATE_SKILL_ERROR_CODE(v) case AB::GameProtocol::SkillError::v: return #v;
         ENUMERATE_SKILL_ERROR_CODES
 #undef ENUMERATE_SKILL_ERROR_CODE
     }
@@ -44,7 +44,7 @@ static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
 
 SkillsComp::SkillsComp(Actor& owner) :
     owner_(owner),
-    lastError_(AB::GameProtocol::SkillErrorNone),
+    lastError_(AB::GameProtocol::SkillError::None),
     lastSkillIndex_(-1),
     startDirty_(false),
     endDirty_(false),
@@ -86,14 +86,14 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 {
     if (index == -1)
     {
-        lastError_ = AB::GameProtocol::SkillErrorInvalidSkill;
+        lastError_ = AB::GameProtocol::SkillError::InvalidSkill;
         return lastError_;
     }
     SkillBar* sb = owner_.GetSkillBar();
     auto skill = sb->GetSkill(index);
     if (!skill || skill->data_.index == 0)
     {
-        lastError_ = AB::GameProtocol::SkillErrorInvalidSkill;
+        lastError_ = AB::GameProtocol::SkillError::InvalidSkill;
         return lastError_;
     }
     std::shared_ptr<Actor> target;
@@ -104,7 +104,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     // But a target is not mandatory, the Skill script will decide
     // if it needs a target, and may fail.
     lastError_ = sb->UseSkill(index, target);
-    usingSkill_ = lastError_ == AB::GameProtocol::SkillErrorNone;
+    usingSkill_ = lastError_ == AB::GameProtocol::SkillError::None;
     lastSkillIndex_ = index;
     lastSkillTime_ = Utils::Tick();
     lastSkill_ = skill;
@@ -116,10 +116,10 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         if (skill->HasTarget(SkillTargetTarget))
             targetId = target ? target->id_ : 0;
         owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT,
-            targetId, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
+            targetId, AB::GameProtocol::ObjectCallType::UseSkill, lastSkillIndex_ + 1);
     }
 #ifdef DEBUG_AI
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+    if (lastError_ != AB::GameProtocol::SkillError::None)
     {
         LOG_DEBUG << owner_.GetName() << " using invalid skill " <<
                      (skill ? skill->data_.name : "(none)") <<
@@ -177,7 +177,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
     // The server has 0 based skill indices but for the client these are 1 based
     if (startDirty_)
     {
-        if (lastError_ == AB::GameProtocol::SkillErrorNone)
+        if (lastError_ == AB::GameProtocol::SkillError::None)
         {
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectUseSkill);
             AB::Packets::Server::ObjectUseSkill packet;
@@ -207,7 +207,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
             AB::Packets::Server::ObjectSkillFailure packet = {
                 owner_.id_,
                 static_cast<int8_t>(lastSkillIndex_ + 1),
-                lastError_
+                static_cast<uint8_t>(lastError_)
             };
             AB::Packets::Add(packet, message);
         }
@@ -216,7 +216,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
 
     if (endDirty_)
     {
-        if (lastError_ == AB::GameProtocol::SkillErrorNone)
+        if (lastError_ == AB::GameProtocol::SkillError::None)
         {
             message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectEndUseSkill);
             AB::Packets::Server::ObjectSkillSuccess packet = {
@@ -232,7 +232,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
             AB::Packets::Server::ObjectSkillFailure packet = {
                 owner_.id_,
                 static_cast<int8_t>(lastSkillIndex_ + 1),
-                lastError_
+                static_cast<uint8_t>(lastError_)
             };
             AB::Packets::Add(packet, message);
         }

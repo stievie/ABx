@@ -439,7 +439,7 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
         // No drops in outposts and PvP games
         return std::shared_ptr<ItemDrop>();
 
-    if (target->GetType() != AB::GameProtocol::ObjectTypePlayer)
+    if (target->GetType() != AB::GameProtocol::GameObjectType::Player)
         return std::shared_ptr<ItemDrop>();
 
     Player* targetPlayer = To<Player>(target);
@@ -568,9 +568,9 @@ void Game::Load(const std::string& mapUuid)
 void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
 {
     AB::GameProtocol::GameObjectType objectType = object->GetType();
-    if (objectType < AB::GameProtocol::ObjectTypeSentToPlayer)
+    if (objectType < AB::GameProtocol::GameObjectType::__SentToPlayer)
         return;
-    if (objectType == AB::GameProtocol::ObjectTypePlayer)
+    if (objectType == AB::GameProtocol::GameObjectType::Player)
     {
         // Spawn points are loaded now
         const SpawnPoint p = map_->GetFreeSpawnPoint("Player");
@@ -603,7 +603,7 @@ void Game::SendInitStateToPlayer(Player& player)
     // when they happen.
     const auto write = [&player](Net::NetworkMessage& msg, const std::shared_ptr<GameObject>& o)
     {
-        if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
+        if (o->GetType() < AB::GameProtocol::GameObjectType::__SentToPlayer)
             // No need to send terrain patch to client
             return;
         if (o->id_ == player.id_)

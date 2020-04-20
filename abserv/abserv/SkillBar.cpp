@@ -100,17 +100,17 @@ bool SkillBar::_LuaSetSkill(int pos, uint32_t skillIndex)
 AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
-        return AB::GameProtocol::SkillErrorInvalidSkill;
+        return AB::GameProtocol::SkillError::InvalidSkill;
     Skill* s = skills_[static_cast<size_t>(index)].get();
     if (!s)
-        return AB::GameProtocol::SkillErrorInvalidSkill;
+        return AB::GameProtocol::SkillError::InvalidSkill;
 
     if (s->IsChangingState())
     {
         if (owner_.IsKnockedDown())
         {
             // Can only use skills like Stances, Shouts when knocked down
-            return AB::GameProtocol::SkillErrorCannotUseSkill;
+            return AB::GameProtocol::SkillError::CannotUseSkill;
         }
         // If changing state cancel old skill. Only one changing state skill at a time.
         Skill* oldSkill = GetCurrentSkill();

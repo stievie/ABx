@@ -211,16 +211,16 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CREATURE_STATE(Dead)
 
 #define ENUMERATE_SKILL_ERROR_CODES                                   \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNone)                        \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorInvalidSkill)                \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorInvalidTarget)               \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorOutOfRange)                  \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNoEnergy)                    \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNoAdrenaline)                \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorRecharging)                  \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorTargetUndestroyable)         \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorCannotUseSkill)              \
-    ENUMERATE_SKILL_ERROR_CODE(SkillErrorNotAppropriate)
+    ENUMERATE_SKILL_ERROR_CODE(None)                        \
+    ENUMERATE_SKILL_ERROR_CODE(InvalidSkill)                \
+    ENUMERATE_SKILL_ERROR_CODE(InvalidTarget)               \
+    ENUMERATE_SKILL_ERROR_CODE(OutOfRange)                  \
+    ENUMERATE_SKILL_ERROR_CODE(NoEnergy)                    \
+    ENUMERATE_SKILL_ERROR_CODE(NoAdrenaline)                \
+    ENUMERATE_SKILL_ERROR_CODE(Recharging)                  \
+    ENUMERATE_SKILL_ERROR_CODE(TargetUndestroyable)         \
+    ENUMERATE_SKILL_ERROR_CODE(CannotUseSkill)              \
+    ENUMERATE_SKILL_ERROR_CODE(NotAppropriate)
 // SkillErrorNotAppropriate is not really an error, using the skill succeeds,
 // but it doesn't make sense to use it.
 
@@ -368,77 +368,78 @@ enum class ServerPacketType : uint8_t
     __Last = 0xFF
 };
 
-enum ObjectCallType : uint8_t
+enum class ObjectCallType : uint8_t
 {
-    ObjectCallTypeNone = 0,
-    ObjectCallTypeFollow,
-    ObjectCallTypeAttack,
-    ObjectCallTypeUseSkill
+    None = 0,
+    Follow,
+    Attack,
+    UseSkill
 };
 
-enum ObjectProgressType : uint8_t
+enum class ObjectProgressType : uint8_t
 {
-    ObjectProgressXPIncreased,
-    ObjectProgressGotSkillPoint,
-    ObjectProgressLevelAdvance,
-    ObjectProgressAttribPointsGain,
+    XPIncreased,
+    GotSkillPoint,
+    LevelAdvance,
+    AttribPointsGain,
 };
 
-enum ResourceType : uint8_t
+enum class ResourceType : uint8_t
 {
-    ResourceTypeHealth = 1,
-    ResourceTypeEnergy,
-    ResourceTypeAdrenaline,
-    ResourceTypeOvercast,
-    ResourceTypeHealthRegen,
-    ResourceTypeEnergyRegen,
-    ResourceTypeMaxHealth,
-    ResourceTypeMaxEnergy,
-    ResourceTypeMorale,
+    Health = 1,
+    Energy,
+    Adrenaline,
+    Overcast,
+    HealthRegen,
+    EnergyRegen,
+    MaxHealth,
+    MaxEnergy,
+    Morale,
 };
 
-enum SkillError : uint8_t
+enum class SkillError : uint8_t
 {
 #define ENUMERATE_SKILL_ERROR_CODE(v) v,
     ENUMERATE_SKILL_ERROR_CODES
 #undef ENUMERATE_SKILL_ERROR_CODE
 };
 
-enum AttackError : uint8_t
+enum class AttackError : uint8_t
 {
-    AttackErrorNone = 0,
-    AttackErrorInvalidTarget,
-    AttackErrorTargetUndestroyable,
-    AttackErrorInterrupted,
-    AttackErrorNoTarget,
-    AttackErrorTargetObstructed,
-    AttackErrorTargetDodge,
-    AttackErrorTargetMissed,
+    None = 0,
+    InvalidTarget,
+    TargetUndestroyable,
+    Interrupted,
+    NoTarget,
+    TargetObstructed,
+    TargetDodge,
+    TargetMissed,
 };
 
-enum PlayerErrorValue : uint8_t
+enum class PlayerErrorValue : uint8_t
 {
-    PlayerErrorNone = 0,
-    PlayerErrorInventoryFull,
-    PlayerErrorChestFull,
-    PlayerErrorTradingPartnerInvalid,
-    PlayerErrorTradingPartnerQueueing,
-    PlayerErrorTradingPartnerTrading
+    None = 0,
+    InventoryFull,
+    ChestFull,
+    TradingPartnerInvalid,
+    TradingPartnerQueueing,
+    TradingPartnerTrading
 };
 
-enum GameObjectType : uint8_t
+enum class GameObjectType : uint8_t
 {
-    ObjectTypeUnknown = 0,
-    ObjectTypeStatic,       // GameObject
-    ObjectTypeTerrainPatch, // GameObject
+    Unknown = 0,
+    Static,       // GameObject
+    TerrainPatch, // GameObject
     // -- Bellow all objects are sent to player when they spawn ----------------
-    ObjectTypeSentToPlayer, // Not an actual object type, all bellow is sent to the player
-    ObjectTypeItemDrop,     // GameObject
-    ObjectTypeAreaOfEffect, // GameObject: Area that affects actors in it, e.g. a well
+    __SentToPlayer, // Not an actual object type, all bellow is sent to the player
+    ItemDrop,     // GameObject
+    AreaOfEffect, // GameObject: Area that affects actors in it, e.g. a well
     // Bellow are all Actors
-    ObjectTypeProjectile, // Actor
-    ObjectTypeNpc,
-    ObjectTypePlayer, // Human player
+    __Actors,
+    Projectile = __Actors, // Actor
+    Npc,
+    Player, // Human player
 };
 
 enum PlayerInfoFields : uint32_t

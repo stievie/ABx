@@ -420,39 +420,39 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
     GameObject* object = nullptr;
     switch (objectType)
     {
-    case AB::GameProtocol::ObjectTypePlayer:
+    case AB::GameProtocol::GameObjectType::Player:
         if (playerId == id)
         {
             CreatePlayer(id, position, scale, rot, state, data);
             object = player_;
-            object->objectType_ = ObjectTypeSelf;
+            object->objectType_ = ObjectType::Self;
         }
         else
         {
             object = CreateActor(id, position, scale, rot, state, data);
-            object->objectType_ = ObjectTypePlayer;
+            object->objectType_ = ObjectType::Player;
         }
         break;
-    case AB::GameProtocol::ObjectTypeNpc:
+    case AB::GameProtocol::GameObjectType::Npc:
         object = CreateActor(id, position, scale, rot, state, data);
-        object->objectType_ = ObjectTypeNpc;
+        object->objectType_ = ObjectType::Npc;
         break;
-    case AB::GameProtocol::ObjectTypeAreaOfEffect:
+    case AB::GameProtocol::GameObjectType::AreaOfEffect:
         object = CreateActor(id, position, scale, rot, state, data);
-        object->objectType_ = ObjectTypeAreaOfEffect;
+        object->objectType_ = ObjectType::AreaOfEffect;
         break;
-    case AB::GameProtocol::ObjectTypeItemDrop:
+    case AB::GameProtocol::GameObjectType::ItemDrop:
         object = CreateActor(id, position, scale, rot, state, data);
-        object->objectType_ = ObjectTypeItemDrop;
+        object->objectType_ = ObjectType::ItemDrop;
         break;
-    case AB::GameProtocol::ObjectTypeProjectile:
+    case AB::GameProtocol::GameObjectType::Projectile:
         object = CreateActor(id, position, scale, rot, state, data);
-        object->objectType_ = ObjectTypeProjectile;
+        object->objectType_ = ObjectType::Projectile;
         break;
-    case AB::GameProtocol::ObjectTypeUnknown:
-    case AB::GameProtocol::ObjectTypeTerrainPatch:
-    case AB::GameProtocol::ObjectTypeStatic:
-    case AB::GameProtocol::ObjectTypeSentToPlayer:
+    case AB::GameProtocol::GameObjectType::Unknown:
+    case AB::GameProtocol::GameObjectType::TerrainPatch:
+    case AB::GameProtocol::GameObjectType::Static:
+    case AB::GameProtocol::GameObjectType::__SentToPlayer:
         // Not for us
         break;
     }
@@ -482,11 +482,11 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
 #endif
         switch (object->objectType_)
         {
-        case ObjectTypePlayer:
+        case ObjectType::Player:
             if (!existing)
                 chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
-        case ObjectTypeSelf:
+        case ObjectType::Self:
         {
             To<Player>(object)->UpdateMumbleContext();
             To<Player>(object)->UpdateUI();
@@ -520,7 +520,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
         }
         object->RemoveFromScene();
         object->GetNode()->Remove();
-        if (object->objectType_ == ObjectTypePlayer)
+        if (object->objectType_ == ObjectType::Player)
         {
             Actor* act = To<Actor>(object);
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
@@ -613,7 +613,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                 if (target)
                 {
                     actor->SetSelectedObject(SharedPtr<GameObject>(target));
-                    if (actor->objectType_ == ObjectTypeSelf)
+                    if (actor->objectType_ == ObjectType::Self)
                     {
                         targetWindow_->SetTarget(SharedPtr<Actor>(To<Actor>(target)));
                         partyWindow_->SelectItem(targetId);
@@ -624,7 +624,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
             {
                 // Unselect
                 actor->SetSelectedObject(SharedPtr<GameObject>());
-                if (actor->objectType_ == ObjectTypeSelf)
+                if (actor->objectType_ == ObjectType::Self)
                 {
                     targetWindow_->SetTarget(SharedPtr<Actor>());
                     partyWindow_->UnselectItem(targetId);
@@ -643,7 +643,7 @@ void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
     {
         AB::GameProtocol::SkillError error = static_cast<AB::GameProtocol::SkillError>(eventData[P_ERROR].GetUInt());
         object->OnSkillError(error);
-        if (object->objectType_ == ObjectTypeSelf)
+        if (object->objectType_ == ObjectType::Self)
         {
             const String& msg = eventData[P_ERRORMSG].GetString();
             if (!msg.Empty())
@@ -665,7 +665,7 @@ void WorldLevel::HandleObjectAttackFailure(StringHash, VariantMap& eventData)
     {
         AB::GameProtocol::AttackError error = static_cast<AB::GameProtocol::AttackError>(eventData[P_ERROR].GetUInt());
         object->OnAttackError(error);
-        if (object->objectType_ == ObjectTypeSelf)
+        if (object->objectType_ == ObjectType::Self)
         {
             const String& msg = eventData[P_ERRORMSG].GetString();
             if (!msg.Empty())
@@ -682,7 +682,7 @@ void WorldLevel::HandlePlayerError(StringHash, VariantMap& eventData)
 {
     using namespace Events::PlayerError;
     AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(eventData[P_ERROR].GetUInt());
-    if (error == AB::GameProtocol::PlayerErrorNone)
+    if (error == AB::GameProtocol::PlayerErrorValue::None)
         return;
     const String& msg = eventData[P_ERRORMSG].GetString();
     if (!msg.Empty())
@@ -711,7 +711,7 @@ void WorldLevel::HandleObjectEffectAdded(StringHash, VariantMap& eventData)
         uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
         uint32_t ticks = eventData[P_TICKS].GetUInt();
         object->OnEffectAdded(effectIndex, ticks);
-        if (object->objectType_ == ObjectTypeSelf)
+        if (object->objectType_ == ObjectType::Self)
         {
             WindowManager* wm = GetSubsystem<WindowManager>();
             EffectsWindow* wnd = dynamic_cast<EffectsWindow*>(wm->GetWindow(WINDOW_EFFECTS, true).Get());
@@ -730,7 +730,7 @@ void WorldLevel::HandleObjectEffectRemoved(StringHash, VariantMap& eventData)
     {
         uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
         object->OnEffectRemoved(effectIndex);
-        if (object->objectType_ == ObjectTypeSelf)
+        if (object->objectType_ == ObjectType::Self)
         {
             WindowManager* wm = GetSubsystem<WindowManager>();
             EffectsWindow* wnd = dynamic_cast<EffectsWindow*>(wm->GetWindow(WINDOW_EFFECTS, true).Get());
@@ -1035,22 +1035,22 @@ void WorldLevel::HandleTradeDialogTrigger(StringHash, VariantMap& eventData)
     auto* source = GetObject<Actor>(sourceId);
     if (!source)
         return;
-    if (source->objectType_ != ObjectTypePlayer && source->objectType_ != ObjectTypeSelf)
+    if (source->objectType_ != ObjectType::Player && source->objectType_ != ObjectType::Self)
         return;
     auto* target = GetObject<Actor>(targetId);
     if (!target)
         return;
-    if (target->objectType_ != ObjectTypePlayer && target->objectType_ != ObjectTypeSelf)
+    if (target->objectType_ != ObjectType::Player && target->objectType_ != ObjectType::Self)
         return;
 
     SharedPtr<Player> player;
     SharedPtr<Actor> partner;
-    if (source->objectType_ == ObjectTypeSelf)
+    if (source->objectType_ == ObjectType::Self)
     {
         player.StaticCast(SharedPtr<Actor>(source));
         partner = target;
     }
-    else if (target->objectType_ == ObjectTypeSelf)
+    else if (target->objectType_ == ObjectType::Self)
     {
         player.StaticCast(SharedPtr<Actor>(target));
         partner = source;

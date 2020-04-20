@@ -59,7 +59,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float ma
         wayPoints_.clear();
         bool succ = FindPath(f->transformation_.position_);
         if (succ && ping)
-            owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
+            owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallType::Follow, 0);
         return succ;
     }
     return false;

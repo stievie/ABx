@@ -115,7 +115,7 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
     GameObject& other, const Math::Vector3& move,
     bool& updateTrans)
 {
-    if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::ObjectTypePlayer))
+    if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::GameObjectType::Player))
         return Iteration::Continue;
     if (Is<Actor>(other))
     {
@@ -155,7 +155,7 @@ void CollisionComp::ResolveCollisions()
 {
     // Players don't collide with other players in outposts.
     // GetType() is virtual so call it just once.
-    isCollidingWithPlayers_ = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
+    isCollidingWithPlayers_ = (owner_.GetType() != AB::GameProtocol::GameObjectType::Player) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
     // Actor always has a MoveComp

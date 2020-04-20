@@ -59,7 +59,7 @@ private:
     int64_t startTick_{ 0 };
     uint32_t lifeTime_{ DEFAULT_LIFETIME };
     uint32_t functions_{ FunctionNone };
-    AB::GameProtocol::AttackError error_{ AB::GameProtocol::AttackErrorNone };
+    AB::GameProtocol::AttackError error_{ AB::GameProtocol::AttackError::None };
     void InitializeLua();
     bool LoadScript(const std::string& fileName);
     bool HaveFunction(Function func) const
@@ -88,7 +88,7 @@ public:
     bool Load();
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypeProjectile;
+        return AB::GameProtocol::GameObjectType::Projectile;
     }
     void SetSource(std::shared_ptr<Actor> source);
     std::shared_ptr<Actor> GetSource() const { return source_.lock(); }
@@ -105,7 +105,7 @@ public:
 template <>
 inline bool Is<Projectile>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypeProjectile;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::Projectile;
 }
 
 }

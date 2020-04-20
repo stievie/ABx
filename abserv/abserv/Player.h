@@ -123,7 +123,7 @@ public:
     void AdvanceLevel() override;
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypePlayer;
+        return AB::GameProtocol::GameObjectType::Player;
     }
     uint32_t GetInactiveTime() const
     {
@@ -253,7 +253,7 @@ public:
 template <>
 inline bool Is<Player>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypePlayer;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::Player;
 }
 
 }

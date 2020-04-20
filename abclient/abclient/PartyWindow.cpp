@@ -242,7 +242,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
             SubscribeToEvent(rejectButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleRejectInvitationClicked));
         }
     }
-    if ((type != MemberType::Invitation) && (actor->objectType_ != ObjectTypeSelf) && IsLeader())
+    if ((type != MemberType::Invitation) && (actor->objectType_ != ObjectType::Self) && IsLeader())
     {
         // If that's not we and we are the leader we can kick players
         Button* kickButton = cont->CreateChild<Button>("KickButton");
@@ -464,7 +464,7 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         auto* o = lm->GetObject(targetId);
-        if (o && o->objectType_ == ObjectTypePlayer)
+        if (o && o->objectType_ == ObjectType::Player)
         {
             Actor& a = To<Actor>(*o);
             addPlayerEdit_->SetText(a.name_);
@@ -491,7 +491,7 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
             if (leader)
                 AddInvitation(SharedPtr<Actor>(To<Actor>(leader)));
         }
-        else if (o->objectType_ == ObjectTypePlayer)
+        else if (o->objectType_ == ObjectType::Player)
         {
             // We invited another player
             AddInvitee(SharedPtr<Actor>(To<Actor>(o)));
@@ -528,7 +528,7 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
         FwClient* cli = GetSubsystem<FwClient>();
         cli->PartyGetMembers(partyId);
     }
-    else if (Is<Actor>(o) && o->objectType_ == ObjectTypePlayer)
+    else if (Is<Actor>(o) && o->objectType_ == ObjectType::Player)
     {
         Actor* actor = To<Actor>(o);
         actor->groupId_ = partyId;
@@ -875,7 +875,7 @@ void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t 
 {
     if (Is<Actor>(object))
     {
-        if (object->objectType_ == ObjectTypeSelf)
+        if (object->objectType_ == ObjectType::Self)
             groupId_ = groupId;
 
 //        URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->gameId_, groupId, groupPos, groupId_);

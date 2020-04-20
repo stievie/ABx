@@ -109,7 +109,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
         objects.erase(std::remove_if(objects.begin(), objects.end(), [](GameObject* current)
         {
             return (current->GetCollisionMask() == 0) ||
-                (current->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch);
+                (current->GetType() == AB::GameProtocol::GameObjectType::TerrainPatch);
         }), objects.end());
     };
 

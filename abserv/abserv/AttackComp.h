@@ -51,7 +51,7 @@ private:
     uint32_t lastAttackSpeed_{ 0 };
     bool attackSpeedDirty_{ false };
     DamageType damageType_{ DamageType::Unknown };
-    AB::GameProtocol::AttackError lastError_{ AB::GameProtocol::AttackErrorNone };
+    AB::GameProtocol::AttackError lastError_{ AB::GameProtocol::AttackError::None };
     bool interrupted_{ false };
     std::weak_ptr<Actor> target_;
     bool CheckRange();

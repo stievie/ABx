@@ -252,5 +252,5 @@ public:
 template <>
 inline bool Is<Actor>(const GameObject& obj)
 {
-    return obj.objectType_ > ObjectTypeStatic;
+    return obj.objectType_ > ObjectType::Static;
 }

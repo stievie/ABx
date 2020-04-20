@@ -269,7 +269,7 @@ void Actor::UpdateTransformation()
     extern bool gNoClientPrediction;
     Vector3 moveTo = {};
     if ((creatureState_ == AB::GameProtocol::CreatureState::Moving) &&
-        (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
+        (objectType_ != ObjectType::Self || gNoClientPrediction || autoRun_))
     {
         // Interpolate when:
         // 1. Creature is moving
@@ -403,11 +403,11 @@ void Actor::Update(float timeStep)
     if (hpBar_ && !undestroyable_)
     {
         hpBar_->SetValues(stats_.maxHealth, stats_.health);
-        hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_ || highlight);
+        hpBar_->SetVisible((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight);
     }
     else if (classLevel_)
     {
-        classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_ || highlight);
+        classLevel_->SetVisible((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight);
     }
     if (IsSpeechBubbleVisible())
     {
@@ -723,7 +723,7 @@ void Actor::HandleNameClicked(StringHash, VariantMap&)
 
 void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
 {
-    if (objectType_ == ObjectTypeSelf)
+    if (objectType_ == ObjectType::Self)
     {
         using namespace AnimationFinished;
         bool looped = eventData[P_LOOPED].GetBool();
@@ -867,12 +867,12 @@ void Actor::SetSelectedObject(SharedPtr<GameObject> object)
     if (selectedObject_ == object)
         return;
 
-    if (objectType_ == ObjectTypeSelf && selectedObject_)
+    if (objectType_ == ObjectType::Self && selectedObject_)
     {
         selectedObject_->playerSelected_ = false;
     }
     selectedObject_ = object;
-    if (objectType_ == ObjectTypeSelf && selectedObject_)
+    if (objectType_ == ObjectType::Self && selectedObject_)
     {
         selectedObject_->playerSelected_ = true;
     }
@@ -1024,31 +1024,31 @@ void Actor::ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value
 {
     switch (resType)
     {
-    case AB::GameProtocol::ResourceTypeHealth:
+    case AB::GameProtocol::ResourceType::Health:
         stats_.health = static_cast<unsigned>(Max(0, value));
         break;
-    case AB::GameProtocol::ResourceTypeEnergy:
+    case AB::GameProtocol::ResourceType::Energy:
         stats_.energy = static_cast<unsigned>(Max(0, value));
         break;
-    case AB::GameProtocol::ResourceTypeAdrenaline:
+    case AB::GameProtocol::ResourceType::Adrenaline:
         stats_.adrenaline = static_cast<unsigned>(Max(0, value));
         break;
-    case AB::GameProtocol::ResourceTypeOvercast:
+    case AB::GameProtocol::ResourceType::Overcast:
         stats_.overcast = static_cast<unsigned>(Max(0, value));
         break;
-    case AB::GameProtocol::ResourceTypeHealthRegen:
+    case AB::GameProtocol::ResourceType::HealthRegen:
         stats_.healthRegen = value;
         break;
-    case AB::GameProtocol::ResourceTypeEnergyRegen:
+    case AB::GameProtocol::ResourceType::EnergyRegen:
         stats_.energyRegen = value;
         break;
-    case AB::GameProtocol::ResourceTypeMaxHealth:
+    case AB::GameProtocol::ResourceType::MaxHealth:
         stats_.maxHealth = static_cast<unsigned>(value);
         break;
-    case AB::GameProtocol::ResourceTypeMaxEnergy:
+    case AB::GameProtocol::ResourceType::MaxEnergy:
         stats_.maxEnergy = static_cast<unsigned>(value);
         break;
-    case AB::GameProtocol::ResourceTypeMorale:
+    case AB::GameProtocol::ResourceType::Morale:
         stats_.morale = value;
         break;
     }

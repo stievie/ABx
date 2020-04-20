@@ -348,7 +348,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeHealth,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::Health),
             static_cast<int16_t>(health_)
         };
         AB::Packets::Add(packet, message);
@@ -358,7 +358,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeEnergy,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::Energy),
             static_cast<int16_t>(energy_)
         };
         AB::Packets::Add(packet, message);
@@ -368,7 +368,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeAdrenaline,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::Adrenaline),
             static_cast<int16_t>(adrenaline_)
         };
         AB::Packets::Add(packet, message);
@@ -378,7 +378,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeOvercast,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::Overcast),
             static_cast<int16_t>(overcast_)
         };
         AB::Packets::Add(packet, message);
@@ -388,7 +388,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeHealthRegen,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::HealthRegen),
             static_cast<int16_t>(GetHealthRegen())
         };
         AB::Packets::Add(packet, message);
@@ -398,7 +398,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeEnergyRegen,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::EnergyRegen),
             static_cast<int16_t>(energyRegen_)
         };
         AB::Packets::Add(packet, message);
@@ -408,7 +408,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeMaxHealth,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::MaxHealth),
             static_cast<int16_t>(maxHealth_)
         };
         AB::Packets::Add(packet, message);
@@ -418,7 +418,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeMaxEnergy,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::MaxEnergy),
             static_cast<int16_t>(maxEnergy_)
         };
         AB::Packets::Add(packet, message);
@@ -428,7 +428,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectResourceChange);
         AB::Packets::Server::ObjectResourceChanged packet = {
             owner_.id_,
-            AB::GameProtocol::ResourceTypeMorale,
+            static_cast<uint8_t>(AB::GameProtocol::ResourceType::Morale),
             static_cast<int16_t>(morale_)
         };
         AB::Packets::Add(packet, message);

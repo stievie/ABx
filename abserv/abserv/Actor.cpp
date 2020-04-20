@@ -294,7 +294,7 @@ bool Actor::UseSkill(int index, bool ping)
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
         return false;
 
-    return skillsComp_->UseSkill(index, ping) == AB::GameProtocol::SkillErrorNone;
+    return skillsComp_->UseSkill(index, ping) == AB::GameProtocol::SkillError::None;
 }
 
 void Actor::CancelAll()

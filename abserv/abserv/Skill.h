@@ -101,7 +101,7 @@ private:
 
     bool haveOnCancelled_{ false };
     bool haveOnInterrupted_{ false };
-    AB::GameProtocol::SkillError lastError_{ AB::GameProtocol::SkillErrorNone };
+    AB::GameProtocol::SkillError lastError_{ AB::GameProtocol::SkillError::None };
 
     bool CanUseSkill(Actor& source, Actor* target);
     void InitializeLua();

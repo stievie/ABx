@@ -72,7 +72,7 @@ void AttackComp::Hit(Actor& target)
     hitting_ = false;
     if (interrupted_)
     {
-        lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+        lastError_ = AB::GameProtocol::AttackError::Interrupted;
         owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
     }
     else
@@ -99,7 +99,7 @@ void AttackComp::Hit(Actor& target)
         }
         else
         {
-            lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+            lastError_ = AB::GameProtocol::AttackError::Interrupted;
             owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
         }
     }
@@ -114,7 +114,7 @@ void AttackComp::FireWeapon(Actor& target)
         owner_.GetPtr<Actor>(), target.GetPtr<Actor>());
     if (!owner_.IsObjectInSight(target))
     {
-        lastError_ = AB::GameProtocol::AttackErrorTargetObstructed;
+        lastError_ = AB::GameProtocol::AttackError::TargetObstructed;
     }
 }
 
@@ -202,7 +202,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
         AB::Packets::Add(packet, message);
         attackSpeedDirty_ = false;
     }
-    if (lastError_ != AB::GameProtocol::AttackErrorNone)
+    if (lastError_ != AB::GameProtocol::AttackError::None)
     {
         message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectAttackFailure);
         AB::Packets::Server::ObjectAttackFailure packet = {
@@ -210,7 +210,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
             static_cast<uint8_t>(lastError_)
         };
         AB::Packets::Add(packet, message);
-        lastError_ = AB::GameProtocol::AttackErrorNone;
+        lastError_ = AB::GameProtocol::AttackError::None;
     }
 }
 
@@ -226,13 +226,13 @@ bool AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     owner_.CallEvent<void(Actor*,bool&)>(EVENT_ON_ATTACK, target.get(), canAttack);
     if (!canAttack)
     {
-        lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
+        lastError_ = AB::GameProtocol::AttackError::InvalidTarget;
         return false;
     }
     if (!target)
     {
         // Attack needs a target
-        lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
+        lastError_ = AB::GameProtocol::AttackError::InvalidTarget;
         return false;
     }
     bool canGettingAttacked = true;
@@ -240,14 +240,14 @@ bool AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     if (target->IsUndestroyable() && canGettingAttacked)
     {
         // Can not attack an destroyable target
-        lastError_ = AB::GameProtocol::AttackErrorTargetUndestroyable;
+        lastError_ = AB::GameProtocol::AttackError::TargetUndestroyable;
         return false;
     }
 
     target_ = target;
     if (ping)
         owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
-            target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
+            target ? target->id_ : 0, AB::GameProtocol::ObjectCallType::Attack, 0);
     attacking_ = true;
     lastAttackTime_ = 0;
     return true;

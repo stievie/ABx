@@ -101,16 +101,16 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
         }
 
         const ObjectType type = actor->objectType_;
-        if (type == ObjectTypeSelf)
+        if (type == ObjectType::Self)
             // Don't collide with self
             continue;
-        else if (type == ObjectTypePlayer && !isCollidingWithPlayers)
+        else if (type == ObjectType::Player && !isCollidingWithPlayers)
             // Don't collide with other players in outposts
             continue;
-        else if (type == ObjectTypeAreaOfEffect || type == ObjectTypeItemDrop)
+        else if (type == ObjectType::AreaOfEffect || type == ObjectType::ItemDrop)
             // Never collide with these
             continue;
-        else if ((type == ObjectTypePlayer || type == ObjectTypeNpc) && actor->IsDead())
+        else if ((type == ObjectType::Player || type == ObjectType::Npc) && actor->IsDead())
             // Dont collide with dead actors
             continue;
         // When we are here we do collide with some object and can't go to pos

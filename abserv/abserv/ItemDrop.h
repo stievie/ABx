@@ -53,7 +53,7 @@ public:
 
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypeItemDrop;
+        return AB::GameProtocol::GameObjectType::ItemDrop;
     }
     uint32_t GetItemIndex() const;
     const Item* GetItem() const;
@@ -71,7 +71,7 @@ public:
 template <>
 inline bool Is<ItemDrop>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypeItemDrop;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::ItemDrop;
 }
 
 }

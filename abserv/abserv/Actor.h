@@ -349,7 +349,7 @@ public:
 template <>
 inline bool Is<Actor>(const GameObject& obj)
 {
-    return obj.GetType() >= AB::GameProtocol::ObjectTypeProjectile;
+    return obj.GetType() >= AB::GameProtocol::GameObjectType::Projectile;
 }
 
 inline bool TargetClassMatches(const Actor& actor, TargetClass _class, const Actor& target)

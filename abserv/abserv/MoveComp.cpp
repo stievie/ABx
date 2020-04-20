@@ -58,7 +58,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     HeadTo(pos);
     owner_.transformation_.position_ = pos;
 
-    if (owner_.GetType() != AB::GameProtocol::ObjectTypeProjectile)
+    if (owner_.GetType() != AB::GameProtocol::GameObjectType::Projectile)
     {
         // Keep on ground
         StickToGround();
@@ -108,7 +108,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
     owner_.transformation_.Move(speed, amount);
 
-    if (owner_.GetType() != AB::GameProtocol::ObjectTypeProjectile)
+    if (owner_.GetType() != AB::GameProtocol::GameObjectType::Projectile)
     {
         // Keep on ground, except projectiles, they usually fly...
         const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);

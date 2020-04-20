@@ -108,7 +108,7 @@ void GameObject::UpdateRanges()
         const Math::Vector3& myPos = GetPosition();
         for (const auto& o : res)
         {
-            if (o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
+            if (o->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer)
             {
                 auto so = o->shared_from_this();
                 const Math::Vector3& objectPos = o->GetPosition();

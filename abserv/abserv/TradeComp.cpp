@@ -96,13 +96,13 @@ void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
         case Components::TradeComp::TradeError::None:
             break;
         case Components::TradeComp::TradeError::TargetInvalid:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerInvalid;
+            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerInvalid);
             break;
         case Components::TradeComp::TradeError::TargetQueing:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerQueueing;
+            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerQueueing);
             break;
         case Components::TradeComp::TradeError::TargetTrading:
-            packet.code = AB::GameProtocol::PlayerErrorTradingPartnerTrading;
+            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading);
             break;
         }
         AB::Packets::Add(packet, message);

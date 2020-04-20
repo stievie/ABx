@@ -50,7 +50,7 @@ public:
     }
     AB::GameProtocol::GameObjectType GetType() const override
     {
-        return AB::GameProtocol::ObjectTypeTerrainPatch;
+        return AB::GameProtocol::GameObjectType::TerrainPatch;
     }
     float GetHeight(const Math::Vector3& position) const;
 
@@ -61,7 +61,7 @@ public:
 template <>
 inline bool Is<TerrainPatch>(const GameObject& obj)
 {
-    return obj.GetType() == AB::GameProtocol::ObjectTypeTerrainPatch;
+    return obj.GetType() == AB::GameProtocol::GameObjectType::TerrainPatch;
 }
 
 }
