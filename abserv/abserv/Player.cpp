@@ -412,6 +412,19 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
 {
 //    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
 //        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
+    if (currentPlace == AB::Entities::StoragePlace::Inventory && tradeComp_->IsTrading())
+    {
+        // Because we use the item position to identify the item that is traded, we don't allow
+        // to reorder the items while trading.
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::GameError packet = {
+            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotAllowedWhileTrading)
+        };
+        AB::Packets::Add(packet, *msg);
+        WriteToOutput(*msg);
+        return;
+    }
 
     if (newPlace == AB::Entities::StoragePlace::Chest)
     {
@@ -422,7 +435,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
         }
         if (inventoryComp_->GetChestItem(newPos) != nullptr)
         {
-            // TODO: If there is arelady some item, exchange it
+            // TODO: If there is already some item, exchange it
             return;
         }
     }

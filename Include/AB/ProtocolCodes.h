@@ -421,6 +421,7 @@ enum class PlayerErrorValue : uint8_t
     None = 0,
     InventoryFull,
     ChestFull,
+    NotAllowedWhileTrading,
     TradingPartnerInvalid,
     TradingPartnerQueueing,
     TradingPartnerTrading

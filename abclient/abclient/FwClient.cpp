@@ -285,6 +285,8 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "Your inventory is full";
     case AB::GameProtocol::PlayerErrorValue::ChestFull:
         return "The chest is full";
+    case AB::GameProtocol::PlayerErrorValue::NotAllowedWhileTrading:
+        return "This operation is not allowed while you are trading";
     case AB::GameProtocol::PlayerErrorValue::TradingPartnerInvalid:
         return "Invalid trading partner";
     case AB::GameProtocol::PlayerErrorValue::TradingPartnerQueueing:
