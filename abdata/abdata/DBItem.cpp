@@ -68,6 +68,7 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
     item.spawnItemUuid = result->GetString("spawn_item_uuid");
     item.actorScript = result->GetString("actor_script");
+    item.tradeAble = result->GetUInt("trade_able") != 0;
 
     return true;
 }

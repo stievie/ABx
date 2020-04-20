@@ -139,9 +139,10 @@ struct Item : Entity
         s.value2b(value);
         s.text1b(spawnItemUuid, Limits::MAX_UUID);
         s.text1b(actorScript, Limits::MAX_FILENAME);
+        s.value1b(tradeAble);
     }
 
-    uint32_t index = INVALID_INDEX;
+    uint32_t index{ INVALID_INDEX };
     ModelClass model_class{ ModelClass::Unknown };
     std::string name;
     std::string script;
@@ -149,10 +150,11 @@ struct Item : Entity
     std::string objectFile;
     ItemType type{ ItemType::Unknown };
     ItemType belongsTo{ ItemType::Unknown };
-    bool stackAble = false;
-    uint16_t value = 0;
-    std::string spawnItemUuid = EMPTY_GUID;
+    bool stackAble{ false };
+    uint16_t value{ 0 };
+    std::string spawnItemUuid{ EMPTY_GUID };
     std::string actorScript;
+    bool tradeAble{ false };
 };
 
 inline bool IsArmorItem(ItemType type)

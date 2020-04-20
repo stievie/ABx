@@ -985,6 +985,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("object").set_value(s.objectFile.c_str());
         gNd.append_attribute("icon").set_value(s.iconFile.c_str());
         gNd.append_attribute("stack_able").set_value(s.stackAble);
+        gNd.append_attribute("trade_able").set_value(s.tradeAble);
     }
 
     std::stringstream stream;

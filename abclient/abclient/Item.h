@@ -58,6 +58,7 @@ public:
     AB::Entities::ItemType type_{ AB::Entities::ItemType::Unknown };
     AB::Entities::ModelClass modelClass_{ AB::Entities::ModelClass::Unknown };
     bool stackAble_{ false };
+    bool tradeAble_{ false };
 };
 
 String FormatMoney(uint32_t amount);

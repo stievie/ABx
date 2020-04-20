@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "TradeDialog.h"
 #include "Player.h"
+#include "ItemsCache.h"
 
 TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner) :
     DialogWindow(context),

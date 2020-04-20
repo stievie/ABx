@@ -652,6 +652,7 @@ void FwClient::LoadItems(uint32_t curVersion)
         item->iconFile_ = itm.attribute("icon").as_string();
         item->modelClass_ = static_cast<AB::Entities::ModelClass>(itm.attribute("model_class").as_uint());
         item->stackAble_ = itm.attribute("stack_able").as_bool();
+        item->tradeAble_ = itm.attribute("trade_able").as_bool();
 
         items->Add(item);
     }

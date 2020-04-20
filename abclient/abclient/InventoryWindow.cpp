@@ -436,15 +436,21 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     }
     else if (tradeDialog && tradeDialog->IsInside({ X, Y }, true))
     {
-        ConcreteItem ci;
-        ci.pos = pos;
-        ci.place = AB::Entities::StoragePlace::Inventory;
-        ci.index = dragItem_->GetVar("Index").GetUInt();
-        ci.count = dragItem_->GetVar("Count").GetUInt();
-        ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
-        LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
+        auto* itemsCache = GetSubsystem<ItemsCache>();
+        auto item = itemsCache->Get(dragItem_->GetVar("Index").GetUInt());
+        if (item && item->tradeAble_)
+        {
+            ConcreteItem ci;
+            ci.pos = pos;
+            ci.type = item->type_;
+            ci.place = AB::Entities::StoragePlace::Inventory;
+            ci.index = dragItem_->GetVar("Index").GetUInt();
+            ci.count = dragItem_->GetVar("Count").GetUInt();
+            ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
+            LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
 
-        tradeDialog->DropItem({ X, Y }, std::move(ci));
+            tradeDialog->DropItem({ X, Y }, std::move(ci));
+        }
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();
@@ -490,9 +496,7 @@ BorderImage* InventoryWindow::GetItemContainer(uint16_t pos)
     String name("ItemRow" + String(rowIndex + 1));
     UIElement* row = container->GetChild(name, true);
     if (!row)
-    {
         return nullptr;
-    }
     unsigned index = pos - (rowIndex * INVENTORY_COLS_PER_ROW) - 1;
     BorderImage* result = row->GetChildStaticCast<BorderImage>(index);
     return result;
