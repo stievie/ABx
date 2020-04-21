@@ -70,6 +70,7 @@ namespace details {
 
 // NOTE: ASSERT_FALSE() never returns
 #if !defined(NDEBUG) || defined(SA_ASSERT)
+// There is an abort() to make sure it really does not return, even when the assert() macro doesn't do much.
 #define ASSERT_FALSE()           \
     do                           \
     {                            \
