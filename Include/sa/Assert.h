@@ -46,16 +46,25 @@
 #   define SA_ASSERT_FUNCTION __FUNCTION__
 #endif
 
+namespace details {
+
 [[noreturn]] SA_ASSERT_INLINE void sa_assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
 {
     std::cerr << "Assertion failed: " << msg << " in " << file << ":" << line << " " << func << std::endl;
     abort();
 }
 
+[[noreturn]] SA_ASSERT_INLINE void sa_abort()
+{
+    abort();
+}
+
+}
+
 #if defined(assert)
 #undef assert
 #endif
-#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa_assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
+#define assert(expr) (static_cast<bool>(expr) ? (void)0 : details::sa_assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
 
 #endif
 
@@ -63,5 +72,9 @@
 
 // Some convenience macros
 
-// NOTE: ASSERT_FALSE() may return when NDEBUG is defined but not SA_ASSERT
+#if !defined(NDEBUG) || defined(SA_ASSERT)
 #define ASSERT_FALSE() assert(false)
+#else
+// NOTE: In release builds (NDEBUG not defined) without SA_ASSERT just abort, so ASSERT_FALSE() never returns.
+#define ASSERT_FALSE() details::sa_abort()
+#endif
