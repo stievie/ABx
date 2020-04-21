@@ -36,7 +36,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <stdio.h>
 
 #include <stdint.h>
-#include <cassert>
+#include <sa/Assert.h>
 
 #include <memory>
 #include <string>

@@ -34,7 +34,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #define AB_UNUSED(P) (void)(P)
 
-#include <cassert>
+#include <sa/Assert.h>
 #include <AB/CommonConfig.h>
 #include <abscommon/ServiceConfig.h>
 #include "Config.h"

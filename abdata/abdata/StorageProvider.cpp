@@ -616,12 +616,12 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     switch (tableHash)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_PLAYERITEMLIST_HASH:
         // Use one bellow
-        assert(false);
+        ASSERT_FALSE();
     case KEY_TYPEDITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_PARTIES_HASH:
         // Not written to DB
         return false;
@@ -669,11 +669,11 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     switch (tableHash)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_PLAYERITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_TYPEDITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_SERVICELIST_HASH:
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:
@@ -712,11 +712,11 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     switch (tableHash)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_PLAYERITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_TYPEDITEMLIST_HASH:
-        assert(false);
+        ASSERT_FALSE();
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;

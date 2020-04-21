@@ -26,6 +26,7 @@
 #include "BoundingBox.h"
 #include "ConvexHull.h"
 #include "Shape.h"
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -181,8 +182,7 @@ bool HeightMap::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3&
 bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
 {
     // Can not collide Heightmap with Heightmap
-    assert(false);
-    return false;
+    ASSERT_FALSE();
 }
 
 Shape HeightMap::GetShape() const

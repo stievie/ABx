@@ -19,41 +19,48 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#if defined(_MSC_VER)
 #pragma once
-#endif
 
-#include "targetver.h"
-#include <sa/PragmaWarning.h>
+// Provide assert() even when NDEBUG is defined, i.e. release builds. In Debug build nothing changes.
+// SA_ASSERT must be defined.
 
-PRAGMA_WARNING_DISABLE_MSVC(4307)
-
-#include <stdio.h>
-
-#include <stdint.h>
-#include <sa/Assert.h>
-
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
-#include <unordered_set>
+#include <cassert>
+#include <stdlib.h>
 #include <iostream>
 
-#include <AB/CommonConfig.h>
-#include <abscommon/DebugConfig.h>
+#ifdef SA_ASSERT
 
-#define ASIO_STANDALONE
-PRAGMA_WARNING_PUSH
-    PRAGMA_WARNING_DISABLE_MSVC(4592)
-#   include <asio.hpp>
-PRAGMA_WARNING_POP
+#ifdef NDEBUG
 
-#include <uuid.h>
+#if defined(__GNUC__)
+#   define SA_ASSERT_INLINE [[gnu::always_inline]] inline
+#elif defined(__clang__)
+#   define SA_ASSERT_INLINE inline __attribute__((always_inline))
+#elif defined(_MSC_VER)
+#   define SA_ASSERT_INLINE __forceinline
+#endif
 
-#include <abscommon/Utils.h>
-#include <abscommon/Logger.h>
+#if defined(__GNUC__) || defined(__clang__)
+#   define SA_ASSERT_FUNCTION __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+#   define SA_ASSERT_FUNCTION __FUNCTION__
+#endif
 
-#define WRITE_MINIBUMP
-#define PROFILING
-#define DEBUG_MATCH
+[[noreturn]] SA_ASSERT_INLINE void sa_assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
+{
+    std::cerr << "Assertion failed: " << msg << " in " << file << ":" << line << " " << func << std::endl;
+    abort();
+}
+
+#if defined(assert)
+#undef assert
+#endif
+#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa_assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
+
+#endif
+
+#endif
+
+// Some convenience macros
+
+#define ASSERT_FALSE() assert(false)

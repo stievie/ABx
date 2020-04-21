@@ -23,8 +23,7 @@
 
 #include <unordered_map>
 #include <vector>
-#include <cassert>
-
+#include <sa/Assert.h>
 #include <sa/TypeName.h>
 #include <sa/StringHash.h>
 

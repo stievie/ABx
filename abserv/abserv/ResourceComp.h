@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <cassert>
+#include <sa/Assert.h>
 #include <stdint.h>
 #include <absmath/MathUtils.h>
 #include <sa/Noncopyable.h>

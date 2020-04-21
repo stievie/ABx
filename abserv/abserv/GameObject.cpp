@@ -186,7 +186,7 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
             using HeightShape = Math::CollisionShape<Math::HeightMap>;
             return std::make_unique<HeightShape>(static_cast<HeightShape&>(*collisionShape_), transformation_.GetMatrix());
         default:
-            assert(false);
+            ASSERT_FALSE();
             return std::unique_ptr<Math::AbstractCollisionShape>();
         }
     };
@@ -273,7 +273,7 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
             break;
         }
         default:
-            assert(false);
+            ASSERT_FALSE();
         }
     }
 

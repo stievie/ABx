@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "SceneViewer.h"
 #include "GameManager.h"
-#include <cassert>
+#include <sa/Assert.h>
 #include "Player.h"
 
 // http://www.alecjacobson.com/weblog/?p=4307

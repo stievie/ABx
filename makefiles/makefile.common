@@ -35,7 +35,7 @@ ifneq ($(CONFIG),Debug)
 endif
 
 # Options
-DEFINES = -DNPROFILING
+DEFINES = -DNPROFILING -DSA_ASSERT
 ifeq ($(CONFIG),Debug)
 	DEFINES += -D_DEBUG -DDEBUG
 else

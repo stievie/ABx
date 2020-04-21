@@ -30,6 +30,7 @@
 #include <array>
 #include "Plane.h"
 #include "Line.h"
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -346,8 +347,7 @@ bool BoundingBox::Collides(const BoundingBox& b2, const Vector3&, Vector3& move)
         }
         default:
             // Only AABB (this) vs. OBB is possible
-            assert(false);
-            return false;
+            ASSERT_FALSE();
         }
         return result;
     }
