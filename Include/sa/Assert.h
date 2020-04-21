@@ -40,35 +40,34 @@
 
 #ifdef NDEBUG
 
-
 #if defined(__GNUC__) || defined(__clang__)
 #   define SA_ASSERT_FUNCTION __PRETTY_FUNCTION__
 #elif defined(_MSC_VER)
 #   define SA_ASSERT_FUNCTION __FUNCTION__
 #endif
 
+namespace sa {
 namespace details {
 
-[[noreturn]] SA_ASSERT_INLINE void sa_assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
+[[noreturn]] SA_ASSERT_INLINE void assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
 {
     std::cerr << "Assertion failed: " << msg << " in " << file << ":" << line << " " << func << std::endl;
     abort();
 }
 
 }
+}
 
 #if defined(assert)
 #undef assert
 #endif
-#define assert(expr) (static_cast<bool>(expr) ? (void)0 : details::sa_assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
+#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa::details::assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
 
 #endif  // NDEBUG
 
 #endif  // SA_ASSERT
 
-// Some convenience macros
-
-// NOTE: ASSERT_FALSE() never returns
+// NOTE: ASSERT_FALSE() never returns, no matter what is defined, i.e. also not in release builds.
 #if !defined(NDEBUG) || defined(SA_ASSERT)
 // There is an abort() to make sure it really does not return, even when the assert() macro doesn't do much.
 #define ASSERT_FALSE()           \
