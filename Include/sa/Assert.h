@@ -28,10 +28,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-#ifdef SA_ASSERT
-
-#ifdef NDEBUG
-
 #if defined(__GNUC__)
 #   define SA_ASSERT_INLINE [[gnu::always_inline]] inline
 #elif defined(__clang__)
@@ -39,6 +35,11 @@
 #elif defined(_MSC_VER)
 #   define SA_ASSERT_INLINE __forceinline
 #endif
+
+#ifdef SA_ASSERT
+
+#ifdef NDEBUG
+
 
 #if defined(__GNUC__) || defined(__clang__)
 #   define SA_ASSERT_FUNCTION __PRETTY_FUNCTION__
@@ -54,11 +55,6 @@ namespace details {
     abort();
 }
 
-[[noreturn]] SA_ASSERT_INLINE void sa_abort()
-{
-    abort();
-}
-
 }
 
 #if defined(assert)
@@ -66,15 +62,20 @@ namespace details {
 #endif
 #define assert(expr) (static_cast<bool>(expr) ? (void)0 : details::sa_assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
 
-#endif
+#endif  // NDEBUG
 
-#endif
+#endif  // SA_ASSERT
 
 // Some convenience macros
 
+// NOTE: ASSERT_FALSE() never returns
 #if !defined(NDEBUG) || defined(SA_ASSERT)
-#define ASSERT_FALSE() assert(false)
+#define ASSERT_FALSE()           \
+    do                           \
+    {                            \
+        assert(false);           \
+        abort();                 \
+    } while (0)
 #else
-// NOTE: In release builds (NDEBUG not defined) without SA_ASSERT just abort, so ASSERT_FALSE() never returns.
-#define ASSERT_FALSE() details::sa_abort()
+#define ASSERT_FALSE() abort()
 #endif

@@ -102,7 +102,6 @@ int ItemStats::GetArmor(DamageType damageType) const
         break;
     default:
         ASSERT_FALSE();
-        break;
     }
 
     return value;

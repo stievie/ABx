@@ -348,7 +348,6 @@ bool BoundingBox::Collides(const BoundingBox& b2, const Vector3&, Vector3& move)
         default:
             // Only AABB (this) vs. OBB is possible
             ASSERT_FALSE();
-            break;
         }
         return result;
     }

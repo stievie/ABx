@@ -47,7 +47,7 @@ HeightMap::HeightMap(const std::vector<float>& data, const Point<int>& size) :
 
 void HeightMap::ProcessData()
 {
-    const unsigned points = (unsigned)(numVertices_.x_ * numVertices_.y_);
+    const unsigned points = static_cast<unsigned>(numVertices_.x_ * numVertices_.y_);
     const float* fData = heightData_.data();
 
     minHeight_ = maxHeight_ = fData[0];
@@ -72,7 +72,7 @@ float HeightMap::GetRawHeight(int x, int z) const
     // TODO: +/- 16?
     const int _x = Clamp(x - 16, 0, numVertices_.x_ - 1);
     const int _z = Clamp(z + 16, 0, numVertices_.y_ - 1);
-    return heightData_[_z * numVertices_.x_ + _x];
+    return heightData_[static_cast<size_t>(_z * numVertices_.x_ + _x)];
 }
 
 Vector3 HeightMap::GetRawNormal(int x, int z) const
@@ -183,21 +183,20 @@ bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
 {
     // Can not collide Heightmap with Heightmap
     ASSERT_FALSE();
-    return false;
 }
 
 Shape HeightMap::GetShape() const
 {
     Shape s;
-    s.vertexData_.resize(numVertices_.x_ + numVertices_.y_);
+    s.vertexData_.resize(static_cast<size_t>(numVertices_.x_ + numVertices_.y_));
     for (int x = 0; x < numVertices_.x_; ++x)
     {
         for (int z = 0; z < numVertices_.y_; ++z)
         {
             float fy = GetRawHeight(x, z);
-            float fx = (float)x - (float)numVertices_.x_ / 2.0f;
-            float fz = (float)z - (float)numVertices_.y_ / 2.0f;
-            s.vertexData_[z * numVertices_.y_ + x] = {
+            float fx = static_cast<float>(x) - static_cast<float>(numVertices_.x_) / 2.0f;
+            float fz = static_cast<float>(z) - static_cast<float>(numVertices_.y_) / 2.0f;
+            s.vertexData_[static_cast<size_t>(z * numVertices_.y_ + x)] = {
                 fx,
                 fy,
                 fz
@@ -243,8 +242,8 @@ Shape HeightMap::GetShape() const
 Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
 {
     const Vector3 pos = matrix_.Inverse() * world;
-    int xPos = (int)(pos.x_ / spacing_.x_ + 0.5f);
-    int zPos = (int)(pos.z_ / spacing_.z_ + 0.5f);
+    int xPos = static_cast<int>(pos.x_ / spacing_.x_ + 0.5f);
+    int zPos = static_cast<int>(pos.z_ / spacing_.z_ + 0.5f);
     xPos = Clamp(xPos, 0, numVertices_.x_ - 1);
     zPos = Clamp(zPos, 0, numVertices_.y_ - 1);
     return Point<int>(xPos, zPos);
@@ -253,8 +252,8 @@ Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
 Vector3 HeightMap::HeightmapToWorld(const Point<int>& pixel)
 {
     const Point<int> pos(pixel.x_, numVertices_.y_ - 1 - pixel.y_);
-    const float xPos = (float)(pos.x_ * spacing_.x_);
-    const float zPos = (float)(pos.y_ * spacing_.z_);
+    const float xPos = static_cast<float>(pos.x_ * spacing_.x_);
+    const float zPos = static_cast<float>(pos.y_ * spacing_.z_);
     const Vector3 lPos(xPos, 0.0f, zPos);
     Vector3 wPos = matrix_ * lPos;
     wPos.y_ = GetHeight(wPos);
