@@ -342,12 +342,13 @@ bool BoundingBox::Collides(const BoundingBox& b2, const Vector3&, Vector3& move)
         case OrientationsO2:
         {
             XMath::BoundingOrientedBox xb2(b2);
-            result = ((XMath::BoundingBox)*this).Intersects(xb2);
+            result = (static_cast<XMath::BoundingBox>(*this)).Intersects(xb2);
             break;
         }
         default:
             // Only AABB (this) vs. OBB is possible
             ASSERT_FALSE();
+            break;
         }
         return result;
     }

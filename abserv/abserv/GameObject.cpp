@@ -274,6 +274,7 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
         }
         default:
             ASSERT_FALSE();
+            break;
         }
     }
 

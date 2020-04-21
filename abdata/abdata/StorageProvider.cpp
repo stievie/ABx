@@ -617,11 +617,14 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     {
     case KEY_ACCOUNTITEMLIST_HASH:
         ASSERT_FALSE();
+        break;
     case KEY_PLAYERITEMLIST_HASH:
         // Use one bellow
         ASSERT_FALSE();
+        break;
     case KEY_TYPEDITEMLIST_HASH:
         ASSERT_FALSE();
+        break;
     case KEY_PARTIES_HASH:
         // Not written to DB
         return false;
@@ -670,10 +673,13 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     {
     case KEY_ACCOUNTITEMLIST_HASH:
         ASSERT_FALSE();
+        break;
     case KEY_PLAYERITEMLIST_HASH:
         ASSERT_FALSE();
+        break;
     case KEY_TYPEDITEMLIST_HASH:
         ASSERT_FALSE();
+        break;
     case KEY_SERVICELIST_HASH:
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:

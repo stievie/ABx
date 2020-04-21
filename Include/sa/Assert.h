@@ -63,4 +63,5 @@
 
 // Some convenience macros
 
+// NOTE: ASSERT_FALSE() may return when NDEBUG is defined but not SA_ASSERT
 #define ASSERT_FALSE() assert(false)

@@ -183,6 +183,7 @@ bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
 {
     // Can not collide Heightmap with Heightmap
     ASSERT_FALSE();
+    return false;
 }
 
 Shape HeightMap::GetShape() const
