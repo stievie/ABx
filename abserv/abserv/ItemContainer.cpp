@@ -112,6 +112,20 @@ uint32_t ItemContainer::GetMoney() const
     return item->concreteItem_.count;
 }
 
+size_t ItemContainer::GetMoneyFreeSpace() const
+{
+    return maxMoney_ - GetMoney();
+}
+
+bool ItemContainer::CheckCapacity(uint32_t money, size_t itemCount)
+{
+    if (GetFreeSpace() < itemCount)
+        return false;
+    if (GetMoneyFreeSpace() < money)
+        return false;
+    return true;
+}
+
 Item* ItemContainer::FindItem(const std::string& uuid)
 {
     auto* cache = GetSubsystem<ItemsCache>();

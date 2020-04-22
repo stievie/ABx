@@ -24,6 +24,8 @@
 #include <sa/Noncopyable.h>
 #include <memory>
 #include <AB/ProtocolCodes.h>
+#include <functional>
+#include <sa/Iteration.h>
 
 namespace Net {
 class NetworkMessage;
@@ -32,6 +34,7 @@ class NetworkMessage;
 namespace Game {
 
 class Player;
+class Item;
 
 namespace Components {
 
@@ -46,6 +49,7 @@ public:
         TargetInvalid,
         TargetTrading,
         TargetQueing,
+        InProgress,
     };
 private:
     enum class TradeState
@@ -53,10 +57,14 @@ private:
         Idle,
         MoveToTarget,
         Trading,
+        Offered,
     };
     Player& owner_;
     std::weak_ptr<Player> target_;
     TradeState state_{ TradeState::Idle };
+    bool accepted_{ false };
+    std::vector<uint16_t> ourOffer_;
+    uint32_t ourOfferedMoney_{ 0 };
     void MoveToTarget(std::shared_ptr<Player> target);
     bool CheckRange();
     void StartTrading();
@@ -77,6 +85,13 @@ public:
     void WriteError(TradeError error, Net::NetworkMessage& message);
 
     bool IsTrading() const { return state_ >= TradeState::Trading; }
+    uint32_t GetTradePartnerId() const;
+    void Offer(uint32_t money, std::vector<uint16_t> items);
+    void Accept();
+    bool IsAccepted() const { return accepted_; }
+    void VisitOfferedItems(const std::function<Iteration(Item&)>& callback);
+    size_t OfferedItemCount() const { return ourOffer_.size(); }
+    uint32_t OfferedMoney() const { return ourOfferedMoney_; }
 };
 
 }

@@ -424,7 +424,8 @@ enum class PlayerErrorValue : uint8_t
     NotAllowedWhileTrading,
     TradingPartnerInvalid,
     TradingPartnerQueueing,
-    TradingPartnerTrading
+    TradingPartnerTrading,
+    AlreadyTradingWithThisTarget
 };
 
 enum class GameObjectType : uint8_t

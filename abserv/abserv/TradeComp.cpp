@@ -63,8 +63,10 @@ void TradeComp::Update(uint32_t)
 
 void TradeComp::Reset()
 {
-    state_ = TradeState::Idle;
+    ourOffer_.clear();
     target_.reset();
+    accepted_ = false;
+    state_ = TradeState::Idle;
 }
 
 void TradeComp::Cancel()
@@ -104,8 +106,120 @@ void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
         case Components::TradeComp::TradeError::TargetTrading:
             packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading);
             break;
+        case Components::TradeComp::TradeError::InProgress:
+            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget);
+            break;
         }
         AB::Packets::Add(packet, message);
+    }
+}
+
+uint32_t TradeComp::GetTradePartnerId() const
+{
+    if (auto p = target_.lock())
+        return p->id_;
+    return 0;
+}
+
+void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
+{
+    auto target = target_.lock();
+    if (!target)
+    {
+        LOG_ERROR << "Target gone while trading" << std::endl;
+        return;
+    }
+    state_ = TradeState::Offered;
+    ourOffer_ = items;
+    ourOfferedMoney_ = money;
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::TradeGotOffer);
+    AB::Packets::Server::TradeOffer packet;
+    packet.money = money;
+    auto& invComp = *owner_.inventoryComp_;
+    for (auto itemPos : items)
+    {
+        auto* item = invComp.GetInventoryItem(itemPos);
+        if (!item)
+        {
+            LOG_ERROR << "No item at pos " << static_cast<int>(itemPos) << " in inventory" << std::endl;
+            continue;
+        }
+
+        AB::Packets::Server::TradeOffer::OfferedItem offeredItem;
+        offeredItem.index = item->data_.index;
+        offeredItem.count = item->concreteItem_.count;
+        offeredItem.stats = item->concreteItem_.itemStats;
+        offeredItem.type = static_cast<uint8_t>(item->data_.type);
+        offeredItem.value = item->concreteItem_.value;
+        for (size_t i = 0; i < static_cast<size_t>(ItemUpgrade::__Count); ++i)
+        {
+            if (auto* upgradeItem = item->GetUpgrade(static_cast<ItemUpgrade>(i)))
+            {
+                assert(i < upgradeItem.mods.size());
+                auto& upgrade = offeredItem.mods[i];
+                upgrade.index = upgradeItem->data_.index;
+                upgrade.count = upgradeItem->concreteItem_.count;
+                upgrade.stats = upgradeItem->concreteItem_.itemStats;
+                upgrade.type = static_cast<uint8_t>(upgradeItem->data_.type);
+                upgrade.value = upgradeItem->concreteItem_.value;
+            }
+        }
+        packet.items.push_back(std::move(offeredItem));
+    }
+    packet.itemCount = static_cast<uint8_t>(packet.items.size());
+    AB::Packets::Add(packet, *msg);
+    target->WriteToOutput(*msg);
+}
+
+void TradeComp::Accept()
+{
+    if (state_ == TradeState::Offered)
+        accepted_ = true;
+    // Both have accepted now.
+    if (auto target = target_.lock())
+    {
+        if (!target->tradeComp_->IsAccepted())
+            return;
+
+        // The last acceptor makes the transaction.
+        if (owner_.inventoryComp_->CheckInventoryCapacity(target->tradeComp_->OfferedMoney(), target->tradeComp_->OfferedItemCount()))
+        {
+            owner_.CallEvent<void()>(EVENT_ON_INVENTORYFULL);
+            Cancel();
+            return;
+        }
+        if (target->inventoryComp_->CheckInventoryCapacity(OfferedMoney(), OfferedItemCount()))
+        {
+
+            target->CallEvent<void()>(EVENT_ON_INVENTORYFULL);
+            Cancel();
+            return;
+        }
+
+        VisitOfferedItems([](Item& item)
+        {
+            (void)item;
+            return Iteration::Continue;
+        });
+        target->tradeComp_->VisitOfferedItems([](Item& item)
+        {
+            (void)item;
+            return Iteration::Continue;
+        });
+    }
+}
+
+void TradeComp::VisitOfferedItems(const std::function<Iteration(Item&)>& callback)
+{
+    auto& invComp = *owner_.inventoryComp_;
+    for (auto itemPos : ourOffer_)
+    {
+        auto* item = invComp.GetInventoryItem(itemPos);
+        if (!item)
+            continue;
+        if (callback(*item) == Iteration::Break)
+            break;
     }
 }
 
@@ -207,10 +321,16 @@ void TradeComp::OnStateChange(AB::GameProtocol::CreatureState, AB::GameProtocol:
 
 TradeComp::TradeError TradeComp::TestTarget(const Player& target)
 {
+    // It's not possible to trade with a partner that is queueing for a game,
+    // because it may just disappear.
     if (target.IsQueueing())
         return TradeError::TargetQueing;
     if (target.tradeComp_->IsTrading())
+    {
+        if (target.tradeComp_->GetTradePartnerId() == owner_.id_)
+            return TradeError::InProgress;
         return TradeError::TargetTrading;
+    }
 
     return TradeError::None;
 }

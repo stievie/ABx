@@ -20,3 +20,7 @@
 #if defined(GetClassName)
 #undef GetClassName
 #endif
+
+#if defined(GetFreeSpace)
+#undef GetFreeSpace
+#endif

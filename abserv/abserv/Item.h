@@ -39,7 +39,8 @@ enum class ItemUpgrade
 {
     Pefix = 0,           // Insignia for armor, prefix for weapon
     Suffix,              // Rune for armor, suffix for weapon
-    Inscription          // For lead/off hand weapons
+    Inscription,         // For lead/off hand weapons
+    __Count
 };
 
 enum class EquipPos : uint32_t

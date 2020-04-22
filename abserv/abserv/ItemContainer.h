@@ -27,6 +27,7 @@
 #include <sa/Iteration.h>
 #include <abscommon/Subsystems.h>
 #include <sa/Noncopyable.h>
+#include <CleanupNs.h>
 
 namespace Game {
 
@@ -72,6 +73,7 @@ public:
     uint32_t GetMoney() const;
 
     bool IsFull() const { return GetCount() >= size_; }
+    size_t GetFreeSpace() const { return size_ - GetCount(); }
     void SetSize(size_t value)
     {
         // Can not make smaller
@@ -90,6 +92,8 @@ public:
         return count;
     }
     size_t GetMaxMoney() const { return maxMoney_; }
+    size_t GetMoneyFreeSpace() const;
+    bool CheckCapacity(uint32_t money, size_t itemCount);
     template<typename Func>
     void VisitItems(Func&& func);
 };

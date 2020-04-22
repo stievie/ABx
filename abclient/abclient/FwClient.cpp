@@ -293,6 +293,9 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "Trading partner is queueing for a match";
     case AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading:
         return "The trading partner is trading with another player";
+    case AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget:
+        // Just ignore this
+        return String::EMPTY;
     default:
         return String::EMPTY;
     }

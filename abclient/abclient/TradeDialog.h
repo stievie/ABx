@@ -35,6 +35,7 @@ class TradeDialog : public DialogWindow
 private:
     WeakPtr<Player> player_;
     WeakPtr<Actor> partner_;
+    SharedPtr<Window> dragItem_;
     std::map<uint16_t, ConcreteItem> ourOffer_;
     std::set<uint32_t> partnerOffer_;
     void HandleOfferClicked(StringHash eventType, VariantMap& eventData);
@@ -42,7 +43,15 @@ private:
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleMoneyEditTextEntry(StringHash eventType, VariantMap& eventData);
     void HandlePartnersOffer(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragMove(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
+    void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
+
     uint32_t GetOfferedMoney() const;
+    bool CreateItem(UIElement* container, int index, const ConcreteItem& iItem);
+    int FindFreeSlot(UIElement* container);
+    bool RemoveItem(UIElement* container, int pos);
 public:
     TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner);
     ~TradeDialog() override;

@@ -1524,12 +1524,16 @@ void Player::CRQTradeCancel()
 void Player::CRQTradeOffer(uint32_t money, std::vector<uint16_t> items)
 {
     // We offer our trade partner the given items in our inventory
-    (void)money;
-    (void)items;
+    if (!tradeComp_->IsTrading())
+        return;
+    tradeComp_->Offer(money, items);
 }
 
 void Player::CRQTradeAccept()
 {
+    if (!tradeComp_->IsTrading())
+        return;
+    tradeComp_->Accept();
 }
 
 bool Player::IsIgnored(const Player& player) const
