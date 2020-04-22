@@ -215,6 +215,8 @@ Item* Item::SetUpgrade(ItemUpgrade type, uint32_t id)
         case ItemUpgrade::Inscription:
             concreteItem_.upgrade3Uuid = upgrade->concreteItem_.uuid;
             break;
+        case ItemUpgrade::__Count:
+            ASSERT_FALSE();
         }
         return upgrade;
     }
@@ -251,6 +253,8 @@ void Item::RemoveUpgrade(ItemUpgrade type)
         case ItemUpgrade::Inscription:
             concreteItem_.upgrade3Uuid = Utils::Uuid::EMPTY_UUID;
             break;
+        case ItemUpgrade::__Count:
+            ASSERT_FALSE();
         }
     }
 }
