@@ -725,6 +725,7 @@ struct TradeCancel
 
 struct TradeOffer
 {
+    static constexpr size_t MOD_COUNT = 3;
     struct Item
     {
         uint32_t index;
@@ -735,7 +736,7 @@ struct TradeOffer
     };
     struct OfferedItem : public Item
     {
-        std::array<Item, 3> mods;
+        std::array<Item, MOD_COUNT> mods;
     };
     uint32_t money{ 0 };
     uint8_t itemCount{ 0 };
@@ -754,7 +755,7 @@ struct TradeOffer
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
-            for (size_t mi = 0; mi < 3; ++mi)
+            for (size_t mi = 0; mi < MOD_COUNT; ++mi)
             {
                 auto& mod = item.mods[mi];
                 ar.value(mod.index);
