@@ -559,12 +559,15 @@ struct InventoryContent
         uint16_t value;
         std::string stats;
     };
-
+    uint32_t maxMoney;
+    uint32_t maxItems;
     uint16_t count;
     std::vector<Item> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(maxMoney);
+        ar.value(maxItems);
         ar.value(count);
         items.resize(count);
         for (uint16_t i = 0; i < count; ++i)

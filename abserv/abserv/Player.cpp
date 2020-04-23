@@ -339,6 +339,8 @@ void Player::CRQGetInventory()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryContent);
     AB::Packets::Server::InventoryContent packet;
+    packet.maxMoney = static_cast<uint32_t>(inventoryComp_->GetMaxInventoryMoney());
+    packet.maxItems = static_cast<uint32_t>(inventoryComp_->GetInventorySize());
     packet.count = static_cast<uint16_t>(count);
 
     inventoryComp_->VisitInventory([&packet](const Item& current)
@@ -529,6 +531,8 @@ void Player::CRQGetChest()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::ChestContent);
     AB::Packets::Server::InventoryContent packet;
+    packet.maxMoney = static_cast<uint32_t>(inventoryComp_->GetMaxChestMoney());
+    packet.maxItems = static_cast<uint32_t>(inventoryComp_->GetChestSize());
     packet.count = static_cast<uint16_t>(count);
     packet.items.reserve(packet.count);
     inventoryComp_->VisitChest([&packet](const Item& current)

@@ -61,5 +61,7 @@ public:
     void GetInventory();
     void Clear();
     bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
+
+    uint32_t money_{ 0 };
 };
 

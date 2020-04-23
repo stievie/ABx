@@ -62,6 +62,7 @@ void AccountChestDialog::HandleChest(StringHash, VariantMap&)
         if (item.type == AB::Entities::ItemType::Money)
         {
             moneyText->SetText(FormatMoney(item.count) + " Drachma");
+            money_ = item.count;
             continue;
         }
 
@@ -90,6 +91,7 @@ void AccountChestDialog::HandleChestItemUpdate(StringHash, VariantMap& eventData
     {
         Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
         moneyText->SetText(FormatMoney(iItem.count) + " Drachma");
+        money_ = iItem.count;
         return;
     }
     Item* i = itemsCache->Get(iItem.index);
@@ -206,6 +208,12 @@ void AccountChestDialog::HandleDepositClicked(StringHash, VariantMap&)
         inputBox_->Close();
 
     inputBox_ = MakeShared<NumberInputBox>(context_, "Deposit Money");
+    auto* client = GetSubsystem<FwClient>();
+    uint32_t invMoney = client->GetInventoryMoney();
+    uint32_t chestCap = client->GetChestLimit().maxMoney - client->GetChestMoney();
+    uint32_t max = std::min(invMoney, chestCap);
+    inputBox_->SetMax(static_cast<int>(max));
+    inputBox_->SetShowMaxButton(true);
     SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleDepositDone));
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
 }
@@ -216,6 +224,12 @@ void AccountChestDialog::HandleWithdrawClicked(StringHash, VariantMap&)
         inputBox_->Close();
 
     inputBox_ = MakeShared<NumberInputBox>(context_, "Withdraw Money");
+    auto* client = GetSubsystem<FwClient>();
+    int chestMoney = static_cast<int>(client->GetChestMoney());
+    int invCap = static_cast<int>(client->GetInventoryLimit().maxMoney) - static_cast<int>(client->GetInventoryMoney());
+    int max = std::min(chestMoney, invCap);
+    inputBox_->SetMax(max);
+    inputBox_->SetShowMaxButton(true);
     SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleWithdrawDone));
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
 }
@@ -382,6 +396,7 @@ void AccountChestDialog::Clear()
 {
     Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
     moneyText->SetText("0 Drachma");
+    money_ = 0;
     uint16_t pos = 1;
     while (auto* cont = GetItemContainer(pos))
     {

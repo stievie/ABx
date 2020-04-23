@@ -1500,6 +1500,8 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpe
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::InventoryContent& packet)
 {
+    inventoryLimit_.maxItems = packet.maxItems;
+    inventoryLimit_.maxMoney = packet.maxMoney;
     inventory_.clear();
     inventory_.reserve(packet.count);
     for (const auto& item : packet.items)
@@ -1576,6 +1578,8 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::ChestContent& packet)
 {
+    chestLimit_.maxItems = packet.maxItems;
+    chestLimit_.maxMoney = packet.maxMoney;
     chest_.clear();
     chest_.reserve(packet.count);
     for (const auto& item : packet.items)

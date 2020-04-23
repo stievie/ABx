@@ -69,6 +69,11 @@ inline unsigned MakeHash<Game::ItemStatIndex>(const Game::ItemStatIndex& value)
 }
 }
 
+struct InventoryLimit
+{
+    uint32_t maxMoney{ 0 };
+    uint32_t maxItems{ 0 };
+};
 class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)
@@ -88,6 +93,8 @@ private:
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::vector<ConcreteItem> inventory_;
     std::vector<ConcreteItem> chest_;
+    InventoryLimit inventoryLimit_;
+    InventoryLimit chestLimit_;
     std::vector<std::string> friendList_;
     std::vector<std::string> guildMembers_;
     AB::Packets::Server::TradeOffer currentPartnerOffer_;
@@ -347,10 +354,25 @@ public:
     {
         return currentMail_;
     }
+    const InventoryLimit& GetInventoryLimit() const { return inventoryLimit_; }
     const std::vector<ConcreteItem>& GetInventoryItems() const
     {
         return inventory_;
     }
+    uint32_t GetInventoryMoney() const
+    {
+        const auto it = std::find_if(inventory_.begin(), inventory_.end(), [](const ConcreteItem& current) -> bool
+        {
+            return current.type == AB::Entities::ItemType::Money;
+        });
+        if (it == inventory_.end())
+        {
+            return 0;
+        }
+
+        return (*it).count;
+    }
+
     const ConcreteItem& GetInventoryItem(uint16_t pos) const
     {
         const auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const ConcreteItem& current) -> bool
@@ -365,9 +387,23 @@ public:
 
         return (*it);
     }
+    const InventoryLimit& GetChestLimit() const { return chestLimit_; }
     const std::vector<ConcreteItem>& GetChestItems() const
     {
         return chest_;
+    }
+    uint32_t GetChestMoney() const
+    {
+        const auto it = std::find_if(chest_.begin(), chest_.end(), [](const ConcreteItem& current) -> bool
+        {
+            return current.type == AB::Entities::ItemType::Money;
+        });
+        if (it == chest_.end())
+        {
+            return 0;
+        }
+
+        return (*it).count;
     }
     const ConcreteItem& GetChestItem(uint16_t pos) const
     {

@@ -33,12 +33,17 @@ class NumberInputBox : public DialogWindow
 {
     URHO3D_OBJECT(NumberInputBox, DialogWindow)
 private:
+    int max_{ 0 };
     void HandleOkClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleEditTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleEditTextEntry(StringHash eventType, VariantMap& eventData);
+    void HandleMaxButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
     NumberInputBox(Context* context, const String& title);
     ~NumberInputBox() override;
+    void SetMax(int value);
+    int GetMax() const { return max_; }
+    void SetShowMaxButton(bool value);
 };
 

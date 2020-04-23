@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "NumberInputBox.h"
+#include "Item.h"
 
 NumberInputBox::NumberInputBox(Context* context, const String& title) :
     DialogWindow(context)
@@ -28,9 +29,9 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
     LoadLayout("UI/NumberInputBox.xml");
     SetStyleAuto();
 
-    SetSize(320, 160);
-    SetMinSize(320, 160);
-    SetMaxSize(320, 160);
+    SetSize(360, 160);
+    SetMinSize(360, 160);
+    SetMaxSize(360, 160);
     SetLayoutSpacing(10);
     SetLayoutBorder({ 10, 10, 10, 10 });
     SetMovable(false);
@@ -45,6 +46,9 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
     auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
     SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(NumberInputBox, HandleEditTextFinished));
     SubscribeToEvent(edit, E_TEXTENTRY, URHO3D_HANDLER(NumberInputBox, HandleEditTextEntry));
+    auto* maxButton = GetChildStaticCast<Button>("MaxButton", true);
+    SubscribeToEvent(maxButton, E_RELEASED, URHO3D_HANDLER(NumberInputBox, HandleMaxButtonClicked));
+    maxButton->SetVisible(false);
 
     MakeModal();
     Center();
@@ -54,6 +58,22 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
 
 NumberInputBox::~NumberInputBox()
 { }
+
+void NumberInputBox::SetMax(int value)
+{
+    auto* button = GetChildStaticCast<Button>("MaxButton", true);
+    max_ = value;
+    auto* buttonText = button->GetChildStaticCast<Text>("MaxButtonText", true);
+    String text;
+    text.AppendWithFormat("Max. %s", FormatMoney(max_).CString());
+    buttonText->SetText(text);
+}
+
+void NumberInputBox::SetShowMaxButton(bool value)
+{
+    auto* button = GetChildStaticCast<Button>("MaxButton", true);
+    button->SetVisible(value);
+}
 
 void NumberInputBox::HandleOkClicked(StringHash, VariantMap&)
 {
@@ -107,7 +127,6 @@ void NumberInputBox::HandleEditTextFinished(StringHash, VariantMap&)
     newEventData[P_VALUE] = iValue;
     SendEvent(E_NUMBERINPUTBOXDONE, newEventData);
     Close();
-
 }
 
 void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
@@ -120,5 +139,20 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
         if (isdigit(*it))
             newText += (*it);
     }
+    if (max_ != 0)
+    {
+        int value = atoi(newText.CString());
+        if (value > max_)
+            newText = String(max_);
+    }
     eventData[P_TEXT] = newText;
+}
+
+void NumberInputBox::HandleMaxButtonClicked(StringHash, VariantMap&)
+{
+    if (max_ == 0)
+        return;
+
+    auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
+    edit->SetText(String(max_));
 }

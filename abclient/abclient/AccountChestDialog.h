@@ -63,5 +63,7 @@ public:
     void Initialize() override;
     bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
     void Clear();
+
+    uint32_t money_{ 0 };
 };
 

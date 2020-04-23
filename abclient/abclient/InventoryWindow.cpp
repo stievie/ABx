@@ -148,6 +148,7 @@ void InventoryWindow::Clear()
 {
     Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
     moneyText->SetText("0 Drachma");
+    money_ = 0;
     uint16_t pos = 1;
     while (auto* cont = GetItemContainer(pos))
     {
@@ -257,6 +258,7 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
         if (item.type == AB::Entities::ItemType::Money)
         {
             moneyText->SetText(FormatMoney(item.count) + " Drachma");
+            money_ = item.count;
             continue;
         }
 
@@ -285,6 +287,7 @@ void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventDat
     {
         Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
         moneyText->SetText(FormatMoney(iItem.count) + " Drachma");
+        money_ = iItem.count;
         return;
     }
     Item* i = itemsCache->Get(iItem.index);

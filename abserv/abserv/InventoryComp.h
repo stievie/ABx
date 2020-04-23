@@ -90,11 +90,13 @@ public:
     {
         inventory_->SetSize(value);
     }
+    size_t GetInventorySize() const { return inventory_->GetSize(); }
     size_t GetInventoryCount() const
     {
         return inventory_->GetCount();
     }
     size_t GetFreeInventorySpace() const { return inventory_->GetFreeSpace(); }
+    size_t GetMaxInventoryMoney() const { return inventory_->GetMaxMoney(); }
     bool CheckInventoryCapacity(uint32_t money, size_t itemCount) const { return inventory_->CheckCapacity(money, itemCount); }
     bool SetChestItem(uint32_t itemId, Net::NetworkMessage* message,
         uint16_t newPos = 0);
@@ -118,11 +120,13 @@ public:
     {
         chest_->SetSize(value);
     }
+    size_t GetChestSize() const { return chest_->GetSize(); }
     size_t GetChestCount() const
     {
         return chest_->GetCount();
     }
     size_t GetFreeChestSpace() const { return chest_->GetFreeSpace(); }
+    size_t GetMaxChestMoney() const { return chest_->GetMaxMoney(); }
     bool CheckChestCapacity(uint32_t money, size_t itemCount) const { return chest_->CheckCapacity(money, itemCount); }
     uint32_t AddChestMoney(uint32_t amount, Net::NetworkMessage* message);
     // Return how much money was removed

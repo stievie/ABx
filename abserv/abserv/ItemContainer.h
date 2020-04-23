@@ -81,6 +81,7 @@ public:
         // + 1 because Money doesnt count
         size_ = value + 1;
     }
+    size_t GetSize() const { return size_; }
     size_t GetCount() const
     {
         size_t count = 0;
