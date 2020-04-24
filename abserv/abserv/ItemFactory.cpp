@@ -174,41 +174,48 @@ std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
     return result;
 }
 
-uint32_t ItemFactory::CreateItem(const std::string& itemUuid,
-    const std::string& instanceUuid, const std::string& mapUuid,
-    uint32_t level /* = LEVEL_CAP */,
-    bool maxStats /* = false */,
-    const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
-    const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
+uint32_t ItemFactory::CreateItem(const CreateItemStruct& info)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
-    gameItem.uuid = itemUuid;
+    gameItem.uuid = info.itemUuid;
     if (!client->Read(gameItem))
     {
-        LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
+        LOG_ERROR << "Unable to read item with UUID " << info.itemUuid << std::endl;
         return 0;
     }
 
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
     if (!result->LoadScript(result->data_.script))
+    {
+        LOG_ERROR << "Error loading item script " << result->data_.script << std::endl;
         return 0;
+    }
 
     AB::Entities::ConcreteItem ci;
     ci.uuid = Utils::Uuid::New();
     ci.itemUuid = gameItem.uuid;
-    ci.accountUuid = accUuid;
-    ci.playerUuid = playerUuid;
-    ci.instanceUuid = instanceUuid;
-    ci.mapUuid = mapUuid;
+    ci.accountUuid = info.accUuid;
+    ci.playerUuid = info.playerUuid;
+    ci.instanceUuid = info.instanceUuid;
+    ci.mapUuid = info.mapUuid;
     ci.creation = Utils::Tick();
-    CalculateValue(gameItem, level, ci);
+    CalculateValue(gameItem, info.level, ci);
+    if (info.count != 0)
+        ci.count = info.count;
+    if (info.value != 0)
+        ci.value = info.value;
+    if (!gameItem.tradeAble)
+        ci.value = 0;
 
     // Create item stats for this drop
-    if (!result->GenerateConcrete(ci, level, maxStats))
+    if (!result->GenerateConcrete(ci, info.level, info.maxStats))
+    {
+        LOG_ERROR << "Error generating concrete item" << std::endl;
         return 0;
+    }
 
-    // Save the created stats
+    // Save the created stats to the DB
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
     );
@@ -218,38 +225,13 @@ uint32_t ItemFactory::CreateItem(const std::string& itemUuid,
 
 uint32_t ItemFactory::CreatePlayerItem(Player& forPlayer, const std::string& itemUuid, uint32_t count /* = 1 */)
 {
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Item gameItem;
-    gameItem.uuid = itemUuid;
-    if (!client->Read(gameItem))
-    {
-        LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
-        return 0;
-    }
-    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
-    if (!result->LoadScript(result->data_.script))
-        return 0;
-
-    AB::Entities::ConcreteItem ci;
-    ci.uuid = Utils::Uuid::New();
-    ci.itemUuid = gameItem.uuid;
-    ci.accountUuid = forPlayer.account_.uuid;
-    ci.playerUuid = forPlayer.data_.uuid;
-    ci.instanceUuid = forPlayer.GetGame()->instanceData_.uuid;
-    ci.mapUuid = forPlayer.GetGame()->data_.uuid;
-    ci.creation = Utils::Tick();
-    ci.count = count;
-
-    // Create item stats for this drop
-    if (!result->GenerateConcrete(ci, forPlayer.data_.level, true))
-        return 0;
-
-    // Save the created stats
-    GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
-    );
-    auto* cache = GetSubsystem<ItemsCache>();
-    return cache->Add(std::move(result));
+    return CreateItem({ itemUuid,
+        forPlayer.GetGame()->instanceData_.uuid,
+        forPlayer.GetGame()->data_.uuid,
+        forPlayer.data_.level,
+        true,
+        forPlayer.account_.uuid,
+        forPlayer.data_.uuid, count });
 }
 
 uint32_t ItemFactory::CreatePlayerMoneyItem(Player& forPlayer, uint32_t count)
@@ -282,9 +264,15 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     }
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
     if (!result->LoadConcrete(ci))
+    {
+        LOG_ERROR << "Error loading concrete item" << std::endl;
         return std::unique_ptr<Item>();
+    }
     if (!result->LoadScript(result->data_.script))
+    {
+        LOG_ERROR << "Error loading script " << result->data_.script << std::endl;
         return std::unique_ptr<Item>();
+    }
 
     return result;
 }
@@ -366,9 +354,9 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forIt
     if (selIt == result.end())
         return 0;
 
-    return CreateItem((*(*selIt)).first,
+    return CreateItem({ (*(*selIt)).first,
         forItem->concreteItem_.instanceUuid, forItem->concreteItem_.mapUuid,
-        level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid);
+        level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid });
 }
 
 void ItemFactory::IdentiyItem(Item* item, Player* player)
@@ -519,7 +507,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
         // There is a chance that nothing drops
         return 0;
 
-    return CreateItem(itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid);
+    return CreateItem({ itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid });
 }
 
 }

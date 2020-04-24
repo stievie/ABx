@@ -34,6 +34,7 @@ class NumberInputBox : public DialogWindow
     URHO3D_OBJECT(NumberInputBox, DialogWindow)
 private:
     int max_{ 0 };
+    bool haveMax_{ false };
     void HandleOkClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleEditTextFinished(StringHash eventType, VariantMap& eventData);

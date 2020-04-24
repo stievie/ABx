@@ -33,6 +33,19 @@ static constexpr const char* MONEY_ITEM_UUID = "08fbf9bd-b84f-412f-ae4a-bc499784
 
 class Player;
 
+struct CreateItemStruct
+{
+    std::string itemUuid;
+    std::string instanceUuid;
+    std::string mapUuid;
+    uint32_t level{ LEVEL_CAP };
+    bool maxStats{ false };
+    std::string accUuid{ Utils::Uuid::EMPTY_UUID };
+    std::string playerUuid{ Utils::Uuid::EMPTY_UUID };
+    uint32_t count{ 0 };
+    uint16_t value{ 0 };
+};
+
 class ItemFactory
 {
 private:
@@ -58,12 +71,7 @@ public:
     void Initialize();
     /// Creates a new concrete item of the item and saves it to DB
     /// maxStats: When buying the item from a merchant these are always with max stats. Dropped Items have random stats.
-    uint32_t CreateItem(const std::string& itemUuid,
-        const std::string& instanceUuid, const std::string& mapUuid,
-        uint32_t level = LEVEL_CAP,
-        bool maxStats = false,
-        const std::string& accUuid = Utils::Uuid::EMPTY_UUID,
-        const std::string& playerUuid = Utils::Uuid::EMPTY_UUID);
+    uint32_t CreateItem(const CreateItemStruct& info);
     uint32_t GetConcreteId(const std::string& concreteUuid);
     void IdentiyItem(Item* item, Player* player);
     /// Create temporary item, does not create a concrete item.

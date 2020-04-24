@@ -74,6 +74,12 @@ bool TradeDialog::DropItem(const IntVector2& screenPos, ConcreteItem&& ci)
 {
     if (ci.place != AB::Entities::StoragePlace::Inventory)
         return false;
+    auto* itemsCache = GetSubsystem<ItemsCache>();
+    auto item = itemsCache->Get(ci.index);
+    if (!item)
+        return false;
+    if (!item->tradeAble_)
+        return false;
 
     if (ourOffer_.size() >= 7)
         return false;

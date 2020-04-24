@@ -73,6 +73,7 @@ void NumberInputBox::SetShowMaxButton(bool value)
 {
     auto* button = GetChildStaticCast<Button>("MaxButton", true);
     button->SetVisible(value);
+    haveMax_ = value;
 }
 
 void NumberInputBox::HandleOkClicked(StringHash, VariantMap&)
@@ -87,7 +88,7 @@ void NumberInputBox::HandleOkClicked(StringHash, VariantMap&)
     const char* pVal = value.CString();
     char* pEnd;
     int iValue = strtol(pVal, &pEnd, 10);
-    if (iValue == 0)
+    if (iValue == 0 || (haveMax_ && iValue > max_))
         return;
 
     VariantMap& newEventData = GetEventDataMap();
@@ -119,7 +120,7 @@ void NumberInputBox::HandleEditTextFinished(StringHash, VariantMap&)
     const char* pVal = value.CString();
     char* pEnd;
     int iValue = strtol(pVal, &pEnd, 10);
-    if (iValue == 0)
+    if (iValue == 0 || (haveMax_ && iValue > max_))
         return;
 
     VariantMap& newEventData = GetEventDataMap();
@@ -139,10 +140,12 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
         if (isdigit(*it))
             newText += (*it);
     }
-    if (max_ != 0)
+    if (haveMax_)
     {
-        int value = atoi(newText.CString());
-        if (value > max_)
+        const char* pVal = newText.CString();
+        char* pEnd;
+        int iValue = strtol(pVal, &pEnd, 10);
+        if (iValue < max_)
             newText = String(max_);
     }
     eventData[P_TEXT] = newText;
@@ -150,7 +153,7 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
 
 void NumberInputBox::HandleMaxButtonClicked(StringHash, VariantMap&)
 {
-    if (max_ == 0)
+    if (!haveMax_)
         return;
 
     auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
