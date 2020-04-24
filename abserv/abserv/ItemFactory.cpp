@@ -174,7 +174,7 @@ std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
     return result;
 }
 
-uint32_t ItemFactory::CreateItem(const CreateItemStruct& info)
+uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
@@ -223,7 +223,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemStruct& info)
     return cache->Add(std::move(result));
 }
 
-uint32_t ItemFactory::CreatePlayerItem(Player& forPlayer, const std::string& itemUuid, uint32_t count /* = 1 */)
+uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, uint32_t count /* = 1 */)
 {
     return CreateItem({ itemUuid,
         forPlayer.GetGame()->instanceData_.uuid,
@@ -234,7 +234,7 @@ uint32_t ItemFactory::CreatePlayerItem(Player& forPlayer, const std::string& ite
         forPlayer.data_.uuid, count });
 }
 
-uint32_t ItemFactory::CreatePlayerMoneyItem(Player& forPlayer, uint32_t count)
+uint32_t ItemFactory::CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count)
 {
     return CreatePlayerItem(forPlayer, MONEY_ITEM_UUID, count);
 }
@@ -289,48 +289,48 @@ uint32_t ItemFactory::GetConcreteId(const std::string& concreteUuid)
     return cache->Add(std::move(item));
 }
 
-void ItemFactory::IdentifyArmor(Item* item, Player* player)
+void ItemFactory::IdentifyArmor(Item& item, Player& player)
 {
     uint32_t insignia = CreateModifier(AB::Entities::ItemType::ModifierInsignia, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (insignia != 0)
-        item->SetUpgrade(ItemUpgrade::Pefix, insignia);
+        item.SetUpgrade(ItemUpgrade::Pefix, insignia);
     uint32_t rune = CreateModifier(AB::Entities::ItemType::ModifierRune, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (rune != 0)
-        item->SetUpgrade(ItemUpgrade::Suffix, rune);
+        item.SetUpgrade(ItemUpgrade::Suffix, rune);
 }
 
-void ItemFactory::IdentifyWeapon(Item* item, Player* player)
+void ItemFactory::IdentifyWeapon(Item& item, Player& player)
 {
     uint32_t prefix = CreateModifier(AB::Entities::ItemType::ModifierWeaponPrefix, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (prefix != 0)
-        item->SetUpgrade(ItemUpgrade::Pefix, prefix);
+        item.SetUpgrade(ItemUpgrade::Pefix, prefix);
     uint32_t suffix = CreateModifier(AB::Entities::ItemType::ModifierWeaponSuffix, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (suffix != 0)
-        item->SetUpgrade(ItemUpgrade::Suffix, suffix);
+        item.SetUpgrade(ItemUpgrade::Suffix, suffix);
     uint32_t inscr = CreateModifier(AB::Entities::ItemType::ModifierWeaponInscription, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (inscr != 0)
-        item->SetUpgrade(ItemUpgrade::Inscription, inscr);
+        item.SetUpgrade(ItemUpgrade::Inscription, inscr);
 }
 
-void ItemFactory::IdentifyOffHandWeapon(Item* item, Player* player)
+void ItemFactory::IdentifyOffHandWeapon(Item& item, Player& player)
 {
     // Offhead weapons do not have a prefix
     uint32_t suffix = CreateModifier(AB::Entities::ItemType::ModifierWeaponSuffix, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (suffix != 0)
-        item->SetUpgrade(ItemUpgrade::Suffix, suffix);
+        item.SetUpgrade(ItemUpgrade::Suffix, suffix);
     uint32_t inscr = CreateModifier(AB::Entities::ItemType::ModifierWeaponInscription, item,
-        player->GetLevel(), false, player->data_.uuid);
+        player.GetLevel(), false, player.data_.uuid);
     if (inscr != 0)
-        item->SetUpgrade(ItemUpgrade::Inscription, inscr);
+        item.SetUpgrade(ItemUpgrade::Inscription, inscr);
 }
 
-uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forItem,
+uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item& forItem,
     uint32_t level, bool maxStats, const std::string& playerUuid)
 {
     auto it = typedItems_.find(modType);
@@ -339,10 +339,10 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forIt
     std::vector<std::vector<TypedListValue>::iterator> result;
     Utils::SelectIterators((*it).second.begin(), (*it).second.end(),
         std::back_inserter(result),
-        [forItem](const TypedListValue& current)
+        [&forItem](const TypedListValue& current)
     {
-        if (!forItem->IsArmor())
-            return (current.second == forItem->data_.type);
+        if (!forItem.IsArmor())
+            return (current.second == forItem.data_.type);
         // Armor can have only runes and insignias
         return current.second == AB::Entities::ItemType::ModifierRune ||
             current.second == AB::Entities::ItemType::ModifierInsignia;
@@ -355,14 +355,13 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forIt
         return 0;
 
     return CreateItem({ (*(*selIt)).first,
-        forItem->concreteItem_.instanceUuid, forItem->concreteItem_.mapUuid,
+        forItem.concreteItem_.instanceUuid, forItem.concreteItem_.mapUuid,
         level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid });
 }
 
-void ItemFactory::IdentiyItem(Item* item, Player* player)
+void ItemFactory::IdentiyItem(Item& item, Player& player)
 {
-    assert(item);
-    switch (item->data_.type)
+    switch (item.data_.type)
     {
     case AB::Entities::ItemType::ArmorHead:
     case AB::Entities::ItemType::ArmorChest:

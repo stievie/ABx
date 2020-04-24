@@ -33,12 +33,13 @@ static constexpr const char* MONEY_ITEM_UUID = "08fbf9bd-b84f-412f-ae4a-bc499784
 
 class Player;
 
-struct CreateItemStruct
+struct CreateItemInfo
 {
     std::string itemUuid;
     std::string instanceUuid;
     std::string mapUuid;
     uint32_t level{ LEVEL_CAP };
+    /// When buying the item from a merchant these are always with max stats. Dropped Items have random stats.
     bool maxStats{ false };
     std::string accUuid{ Utils::Uuid::EMPTY_UUID };
     std::string playerUuid{ Utils::Uuid::EMPTY_UUID };
@@ -55,10 +56,10 @@ private:
     /// List of upgrades. Upgrades are not specific to maps
     std::map<AB::Entities::ItemType, std::vector<TypedListValue>> typedItems_;
     std::mutex lock_;
-    void IdentifyArmor(Item* item, Player* player);
-    void IdentifyWeapon(Item* item, Player* player);
-    void IdentifyOffHandWeapon(Item* item, Player* player);
-    uint32_t CreateModifier(AB::Entities::ItemType modType, Item* forItem,
+    void IdentifyArmor(Item& item, Player& player);
+    void IdentifyWeapon(Item& item, Player& player);
+    void IdentifyOffHandWeapon(Item& item, Player& player);
+    uint32_t CreateModifier(AB::Entities::ItemType modType, Item& forItem,
         uint32_t level, bool maxStats, const std::string& playerUuid);
     void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
     bool CreateDBItem(AB::Entities::ConcreteItem item);
@@ -70,23 +71,23 @@ public:
     /// Load items that drop on all maps
     void Initialize();
     /// Creates a new concrete item of the item and saves it to DB
-    /// maxStats: When buying the item from a merchant these are always with max stats. Dropped Items have random stats.
-    uint32_t CreateItem(const CreateItemStruct& info);
+    uint32_t CreateItem(const CreateItemInfo& info);
     uint32_t GetConcreteId(const std::string& concreteUuid);
-    void IdentiyItem(Item* item, Player* player);
+    void IdentiyItem(Item& item, Player& player);
     /// Create temporary item, does not create a concrete item.
     std::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
     /// Deletes a concrete item from the database, e.g. when an item was not picked up. Also removes it from cache.
     void DeleteConcrete(const std::string& uuid);
     /// Deletes an Item with all attached modifiers. Removes them from cache
     void DeleteItem(Item* item);
+    /// mapUuid is not a reference because it's called asynchronously
     void LoadDropChances(const std::string mapUuid);
     /// Delete drop chances for this map
     void DeleteMap(const std::string& uuid);
     uint32_t CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level, Player* player);
-    uint32_t CreatePlayerMoneyItem(Player& forPlayer, uint32_t count);
-    uint32_t CreatePlayerItem(Player& forPlayer, const std::string& itemUuid, uint32_t count = 1);
+    uint32_t CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count);
+    uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, uint32_t count = 1);
 };
 
 }

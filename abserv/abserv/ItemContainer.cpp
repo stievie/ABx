@@ -143,7 +143,7 @@ Item* ItemContainer::FindItem(const std::string& uuid)
 
 bool ItemContainer::StackItem(Item* item, const ItemUpdatedCallback& callback)
 {
-    int32_t count = static_cast<int32_t>(item->concreteItem_.count);
+    uint32_t count = item->concreteItem_.count;
     auto* cache = GetSubsystem<ItemsCache>();
     for (uint32_t itemId : items_)
     {
@@ -156,7 +156,7 @@ bool ItemContainer::StackItem(Item* item, const ItemUpdatedCallback& callback)
             int32_t space = static_cast<int32_t>(stackSize_) - static_cast<int32_t>(i->concreteItem_.count);
             if (space > 0)
             {
-                int32_t added = std::min(space, count);
+                uint32_t added = std::min(static_cast<uint32_t>(space), count);
                 i->concreteItem_.count += added;
                 count -= added;
                 callback(i);
@@ -175,7 +175,7 @@ bool ItemContainer::StackItem(Item* item, const ItemUpdatedCallback& callback)
         return true;
     }
 
-    // Add remaing as new item
+    // Add remaining as new item
     item->concreteItem_.count = count;
     uint16_t p = InsertItem(item);
     if (p != 0)
