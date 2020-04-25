@@ -224,6 +224,8 @@ void TradeComp::Accept()
             item.concreteItem_.accountUuid = target->GetAccountUuid();
             item.concreteItem_.playerUuid = target->data_.uuid;
             uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
+            // Use next free slot
+            item.concreteItem_.storagePos = 0;
             addtoInv.SetInventoryItem(id, &addMessage);
             removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
             AB::Packets::Server::InventoryItemDelete packet = {
