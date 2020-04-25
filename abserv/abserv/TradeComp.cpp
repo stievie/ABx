@@ -292,14 +292,14 @@ void TradeComp::Accept()
     }
     if (target->tradeComp_->GetOfferedMoney() != 0)
     {
-        if (target->tradeComp_->GetOfferedMoney() <= target->inventoryComp_->GetInventoryCount())
+        if (target->tradeComp_->GetOfferedMoney() <= target->inventoryComp_->GetInventoryMoney())
         {
             target->inventoryComp_->RemoveInventoryMoney(target->tradeComp_->GetOfferedMoney(), theirMessage.get());
             owner_.inventoryComp_->AddInventoryMoney(target->tradeComp_->GetOfferedMoney(), ourMessage.get());
         }
         else
             LOG_WARNING << "CHEAT: Player " << target->GetName() <<
-                " offered too much money, available " << target->inventoryComp_->GetInventoryCount() <<
+                " offered too much money, available " << target->inventoryComp_->GetInventoryMoney() <<
                 " offered " << target->tradeComp_->GetOfferedMoney() << std::endl;
     }
 

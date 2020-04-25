@@ -450,7 +450,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
         }
         if (inventoryComp_->GetInventoryItem(newPos) != nullptr)
         {
-            // TODO: If there is arelady some item, exchange it
+            // TODO: If there is already some item, exchange it
             return;
         }
     }
