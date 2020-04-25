@@ -272,8 +272,8 @@ void TradeComp::Accept()
     }
     if (target->tradeComp_->GetOfferedMoney() != 0)
     {
-        target->inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), theirMessage.get());
-        owner_.inventoryComp_->AddInventoryMoney(GetOfferedMoney(), ourMessage.get());
+        target->inventoryComp_->RemoveInventoryMoney(target->tradeComp_->GetOfferedMoney(), theirMessage.get());
+        owner_.inventoryComp_->AddInventoryMoney(target->tradeComp_->GetOfferedMoney(), ourMessage.get());
     }
 
     AB::Packets::Server::TradeAccepted packet{};
