@@ -77,8 +77,6 @@ void TradeComp::Cancel()
 {
     if (state_ > TradeState::Idle)
     {
-        state_ = TradeState::Idle;
-
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::TradeCancel);
         AB::Packets::Server::TradeCancel packet;
@@ -86,8 +84,12 @@ void TradeComp::Cancel()
         owner_.WriteToOutput(*msg);
 
         if (auto target = target_.lock())
-            target->tradeComp_->Cancel();
-        target_.reset();
+        {
+            target->WriteToOutput(*msg);
+            target->tradeComp_->Reset();
+        }
+
+        Reset();
     }
 }
 
@@ -221,18 +223,19 @@ void TradeComp::Accept()
         if (item.concreteItem_.count == count)
         {
             // Shortcut, just move the item
-            item.concreteItem_.accountUuid = target->GetAccountUuid();
-            item.concreteItem_.playerUuid = target->data_.uuid;
             uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
-            // Use next free slot
-            item.concreteItem_.storagePos = 0;
-            addtoInv.SetInventoryItem(id, &addMessage);
             removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
             AB::Packets::Server::InventoryItemDelete packet = {
                 item.concreteItem_.storagePos
             };
-
             AB::Packets::Add(packet, removeMessage);
+
+            item.concreteItem_.accountUuid = target->GetAccountUuid();
+            item.concreteItem_.playerUuid = target->data_.uuid;
+            // Use next free slot
+            item.concreteItem_.storagePos = 0;
+            addtoInv.SetInventoryItem(id, &addMessage);
+
             return;
         }
 
@@ -249,7 +252,12 @@ void TradeComp::Accept()
     VisitOfferedItems([&](Item& item, uint32_t count)
     {
         if (item.concreteItem_.count > count)
+        {
+            LOG_WARNING << "CHEAT: Player " << owner_.GetName() <<
+                " offered too many items, available " << item.concreteItem_.count <<
+                " offered " << count << std::endl;
             return Iteration::Continue;
+        }
 
         // Our offered items become theirs
         exchangeItem(item, count, owner_, *target, *ourMessage, *theirMessage);
@@ -258,7 +266,12 @@ void TradeComp::Accept()
     target->tradeComp_->VisitOfferedItems([&](Item& item, uint32_t count)
     {
         if (item.concreteItem_.count > count)
+        {
+            LOG_WARNING << "CHEAT: Player " << target->GetName() <<
+                " offered too many items, available " << item.concreteItem_.count <<
+                " offered " << count << std::endl;
             return Iteration::Continue;
+        }
 
         exchangeItem(item, count, *target, owner_, *theirMessage, *ourMessage);
         return Iteration::Continue;
@@ -267,13 +280,27 @@ void TradeComp::Accept()
     // Finally exchange money
     if (GetOfferedMoney() != 0)
     {
-        target->inventoryComp_->AddInventoryMoney(GetOfferedMoney(), theirMessage.get());
-        owner_.inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), ourMessage.get());
+        if (GetOfferedMoney() <= owner_.inventoryComp_->GetInventoryMoney())
+        {
+            target->inventoryComp_->AddInventoryMoney(GetOfferedMoney(), theirMessage.get());
+            owner_.inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), ourMessage.get());
+        }
+        else
+            LOG_WARNING << "CHEAT: Player " << owner_.GetName() <<
+                " offered too much money, available " << owner_.inventoryComp_->GetInventoryMoney() <<
+                " offered " << GetOfferedMoney() << std::endl;
     }
     if (target->tradeComp_->GetOfferedMoney() != 0)
     {
-        target->inventoryComp_->RemoveInventoryMoney(target->tradeComp_->GetOfferedMoney(), theirMessage.get());
-        owner_.inventoryComp_->AddInventoryMoney(target->tradeComp_->GetOfferedMoney(), ourMessage.get());
+        if (target->tradeComp_->GetOfferedMoney() <= target->inventoryComp_->GetInventoryCount())
+        {
+            target->inventoryComp_->RemoveInventoryMoney(target->tradeComp_->GetOfferedMoney(), theirMessage.get());
+            owner_.inventoryComp_->AddInventoryMoney(target->tradeComp_->GetOfferedMoney(), ourMessage.get());
+        }
+        else
+            LOG_WARNING << "CHEAT: Player " << target->GetName() <<
+                " offered too much money, available " << target->inventoryComp_->GetInventoryCount() <<
+                " offered " << target->tradeComp_->GetOfferedMoney() << std::endl;
     }
 
     AB::Packets::Server::TradeAccepted packet{};

@@ -1064,7 +1064,6 @@ void Player::CRQWithdrawMoney(uint32_t amount)
     if (amount > inventoryComp_->GetChestMoney())
         return;
 
-    // TODO: Do some checking
     auto msg = Net::NetworkMessage::GetNew();
     inventoryComp_->WithdrawMoney(amount, msg.get());
     WriteToOutput(*msg);
