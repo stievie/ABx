@@ -47,6 +47,8 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Client runs on Windows and Linux
 * Game AI, Behavior Tree
 * [Mumble](https://www.mumble.info/) voice chat integration.
+* Player inventory and account chest (account wide storage).
+* Players can exchange Items and Money.
 
 ## Screenshot
 
