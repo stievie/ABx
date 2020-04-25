@@ -54,8 +54,9 @@ private:
     std::unique_ptr<ItemContainer> inventory_;
     /// Account chest
     std::unique_ptr<ItemContainer> chest_;
-    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
 public:
+    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
+
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner);
     ~InventoryComp() = default;
@@ -76,7 +77,6 @@ public:
         return inventory_->DestroyItem(pos);
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
-    /// Since it's a unique_ptr somebody should own it, if it's still needed.
     uint32_t RemoveInventoryItem(ItemPos pos)
     {
         return inventory_->RemoveItem(pos);

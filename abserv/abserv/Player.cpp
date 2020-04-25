@@ -1525,12 +1525,12 @@ void Player::CRQTradeCancel()
         tradeComp_->Cancel();
 }
 
-void Player::CRQTradeOffer(uint32_t money, std::vector<uint16_t> items)
+void Player::CRQTradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>> items)
 {
     // We offer our trade partner the given items in our inventory
     if (!tradeComp_->IsTrading())
         return;
-    tradeComp_->Offer(money, items);
+    tradeComp_->Offer(money, std::move(items));
 }
 
 void Player::CRQTradeAccept()

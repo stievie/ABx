@@ -696,10 +696,10 @@ void Client::TradeCancel()
         protoGame_->TradeCancel();
 }
 
-void Client::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
+void Client::TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items)
 {
     if (state_ == State::World)
-        protoGame_->TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
+        protoGame_->TradeOffer(money, std::forward<std::vector<std::pair<uint16_t, uint32_t>>>(items));
 }
 
 void Client::TradeAccept()

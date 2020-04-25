@@ -1139,10 +1139,10 @@ void FwClient::TradeCancel()
         client_.TradeCancel();
 }
 
-void FwClient::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
+void FwClient::TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items)
 {
     if (loggedIn_)
-        client_.TradeOffer(money, std::forward<std::vector<uint16_t>>(items));
+        client_.TradeOffer(money, std::forward<std::vector<std::pair<uint16_t, uint32_t>>>(items));
 }
 
 void FwClient::TradeAccept()

@@ -44,7 +44,6 @@ private:
     void HandleAcceptClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleMoneyEditTextEntry(StringHash eventType, VariantMap& eventData);
-    void HandleMoneyEditTextChanged(StringHash eventType, VariantMap& eventData);
     void HandlePartnersOffer(StringHash eventType, VariantMap& eventData);
     void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleItemDragMove(StringHash eventType, VariantMap& eventData);

@@ -99,6 +99,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SENDMAILTO, URHO3D_HANDLER(WorldLevel, HandleSendMailTo));
     SubscribeToEvent(Events::E_TRADEDIALOG_TRIGGER, URHO3D_HANDLER(WorldLevel, HandleTradeDialogTrigger));
     SubscribeToEvent(Events::E_TRADECANCEL, URHO3D_HANDLER(WorldLevel, HandleTradeCancel));
+    // TODO: In case of cancel write something to the chat window
     SubscribeToEvent(Events::E_TRADEACCEPTED, URHO3D_HANDLER(WorldLevel, HandleTradeCancel));
 
     SubscribeToEvent(Events::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));

@@ -134,7 +134,7 @@ public:
     void LoadSkillTemplate(const std::string& templ);
     void TradeRequest(uint32_t targetId);
     void TradeCancel();
-    void TradeOffer(uint32_t money, std::vector<uint16_t>&& items);
+    void TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
     void TradeAccept();
 
     int64_t GetUpdateTick() const

@@ -301,7 +301,8 @@ struct TradeOffer
 {
     uint32_t money;
     uint8_t itemCount;
-    std::vector<uint16_t> items;
+    // Item pos, count
+    std::vector<std::pair<uint16_t, uint32_t>> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -311,7 +312,8 @@ struct TradeOffer
         for (uint8_t i = 0; i < itemCount; ++i)
         {
             auto& item = items[i];
-            ar.value(item);
+            ar.value(item.first);
+            ar.value(item.second);
         }
     }
 };

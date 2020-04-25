@@ -25,6 +25,9 @@
 #include <abscommon/NetworkMessage.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/Packets/Packet.h>
+#include "InventoryComp.h"
+#include "ItemFactory.h"
+#include <abscommon/Subsystems.h>
 
 namespace Game {
 namespace Components {
@@ -64,6 +67,7 @@ void TradeComp::Update(uint32_t)
 void TradeComp::Reset()
 {
     ourOffer_.clear();
+    ourOfferedMoney_ = 0;
     target_.reset();
     accepted_ = false;
     state_ = TradeState::Idle;
@@ -121,7 +125,7 @@ uint32_t TradeComp::GetTradePartnerId() const
     return 0;
 }
 
-void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
+void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items)
 {
     auto target = target_.lock();
     if (!target)
@@ -130,7 +134,7 @@ void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
         return;
     }
     state_ = TradeState::Offered;
-    ourOffer_ = items;
+    ourOffer_ = std::move(items);
     ourOfferedMoney_ = money;
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::TradeGotOffer);
@@ -139,18 +143,18 @@ void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
     auto& invComp = *owner_.inventoryComp_;
     static_assert(AB::Packets::Server::TradeOffer::MOD_COUNT == static_cast<size_t>(ItemUpgrade::__Count),
         "AB::Packets::Server::TradeOffer::MOD_COUNT does not match ItemUpgrade::__Count");
-    for (auto itemPos : items)
+    for (auto itemPair : ourOffer_)
     {
-        auto* item = invComp.GetInventoryItem(itemPos);
+        auto* item = invComp.GetInventoryItem(itemPair.first);
         if (!item)
         {
-            LOG_ERROR << "No item at pos " << static_cast<int>(itemPos) << " in inventory" << std::endl;
+            LOG_ERROR << "No item at pos " << static_cast<int>(itemPair.first) << " in inventory" << std::endl;
             continue;
         }
 
         AB::Packets::Server::TradeOffer::OfferedItem offeredItem;
         offeredItem.index = item->data_.index;
-        offeredItem.count = item->concreteItem_.count;
+        offeredItem.count = itemPair.second;
         offeredItem.stats = item->concreteItem_.itemStats;
         offeredItem.type = static_cast<uint8_t>(item->data_.type);
         offeredItem.value = item->concreteItem_.value;
@@ -160,6 +164,7 @@ void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
             {
                 auto& upgrade = offeredItem.mods[i];
                 upgrade.index = upgradeItem->data_.index;
+                // An upgrade doesn't really have count (it's always 1), so just copy it
                 upgrade.count = upgradeItem->concreteItem_.count;
                 upgrade.stats = upgradeItem->concreteItem_.itemStats;
                 upgrade.type = static_cast<uint8_t>(upgradeItem->data_.type);
@@ -175,51 +180,122 @@ void TradeComp::Offer(uint32_t money, std::vector<uint16_t> items)
 
 void TradeComp::Accept()
 {
-    if (state_ == TradeState::Offered)
-        accepted_ = true;
-    // Both have accepted now.
-    if (auto target = target_.lock())
+    // Must submit an offer before accept is possible
+    if (state_ != TradeState::Offered)
+        return;
+    auto target = target_.lock();
+    if (!target)
     {
-        if (!target->tradeComp_->IsAccepted())
-            return;
-
-        // The last acceptor makes the transaction.
-        if (owner_.inventoryComp_->CheckInventoryCapacity(target->tradeComp_->OfferedMoney(), target->tradeComp_->OfferedItemCount()))
-        {
-            owner_.CallEvent<void()>(EVENT_ON_INVENTORYFULL);
-            Cancel();
-            return;
-        }
-        if (target->inventoryComp_->CheckInventoryCapacity(OfferedMoney(), OfferedItemCount()))
-        {
-
-            target->CallEvent<void()>(EVENT_ON_INVENTORYFULL);
-            Cancel();
-            return;
-        }
-
-        VisitOfferedItems([](Item& item)
-        {
-            (void)item;
-            return Iteration::Continue;
-        });
-        target->tradeComp_->VisitOfferedItems([](Item& item)
-        {
-            (void)item;
-            return Iteration::Continue;
-        });
+        Cancel();
+        return;
     }
+
+    accepted_ = true;
+    if (!target->tradeComp_->IsAccepted())
+        return;
+    // Both have accepted now.
+
+    // The last acceptor makes the transaction.
+    if (!owner_.inventoryComp_->CheckInventoryCapacity(target->tradeComp_->GetOfferedMoney(), target->tradeComp_->GetOfferedItemCount()))
+    {
+        owner_.CallEvent<void()>(EVENT_ON_INVENTORYFULL);
+        Cancel();
+        return;
+    }
+    if (!target->inventoryComp_->CheckInventoryCapacity(GetOfferedMoney(), GetOfferedItemCount()))
+    {
+
+        target->CallEvent<void()>(EVENT_ON_INVENTORYFULL);
+        Cancel();
+        return;
+    }
+
+    auto* factory = GetSubsystem<ItemFactory>();
+    auto exchangeItem = [&](Item& item, uint32_t count,
+        Player& removeFrom, Player& addTo,
+        Net::NetworkMessage& removeMessage,
+        Net::NetworkMessage& addMessage)
+    {
+        InventoryComp& removeInv = *removeFrom.inventoryComp_;
+        InventoryComp& addtoInv = *addTo.inventoryComp_;
+        if (item.concreteItem_.count == count)
+        {
+            // Shortcut, just move the item
+            item.concreteItem_.accountUuid = target->GetAccountUuid();
+            item.concreteItem_.playerUuid = target->data_.uuid;
+            uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
+            addtoInv.SetInventoryItem(id, &addMessage);
+            removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+            AB::Packets::Server::InventoryItemDelete packet = {
+                item.concreteItem_.storagePos
+            };
+
+            AB::Packets::Add(packet, removeMessage);
+            return;
+        }
+
+        // We must split the stack into 2 items
+        uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
+        addtoInv.SetInventoryItem(itemId, &addMessage);
+
+        item.concreteItem_.count -= count;
+        InventoryComp::WriteItemUpdate(&item, &removeMessage);
+    };
+
+    auto ourMessage = Net::NetworkMessage::GetNew();
+    auto theirMessage = Net::NetworkMessage::GetNew();
+    VisitOfferedItems([&](Item& item, uint32_t count)
+    {
+        if (item.concreteItem_.count > count)
+            return Iteration::Continue;
+
+        // Our offered items become theirs
+        exchangeItem(item, count, owner_, *target, *ourMessage, *theirMessage);
+        return Iteration::Continue;
+    });
+    target->tradeComp_->VisitOfferedItems([&](Item& item, uint32_t count)
+    {
+        if (item.concreteItem_.count > count)
+            return Iteration::Continue;
+
+        exchangeItem(item, count, *target, owner_, *theirMessage, *ourMessage);
+        return Iteration::Continue;
+    });
+
+    // Finally exchange money
+    if (GetOfferedMoney() != 0)
+    {
+        target->inventoryComp_->AddInventoryMoney(GetOfferedMoney(), theirMessage.get());
+        owner_.inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), ourMessage.get());
+    }
+    if (target->tradeComp_->GetOfferedMoney() != 0)
+    {
+        target->inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), theirMessage.get());
+        owner_.inventoryComp_->AddInventoryMoney(GetOfferedMoney(), ourMessage.get());
+    }
+
+    AB::Packets::Server::TradeAccepted packet{};
+    ourMessage->AddByte(AB::GameProtocol::ServerPacketType::TradeAccepted);
+    AB::Packets::Add(packet, *ourMessage);
+    owner_.WriteToOutput(*ourMessage);
+
+    theirMessage->AddByte(AB::GameProtocol::ServerPacketType::TradeAccepted);
+    AB::Packets::Add(packet, *theirMessage);
+    target->WriteToOutput(*theirMessage);
+
+    Reset();
+    target->tradeComp_->Reset();
 }
 
-void TradeComp::VisitOfferedItems(const std::function<Iteration(Item&)>& callback)
+void TradeComp::VisitOfferedItems(const std::function<Iteration(Item&, uint32_t)>& callback)
 {
     auto& invComp = *owner_.inventoryComp_;
-    for (auto itemPos : ourOffer_)
+    for (auto itemPair : ourOffer_)
     {
-        auto* item = invComp.GetInventoryItem(itemPos);
+        auto* item = invComp.GetInventoryItem(itemPair.first);
         if (!item)
             continue;
-        if (callback(*item) == Iteration::Break)
+        if (callback(*item, itemPair.second) == Iteration::Break)
             break;
     }
 }

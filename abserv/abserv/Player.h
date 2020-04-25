@@ -237,7 +237,7 @@ public:
     void CRQLoadSkillTemplate(std::string templ);
     void CRQTradeRequest(uint32_t targetId);
     void CRQTradeCancel();
-    void CRQTradeOffer(uint32_t money, std::vector<uint16_t> items);
+    void CRQTradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>> items);
     void CRQTradeAccept();
     //}
 

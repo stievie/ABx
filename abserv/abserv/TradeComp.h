@@ -63,7 +63,7 @@ private:
     std::weak_ptr<Player> target_;
     TradeState state_{ TradeState::Idle };
     bool accepted_{ false };
-    std::vector<uint16_t> ourOffer_;
+    std::vector<std::pair<uint16_t, uint32_t>> ourOffer_;
     uint32_t ourOfferedMoney_{ 0 };
     void MoveToTarget(std::shared_ptr<Player> target);
     bool CheckRange();
@@ -86,12 +86,12 @@ public:
 
     bool IsTrading() const { return state_ >= TradeState::Trading; }
     uint32_t GetTradePartnerId() const;
-    void Offer(uint32_t money, std::vector<uint16_t> items);
+    void Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
     void Accept();
     bool IsAccepted() const { return accepted_; }
-    void VisitOfferedItems(const std::function<Iteration(Item&)>& callback);
-    size_t OfferedItemCount() const { return ourOffer_.size(); }
-    uint32_t OfferedMoney() const { return ourOfferedMoney_; }
+    void VisitOfferedItems(const std::function<Iteration(Item&, uint32_t)>& callback);
+    size_t GetOfferedItemCount() const { return ourOffer_.size(); }
+    uint32_t GetOfferedMoney() const { return ourOfferedMoney_; }
 };
 
 }

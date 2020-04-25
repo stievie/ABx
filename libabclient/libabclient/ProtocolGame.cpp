@@ -614,7 +614,7 @@ void ProtocolGame::TradeCancel()
     SendPacket(AB::GameProtocol::ClientPacketTypes::TradeCancel, packet);
 }
 
-void ProtocolGame::TradeOffer(uint32_t money, std::vector<uint16_t>&& items)
+void ProtocolGame::TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items)
 {
     uint8_t count = static_cast<uint8_t>(items.size());
     AB::Packets::Client::TradeOffer packet{ money, count, std::move(items) };
