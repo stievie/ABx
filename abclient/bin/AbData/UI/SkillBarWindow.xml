@@ -10,7 +10,7 @@
 	<attribute name="Image Rect" value="48 0 64 16" />
 	<attribute name="Border" value="4 4 4 4" />
 	<attribute name="Resize Border" value="8 8 8 8" />
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill1" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -66,7 +66,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill2" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -121,7 +121,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill3" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -176,7 +176,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill4" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -231,7 +231,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill5" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -286,7 +286,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill6" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -341,7 +341,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill7" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />
@@ -396,7 +396,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="SkillsButton">
 		<attribute name="Name" value="Skill8" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Focus Mode" value="NotFocusable" />

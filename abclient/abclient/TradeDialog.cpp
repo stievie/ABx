@@ -49,15 +49,18 @@ TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<A
     partnersOfferText.AppendWithFormat("%s's Offer", partner->name_.CString());
     partnerText->SetText(partnersOfferText);
 
-    auto* okButton = GetChildDynamicCast<Button>("OfferButton", true);
-    SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOfferClicked));
+    auto* offerButton = GetChildDynamicCast<Button>("OfferButton", true);
+    SubscribeToEvent(offerButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOfferClicked));
+    offerButton->SetEnabled(false);
     auto* acceptButton = GetChildDynamicCast<Button>("AcceptButton", true);
     SubscribeToEvent(acceptButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleAcceptClicked));
+    acceptButton->SetEnabled(false);
     auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleCancelClicked));
     auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
     moneyEdit->SetText("0");
     SubscribeToEvent(moneyEdit, E_TEXTENTRY, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextEntry));
+    SubscribeToEvent(moneyEdit, E_TEXTCHANGED, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextChanged));
 
     SubscribeToEvent(Events::E_TRADEOFFER, URHO3D_HANDLER(TradeDialog, HandlePartnersOffer));
 
@@ -98,6 +101,7 @@ bool TradeDialog::DropItem(const IntVector2& screenPos, ConcreteItem&& ci)
         return false;
 
     ourOffer_.emplace(pos, std::move(ci));
+    EnableOfferButton(ourOffer_.size() != 0 || GetOfferedMoney() != 0);
     return true;
 }
 
@@ -113,6 +117,9 @@ void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
 
     auto* client = GetSubsystem<FwClient>();
     client->TradeOffer(money, std::move(ourItems));
+    EnableOfferButton(false);
+    offered_ = true;
+    EnableAcceptButton();
 }
 
 void TradeDialog::HandleAcceptClicked(StringHash, VariantMap&)
@@ -141,6 +148,15 @@ void TradeDialog::HandleMoneyEditTextEntry(StringHash, VariantMap& eventData)
     eventData[P_TEXT] = newText;
 }
 
+void TradeDialog::HandleMoneyEditTextChanged(StringHash, VariantMap& eventData)
+{
+    using namespace TextChanged;
+    const char* pVal = eventData[P_TEXT].GetString().CString();
+    char* pEnd;
+    int iValue = strtol(pVal, &pEnd, 10);
+    EnableOfferButton(ourOffer_.size() != 0 || iValue != 0);
+}
+
 void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
 {
     auto* client = GetSubsystem<FwClient>();
@@ -161,6 +177,8 @@ void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
         CreateItem(container, index, ci);
         ++index;
     }
+    gotOffer_ = true;
+    EnableAcceptButton();
 }
 
 void TradeDialog::HandleItemDragBegin(StringHash, VariantMap& eventData)
@@ -247,6 +265,7 @@ void TradeDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragItem_.Get());
     dragItem_.Reset();
+    EnableOfferButton(ourOffer_.size() != 0 || GetOfferedMoney() != 0);
 }
 
 uint32_t TradeDialog::GetOfferedMoney() const
@@ -361,4 +380,19 @@ bool TradeDialog::RemoveItem(UIElement* container, int pos)
         }
     }
     return false;
+}
+
+void TradeDialog::EnableOfferButton(bool value)
+{
+    auto* offerButton = GetChildDynamicCast<Button>("OfferButton", true);
+    offerButton->SetEnabled(value);
+}
+
+void TradeDialog::EnableAcceptButton()
+{
+    if (offered_ && gotOffer_)
+    {
+        auto* offerButton = GetChildDynamicCast<Button>("AcceptButton", true);
+        offerButton->SetEnabled(true);
+    }
 }

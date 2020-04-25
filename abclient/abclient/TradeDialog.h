@@ -38,10 +38,13 @@ private:
     SharedPtr<Window> dragItem_;
     std::map<uint16_t, ConcreteItem> ourOffer_;
     std::set<uint32_t> partnerOffer_;
+    bool offered_{ false };
+    bool gotOffer_{ false };
     void HandleOfferClicked(StringHash eventType, VariantMap& eventData);
     void HandleAcceptClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleMoneyEditTextEntry(StringHash eventType, VariantMap& eventData);
+    void HandleMoneyEditTextChanged(StringHash eventType, VariantMap& eventData);
     void HandlePartnersOffer(StringHash eventType, VariantMap& eventData);
     void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleItemDragMove(StringHash eventType, VariantMap& eventData);
@@ -52,6 +55,8 @@ private:
     bool CreateItem(UIElement* container, int index, const ConcreteItem& iItem);
     int FindFreeSlot(UIElement* container);
     bool RemoveItem(UIElement* container, int pos);
+    void EnableOfferButton(bool value);
+    void EnableAcceptButton();
 public:
     TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner);
     ~TradeDialog() override;

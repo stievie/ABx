@@ -910,13 +910,17 @@ void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)
     wnd->BringToFront();
 }
 
-void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
+void WorldLevel::HandleToggleNewMail(StringHash, VariantMap& eventData)
 {
+    using namespace Events::ToggleNewMailWindow;
     WindowManager* wm = GetSubsystem<WindowManager>();
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
     wnd->SetVisible(!wnd->IsVisible());
     if (wnd->IsVisible())
     {
+        wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
+        wnd->SetSubject(eventData[P_SUBJECT].GetString());
+        wnd->SetBody(eventData[P_BODY].GetString());
         wnd->BringToFront();
         wnd->FocusRecipient();
     }

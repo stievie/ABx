@@ -46,6 +46,7 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
     auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
     SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(NumberInputBox, HandleEditTextFinished));
     SubscribeToEvent(edit, E_TEXTENTRY, URHO3D_HANDLER(NumberInputBox, HandleEditTextEntry));
+    SubscribeToEvent(edit, E_TEXTCHANGED, URHO3D_HANDLER(NumberInputBox, HandleEditTextChanged));
     auto* maxButton = GetChildStaticCast<Button>("MaxButton", true);
     SubscribeToEvent(maxButton, E_RELEASED, URHO3D_HANDLER(NumberInputBox, HandleMaxButtonClicked));
     maxButton->SetVisible(false);
@@ -145,10 +146,24 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
         const char* pVal = newText.CString();
         char* pEnd;
         int iValue = strtol(pVal, &pEnd, 10);
-        if (iValue < max_)
+        if (iValue > max_)
             newText = String(max_);
     }
     eventData[P_TEXT] = newText;
+}
+
+void NumberInputBox::HandleEditTextChanged(StringHash, VariantMap& eventData)
+{
+    using namespace TextChanged;
+    if (haveMax_)
+    {
+        const char* pVal = eventData[P_TEXT].GetString().CString();
+        LineEdit* edit = static_cast<LineEdit*>(eventData[P_ELEMENT].GetVoidPtr());
+        char* pEnd;
+        int iValue = strtol(pVal, &pEnd, 10);
+        if (iValue > max_)
+            edit->SetText(String(max_));
+    }
 }
 
 void NumberInputBox::HandleMaxButtonClicked(StringHash, VariantMap&)

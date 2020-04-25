@@ -90,8 +90,10 @@ MailWindow::MailWindow(Context* context) :
     SubscribeToEvents();
 
     Button* delButton = GetChildStaticCast<Button>("DeleteMailButton", true);
+    delButton->SetDisabledOffset({ 0, 0 });
     delButton->SetEnabled(false);
     Button* repButton = GetChildStaticCast<Button>("ReplyMailButton", true);
+    repButton->SetDisabledOffset({ 0, 0 });
     repButton->SetEnabled(false);
 }
 
@@ -168,7 +170,11 @@ void MailWindow::HandleMailReadMessage(StringHash, VariantMap&)
 
 void MailWindow::HandleNewClicked(StringHash, VariantMap&)
 {
+    using namespace Events::ToggleNewMailWindow;
     VariantMap& e = GetEventDataMap();
+    e[P_RECIPIENT] = String::EMPTY;
+    e[P_SUBJECT] = String::EMPTY;
+    e[P_BODY] = String::EMPTY;
     SendEvent(Events::E_SC_TOGGLENEWMAILWINDOW, e);
 }
 

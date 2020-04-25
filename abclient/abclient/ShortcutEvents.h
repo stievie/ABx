@@ -94,6 +94,9 @@ URHO3D_EVENT(E_SC_TOGGLEMAILWINDOW, ToggleMailWindow)
 
 URHO3D_EVENT(E_SC_TOGGLENEWMAILWINDOW, ToggleNewMailWindow)
 {
+    URHO3D_PARAM(P_RECIPIENT, Recipient);     // String
+    URHO3D_PARAM(P_SUBJECT, Subject);         // String
+    URHO3D_PARAM(P_BODY, Body);               // String
 }
 
 URHO3D_EVENT(E_SC_TOGGLEMISSIONMAPWINDOW, ToggleMissionMapWindow)

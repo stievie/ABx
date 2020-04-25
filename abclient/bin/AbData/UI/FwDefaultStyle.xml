@@ -9,6 +9,15 @@
         <attribute name="Pressed Image Offset" value="16 0" />
         <attribute name="Hover Image Offset" value="0 16" />
         <attribute name="Pressed Child Offset" value="-1 1" />
+        <attribute name="Disabled Image Offset" value="32 0" />
+    </element>
+    <element type="SkillsButton" style="BorderImage">
+        <attribute name="Texture" value="Texture2D;Textures/Skills/no_skill_disabled.png" />
+        <attribute name="Image Rect" value="0 0 256 256" />
+        <attribute name="Border" value="4 4 4 4" />
+        <attribute name="Pressed Image Offset" value="16 0" />
+        <attribute name="Hover Image Offset" value="0 16" />
+        <attribute name="Pressed Child Offset" value="-1 1" />
     </element>
     <element type="MapButton" style="BorderImage">
         <attribute name="Texture" value="Texture2D;Textures/Map/Oracle.png" />
@@ -40,6 +49,9 @@
         <attribute name="Color" value="0.01 0.95 0.01" />
      </element>
     <element type="BackButton" style="Button">
+        <attribute name="Color" value="1.0 0.05 0.05" />
+     </element>
+    <element type="CancelButton" style="Button">
         <attribute name="Color" value="1.0 0.05 0.05" />
      </element>
     <element type="CheckBox" style="BorderImage">
@@ -155,20 +167,24 @@
         </element>
     </element>
     <element type="Spinner" style="BorderImage">
+        <attribute name="Layout Spacing" value="2" />
         <attribute name="Border" value="0 0 0 0" />
+        <attribute name="Layout Border" value="1 1 1 1" />
         <element type="Button" internal="true">
             <attribute name="Border" value="0 0 0 0" />
-            <attribute name="Image Rect" value="130 102 146 110" />
+            <attribute name="Image Rect" value="132 103 144 111" />
             <attribute name="Image Border" value="0 0 0 0" />
             <attribute name="Pressed Image Offset" value="1 -1" />
             <attribute name="Hover Image Offset" value="0 1" />
+            <attribute name="Disabled Image Offset" value="0 0" />
         </element>
         <element type="Button" internal="true">
             <attribute name="Border" value="0 0 0 0" />
-            <attribute name="Image Rect" value="130 86 146 94" />
+            <attribute name="Image Rect" value="132 88 144 96" />
             <attribute name="Image Border" value="0 0 0 0" />
             <attribute name="Pressed Image Offset" value="1 -1" />
             <attribute name="Hover Image Offset" value="0 1" />
+            <attribute name="Disabled Image Offset" value="0 0" />
         </element>
     </element>
 

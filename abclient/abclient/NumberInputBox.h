@@ -39,6 +39,7 @@ private:
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleEditTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleEditTextEntry(StringHash eventType, VariantMap& eventData);
+    void HandleEditTextChanged(StringHash eventType, VariantMap& eventData);
     void HandleMaxButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
     NumberInputBox(Context* context, const String& title);

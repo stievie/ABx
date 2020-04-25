@@ -35,8 +35,6 @@ Spinner::Spinner(Context* context) :
 {
     SetEditable(false);
     SetFocusMode(FM_FOCUSABLE);
-    SetLayoutMode(LM_HORIZONTAL);
-
     SetLayoutMode(LM_VERTICAL);
 
     buttonIncrease_ = CreateChild<Button>("Increase");
