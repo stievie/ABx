@@ -47,15 +47,16 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         LOG_ERROR << "Unexpected storage place " << static_cast<int>(item->concreteItem_.storagePlace) << std::endl;
         return;
     }
-    AB::Packets::Server::InventoryItemUpdate packet = {
-        static_cast<uint16_t>(item->data_.type),
+    // TODO: Upgrades are missing.
+    AB::Packets::Server::InventoryItemUpdate packet = {{
         item->data_.index,
-        static_cast<uint8_t>(item->concreteItem_.storagePlace),
-        item->concreteItem_.storagePos,
+        static_cast<uint16_t>(item->data_.type),
         item->concreteItem_.count,
         item->concreteItem_.value,
-        item->concreteItem_.itemStats
-    };
+        item->concreteItem_.itemStats,
+        static_cast<uint8_t>(item->concreteItem_.storagePlace),
+        item->concreteItem_.storagePos
+    }};
     AB::Packets::Add(packet, *message);
 }
 
@@ -69,7 +70,7 @@ void InventoryComp::ExchangeItem(Item& item, uint32_t count,
     InventoryComp& addtoInv = *addTo.inventoryComp_;
     if (item.concreteItem_.count == count)
     {
-        // Shortcut, just move the item
+        // Shortcut, just move the whole item including upgrades.
         uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
         removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
         AB::Packets::Server::InventoryItemDelete packet = {
@@ -81,12 +82,21 @@ void InventoryComp::ExchangeItem(Item& item, uint32_t count,
         item.concreteItem_.playerUuid = addTo.data_.uuid;
         // Use next free slot
         item.concreteItem_.storagePos = 0;
+        for (size_t i = 0; i < static_cast<size_t>(ItemUpgrade::__Count); ++i)
+        {
+            auto* upgrade = item.GetUpgrade(static_cast<ItemUpgrade>(i));
+            if (!upgrade)
+                continue;
+            upgrade->concreteItem_.accountUuid = addTo.GetAccountUuid();
+            upgrade->concreteItem_.playerUuid = addTo.data_.uuid;
+        }
         addtoInv.SetInventoryItem(id, &addMessage);
 
         return;
     }
 
-    // We must split the stack into 2 items
+    // We must split the stack into 2 items.
+    // This also mean the item is stackable and therefore can not have upgrades.
     uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
     addtoInv.SetInventoryItem(itemId, &addMessage);
 

@@ -1524,37 +1524,37 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
 {
     const auto it = std::find_if(inventory_.begin(), inventory_.end(), [&packet](const ConcreteItem& current) -> bool
     {
-        return current.pos == packet.pos;
+        return current.pos == packet.item.pos;
     });
     if (it != inventory_.end())
     {
         // Replace item at the pos
-        it->type = static_cast<AB::Entities::ItemType>(packet.type);
-        it->index = packet.index;
-        it->place = static_cast<AB::Entities::StoragePlace>(packet.place);
-        it->pos = packet.pos;
-        it->count = packet.count;
-        it->value = packet.value;
-        LoadStatsFromString(it->stats, packet.stats);
+        it->type = static_cast<AB::Entities::ItemType>(packet.item.type);
+        it->index = packet.item.index;
+        it->place = static_cast<AB::Entities::StoragePlace>(packet.item.place);
+        it->pos = packet.item.pos;
+        it->count = packet.item.count;
+        it->value = packet.item.value;
+        LoadStatsFromString(it->stats, packet.item.stats);
     }
     else
     {
         // Append
         ConcreteItem item;
-        item.type = static_cast<AB::Entities::ItemType>(packet.type);
-        item.index = packet.index;
-        item.place = static_cast<AB::Entities::StoragePlace>(packet.place);
-        item.pos = packet.pos;
-        item.count = packet.count;
-        item.value = packet.value;
-        LoadStatsFromString(item.stats, packet.stats);
+        item.type = static_cast<AB::Entities::ItemType>(packet.item.type);
+        item.index = packet.item.index;
+        item.place = static_cast<AB::Entities::StoragePlace>(packet.item.place);
+        item.pos = packet.item.pos;
+        item.count = packet.item.count;
+        item.value = packet.item.value;
+        LoadStatsFromString(item.stats, packet.item.stats);
         inventory_.push_back(std::move(item));
     }
 
     using namespace Events::InventoryItemUpdate;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_ITEMPOS] = packet.pos;
+    eData[P_ITEMPOS] = packet.item.pos;
     SendEvent(Events::E_INVENTORYITEMUPDATE, eData);
 }
 
@@ -1602,37 +1602,37 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItem
 {
     const auto it = std::find_if(chest_.begin(), chest_.end(), [&packet](const ConcreteItem& current) -> bool
     {
-        return current.pos == packet.pos;
+        return current.pos == packet.item.pos;
     });
     if (it != chest_.end())
     {
         // Replace item at the pos
-        it->type = static_cast<AB::Entities::ItemType>(packet.type);
-        it->index = packet.index;
-        it->place = static_cast<AB::Entities::StoragePlace>(packet.place);
-        it->pos = packet.pos;
-        it->count = packet.count;
-        it->value = packet.value;
-        LoadStatsFromString(it->stats, packet.stats);
+        it->type = static_cast<AB::Entities::ItemType>(packet.item.type);
+        it->index = packet.item.index;
+        it->place = static_cast<AB::Entities::StoragePlace>(packet.item.place);
+        it->pos = packet.item.pos;
+        it->count = packet.item.count;
+        it->value = packet.item.value;
+        LoadStatsFromString(it->stats, packet.item.stats);
     }
     else
     {
         // Append
         ConcreteItem item;
-        item.type = static_cast<AB::Entities::ItemType>(packet.type);
-        item.index = packet.index;
-        item.place = static_cast<AB::Entities::StoragePlace>(packet.place);
-        item.pos = packet.pos;
-        item.count = packet.count;
-        item.value = packet.value;
-        LoadStatsFromString(item.stats, packet.stats);
+        item.type = static_cast<AB::Entities::ItemType>(packet.item.type);
+        item.index = packet.item.index;
+        item.place = static_cast<AB::Entities::StoragePlace>(packet.item.place);
+        item.pos = packet.item.pos;
+        item.count = packet.item.count;
+        item.value = packet.item.value;
+        LoadStatsFromString(item.stats, packet.item.stats);
         chest_.push_back(std::move(item));
     }
 
     using namespace Events::ChestItemUpdate;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
-    eData[P_ITEMPOS] = packet.pos;
+    eData[P_ITEMPOS] = packet.item.pos;
     SendEvent(Events::E_CHESTITEMUPDATE, eData);
 }
 

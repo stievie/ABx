@@ -346,13 +346,13 @@ void Player::CRQGetInventory()
     inventoryComp_->VisitInventory([&packet](const Item& current)
     {
         packet.items.push_back({
-            static_cast<uint16_t>(current.data_.type),
             current.data_.index,
-            static_cast<uint8_t>(current.concreteItem_.storagePlace),
-            current.concreteItem_.storagePos,
+            static_cast<uint16_t>(current.data_.type),
             current.concreteItem_.count,
             current.concreteItem_.value,
-            current.concreteItem_.itemStats
+            current.concreteItem_.itemStats,
+            static_cast<uint8_t>(current.concreteItem_.storagePlace),
+            current.concreteItem_.storagePos
         });
         return Iteration::Continue;
     });
@@ -541,13 +541,13 @@ void Player::CRQGetChest()
     inventoryComp_->VisitChest([&packet](const Item& current)
     {
         packet.items.push_back({
-            static_cast<uint16_t>(current.data_.type),
             current.data_.index,
-            static_cast<uint8_t>(current.concreteItem_.storagePlace),
-            current.concreteItem_.storagePos,
+            static_cast<uint16_t>(current.data_.type),
             current.concreteItem_.count,
             current.concreteItem_.value,
-            current.concreteItem_.itemStats
+            current.concreteItem_.itemStats,
+            static_cast<uint8_t>(current.concreteItem_.storagePlace),
+            current.concreteItem_.storagePos
         });
         return Iteration::Continue;
     });

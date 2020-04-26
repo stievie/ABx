@@ -547,18 +547,24 @@ struct ObjectTargetSelected
     }
 };
 
+inline constexpr size_t ITEM_MOD_COUNT = 3;
+struct Item
+{
+    uint32_t index;
+    uint16_t type;
+    uint32_t count;
+    uint16_t value;
+    std::string stats;
+    uint8_t place;
+    uint16_t pos;
+};
+struct UpgradeableItem : public Item
+{
+    std::array<Item, ITEM_MOD_COUNT> mods;
+};
+
 struct InventoryContent
 {
-    struct Item
-    {
-        uint16_t type;
-        uint32_t index;
-        uint8_t place;
-        uint16_t pos;
-        uint32_t count;
-        uint16_t value;
-        std::string stats;
-    };
     uint32_t maxMoney;
     uint32_t maxItems;
     uint16_t count;
@@ -584,31 +590,25 @@ struct InventoryContent
     }
 };
 
-struct ChestContent : InventoryContent { };
+struct ChestContent : public InventoryContent { };
 
 struct InventoryItemUpdate
 {
-    uint16_t type;
-    uint32_t index;
-    uint8_t place;
-    uint16_t pos;
-    uint32_t count;
-    uint16_t value;
-    std::string stats;
+    Item item;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
-        ar.value(type);
-        ar.value(index);
-        ar.value(place);
-        ar.value(pos);
-        ar.value(count);
-        ar.value(value);
-        ar.value(stats);
+        ar.value(item.type);
+        ar.value(item.index);
+        ar.value(item.place);
+        ar.value(item.pos);
+        ar.value(item.count);
+        ar.value(item.value);
+        ar.value(item.stats);
     }
 };
 
-struct ChestItemUpdate : InventoryItemUpdate { };
+struct ChestItemUpdate : public InventoryItemUpdate { };
 
 struct InventoryItemDelete
 {
@@ -725,22 +725,9 @@ struct TradeCancel
 
 struct TradeOffer
 {
-    static constexpr size_t MOD_COUNT = 3;
-    struct Item
-    {
-        uint32_t index;
-        uint8_t type;
-        uint32_t count;
-        uint16_t value;
-        std::string stats;
-    };
-    struct OfferedItem : public Item
-    {
-        std::array<Item, MOD_COUNT> mods;
-    };
     uint32_t money{ 0 };
     uint8_t itemCount{ 0 };
-    std::vector<OfferedItem> items;
+    std::vector<UpgradeableItem> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -755,7 +742,7 @@ struct TradeOffer
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
-            for (size_t mi = 0; mi < MOD_COUNT; ++mi)
+            for (size_t mi = 0; mi < ITEM_MOD_COUNT; ++mi)
             {
                 auto& mod = item.mods[mi];
                 ar.value(mod.index);
