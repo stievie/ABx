@@ -428,7 +428,7 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     cache->RemoveConcrete(uuid);
     if (!client->Read(ci))
     {
-        LOG_WARNING << "Unable to  read concrete item " << uuid << std::endl;
+        LOG_WARNING << "Unable to  read concrete item " << ci.uuid << std::endl;
         return;
     }
     ci.deleted = Utils::Tick();
@@ -437,7 +437,7 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
         client->Invalidate(ci);
     }
     else
-        LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
+        LOG_WARNING << "Error deleting concrete item " << ci.uuid << std::endl;
 }
 
 void ItemFactory::DeleteItem(Item* item)
