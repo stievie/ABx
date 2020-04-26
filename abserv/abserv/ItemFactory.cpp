@@ -215,7 +215,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
         return 0;
     }
 
-    pendingCreates_.emplace(result->concreteItem_.uuid, AB::Entities::ConcreteItem(result->concreteItem_));
+    pendingCreates_.emplace(result->concreteItem_.uuid, result->concreteItem_);
     // Save the created stats to the DB
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreatePendingItems, this))
@@ -408,22 +408,24 @@ void ItemFactory::IdentiyItem(Item& item, Player& player)
     }
 }
 
-void ItemFactory::DeleteConcrete(std::string uuid)
+void ItemFactory::DeleteConcrete(const std::string& uuid)
 {
     auto* cache = GetSubsystem<ItemsCache>();
-    cache->RemoveConcrete(uuid);
 
     auto it = pendingCreates_.find(uuid);
     if (it != pendingCreates_.end())
     {
         // Not yet written to DB
         pendingCreates_.erase(it);
+        cache->RemoveConcrete(uuid);
         return;
     }
 
     AB::Entities::ConcreteItem ci;
     auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
+    // Removing from cache may invalidate the uuid argument, so do it when we don't need it anymore
+    cache->RemoveConcrete(uuid);
     if (!client->Read(ci))
     {
         LOG_WARNING << "Unable to  read concrete item " << uuid << std::endl;

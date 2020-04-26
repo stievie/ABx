@@ -79,7 +79,7 @@ public:
     /// Create temporary item, does not create a concrete item.
     std::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
     /// Deletes a concrete item from the database, e.g. when an item was not picked up. Also removes it from cache.
-    void DeleteConcrete(std::string uuid);
+    void DeleteConcrete(const std::string& uuid);
     /// Deletes an Item with all attached modifiers. Removes them from cache
     void DeleteItem(Item* item);
     /// mapUuid is not a reference because it's called asynchronously
