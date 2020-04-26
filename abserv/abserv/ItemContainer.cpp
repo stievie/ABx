@@ -50,7 +50,7 @@ bool ItemContainer::SetItem(uint32_t itemId, const ItemUpdatedCallback& callback
         else
         {
             auto* currItem = GetItem(0);
-            if (currItem->concreteItem_.count + item->concreteItem_.count > maxMoney_)
+            if (Utils::WouldExceed(currItem->concreteItem_.count, item->concreteItem_.count, static_cast<uint32_t>(maxMoney_)))
                 return false;
             currItem->concreteItem_.count += item->concreteItem_.count;
             // Merged -> delete this

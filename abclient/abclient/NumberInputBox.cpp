@@ -70,11 +70,40 @@ void NumberInputBox::SetMax(int value)
     buttonText->SetText(text);
 }
 
+void NumberInputBox::SetMin(int value)
+{
+    min_ = value;
+}
+
 void NumberInputBox::SetShowMaxButton(bool value)
 {
     auto* button = GetChildStaticCast<Button>("MaxButton", true);
     button->SetVisible(value);
     haveMax_ = value;
+}
+
+void NumberInputBox::SetValue(int value)
+{
+    auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
+    edit->SetText(String(value));
+}
+
+int NumberInputBox::GetValue() const
+{
+    auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
+    const String value = edit->GetText();
+    if (value.Empty())
+        return -1;
+
+    const char* pVal = value.CString();
+    char* pEnd;
+    return strtol(pVal, &pEnd, 10);
+}
+
+void NumberInputBox::SelectAll()
+{
+    auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
+    edit->GetTextElement()->SetSelection(0);
 }
 
 void NumberInputBox::HandleOkClicked(StringHash, VariantMap&)
@@ -89,12 +118,13 @@ void NumberInputBox::HandleOkClicked(StringHash, VariantMap&)
     const char* pVal = value.CString();
     char* pEnd;
     int iValue = strtol(pVal, &pEnd, 10);
-    if (iValue == 0 || (haveMax_ && iValue > max_))
+    if (iValue == 0 || (haveMax_ && iValue > max_) || (HaveMin() && iValue < min_))
         return;
 
     VariantMap& newEventData = GetEventDataMap();
     newEventData[P_OK] = true;
     newEventData[P_VALUE] = iValue;
+    newEventData[P_ELEMENT] = this;
     SendEvent(E_NUMBERINPUTBOXDONE, newEventData);
     Close();
 }
@@ -105,6 +135,7 @@ void NumberInputBox::HandleCancelClicked(StringHash, VariantMap&)
     VariantMap& newEventData = GetEventDataMap();
     newEventData[P_OK] = false;
     newEventData[P_VALUE] = 0;
+    newEventData[P_ELEMENT] = this;
     SendEvent(E_NUMBERINPUTBOXDONE, newEventData);
     Close();
 }
@@ -121,12 +152,13 @@ void NumberInputBox::HandleEditTextFinished(StringHash, VariantMap&)
     const char* pVal = value.CString();
     char* pEnd;
     int iValue = strtol(pVal, &pEnd, 10);
-    if (iValue == 0 || (haveMax_ && iValue > max_))
+    if (iValue == 0 || (haveMax_ && iValue > max_) || (HaveMin() && iValue < min_))
         return;
 
     VariantMap& newEventData = GetEventDataMap();
     newEventData[P_OK] = true;
     newEventData[P_VALUE] = iValue;
+    newEventData[P_ELEMENT] = this;
     SendEvent(E_NUMBERINPUTBOXDONE, newEventData);
     Close();
 }
@@ -141,28 +173,27 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
         if (isdigit(*it))
             newText += (*it);
     }
-    if (haveMax_)
-    {
-        const char* pVal = newText.CString();
-        char* pEnd;
-        int iValue = strtol(pVal, &pEnd, 10);
-        if (iValue > max_)
-            newText = String(max_);
-    }
     eventData[P_TEXT] = newText;
 }
 
 void NumberInputBox::HandleEditTextChanged(StringHash, VariantMap& eventData)
 {
     using namespace TextChanged;
+    if (eventData[P_TEXT].GetString().Empty())
+        return;
+    const char* pVal = eventData[P_TEXT].GetString().CString();
+    LineEdit* edit = static_cast<LineEdit*>(eventData[P_ELEMENT].GetVoidPtr());
+    char* pEnd;
+    int iValue = strtol(pVal, &pEnd, 10);
     if (haveMax_)
     {
-        const char* pVal = eventData[P_TEXT].GetString().CString();
-        LineEdit* edit = static_cast<LineEdit*>(eventData[P_ELEMENT].GetVoidPtr());
-        char* pEnd;
-        int iValue = strtol(pVal, &pEnd, 10);
         if (iValue > max_)
             edit->SetText(String(max_));
+    }
+    if (HaveMin())
+    {
+        if (iValue < min_)
+            edit->SetText(String(min_));
     }
 }
 

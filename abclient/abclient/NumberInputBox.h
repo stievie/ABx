@@ -27,6 +27,7 @@ URHO3D_EVENT(E_NUMBERINPUTBOXDONE, NumberInputBoxDone)
 {
     URHO3D_PARAM(P_OK, Ok);              // bool
     URHO3D_PARAM(P_VALUE, Value);              // int
+    URHO3D_PARAM(P_ELEMENT, Element);
 }
 
 class NumberInputBox : public DialogWindow
@@ -34,6 +35,7 @@ class NumberInputBox : public DialogWindow
     URHO3D_OBJECT(NumberInputBox, DialogWindow)
 private:
     int max_{ 0 };
+    int min_{ -1 };
     bool haveMax_{ false };
     void HandleOkClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
@@ -41,11 +43,17 @@ private:
     void HandleEditTextEntry(StringHash eventType, VariantMap& eventData);
     void HandleEditTextChanged(StringHash eventType, VariantMap& eventData);
     void HandleMaxButtonClicked(StringHash eventType, VariantMap& eventData);
+    bool HaveMin() const { return min_ > -1; }
 public:
     NumberInputBox(Context* context, const String& title);
     ~NumberInputBox() override;
     void SetMax(int value);
     int GetMax() const { return max_; }
+    void SetMin(int value);
+    int GetMin() const { return min_; }
     void SetShowMaxButton(bool value);
+    void SetValue(int value);
+    int GetValue() const;
+    void SelectAll();
 };
 

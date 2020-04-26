@@ -56,6 +56,11 @@ private:
     std::unique_ptr<ItemContainer> chest_;
 public:
     static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
+    // Move an Item from one player to another
+    static void ExchangeItem(Item& item, uint32_t count,
+        Player& removeFrom, Player& addTo,
+        Net::NetworkMessage& removeMessage,
+        Net::NetworkMessage& addMessage);
 
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner);

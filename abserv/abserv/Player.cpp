@@ -499,7 +499,10 @@ void Player::CRQDropInventoryItem(uint16_t pos)
     auto* cache = GetSubsystem<ItemsCache>();
     auto* item = cache->Get(itemId);
     if (!item)
+    {
+        LOG_ERROR << "No item at pos " << static_cast<int>(pos) << " in inventory" << std::endl;
         return;
+    }
 
     item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
     item->concreteItem_.storagePos = 0;

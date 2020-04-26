@@ -214,6 +214,8 @@ void AccountChestDialog::HandleDepositClicked(StringHash, VariantMap&)
     uint32_t max = std::min(invMoney, chestCap);
     inputBox_->SetMax(static_cast<int>(max));
     inputBox_->SetShowMaxButton(true);
+    inputBox_->SetMin(1);
+    inputBox_->SelectAll();
     SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleDepositDone));
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
 }
@@ -230,6 +232,8 @@ void AccountChestDialog::HandleWithdrawClicked(StringHash, VariantMap&)
     int max = std::min(chestMoney, invCap);
     inputBox_->SetMax(max);
     inputBox_->SetShowMaxButton(true);
+    inputBox_->SetMin(1);
+    inputBox_->SelectAll();
     SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleWithdrawDone));
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
 }

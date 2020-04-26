@@ -53,7 +53,7 @@ bool SkillAction::TestSkill(int index, Game::Actor& source, Game::Actor* target)
     }
     auto res = skill->CanUse(&source, target);
 #ifdef DEBUG_AI
-    if (res != AB::GameProtocol::SkillErrorNone)
+    if (res != AB::GameProtocol::SkillError::None)
         LOG_DEBUG << skill->data_.name << "::CanUse() returned " << static_cast<int>(res) << std::endl;
 #endif
     // Out of range is okay we will move to the target

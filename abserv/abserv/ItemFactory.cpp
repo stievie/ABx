@@ -146,7 +146,7 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     }
 }
 
-bool ItemFactory::CreateDBItem(AB::Entities::ConcreteItem item)
+bool ItemFactory::CreateDBItem(const AB::Entities::ConcreteItem& item)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Create(item))
@@ -215,9 +215,10 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
         return 0;
     }
 
+    pendingCreates_.emplace(result->concreteItem_.uuid, AB::Entities::ConcreteItem(result->concreteItem_));
     // Save the created stats to the DB
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
+        Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreatePendingItems, this))
     );
     auto* cache = GetSubsystem<ItemsCache>();
     return cache->Add(std::move(result));
@@ -287,6 +288,15 @@ uint32_t ItemFactory::GetConcreteId(const std::string& concreteUuid)
     if (!item)
         return 0;
     return cache->Add(std::move(item));
+}
+
+void ItemFactory::CreatePendingItems()
+{
+    for (const auto& item : pendingCreates_)
+    {
+        CreateDBItem(item.second);
+    }
+    pendingCreates_.clear();
 }
 
 void ItemFactory::IdentifyArmor(Item& item, Player& player)
@@ -398,8 +408,19 @@ void ItemFactory::IdentiyItem(Item& item, Player& player)
     }
 }
 
-void ItemFactory::DeleteConcrete(const std::string& uuid)
+void ItemFactory::DeleteConcrete(std::string uuid)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    cache->RemoveConcrete(uuid);
+
+    auto it = pendingCreates_.find(uuid);
+    if (it != pendingCreates_.end())
+    {
+        // Not yet written to DB
+        pendingCreates_.erase(it);
+        return;
+    }
+
     AB::Entities::ConcreteItem ci;
     auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
@@ -411,8 +432,6 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     ci.deleted = Utils::Tick();
     if (client->Update(ci))
     {
-        auto* cache = GetSubsystem<ItemsCache>();
-        cache->RemoveConcrete(uuid);
         client->Invalidate(ci);
     }
     else

@@ -26,8 +26,6 @@
 #include <AB/Packets/ServerPackets.h>
 #include <AB/Packets/Packet.h>
 #include "InventoryComp.h"
-#include "ItemFactory.h"
-#include <abscommon/Subsystems.h>
 
 namespace Game {
 namespace Components {
@@ -212,46 +210,11 @@ void TradeComp::Accept()
         return;
     }
 
-    auto* factory = GetSubsystem<ItemFactory>();
-    auto exchangeItem = [&](Item& item, uint32_t count,
-        Player& removeFrom, Player& addTo,
-        Net::NetworkMessage& removeMessage,
-        Net::NetworkMessage& addMessage)
-    {
-        InventoryComp& removeInv = *removeFrom.inventoryComp_;
-        InventoryComp& addtoInv = *addTo.inventoryComp_;
-        if (item.concreteItem_.count == count)
-        {
-            // Shortcut, just move the item
-            uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
-            removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
-            AB::Packets::Server::InventoryItemDelete packet = {
-                item.concreteItem_.storagePos
-            };
-            AB::Packets::Add(packet, removeMessage);
-
-            item.concreteItem_.accountUuid = target->GetAccountUuid();
-            item.concreteItem_.playerUuid = target->data_.uuid;
-            // Use next free slot
-            item.concreteItem_.storagePos = 0;
-            addtoInv.SetInventoryItem(id, &addMessage);
-
-            return;
-        }
-
-        // We must split the stack into 2 items
-        uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
-        addtoInv.SetInventoryItem(itemId, &addMessage);
-
-        item.concreteItem_.count -= count;
-        InventoryComp::WriteItemUpdate(&item, &removeMessage);
-    };
-
     auto ourMessage = Net::NetworkMessage::GetNew();
     auto theirMessage = Net::NetworkMessage::GetNew();
     VisitOfferedItems([&](Item& item, uint32_t count)
     {
-        if (item.concreteItem_.count > count)
+        if (item.concreteItem_.count < count)
         {
             LOG_WARNING << "CHEAT: Player " << owner_.GetName() <<
                 " offered too many items, available " << item.concreteItem_.count <<
@@ -260,12 +223,12 @@ void TradeComp::Accept()
         }
 
         // Our offered items become theirs
-        exchangeItem(item, count, owner_, *target, *ourMessage, *theirMessage);
+        InventoryComp::ExchangeItem(item, count, owner_, *target, *ourMessage, *theirMessage);
         return Iteration::Continue;
     });
     target->tradeComp_->VisitOfferedItems([&](Item& item, uint32_t count)
     {
-        if (item.concreteItem_.count > count)
+        if (item.concreteItem_.count < count)
         {
             LOG_WARNING << "CHEAT: Player " << target->GetName() <<
                 " offered too many items, available " << item.concreteItem_.count <<
@@ -273,14 +236,14 @@ void TradeComp::Accept()
             return Iteration::Continue;
         }
 
-        exchangeItem(item, count, *target, owner_, *theirMessage, *ourMessage);
+        InventoryComp::ExchangeItem(item, count, *target, owner_, *theirMessage, *ourMessage);
         return Iteration::Continue;
     });
 
     // Finally exchange money
     if (GetOfferedMoney() != 0)
     {
-        if (GetOfferedMoney() <= owner_.inventoryComp_->GetInventoryMoney())
+        if (owner_.inventoryComp_->GetInventoryMoney() >= GetOfferedMoney())
         {
             target->inventoryComp_->AddInventoryMoney(GetOfferedMoney(), theirMessage.get());
             owner_.inventoryComp_->RemoveInventoryMoney(GetOfferedMoney(), ourMessage.get());
@@ -292,7 +255,7 @@ void TradeComp::Accept()
     }
     if (target->tradeComp_->GetOfferedMoney() != 0)
     {
-        if (target->tradeComp_->GetOfferedMoney() <= target->inventoryComp_->GetInventoryMoney())
+        if (target->inventoryComp_->GetInventoryMoney() >= target->tradeComp_->GetOfferedMoney())
         {
             target->inventoryComp_->RemoveInventoryMoney(target->tradeComp_->GetOfferedMoney(), theirMessage.get());
             owner_.inventoryComp_->AddInventoryMoney(target->tradeComp_->GetOfferedMoney(), ourMessage.get());

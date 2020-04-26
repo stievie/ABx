@@ -31,6 +31,69 @@
 namespace Game {
 namespace Components {
 
+void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message)
+{
+    if (!item || !message)
+        return;
+    switch (item->concreteItem_.storagePlace)
+    {
+    case AB::Entities::StoragePlace::Inventory:
+        message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemUpdate);
+        break;
+    case AB::Entities::StoragePlace::Chest:
+        message->AddByte(AB::GameProtocol::ServerPacketType::ChestItemUpdate);
+        break;
+    default:
+        LOG_ERROR << "Unexpected storage place " << static_cast<int>(item->concreteItem_.storagePlace) << std::endl;
+        return;
+    }
+    AB::Packets::Server::InventoryItemUpdate packet = {
+        static_cast<uint16_t>(item->data_.type),
+        item->data_.index,
+        static_cast<uint8_t>(item->concreteItem_.storagePlace),
+        item->concreteItem_.storagePos,
+        item->concreteItem_.count,
+        item->concreteItem_.value,
+        item->concreteItem_.itemStats
+    };
+    AB::Packets::Add(packet, *message);
+}
+
+void InventoryComp::ExchangeItem(Item& item, uint32_t count,
+    Player& removeFrom, Player& addTo,
+    Net::NetworkMessage& removeMessage,
+    Net::NetworkMessage& addMessage)
+{
+    auto* factory = GetSubsystem<ItemFactory>();
+    InventoryComp& removeInv = *removeFrom.inventoryComp_;
+    InventoryComp& addtoInv = *addTo.inventoryComp_;
+    if (item.concreteItem_.count == count)
+    {
+        // Shortcut, just move the item
+        uint32_t id = removeInv.RemoveInventoryItem(item.concreteItem_.storagePos);
+        removeMessage.AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+        AB::Packets::Server::InventoryItemDelete packet = {
+            item.concreteItem_.storagePos
+        };
+        AB::Packets::Add(packet, removeMessage);
+
+        item.concreteItem_.accountUuid = addTo.GetAccountUuid();
+        item.concreteItem_.playerUuid = addTo.data_.uuid;
+        // Use next free slot
+        item.concreteItem_.storagePos = 0;
+        addtoInv.SetInventoryItem(id, &addMessage);
+
+        return;
+    }
+
+    // We must split the stack into 2 items
+    uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
+    addtoInv.SetInventoryItem(itemId, &addMessage);
+
+    item.concreteItem_.count -= count;
+    InventoryComp::WriteItemUpdate(&item, &removeMessage);
+}
+
 InventoryComp::InventoryComp(Actor& owner) :
     owner_(owner),
     inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE,
@@ -113,34 +176,6 @@ EquipPos InventoryComp::EquipInventoryItem(ItemPos pos)
     // Rollback
     inventory_->InternalSetItem(item);
     return EquipPos::None;
-}
-
-void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message)
-{
-    if (!item || !message)
-        return;
-    switch (item->concreteItem_.storagePlace)
-    {
-    case AB::Entities::StoragePlace::Inventory:
-        message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemUpdate);
-        break;
-    case AB::Entities::StoragePlace::Chest:
-        message->AddByte(AB::GameProtocol::ServerPacketType::ChestItemUpdate);
-        break;
-    default:
-        LOG_ERROR << "Unexpected storage place " << static_cast<int>(item->concreteItem_.storagePlace) << std::endl;
-        return;
-    }
-    AB::Packets::Server::InventoryItemUpdate packet = {
-        static_cast<uint16_t>(item->data_.type),
-        item->data_.index,
-        static_cast<uint8_t>(item->concreteItem_.storagePlace),
-        item->concreteItem_.storagePos,
-        item->concreteItem_.count,
-        item->concreteItem_.value,
-        item->concreteItem_.itemStats
-    };
-    AB::Packets::Add(packet, *message);
 }
 
 bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message, uint16_t newPos)
