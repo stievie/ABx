@@ -487,15 +487,11 @@ void ItemFactory::LoadDropChances(const std::string mapUuid)
 
     std::unique_ptr<ItemSelector> selector = std::make_unique<ItemSelector>();
     for (const auto& i : il.items)
-    {
         selector->Add(i.first, i.second);
-    }
     selector->Update();
 
-    {
-        std::scoped_lock lock(lock_);
-        dropChances_.emplace(mapUuid, std::move(selector));
-    }
+    std::scoped_lock lock(lock_);
+    dropChances_.emplace(mapUuid, std::move(selector));
 }
 
 void ItemFactory::DeleteMap(const std::string& uuid)
