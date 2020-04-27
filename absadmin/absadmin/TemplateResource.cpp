@@ -42,14 +42,14 @@ bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects
     else
         objects["user"] = "";
     auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
-    AB::Entities::AccountType accType = AB::Entities::AccountTypeUnknown;
+    AB::Entities::AccountType accType = AB::Entities::AccountType::Unknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
-    objects["is_user"] = accType >= AB::Entities::AccountTypeNormal;
-    objects["is_tutor"] = accType >= AB::Entities::AccountTypeTutor;
-    objects["is_sentutor"] = accType >= AB::Entities::AccountTypeSeniorTutor;
-    objects["is_gm"] = accType >= AB::Entities::AccountTypeGamemaster;
-    objects["is_god"] = accType >= AB::Entities::AccountTypeGod;
+    objects["is_user"] = accType >= AB::Entities::AccountType::Normal;
+    objects["is_tutor"] = accType >= AB::Entities::AccountType::Tutor;
+    objects["is_sentutor"] = accType >= AB::Entities::AccountType::SeniorTutor;
+    objects["is_gm"] = accType >= AB::Entities::AccountType::Gamemaster;
+    objects["is_god"] = accType >= AB::Entities::AccountType::God;
 
     std::vector<std::map<std::string, ginger::object>> s;
     for (const auto& f : styles_)

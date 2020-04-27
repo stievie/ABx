@@ -34,14 +34,14 @@ static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 // Account chest size
 static constexpr size_t DEFAULT_CHEST_SIZE = 80;
 
-enum AccountType : uint8_t
+enum class AccountType : uint8_t
 {
-    AccountTypeUnknown = 0,
-    AccountTypeNormal = 1,
-    AccountTypeTutor = 2,
-    AccountTypeSeniorTutor = 3,
-    AccountTypeGamemaster = 4,
-    AccountTypeGod = 5
+    Unknown = 0,
+    Normal = 1,
+    Tutor = 2,
+    SeniorTutor = 3,
+    Gamemaster = 4,
+    God = 5
 };
 
 enum AccountStatus : uint8_t
@@ -100,7 +100,7 @@ struct Account : Entity
         });
     }
 
-    AccountType type = AccountTypeUnknown;
+    AccountType type = AccountType::Unknown;
     AccountStatus status = AccountStatusUnknown;
     timestamp_t creation = 0;
     std::string name;

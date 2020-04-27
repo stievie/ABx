@@ -40,10 +40,10 @@ bool Resource::IsAllowed(AB::Entities::AccountType minType)
     bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (!loggedIn)
     {
-        return minType == AB::Entities::AccountTypeUnknown;
+        return minType == AB::Entities::AccountType::Unknown;
     }
     auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
-    AB::Entities::AccountType accType = AB::Entities::AccountTypeUnknown;
+    AB::Entities::AccountType accType = AB::Entities::AccountType::Unknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
 

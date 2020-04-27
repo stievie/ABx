@@ -33,6 +33,24 @@ namespace Packets {
 namespace Server {
 // Packets sent from the server to the client
 
+namespace Internal {
+inline constexpr size_t ITEM_MOD_COUNT = 3;
+struct Item
+{
+    uint32_t index;
+    uint16_t type;
+    uint32_t count;
+    uint16_t value;
+    std::string stats;
+    uint8_t place;
+    uint16_t pos;
+};
+struct UpgradeableItem : public Item
+{
+    std::array<Item, ITEM_MOD_COUNT> mods;
+};
+}
+
 struct ProtocolError
 {
     uint8_t code;
@@ -547,28 +565,12 @@ struct ObjectTargetSelected
     }
 };
 
-inline constexpr size_t ITEM_MOD_COUNT = 3;
-struct Item
-{
-    uint32_t index;
-    uint16_t type;
-    uint32_t count;
-    uint16_t value;
-    std::string stats;
-    uint8_t place;
-    uint16_t pos;
-};
-struct UpgradeableItem : public Item
-{
-    std::array<Item, ITEM_MOD_COUNT> mods;
-};
-
 struct InventoryContent
 {
     uint32_t maxMoney;
     uint32_t maxItems;
     uint16_t count;
-    std::vector<Item> items;
+    std::vector<Internal::Item> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -594,7 +596,7 @@ struct ChestContent : public InventoryContent { };
 
 struct InventoryItemUpdate
 {
-    Item item;
+    Internal::Item item;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -727,7 +729,7 @@ struct TradeOffer
 {
     uint32_t money{ 0 };
     uint8_t itemCount{ 0 };
-    std::vector<UpgradeableItem> items;
+    std::vector<Internal::UpgradeableItem> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -742,7 +744,7 @@ struct TradeOffer
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
-            for (size_t mi = 0; mi < ITEM_MOD_COUNT; ++mi)
+            for (size_t mi = 0; mi < Internal::ITEM_MOD_COUNT; ++mi)
             {
                 auto& mod = item.mods[mi];
                 ar.value(mod.index);

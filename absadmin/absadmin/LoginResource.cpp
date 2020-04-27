@@ -41,7 +41,7 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
         return false;
     if (account.status != AB::Entities::AccountStatusActivated)
         return false;
-    if (account.type < AB::Entities::AccountTypeNormal)
+    if (account.type < AB::Entities::AccountType::Normal)
         return false;
     auto banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsAccountBanned(uuids::uuid(account.uuid)))

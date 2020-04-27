@@ -96,7 +96,7 @@ void InventoryComp::ExchangeItem(Item& item, uint32_t count,
     }
 
     // We must split the stack into 2 items.
-    // This also mean the item is stackable and therefore can not have upgrades.
+    // This also means the item is stackable and therefore can not have upgrades.
     uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
     addtoInv.SetInventoryItem(itemId, &addMessage);
 

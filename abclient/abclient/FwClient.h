@@ -74,6 +74,7 @@ struct InventoryLimit
     uint32_t maxMoney{ 0 };
     uint32_t maxItems{ 0 };
 };
+
 class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)
@@ -105,7 +106,7 @@ private:
     Mutex mutex_;
     HashMap<String, uint32_t> versions_;
     bool loggedIn_{ false };
-    AB::Entities::AccountType accType_{ AB::Entities::AccountTypeUnknown };
+    AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
     void LoadData();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
     void LoadGames(uint32_t curVersion);
@@ -143,7 +144,7 @@ public:
             return client_.GetClockDiff();
         return 0;
     }
-    AB::Entities::AccountType GetAccountType() const { return accType_; }
+    AB::Entities::AccountType GetAccountType() const { return accountType_; }
     void UpdateServers();
     void AddAccountKey(const String& newKey);
     void DeleteCharacter(const String& uuid);

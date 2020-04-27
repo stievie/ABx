@@ -50,12 +50,12 @@ bool AccountResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["name"] = Utils::XML::Escape(acc.name);
     objects["type"] = static_cast<int>(acc.type);
 
-    objects["type_unknown"] = acc.type == AB::Entities::AccountTypeUnknown;
-    objects["type_normnal"] = acc.type == AB::Entities::AccountTypeNormal;
-    objects["type_tutor"] = acc.type == AB::Entities::AccountTypeTutor;
-    objects["type_sentutor"] = acc.type == AB::Entities::AccountTypeSeniorTutor;
-    objects["type_gm"] = acc.type == AB::Entities::AccountTypeGamemaster;
-    objects["type_god"] = acc.type == AB::Entities::AccountTypeGod;
+    objects["type_unknown"] = acc.type == AB::Entities::AccountType::Unknown;
+    objects["type_normnal"] = acc.type == AB::Entities::AccountType::Normal;
+    objects["type_tutor"] = acc.type == AB::Entities::AccountType::Tutor;
+    objects["type_sentutor"] = acc.type == AB::Entities::AccountType::SeniorTutor;
+    objects["type_gm"] = acc.type == AB::Entities::AccountType::Gamemaster;
+    objects["type_god"] = acc.type == AB::Entities::AccountType::God;
 
     objects["status"] = static_cast<int>(acc.status);
     objects["status_unknown"] = acc.status == AB::Entities::AccountStatusUnknown;
@@ -126,7 +126,7 @@ AccountResource::AccountResource(std::shared_ptr<HttpsServer::Request> request) 
 
 void AccountResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeGod))
+    if (!IsAllowed(AB::Entities::AccountType::God))
     {
         Redirect(response, "/");
         return;

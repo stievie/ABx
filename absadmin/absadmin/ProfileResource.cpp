@@ -55,7 +55,7 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
 
 void ProfileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    if (!IsAllowed(AB::Entities::AccountType::Normal))
     {
         Redirect(response, "/");
         return;

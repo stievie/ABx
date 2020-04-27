@@ -549,7 +549,7 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill.png");
     auto* client = GetSubsystem<FwClient>();
-    bool haveLocked = client->GetAccountType() >= AB::Entities::AccountTypeGamemaster;
+    bool haveLocked = client->GetAccountType() >= AB::Entities::AccountType::Gamemaster;
 
     auto* sm = GetSubsystem<SkillManager>();
     ListView* lv = GetChildStaticCast<ListView>("SkillsList", true);

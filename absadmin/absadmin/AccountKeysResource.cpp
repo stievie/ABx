@@ -100,7 +100,7 @@ AccountKeysResource::AccountKeysResource(std::shared_ptr<HttpsServer::Request> r
 
 void AccountKeysResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeGod))
+    if (!IsAllowed(AB::Entities::AccountType::God))
     {
         Redirect(response, "/");
         return;

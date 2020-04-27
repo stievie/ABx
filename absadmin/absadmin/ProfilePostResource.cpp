@@ -29,7 +29,7 @@ namespace Resources {
 
 void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    if (!IsAllowed(AB::Entities::AccountType::Normal))
     {
         response->write(SimpleWeb::StatusCode::client_error_unauthorized,
             "Unauthorized");

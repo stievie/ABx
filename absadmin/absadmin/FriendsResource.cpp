@@ -39,7 +39,7 @@ FriendsResource::FriendsResource(std::shared_ptr<HttpsServer::Request> request) 
 
 void FriendsResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    if (!IsAllowed(AB::Entities::AccountType::Normal))
     {
         Redirect(response, "/");
         return;

@@ -69,7 +69,7 @@ bool CreateKeyResource::CreateKey(const std::string& uuid,
 
 void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeGod))
+    if (!IsAllowed(AB::Entities::AccountType::God))
     {
         response->write(SimpleWeb::StatusCode::client_error_unauthorized,
             "Unauthorized");

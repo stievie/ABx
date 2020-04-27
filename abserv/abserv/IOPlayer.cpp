@@ -193,7 +193,7 @@ static bool LoadPlayer(Game::Player& player)
     if (!player.data_.skillTemplate.empty())
     {
         // After loading professions we can load the skills
-        if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountTypeGamemaster))
+        if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountType::Gamemaster))
             LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
     }
 

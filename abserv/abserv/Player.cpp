@@ -108,13 +108,13 @@ size_t Player::GetGroupPos()
 bool Player::CanAttack() const
 {
     return !AB::Entities::IsOutpost(GetGame()->data_.type) ||
-        account_.type >= AB::Entities::AccountTypeGamemaster;
+        account_.type >= AB::Entities::AccountType::Gamemaster;
 }
 
 bool Player::CanUseSkill() const
 {
     return !AB::Entities::IsOutpost(GetGame()->data_.type) ||
-        account_.type >= AB::Entities::AccountTypeGamemaster;
+        account_.type >= AB::Entities::AccountType::Gamemaster;
 }
 
 void Player::SetLevel(uint32_t value)
@@ -1452,7 +1452,7 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
             auto skill = sm->Get(skillIndex);
             if (skill)
             {
-                if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountTypeGamemaster) &&
+                if (haveAccess(skill->data_, account_.type >= AB::Entities::AccountType::Gamemaster) &&
                     professionsMatch(skill->data_))
                     validateSetSkill(static_cast<int>(pos), skill);
             }
@@ -1480,7 +1480,7 @@ void Player::CRQLoadSkillTemplate(std::string templ)
     uint32_t oldProf = skills_->prof2_.index;
 
     if (IsInOutpost())
-        success = skills_->Load(templ, account_.type >= AB::Entities::AccountTypeGamemaster);
+        success = skills_->Load(templ, account_.type >= AB::Entities::AccountType::Gamemaster);
 
     if (success && oldProf != skills_->prof2_.index)
     {
@@ -1678,7 +1678,7 @@ void Player::OnHandleCommand(AB::GameProtocol::CommandType type,
 
 void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
     {
         HandleUnknownCommand();
         return;
@@ -1862,7 +1862,7 @@ void Player::HandleXpCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
     {
         HandleUnknownCommand();
         return;
@@ -1956,7 +1956,7 @@ void Player::HandleDeathsCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGod)
+    if (account_.type < AB::Entities::AccountType::God)
     {
         HandleUnknownCommand();
         return;
@@ -1967,7 +1967,7 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGod)
+    if (account_.type < AB::Entities::AccountType::God)
     {
         HandleUnknownCommand();
         return;
@@ -2011,7 +2011,7 @@ void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMe
 
 void Player::HandleGodModeCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
     {
         HandleUnknownCommand();
         return;
@@ -2027,7 +2027,7 @@ void Player::HandleGodModeCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
     {
         HandleUnknownCommand();
         return;
@@ -2051,7 +2051,7 @@ void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage
 
 void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGod)
+    if (account_.type < AB::Entities::AccountType::God)
     {
         HandleUnknownCommand();
         return;
@@ -2065,7 +2065,7 @@ void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessa
 
 void Player::HandleEnterInstanceCommand(const std::string& instanceUuid, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGod)
+    if (account_.type < AB::Entities::AccountType::God)
     {
         HandleUnknownCommand();
         return;
@@ -2081,7 +2081,7 @@ void Player::HandleEnterInstanceCommand(const std::string& instanceUuid, Net::Ne
 
 void Player::HandleGotoPlayerCommand(const std::string& playerName, Net::NetworkMessage&)
 {
-    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
     {
         HandleUnknownCommand();
         return;

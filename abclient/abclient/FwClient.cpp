@@ -846,7 +846,7 @@ void FwClient::Logout()
     client_.ResetPoll();
     client_.Run();
     loggedIn_ = false;
-    accType_ = AB::Entities::AccountTypeUnknown;
+    accountType_ = AB::Entities::AccountType::Unknown;
     currentGameType_ = AB::Entities::GameTypeUnknown;
 }
 
@@ -1159,7 +1159,7 @@ void FwClient::OnLog(const std::string& message)
 
 void FwClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType accType)
 {
-    accType_ = accType;
+    accountType_ = accType;
     LoadData();
 }
 

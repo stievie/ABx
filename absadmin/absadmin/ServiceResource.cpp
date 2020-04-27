@@ -88,7 +88,7 @@ ServiceResource::ServiceResource(std::shared_ptr<HttpsServer::Request> request) 
 
 void ServiceResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeGod))
+    if (!IsAllowed(AB::Entities::AccountType::God))
     {
         Redirect(response, "/");
         return;

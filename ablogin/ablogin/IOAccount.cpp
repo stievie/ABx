@@ -78,7 +78,7 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     acc.email = email;
     acc.authToken = Utils::Uuid::New();
     acc.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
-    acc.type = AB::Entities::AccountType::AccountTypeNormal;
+    acc.type = AB::Entities::AccountType::Normal;
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
     acc.creation = Utils::Tick();
     acc.chest_size = AB::Entities::DEFAULT_CHEST_SIZE;
