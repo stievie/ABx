@@ -51,6 +51,8 @@ private:
     void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
     void HandleItemDragEnd(StringHash eventType, VariantMap& eventData);
+    void HandleInputBoxDone(StringHash eventType, VariantMap& eventData);
+    void HandleInputBoxClose(StringHash eventType, VariantMap& eventData);
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const ConcreteItem& iItem);
     uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
@@ -62,7 +64,7 @@ public:
 
     void GetInventory();
     void Clear();
-    bool DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
+    void DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
 
     uint32_t money_{ 0 };
 };

@@ -399,21 +399,59 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     dragItem_.Reset();
 }
 
-bool InventoryWindow::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
+void InventoryWindow::HandleInputBoxDone(StringHash, VariantMap& eventData)
+{
+    using namespace NumberInputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    uint16_t currentPos = static_cast<uint16_t>(inputBox_->GetVar("CurrentPos").GetUInt());
+    AB::Entities::StoragePlace currentPlace = static_cast<AB::Entities::StoragePlace>(inputBox_->GetVar("CurrentPlace").GetUInt());
+    uint16_t newPos = static_cast<uint16_t>(inputBox_->GetVar("Pos").GetUInt());
+    auto* client = GetSubsystem<FwClient>();
+    client->SetItemPos(currentPlace, currentPos,
+        AB::Entities::StoragePlace::Inventory, newPos, eventData[P_VALUE].GetUInt());
+}
+
+void InventoryWindow::HandleInputBoxClose(StringHash, VariantMap&)
+{
+    if (inputBox_)
+        inputBox_.Reset();
+}
+
+void InventoryWindow::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
 {
     if (!IsInside(screenPos, true))
-        return false;
+        return;
 
     IntVector2 clientPos = screenPos - GetScreenPosition();
     uint16_t itemPos = GetItemPosFromClientPos(clientPos);
     if (itemPos == 0)
-        return false;
+        return;
 
-    auto* client = GetSubsystem<FwClient>();
-    client->SetItemPos(ci.place, ci.pos,
-        AB::Entities::StoragePlace::Inventory, itemPos, ci.count);
+    auto* input = GetSubsystem<Input>();
+    if (!input->GetKeyDown(Key::KEY_CTRL))
+    {
+        auto* client = GetSubsystem<FwClient>();
+        client->SetItemPos(ci.place, ci.pos,
+            AB::Entities::StoragePlace::Inventory, itemPos, ci.count);
+        return;
+    }
 
-    return true;
+    if (inputBox_)
+        inputBox_->Close();
+
+    inputBox_ = MakeShared<NumberInputBox>(context_, "How many?");
+    inputBox_->SetMax(static_cast<int>(ci.count));
+    inputBox_->SetVar("Pos", itemPos);
+    inputBox_->SetVar("CurrentPlace", static_cast<unsigned>(ci.place));
+    inputBox_->SetVar("CurrentPos", static_cast<unsigned>(ci.pos));
+    inputBox_->SetShowMaxButton(true);
+    inputBox_->SetMin(1);
+    inputBox_->SetValue(1);
+    inputBox_->SelectAll();
+    SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(InventoryWindow, HandleInputBoxDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(InventoryWindow, HandleInputBoxClose));
 }
 
 uint16_t InventoryWindow::GetItemPosFromClientPos(const IntVector2& clientPos)
