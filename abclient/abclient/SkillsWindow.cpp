@@ -21,20 +21,19 @@
 
 #include "stdafx.h"
 #include "SkillsWindow.h"
-#include "Shortcuts.h"
-#include "Spinner.h"
-#include "SkillManager.h"
-#include "Player.h"
-#include "LevelManager.h"
-#include "TabGroup.h"
-#include "ShortcutEvents.h"
-#include "SkillManager.h"
-#include "FwClient.h"
-#include <abshared/Mechanic.h>
-#include "SkillBarWindow.h"
-#include "WindowManager.h"
 #include "FilePicker.h"
+#include "FwClient.h"
+#include "LevelManager.h"
+#include "Player.h"
+#include "ShortcutEvents.h"
+#include "Shortcuts.h"
+#include "SkillBarWindow.h"
 #include "SkillCostElement.h"
+#include "SkillManager.h"
+#include "Spinner.h"
+#include "TabGroup.h"
+#include "WindowManager.h"
+#include <abshared/Mechanic.h>
 
 SkillsWindow::SkillsWindow(Context* context) :
     Window(context)

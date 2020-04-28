@@ -21,13 +21,13 @@
 
 #include "stdafx.h"
 #include "SkillBarWindow.h"
+#include "Actor.h"
 #include "FwClient.h"
+#include "LevelManager.h"
+#include "SkillCostElement.h"
 #include "SkillManager.h"
 #include "TemplateEvaluator.h"
-#include "LevelManager.h"
-#include "Actor.h"
 #include "WindowManager.h"
-#include "SkillCostElement.h"
 
 void SkillBarWindow::RegisterObject(Context* context)
 {

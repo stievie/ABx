@@ -21,25 +21,24 @@
 
 #include "stdafx.h"
 #include "Player.h"
+#include "ActorResourceBar.h"
+#include "ClientPrediction.h"
+#include "EquipmentWindow.h"
 #include "FwClient.h"
+#include "LevelManager.h"
 #include "MathUtils.h"
+#include "Mumble.h"
 #include "Options.h"
 #include "Shortcuts.h"
-#include "WindowManager.h"
 #include "SkillBarWindow.h"
-#include "Mumble.h"
-#include "LevelManager.h"
-#include "ClientPrediction.h"
-#include "WindowManager.h"
-#include "EquipmentWindow.h"
-#include <Urho3D/Physics/RigidBody.h>
-#include <Urho3D/Physics/PhysicsWorld.h>
-#include <abshared/Attributes.h>
-#include "ActorResourceBar.h"
 #include "TimeUtils.h"
-#include <abshared/Mechanic.h>
-#include <Urho3D/Container/Sort.h>
+#include "WindowManager.h"
 #include "WorldLevel.h"
+#include <Urho3D/Container/Sort.h>
+#include <Urho3D/Physics/PhysicsWorld.h>
+#include <Urho3D/Physics/RigidBody.h>
+#include <abshared/Attributes.h>
+#include <abshared/Mechanic.h>
 #include <algorithm>
 
 //#include <Urho3D/DebugNew.h>

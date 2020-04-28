@@ -23,22 +23,22 @@
 
 #include "stdafx.h"
 #include "Actor.h"
-#include "Definitions.h"
-#include "LevelManager.h"
 #include "BaseLevel.h"
-#include "MathUtils.h"
-#include "TimeUtils.h"
-#include <AB/ProtocolCodes.h>
+#include "ChatFilter.h"
+#include "Definitions.h"
 #include "FwClient.h"
-#include "ItemsCache.h"
-#include "Shortcuts.h"
-#include <AB/Entities/Skill.h>
 #include "HealthBar.h"
+#include "ItemsCache.h"
+#include "LevelManager.h"
+#include "MathUtils.h"
+#include "Shortcuts.h"
 #include "SkillManager.h"
+#include "TimeUtils.h"
+#include "WindowManager.h"
+#include <AB/Entities/Skill.h>
+#include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
-#include "WindowManager.h"
-#include "ChatFilter.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -54,7 +54,6 @@ Actor::Actor(Context* context) :
     selectedObject_(nullptr),
     skills_{}
 {
-    // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_UPDATE);
     SubscribeToEvent(Events::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
     SubscribeToEvent(Events::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
