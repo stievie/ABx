@@ -104,6 +104,8 @@ struct SetItemPos
     uint8_t soragePlace;
     // If 0 use first free slot
     uint16_t storagePos;
+    // If stackable, how many to move
+    uint32_t count;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -111,6 +113,7 @@ struct SetItemPos
         ar.value(currentPos);
         ar.value(soragePlace);
         ar.value(storagePos);
+        ar.value(count);
     }
 };
 

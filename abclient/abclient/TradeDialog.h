@@ -29,6 +29,7 @@
 class Actor;
 class Player;
 class NumberInputBox;
+class ItemUIElement;
 
 class TradeDialog : public DialogWindow
 {
@@ -55,7 +56,7 @@ private:
     void HandleInputDialogDone(StringHash eventType, VariantMap& eventData);
 
     uint32_t GetOfferedMoney() const;
-    Button* CreateItem(UIElement* container, int index, const ConcreteItem& iItem);
+    ItemUIElement* CreateItem(UIElement* container, int index, const ConcreteItem& iItem);
     int FindFreeSlot(UIElement* container);
     bool RemoveItem(UIElement* container, unsigned pos);
     UIElement* GetItemFromPos(UIElement* container, unsigned pos);

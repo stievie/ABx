@@ -444,28 +444,13 @@ void ItemFactory::DeleteItem(Item* item)
 {
     if (!item)
         return;
+
+    for (size_t i = 0; i < static_cast<size_t>(ItemUpgrade::__Count); ++i)
     {
-        auto upg = item->GetUpgrade(ItemUpgrade::Pefix);
-        if (upg)
+        if (auto* upgrade = item->GetUpgrade(static_cast<ItemUpgrade>(i)))
         {
-            DeleteConcrete(upg->concreteItem_.uuid);
+            DeleteConcrete(upgrade->concreteItem_.uuid);
             item->RemoveUpgrade(ItemUpgrade::Pefix);
-        }
-    }
-    {
-        auto upg = item->GetUpgrade(ItemUpgrade::Suffix);
-        if (upg)
-        {
-            DeleteConcrete(upg->concreteItem_.uuid);
-            item->RemoveUpgrade(ItemUpgrade::Suffix);
-        }
-    }
-    {
-        auto upg = item->GetUpgrade(ItemUpgrade::Inscription);
-        if (upg)
-        {
-            DeleteConcrete(upg->concreteItem_.uuid);
-            item->RemoveUpgrade(ItemUpgrade::Inscription);
         }
     }
     DeleteConcrete(item->concreteItem_.uuid);
@@ -515,7 +500,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
         // No drops on this map :(
         return 0;
 
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
     const std::string& itemUuid = (*it).second->Get(rnd1, rnd2);

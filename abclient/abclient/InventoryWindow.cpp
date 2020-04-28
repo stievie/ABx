@@ -30,6 +30,8 @@
 #include "TradeDialog.h"
 #include "LevelManager.h"
 #include "WorldLevel.h"
+#include "NumberInputBox.h"
+#include "ItemUIElement.h"
 
 void InventoryWindow::RegisterObject(Context* context)
 {
@@ -183,65 +185,23 @@ void InventoryWindow::SetItem(Item* item, const ConcreteItem& iItem)
         // The item was removed
         return;
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    // For ToolTips we need a button
-    Button* icon = container->CreateChild<Button>("Icon");
-    icon->SetPosition(4, 4);
-    icon->SetSize(container->GetSize() - IntVector2(8, 8));
-    icon->SetMinSize(icon->GetSize());
-    Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
-    icon->SetTexture(texture);
-    icon->SetFullImageRect();
-    icon->SetLayoutMode(LM_FREE);
-    icon->SetVar("POS", iItem.pos);
-    icon->SetVar("Index", iItem.index);
-    icon->SetVar("Count", iItem.count);
-    icon->SetVar("Value", iItem.value);
-    icon->SetVar("Stats", SaveStatsToString(iItem.stats));
+    ItemUIElement* itemElem = container->CreateChild<ItemUIElement>("ItemElememt");
+    itemElem->SetPosition(4, 4);
+    itemElem->SetSize(container->GetSize() - IntVector2(8, 8));
+    itemElem->SetMinSize(itemElem->GetSize());
+    itemElem->SetName(item->name_);
+    itemElem->SetIcon(item->iconFile_);
+    itemElem->SetPos(iItem.pos);
+    itemElem->SetIndex(iItem.index);
+    itemElem->SetCount(iItem.count);
+    itemElem->SetValue(iItem.value);
+    itemElem->SetStats(SaveStatsToString(iItem.stats));
 
-    SubscribeToEvent(icon, E_CLICKEND, URHO3D_HANDLER(InventoryWindow, HandleItemClicked));
-    SubscribeToEvent(icon, E_DRAGMOVE, URHO3D_HANDLER(InventoryWindow, HandleItemDragMove));
-    SubscribeToEvent(icon, E_DRAGBEGIN, URHO3D_HANDLER(InventoryWindow, HandleItemDragBegin));
-    SubscribeToEvent(icon, E_DRAGCANCEL, URHO3D_HANDLER(InventoryWindow, HandleItemDragCancel));
-    SubscribeToEvent(icon, E_DRAGEND, URHO3D_HANDLER(InventoryWindow, HandleItemDragEnd));
-
-    if (iItem.count > 1)
-    {
-        Text* count = icon->CreateChild<Text>("Count");
-        count->SetAlignment(HA_LEFT, VA_BOTTOM);
-        count->SetPosition(0, 0);
-        count->SetSize(10, icon->GetWidth());
-        count->SetMinSize(10, icon->GetWidth());
-        count->SetText(String(iItem.count));
-        count->SetStyleAuto();                  // !!!
-        count->SetFontSize(9);
-    }
-
-    {
-        // Tooltip
-        ToolTip* tt = icon->CreateChild<ToolTip>();
-        tt->SetLayoutMode(LM_HORIZONTAL);
-        Window* ttWindow = tt->CreateChild<Window>();
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
-        Text* ttText1 = ttWindow->CreateChild<Text>();
-        String text = iItem.count > 1 ? String(iItem.count) + " " : "";
-        text += item->name_;
-        ttText1->SetText(text);
-        ttText1->SetStyleAuto();
-
-        String text2 = String(iItem.count * iItem.value) + " Drachma";
-        Text* ttText2 = ttWindow->CreateChild<Text>();
-        ttText2->SetText(text2);
-        ttText2->SetStyleAuto();
-        ttText2->SetFontSize(9);
-
-        tt->SetPriority(2147483647);
-        tt->SetOpacity(0.7f);
-        tt->SetStyleAuto();
-        tt->SetPosition(IntVector2(0, -(ttWindow->GetHeight() + 10)));
-    }
+    SubscribeToEvent(itemElem, E_CLICKEND, URHO3D_HANDLER(InventoryWindow, HandleItemClicked));
+    SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(InventoryWindow, HandleItemDragMove));
+    SubscribeToEvent(itemElem, E_DRAGBEGIN, URHO3D_HANDLER(InventoryWindow, HandleItemDragBegin));
+    SubscribeToEvent(itemElem, E_DRAGCANCEL, URHO3D_HANDLER(InventoryWindow, HandleItemDragCancel));
+    SubscribeToEvent(itemElem, E_DRAGEND, URHO3D_HANDLER(InventoryWindow, HandleItemDragEnd));
 }
 
 void InventoryWindow::HandleInventory(StringHash, VariantMap&)
@@ -310,7 +270,7 @@ void InventoryWindow::HandleItemClicked(StringHash, VariantMap& eventData)
 {
     using namespace ClickEnd;
     MouseButton button = static_cast<MouseButton>(eventData[P_BUTTON].GetUInt());
-    Button* elem = dynamic_cast<Button*>(eventData[P_ELEMENT].GetPtr());
+    ItemUIElement* elem = dynamic_cast<ItemUIElement*>(eventData[P_ELEMENT].GetPtr());
     if (!elem)
         return;
     if (button == MOUSEB_RIGHT)
@@ -319,7 +279,7 @@ void InventoryWindow::HandleItemClicked(StringHash, VariantMap& eventData)
         int y = eventData[P_Y].GetInt();
         itemPopup_->SetPosition(x, y);
         itemPopup_->ShowPopup(true);
-        itemPopup_->SetVar("ItemPos", elem->GetVar("POS").GetUInt());
+        itemPopup_->SetVar("ItemPos", elem->pos_);
     }
 }
 
@@ -331,7 +291,7 @@ void InventoryWindow::HandleItemDestroySelected(StringHash, VariantMap& eventDat
     if (!sender)
         return;
     unsigned pos = itemPopup_->GetVar("ItemPos").GetUInt();
-    if (pos > std::numeric_limits<uint16_t>::max())
+    if (pos == 0)
         return;
     FwClient* cli = GetSubsystem<FwClient>();
     cli->InventoryDestroyItem(static_cast<uint16_t>(pos));
@@ -345,7 +305,7 @@ void InventoryWindow::HandleItemDropSelected(StringHash, VariantMap& eventData)
     if (!sender)
         return;
     unsigned pos = itemPopup_->GetVar("ItemPos").GetUInt();
-    if (pos > std::numeric_limits<uint16_t>::max())
+    if (pos == 0)
         return;
     FwClient* cli = GetSubsystem<FwClient>();
     cli->InventoryDropItem(static_cast<uint16_t>(pos));
@@ -359,7 +319,7 @@ void InventoryWindow::HandleItemDragMove(StringHash, VariantMap& eventData)
     dragItem_->BringToFront();
 
     int buttons = eventData[P_BUTTONS].GetInt();
-    auto* element = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
+    auto* element = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     int BUTTONS = element->GetVar("BUTTONS").GetInt();
@@ -371,35 +331,11 @@ void InventoryWindow::HandleItemDragMove(StringHash, VariantMap& eventData)
 void InventoryWindow::HandleItemDragBegin(StringHash, VariantMap& eventData)
 {
     using namespace DragBegin;
-
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    auto* item = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
-    UIElement* root = GetSubsystem<UI>()->GetRoot();
-
-    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
-    dragItem_ = root->CreateChild<Window>();
-    dragItem_->SetLayout(LM_HORIZONTAL);
-    dragItem_->SetLayoutBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetTexture(tex);
-    dragItem_->SetImageRect(IntRect(48, 0, 64, 16));
-    dragItem_->SetBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetMinSize(item->GetSize());
-    dragItem_->SetMaxSize(item->GetSize());
-    BorderImage* icon = dragItem_->CreateChild<BorderImage>();
-    icon->SetTexture(item->GetTexture());
-    dragItem_->SetPosition(item->GetPosition());
-    dragItem_->SetVar("POS", item->GetVar("POS"));
-    dragItem_->SetVar("Index", item->GetVar("Index"));
-    dragItem_->SetVar("Count", item->GetVar("Count"));
-    dragItem_->SetVar("Value", item->GetVar("Value"));
-    dragItem_->SetVar("Stats", item->GetVar("Stats"));
-
+    auto* item = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
+    int buttons = eventData[P_BUTTONS].GetInt();
     int lx = eventData[P_X].GetInt();
     int ly = eventData[P_Y].GetInt();
-    dragItem_->SetPosition(IntVector2(lx, ly) - dragItem_->GetSize() / 2);
-
-    int buttons = eventData[P_BUTTONS].GetInt();
-    item->SetVar("BUTTONS", buttons);
+    dragItem_ = item->GetDragItem(buttons, { lx, ly });
     dragItem_->BringToFront();
 }
 
@@ -418,7 +354,7 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     using namespace DragEnd;
     if (!dragItem_)
         return;
-    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("POS").GetUInt());
+    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("Pos").GetUInt());
     WindowManager* wm = GetSubsystem<WindowManager>();
     auto dialog = wm->GetDialog(AB::DialogAccountChest);
     AccountChestDialog* chest = dynamic_cast<AccountChestDialog*>(dialog.Get());
@@ -428,32 +364,34 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     if (level)
         tradeDialog = level->GetTradeDialog();
 
+    auto* itemsCache = GetSubsystem<ItemsCache>();
+    auto item = itemsCache->Get(dragItem_->GetVar("Index").GetUInt());
+    if (!item)
+        return;
+
+    ConcreteItem ci;
+    ci.pos = pos;
+    ci.pos = pos;
+    ci.type = item->type_;
+    ci.place = AB::Entities::StoragePlace::Inventory;
+    ci.index = dragItem_->GetVar("Index").GetUInt();
+    ci.count = dragItem_->GetVar("Count").GetUInt();
+    ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
+    LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
+
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     if (IsInside({ X, Y }, true))
-        DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
+        DropItem({ X, Y }, ci);
     else if (chest && chest->IsInside({ X, Y }, true))
     {
         // If dropping on the account chest it is store in the chest
-        chest->DropItem({ X, Y }, AB::Entities::StoragePlace::Inventory, pos);
+        chest->DropItem({ X, Y }, ci);
     }
     else if (tradeDialog && tradeDialog->IsInside({ X, Y }, true))
     {
-        auto* itemsCache = GetSubsystem<ItemsCache>();
-        auto item = itemsCache->Get(dragItem_->GetVar("Index").GetUInt());
-        if (item && item->tradeAble_)
-        {
-            ConcreteItem ci;
-            ci.pos = pos;
-            ci.type = item->type_;
-            ci.place = AB::Entities::StoragePlace::Inventory;
-            ci.index = dragItem_->GetVar("Index").GetUInt();
-            ci.count = dragItem_->GetVar("Count").GetUInt();
-            ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
-            LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
-
+        if (item->tradeAble_)
             tradeDialog->DropItem({ X, Y }, std::move(ci));
-        }
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();
@@ -461,7 +399,7 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     dragItem_.Reset();
 }
 
-bool InventoryWindow::DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos)
+bool InventoryWindow::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
 {
     if (!IsInside(screenPos, true))
         return false;
@@ -472,8 +410,8 @@ bool InventoryWindow::DropItem(const IntVector2& screenPos, AB::Entities::Storag
         return false;
 
     auto* client = GetSubsystem<FwClient>();
-    client->SetItemPos(currentPlace, currItemPos,
-        AB::Entities::StoragePlace::Inventory, itemPos);
+    client->SetItemPos(ci.place, ci.pos,
+        AB::Entities::StoragePlace::Inventory, itemPos, ci.count);
 
     return true;
 }
@@ -485,7 +423,6 @@ uint16_t InventoryWindow::GetItemPosFromClientPos(const IntVector2& clientPos)
     IntVector2 item;
     item.y_ = ((clientPos.y_ - (container->GetPosition().y_ + moneyRow->GetPosition().y_ + moneyRow->GetHeight())) / INVENTORY_ITEM_SIZE_Y);
     item.x_ = (clientPos.x_ / INVENTORY_ITEM_SIZE_X) + 1;
-//    URHO3D_LOGINFOF("X = %d, Y = %d", item.x_, item.y_);
     if (item.y_ < 0 || item.x_ < 0)
         return 0;
     return static_cast<uint16_t>((item.y_ * INVENTORY_COLS_PER_ROW) + item.x_);

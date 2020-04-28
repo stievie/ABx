@@ -25,6 +25,7 @@
 #include "AB/Entities/ConcreteItem.h"
 
 class Item;
+class NumberInputBox;
 
 static const unsigned INVENTORY_COLS_PER_ROW = 5;
 static const int INVENTORY_ITEM_SIZE_X = 48;
@@ -37,6 +38,7 @@ private:
     bool initializted_;
     SharedPtr<Menu> itemPopup_;
     SharedPtr<Window> dragItem_;
+    SharedPtr<NumberInputBox> inputBox_;
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleInventory(StringHash eventType, VariantMap& eventData);
@@ -60,8 +62,7 @@ public:
 
     void GetInventory();
     void Clear();
-    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
+    bool DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
 
     uint32_t money_{ 0 };
 };
-

@@ -212,7 +212,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
             static_cast<AB::Entities::StoragePlace>(packet.currentPlace),
             packet.currentPos,
             static_cast<AB::Entities::StoragePlace>(packet.soragePlace),
-            packet.storagePos);
+            packet.storagePos,
+            packet.count);
         break;
     }
     case ClientPacketTypes::WithdrawMoney:

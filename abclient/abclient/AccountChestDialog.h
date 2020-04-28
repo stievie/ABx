@@ -42,7 +42,6 @@ private:
     void HandleChest(StringHash eventType, VariantMap& eventData);
     void HandleChestItemUpdate(StringHash eventType, VariantMap& eventData);
     void HandleChestItemRemove(StringHash eventType, VariantMap& eventData);
-    void HandleItemClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemDragMove(StringHash eventType, VariantMap& eventData);
     void HandleItemDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleItemDragCancel(StringHash eventType, VariantMap& eventData);
@@ -61,7 +60,7 @@ public:
     AccountChestDialog(Context* context);
     ~AccountChestDialog() override;
     void Initialize() override;
-    bool DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos);
+    bool DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
     void Clear();
 
     uint32_t money_{ 0 };

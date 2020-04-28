@@ -307,9 +307,12 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
 }
 
 void ProtocolGame::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-    AB::Entities::StoragePlace place, uint16_t newPos)
+    AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count)
 {
-    AB::Packets::Client::SetItemPos packet{ static_cast<uint8_t>(currentPlace), currentPos, static_cast<uint8_t>(place), newPos };
+    AB::Packets::Client::SetItemPos packet{
+        static_cast<uint8_t>(currentPlace), currentPos,
+        static_cast<uint8_t>(place), newPos,
+        count};
     SendPacket(AB::GameProtocol::ClientPacketTypes::SetItemPos, packet);
 }
 

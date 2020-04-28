@@ -171,7 +171,7 @@ public:
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
     void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-        AB::Entities::StoragePlace place, uint16_t newPos);
+        AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count);
     void UpdateChest();
     void ChestDestroyItem(uint16_t pos);
     void DepositMoney(uint32_t amount);

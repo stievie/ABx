@@ -27,6 +27,7 @@
 #include "WindowManager.h"
 #include "InventoryWindow.h"
 #include "NumberInputBox.h"
+#include "ItemUIElement.h"
 
 AccountChestDialog::AccountChestDialog(Context* context) :
     DialogWindow(context),
@@ -110,12 +111,6 @@ void AccountChestDialog::HandleChestItemRemove(StringHash, VariantMap& eventData
     SetItem(nullptr, item);
 }
 
-void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
-{
-    // TODO: What???
-    (void)eventData;
-}
-
 void AccountChestDialog::HandleItemDragMove(StringHash, VariantMap& eventData)
 {
     if (!dragItem_)
@@ -124,7 +119,7 @@ void AccountChestDialog::HandleItemDragMove(StringHash, VariantMap& eventData)
     dragItem_->BringToFront();
 
     int buttons = eventData[P_BUTTONS].GetInt();
-    auto* element = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
+    auto* element = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     int BUTTONS = element->GetVar("BUTTONS").GetInt();
@@ -137,30 +132,11 @@ void AccountChestDialog::HandleItemDragBegin(StringHash, VariantMap& eventData)
 {
     using namespace DragBegin;
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    auto* item = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
-    UIElement* root = GetSubsystem<UI>()->GetRoot();
-
-    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
-    dragItem_ = root->CreateChild<Window>();
-    dragItem_->SetLayout(LM_HORIZONTAL);
-    dragItem_->SetLayoutBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetTexture(tex);
-    dragItem_->SetImageRect(IntRect(48, 0, 64, 16));
-    dragItem_->SetBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetMinSize(item->GetSize());
-    dragItem_->SetMaxSize(item->GetSize());
-    BorderImage* icon = dragItem_->CreateChild<BorderImage>();
-    icon->SetTexture(item->GetTexture());
-    dragItem_->SetPosition(item->GetPosition());
-    dragItem_->SetVar("POS", item->GetVar("POS"));
-
+    auto* item = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
+    int buttons = eventData[P_BUTTONS].GetInt();
     int lx = eventData[P_X].GetInt();
     int ly = eventData[P_Y].GetInt();
-    dragItem_->SetPosition(IntVector2(lx, ly) - dragItem_->GetSize() / 2);
-
-    int buttons = eventData[P_BUTTONS].GetInt();
-    item->SetVar("BUTTONS", buttons);
+    dragItem_ = item->GetDragItem(buttons, { lx, ly });
     dragItem_->BringToFront();
 }
 
@@ -179,21 +155,36 @@ void AccountChestDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
     using namespace DragEnd;
     if (!dragItem_)
         return;
-    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("POS").GetUInt());
+    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("Pos").GetUInt());
+
+    auto* itemsCache = GetSubsystem<ItemsCache>();
+    auto item = itemsCache->Get(dragItem_->GetVar("Index").GetUInt());
+    if (!item)
+        return;
+
+    ConcreteItem ci;
+    ci.pos = pos;
+    ci.pos = pos;
+    ci.type = item->type_;
+    ci.place = AB::Entities::StoragePlace::Chest;
+    ci.index = dragItem_->GetVar("Index").GetUInt();
+    ci.count = dragItem_->GetVar("Count").GetUInt();
+    ci.value = static_cast<uint16_t>(dragItem_->GetVar("Value").GetUInt());
+    LoadStatsFromString(ci.stats, dragItem_->GetVar("Stats").GetString());
 
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     if (IsInside({ X, Y }, true))
-        DropItem({ X, Y }, AB::Entities::StoragePlace::Chest, pos);
+        DropItem({ X, Y }, ci);
     else
     {
         // If dropping on the players inventory move it there
         WindowManager* wm = GetSubsystem<WindowManager>();
-        auto inv = wm->GetWindow(WINDOW_INVENTORY);
-        if (inv && inv->IsVisible())
+        auto inventory = wm->GetWindow(WINDOW_INVENTORY);
+        if (inventory && inventory->IsVisible())
         {
-            if (inv->IsInside({ X, Y }, true))
-                static_cast<InventoryWindow*>(inv.Get())->DropItem({ X, Y }, AB::Entities::StoragePlace::Chest, pos);
+            if (inventory->IsInside({ X, Y }, true))
+                static_cast<InventoryWindow*>(inventory.Get())->DropItem({ X, Y }, ci);
         }
     }
 
@@ -298,7 +289,7 @@ void AccountChestDialog::Initialize()
     }
 }
 
-bool AccountChestDialog::DropItem(const IntVector2& screenPos, AB::Entities::StoragePlace currentPlace, uint16_t currItemPos)
+bool AccountChestDialog::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
 {
     if (!IsInside(screenPos, true))
         return false;
@@ -308,9 +299,11 @@ bool AccountChestDialog::DropItem(const IntVector2& screenPos, AB::Entities::Sto
     if (itemPos == 0)
         return false;
 
+
+
     auto* client = GetSubsystem<FwClient>();
-    client->SetItemPos(currentPlace, currItemPos,
-        AB::Entities::StoragePlace::Chest, itemPos);
+    client->SetItemPos(ci.place, ci.pos,
+        AB::Entities::StoragePlace::Chest, itemPos, ci.count);
 
     return true;
 }
@@ -340,60 +333,21 @@ void AccountChestDialog::SetItem(Item* item, const ConcreteItem& iItem)
         // The item was removed
         return;
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    // For ToolTips we need a button
-    Button* icon = container->CreateChild<Button>("Icon");
-    icon->SetPosition(4, 4);
-    icon->SetSize(container->GetSize() - IntVector2(8, 8));
-    icon->SetMinSize(icon->GetSize());
-    Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
-    icon->SetTexture(texture);
-    icon->SetFullImageRect();
-    icon->SetLayoutMode(LM_FREE);
-    icon->SetVar("POS", iItem.pos);
-    SubscribeToEvent(icon, E_CLICKEND, URHO3D_HANDLER(AccountChestDialog, HandleItemClicked));
-    SubscribeToEvent(icon, E_DRAGMOVE, URHO3D_HANDLER(AccountChestDialog, HandleItemDragMove));
-    SubscribeToEvent(icon, E_DRAGBEGIN, URHO3D_HANDLER(AccountChestDialog, HandleItemDragBegin));
-    SubscribeToEvent(icon, E_DRAGCANCEL, URHO3D_HANDLER(AccountChestDialog, HandleItemDragCancel));
-    SubscribeToEvent(icon, E_DRAGEND, URHO3D_HANDLER(AccountChestDialog, HandleItemDragEnd));
-
-    if (iItem.count > 1)
-    {
-        Text* count = icon->CreateChild<Text>("Count");
-        count->SetAlignment(HA_LEFT, VA_BOTTOM);
-        count->SetPosition(0, 0);
-        count->SetSize(10, icon->GetWidth());
-        count->SetMinSize(10, icon->GetWidth());
-        count->SetText(String(iItem.count));
-        count->SetStyleAuto();                  // !!!
-        count->SetFontSize(9);
-    }
-
-    {
-        // Tooltip
-        ToolTip* tt = icon->CreateChild<ToolTip>();
-        tt->SetLayoutMode(LM_HORIZONTAL);
-        Window* ttWindow = tt->CreateChild<Window>();
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
-        Text* ttText1 = ttWindow->CreateChild<Text>();
-        String text = iItem.count > 1 ? String(iItem.count) + " " : "";
-        text += item->name_;
-        ttText1->SetText(text);
-        ttText1->SetStyleAuto();
-
-        String text2 = String(iItem.count * iItem.value) + " Drachma";
-        Text* ttText2 = ttWindow->CreateChild<Text>();
-        ttText2->SetText(text2);
-        ttText2->SetStyleAuto();
-        ttText2->SetFontSize(9);
-
-        tt->SetPriority(2147483647);
-        tt->SetOpacity(0.7f);
-        tt->SetStyleAuto();
-        tt->SetPosition(IntVector2(0, -(ttWindow->GetHeight() + 10)));
-    }
+    ItemUIElement* itemElem = container->CreateChild<ItemUIElement>("ItemElememt");
+    itemElem->SetPosition(4, 4);
+    itemElem->SetSize(container->GetSize() - IntVector2(8, 8));
+    itemElem->SetMinSize(itemElem->GetSize());
+    itemElem->SetName(item->name_);
+    itemElem->SetIcon(item->iconFile_);
+    itemElem->SetPos(iItem.pos);
+    itemElem->SetIndex(iItem.index);
+    itemElem->SetCount(iItem.count);
+    itemElem->SetValue(iItem.value);
+    itemElem->SetStats(SaveStatsToString(iItem.stats));
+    SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(AccountChestDialog, HandleItemDragMove));
+    SubscribeToEvent(itemElem, E_DRAGBEGIN, URHO3D_HANDLER(AccountChestDialog, HandleItemDragBegin));
+    SubscribeToEvent(itemElem, E_DRAGCANCEL, URHO3D_HANDLER(AccountChestDialog, HandleItemDragCancel));
+    SubscribeToEvent(itemElem, E_DRAGEND, URHO3D_HANDLER(AccountChestDialog, HandleItemDragEnd));
 }
 
 void AccountChestDialog::Clear()

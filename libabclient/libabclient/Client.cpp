@@ -462,10 +462,10 @@ void Client::InventoryDropItem(uint16_t pos)
 }
 
 void Client::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-    AB::Entities::StoragePlace place, uint16_t newPos)
+    AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count)
 {
     if (state_ == State::World)
-        protoGame_->SetItemPos(currentPlace, currentPos, place, newPos);
+        protoGame_->SetItemPos(currentPlace, currentPos, place, newPos, count);
 }
 
 void Client::GetChest()

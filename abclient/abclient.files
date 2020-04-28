@@ -74,6 +74,8 @@ abclient/Item.cpp
 abclient/Item.h
 abclient/ItemsCache.cpp
 abclient/ItemsCache.h
+abclient/ItemUIElement.cpp
+abclient/ItemUIElement.h
 abclient/LevelManager.cpp
 abclient/LevelManager.h
 abclient/LoginLevel.cpp

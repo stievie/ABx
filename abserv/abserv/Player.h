@@ -216,7 +216,8 @@ public:
     void CRQDropInventoryItem(uint16_t pos);
     void CRQDestroyInventoryItem(uint16_t pos);
     void CRQSetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-        AB::Entities::StoragePlace newPlace, uint16_t newPos);
+        AB::Entities::StoragePlace newPlace, uint16_t newPos,
+        uint32_t count);
     void CRQGetChest();
     void CRQDestroyChestItem(uint16_t pos);
     void CRQDepositMoney(uint32_t amount);

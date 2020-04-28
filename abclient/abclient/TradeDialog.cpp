@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "ItemsCache.h"
 #include "NumberInputBox.h"
+#include "ItemUIElement.h"
 
 TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<Actor> partner) :
     DialogWindow(context),
@@ -101,7 +102,7 @@ bool TradeDialog::DropItem(const IntVector2& screenPos, ConcreteItem&& ci)
     int freeSlot = FindFreeSlot(container);
     if (freeSlot == -1)
         return false;
-    Button* icon = CreateItem(container, freeSlot, ci);
+    ItemUIElement* icon = CreateItem(container, freeSlot, ci);
     if (icon == nullptr)
         return false;
 
@@ -190,35 +191,11 @@ void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
 void TradeDialog::HandleItemDragBegin(StringHash, VariantMap& eventData)
 {
     using namespace DragBegin;
-
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    auto* item = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
-    UIElement* root = GetSubsystem<UI>()->GetRoot();
-
-    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
-    dragItem_ = root->CreateChild<Window>();
-    dragItem_->SetLayout(LM_HORIZONTAL);
-    dragItem_->SetLayoutBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetTexture(tex);
-    dragItem_->SetImageRect(IntRect(48, 0, 64, 16));
-    dragItem_->SetBorder(IntRect(4, 4, 4, 4));
-    dragItem_->SetMinSize(item->GetSize());
-    dragItem_->SetMaxSize(item->GetSize());
-    BorderImage* icon = dragItem_->CreateChild<BorderImage>();
-    icon->SetTexture(item->GetTexture());
-    dragItem_->SetPosition(item->GetPosition());
-    dragItem_->SetVar("POS", item->GetVar("POS"));
-    dragItem_->SetVar("Index", item->GetVar("Index"));
-    dragItem_->SetVar("Count", item->GetVar("Count"));
-    dragItem_->SetVar("Value", item->GetVar("Value"));
-    dragItem_->SetVar("Stats", item->GetVar("Stats"));
-
+    auto* item = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
+    int buttons = eventData[P_BUTTONS].GetInt();
     int lx = eventData[P_X].GetInt();
     int ly = eventData[P_Y].GetInt();
-    dragItem_->SetPosition(IntVector2(lx, ly) - dragItem_->GetSize() / 2);
-
-    int buttons = eventData[P_BUTTONS].GetInt();
-    item->SetVar("BUTTONS", buttons);
+    dragItem_ = item->GetDragItem(buttons, { lx, ly });
     dragItem_->BringToFront();
 }
 
@@ -230,7 +207,7 @@ void TradeDialog::HandleItemDragMove(StringHash, VariantMap& eventData)
     dragItem_->BringToFront();
 
     int buttons = eventData[P_BUTTONS].GetInt();
-    auto* element = reinterpret_cast<Button*>(eventData[P_ELEMENT].GetVoidPtr());
+    auto* element = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
     int BUTTONS = element->GetVar("BUTTONS").GetInt();
@@ -254,7 +231,7 @@ void TradeDialog::HandleItemDragEnd(StringHash, VariantMap& eventData)
     using namespace DragEnd;
     if (!dragItem_)
         return;
-    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("POS").GetUInt());
+    uint16_t pos = static_cast<uint16_t>(dragItem_->GetVar("Pos").GetUInt());
 
     int X = eventData[P_X].GetInt();
     int Y = eventData[P_Y].GetInt();
@@ -281,7 +258,7 @@ void TradeDialog::HandleInputDialogDone(StringHash, VariantMap& eventData)
 {
     using namespace NumberInputBoxDone;
     NumberInputBox* dialog = static_cast<NumberInputBox*>(eventData[P_ELEMENT].GetVoidPtr());
-    unsigned pos = dialog->GetVar("POS").GetUInt();
+    unsigned pos = dialog->GetVar("Pos").GetUInt();
     auto* container = GetChild("OfferItems", true);
     if (!eventData[P_OK].GetBool())
     {
@@ -297,33 +274,9 @@ void TradeDialog::HandleInputDialogDone(StringHash, VariantMap& eventData)
 
     (*it).second.count = count;
     auto* item = GetItemFromPos(container, pos);
-    auto* icon = item->GetChildStaticCast<Button>("Icon", true);
-    icon->SetVar("Count", count);
-    const String& itemName = icon->GetVar("ItemName").GetString();
-    unsigned itemValue = icon->GetVar("Value").GetUInt();
-
-    Text* countText = icon->GetChildStaticCast<Text>("Count", true);
-    if (countText)
-    {
-        if (count == 1)
-            countText->Remove();
-        else
-            countText->SetText(String(count));
-    }
-    ToolTip* tt = icon->GetChildStaticCast<ToolTip>("Tooltip", true);
-    if (tt)
-    {
-        Window* ttWindow = tt->GetChildStaticCast<Window>("TooltipWindow", true);
-        Text* ttText1 = ttWindow->GetChildStaticCast<Text>("CountTooltip", true);
-        String text = count > 1 ? String(count) + " " : "";
-        text += itemName;
-        ttText1->SetText(text);
-
-        String text2 = String(count * itemValue) + " Drachma";
-        Text* ttText2 = ttWindow->GetChildStaticCast<Text>("ValueTooltip", true);
-        ttText2->SetText(text2);
-    }
-    icon->SetVisible(true);
+    auto* itemElem = item->GetChildStaticCast<ItemUIElement>("ItemElememt", true);
+    itemElem->SetCount(count);
+    itemElem->SetVisible(true);
 }
 
 uint32_t TradeDialog::GetOfferedMoney() const
@@ -336,9 +289,8 @@ uint32_t TradeDialog::GetOfferedMoney() const
     return static_cast<uint32_t>(iValue);
 }
 
-Button* TradeDialog::CreateItem(UIElement* container, int index, const ConcreteItem& iItem)
+ItemUIElement* TradeDialog::CreateItem(UIElement* container, int index, const ConcreteItem& iItem)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
     auto* itemsCache = GetSubsystem<ItemsCache>();
     auto item = itemsCache->Get(iItem.index);
     if (!item)
@@ -348,65 +300,24 @@ Button* TradeDialog::CreateItem(UIElement* container, int index, const ConcreteI
     if (!itemContainer)
         return nullptr;
 
-    // For ToolTips we need a button
-    Button* icon = itemContainer->CreateChild<Button>("Icon");
-    icon->SetPosition(4, 4);
-    icon->SetSize(itemContainer->GetSize() - IntVector2(8, 8));
-    icon->SetMinSize(icon->GetSize());
-    Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
-    icon->SetTexture(texture);
-    icon->SetFullImageRect();
-    icon->SetLayoutMode(LM_FREE);
-    icon->SetVar("POS", iItem.pos);
-    icon->SetVar("Index", iItem.index);
-    icon->SetVar("Count", iItem.count);
-    icon->SetVar("Value", iItem.value);
-    icon->SetVar("Stats", SaveStatsToString(iItem.stats));
-    icon->SetVar("ItemName", item->name_);
+    ItemUIElement* itemElem = itemContainer->CreateChild<ItemUIElement>("ItemElememt");
+    itemElem->SetPosition(4, 4);
+    itemElem->SetSize(itemContainer->GetSize() - IntVector2(8, 8));
+    itemElem->SetMinSize(itemElem->GetSize());
+    itemElem->SetName(item->name_);
+    itemElem->SetIcon(item->iconFile_);
+    itemElem->SetPos(iItem.pos);
+    itemElem->SetIndex(iItem.index);
+    itemElem->SetCount(iItem.count);
+    itemElem->SetValue(iItem.value);
+    itemElem->SetStats(SaveStatsToString(iItem.stats));
 
-    SubscribeToEvent(icon, E_DRAGMOVE, URHO3D_HANDLER(TradeDialog, HandleItemDragMove));
-    SubscribeToEvent(icon, E_DRAGBEGIN, URHO3D_HANDLER(TradeDialog, HandleItemDragBegin));
-    SubscribeToEvent(icon, E_DRAGCANCEL, URHO3D_HANDLER(TradeDialog, HandleItemDragCancel));
-    SubscribeToEvent(icon, E_DRAGEND, URHO3D_HANDLER(TradeDialog, HandleItemDragEnd));
+    SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(TradeDialog, HandleItemDragMove));
+    SubscribeToEvent(itemElem, E_DRAGBEGIN, URHO3D_HANDLER(TradeDialog, HandleItemDragBegin));
+    SubscribeToEvent(itemElem, E_DRAGCANCEL, URHO3D_HANDLER(TradeDialog, HandleItemDragCancel));
+    SubscribeToEvent(itemElem, E_DRAGEND, URHO3D_HANDLER(TradeDialog, HandleItemDragEnd));
 
-    if (iItem.count > 1)
-    {
-        Text* count = icon->CreateChild<Text>("Count");
-        count->SetAlignment(HA_LEFT, VA_BOTTOM);
-        count->SetPosition(0, 0);
-        count->SetSize(10, icon->GetWidth());
-        count->SetMinSize(10, icon->GetWidth());
-        count->SetText(String(iItem.count));
-        count->SetStyleAuto();                  // !!!
-        count->SetFontSize(9);
-    }
-
-    {
-        // Tooltip
-        ToolTip* tt = icon->CreateChild<ToolTip>("Tooltip");
-        tt->SetLayoutMode(LM_HORIZONTAL);
-        Window* ttWindow = tt->CreateChild<Window>("TooltipWindow");
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
-        Text* ttText1 = ttWindow->CreateChild<Text>("CountTooltip");
-        String text = iItem.count > 1 ? String(iItem.count) + " " : "";
-        text += item->name_;
-        ttText1->SetText(text);
-        ttText1->SetStyleAuto();
-
-        String text2 = String(iItem.count * iItem.value) + " Drachma";
-        Text* ttText2 = ttWindow->CreateChild<Text>("ValueTooltip");
-        ttText2->SetText(text2);
-        ttText2->SetStyleAuto();
-        ttText2->SetFontSize(9);
-
-        tt->SetPriority(2147483647);
-        tt->SetOpacity(0.7f);
-        tt->SetStyleAuto();
-        tt->SetPosition(IntVector2(0, -(ttWindow->GetHeight() + 10)));
-    }
-    return icon;
+    return itemElem;
 }
 
 int TradeDialog::FindFreeSlot(UIElement* container)
@@ -439,13 +350,11 @@ UIElement* TradeDialog::GetItemFromPos(UIElement* container, unsigned pos)
         auto* itemContainer = container->GetChild("Item" + String(i + 1), true);
         if (!itemContainer)
             continue;
-        Button* icon = itemContainer->GetChildStaticCast<Button>("Icon", true);
+        ItemUIElement* icon = itemContainer->GetChildDynamicCast<ItemUIElement>("ItemElememt", true);
         if (!icon)
             continue;
-        if (icon->GetVar("POS").GetUInt() == static_cast<unsigned>(pos))
-        {
+        if (icon->pos_ == static_cast<unsigned>(pos))
             return itemContainer;
-        }
     }
     return nullptr;
 }
@@ -472,7 +381,7 @@ void TradeDialog::ShowCountDialog(uint16_t pos, int max)
 
     inputBox_ = MakeShared<NumberInputBox>(context_, "Number of Items");
     inputBox_->SetMax(max);
-    inputBox_->SetVar("POS", pos);
+    inputBox_->SetVar("Pos", pos);
     inputBox_->SetShowMaxButton(true);
     inputBox_->SetMin(1);
     inputBox_->SetValue(1);

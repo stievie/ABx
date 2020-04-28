@@ -32,9 +32,7 @@
 #include "FormatText.h"
 #include "FriendListWindow.h"
 #include "GameMenu.h"
-#include "GameMenu.h"
 #include "GameMessagesWindow.h"
-#include "HealthBar.h"
 #include "HealthBar.h"
 #include "HotkeyEdit.h"
 #include "InventoryWindow.h"
@@ -46,6 +44,7 @@
 #include "Options.h"
 #include "OutpostLevel.h"
 #include "PartyItem.h"
+#include "ItemUIElement.h"
 #include "PartyWindow.h"
 #include "PingDot.h"
 #include "Player.h"
@@ -197,6 +196,7 @@ ClientApp::ClientApp(Context* context) :
     Spinner::RegisterObject(context);
     PartyItem::RegisterObject(context);
     SkillCostElement::RegisterObject(context);
+    ItemUIElement::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

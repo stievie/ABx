@@ -916,10 +916,10 @@ void FwClient::InventoryDropItem(uint16_t pos)
 }
 
 void FwClient::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-    AB::Entities::StoragePlace place, uint16_t newPos)
+    AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count)
 {
     if (loggedIn_)
-        client_.SetItemPos(currentPlace, currentPos, place, newPos);
+        client_.SetItemPos(currentPlace, currentPos, place, newPos, count);
 }
 
 void FwClient::UpdateChest()
