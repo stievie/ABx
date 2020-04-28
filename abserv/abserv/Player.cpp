@@ -413,6 +413,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
     uint16_t currentPos, AB::Entities::StoragePlace newPlace, uint16_t newPos,
     uint32_t count)
 {
+    (void)count;
 //    LOG_INFO << "CRQSetItemPos(): place: " << static_cast<int>(currentPlace) << " pos: " << currentPos <<
 //        " new place: " << static_cast<int>(newPlace) << " new pos: " << newPos << std::endl;
     if (currentPlace == AB::Entities::StoragePlace::Inventory && tradeComp_->IsTrading())
@@ -464,7 +465,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
     if (currentPlace != AB::Entities::StoragePlace::Chest && currentPlace != AB::Entities::StoragePlace::Inventory)
         return;
 
-    // TODO: If count != whoole stack split items
+    // TODO: If count != whole stack split items
     auto removeItem = [&]() -> uint32_t
     {
         if (currentPlace == AB::Entities::StoragePlace::Inventory)
