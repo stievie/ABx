@@ -118,6 +118,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRenamed& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet) = 0;

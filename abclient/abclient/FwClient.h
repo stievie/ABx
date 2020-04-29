@@ -190,6 +190,7 @@ public:
     void Cancel();
     void AddFriend(const String& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const String& accountUuid);
+    void RenameFriend(const String& accountUuid, const String& newName);
     void UpdateFriendList();
     void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
     void PartyInvitePlayer(uint32_t objectId);
@@ -277,6 +278,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRenamed& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet) override;

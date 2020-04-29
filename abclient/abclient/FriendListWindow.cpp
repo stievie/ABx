@@ -24,6 +24,7 @@
 #include "Shortcuts.h"
 #include "FwClient.h"
 #include "Player.h"
+#include "InputBox.h"
 
 void FriendListWindow::RegisterObject(Context* context)
 {
@@ -122,7 +123,6 @@ void FriendListWindow::CreateMenus()
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendWhisperClicked));
     }
     {
-        // Remove
         Menu* item = popup->CreateChild<Menu>();
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
@@ -139,7 +139,22 @@ void FriendListWindow::CreateMenus()
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendSendMailClicked));
     }
     {
-        // Remove
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Rename");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendRenameClicked));
+    }
+    {
         Menu* item = popup->CreateChild<Menu>();
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
@@ -199,6 +214,7 @@ void FriendListWindow::SubscribeEvents()
     SubscribeToEvent(Events::E_GOT_FRIENDLIST, URHO3D_HANDLER(FriendListWindow, HandleGotFriendList));
     SubscribeToEvent(Events::E_FRIENDADDED, URHO3D_HANDLER(FriendListWindow, HandleFriendAdded));
     SubscribeToEvent(Events::E_FRIENDREMOVED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoved));
+    SubscribeToEvent(Events::E_FRIENDRENAMED, URHO3D_HANDLER(FriendListWindow, HandleFriendRenamed));
 }
 
 void FriendListWindow::HandleStatusDropdownSelected(StringHash, VariantMap& eventData)
@@ -330,6 +346,50 @@ void FriendListWindow::HandleFriendSendMailClicked(StringHash, VariantMap& event
     SendEvent(Events::E_SENDMAILTO, e);
 }
 
+void FriendListWindow::HandleFriendRenameClicked(StringHash, VariantMap& eventData)
+{
+    friendPopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& uuid = friendPopup_->GetVar("AccountUuid").GetString();
+    const String& name = friendPopup_->GetVar("NickName").GetString();
+
+    inputBox_ = MakeShared<InputBox>(context_, "Rename Friend");
+    inputBox_->SetVar("AccountUuid", uuid);
+    inputBox_->SetValue(name);
+    inputBox_->SelectAll();
+    SubscribeToEvent(inputBox_, E_INPUTBOXDONE, URHO3D_HANDLER(FriendListWindow, HandleRenameFriendDialogDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(FriendListWindow, HandleDialogClosed));
+}
+
+void FriendListWindow::HandleRenameFriendDialogDone(StringHash, VariantMap& eventData)
+{
+    using namespace InputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    const String& uuid = inputBox_->GetVar("AccountUuid").GetString();
+    const String& newName = eventData[P_VALUE].GetString();
+    auto* client = GetSubsystem<FwClient>();
+    client->RenameFriend(uuid, newName);
+}
+
+void FriendListWindow::HandleFriendRenamed(StringHash, VariantMap& eventData)
+{
+    using namespace Events::FriendRenamed;
+    auto* client = GetSubsystem<FwClient>();
+    auto* acc = client->GetRelatedAccount(eventData[P_ACCOUNTUUID].GetString());
+    if (acc == nullptr)
+        return;
+
+    if (acc->relation == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
+        UpdateItem(friendList_, *acc);
+    else if (acc->relation == AB::Packets::Server::PlayerInfo::FriendRelationIgnore)
+        UpdateItem(ignoreList_, *acc);
+}
+
 void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData)
 {
     using namespace ClickEnd;
@@ -344,8 +404,15 @@ void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData
         friendPopup_->SetPosition(x, y);
         friendPopup_->SetVar("AccountUuid", elem->GetVar("AccountUuid").GetString());
         friendPopup_->SetVar("CharacterName", elem->GetVar("CharacterName").GetString());
+        friendPopup_->SetVar("NickName", elem->GetVar("NickName").GetString());
         friendPopup_->ShowPopup(true);
     }
+}
+
+void FriendListWindow::HandleDialogClosed(StringHash, VariantMap&)
+{
+    if (inputBox_)
+        inputBox_.Reset();
 }
 
 void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
@@ -398,7 +465,8 @@ void FriendListWindow::UpdateItem(ListView* lv, const AB::Packets::Server::Playe
         txt->SetStyle("FriendListItemOnline");
 
     txt->SetVar("AccountUuid", String(f.accountUuid.c_str()));
-    txt->SetVar("CharacterName", String(f.currentName.c_str()));
+    txt->SetVar("CharacterName", String(f.currentName.c_str(), static_cast<unsigned>(f.currentName.length())));
+    txt->SetVar("NickName", String(f.nickName.c_str(), static_cast<unsigned>(f.nickName.length())));
     txt->EnableLayoutUpdate();
     txt->UpdateLayout();
     lv->AddItem(txt);
@@ -425,7 +493,7 @@ void FriendListWindow::HandleGotPlayerInfo(StringHash, VariantMap& eventData)
 {
     using namespace Events::GotPlayerInfo;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
-        auto* client = GetSubsystem<FwClient>();
+    auto* client = GetSubsystem<FwClient>();
     auto* acc = client->GetRelatedAccount(uuid);
     if (acc == nullptr)
         return;

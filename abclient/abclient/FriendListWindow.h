@@ -26,6 +26,7 @@
 #include <Urho3DAll.h>
 
 class Player;
+class InputBox;
 
 class FriendListWindow : public Window
 {
@@ -38,6 +39,7 @@ private:
     SharedPtr<Menu> friendPopup_;
     SharedPtr<Menu> ignorePopup_;
     SharedPtr<DropDownList> statusDropdown_;
+    SharedPtr<InputBox> inputBox_;
     bool initialized_{ false };
 
     void CreateMenus();
@@ -53,7 +55,11 @@ private:
     void HandleFriendRemoveClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendWhisperClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendSendMailClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFriendRenameClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendItemClicked(StringHash eventType, VariantMap& eventData);
+    void HandleDialogClosed(StringHash eventType, VariantMap& eventData);
+    void HandleRenameFriendDialogDone(StringHash eventType, VariantMap& eventData);
+    void HandleFriendRenamed(StringHash eventType, VariantMap& eventData);
     void UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f);
     void UpdateAll();
     void UpdateSelf(const AB::Packets::Server::PlayerInfo& acc);

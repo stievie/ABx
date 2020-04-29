@@ -91,6 +91,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::FriendList, ServerPacketType::FriendList>();
     AddHandler<AB::Packets::Server::FriendAdded, ServerPacketType::FriendAdded>();
     AddHandler<AB::Packets::Server::FriendRemoved, ServerPacketType::FriendRemoved>();
+    AddHandler<AB::Packets::Server::FriendRenamed, ServerPacketType::FriendRenamed>();
     AddHandler<AB::Packets::Server::GuildInfo, ServerPacketType::GuildInfo>();
     AddHandler<AB::Packets::Server::GuildMemberList, ServerPacketType::GuildMemberList>();
     AddHandler<AB::Packets::Server::QuestSelectionDialogTrigger, ServerPacketType::QuestSelectionDialogTrigger>();
@@ -558,6 +559,15 @@ void ProtocolGame::RemoveFriend(const std::string& accountUuid)
         accountUuid
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::RemoveFriend, packet);
+}
+
+void ProtocolGame::RenameFriend(const std::string& accountUuid, const std::string& newName)
+{
+    AB::Packets::Client::RenameFriend packet{
+        accountUuid,
+        newName
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::RenameFriend, packet);
 }
 
 void ProtocolGame::UpdateFriendList()

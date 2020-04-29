@@ -1043,6 +1043,13 @@ void FwClient::RemoveFriend(const String& accountUuid)
         client_.RemoveFriend(std::string(accountUuid.CString(), accountUuid.Length()));
 }
 
+void FwClient::RenameFriend(const String& accountUuid, const String& newName)
+{
+    if (loggedIn_)
+        client_.RenameFriend(std::string(accountUuid.CString(), accountUuid.Length()),
+            std::string(newName.CString(), newName.Length()));
+}
+
 void FwClient::UpdateFriendList()
 {
     if (loggedIn_)
@@ -2107,6 +2114,23 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendRemoved& packe
     eData[P_ACCOUNTUUID] = String(packet.accountUuid.c_str());
     eData[P_RELATION] = static_cast<unsigned>(packet.relation);
     QueueEvent(Events::E_FRIENDREMOVED, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendRenamed& packet)
+{
+    const auto it = relatedAccounts_.find(packet.accountUuid);
+
+    if (it != relatedAccounts_.end())
+    {
+        (*it).second.nickName = packet.newName;
+    }
+
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::FriendRenamed;
+    eData[P_ACCOUNTUUID] = String(packet.accountUuid.c_str());
+    eData[P_RELATION] = static_cast<unsigned>(packet.relation);
+    eData[P_NEWNAME] = String(packet.newName.c_str(), static_cast<unsigned>(packet.newName.length()));
+    QueueEvent(Events::E_FRIENDRENAMED, eData);
 }
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::GuildInfo& packet)

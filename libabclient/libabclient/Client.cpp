@@ -636,6 +636,12 @@ void Client::RemoveFriend(const std::string& accountUuid)
         protoGame_->RemoveFriend(accountUuid);
 }
 
+void Client::RenameFriend(const std::string& accountUuid, const std::string& newName)
+{
+    if (state_ == State::World)
+        protoGame_->RenameFriend(accountUuid, newName);
+}
+
 void Client::UpdateFriendList()
 {
     if (state_ == State::World)
@@ -960,6 +966,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRenamed& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

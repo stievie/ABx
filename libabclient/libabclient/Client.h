@@ -165,6 +165,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerInfo& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendAdded& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRemoved& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::FriendRenamed& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildInfo& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::GuildMemberList& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::QuestSelectionDialogTrigger& packet) override;
@@ -245,6 +246,7 @@ public:
     void UnqueueMatch();
     void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const std::string& accountUuid);
+    void RenameFriend(const std::string& accountUuid, const std::string& newName);
     void UpdateFriendList();
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);

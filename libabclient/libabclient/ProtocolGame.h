@@ -126,6 +126,7 @@ public:
     void UnqueueMatch();
     void AddFriend(const std::string& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const std::string& accountUuid);
+    void RenameFriend(const std::string& accountUuid, const std::string& newName);
     void UpdateFriendList();
     void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
     void SetSecondaryProfession(uint32_t profIndex);

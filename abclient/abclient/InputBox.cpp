@@ -79,7 +79,7 @@ void InputBox::HandleOkClicked(StringHash, VariantMap&)
 {
     using namespace InputBoxDone;
 
-    auto* edit = GetChildDynamicCast<LineEdit>("NumberInputEdit", true);
+    auto* edit = GetChildDynamicCast<LineEdit>("InputEdit", true);
     const String value = edit->GetText();
     if (value.Empty())
         return;
