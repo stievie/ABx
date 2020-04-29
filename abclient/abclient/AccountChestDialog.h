@@ -51,6 +51,7 @@ private:
     void HandleWithdrawDone(StringHash eventType, VariantMap& eventData);
     void HandleDepositDone(StringHash eventType, VariantMap& eventData);
     void HandleDialogClosed(StringHash eventType, VariantMap& eventData);
+    void HandleItemCountDone(StringHash eventType, VariantMap& eventData);
     uint16_t GetItemPosFromClientPos(const IntVector2& clientPos);
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const ConcreteItem& iItem);
@@ -60,7 +61,7 @@ public:
     AccountChestDialog(Context* context);
     ~AccountChestDialog() override;
     void Initialize() override;
-    bool DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
+    void DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
     void Clear();
 
     uint32_t money_{ 0 };

@@ -237,6 +237,9 @@
     <ClInclude Include="ItemUIElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -432,6 +435,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemUIElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -67,6 +67,8 @@ abclient/ValueBar.cpp
 abclient/ValueBar.h
 abclient/HotkeyEdit.cpp
 abclient/HotkeyEdit.h
+abclient/InputBox.cpp
+abclient/InputBox.h
 abclient/InternalEvents.h
 abclient/InventoryWindow.cpp
 abclient/InventoryWindow.h

@@ -262,7 +262,6 @@ uint16_t AccountChestDialog::GetItemPosFromClientPos(const IntVector2& clientPos
     IntVector2 item;
     item.y_ = ((clientPos.y_ - (container->GetPosition().y_ + moneyRow->GetPosition().y_ + moneyRow->GetHeight())) / CHEST_ITEM_SIZE_Y);
     item.x_ = (clientPos.x_ / CHEST_ITEM_SIZE_X) + 1;
-//    URHO3D_LOGINFOF("X = %d, Y = %d", item.x_, item.y_);
     if (item.y_ < 0 || item.x_ < 0)
         return 0;
     return static_cast<uint16_t>((item.y_ * CHEST_COLS_PER_ROW) + item.x_);
@@ -289,23 +288,53 @@ void AccountChestDialog::Initialize()
     }
 }
 
-bool AccountChestDialog::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
+void AccountChestDialog::HandleItemCountDone(StringHash, VariantMap& eventData)
+{
+    using namespace NumberInputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    uint16_t currentPos = static_cast<uint16_t>(inputBox_->GetVar("CurrentPos").GetUInt());
+    AB::Entities::StoragePlace currentPlace = static_cast<AB::Entities::StoragePlace>(inputBox_->GetVar("CurrentPlace").GetUInt());
+    uint16_t newPos = static_cast<uint16_t>(inputBox_->GetVar("Pos").GetUInt());
+    auto* client = GetSubsystem<FwClient>();
+    client->SetItemPos(currentPlace, currentPos,
+        AB::Entities::StoragePlace::Chest, newPos, eventData[P_VALUE].GetUInt());
+}
+
+void AccountChestDialog::DropItem(const IntVector2& screenPos, const ConcreteItem& ci)
 {
     if (!IsInside(screenPos, true))
-        return false;
+        return;
 
     IntVector2 clientPos = screenPos - GetScreenPosition();
     uint16_t itemPos = GetItemPosFromClientPos(clientPos);
     if (itemPos == 0)
-        return false;
+        return;
 
+    auto* input = GetSubsystem<Input>();
+    if (ci.count == 1 || !input->GetKeyDown(Key::KEY_CTRL))
+    {
+        auto* client = GetSubsystem<FwClient>();
+        client->SetItemPos(ci.place, ci.pos,
+            AB::Entities::StoragePlace::Chest, itemPos, ci.count);
+        return;
+    }
 
+    if (inputBox_)
+        inputBox_->Close();
 
-    auto* client = GetSubsystem<FwClient>();
-    client->SetItemPos(ci.place, ci.pos,
-        AB::Entities::StoragePlace::Chest, itemPos, ci.count);
-
-    return true;
+    inputBox_ = MakeShared<NumberInputBox>(context_, "How many?");
+    inputBox_->SetMax(static_cast<int>(ci.count));
+    inputBox_->SetVar("Pos", itemPos);
+    inputBox_->SetVar("CurrentPlace", static_cast<unsigned>(ci.place));
+    inputBox_->SetVar("CurrentPos", static_cast<unsigned>(ci.pos));
+    inputBox_->SetShowMaxButton(true);
+    inputBox_->SetMin(1);
+    inputBox_->SetValue(1);
+    inputBox_->SelectAll();
+    SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(AccountChestDialog, HandleItemCountDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(AccountChestDialog, HandleDialogClosed));
 }
 
 BorderImage* AccountChestDialog::GetItemContainer(uint16_t pos)

@@ -285,6 +285,7 @@
     <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="EquipmentWindow.cpp" />
     <ClCompile Include="FilePicker.cpp" />
+    <ClCompile Include="InputBox.cpp" />
     <ClCompile Include="ItemUIElement.cpp" />
     <ClCompile Include="NumberInputBox.cpp" />
     <ClCompile Include="SkillCostElement.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="DamageWindow.h" />
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="FilePicker.h" />
+    <ClInclude Include="InputBox.h" />
     <ClInclude Include="ItemUIElement.h" />
     <ClInclude Include="NumberInputBox.h" />
     <ClInclude Include="SkillCostElement.h" />

@@ -430,7 +430,7 @@ void InventoryWindow::DropItem(const IntVector2& screenPos, const ConcreteItem& 
         return;
 
     auto* input = GetSubsystem<Input>();
-    if (!input->GetKeyDown(Key::KEY_CTRL))
+    if (ci.count == 1 || !input->GetKeyDown(Key::KEY_CTRL))
     {
         auto* client = GetSubsystem<FwClient>();
         client->SetItemPos(ci.place, ci.pos,

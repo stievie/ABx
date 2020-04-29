@@ -40,6 +40,7 @@ NumberInputBox::NumberInputBox(Context* context, const String& title) :
     caption->SetText(title);
 
     auto* okButton = GetChildDynamicCast<Button>("OkButton", true);
+    okButton->SetEnabled(false);
     SubscribeToEvent(okButton, E_RELEASED, URHO3D_HANDLER(NumberInputBox, HandleOkClicked));
     auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(NumberInputBox, HandleCancelClicked));
@@ -179,8 +180,12 @@ void NumberInputBox::HandleEditTextEntry(StringHash, VariantMap& eventData)
 void NumberInputBox::HandleEditTextChanged(StringHash, VariantMap& eventData)
 {
     using namespace TextChanged;
+    auto* okButton = GetChildDynamicCast<Button>("OkButton", true);
     if (eventData[P_TEXT].GetString().Empty())
+    {
+        okButton->SetEnabled(false);
         return;
+    }
     const char* pVal = eventData[P_TEXT].GetString().CString();
     LineEdit* edit = static_cast<LineEdit*>(eventData[P_ELEMENT].GetVoidPtr());
     char* pEnd;
@@ -195,6 +200,8 @@ void NumberInputBox::HandleEditTextChanged(StringHash, VariantMap& eventData)
         if (iValue < min_)
             edit->SetText(String(min_));
     }
+
+    okButton->SetEnabled(!edit->GetText().Empty());
 }
 
 void NumberInputBox::HandleMaxButtonClicked(StringHash, VariantMap&)
