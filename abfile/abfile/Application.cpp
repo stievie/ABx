@@ -273,6 +273,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     catch (const std::exception& ex)
     {
         LOG_ERROR << ex.what() << std::endl;
+        LOG_INFO << "If SSL keys are missing, create them by running `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout \"" <<
+                    key << "\" -out \"" << cert << "\"` in the Bin directory" << std::endl;
         return false;
     }
 
@@ -603,8 +605,9 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         else
             throw std::invalid_argument("could not read file");
     }
-    catch (const std::exception&)
+    catch (const std::exception& ex)
     {
+        LOG_ERROR << "Exception " << ex.what() << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "Not found " + request->path);
     }

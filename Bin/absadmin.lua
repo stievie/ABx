@@ -10,6 +10,8 @@ admin_ip = ""         -- Listen on all
 admin_host = ""       -- emtpy use same host as for login
 admin_port = 443
 
+-- Create self signing Key/Cert with something like this:
+-- openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt
 server_key = "server.key"
 server_cert = "server.crt"
 
