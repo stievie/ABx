@@ -31,8 +31,9 @@ $ createdb forgottenwars
 6. Run `Bin/dbtool -a update` to create the database structure. Then run `Bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run the `Bin/keygen` tool to create the DH server keys.
-9. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
-10. You may want to create an account key to be able to create an account. You could use the `random_guid()` function to generate the GUID, e.g.:
+9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `Bin` directory to create keys and certificate for the HTTPS file server.
+10. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
+11. You may want to create an account key to be able to create an account. You could use the `random_guid()` function to generate the GUID, e.g.:
 ~~~sql
 INSERT INTO public.account_keys VALUES (random_guid(), 0, 100, 'My Account Key', 2, 1, '');
 ~~~
