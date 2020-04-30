@@ -165,3 +165,9 @@ void NewMailWindow::FocusRecipient()
     recipient_->GetTextElement()->SetSelection(0);
     recipient_->SetFocus(true);
 }
+
+void NewMailWindow::FocusSubject()
+{
+    subject_->GetTextElement()->SetSelection(0);
+    subject_->SetFocus(true);
+}

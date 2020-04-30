@@ -38,6 +38,7 @@ public:
     void FocusBody();
     void SetBody(const String& value);
     void FocusRecipient();
+    void FocusSubject();
 private:
     SharedPtr<MultiLineEdit> mailBody_;
     SharedPtr<LineEdit> recipient_;

@@ -2118,12 +2118,9 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendRemoved& packe
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::FriendRenamed& packet)
 {
-    const auto it = relatedAccounts_.find(packet.accountUuid);
-
+    auto it = relatedAccounts_.find(packet.accountUuid);
     if (it != relatedAccounts_.end())
-    {
         (*it).second.nickName = packet.newName;
-    }
 
     VariantMap& eData = GetEventDataMap();
     using namespace Events::FriendRenamed;

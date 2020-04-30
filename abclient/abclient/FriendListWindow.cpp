@@ -68,7 +68,7 @@ FriendListWindow::FriendListWindow(Context* context) :
 
     auto createStatusDropdownItem = [this](const String& text, AB::Packets::Server::PlayerInfo::Status status) -> Text*
     {
-        Text* result = new Text(context_);
+        Text* result = statusDropdown_->CreateChild<Text>();
         result->SetText(text);
         result->SetVar("Value", static_cast<int>(status));
         result->SetStyle("DropDownItemEnumText");
@@ -399,6 +399,11 @@ void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData
         return;
     if (button == MOUSEB_RIGHT)
     {
+        unsigned itemIndex = friendList_->FindItem(elem);
+        if (itemIndex == M_MAX_UNSIGNED)
+            return;
+        friendList_->SetSelection(itemIndex);
+
         int x = eventData[P_X].GetInt();
         int y = eventData[P_Y].GetInt();
         friendPopup_->SetPosition(x, y);

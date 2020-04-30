@@ -7,7 +7,7 @@ The binary of the *Client* is located in `./abclient/bin` and has the name
 
 ## Server
 
-1. Build the server, see [BUILD.md](BUILD.md)
+1. Build the server, see [BUILD.md](BUILD.md). After that all server executables are located in the `Bin` directory.
 2. On Windows copy the *OpenSSL* and *PostgreSQL* client libraries to the `Bin` directory.
     * `libeay32.dll` (OpenSSL)
     * `ssleay32.dll` (OpenSSL)
@@ -28,27 +28,23 @@ db_pass = "password"
 ~~~sh
 $ createdb forgottenwars
 ~~~
-6. Run `Bin/dbtool -a update` to create the database structure. Then run `Bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
+6. Run `./Bin/dbtool -a update` to create the database structure. Then run `./Bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
-8. Run the `Bin/keygen` tool to create the DH server keys.
-9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `Bin` directory to create keys and certificate for the HTTPS file server.
+8. Run the `./Bin/keygen` tool to create the DH server keys.
+9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `Bin` directory to create self-signed keys and certificate for the HTTPS file server.
 10. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
-11. You may want to create an account key to be able to create an account. You could use the `random_guid()` function to generate the GUID, e.g.:
-~~~sql
-INSERT INTO public.account_keys VALUES (random_guid(), 0, 100, 'My Account Key', 2, 1, '');
-~~~
-Or you can use the `dbtool`:
+11. You may want to create an account key to be able to create an account. To do so, run the `dbtool`:
 ~~~sh
-$ dbtool -a genacckey
+$ ./Bin/dbtool -a genacckey
 ~~~
 
-### Known issuses
+### Known issues
 
 The Server should run on Windows and Linux.
 
 ## Client
 
-1. Build it, see [BUILD.md](BUILD.md)
+1. Build it, see [BUILD.md](BUILD.md). The client executable is located in the `abclient/bin` directory and has the name `fw` or `fw.exe` on Windows.
 2. Download client assets `client_data.zip` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files). There should also be the Urho3D asset files, this directory should look like:
 ~~~plain
 bin
@@ -71,14 +67,11 @@ bin
 </config>
 ~~~
 5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && ./fw`.
-6. Create an account using the `random_guid()` value of your previously created account key. To find out what GUID was created, run:
-~~~sql
-SELECT uuid FROM public.account_keys;
-~~~
-Or use the `dbtool`:
+6. Create an account using the UUID of your previously created account key. To find out what GUID was created, run the `dbtool`:
 ~~~sh
-$ dbtool -a acckeys
+$ ./Bin/dbtool -a acckeys
 ~~~
+This lists all account keys, pick one.
 
 ### Known issues
 

@@ -366,7 +366,6 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     if (httpClient_ == nullptr)
         return false;
     SimpleWeb::CaseInsensitiveMultimap header;
-    header.emplace("Connection", "keep-alive");
     std::stringstream ss;
     ss << accountUuid_ << authToken_;
     header.emplace("Auth", ss.str());

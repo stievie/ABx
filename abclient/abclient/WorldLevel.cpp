@@ -909,6 +909,7 @@ void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)
     wnd->SetRecipient(eventData[P_NAME].GetString());
     wnd->SetVisible(true);
     wnd->BringToFront();
+    wnd->FocusSubject();
 }
 
 void WorldLevel::HandleToggleNewMail(StringHash, VariantMap& eventData)
