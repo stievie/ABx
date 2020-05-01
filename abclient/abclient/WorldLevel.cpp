@@ -907,6 +907,8 @@ void WorldLevel::HandleSendMailTo(StringHash, VariantMap& eventData)
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
     using namespace Events::SendMailTo;
     wnd->SetRecipient(eventData[P_NAME].GetString());
+    wnd->SetSubject(eventData[P_SUBJECT].GetString());
+    wnd->SetBody(eventData[P_BODY].GetString());
     wnd->SetVisible(true);
     wnd->BringToFront();
     wnd->FocusSubject();

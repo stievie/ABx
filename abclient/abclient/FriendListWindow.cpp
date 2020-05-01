@@ -343,6 +343,8 @@ void FriendListWindow::HandleFriendSendMailClicked(StringHash, VariantMap& event
     using namespace Events::SendMailTo;
     VariantMap& e = GetEventDataMap();
     e[P_NAME] = name;
+    e[P_SUBJECT] = "";
+    e[P_BODY] = "";
     SendEvent(Events::E_SENDMAILTO, e);
 }
 
