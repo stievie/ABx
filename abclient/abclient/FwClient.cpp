@@ -721,8 +721,11 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
             return false;
         }
 
-        if (request->GetAvailableSize() > 0)
-            f << request->ReadBuffer().Buffer();
+        unsigned size = request->GetAvailableSize();
+        if (size > 0)
+        {
+            f.write((const char*)request->ReadBuffer().Buffer(), size);
+        }
         else
             break;
     }
