@@ -38,7 +38,7 @@ void Item::RegisterLua(kaguya::State& state)
         .addFunction("GetWeaponDamageType", &Item::GetWeaponDamageType)
         .addFunction("GetWeaponDamage", &Item::GetWeaponDamage)
         .addFunction("GetType", &Item::GetType)
-        .addFunction("IsStackAble", &Item::IsStackAble)
+        .addFunction("IsStackable", &Item::IsStackable)
     );
 }
 
@@ -609,11 +609,6 @@ uint32_t Item::GetValue() const
 AB::Entities::ItemType Item::GetType() const
 {
     return data_.type;
-}
-
-bool Item::IsStackAble() const
-{
-    return data_.stackAble;
 }
 
 void Item::GetWeaponDamage(int32_t& value, bool critical)

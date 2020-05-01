@@ -117,6 +117,14 @@ enum class ModelClass : uint32_t
     Aoe = 1000,
 };
 
+enum ItemFlag : uint32_t
+{
+    ItemFlagStackable = 1,
+    ItemFlagIdentifyable = 1 << 1,
+    ItemFlagTradeable = 1 << 2,
+    ItemFlagUpgradeable = 1 << 3,
+};
+
 struct Item : Entity
 {
     static constexpr const char* KEY()
@@ -135,11 +143,10 @@ struct Item : Entity
         s.text1b(objectFile, Limits::MAX_FILENAME);
         s.value2b(type);
         s.value2b(belongsTo);
-        s.value1b(stackAble);
         s.value2b(value);
         s.text1b(spawnItemUuid, Limits::MAX_UUID);
         s.text1b(actorScript, Limits::MAX_FILENAME);
-        s.value1b(tradeAble);
+        s.value4b(itemFlags);
     }
 
     uint32_t index{ INVALID_INDEX };
@@ -150,12 +157,31 @@ struct Item : Entity
     std::string objectFile;
     ItemType type{ ItemType::Unknown };
     ItemType belongsTo{ ItemType::Unknown };
-    bool stackAble{ false };
     uint16_t value{ 0 };
     std::string spawnItemUuid{ EMPTY_GUID };
     std::string actorScript;
-    bool tradeAble{ false };
+    uint32_t itemFlags{ 0 };
 };
+
+inline bool IsItemStackable(uint32_t flags)
+{
+    return (flags & ItemFlagStackable) == ItemFlagStackable;
+}
+
+inline bool IsItemIdentifyable(uint32_t flags)
+{
+    return (flags & ItemFlagIdentifyable) == ItemFlagIdentifyable;
+}
+
+inline bool IsItemTradeable(uint32_t flags)
+{
+    return (flags & ItemFlagTradeable) == ItemFlagTradeable;
+}
+
+inline bool IsItemUpgradeable(uint32_t flags)
+{
+    return (flags & ItemFlagUpgradeable) == ItemFlagUpgradeable;
+}
 
 inline bool IsArmorItem(ItemType type)
 {

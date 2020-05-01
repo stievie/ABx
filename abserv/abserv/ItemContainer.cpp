@@ -194,7 +194,7 @@ bool ItemContainer::AddItem(Item* item, const ItemUpdatedCallback& callback)
     if (pos == 0)
     {
         // Adding new item to inventory
-        if (item->data_.stackAble)
+        if (item->IsStackable())
             return StackItem(item, callback);
 
         // Not stackable

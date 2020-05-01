@@ -137,7 +137,7 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
             // The value in the items table is used for materials
             result.value = (item.value != 0) ? item.value : 1u;
         // Count also depends on the value of the item
-        if (item.stackAble)
+        if (AB::Entities::IsItemStackable(item.itemFlags))
             // Only stackable items drop count > 1. And always <= MAX_INVENTORY_STACK_SIZE
             result.count = Math::Clamp((rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l) / result.value,
                 1u, MAX_INVENTORY_STACK_SIZE);
@@ -205,7 +205,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
         ci.count = info.count;
     if (info.value != 0)
         ci.value = info.value;
-    if (!gameItem.tradeAble)
+    if (!AB::Entities::IsItemTradeable(gameItem.itemFlags))
         ci.value = 0;
 
     // Create item stats for this drop

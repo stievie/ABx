@@ -134,7 +134,8 @@ public:
     uint32_t GetValue() const;
 
     AB::Entities::ItemType GetType() const;
-    bool IsStackAble() const;
+    bool IsStackable() const { return AB::Entities::IsItemStackable(data_.itemFlags); }
+    bool IsTradeable() const { return AB::Entities::IsItemTradeable(data_.itemFlags); }
     bool IsArmor() const
     {
         return AB::Entities::IsArmorItem(data_.type);

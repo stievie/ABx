@@ -64,11 +64,10 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.iconFile = result->GetString("icon_file");
     item.type = static_cast<AB::Entities::ItemType>(result->GetUInt("type"));
     item.belongsTo = static_cast<AB::Entities::ItemType>(result->GetUInt("belongs_to"));
-    item.stackAble = result->GetUInt("stack_able") != 0;
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
     item.spawnItemUuid = result->GetString("spawn_item_uuid");
     item.actorScript = result->GetString("actor_script");
-    item.tradeAble = result->GetUInt("trade_able") != 0;
+    item.itemFlags = result->GetUInt("item_flags");
 
     return true;
 }
