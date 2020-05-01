@@ -117,6 +117,7 @@ private:
     void LoadItems(uint32_t curVersion);
     void LoadMusic(uint32_t curVersion);
     bool MakeHttpRequest(const String& path, const String& outFile);
+    bool MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);

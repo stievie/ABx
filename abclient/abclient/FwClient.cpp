@@ -361,12 +361,23 @@ void FwClient::LoadData()
 {
     std::stringstream ss;
     if (!client_.HttpRequest("/_versions_", ss))
+    {
+        ErrorExit("Unable to connect to the file server");
         return;
+    }
+
+    // Well...
+//    PODVector<unsigned char> buffer;
+//    if (!MakeHttpRequest("/_versions", buffer))
+//        return;
 
     pugi::xml_document doc;
     std::string strVer = ss.str();
-    if (!doc.load_string(strVer.c_str(), static_cast<unsigned>(strVer.length())))
+    if (!doc.load_string(strVer.c_str(), static_cast<unsigned>(strVer.size())))
+    {
+        ErrorExit("Fileserver returned malformed data");
         return;
+    }
 
     const pugi::xml_node& ver_node = doc.child("versions");
     for (const auto& file_node : ver_node.children("version"))
@@ -725,6 +736,46 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
         if (size > 0)
         {
             f.write((const char*)request->ReadBuffer().Buffer(), size);
+        }
+        else
+            break;
+    }
+
+    return true;
+}
+
+bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer)
+{
+    Urho3D::Network* network = GetSubsystem<Urho3D::Network>();
+    std::stringstream ss;
+    ss << "https://";
+    ss << client_.fileHost_;
+    ss << ":" << static_cast<int>(client_.filePort_);
+    ss << path.CString();
+    String url(ss.str().c_str());
+    Vector<String> headers;
+    std::stringstream hss;
+    hss << "Auth: " << client_.accountUuid_ << client_.password_;
+    headers.Push(hss.str().c_str());
+
+    SharedPtr<Urho3D::HttpRequest> request = network->MakeHttpRequest(url, "GET", headers);
+    for (;;)
+    {
+        if (request->GetState() == HTTP_INITIALIZING)
+        {
+            Time::Sleep(5);
+            continue;
+        }
+        if (request->GetState() == HTTP_ERROR)
+        {
+            URHO3D_LOGERRORF("HTTP request error: %s", request->GetError().CString());
+            return false;
+        }
+
+        unsigned size = request->GetAvailableSize();
+        if (size > 0)
+        {
+            buffer.Push(request->ReadBuffer());
         }
         else
             break;
