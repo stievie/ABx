@@ -113,14 +113,18 @@ void ItemUIElement::SetCount(unsigned value)
     count_ = value;
     if (count_ > 1)
     {
-        Text* count = CreateChild<Text>("Count");
-        count->SetAlignment(HA_LEFT, VA_BOTTOM);
-        count->SetPosition(0, 0);
-        count->SetSize(10, GetWidth());
-        count->SetMinSize(10, GetWidth());
+        Text* count = GetChildDynamicCast<Text>("Count", true);
+        if (!count)
+        {
+            count = CreateChild<Text>("Count");
+            count->SetAlignment(HA_LEFT, VA_BOTTOM);
+            count->SetPosition(0, 0);
+            count->SetSize(10, GetWidth());
+            count->SetMinSize(10, GetWidth());
+            count->SetStyleAuto();
+            count->SetFontSize(9);
+        }
         count->SetText(String(count_));
-        count->SetStyleAuto();                  // !!!
-        count->SetFontSize(9);
     }
     else
     {

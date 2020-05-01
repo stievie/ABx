@@ -12,6 +12,7 @@ db_name = "forgottenwars"
 -- Database Port. Not used for ODBC
 --db_port = 3306
 
+-- Directory where SQL files are located
 db_schema_dir = EXE_PATH .. "/../sql"
 
 require("config/db_private")

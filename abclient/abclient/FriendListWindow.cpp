@@ -143,7 +143,7 @@ void FriendListWindow::CreateMenus()
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
         Text* menuText = item->CreateChild<Text>();
-        menuText->SetText("Rename");
+        menuText->SetText("Rename...");
         menuText->SetStyle("EditorMenuText");
         item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
         item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));

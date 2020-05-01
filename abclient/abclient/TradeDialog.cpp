@@ -41,12 +41,12 @@ TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<A
     SetMovable(true);
     SetResizable(false);
 
-    auto* caption = GetChildDynamicCast<Text>("Caption", true);
+    auto* caption = GetChildStaticCast<Text>("Caption", true);
     String title = "Trade with ";
     title.AppendWithFormat("%s", partner->name_.CString());
     caption->SetText(title);
 
-    auto* partnerText = GetChildDynamicCast<Text>("PartnersOfferText", true);
+    auto* partnerText = GetChildStaticCast<Text>("PartnersOfferText", true);
     String partnersOfferText;
     partnersOfferText.AppendWithFormat("%s's Offer", partner->name_.CString());
     partnerText->SetText(partnersOfferText);
@@ -54,15 +54,15 @@ TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<A
     auto* receiveContainer = GetChild("ReceiveContainer", true);
     receiveContainer->SetVisible(false);
 
-    auto* offerButton = GetChildDynamicCast<Button>("OfferButton", true);
+    auto* offerButton = GetChildStaticCast<Button>("OfferButton", true);
     SubscribeToEvent(offerButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleOfferClicked));
     offerButton->SetEnabled(true);
-    auto* acceptButton = GetChildDynamicCast<Button>("AcceptButton", true);
+    auto* acceptButton = GetChildStaticCast<Button>("AcceptButton", true);
     SubscribeToEvent(acceptButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleAcceptClicked));
     acceptButton->SetEnabled(false);
-    auto* cancelButton = GetChildDynamicCast<Button>("CancelButton", true);
+    auto* cancelButton = GetChildStaticCast<Button>("CancelButton", true);
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(TradeDialog, HandleCancelClicked));
-    auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    auto* moneyEdit = GetChildStaticCast<LineEdit>("OfferMoneyEdit", true);
     moneyEdit->SetText("0");
     SubscribeToEvent(moneyEdit, E_TEXTENTRY, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextEntry));
 
@@ -128,7 +128,7 @@ void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
     auto* client = GetSubsystem<FwClient>();
     client->TradeOffer(money, std::move(ourItems));
     EnableOfferButton(false);
-    auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    auto* moneyEdit = GetChildStaticCast<LineEdit>("OfferMoneyEdit", true);
     moneyEdit->SetEnabled(false);
     offered_ = true;
     EnableAcceptButton();
@@ -136,7 +136,7 @@ void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
 
 void TradeDialog::HandleAcceptClicked(StringHash, VariantMap&)
 {
-    auto* acceptButton = GetChildDynamicCast<Button>("AcceptButton", true);
+    auto* acceptButton = GetChildStaticCast<Button>("AcceptButton", true);
     acceptButton->SetEnabled(false);
     auto* client = GetSubsystem<FwClient>();
     client->TradeAccept();
@@ -190,6 +190,9 @@ void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
 
 void TradeDialog::HandleItemDragBegin(StringHash, VariantMap& eventData)
 {
+    if (offered_)
+        // Once we have submitted our offer it's not possible to change it
+        return;
     using namespace DragBegin;
     auto* item = reinterpret_cast<ItemUIElement*>(eventData[P_ELEMENT].GetVoidPtr());
     int buttons = eventData[P_BUTTONS].GetInt();
@@ -281,7 +284,7 @@ void TradeDialog::HandleInputDialogDone(StringHash, VariantMap& eventData)
 
 uint32_t TradeDialog::GetOfferedMoney() const
 {
-    auto* moneyEdit = GetChildDynamicCast<LineEdit>("OfferMoneyEdit", true);
+    auto* moneyEdit = GetChildStaticCast<LineEdit>("OfferMoneyEdit", true);
     const String& text = moneyEdit->GetText();
     const char* pVal = text.CString();
     char* pEnd;
@@ -361,7 +364,7 @@ UIElement* TradeDialog::GetItemFromPos(UIElement* container, unsigned pos)
 
 void TradeDialog::EnableOfferButton(bool value)
 {
-    auto* offerButton = GetChildDynamicCast<Button>("OfferButton", true);
+    auto* offerButton = GetChildStaticCast<Button>("OfferButton", true);
     offerButton->SetEnabled(value);
 }
 
@@ -369,7 +372,7 @@ void TradeDialog::EnableAcceptButton()
 {
     if (offered_ && gotOffer_)
     {
-        auto* acceptButton = GetChildDynamicCast<Button>("AcceptButton", true);
+        auto* acceptButton = GetChildStaticCast<Button>("AcceptButton", true);
         acceptButton->SetEnabled(true);
     }
 }
