@@ -498,6 +498,9 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
 
 void Player::CRQDropInventoryItem(uint16_t pos, uint32_t count)
 {
+    if (GetGame()->data_.type == AB::Entities::GameTypePvPCombat)
+        return;
+
     auto* item = inventoryComp_->GetInventoryItem(pos);
     if (!item)
     {
