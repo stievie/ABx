@@ -42,11 +42,12 @@ class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>
 public:
     HttpsClient(const std::string& server_port_path,
         bool verify_certificate = true,
-        const std::string& cert_file = std::string(),
-        const std::string& private_key_file = std::string(),
-        const std::string& verify_file = std::string()) :
+        const std::string& cert_file = "",
+        const std::string& private_key_file = "",
+        const std::string& verify_file = "",
+        std::function<bool(bool, asio::ssl::verify_context&)> callback = {}) :
         SimpleWeb::Client<SimpleWeb::HTTPS>::Client(server_port_path, verify_certificate,
-            cert_file, private_key_file, verify_file)
+            cert_file, private_key_file, verify_file, callback)
     { }
     virtual ~HttpsClient();
 };
@@ -127,7 +128,43 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
     {
         std::stringstream ss;
         ss << fileHost_ << ":" << filePort_;
-        httpClient_ = new HttpsClient(ss.str(), false);
+        httpClient_ = new HttpsClient(ss.str(), true, "", "", "", [this](bool preverified, asio::ssl::verify_context& ctx) -> bool
+        {
+            X509_STORE_CTX* cts = ctx.native_handle();
+            X509* cert = X509_STORE_CTX_get_current_cert(cts);
+
+            switch (cts->error)
+            {
+            case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
+                OnLog("X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT");
+                break;
+            case X509_V_ERR_CERT_NOT_YET_VALID:
+            case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
+                OnLog("Certificate not yet valid");
+                break;
+            case X509_V_ERR_CERT_HAS_EXPIRED:
+            case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
+                OnLog("Certificate expired");
+                break;
+            case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+            case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
+                preverified = true;
+                break;
+            default:
+                break;
+            }
+
+            char subject_name[256];
+            X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+            std::stringstream ss;
+            ss << "Certificate " << subject_name << " is";
+            if (preverified)
+                ss << " valid";
+            else
+                ss << " invalid";
+            OnLog(ss.str());
+            return preverified;
+        });
     }
 
     receiver_.OnLoggedIn(accountUuid_, authToken_, accType);

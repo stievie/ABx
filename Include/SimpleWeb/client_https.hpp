@@ -15,23 +15,31 @@ namespace SimpleWeb {
   template <>
   class Client<HTTPS> : public ClientBase<HTTPS> {
   public:
-    Client(const std::string &server_port_path, bool verify_certificate = true, const std::string &cert_file = std::string(),
-           const std::string &private_key_file = std::string(), const std::string &verify_file = std::string())
-        : ClientBase<HTTPS>::ClientBase(server_port_path, 443), context(asio::ssl::context::tlsv12) {
-      if(cert_file.size() > 0 && private_key_file.size() > 0) {
+    Client(const std::string &server_port_path, bool verify_certificate = true, const std::string &cert_file = "",
+           const std::string &private_key_file = "", const std::string &verify_file = "",
+           std::function<bool(bool, asio::ssl::verify_context&)> callback = {}) :
+        ClientBase<HTTPS>::ClientBase(server_port_path, 443),
+        context(asio::ssl::context::tlsv12)
+    {
+      if (!cert_file.empty() && !private_key_file.empty()) {
         context.use_certificate_chain_file(cert_file);
         context.use_private_key_file(private_key_file, asio::ssl::context::pem);
       }
 
-      if(verify_certificate)
-        context.set_verify_callback(asio::ssl::rfc2818_verification(host));
+      if (verify_certificate)
+      {
+          if (callback)
+              context.set_verify_callback(callback);
+          else
+              context.set_verify_callback(asio::ssl::rfc2818_verification(host));
+      }
 
-      if(verify_file.size() > 0)
+      if (!verify_file.empty())
         context.load_verify_file(verify_file);
       else
         context.set_default_verify_paths();
 
-      if(verify_file.size() > 0 || verify_certificate)
+      if(!verify_file.empty() || verify_certificate)
         context.set_verify_mode(asio::ssl::verify_peer);
       else
         context.set_verify_mode(asio::ssl::verify_none);
@@ -67,7 +75,7 @@ namespace SimpleWeb {
                   auto write_buffer = std::make_shared<asio::streambuf>();
                   std::ostream write_stream(write_buffer.get());
                   auto host_port = this->host + ':' + std::to_string(this->port);
-                  write_stream << "CONNECT " + host_port + " HTTP/1.1\r\n"
+                  write_stream << "CONNECT " << host_port << " HTTP/1.1\r\n"
                                << "Host: " << host_port << "\r\n\r\n";
                   session->connection->set_timeout(this->config.timeout_connect);
                   asio::async_write(session->connection->socket->next_layer(), *write_buffer, [this, session, write_buffer](const error_code &ec, std::size_t /*bytes_transferred*/) {
