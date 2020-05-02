@@ -31,7 +31,7 @@ namespace Components {
 ProgressComp::ProgressComp(Actor& owner) :
     owner_(owner)
 {
-    owner_.SubscribeEvent<void(void)>(EVENT_ON_DIED, std::bind(&ProgressComp::OnDied, this));
+    owner_.SubscribeEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, std::bind(&ProgressComp::OnDied, this, std::placeholders::_1, std::placeholders::_2));
     owner_.SubscribeEvent<void(Actor*, Actor*)>(EVENT_ON_KILLEDFOE, std::bind(&ProgressComp::OnKilledFoe,
         this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -102,7 +102,7 @@ void ProgressComp::OnKilledFoe(Actor* foe, Actor*)
         owner_.progressComp_->AddXpForKill(foe);
 }
 
-void ProgressComp::OnDied()
+void ProgressComp::OnDied(Actor*, Actor*)
 {
     Actor* killer = owner_.GetKiller();
     // When we die all Enemies in range get XP for that

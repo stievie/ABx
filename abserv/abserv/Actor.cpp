@@ -990,7 +990,7 @@ bool Actor::Die()
         autorunComp_->SetAutoRun(false);
         DecreaseMorale();
         killedBy_ = damageComp_->GetLastDamager();
-        CallEvent<void(void)>(EVENT_ON_DIED);
+        CallEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, this, damageComp_->GetLastDamager().get());
         return true;
     }
     return false;

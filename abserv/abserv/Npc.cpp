@@ -76,7 +76,7 @@ Npc::Npc() :
             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     events_.Subscribe<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, std::bind(&Npc::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     events_.Subscribe<void(Actor*, Skill*, bool&)>(EVENT_ON_USESKILL, std::bind(&Npc::OnUseSkill, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    events_.Subscribe<void(void)>(EVENT_ON_DIED, std::bind(&Npc::OnDied, this));
+    events_.Subscribe<void(Actor*, Actor*)>(EVENT_ON_DIED, std::bind(&Npc::OnDied, this, std::placeholders::_1, std::placeholders::_2));
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Npc::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Npc::OnStartUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&Npc::OnClicked, this, std::placeholders::_1));
@@ -530,7 +530,7 @@ void Npc::OnHealed(int hp)
         Lua::CallFunction(luaState_, "onHealed", hp);
 }
 
-void Npc::OnDied()
+void Npc::OnDied(Actor*, Actor*)
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onDied");

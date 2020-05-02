@@ -58,7 +58,7 @@ private:
     unsigned deaths_{ 0 };
 private:
     /// The owner died
-    void OnDied();
+    void OnDied(Actor*, Actor*);
     /// A foe was killed nearby
     void OnKilledFoe(Actor* foe, Actor* killer);
 public:

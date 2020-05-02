@@ -82,7 +82,7 @@ private:
     void OnSelected(Actor* selector);
     void OnTrigger(GameObject* other);
     void OnLeftArea(GameObject* other);
-    void OnDied();
+    void OnDied(Actor*, Actor*);
     void OnEndUseSkill(Skill* skill);
     void OnStartUseSkill(Skill* skill);
     void OnAttack(Actor* target, bool& canAttack);
