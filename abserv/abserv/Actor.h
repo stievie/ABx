@@ -238,7 +238,7 @@ public:
     virtual void AdvanceLevel();
     virtual AB::Entities::CharacterSex GetSex() const
     {
-        return AB::Entities::CharacterSexUnknown;
+        return AB::Entities::CharacterSex::Unknown;
     }
     virtual uint32_t GetItemIndex() const
     {

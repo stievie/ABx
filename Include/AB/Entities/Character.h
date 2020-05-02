@@ -40,11 +40,11 @@ namespace Entities {
 // Player inventory size
 static constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
 
-enum CharacterSex : uint8_t
+enum class CharacterSex : uint8_t
 {
-    CharacterSexUnknown = 0,
-    CharacterSexFemale = 1,
-    CharacterSexMale = 2
+    Unknown,
+    Female,
+    Male
 };
 
 static constexpr auto KEY_CHARACTERS = "characters";
@@ -94,7 +94,7 @@ struct Character : Entity
     bool pvp = false;
     uint32_t xp = 0;
     uint32_t skillPoints = 0;
-    CharacterSex sex = CharacterSexUnknown;
+    CharacterSex sex = CharacterSex::Unknown;
     std::string currentMapUuid = EMPTY_GUID;
     std::string lastOutpostUuid = EMPTY_GUID;
     std::string accountUuid = EMPTY_GUID;

@@ -221,8 +221,8 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
 
-    if (packet.sex < AB::Entities::CharacterSex::CharacterSexFemale ||
-        packet.sex > AB::Entities::CharacterSex::CharacterSexMale)
+    if (packet.sex < static_cast<uint8_t>(AB::Entities::CharacterSex::Female) ||
+        packet.sex > static_cast<uint8_t>(AB::Entities::CharacterSex::Male))
     {
         DisconnectClient(AB::ErrorCodes::InvalidPlayerSex);
         return;
@@ -444,7 +444,7 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
             character.name,
             character.profession,
             character.profession2,
-            character.sex,
+            static_cast<uint8_t>(character.sex),
             character.modelIndex,
             (Utils::Uuid::IsEmpty(character.lastOutpostUuid) ? landingGame : character.lastOutpostUuid)
         });

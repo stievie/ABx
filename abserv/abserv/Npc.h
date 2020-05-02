@@ -51,7 +51,7 @@ private:
     bool serverOnly_{ false };
     uint32_t level_{ 1 };
     uint32_t itemIndex_{ 0 };
-    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
+    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
     std::shared_ptr<Script> script_;
     /// Quests this NPC may have for the player
     std::set<uint32_t> quests_;

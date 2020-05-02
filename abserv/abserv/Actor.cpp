@@ -567,7 +567,7 @@ bool Actor::Serialize(sa::PropWriteStream& stream)
     {
         stream.Write<uint8_t>(To<Player>(*this).data_.pvp ? 1 : 0);
     }
-    stream.Write<uint8_t>(GetSex());
+    stream.Write<uint8_t>(static_cast<uint8_t>(GetSex()));
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProfIndex()));
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProf2Index()));
     stream.Write<uint32_t>(GetItemIndex());

@@ -178,7 +178,7 @@ public:
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;
-    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
+    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
     uint32_t level_{ 0 };
     AB::Entities::Profession* profession_{ nullptr };
     AB::Entities::Profession* profession2_{ nullptr };

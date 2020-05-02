@@ -109,12 +109,12 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
         msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
         msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
         msg.Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
-        AB::Packets::Client::Login::CreatePlayer packet = {
+        AB::Packets::Client::Login::CreatePlayer packet{
             accountUuid,
             token,
             charName,
             itemIndex,
-            sex,
+            static_cast<uint8_t>(sex),
             profUuid,
             isPvp
         };
@@ -140,7 +140,7 @@ void ProtocolLogin::DeleteCharacter(std::string& host, uint16_t port,
         msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
         msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
         msg.Add<uint8_t>(AB::LoginProtocol::LoginDeleteCharacter);
-        AB::Packets::Client::Login::DeleteCharacter packet = {
+        AB::Packets::Client::Login::DeleteCharacter packet{
             accountUuid,
             token,
             uuid
@@ -166,7 +166,7 @@ void ProtocolLogin::AddAccountKey(std::string& host, uint16_t port,
         msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
         msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
         msg.Add<uint8_t>(AB::LoginProtocol::LoginAddAccountKey);
-        AB::Packets::Client::Login::AddAccountKey packet = {
+        AB::Packets::Client::Login::AddAccountKey packet{
             accountUuid,
             token,
             newAccountKey
@@ -192,7 +192,7 @@ void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
         msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
         msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
         msg.Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
-        AB::Packets::Client::Login::GetOutposts packet = {
+        AB::Packets::Client::Login::GetOutposts packet{
             accountUuid,
             token
         };
@@ -217,7 +217,7 @@ void ProtocolLogin::GetServers(std::string& host, uint16_t port,
         msg.Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
         msg.Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
         msg.Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
-        AB::Packets::Client::Login::GetServers packet = {
+        AB::Packets::Client::Login::GetServers packet{
             accountUuid,
             token
         };

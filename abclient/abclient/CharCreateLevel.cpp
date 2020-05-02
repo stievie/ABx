@@ -94,9 +94,9 @@ void CharCreateLevel::CreateUI()
     }
 
     sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());
-    sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(AB::Entities::CharacterSexUnknown)));
-    sexDropdown_->AddItem(CreateDropdownItem("Female", static_cast<uint32_t>(AB::Entities::CharacterSexFemale)));
-    sexDropdown_->AddItem(CreateDropdownItem("Male", static_cast<uint32_t>(AB::Entities::CharacterSexMale)));
+    sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(AB::Entities::CharacterSex::Unknown)));
+    sexDropdown_->AddItem(CreateDropdownItem("Female", static_cast<uint32_t>(AB::Entities::CharacterSex::Female)));
+    sexDropdown_->AddItem(CreateDropdownItem("Male", static_cast<uint32_t>(AB::Entities::CharacterSex::Male)));
 
     nameEdit_->SetFocus(true);
 }
@@ -160,7 +160,7 @@ void CharCreateLevel::DoCreateCharacter()
 
     Text* sexTxt = static_cast<Text*>(sexDropdown_->GetSelectedItem());
     uint32_t sex = sexTxt->GetVar("Int Value").GetUInt();
-    if (sex == 0 || sex > AB::Entities::CharacterSexMale)
+    if (sex == 0 || sex > static_cast<uint32_t>(AB::Entities::CharacterSex::Male))
     {
         ShowError("Please select the gender of your character.");
         return;
@@ -175,7 +175,7 @@ void CharCreateLevel::DoCreateCharacter()
     auto profIt = profs.find(std::string(prof.CString()));
     if (profIt != profs.end())
     {
-        if (_sex == AB::Entities::CharacterSexFemale)
+        if (_sex == AB::Entities::CharacterSex::Female)
             modelIndex = (*profIt).second.modelIndexFemale;
         else
             modelIndex = (*profIt).second.modelIndexMale;
