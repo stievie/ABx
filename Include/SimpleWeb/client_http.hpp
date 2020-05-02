@@ -181,30 +181,39 @@ namespace SimpleWeb {
     /// If reusing the io_service for other tasks, use the asynchronous request functions instead.
     /// Do not use concurrently with the asynchronous request functions.
     std::shared_ptr<Response> request(const std::string &method, const std::string &path = std::string("/"),
-                                      string_view content = "", const CaseInsensitiveMultimap &header = CaseInsensitiveMultimap()) {
-      std::shared_ptr<Response> response;
+        string_view content = "", const CaseInsensitiveMultimap &header = CaseInsensitiveMultimap())
+    {
       error_code ec;
-      request(method, path, content, header, [&response, &ec](std::shared_ptr<Response> response_, const error_code &ec_) {
-        response = response_;
-        ec = ec_;
-      });
-
-      {
-        std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
-        ++concurrent_synchronous_requests;
-      }
-      io_service->run();
-      {
-        std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
-        --concurrent_synchronous_requests;
-        if(!concurrent_synchronous_requests)
-          io_service->reset();
-      }
-
+      std::shared_ptr<Response> response = request(method, ec, path, content, header);
       if(ec)
         throw system_error(ec);
 
       return response;
+    }
+    // Same as abobe, but does not throw an exception
+    std::shared_ptr<Response> request(const std::string& method, error_code& ec, const std::string& path = std::string("/"),
+        string_view content = "", const CaseInsensitiveMultimap& header = CaseInsensitiveMultimap())
+    {
+        std::shared_ptr<Response> response;
+        request(method, path, content, header, [&response, &ec](std::shared_ptr<Response> response_, const error_code& ec_)
+        {
+            response = response_;
+            ec = ec_;
+        });
+
+        {
+            std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
+            ++concurrent_synchronous_requests;
+        }
+        io_service->run();
+        {
+            std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
+            --concurrent_synchronous_requests;
+            if (!concurrent_synchronous_requests)
+                io_service->reset();
+        }
+
+        return response;
     }
 
     /// Convenience function to perform synchronous request. The io_service is run within this function.
@@ -212,29 +221,35 @@ namespace SimpleWeb {
     /// Do not use concurrently with the asynchronous request functions.
     std::shared_ptr<Response> request(const std::string &method, const std::string &path, std::istream &content,
                                       const CaseInsensitiveMultimap &header = CaseInsensitiveMultimap()) {
-      std::shared_ptr<Response> response;
       error_code ec;
-      request(method, path, content, header, [&response, &ec](std::shared_ptr<Response> response_, const error_code &ec_) {
-        response = response_;
-        ec = ec_;
-      });
-
-      {
-        std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
-        ++concurrent_synchronous_requests;
-      }
-      io_service->run();
-      {
-        std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
-        --concurrent_synchronous_requests;
-        if(!concurrent_synchronous_requests)
-          io_service->reset();
-      }
-
+      std::shared_ptr<Response> response = request(method, ec, path, content, header);
       if(ec)
         throw system_error(ec);
 
       return response;
+    }
+    std::shared_ptr<Response> request(const std::string& method, error_code& ec, const std::string& path, std::istream& content,
+        const CaseInsensitiveMultimap& header = CaseInsensitiveMultimap()) {
+        std::shared_ptr<Response> response;
+        request(method, path, content, header, [&response, &ec](std::shared_ptr<Response> response_, const error_code& ec_)
+        {
+            response = response_;
+            ec = ec_;
+        });
+
+        {
+            std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
+            ++concurrent_synchronous_requests;
+        }
+        io_service->run();
+        {
+            std::unique_lock<std::mutex> lock(concurrent_synchronous_requests_mutex);
+            --concurrent_synchronous_requests;
+            if (!concurrent_synchronous_requests)
+                io_service->reset();
+        }
+
+        return response;
     }
 
     /// Asynchronous request where setting and/or running Client's io_service is required.

@@ -409,18 +409,14 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
 
     auto get = [&]() -> bool
     {
-        try
-        {
-            auto r = httpClient_->request("GET", path, "", header);
-            if (r->status_code != "200 OK")
-                return false;
-            out << r->content.rdbuf();
-            return true;
-        }
-        catch (...)
-        {
+        asio::error_code ec;
+        auto r = httpClient_->request("GET", ec, path, "", header);
+        if (ec)
             return false;
-        }
+        if (r->status_code != "200 OK")
+            return false;
+        out << r->content.rdbuf();
+            return true;
     };
 
     if (get())
