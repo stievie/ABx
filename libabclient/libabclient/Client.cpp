@@ -133,7 +133,7 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
             X509_STORE_CTX* cts = ctx.native_handle();
             X509* cert = X509_STORE_CTX_get_current_cert(cts);
 
-            switch (cts->error)
+            switch (X509_STORE_CTX_get_error(cts))
             {
             case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
                 OnLog("X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT");
