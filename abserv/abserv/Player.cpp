@@ -1351,7 +1351,7 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
     if (IsInOutpost())
     {
         auto nmsg = Net::NetworkMessage::GetNew();
-        std::string current = skills_->prof2_.uuid;
+        const std::string& oldProf = skills_->prof2_.uuid;
         if (skills_->SetSecondaryProfession(profIndex))
         {
             // The player may have equipped skills from the previous secondary profession that are not
@@ -1363,7 +1363,7 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
                 if (!_skill)
                     continue;
 
-                if (_skill->data_.professionUuid.compare(current) == 0)
+                if (_skill->data_.professionUuid.compare(oldProf) == 0)
                 {
                     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetSkill);
                     AB::Packets::Server::ObjectSetSkill packet{
@@ -1372,6 +1372,7 @@ void Player::CRQSetSecondaryProfession(uint32_t profIndex)
                         static_cast<uint8_t>(i)
                     };
                     AB::Packets::Add(packet, *nmsg);
+                    skills_->RemoveSkill(i);
                 }
             }
             WriteToOutput(*nmsg);
@@ -1462,6 +1463,8 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
                             static_cast<uint8_t>(i)
                         };
                         AB::Packets::Add(packet, *nmsg);
+                        skills_->RemoveSkill(i);
+                        continue;
                     }
                     if (skill->data_.isElite)
                     {
@@ -1475,6 +1478,8 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
                                 static_cast<uint8_t>(i)
                             };
                             AB::Packets::Add(packet, *nmsg);
+                            skills_->RemoveSkill(i);
+                            continue;
                         }
                     }
                 }
@@ -2144,7 +2149,7 @@ void Player::HandleGotoPlayerCommand(const std::string& playerName, Net::Network
         moveComp_->forcePosition_ = true;
         return;
     }
-    // enter the same instance as the player
+    // Enter the same instance as the player
     ChangeInstance(currentMap, currentInst);
 }
 
