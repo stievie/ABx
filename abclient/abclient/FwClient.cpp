@@ -965,10 +965,10 @@ void FwClient::InventoryDestroyItem(uint16_t pos)
         client_.InventoryDestroyItem(pos);
 }
 
-void FwClient::InventoryDropItem(uint16_t pos)
+void FwClient::InventoryDropItem(uint16_t pos, uint32_t count)
 {
     if (loggedIn_)
-        client_.InventoryDropItem(pos);
+        client_.InventoryDropItem(pos, count);
 }
 
 void FwClient::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,

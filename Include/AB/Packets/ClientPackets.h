@@ -140,10 +140,12 @@ struct InventoryDestroyItem
 struct InventoryDropItem
 {
     uint16_t pos;
+    uint32_t count;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(pos);
+        ar.value(count);
     }
 };
 

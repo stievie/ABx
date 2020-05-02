@@ -496,35 +496,65 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
     WriteToOutput(*msg);
 }
 
-void Player::CRQDropInventoryItem(uint16_t pos)
+void Player::CRQDropInventoryItem(uint16_t pos, uint32_t count)
 {
-    uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
-    auto* cache = GetSubsystem<ItemsCache>();
-    auto* item = cache->Get(itemId);
+    auto* item = inventoryComp_->GetInventoryItem(pos);
     if (!item)
     {
         LOG_ERROR << "No item at pos " << static_cast<int>(pos) << " in inventory" << std::endl;
         return;
     }
-
-    item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
-    item->concreteItem_.storagePos = 0;
-    auto rng = GetSubsystem<Crypto::Random>();
-    std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
-    drop->transformation_.position_ = transformation_.position_;
-    // Random pos around dropper
-    drop->transformation_.position_.y_ += 0.2f;
-    drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-    drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-    drop->SetSource(GetPtr<Actor>());
-    GetGame()->SpawnItemDrop(drop);
+    if (item->concreteItem_.count < count)
+    {
+        LOG_WARNING << "CHEAT: Player " << GetName() << " tries to drop more items than available. Available " <<
+            item->concreteItem_.count << " count " << count << std::endl;
+        return;
+    }
 
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
-    AB::Packets::Server::InventoryItemDelete packet = {
-        pos
-    };
-    AB::Packets::Add(packet, *msg);
+    if (count == item->concreteItem_.count)
+    {
+        // Drop the whole stack
+        inventoryComp_->RemoveInventoryItem(pos);
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
+        item->concreteItem_.storagePos = 0;
+        auto rng = GetSubsystem<Crypto::Random>();
+        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
+        drop->transformation_.position_ = transformation_.position_;
+        // Random pos around dropper
+        drop->transformation_.position_.y_ += 0.2f;
+        drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->SetSource(GetPtr<Actor>());
+        GetGame()->SpawnItemDrop(drop);
+
+        msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+        AB::Packets::Server::InventoryItemDelete packet{
+            pos
+        };
+        AB::Packets::Add(packet, *msg);
+    }
+    else
+    {
+        // Split it
+        auto* cache = GetSubsystem<ItemsCache>();
+        auto* factory = GetSubsystem<ItemFactory>();
+        uint32_t itemId = factory->CreatePlayerItem(*this, item->data_.uuid, count);
+        item->concreteItem_.count -= count;
+        auto newItem = cache->Get(itemId);
+        newItem->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
+        newItem->concreteItem_.storagePos = 0;
+        auto rng = GetSubsystem<Crypto::Random>();
+        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(newItem->id_);
+        drop->transformation_.position_ = transformation_.position_;
+        // Random pos around dropper
+        drop->transformation_.position_.y_ += 0.2f;
+        drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->SetSource(GetPtr<Actor>());
+        GetGame()->SpawnItemDrop(drop);
+        Components::InventoryComp::WriteItemUpdate(item, msg.get());
+    }
     WriteToOutput(*msg);
 }
 

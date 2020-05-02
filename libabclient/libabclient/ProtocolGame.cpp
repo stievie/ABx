@@ -299,10 +299,11 @@ void ProtocolGame::InventoryDestroyItem(uint16_t pos)
     SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryDestroyItem, packet);
 }
 
-void ProtocolGame::InventoryDropItem(uint16_t pos)
+void ProtocolGame::InventoryDropItem(uint16_t pos, uint32_t count)
 {
-    AB::Packets::Client::InventoryDropItem packet = {
-        pos
+    AB::Packets::Client::InventoryDropItem packet{
+        pos,
+        count
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::InventoryDropItem, packet);
 }

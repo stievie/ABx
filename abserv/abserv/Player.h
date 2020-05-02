@@ -213,7 +213,7 @@ public:
     void CRQGetGuildMembers();
     /// Client requests the inventory
     void CRQGetInventory();
-    void CRQDropInventoryItem(uint16_t pos);
+    void CRQDropInventoryItem(uint16_t pos, uint32_t count);
     void CRQDestroyInventoryItem(uint16_t pos);
     void CRQSetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
         AB::Entities::StoragePlace newPlace, uint16_t newPos,

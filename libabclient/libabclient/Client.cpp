@@ -487,10 +487,10 @@ void Client::InventoryDestroyItem(uint16_t pos)
         protoGame_->InventoryDestroyItem(pos);
 }
 
-void Client::InventoryDropItem(uint16_t pos)
+void Client::InventoryDropItem(uint16_t pos, uint32_t count)
 {
     if (state_ == State::World)
-        protoGame_->InventoryDropItem(pos);
+        protoGame_->InventoryDropItem(pos, count);
 }
 
 void Client::SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,

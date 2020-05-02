@@ -106,23 +106,6 @@ InventoryWindow::InventoryWindow(Context* context) :
             height = item->GetHeight();
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(InventoryWindow, HandleItemDestroySelected));
     }
-    {
-        // Drop
-        Menu* item = popup->CreateChild<Menu>();
-        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-        item->SetStyleAuto();
-        Text* menuText = item->CreateChild<Text>();
-        menuText->SetText("Drop");
-        menuText->SetStyle("EditorMenuText");
-        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
-        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
-        item->SetSize(item->GetMinSize());
-        if (item->GetWidth() > width)
-            width = item->GetWidth();
-        if (item->GetHeight() > height)
-            height = item->GetHeight();
-        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(InventoryWindow, HandleItemDropSelected));
-    }
 
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());
@@ -297,20 +280,6 @@ void InventoryWindow::HandleItemDestroySelected(StringHash, VariantMap& eventDat
     cli->InventoryDestroyItem(static_cast<uint16_t>(pos));
 }
 
-void InventoryWindow::HandleItemDropSelected(StringHash, VariantMap& eventData)
-{
-    itemPopup_->ShowPopup(false);
-    using namespace MenuSelected;
-    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
-    if (!sender)
-        return;
-    unsigned pos = itemPopup_->GetVar("ItemPos").GetUInt();
-    if (pos == 0)
-        return;
-    FwClient* cli = GetSubsystem<FwClient>();
-    cli->InventoryDropItem(static_cast<uint16_t>(pos));
-}
-
 void InventoryWindow::HandleItemDragMove(StringHash, VariantMap& eventData)
 {
     if (!dragItem_)
@@ -347,6 +316,19 @@ void InventoryWindow::HandleItemDragCancel(StringHash, VariantMap&)
     UIElement* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveChild(dragItem_.Get());
     dragItem_.Reset();
+}
+
+void InventoryWindow::HandleDropInputBoxDone(StringHash, VariantMap& eventData)
+{
+    using namespace NumberInputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+    if (eventData[P_VALUE].GetUInt() == 0)
+        return;
+
+    uint16_t pos = static_cast<uint16_t>(inputBox_->GetVar("Pos").GetUInt());
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->InventoryDropItem(pos, eventData[P_VALUE].GetUInt());
 }
 
 void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
@@ -397,8 +379,27 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
         // Drop on ground
         if (pos == 0)
             return;
-        FwClient* cli = GetSubsystem<FwClient>();
-        cli->InventoryDropItem(pos);
+
+        if (ci.count == 1)
+        {
+            FwClient* cli = GetSubsystem<FwClient>();
+            cli->InventoryDropItem(pos, ci.count);
+        }
+        else
+        {
+            if (inputBox_)
+                inputBox_->Close();
+
+            inputBox_ = MakeShared<NumberInputBox>(context_, "How many?");
+            inputBox_->SetMax(static_cast<int>(ci.count));
+            inputBox_->SetVar("Pos", pos);
+            inputBox_->SetShowMaxButton(true);
+            inputBox_->SetMin(1);
+            inputBox_->SetValue(1);
+            inputBox_->SelectAll();
+            SubscribeToEvent(inputBox_, E_NUMBERINPUTBOXDONE, URHO3D_HANDLER(InventoryWindow, HandleDropInputBoxDone));
+            SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(InventoryWindow, HandleInputBoxClose));
+        }
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();

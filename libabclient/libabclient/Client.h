@@ -214,7 +214,7 @@ public:
     void GetMail(const std::string& mailUuid);
     void GetInventory();
     void InventoryDestroyItem(uint16_t pos);
-    void InventoryDropItem(uint16_t pos);
+    void InventoryDropItem(uint16_t pos, uint32_t count);
     void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
         AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count);
     void GetChest();

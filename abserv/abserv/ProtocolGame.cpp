@@ -202,7 +202,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case ClientPacketTypes::InventoryDropItem:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::InventoryDropItem>(message);
-        AddPlayerTask(&Game::Player::CRQDropInventoryItem, packet.pos);
+        AddPlayerTask(&Game::Player::CRQDropInventoryItem, packet.pos, packet.count);
         break;
     }
     case ClientPacketTypes::SetItemPos:
