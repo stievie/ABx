@@ -371,7 +371,6 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
 
     ConcreteItem ci;
     ci.pos = pos;
-    ci.pos = pos;
     ci.type = item->type_;
     ci.place = AB::Entities::StoragePlace::Inventory;
     ci.index = dragItem_->GetVar("Index").GetUInt();
@@ -392,6 +391,14 @@ void InventoryWindow::HandleItemDragEnd(StringHash, VariantMap& eventData)
     {
         if (item->tradeAble_)
             tradeDialog->DropItem({ X, Y }, std::move(ci));
+    }
+    else
+    {
+        // Drop on ground
+        if (pos == 0)
+            return;
+        FwClient* cli = GetSubsystem<FwClient>();
+        cli->InventoryDropItem(pos);
     }
 
     UIElement* root = GetSubsystem<UI>()->GetRoot();
