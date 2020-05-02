@@ -20,18 +20,20 @@ to explore modern C++.
 ## Windows
 
 On Windows the easiest is to use Visual Studio 2019 (Community). For each project
-there is a solution file `.sln` in the respective directory. There is also
+there is a solution file (`.sln`) in the respective directory. There is also
 a solution file (`absall/absall.sln`) which contains all server projects.
 
 ## Linux
 
 As C++ IDE on Linux I prefer QtCreator. There are QtCreator project
-files `.creator` in the subdirectories of the projects. You can also setup
+files (`.creator`) in the subdirectories of the projects. You can also setup
 QtCreator to build the projects with the makefiles in the `makefiles` directory.
+
+![QtCreator Build](/Doc/qtcreator_build.png?raw=true)
 
 ## If you don't want to code
 
-That's also great, because a game doesn't need only code, in fact coding is the
+That's also great, because a game doesn't need only code. In fact coding is the
 smallest problem. It also needs people who do:
 
 * 3D Modeling
