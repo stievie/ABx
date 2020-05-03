@@ -162,6 +162,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
         {
             if (auto* upgradeItem = item->GetUpgrade(static_cast<ItemUpgrade>(i)))
             {
+                offeredItem.upgrades |= i;
                 auto& upgrade = offeredItem.mods[i];
                 upgrade.index = upgradeItem->data_.index;
                 // An upgrade doesn't really have count (it's always 1), so just copy it

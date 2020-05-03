@@ -35,6 +35,10 @@ namespace Server {
 
 namespace Internal {
 inline constexpr size_t ITEM_MOD_COUNT = 3;
+inline constexpr uint8_t ITEM_UPGRADE_1 = 1;
+inline constexpr uint8_t ITEM_UPGRADE_2 = 1 << 1;
+inline constexpr uint8_t ITEM_UPGRADE_3 = 1 << 2;
+
 struct Item
 {
     uint32_t index;
@@ -47,6 +51,7 @@ struct Item
 };
 struct UpgradeableItem : public Item
 {
+    uint8_t upgrades{ 0 };
     std::array<Item, ITEM_MOD_COUNT> mods;
 };
 }
@@ -744,14 +749,18 @@ struct TradeOffer
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
+            ar.value(item.upgrades);
             for (size_t mi = 0; mi < Internal::ITEM_MOD_COUNT; ++mi)
             {
-                auto& mod = item.mods[mi];
-                ar.value(mod.index);
-                ar.value(mod.type);
-                ar.value(mod.count);
-                ar.value(mod.value);
-                ar.value(mod.stats);
+                if ((item.upgrades & i) == Internal::ITEM_UPGRADE_1)
+                {
+                    auto& mod = item.mods[mi];
+                    ar.value(mod.index);
+                    ar.value(mod.type);
+                    ar.value(mod.count);
+                    ar.value(mod.value);
+                    ar.value(mod.stats);
+                }
             }
         }
     }
