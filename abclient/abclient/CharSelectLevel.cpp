@@ -87,15 +87,13 @@ void CharSelectLevel::CreateUI()
     int i = 0;
     for (const auto& ch : chars)
     {
-        auto* container = window_->CreateChild<UIElement>();
+        auto* container = window_->CreateChild<UIElement>(String(ch.uuid.c_str()));
         container->SetLayoutMode(LM_HORIZONTAL);
         container->SetMinHeight(40);
         container->SetMaxHeight(40);
         container->SetLayoutSpacing(8);
-        container->SetName(String(ch.uuid.c_str()));
 
-        Button* button = container->CreateChild<Button>();
-        button->SetName(String(ch.uuid.c_str()));
+        Button* button = container->CreateChild<Button>("CharacterButton");
         button->SetStyleAuto();
         button->SetOpacity(1.0f);
         button->SetLayoutMode(LM_FREE);
@@ -117,7 +115,7 @@ void CharSelectLevel::CreateUI()
             t->SetStyle("Text");
         }
 
-        Button* deleteButton = container->CreateChild<Button>();
+        Button* deleteButton = container->CreateChild<Button>("CharacterDeleteButton");
         deleteButton->SetMinWidth(40);
         deleteButton->SetMaxWidth(40);
         deleteButton->SetStyleAuto();
@@ -227,6 +225,7 @@ void CharSelectLevel::CreateScene()
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
 {
     using namespace Urho3D::Released;
+    EnableButtons(false);
     Button* sender = static_cast<Button*>(eventData[P_ELEMENT].GetPtr());
     String uuid = sender->GetVar("uuid").GetString();
     String mapUuid = sender->GetVar("map_uuid").GetString();
@@ -293,6 +292,21 @@ void CharSelectLevel::HandleCharacterDeleted(StringHash, VariantMap& eventData)
 
     container->Remove();
     window_->UpdateLayout();
+}
+
+void CharSelectLevel::EnableButtons(bool enable)
+{
+    const auto& children = window_->GetChildren();
+
+    for (auto childIt = children.Begin(); childIt != children.End(); childIt++)
+    {
+        auto* characterButton = (*childIt)->GetChildDynamicCast<Button>("CharacterButton", true);
+        if (characterButton)
+            characterButton->SetEnabled(enable);
+        auto* deleteButton = (*childIt)->GetChildDynamicCast<Button>("CharacterDeleteButton", true);
+        if (deleteButton)
+            deleteButton->SetEnabled(enable);
+    }
 }
 
 void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)

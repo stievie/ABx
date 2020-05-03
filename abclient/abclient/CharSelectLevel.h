@@ -46,5 +46,6 @@ private:
     void HandleOptionsClicked(StringHash eventType, VariantMap& eventData);
     void HandleAccountKeyAdded(StringHash eventType, VariantMap& eventData);
     void HandleCharacterDeleted(StringHash eventType, VariantMap& eventData);
+    void EnableButtons(bool enable);
 };
 
