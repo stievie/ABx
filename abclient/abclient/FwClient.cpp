@@ -709,7 +709,7 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
 bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer)
 {
 #ifdef URHO3D_SSL
-    return MakeHttpRequest(path, [&f](unsigned size, const PODVector<unsigned char>& data)
+    return MakeHttpRequest(path, [&buffer](unsigned size, const PODVector<unsigned char>& data)
     {
         buffer.Push(data);
     });
