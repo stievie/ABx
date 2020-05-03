@@ -67,8 +67,6 @@ Client::Client(Receiver& receiver) :
 
 Client::~Client()
 {
-    if (httpClient_)
-        delete httpClient_;
     Terminate();
 }
 
@@ -106,6 +104,58 @@ void Client::Terminate()
     Connection::Terminate();
 }
 
+HttpsClient* Client::GetHttpClient()
+{
+    if (!httpClient_)
+    {
+        if (!fileHost_.empty() && filePort_ != 0)
+        {
+            std::stringstream ss;
+            ss << fileHost_ << ":" << filePort_;
+            httpClient_ = std::make_unique<HttpsClient>(ss.str(), true, "", "", "", [this](bool preverified, asio::ssl::verify_context& ctx) -> bool
+            {
+                X509_STORE_CTX* cts = ctx.native_handle();
+                X509* cert = X509_STORE_CTX_get_current_cert(cts);
+
+                switch (X509_STORE_CTX_get_error(cts))
+                {
+                case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
+                    OnLog("X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT");
+                    break;
+                case X509_V_ERR_CERT_NOT_YET_VALID:
+                case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
+                    OnLog("Certificate not yet valid");
+                    break;
+                case X509_V_ERR_CERT_HAS_EXPIRED:
+                case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
+                    OnLog("Certificate expired");
+                    break;
+                case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+                case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
+                    preverified = true;
+                    break;
+                default:
+                    break;
+                }
+
+                char subject_name[256];
+                X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+                std::stringstream ss;
+                ss << "Certificate " << subject_name << " is";
+                if (preverified)
+                    ss << " valid";
+                else
+                    ss << " invalid";
+                OnLog(ss.str());
+                return preverified;
+            });
+        }
+    }
+    if (httpClient_)
+        return httpClient_.get();
+    return nullptr;
+}
+
 void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType accType)
 {
     accountUuid_ = accountUuid;
@@ -123,49 +173,6 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
     else
         // If file host is empty use the login host
         fileHost_ = loginHost_;
-
-    if (!fileHost_.empty() && filePort_ != 0)
-    {
-        std::stringstream ss;
-        ss << fileHost_ << ":" << filePort_;
-        httpClient_ = new HttpsClient(ss.str(), true, "", "", "", [this](bool preverified, asio::ssl::verify_context& ctx) -> bool
-        {
-            X509_STORE_CTX* cts = ctx.native_handle();
-            X509* cert = X509_STORE_CTX_get_current_cert(cts);
-
-            switch (X509_STORE_CTX_get_error(cts))
-            {
-            case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
-                OnLog("X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT");
-                break;
-            case X509_V_ERR_CERT_NOT_YET_VALID:
-            case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
-                OnLog("Certificate not yet valid");
-                break;
-            case X509_V_ERR_CERT_HAS_EXPIRED:
-            case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
-                OnLog("Certificate expired");
-                break;
-            case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-            case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
-                preverified = true;
-                break;
-            default:
-                break;
-            }
-
-            char subject_name[256];
-            X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-            std::stringstream ss;
-            ss << "Certificate " << subject_name << " is";
-            if (preverified)
-                ss << " valid";
-            else
-                ss << " invalid";
-            OnLog(ss.str());
-            return preverified;
-        });
-    }
 
     receiver_.OnLoggedIn(accountUuid_, authToken_, accType);
 }
@@ -400,7 +407,8 @@ void Client::Update(int timeElapsed)
 
 bool Client::HttpRequest(const std::string& path, std::ostream& out)
 {
-    if (httpClient_ == nullptr)
+    auto* client = GetHttpClient();
+    if (client == nullptr)
         return false;
     SimpleWeb::CaseInsensitiveMultimap header;
     std::stringstream ss;
@@ -410,7 +418,7 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     auto get = [&]() -> bool
     {
         asio::error_code ec;
-        auto r = httpClient_->request("GET", ec, path, "", header);
+        auto r = client->request("GET", ec, path, "", header);
         if (ec)
             return false;
         if (r->status_code != "200 OK")

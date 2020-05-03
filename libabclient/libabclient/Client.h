@@ -191,7 +191,9 @@ public:
     uint16_t filePort_{ 0 };
     std::string gameHost_;
     uint16_t gamePort_{ 0 };
-    HttpsClient* httpClient_{ nullptr };
+    std::unique_ptr<HttpsClient> httpClient_;
+    // May return nullptr when fileHost_ is empty or filePort_ is 0
+    HttpsClient* GetHttpClient();
     State GetState() const { return state_; }
     void SetState(State value) { state_ = value; }
     int GetAvgPing() const
