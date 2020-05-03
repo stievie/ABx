@@ -359,21 +359,12 @@ void FwClient::HandleLevelReady(StringHash, VariantMap&)
 
 void FwClient::LoadData()
 {
-    std::stringstream ss;
-    if (!client_.HttpRequest("/_versions_", ss))
-    {
-        ErrorExit("Unable to connect to the file server");
+    PODVector<unsigned char> buffer;
+    if (!MakeHttpRequest("/_versions_", buffer))
         return;
-    }
-
-    // Well...
-//    PODVector<unsigned char> buffer;
-//    if (!MakeHttpRequest("/_versions", buffer))
-//        return;
 
     pugi::xml_document doc;
-    std::string strVer = ss.str();
-    if (!doc.load_string(strVer.c_str(), static_cast<unsigned>(strVer.size())))
+    if (!doc.load_buffer((const void*)buffer.Buffer(), static_cast<size_t>(buffer.Size())))
     {
         ErrorExit("Fileserver returned malformed data");
         return;
@@ -421,7 +412,7 @@ void FwClient::LoadGames(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_games_", o->GetDataFileStl("GameData/Games.xml")))
+        if (!MakeHttpRequest("/_games_", o->GetDataFile("GameData/Games.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -457,7 +448,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_skills_", o->GetDataFileStl("GameData/Skills.xml")))
+        if (!MakeHttpRequest("/_skills_", o->GetDataFile("GameData/Skills.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -509,7 +500,7 @@ void FwClient::LoadAttributes(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_attributes_", o->GetDataFileStl("GameData/Attributes.xml")))
+        if (!MakeHttpRequest("/_attributes_", o->GetDataFile("GameData/Attributes.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -563,7 +554,7 @@ void FwClient::LoadProfessions(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_professions_", o->GetDataFileStl("GameData/Professions.xml")))
+        if (!MakeHttpRequest("/_professions_", o->GetDataFile("GameData/Professions.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -603,7 +594,7 @@ void FwClient::LoadEffects(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_effects_", o->GetDataFileStl("GameData/Effects.xml")))
+        if (!MakeHttpRequest("/_effects_", o->GetDataFile("GameData/Effects.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -641,7 +632,7 @@ void FwClient::LoadItems(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_items_", o->GetDataFileStl("GameData/Items.xml")))
+        if (!MakeHttpRequest("/_items_", o->GetDataFile("GameData/Items.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -684,7 +675,7 @@ void FwClient::LoadMusic(uint32_t curVersion)
     if (!file || IsOldData(curVersion, file))
     {
         Options* o = GetSubsystem<Options>();
-        if (!client_.HttpDownload("/_music_", o->GetDataFileStl("GameData/Music.xml")))
+        if (!MakeHttpRequest("/_music_", o->GetDataFile("GameData/Music.xml")))
             return;
         if (file)
             cache->ReloadResource(file);
@@ -697,21 +688,42 @@ void FwClient::LoadMusic(uint32_t curVersion)
     am->LoadMusic(file);
 }
 
-#ifdef URHO3D_SSL
-
 bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
 {
     std::remove(outFile.CString());
+
+#ifdef URHO3D_SSL
     std::ofstream f;
     f.open(outFile.CString());
     if (!f.is_open())
         return false;
-
     return MakeHttpRequest(path, [&f](unsigned size, const PODVector<unsigned char>& data)
     {
         f.write((const char*)data.Buffer(), size);
     });
+#else
+    return client_.HttpDownload(std::string(path.CString()), std::string(outFile.CString()));
+#endif
 }
+
+bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer)
+{
+#ifdef URHO3D_SSL
+    return MakeHttpRequest(path, [&f](unsigned size, const PODVector<unsigned char>& data)
+    {
+        buffer.Push(data);
+    });
+#else
+    std::stringstream ss;
+    if (!client_.HttpRequest(std::string(path.CString()), ss))
+        return false;
+    std::string str = ss.str();
+    buffer.Push(PODVector((unsigned char*)str.data(), static_cast<unsigned>(str.length())));
+    return true;
+#endif
+}
+
+#ifdef URHO3D_SSL
 
 bool FwClient::MakeHttpRequest(const String& path, std::function<void(unsigned size, const PODVector<unsigned char>&)> onData)
 {

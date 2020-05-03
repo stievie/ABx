@@ -416,7 +416,7 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
         if (r->status_code != "200 OK")
             return false;
         out << r->content.rdbuf();
-            return true;
+        return true;
     };
 
     if (get())
