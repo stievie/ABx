@@ -1348,10 +1348,13 @@ void Player::CRQSetOnlineStatus(AB::Entities::OnlineStatus status)
 
 void Player::CRQSetSecondaryProfession(uint32_t profIndex)
 {
+    if (skills_->prof2_.index == profIndex)
+        return;
+
     if (IsInOutpost())
     {
         auto nmsg = Net::NetworkMessage::GetNew();
-        const std::string& oldProf = skills_->prof2_.uuid;
+        const std::string oldProf = skills_->prof2_.uuid;
         if (skills_->SetSecondaryProfession(profIndex))
         {
             // The player may have equipped skills from the previous secondary profession that are not

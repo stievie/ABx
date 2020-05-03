@@ -292,7 +292,7 @@ bool SkillBar::SetSecondaryProfession(uint32_t index)
         }
     }
     prof2_ = p2;
-    InitProf2Attribs(attributes_, prof1_, &prof2_);
+    InitProf2Attribs(attributes_, prof1_, (index != 0) ? &prof2_ : nullptr);
     return true;
 }
 

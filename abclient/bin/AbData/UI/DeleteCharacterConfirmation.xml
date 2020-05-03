@@ -2,6 +2,8 @@
 <element type="Window">
 	<attribute name="Name" value="ConfirmDeleteCharacter" />
 	<attribute name="Size" value="400 200" />
+	<attribute name="Min Size" value="0 200" />
+	<attribute name="Max Size" value="2147483647 200" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Focus Mode" value="Focusable" />
 	<attribute name="Layout Mode" value="Vertical" />
@@ -17,6 +19,7 @@
 		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="10" />
 		<attribute name="Text" value="Confirm Delete Character" />
 	</element>
 	<element type="Text">
