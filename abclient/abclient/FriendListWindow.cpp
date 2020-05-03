@@ -93,7 +93,13 @@ FriendListWindow::FriendListWindow(Context* context) :
 
 void FriendListWindow::CreateMenus()
 {
-    friendPopup_ = new Menu(context_);
+    CreateFriendMenu();
+    CreateIgnoreMenu();
+}
+
+void FriendListWindow::CreateFriendMenu()
+{
+    friendPopup_ = MakeShared<Menu>(context_);
     friendPopup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     friendPopup_->SetStyleAuto();
     Window* popup = friendPopup_->CreateChild<Window>();
@@ -170,9 +176,92 @@ void FriendListWindow::CreateMenus()
             height = item->GetHeight();
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoveClicked));
     }
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Copy Name");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendCopyNameClicked));
+    }
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());
     friendPopup_->SetSize(popup->GetSize());
+}
+
+void FriendListWindow::CreateIgnoreMenu()
+{
+    ignorePopup_ = MakeShared<Menu>(context_);
+    ignorePopup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+    ignorePopup_->SetStyleAuto();
+    Window* popup = ignorePopup_->CreateChild<Window>();
+    popup->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+    popup->SetStyle("MenuPopupWindow");
+    popup->SetLayout(LM_VERTICAL, 1);
+    ignorePopup_->SetPopup(popup);
+
+    int width = 0;
+    int height = 0;
+
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Rename...");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredRenameClicked));
+    }
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Remove");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredRemoveClicked));
+    }
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Copy Name");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredCopyNameClicked));
+    }
+    popup->SetMinSize(IntVector2(width, height));
+    popup->SetSize(popup->GetMinSize());
+    ignorePopup_->SetSize(popup->GetSize());
 }
 
 FriendListWindow::~FriendListWindow()
@@ -316,6 +405,18 @@ void FriendListWindow::HandleFriendRemoveClicked(StringHash, VariantMap& eventDa
     client->RemoveFriend(uuid);
 }
 
+void FriendListWindow::HandleIgnoredRemoveClicked(StringHash, VariantMap& eventData)
+{
+    ignorePopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& uuid = ignorePopup_->GetVar("AccountUuid").GetString();
+    auto* client = GetSubsystem<FwClient>();
+    client->RemoveFriend(uuid);
+}
+
 void FriendListWindow::HandleFriendWhisperClicked(StringHash, VariantMap& eventData)
 {
     friendPopup_->ShowPopup(false);
@@ -366,7 +467,37 @@ void FriendListWindow::HandleFriendRenameClicked(StringHash, VariantMap& eventDa
     SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(FriendListWindow, HandleDialogClosed));
 }
 
+void FriendListWindow::HandleIgnoredRenameClicked(StringHash, VariantMap& eventData)
+{
+    ignorePopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& uuid = ignorePopup_->GetVar("AccountUuid").GetString();
+    const String& name = ignorePopup_->GetVar("NickName").GetString();
+
+    inputBox_ = MakeShared<InputBox>(context_, "Rename Ignored");
+    inputBox_->SetVar("AccountUuid", uuid);
+    inputBox_->SetValue(name);
+    inputBox_->SelectAll();
+    SubscribeToEvent(inputBox_, E_INPUTBOXDONE, URHO3D_HANDLER(FriendListWindow, HandleRenameIgnoredDialogDone));
+    SubscribeToEvent(inputBox_, E_DIALOGCLOSE, URHO3D_HANDLER(FriendListWindow, HandleDialogClosed));
+}
+
 void FriendListWindow::HandleRenameFriendDialogDone(StringHash, VariantMap& eventData)
+{
+    using namespace InputBoxDone;
+    if (!eventData[P_OK].GetBool())
+        return;
+
+    const String& uuid = inputBox_->GetVar("AccountUuid").GetString();
+    const String& newName = eventData[P_VALUE].GetString();
+    auto* client = GetSubsystem<FwClient>();
+    client->RenameFriend(uuid, newName);
+}
+
+void FriendListWindow::HandleRenameIgnoredDialogDone(StringHash, VariantMap& eventData)
 {
     using namespace InputBoxDone;
     if (!eventData[P_OK].GetBool())
@@ -390,6 +521,28 @@ void FriendListWindow::HandleFriendRenamed(StringHash, VariantMap& eventData)
         UpdateItem(friendList_, *acc);
     else if (acc->relation == AB::Packets::Server::PlayerInfo::FriendRelationIgnore)
         UpdateItem(ignoreList_, *acc);
+}
+
+void FriendListWindow::HandleFriendCopyNameClicked(StringHash, VariantMap& eventData)
+{
+    friendPopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& name = friendPopup_->GetVar("CharacterName").GetString();
+    GetSubsystem<UI>()->SetClipboardText(name);
+}
+
+void FriendListWindow::HandleIgnoredCopyNameClicked(StringHash, VariantMap& eventData)
+{
+    ignorePopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    const String& name = ignorePopup_->GetVar("NickName").GetString();
+    GetSubsystem<UI>()->SetClipboardText(name);
 }
 
 void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData)
@@ -416,6 +569,30 @@ void FriendListWindow::HandleFriendItemClicked(StringHash, VariantMap& eventData
     }
 }
 
+void FriendListWindow::HandleIgnoredItemClicked(StringHash, VariantMap& eventData)
+{
+    using namespace ClickEnd;
+    MouseButton button = static_cast<MouseButton>(eventData[P_BUTTON].GetUInt());
+    Text* elem = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
+    if (!elem)
+        return;
+    if (button == MOUSEB_RIGHT)
+    {
+        unsigned itemIndex = ignoreList_->FindItem(elem);
+        if (itemIndex == M_MAX_UNSIGNED)
+            return;
+        ignoreList_->SetSelection(itemIndex);
+
+        int x = eventData[P_X].GetInt();
+        int y = eventData[P_Y].GetInt();
+        ignorePopup_->SetPosition(x, y);
+        ignorePopup_->SetVar("AccountUuid", elem->GetVar("AccountUuid").GetString());
+        ignorePopup_->SetVar("CharacterName", elem->GetVar("CharacterName").GetString());
+        ignorePopup_->SetVar("NickName", elem->GetVar("NickName").GetString());
+        ignorePopup_->ShowPopup(true);
+    }
+}
+
 void FriendListWindow::HandleDialogClosed(StringHash, VariantMap&)
 {
     if (inputBox_)
@@ -439,37 +616,43 @@ void FriendListWindow::UpdateItem(ListView* lv, const AB::Packets::Server::Playe
     {
         txt = lv->CreateChild<Text>();
         txt->SetName(name);
-        SubscribeToEvent(txt, E_CLICKEND, URHO3D_HANDLER(FriendListWindow, HandleFriendItemClicked));
+        if (f.relation == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
+            SubscribeToEvent(txt, E_CLICKEND, URHO3D_HANDLER(FriendListWindow, HandleFriendItemClicked));
+        else
+            SubscribeToEvent(txt, E_CLICKEND, URHO3D_HANDLER(FriendListWindow, HandleIgnoredItemClicked));
     }
     String text(f.nickName.c_str());
-    if (f.nickName.compare(f.currentName) != 0 && !Client::IsOffline(f.status))
-        text.AppendWithFormat(" (%s)", f.currentName.c_str());
+    txt->SetStyle("FriendListItem");
 
-    auto* client = GetSubsystem<FwClient>();
-    if (!Client::IsOffline(f.status))
+    if (f.relation == AB::Packets::Server::PlayerInfo::FriendRelationFriend)
     {
-        const AB::Entities::Game* game = client->GetGame(String(f.currentMap.c_str()));
-        if (game)
-            text.AppendWithFormat(" [%s]", game->name.c_str());
-    }
+        if (f.nickName.compare(f.currentName) != 0 && !Client::IsOffline(f.status))
+            text.AppendWithFormat(" (%s)", f.currentName.c_str());
 
-    switch (f.status)
-    {
-    case AB::Packets::Server::PlayerInfo::OnlineStatusAway:
-        text.Append(" (AFK)");
-        break;
-    case AB::Packets::Server::PlayerInfo::OnlineStatusDoNotDisturb:
-        text.Append(" (DND)");
-        break;
-    default:
-        break;
-    }
+        auto* client = GetSubsystem<FwClient>();
+        if (!Client::IsOffline(f.status))
+        {
+            const AB::Entities::Game* game = client->GetGame(String(f.currentMap.c_str()));
+            if (game)
+                text.AppendWithFormat(" [%s]", game->name.c_str());
+        }
 
+        switch (f.status)
+        {
+        case AB::Packets::Server::PlayerInfo::OnlineStatusAway:
+            text.Append(" (AFK)");
+            break;
+        case AB::Packets::Server::PlayerInfo::OnlineStatusDoNotDisturb:
+            text.Append(" (DND)");
+            break;
+        default:
+            break;
+        }
+
+        if (!Client::IsOffline(f.status))
+            txt->SetStyle("FriendListItemOnline");
+    }
     txt->SetText(text);
-    if (Client::IsOffline(f.status))
-        txt->SetStyle("FriendListItem");
-    else
-        txt->SetStyle("FriendListItemOnline");
 
     txt->SetVar("AccountUuid", String(f.accountUuid.c_str()));
     txt->SetVar("CharacterName", String(f.currentName.c_str(), static_cast<unsigned>(f.currentName.length())));

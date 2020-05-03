@@ -800,6 +800,8 @@ void Player::CRQChangeFriendNick(const std::string accountUuid, const std::strin
 
     if (!GetFriendList().GetFriendByAccount(accountUuid, f))
         return;
+    if (f.relation == AB::Entities::FriendRelationUnknown)
+        return;
 
     auto res = GetFriendList().ChangeNickname(accountUuid, newName);
 
@@ -2148,7 +2150,12 @@ void Player::HandleGotoPlayerCommand(const std::string& playerName, Net::Network
     if (Utils::Uuid::IsEqual(data_.instanceUuid, currentInst))
     {
         // This is the same instance -> teleport to player
-        moveComp_->SetPosition(player->transformation_.position_);
+        Math::Vector3 pos = player->transformation_.position_;
+        // Random pos around target
+        auto rng = GetSubsystem<Crypto::Random>();
+        pos.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        pos.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        moveComp_->SetPosition(pos);
         moveComp_->forcePosition_ = true;
         return;
     }

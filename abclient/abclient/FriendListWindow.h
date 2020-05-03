@@ -43,6 +43,8 @@ private:
     bool initialized_{ false };
 
     void CreateMenus();
+    void CreateFriendMenu();
+    void CreateIgnoreMenu();
     void SubscribeEvents();
     void HandleStatusDropdownSelected(StringHash eventType, VariantMap& eventData);
     void HandleGotFriendList(StringHash eventType, VariantMap& eventData);
@@ -53,13 +55,19 @@ private:
     void HandleFriendAdded(StringHash eventType, VariantMap& eventData);
     void HandleFriendRemoved(StringHash eventType, VariantMap& eventData);
     void HandleFriendRemoveClicked(StringHash eventType, VariantMap& eventData);
+    void HandleIgnoredRemoveClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendWhisperClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendSendMailClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendRenameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleIgnoredRenameClicked(StringHash eventType, VariantMap& eventData);
     void HandleFriendItemClicked(StringHash eventType, VariantMap& eventData);
+    void HandleIgnoredItemClicked(StringHash eventType, VariantMap& eventData);
     void HandleDialogClosed(StringHash eventType, VariantMap& eventData);
     void HandleRenameFriendDialogDone(StringHash eventType, VariantMap& eventData);
+    void HandleRenameIgnoredDialogDone(StringHash eventType, VariantMap& eventData);
     void HandleFriendRenamed(StringHash eventType, VariantMap& eventData);
+    void HandleFriendCopyNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleIgnoredCopyNameClicked(StringHash eventType, VariantMap& eventData);
     void UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f);
     void UpdateAll();
     void UpdateSelf(const AB::Packets::Server::PlayerInfo& acc);
