@@ -167,7 +167,7 @@ public:
     void DeleteMail(const std::string& uuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void GetPlayerInfoByName(const std::string& name, uint32_t fields);
-    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields);
+    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields, bool refresh = false);
     void UpdateInventory();
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos, uint32_t count);

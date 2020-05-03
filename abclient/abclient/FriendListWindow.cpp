@@ -362,6 +362,7 @@ void FriendListWindow::AddFriend()
         return;
     auto* client = GetSubsystem<FwClient>();
     client->AddFriend(name, AB::Entities::FriendRelationFriend);
+    addFriendEdit_->SetText("");
 }
 
 void FriendListWindow::AddIgnore()
@@ -371,6 +372,7 @@ void FriendListWindow::AddIgnore()
         return;
     auto* client = GetSubsystem<FwClient>();
     client->AddFriend(name, AB::Entities::FriendRelationIgnore);
+    addIgnoreEdit_->SetText("");
 }
 
 void FriendListWindow::HandleFriendRemoved(StringHash, VariantMap& eventData)
@@ -601,11 +603,10 @@ void FriendListWindow::HandleDialogClosed(StringHash, VariantMap&)
 
 void FriendListWindow::HandleFriendAdded(StringHash, VariantMap& eventData)
 {
-    addFriendEdit_->SetText("");
     using namespace Events::FriendAdded;
     const String& uuid = eventData[P_ACCOUNTUUID].GetString();
     auto* client = GetSubsystem<FwClient>();
-    client->GetPlayerInfoByAccount(std::string(uuid.CString()), AB::GameProtocol::PlayerInfoFieldsAll);
+    client->GetPlayerInfoByAccount(std::string(uuid.CString()), AB::GameProtocol::PlayerInfoFieldsAll, true);
 }
 
 void FriendListWindow::UpdateItem(ListView* lv, const AB::Packets::Server::PlayerInfo& f)

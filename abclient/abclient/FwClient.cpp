@@ -936,18 +936,22 @@ void FwClient::GetPlayerInfoByName(const std::string& name, uint32_t fields)
         client_.GetPlayerInfoByName(name, fields);
 }
 
-void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields)
+void FwClient::GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields, bool refresh /* = false */)
 {
     if (!loggedIn_)
         return;
-    const auto it = relatedAccounts_.find(accountUuid);
 
-    if (it != relatedAccounts_.end())
+    if (!refresh)
     {
-        if (((*it).second.fields & fields) == fields)
+        const auto it = relatedAccounts_.find(accountUuid);
+
+        if (it != relatedAccounts_.end())
         {
-            OnPacket(0, (*it).second);
-            return;
+            if (((*it).second.fields & fields) == fields)
+            {
+                OnPacket(0, (*it).second);
+                return;
+            }
         }
     }
     client_.GetPlayerInfoByAccount(accountUuid, fields);
