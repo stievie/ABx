@@ -116,8 +116,10 @@ private:
     void LoadEffects(uint32_t curVersion);
     void LoadItems(uint32_t curVersion);
     void LoadMusic(uint32_t curVersion);
+#ifdef URHO3D_SSL
     bool MakeHttpRequest(const String& path, const String& outFile);
-    bool MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer);
+    bool MakeHttpRequest(const String& path, std::function<void(unsigned size, const PODVector<unsigned char>&)> onData);
+#endif
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);

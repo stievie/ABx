@@ -141,7 +141,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
     AB::Packets::Server::TradeOffer packet;
     packet.money = money;
     auto& invComp = *owner_.inventoryComp_;
-    static_assert(AB::Packets::Server::Internal::ITEM_MOD_COUNT == static_cast<size_t>(ItemUpgrade::__Count),
+    static_assert(AB::Packets::Server::Internal::ITEM_UPGRADE_COUNT == static_cast<size_t>(ItemUpgrade::__Count),
         "AB::Packets::Server::TradeOffer::MOD_COUNT does not match ItemUpgrade::__Count");
     for (auto itemPair : ourOffer_)
     {

@@ -34,25 +34,25 @@ namespace Server {
 // Packets sent from the server to the client
 
 namespace Internal {
-inline constexpr size_t ITEM_MOD_COUNT = 3;
+inline constexpr size_t ITEM_UPGRADE_COUNT = 3;
 inline constexpr uint8_t ITEM_UPGRADE_1 = 1;
 inline constexpr uint8_t ITEM_UPGRADE_2 = 1 << 1;
 inline constexpr uint8_t ITEM_UPGRADE_3 = 1 << 2;
 
 struct Item
 {
-    uint32_t index;
-    uint16_t type;
-    uint32_t count;
-    uint16_t value;
+    uint32_t index{ 0 };
+    uint16_t type{ 0 };
+    uint32_t count{ 0 };
+    uint16_t value{ 0 };
     std::string stats;
-    uint8_t place;
-    uint16_t pos;
+    uint8_t place{ 0 };
+    uint16_t pos{ 0 };
 };
 struct UpgradeableItem : public Item
 {
     uint8_t upgrades{ 0 };
-    std::array<Item, ITEM_MOD_COUNT> mods;
+    std::array<Item, ITEM_UPGRADE_COUNT> mods;
 };
 }
 
@@ -750,9 +750,9 @@ struct TradeOffer
             ar.value(item.value);
             ar.value(item.stats);
             ar.value(item.upgrades);
-            for (size_t mi = 0; mi < Internal::ITEM_MOD_COUNT; ++mi)
+            for (size_t mi = 0; mi < Internal::ITEM_UPGRADE_COUNT; ++mi)
             {
-                if ((item.upgrades & i) == Internal::ITEM_UPGRADE_1)
+                if ((item.upgrades & mi) == mi)
                 {
                     auto& mod = item.mods[mi];
                     ar.value(mod.index);
