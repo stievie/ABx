@@ -54,7 +54,7 @@ public:
 template<typename Callback>
 inline void Zone::VisitAgents(Callback&& callback)
 {
-    for (auto agent : agents_)
+    for (const auto& agent : agents_)
     {
         if (callback(*agent.second) != Iteration::Continue)
             break;

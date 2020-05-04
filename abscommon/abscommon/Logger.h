@@ -96,8 +96,12 @@ public:
     {
         if (nextIsBegin_)
         {
+            // TODO: Rotating here is not a good idea, because when we rotate, this instance is deleted.
             if (Utils::TimeElapsed(logStart_) > LOG_ROTATE_INTERVAL)
+            {
                 Logger::Rotate();
+                return Logger::Instance() << data;
+            }
             //set time_point to current time
             std::chrono::time_point<std::chrono::system_clock> time_point;
             time_point = std::chrono::system_clock::now();
