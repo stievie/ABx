@@ -534,7 +534,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
     try
     {
         auto web_root_path = fs::canonical(root_);
-        auto path = fs::canonical(Utils::AddSlash(root_) + request->path);
+        auto path = fs::canonical(root_ + request->path);
         // Check if path is within web_root_path
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
