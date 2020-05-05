@@ -190,6 +190,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Password hash: bcrypt OpenBSD https://www.openbsd.org/", 15);
     CreateSingleLine("PRNG: arc4random OpenBSD https://www.openbsd.org/", 15);
     CreateSingleLine("PDCurses https://pdcurses.org/", 15);
+    CreateSingleLine("DeathHandler: https://github.com/vmarkovtsev/DeathHandler", 15);
     CreateSingleLine("Database: PostgreSQL https://www.postgresql.org/", 15);
     CreateLogo("Textures/PostgreSQL_logo.png", 0.5f);
 
@@ -203,6 +204,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Particles: https://kenney.nl/assets/particle-pack", 15);
     CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
     CreateSingleLine("tinyexpr: https://github.com/codeplea/tinyexpr", 15);
+    CreateSingleLine("HTTP Client: https://github.com/yhirose/cpp-httplib", 15);
 
     CreateSingleLine("Assets", 30, true);
     CreateSingleLine("World Map: https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg", 15);

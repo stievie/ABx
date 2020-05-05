@@ -10,7 +10,6 @@ Creator: sa 2017-2019
 * Catch2 https://github.com/catchorg/Catch2
 * stb https://github.com/nothings/stb
 * LZ4 https://github.com/lz4/lz4
-* DeathHandler https://github.com/vmarkovtsev/DeathHandler
 
 ## Server
 
@@ -30,6 +29,7 @@ Creator: sa 2017-2019
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server
 * DirectXMath https://github.com/Microsoft/DirectXMath
 * PDCurses https://pdcurses.org/
+* DeathHandler https://github.com/vmarkovtsev/DeathHandler
 
 ## Client
 
@@ -41,8 +41,8 @@ Creator: sa 2017-2019
 * http://kenney.nl/assets/particle-pack
 * Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
 * https://github.com/codeplea/tinyexpr
+* HTTP Client: https://github.com/yhirose/cpp-httplib
 * Font: ClearSans
-* HTTP Client https://github.com/yhirose/cpp-httplib
 
 ## Assets
 
