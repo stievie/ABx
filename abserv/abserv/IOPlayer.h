@@ -24,6 +24,7 @@
 #include "Player.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
+#include <sa/Assert.h>
 
 namespace IO {
 namespace IOPlayer {

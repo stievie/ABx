@@ -25,6 +25,7 @@
 #include <map>
 #include <vector>
 #include "Quest.h"
+#include <sa/Assert.h>
 #include <sa/Iteration.h>
 #include <sa/Noncopyable.h>
 
@@ -78,11 +79,13 @@ public:
     {
         for (const auto& q : doneQuests_)
         {
+            assert(q.second);
             if (callback(*q.second) != Iteration::Continue)
                 break;
         }
         for (const auto& q : activeQuests_)
         {
+            assert(q.second);
             if (callback(*q.second) != Iteration::Continue)
                 break;
         }
@@ -92,6 +95,7 @@ public:
     {
         for (const auto& q : activeQuests_)
         {
+            assert(q.second);
             if (!q.second->IsActive())
                 continue;
             if (callback(*q.second) != Iteration::Continue)

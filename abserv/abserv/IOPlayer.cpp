@@ -77,6 +77,7 @@ static bool LoadPlayerInventory(Game::Player& player)
 
 static bool SavePlayerInventory(Game::Player& player)
 {
+    assert(player.inventoryComp_);
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Equipment
     player.inventoryComp_->VisitEquipement([client](Game::Item& item)
@@ -120,6 +121,7 @@ static bool LoadQuestLog(Game::Player& player)
     if (!client->Read(ql))
         return false;
 
+    assert(player.questComp_);
     Game::Components::QuestComp& questComp = *player.questComp_;
     for (const auto& q : ql.questUuids)
     {
@@ -143,6 +145,7 @@ static bool LoadQuestLog(Game::Player& player)
 static bool SaveQuestLog(Game::Player& player)
 {
     auto* client = GetSubsystem<IO::DataClient>();
+    assert(player.questComp_);
     Game::Components::QuestComp& questComp = *player.questComp_;
     questComp.VisitQuests([client](Game::Quest& current)
     {

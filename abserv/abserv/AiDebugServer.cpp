@@ -58,7 +58,7 @@ DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port
 
 void DebugServer::HandleGetGames(IPC::ServerConnection& client, const GetGames&)
 {
-    for (auto weakGame : games_)
+    for (const auto& weakGame : games_)
     {
         if (auto sGame = weakGame.lock())
         {

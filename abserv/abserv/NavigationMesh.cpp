@@ -165,12 +165,8 @@ bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& 
 }
 
 bool NavigationMesh::FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+    const dtQueryFilter* filter)
 {
-    dtPolyRef pointRef;
-    if (!nearestRef)
-        nearestRef = &pointRef;
-
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;
     dtStatus startStatus = navQuery_->findNearestPoly(point.Data(), extents.Data(), queryFilter, &startRef, nullptr);

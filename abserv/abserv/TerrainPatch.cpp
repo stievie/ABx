@@ -100,7 +100,8 @@ float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& di
     const float mint = 0.001f;
     float lh = 0.0f;
     float ly = 0.0f;
-    for (float t = mint; t < maxDist; t += dt)
+    float t = mint;
+    while (t < maxDist)
     {
         const Math::Vector3 p = origin + direction * t;
         const float h = GetHeight(p);
@@ -109,6 +110,7 @@ float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& di
             return (t - dt + dt * (lh - ly) / (p.y_ - ly - h + lh));
         lh = h;
         ly = p.y_;
+        t += dt;
     }
     return Math::M_INFINITE;
 }

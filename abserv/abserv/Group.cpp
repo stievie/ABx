@@ -194,7 +194,7 @@ std::vector<Actor*> Group::_LuaGetMembers()
 {
     std::vector<Actor*> result;
     result.reserve(members_.size());
-    for (auto m : members_)
+    for (const auto& m : members_)
     {
         if (auto sm = m.lock())
             result.push_back(sm.get());
