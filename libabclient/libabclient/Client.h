@@ -44,7 +44,6 @@ namespace Client {
 
 class ProtocolLogin;
 class ProtocolGame;
-class HttpsClient;
 
 enum class State
 {
@@ -64,6 +63,7 @@ private:
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
     sa::CircularQueue<int, 10> pings_;
+    std::unique_ptr<httplib::SSLClient> httpClient_;
     int lastRun_{ 0 };
     int lastPing_{ 0 };
     bool gotPong_{ true };
@@ -196,7 +196,6 @@ public:
     uint16_t filePort_{ 0 };
     std::string gameHost_;
     uint16_t gamePort_{ 0 };
-    std::unique_ptr<httplib::SSLClient> httpClient_;
     // May return nullptr when fileHost_ is empty or filePort_ is 0
     httplib::SSLClient* GetHttpClient();
     State GetState() const { return state_; }

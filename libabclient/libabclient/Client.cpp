@@ -357,7 +357,6 @@ bool Client::HttpRequest(const std::string& path, std::function<bool(const char*
         { "Auth", ss.str() }
     };
     auto res = client->Get(path.c_str(), header, std::move(callback));
-
     return res && res->status == 200;
 }
 
