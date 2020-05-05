@@ -42,6 +42,7 @@ Creator: sa 2017-2019
 * Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
 * https://github.com/codeplea/tinyexpr
 * Font: ClearSans
+* HTTP Client https://github.com/yhirose/cpp-httplib
 
 ## Assets
 

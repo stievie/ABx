@@ -25,34 +25,14 @@
 #include "ProtocolGame.h"
 #include "Connection.h"
 #include <sa/PragmaWarning.h>
-#define USE_STANDALONE_ASIO
-PRAGMA_WARNING_PUSH
-PRAGMA_WARNING_DISABLE_MSVC(4457 4456 4150)
-#include <SimpleWeb/client_https.hpp>
-PRAGMA_WARNING_POP
 #include <iostream>
 #include <fstream>
 #include "Random.h"
 #include <thread>
+#define CPPHTTPLIB_OPENSSL_SUPPORT
+#include <httplib.h>
 
 namespace Client {
-
-class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>
-{
-public:
-    HttpsClient(const std::string& server_port_path,
-        bool verify_certificate = true,
-        const std::string& cert_file = "",
-        const std::string& private_key_file = "",
-        const std::string& verify_file = "",
-        std::function<bool(bool, asio::ssl::verify_context&)> callback = {}) :
-        SimpleWeb::Client<SimpleWeb::HTTPS>::Client(server_port_path, verify_certificate,
-            cert_file, private_key_file, verify_file, callback)
-    { }
-    virtual ~HttpsClient();
-};
-
-HttpsClient::~HttpsClient() = default;
 
 Client::Client(Receiver& receiver) :
     receiver_(receiver),
@@ -104,52 +84,12 @@ void Client::Terminate()
     Connection::Terminate();
 }
 
-HttpsClient* Client::GetHttpClient()
+httplib::SSLClient* Client::GetHttpClient()
 {
     if (!httpClient_)
     {
         if (!fileHost_.empty() && filePort_ != 0)
-        {
-            std::stringstream ss;
-            ss << fileHost_ << ":" << filePort_;
-            httpClient_ = std::make_unique<HttpsClient>(ss.str(), true, "", "", "", [this](bool preverified, asio::ssl::verify_context& ctx) -> bool
-            {
-                X509_STORE_CTX* cts = ctx.native_handle();
-                X509* cert = X509_STORE_CTX_get_current_cert(cts);
-
-                switch (X509_STORE_CTX_get_error(cts))
-                {
-                case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
-                    OnLog("X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT");
-                    break;
-                case X509_V_ERR_CERT_NOT_YET_VALID:
-                case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
-                    OnLog("Certificate not yet valid");
-                    break;
-                case X509_V_ERR_CERT_HAS_EXPIRED:
-                case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
-                    OnLog("Certificate expired");
-                    break;
-                case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-                case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
-                    preverified = true;
-                    break;
-                default:
-                    break;
-                }
-
-                char subject_name[256];
-                X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-                std::stringstream ss;
-                ss << "Certificate " << subject_name << " is";
-                if (preverified)
-                    ss << " valid";
-                else
-                    ss << " invalid";
-                OnLog(ss.str());
-                return preverified;
-            });
-        }
+            httpClient_ = std::make_unique<httplib::SSLClient>(fileHost_, filePort_);
     }
     if (httpClient_)
         return httpClient_.get();
@@ -405,38 +345,29 @@ void Client::Update(int timeElapsed)
         lastPing_ += timeElapsed;
 }
 
-bool Client::HttpRequest(const std::string& path, std::ostream& out)
+bool Client::HttpRequest(const std::string& path, std::function<bool(const char* data, uint64_t size)>&& callback)
 {
     auto* client = GetHttpClient();
     if (client == nullptr)
         return false;
-    SimpleWeb::CaseInsensitiveMultimap header;
+
     std::stringstream ss;
     ss << accountUuid_ << authToken_;
-    header.emplace("Auth", ss.str());
-
-    auto get = [&]() -> bool
-    {
-        asio::error_code ec;
-        auto r = client->request("GET", ec, path, "", header);
-        if (ec)
-            return false;
-        if (r->status_code != "200 OK")
-            return false;
-        out << r->content.rdbuf();
-        return true;
+    httplib::Headers header = {
+        { "Auth", ss.str() }
     };
+    auto res = client->Get(path.c_str(), header, std::move(callback));
 
-    if (get())
+    return res && res->status == 200;
+}
+
+bool Client::HttpRequest(const std::string& path, std::ostream& out)
+{
+    return HttpRequest(path, [&out](const char* data, uint64_t size)
+    {
+        out.write(data, size);
         return true;
-
-    // Try once again
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(500ms);
-    if (get())
-        return true;
-
-    return false;
+    });
 }
 
 bool Client::HttpDownload(const std::string& path, const std::string& outFile)

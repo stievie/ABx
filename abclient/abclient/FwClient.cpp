@@ -691,82 +691,26 @@ void FwClient::LoadMusic(uint32_t curVersion)
 bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
 {
     std::remove(outFile.CString());
-
-#ifdef URHO3D_SSL
-    std::ofstream f;
-    f.open(outFile.CString());
-    if (!f.is_open())
-        return false;
-    return MakeHttpRequest(path, [&f](unsigned size, const PODVector<unsigned char>& data)
-    {
-        f.write((const char*)data.Buffer(), size);
-    });
-#else
     return client_.HttpDownload(std::string(path.CString()), std::string(outFile.CString()));
-#endif
 }
 
 bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer)
 {
-#ifdef URHO3D_SSL
-    return MakeHttpRequest(path, [&buffer](unsigned size, const PODVector<unsigned char>& data)
+    return client_.HttpRequest(std::string(path.CString()), [&buffer](const char* data, uint64_t size)
     {
-        buffer.Push(data);
+        buffer.Push(PODVector((unsigned char*)data, static_cast<unsigned>(size)));
+        return true;
     });
-#else
-    std::stringstream ss;
-    if (!client_.HttpRequest(std::string(path.CString()), ss))
-        return false;
-    std::string str = ss.str();
-    buffer.Push(PODVector((unsigned char*)str.data(), static_cast<unsigned>(str.length())));
-    return true;
-#endif
 }
-
-#ifdef URHO3D_SSL
 
 bool FwClient::MakeHttpRequest(const String& path, std::function<void(unsigned size, const PODVector<unsigned char>&)> onData)
 {
-    Urho3D::Network* network = GetSubsystem<Urho3D::Network>();
-    std::stringstream ss;
-    ss << "https://";
-    ss << client_.fileHost_;
-    ss << ":" << static_cast<int>(client_.filePort_);
-    ss << path.CString();
-    String url(ss.str().c_str());
-    Vector<String> headers;
-    std::stringstream hss;
-    hss << "Auth: " << client_.accountUuid_ << client_.authToken_;
-    headers.Push(hss.str().c_str());
-
-    SharedPtr<Urho3D::HttpRequest> request = network->MakeHttpRequest(url, "GET", headers);
-    for (;;)
+    return client_.HttpRequest(std::string(path.CString()), [&onData](const char* data, uint64_t size)
     {
-        if (request->GetState() == HTTP_INITIALIZING)
-        {
-            Time::Sleep(5);
-            continue;
-        }
-        if (request->GetState() == HTTP_ERROR)
-        {
-            URHO3D_LOGERRORF("HTTP request error: %s", request->GetError().CString());
-            return false;
-        }
-
-        unsigned size = request->GetAvailableSize();
-        if (size > 0)
-        {
-            if (onData)
-                onData(size, request->ReadBuffer());
-        }
-        else
-            break;
-    }
-
-    return true;
+        onData(static_cast<unsigned>(size), PODVector((unsigned char*)data, static_cast<unsigned>(size)));
+        return true;
+    });
 }
-
-#endif
 
 void FwClient::Update(float timeStep)
 {

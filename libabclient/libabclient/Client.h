@@ -36,6 +36,10 @@
 #include <numeric>
 #include <AB/Packets/ServerPackets.h>
 
+namespace httplib {
+class SSLClient;
+}
+
 namespace Client {
 
 class ProtocolLogin;
@@ -95,6 +99,7 @@ public:
     void Update(int timeElapsed);
 
     bool HttpRequest(const std::string& path, std::ostream& out);
+    bool HttpRequest(const std::string& path, std::function<bool(const char* data, uint64_t size)>&& callback);
     bool HttpDownload(const std::string& path, const std::string& outFile);
 
     uint32_t GetIp() const;
@@ -191,9 +196,9 @@ public:
     uint16_t filePort_{ 0 };
     std::string gameHost_;
     uint16_t gamePort_{ 0 };
-    std::unique_ptr<HttpsClient> httpClient_;
+    std::unique_ptr<httplib::SSLClient> httpClient_;
     // May return nullptr when fileHost_ is empty or filePort_ is 0
-    HttpsClient* GetHttpClient();
+    httplib::SSLClient* GetHttpClient();
     State GetState() const { return state_; }
     void SetState(State value) { state_ = value; }
     int GetAvgPing() const
