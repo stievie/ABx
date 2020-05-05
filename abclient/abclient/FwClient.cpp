@@ -703,7 +703,7 @@ bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buf
     });
 }
 
-bool FwClient::MakeHttpRequest(const String& path, std::function<void(unsigned size, const PODVector<unsigned char>&)> onData)
+bool FwClient::MakeHttpRequest(const String& path, const std::function<void(unsigned size, const PODVector<unsigned char>&)>& onData)
 {
     return client_.HttpRequest(std::string(path.CString()), [&onData](const char* data, uint64_t size)
     {

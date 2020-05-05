@@ -118,7 +118,7 @@ private:
     void LoadMusic(uint32_t curVersion);
     bool MakeHttpRequest(const String& path, const String& outFile);
     bool MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer);
-    bool MakeHttpRequest(const String& path, std::function<void(unsigned size, const PODVector<unsigned char>&)> onData);
+    bool MakeHttpRequest(const String& path, const std::function<void(unsigned size, const PODVector<unsigned char>&)>& onData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);
