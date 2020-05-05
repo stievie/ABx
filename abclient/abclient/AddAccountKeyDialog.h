@@ -30,7 +30,7 @@ private:
     void HandleAddClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
 protected:
-    void SubscribeEvents() override;
+    void SubscribeEvents();
 public:
     AddAccountKeyDialog(Context* context);
     ~AddAccountKeyDialog() override;

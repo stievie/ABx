@@ -564,7 +564,7 @@ RenderPath * PostProcessController::BuildEffectsPath()
     {
         effectsPath_ = renderer_->GetDefaultRenderPath()->Clone();
     }
-    for (auto pair : effectsOrder_)
+    for (const auto& pair : effectsOrder_)
     {
 //        if (!effectsPath_->IsAdded(pair.first_))
 //        {

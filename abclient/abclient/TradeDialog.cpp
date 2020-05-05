@@ -67,6 +67,7 @@ TradeDialog::TradeDialog(Context* context, SharedPtr<Player> player, SharedPtr<A
     SubscribeToEvent(moneyEdit, E_TEXTENTRY, URHO3D_HANDLER(TradeDialog, HandleMoneyEditTextEntry));
 
     SubscribeToEvent(Events::E_TRADEOFFER, URHO3D_HANDLER(TradeDialog, HandlePartnersOffer));
+    DialogWindow::SubscribeEvents();
 
     UpdateLayout();
     BringToFront();
@@ -122,7 +123,7 @@ void TradeDialog::HandleOfferClicked(StringHash, VariantMap&)
 {
     uint32_t money = GetOfferedMoney();
     std::vector<std::pair<uint16_t, uint32_t>> ourItems;
-    for (auto i : ourOffer_)
+    for (const auto& i : ourOffer_)
         ourItems.push_back({ i.first, i.second.count });
 
     auto* client = GetSubsystem<FwClient>();

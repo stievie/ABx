@@ -56,7 +56,7 @@ FilePicker::FilePicker(Context* context, const String& root, Mode mode) :
     else
         caption->SetText("Save file");
 
-    SubscribeEvents();
+    DialogWindow::SubscribeEvents();
 
     auto* newFolder = GetChildDynamicCast<Button>("NewFolderButton", true);
     newFolder->SetVisible(false);

@@ -56,7 +56,7 @@ private:
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const ConcreteItem& iItem);
 protected:
-    void SubscribeEvents() override;
+    void SubscribeEvents();
 public:
     AccountChestDialog(Context* context);
     ~AccountChestDialog() override;

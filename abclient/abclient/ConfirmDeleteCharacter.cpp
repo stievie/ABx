@@ -54,6 +54,7 @@ ConfirmDeleteCharacter::ConfirmDeleteCharacter(Context* context, const String& u
     BringToFront();
 
     Center();
+    DialogWindow::SubscribeEvents();
 
     SubscribeToEvent(this, E_MODALCHANGED, URHO3D_HANDLER(ConfirmDeleteCharacter, HandleCancelClicked));
     nameEdit_->SetFocus(true);

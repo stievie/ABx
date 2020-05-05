@@ -49,6 +49,7 @@ InputBox::InputBox(Context* context, const String& title) :
 
     MakeModal();
     Center();
+    DialogWindow::SubscribeEvents();
     BringToFront();
     edit->SetFocus(true);
 }
