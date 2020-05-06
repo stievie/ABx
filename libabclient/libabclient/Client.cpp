@@ -31,6 +31,7 @@
 #include <thread>
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
+#include <sa/ScopeGuard.h>
 
 namespace Client {
 
@@ -376,9 +377,11 @@ bool Client::HttpDownload(const std::string& path, const std::string& outFile)
     f.open(outFile);
     if (!f.is_open())
         return false;
-    bool ret = HttpRequest(path, f);
-    f.close();
-    return ret;
+    sa::ScopeGuard fileGuard([&f]()
+    {
+        f.close();
+    });
+    return HttpRequest(path, f);
 }
 
 uint32_t Client::GetIp() const
