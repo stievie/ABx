@@ -84,8 +84,8 @@ Required lib files for the client not in this repository:
 
 * `Urho3D(_d).lib`
 
-Clone Urho3D from GitHub (https://github.com/urho3d/Urho3D, I think version 1.7
-should work). Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
+Clone Urho3D from the official GitHub repository (https://github.com/urho3d/Urho3D, use the latest master).
+Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
 `/Lib/x64/Release`). Copy or symlink the directory with Urho3D header files to `Include/`,
 so there is a `Include/Urho3D` directory, e.g:
 ~~~sh
