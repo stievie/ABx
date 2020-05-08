@@ -30,6 +30,33 @@
 namespace Game {
 namespace Components {
 
+void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
+{
+    if (error == TradeError::None)
+        return;
+
+    message.AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+    AB::Packets::Server::GameError packet;
+    switch (error)
+    {
+    case Components::TradeComp::TradeError::None:
+        break;
+    case Components::TradeComp::TradeError::TargetInvalid:
+        packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerInvalid);
+        break;
+    case Components::TradeComp::TradeError::TargetQueing:
+        packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerQueueing);
+        break;
+    case Components::TradeComp::TradeError::TargetTrading:
+        packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading);
+        break;
+    case Components::TradeComp::TradeError::InProgress:
+        packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget);
+        break;
+    }
+    AB::Packets::Add(packet, message);
+}
+
 TradeComp::TradeComp(Player& owner) :
     owner_(owner)
 {
@@ -91,33 +118,6 @@ void TradeComp::Cancel()
     }
 }
 
-void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
-{
-    if (error != TradeError::None)
-    {
-        message.AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::GameError packet;
-        switch (error)
-        {
-        case Components::TradeComp::TradeError::None:
-            break;
-        case Components::TradeComp::TradeError::TargetInvalid:
-            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerInvalid);
-            break;
-        case Components::TradeComp::TradeError::TargetQueing:
-            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerQueueing);
-            break;
-        case Components::TradeComp::TradeError::TargetTrading:
-            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading);
-            break;
-        case Components::TradeComp::TradeError::InProgress:
-            packet.code = static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget);
-            break;
-        }
-        AB::Packets::Add(packet, message);
-    }
-}
-
 uint32_t TradeComp::GetTradePartnerId() const
 {
     if (auto p = target_.lock())
@@ -142,7 +142,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
     packet.money = money;
     auto& invComp = *owner_.inventoryComp_;
     static_assert(AB::Packets::Server::Internal::ITEM_UPGRADE_COUNT == static_cast<size_t>(ItemUpgrade::__Count),
-        "AB::Packets::Server::TradeOffer::MOD_COUNT does not match ItemUpgrade::__Count");
+        "AB::Packets::Server::Internal::ITEM_UPGRADE_COUNT does not match ItemUpgrade::__Count");
     for (auto itemPair : ourOffer_)
     {
         auto* item = invComp.GetInventoryItem(itemPair.first);

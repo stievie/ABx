@@ -1562,7 +1562,7 @@ void Player::CRQTradeRequest(uint32_t targetId)
     if (error != Components::TradeComp::TradeError::None)
     {
         auto msg = Net::NetworkMessage::GetNew();
-        tradeComp_->WriteError(error, *msg);
+        Components::TradeComp::WriteError(error, *msg);
         WriteToOutput(*msg);
     }
 }

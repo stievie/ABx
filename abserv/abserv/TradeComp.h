@@ -73,6 +73,8 @@ private:
     TradeError TestTarget(const Player& target);
     void TradeReqeust(Player& source);
 public:
+    static void WriteError(TradeError error, Net::NetworkMessage& message);
+
     TradeComp() = delete;
     explicit TradeComp(Player& owner);
     ~TradeComp() = default;
@@ -82,7 +84,6 @@ public:
     void Reset();
     // One player requested to cancel the trading
     void Cancel();
-    void WriteError(TradeError error, Net::NetworkMessage& message);
 
     bool IsTrading() const { return state_ >= TradeState::Trading; }
     uint32_t GetTradePartnerId() const;

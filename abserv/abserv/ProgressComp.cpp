@@ -102,9 +102,8 @@ void ProgressComp::OnKilledFoe(Actor* foe, Actor*)
         owner_.progressComp_->AddXpForKill(foe);
 }
 
-void ProgressComp::OnDied(Actor*, Actor*)
+void ProgressComp::OnDied(Actor*, Actor* killer)
 {
-    Actor* killer = owner_.GetKiller();
     // When we die all Enemies in range get XP for that
     owner_.VisitEnemiesInRange(Ranges::Aggro, [&](const Actor& actor)
     {
@@ -163,18 +162,19 @@ void ProgressComp::AddSkillPoint()
 
 void ProgressComp::AdvanceLevel()
 {
-    if (owner_.GetLevel() < LEVEL_CAP)
+    if (owner_.GetLevel() >= LEVEL_CAP)
+        // Max level reached
+        return;
+
+    const uint32_t oldLevel = owner_.GetLevel();
+    const uint32_t oldAttribPoints = owner_.GetAttributePoints();
+    items_.push_back({ ProgressType::LevelAdvance, 1 });
+    owner_.AdvanceLevel();
+    if (oldLevel >= 2 && oldLevel < LEVEL_CAP)
     {
-        const uint32_t oldLevel = owner_.GetLevel();
-        const uint32_t oldAttribPoints = owner_.GetAttributePoints();
-        items_.push_back({ ProgressType::LevelAdvance, 1 });
-        owner_.AdvanceLevel();
-        if (oldLevel >= 2 && oldLevel < LEVEL_CAP)
-        {
-            const int attribPointsChange = static_cast<int>(owner_.GetAttributePoints()) - static_cast<int>(oldAttribPoints);
-            if (attribPointsChange > 0)
-                items_.push_back({ ProgressType::AttributePointGain, attribPointsChange });
-        }
+        const int attribPointsChange = static_cast<int>(owner_.GetAttributePoints()) - static_cast<int>(oldAttribPoints);
+        if (attribPointsChange > 0)
+            items_.push_back({ ProgressType::AttributePointGain, attribPointsChange });
     }
 }
 
