@@ -22,12 +22,14 @@
 #include "stdafx.h"
 #include "AccountChestDialog.h"
 #include "FwClient.h"
-#include "Item.h"
-#include "ItemsCache.h"
-#include "WindowManager.h"
 #include "InventoryWindow.h"
-#include "NumberInputBox.h"
+#include "Item.h"
 #include "ItemUIElement.h"
+#include "ItemsCache.h"
+#include "NumberInputBox.h"
+#include "ShortcutEvents.h"
+#include "Shortcuts.h"
+#include "WindowManager.h"
 
 AccountChestDialog::AccountChestDialog(Context* context) :
     DialogWindow(context),
@@ -312,8 +314,8 @@ void AccountChestDialog::DropItem(const IntVector2& screenPos, const ConcreteIte
     if (itemPos == 0)
         return;
 
-    auto* input = GetSubsystem<Input>();
-    if (ci.count == 1 || !input->GetKeyDown(Key::KEY_CTRL))
+    auto* sc = GetSubsystem<Shortcuts>();
+    if (ci.count == 1 || !sc->Test(Events::E_SC_SPLITSTACK))
     {
         auto* client = GetSubsystem<FwClient>();
         client->SetItemPos(ci.place, ci.pos,

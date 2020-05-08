@@ -119,6 +119,7 @@ public:
     Shortcuts(Context* context);
     ~Shortcuts() override;
 
+    // Test if a shortcut triggered.
     bool Test(const StringHash& e);
     void Load(const XMLElement& root);
     void Save(XMLElement& root);

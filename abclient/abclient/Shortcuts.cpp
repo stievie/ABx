@@ -271,6 +271,7 @@ void Shortcuts::Init()
     shortcuts_[Events::E_SC_CHATPARTY] = ShortcutEvent(Events::E_SC_CHATPARTY, "Party", Trigger::Up, "Party chat");
     shortcuts_[Events::E_SC_CHATTRADE] = ShortcutEvent(Events::E_SC_CHATTRADE, "Trade", Trigger::Up, "Trade chat");
     shortcuts_[Events::E_SC_CHATWHISPER] = ShortcutEvent(Events::E_SC_CHATWHISPER, "Whisper", Trigger::Up, "Whisper chat");
+    shortcuts_[Events::E_SC_SPLITSTACK] = ShortcutEvent(Events::E_SC_SPLITSTACK, "Split stack", Trigger::None);
 
 #ifdef DEBUG_HUD
     shortcuts_[Events::E_SC_TOGGLEDEBUGHUD] = ShortcutEvent(Events::E_SC_TOGGLEDEBUGHUD, "Debug HUD", Trigger::Down, "Toggle Debug HUD");
@@ -341,6 +342,7 @@ void Shortcuts::AddDefault()
     Add(Events::E_SC_SELECTPREVFOE, { KEY_TAB, MOUSEB_NONE, SC_MOD_SHIFT });
 
     Add(Events::E_SC_TOGGLEMISSIONMAPWINDOW, { KEY_U });
+    Add(Events::E_SC_SPLITSTACK, { KEY_LCTRL });
 #ifdef DEBUG_HUD
     Add(Events::E_SC_TOGGLEDEBUGHUD, { KEY_F12 });
     Add(Events::E_SC_TOGGLECONSOLE, { KEY_F9 });

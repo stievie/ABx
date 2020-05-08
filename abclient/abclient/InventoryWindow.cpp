@@ -21,17 +21,17 @@
 
 #include "stdafx.h"
 #include "InventoryWindow.h"
-#include "Shortcuts.h"
-#include "FwClient.h"
-#include "ItemsCache.h"
-#include "Item.h"
-#include "WindowManager.h"
 #include "AccountChestDialog.h"
-#include "TradeDialog.h"
-#include "LevelManager.h"
-#include "WorldLevel.h"
-#include "NumberInputBox.h"
+#include "FwClient.h"
+#include "Item.h"
 #include "ItemUIElement.h"
+#include "ItemsCache.h"
+#include "LevelManager.h"
+#include "NumberInputBox.h"
+#include "Shortcuts.h"
+#include "TradeDialog.h"
+#include "WindowManager.h"
+#include "WorldLevel.h"
 
 void InventoryWindow::RegisterObject(Context* context)
 {
@@ -437,8 +437,8 @@ void InventoryWindow::DropItem(const IntVector2& screenPos, const ConcreteItem& 
     if (itemPos == 0)
         return;
 
-    auto* input = GetSubsystem<Input>();
-    if (ci.count == 1 || !input->GetKeyDown(Key::KEY_CTRL))
+    auto* sc = GetSubsystem<Shortcuts>();
+    if (ci.count == 1 || !sc->Test(Events::E_SC_SPLITSTACK))
     {
         auto* client = GetSubsystem<FwClient>();
         client->SetItemPos(ci.place, ci.pos,
