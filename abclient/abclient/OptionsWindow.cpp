@@ -768,7 +768,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
             sc.modifiers_ = hkEdit->GetQualifiers();
             sc.mouseButton_ = hkEdit->GetMouseButton();
             Shortcuts* scs = GetSubsystem<Shortcuts>();
-            unsigned id = scs->Add(_event, sc);
+            unsigned id = scs->Add(_event, std::move(sc));
 
             if (id != 0)
             {

@@ -650,14 +650,8 @@ void ChatWindow::HandleTabSelected(StringHash, VariantMap& eventData)
 
 void ChatWindow::HandleKeyDown(StringHash, VariantMap& eventData)
 {
-    UI* ui = GetSubsystem<UI>();
-    auto* focusElem = ui->GetFocusElement();
-    if (focusElem)
-    {
-        // Don't allow keyboard shortcuts only when an editor has the focus
-        if (dynamic_cast<LineEdit*>(focusElem) || dynamic_cast<MultiLineEdit*>(focusElem))
-            return;
-    }
+    if (GetSubsystem<Shortcuts>()->IsDisabled())
+        return;
 
     using namespace KeyDown;
 

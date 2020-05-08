@@ -102,6 +102,7 @@ class Shortcuts : public Object
 {
     URHO3D_OBJECT(Shortcuts, Object)
 private:
+    static unsigned shortcutIds;
     HashMap<StringHash, bool> triggered_;
     void SubscribeToEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -113,25 +114,25 @@ private:
     void AddDefault();
     bool ModifiersMatch(unsigned mods);
     unsigned GetModifiers() const;
-    static unsigned shortcutIds;
     static bool IsModifier(Key key);
 public:
     Shortcuts(Context* context);
     ~Shortcuts() override;
 
     // Test if a shortcut triggered.
-    bool Test(const StringHash& e);
+    bool IsTriggered(const StringHash& e) const;
     void Load(const XMLElement& root);
     void Save(XMLElement& root);
     /// Return ID
-    unsigned Add(const StringHash& _event, const Shortcut& sc);
+    unsigned Add(const StringHash& _event, Shortcut&& sc);
     const Shortcut& Get(const StringHash& _event) const;
     String GetCaption(const StringHash& _event, const String& def = String::EMPTY,
-        bool widthShortcut = false, unsigned align = 0);
-    String GetShortcutName(const StringHash& _event);
+        bool widthShortcut = false, unsigned align = 0) const;
+    String GetShortcutName(const StringHash& _event) const;
     void RestoreDefault();
     void Delete(unsigned id);
+    // Returns true when some editor UI element has the focus, because then we don't want to process shortcuts.
+    bool IsDisabled() const;
 
     HashMap<StringHash, ShortcutEvent> shortcuts_;
 };
-

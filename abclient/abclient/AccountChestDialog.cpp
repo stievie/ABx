@@ -315,7 +315,7 @@ void AccountChestDialog::DropItem(const IntVector2& screenPos, const ConcreteIte
         return;
 
     auto* sc = GetSubsystem<Shortcuts>();
-    if (ci.count == 1 || !sc->Test(Events::E_SC_SPLITSTACK))
+    if (ci.count == 1 || !sc->IsTriggered(Events::E_SC_SPLITSTACK))
     {
         auto* client = GetSubsystem<FwClient>();
         client->SetItemPos(ci.place, ci.pos,

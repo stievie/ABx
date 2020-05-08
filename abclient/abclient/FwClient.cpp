@@ -981,7 +981,7 @@ void FwClient::FollowObject(uint32_t objectId)
     if (loggedIn_)
     {
         auto* sc = GetSubsystem<Shortcuts>();
-        client_.FollowObject(objectId, sc->Test(Events::E_SC_PINGTARGET));
+        client_.FollowObject(objectId, sc->IsTriggered(Events::E_SC_PINGTARGET));
     }
 }
 
@@ -996,7 +996,7 @@ void FwClient::UseSkill(uint32_t index)
     if (loggedIn_)
     {
         auto* sc = GetSubsystem<Shortcuts>();
-        client_.UseSkill(index, sc->Test(Events::E_SC_PINGTARGET));
+        client_.UseSkill(index, sc->IsTriggered(Events::E_SC_PINGTARGET));
     }
 }
 
@@ -1005,7 +1005,7 @@ void FwClient::Attack()
     if (loggedIn_)
     {
         auto* sc = GetSubsystem<Shortcuts>();
-        client_.Attack(sc->Test(Events::E_SC_PINGTARGET));
+        client_.Attack(sc->IsTriggered(Events::E_SC_PINGTARGET));
     }
 }
 

@@ -311,27 +311,27 @@ void WorldLevel::Update(StringHash, VariantMap&)
         CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
 
     // Update controls using keys
-    if (sc->Test(Events::E_SC_MOVEFORWARD))
+    if (sc->IsTriggered(Events::E_SC_MOVEFORWARD))
     {
         player_->controls_.Set(CTRL_MOVE_FORWARD, true);
-        if (!sc->Test(Events::E_SC_KEEPRUNNING))
+        if (!sc->IsTriggered(Events::E_SC_KEEPRUNNING))
             player_->controls_.Set(CTRL_MOVE_LOCK, false);
     }
-    if (sc->Test(Events::E_SC_MOVEBACKWARD))
+    if (sc->IsTriggered(Events::E_SC_MOVEBACKWARD))
     {
         player_->controls_.Set(CTRL_MOVE_BACK, true);
-        if (!sc->Test(Events::E_SC_KEEPRUNNING))
+        if (!sc->IsTriggered(Events::E_SC_KEEPRUNNING))
             player_->controls_.Set(CTRL_MOVE_LOCK, false);
     }
-    player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(Events::E_SC_MOVELEFT));
-    player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(Events::E_SC_MOVERIGHT));
+    player_->controls_.Set(CTRL_MOVE_LEFT, sc->IsTriggered(Events::E_SC_MOVELEFT));
+    player_->controls_.Set(CTRL_MOVE_RIGHT, sc->IsTriggered(Events::E_SC_MOVERIGHT));
 
-    if (sc->Test(Events::E_SC_MOUSELOOK))
+    if (sc->IsTriggered(Events::E_SC_MOUSELOOK))
     {
         player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
-            sc->Test(Events::E_SC_TURNLEFT));
+            sc->IsTriggered(Events::E_SC_TURNLEFT));
         player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
-            sc->Test(Events::E_SC_TURNRIGHT));
+            sc->IsTriggered(Events::E_SC_TURNRIGHT));
 
         Input* input = GetSubsystem<Input>();
         player_->controls_.yaw_ += static_cast<float>(input->GetMouseMoveX()) * op->mouseSensitivity_;
@@ -339,8 +339,8 @@ void WorldLevel::Update(StringHash, VariantMap&)
     }
     else
     {
-        player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(Events::E_SC_TURNLEFT));
-        player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(Events::E_SC_TURNRIGHT));
+        player_->controls_.Set(CTRL_TURN_LEFT, sc->IsTriggered(Events::E_SC_TURNLEFT));
+        player_->controls_.Set(CTRL_TURN_RIGHT, sc->IsTriggered(Events::E_SC_TURNRIGHT));
     }
 
     // Limit pitch

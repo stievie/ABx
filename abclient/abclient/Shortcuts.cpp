@@ -176,12 +176,28 @@ Shortcuts::~Shortcuts()
     UnsubscribeFromAllEvents();
 }
 
-bool Shortcuts::Test(const StringHash& e)
+bool Shortcuts::IsDisabled() const
 {
-    return triggered_[e];
+    UI* ui = GetSubsystem<UI>();
+    auto* focusElem = ui->GetFocusElement();
+    if (focusElem)
+    {
+        // Don't allow keyboard shortcuts only when an editor has the focus
+        if (dynamic_cast<LineEdit*>(focusElem) || dynamic_cast<MultiLineEdit*>(focusElem))
+            return true;
+    }
+    return false;
 }
 
-unsigned Shortcuts::Add(const StringHash& _event, const Shortcut& sc)
+bool Shortcuts::IsTriggered(const StringHash& e) const
+{
+    const auto it = triggered_.Find(e);
+    if (it != triggered_.End())
+        return it->second_;
+    return false;
+}
+
+unsigned Shortcuts::Add(const StringHash& _event, Shortcut&& sc)
 {
     for (const auto& s : shortcuts_[_event].shortcuts_)
     {
@@ -191,9 +207,8 @@ unsigned Shortcuts::Add(const StringHash& _event, const Shortcut& sc)
     }
 
     unsigned id = ++shortcutIds;
-    Shortcut _sc(sc);
-    _sc.id_ = id;
-    shortcuts_[_event].shortcuts_.Push(_sc);
+    sc.id_ = id;
+    shortcuts_[_event].shortcuts_.Push(std::move(sc));
     triggered_[_event] = false;
     return id;
 }
@@ -367,7 +382,7 @@ void Shortcuts::Load(const XMLElement& root)
             Shortcut sc{ static_cast<Key>(paramElem.GetUInt("key")),
                 static_cast<MouseButton>(paramElem.GetUInt("mousebutton")),
                 paramElem.GetUInt("modifiers") };
-            Add(_event, sc);
+            Add(_event, std::move(sc));
         }
 
         paramElem = paramElem.GetNext("shortcut");
@@ -405,7 +420,7 @@ const Shortcut& Shortcuts::Get(const StringHash& _event) const
 String Shortcuts::GetCaption(const StringHash& _event,
     const String& def /* = String::EMPTY */,
     bool widthShortcut /* = false */,
-    unsigned align /* = 0 */)
+    unsigned align /* = 0 */) const
 {
     auto it = shortcuts_.Find(_event);
     if (it == shortcuts_.End())
@@ -430,7 +445,7 @@ String Shortcuts::GetCaption(const StringHash& _event,
     return result;
 }
 
-String Shortcuts::GetShortcutName(const StringHash& _event)
+String Shortcuts::GetShortcutName(const StringHash& _event) const
 {
     auto it = shortcuts_.Find(_event);
     if (it != shortcuts_.End())
@@ -477,11 +492,8 @@ void Shortcuts::SubscribeToEvents()
 
 void Shortcuts::HandleUpdate(StringHash, VariantMap&)
 {
-    for (auto& t : triggered_)
-        t.second_ = false;
-
-    UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement())
+    triggered_.Clear();
+    if (IsDisabled())
         return;
 
     Input* input = GetSubsystem<Input>();
@@ -509,14 +521,8 @@ void Shortcuts::HandleUpdate(StringHash, VariantMap&)
 
 void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
 {
-    UI* ui = GetSubsystem<UI>();
-    auto* focusElem = ui->GetFocusElement();
-    if (focusElem)
-    {
-        // Don't allow keyboard shortcuts only when an editor has the focus
-        if (dynamic_cast<LineEdit*>(focusElem) || dynamic_cast<MultiLineEdit*>(focusElem))
-            return;
-    }
+    if (IsDisabled())
+        return;
 
     using namespace KeyDown;
     bool repeat = eventData[P_REPEAT].GetBool();
@@ -546,8 +552,7 @@ void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
 
 void Shortcuts::HandleKeyUp(StringHash, VariantMap& eventData)
 {
-    UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement())
+    if (IsDisabled())
         return;
 
     using namespace KeyUp;

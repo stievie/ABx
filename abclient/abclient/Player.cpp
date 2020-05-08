@@ -471,7 +471,7 @@ void Player::PostUpdate(float timeStep)
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
     float yaw = controls_.yaw_;
-    if (scs->Test(Events::E_SC_REVERSECAMERA))
+    if (scs->IsTriggered(Events::E_SC_REVERSECAMERA))
         yaw += 180.0f;
     // Get camera look at dir from character yaw + pitch
     Quaternion rot = Quaternion(yaw, Vector3::UP);

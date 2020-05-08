@@ -363,7 +363,7 @@ void Actor::Update(float timeStep)
     IntVector2 screenPos = WorldToScreenPoint(pos);
     IntVector2 hpTop = WorldToScreenPoint(headPos);
 
-    bool highlight = sc->Test(Events::E_SC_HIGHLIGHTOBJECTS);
+    bool highlight = sc->IsTriggered(Events::E_SC_HIGHLIGHTOBJECTS);
     if (hovered_ || playerSelected_ || highlight || IsSpeechBubbleVisible())
     {
         float sizeFac = 1.0f;
