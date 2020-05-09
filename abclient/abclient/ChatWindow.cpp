@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "ChatWindow.h"
+#include "Conversions.h"
 #include "FwClient.h"
 #include "Utils.h"
 #include <TimeUtils.h>
@@ -291,7 +292,7 @@ void ChatWindow::LoadHistory()
     {
         if (line.empty())
             continue;
-        history_.Push(String(line.c_str()));
+        history_.Push(ToUrhoString(line));
     }
     while (history_.Size() > historyRows_)
         history_.Erase(history_.Begin());
@@ -302,7 +303,7 @@ void ChatWindow::SaveHistory()
 {
     auto* options = GetSubsystem<Options>();
     String filename = AddTrailingSlash(options->GetPrefPath()) + "history.txt";
-    std::fstream file(filename.CString(), std::fstream::out);
+    std::fstream file(ToStdString(filename), std::fstream::out);
     for (const auto& line : history_)
     {
         file << line.CString() << std::endl;
@@ -411,9 +412,9 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         {
             kainjow::mustache::mustache tpl{ "{{name}} got a skill point" };
             kainjow::mustache::data data;
-            data.set("name", std::string(actor->name_.CString(), actor->name_.Length()));
+            data.set("name", ToStdString(actor->name_));
             std::string t = tpl.render(data);
-            AddLine(String(t.c_str()), "ChatLogServerInfoText");
+            AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
     }
@@ -427,7 +428,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
             kainjow::mustache::data data;
             data.set("number", std::to_string(eventData[P_VALUE].GetInt()));
             std::string t = tpl.render(data);
-            AddLine(String(t.c_str()), "ChatLogServerInfoText");
+            AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
     }
@@ -439,7 +440,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         {
             kainjow::mustache::mustache tpl{ "{{name}} advanced to level {{level}}" };
             kainjow::mustache::data data;
-            data.set("name", std::string(actor->name_.CString(), actor->name_.Length()));
+            data.set("name", ToStdString(actor->name_));
             data.set("level", std::to_string(eventData[P_VALUE].GetInt()));
             std::string t = tpl.render(data);
             AddLine(String(t.c_str()), "ChatLogServerInfoText");
@@ -745,11 +746,11 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
             continue;
 
         kainjow::mustache::data data;
-        data.set("instance", std::string(instData[0].CString(), instData[0].Length()));
-        data.set("game", std::string(instData[1].CString(), instData[1].Length()));
-        data.set("name", std::string(instData[2].CString(), instData[2].Length()));
+        data.set("instance", ToStdString(instData[0]));
+        data.set("game", ToStdString(instData[1]));
+        data.set("name", ToStdString(instData[2]));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str()), "ChatLogServerInfoText");
+        AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
 
@@ -817,11 +818,7 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
 void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectPingTarget;
-    /*
-    URHO3D_PARAM(P_OBJECTID, ObjectId);
-    URHO3D_PARAM(P_TARGETID, TargetId);
-    URHO3D_PARAM(P_SKILLINDEX, SkillIndex);
-*/
+
     String message = "I am";
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
@@ -974,6 +971,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /resign: Resign", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
+        AddLine("  /deaths: Show how often you died", "ChatLogServerInfoText");
         AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
         AddLine("  /stuck: Force server position", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");

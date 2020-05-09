@@ -80,7 +80,6 @@ public:
     void Save();
 
     String GetDataFile(const String& file) const;
-    std::string GetDataFileStl(const std::string& file) const;
     Environment* GetEnvironmment(const String& name);
     Environment* GetSelectedEnvironment();
     void SetSelectedEnvironment(const String& name);
@@ -263,8 +262,6 @@ private:
     AntiAliasingMode antiAliasingMode_{ AntiAliasingMode::FXAA3 };
     bool specularLightning_{ true };
     bool hdrRendering_{ false };
-    // "RenderPaths/Prepass.xml";
-    // "RenderPaths/Deferred.xml";
     String renderPath_;
 
     void UpdateGraphicsMode();

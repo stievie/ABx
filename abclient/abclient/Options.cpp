@@ -25,6 +25,7 @@
 #include "Shortcuts.h"
 #include "LevelManager.h"
 #include "BaseLevel.h"
+#include "Conversions.h"
 #if __cplusplus < 201703L
 #   if !defined(__clang__)
 #       include <filesystem>
@@ -881,7 +882,7 @@ bool Options::CreateDir(const String& path)
     // C++17
     namespace fs = std::filesystem;
 #endif
-    fs::path p(std::string(path.CString()));
+    fs::path p(ToStdString(path));
     if (fs::exists(p))
         return true;
     return fs::create_directories(p);
@@ -894,9 +895,4 @@ String Options::GetDataFile(const String& file) const
         file.Front() != '/' && file.Front() != '\\')
         result += "/";
     return result + file;
-}
-
-std::string Options::GetDataFileStl(const std::string& file) const
-{
-    return std::string(GetDataFile(String(file.c_str())).CString());
 }

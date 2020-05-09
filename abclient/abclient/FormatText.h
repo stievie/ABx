@@ -21,36 +21,26 @@
 
 #pragma once
 
-enum class NodeType
+#include <Urho3DAll.h>
+
+class FormatTextElelement : public Text
 {
-    Root,
-    Text,
-    Color,
-    Link
+    URHO3D_OBJECT(FormatTextElelement, Text)
+public:
+    FormatTextElelement(Context* context);
+    ~FormatTextElelement() override;
+    String linkTarget_;
 };
 
-struct TreeNode
+class FormatText : public UISelectable
 {
-    NodeType type{ NodeType::Root };
-    String value;
-    PODVector<TreeNode*> children;
-};
-
-class FormatText : public Text
-{
-    URHO3D_OBJECT(FormatText, Text);
+    URHO3D_OBJECT(FormatText, UISelectable);
 public:
     static void RegisterObject(Context* context);
 
     FormatText(Context* context);
-    ~FormatText();
+    ~FormatText() override;
 
-    void SetMarkupText(const String& value);
-    void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
+    void SetText(const String& value);
 private:
-    void ParseNode(const pugi::xml_node& pugiNode, TreeNode* treeNode);
-    void DeleteTree(TreeNode* tree);
-    String GetTreeText() const;
-    String GetNodeText(TreeNode* node) const;
-    TreeNode* tree_{ nullptr };
 };

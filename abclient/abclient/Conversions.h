@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,35 +19,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
-#include "FormatText.h"
-#include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
+#pragma once
 
-void FormatText::RegisterObject(Context* context)
-{
-    context->RegisterFactory<FormatText>();
-    context->RegisterFactory<FormatTextElelement>();
-}
+#include <string>
+#include <Urho3DAll.h>
 
-FormatTextElelement::FormatTextElelement(Context* context) :
-    Text(context)
-{
-}
-
-FormatTextElelement::~FormatTextElelement()
-{ }
-
-FormatText::FormatText(Context* context) :
-    UISelectable(context)
-{
-    SetLayoutMode(LM_FREE);
-}
-
-FormatText::~FormatText()
-{
-}
-
-void FormatText::SetText(const String& value)
-{
-    (void)value;
-}
+String ToUrhoString(const std::string& value);
+std::string ToStdString(const String& value);
