@@ -276,7 +276,7 @@ public:
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
-    virtual bool Die();
+    virtual bool Die(Actor* killer);
     virtual bool Resurrect(int precentHealth, int percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
     unsigned GetDeaths() const;

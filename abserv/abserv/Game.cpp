@@ -435,8 +435,8 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
 {
     if (state_ != ExecutionState::Running || !dropper)
         return std::shared_ptr<ItemDrop>();
-    if (AB::Entities::IsOutpost(data_.type) || data_.type == AB::Entities::GameTypePvPCombat)
-        // No drops in outposts and PvP games
+    if (AB::Entities::IsOutpost(data_.type))
+        // No drops in outposts
         return std::shared_ptr<ItemDrop>();
 
     if (target->GetType() != AB::GameProtocol::GameObjectType::Player)

@@ -41,6 +41,6 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  target:Die()
+  target:Die(source)
   return SkillErrorNone
 end

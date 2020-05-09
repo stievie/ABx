@@ -251,7 +251,7 @@ void Group::KillAll()
 {
     VisitMembers([&](Actor& current)
     {
-        current.Die();
+        current.Die(nullptr);
         return Iteration::Continue;
     });
 }

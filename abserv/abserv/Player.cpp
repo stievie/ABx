@@ -2008,7 +2008,7 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
         return;
     }
 
-    Die();
+    Die(nullptr);
 }
 
 void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)

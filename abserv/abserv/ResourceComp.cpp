@@ -335,7 +335,7 @@ void ResourceComp::Update(uint32_t timeElapsed)
         overcast_ = 0.0f;
 
     if (health_ <= 0.0f && !owner_.IsDead())
-        owner_.Die();
+        owner_.Die(nullptr);
 }
 
 void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = false */)

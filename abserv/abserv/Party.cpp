@@ -423,6 +423,16 @@ Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
 {
     if (members_.size() == 0 || actor == nullptr)
         return nullptr;
+    if (members_.size() == 1)
+    {
+        if (auto current = members_.at(0).lock())
+        {
+            if (Is<Player>(*current) && actor->IsInRange(range, current.get()))
+                return To<Player>(current.get());
+        }
+        return nullptr;
+    }
+
     std::vector<Player*> players;
     VisitPlayers([&](Player& current) {
         if (actor->IsInRange(range, &current))

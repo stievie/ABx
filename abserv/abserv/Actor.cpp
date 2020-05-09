@@ -977,7 +977,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     progressComp_->Write(message);
 }
 
-bool Actor::Die()
+bool Actor::Die(Actor* killer)
 {
     if (!IsDead())
     {
@@ -989,8 +989,11 @@ bool Actor::Die()
         damageComp_->Touch();
         autorunComp_->SetAutoRun(false);
         DecreaseMorale();
-        killedBy_ = damageComp_->GetLastDamager();
-        CallEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, this, damageComp_->GetLastDamager().get());
+        if (killer)
+            killedBy_ = killer->GetPtr<Actor>();
+        else
+            killedBy_ = damageComp_->GetLastDamager();
+        CallEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, this, killer ? killer : damageComp_->GetLastDamager().get());
         return true;
     }
     return false;
