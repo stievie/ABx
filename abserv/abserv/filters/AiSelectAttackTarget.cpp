@@ -58,8 +58,8 @@ void SelectAttackTarget::Execute(Agent& agent)
         // This prevents switching targets.
         if (it != candidates.end())
         {
-            auto* t = chr.GetGame()->GetObject<Game::Actor>(*it);
-            if (!t->IsDead())
+            auto* target = chr.GetGame()->GetObject<Game::Actor>(*it);
+            if (target && !target->IsDead())
                 // Not dead yet.
                 return;
         }
