@@ -55,6 +55,7 @@ static constexpr int MAX_CHARACTER_NAME = 32;
 static constexpr int MAX_CHARACTER_PROF = 2;
 static constexpr int MAX_CHARACTER_SKILLTEMPLATE = 64;
 static constexpr int MAX_CHARACTERS = std::numeric_limits<int>::max();
+static constexpr int MAX_DEATH_STATS = 64;                         // Max size of stats BLOB
 
 // Map
 static constexpr int MAX_MAP_NAME = 50;

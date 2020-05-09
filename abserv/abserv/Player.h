@@ -244,6 +244,7 @@ public:
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;
+    Utils::VariantMap deathStats_;
     time_t loginTime_{ 0 };
     time_t logoutTime_{ 0 };
     int64_t lastPing_{ 0 };

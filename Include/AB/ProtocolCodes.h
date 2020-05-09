@@ -326,6 +326,7 @@ enum class ServerMessageType : uint8_t
     Age,  // /age
     Hp,   // /hp
     Xp,   // /xp
+    Deaths,
     Pos,  // /pos
     PlayerNotOnline,
     PlayerGotMessage,

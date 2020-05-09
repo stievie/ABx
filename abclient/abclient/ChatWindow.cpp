@@ -345,6 +345,9 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageType::Xp:
         HandleServerMessageXp(eventData);
         break;
+    case AB::GameProtocol::ServerMessageType::Deaths:
+        HandleServerMessageDeaths(eventData);
+        break;
     case AB::GameProtocol::ServerMessageType::PlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
         break;
@@ -539,13 +542,29 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "XP {{xp}}, Skill points {{sp}}" };
+    kainjow::mustache::mustache tpl{ "You have {{xp}} XP and {{sp}} Skill points" };
     kainjow::mustache::data data;
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
         data.set("xp", std::string(parts[0].CString(), parts[0].Length()));
         data.set("sp", std::string(parts[1].CString(), parts[1].Length()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    }
+}
+
+void ChatWindow::HandleServerMessageDeaths(VariantMap& eventData)
+{
+    using namespace Events::ServerMessage;
+    const String& message = eventData[P_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "You died {{deaths}} times. You gained {{xp}} XP since last death." };
+    kainjow::mustache::data data;
+    auto parts = message.Split('|');
+    if (parts.Size() == 2)
+    {
+        data.set("deaths", std::string(parts[0].CString(), parts[0].Length()));
+        data.set("xp", std::string(parts[1].CString(), parts[1].Length()));
         std::string t = tpl.render(data);
         AddLine(String(t.c_str()), "ChatLogServerInfoText");
     }

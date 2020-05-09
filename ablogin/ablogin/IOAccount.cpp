@@ -261,7 +261,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     ch.pvp = isPvp;
     ch.level = isPvp ? Game::LEVEL_CAP : 1;
     ch.creation = Utils::Tick();
-    ch.inventory_size = AB::Entities::DEFAULT_INVENTORY_SIZE;
+    ch.inventorySize = AB::Entities::DEFAULT_INVENTORY_SIZE;
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))
     {

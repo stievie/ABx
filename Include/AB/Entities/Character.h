@@ -47,6 +47,13 @@ enum class CharacterSex : uint8_t
     Male
 };
 
+enum DeathStatIndex : size_t
+{
+    DeathStatIndexCount,
+    DeathStatIndexAtXp,
+    __DeathStatIndexCount
+};
+
 static constexpr auto KEY_CHARACTERS = "characters";
 
 struct Character : Entity
@@ -82,38 +89,41 @@ struct Character : Entity
         s.value8b(lastLogout);
         s.text1b(instanceUuid, Limits::MAX_UUID);
         s.text1b(partyUuid, Limits::MAX_UUID);
+        s.value2b(inventorySize);
+        s.text1b(deathStats, Limits::MAX_DEATH_STATS);
     }
 
     std::string name;
     std::string profession;
     std::string profession2;
-    std::string professionUuid = EMPTY_GUID;
-    std::string profession2Uuid = EMPTY_GUID;
-    uint8_t level = 0;
+    std::string professionUuid{ EMPTY_GUID };
+    std::string profession2Uuid{ EMPTY_GUID };
+    uint8_t level{ 0 };
     /// PvP only character
-    bool pvp = false;
-    uint32_t xp = 0;
-    uint32_t skillPoints = 0;
-    CharacterSex sex = CharacterSex::Unknown;
-    std::string currentMapUuid = EMPTY_GUID;
-    std::string lastOutpostUuid = EMPTY_GUID;
-    std::string accountUuid = EMPTY_GUID;
+    bool pvp{ false };
+    uint32_t xp{ 0 };
+    uint32_t skillPoints{ 0 };
+    CharacterSex sex{ CharacterSex::Unknown };
+    std::string currentMapUuid{ EMPTY_GUID };
+    std::string lastOutpostUuid{ EMPTY_GUID };
+    std::string accountUuid{ EMPTY_GUID };
     // Index in game_items
-    uint32_t modelIndex = 0;
+    uint32_t modelIndex{ 0 };
     std::string skillTemplate;
 
-    int64_t onlineTime = 0;
+    int64_t onlineTime{ 0 };
     /// 0 if not deleted
-    timestamp_t deletedTime = 0;
-    timestamp_t creation = 0;
+    timestamp_t deletedTime{ 0 };
+    timestamp_t creation{ 0 };
 
-    timestamp_t lastLogin = 0;
-    timestamp_t lastLogout = 0;
+    timestamp_t lastLogin{ 0 };
+    timestamp_t lastLogout{ 0 };
     /// ID of AB::Entities::GameInstance
-    std::string instanceUuid = EMPTY_GUID;
+    std::string instanceUuid{ EMPTY_GUID };
     /// AB::Entities::Party
-    std::string partyUuid = EMPTY_GUID;
-    uint16_t inventory_size = DEFAULT_INVENTORY_SIZE;
+    std::string partyUuid{ EMPTY_GUID };
+    uint16_t inventorySize{ DEFAULT_INVENTORY_SIZE };
+    std::string deathStats;
 };
 
 typedef std::vector<Character> CharList;

@@ -1997,7 +1997,18 @@ void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleDeathsCommand(const std::string&, Net::NetworkMessage&)
 {
-    // TODO:
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
+    std::stringstream ss;
+    ss << std::to_string(deathStats_[AB::Entities::DeathStatIndexCount].GetInt()) << "|";
+    ss << std::to_string(GetXp() - deathStats_[AB::Entities::DeathStatIndexAtXp].GetInt());
+    AB::Packets::Server::ServerMessage packet = {
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::Deaths),
+        GetName(),
+        ss.str()
+    };
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)

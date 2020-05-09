@@ -56,7 +56,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     query << static_cast<uint32_t>(character.sex) << ", ";
     query << character.modelIndex << ", ";
     query << character.creation << ", ";
-    query << static_cast<int>(character.inventory_size);
+    query << static_cast<int>(character.inventorySize);
 
     query << ")";
 
@@ -115,7 +115,8 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     character.deletedTime = result->GetLong("deleted");
     character.currentMapUuid = result->GetString("current_map_uuid");
     character.lastOutpostUuid = result->GetString("last_outpost_uuid");
-    character.inventory_size = static_cast<uint16_t>(result->GetUInt("inventory_size"));
+    character.inventorySize = static_cast<uint16_t>(result->GetUInt("inventory_size"));
+    character.deathStats = result->GetStream("death_stats");
 
     return true;
 }
@@ -146,7 +147,8 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
     query << " `deleted` = " << character.deletedTime << ", ";
     query << " `current_map_uuid` = " << db->EscapeString(character.currentMapUuid) << ", ";
     query << " `last_outpost_uuid` = " << db->EscapeString(character.lastOutpostUuid) << ", ";
-    query << " `inventory_size` = " << static_cast<int>(character.inventory_size);
+    query << " `inventory_size` = " << static_cast<int>(character.inventorySize) << ", ";
+    query << " `death_stats` = " << db->EscapeBlob(character.deathStats.data(), character.deathStats.length());
 
     query << " WHERE `uuid` = " << db->EscapeString(character.uuid);
 

@@ -200,8 +200,12 @@ static bool LoadPlayer(Game::Player& player)
             LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
     }
 
-    player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
+    player.inventoryComp_->SetInventorySize(player.data_.inventorySize);
     player.inventoryComp_->SetChestSize(player.account_.chest_size);
+    sa::PropReadStream stream;
+    stream.Init(player.data_.deathStats.data(), player.data_.deathStats.length());
+    Utils::VariantMapRead(player.deathStats_, stream);
+
     if (!LoadPlayerInventory(player))
         return false;
     if (!LoadQuestLog(player))
@@ -243,6 +247,12 @@ bool SavePlayer(Game::Player& player)
     player.data_.profession2Uuid = player.skills_->prof2_.uuid;
     player.data_.skillTemplate = player.skills_->Encode();
     player.data_.onlineTime += static_cast<int64_t>((player.logoutTime_ - player.loginTime_) / 1000);
+    sa::PropWriteStream stream;
+    Utils::VariantMapWrite(player.deathStats_, stream);
+    size_t ssize = 0;
+    const char* s = stream.GetStream(ssize);
+    player.data_.deathStats = std::string(s, ssize);
+
     if (!client->Update(player.data_))
         return false;
     if (!SavePlayerInventory(player))

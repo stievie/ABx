@@ -104,6 +104,13 @@ void ProgressComp::OnKilledFoe(Actor* foe, Actor*)
 
 void ProgressComp::OnDied(Actor*, Actor* killer)
 {
+    if (Is<Player>(owner_))
+    {
+        auto& player = To<Player>(owner_);
+        player.deathStats_[AB::Entities::DeathStatIndexCount] =
+            player.deathStats_[AB::Entities::DeathStatIndexCount].GetInt() + 1;
+        player.deathStats_[AB::Entities::DeathStatIndexAtXp] = player.GetXp();
+    }
     // When we die all Enemies in range get XP for that
     owner_.VisitEnemiesInRange(Ranges::Aggro, [&](const Actor& actor)
     {
