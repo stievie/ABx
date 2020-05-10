@@ -24,6 +24,7 @@
 #include "GameObject.h"
 #include "Script.h"
 #include "Skill.h"
+#include <sa/Bits.h>
 
 namespace Game {
 
@@ -57,7 +58,7 @@ private:
     uint32_t itemIndex_{ 0 };
     bool HaveFunction(Function func) const
     {
-        return luaInitialized_ && ((functions_ & func) == func);
+        return luaInitialized_ && sa::bits::is_set(functions_, func);
     }
     void InitializeLua();
     void _LuaSetSource(Actor* source);

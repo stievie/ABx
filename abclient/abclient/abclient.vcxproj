@@ -278,6 +278,7 @@
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="ClientPrediction.cpp" />
     <ClCompile Include="ConfirmDeleteCharacter.cpp" />
+    <ClCompile Include="Conversions.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DamageWindow.cpp" />
@@ -347,6 +348,7 @@
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="ConfirmDeleteCharacter.h" />
+    <ClInclude Include="Conversions.h" />
     <ClInclude Include="DamageWindow.h" />
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="FilePicker.h" />

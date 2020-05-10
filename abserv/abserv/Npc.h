@@ -29,6 +29,7 @@
 #include "AiComp.h"
 #include "WanderComp.h"
 #include <set>
+#include <sa/Bits.h>
 
 namespace Game {
 
@@ -58,7 +59,7 @@ private:
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
     {
-        return (functions_ & func) == func;
+        return luaInitialized_ && sa::bits::is_set(functions_, func);
     }
     kaguya::State luaState_;
     bool luaInitialized_;

@@ -27,6 +27,7 @@
 #include <sa/IdGenerator.h>
 #include <kaguya/kaguya.hpp>
 #include <abshared/Mechanic.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -42,6 +43,8 @@ enum class TeamColor
 
 class Group
 {
+    NON_COPYABLE(Group)
+    NON_MOVEABLE(Group)
 private:
     bool _LuaAdd(Actor* actor);
     bool _LuaRemove(Actor* actor);

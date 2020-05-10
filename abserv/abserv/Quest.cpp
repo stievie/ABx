@@ -77,7 +77,7 @@ bool Quest::LoadScript(const std::string& fileName)
         return false;
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
+        sa::bits::set(functions_, FunctionUpdate);
     return true;
 }
 

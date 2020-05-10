@@ -29,6 +29,7 @@
 #include <abshared/Damage.h>
 #include "ItemStats.h"
 #include <abshared/Attributes.h>
+#include <sa/Bits.h>
 
 namespace Game {
 
@@ -84,7 +85,7 @@ private:
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
-        return (functions_ & func) == func;
+        return sa::bits::is_set(functions_, func);
     }
     void CreateInsigniaStats(uint32_t level, bool maxStats);
     void CreateWeaponStats(uint32_t level, bool maxStats);

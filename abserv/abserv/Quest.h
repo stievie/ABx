@@ -26,6 +26,7 @@
 #include <kaguya/kaguya.hpp>
 #include <AB/Entities/Quest.h>
 #include <AB/Entities/PlayerQuest.h>
+#include <sa/Bits.h>
 
 namespace Net {
 class NetworkMessage;
@@ -55,7 +56,7 @@ private:
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
-        return (functions_ & func) == func;
+        return sa::bits::is_set(functions_, func);
     }
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);

@@ -115,15 +115,15 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         effectTarget_ = luaState_["effectTarget"];
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
+        sa::bits::set(functions_, FunctionUpdate);
     if (Lua::IsFunction(luaState_, "onEnded"))
-        functions_ |= FunctionEnded;
+        sa::bits::set(functions_, FunctionEnded);
     if (Lua::IsFunction(luaState_, "onCollide"))
-        functions_ |= FunctionOnCollide;
+        sa::bits::set(functions_, FunctionOnCollide);
     if (Lua::IsFunction(luaState_, "onTrigger"))
-        functions_ |= FunctionOnTrigger;
+        sa::bits::set(functions_, FunctionOnTrigger);
     if (Lua::IsFunction(luaState_, "onLeftArea"))
-        functions_ |= FunctionOnLeftArea;
+        sa::bits::set(functions_, FunctionOnLeftArea);
 
     bool ret = luaState_["onInit"]();
     return ret;

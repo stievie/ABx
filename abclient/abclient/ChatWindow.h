@@ -34,7 +34,6 @@ private:
     static constexpr int MAX_LINES = 100;
     static const HashMap<String, AB::GameProtocol::CommandType> CHAT_COMMANDS;
     SharedPtr<BorderImage> background_;
-    bool firstStart_{ false };
     Vector<String> history_;
     /// Command auto complete current position.
     unsigned historyRows_{ 20 };

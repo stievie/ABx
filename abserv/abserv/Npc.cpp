@@ -154,13 +154,13 @@ bool Npc::LoadScript(const std::string& fileName)
     if (Lua::IsString(luaState_, "behavior"))
         bt = static_cast<const char*>(luaState_["behavior"]);
     if (Lua::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
+        sa::bits::set(functions_, FunctionUpdate);
     if (Lua::IsFunction(luaState_, "onTrigger"))
-        functions_ |= FunctionOnTrigger;
+        sa::bits::set(functions_, FunctionOnTrigger);
     if (Lua::IsFunction(luaState_, "onLeftArea"))
-        functions_ |= FunctionOnLeftArea;
+        sa::bits::set(functions_, FunctionOnLeftArea);
     if (Lua::IsFunction(luaState_, "onGetQuote"))
-        functions_ |= FunctionOnGetQuote;
+        sa::bits::set(functions_, FunctionOnGetQuote);
 
     GetSkillBar()->InitAttributes();
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.

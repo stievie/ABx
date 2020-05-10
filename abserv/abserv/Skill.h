@@ -148,7 +148,7 @@ public:
         // Unfortunately AB::Entities::SkillTypeSkill = 0 and 0 & 0 = 0 :/
         if (data_.type == AB::Entities::SkillTypeSkill || type == AB::Entities::SkillTypeSkill)
             return true;
-        return (data_.type & type) == type;
+        return sa::bits::is_set(data_.type, type);
     }
     bool CanUseOnAlly() const
     {
@@ -170,7 +170,7 @@ public:
             return false;
         if (canInterrupt_ == type)
             return true;
-        return ((canInterrupt_ & type) == type);
+        return sa::bits::is_set(canInterrupt_, type);
     }
     /// Does a skill change the creature state.
     bool IsChangingState() const
@@ -180,8 +180,8 @@ public:
             !IsType(AB::Entities::SkillTypeShout);
     }
     uint32_t GetIndex() const { return data_.index; }
-    bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillEffectTarget target) const { return (effectTarget_ & target) == target; }
+    bool HasEffect(SkillEffect effect) const { return sa::bits::is_set(skillEffect_, effect); }
+    bool HasTarget(SkillEffectTarget target) const { return sa::bits::is_set(effectTarget_, target); }
     float CalculateCost(const std::function<float(CostType)>& importanceCallback) const;
     bool IsInRange(const Actor* target) const;
     Ranges GetRange() const { return range_; }

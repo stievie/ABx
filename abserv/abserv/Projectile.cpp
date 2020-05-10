@@ -73,11 +73,11 @@ bool Projectile::LoadScript(const std::string& fileName)
         return false;
 
     if (Lua::IsFunction(luaState_, "onCollide"))
-        functions_ |= FunctionOnCollide;
+        sa::bits::set(functions_, FunctionOnCollide);
     if (Lua::IsFunction(luaState_, "onHitTarget"))
-        functions_ |= FunctionOnHitTarget;
+        sa::bits::set(functions_, FunctionOnHitTarget);
     if (Lua::IsFunction(luaState_, "onStart"))
-        functions_ |= FunctionOnStart;
+        sa::bits::set(functions_, FunctionOnStart);
 
     bool ret = luaState_["onInit"]();
     return ret;

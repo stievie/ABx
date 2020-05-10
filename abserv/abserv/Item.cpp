@@ -82,19 +82,19 @@ bool Item::LoadScript(const std::string& fileName)
         return false;
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
+        sa::bits::set(functions_, FunctionUpdate);
     if (Lua::IsFunction(luaState_, "getDamage"))
-        functions_ |= FunctionGetDamage;
+        sa::bits::set(functions_, FunctionGetDamage);
     if (Lua::IsFunction(luaState_, "getDamageType"))
-        functions_ |= FunctionGetDamageType;
+        sa::bits::set(functions_, FunctionGetDamageType);
     if (Lua::IsFunction(luaState_, "onEquip"))
-        functions_ |= FunctionOnEquip;
+        sa::bits::set(functions_, FunctionOnEquip);
     if (Lua::IsFunction(luaState_, "onUnequip"))
-        functions_ |= FunctionOnUnequip;
+        sa::bits::set(functions_, FunctionOnUnequip);
     if (Lua::IsFunction(luaState_, "getSkillCost"))
-        functions_ |= FunctionGetSkillCost;
+        sa::bits::set(functions_, FunctionGetSkillCost);
     if (Lua::IsFunction(luaState_, "getSkillRecharge"))
-        functions_ |= FunctionGetSkillRecharge;
+        sa::bits::set(functions_, FunctionGetSkillRecharge);
     return true;
 }
 

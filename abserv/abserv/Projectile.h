@@ -23,6 +23,7 @@
 
 #include "Actor.h"
 #include <abscommon/Utils.h>
+#include <sa/Bits.h>
 
 namespace Game {
 
@@ -64,7 +65,7 @@ private:
     bool LoadScript(const std::string& fileName);
     bool HaveFunction(Function func) const
     {
-        return luaInitialized_ && ((functions_ & func) == func);
+        return luaInitialized_ && sa::bits::is_set(functions_, func);
     }
     void SetError(AB::GameProtocol::AttackError error);
     Actor* _LuaGetSource();

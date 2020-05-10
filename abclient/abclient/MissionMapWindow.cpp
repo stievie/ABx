@@ -82,6 +82,7 @@ void MissionMapWindow::OnDragBegin(const IntVector2& position, const IntVector2&
     int buttons, int qualifiers, Cursor* cursor)
 {
     Window::OnDragBegin(position, screenPosition, buttons, qualifiers, cursor);
+    // TODO: Move map
 }
 
 void MissionMapWindow::SetScene(SharedPtr<Scene> scene)

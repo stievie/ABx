@@ -443,7 +443,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
             data.set("name", ToStdString(actor->name_));
             data.set("level", std::to_string(eventData[P_VALUE].GetInt()));
             std::string t = tpl.render(data);
-            AddLine(String(t.c_str()), "ChatLogServerInfoText");
+            AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
     }
@@ -475,11 +475,11 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
     String max = message.Substring(p + 1);
     kainjow::mustache::mustache tpl{ "{{name}} rolls {{res}} on a {{max}} sided die." };
     kainjow::mustache::data data;
-    data.set("name", std::string(sender.CString(), sender.Length()));
-    data.set("res", std::string(res.CString(), res.Length()));
-    data.set("max", std::string(max.CString(), max.Length()));
+    data.set("name", ToStdString(sender));
+    data.set("res", ToStdString(res));
+    data.set("max", ToStdString(max));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogChatText");
+    AddLine(ToUrhoString(t), "ChatLogChatText");
 }
 
 void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
@@ -509,7 +509,7 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
         ss << tAge.months << " month(s).";
     else
         ss << tAge.days << " day(s).";
-    AddLine(String(ss.str().c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(ss.str()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
@@ -524,19 +524,19 @@ void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
         unsigned p = parts[0].Find(":");
         String currHp = parts[0].Substring(0, p);
         String maxHp = parts[0].Substring(p + 1);
-        data.set("currHp", std::string(currHp.CString(), currHp.Length()));
-        data.set("maxHp", std::string(maxHp.CString(), maxHp.Length()));
+        data.set("currHp", ToStdString(currHp));
+        data.set("maxHp", ToStdString(maxHp));
     }
     if (parts.Size() > 1)
     {
         unsigned p = parts[1].Find(":");
         String currE = parts[1].Substring(0, p);
         String maxE = parts[1].Substring(p + 1);
-        data.set("currE", std::string(currE.CString(), currE.Length()));
-        data.set("maxE", std::string(maxE.CString(), maxE.Length()));
+        data.set("currE", ToStdString(currE));
+        data.set("maxE", ToStdString(maxE));
     }
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
@@ -548,10 +548,10 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        data.set("xp", std::string(parts[0].CString(), parts[0].Length()));
-        data.set("sp", std::string(parts[1].CString(), parts[1].Length()));
+        data.set("xp", ToStdString(parts[0]));
+        data.set("sp", ToStdString(parts[1]));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str()), "ChatLogServerInfoText");
+        AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
 
@@ -564,10 +564,10 @@ void ChatWindow::HandleServerMessageDeaths(VariantMap& eventData)
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        data.set("deaths", std::string(parts[0].CString(), parts[0].Length()));
-        data.set("xp", std::string(parts[1].CString(), parts[1].Length()));
+        data.set("deaths", ToStdString(parts[0]));
+        data.set("xp", ToStdString(parts[1]));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str()), "ChatLogServerInfoText");
+        AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
 
@@ -581,8 +581,12 @@ void ChatWindow::HandleServerMessagePos(VariantMap& eventData)
 void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
-    const String& data = eventData[P_DATA].GetString();
-    AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
+    const String& name = eventData[P_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "Player {{name}} is not online." };
+    kainjow::mustache::data data;
+    data.set("count", ToStdString(name));
+    std::string t = tpl.render(data);
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
@@ -590,6 +594,7 @@ void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
     using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
     const String& data = eventData[P_DATA].GetString();
+
     AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
 }
 
@@ -599,9 +604,9 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
     const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "You got a new mail, total {{count}} mail(s)." };
     kainjow::mustache::data data;
-    data.set("count", std::string(count.CString(), count.Length()));
+    data.set("count", ToStdString(count));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 
     VariantMap& eData = GetEventDataMap();
     using namespace Events::NewMail;
@@ -615,9 +620,9 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
     const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
     kainjow::mustache::data data;
-    data.set("recipient", std::string(name.CString(), name.Length()));
+    data.set("recipient", ToStdString(name));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
@@ -626,9 +631,9 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
     const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
     kainjow::mustache::data data;
-    data.set("recipient", std::string(name.CString(), name.Length()));
+    data.set("recipient", ToStdString(name));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
@@ -637,9 +642,9 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
     const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
     kainjow::mustache::data data;
-    data.set("count", std::string(count.CString(), count.Length()));
+    data.set("count", ToStdString(count));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageMailDeleted(VariantMap&)
@@ -728,9 +733,9 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
     const String& resigner = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "{{name}} has resigned" };
     kainjow::mustache::data data;
-    data.set("name", std::string(resigner.CString(), resigner.Length()));
+    data.set("name", ToStdString(resigner));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
@@ -768,9 +773,9 @@ void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)
     const String& name = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "A Player with name {{name}} does not exist." };
     kainjow::mustache::data data;
-    data.set("name", std::string(name.CString(), name.Length()));
+    data.set("name", ToStdString(name));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleShortcutChatParty(StringHash, VariantMap&)
@@ -800,7 +805,7 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("id", std::to_string(partyId));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
@@ -812,7 +817,7 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
     kainjow::mustache::data data;
     data.set("id", std::to_string(partyId));
     std::string t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
@@ -878,14 +883,14 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     kainjow::mustache::mustache tplCount{ "{{dropper}} dropped {{count}} {{item}} for {{target}}" };
     kainjow::mustache::mustache tpl{ "{{dropper}} dropped {{item}} for {{target}}" };
     kainjow::mustache::data data;
-    data.set("dropper", std::string(dropper->name_.CString()));
+    data.set("dropper", ToStdString(dropper->name_));
     if (item)
-        data.set("item", std::string(item->name_.CString()));
+        data.set("item", ToStdString(item->name_));
     else
     {
         data.set("item", std::to_string(itemIndex));
     }
-    data.set("target", std::string(target->name_.CString()));
+    data.set("target", ToStdString(target->name_));
     std::string t;
     if (count > 1)
     {
@@ -894,7 +899,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     }
     else
         t = tpl.render(data);
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChannel defChannel)
@@ -1102,10 +1107,10 @@ void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
 
     kainjow::mustache::mustache tpl{ "Screenshot saved to {{file}}" };
     kainjow::mustache::data data;
-    data.set("file", std::string(file.CString()));
+    data.set("file", ToStdString(file));
     std::string t = tpl.render(data);
 
-    AddLine(String(t.c_str()), "ChatLogServerInfoText");
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleEditFocused(StringHash, VariantMap& eventData)
@@ -1329,14 +1334,15 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name, const String
 
 void ChatWindow::SayHello(Player* player)
 {
-    if (firstStart_ && player)
+    static bool firstStart = true;
+    if (firstStart && player)
     {
         kainjow::mustache::mustache tpl{ "Hello {{name}}, type /help for available commands." };
         kainjow::mustache::data data;
-        data.set("name", std::string(player->name_.CString(), player->name_.Length()));
+        data.set("name", ToStdString(player->name_));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str()), "ChatLogServerInfoText");
-        firstStart_ = false;
+        AddLine(ToUrhoString(t), "ChatLogServerInfoText");
+        firstStart = false;
     }
 }
 

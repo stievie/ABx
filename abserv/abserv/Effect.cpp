@@ -60,49 +60,49 @@ bool Effect::LoadScript(const std::string& fileName)
         internal_ = luaState_["internal"];
 
     if (Lua::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
+        sa::bits::set(functions_, FunctionUpdate);
     if (Lua::IsFunction(luaState_, "getSkillCost"))
-        functions_ |= FunctionGetSkillCost;
+        sa::bits::set(functions_, FunctionGetSkillCost);
     if (Lua::IsFunction(luaState_, "getDamage"))
-        functions_ |= FunctionGetDamage;
+        sa::bits::set(functions_, FunctionGetDamage);
     if (Lua::IsFunction(luaState_, "getAttackSpeed"))
-        functions_ |= FunctionGetAttackSpeed;
+        sa::bits::set(functions_, FunctionGetAttackSpeed);
     if (Lua::IsFunction(luaState_, "getAttackDamageType"))
-        functions_ |= FunctionGetAttackDamageType;
+        sa::bits::set(functions_, FunctionGetAttackDamageType);
     if (Lua::IsFunction(luaState_, "getAttackDamage"))
-        functions_ |= FunctionGetAttackDamage;
+        sa::bits::set(functions_, FunctionGetAttackDamage);
     if (Lua::IsFunction(luaState_, "onAttack"))
-        functions_ |= FunctionOnAttack;
+        sa::bits::set(functions_, FunctionOnAttack);
     if (Lua::IsFunction(luaState_, "onGettingAttacked"))
-        functions_ |= FunctionOnGettingAttacked;
+        sa::bits::set(functions_, FunctionOnGettingAttacked);
     if (Lua::IsFunction(luaState_, "onUseSkill"))
-        functions_ |= FunctionOnUseSkill;
+        sa::bits::set(functions_, FunctionOnUseSkill);
     if (Lua::IsFunction(luaState_, "onSkillTargeted"))
-        functions_ |= FunctionOnSkillTargeted;
+        sa::bits::set(functions_, FunctionOnSkillTargeted);
     if (Lua::IsFunction(luaState_, "onAttacked"))
-        functions_ |= FunctionOnAttacked;
+        sa::bits::set(functions_, FunctionOnAttacked);
     if (Lua::IsFunction(luaState_, "onInterruptingAttack"))
-        functions_ |= FunctionOnInterruptingAttack;
+        sa::bits::set(functions_, FunctionOnInterruptingAttack);
     if (Lua::IsFunction(luaState_, "onInterruptingSkill"))
-        functions_ |= FunctionOnInterruptingSkill;
+        sa::bits::set(functions_, FunctionOnInterruptingSkill);
     if (Lua::IsFunction(luaState_, "onKnockingDown"))
-        functions_ |= FunctionOnKnockingDown;
+        sa::bits::set(functions_, FunctionOnKnockingDown);
     if (Lua::IsFunction(luaState_, "onHealing"))
-        functions_ |= FunctionOnHealing;
+        sa::bits::set(functions_, FunctionOnHealing);
     if (Lua::IsFunction(luaState_, "onGetCriticalHit"))
-        functions_ |= FunctionOnGetCriticalHit;
+        sa::bits::set(functions_, FunctionOnGetCriticalHit);
     if (Lua::IsFunction(luaState_, "getArmor"))
-        functions_ |= FunctionGetArmor;
+        sa::bits::set(functions_, FunctionGetArmor);
     if (Lua::IsFunction(luaState_, "getArmorPenetration"))
-        functions_ |= FunctionGetArmorPenetration;
+        sa::bits::set(functions_, FunctionGetArmorPenetration);
     if (Lua::IsFunction(luaState_, "getAttributeRank"))
-        functions_ |= FunctionGetAttributeRank;
+        sa::bits::set(functions_, FunctionGetAttributeRank);
     if (Lua::IsFunction(luaState_, "getResources"))
-        functions_ |= FunctionGetResources;
+        sa::bits::set(functions_, FunctionGetResources);
     if (Lua::IsFunction(luaState_, "getSkillRecharge"))
-        functions_ |= FunctionGetSkillRecharge;
+        sa::bits::set(functions_, FunctionGetSkillRecharge);
     if (Lua::IsFunction(luaState_, "onRemove"))
-        functions_ |= FunctionOnRemoved;
+        sa::bits::set(functions_, FunctionOnRemoved);
     return true;
 }
 
