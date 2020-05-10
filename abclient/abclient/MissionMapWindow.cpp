@@ -79,7 +79,7 @@ MissionMapWindow::~MissionMapWindow()
 }
 
 void MissionMapWindow::OnDragBegin(const IntVector2& position, const IntVector2& screenPosition,
-    int buttons, int qualifiers, Cursor* cursor)
+    MouseButtonFlags buttons, QualifierFlags qualifiers, Cursor* cursor)
 {
     Window::OnDragBegin(position, screenPosition, buttons, qualifiers, cursor);
     // TODO: Move map

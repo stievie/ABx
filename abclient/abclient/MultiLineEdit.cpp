@@ -138,7 +138,7 @@ void MultiLineEdit::Update(float timeStep)
 }
 
 void MultiLineEdit::OnClickBegin(const IntVector2& position,
-    const IntVector2& /* screenPosition */, int button, int /* buttons */, int /* qualifiers */,
+    const IntVector2& /* screenPosition */, MouseButton button, MouseButtonFlags /* buttons */, QualifierFlags /* qualifiers */,
     Cursor* /* cursor */)
 {
     if (button == MOUSEB_LEFT && cursorMovable_)
@@ -153,7 +153,7 @@ void MultiLineEdit::OnClickBegin(const IntVector2& position,
 }
 
 void MultiLineEdit::OnDoubleClick(const IntVector2& /* position */,
-    const IntVector2& /* screenPosition */, int button, int /* buttons */, int /* qualifiers */,
+    const IntVector2& /* screenPosition */, MouseButton button, MouseButtonFlags /* buttons */, QualifierFlags /* qualifiers */,
     Cursor* /* cursor */)
 {
     if (button == MOUSEB_LEFT)
@@ -161,7 +161,7 @@ void MultiLineEdit::OnDoubleClick(const IntVector2& /* position */,
 }
 
 void MultiLineEdit::OnDragBegin(const IntVector2& position,
-    const IntVector2& screenPosition, int buttons, int qualifiers,
+    const IntVector2& screenPosition, MouseButtonFlags buttons, QualifierFlags qualifiers,
     Cursor* cursor)
 {
     UIElement::OnDragBegin(position, screenPosition, buttons, qualifiers, cursor);
@@ -170,8 +170,8 @@ void MultiLineEdit::OnDragBegin(const IntVector2& position,
 }
 
 void MultiLineEdit::OnDragMove(const IntVector2& position,
-    const IntVector2& /* screenPosition */, const IntVector2& /* deltaPos */, int /* buttons */,
-    int /* qualifiers */, Cursor* /* cursor */)
+    const IntVector2& /* screenPosition */, const IntVector2& /* deltaPos */, MouseButtonFlags /* buttons */,
+    QualifierFlags /* qualifiers */, Cursor* /* cursor */)
 {
     if (cursorMovable_ && textSelectable_)
     {

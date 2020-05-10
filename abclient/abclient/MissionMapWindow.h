@@ -33,7 +33,7 @@ public:
     ~MissionMapWindow() override;
     void OnDragBegin(const IntVector2& position,
         const IntVector2& screenPosition,
-        int buttons, int qualifiers, Cursor* cursor) override;
+        MouseButtonFlags buttons, QualifierFlags qualifierFlags, Cursor* cursor) override;
     void SetScene(SharedPtr<Scene> scene);
 private:
     SharedPtr<Texture2D> renderTexture_;
