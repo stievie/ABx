@@ -37,15 +37,15 @@ void un_set(T& bit_set, U bits)
 }
 
 template <typename T, typename U>
-void xor(T& bit_set, U bits)
+[[nodiscard]] bool is_set(T bit_set, U bit)
 {
-    bit_set ^= static_cast<T>(bits);
+    return (bit_set & static_cast<T>(bit)) == static_cast<T>(bit) && (bit != 0 || bit_set == static_cast<T>(bit));
 }
 
 template <typename T, typename U>
-[[nodiscard]] bool is_set(T bit_set, U bits)
+[[nodiscard]] bool is_any_set(T bit_set, U bits)
 {
-    return (bit_set & static_cast<T>(bits)) == static_cast<T>(bits) && (bits != 0 || bit_set == static_cast<T>(bits));
+    return (bit_set & static_cast<T>(bits)) != 0 && (bits != 0 || bit_set == static_cast<T>(bits));
 }
 
 template <typename T, typename U>
