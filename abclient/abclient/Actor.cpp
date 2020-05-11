@@ -635,18 +635,13 @@ String Actor::GetClassSubdir(AB::Entities::ModelClass cls)
 
 String Actor::GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash)
 {
-    String result;
-    result = "Animations/";
+    String result = "Animations/";
     if (cls == AB::Entities::ModelClass::AccountChest)
     {
         if (hash == ANIM_CHEST_OPENING)
-        {
             return result + "Chest/Opening.ani";
-        }
-        else if (hash == ANIM_CHEST_CLOSING)
-        {
+        if (hash == ANIM_CHEST_CLOSING)
             return result + "Chest/Closing.ani";
-        }
     }
 
     result += GetClassSubdir(cls);
