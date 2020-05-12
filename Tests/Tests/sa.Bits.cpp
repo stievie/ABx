@@ -20,6 +20,16 @@ TEST_CASE("Bits is_set")
     REQUIRE(!sa::bits::is_set(bit_set, BIT5));
 }
 
+TEST_CASE("Bits un_set")
+{
+    uint32_t bit_set = BIT2 | BIT4;
+    REQUIRE(sa::bits::is_set(bit_set, BIT4));
+    REQUIRE(sa::bits::is_set(bit_set, BIT2));
+    sa::bits::un_set(bit_set, BIT4);
+    REQUIRE(!sa::bits::is_set(bit_set, BIT4));
+    REQUIRE(sa::bits::is_set(bit_set, BIT2));
+}
+
 TEST_CASE("Bits is_set_any")
 {
     uint32_t bit_set = BIT2 | BIT4;

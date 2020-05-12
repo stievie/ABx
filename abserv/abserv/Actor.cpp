@@ -43,6 +43,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Attributes.h>
+#include <sa/Bits.h>
 
 namespace Game {
 
@@ -1073,7 +1074,7 @@ bool Actor::IsEnemy(const Actor* other) const
         // Same group members are always friends
         return false;
     // Return true if we have a matching bit of our foe mask in their friend mask
-    return ((GetFoeMask() & other->GetFriendMask()) != 0);
+    return sa::bits::is_any_set(GetFoeMask(), other->GetFriendMask());
 }
 
 bool Actor::IsAlly(const Actor* other) const
@@ -1085,7 +1086,7 @@ bool Actor::IsAlly(const Actor* other) const
         // Same group members are always friends
         return true;
     // Return true if they have matching bits in the friend mask
-    return ((GetFriendMask() & other->GetFriendMask()) != 0);
+    return sa::bits::is_any_set(GetFriendMask(), other->GetFriendMask());
 }
 
 uint32_t Actor::GetAttributeRank(Attribute index)
