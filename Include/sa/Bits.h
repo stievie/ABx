@@ -21,12 +21,16 @@
 
 #pragma once
 
+// This is a bit like std::bitset, but it allows an arbitrary underlying type,
+// i.e. you could also use it with an uint64_t.
+// Also there is no class, just some free functions.
+
 #include <string>
 
 namespace sa {
 namespace bits {
 
-// Count of bits
+// Return number of bits that fit into T
 template <typename T>
 constexpr size_t count()
 {
@@ -66,7 +70,6 @@ template <typename T, typename U>
     return !is_any_set(bit_set, bits);
 }
 
-// Test if all are set
 template <typename T, typename U>
 [[nodiscard]] bool equals(T bit_set, U bits)
 {

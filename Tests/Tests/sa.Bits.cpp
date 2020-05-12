@@ -10,7 +10,7 @@ static const uint32_t BIT4 = 1 << 3;
 static const uint32_t BIT5 = 1 << 4;
 static const uint32_t BIT6 = 1 << 5;
 static const uint32_t BIT7 = 1 << 6;
-static const uint32_t BIT8 = 1 << 8;
+static const uint32_t BIT8 = 1 << 7;
 
 TEST_CASE("Bits is_set")
 {
@@ -18,6 +18,8 @@ TEST_CASE("Bits is_set")
     REQUIRE(sa::bits::is_set(bit_set, BIT4));
     REQUIRE(sa::bits::is_set(bit_set, BIT2));
     REQUIRE(!sa::bits::is_set(bit_set, BIT5));
+    REQUIRE(!sa::bits::is_set(bit_set, BIT3));
+    REQUIRE(!sa::bits::is_set(bit_set, BIT7));
 }
 
 TEST_CASE("Bits un_set")
@@ -37,12 +39,20 @@ TEST_CASE("Bits is_set_any")
     REQUIRE(!sa::bits::is_any_set(bit_set, BIT1 | BIT5));
 }
 
+TEST_CASE("Bits all set")
+{
+    uint32_t bit_set = BIT2 | BIT4 | BIT5;
+    REQUIRE(sa::bits::is_set(bit_set, BIT2 | BIT4));
+    REQUIRE(!sa::bits::is_set(bit_set, BIT1 | BIT5));
+    REQUIRE(!sa::bits::is_set(bit_set, BIT1 | BIT6));
+}
+
 TEST_CASE("Bits flip one or two")
 {
     uint32_t bit_set = BIT2 | BIT4;
     REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000000001010");
     sa::bits::flip(bit_set, BIT2 | BIT8);
-    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000100001000");
+    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000010001000");
 }
 
 TEST_CASE("Bits flip all")
@@ -62,5 +72,5 @@ TEST_CASE("Bits count")
 TEST_CASE("Bits to_string")
 {
     uint32_t bit_set = BIT2 | BIT4 | BIT8;
-    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000100001010");
+    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000010001010");
 }
