@@ -37,7 +37,15 @@ TEST_CASE("Bits is_set_any")
     REQUIRE(!sa::bits::is_any_set(bit_set, BIT1 | BIT5));
 }
 
-TEST_CASE("Bits flip")
+TEST_CASE("Bits flip one or two")
+{
+    uint32_t bit_set = BIT2 | BIT4;
+    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000000001010");
+    sa::bits::flip(bit_set, BIT2 | BIT8);
+    REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000100001000");
+}
+
+TEST_CASE("Bits flip all")
 {
     uint32_t bit_set = BIT2 | BIT4;
     REQUIRE(sa::bits::to_string(bit_set) == "00000000000000000000000000001010");

@@ -26,6 +26,13 @@
 namespace sa {
 namespace bits {
 
+// Count of bits
+template <typename T>
+constexpr size_t count()
+{
+    return sizeof(T) * 8;
+}
+
 template <typename T, typename U>
 void set(T& bit_set, U bits)
 {
@@ -36,20 +43,6 @@ template <typename T, typename U>
 void un_set(T& bit_set, U bits)
 {
     bit_set &= ~static_cast<T>(bits);
-}
-
-// Flip bits 0101 -> 1010
-template <typename T>
-void flip(T& bit_set)
-{
-    constexpr size_t c = count<T>();
-    for (size_t i = 1; i <= c; ++i)
-    {
-        if (is_set(bit_set, 1 << (i - 1)))
-            un_set(bit_set, 1 << (i - 1));
-        else
-            set(bit_set, 1 << (i - 1));
-    }
 }
 
 // Test if single bit is set in bit_set
@@ -80,11 +73,17 @@ template <typename T, typename U>
     return bit_set == static_cast<T>(bits);
 }
 
-// Count of bits
+// Flip all bits 0101 -> 1010
 template <typename T>
-constexpr size_t count()
+void flip(T& bit_set)
 {
-    return sizeof(T) * 8;
+    bit_set = ~bit_set;
+}
+
+template <typename T, typename U>
+void flip(T& bit_set, U bit)
+{
+    bit_set ^= bit;
 }
 
 // Convert the bit set to a string, returns e.g. 00000000000000000000000000001010 when bit 2 and bit 4 are set

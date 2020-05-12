@@ -519,7 +519,7 @@ void StorageProvider::FlushCache()
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         // Don't return deleted, these are flushed in CleanCache()
-        return (IsModified(current.second.flags) || !IsCreated(current.second.flags) &&
+        return ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
             !IsDeleted(current.second.flags));
     })) != cache_.end())
     {
