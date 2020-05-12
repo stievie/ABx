@@ -161,7 +161,7 @@ bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector
     {
         // If there is a deleted record we must delete it from DB now or we may get
         // a constraint violation.
-        if ((*_data).second.first.deleted)
+        if (IsDeleted((*_data).second.flags))
             FlushData(key);
         else
             // Already exists
@@ -181,7 +181,7 @@ bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector
         return false;
     }
 
-    CacheData(table, _id, data, false, false);
+    CacheData(table, _id, data, 0);
 
     // Unfortunately we must flush the data for create operations. Or we find a way
     // to check constraints, unique columns etc.
@@ -212,15 +212,15 @@ bool StorageProvider::Update(const IO::DataKey& key, std::shared_ptr<std::vector
     // The only possibility to update a not yet created entity is when its in cache and not flushed.
     bool isCreated = true;
     if (_data != cache_.end())
-        isCreated = (*_data).second.first.created;
+        isCreated = IsCreated((*_data).second.flags);
 
     // The client sets the data so this is not stored in DB
-    CacheData(table, id, data, true, isCreated);
+    CacheData(table, id, data, CacheFlag::Modified | (isCreated ? CacheFlag::Created : 0));
     return true;
 }
 
 void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
-    std::shared_ptr<std::vector<uint8_t>> data, bool modified, bool created)
+    std::shared_ptr<std::vector<uint8_t>> data, CacheFlags flags)
 {
     size_t sizeNeeded = data->size();
     if (!EnoughSpace(sizeNeeded))
@@ -242,10 +242,10 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     else
     {
         index_.Refresh(key);
-        currentSize_ = (currentSize_ - cache_[key].second->size()) + data->size();
+        currentSize_ = (currentSize_ - cache_[key].data->size()) + data->size();
     }
 
-    cache_[key] = { { created, modified, false }, data };
+    cache_[key] = { flags, data };
 
     // Special case for player names
     size_t tableHash = sa::StringHashRt(table.data());
@@ -264,10 +264,10 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
     auto _data = cache_.find(key);
     if (_data != cache_.end())
     {
-        if ((*_data).second.first.deleted)
+        if (IsDeleted((*_data).second.flags))
             // Don't return deleted items that are in cache
             return false;
-        data->assign((*_data).second.second->begin(), (*_data).second.second->end());
+        data->assign((*_data).second.data->begin(), (*_data).second.data->end());
         return true;
     }
 
@@ -293,10 +293,10 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
                 _data = cache_.find(*nameKey);
                 if (_data != cache_.end())
                 {
-                    if ((*_data).second.first.deleted)
+                    if (IsDeleted((*_data).second.flags))
                         // Don't return deleted items that are in cache
                         return false;
-                    data->assign((*_data).second.second->begin(), (*_data).second.second->end());
+                    data->assign((*_data).second.data->begin(), (*_data).second.data->end());
                     return true;
                 }
             }
@@ -314,16 +314,16 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
     {
-        CacheData(table, _id, data, false, true);
+        CacheData(table, _id, data, CacheFlag::Created);
     }
     else
     {
         // Was already cached
-        if ((*_newdata).second.first.deleted)
+        if (IsDeleted((*_newdata).second.flags))
             // Don't return deleted items that are in cache
             return false;
         // Return the cached object, it may have changed
-        data->assign((*_newdata).second.second->begin(), (*_newdata).second.second->end());
+        data->assign((*_newdata).second.data->begin(), (*_newdata).second.data->end());
     }
     return true;
 
@@ -337,7 +337,7 @@ bool StorageProvider::Delete(const IO::DataKey& key)
     {
         return false;
     }
-    (*data).second.first.deleted = true;
+    sa::bits::set((*data).second.flags, CacheFlag::Deleted);
     return true;
 }
 
@@ -378,7 +378,7 @@ void StorageProvider::PreloadTask(IO::DataKey key)
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
     {
-        CacheData(table, _id, data, false, true);
+        CacheData(table, _id, data, CacheFlag::Created);
     }
 }
 
@@ -400,7 +400,7 @@ bool StorageProvider::Exists(const IO::DataKey& key, std::shared_ptr<std::vector
     auto _data = cache_.find(key);
 
     if (_data != cache_.end())
-        return !(*_data).second.first.deleted;
+        return !IsDeleted((*_data).second.flags);
 
     return ExistsData(key, *data);
 }
@@ -423,7 +423,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
 
         if (FlushData(key))
         {
-            currentSize_ -= ci.second.second->size();
+            currentSize_ -= ci.second.data->size();
             toDelete.push_back(key);
         }
     }
@@ -458,12 +458,12 @@ void StorageProvider::CleanCache()
     auto i = cache_.begin();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
-        return current.second.first.deleted;
+        return IsDeleted(current.second.flags);
     })) != cache_.end())
     {
         bool ok = true;
         const IO::DataKey& key = (*i).first;
-        if ((*i).second.first.created)
+        if (IsCreated((*i).second.flags))
         {
             // If it's in DB (created == true) update changed data in DB
             ok = FlushData(key);
@@ -472,7 +472,7 @@ void StorageProvider::CleanCache()
         {
             // Remove from players cache
             RemovePlayerFromCache(key);
-            currentSize_ -= (*i).second.second->size();
+            currentSize_ -= (*i).second.data->size();
             index_.Delete(key);
             cache_.erase(i++);
             ++removed;
@@ -519,8 +519,8 @@ void StorageProvider::FlushCache()
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         // Don't return deleted, these are flushed in CleanCache()
-        return (current.second.first.modified || !current.second.first.created) &&
-            !current.second.first.deleted;
+        return (IsModified(current.second.flags) || !IsCreated(current.second.flags) &&
+            !IsDeleted(current.second.flags));
     })) != cache_.end())
     {
         ++written;
@@ -592,7 +592,7 @@ bool StorageProvider::RemoveData(const IO::DataKey& key)
     {
         RemovePlayerFromCache(key);
 
-        currentSize_ -= (*data).second.second->size();
+        currentSize_ -= (*data).second.data->size();
         cache_.erase(key);
         index_.Delete(key);
 
@@ -649,11 +649,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     if (data == cache_.end())
         // Not in cache so no need to flush anything
         return true;
-    // No need to save to DB when not modified
-    if (!(*data).second.first.modified && !(*data).second.first.deleted && (*data).second.first.created)
-        return true;
 
     CacheItem& item = (*data).second;
+
+    // No need to save to DB when not modified
+    if (!IsModified(item.flags) && !IsDeleted(item.flags) && IsCreated(item.flags))
+        return true;
 
     std::string table;
     uuids::uuid id;
@@ -680,8 +681,7 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_PARTIES_HASH:
         // Not written to DB
         // Mark not modified and created or it will infinitely try to flush it
-        (*data).second.first.created = true;
-        (*data).second.first.modified = false;
+        item.flags = CacheFlag::Created;
         succ = true;
         break;
     default:

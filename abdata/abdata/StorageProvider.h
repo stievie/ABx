@@ -41,18 +41,37 @@ PRAGMA_WARNING_POP
 #include <sa/StringHash.h>
 #include <abscommon/DataKey.h>
 #include <sa/CallableTable.h>
+#include <sa/Bits.h>
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Flush cache every minute
 #define FLUSH_CACHE_MS (1000 * 60)
 
-struct CacheFlags
+struct CacheFlag
 {
-    bool created;             // It exists in DB
-    bool modified;
-    bool deleted;
+    enum
+    {
+        Created = 1,              // It exists in DB
+        Modified = 1 << 1,
+        Deleted = 1 << 2,
+    };
 };
+
+using CacheFlags = uint32_t;
+
+inline bool IsCreated(CacheFlags flags)
+{
+    return sa::bits::is_set(flags, CacheFlag::Created);
+}
+inline bool IsModified(CacheFlags flags)
+{
+    return sa::bits::is_set(flags, CacheFlag::Modified);
+}
+inline bool IsDeleted(CacheFlags flags)
+{
+    return sa::bits::is_set(flags, CacheFlag::Deleted);
+}
 
 class StorageProvider
 {
@@ -140,7 +159,11 @@ public:
     uint32_t cleanInterval_;
 private:
     /// first = flags, second = data
-    using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
+    struct CacheItem
+    {
+        CacheFlags flags{ 0 };
+        std::shared_ptr<std::vector<uint8_t>> data;
+    };
     sa::CallableTable<size_t, bool, std::vector<uint8_t>&> exitsCallables_;
     sa::CallableTable<size_t, bool, CacheItem&> flushCallables_;
     sa::CallableTable<size_t, bool, const uuids::uuid&, std::vector<uint8_t>&> loadCallables_;
@@ -175,7 +198,7 @@ private:
     void CreateSpace(size_t size);
     void CacheData(const std::string& table, const uuids::uuid& id,
         std::shared_ptr<std::vector<uint8_t>> data,
-        bool modified, bool created);
+        CacheFlags flags);
     bool RemoveData(const IO::DataKey& key);
     void PreloadTask(IO::DataKey key);
     bool ExistsData(const IO::DataKey& key, std::vector<uint8_t>& data);
@@ -216,23 +239,23 @@ private:
     {
         bool succ = true;
         // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
-        if (!data.first.created)
+        if (!IsCreated(data.flags))
         {
-            succ = CreateInDB<D, E>(*data.second.get());
+            succ = CreateInDB<D, E>(*data.data);
             if (succ)
             {
-                data.first.created = true;
-                data.first.modified = false;
+                sa::bits::set(data.flags, CacheFlag::Created);
+                sa::bits::un_set(data.flags, CacheFlag::Modified);
             }
         }
-        else if (data.first.modified)
+        else if (IsModified(data.flags))
         {
-            succ = SaveToDB<D, E>(*data.second.get());
+            succ = SaveToDB<D, E>(*data.data);
             if (succ)
-                data.first.modified = false;
+                sa::bits::un_set(data.flags, CacheFlag::Modified);
         }
-        if (data.first.deleted)
-            succ = DeleteFromDB<D, E>(*data.second.get());
+        if (IsDeleted(data.flags))
+            succ = DeleteFromDB<D, E>(*data.data);
 
         return succ;
     }
