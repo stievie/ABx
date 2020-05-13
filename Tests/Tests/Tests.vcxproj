@@ -131,6 +131,7 @@
     <ClCompile Include="sa.Bits.cpp" />
     <ClCompile Include="sa.PatternMatch.cpp" />
     <ClCompile Include="sa.PoolAllocator.cpp" />
+    <ClCompile Include="sa.Result.cpp" />
     <ClCompile Include="sa.SharedPtr.cpp" />
     <ClCompile Include="sa.TypeName.cpp" />
     <ClCompile Include="TinyExpr.cpp" />

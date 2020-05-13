@@ -30,6 +30,7 @@ Tests/sa.ArgParser.cpp
 Tests/sa.Bits.cpp
 Tests/sa.PatternMatch.cpp
 Tests/sa.PoolAllocator.cpp
+Tests/sa.Result.cpp
 Tests/sa.SharedPtr.cpp
 Tests/sa.TypeName.cpp
 Tests/stdafx.h

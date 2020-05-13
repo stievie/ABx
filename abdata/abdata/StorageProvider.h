@@ -93,7 +93,7 @@ public:
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
-        SetEntity<E>(entity, *data.get());
+        SetEntity<E>(entity, *data);
         if (!Read(aKey, data))
             return false;
         if (GetEntity(*data.get(), entity))
@@ -118,7 +118,7 @@ public:
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
-        if (SetEntity<E>(entity, *data.get()) == 0)
+        if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Update(aKey, data);
     }
@@ -127,7 +127,7 @@ public:
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
-        if (SetEntity<E>(entity, *data.get()) == 0)
+        if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Create(aKey, data);
     }
@@ -142,7 +142,7 @@ public:
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
-        if (SetEntity<E>(entity, *data.get()) == 0)
+        if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Exists(aKey, data);
     }
