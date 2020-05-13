@@ -7,7 +7,7 @@
 
 TEST_CASE("Result construct Ok")
 {
-    sa::Result<int, std::string> res = 1;
+    sa::Result<int, std::string> res(1);
     REQUIRE(res.IsOk());
     REQUIRE(res == 1);
     REQUIRE(res);
