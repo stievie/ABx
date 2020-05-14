@@ -51,9 +51,9 @@ void un_set(T& bit_set, U bits)
 
 // Test if single bit is set in bit_set
 template <typename T, typename U>
-[[nodiscard]] bool is_set(T bit_set, U bit)
+[[nodiscard]] bool is_set(T bit_set, U bits)
 {
-    return (bit_set & static_cast<T>(bit)) == static_cast<T>(bit) && (bit != 0 || bit_set == static_cast<T>(bit));
+    return (bit_set & static_cast<T>(bits)) == static_cast<T>(bits) && (bits != 0 || bit_set == static_cast<T>(bits));
 }
 
 // Test if any bit of bits is set in bit_set
@@ -84,9 +84,9 @@ void flip(T& bit_set)
 }
 
 template <typename T, typename U>
-void flip(T& bit_set, U bit)
+void flip(T& bit_set, U bits)
 {
-    bit_set ^= bit;
+    bit_set ^= bits;
 }
 
 // Convert the bit set to a string, returns e.g. 00000000000000000000000000001010 when bit 2 and bit 4 are set

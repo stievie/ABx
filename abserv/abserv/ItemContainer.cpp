@@ -114,7 +114,10 @@ uint32_t ItemContainer::GetMoney() const
 
 size_t ItemContainer::GetMoneyFreeSpace() const
 {
-    return maxMoney_ - GetMoney();
+    const uint32_t money = GetMoney();
+    if (money >= maxMoney_)
+        return 0;
+    return maxMoney_ - money;
 }
 
 bool ItemContainer::CheckCapacity(uint32_t money, size_t itemCount)

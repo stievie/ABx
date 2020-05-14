@@ -187,4 +187,16 @@ public:
 
 };
 
+template <typename T, typename E>
+Result<T, E> ResultOk(T value)
+{
+    return Result<T, E>::Ok(value);
+}
+
+template <typename T, typename E>
+Result<T, E> ResultError(E value)
+{
+    return Result<T, E>::Error(value);
+}
+
 }

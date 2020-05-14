@@ -134,3 +134,54 @@ TEST_CASE("Result Result::Error()")
     REQUIRE(error.has_value());
     REQUIRE(error.value() == "Some Error");
 }
+
+TEST_CASE("Result ResultOk()")
+{
+    auto res = sa::ResultOk<int, std::string>(1);
+    auto ok = res.GetOk();
+    REQUIRE(ok.has_value());
+    REQUIRE(ok.value() == 1);
+    auto error = res.GetError();
+    REQUIRE(!error.has_value());
+}
+
+TEST_CASE("Result ResultError()")
+{
+    auto res = sa::ResultError<int, std::string>("Some Error");
+    auto ok = res.GetOk();
+    REQUIRE(!ok.has_value());
+    auto error = res.GetError();
+    REQUIRE(error.has_value());
+    REQUIRE(error.value() == "Some Error");
+}
+
+static sa::Result<int, std::string> SomeOkFunc()
+{
+    // Implicit construct Ok
+    return { 1 };
+}
+static sa::Result<int, std::string> SomeErrorFunc()
+{
+    // Implicit construct Error
+    return { std::string("Some Error") };
+}
+
+TEST_CASE("Result SomeOkFunc()")
+{
+    auto res = SomeOkFunc();
+    auto ok = res.GetOk();
+    REQUIRE(ok.has_value());
+    REQUIRE(ok.value() == 1);
+    auto error = res.GetError();
+    REQUIRE(!error.has_value());
+}
+
+TEST_CASE("Result SomeErrorFunc()")
+{
+    auto res = SomeErrorFunc();
+    auto ok = res.GetOk();
+    REQUIRE(!ok.has_value());
+    auto error = res.GetError();
+    REQUIRE(error.has_value());
+    REQUIRE(error.value() == "Some Error");
+}

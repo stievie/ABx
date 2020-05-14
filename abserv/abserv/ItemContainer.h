@@ -73,12 +73,16 @@ public:
     uint32_t GetMoney() const;
 
     bool IsFull() const { return GetCount() >= size_; }
-    size_t GetFreeSpace() const { return size_ - GetCount(); }
+    size_t GetFreeSpace() const
+    {
+        const size_t c = GetCount();
+        return (c >= size_) ? 0 : (size_ - c);
+    }
     void SetSize(size_t value)
     {
         // Can not make smaller
         assert(value + 1u > size_);
-        // + 1 because Money doesnt count
+        // + 1 because Money doesn't count
         size_ = value + 1;
     }
     size_t GetSize() const { return size_; }
