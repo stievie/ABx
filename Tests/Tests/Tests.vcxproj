@@ -56,7 +56,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;SA_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -85,7 +85,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;SA_ASSERT%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>

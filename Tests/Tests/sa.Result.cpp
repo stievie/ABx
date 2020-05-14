@@ -94,3 +94,43 @@ TEST_CASE("Result Error << operator")
     ss << res;
     REQUIRE(ss.str() == "Some Error");
 }
+
+TEST_CASE("Result GetOk()")
+{
+    sa::Result<int, std::string> res(1);
+    auto ok = res.GetOk();
+    REQUIRE(ok.has_value());
+    REQUIRE(ok.value() == 1);
+    auto error = res.GetError();
+    REQUIRE(!error.has_value());
+}
+
+TEST_CASE("Result GetError()")
+{
+    sa::Result<int, std::string> res(std::string("Some Error"));
+    auto ok = res.GetOk();
+    REQUIRE(!ok.has_value());
+    auto error = res.GetError();
+    REQUIRE(error.has_value());
+    REQUIRE(error.value() == "Some Error");
+}
+
+TEST_CASE("Result Result::Ok()")
+{
+    auto res = sa::Result<int, std::string>::Ok(1);
+    auto ok = res.GetOk();
+    REQUIRE(ok.has_value());
+    REQUIRE(ok.value() == 1);
+    auto error = res.GetError();
+    REQUIRE(!error.has_value());
+}
+
+TEST_CASE("Result Result::Error()")
+{
+    auto res = sa::Result<int, std::string>::Error("Some Error");
+    auto ok = res.GetOk();
+    REQUIRE(!ok.has_value());
+    auto error = res.GetError();
+    REQUIRE(error.has_value());
+    REQUIRE(error.value() == "Some Error");
+}

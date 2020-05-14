@@ -24,6 +24,7 @@
 // Result, Error pair
 
 #include <iostream>
+#include <optional>
 #include <utility>
 #include <variant>
 #include <sa/Assert.h>
@@ -47,6 +48,14 @@ public:
 private:
     std::variant<OkType, ErrorType> value_;
 public:
+    static Result Ok(T value) noexcept
+    {
+        return Result(value);
+    }
+    static Result Error(E error) noexcept
+    {
+        return Result(error);
+    }
     Result() noexcept
     { }
     Result(const OkType& value) noexcept :
@@ -99,6 +108,20 @@ public:
     bool IsError() const
     {
         return std::holds_alternative<ErrorType>(value_);
+    }
+
+    std::optional<T> GetOk() const
+    {
+        if (IsOk())
+            return static_cast<T>(std::get<OkType>(value_));
+        return {};
+    }
+
+    std::optional<E> GetError() const
+    {
+        if (IsError())
+            return static_cast<E>(std::get<ErrorType>(value_));
+        return {};
     }
 
     explicit operator T() const
