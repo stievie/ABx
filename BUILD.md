@@ -90,6 +90,7 @@ Unfortunately the Client does not compile with the current Urho3D master branch.
 Clone my fork of Urho3D from https://github.com/stievie/Urho3D and switch to the `abx` branch:
 ~~~sh
 $ git clone https://github.com/stievie/Urho3D
+$ cd Urho3D
 $ git checkout -b abx
 ~~~
 
