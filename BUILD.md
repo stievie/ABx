@@ -84,7 +84,15 @@ Required lib files for the client not in this repository:
 
 * `Urho3D(_d).lib`
 
-Clone Urho3D from the official GitHub repository (https://github.com/urho3d/Urho3D, use the latest master).
+<s>Clone Urho3D from the official GitHub repository (https://github.com/urho3d/Urho3D, use the latest master).</s>
+Unfortunately the Client does not compile with the current Urho3D master branch.
+
+Clone my fork of Urho3D from https://github.com/stievie/Urho3D and switch to the `abx` branch:
+~~~sh
+$ git clone https://github.com/stievie/Urho3D
+$ git checkout -b abx
+~~~
+
 Build Urho3D and put the library files in `./Lib` (or `./Lib/x64/Debug`,
 `/Lib/x64/Release`). Copy or symlink the directory with Urho3D header files to `Include/`,
 so there is a `Include/Urho3D` directory, e.g:
