@@ -413,7 +413,7 @@ Player* Party::GetRandomPlayer() const
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = ea::vector<Player*>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
+    auto it = Utils::ea::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
         return (*it);
     return nullptr;
@@ -445,7 +445,7 @@ Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = ea::vector<Player*>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
+    auto it = Utils::ea::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
         return (*it);
 

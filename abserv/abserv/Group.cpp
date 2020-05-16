@@ -144,7 +144,7 @@ Actor* Group::GetRandomMember() const
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = ea::vector<ea::weak_ptr<Actor>>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
+    auto it = Utils::ea::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
     if (it != members_.end())
     {
         if (auto p = (*it).lock())
@@ -169,7 +169,7 @@ Actor* Group::GetRandomMemberInRange(const Actor* actor, Ranges range) const
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = ea::vector<Actor*>::const_iterator;
-    auto it = Utils::SelectRandomly<iterator>(actors.begin(), actors.end(), rnd);
+    auto it = Utils::ea::SelectRandomly<iterator>(actors.begin(), actors.end(), rnd);
     if (it != actors.end())
         return (*it);
 
