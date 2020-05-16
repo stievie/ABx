@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/$(CONFIG)/abserv
-LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -labipc -labshared -lpugixml -ldetour -lstdc++fs -luuid -ldeathhandler -ldl
+LIBS += -lpthread -llua5.3 -labscommon -labcrypto -labsmath -labai -labipc -labshared -lpugixml -ldetour -lEASTL -lstdc++fs -luuid -ldeathhandler -ldl
 CXXFLAGS += -fexceptions -Werror -Wno-maybe-uninitialized
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
@@ -16,7 +16,6 @@ SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp 
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
-#$(info $(OBJ_FILES))
 GCH = $(PCH).gch
 
 all: $(TARGET)
@@ -37,4 +36,4 @@ $(GCH): $(PCH)
 
 .PHONY: clean
 clean:
-	rm -f $(GCH) $(OBJ_FILES) $(TARGET)  $(OBJDIR)/*.d  $(OBJDIR)/*/*.d
+	rm -f $(GCH) $(OBJ_FILES) $(TARGET) $(OBJ_FILES:.o=.d)

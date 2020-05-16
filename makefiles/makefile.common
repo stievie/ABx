@@ -41,5 +41,4 @@ ifeq ($(CONFIG),Debug)
 else
 	DEFINES += -DNDEBUG
 endif
-INCLUDES = -I../Include
-
+INCLUDES = -I../Include -I../ThirdParty/EASTL/include -I../ThirdParty/EASTL/test/packages/EABase/include/Common
