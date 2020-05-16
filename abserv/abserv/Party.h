@@ -32,19 +32,20 @@
 #include <sa/IdGenerator.h>
 #include <sa/Iteration.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
 class PartyChatChannel;
 class Player;
 
-class Party final : public Group, public std::enable_shared_from_this<Party>
+class Party final : public Group, public ea::enable_shared_from_this<Party>
 {
     NON_COPYABLE(Party)
 private:
     /// Used when forming a group. If the player accepts it is added to the members.
-    std::vector<std::weak_ptr<Player>> invited_;
-    std::shared_ptr<PartyChatChannel> chatChannel_;
+    ea::vector<ea::weak_ptr<Player>> invited_;
+    ea::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_{ 1 };
     int64_t defeatedTick_{ 0 };
@@ -69,15 +70,15 @@ public:
     ~Party();
 
     /// Append player
-    bool AddPlayer(std::shared_ptr<Player> player);
+    bool AddPlayer(ea::shared_ptr<Player> player);
     /// Insert at the position in data_
-    bool SetPlayer(std::shared_ptr<Player> player);
+    bool SetPlayer(ea::shared_ptr<Player> player);
     bool RemovePlayer(Player& player, bool newParty = true);
-    bool Invite(std::shared_ptr<Player> player);
-    bool RemoveInvite(std::shared_ptr<Player> player);
+    bool Invite(ea::shared_ptr<Player> player);
+    bool RemoveInvite(ea::shared_ptr<Player> player);
     /// Clear all invites
     void ClearInvites();
-    const std::vector<std::weak_ptr<Actor>>& GetMembers() const { return members_; }
+    const ea::vector<ea::weak_ptr<Actor>>& GetMembers() const { return members_; }
     Player* GetRandomPlayer() const;
     Player* GetRandomPlayerInRange(const Actor* actor, Ranges range) const;
 
@@ -92,7 +93,7 @@ public:
     bool IsMember(const Player& player) const;
     bool IsInvited(const Player& player) const;
     bool IsLeader(const Player& player) const;
-    std::shared_ptr<Player> GetAnyPlayer() const;
+    ea::shared_ptr<Player> GetAnyPlayer() const;
     void Defeat();
     bool IsDefeated() const { return defeated_; }
     /// Bring all players back to their last outpost

@@ -100,7 +100,7 @@ GameObject::~GameObject()
 void GameObject::UpdateRanges()
 {
     ranges_.clear();
-    std::vector<GameObject*> res;
+    ea::vector<GameObject*> res;
 
     // Compass radius
     if (QueryObjects(res, RANGE_COMPASS))
@@ -292,7 +292,7 @@ void GameObject::SetVar(const std::string& name, const Utils::Variant& val)
     variables_[sa::StringHashRt(name.c_str())] = val;
 }
 
-void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results)
+void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results)
 {
     float distance = query.ray_.HitDistance(GetWorldBoundingBox());
     if (distance < query.maxDistance_)
@@ -306,7 +306,7 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<
     }
 }
 
-bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
+bool GameObject::QueryObjects(ea::vector<GameObject*>& result, float radius)
 {
     if (!octant_)
         return false;
@@ -318,7 +318,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
     return true;
 }
 
-bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box)
+bool GameObject::QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box)
 {
     if (!octant_)
         return false;
@@ -329,21 +329,21 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     return true;
 }
 
-bool GameObject::Raycast(std::vector<GameObject*>& result,
+bool GameObject::Raycast(ea::vector<GameObject*>& result,
     const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
     return Raycast(result, transformation_.position_ + HeadOffset, direction, maxDist);
 }
 
-bool GameObject::Raycast(std::vector<GameObject*>& result,
+bool GameObject::Raycast(ea::vector<GameObject*>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
     if (!octant_)
         return false;
 
-    std::vector<Math::RayQueryResult> res;
+    ea::vector<Math::RayQueryResult> res;
     if (!RaycastWithResult(res, position, direction, maxDist))
         return false;
 
@@ -352,7 +352,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result,
     return true;
 }
 
-bool GameObject::RaycastWithResult(std::vector<Math::RayQueryResult>& result,
+bool GameObject::RaycastWithResult(ea::vector<Math::RayQueryResult>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
@@ -368,7 +368,7 @@ bool GameObject::RaycastWithResult(std::vector<Math::RayQueryResult>& result,
 
 bool GameObject::IsObjectInSight(const GameObject& object) const
 {
-    std::vector<GameObject*> result;
+    ea::vector<GameObject*> result;
     const bool res = Raycast(result, object.transformation_.position_ + BodyOffset);
     if (!res)
         // Shouldn't happen
@@ -413,9 +413,13 @@ void GameObject::SetState(AB::GameProtocol::CreatureState state)
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 {
-    std::vector<GameObject*> res;
+    ea::vector<GameObject*> res;
+    std::vector<GameObject*> luares;
     if (QueryObjects(res, radius))
-        return res;
+    {
+        std::copy(res.begin(), res.end(), std::back_inserter(luares));
+        return luares;
+    }
     return std::vector<GameObject*>();
 }
 
@@ -463,7 +467,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& directi
 
     const Math::Vector3& src = transformation_.position_;
     const Math::Vector3 dest(direction);
-    std::vector<Math::RayQueryResult> res;
+    ea::vector<Math::RayQueryResult> res;
     const Math::Ray ray(src, dest);
     Math::RayOctreeQuery query(res, ray, src.Distance(dest));
     query.ignore_ = this;
@@ -494,7 +498,7 @@ bool GameObject::IsInRange(Ranges range, const GameObject* object) const
     if (rIt == ranges_.end())
         return false;
     const auto& r = (*rIt).second;
-    const auto it = std::find_if(r.begin(), r.end(), [&object](const std::weak_ptr<GameObject>& current) -> bool
+    const auto it = ea::find_if(r.begin(), r.end(), [&object](const ea::weak_ptr<GameObject>& current) -> bool
     {
         if (auto c = current.lock())
             return c->id_ == object->id_;

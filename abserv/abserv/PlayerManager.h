@@ -26,6 +26,7 @@
 #include <memory>
 #include <limits>
 #include <abscommon/Utils.h>
+#include <eastl.hpp>
 #include <sa/Iteration.h>
 #include <multi_index_container.hpp>
 #include <multi_index/hashed_index.hpp>
@@ -84,7 +85,7 @@ private:
     /// Time with no players
     int64_t idleTime_;
     /// The owner of players
-    std::map<uint32_t, std::shared_ptr<Player>> players_;
+    ea::map<uint32_t, ea::shared_ptr<Player>> players_;
 public:
     PlayerManager() :
         idleTime_(Utils::Tick())
@@ -95,15 +96,15 @@ public:
         players_.clear();
     }
 
-    std::shared_ptr<Player> GetPlayerByName(const std::string& name);
-    /// GEt player by player UUID
-    std::shared_ptr<Player> GetPlayerByUuid(const std::string& uuid);
+    ea::shared_ptr<Player> GetPlayerByName(const std::string& name);
+    /// Get player by player UUID
+    ea::shared_ptr<Player> GetPlayerByUuid(const std::string& uuid);
     /// Get player by in game ID
-    std::shared_ptr<Player> GetPlayerById(uint32_t id);
-    std::shared_ptr<Player> GetPlayerByAccountUuid(const std::string& uuid);
+    ea::shared_ptr<Player> GetPlayerById(uint32_t id);
+    ea::shared_ptr<Player> GetPlayerByAccountUuid(const std::string& uuid);
     /// Get player ID by name
     uint32_t GetPlayerIdByName(const std::string& name);
-    std::shared_ptr<Player> CreatePlayer(std::shared_ptr<Net::ProtocolGame> client);
+    ea::shared_ptr<Player> CreatePlayer(std::shared_ptr<Net::ProtocolGame> client);
     void UpdatePlayerIndex(const Player& player);
     void RemovePlayer(uint32_t playerId);
     void CleanPlayers();

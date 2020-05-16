@@ -24,6 +24,7 @@
 #include "GameObject.h"
 #include <absmath/Point.h>
 #include <absmath/BoundingBox.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -32,17 +33,17 @@ class Terrain;
 class TerrainPatch final : public GameObject
 {
 private:
-    std::weak_ptr<Terrain> owner_;
+    ea::weak_ptr<Terrain> owner_;
     Math::BoundingBox boundingBox_;
     float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const;
 public:
-    TerrainPatch(std::shared_ptr<Terrain> owner,
+    TerrainPatch(ea::shared_ptr<Terrain> owner,
         const Math::Point<int>& offset,
         const Math::Point<int>& size);
     ~TerrainPatch() override = default;
 
-    /// Process octree raycast. May be called from a worker thread.
-    void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results) override;
+    /// Process octree raycast.
+    void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results) override;
     Math::BoundingBox GetWorldBoundingBox() const override;
     Math::BoundingBox GetBoundingBox() const override
     {

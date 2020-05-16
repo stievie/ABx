@@ -25,6 +25,7 @@
 #include <abshared/Damage.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Net {
 class NetworkMessage;
@@ -53,12 +54,12 @@ private:
     DamageType damageType_{ DamageType::Unknown };
     AB::GameProtocol::AttackError lastError_{ AB::GameProtocol::AttackError::None };
     bool interrupted_{ false };
-    std::weak_ptr<Actor> target_;
+    ea::weak_ptr<Actor> target_;
     bool CheckRange();
     void StartHit(Actor& target);
     void Hit(Actor& target);
     void FireWeapon(Actor& target);
-    void MoveToTarget(std::shared_ptr<Actor> target);
+    void MoveToTarget(ea::shared_ptr<Actor> target);
 public:
     AttackComp() = delete;
     explicit AttackComp(Actor& owner) :
@@ -70,7 +71,7 @@ public:
     void Write(Net::NetworkMessage& message);
     bool IsHitting() const { return hitting_; }
     void Cancel();
-    bool Attack(std::shared_ptr<Actor> target, bool ping);
+    bool Attack(ea::shared_ptr<Actor> target, bool ping);
     int64_t GetLastAttackTime() const { return lastAttackTime_; }
     bool IsAttackState() const;
     void SetAttackState(bool value);

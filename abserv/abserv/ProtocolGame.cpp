@@ -57,7 +57,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     LOG_DEBUG << "Player " << packet.charUuid << " logging in" << std::endl;
 #endif
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
-    std::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(packet.charUuid);
+    ea::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(packet.charUuid);
     if (foundPlayer)
     {
 #ifdef DEBUG_NET
@@ -74,7 +74,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
         return;
     }
 
-    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetPtr());
+    ea::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetPtr());
     assert(player);
 
     // Load player and account data from DB
@@ -620,7 +620,7 @@ void ProtocolGame::EnterGame()
     }
     auto* gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
-    std::shared_ptr<Game::Game> instance;
+    ea::shared_ptr<Game::Game> instance;
     if (!Utils::Uuid::IsEmpty(player->data_.instanceUuid))
     {
         // Enter an existing instance

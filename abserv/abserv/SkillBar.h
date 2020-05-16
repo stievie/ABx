@@ -22,18 +22,18 @@
 #pragma once
 
 #include "Skill.h"
-#include <array>
 #include <queue>
 #include <AB/Entities/Profession.h>
 #include <abshared/Mechanic.h>
 #include <abshared/TemplEncoder.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
 class Actor;
 
-typedef std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> SkillsArray;
+typedef ea::array<ea::shared_ptr<Skill>, PLAYER_MAX_SKILLS> SkillsArray;
 
 class SkillBar
 {
@@ -68,7 +68,7 @@ public:
     ~SkillBar() = default;
 
     /// 0 Based
-    AB::GameProtocol::SkillError UseSkill(int index, std::shared_ptr<Actor> target);
+    AB::GameProtocol::SkillError UseSkill(int index, ea::shared_ptr<Actor> target);
     Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed);
     std::string Encode();
@@ -77,9 +77,9 @@ public:
     bool SetSecondaryProfession(uint32_t index);
 
     void ResetSkills();
-    std::shared_ptr<Skill> GetSkill(int pos);
+    ea::shared_ptr<Skill> GetSkill(int pos);
     uint32_t GetIndexOfSkill(int pos);
-    bool SetSkill(int pos, std::shared_ptr<Skill> skill);
+    bool SetSkill(int pos, ea::shared_ptr<Skill> skill);
     bool RemoveSkill(int pos)
     {
         if (pos < 0 || pos >= PLAYER_MAX_SKILLS)

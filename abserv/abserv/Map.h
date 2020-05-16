@@ -27,6 +27,7 @@
 #include <absmath/Vector3.h>
 #include <pugixml.hpp>
 #include "TerrainPatch.h"
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -66,11 +67,11 @@ inline bool SpawnPoint::Empty() const
 class Map
 {
 private:
-    std::weak_ptr<Game> game_;
+    ea::weak_ptr<Game> game_;
     // TerrainPatches are also owned by the game
-    std::vector<std::shared_ptr<TerrainPatch>> patches_;
+    ea::vector<ea::shared_ptr<TerrainPatch>> patches_;
 public:
-    Map(std::shared_ptr<Game> game);
+    Map(ea::shared_ptr<Game> game);
     Map() = delete;
     ~Map();
 
@@ -85,22 +86,22 @@ public:
     }
     float GetTerrainHeight(const Math::Vector3& world) const;
     void UpdatePointHeight(Math::Vector3& world) const;
-    std::shared_ptr<Game> GetGame()
+    ea::shared_ptr<Game> GetGame()
     {
         return game_.lock();
     }
 
-    void AddGameObject(std::shared_ptr<GameObject> object);
+    void AddGameObject(ea::shared_ptr<GameObject> object);
     void UpdateOctree(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
     SpawnPoint GetFreeSpawnPoint(const std::string& group);
-    SpawnPoint GetFreeSpawnPoint(const std::vector<SpawnPoint>& points);
+    SpawnPoint GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points);
     const SpawnPoint& GetSpawnPoint(const std::string& group) const;
-    std::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
+    ea::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
 
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.
-    bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
+    bool FindPath(ea::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
@@ -108,10 +109,10 @@ public:
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 
     MapData data_;
-    std::vector<SpawnPoint> spawnPoints_;
-    std::shared_ptr<Navigation::NavigationMesh> navMesh_;
-    std::shared_ptr<Terrain> terrain_;
-    std::unique_ptr<Math::Octree> octree_;
+    ea::vector<SpawnPoint> spawnPoints_;
+    ea::shared_ptr<Navigation::NavigationMesh> navMesh_;
+    ea::shared_ptr<Terrain> terrain_;
+    ea::unique_ptr<Math::Octree> octree_;
 };
 
 }

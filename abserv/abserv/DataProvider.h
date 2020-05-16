@@ -26,15 +26,14 @@
 #include <abscommon/FileUtils.h>
 #include <abscommon/Logger.h>
 #include <abscommon/StringUtils.h>
-#include <map>
-#include <memory>
+#include <eastl.hpp>
+#include <sa/Assert.h>
 #include <sa/StringHash.h>
 #include <sa/TypeName.h>
-#include <unordered_map>
 
 namespace IO {
 
-typedef std::pair<size_t, std::string> CacheKey;
+typedef ea::pair<size_t, std::string> CacheKey;
 
 struct KeyHasher
 {
@@ -54,8 +53,8 @@ struct KeyHasher
 class DataProvider
 {
 private:
-    std::map<size_t, std::unique_ptr<IOAsset>> importers_;
-    std::unordered_map<CacheKey, std::shared_ptr<Asset>, KeyHasher> cache_;
+    ea::map<size_t, ea::unique_ptr<IOAsset>> importers_;
+    ea::unordered_map<CacheKey, ea::shared_ptr<Asset>, KeyHasher> cache_;
 public:
     DataProvider();
     ~DataProvider() = default;
@@ -71,7 +70,7 @@ public:
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
@@ -82,18 +81,18 @@ public:
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         return (it != cache_.end());
     }
     /// Add an asset to the cache
     /// @return true if it was added, false if such an asset already exists in the cache
     template<class T>
-    bool AddToCache(std::shared_ptr<T> asset, const std::string& name)
+    bool AddToCache(ea::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
@@ -101,11 +100,11 @@ public:
         return true;
     }
     template<class T>
-    bool RemoveFromCache(std::shared_ptr<T> asset, const std::string& name)
+    bool RemoveFromCache(ea::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end() && (*it).second.get() == asset.get())
         {
@@ -115,17 +114,17 @@ public:
         return false;
     }
     template<class T>
-    std::shared_ptr<T> GetCached(const std::string& name)
+    ea::shared_ptr<T> GetCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
-            return std::static_pointer_cast<T>((*it).second);
+            return ea::static_pointer_cast<T>((*it).second);
         }
-        return std::shared_ptr<T>();
+        return ea::shared_ptr<T>();
     }
     /// Remove all objects from the cache
     void ClearCache()
@@ -141,7 +140,7 @@ public:
     void AddImporter()
     {
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        importers_[hash] = std::make_unique<I>();
+        importers_[hash] = ea::make_unique<I>();
     }
     /// Get an importer instance
     template<class T>
@@ -178,23 +177,23 @@ public:
     }
 
     template<class T>
-    std::shared_ptr<T> GetAsset(const std::string& name, bool cacheAble = true)
+    ea::shared_ptr<T> GetAsset(const std::string& name, bool cacheAble = true)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = std::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normal_name);
         // Lookup in cache
         if (cacheAble)
         {
             auto it = cache_.find(key);
             if (it != cache_.end())
             {
-                return std::static_pointer_cast<T>((*it).second);
+                return ea::static_pointer_cast<T>((*it).second);
             }
         }
 
         // Not in cache make a new one and load it
-        std::shared_ptr<T> asset = std::make_shared<T>();
+        ea::shared_ptr<T> asset = ea::make_shared<T>();
         assert(asset);
         if (Import<T>(*asset, normal_name))
         {
@@ -202,7 +201,7 @@ public:
                 cache_[key] = asset;
             return asset;
         }
-        return std::shared_ptr<T>();
+        return ea::shared_ptr<T>();
     }
 };
 

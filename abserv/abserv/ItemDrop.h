@@ -23,6 +23,7 @@
 
 #include "GameObject.h"
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -38,7 +39,7 @@ private:
     std::string concreteUuid_;
     bool pickedUp_{ false };
     /// Dropper
-    std::weak_ptr<Actor> source_;
+    ea::weak_ptr<Actor> source_;
     void PickUp(Actor* actor);
 protected:
     void OnClicked(Actor* actor);
@@ -60,7 +61,7 @@ public:
     /// ID of dropper
     uint32_t GetSourceId();
 
-    void SetSource(std::shared_ptr<Actor> source);
+    void SetSource(ea::shared_ptr<Actor> source);
     bool Serialize(sa::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 

@@ -77,7 +77,7 @@ void DataProvider::CleanCache()
 #endif
     // Delete all assets that are only owned by the cache
     auto i = cache_.begin();
-    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         return current.second.use_count() == 1;
     })) != cache_.end())

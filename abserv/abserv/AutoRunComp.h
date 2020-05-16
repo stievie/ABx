@@ -25,6 +25,7 @@
 #include <absmath/Vector3.h>
 #include <absmath/Quaternion.h>
 #include <abshared/Mechanic.h>
+#include <eastl.hpp>
 #include <sa/Noncopyable.h>
 
 namespace Game {
@@ -47,9 +48,9 @@ private:
     /// Maximum distance to consider being there
     float maxDist_{ RANGE_TOUCH };
     bool autoRun_{ false };
-    std::vector<Math::Vector3> wayPoints_;
+    ea::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
-    std::weak_ptr<Actor> following_;
+    ea::weak_ptr<Actor> following_;
     // Remove the first way points
     void Pop();
     // Get next waypoint
@@ -67,7 +68,7 @@ public:
     explicit AutoRunComp(Actor& owner);
     ~AutoRunComp() = default;
 
-    bool Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist = RANGE_TOUCH);
+    bool Follow(ea::shared_ptr<GameObject> object, bool ping, float maxDist = RANGE_TOUCH);
     bool Goto(const Math::Vector3& dest);
     bool GotoDirection(const Math::Quaternion& direction, float distance);
     void Reset();

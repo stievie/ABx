@@ -26,6 +26,7 @@
 #include "GameObject.h"
 #include <AB/ProtocolCodes.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -81,7 +82,7 @@ class Skill
     friend class SkillBar;
 private:
     kaguya::State luaState_;
-    std::shared_ptr<Script> script_;
+    ea::shared_ptr<Script> script_;
     int64_t startUse_{ 0 };
     int64_t lastUse_{ 0 };
     int64_t recharged_{ 0 };
@@ -90,8 +91,8 @@ private:
     uint32_t effectTarget_{ SkillTargetNone };
     SkillTargetType targetType_{ SkillTargetTypeNone };
     AB::Entities::SkillType canInterrupt_{ AB::Entities::SkillTypeSkill };
-    std::weak_ptr<Actor> source_;
-    std::weak_ptr<Actor> target_;
+    ea::weak_ptr<Actor> source_;
+    ea::weak_ptr<Actor> target_;
     // The real cost may be influenced by skills, armor, effects etc.
     int32_t realEnergy_{ 0 };
     int32_t realAdrenaline_{ 0 };
@@ -111,7 +112,7 @@ private:
     std::string _LuaGetName() const { return data_.name; }
     uint32_t GetRecharge(uint32_t recharge);
     // Only SkillBar may use this
-    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
+    AB::GameProtocol::SkillError StartUse(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target);
 public:
     static void RegisterLua(kaguya::State& state);
 

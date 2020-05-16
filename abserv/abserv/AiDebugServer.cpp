@@ -38,7 +38,7 @@ namespace AI
 {
 
 DebugServer::DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port) :
-    server_(std::make_unique<IPC::Server>(ioService, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port))),
+    server_(ea::make_unique<IPC::Server>(ioService, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port))),
     active_{ true }
 {
     server_->handlers_.Add<GetTrees>(std::bind(&DebugServer::HandleGetTrees, this, std::placeholders::_1, std::placeholders::_2));
@@ -79,7 +79,7 @@ void DebugServer::HandleSelectGame(IPC::ServerConnection& client, const SelectGa
         std::scoped_lock lock(lock_);
         selectedGames_.erase(client.GetId());
     }
-    auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
+    auto it = ea::find_if(games_.begin(), games_.end(), [&](const ea::weak_ptr<Game::Game>& current)
     {
         if (auto c = current.lock())
             return c->id_ == msg.gameId;
@@ -123,9 +123,9 @@ void DebugServer::HandleGetTrees(IPC::ServerConnection& client, const GetTrees&)
     });
 }
 
-std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
+ea::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
 {
-    std::set<uint32_t> result;
+    ea::set<uint32_t> result;
     for (const auto& i : selectedGames_)
     {
         if (i.second == gameId)
@@ -134,12 +134,12 @@ std::set<uint32_t> DebugServer::GetSubscribedClients(uint32_t gameId)
     return result;
 }
 
-void DebugServer::AddGame(std::shared_ptr<Game::Game> game)
+void DebugServer::AddGame(ea::shared_ptr<Game::Game> game)
 {
     if (!active_)
         return;
 
-    const auto it = std::find_if(games_.begin(), games_.end(), [&](const std::weak_ptr<Game::Game>& current)
+    const auto it = ea::find_if(games_.begin(), games_.end(), [&](const ea::weak_ptr<Game::Game>& current)
     {
         if (auto c = current.lock())
             return c->id_ == game->id_;
@@ -157,7 +157,7 @@ void DebugServer::RemoveGame(uint32_t id)
     if (!active_)
         return;
 
-    auto it = std::find_if(games_.begin(), games_.end(), [&id](const std::weak_ptr<Game::Game>& current) -> bool
+    auto it = ea::find_if(games_.begin(), games_.end(), [&id](const ea::weak_ptr<Game::Game>& current) -> bool
     {
         if (auto c = current.lock())
             return c->id_ == id;
@@ -171,7 +171,7 @@ void DebugServer::RemoveGame(uint32_t id)
 
     // Unsubscribe all from this game
     auto i = selectedGames_.begin();
-    while ((i = std::find_if(i, selectedGames_.end(), [&id](const auto& current) -> bool
+    while ((i = ea::find_if(i, selectedGames_.end(), [&id](const auto& current) -> bool
     {
         return current.second == id;
     })) != selectedGames_.end())

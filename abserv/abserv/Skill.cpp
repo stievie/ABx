@@ -203,7 +203,7 @@ AB::GameProtocol::SkillError Skill::CanUse(Actor* source, Actor* target)
     return luaState_["onStartUse"](source, target);
 }
 
-AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+AB::GameProtocol::SkillError Skill::StartUse(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target)
 {
     lastError_ = AB::GameProtocol::SkillError::None;
     if (!CanUseSkill(*source, target.get()))

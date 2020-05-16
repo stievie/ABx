@@ -37,75 +37,75 @@ ChatChannel::~ChatChannel() = default;
 Chat::Chat()
 {
     // Keep a reference to this chat so it doesn't get deleted.
-    tradeChat_ = std::make_shared<TradeChatChannel>();
-    static const std::pair<ChatType, uint64_t> tradeChannelId = { ChatType::Trade, 0ULL };
+    tradeChat_ = ea::make_shared<TradeChatChannel>();
+    static const ea::pair<ChatType, uint64_t> tradeChannelId = { ChatType::Trade, 0ULL };
     channels_.emplace(tradeChannelId, tradeChat_);
 }
 
-std::shared_ptr<ChatChannel> Chat::Get(ChatType type, uint64_t id)
+ea::shared_ptr<ChatChannel> Chat::Get(ChatType type, uint64_t id)
 {
     switch (type)
     {
     case ChatType::None:
-        return std::shared_ptr<ChatChannel>();
+        return ea::shared_ptr<ChatChannel>();
     case ChatType::Whisper:
-        return std::make_shared<WhisperChatChannel>(id);
+        return ea::make_shared<WhisperChatChannel>(id);
     default:
         break;
     }
 
-    const std::pair<ChatType, uint64_t> channelId = { type, id };
+    const ea::pair<ChatType, uint64_t> channelId = { type, id };
     const auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
 
-    std::shared_ptr<ChatChannel> c;
+    ea::shared_ptr<ChatChannel> result;
     switch (type)
     {
     case ChatType::Map:
-        c = std::make_shared<GameChatChannel>(id);
+        result = ea::make_shared<GameChatChannel>(id);
         break;
     case ChatType::Party:
-        c = std::make_shared<PartyChatChannel>(id);
+        result = ea::make_shared<PartyChatChannel>(id);
         break;
     default:
-        c = std::make_shared<ChatChannel>(id);
+        result = ea::make_shared<ChatChannel>(id);
         break;
     }
-    channels_.emplace(channelId, c);
-    return c;
+    channels_.emplace(channelId, result);
+    return result;
 }
 
-std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
+ea::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
 {
     if (Utils::Uuid::IsEmpty(uuid) || type == ChatType::None)
-        return std::shared_ptr<ChatChannel>();
+        return ea::shared_ptr<ChatChannel>();
 
-    const std::pair<ChatType, uint64_t> channelId = { type, sa::StringHashRt(uuid.c_str()) };
+    const ea::pair<ChatType, uint64_t> channelId = { type, sa::StringHashRt(uuid.c_str()) };
     const auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
 
-    std::shared_ptr<ChatChannel> c;
+    ea::shared_ptr<ChatChannel> result;
     switch (type)
     {
     case ChatType::Guild:
-        c = std::make_shared<GuildChatChannel>(uuid);
-        channels_.emplace(channelId, c);
+        result = ea::make_shared<GuildChatChannel>(uuid);
+        channels_.emplace(channelId, result);
         break;
     case ChatType::Whisper:
-        c = std::make_shared<WhisperChatChannel>(uuid);
-        channels_.emplace(channelId, c);
+        result = ea::make_shared<WhisperChatChannel>(uuid);
+        channels_.emplace(channelId, result);
         break;
     default:
         break;
     }
-    return c;
+    return result;
 }
 
 void Chat::Remove(ChatType type, uint64_t id)
 {
-    const std::pair<ChatType, uint64_t> channelId = { type, id };
+    const ea::pair<ChatType, uint64_t> channelId = { type, id };
     auto it = channels_.find(channelId);
     if (it != channels_.end())
         channels_.erase(it);
@@ -120,7 +120,7 @@ void Chat::CleanChats()
     LOG_DEBUG << "Cleaning chats" << std::endl;
 #endif
     auto i = channels_.begin();
-    while ((i = std::find_if(i, channels_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, channels_.end(), [](const auto& current) -> bool
     {
         return current.second.use_count() == 1;
     })) != channels_.end())
@@ -287,7 +287,7 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
 
     for (const auto& g : gs.members)
     {
-        std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerByAccountUuid(g.accountUuid);
+        ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerByAccountUuid(g.accountUuid);
         if (!player)
             // This player not on this server.
             continue;

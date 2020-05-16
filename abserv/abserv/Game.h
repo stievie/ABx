@@ -34,6 +34,7 @@
 #include <CleanupNs.h>
 #include <abscommon/NetworkMessage.h>
 #include <atomic>
+#include <eastl.hpp>
 #include <mutex>
 #include <sa/Iteration.h>
 
@@ -48,11 +49,11 @@ class Crowd;
 
 /// The list which owns the objects. We use a std::map because we want to
 /// have it in the order of creation (allocation) when Update() is called.
-using ObjectList = std::map<uint32_t, std::shared_ptr<GameObject>>;
-using PlayersList = std::unordered_map<uint32_t, Player*>;
-using CrowdList = std::unordered_map<uint32_t, std::unique_ptr<Crowd>>;
+using ObjectList = ea::map<uint32_t, ea::shared_ptr<GameObject>>;
+using PlayersList = ea::unordered_map<uint32_t, Player*>;
+using CrowdList = ea::unordered_map<uint32_t, ea::unique_ptr<Crowd>>;
 
-class Game : public std::enable_shared_from_this<Game>
+class Game : public ea::enable_shared_from_this<Game>
 {
 public:
     enum class ExecutionState
@@ -72,9 +73,9 @@ private:
     PlayersList players_;
     CrowdList crowds_;
     kaguya::State luaState_;
-    std::shared_ptr<Script> script_;
+    ea::shared_ptr<Script> script_;
     /// First player(s) triggering the creation of this game
-    std::vector<std::shared_ptr<GameObject>> queuedObjects_;
+    ea::vector<ea::shared_ptr<GameObject>> queuedObjects_;
     void InitializeLua();
     void InternalLoad();
     void Update();
@@ -125,10 +126,10 @@ private:
         Actor* target);
     ItemDrop* _LuaAddItemDrop(Actor* dropper);
     int _LuaGetType() const { return data_.type; }
-    void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
-    void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
+    void BroadcastPlayerLoggedIn(ea::shared_ptr<Player> player);
+    void BroadcastPlayerLoggedOut(ea::shared_ptr<Player> player);
     void InternalRemoveObject(GameObject* object);
-    void SendSpawnObject(std::shared_ptr<GameObject> object);
+    void SendSpawnObject(ea::shared_ptr<GameObject> object);
     void SendLeaveObject(uint32_t objectId);
     /// Send spawn message for all existing objects
     void SendInitStateToPlayer(Player& player);
@@ -169,22 +170,22 @@ public:
             return To<T>(o);
         return nullptr;
     }
-    void AddObject(std::shared_ptr<GameObject> object);
-    void AddObjectInternal(std::shared_ptr<GameObject> object);
+    void AddObject(ea::shared_ptr<GameObject> object);
+    void AddObjectInternal(ea::shared_ptr<GameObject> object);
     Group* GetGroup(uint32_t id);
     Crowd* AddCrowd();
 
-    std::shared_ptr<Npc> AddNpc(const std::string& script);
-    std::shared_ptr<AreaOfEffect> AddAreaOfEffect(const std::string& script,
-        std::shared_ptr<Actor> source,
+    ea::shared_ptr<Npc> AddNpc(const std::string& script);
+    ea::shared_ptr<AreaOfEffect> AddAreaOfEffect(const std::string& script,
+        ea::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
     void AddProjectile(const std::string& itemUuid,
-        std::shared_ptr<Actor> source,
-        std::shared_ptr<Actor> target);
-    std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
-    std::shared_ptr<ItemDrop> AddRandomItemDropFor(Actor* dropper, Actor* target);
-    void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
+        ea::shared_ptr<Actor> source,
+        ea::shared_ptr<Actor> target);
+    ea::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
+    ea::shared_ptr<ItemDrop> AddRandomItemDropFor(Actor* dropper, Actor* target);
+    void SpawnItemDrop(ea::shared_ptr<ItemDrop> item);
 
     ExecutionState GetState() const { return state_; }
     Net::NetworkMessage& GetGameStatus()

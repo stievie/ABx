@@ -34,7 +34,7 @@ public:
     SkillManager();
     ~SkillManager() = default;
 
-    std::shared_ptr<Skill> Get(uint32_t index);
+    ea::shared_ptr<Skill> Get(uint32_t index);
 };
 
 }

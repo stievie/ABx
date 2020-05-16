@@ -56,7 +56,7 @@ AreaOfEffect::AreaOfEffect() :
     events_.Subscribe<void(GameObject*)>(EVENT_ON_LEFTAREA, std::bind(&AreaOfEffect::OnLeftArea, this, std::placeholders::_1));
     // By default AOE has a sphere shape with the range as radius
     SetCollisionShape(
-        std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
+        ea::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
     );
     // AOE can not hide other objects
@@ -186,19 +186,19 @@ void AreaOfEffect::SetShapeType(Math::ShapeType shape)
         const float rangeSize = RangeDistances[static_cast<int>(range_)] * 0.5f;
         const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
         SetCollisionShape(
-            std::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
+            ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
                 -halfSize, halfSize)
         );
         break;
     }
     case Math::ShapeType::Sphere:
         SetCollisionShape(
-            std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
+            ea::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
                 Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
         );
         break;
     case Math::ShapeType::None:
-        SetCollisionShape(std::unique_ptr<Math::AbstractCollisionShape>());
+        SetCollisionShape(ea::unique_ptr<Math::AbstractCollisionShape>());
         break;
     default:
         LOG_ERROR << "Invalid shape type for AOE " << static_cast<int>(shape) << std::endl;
@@ -244,12 +244,12 @@ void AreaOfEffect::SetRange(Ranges range)
     }
 }
 
-void AreaOfEffect::SetSource(std::shared_ptr<Actor> source)
+void AreaOfEffect::SetSource(ea::shared_ptr<Actor> source)
 {
     source_ = source;
 }
 
-std::shared_ptr<Actor> AreaOfEffect::GetSource()
+ea::shared_ptr<Actor> AreaOfEffect::GetSource()
 {
     return source_.lock();
 }

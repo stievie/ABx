@@ -116,7 +116,7 @@ private:
     uint32_t GetFoeMask() const { return groupMask_ >> 16; }
 protected:
     Math::Vector3 homePos_;
-    std::weak_ptr<Actor> killedBy_;
+    ea::weak_ptr<Actor> killedBy_;
     int morale_{ 0 };
     /// Group/Party ID
     uint32_t groupId_{ 0 };

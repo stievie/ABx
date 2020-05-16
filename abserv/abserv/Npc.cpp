@@ -339,14 +339,14 @@ void Npc::Say(ChatType channel, const std::string& message)
     {
     case ChatType::Map:
     {
-        std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
+        ea::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
         if (ch)
             ch->TalkNpc(*this, message);
         break;
     }
     case ChatType::Party:
     {
-        std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Party, GetGroupId());
+        ea::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Party, GetGroupId());
         if (ch)
             ch->TalkNpc(*this, message);
         break;

@@ -25,7 +25,7 @@
 
 namespace Game {
 
-TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
+TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
     const Math::Point<int>& offset,
     const Math::Point<int>& size) :
     GameObject(),
@@ -116,7 +116,7 @@ float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& di
 }
 
 void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
-    std::vector<Math::RayQueryResult>& results)
+    ea::vector<Math::RayQueryResult>& results)
 {
     if (auto o = owner_.lock())
     {

@@ -52,41 +52,41 @@ EffectsComp::EffectsComp(Actor& owner) :
 void EffectsComp::OnMorale(int morale)
 {
     if (morale != 0)
-        AddEffect(std::shared_ptr<Actor>(), AB::Entities::EFFECT_INDEX_MORALE, 0);
+        AddEffect(ea::shared_ptr<Actor>(), AB::Entities::EFFECT_INDEX_MORALE, 0);
     else
         RemoveEffect(AB::Entities::EFFECT_INDEX_MORALE);
 }
 
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory category)
 {
-    const auto check = [category](const std::shared_ptr<Effect>& current)
+    const auto check = [category](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.category == category;
     };
 
-    auto it = std::find_if(effects_.begin(), effects_.end(), check);
+    auto it = ea::find_if(effects_.begin(), effects_.end(), check);
     while (it != effects_.end())
     {
         (*it)->Remove();
         removedEffects_.push_back((*it));
         effects_.erase(it);
-        it = std::find_if(effects_.begin(), effects_.end(), check);
+        it = ea::find_if(effects_.begin(), effects_.end(), check);
     }
 }
 
 bool EffectsComp::HasEffectOf(AB::Entities::EffectCategory category)
 {
-    const auto check = [category](const std::shared_ptr<Effect>& current)
+    const auto check = [category](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.category == category;
     };
 
-    auto it = std::find_if(effects_.begin(), effects_.end(), check);
+    auto it = ea::find_if(effects_.begin(), effects_.end(), check);
     return it != effects_.end();
 }
 
 
-void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t time)
+void EffectsComp::AddEffect(ea::shared_ptr<Actor> source, uint32_t index, uint32_t time)
 {
     auto effect = GetSubsystem<EffectManager>()->Get(index);
     if (effect)
@@ -113,7 +113,7 @@ void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint3
 
 void EffectsComp::DeleteEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
+    auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
@@ -126,7 +126,7 @@ void EffectsComp::DeleteEffect(uint32_t index)
 
 void EffectsComp::RemoveEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
+    auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
@@ -140,21 +140,21 @@ void EffectsComp::RemoveEffect(uint32_t index)
 
 bool EffectsComp::HasEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
+    auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
     return it != effects_.end();
 }
 
-std::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory category)
+ea::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory category)
 {
     for (auto i = effects_.rbegin(); i != effects_.rend(); ++i)
     {
         if ((*i)->data_.category == category)
             return (*i);
     }
-    return std::shared_ptr<Effect>();
+    return ea::shared_ptr<Effect>();
 }
 
 void EffectsComp::Update(uint32_t timeElapsed)

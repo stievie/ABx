@@ -96,7 +96,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         lastError_ = AB::GameProtocol::SkillError::InvalidSkill;
         return lastError_;
     }
-    std::shared_ptr<Actor> target;
+    ea::shared_ptr<Actor> target;
     if (auto selObj = owner_.GetSelectedObject())
         target = selObj->GetPtr<Actor>();
 

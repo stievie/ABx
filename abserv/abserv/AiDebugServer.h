@@ -30,6 +30,7 @@
 #include <set>
 #include <vector>
 #include <mutex>
+#include <eastl.hpp>
 
 namespace Game {
 class Game;
@@ -42,10 +43,10 @@ class DebugServer
 {
     NON_COPYABLE(DebugServer)
 private:
-    std::unique_ptr<IPC::Server> server_;
+    ea::unique_ptr<IPC::Server> server_;
     bool active_{ false };
-    std::vector<std::weak_ptr<Game::Game>> games_;
-    std::map<uint32_t, uint32_t> selectedGames_;
+    ea::vector<ea::weak_ptr<Game::Game>> games_;
+    ea::map<uint32_t, uint32_t> selectedGames_;
     std::mutex lock_;
     void BroadcastGame(const Game::Game& game);
     void BroadcastGameAdded(const Game::Game& game);
@@ -53,11 +54,11 @@ private:
     void HandleGetGames(IPC::ServerConnection& client, const GetGames&);
     void HandleSelectGame(IPC::ServerConnection& client, const SelectGame&);
     void HandleGetTrees(IPC::ServerConnection& client, const GetTrees&);
-    std::set<uint32_t> GetSubscribedClients(uint32_t gameId);
+    ea::set<uint32_t> GetSubscribedClients(uint32_t gameId);
 public:
     DebugServer(asio::io_service& ioService, uint32_t ip, uint16_t port);
     DebugServer() = default;
-    void AddGame(std::shared_ptr<Game::Game> game);
+    void AddGame(ea::shared_ptr<Game::Game> game);
     void RemoveGame(uint32_t id);
     void Update();
     bool IsActive() const { return active_; }

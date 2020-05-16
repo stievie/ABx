@@ -28,16 +28,16 @@ namespace Game {
 
 SkillManager::SkillManager() = default;
 
-std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
+ea::shared_ptr<Skill> SkillManager::Get(uint32_t index)
 {
     if (index == 0)
-        return std::shared_ptr<Skill>();
+        return ea::shared_ptr<Skill>();
 
-    std::shared_ptr<Skill> result;
+    ea::shared_ptr<Skill> result;
     auto it = skillCache_.find(index);
     if (it != skillCache_.end())
     {
-        result = std::make_shared<Skill>((*it).second);
+        result = ea::make_shared<Skill>((*it).second);
     }
     else
     {
@@ -47,9 +47,9 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
         if (!client->Read(skill))
         {
             LOG_ERROR << "Error reading skill with index " << index << std::endl;
-            return std::shared_ptr<Skill>();
+            return ea::shared_ptr<Skill>();
         }
-        result = std::make_shared<Skill>(skill);
+        result = ea::make_shared<Skill>(skill);
         // Move to cache
         skillCache_.emplace(index, skill);
     }
@@ -60,7 +60,7 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
             return result;
     }
 
-    return std::shared_ptr<Skill>();
+    return ea::shared_ptr<Skill>();
 }
 
 }

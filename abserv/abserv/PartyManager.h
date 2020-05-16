@@ -35,7 +35,7 @@ class PartyManager
 {
 private:
     /// The owner of Parties
-    ea::unordered_map<uint32_t, std::shared_ptr<Party>> parties_;
+    ea::unordered_map<uint32_t, ea::shared_ptr<Party>> parties_;
 
     // https://stackoverflow.com/questions/39510143/how-to-use-create-boostmulti-index
     struct PartyIndexItem
@@ -70,8 +70,8 @@ public:
     PartyManager() = default;
     ~PartyManager() = default;
     /// Returns an existing party or creates a new one
-    std::shared_ptr<Party> GetByUuid(const std::string& uuid);
-    std::shared_ptr<Party> Get(uint32_t partyId) const;
+    ea::shared_ptr<Party> GetByUuid(const std::string& uuid);
+    ea::shared_ptr<Party> Get(uint32_t partyId) const;
     void Remove(uint32_t partyId);
     // Update parties game ID
     void SetPartyGameId(uint32_t partyId, uint32_t gameId);

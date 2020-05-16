@@ -160,7 +160,7 @@ void CollisionComp::ResolveCollisions()
 
     // Actor always has a MoveComp
     MoveComp& mc = *owner_.moveComp_;
-    std::vector<GameObject*> c;
+    ea::vector<GameObject*> c;
     const Math::BoundingBox box = owner_.GetWorldBoundingBox();
     if (owner_.QueryObjects(c, box))
     {

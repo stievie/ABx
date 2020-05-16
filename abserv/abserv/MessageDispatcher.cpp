@@ -47,8 +47,8 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
     if (!stream.ReadString(message))
         return;
 
-    std::shared_ptr<Game::GuildChatChannel> chat =
-        std::dynamic_pointer_cast<Game::GuildChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Guild, guildUuid));
+    ea::shared_ptr<Game::GuildChatChannel> chat =
+        ea::dynamic_pointer_cast<Game::GuildChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Guild, guildUuid));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -65,8 +65,8 @@ void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
     if (!stream.ReadString(message))
         return;
 
-    std::shared_ptr<Game::TradeChatChannel> chat =
-        std::dynamic_pointer_cast<Game::TradeChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Trade, 0));
+    ea::shared_ptr<Game::TradeChatChannel> chat =
+        ea::dynamic_pointer_cast<Game::TradeChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Trade, 0));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -87,12 +87,12 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
     if (!stream.ReadString(message))
         return;
 
-    std::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByUuid(playerUuid);
+    ea::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByUuid(playerUuid);
     if (!player)
         return;
 
-    std::shared_ptr<Game::WhisperChatChannel> chat =
-        std::dynamic_pointer_cast<Game::WhisperChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Whisper, player->id_));
+    ea::shared_ptr<Game::WhisperChatChannel> chat =
+        ea::dynamic_pointer_cast<Game::WhisperChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Whisper, player->id_));
     if (chat)
         chat->Talk(name, message);
 }
@@ -106,7 +106,7 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
     std::string recvAccUuid;
     if (!stream.ReadString(recvAccUuid))
         return;
-    std::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByAccountUuid(recvAccUuid);
+    ea::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByAccountUuid(recvAccUuid);
     if (!player)
         return;
     player->NotifyNewMail();

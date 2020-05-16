@@ -115,7 +115,7 @@ void ItemDrop::OnClicked(Actor* actor)
         PickUp(actor);
 }
 
-void ItemDrop::SetSource(std::shared_ptr<Actor> source)
+void ItemDrop::SetSource(ea::shared_ptr<Actor> source)
 {
     source_ = source;
 }

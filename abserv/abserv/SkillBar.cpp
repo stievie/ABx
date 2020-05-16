@@ -62,7 +62,7 @@ Skill* SkillBar::_LuaGetSkill(int pos)
 int SkillBar::_LuaAddSkill(uint32_t skillIndex)
 {
     SkillManager* sm = GetSubsystem<SkillManager>();
-    std::shared_ptr<Skill> skill = sm->Get(skillIndex);
+    ea::shared_ptr<Skill> skill = sm->Get(skillIndex);
     if (!skill)
         return -1;
 
@@ -97,7 +97,7 @@ bool SkillBar::_LuaSetSkill(int pos, uint32_t skillIndex)
     return skillIndex == newIndex;
 }
 
-AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
+AB::GameProtocol::SkillError SkillBar::UseSkill(int index, ea::shared_ptr<Actor> target)
 {
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
         return AB::GameProtocol::SkillError::InvalidSkill;
@@ -304,13 +304,13 @@ void SkillBar::ResetSkills()
     }
 }
 
-std::shared_ptr<Skill> SkillBar::GetSkill(int pos)
+ea::shared_ptr<Skill> SkillBar::GetSkill(int pos)
 {
     if (pos < 0)
-        return std::shared_ptr<Skill>();
+        return ea::shared_ptr<Skill>();
     if (pos < PLAYER_MAX_SKILLS)
         return skills_[static_cast<size_t>(pos)];
-    return std::shared_ptr<Skill>();
+    return ea::shared_ptr<Skill>();
 }
 
 uint32_t SkillBar::GetIndexOfSkill(int pos)
@@ -325,7 +325,7 @@ uint32_t SkillBar::GetIndexOfSkill(int pos)
     return skill->GetIndex();
 }
 
-bool SkillBar::SetSkill(int pos, std::shared_ptr<Skill> skill)
+bool SkillBar::SetSkill(int pos, ea::shared_ptr<Skill> skill)
 {
     if (pos < 0 || pos >= PLAYER_MAX_SKILLS)
         return false;

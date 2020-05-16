@@ -27,6 +27,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
+#include <eastl.hpp>
 #include <sa/PropStream.h>
 #include <abscommon/Variant.h>
 #include <abshared/Mechanic.h>
@@ -98,7 +99,7 @@ using GameObjectEvents = sa::Events<
 
 static const float AVERAGE_BB_EXTENDS = 0.3f;
 
-class GameObject : public std::enable_shared_from_this<GameObject>
+class GameObject : public ea::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
@@ -107,7 +108,7 @@ public:
     static sa::IdGenerator<uint32_t> objectIds_;
 private:
     int64_t removeAt_{ 0 };
-    std::unique_ptr<Math::AbstractCollisionShape> collisionShape_{ nullptr };
+    ea::unique_ptr<Math::AbstractCollisionShape> collisionShape_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(const Math::STLVector3& direction);
     /// Raycast to destination point
@@ -142,12 +143,12 @@ private:
 protected:
     std::string name_;
     Utils::VariantMap variables_;
-    std::weak_ptr<Game> game_;
+    ea::weak_ptr<Game> game_;
     GameObjectEvents events_;
     /// Octree octant.
     Math::Octant* octant_{ nullptr };
     float sortValue_{ 0.0f };
-    std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
+    std::map<Ranges, ea::vector<ea::weak_ptr<GameObject>>> ranges_;
     void UpdateRanges();
     uint32_t GetNewId()
     {
@@ -167,23 +168,23 @@ public:
 
     // Return smart pointer
     template <typename T>
-    inline std::shared_ptr<T> GetPtr();
+    inline ea::shared_ptr<T> GetPtr();
 
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 
     void SetBoundingSize(const Math::Vector3& size);
-    void SetCollisionShape(std::unique_ptr<Math::AbstractCollisionShape> shape)
+    void SetCollisionShape(ea::unique_ptr<Math::AbstractCollisionShape> shape)
     {
         collisionShape_ = std::move(shape);
     }
     uint32_t GetId() const { return id_; }
-    std::shared_ptr<Game> GetGame() const
+    ea::shared_ptr<Game> GetGame() const
     {
         return game_.lock();
     }
     // Returns true when the object is currently in an outpost
     bool IsInOutpost() const;
-    virtual void SetGame(std::shared_ptr<Game> game)
+    virtual void SetGame(ea::shared_ptr<Game> game)
     {
         RemoveFromOctree();
         game_ = game;
@@ -257,7 +258,7 @@ public:
     const Utils::Variant& GetVar(const std::string& name) const;
     void SetVar(const std::string& name, const Utils::Variant& val);
     /// Process octree raycast.
-    virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results);
+    virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results);
     void SetSortValue(float value) { sortValue_ = value; }
     float GetSortValue() const { return sortValue_; }
 
@@ -272,9 +273,9 @@ public:
         octant_ = octant;
     }
 
-    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool RaycastWithResult(std::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool RaycastWithResult(ea::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool IsObjectInSight(const GameObject& object) const;
     /// Remove this object from scene
     void Remove();
@@ -334,8 +335,8 @@ public:
             return Math::BoundingBox();
         return collisionShape_->GetBoundingBox();
     }
-    bool QueryObjects(std::vector<GameObject*>& result, float radius);
-    bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
+    bool QueryObjects(ea::vector<GameObject*>& result, float radius);
+    bool QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box);
 
     uint32_t GetRetriggerTimout() const;
     void SetRetriggerTimout(uint32_t value);
@@ -400,11 +401,11 @@ inline T* To(GameObject* obj)
 }
 
 template <typename T>
-inline std::shared_ptr<T> GameObject::GetPtr()
+inline ea::shared_ptr<T> GameObject::GetPtr()
 {
     if (Is<T>(*this))
-        return std::static_pointer_cast<T>(shared_from_this());
-    return std::shared_ptr<T>();
+        return ea::static_pointer_cast<T>(shared_from_this());
+    return ea::shared_ptr<T>();
 }
 
 template<class _Stream>

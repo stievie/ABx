@@ -50,7 +50,7 @@ private:
     std::shared_ptr<Net::ProtocolGame> client_;
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
-    std::shared_ptr<Party> party_;
+    ea::shared_ptr<Party> party_;
     bool resigned_{ false  };
     bool queueing_{ false };
     Party* _LuaGetParty();
@@ -99,7 +99,7 @@ public:
     ~Player() override;
 
     /// We are entering a game
-    void SetGame(std::shared_ptr<Game> game) override;
+    void SetGame(ea::shared_ptr<Game> game) override;
     const std::string& GetName() const override { return data_.name; }
     AB::Entities::CharacterSex GetSex() const override
     {
@@ -152,8 +152,8 @@ public:
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
 
-    void SetParty(std::shared_ptr<Party> party);
-    std::shared_ptr<Party> GetParty() const
+    void SetParty(ea::shared_ptr<Party> party);
+    ea::shared_ptr<Party> GetParty() const
     {
         return party_;
     }

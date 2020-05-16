@@ -159,7 +159,7 @@ Actor::Actor() :
      * <attribute name="Offset Position" value="0 0.85 0"/>
     */
     SetCollisionShape(
-        std::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
+        ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
@@ -390,7 +390,7 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_->AddEffect(source ? source->GetPtr<Actor>() : std::shared_ptr<Actor>(), index, time);
+    effectsComp_->AddEffect(source ? source->GetPtr<Actor>() : ea::shared_ptr<Actor>(), index, time);
 }
 
 bool Actor::_LuaHasEffect(uint32_t index)

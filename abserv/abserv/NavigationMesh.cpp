@@ -44,8 +44,8 @@ struct FindPathData
 NavigationMesh::NavigationMesh() :
     IO::Asset(),
     navQuery_(dtAllocNavMeshQuery()),
-    queryFilter_(std::make_unique<dtQueryFilter>()),
-    pathData_(std::make_unique<FindPathData>())
+    queryFilter_(ea::make_unique<dtQueryFilter>()),
+    pathData_(ea::make_unique<FindPathData>())
 {
 }
 
@@ -65,7 +65,7 @@ void NavigationMesh::SetNavMesh(dtNavMesh* value)
     navQuery_->init(navMesh_, MAX_POLYS);
 }
 
-bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
+bool NavigationMesh::FindPath(ea::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,
     const dtQueryFilter* filter /* = nullptr */)
@@ -120,10 +120,9 @@ bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     navQuery_->findStraightPath(&start.x_, &actualEnd.x_, pathData_->polys_, numPolys,
         &pathData_->pathPoints_[0].x_, pathData_->pathFlags_, pathData_->pathPolys_, &numPathPoints, MAX_POLYS);
 
+    dest.reserve(numPathPoints);
     for (int i = 0; i < numPathPoints; ++i)
-    {
         dest.push_back(pathData_->pathPoints_[i]);
-    }
 
     return true;
 }

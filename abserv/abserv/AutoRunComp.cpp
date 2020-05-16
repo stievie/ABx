@@ -40,7 +40,7 @@ AutoRunComp::AutoRunComp(Actor& owner) :
     owner_.SubscribeEvent<void(void)>(EVENT_ON_STUCK, std::bind(&AutoRunComp::OnStuck, this));
 }
 
-bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
+bool AutoRunComp::Follow(ea::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
 {
     auto actor = object->GetPtr<Actor>();
     if (!actor)
@@ -97,7 +97,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     if (pos.Distance(dest) < maxDist_)
         return false;
 
-    std::vector<Math::Vector3> wp;
+    ea::vector<Math::Vector3> wp;
     bool succ = owner_.GetGame()->map_->FindPath(wp, pos, dest, EXTENDS);
 #ifdef DEBUG_NAVIGATION
     std::stringstream ss;
@@ -182,7 +182,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     // Raycast to the point and see if there is a hit.
     const auto raycast = [&pos, this](const Math::Vector3& dest) -> std::optional<Math::RayQueryResult>
     {
-        std::vector<Math::RayQueryResult> result;
+        ea::vector<Math::RayQueryResult> result;
         float dist = pos.Distance(dest);
         if (!owner_.RaycastWithResult(result, pos, dest - pos, dist))
             // No Octree (shouldn't happen)

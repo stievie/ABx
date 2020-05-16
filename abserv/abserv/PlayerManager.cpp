@@ -25,35 +25,35 @@
 
 namespace Game {
 
-std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
+ea::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
     return GetPlayerById(GetPlayerIdByName(name));
 }
 
-std::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
+ea::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
 {
     auto& index = playerIndex_.get<PlayerUuidIndexTag>();
     const auto accountIt = index.find(uuid);
     if (accountIt == index.end())
-        return std::shared_ptr<Player>();
+        return ea::shared_ptr<Player>();
     return GetPlayerById((*accountIt).id);
 }
 
-std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
+ea::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
 {
     auto it = players_.find(id);
     if (it != players_.end())
         return (*it).second;
 
-    return std::shared_ptr<Player>();
+    return ea::shared_ptr<Player>();
 }
 
-std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
+ea::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
 {
     auto& index = playerIndex_.get<AccountUuidIndexTag>();
     const auto accountIt = index.find(uuid);
     if (accountIt == index.end())
-        return std::shared_ptr<Player>();
+        return ea::shared_ptr<Player>();
     return GetPlayerById((*accountIt).id);
 }
 
@@ -67,9 +67,9 @@ uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
     return (*accountIt).id;
 }
 
-std::shared_ptr<Player> PlayerManager::CreatePlayer(std::shared_ptr<Net::ProtocolGame> client)
+ea::shared_ptr<Player> PlayerManager::CreatePlayer(std::shared_ptr<Net::ProtocolGame> client)
 {
-    std::shared_ptr<Player> result = std::make_shared<Player>(client);
+    ea::shared_ptr<Player> result = ea::make_shared<Player>(client);
     players_[result->id_] = result;
 
     return result;
@@ -109,13 +109,13 @@ void PlayerManager::CleanPlayers()
 
     // Logout all inactive players
     auto i = players_.begin();
-    while ((i = std::find_if(i, players_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, players_.end(), [](const auto& current) -> bool
     {
         // Disconnect after 10sec
         return current.second->GetInactiveTime() > PLAYER_INACTIVE_TIME_KICK;
     })) != players_.end())
     {
-        std::shared_ptr<Player> p = (*i).second;
+        ea::shared_ptr<Player> p = (*i).second;
         ++i;
         // Calls PlayerManager::RemovePlayer()
         p->PartyLeave();
@@ -143,7 +143,7 @@ void PlayerManager::KickPlayer(uint32_t playerId)
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
-        std::shared_ptr<Player> p = (*it).second;
+        ea::shared_ptr<Player> p = (*it).second;
         p->PartyLeave();
         p->Logout();
     }
@@ -154,7 +154,7 @@ void PlayerManager::KickAllPlayers()
     while (!players_.empty())
     {
         auto it = players_.begin();
-        std::shared_ptr<Player> p = (*it).second;
+        ea::shared_ptr<Player> p = (*it).second;
         p->PartyLeave();
         p->Logout();
     }

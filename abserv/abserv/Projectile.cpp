@@ -43,7 +43,7 @@ Projectile::Projectile(const std::string& itemUuid) :
 {
     events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&Projectile::OnCollide, this, std::placeholders::_1));
     SetCollisionShape(
-        std::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
+        ea::make_unique<Math::CollisionShape<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, PROJECTILE_SIZE)
     );
     // Projectile can not hide other objects
@@ -97,7 +97,7 @@ bool Projectile::Load()
     return LoadScript(gameItem.actorScript);
 }
 
-void Projectile::SetSource(std::shared_ptr<Actor> source)
+void Projectile::SetSource(ea::shared_ptr<Actor> source)
 {
     if (!startSet_)
     {
@@ -109,7 +109,7 @@ void Projectile::SetSource(std::shared_ptr<Actor> source)
     }
 }
 
-void Projectile::SetTarget(std::shared_ptr<Actor> target)
+void Projectile::SetTarget(ea::shared_ptr<Actor> target)
 {
     // Can not change target
     if (started_)
@@ -123,7 +123,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     distance_ = currentDistance_ = GetPosition().Distance(targetPos_);
 
     bool obstructed = false;
-    std::vector<GameObject*> objects;
+    ea::vector<GameObject*> objects;
     const auto& origin = GetPosition();
     const auto direction = targetPos_ - origin;
     if (Raycast(objects, origin, direction, distance_))

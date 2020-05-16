@@ -26,6 +26,7 @@
 #include <AB/ProtocolCodes.h>
 #include <functional>
 #include <sa/Iteration.h>
+#include <eastl.hpp>
 
 namespace Net {
 class NetworkMessage;
@@ -60,12 +61,12 @@ private:
         Offered,
     };
     Player& owner_;
-    std::weak_ptr<Player> target_;
+    ea::weak_ptr<Player> target_;
     TradeState state_{ TradeState::Idle };
     bool accepted_{ false };
     std::vector<std::pair<uint16_t, uint32_t>> ourOffer_;
     uint32_t ourOfferedMoney_{ 0 };
-    void MoveToTarget(std::shared_ptr<Player> target);
+    void MoveToTarget(ea::shared_ptr<Player> target);
     bool CheckRange();
     void StartTrading();
     void OnStuck();
@@ -80,7 +81,7 @@ public:
     ~TradeComp() = default;
     void Update(uint32_t timeElapsed);
 
-    TradeError TradeWith(std::shared_ptr<Player> target);
+    TradeError TradeWith(ea::shared_ptr<Player> target);
     void Reset();
     // One player requested to cancel the trading
     void Cancel();

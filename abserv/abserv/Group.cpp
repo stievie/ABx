@@ -100,7 +100,7 @@ bool Group::IsAlly(const Group* other) const
 
 bool Group::Remove(uint32_t id)
 {
-    auto it = std::find_if(members_.begin(), members_.end(), [&](const std::weak_ptr<Actor>& current)
+    auto it = ea::find_if(members_.begin(), members_.end(), [&](const ea::weak_ptr<Actor>& current)
     {
         if (auto c = current.lock())
             return c->id_ == id;
@@ -112,9 +112,9 @@ bool Group::Remove(uint32_t id)
     return true;
 }
 
-bool Group::Add(std::shared_ptr<Actor> actor)
+bool Group::Add(ea::shared_ptr<Actor> actor)
 {
-    const auto it = std::find_if(members_.begin(), members_.end(), [&](const std::weak_ptr<Actor>& current)
+    const auto it = ea::find_if(members_.begin(), members_.end(), [&](const ea::weak_ptr<Actor>& current)
     {
         if (auto c = current.lock())
             return c->id_ == actor->id_;
@@ -143,7 +143,7 @@ Actor* Group::GetRandomMember() const
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
-    using iterator = std::vector<std::weak_ptr<Actor>>::const_iterator;
+    using iterator = ea::vector<ea::weak_ptr<Actor>>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
     if (it != members_.end())
     {
@@ -157,7 +157,7 @@ Actor* Group::GetRandomMemberInRange(const Actor* actor, Ranges range) const
 {
     if (members_.size() == 0 || actor == nullptr)
         return nullptr;
-    std::vector<Actor*> actors;
+    ea::vector<Actor*> actors;
     VisitMembers([&](Actor& current) {
         if (actor->IsInRange(range, &current))
             actors.push_back(&current);
@@ -168,7 +168,7 @@ Actor* Group::GetRandomMemberInRange(const Actor* actor, Ranges range) const
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
-    using iterator = std::vector<Actor*>::const_iterator;
+    using iterator = ea::vector<Actor*>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(actors.begin(), actors.end(), rnd);
     if (it != actors.end())
         return (*it);

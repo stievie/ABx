@@ -21,8 +21,7 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
+#include <eastl.hpp>
 #include <sa/Iteration.h>
 #include <sa/IdGenerator.h>
 #include <kaguya/kaguya.hpp>
@@ -52,7 +51,7 @@ private:
     int _LuaGetMemberCount();
     std::vector<Actor*> _LuaGetMembers();
 protected:
-    std::vector<std::weak_ptr<Actor>> members_;
+    ea::vector<ea::weak_ptr<Actor>> members_;
     TeamColor color_{ TeamColor::Default };
     uint32_t id_;
     std::string name_;
@@ -81,7 +80,7 @@ public:
     void Resurrect(int precentHealth, int percentEnergy);
     void KillAll();
 
-    bool Add(std::shared_ptr<Actor> actor);
+    bool Add(ea::shared_ptr<Actor> actor);
     bool Remove(uint32_t id);
     Actor* GetLeader() const;
 

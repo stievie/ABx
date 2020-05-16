@@ -61,13 +61,13 @@ AB::Entities::EffectCategory EffectCatNameToEffectCat(const std::string& name)
     }
 }
 
-std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
+ea::shared_ptr<Effect> EffectManager::Get(uint32_t index)
 {
-    std::shared_ptr<Effect> result;
+    ea::shared_ptr<Effect> result;
     auto it = effects_.find(index);
     if (it != effects_.end())
     {
-        result = std::make_shared<Effect>((*it).second);
+        result = ea::make_shared<Effect>((*it).second);
     }
     else
     {
@@ -77,9 +77,9 @@ std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
         if (!client->Read(effect))
         {
             LOG_ERROR << "Error reading effect with index " << index << std::endl;
-            return std::shared_ptr<Effect>();
+            return ea::shared_ptr<Effect>();
         }
-        result = std::make_shared<Effect>(effect);
+        result = ea::make_shared<Effect>(effect);
         // Move to cache
         effects_.emplace(index, effect);
     }
@@ -90,7 +90,7 @@ std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
             return result;
     }
 
-    return std::shared_ptr<Effect>();
+    return ea::shared_ptr<Effect>();
 }
 
 }

@@ -136,7 +136,7 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t time)
+bool Effect::Start(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target, uint32_t time)
 {
     target_ = target;
     source_ = source;

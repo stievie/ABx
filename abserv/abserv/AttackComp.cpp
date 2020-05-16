@@ -118,7 +118,7 @@ void AttackComp::FireWeapon(Actor& target)
     }
 }
 
-void AttackComp::MoveToTarget(std::shared_ptr<Actor> target)
+void AttackComp::MoveToTarget(ea::shared_ptr<Actor> target)
 {
     if (!owner_.autorunComp_->IsAutoRun())
     {
@@ -220,7 +220,7 @@ void AttackComp::Cancel()
     SetAttackState(false);
 }
 
-bool AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
+bool AttackComp::Attack(ea::shared_ptr<Actor> target, bool ping)
 {
     bool canAttack = true;
     owner_.CallEvent<void(Actor*,bool&)>(EVENT_ON_ATTACK, target.get(), canAttack);

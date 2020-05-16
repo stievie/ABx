@@ -25,6 +25,7 @@
 #include <absmath/BoundingBox.h>
 #include <absmath/Vector3.h>
 #include <limits>
+#include <eastl.hpp>
 
 namespace Game {
 class GameObject;
@@ -65,7 +66,7 @@ protected:
     /// Return drawable objects by a ray query, called internally.
     void GetObjectsInternal(RayOctreeQuery& query) const;
     /// Return drawable objects only for a threaded ray query, called internally.
-    void GetObjectsOnlyInternal(RayOctreeQuery& query, std::vector<Game::GameObject*>& objects) const;
+    void GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<Game::GameObject*>& objects) const;
     BoundingBox worldBoundingBox_;
     /// Bounding box used for drawable object fitting.
     BoundingBox cullingBox_;
@@ -78,7 +79,7 @@ protected:
     Octree* root_;
     /// Octant index relative to its siblings or ROOT_INDEX for root octant
     unsigned index_;
-    std::vector<Game::GameObject*> objects_;
+    ea::vector<Game::GameObject*> objects_;
     /// Number of objects in this octant and child octants.
     unsigned numObjects_;
     /// Increase drawable object count recursively.
@@ -123,10 +124,10 @@ public:
 
     /// Subdivision level.
     unsigned numLevels_;
-    std::vector<Game::GameObject*> objectUpdate_;
+    ea::vector<Game::GameObject*> objectUpdate_;
 private:
     /// Ray query temporary list of drawables.
-    mutable std::vector<Game::GameObject*> rayQueryObjects_;
+    mutable ea::vector<Game::GameObject*> rayQueryObjects_;
 };
 
 }

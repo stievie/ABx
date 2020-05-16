@@ -25,6 +25,7 @@
 #include "Script.h"
 #include "Skill.h"
 #include <sa/Bits.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -42,10 +43,10 @@ private:
         FunctionOnLeftArea = 1 << 3,
         FunctionOnCollide = 1 << 4,
     };
-    std::weak_ptr<Actor> source_;
+    ea::weak_ptr<Actor> source_;
     kaguya::State luaState_;
     bool luaInitialized_{ false };
-    std::shared_ptr<Script> script_;
+    ea::shared_ptr<Script> script_;
     /// Effect or skill index
     uint32_t index_{ 0 };
     Ranges range_{ Ranges::Adjecent };
@@ -86,8 +87,8 @@ public:
     Math::ShapeType GetShapeType() const;
     void SetRange(Ranges range);
     Ranges GetRange() const { return range_; }
-    void SetSource(std::shared_ptr<Actor> source);
-    std::shared_ptr<Actor> GetSource();
+    void SetSource(ea::shared_ptr<Actor> source);
+    ea::shared_ptr<Actor> GetSource();
     uint32_t GetLifetime() const { return lifetime_; }
     void SetLifetime(uint32_t value) { lifetime_ = value; }
     int64_t GetStartTime() const { return startTime_; }

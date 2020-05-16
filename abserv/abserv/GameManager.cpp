@@ -52,13 +52,13 @@ void GameManager::Stop()
     }
 }
 
-std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
+ea::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 {
     assert(state_ == State::ManagerStateRunning);
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Creating game " << mapUuid << std::endl;
 #endif
-    std::shared_ptr<Game> game = std::make_shared<Game>();
+    ea::shared_ptr<Game> game = ea::make_shared<Game>();
     {
         std::scoped_lock lock(lock_);
         game->id_ = GetNewGameId();
@@ -91,7 +91,7 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     }
 }
 
-std::shared_ptr<Game> GameManager::GetOrCreateInstance(const std::string& mapUuid, const std::string& instanceUuid)
+ea::shared_ptr<Game> GameManager::GetOrCreateInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
     auto result = GetInstance(instanceUuid);
     if (result)
@@ -113,7 +113,7 @@ bool GameManager::InstanceExists(const std::string& uuid)
     return it != games_.end();
 }
 
-std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
+ea::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 {
     auto it = ea::find_if(games_.begin(), games_.end(), [&](auto const& current)
     {
@@ -122,10 +122,10 @@ std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
     if (it != games_.end())
         return (*it).second;
 
-    return std::shared_ptr<Game>();
+    return ea::shared_ptr<Game>();
 }
 
-std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
+ea::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
 {
     AB::Entities::GameType gType = GetGameType(mapUuid);
     if (gType >= AB::Entities::GameTypePvPCombat && canCreate)
@@ -137,7 +137,7 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canC
     {
         // No instance of this map exists
         if (!canCreate)
-            return std::shared_ptr<Game>();
+            return ea::shared_ptr<Game>();
         return CreateGame(mapUuid);
     }
     // There are already some games with this map
@@ -153,22 +153,22 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canC
     if (canCreate)
         return CreateGame(mapUuid);
     LOG_WARNING << "No game with UUID " << mapUuid << std::endl;
-    return std::shared_ptr<Game>();
+    return ea::shared_ptr<Game>();
 }
 
-std::shared_ptr<Game> GameManager::Get(uint32_t gameId)
+ea::shared_ptr<Game> GameManager::Get(uint32_t gameId)
 {
     auto it = games_.find(gameId);
     if (it != games_.end())
     {
         return (*it).second;
     }
-    return std::shared_ptr<Game>();
+    return ea::shared_ptr<Game>();
 }
 
-bool GameManager::AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> player)
+bool GameManager::AddPlayer(const std::string& mapUuid, ea::shared_ptr<Player> player)
 {
-    std::shared_ptr<Game> game = GetGame(mapUuid, true);
+    ea::shared_ptr<Game> game = GetGame(mapUuid, true);
     if (!game)
     {
         LOG_ERROR << "Unable to get game, Map UUID: " << mapUuid << std::endl;

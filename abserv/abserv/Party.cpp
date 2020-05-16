@@ -50,7 +50,7 @@ void Party::RegisterLua(kaguya::State& state)
 Party::Party() :
     Group(Group::GetNewId())
 {
-    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
+    chatChannel_ = ea::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
     members_.reserve(AB::Entities::Limits::MAX_PARTY_MEMBERS);
     // The Entity is created by the PartyManager
@@ -63,7 +63,7 @@ Party::~Party()
 
 size_t Party::GetDataPos(const Player& player)
 {
-    std::vector<std::string>::iterator iter = std::find_if(data_.members.begin(),
+   auto iter = ea::find_if(data_.members.begin(),
         data_.members.end(), [&player](const std::string& current)
     {
         return Utils::Uuid::IsEqual(player.data_.uuid, current);
@@ -95,7 +95,7 @@ void Party::_LuaSetVarNumber(const std::string& name, float value)
     SetVar(name, Utils::Variant(value));
 }
 
-bool Party::AddPlayer(std::shared_ptr<Player> player)
+bool Party::AddPlayer(ea::shared_ptr<Player> player)
 {
     if (!player)
         return false;
@@ -114,7 +114,7 @@ bool Party::AddPlayer(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::SetPlayer(std::shared_ptr<Player> player)
+bool Party::SetPlayer(ea::shared_ptr<Player> player)
 {
     if (!player)
         return false;
@@ -136,14 +136,14 @@ bool Party::SetPlayer(std::shared_ptr<Player> player)
 
 bool Party::RemovePlayer(Player& player, bool newParty /* = true */)
 {
-    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Actor>& current)
+    members_.erase(ea::remove_if(members_.begin(), members_.end(), [&player](ea::weak_ptr<Actor>& current)
     {
         if (auto p = current.lock())
             return (p->id_ == player.id_);
         return false;
     }), members_.end());
 
-    auto dataIt = std::find(data_.members.begin(), data_.members.end(), player.data_.uuid);
+    auto dataIt = ea::find(data_.members.begin(), data_.members.end(), player.data_.uuid);
     if (dataIt != data_.members.end())
         data_.members.erase(dataIt);
     UpdateEntity(data_);
@@ -151,12 +151,12 @@ bool Party::RemovePlayer(Player& player, bool newParty /* = true */)
     if (newParty)
     {
         // Lastly, this may call the destructor
-        player.SetParty(std::shared_ptr<Party>());
+        player.SetParty(ea::shared_ptr<Party>());
     }
     return true;
 }
 
-bool Party::Invite(std::shared_ptr<Player> player)
+bool Party::Invite(ea::shared_ptr<Player> player)
 {
     if (!player)
         return false;
@@ -168,12 +168,12 @@ bool Party::Invite(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::RemoveInvite(std::shared_ptr<Player> player)
+bool Party::RemoveInvite(ea::shared_ptr<Player> player)
 {
     if (!player)
         return false;
 
-    auto it = std::find_if(invited_.begin(), invited_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = ea::find_if(invited_.begin(), invited_.end(), [&player](const ea::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -261,7 +261,7 @@ inline size_t Party::GetValidPlayerCount() const
 
 bool Party::IsMember(const Player& player) const
 {
-    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Actor>& current)
+    auto it = ea::find_if(members_.begin(), members_.end(), [&player](const ea::weak_ptr<Actor>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -274,7 +274,7 @@ bool Party::IsMember(const Player& player) const
 
 bool Party::IsInvited(const Player& player) const
 {
-    auto it = std::find_if(invited_.begin(), invited_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = ea::find_if(invited_.begin(), invited_.end(), [&player](const ea::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -372,7 +372,7 @@ void Party::SetVar(const std::string& name, const Utils::Variant& val)
 void Party::ChangeInstance(const std::string& mapUuid)
 {
     // Get or create a game. The client gets an instance UUID to change to.
-    std::shared_ptr<Game> game = GetSubsystem<GameManager>()->GetGame(mapUuid, true);
+    ea::shared_ptr<Game> game = GetSubsystem<GameManager>()->GetGame(mapUuid, true);
     if (!game)
     {
         LOG_ERROR << "Failed to get game " << mapUuid << std::endl;
@@ -384,10 +384,10 @@ void Party::ChangeInstance(const std::string& mapUuid)
     });
 }
 
-std::shared_ptr<Player> Party::GetAnyPlayer() const
+ea::shared_ptr<Player> Party::GetAnyPlayer() const
 {
     if (members_.size() == 0)
-        return std::shared_ptr<Player>();
+        return ea::shared_ptr<Player>();
     for (const auto& m : members_)
     {
         if (auto sm = m.lock())
@@ -396,7 +396,7 @@ std::shared_ptr<Player> Party::GetAnyPlayer() const
                 return To<Player>(*sm).GetPtr<Player>();
         }
     }
-    return std::shared_ptr<Player>();
+    return ea::shared_ptr<Player>();
 }
 
 Player* Party::GetRandomPlayer() const
@@ -404,7 +404,7 @@ Player* Party::GetRandomPlayer() const
     if (members_.size() == 0)
         return nullptr;
 
-    std::vector<Player*> players;
+    ea::vector<Player*> players;
     VisitPlayers([&players](Player& current) {
        players.push_back(&current);
        return Iteration::Continue;
@@ -412,7 +412,7 @@ Player* Party::GetRandomPlayer() const
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
-    using iterator = std::vector<Player*>::const_iterator;
+    using iterator = ea::vector<Player*>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
         return (*it);
@@ -433,7 +433,7 @@ Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
         return nullptr;
     }
 
-    std::vector<Player*> players;
+    ea::vector<Player*> players;
     VisitPlayers([&](Player& current) {
         if (actor->IsInRange(range, &current))
             players.push_back(&current);
@@ -444,7 +444,7 @@ Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
-    using iterator = std::vector<Player*>::const_iterator;
+    using iterator = ea::vector<Player*>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
         return (*it);

@@ -31,6 +31,7 @@
 #include <abshared/Attributes.h>
 #include <sa/Noncopyable.h>
 #include <sa/Bits.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -78,9 +79,9 @@ private:
         FunctionOnRemoved = 1 << 21,
     };
     kaguya::State luaState_;
-    std::shared_ptr<Script> script_;
-    std::weak_ptr<Actor> target_;
-    std::weak_ptr<Actor> source_;
+    ea::shared_ptr<Script> script_;
+    ea::weak_ptr<Actor> target_;
+    ea::weak_ptr<Actor> source_;
     bool persistent_{ false };
     uint32_t functions_{ FunctionNone };
     /// Internal effects are not visible to the player, e.g. Effects from the equipments (+armor from Armor, Shield...).
@@ -119,7 +120,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    bool Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t time);
+    bool Start(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target, uint32_t time);
     /// Remove Effect before it ends
     void Remove();
     /// Get real cost of a skill
@@ -174,7 +175,7 @@ public:
 };
 
 /// effects are fist-in-last-out
-typedef std::vector<std::shared_ptr<Effect>> EffectList;
+typedef ea::vector<ea::shared_ptr<Effect>> EffectList;
 
 enum ConditionType : uint8_t
 {

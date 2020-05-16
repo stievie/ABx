@@ -80,7 +80,7 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
     const Math::STLVector3& pos)
 {
     auto o = AddAreaOfEffect(script,
-        source ? source->GetPtr<Actor>() : std::shared_ptr<Actor>(),
+        source ? source->GetPtr<Actor>() : ea::shared_ptr<Actor>(),
         index, pos);
     if (o)
         return o.get();
@@ -104,7 +104,7 @@ ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
     return nullptr;
 }
 
-void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
+void Game::BroadcastPlayerLoggedIn(ea::shared_ptr<Player> player)
 {
     if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
@@ -114,7 +114,7 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
         AB::GameProtocol::PlayerInfoFieldCurrentName | AB::GameProtocol::PlayerInfoFieldCurrentMap);
 }
 
-void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
+void Game::BroadcastPlayerLoggedOut(ea::shared_ptr<Player> player)
 {
     if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
@@ -350,13 +350,13 @@ Player* Game::GetPlayerByName(const std::string& name)
     return nullptr;
 }
 
-void Game::AddObject(std::shared_ptr<GameObject> object)
+void Game::AddObject(ea::shared_ptr<GameObject> object)
 {
     AddObjectInternal(object);
     Lua::CallFunction(luaState_, "onAddObject", object.get());
 }
 
-void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
+void Game::AddObjectInternal(ea::shared_ptr<GameObject> object)
 {
     objects_.emplace(object->id_, object);
     object->SetGame(shared_from_this());
@@ -368,17 +368,17 @@ void Game::InternalRemoveObject(GameObject* object)
     if (it == objects_.end())
         return;
     Lua::CallFunction(luaState_, "onRemoveObject", object);
-    object->SetGame(std::shared_ptr<Game>());
+    object->SetGame(ea::shared_ptr<Game>());
     if (it != objects_.end())
         objects_.erase(it);
 }
 
-std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
+ea::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
-    std::shared_ptr<Npc> result = std::make_shared<Npc>();
+    ea::shared_ptr<Npc> result = ea::make_shared<Npc>();
     result->SetGame(shared_from_this());
     if (!result->LoadScript(script))
-        return std::shared_ptr<Npc>();
+        return ea::shared_ptr<Npc>();
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
@@ -389,12 +389,12 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     return result;
 }
 
-std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
-    std::shared_ptr<Actor> source,
+ea::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
+    ea::shared_ptr<Actor> source,
     uint32_t index,
     const Math::Vector3& pos)
 {
-    std::shared_ptr<AreaOfEffect> result = std::make_shared<AreaOfEffect>();
+    ea::shared_ptr<AreaOfEffect> result = ea::make_shared<AreaOfEffect>();
     result->SetGame(shared_from_this());
     result->SetSource(source);
     result->SetIndex(index);
@@ -402,7 +402,7 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     if (Math::Equals(pos.y_, 0.0f))
         result->transformation_.position_.y_ = map_->GetTerrainHeight(pos);
     if (!result->LoadScript(script))
-        return std::shared_ptr<AreaOfEffect>();
+        return ea::shared_ptr<AreaOfEffect>();
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
@@ -414,10 +414,10 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
 }
 
 void Game::AddProjectile(const std::string& itemUuid,
-    std::shared_ptr<Actor> source,
-    std::shared_ptr<Actor> target)
+    ea::shared_ptr<Actor> source,
+    ea::shared_ptr<Actor> target)
 {
-    std::shared_ptr<Projectile> result = std::make_shared<Projectile>(itemUuid);
+    ea::shared_ptr<Projectile> result = ea::make_shared<Projectile>(itemUuid);
     result->SetGame(shared_from_this());
     result->SetSource(source);
     result->SetTarget(target);
@@ -431,25 +431,25 @@ void Game::AddProjectile(const std::string& itemUuid,
     );
 }
 
-std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* target)
+ea::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* target)
 {
     if (state_ != ExecutionState::Running || !dropper)
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
     if (AB::Entities::IsOutpost(data_.type))
         // No drops in outposts
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
 
     if (target->GetType() != AB::GameProtocol::GameObjectType::Player)
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
 
     Player* targetPlayer = To<Player>(target);
     auto* factory = GetSubsystem<ItemFactory>();
     auto* rng = GetSubsystem<Crypto::Random>();
     uint32_t itemId = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), targetPlayer);
     if (itemId == 0)
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
 
-    std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(itemId);
+    ea::shared_ptr<ItemDrop> result = ea::make_shared<ItemDrop>(itemId);
     result->transformation_.position_ = dropper->transformation_.position_;
     // Random pos around dropper
     result->transformation_.position_.y_ += 0.2f;
@@ -462,27 +462,27 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
     return result;
 }
 
-std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
+ea::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
 {
     if (state_ != ExecutionState::Running || !dropper)
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
     if (AB::Entities::IsOutpost(data_.type) || data_.type == AB::Entities::GameTypePvPCombat)
         // No drops in outposts and PvP games
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     auto p = Utils::SelectRandomly(players_.begin(), players_.end(), rnd);
     if (p == players_.end())
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
 
     Player* target = (*p).second;
     if (!target)
-        return std::shared_ptr<ItemDrop>();
+        return ea::shared_ptr<ItemDrop>();
     return AddRandomItemDropFor(dropper, target);
 }
 
-void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
+void Game::SpawnItemDrop(ea::shared_ptr<ItemDrop> item)
 {
     item->SetGame(shared_from_this());
     // Also adds it to the objects array
@@ -571,7 +571,7 @@ void Game::Load(const std::string& mapUuid)
     thPool->Enqueue(&ItemFactory::LoadDropChances, factory, mapUuid);
 }
 
-void Game::SendSpawnObject(std::shared_ptr<GameObject> object)
+void Game::SendSpawnObject(ea::shared_ptr<GameObject> object)
 {
     AB::GameProtocol::GameObjectType objectType = object->GetType();
     if (objectType < AB::GameProtocol::GameObjectType::__SentToPlayer)
@@ -607,23 +607,23 @@ void Game::SendInitStateToPlayer(Player& player)
     // This is sent to all players when they enter a game.
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
-    const auto write = [&player](Net::NetworkMessage& msg, const std::shared_ptr<GameObject>& o)
+    const auto write = [&player](Net::NetworkMessage& msg, GameObject& o)
     {
-        if (o->GetType() < AB::GameProtocol::GameObjectType::__SentToPlayer)
+        if (o.GetType() < AB::GameProtocol::GameObjectType::__SentToPlayer)
             // No need to send terrain patch to client
             return;
-        if (o->id_ == player.id_)
+        if (o.id_ == player.id_)
             // Don't send spawn of our self
             return;
 
         msg.AddByte(AB::GameProtocol::ServerPacketType::GameSpawnObjectExisting);
-        o->WriteSpawnData(msg);
+        o.WriteSpawnData(msg);
     };
 
     auto msg = Net::NetworkMessage::GetNew();
     for (const auto& o : objects_)
     {
-        write(*msg, o.second);
+        write(*msg, *o.second);
         // When there are many objects this may exceed the buffer size.
         if (msg->GetSpace() < 512)
         {
@@ -635,7 +635,7 @@ void Game::SendInitStateToPlayer(Player& player)
     // Also send queued objects
     for (const auto& o : queuedObjects_)
     {
-        write(*msg, o);
+        write(*msg, *o);
         if (msg->GetSpace() < 512)
         {
             player.WriteToOutput(*msg);
@@ -649,7 +649,7 @@ void Game::SendInitStateToPlayer(Player& player)
 
 void Game::PlayerJoin(uint32_t playerId)
 {
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
         {
@@ -702,7 +702,7 @@ void Game::PlayerLeave(uint32_t playerId)
     if (player)
     {
         std::scoped_lock lock(lock_);
-        player->SetGame(std::shared_ptr<Game>());
+        player->SetGame(ea::shared_ptr<Game>());
         auto it = players_.find(playerId);
         if (it != players_.end())
         {
@@ -728,9 +728,9 @@ void Game::PlayerLeave(uint32_t playerId)
 
 Crowd* Game::AddCrowd()
 {
-    std::unique_ptr<Crowd> crowd = std::make_unique<Crowd>();
+    ea::unique_ptr<Crowd> crowd = ea::make_unique<Crowd>();
     Crowd* result = crowd.get();
-    crowds_.emplace(crowd->GetId(), std::move(crowd));
+    crowds_.emplace(crowd->GetId(), ea::move(crowd));
     return result;
 }
 

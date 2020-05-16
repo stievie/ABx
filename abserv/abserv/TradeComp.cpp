@@ -293,7 +293,7 @@ void TradeComp::VisitOfferedItems(const std::function<Iteration(Item&, uint32_t)
     }
 }
 
-TradeComp::TradeError TradeComp::TradeWith(std::shared_ptr<Player> target)
+TradeComp::TradeError TradeComp::TradeWith(ea::shared_ptr<Player> target)
 {
     if (!target)
         return TradeError::TargetInvalid;
@@ -324,7 +324,7 @@ void TradeComp::TradeReqeust(Player& source)
     state_ = TradeState::Trading;
 }
 
-void TradeComp::MoveToTarget(std::shared_ptr<Player> target)
+void TradeComp::MoveToTarget(ea::shared_ptr<Player> target)
 {
     if (!owner_.autorunComp_->IsAutoRun())
     {

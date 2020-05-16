@@ -81,7 +81,7 @@ void Octree::Raycast(RayOctreeQuery& query) const
 {
     query.result_.clear();
     GetObjectsInternal(query);
-    std::sort(query.result_.begin(), query.result_.end(), CompareRayQueryResults);
+    ea::sort(query.result_.begin(), query.result_.end(), CompareRayQueryResults);
 }
 
 void Octree::RaycastSingle(RayOctreeQuery& query) const
@@ -95,7 +95,7 @@ void Octree::RaycastSingle(RayOctreeQuery& query) const
     {
         object->SetSortValue(query.ray_.HitDistance(object->GetWorldBoundingBox()));
     }
-    std::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), Game::CompareObjects);
+    ea::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), Game::CompareObjects);
 
     // Then do the actual test according to the query, and early-out as possible
     float closestHit = Math::M_INFINITE;
@@ -364,7 +364,7 @@ void Octant::GetObjectsInternal(RayOctreeQuery& query) const
     }
 }
 
-void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, std::vector<Game::GameObject*>& objects) const
+void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<Game::GameObject*>& objects) const
 {
     float octantDist = query.ray_.HitDistance(cullingBox_);
     if (octantDist >= query.maxDistance_)

@@ -28,10 +28,10 @@
 
 namespace Game {
 
-Map::Map(std::shared_ptr<Game> game) :
+Map::Map(ea::shared_ptr<Game> game) :
     game_(game),
     navMesh_(nullptr),
-    octree_(std::make_unique<Math::Octree>())
+    octree_(ea::make_unique<Math::Octree>())
 {
 }
 
@@ -50,7 +50,7 @@ void Map::CreatePatches()
         for (int x = 0; x < terrain_->numPatches_.x_; ++x)
         {
             patches_.push_back(
-                std::make_shared<TerrainPatch>(terrain_, Math::Point<int>(x, y),
+                ea::make_shared<TerrainPatch>(terrain_, Math::Point<int>(x, y),
                     Math::Point<int>(terrain_->patchSize_, terrain_->patchSize_))
             );
         }
@@ -70,7 +70,7 @@ TerrainPatch* Map::GetPatch(int x, int z) const
         return GetPatch((unsigned)(z * terrain_->numPatches_.x_ + x));
 }
 
-void Map::AddGameObject(std::shared_ptr<GameObject> object)
+void Map::AddGameObject(ea::shared_ptr<GameObject> object)
 {
     if (auto game = game_.lock())
         game->AddObjectInternal(object);
@@ -96,17 +96,17 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::string& group)
     return GetFreeSpawnPoint(sps);
 }
 
-SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
+SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points)
 {
     if (points.size() == 0)
         return EmtpySpawnPoint;
 
-    auto cleanObjects = [](std::vector<GameObject*>& objects)
+    auto cleanObjects = [](ea::vector<GameObject*>& objects)
     {
         if (objects.size() == 0)
             return;
         // Remove all objects that are not interesting
-        objects.erase(std::remove_if(objects.begin(), objects.end(), [](GameObject* current)
+        objects.erase(ea::remove_if(objects.begin(), objects.end(), [](GameObject* current)
         {
             return (current->GetCollisionMask() == 0) ||
                 (current->GetType() == AB::GameProtocol::GameObjectType::TerrainPatch);
@@ -117,7 +117,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
     SpawnPoint minPos;
     for (const auto& p : points)
     {
-        std::vector<GameObject*> result;
+        ea::vector<GameObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(p.position, 5.0f));
         octree_->GetObjects(query);
         cleanObjects(result);
@@ -131,7 +131,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
     }
 
     {
-        std::vector<GameObject*> result;
+        ea::vector<GameObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f));
         octree_->GetObjects(query);
         cleanObjects(result);
@@ -162,9 +162,9 @@ const SpawnPoint& Map::GetSpawnPoint(const std::string& group) const
     return EmtpySpawnPoint;
 }
 
-std::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
+ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
 {
-    std::vector<SpawnPoint> result;
+    ea::vector<SpawnPoint> result;
     for (const auto& sp : spawnPoints_)
     {
         if (sp.group.compare(group) == 0)
@@ -187,7 +187,7 @@ void Map::UpdatePointHeight(Math::Vector3& world) const
     world.y_ = terrain_->GetHeight(world);
 }
 
-bool Map::FindPath(std::vector<Math::Vector3>& dest,
+bool Map::FindPath(ea::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,
     const dtQueryFilter* filter /* = nullptr */)

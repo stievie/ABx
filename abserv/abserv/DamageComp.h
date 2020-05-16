@@ -27,6 +27,7 @@
 #include <abshared/Damage.h>
 #include <sa/CircularQueue.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Net {
 class NetworkMessage;
@@ -66,8 +67,8 @@ private:
     Actor& owner_;
     // Damage history kept for DAMAGEHISTORY_TOKEEP
     sa::CircularQueue<DamageItem, DAMAGEHISTORY_TOKEEP> damages_;
-    std::weak_ptr<Actor> lastDamager_;
-    std::weak_ptr<Actor> lastMeleeDamager_;
+    ea::weak_ptr<Actor> lastDamager_;
+    ea::weak_ptr<Actor> lastMeleeDamager_;
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner);
@@ -83,8 +84,8 @@ public:
     bool IsGettingMeleeDamage() const;
     /// How long the actor didn't get damage in ms
     uint32_t NoDamageTime() const;
-    std::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
-    std::shared_ptr<Actor> GetLastMeleeDamager() const { return lastMeleeDamager_.lock(); }
+    ea::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
+    ea::shared_ptr<Actor> GetLastMeleeDamager() const { return lastMeleeDamager_.lock(); }
     bool GotDamageType(DamageType type) const;
     bool GotDamageCategory(DamageTypeCategory cat) const;
 

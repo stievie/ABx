@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <memory>
+#include <eastl.hpp>
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Skill.h>
 #include <sa/Noncopyable.h>
@@ -51,7 +51,7 @@ private:
     bool usingSkill_;
     uint32_t newRecharge_;
     int64_t lastSkillTime_;
-    std::weak_ptr<Skill> lastSkill_;
+    ea::weak_ptr<Skill> lastSkill_;
     void OnIncMorale(int morale);
 public:
     SkillsComp() = delete;

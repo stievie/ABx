@@ -30,6 +30,7 @@
 #include <abscommon/Subsystems.h>
 #include "InputQueue.h"
 #include <AB/Packets/ClientPackets.h>
+#include <eastl.hpp>
 
 namespace Game {
 class Player;
@@ -48,9 +49,9 @@ public:
     static const char* ProtocolName() { return "Game Protocol"; }
     static std::string serverId_;
 private:
-    std::weak_ptr<Game::Player> player_;
+    ea::weak_ptr<Game::Player> player_;
     DH_KEY clientKey_;
-    std::shared_ptr<Game::Player> GetPlayer()
+    ea::shared_ptr<Game::Player> GetPlayer()
     {
         return player_.lock();
     }

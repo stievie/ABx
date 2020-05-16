@@ -26,6 +26,7 @@
 #include <map>
 #include <sa/StringHash.h>
 #include <AB/ProtocolCodes.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -72,7 +73,7 @@ public:
 class GameChatChannel : public ChatChannel
 {
 private:
-    std::weak_ptr<Game> game_;
+    ea::weak_ptr<Game> game_;
 public:
     explicit GameChatChannel(uint64_t id);
     bool Talk(Player& player, const std::string& text) override;
@@ -95,7 +96,7 @@ class WhisperChatChannel : public ChatChannel
 {
 private:
     /// The recipient
-    std::weak_ptr<Player> player_;
+    ea::weak_ptr<Player> player_;
     std::string playerUuid_;
 public:
     explicit WhisperChatChannel(uint64_t id);
@@ -132,8 +133,8 @@ class Chat
 {
 private:
     // Type | ID
-    std::map<std::pair<ChatType, uint64_t>, std::shared_ptr<ChatChannel>> channels_;
-    std::shared_ptr<ChatChannel> tradeChat_;
+    ea::map<ea::pair<ChatType, uint64_t>, ea::shared_ptr<ChatChannel>> channels_;
+    ea::shared_ptr<ChatChannel> tradeChat_;
 public:
     Chat();
     ~Chat() = default;
@@ -141,8 +142,8 @@ public:
     Chat(const Chat&) = delete;
     Chat& operator=(const Chat&) = delete;
 
-    std::shared_ptr<ChatChannel> Get(ChatType type, uint64_t id);
-    std::shared_ptr<ChatChannel> Get(ChatType type, const std::string& uuid);
+    ea::shared_ptr<ChatChannel> Get(ChatType type, uint64_t id);
+    ea::shared_ptr<ChatChannel> Get(ChatType type, const std::string& uuid);
     void Remove(ChatType type, uint64_t id);
     void CleanChats();
 };

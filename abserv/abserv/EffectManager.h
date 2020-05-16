@@ -55,7 +55,7 @@ public:
     EffectManager() = default;
     ~EffectManager() = default;
 
-    std::shared_ptr<Effect> Get(uint32_t index);
+    ea::shared_ptr<Effect> Get(uint32_t index);
 };
 
 }

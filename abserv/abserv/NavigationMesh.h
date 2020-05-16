@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <memory>
+#include <eastl.hpp>
 #include <DetourNavMesh.h>
 #include <DetourNavMeshQuery.h>
 #include "Asset.h"
@@ -37,8 +37,8 @@ class NavigationMesh final : public IO::Asset
 private:
     dtNavMesh* navMesh_{ nullptr };
     dtNavMeshQuery* navQuery_;
-    std::unique_ptr<dtQueryFilter> queryFilter_;
-    std::unique_ptr<FindPathData> pathData_;
+    ea::unique_ptr<dtQueryFilter> queryFilter_;
+    ea::unique_ptr<FindPathData> pathData_;
 public:
     NavigationMesh();
     ~NavigationMesh() override;
@@ -52,7 +52,7 @@ public:
 
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.
-    bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
+    bool FindPath(ea::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
     /// Find the nearest point on the navigation mesh to a given point. Extents specifies how far out from the specified point to check along each axis.
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,

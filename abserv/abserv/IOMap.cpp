@@ -27,6 +27,7 @@
 #include "TerrainPatch.h"
 #include "Model.h"
 #include "Game.h"
+#include <eastl.hpp>
 
 namespace IO {
 namespace IOMap {
@@ -92,8 +93,8 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             return true;
         }
 
-        std::shared_ptr<Game::Model> model;
-        std::shared_ptr<Game::GameObject> object;
+        ea::shared_ptr<Game::Model> model;
+        ea::shared_ptr<Game::GameObject> object;
         Math::Vector3 size = Math::Vector3::One;
         Math::Vector3 offset = Math::Vector3::Zero;
         Math::Quaternion offsetRot = Math::Quaternion::Identity;
@@ -108,7 +109,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             {
             case AttrStaticModel:
             {
-                object = std::make_shared<Game::GameObject>();
+                object = ea::make_shared<Game::GameObject>();
                 object->SetName(name);
                 object->collisionMask_ = colisionMask;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
@@ -190,7 +191,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 LOG_DEBUG << "Setting ConvexHull collision shape for " << *object << std::endl;
 #endif
                                 object->SetCollisionShape(
-                                    std::make_unique<Math::CollisionShape<Math::ConvexHull>>(
+                                    ea::make_unique<Math::CollisionShape<Math::ConvexHull>>(
                                         Math::ShapeType::ConvexHull, model->shape_->vertexData_)
                                 );
                             }
@@ -210,7 +211,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 ", size +/- " << halfSize << ", orientation " << bb.orientation_ << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShape<Math::BoundingBox>>(
+                                ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }
@@ -226,7 +227,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 ", Radius " << radius << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShape<Math::Sphere>>(
+                                ea::make_unique<Math::CollisionShape<Math::Sphere>>(
                                     Math::ShapeType::Sphere, sphere)
                             );
                         }
@@ -242,7 +243,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 " to model BB " << model->GetBoundingBox() << " orientation " << bb.orientation_ << std::endl;
 #endif
                             object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShape<Math::BoundingBox>>(
+                                ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }

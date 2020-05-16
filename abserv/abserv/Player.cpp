@@ -86,7 +86,7 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 
 Player::~Player() = default;
 
-void Player::SetGame(std::shared_ptr<Game> game)
+void Player::SetGame(ea::shared_ptr<Game> game)
 {
     Actor::SetGame(game);
     // Changing the instance also clears any invites. The client should check that we
@@ -522,7 +522,7 @@ void Player::CRQDropInventoryItem(uint16_t pos, uint32_t count)
         item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
         item->concreteItem_.storagePos = 0;
         auto rng = GetSubsystem<Crypto::Random>();
-        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
+        ea::shared_ptr<ItemDrop> drop = ea::make_shared<ItemDrop>(item->id_);
         drop->transformation_.position_ = transformation_.position_;
         // Random pos around dropper
         drop->transformation_.position_.y_ += 0.2f;
@@ -548,7 +548,7 @@ void Player::CRQDropInventoryItem(uint16_t pos, uint32_t count)
         newItem->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
         newItem->concreteItem_.storagePos = 0;
         auto rng = GetSubsystem<Crypto::Random>();
-        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(newItem->id_);
+        ea::shared_ptr<ItemDrop> drop = ea::make_shared<ItemDrop>(newItem->id_);
         drop->transformation_.position_ = transformation_.position_;
         // Random pos around dropper
         drop->transformation_.position_.y_ += 0.2f;
@@ -1022,7 +1022,7 @@ void Player::OnChestFull()
     WriteToOutput(*msg);
 }
 
-void Player::SetParty(std::shared_ptr<Party> party)
+void Player::SetParty(ea::shared_ptr<Party> party)
 {
     if (party_)
     {
@@ -1121,7 +1121,7 @@ void Player::CRQPartyInvitePlayer(uint32_t playerId)
         return;
     if (party_->IsFull())
         return;
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
         if (party_->Invite(player))
@@ -1154,7 +1154,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
         // Only leader can kick
         return;
 
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (!player)
         return;
 
@@ -1192,7 +1192,7 @@ void Player::CRQPartyKickPlayer(uint32_t playerId)
     if (removedMember)
     {
         // The kicked player needs a new party
-        player->SetParty(std::shared_ptr<Party>());
+        player->SetParty(ea::shared_ptr<Party>());
         auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerAdded);
         AB::Packets::Server::PartyPlayerAdded packet = {
@@ -1227,7 +1227,7 @@ void Player::PartyLeave()
 
     {
         // We need a new party
-        SetParty(std::shared_ptr<Party>());
+        SetParty(ea::shared_ptr<Party>());
         auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerAdded);
         AB::Packets::Server::PartyPlayerAdded packet = {
@@ -1251,7 +1251,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
     if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
 
-    std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    ea::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (leader)
     {
         // Leave current party
@@ -1280,7 +1280,7 @@ void Player::CRQPartyRejectInvite(uint32_t inviterId)
     // We are the rejecter
     if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
-    std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
+    ea::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
     if (leader)
     {
         if (leader->GetParty()->RemoveInvite(GetPtr<Player>()))
@@ -1303,7 +1303,7 @@ void Player::CRQPartyRejectInvite(uint32_t inviterId)
 
 void Player::CRQPartyGetMembers(uint32_t partyId)
 {
-    std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
+    ea::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
     if (party)
     {
         auto nmsg = Net::NetworkMessage::GetNew();
@@ -1447,7 +1447,7 @@ void Player::CRQEquipSkill(uint32_t skillIndex, uint8_t pos)
             return SkillProfessionMatches(skill, skills_->prof1_, &skills_->prof2_);
         };
 
-        auto validateSetSkill = [&](int pos, std::shared_ptr<Skill> skill) -> bool
+        auto validateSetSkill = [&](int pos, ea::shared_ptr<Skill> skill) -> bool
         {
             if (skill)
             {
@@ -1750,11 +1750,11 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
 
     const std::string name = arguments.substr(0, p);
     const std::string msg = sa::LeftTrim(arguments.substr(p + 1, std::string::npos));
-    std::shared_ptr<Player> target = GetSubsystem<PlayerManager>()->GetPlayerByName(name);
+    ea::shared_ptr<Player> target = GetSubsystem<PlayerManager>()->GetPlayerByName(name);
     if (target)
     {
         // Found a player with the name so the target is on this server.
-        std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, target->id_);
+        ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, target->id_);
         if (channel)
         {
             if (channel->Talk(*this, msg))
@@ -1786,7 +1786,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         if (cli->Read(account) && AB::Entities::IsOnline(account.onlineStatus))
         {
             // The player may set his status to offline.
-            std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
+            ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
             if (channel->Talk(*this, msg))
             {
                 auto nmsg = Net::NetworkMessage::GetNew();
@@ -1817,14 +1817,14 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
 
 void Player::HandleChatGuildCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Guild, account_.guildUuid);
+    ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Guild, account_.guildUuid);
     if (channel)
         channel->Talk(*this, arguments);
 }
 
 void Player::HandleChatTradeCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
+    ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
     if (channel)
         channel->Talk(*this, arguments);
 }
@@ -2054,14 +2054,14 @@ void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Map, GetGame()->id_);
+    ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Map, GetGame()->id_);
     if (channel)
         channel->Talk(*this, arguments);
 }
 
 void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->GetId());
+    ea::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->GetId());
     if (channel)
         channel->Talk(*this, arguments);
 }
@@ -2079,7 +2079,7 @@ void Player::HandleGodModeCommand(const std::string&, Net::NetworkMessage&)
     if (effectsComp_->HasEffect(EFFECTINDEX_UNDESTROYABLE))
         effectsComp_->RemoveEffect(EFFECTINDEX_UNDESTROYABLE);
     else
-        effectsComp_->AddEffect(std::shared_ptr<Actor>(), EFFECTINDEX_UNDESTROYABLE, 0);
+        effectsComp_->AddEffect(ea::shared_ptr<Actor>(), EFFECTINDEX_UNDESTROYABLE, 0);
 }
 
 void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage&)

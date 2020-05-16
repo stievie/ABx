@@ -25,6 +25,7 @@
 #include <abshared/Damage.h>
 #include <sa/Noncopyable.h>
 #include <abshared/Attributes.h>
+#include <eastl.hpp>
 
 namespace Net {
 class NetworkMessage;
@@ -71,13 +72,13 @@ public:
     /// @param source The source of the effect, can be empty
     /// @param index The effect index
     /// @param time How long does the effect last. If 0 the script defines the duration.
-    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t time);
+    void AddEffect(ea::shared_ptr<Actor> source, uint32_t index, uint32_t time);
     void DeleteEffect(uint32_t index);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
     bool HasEffect(uint32_t index);
     bool HasEffectOf(AB::Entities::EffectCategory category);
-    std::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
+    ea::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
     /// Get real cost of a skill
