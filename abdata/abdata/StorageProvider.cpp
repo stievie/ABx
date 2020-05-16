@@ -456,7 +456,7 @@ void StorageProvider::CleanCache()
     size_t oldSize = currentSize_;
     int removed = 0;
     auto i = cache_.begin();
-    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         return IsDeleted(current.second.flags);
     })) != cache_.end())
@@ -516,7 +516,7 @@ void StorageProvider::FlushCache()
     int written = 0;
     auto i = cache_.begin();
     auto* tp = GetSubsystem<Asynch::ThreadPool>();
-    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         // Don't return deleted, these are flushed in CleanCache()
         return ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
