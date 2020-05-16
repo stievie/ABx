@@ -63,10 +63,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <unordered_set>
 #include <vector>
 
-// EASTL
-#include <EASTL/vector.h>
-
-namespace ea = eastl;
+#include <eastl.hpp>
 
 #include <limits>
 #include <stdint.h>

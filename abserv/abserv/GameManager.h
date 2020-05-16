@@ -23,6 +23,7 @@
 
 #include "Game.h"
 #include <limits>
+#include <eastl.hpp>
 #include <abscommon/Service.h>
 #include <sa/IdGenerator.h>
 #include <AB/Entities/Game.h>
@@ -42,8 +43,8 @@ public:
 private:
     State state_;
     std::mutex lock_;
-    std::map<uint32_t, std::shared_ptr<Game>> games_;
-    std::map<std::string, std::vector<Game*>> maps_;
+    ea::map<uint32_t, std::shared_ptr<Game>> games_;
+    ea::map<std::string, std::vector<Game*>> maps_;
     sa::IdGenerator<uint32_t> gameIds_;
     uint32_t GetNewGameId()
     {
@@ -78,7 +79,7 @@ public:
 
     GameManager::State GetState() const { return state_; }
     size_t GetGameCount() const { return games_.size(); }
-    const std::map<uint32_t, std::shared_ptr<Game>>& GetGames() const { return games_; }
+    const ea::map<uint32_t, std::shared_ptr<Game>>& GetGames() const { return games_; }
 };
 
 }
