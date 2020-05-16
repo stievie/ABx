@@ -4,7 +4,7 @@
 // https://github.com/electronicarts/EASTL/blob/master/test/source/EASTLTestAllocator.cpp
 
 #if !defined(EA_PLATFORM_MICROSOFT) || defined(EA_PLATFORM_MINGW)
-#include <cstdlib>
+#include <stdlib.h>
 #endif
 
 namespace Internal
@@ -14,7 +14,15 @@ void* EASTLAlignedAlloc(size_t size, size_t alignment)
 #ifdef EA_PLATFORM_MICROSOFT
     return _aligned_malloc(size, alignment);
 #else
-    return std::aligned_alloc(size, alignment);
+    // aligned_malloc() causes:
+    // malloc.c:2379: sysmalloc: Assertion `(old_top == initial_top (av) && old_size == 0) || ((unsigned long) (old_size) >= MINSIZE && prev_inuse (old_top) && ((unsigned long) old_end & (pagesize - 1)) == 0)' failed.
+    //return aligned_alloc(size, alignment);
+
+    // So let's take the EA ay.
+    void* p = nullptr;
+    alignment = alignment < sizeof(void*) ? sizeof(void*) : alignment;
+    posix_memalign(&p, alignment, size);
+    return p;
 #endif
 }
 
