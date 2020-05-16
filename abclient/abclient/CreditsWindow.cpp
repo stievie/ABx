@@ -172,6 +172,7 @@ void CreditsWindow::AddCredits()
 
     CreateSingleLine("Server", 30, true);
     CreateSingleLine("Recast & Detour: https://github.com/recastnavigation/recastnavigation", 15);
+    CreateSingleLine("EASTL: https://github.com/electronicarts/EASTL", 15);
     CreateSingleLine("SimpleWeb: https://github.com/eidheim/Simple-Web-Server", 15);
     CreateSingleLine("Simple cache: https://github.com/brimzi/simple-cache", 15);
     CreateSingleLine("Lua 5.3.4: https://www.lua.org/", 15);
