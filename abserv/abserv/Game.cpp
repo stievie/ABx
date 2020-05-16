@@ -41,6 +41,7 @@
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
+#include <sa/EAIterator.h>
 
 namespace Game {
 
@@ -472,7 +473,7 @@ ea::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
 
     auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
-    auto p = Utils::ea::SelectRandomly(players_.begin(), players_.end(), rnd);
+    auto p = sa::ea::SelectRandomly(players_.begin(), players_.end(), rnd);
     if (p == players_.end())
         return ea::shared_ptr<ItemDrop>();
 

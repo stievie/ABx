@@ -27,6 +27,8 @@
 #include <AB/Entities/TypedItemList.h>
 #include "Player.h"
 #include "ItemsCache.h"
+#include <sa/EAIterator.h>
+#include <sa/Iterator.h>
 
 namespace Game {
 
@@ -347,7 +349,7 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item& forIt
     if (it == typedItems_.end())
         return 0;
     std::vector<std::vector<TypedListValue>::iterator> result;
-    Utils::SelectIterators((*it).second.begin(), (*it).second.end(),
+    sa::SelectIterators((*it).second.begin(), (*it).second.end(),
         std::back_inserter(result),
         [&forItem](const TypedListValue& current)
     {
@@ -360,7 +362,7 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item& forIt
 
     if (result.size() == 0)
         return 0;
-    auto selIt = Utils::SelectRandomly(result.begin(), result.end());
+    auto selIt = sa::SelectRandomly(result.begin(), result.end());
     if (selIt == result.end())
         return 0;
 

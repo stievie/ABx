@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AiSelectRandom.h"
+#include <sa/Iterator.h>
 
 namespace AI {
 namespace Filters {
@@ -48,7 +49,7 @@ void SelectRandom::Execute(Agent& agent)
     while (entities.size() < count_ && copy.size() > 0)
     {
         const float rn = rnd->GetFloat();
-        auto it = Utils::SelectRandomly(copy.begin(), copy.end(), rn);
+        auto it = sa::SelectRandomly(copy.begin(), copy.end(), rn);
         entities.push_back(*it);
         copy.erase(it);
     }

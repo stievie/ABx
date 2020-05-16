@@ -31,6 +31,7 @@
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
 #include <sa/StringTempl.h>
+#include <sa/Iterator.h>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -205,7 +206,7 @@ bool Application::GetServiceCallbackList(AB::Entities::Service& svc)
         return false;
     }
 
-    const auto item = Utils::SelectRandomly(serviceList_.begin(), serviceList_.end());
+    const auto item = sa::SelectRandomly(serviceList_.begin(), serviceList_.end());
     svc.host = (*item).first;
     svc.port = (*item).second;
     return true;
