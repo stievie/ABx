@@ -325,6 +325,8 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     playerMngr->VisitPlayers([&playerName, &msg](Player& player) {
         if (player.IsIgnored(playerName))
             return Iteration::Continue;
+        if (!AB::Entities::IsOutpost(player.GetGame()->data_.type))
+            return Iteration::Continue;
         player.WriteToOutput(*msg);
         return Iteration::Continue;
     });
