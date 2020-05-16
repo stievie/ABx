@@ -39,7 +39,7 @@ MessageParticipant::~MessageParticipant() = default;
 void MessageChannel::Join(std::shared_ptr<MessageParticipant> participant)
 {
     participants_.insert(participant);
-    std::for_each(recentMsgs_.begin(), recentMsgs_.end(),
+    ea::for_each(recentMsgs_.begin(), recentMsgs_.end(),
         std::bind(&MessageParticipant::Deliver, participant, std::placeholders::_1));
 }
 
@@ -53,7 +53,7 @@ void MessageChannel::Deliver(const Net::MessageMsg& msg)
     recentMsgs_.push_back(msg);
     while (recentMsgs_.size() > MaxRecentMsgs)
         recentMsgs_.pop_front();
-    std::for_each(participants_.begin(), participants_.end(),
+    ea::for_each(participants_.begin(), participants_.end(),
         std::bind(&MessageParticipant::Deliver, std::placeholders::_1, msg));
 }
 
@@ -388,7 +388,7 @@ MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& acc
 
 MessageParticipant* MessageSession::GetServerByType(AB::Entities::ServiceType type)
 {
-    auto serv = std::find_if(channel_.participants_.begin(),
+    auto serv = ea::find_if(channel_.participants_.begin(),
         channel_.participants_.end(), [type](const std::shared_ptr<MessageParticipant>& current)
     {
         return current->serviceType_ == type;
@@ -400,7 +400,7 @@ MessageParticipant* MessageSession::GetServerByType(AB::Entities::ServiceType ty
 
 MessageParticipant* MessageSession::GetServer(const std::string& serverUuid)
 {
-    auto serv = std::find_if(channel_.participants_.begin(),
+    auto serv = ea::find_if(channel_.participants_.begin(),
         channel_.participants_.end(), [&serverUuid](const std::shared_ptr<MessageParticipant>& current)
     {
         return Utils::Uuid::IsEqual(current->serverId_, serverUuid);

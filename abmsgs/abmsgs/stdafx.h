@@ -45,6 +45,8 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <unordered_set>
 #include <iostream>
 
+#include <eastl.hpp>
+
 #include <AB/CommonConfig.h>
 #include <abscommon/DebugConfig.h>
 

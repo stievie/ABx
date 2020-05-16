@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <set>
+#include <eastl.hpp>
 #include "Connection.h"
 #include <sa/Noncopyable.h>
 
@@ -41,5 +41,5 @@ public:
     void StopAll();
 
 private:
-    std::set<std::shared_ptr<Connection>> connections_;
+    ea::set<std::shared_ptr<Connection>> connections_;
 };

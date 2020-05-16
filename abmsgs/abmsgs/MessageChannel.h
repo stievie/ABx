@@ -24,7 +24,7 @@
 #include <memory>
 #include <asio.hpp>
 #include <abscommon/MessageMsg.h>
-#include <set>
+#include <eastl.hpp>
 #include <AB/Entities/Service.h>
 
 class MessageParticipant
@@ -45,7 +45,7 @@ public:
     void Join(std::shared_ptr<MessageParticipant> participant);
     void Leave(std::shared_ptr<MessageParticipant> participant);
     void Deliver(const Net::MessageMsg& msg);
-    std::set<std::shared_ptr<MessageParticipant>> participants_;
+    ea::set<std::shared_ptr<MessageParticipant>> participants_;
 };
 
 class MessageSession : public MessageParticipant, public std::enable_shared_from_this<MessageSession>

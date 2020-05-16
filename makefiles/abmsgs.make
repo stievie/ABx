@@ -6,10 +6,9 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abmsgs$(SUFFIX)
 SOURDEDIR = ../abmsgs/abmsgs
 OBJDIR = obj/x64/$(CONFIG)/abmsgs
-LIBS += -lpthread -labcrypto -labscommon -luuid -llua5.3 -ldeathhandler -ldl
-CXXFLAGS += -fexceptions
+LIBS += -lpthread -labcrypto -labscommon -luuid -lEASTL -llua5.3 -ldeathhandler -ldl
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
+CXXFLAGS += -fexceptions -Werror -Wno-unused-variable -Wno-deprecated-copy
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

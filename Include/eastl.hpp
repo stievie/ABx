@@ -9,6 +9,7 @@
 #include <EASTL/map.h>
 #include <EASTL/memory.h>
 #include <EASTL/tuple.h>
+#include <EASTL/set.h>
 #include <EASTL/unordered_map.h>
 #include <EASTL/unordered_set.h>
 #include <EASTL/vector.h>

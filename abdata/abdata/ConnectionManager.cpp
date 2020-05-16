@@ -36,7 +36,7 @@ void ConnectionManager::Stop(std::shared_ptr<Connection> c)
 
 void ConnectionManager::StopAll()
 {
-	std::for_each(connections_.begin(), connections_.end(),
+	ea::for_each(connections_.begin(), connections_.end(),
 		std::bind(&Connection::Stop, std::placeholders::_1));
 	connections_.clear();
 }
