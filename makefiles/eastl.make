@@ -6,11 +6,12 @@ TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libEASTL.a
 SOURDEDIR = ../ThirdParty/EASTL
 OBJDIR = obj/x64/$(CONFIG)/EASTL
-SRC_FILES = $(wildcard $(SOURDEDIR)/source/*.cpp)
-CFLAGS += -Werror
+CXXFLAGS += -Werror -Wno-strict-aliasing -Wno-unused-variable
 # End changes
 
-CFLAGS += $(DEFINES) $(INCLUDES)
+SRC_FILES = $(wildcard $(SOURDEDIR)/source/*.cpp)
+
+CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
 #$(info $(OBJ_FILES))
@@ -21,9 +22,9 @@ $(TARGET): $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
 	$(LINKCMD_LIB) $(OBJ_FILES)
 
-$(OBJDIR)/%.o: $(SOURDEDIR)/%.c
+$(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
-	$(PRE_CXX) $(CC) $(CFLAGS) -MMD -c $< -o $@
+	$(PRE_CXX) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
 -include $(OBJ_FILES:.o=.d)
 

@@ -3,6 +3,8 @@
 all:
 	@echo "------------------- Building abcrypto -------------------"
 	@$(MAKE) -f  abcrypto.make
+	@echo "--------------------- Building EASTL --------------------"
+	@$(MAKE) -f  eastl.make
 	@echo "-------------------- Building pugixml -------------------"
 	@$(MAKE) -f  pugixml.make
 	@echo "-------------------- Building recast --------------------"
@@ -56,6 +58,7 @@ all:
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
+	@$(MAKE) -f  eastl.make clean
 	@$(MAKE) -f  pugixml.make clean
 	@$(MAKE) -f  recast.make clean
 	@$(MAKE) -f  detour.make clean
