@@ -21,7 +21,8 @@ void* EASTLAlignedAlloc(size_t size, size_t alignment)
     // So let's take the EA ay.
     void* p = nullptr;
     alignment = alignment < sizeof(void*) ? sizeof(void*) : alignment;
-    posix_memalign(&p, alignment, size);
+    int result = posix_memalign(&p, alignment, size);
+    (void)result;
     return p;
 #endif
 }
