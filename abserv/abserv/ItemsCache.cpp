@@ -43,19 +43,19 @@ uint32_t ItemsCache::GetConcreteId(const std::string& uuid) const
     return itemIds_.InvalidId;
 }
 
-uint32_t ItemsCache::Add(std::unique_ptr<Item>&& item)
+uint32_t ItemsCache::Add(ea::unique_ptr<Item>&& item)
 {
     if (!item)
         return itemIds_.InvalidId;
     if (item->id_ == itemIds_.InvalidId)
         item->id_ = itemIds_.Next();
-    uint32_t id = item->id_;
+    const uint32_t id = item->id_;
     const auto cIt = concreteIds_.find(item->concreteItem_.uuid);
     if (cIt == concreteIds_.end())
         concreteIds_.emplace(item->concreteItem_.uuid, id);
     const auto it = itemCache_.find(id);
     if (it == itemCache_.end())
-        itemCache_.emplace(id, std::move(item));
+        itemCache_.emplace(id, ea::move(item));
 
     return id;
 }

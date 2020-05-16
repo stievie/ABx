@@ -30,6 +30,7 @@
 #include "ItemStats.h"
 #include <abshared/Attributes.h>
 #include <sa/Bits.h>
+#include <eastl.hpp>
 
 namespace Game {
 

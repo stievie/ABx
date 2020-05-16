@@ -26,6 +26,7 @@
 #include <abscommon/UuidUtils.h>
 #include <abshared/Mechanic.h>
 #include <sa/WeightedSelector.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -56,7 +57,7 @@ private:
     /// List of upgrades. Upgrades are not specific to maps
     std::map<AB::Entities::ItemType, std::vector<TypedListValue>> typedItems_;
     std::mutex lock_;
-    std::map<std::string, AB::Entities::ConcreteItem> pendingCreates_;
+    ea::map<std::string, AB::Entities::ConcreteItem> pendingCreates_;
     void CreatePendingItems();
     void IdentifyArmor(Item& item, Player& player);
     void IdentifyWeapon(Item& item, Player& player);
@@ -65,7 +66,7 @@ private:
         uint32_t level, bool maxStats, const std::string& playerUuid);
     void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
     bool CreateDBItem(const AB::Entities::ConcreteItem& item);
-    std::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
+    ea::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
 public:
     ItemFactory();
     ~ItemFactory() = default;
@@ -77,7 +78,7 @@ public:
     uint32_t GetConcreteId(const std::string& concreteUuid);
     void IdentiyItem(Item& item, Player& player);
     /// Create temporary item, does not create a concrete item.
-    std::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
+    ea::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
     /// Deletes a concrete item from the database, e.g. when an item was not picked up. Also removes it from cache.
     void DeleteConcrete(const std::string& uuid);
     /// Deletes an Item with all attached modifiers. Removes them from cache

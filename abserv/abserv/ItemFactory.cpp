@@ -159,7 +159,7 @@ bool ItemFactory::CreateDBItem(const AB::Entities::ConcreteItem& item)
     return true;
 }
 
-std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
+ea::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
@@ -167,12 +167,12 @@ std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
     if (!client->Read(gameItem))
     {
         LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
 
-    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    ea::unique_ptr<Item> result = ea::make_unique<Item>(gameItem);
     if (!result->LoadScript(result->data_.script))
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     return result;
 }
 
@@ -187,7 +187,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
         return 0;
     }
 
-    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    ea::unique_ptr<Item> result = ea::make_unique<Item>(gameItem);
     if (!result->LoadScript(result->data_.script))
     {
         LOG_ERROR << "Error loading item script " << result->data_.script << std::endl;
@@ -242,7 +242,7 @@ uint32_t ItemFactory::CreatePlayerMoneyItem(const Player& forPlayer, uint32_t co
     return CreatePlayerItem(forPlayer, MONEY_ITEM_UUID, count);
 }
 
-std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
+ea::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
 {
     AB::Entities::ConcreteItem ci;
     auto* client = GetSubsystem<IO::DataClient>();
@@ -250,12 +250,12 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     if (!client->Read(ci))
     {
         LOG_ERROR << "Error loading concrete item " << concreteUuid << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
     if (ci.deleted != 0)
     {
         LOG_INFO << "Item " << concreteUuid << " was deleted" << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
 
     AB::Entities::Item gameItem;
@@ -263,18 +263,18 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     if (!client->Read(gameItem))
     {
         LOG_ERROR << "Error loading item " << ci.itemUuid << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
-    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    ea::unique_ptr<Item> result = ea::make_unique<Item>(gameItem);
     if (!result->LoadConcrete(ci))
     {
         LOG_ERROR << "Error loading concrete item" << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
     if (!result->LoadScript(result->data_.script))
     {
         LOG_ERROR << "Error loading script " << result->data_.script << std::endl;
-        return std::unique_ptr<Item>();
+        return ea::unique_ptr<Item>();
     }
 
     return result;
@@ -286,7 +286,7 @@ uint32_t ItemFactory::GetConcreteId(const std::string& concreteUuid)
     uint32_t result = cache->GetConcreteId(concreteUuid);
     if (result != 0)
         return result;
-    std::unique_ptr<Item> item = LoadConcrete(concreteUuid);
+    ea::unique_ptr<Item> item = LoadConcrete(concreteUuid);
     if (!item)
         return 0;
     return cache->Add(std::move(item));
