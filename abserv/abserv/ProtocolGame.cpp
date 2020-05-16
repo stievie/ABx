@@ -134,7 +134,7 @@ void ProtocolGame::Logout()
 void ProtocolGame::ParsePacket(NetworkMessage& message)
 {
     if (!acceptPackets_ ||
-        GetSubsystem<Game::GameManager>()->GetState() != Game::GameManager::ManagerStateRunning ||
+        GetSubsystem<Game::GameManager>()->GetState() != Game::GameManager::State::Running ||
         message.GetSize() == 0)
         return;
 

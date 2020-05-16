@@ -35,10 +35,10 @@ class Player;
 class GameManager
 {
 public:
-    enum State
+    enum class State
     {
-        ManagerStateRunning,
-        ManagerStateTerminated
+        Running,
+        Terminated
     };
 private:
     State state_;
@@ -56,7 +56,7 @@ protected:
     void DeleteGameTask(uint32_t gameId);
 public:
     GameManager() :
-        state_(ManagerStateTerminated)
+        state_(State::Terminated)
     { }
 
     void Start();

@@ -25,6 +25,7 @@
 #include <memory>
 #include <AB/Entities/Effect.h>
 #include <sa/StringHash.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -49,7 +50,7 @@ AB::Entities::EffectCategory EffectCatNameToEffectCat(const std::string& name);
 class EffectManager
 {
 private:
-    std::map<uint32_t, AB::Entities::Effect> effects_;
+    ea::map<uint32_t, AB::Entities::Effect> effects_;
 public:
     EffectManager() = default;
     ~EffectManager() = default;

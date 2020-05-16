@@ -27,6 +27,7 @@
 #include <sa/PragmaWarning.h>
 #include "CacheIndex.h"
 #include "NameIndex.h"
+#include <eastl.hpp>
 
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4310 4100)
@@ -320,10 +321,9 @@ private:
     size_t maxSize_;
     size_t currentSize_;
 
-    std::unordered_map<IO::DataKey, CacheItem> cache_;
+    ea::unordered_map<IO::DataKey, CacheItem, std::hash<IO::DataKey>> cache_;
     std::mutex lock_;
     /// Name -> Cache Key
     NameIndex namesCache_;
     CacheIndex index_;
 };
-

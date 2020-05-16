@@ -6,8 +6,8 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abdata$(SUFFIX)
 SOURDEDIR = ../abdata/abdata
 OBJDIR = obj/x64/$(CONFIG)/abdata
-LIBS += -lpthread -labcrypto -labscommon -labdb -luuid -lstdc++fs -llua5.3 -ldeathhandler -ldl
-CXXFLAGS += -fexceptions -Werror
+LIBS += -lpthread -labcrypto -labscommon -labdb -luuid -lEASTL -lstdc++fs -llua5.3 -ldeathhandler -ldl
+CXXFLAGS += -fexceptions -Werror -Wno-maybe-uninitialized -Wno-unused-variable -Wno-deprecated-copy
 PCH = $(SOURDEDIR)/stdafx.h
 DEFINES += -DUSE_PGSQL
 # Database Libs

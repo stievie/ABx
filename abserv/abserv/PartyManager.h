@@ -27,7 +27,7 @@
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/ordered_index.hpp>
 #include <multi_index/member.hpp>
-#include <unordered_map>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -35,7 +35,7 @@ class PartyManager
 {
 private:
     /// The owner of Parties
-    std::unordered_map<uint32_t, std::shared_ptr<Party>> parties_;
+    ea::unordered_map<uint32_t, std::shared_ptr<Party>> parties_;
 
     // https://stackoverflow.com/questions/39510143/how-to-use-create-boostmulti-index
     struct PartyIndexItem

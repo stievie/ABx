@@ -33,17 +33,17 @@ void GameManager::Start()
 {
     // Main Thread
     std::scoped_lock lock(lock_);
-    state_ = State::ManagerStateRunning;
+    state_ = State::Running;
 }
 
 void GameManager::Stop()
 {
     // Main Thread
-    if (state_ == State::ManagerStateRunning)
+    if (state_ == State::Running)
     {
         {
             std::scoped_lock lock(lock_);
-            state_ = State::ManagerStateTerminated;
+            state_ = State::Terminated;
         }
         for (const auto& g : games_)
         {
