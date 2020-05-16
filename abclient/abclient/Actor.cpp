@@ -42,6 +42,7 @@
 
 //#include <Urho3D/DebugNew.h>
 
+#define WALK_SPEED_THRESHOLD (0.5f)
 #define RUN_ANIM_SPEED(x) (x > 1.0f ? x * 0.8f : x)
 // speed / 2 -> walk animation -> playing at normal speed = speed * 2
 #define WALK_ANIM_SPEED(x) (x * 2.0f)
@@ -881,12 +882,12 @@ void Actor::UpdateMoveSpeed()
     {
     case AB::GameProtocol::CreatureState::Moving:
     {
-        if (speedFactor_ > 0.5f && currentAnimation_ != ANIM_RUN)
+        if (speedFactor_ > WALK_SPEED_THRESHOLD && currentAnimation_ != ANIM_RUN)
         {
             PlayAnimation(ANIM_RUN, true, 0.0f, RUN_ANIM_SPEED(speedFactor_));
             return;
         }
-        else if (currentAnimation_ != ANIM_WALK)
+        else if (speedFactor_ <= WALK_SPEED_THRESHOLD && currentAnimation_ != ANIM_WALK)
         {
             // speed / 2 -> walk animation -> playing at normal speed = speed * 2
             PlayAnimation(ANIM_WALK, true, 0.0f, WALK_ANIM_SPEED(speedFactor_));
@@ -962,7 +963,7 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureState::Moving:
     {
-        if (speedFactor_ > 0.5f)
+        if (speedFactor_ > WALK_SPEED_THRESHOLD)
             PlayAnimation(ANIM_RUN, true, fadeTime, RUN_ANIM_SPEED(speedFactor_));
         else
             // speed / 2 -> walk animation -> playing at normal speed = speed * 2
