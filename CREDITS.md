@@ -15,6 +15,7 @@ Creator: sa 2017-2019
 
 * Lua 5.3.4 https://www.lua.org/
 * Kaguya https://github.com/satoren/kaguya
+* EASTL https://github.com/electronicarts/EASTL
 * pugixml https://pugixml.org/
 * Recast & Detour https://github.com/recastnavigation/recastnavigation
 * GJK https://github.com/xuzebin/gjk
