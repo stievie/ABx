@@ -28,12 +28,16 @@
 
 namespace Game {
 
+// The owner of all items. Because Items move around alot, e.g. peaople trade items,
+// store them in chest inventory, i.e. would change ownership, and changing ownerhip
+// of unique_ptr's is a bit cumbersome, the real owners of the items store only the
+// IDs in this cache.
 class ItemsCache
 {
 private:
     static sa::IdGenerator<uint32_t> itemIds_;
     ea::unordered_map<uint32_t, ea::unique_ptr<Item>> itemCache_;
-    ea::unordered_map<std::string, uint32_t> concreteIds_;
+    std::unordered_map<std::string, uint32_t> concreteIds_;
 public:
     Item* Get(uint32_t id);
     uint32_t GetConcreteId(const std::string& uuid) const;
