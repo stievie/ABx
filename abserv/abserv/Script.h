@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <vector>
+#include <eastl.hpp>
 #include "Asset.h"
 
 namespace kaguya {
@@ -33,14 +33,14 @@ namespace Game {
 class Script final : public IO::Asset
 {
 private:
-    std::vector<char> buffer_;
+    ea::vector<char> buffer_;
 public:
     Script() :
         IO::Asset()
     { }
     ~Script() override;
 
-    std::vector<char>& GetBuffer()
+    ea::vector<char>& GetBuffer()
     {
         return buffer_;
     }

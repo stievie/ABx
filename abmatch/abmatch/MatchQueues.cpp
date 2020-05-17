@@ -59,7 +59,7 @@ Queue* MatchQueues::GetQueue(const std::string& mapUuid)
     auto it = queues_.find(mapUuid);
     if (it == queues_.end())
     {
-        auto queue = std::make_unique<Queue>(mapUuid);
+        auto queue = ea::make_unique<Queue>(mapUuid);
         if (queue->Load())
         {
             auto res = queues_.emplace(mapUuid, std::move(queue));
@@ -77,7 +77,7 @@ void MatchQueues::Update(uint32_t timeElapsed)
     std::scoped_lock lock(lock_);
     // Delete empty queues
     auto i = queues_.begin();
-    while ((i = std::find_if(i, queues_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, queues_.end(), [](const auto& current) -> bool
     {
         return current.second->Count() == 0;
     })) != queues_.end())

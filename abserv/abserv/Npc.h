@@ -28,6 +28,7 @@
 #include "TriggerComp.h"
 #include "AiComp.h"
 #include "WanderComp.h"
+#include <eastl.hpp>
 #include <set>
 #include <sa/Bits.h>
 
@@ -55,7 +56,7 @@ private:
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
     ea::shared_ptr<Script> script_;
     /// Quests this NPC may have for the player
-    std::set<uint32_t> quests_;
+    ea::set<uint32_t> quests_;
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
     {
@@ -65,8 +66,8 @@ private:
     bool luaInitialized_;
     void InitializeLua();
     std::string GetQuote(int index);
-    void _LuaAddWanderPoint(const Math::STLVector3& point);
-    void _LuaAddWanderPoints(const std::vector<Math::STLVector3>& points);
+    void _LuaAddWanderPoint(const Math::StdVector3& point);
+    void _LuaAddWanderPoints(const std::vector<Math::StdVector3>& points);
     /// Set the name of the NPC. This must happen before the spawn data is sent to the clients
     void _LuaSetName(const std::string& name);
     void _LuaAddQuest(uint32_t index);
@@ -140,11 +141,11 @@ public:
     bool SayQuote(ChatType channel, int index);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
-    std::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
+    ea::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
     bool HaveQuestsForPlayer(const Player& player) const;
 
-    std::unique_ptr<Components::AiComp> aiComp_;
-    std::unique_ptr<Components::WanderComp> wanderComp_;
+    ea::unique_ptr<Components::AiComp> aiComp_;
+    ea::unique_ptr<Components::WanderComp> wanderComp_;
 };
 
 template <>

@@ -120,7 +120,7 @@ private:
     AreaOfEffect* _LuaAddAreaOfEffect(const std::string& script,
         Actor* source,
         uint32_t index,
-        const Math::STLVector3& pos);
+        const Math::StdVector3& pos);
     void _LuaAddProjectile(const std::string& itemUuid,
         Actor* source,
         Actor* target);

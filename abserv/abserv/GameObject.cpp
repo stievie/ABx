@@ -458,7 +458,7 @@ bool GameObject::_LuaIsObjectInSight(const GameObject* object) const
     return IsObjectInSight(*object);
 }
 
-std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& direction)
+std::vector<GameObject*> GameObject::_LuaRaycast(const Math::StdVector3& direction)
 {
     std::vector<GameObject*> result;
 
@@ -480,7 +480,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& directi
     return result;
 }
 
-std::vector<GameObject*> GameObject::_LuaRaycastTo(const Math::STLVector3& destination)
+std::vector<GameObject*> GameObject::_LuaRaycastTo(const Math::StdVector3& destination)
 {
     const Math::Vector3& src = transformation_.position_;
     const Math::Vector3 direction = Math::Vector3(destination) - src;
@@ -581,7 +581,7 @@ AreaOfEffect* GameObject::_LuaAsAOE()
     return To<AreaOfEffect>(this);
 }
 
-void GameObject::_LuaSetPosition(const Math::STLVector3& pos)
+void GameObject::_LuaSetPosition(const Math::StdVector3& pos)
 {
     transformation_.position_ = pos;
 }
@@ -593,7 +593,7 @@ void GameObject::_LuaSetRotation(float y)
     transformation_.SetYRotation(ang);
 }
 
-void GameObject::_LuaSetScale(const Math::STLVector3& scale)
+void GameObject::_LuaSetScale(const Math::StdVector3& scale)
 {
     transformation_.scale_ = scale;
 }
@@ -605,9 +605,9 @@ void GameObject::_LuaSetScaleSimple(float value)
     transformation_.scale_.z_ = value;
 }
 
-Math::STLVector3 GameObject::_LuaGetPosition() const
+Math::StdVector3 GameObject::_LuaGetPosition() const
 {
-    return static_cast<Math::STLVector3>(transformation_.position_);
+    return static_cast<Math::StdVector3>(transformation_.position_);
 }
 
 float GameObject::_LuaGetRotation() const
@@ -615,12 +615,12 @@ float GameObject::_LuaGetRotation() const
     return Math::RadToDeg(transformation_.GetYRotation());
 }
 
-Math::STLVector3 GameObject::_LuaGetScale() const
+Math::StdVector3 GameObject::_LuaGetScale() const
 {
-    return static_cast<Math::STLVector3>(transformation_.scale_);
+    return static_cast<Math::StdVector3>(transformation_.scale_);
 }
 
-void GameObject::_LuaSetBoundingBox(const Math::STLVector3& min, const Math::STLVector3& max)
+void GameObject::_LuaSetBoundingBox(const Math::StdVector3& min, const Math::StdVector3& max)
 {
     if (!collisionShape_)
         return;
@@ -665,7 +665,7 @@ void GameObject::SetBoundingSize(const Math::Vector3& size)
     }
 }
 
-void GameObject::_LuaSetBoundingSize(const Math::STLVector3& size)
+void GameObject::_LuaSetBoundingSize(const Math::StdVector3& size)
 {
     SetBoundingSize(size);
 }
@@ -770,7 +770,7 @@ uint32_t GameObject::GetRetriggerTimout() const
 void GameObject::SetRetriggerTimout(uint32_t value)
 {
     if (!triggerComp_)
-        triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_ = ea::make_unique<Components::TriggerComp>(*this);
     triggerComp_->retriggerTimeout_ = value;
 }
 
@@ -782,7 +782,7 @@ bool GameObject::IsTrigger() const
 void GameObject::SetTrigger(bool value)
 {
     if (!triggerComp_)
-        triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_ = ea::make_unique<Components::TriggerComp>(*this);
     triggerComp_->trigger_ = value;
 }
 }

@@ -22,8 +22,7 @@
 #pragma once
 
 #include "Guild.h"
-#include <unordered_map>
-#include <memory>
+#include <eastl.hpp>
 #include <multi_index_container.hpp>
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/ordered_index.hpp>
@@ -55,11 +54,11 @@ private:
         >
     >;
     GuildIndex guildIndex_;
-    std::unordered_map<std::string, std::shared_ptr<Guild>> guilds_;
+    ea::unordered_map<std::string, ea::shared_ptr<Guild>> guilds_;
     void AddGuildToIndex(const AB::Entities::Guild& guild);
 public:
-    std::shared_ptr<Guild> Get(const std::string& guildUuid);
-    std::shared_ptr<Guild> GetByName(const std::string& name);
+    ea::shared_ptr<Guild> Get(const std::string& guildUuid);
+    ea::shared_ptr<Guild> GetByName(const std::string& name);
 };
 
 }

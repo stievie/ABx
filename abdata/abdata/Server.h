@@ -45,7 +45,7 @@ private:
     bool running_{ false };
     asio::io_service& io_service_;
     asio::ip::tcp::acceptor acceptor_;
-    std::shared_ptr<Connection> newConnection_;
+    ea::shared_ptr<Connection> newConnection_;
     ConnectionManager connectionManager_;
     StorageProvider storageProvider_;
     Net::IpList& whiteList_;

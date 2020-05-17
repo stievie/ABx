@@ -22,13 +22,13 @@
 #include "stdafx.h"
 #include "ConnectionManager.h"
 
-void ConnectionManager::Start(std::shared_ptr<Connection> c)
+void ConnectionManager::Start(ea::shared_ptr<Connection> c)
 {
 	connections_.insert(c);
 	c->Start();
 }
 
-void ConnectionManager::Stop(std::shared_ptr<Connection> c)
+void ConnectionManager::Stop(ea::shared_ptr<Connection> c)
 {
 	connections_.erase(c);
 	c->Stop();

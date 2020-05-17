@@ -70,8 +70,8 @@ void Player::RegisterLua(kaguya::State& state)
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
-    questComp_(std::make_unique<Components::QuestComp>(*this)),
-    tradeComp_(std::make_unique<Components::TradeComp>(*this))
+    questComp_(ea::make_unique<Components::QuestComp>(*this)),
+    tradeComp_(ea::make_unique<Components::TradeComp>(*this))
 {
     events_.Subscribe<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
         std::bind(&Player::OnHandleCommand, this,
@@ -219,7 +219,7 @@ void Player::TriggerDialog(uint32_t triggererId, uint32_t dialogIndex)
     WriteToOutput(*msg);
 }
 
-void Player::TriggerQuestSelectionDialog(uint32_t triggererId, const std::set<uint32_t>& quests)
+void Player::TriggerQuestSelectionDialog(uint32_t triggererId, const ea::set<uint32_t>& quests)
 {
     if (triggererId != 0)
     {
@@ -300,7 +300,7 @@ void Player::TriggerTradeDialog(uint32_t targetId)
 MailBox& Player::GetMailBox()
 {
     if (!mailBox_)
-        mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
+        mailBox_ = ea::make_unique<MailBox>(data_.accountUuid);
     return *mailBox_;
 }
 
@@ -1616,7 +1616,7 @@ Party* Player::_LuaGetParty()
 
 void Player::LoadFriendList()
 {
-    friendList_ = std::make_unique<FriendList>(data_.accountUuid);
+    friendList_ = ea::make_unique<FriendList>(data_.accountUuid);
     friendList_->Load();
 }
 

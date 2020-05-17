@@ -44,7 +44,6 @@ Application::Application() :
     maxSize_(0),
     readonly_(false),
     ioService_(),
-    server_(nullptr),
     flushInterval_(FLUSH_CACHE_MS),
     cleanInterval_(CLEAN_CACHE_MS)
 {
@@ -392,7 +391,7 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Start();
     GetSubsystem<Asynch::ThreadPool>()->Start();
 
-    server_ = std::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_, whiteList_);
+    server_ = ea::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_, whiteList_);
     auto& provider = server_->GetStorageProvider();
     provider.flushInterval_ = flushInterval_;
     provider.cleanInterval_ = cleanInterval_;

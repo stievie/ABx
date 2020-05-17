@@ -27,6 +27,12 @@ then
         ./ablogin &
 fi
 
+ps auxw | grep abmatch | grep -v grep > /dev/null
+if [ $? != 0 ]
+then
+        ./abmatch &
+fi
+
 ps auxw | grep abserv | grep -v grep > /dev/null
 if [ $? != 0 ]
 then

@@ -43,7 +43,7 @@ asio::ip::tcp::socket& Connection::GetSocket()
 
 void Connection::Start()
 {
-    data_.reset(new std::vector<uint8_t>(3));
+    data_.reset(new StorageData(3));
     auto self(shared_from_this());
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(3),
         [this, self](const asio::error_code& error, size_t /* bytes_transferred */)
@@ -89,7 +89,7 @@ void Connection::StartReadKey(uint16_t keySize)
 
 void Connection::StartCreateOperation()
 {
-    data_.reset(new std::vector<uint8_t>(4));
+    data_.reset(new StorageData(4));
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
@@ -104,7 +104,7 @@ void Connection::StartCreateOperation()
             }
             if (size <= maxDataSize_)
             {
-                data_.reset(new std::vector<uint8_t>(size));
+                data_.reset(new StorageData(size));
                 asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleCreateReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
@@ -122,7 +122,7 @@ void Connection::StartCreateOperation()
 
 void Connection::StartUpdateDataOperation()
 {
-    data_.reset(new std::vector<uint8_t>(4));
+    data_.reset(new StorageData(4));
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
@@ -137,7 +137,7 @@ void Connection::StartUpdateDataOperation()
             }
             if (size <= maxDataSize_)
             {
-                data_.reset(new std::vector<uint8_t>(size));
+                data_.reset(new StorageData(size));
                 asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleUpdateReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
@@ -155,7 +155,7 @@ void Connection::StartUpdateDataOperation()
 
 void Connection::StartReadOperation()
 {
-    data_.reset(new std::vector<uint8_t>(4));
+    data_.reset(new StorageData(4));
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
@@ -170,7 +170,7 @@ void Connection::StartReadOperation()
             }
             if (size <= maxDataSize_)
             {
-                data_.reset(new std::vector<uint8_t>(size));
+                data_.reset(new StorageData(size));
                 asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleReadReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
@@ -212,7 +212,7 @@ void Connection::StartPreloadOperation()
 
 void Connection::StartExistsOperation()
 {
-    data_.reset(new std::vector<uint8_t>(4));
+    data_.reset(new StorageData(4));
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
@@ -227,7 +227,7 @@ void Connection::StartExistsOperation()
             }
             if (size <= maxDataSize_)
             {
-                data_.reset(new std::vector<uint8_t>(size));
+                data_.reset(new StorageData(size));
                 asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleExistsReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
@@ -419,7 +419,7 @@ void Connection::StartClientRequestedOp()
 
 void Connection::SendStatusAndRestart(IO::ErrorCodes code, const std::string& message)
 {
-    data_.reset(new std::vector<uint8_t>);
+    data_.reset(new StorageData);
     data_->push_back(static_cast<uint8_t>(IO::OpCodes::Status));
     data_->push_back(static_cast<uint8_t>(code));
     data_->push_back(0);

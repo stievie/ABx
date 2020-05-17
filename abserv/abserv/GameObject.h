@@ -110,22 +110,22 @@ private:
     int64_t removeAt_{ 0 };
     ea::unique_ptr<Math::AbstractCollisionShape> collisionShape_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
-    std::vector<GameObject*> _LuaRaycast(const Math::STLVector3& direction);
+    std::vector<GameObject*> _LuaRaycast(const Math::StdVector3& direction);
     /// Raycast to destination point
-    std::vector<GameObject*> _LuaRaycastTo(const Math::STLVector3& destination);
+    std::vector<GameObject*> _LuaRaycastTo(const Math::StdVector3& destination);
     Actor* _LuaAsActor();
     Npc* _LuaAsNpc();
     Player* _LuaAsPlayer();
     AreaOfEffect* _LuaAsAOE();
-    void _LuaSetPosition(const Math::STLVector3& pos);
+    void _LuaSetPosition(const Math::StdVector3& pos);
     void _LuaSetRotation(float y);
-    void _LuaSetScale(const Math::STLVector3& scale);
+    void _LuaSetScale(const Math::StdVector3& scale);
     void _LuaSetScaleSimple(float value);
-    Math::STLVector3 _LuaGetPosition() const;
+    Math::StdVector3 _LuaGetPosition() const;
     float _LuaGetRotation() const;
-    Math::STLVector3 _LuaGetScale() const;
-    void _LuaSetBoundingBox(const Math::STLVector3& min, const Math::STLVector3& max);
-    void _LuaSetBoundingSize(const Math::STLVector3& size);
+    Math::StdVector3 _LuaGetScale() const;
+    void _LuaSetBoundingBox(const Math::StdVector3& min, const Math::StdVector3& max);
+    void _LuaSetBoundingSize(const Math::StdVector3& size);
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);
@@ -148,7 +148,7 @@ protected:
     /// Octree octant.
     Math::Octant* octant_{ nullptr };
     float sortValue_{ 0.0f };
-    std::map<Ranges, ea::vector<ea::weak_ptr<GameObject>>> ranges_;
+    ea::map<Ranges, ea::vector<ea::weak_ptr<GameObject>>> ranges_;
     void UpdateRanges();
     uint32_t GetNewId()
     {
@@ -317,7 +317,7 @@ public:
     /// Can not be selected by a player. Majority of objects is not selectable by the player so lets make it true by default.
     bool selectable_{ false };
     Components::StateComp stateComp_;
-    std::unique_ptr<Components::TriggerComp> triggerComp_;
+    ea::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_{ false };
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.

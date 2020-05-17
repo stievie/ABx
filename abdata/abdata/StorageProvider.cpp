@@ -153,7 +153,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBPlayerQuestListRewarded, AB::Entities::PlayerQuestListRewarded>();
 }
 
-bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     auto _data = cache_.find(key);
 
@@ -194,7 +194,7 @@ bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector
     return true;
 }
 
-bool StorageProvider::Update(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Update(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     std::string table;
     uuids::uuid id;
@@ -220,7 +220,7 @@ bool StorageProvider::Update(const IO::DataKey& key, std::shared_ptr<std::vector
 }
 
 void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
-    std::shared_ptr<std::vector<uint8_t>> data, CacheFlags flags)
+    ea::shared_ptr<StorageData> data, CacheFlags flags)
 {
     size_t sizeNeeded = data->size();
     if (!EnoughSpace(sizeNeeded))
@@ -257,7 +257,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     }
 }
 
-bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Read(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
 //    AB_PROFILE;
 
@@ -366,7 +366,7 @@ void StorageProvider::PreloadTask(IO::DataKey key)
         LOG_ERROR << "Unable to decode key " << key.format() << std::endl;
         return;
     }
-    std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>(0);
+    ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>(0);
     if (!LoadData(key, data))
         return;
 
@@ -395,7 +395,7 @@ bool StorageProvider::Preload(const IO::DataKey& key)
     return true;
 }
 
-bool StorageProvider::Exists(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Exists(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     auto _data = cache_.find(key);
 
@@ -558,7 +558,7 @@ void StorageProvider::FlushCacheTask()
     }
 }
 
-uuids::uuid StorageProvider::GetUuid(std::vector<uint8_t>& data)
+uuids::uuid StorageProvider::GetUuid(StorageData& data)
 {
     // Get UUID from raw data. UUID is serialized first as string
     const std::string suuid(data.begin() + 1,
@@ -602,7 +602,7 @@ bool StorageProvider::RemoveData(const IO::DataKey& key)
 }
 
 bool StorageProvider::LoadData(const IO::DataKey& key,
-    std::shared_ptr<std::vector<uint8_t>> data)
+    ea::shared_ptr<StorageData> data)
 {
     std::string table;
     uuids::uuid id;
@@ -701,7 +701,7 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     return succ;
 }
 
-bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& data)
+bool StorageProvider::ExistsData(const IO::DataKey& key, StorageData& data)
 {
     std::string table;
     uuids::uuid id;

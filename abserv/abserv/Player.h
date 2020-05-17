@@ -29,6 +29,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
 #include <set>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -48,8 +49,8 @@ class Player final : public Actor
 private:
     // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
     std::shared_ptr<Net::ProtocolGame> client_;
-    std::unique_ptr<MailBox> mailBox_;
-    std::unique_ptr<FriendList> friendList_;
+    ea::unique_ptr<MailBox> mailBox_;
+    ea::unique_ptr<FriendList> friendList_;
     ea::shared_ptr<Party> party_;
     bool resigned_{ false  };
     bool queueing_{ false };
@@ -136,7 +137,7 @@ public:
     void Initialize() override;
     void Logout();
     void TriggerDialog(uint32_t triggererId, uint32_t dialogIndex);
-    void TriggerQuestSelectionDialog(uint32_t triggererId, const std::set<uint32_t>& quests);
+    void TriggerQuestSelectionDialog(uint32_t triggererId, const ea::set<uint32_t>& quests);
     void TriggerQuestDialog(uint32_t triggererId, uint32_t index);
     void TriggerTradeDialog(uint32_t targetId);
     void ChangeMap(const std::string& mapUuid);
@@ -248,8 +249,8 @@ public:
     time_t loginTime_{ 0 };
     time_t logoutTime_{ 0 };
     int64_t lastPing_{ 0 };
-    std::unique_ptr<Components::QuestComp> questComp_;
-    std::unique_ptr<Components::TradeComp> tradeComp_;
+    ea::unique_ptr<Components::QuestComp> questComp_;
+    ea::unique_ptr<Components::TradeComp> tradeComp_;
 };
 
 template <>

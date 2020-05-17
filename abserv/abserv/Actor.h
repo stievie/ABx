@@ -93,10 +93,10 @@ class Actor : public GameObject
 {
     friend class Components::MoveComp;              // Needed for accessing octand
 private:
-    void _LuaGotoPosition(const Math::STLVector3& pos);
-    void _LuaSetHomePos(const Math::STLVector3& pos);
-    void _LuaHeadTo(const Math::STLVector3& pos);
-    Math::STLVector3 _LuaGetHomePos();
+    void _LuaGotoPosition(const Math::StdVector3& pos);
+    void _LuaSetHomePos(const Math::StdVector3& pos);
+    void _LuaHeadTo(const Math::StdVector3& pos);
+    Math::StdVector3 _LuaGetHomePos();
     void _LuaFollowObject(GameObject* object);
     void _LuaAddEffect(Actor* source, uint32_t index, uint32_t time);
     void _LuaRemoveEffect(uint32_t index);
@@ -108,7 +108,7 @@ private:
     std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);
     AreaOfEffect* _LuaAddAOE(const std::string& script,
         uint32_t index,
-        const Math::STLVector3& pos);
+        const Math::StdVector3& pos);
     bool _LuaHasEffect(uint32_t index);
     /// Get lower 16 bits of the group mask
     uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
@@ -320,21 +320,21 @@ public:
     virtual bool AddToInventory(uint32_t itemId);
     void DropRandomItem();
 
-    std::unique_ptr<SkillBar> skills_;
+    ea::unique_ptr<SkillBar> skills_;
 
-    std::unique_ptr<Components::ResourceComp> resourceComp_;
-    std::unique_ptr<Components::AttackComp> attackComp_;
-    std::unique_ptr<Components::SkillsComp> skillsComp_;
-    std::unique_ptr<Components::InputComp> inputComp_;
-    std::unique_ptr<Components::DamageComp> damageComp_;
-    std::unique_ptr<Components::HealComp> healComp_;
-    std::unique_ptr<Components::AutoRunComp> autorunComp_;
-    std::unique_ptr<Components::ProgressComp> progressComp_;
-    std::unique_ptr<Components::EffectsComp> effectsComp_;
-    std::unique_ptr<Components::InventoryComp> inventoryComp_;
-    std::unique_ptr<Components::MoveComp> moveComp_;
-    std::unique_ptr<Components::CollisionComp> collisionComp_;
-    std::unique_ptr<Components::SelectionComp> selectionComp_;
+    ea::unique_ptr<Components::ResourceComp> resourceComp_;
+    ea::unique_ptr<Components::AttackComp> attackComp_;
+    ea::unique_ptr<Components::SkillsComp> skillsComp_;
+    ea::unique_ptr<Components::InputComp> inputComp_;
+    ea::unique_ptr<Components::DamageComp> damageComp_;
+    ea::unique_ptr<Components::HealComp> healComp_;
+    ea::unique_ptr<Components::AutoRunComp> autorunComp_;
+    ea::unique_ptr<Components::ProgressComp> progressComp_;
+    ea::unique_ptr<Components::EffectsComp> effectsComp_;
+    ea::unique_ptr<Components::InventoryComp> inventoryComp_;
+    ea::unique_ptr<Components::MoveComp> moveComp_;
+    ea::unique_ptr<Components::CollisionComp> collisionComp_;
+    ea::unique_ptr<Components::SelectionComp> selectionComp_;
 
     bool undestroyable_{ false };
     /// Friend foe identification. Upper 16 bit is foe mask, lower 16 bit friend mask.

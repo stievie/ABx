@@ -135,20 +135,20 @@ void Actor::RegisterLua(kaguya::State& state)
 
 Actor::Actor() :
     GameObject(),
-    skills_(std::make_unique<SkillBar>(*this)),
-    resourceComp_(std::make_unique<Components::ResourceComp>(*this)),
-    attackComp_(std::make_unique<Components::AttackComp>(*this)),
-    skillsComp_(std::make_unique<Components::SkillsComp>(*this)),
-    inputComp_(std::make_unique<Components::InputComp>(*this)),
-    damageComp_(std::make_unique<Components::DamageComp>(*this)),
-    healComp_(std::make_unique<Components::HealComp>(*this)),
-    autorunComp_(std::make_unique<Components::AutoRunComp>(*this)),
-    progressComp_(std::make_unique<Components::ProgressComp>(*this)),
-    effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
-    inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
-    moveComp_(std::make_unique<Components::MoveComp>(*this)),
-    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
-    selectionComp_(std::make_unique<Components::SelectionComp>(*this))
+    skills_(ea::make_unique<SkillBar>(*this)),
+    resourceComp_(ea::make_unique<Components::ResourceComp>(*this)),
+    attackComp_(ea::make_unique<Components::AttackComp>(*this)),
+    skillsComp_(ea::make_unique<Components::SkillsComp>(*this)),
+    inputComp_(ea::make_unique<Components::InputComp>(*this)),
+    damageComp_(ea::make_unique<Components::DamageComp>(*this)),
+    healComp_(ea::make_unique<Components::HealComp>(*this)),
+    autorunComp_(ea::make_unique<Components::AutoRunComp>(*this)),
+    progressComp_(ea::make_unique<Components::ProgressComp>(*this)),
+    effectsComp_(ea::make_unique<Components::EffectsComp>(*this)),
+    inventoryComp_(ea::make_unique<Components::InventoryComp>(*this)),
+    moveComp_(ea::make_unique<Components::MoveComp>(*this)),
+    collisionComp_(ea::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
+    selectionComp_(ea::make_unique<Components::SelectionComp>(*this))
 {
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Actor::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Actor::OnStartUseSkill, this, std::placeholders::_1));
@@ -362,21 +362,21 @@ void Actor::SetState(AB::GameProtocol::CreatureState state)
     inputComp_->Add(InputType::SetState, std::move(data));
 }
 
-void Actor::_LuaSetHomePos(const Math::STLVector3& pos)
+void Actor::_LuaSetHomePos(const Math::StdVector3& pos)
 {
     homePos_ = pos;
     if (Math::Equals(homePos_.y_, 0.0f))
         GetGame()->map_->UpdatePointHeight(homePos_);
 }
 
-void Actor::_LuaHeadTo(const Math::STLVector3& pos)
+void Actor::_LuaHeadTo(const Math::StdVector3& pos)
 {
     HeadTo(pos);
 }
 
-Math::STLVector3 Actor::_LuaGetHomePos()
+Math::StdVector3 Actor::_LuaGetHomePos()
 {
-    return static_cast<Math::STLVector3>(homePos_);
+    return static_cast<Math::StdVector3>(homePos_);
 }
 
 void Actor::_LuaFollowObject(GameObject* object)
@@ -923,7 +923,7 @@ const std::string& Actor::GetAccountUuid() const
     return empty;
 }
 
-void Actor::_LuaGotoPosition(const Math::STLVector3& pos)
+void Actor::_LuaGotoPosition(const Math::StdVector3& pos)
 {
     if (IsImmobilized())
         return;
@@ -1119,7 +1119,7 @@ uint32_t Actor::GetAttributeRank(Attribute index)
 }
 
 AreaOfEffect* Actor::_LuaAddAOE(const std::string& script, uint32_t index,
-    const Math::STLVector3& pos)
+    const Math::StdVector3& pos)
 {
     auto result = GetGame()->AddAreaOfEffect(script, GetPtr<Actor>(), index, pos);
     if (result)

@@ -74,18 +74,20 @@ inline bool IsDeleted(CacheFlags flags)
     return sa::bits::is_set(flags, CacheFlag::Deleted);
 }
 
+using StorageData = std::vector<uint8_t>;
+
 class StorageProvider
 {
 public:
     StorageProvider(size_t maxSize, bool readonly);
 
-    bool Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
-    bool Update(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
-    bool Read(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Update(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Read(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
     bool Delete(const IO::DataKey& key);
     bool Invalidate(const IO::DataKey& key);
     bool Preload(const IO::DataKey& key);
-    bool Exists(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Exists(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
     bool Clear(const IO::DataKey& key);
 
     // Client compatible Methods
@@ -93,7 +95,7 @@ public:
     bool EntityRead(E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         SetEntity<E>(entity, *data);
         if (!Read(aKey, data))
             return false;
@@ -118,7 +120,7 @@ public:
     bool EntityUpdate(const E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Update(aKey, data);
@@ -127,7 +129,7 @@ public:
     bool EntityCreate(E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Create(aKey, data);
@@ -142,7 +144,7 @@ public:
     bool EntityExists(const E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
         return Exists(aKey, data);
@@ -163,11 +165,11 @@ private:
     struct CacheItem
     {
         CacheFlags flags{ 0 };
-        std::shared_ptr<std::vector<uint8_t>> data;
+        ea::shared_ptr<StorageData> data;
     };
-    sa::CallableTable<size_t, bool, std::vector<uint8_t>&> exitsCallables_;
+    sa::CallableTable<size_t, bool, StorageData&> exitsCallables_;
     sa::CallableTable<size_t, bool, CacheItem&> flushCallables_;
-    sa::CallableTable<size_t, bool, const uuids::uuid&, std::vector<uint8_t>&> loadCallables_;
+    sa::CallableTable<size_t, bool, const uuids::uuid&, StorageData&> loadCallables_;
     template<typename D, typename E>
     void AddEntityClass()
     {
@@ -193,16 +195,16 @@ private:
     void InitEnitityClasses();
 
     /// Read UUID from data
-    static uuids::uuid GetUuid(std::vector<uint8_t>& data);
+    static uuids::uuid GetUuid(StorageData& data);
 
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
     void CacheData(const std::string& table, const uuids::uuid& id,
-        std::shared_ptr<std::vector<uint8_t>> data,
+        ea::shared_ptr<StorageData> data,
         CacheFlags flags);
     bool RemoveData(const IO::DataKey& key);
     void PreloadTask(IO::DataKey key);
-    bool ExistsData(const IO::DataKey& key, std::vector<uint8_t>& data);
+    bool ExistsData(const IO::DataKey& key, StorageData& data);
     /// If the data is a player and it's in playerNames_ remove it from playerNames_
     void RemovePlayerFromCache(const IO::DataKey& key);
 
@@ -212,9 +214,9 @@ private:
     void FlushCacheTask();
 
     /// Loads Data from DB
-    bool LoadData(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool LoadData(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
     template<typename D, typename E>
-    bool LoadFromDB(const uuids::uuid& id, std::vector<uint8_t>& data)
+    bool LoadFromDB(const uuids::uuid& id, StorageData& data)
     {
         E e{};
         if (!id.nil())
@@ -261,7 +263,7 @@ private:
         return succ;
     }
     template<typename D, typename E>
-    bool CreateInDB(std::vector<uint8_t>& data)
+    bool CreateInDB(StorageData& data)
     {
         E e{};
         if (GetEntity<E>(data, e))
@@ -275,7 +277,7 @@ private:
         return false;
     }
     template<typename D, typename E>
-    bool SaveToDB(std::vector<uint8_t>& data)
+    bool SaveToDB(StorageData& data)
     {
         E e{};
         if (GetEntity<E>(data, e))
@@ -283,7 +285,7 @@ private:
         return false;
     }
     template<typename D, typename E>
-    bool DeleteFromDB(std::vector<uint8_t>& data)
+    bool DeleteFromDB(StorageData& data)
     {
         E e{};
         if (GetEntity<E>(data, e))
@@ -291,7 +293,7 @@ private:
         return false;
     }
     template<typename D, typename E>
-    bool ExistsInDB(std::vector<uint8_t>& data)
+    bool ExistsInDB(StorageData& data)
     {
         E e{};
         if (GetEntity<E>(data, e))
@@ -300,18 +302,17 @@ private:
     }
 
     template<typename E>
-    static bool GetEntity(std::vector<uint8_t>& data, E& e)
+    static bool GetEntity(StorageData& data, E& e)
     {
-        using InputAdapter = bitsery::InputBufferAdapter<std::vector<uint8_t>>;
+        using InputAdapter = bitsery::InputBufferAdapter<StorageData>;
         InputAdapter ia(data.begin(), data.size());
         auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
         return state.first == bitsery::ReaderError::NoError;
     }
     template<typename E>
-    static size_t SetEntity(const E& e, std::vector<uint8_t>& buffer)
+    static size_t SetEntity(const E& e, StorageData& buffer)
     {
-        using Buffer = std::vector<uint8_t>;
-        using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
+        using OutputAdapter = bitsery::OutputBufferAdapter<StorageData>;
         auto writtenSize = bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
         return writtenSize;
     }

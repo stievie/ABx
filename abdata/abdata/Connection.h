@@ -29,10 +29,11 @@
 #include <abscommon/Subsystems.h>
 #include <abscommon/DataCodes.h>
 #include <asio.hpp>
+#include <eastl.hpp>
 
 class ConnectionManager;
 
-class Connection : public std::enable_shared_from_this<Connection>
+class Connection : public ea::enable_shared_from_this<Connection>
 {
 public:
     explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
@@ -68,11 +69,11 @@ private:
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
     void SendStatusAndRestart(IO::ErrorCodes code, const std::string& message);
 
-    static inline uint32_t ToInt32(const std::vector<uint8_t>& intBytes, size_t start)
+    static inline uint32_t ToInt32(const StorageData& intBytes, size_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
     }
-    static inline uint16_t ToInt16(const std::vector<uint8_t>& intBytes, size_t start)
+    static inline uint16_t ToInt16(const StorageData& intBytes, size_t start)
     {
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
@@ -85,5 +86,5 @@ private:
     IO::OpCodes opcode_;
 
     IO::DataKey key_;
-    std::shared_ptr<std::vector<uint8_t>> data_;
+    ea::shared_ptr<StorageData> data_;
 };

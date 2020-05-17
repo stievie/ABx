@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include <memory>
 #include "Asset.h"
 #include <absmath/Vector3.h>
 #include <absmath/HeightMap.h>
 #include <absmath/Transformation.h>
 #include <absmath/Point.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -38,12 +38,12 @@ class Terrain final : public IO::Asset
 {
 private:
     // Must be shared_ptr CollisionShape may also own it
-    std::shared_ptr<Math::HeightMap> heightMap_;
+    ea::shared_ptr<Math::HeightMap> heightMap_;
 public:
     Terrain();
     ~Terrain() override;
 
-    void SetHeightMap(std::shared_ptr<Math::HeightMap> val)
+    void SetHeightMap(ea::shared_ptr<Math::HeightMap> val)
     {
         heightMap_ = val;
     }

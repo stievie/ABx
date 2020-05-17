@@ -22,7 +22,8 @@
 #pragma once
 
 #include <AB/Entities/Profession.h>
-#include <deque>
+#include <eastl.hpp>
+#include <EASTL/deque.h>
 #include <optional>
 #include <functional>
 
@@ -48,7 +49,7 @@ private:
     static std::string FindServerForMatch(const MatchTeams& teams);
     std::string uuid_;
     std::string mapUuid_;
-    std::deque<QueueEntry> entries_;
+    ea::deque<QueueEntry> entries_;
     unsigned partySize_{ 0 };
     unsigned partyCount_{ 0 };
     /// If true, choose partyCount_ * partySize_ players and put them into pertyCount_ parties.

@@ -32,7 +32,7 @@ void GuildManager::AddGuildToIndex(const AB::Entities::Guild& guild)
     });
 }
 
-std::shared_ptr<Guild> GuildManager::GetByName(const std::string& name)
+ea::shared_ptr<Guild> GuildManager::GetByName(const std::string& name)
 {
     auto& index = guildIndex_.get<GuildNameIndexTag>();
     // Guild names are case insensitive
@@ -43,10 +43,10 @@ std::shared_ptr<Guild> GuildManager::GetByName(const std::string& name)
         AB::Entities::Guild g;
         g.name = name;
         if (!client->Read(g))
-            return std::shared_ptr<Guild>();
+            return ea::shared_ptr<Guild>();
         AddGuildToIndex(g);
 
-        std::shared_ptr<Guild> guild = std::make_shared<Guild>(std::move(g));
+        ea::shared_ptr<Guild> guild = ea::make_shared<Guild>(std::move(g));
         guilds_.emplace(g.uuid, guild);
         return guild;
     }
@@ -54,7 +54,7 @@ std::shared_ptr<Guild> GuildManager::GetByName(const std::string& name)
     return Get((*it).guildUuid);
 }
 
-std::shared_ptr<Guild> GuildManager::Get(const std::string& guildUuid)
+ea::shared_ptr<Guild> GuildManager::Get(const std::string& guildUuid)
 {
     const auto it = guilds_.find(guildUuid);
     if (it != guilds_.end())
@@ -64,10 +64,10 @@ std::shared_ptr<Guild> GuildManager::Get(const std::string& guildUuid)
     AB::Entities::Guild g;
     g.uuid = guildUuid;
     if (!client->Read(g))
-        return std::shared_ptr<Guild>();
+        return ea::shared_ptr<Guild>();
 
     AddGuildToIndex(g);
-    std::shared_ptr<Guild> guild = std::make_shared<Guild>(std::move(g));
+    ea::shared_ptr<Guild> guild = ea::make_shared<Guild>(std::move(g));
     guilds_.emplace(guildUuid, guild);
     return guild;
 }

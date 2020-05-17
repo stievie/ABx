@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <map>
-#include <memory>
 #include <AB/Entities/Effect.h>
 #include <sa/StringHash.h>
 #include <eastl.hpp>

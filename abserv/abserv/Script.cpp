@@ -24,21 +24,23 @@
 
 namespace Game {
 
+namespace Internal {
 template<typename CharT, typename TraitsT = std::char_traits<CharT> >
 class vectorbuf : public std::basic_streambuf<CharT, TraitsT>
 {
 public:
-    vectorbuf(std::vector<CharT>& vec)
+    vectorbuf(ea::vector<CharT>& vec)
     {
         this->setg(vec.data(), vec.data(), vec.data() + vec.size());
     }
 };
+}
 
 Script::~Script() = default;
 
 bool Script::Execute(kaguya::State& luaState)
 {
-    vectorbuf<char> databuf(buffer_);
+    Internal::vectorbuf<char> databuf(buffer_);
     std::istream is(&databuf);
     if (!luaState.dostream(is))
     {

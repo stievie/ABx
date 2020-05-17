@@ -95,9 +95,9 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::ItemsCache>();
     Subsystems::Instance.CreateSubsystem<AI::BevaviorCache>();
 
-    serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
+    serviceManager_ = ea::make_unique<Net::ServiceManager>(ioService_);
 
-    maintenance_ = std::make_unique<Maintenance>();
+    maintenance_ = ea::make_unique<Maintenance>();
 
     cli_.push_back({ "autoterm", { "-autoterm", "--auto-terminate" }, "Automatic stop application", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "temp", { "-temp", "--temporary" }, "Temporary application", false, false, sa::arg_parser::option_type::none });
@@ -409,7 +409,7 @@ bool Application::LoadMain()
 
     auto* msgClient = GetSubsystem<Net::MessageClient>();
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
-    msgDispatcher_ = std::make_unique<MessageDispatcher>();
+    msgDispatcher_ = ea::make_unique<MessageDispatcher>();
     if (msgClient->IsConnected())
         LOG_INFO << "[done]" << std::endl;
     else

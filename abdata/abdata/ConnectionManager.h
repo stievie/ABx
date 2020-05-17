@@ -32,14 +32,14 @@ public:
     ConnectionManager() = default;
 
     /// Add the specified connection to the manager and start it.
-    void Start(std::shared_ptr<Connection> c);
+    void Start(ea::shared_ptr<Connection> c);
 
     /// Stop the specified connection.
-    void Stop(std::shared_ptr<Connection> c);
+    void Stop(ea::shared_ptr<Connection> c);
 
     /// Stop all connections.
     void StopAll();
 
 private:
-    ea::set<std::shared_ptr<Connection>> connections_;
+    ea::set<ea::shared_ptr<Connection>> connections_;
 };

@@ -30,6 +30,7 @@
 #include <sa/CircularQueue.h>
 #include <asio.hpp>
 #include <mutex>
+#include <eastl.hpp>
 
 namespace Net {
 class MessageMsg;
@@ -44,11 +45,11 @@ class Application final : public ServerApp
 private:
     asio::io_service ioService_;
     std::mutex lock_;
-    std::unique_ptr<Net::ServiceManager> serviceManager_;
-    std::unique_ptr<MessageDispatcher> msgDispatcher_;
+    ea::unique_ptr<Net::ServiceManager> serviceManager_;
+    ea::unique_ptr<MessageDispatcher> msgDispatcher_;
     sa::CircularQueue<unsigned, 10> loads_;
     int64_t lastLoadCalc_{ 0 };
-    std::unique_ptr<Maintenance> maintenance_;
+    ea::unique_ptr<Maintenance> maintenance_;
 #if defined(SCENE_VIEWER)
     std::shared_ptr<Debug::SceneViewer> sceneViewer_;
 #endif

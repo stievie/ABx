@@ -40,7 +40,7 @@ enum class Intersection
     Inside
 };
 
-using STLVector3 = std::array<float, 3>;
-using STLVector4 = std::array<float, 4>;
+using StdVector3 = std::array<float, 3>;
+using StdVector4 = std::array<float, 4>;
 
 }

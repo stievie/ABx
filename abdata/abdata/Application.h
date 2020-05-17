@@ -24,6 +24,7 @@
 #include <abscommon/IpList.h>
 #include <abscommon/ServerApp.h>
 #include <asio.hpp>
+#include <eastl.hpp>
 
 class Server;
 
@@ -34,7 +35,7 @@ private:
     size_t maxSize_;
     bool readonly_;
     asio::io_service ioService_;
-    std::unique_ptr<Server> server_;
+    ea::unique_ptr<Server> server_;
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
     Net::IpList whiteList_;

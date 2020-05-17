@@ -38,7 +38,7 @@ bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
     if (sig[0] != 'H' || sig[1] != 'M' || sig[2] != '\0' || sig[3] != '\0')
         return false;
 
-    std::shared_ptr<Math::HeightMap> heightMap = std::make_shared<Math::HeightMap>();
+    ea::shared_ptr<Math::HeightMap> heightMap = ea::make_shared<Math::HeightMap>();
     asset.SetHeightMap(heightMap);
 
     // Urho3D default spacing

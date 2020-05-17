@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <unordered_map>
 #include <sa/IdGenerator.h>
 #include "Item.h"
 #include <eastl.hpp>
@@ -37,7 +36,7 @@ class ItemsCache
 private:
     static sa::IdGenerator<uint32_t> itemIds_;
     ea::unordered_map<uint32_t, ea::unique_ptr<Item>> itemCache_;
-    std::unordered_map<std::string, uint32_t> concreteIds_;
+    ea::unordered_map<std::string, uint32_t> concreteIds_;
 public:
     Item* Get(uint32_t id);
     uint32_t GetConcreteId(const std::string& uuid) const;

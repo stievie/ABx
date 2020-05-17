@@ -205,7 +205,7 @@ bool Npc::SetBehavior(const std::string& name)
             LOG_WARNING << "Behavior with name " << name << " not found in cache" << std::endl;
         return false;
     }
-    aiComp_ = std::make_unique<Components::AiComp>(*this);
+    aiComp_ = ea::make_unique<Components::AiComp>(*this);
     aiComp_->GetAgent().SetBehavior(root);
     return true;
 }
@@ -324,7 +324,7 @@ void Npc::SetWander(bool value)
     }
 
     if (!wanderComp_)
-        wanderComp_ = std::make_unique<Components::WanderComp>(*this);
+        wanderComp_ = ea::make_unique<Components::WanderComp>(*this);
 }
 
 void Npc::WriteSpawnData(Net::NetworkMessage& msg)
@@ -370,13 +370,13 @@ void Npc::_LuaSetName(const std::string& name)
     name_ = name;
 }
 
-void Npc::_LuaAddWanderPoint(const Math::STLVector3& point)
+void Npc::_LuaAddWanderPoint(const Math::StdVector3& point)
 {
     if (IsWander())
         wanderComp_->AddRoutePoint(point);
 }
 
-void Npc::_LuaAddWanderPoints(const std::vector<Math::STLVector3>& points)
+void Npc::_LuaAddWanderPoints(const std::vector<Math::StdVector3>& points)
 {
     for (const auto& point : points)
         _LuaAddWanderPoint(point);
@@ -547,9 +547,9 @@ void Npc::_LuaAddQuest(uint32_t index)
     quests_.emplace(index);
 }
 
-std::set<uint32_t> Npc::GetQuestsForPlayer(const Player& player) const
+ea::set<uint32_t> Npc::GetQuestsForPlayer(const Player& player) const
 {
-    std::set<uint32_t> result;
+    ea::set<uint32_t> result;
     const auto& qc = *player.questComp_;
     for (auto qIndex : quests_)
     {
