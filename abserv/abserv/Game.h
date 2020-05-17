@@ -251,7 +251,7 @@ public:
 };
 
 template <>
-GameObject* Game::GetObject<GameObject>(uint32_t id)
+inline GameObject* Game::GetObject<GameObject>(uint32_t id)
 {
     const auto it = objects_.find(id);
     if (it == objects_.end())
