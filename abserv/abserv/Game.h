@@ -251,6 +251,9 @@ public:
 };
 
 template <>
+#if defined(__GNUC__)
+[[gnu::always_inline]]
+#endif
 inline GameObject* Game::GetObject<GameObject>(uint32_t id)
 {
     const auto it = objects_.find(id);
