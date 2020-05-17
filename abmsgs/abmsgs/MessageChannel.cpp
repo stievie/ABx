@@ -412,7 +412,6 @@ MessageParticipant* MessageSession::GetServer(const std::string& serverUuid)
 
 void MessageSession::Start()
 {
-    auto endp = socket_.remote_endpoint();
     channel_.Join(shared_from_this());
     asio::async_read(socket_,
         asio::buffer(readMsg_.Data(), Net::MessageMsg::HeaderLength),
