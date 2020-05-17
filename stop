@@ -1,0 +1,11 @@
+#!/bin/sh
+
+killall abserv
+killall abmatch
+killall ablogin
+sleep 1
+killall abfile
+sleep 1
+killall abmsgs
+sleep 1
+killall abdata

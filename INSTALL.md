@@ -38,6 +38,8 @@ $ createdb forgottenwars
 $ ./Bin/dbtool -a genacckey
 ~~~
 
+To stop the servers in the correct order, you can use `.stop` in the root directory.
+
 ### Known issues
 
 The Server should run on Windows and Linux.
