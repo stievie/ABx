@@ -22,7 +22,8 @@
 #pragma once
 
 #include <abscommon/Variant.h>
-#include <queue>
+#include <eastl.hpp>
+#include <EASTL/queue.h>
 #include <mutex>
 
 namespace Game {
@@ -68,11 +69,11 @@ struct InputItem
 class InputQueue
 {
 private:
-    std::queue<InputItem> queue_;
+    ea::queue<InputItem> queue_;
     std::mutex lock_;
 public:
-    InputQueue() = default;
-    ~InputQueue() = default;
+    InputQueue();
+    ~InputQueue();
 
     void Add(InputType type, Utils::VariantMap&& data)
     {
@@ -86,15 +87,7 @@ public:
         std::scoped_lock lock(lock_);
         queue_.push({ type, Utils::VariantMapEmpty });
     }
-    bool Get(InputItem& item)
-    {
-        // Dispatcher Thread
-        if (queue_.empty())
-            return false;
-        item = queue_.front();
-        queue_.pop();
-        return true;
-    }
+    bool Get(InputItem& item);
 };
 
 }

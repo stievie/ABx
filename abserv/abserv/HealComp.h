@@ -22,7 +22,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <vector>
+#include <eastl.hpp>
 #include <sa/Noncopyable.h>
 
 namespace Net {
@@ -50,7 +50,7 @@ private:
         int64_t tick;
     };
     Actor& owner_;
-    std::vector<HealItem> healings_;
+    ea::vector<HealItem> healings_;
 public:
     HealComp() = delete;
     explicit HealComp(Actor& owner) :

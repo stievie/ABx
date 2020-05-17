@@ -162,10 +162,9 @@ public:
     template <typename T>
     T* GetObject(uint32_t id)
     {
-        auto it = objects_.find(id);
-        if (it == objects_.end())
+        GameObject* o = GetObject<GameObject>(id);
+        if (!o)
             return nullptr;
-        GameObject* o = (*it).second.get();
         if (Is<T>(o))
             return To<T>(o);
         return nullptr;
@@ -250,5 +249,14 @@ public:
         partyMngr->VisitGameParties(id_, std::forward(callback));
     }
 };
+
+template <>
+GameObject* Game::GetObject<GameObject>(uint32_t id)
+{
+    const auto it = objects_.find(id);
+    if (it == objects_.end())
+        return nullptr;
+    return (*it).second.get();
+}
 
 }

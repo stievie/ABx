@@ -203,7 +203,7 @@ bool QuestComp::HaveQuest(uint32_t index) const
 
 bool QuestComp::Add(const AB::Entities::Quest& q, AB::Entities::PlayerQuest&& pq)
 {
-    std::unique_ptr<Quest> quest = std::make_unique<Quest>(owner_, q, std::move(pq));
+    ea::unique_ptr<Quest> quest = ea::make_unique<Quest>(owner_, q, std::move(pq));
     if (!quest->LoadScript(q.script))
     {
         LOG_ERROR << "Error loading quest script " << q.script << std::endl;

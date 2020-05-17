@@ -24,5 +24,17 @@
 
 namespace Game {
 
+InputQueue::InputQueue() = default;
+InputQueue::~InputQueue() = default;
+
+bool InputQueue::Get(InputItem& item)
+{
+    // Dispatcher Thread
+    if (queue_.empty())
+        return false;
+    item = queue_.front();
+    queue_.pop();
+    return true;
+}
 
 }

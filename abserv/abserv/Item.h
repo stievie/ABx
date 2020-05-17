@@ -21,16 +21,16 @@
 
 #pragma once
 
-#include <memory>
-#include <kaguya/kaguya.hpp>
-#include <AB/Entities/Item.h>
-#include <AB/Entities/ConcreteItem.h>
-#include "Script.h"
-#include <abshared/Damage.h>
 #include "ItemStats.h"
+#include "Script.h"
+#include <AB/Entities/ConcreteItem.h>
+#include <AB/Entities/Item.h>
 #include <abshared/Attributes.h>
-#include <sa/Bits.h>
+#include <abshared/Damage.h>
 #include <eastl.hpp>
+#include <kaguya/kaguya.hpp>
+#include <sa/Bits.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -59,11 +59,12 @@ enum class EquipPos : uint32_t
     WeaponTwoHanded
 };
 
-typedef std::map<ItemUpgrade, uint32_t> UpgradesMap;
-typedef std::map<EquipPos, uint32_t> EquipmentMap;
+typedef ea::map<ItemUpgrade, uint32_t> UpgradesMap;
+typedef ea::map<EquipPos, uint32_t> EquipmentMap;
 
 class Item
 {
+    NON_COPYABLE(Item)
 private:
     enum Function : uint32_t
     {
@@ -101,9 +102,6 @@ public:
     {
         InitializeLua();
     }
-    // non-copyable
-    Item(const Item&) = delete;
-    Item& operator=(const Item&) = delete;
 
     ~Item() = default;
 

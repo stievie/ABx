@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "InventoryComp.h"
 #include "ItemFactory.h"
-#include "Actor.h"
+#include "Player.h"
 #include "Skill.h"
 #include <sa/Transaction.h>
 #include <AB/Packets/Packet.h>
@@ -106,10 +106,10 @@ void InventoryComp::ExchangeItem(Item& item, uint32_t count,
 
 InventoryComp::InventoryComp(Actor& owner) :
     owner_(owner),
-    inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE,
+    inventory_(ea::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE,
         AB::Entities::DEFAULT_INVENTORY_SIZE, MAX_INVENTOREY_MONEY,
         AB::Entities::StoragePlace::Inventory)),
-    chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE,
+    chest_(ea::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE,
         AB::Entities::DEFAULT_CHEST_SIZE, DEFAULT_CHEST_MONEY,
         AB::Entities::StoragePlace::Chest))
 { }

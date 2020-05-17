@@ -21,9 +21,7 @@
 
 #pragma once
 
-#include <memory>
-#include <map>
-#include <vector>
+#include <eastl.hpp>
 #include "Quest.h"
 #include <sa/Assert.h>
 #include <sa/Iteration.h>
@@ -45,10 +43,10 @@ class QuestComp
     NON_MOVEABLE(QuestComp)
 private:
     Player& owner_;
-    std::map<uint32_t, std::unique_ptr<Quest>> activeQuests_;
+    ea::map<uint32_t, ea::unique_ptr<Quest>> activeQuests_;
     // This can be a std::map because we keep this only to check if the player
     // has the requirements for another quest.
-    std::map<uint32_t, std::unique_ptr<Quest>> doneQuests_;
+    ea::map<uint32_t, ea::unique_ptr<Quest>> doneQuests_;
     Quest* GetCompletedQuest(uint32_t index) const;
 public:
     QuestComp() = delete;

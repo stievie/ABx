@@ -22,7 +22,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <map>
+#include <eastl.hpp>
 #include <sa/Iteration.h>
 #include <sa/Noncopyable.h>
 
@@ -39,7 +39,7 @@ class TriggerComp
     NON_MOVEABLE(TriggerComp)
 private:
     GameObject& owner_;
-    std::map<uint32_t, int64_t> triggered_;
+    ea::map<uint32_t, int64_t> triggered_;
     uint32_t lastCheck_{ 0 };
     void DoTrigger(GameObject* other);
     void OnCollide(GameObject* other);

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <memory>
+#include <eastl.hpp>
 #include "Item.h"
 #include <abshared/Damage.h>
 #include <abshared/Mechanic.h>
@@ -38,6 +38,7 @@ class NetworkMessage;
 namespace Game {
 
 class Actor;
+class Player;
 class Skill;
 
 namespace Components {
@@ -51,9 +52,9 @@ private:
     Actor& owner_;
     EquipmentMap equipment_;
     /// Character inventory
-    std::unique_ptr<ItemContainer> inventory_;
+    ea::unique_ptr<ItemContainer> inventory_;
     /// Account chest
-    std::unique_ptr<ItemContainer> chest_;
+    ea::unique_ptr<ItemContainer> chest_;
 public:
     static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
     // Move an Item from one player to another
