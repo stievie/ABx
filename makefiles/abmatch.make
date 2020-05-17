@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/abmatch$(SUFFIX)
 SOURDEDIR = ../abmatch/abmatch
 OBJDIR = obj/x64/$(CONFIG)/abmatch
 LIBS += -lpthread -labcrypto -labscommon -luuid -lEASTL -llua5.3 -ldeathhandler -ldl
-CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
+CXXFLAGS += -fexceptions -Werror -Wno-unused-variable -Wno-deprecated-copy
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
@@ -38,4 +37,4 @@ $(GCH): $(PCH)
 
 .PHONY: clean
 clean:
-	rm -f $(GCH) $(OBJ_FILES) $(TARGET) $(OBJDIR)/*.d
+	rm -f $(GCH) $(OBJ_FILES) $(TARGET) $(OBJ_FILES:.o=.d)

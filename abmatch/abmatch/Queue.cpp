@@ -143,7 +143,7 @@ void Queue::Add(const std::string& uuid)
 
 void Queue::Remove(const std::string& uuid)
 {
-    auto it = std::find_if(entries_.begin(), entries_.end(), [&](const QueueEntry& current) {
+    auto it = ea::find_if(entries_.begin(), entries_.end(), [&](const QueueEntry& current) {
         return Utils::Uuid::IsEqual(current.uuid, uuid);
     });
     if (it != entries_.end())
@@ -200,7 +200,7 @@ std::optional<QueueEntry> Queue::GetPlayerByPos(AB::Entities::ProfessionPosition
     if (entries_.empty())
         return {};
 
-    auto it = std::find_if(entries_.begin(), entries_.end(), [&](const auto& current) {
+    auto it = ea::find_if(entries_.begin(), entries_.end(), [&](const auto& current) {
         return current.position == pos;
     });
     if (it != entries_.end())
