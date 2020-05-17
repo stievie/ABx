@@ -79,8 +79,6 @@ void Server::HandleAccept(const asio::error_code& error)
             LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;
             connectionManager_.Start(newConnection_);
         }
-        else
-            LOG_ERROR << "Connection from " << endp.address() << " not allowed" << std::endl;
     }
     StartAccept();
 }
@@ -89,5 +87,9 @@ bool Server::IsIpAllowed(const asio::ip::tcp::endpoint& ep)
 {
     if (whiteList_.IsEmpty())
         return true;
-    return whiteList_.Contains(ep.address().to_v4().to_uint());
+    const uint32_t ip = ep.address().to_v4().to_uint();
+    const bool result = whiteList_.Contains(ip);
+    if (!result)
+        LOG_WARNING << "Connection attempt from a not allowed IP " << Utils::ConvertIPToString(ip) << std::endl;
+    return result;
 }

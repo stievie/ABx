@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="DoubleHeadedAxe"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/DoubleHeadedAxe.mdl"/>
+		<attribute name="Material" value="Material;Materials/DoubleHeadedAxe_Steel.xml;Materials/DoubleHeadedAxe_Wood.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0261905 0.367214 0.804754"/>
+		<attribute name="Offset Position" value="2.00234e-08 7.45058e-09 0.324081"/>
+	</component>
+</node>

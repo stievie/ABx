@@ -41,4 +41,3 @@ public:
         Net::IpList& whiteList);
     ~MessageServer() = default;
 };
-

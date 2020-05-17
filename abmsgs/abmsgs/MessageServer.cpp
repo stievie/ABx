@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "MessageServer.h"
+#include <abscommon/StringUtils.h>
 
 MessageServer::MessageServer(asio::io_service& ioService,
     const asio::ip::tcp::endpoint& endpoint, Net::IpList& whiteList) :
@@ -45,9 +46,10 @@ void MessageServer::HandleAccept(std::shared_ptr<MessageSession> session,
     {
         auto endp = session->Socket().remote_endpoint();
         if (IsIpAllowed(endp))
+        {
+            LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;
             session->Start();
-        else
-            LOG_ERROR << "Connection from " << endp.address() << " not allowed" << std::endl;
+        }
     }
     StartAccept();
 }
@@ -56,5 +58,9 @@ bool MessageServer::IsIpAllowed(const asio::ip::tcp::endpoint& ep)
 {
     if (whiteList_.IsEmpty())
         return true;
-    return whiteList_.Contains(ep.address().to_v4().to_uint());
+    const uint32_t ip = ep.address().to_v4().to_uint();
+    const bool result = whiteList_.Contains(ip);
+    if (!result)
+        LOG_WARNING << "Connection attempt from a not allowed IP " << Utils::ConvertIPToString(ip) << std::endl;
+    return result;
 }
