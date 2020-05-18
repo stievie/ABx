@@ -39,7 +39,7 @@ TEST_CASE("BB IsFacingOutside")
     Math::Shape bbShape = bb.GetShape();
     for (unsigned i = 0; i < bbShape.GetTriangleCount(); ++i)
     {
-        std::array<Math::Vector3, 3> triangle = bbShape.GetTriangle(i);
+        ea::array<Math::Vector3, 3> triangle = bbShape.GetTriangle(i);
         bool res = bbShape.IsFacingOutside(triangle);
         INFO(i);
         REQUIRE(res);

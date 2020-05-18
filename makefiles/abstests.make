@@ -7,9 +7,8 @@ TARGET = $(TARGETDIR)/Tests$(SUFFIX)
 SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/$(CONFIG)/Tests
 LIBS += -labscommon -labsmath -labai -labipc -ltinyexpr -llua5.3 -lpthread
-CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
+CXXFLAGS += -fexceptions -Werror -Wno-unused-variable -Wno-deprecated-copy
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
