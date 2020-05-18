@@ -33,16 +33,6 @@ namespace Game {
 
 class Game;
 
-/// Database map data
-struct MapData
-{
-    /// DB ID
-    uint32_t id;
-    /// The name of the map
-    std::string name;
-    std::string directory;
-};
-
 struct SpawnPoint
 {
     Math::Vector3 position;
@@ -108,7 +98,8 @@ public:
     bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 
-    MapData data_;
+    std::string name_;
+    std::string directory_;
     ea::vector<SpawnPoint> spawnPoints_;
     ea::shared_ptr<Navigation::NavigationMesh> navMesh_;
     ea::shared_ptr<Terrain> terrain_;

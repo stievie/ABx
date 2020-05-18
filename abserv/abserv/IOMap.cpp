@@ -48,23 +48,23 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         bool isSpawnPoint = false;
         for (const auto& attr : node.children("attribute"))
         {
-            const pugi::xml_attribute& name_attr = attr.attribute("name");
-            const pugi::xml_attribute& value_attr = attr.attribute("value");
-            const size_t name_hash = sa::StringHashRt(name_attr.as_string());
-            switch (name_hash)
+            const pugi::xml_attribute& nameAttr = attr.attribute("name");
+            const pugi::xml_attribute& valueAttr = attr.attribute("value");
+            const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+            switch (nameHash)
             {
             case AttrPosition:
-                pos = Math::Vector3(value_attr.as_string());
+                pos = Math::Vector3(valueAttr.as_string());
                 break;
             case AttrRotation:
-                rot = Math::Quaternion(value_attr.as_string()).Normal();
+                rot = Math::Quaternion(valueAttr.as_string()).Normal();
                 break;
             case AttrScale:
-                scale = Math::Vector3(value_attr.as_string());
+                scale = Math::Vector3(valueAttr.as_string());
                 break;
             case AttrName:
-                isSpawnPoint = strcmp(value_attr.as_string(), "SpawnPoint") == 0;
-                name = value_attr.as_string();
+                isSpawnPoint = strcmp(valueAttr.as_string(), "SpawnPoint") == 0;
+                name = valueAttr.as_string();
                 break;
             case AttrVariables:
             {
@@ -119,14 +119,14 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 }
                 for (const auto& attr : comp.children())
                 {
-                    const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
-                    const pugi::xml_attribute& value_attr = attr.attribute("value");
-                    switch (name_hash)
+                    const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                    const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                    const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                    switch (nameHash)
                     {
                     case AttrModel:
                     {
-                        std::string modelValue = value_attr.as_string();
+                        std::string modelValue = valueAttr.as_string();
                         std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
                         if (modelFile.size() == 2)
                         {
@@ -141,10 +141,10 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                         break;
                     }
                     case AttrIsOccluder:
-                        object->occluder_ = value_attr.as_bool();
+                        object->occluder_ = valueAttr.as_bool();
                         break;
                     case AttrIsOccludee:
-                        object->occludee_ = value_attr.as_bool();
+                        object->occludee_ = valueAttr.as_bool();
                         break;
                     }
                 }
@@ -152,38 +152,38 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             }
             case AttrCollisionShape:
             {
-                size_t coll_shape = AttrCollisionShapeTypeBox;
+                size_t collShape = AttrCollisionShapeTypeBox;
                 if (object)
                 {
                     for (const auto& attr : comp.children())
                     {
-                        const pugi::xml_attribute& name_attr = attr.attribute("name");
-                        const size_t name_hash = sa::StringHashRt(name_attr.as_string());
-                        const pugi::xml_attribute& value_attr = attr.attribute("value");
-                        const size_t value_hash = sa::StringHashRt(value_attr.as_string());
-                        switch (name_hash)
+                        const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                        const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                        const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                        const size_t valueHash = sa::StringHashRt(valueAttr.as_string());
+                        switch (nameHash)
                         {
                         case AttrSize:
-                            size = Math::Vector3(value_attr.as_string());
+                            size = Math::Vector3(valueAttr.as_string());
                             break;
                         case AttrOffsetPos:
-                            offset = Math::Vector3(value_attr.as_string());
+                            offset = Math::Vector3(valueAttr.as_string());
                             break;
                         case AttrOffsetRot:
-                            offsetRot = Math::Quaternion(value_attr.as_string()).Normal();
+                            offsetRot = Math::Quaternion(valueAttr.as_string()).Normal();
                             break;
                         case AttrShapeType:
                         {
-                            coll_shape = value_hash;
+                            collShape = valueHash;
                         }
                         }
                     }
 
                     if (object && !object->GetCollisionShape())
                     {
-                        if (coll_shape == AttrCollisionShapeTypeTriangleMesh ||
-                            coll_shape == AttrCollisionShapeTypeConvexHull ||
-                            coll_shape == AttrCollisionShapeTypeCapsule)
+                        if (collShape == AttrCollisionShapeTypeTriangleMesh ||
+                            collShape == AttrCollisionShapeTypeConvexHull ||
+                            collShape == AttrCollisionShapeTypeCapsule)
                         {
                             if (model)
                             {
@@ -196,7 +196,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 );
                             }
                         }
-                        else if (coll_shape == AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
+                        else if (collShape == AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
                             const Math::Vector3 halfSize = (size * 0.5f);
@@ -215,7 +215,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }
-                        else if ((coll_shape == AttrCollisionShapeTypeSphere || coll_shape == AttrCollisionShapeTypeCylinder) &&
+                        else if ((collShape == AttrCollisionShapeTypeSphere || collShape == AttrCollisionShapeTypeCylinder) &&
                             size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
@@ -255,13 +255,13 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             {
                 for (const auto& attr : comp.children())
                 {
-                    const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
-                    const pugi::xml_attribute& value_attr = attr.attribute("value");
-                    switch (name_hash)
+                    const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                    const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                    const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                    switch (nameHash)
                     {
                     case AttrCollisionMask:
-                        colisionMask = value_attr.as_uint();
+                        colisionMask = valueAttr.as_uint();
                         if (object)
                             object->collisionMask_ = colisionMask;
                         break;
@@ -276,13 +276,13 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 map.terrain_->GetHeightMap()->matrix_ = map.terrain_->transformation_.GetMatrix();
                 for (const auto& attr : comp.children())
                 {
-                    const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = sa::StringHashRt(name_attr.as_string());
-                    const pugi::xml_attribute& value_attr = attr.attribute("value");
-                    switch (name_hash)
+                    const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                    const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                    const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                    switch (nameHash)
                     {
                     case AttrVertexSpacing:
-                        map.terrain_->GetHeightMap()->spacing_ = Math::Vector3(value_attr.as_string());
+                        map.terrain_->GetHeightMap()->spacing_ = Math::Vector3(valueAttr.as_string());
                         break;
                     }
                 }
@@ -298,7 +298,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 static bool LoadScene(Game::Map& map, const std::string& name)
 {
     // Game load thread
-    const std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.data_.directory) + name);
+    const std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.directory_) + name);
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
@@ -306,14 +306,14 @@ static bool LoadScene(Game::Map& map, const std::string& name)
         LOG_ERROR << "Error loading file " << file << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node& scene_node = doc.child("scene");
-    if (!scene_node)
+    const pugi::xml_node& sceneNode = doc.child("scene");
+    if (!sceneNode)
     {
         LOG_ERROR << "File " << file << " does not have a scene node" << std::endl;
         return false;
     }
 
-    for (pugi::xml_node_iterator it = scene_node.begin(); it != scene_node.end(); ++it)
+    for (pugi::xml_node_iterator it = sceneNode.begin(); it != sceneNode.end(); ++it)
     {
         if (strcmp((*it).name(), "node") == 0)
         {
@@ -342,7 +342,7 @@ bool Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
-    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.data_.directory) + "index.xml");
+    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.directory_) + "index.xml");
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
@@ -350,8 +350,8 @@ bool Load(Game::Map& map)
         LOG_ERROR << "Error loading file " << file << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node& index_node = doc.child("index");
-    if (!index_node)
+    const pugi::xml_node& indexNode = doc.child("index");
+    if (!indexNode)
     {
         LOG_ERROR << "File " << file << " does not have an index node" << std::endl;
         return false;
@@ -362,23 +362,23 @@ bool Load(Game::Map& map)
     std::string navMeshFile;
     std::string terrainFile;
 
-    for (const auto& file_node : index_node.children("file"))
+    for (const auto& fileNode : indexNode.children("file"))
     {
-        const pugi::xml_attribute& type_attr = file_node.attribute("type");
-        const size_t type_hash = sa::StringHashRt(type_attr.as_string());
-        const pugi::xml_attribute& src_attr = file_node.attribute("src");
-        switch (type_hash)
+        const pugi::xml_attribute& typeAttr = fileNode.attribute("type");
+        const size_t typeHash = sa::StringHashRt(typeAttr.as_string());
+        const pugi::xml_attribute& srcAttr = fileNode.attribute("src");
+        switch (typeHash)
         {
         case FileTypeScene:
-            sceneFile = src_attr.as_string();
+            sceneFile = srcAttr.as_string();
             break;
         case FileTypeNavmesh:
         {
-            navMeshFile = src_attr.as_string();
+            navMeshFile = srcAttr.as_string();
             break;
         }
         case FileTypeTerrain:
-            terrainFile = src_attr.as_string();
+            terrainFile = srcAttr.as_string();
             break;
         }
     }
@@ -400,14 +400,14 @@ bool Load(Game::Map& map)
     }
 
     // Before scene
-    map.terrain_ = dataProv->GetAsset<Game::Terrain>(Utils::AddSlash(map.data_.directory) + terrainFile);
+    map.terrain_ = dataProv->GetAsset<Game::Terrain>(Utils::AddSlash(map.directory_) + terrainFile);
     if (!map.terrain_)
     {
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
 
-    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(Utils::AddSlash(map.data_.directory) + navMeshFile);
+    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(Utils::AddSlash(map.directory_) + navMeshFile);
     if (!map.navMesh_)
     {
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;
@@ -420,7 +420,6 @@ bool Load(Game::Map& map)
     }
 
     map.CreatePatches();
-    // TODO: Make TerrainPatches part of Game::Map (Not Terrain)
     // After loading the Scene add terrain patches as game objects
     for (size_t i = 0; i < map.GetPatchesCount(); ++i)
     {

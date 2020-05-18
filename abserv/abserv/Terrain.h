@@ -30,9 +30,9 @@
 
 namespace Game {
 
-static constexpr int DEFAULT_PATCH_SIZE = 32;
-static constexpr int MIN_PATCH_SIZE = 4;
-static constexpr int MAX_PATCH_SIZE = 128;
+inline constexpr int DEFAULT_PATCH_SIZE = 32;
+inline constexpr int MIN_PATCH_SIZE = 4;
+inline constexpr int MAX_PATCH_SIZE = 128;
 
 class Terrain final : public IO::Asset
 {
@@ -53,13 +53,7 @@ public:
             return heightMap_.get();
         return nullptr;
     }
-    float GetHeight(const Math::Vector3& world) const
-    {
-        if (!heightMap_)
-            return 0.0f;
-        heightMap_->matrix_ = transformation_.GetMatrix();
-        return heightMap_->GetHeight(world);
-    }
+    float GetHeight(const Math::Vector3& world) const;
 
     Math::Transformation transformation_;
     int patchSize_{ DEFAULT_PATCH_SIZE };

@@ -30,7 +30,6 @@ namespace Game {
 
 Map::Map(ea::shared_ptr<Game> game) :
     game_(game),
-    navMesh_(nullptr),
     octree_(ea::make_unique<Math::Octree>())
 {
 }
@@ -109,7 +108,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points)
         objects.erase(ea::remove_if(objects.begin(), objects.end(), [](GameObject* current)
         {
             return (current->GetCollisionMask() == 0) ||
-                (current->GetType() == AB::GameProtocol::GameObjectType::TerrainPatch);
+                Is<TerrainPatch>(current);
         }), objects.end());
     };
 

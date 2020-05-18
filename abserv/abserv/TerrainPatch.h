@@ -35,7 +35,7 @@ class TerrainPatch final : public GameObject
 private:
     ea::weak_ptr<Terrain> owner_;
     Math::BoundingBox boundingBox_;
-    Math::BoundingBox transformedBoundingBox_;
+    Math::BoundingBox worldBoundingBox_;
     float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const;
 public:
     TerrainPatch(ea::shared_ptr<Terrain> owner,
@@ -45,7 +45,10 @@ public:
 
     /// Process octree raycast.
     void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results) override;
-    Math::BoundingBox GetWorldBoundingBox() const override;
+    Math::BoundingBox GetWorldBoundingBox() const override
+    {
+        return worldBoundingBox_;
+    }
     Math::BoundingBox GetBoundingBox() const override
     {
         return boundingBox_;

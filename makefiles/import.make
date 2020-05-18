@@ -6,8 +6,8 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/import$(SUFFIX)
 SOURDEDIR = ../import/import
 OBJDIR = obj/x64/$(CONFIG)/import
-LIBS += -labsmath -labscommon -lpthread -lassimp
-CXXFLAGS += -Werror
+LIBS += -labsmath -labscommon -lpthread -lEASTL -lassimp
+CXXFLAGS += -Werror -Wno-unused-variable -Wno-deprecated-copy
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
@@ -30,5 +30,5 @@ $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 
 .PHONY: clean
 clean:
-	rm -f $(OBJ_FILES) $(TARGET) $(OBJDIR)/*.d
+	rm -f $(OBJ_FILES) $(TARGET) $(OBJ_FILES:.o=.d)
 

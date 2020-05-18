@@ -80,8 +80,8 @@ TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
         maxY,
         transformation_.position_.z_ + (static_cast<float>(size.y_) / 2.0f));
     boundingBox_ = Math::BoundingBox(bbMin, bbMax);
-    // We can cache it because it does not change, i.e. a Terrain doe not move.
-    transformedBoundingBox_ = boundingBox_.Transformed(owner->transformation_.GetMatrix());
+    // We can cache it because it does not change, i.e. a Terrain does not move.
+    worldBoundingBox_ = boundingBox_.Transformed(owner->transformation_.GetMatrix());
 
 #ifdef DEBUG_COLLISION
     char buff[256];
@@ -154,11 +154,6 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
         }
 #endif
     }
-}
-
-Math::BoundingBox TerrainPatch::GetWorldBoundingBox() const
-{
-    return transformedBoundingBox_;
 }
 
 float TerrainPatch::GetHeight(const Math::Vector3& position) const

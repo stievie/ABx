@@ -152,7 +152,7 @@ public:
     int64_t GetUpdateTick() const { return lastUpdate_; }
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::TimeElapsed(startTime_); }
-    std::string GetName() const { return map_->data_.name; }
+    std::string GetName() const { return map_->name_; }
     /// Default level on this map
     uint32_t GetDefaultLevel() const { return static_cast<uint32_t>(data_.defaultLevel); }
     /// Returns only players that are part of this game
@@ -209,6 +209,7 @@ public:
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
 
+    // Visit all objects. Non-const version
     template<typename O = GameObject, typename Callback>
     void VisitObjects(Callback&& callback)
     {
@@ -221,6 +222,7 @@ public:
             }
         }
     }
+    // Visit all objects. Const version
     template<typename O = GameObject, typename Callback>
     void VisitObjects(Callback&& callback) const
     {
@@ -250,6 +252,7 @@ public:
     }
 };
 
+// Shortcut function. No need to test and cast, because all objects are GameObjects
 template <>
 #if defined(__GNUC__)
 [[gnu::always_inline]]

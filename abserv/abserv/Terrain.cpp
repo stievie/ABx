@@ -32,4 +32,12 @@ Terrain::Terrain() :
 
 Terrain::~Terrain() = default;
 
+float Terrain::GetHeight(const Math::Vector3& world) const
+{
+    if (!heightMap_)
+        return 0.0f;
+    heightMap_->matrix_ = transformation_.GetMatrix();
+    return heightMap_->GetHeight(world);
+}
+
 }

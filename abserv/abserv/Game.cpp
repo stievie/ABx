@@ -177,8 +177,8 @@ void Game::Start()
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
         instanceData_.gameUuid = data_.uuid;
-        instanceData_.name = map_->data_.name;
-        LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
+        instanceData_.name = map_->name_;
+        LOG_INFO << "Starting game " << id_ << ", " << map_->name_ << std::endl;
 
         if ((*config)[ConfigManager::Key::RecordGames])
         {
@@ -281,7 +281,7 @@ void Game::Update()
             // If all players left the game, delete it. Actually just mark as
             // terminated, it'll be deleted in the next update.
             // Keep empty games for 10 seconds
-            LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << " no players for " << noplayerTime_ << std::endl;
+            LOG_INFO << "Shutting down game " << id_ << ", " << map_->name_ << " no players for " << noplayerTime_ << std::endl;
             SetState(ExecutionState::Terminated);
             Lua::CallFunction(luaState_, "onStop");
         }
@@ -300,7 +300,7 @@ void Game::Update()
     }
     case ExecutionState::Terminated:
         // Delete this game
-        LOG_INFO << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
+        LOG_INFO << "Stopping game " << id_ << ", " << map_->name_ << std::endl;
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(500, std::bind(&GameManager::DeleteGameTask,
                 GetSubsystem<GameManager>(), id_))
@@ -526,7 +526,7 @@ void Game::InternalLoad()
 
     if (!IO::IOMap::Load(*map_))
     {
-        LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
+        LOG_ERROR << "Error loading map with name " << map_->name_ << std::endl;
         return;
     }
 
@@ -544,11 +544,9 @@ void Game::Load(const std::string& mapUuid)
         LOG_ERROR << "Error loading game " << mapUuid << std::endl;
         return;
     }
-    std::stringstream name;
-    name << data_.name << " (" << instanceData_.number << ")";
     map_ = std::make_unique<Map>(shared_from_this());
-    map_->data_.name = data_.name;
-    map_->data_.directory = data_.directory;
+    map_->name_ = data_.name;
+    map_->directory_ = data_.directory;
 
     // Must be executed here because the player doesn't wait to fully load the game to join
     // Execute initialization code if any
