@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/Tests$(SUFFIX)
 SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/$(CONFIG)/Tests
-LIBS += -labscommon -labsmath -labai -labipc -ltinyexpr -llua5.3 -lpthread
+LIBS += -labscommon -labsmath -labai -labipc -ltinyexpr -lEASTL -llua5.3 -lpthread
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -fexceptions -Werror -Wno-unused-variable -Wno-deprecated-copy
 # End changes

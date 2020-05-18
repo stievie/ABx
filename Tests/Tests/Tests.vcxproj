@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;_DEBUG;_CONSOLE;SA_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus /utf-8</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
@@ -67,7 +67,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>EASTL.lib;tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -87,7 +87,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CATCH_CONFIG_FAST_COMPILE;NDEBUG;_CONSOLE;SA_ASSERT%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\absmath;$(SolutionDir)..\abai;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\abipc;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus /utf-8</AdditionalOptions>
       <UndefinePreprocessorDefinitions>DEBUG_AI</UndefinePreprocessorDefinitions>
@@ -98,7 +98,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>EASTL.lib;tinyexpr.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(OutDir)$(TargetFileName)</Command>
