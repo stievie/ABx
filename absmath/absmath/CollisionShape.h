@@ -29,8 +29,9 @@
 #include "HeightMap.h"
 #include "ConvexHull.h"
 #include "Shape.h"
-#include <memory>
+#include <eastl.hpp>
 #include <limits>
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -92,23 +93,23 @@ template <typename T>
 class CollisionShape final : public AbstractCollisionShape
 {
 private:
-    std::shared_ptr<T> object_;
+    ea::shared_ptr<T> object_;
 public:
     /// Ctor. Create new shape
     template<typename... _CArgs>
     explicit CollisionShape(ShapeType type, _CArgs&&... _Args) :
         AbstractCollisionShape(type),
-        object_(std::make_shared<T>(std::forward<_CArgs>(_Args)...))
+        object_(ea::make_shared<T>(std::forward<_CArgs>(_Args)...))
     { }
     /// Ctor. Assign existing shape
-    explicit CollisionShape(ShapeType type, std::shared_ptr<T> ptr) :
+    explicit CollisionShape(ShapeType type, ea::shared_ptr<T> ptr) :
         AbstractCollisionShape(type),
         object_(ptr)
     { }
     /// Create a transformed version. Requires that T has a copy constructor.
     explicit CollisionShape(const CollisionShape<T>& other, const Matrix4& transformation) :
         AbstractCollisionShape(other.shapeType_),
-        object_(std::make_shared<T>(other.Object().Transformed(transformation)))
+        object_(ea::make_shared<T>(other.Object().Transformed(transformation)))
     { }
 
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override

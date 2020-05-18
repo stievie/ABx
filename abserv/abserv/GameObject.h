@@ -344,6 +344,11 @@ public:
     void SetTrigger(bool value);
 
     virtual void WriteSpawnData(Net::NetworkMessage& msg);
+
+    friend std::ostream& operator << (std::ostream& os, const GameObject& value)
+    {
+        return os << "GameObject{" << static_cast<int>(value.GetType()) << "} id " << value.id_ << ": " << value.GetName();
+    }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)
@@ -406,12 +411,6 @@ inline ea::shared_ptr<T> GameObject::GetPtr()
     if (Is<T>(*this))
         return ea::static_pointer_cast<T>(shared_from_this());
     return ea::shared_ptr<T>();
-}
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, GameObject& value)
-{
-    return os << "GameObject{" << static_cast<int>(value.GetType()) << "} id " << value.id_ << ": " << value.GetName();
 }
 
 }

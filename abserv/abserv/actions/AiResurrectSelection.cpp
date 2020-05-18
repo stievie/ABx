@@ -58,7 +58,7 @@ Node::Status ResurrectSelection::DoAction(Agent& agent, uint32_t)
     if (!target->IsDead())
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     if (!npc.GetSkillCandidates(skills, Game::SkillEffectResurrect, Game::SkillTargetTarget))
     {
 #ifdef DEBUG_AI

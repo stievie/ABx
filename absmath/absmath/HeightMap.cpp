@@ -36,7 +36,7 @@ HeightMap::HeightMap() :
 {
 }
 
-HeightMap::HeightMap(const std::vector<float>& data, const Point<int>& size) :
+HeightMap::HeightMap(const ea::vector<float>& data, const Point<int>& size) :
     minHeight_(std::numeric_limits<float>::max()),
     maxHeight_(std::numeric_limits<float>::lowest()),
     numVertices_(size),

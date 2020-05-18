@@ -34,6 +34,10 @@ public:
         end_(e)
     { }
     ~Line() = default;
+    friend std::ostream& operator << (std::ostream& os, const Line& value)
+    {
+        return os << "Start " << value.start_ << ", End " << value.end_;
+    }
 
     Vector3 start_;
     Vector3 end_;

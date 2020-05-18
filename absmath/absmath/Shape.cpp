@@ -42,7 +42,7 @@ void Shape::AddTriangle(unsigned i1, unsigned i2, unsigned i3)
     indexCount_ += 3;
 }
 
-bool Shape::IsFacingOutside(const std::array<Vector3, 3>& triangle) const
+bool Shape::IsFacingOutside(const ea::array<Vector3, 3>& triangle) const
 {
     // We only support convex shapes so calculate the normal and check if
     // it points outside.

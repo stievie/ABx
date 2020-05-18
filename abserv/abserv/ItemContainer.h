@@ -28,6 +28,7 @@
 #include <abscommon/Subsystems.h>
 #include <sa/Noncopyable.h>
 #include <CleanupNs.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -45,7 +46,7 @@ private:
     size_t maxMoney_;
     AB::Entities::StoragePlace place_;
     /// All inventory. Index 0 is the money
-    std::vector<uint32_t> items_;
+    ea::vector<uint32_t> items_;
     bool AddItem(Item* item, const ItemUpdatedCallback& callback);
     bool StackItem(Item* item, const ItemUpdatedCallback& callback);
     /// Insert in first free slot. Return position

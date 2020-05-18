@@ -46,14 +46,26 @@ private:
     int currentSkillIndex_{ -1 };
     int _LuaAddSkill(uint32_t skillIndex);
     bool _LuaSetSkill(int pos, uint32_t skillIndex);
-    std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const {
-        return GetSkillsWithEffect(static_cast<SkillEffect>(effect));
+    std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const
+    {
+        const auto res = GetSkillsWithEffect(static_cast<SkillEffect>(effect));
+        std::vector<uint32_t> luares;
+        ea::copy(res.begin(), res.end(), std::back_inserter(luares));
+        return luares;
     }
-    std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const {
-        return GetSkillsWithTarget(static_cast<SkillEffectTarget>(target));
+    std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const
+    {
+        const auto res = GetSkillsWithTarget(static_cast<SkillEffectTarget>(target));
+        std::vector<uint32_t> luares;
+        ea::copy(res.begin(), res.end(), std::back_inserter(luares));
+        return luares;
     }
-    std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const {
-        return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillEffectTarget>(target));
+    std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const
+    {
+        const auto res = GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillEffectTarget>(target));
+        std::vector<uint32_t> luares;
+        ea::copy(res.begin(), res.end(), std::back_inserter(luares));
+        return luares;
     }
     Skill* _LuaGetSkill(int pos);
     void SetAttributes(const Attributes& attributes);
@@ -99,9 +111,9 @@ public:
     int GetUsedAttributePoints() const;
     int GetAvailableAttributePoints() const;
     const SkillsArray& GetArray() const { return skills_; }
-    std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
-    std::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;
-    std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly = false) const;
+    ea::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
+    ea::vector<uint32_t> GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly = false) const;
+    ea::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly = false) const;
 
     std::string GetClasses() const;
 

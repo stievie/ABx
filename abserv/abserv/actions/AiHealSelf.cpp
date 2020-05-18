@@ -51,7 +51,7 @@ Node::Status HealSelf::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetSelf);
 
     int skillIndex = GetSkillIndex(skills, npc, &npc);

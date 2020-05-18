@@ -165,22 +165,6 @@ void FriendListWindow::CreateFriendMenu()
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
         Text* menuText = item->CreateChild<Text>();
-        menuText->SetText("Remove");
-        menuText->SetStyle("EditorMenuText");
-        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
-        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
-        item->SetSize(item->GetMinSize());
-        if (item->GetWidth() > width)
-            width = item->GetWidth();
-        if (item->GetHeight() > height)
-            height = item->GetHeight();
-        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoveClicked));
-    }
-    {
-        Menu* item = popup->CreateChild<Menu>();
-        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-        item->SetStyleAuto();
-        Text* menuText = item->CreateChild<Text>();
         menuText->SetText("Copy Name");
         menuText->SetStyle("EditorMenuText");
         item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
@@ -191,6 +175,26 @@ void FriendListWindow::CreateFriendMenu()
         if (item->GetHeight() > height)
             height = item->GetHeight();
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendCopyNameClicked));
+    }
+    {
+        BorderImage* sep = popup->CreateChild<BorderImage>();
+        sep->SetStyle("EditorDivider");
+    }
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Remove");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleFriendRemoveClicked));
     }
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());
@@ -232,22 +236,6 @@ void FriendListWindow::CreateIgnoreMenu()
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
         Text* menuText = item->CreateChild<Text>();
-        menuText->SetText("Remove");
-        menuText->SetStyle("EditorMenuText");
-        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
-        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
-        item->SetSize(item->GetMinSize());
-        if (item->GetWidth() > width)
-            width = item->GetWidth();
-        if (item->GetHeight() > height)
-            height = item->GetHeight();
-        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredRemoveClicked));
-    }
-    {
-        Menu* item = popup->CreateChild<Menu>();
-        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-        item->SetStyleAuto();
-        Text* menuText = item->CreateChild<Text>();
         menuText->SetText("Copy Name");
         menuText->SetStyle("EditorMenuText");
         item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
@@ -258,6 +246,26 @@ void FriendListWindow::CreateIgnoreMenu()
         if (item->GetHeight() > height)
             height = item->GetHeight();
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredCopyNameClicked));
+    }
+    {
+        BorderImage* sep = popup->CreateChild<BorderImage>();
+        sep->SetStyle("EditorDivider");
+    }
+    {
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Remove");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(FriendListWindow, HandleIgnoredRemoveClicked));
     }
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());

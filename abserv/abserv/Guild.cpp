@@ -30,7 +30,7 @@ Guild::Guild(AB::Entities::Guild&& data) :
 {
 }
 
-size_t Guild::GetAccounts(std::vector<std::string>& uuids) const
+size_t Guild::GetAccounts(ea::vector<std::string>& uuids) const
 {
     AB::Entities::GuildMembers members;
     members.uuid = data_.uuid;

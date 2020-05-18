@@ -217,18 +217,16 @@ public:
         return Intersection::Inside;
     }
 
+    friend std::ostream& operator << (std::ostream& os, const BoundingBox& value)
+    {
+        return os << value.ToString();
+    }
+
     Vector3 min_;
     float dummyMin_{ 0.0f };
     Vector3 max_;
     float dummyMax_{ 0.0f };
     Quaternion orientation_;
 };
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, BoundingBox& value)
-{
-    os << value.ToString();
-    return os;
-}
 
 }

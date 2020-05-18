@@ -387,9 +387,9 @@ uint32_t SkillBar::GetAttributeRank(Attribute index) const
     return GetAttribRank(attributes_, index);
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const
+ea::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const
 {
-    std::vector<uint32_t> result;
+    ea::vector<uint32_t> result;
     uint32_t i = 0;
     for (const auto& skill : skills_)
     {
@@ -400,9 +400,9 @@ std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rec
     return result;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly /* = false */) const
+ea::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillEffectTarget target, bool rechargedOnly /* = false */) const
 {
-    std::vector<uint32_t> result;
+    ea::vector<uint32_t> result;
     uint32_t i = 0;
     for (const auto& skill : skills_)
     {
@@ -413,9 +413,9 @@ std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillEffectTarget target, bo
     return result;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly /* = false */) const
+ea::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, SkillEffectTarget target, bool rechargedOnly /* = false */) const
 {
-    std::vector<uint32_t> result;
+    ea::vector<uint32_t> result;
     uint32_t i = 0;
     for (const auto& skill : skills_)
     {

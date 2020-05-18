@@ -23,6 +23,7 @@
 
 #include <absmath/Vector3.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -42,7 +43,7 @@ private:
     };
     Npc& owner_;
 
-    std::vector<Math::Vector3> route_;
+    ea::vector<Math::Vector3> route_;
     Direction direction_{ Direction::Forward };
     int currentIndex_{ -1 };
     bool wandering_{ false };

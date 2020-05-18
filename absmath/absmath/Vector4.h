@@ -131,6 +131,10 @@ public:
         ss << w_ << " " << x_ << " " << y_ << " " << z_;
         return ss.str();
     }
+    friend std::ostream& operator << (std::ostream& os, const Vector4& value)
+    {
+        return os << value.ToString();
+    }
 
     float x_;
     float y_;
@@ -144,11 +148,5 @@ public:
     static const Vector4 UnitZ;
     static const Vector4 UnitW;
 };
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Vector4& value)
-{
-    return os << value.ToString();
-}
 
 }

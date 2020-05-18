@@ -151,18 +151,15 @@ public:
 
     /// Return distance of a point to the surface, or 0 if inside.
     float Distance(const Vector3& point) const { return std::max((point - center_).Length() - radius_, 0.0f); }
+    friend std::ostream& operator << (std::ostream& os, const Sphere& value)
+    {
+        return os << value.center_ << " +/- " << value.radius_;
+    }
 
     /// Sphere center.
     Vector3 center_;
     /// Sphere radius.
     float radius_;
 };
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Sphere& value)
-{
-    os << value.center_.ToString() << " +/- " << value.radius_;
-    return os;
-}
 
 }

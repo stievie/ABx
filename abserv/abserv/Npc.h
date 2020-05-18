@@ -126,7 +126,7 @@ public:
         AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);
     bool GetSkillCandidates(
-        std::vector<int>& results,
+        ea::vector<int>& results,
         SkillEffect effect, SkillEffectTarget target,
         AB::Entities::SkillType interrupts = AB::Entities::SkillTypeAll,
         const Actor* targetActor = nullptr);

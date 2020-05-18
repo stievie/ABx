@@ -56,7 +56,7 @@ Node::Status UseDamageSkill::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     if (!npc.GetSkillCandidates(skills, Game::SkillEffectDamage, targetType_,
                                 AB::Entities::SkillTypeAll, target))
     {

@@ -63,7 +63,7 @@ Node::Status Interrupt::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     if (!npc.GetSkillCandidates(skills, Game::SkillEffectInterrupt,
         Game::SkillTargetTarget, type_))
     {

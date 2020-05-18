@@ -186,6 +186,10 @@ public:
 
     /// Return integer data.
     const float* Data() const { return &x_; }
+    friend std::ostream& operator << (std::ostream& os, const Vector3& value)
+    {
+        return os << value.ToString();
+    }
 
     float x_;
     float y_;
@@ -211,12 +215,6 @@ inline bool Vector3::Equals(const Vector3& rhs, float epsilon) const
     return Math::Equals(x_, rhs.x_, epsilon) &&
         Math::Equals(y_, rhs.y_, epsilon) &&
         Math::Equals(z_, rhs.z_, epsilon);
-}
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Vector3& value)
-{
-    return os << value.ToString();
 }
 
 }

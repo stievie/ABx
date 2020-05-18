@@ -171,7 +171,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     if (recursionLevel >= MAX_OBSTACLE_AVOID_RECURSION_LEVEL)
     {
 #ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "Stuck: new destination " << newDest.ToString() << std::endl;
+    LOG_DEBUG << "Stuck: new destination " << newDest << std::endl;
 #endif
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
         return destination;
@@ -220,7 +220,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         return destination;
 
 #ifdef DEBUG_NAVIGATION
-//    LOG_DEBUG << "Obstacle " << hit->object_->GetName() << " on the way to " << destination.ToString() << std::endl;
+//    LOG_DEBUG << "Obstacle " << *hit->object_ << " on the way to " << destination << std::endl;
 #endif
 
     Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
@@ -233,7 +233,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     if (newHit.has_value())
         return AvoidObstaclesInternal(newDest, recursionLevel + 1);
 #ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "New destination " << newDest.ToString() << std::endl;
+    LOG_DEBUG << "New destination " << newDest << std::endl;
 #endif
     return newDest;
 }
@@ -263,7 +263,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (!HasWaypoints())
     {
 #ifdef DEBUG_NAVIGATION
-        LOG_DEBUG << owner_.GetName() << " has no (more) waypoints" << std::endl;
+        LOG_DEBUG << owner_ << " has no (more) waypoints" << std::endl;
 #endif
         // Still auto running but no more waypoints, move close to dest
         const float distance = destination_.Distance(pos);
@@ -287,7 +287,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (!pos.Equals(currWp, AT_POSITION_THRESHOLD))
     {
 #ifdef DEBUG_NAVIGATION
-        LOG_DEBUG << owner_.GetName() << " moving to way point " << currWp.ToString() << std::endl;
+        LOG_DEBUG << owner_ << " moving to way point " << currWp << std::endl;
 #endif
         MoveTo(timeElapsed, currWp);
     }

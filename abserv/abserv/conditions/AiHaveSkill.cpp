@@ -37,7 +37,7 @@ HaveSkill::HaveSkill(const ArgumentsType& arguments) :
 bool HaveSkill::Evaluate(Agent& agent, const Node&)
 {
     Game::Npc& npc = GetNpc(agent);
-    std::vector<int> skills;
+    ea::vector<int> skills;
     return npc.GetSkillCandidates(skills, effect_, effectTarget_);
 }
 

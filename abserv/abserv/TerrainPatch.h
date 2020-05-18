@@ -35,6 +35,7 @@ class TerrainPatch final : public GameObject
 private:
     ea::weak_ptr<Terrain> owner_;
     Math::BoundingBox boundingBox_;
+    mutable Math::BoundingBox transformedBoundingBox_;
     float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const;
 public:
     TerrainPatch(ea::shared_ptr<Terrain> owner,

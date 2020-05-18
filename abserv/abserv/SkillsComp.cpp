@@ -121,11 +121,15 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 #ifdef DEBUG_AI
     if (lastError_ != AB::GameProtocol::SkillError::None)
     {
-        LOG_DEBUG << owner_.GetName() << " using invalid skill " <<
-                     (skill ? skill->data_.name : "(none)") <<
-                     " on target " << (target ? target->GetName() : "(none)") <<
-                     " error (" <<
-                     static_cast<int>(lastError_) << ") " << GetSkillErrorString(lastError_) << std::endl;
+        LOG_DEBUG << owner_ << " using invalid skill " <<
+            (skill ? skill->data_.name : "(none)") <<
+            " on target ";
+        if (target)
+            LOG_DEBUG << (*target);
+        else
+            LOG_DEBUG << "(none)";
+        LOG_DEBUG << " error (" <<
+            static_cast<int>(lastError_) << ") " << GetSkillErrorString(lastError_) << std::endl;
     }
 #endif
     return lastError_;

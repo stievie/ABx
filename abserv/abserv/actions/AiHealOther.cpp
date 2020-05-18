@@ -66,7 +66,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (selection.size() > 4)
     {
         // Many to heal try party healing
-        std::vector<int> skills;
+        ea::vector<int> skills;
         if (npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetParty))
         {
             int skillIndex = GetSkillIndex(skills, npc, nullptr);
@@ -86,7 +86,7 @@ Node::Status HealOther::DoAction(Agent& agent, uint32_t)
     if (target->IsDead())
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     if (!npc.GetSkillCandidates(skills, Game::SkillEffectHeal, Game::SkillTargetTarget))
         return Status::Failed;
 

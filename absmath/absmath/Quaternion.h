@@ -154,6 +154,10 @@ public:
         ss << w_ << " " << x_ << " " << y_ << " " << z_;
         return ss.str();
     }
+    friend std::ostream& operator << (std::ostream& os, const Quaternion& value)
+    {
+        return os << value.ToString();
+    }
 
     float w_;
     float x_;
@@ -162,11 +166,5 @@ public:
 
     static const Quaternion Identity;
 };
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Quaternion& value)
-{
-    return os << value.ToString();
-}
 
 }

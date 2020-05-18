@@ -23,6 +23,7 @@
 
 #include "BoundingBox.h"
 #include "Shape.h"
+#include <eastl.hpp>
 
 namespace Math {
 
@@ -32,7 +33,7 @@ class HeightMap;
 class ConvexHull : public Shape
 {
 private:
-    void BuildHull(const std::vector<Vector3>& vertices);
+    void BuildHull(const ea::vector<Vector3>& vertices);
 public:
     ConvexHull() = default;
     ConvexHull(const ConvexHull& other) :
@@ -43,7 +44,7 @@ public:
         Shape(other),
         boundingBox_(std::move(other.boundingBox_))
     {}
-    explicit ConvexHull(const std::vector<Vector3>& vertices);
+    explicit ConvexHull(const ea::vector<Vector3>& vertices);
     ~ConvexHull() = default;
 
     ConvexHull& operator= (const ConvexHull& other)

@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include <vector>
 #include <stdint.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Net {
 class NetworkMessage;
@@ -53,7 +53,7 @@ private:
         ProgressType type;
         int value;
     };
-    std::vector<ProgressItem> items_;
+    ea::vector<ProgressItem> items_;
     Actor& owner_;
     unsigned deaths_{ 0 };
 private:

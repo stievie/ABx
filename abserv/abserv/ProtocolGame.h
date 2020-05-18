@@ -67,7 +67,6 @@ public:
         checksumEnabled_ = ProtocolGame::UseChecksum;
         compressionEnabled_ = ENABLE_GAME_COMPRESSION;
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
-        // TODO:
         SetEncKey(AB::ENC_KEY);
     }
 
@@ -81,12 +80,12 @@ private:
     template <typename Callable, typename... Args>
     void AddPlayerTask(Callable&& function, Args&&... args)
     {
-        auto player = GetPlayer();
-        if (!player)
-            return;
-        GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(std::move(function), player, std::forward<Args>(args)...))
-        );
+        if (auto player = GetPlayer())
+        {
+            GetSubsystem<Asynch::Dispatcher>()->Add(
+                Asynch::CreateTask(std::bind(std::move(function), player, std::forward<Args>(args)...))
+            );
+        }
     }
 
     std::shared_ptr<ProtocolGame> GetPtr()

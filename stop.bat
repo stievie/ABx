@@ -1,11 +1,11 @@
 @echo off
 
-taskkill /IM abserv.exe /F
-taskkill /IM abmatch.exe /F
-taskkill /IM ablogin.exe /F
+taskkill /IM abserv.exe
+taskkill /IM abmatch.exe
+taskkill /IM ablogin.exe
 timeout /T 1 /nobreak >nul
-taskkill /IM abfile.exe /F
+taskkill /IM abfile.exe
 timeout /T 1 /nobreak >nul
-taskkill /IM abmsgs.exe /F
+taskkill /IM abmsgs.exe
 timeout /T 1 /nobreak >nul
-taskkill /IM abdata.exe /F
+taskkill /IM abdata.exe

@@ -93,7 +93,7 @@ Logger& Logger::operator << (EndlType endl)
     return *this;
 }
 
-Logger& Logger::Error()
+Logger& Logger::Error(const char* function)
 {
     static Color::Modifier red(Color::FG_LIGHTRED);
     if (nextIsBegin_)
@@ -107,18 +107,24 @@ Logger& Logger::Error()
 #endif
         }
         (*this) << "[ERROR] ";
+        if (function)
+            (*this) << function << ": ";
     }
     return *this;
 }
 
-Logger& Logger::Info()
+Logger& Logger::Info(const char* function)
 {
     if (nextIsBegin_)
+    {
         (*this) << "[Info] ";
+        if (function)
+            (*this) << function << ": ";
+    }
     return *this;
 }
 
-Logger& Logger::Warning()
+Logger& Logger::Warning(const char* function)
 {
     static Color::Modifier yellow(Color::FG_LIGHTYELLOW);
     if (nextIsBegin_)
@@ -132,6 +138,8 @@ Logger& Logger::Warning()
 #endif
         }
         (*this) << "[Warning] ";
+        if (function)
+            (*this) << function << ": ";
     }
     return *this;
 }
@@ -156,7 +164,7 @@ Logger& Logger::Profile()
 }
 #endif
 
-Logger& Logger::Debug()
+Logger& Logger::Debug(const char* function)
 {
     static Color::Modifier grey(Color::FG_LIGHTGREY);
     if (nextIsBegin_)
@@ -170,7 +178,9 @@ Logger& Logger::Debug()
 #endif
         }
         (*this) << "[Debug] ";
-    }
+        if (function)
+            (*this) << function << ": ";
+}
     return *this;
 }
 

@@ -62,12 +62,11 @@ public:
     XMath::XMMATRIX GetMatrix(const Quaternion& rot) const;
     void Move(float speed, const Vector3& amount);
     void Turn(float yAngle);
-};
+    friend std::ostream& operator << (std::ostream& os, const Transformation& value)
+    {
+        return os << " position " << value.position_ << ", scale " << value.scale_ << ", orientation " << value.oriention_;
+    }
 
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Transformation& value)
-{
-    return os << " position " << value.position_ << ", scale " << value.scale_ << ", orientation " << value.oriention_;
-}
+};
 
 }

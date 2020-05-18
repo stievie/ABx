@@ -60,7 +60,7 @@ bool SkillAction::TestSkill(int index, Game::Actor& source, Game::Actor* target)
     return res == AB::GameProtocol::SkillError::None || res == AB::GameProtocol::SkillError::OutOfRange;
 }
 
-int SkillAction::GetSkillIndex(std::vector<int>& candidates, Game::Actor& source, Game::Actor* target)
+int SkillAction::GetSkillIndex(ea::vector<int>& candidates, Game::Actor& source, Game::Actor* target)
 {
     int skillIndex = -1;
     for (int index : candidates)

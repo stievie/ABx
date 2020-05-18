@@ -54,7 +54,7 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
             LOG_DEBUG << "Stuck! Distance: " << manifold.distance << " ";
-        LOG_DEBUG << "Going back to " << safePos.ToString() << std::endl;
+        LOG_DEBUG << "Going back to " << safePos << std::endl;
 #endif
         GotoSafePosition();
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
@@ -80,9 +80,9 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
     const Math::Vector3 newPos = safePos + newVelocityVector;
 
 #ifdef DEBUG_COLLISION
-    LOG_DEBUG << "Sliding from " << safePos.ToString() << " to "
+    LOG_DEBUG << "Sliding from " << safePos << " to "
         << newPos.ToString() <<
-        " intersection at " << manifold.intersectionPoint.ToString() << std::endl;
+        " intersection at " << manifold.intersectionPoint << std::endl;
 #endif
 
     // TODO:

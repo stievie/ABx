@@ -30,7 +30,7 @@
 
 namespace Math {
 
-ConvexHull::ConvexHull(const std::vector<Vector3>& vertices) :
+ConvexHull::ConvexHull(const ea::vector<Vector3>& vertices) :
     Shape()
 {
     BuildHull(vertices);
@@ -92,7 +92,7 @@ bool ConvexHull::Collides(const HeightMap& b2, const Vector3&, Vector3& move) co
     return false;
 }
 
-void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
+void ConvexHull::BuildHull(const ea::vector<Vector3>& vertices)
 {
     if (vertices.size())
     {

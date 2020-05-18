@@ -57,11 +57,11 @@ private:
     short foregroundDefault_{ 0 };
     bool isConsole_{ false };
 #endif
-    bool nextIsBegin_{ true };
     std::ofstream fstream_;
     std::ostream& stream_;
     Mode mode_;
     int64_t logStart_;
+    bool nextIsBegin_{ true };
     using EndlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
@@ -143,13 +143,13 @@ public:
     {
         Debug() << msg << std::endl;
     }
-    Logger& Error();
-    Logger& Info();
-    Logger& Warning();
+    Logger& Error(const char* function = nullptr);
+    Logger& Info(const char* function = nullptr);
+    Logger& Warning(const char* function = nullptr);
 #if defined(PROFILING)
     Logger& Profile();
 #endif
-    Logger& Debug();
+    Logger& Debug(const char* function = nullptr);
     static int PrintF(const char *__restrict __format, ...);
 
     static void Close()
@@ -171,11 +171,11 @@ public:
 
 #define LOG_PLAIN (IO::Logger::Instance())
 #define LOG_INFO (IO::Logger::Instance().Info())
-#define LOG_WARNING (IO::Logger::Instance().Warning() << AB_PRETTY_FUNCTION << ": ")
-#define LOG_ERROR (IO::Logger::Instance().Error() << AB_PRETTY_FUNCTION << ": ")
+#define LOG_WARNING (IO::Logger::Instance().Warning(AB_PRETTY_FUNCTION))
+#define LOG_ERROR (IO::Logger::Instance().Error(AB_PRETTY_FUNCTION))
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #elif !defined(LOG_PROFILE)
 #   define LOG_PROFILE
 #endif
-#define LOG_DEBUG (IO::Logger::Instance().Debug() << AB_PRETTY_FUNCTION << ": ")
+#define LOG_DEBUG (IO::Logger::Instance().Debug(AB_PRETTY_FUNCTION))

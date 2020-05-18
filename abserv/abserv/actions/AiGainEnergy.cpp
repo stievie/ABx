@@ -46,7 +46,7 @@ Node::Status GainEnergy::DoAction(Agent& agent, uint32_t)
         // Some other skill currently using
         return Status::Failed;
 
-    std::vector<int> skills;
+    ea::vector<int> skills;
     if (!npc.GetSkillCandidates(skills, Game::SkillEffectGainEnergy, Game::SkillTargetNone))
     {
 #ifdef DEBUG_AI

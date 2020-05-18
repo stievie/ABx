@@ -25,6 +25,7 @@
 #include <AB/Entities/GuildMembers.h>
 #include <sa/Iteration.h>
 #include <sa/Noncopyable.h>
+#include <eastl.hpp>
 
 namespace Game {
 
@@ -36,7 +37,7 @@ public:
     explicit Guild(AB::Entities::Guild&& data);
     ~Guild() = default;
 
-    size_t GetAccounts(std::vector<std::string>& uuids) const;
+    size_t GetAccounts(ea::vector<std::string>& uuids) const;
     bool GetMembers(AB::Entities::GuildMembers& members) const;
     bool IsMember(const std::string& accountUuid) const;
     bool GetMember(const std::string& accountUuid, AB::Entities::GuildMember& member) const;

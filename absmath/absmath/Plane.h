@@ -52,6 +52,10 @@ public:
 
     float Distance(const Vector3& point) const { return normal_.DotProduct(point) + d_; }
     bool IsFrontFacingTo(const Vector3& direction) const { return normal_.DotProduct(direction) <= 0.0f; }
+    friend std::ostream& operator << (std::ostream& os, const Plane& value)
+    {
+        return os << "Normal " << value.normal_ << ", d " << value.d_;
+    }
 
     Vector3 normal_;
     float d_;

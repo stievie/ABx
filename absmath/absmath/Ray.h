@@ -92,17 +92,15 @@ public:
     /// Return transformed by a 3x4 matrix. This may result in a non-normalized direction.
     Ray Transformed(const Matrix4& transform) const;
     bool IsDefined() const { return !origin_.Equals(Vector3::Zero) && !direction_.Equals(Vector3::Zero); }
+    friend std::ostream& operator << (std::ostream& os, const Ray& value)
+    {
+        return os << value.origin_ << " -> " << value.direction_;
+    }
 
     /// Ray origin.
     Vector3 origin_;
     /// Ray direction.
     Vector3 direction_;
 };
-
-template<class _Stream>
-inline _Stream& operator << (_Stream& os, Ray& value)
-{
-    return os << value.origin_ << " -> " << value.direction_;
-}
 
 }

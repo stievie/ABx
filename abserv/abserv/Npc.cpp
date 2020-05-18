@@ -224,13 +224,13 @@ float Npc::GetAggro(const Actor* other)
 }
 
 bool Npc::GetSkillCandidates(
-    std::vector<int>& results,
+    ea::vector<int>& results,
     SkillEffect effect, SkillEffectTarget target,
     AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
     // skill index -> cost (smaller is better)
-    std::map<int, float> sorting;
+    ea::map<int, float> sorting;
     skills_->VisitSkills([&](int index, const Skill& current)
     {
         if (!current.CanUseOnTarget(*this, targetActor))
@@ -292,7 +292,7 @@ bool Npc::GetSkillCandidates(
     if (results.size() == 0)
         return false;
 
-    std::sort(results.begin(), results.end(), [&sorting](int i, int j)
+    ea::sort(results.begin(), results.end(), [&sorting](int i, int j)
     {
         return sorting[i] < sorting[j];
     });
@@ -303,7 +303,7 @@ int Npc::GetBestSkillIndex(SkillEffect effect, SkillEffectTarget target,
     AB::Entities::SkillType interrupts /* = AB::Entities::SkillTypeAll */,
     const Actor* targetActor /* = nullptr */)
 {
-    std::vector<int> skillIndices;
+    ea::vector<int> skillIndices;
     if (GetSkillCandidates(skillIndices, effect, target, interrupts, targetActor))
         return *skillIndices.begin();
     return -1;

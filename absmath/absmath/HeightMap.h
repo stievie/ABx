@@ -26,6 +26,7 @@
 #include "BoundingBox.h"
 #include "Point.h"
 #include "Matrix4.h"
+#include <eastl.hpp>
 
 namespace Math {
 
@@ -53,7 +54,7 @@ public:
         boundingBox_(std::move(other.boundingBox_)),
         matrix_(std::move(other.matrix_))
     {}
-    HeightMap(const std::vector<float>& data, const Point<int>& size);
+    HeightMap(const ea::vector<float>& data, const Point<int>& size);
     ~HeightMap() = default;
 
     HeightMap& operator= (const HeightMap& other)
@@ -121,7 +122,7 @@ public:
     float minHeight_;
     float maxHeight_;
     Point<int> numVertices_;
-    std::vector<float> heightData_;
+    ea::vector<float> heightData_;
     BoundingBox boundingBox_;
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;

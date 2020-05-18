@@ -23,6 +23,7 @@
 
 #include "Vector3.h"
 #include "Matrix4.h"
+#include <eastl.hpp>
 
 namespace Math {
 
@@ -52,12 +53,12 @@ public:
     {
         vertexData_.push_back(vector);
     }
-    explicit Shape(const std::vector<Vector3>& vertices) :
+    explicit Shape(const ea::vector<Vector3>& vertices) :
         vertexData_(vertices),
         vertexCount_(static_cast<unsigned>(vertexData_.size())),
         indexCount_(0)
     { }
-    Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
+    Shape(const ea::vector<Vector3>& vertices, const ea::vector<unsigned>& indices) :
         vertexData_(vertices),
         indexData_(indices),
         vertexCount_(static_cast<unsigned>(vertexData_.size())),
@@ -108,16 +109,16 @@ public:
             return GetCount() / 3;
         return 0;
     }
-    std::array<Vector3, 3> GetTriangle(unsigned i) const
+    ea::array<Vector3, 3> GetTriangle(unsigned i) const
     {
-        std::array<Vector3, 3> result;
+        ea::array<Vector3, 3> result;
         result[0] = GetVertex(i * 3);
         result[1] = GetVertex(i * 3 + 1);
         result[2] = GetVertex(i * 3 + 2);
         return result;
     }
     /// Check if the triangle face points outside. This only depends on the order of the points.
-    bool IsFacingOutside(const std::array<Vector3, 3>& triangle) const;
+    bool IsFacingOutside(const ea::array<Vector3, 3>& triangle) const;
 
     Vector3 GetVertex(unsigned index) const
     {
@@ -144,8 +145,8 @@ public:
 
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;
-    std::vector<Vector3> vertexData_;
-    std::vector<unsigned> indexData_;
+    ea::vector<Vector3> vertexData_;
+    ea::vector<unsigned> indexData_;
     unsigned vertexCount_;
     unsigned indexCount_;
 };

@@ -22,6 +22,7 @@
 #pragma once
 
 #include <abai/Action.h>
+#include <eastl.hpp>
 
 namespace Game {
 class Actor;
@@ -34,7 +35,7 @@ class SkillAction : public Action
 {
 protected:
     bool TestSkill(int index, Game::Actor& source, Game::Actor* target);
-    int GetSkillIndex(std::vector<int>& candidates, Game::Actor& source, Game::Actor* target);
+    int GetSkillIndex(ea::vector<int>& candidates, Game::Actor& source, Game::Actor* target);
     explicit SkillAction(const ArgumentsType& arguments) :
         Action(arguments)
     {
