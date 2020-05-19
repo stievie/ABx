@@ -8,4 +8,8 @@ add_executable(
     ${ABSADMIN_SOURCES}
 )
 
-target_link_libraries(absadmin abscommon)
+if (WIN32)
+  include_directories(../Include/openssl-1.0)
+endif()
+
+target_link_libraries(absadmin abscommon abcrypto lua less PugiXml libeay32 ssleay32)

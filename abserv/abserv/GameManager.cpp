@@ -26,6 +26,7 @@
 #include "IOGame.h"
 #include "Group.h"
 #include "AiDebugServer.h"
+#include <sa/Assert.h>
 
 namespace Game {
 
@@ -54,7 +55,7 @@ void GameManager::Stop()
 
 ea::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 {
-    assert(state_ == State::ManagerStateRunning);
+    assert(state_ == State::Running);
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Creating game " << mapUuid << std::endl;
 #endif

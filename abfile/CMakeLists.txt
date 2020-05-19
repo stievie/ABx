@@ -8,4 +8,8 @@ add_executable(
     ${ABFILE_SOURCES}
 )
 
-target_link_libraries(abfile abscommon)
+if (WIN32)
+  include_directories(../Include/openssl-1.0)
+endif()
+
+target_link_libraries(abfile abscommon abcrypto lua PugiXml libeay32 ssleay32)

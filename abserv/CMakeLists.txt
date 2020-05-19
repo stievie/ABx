@@ -18,4 +18,4 @@ if (ABX_SCENE_VIEWER)
   target_compile_definitions(abserv PRIVATE SCENE_VIEWER)
 endif(ABX_SCENE_VIEWER)
 
-target_link_libraries(abserv lua abscommon abcrypto absmath abai abipc abshared pugixml detour EASTL PugiXml)
+target_link_libraries(abserv lua abscommon abcrypto absmath abai abipc abshared pugixml Detour DetourTileCache EASTL PugiXml)

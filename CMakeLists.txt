@@ -24,6 +24,9 @@ add_definitions(-DASIO_STANDALONE)
 
 include_directories(Include)
 include_directories(ThirdParty/EASTL/test/packages/EABase/include/Common)
+if (WIN32)
+link_directories(Lib/x64)
+endif()
 
 option (ABX_ASSERT "Enable assert() in Release mode" TRUE)
 option (ABX_SCENE_VIEWER "Compile with Scene viewer" FALSE)
@@ -56,7 +59,7 @@ add_subdirectory(absadmin)
 add_subdirectory(abserv)
 
 # Tools
-add_subdirectory(dbgclient)
+#add_subdirectory(dbgclient)
 add_subdirectory(dbtool)
 add_subdirectory(keygen)
 add_subdirectory(Tests)
