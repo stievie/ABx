@@ -29,7 +29,7 @@ PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
 PRAGMA_WARNING_POP
-#include "StringUtils.h"
+#include <abscommon/StringUtils.h>
 
 void CreateModelAction::Save()
 {

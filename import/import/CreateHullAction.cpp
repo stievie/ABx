@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include <sa/PragmaWarning.h>
 #include "CreateHullAction.h"
-#include "Hull.h"
+#include <absmath/Hull.h>
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_GCC("-Wdeprecated-copy")
 PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
@@ -30,7 +30,7 @@ PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
 PRAGMA_WARNING_POP
-#include "StringUtils.h"
+#include <abscommon/StringUtils.h>
 
 void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 {

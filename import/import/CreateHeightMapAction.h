@@ -27,8 +27,8 @@ PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 #include <stb_image.h>
 PRAGMA_WARNING_POP
-#include "Vector3.h"
-#include "Point.h"
+#include <absmath/Vector3.h>
+#include <absmath/Point.h>
 
 /// Creates Heightmap and Mesh from Image
 class CreateHeightMapAction

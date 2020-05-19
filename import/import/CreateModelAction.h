@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "Vector3.h"
-#include "BoundingBox.h"
+#include <absmath/Vector3.h>
+#include <absmath/BoundingBox.h>
 
 class CreateModelAction
 {

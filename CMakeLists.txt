@@ -15,8 +15,8 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4 /MP /Zc:__cplusplus /utf-8")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c++17 /W4 /MP /utf-8")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -march=native")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17 -Wall -Wextra -march=native")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -march=native -fdiagnostics-color=always")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17 -Wall -Wextra -march=native -fdiagnostics-color=always")
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
@@ -63,10 +63,12 @@ add_subdirectory(absadmin)
 add_subdirectory(abserv)
 
 # Tools
-#add_subdirectory(dbgclient)
+add_subdirectory(dbgclient)
 add_subdirectory(dbtool)
 add_subdirectory(keygen)
+add_subdirectory(import)
 add_subdirectory(Tests)
 
 # Client
-# TODO:
+add_subdirectory(libabclient)
+add_subdirectory(abclient)
