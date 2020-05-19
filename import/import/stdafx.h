@@ -48,4 +48,4 @@
 
 #include <stdint.h>
 
-#include "MathConfig.h"
+#include <absmath/MathConfig.h>

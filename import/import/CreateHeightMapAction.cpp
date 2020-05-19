@@ -23,9 +23,9 @@
 #include "CreateHeightMapAction.h"
 #include "ObjWriter.h"
 #include <fstream>
-#include "MathUtils.h"
+#include <absmath/MathUtils.h>
 #include <limits>
-#include "StringUtils.h"
+#include <abscommon/StringUtils.h>
 
 void CreateHeightMapAction::SaveObj()
 {

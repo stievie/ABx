@@ -11,3 +11,5 @@ add_executable(
 )
 
 target_link_libraries(Tests abscommon absmath abai abipc tinyexpr)
+
+add_test(ABxTestRuns Tests)
