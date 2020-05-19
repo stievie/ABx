@@ -10,10 +10,10 @@ add_executable(
     ${ABSADMIN_SOURCES}
 )
 
-target_link_libraries(absadmin abscommon abcrypto lua less PugiXml)
+target_link_libraries(absadmin abscommon less PugiXml)
 if (WIN32)
  	include_directories(../Include/openssl-1.0)
 	target_link_libraries(absadmin libeay32 ssleay32)
 else()
-	target_link_libraries(absadmin pthread DeathHandler PugiXml uuid dl ssl crypto)
+	target_link_libraries(absadmin DeathHandler dl ssl crypto)
 endif()

@@ -9,4 +9,7 @@ add_library(
 )
 
 target_link_libraries(abscommon lua abcrypto)
+if (UNIX)
+	target_link_libraries(abscommon pthread uuid)
+endif()
 target_include_directories(abscommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

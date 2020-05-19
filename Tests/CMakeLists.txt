@@ -10,4 +10,4 @@ add_executable(
     ${TESTS_SOURCES}
 )
 
-target_link_libraries(Tests abscommon absmath abai abipc)
+target_link_libraries(Tests abscommon absmath abai abipc tinyexpr)

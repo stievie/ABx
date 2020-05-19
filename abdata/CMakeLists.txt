@@ -22,5 +22,5 @@ endif()
 
 target_link_libraries(abdata abdb abscommon EASTL)
 if (UNIX)
-	target_link_libraries(abdata pthread DeathHandler dl uuid)
+	target_link_libraries(abdata DeathHandler dl)
 endif()

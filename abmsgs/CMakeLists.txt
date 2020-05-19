@@ -12,5 +12,5 @@ add_executable(
 
 target_link_libraries(abmsgs abscommon EASTL)
 if (UNIX)
-	target_link_libraries(abmsgs pthread DeathHandler dl uuid)
+	target_link_libraries(abmsgs DeathHandler dl)
 endif()

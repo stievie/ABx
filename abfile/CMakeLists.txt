@@ -15,6 +15,5 @@ if (WIN32)
  	include_directories(../Include/openssl-1.0)
 	target_link_libraries(abfile libeay32 ssleay32)
 else()
-	target_link_libraries(abfile pthread DeathHandler PugiXml uuid dl ssl crypto)
+	target_link_libraries(abfile DeathHandler PugiXml dl ssl crypto)
 endif()
-

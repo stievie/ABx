@@ -76,6 +76,21 @@ It can use ccache to speedup compilation. Export the `PRE_CXX` environment varia
 export PRE_CXX=ccache
 ~~~
 
+On Linux you could also use CMake. If you are in the root directory:
+~~~sh
+mkdir build
+cd build
+cmake ..
+make
+~~~
+Of if you prefer Ninja:
+~~~sh
+mkdir build
+cd build
+cmake -G Ninja ..
+ninja
+~~~
+
 ### Client
 
 #### Dependencies

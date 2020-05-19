@@ -11,8 +11,6 @@ add_executable(
 )
 
 target_link_libraries(ablb abscommon)
-if (WIN32)
-	target_link_libraries(ablb abscommon uuid)
-else()
-	target_link_libraries(ablb pthread abscommon uuid DeathHandler dl)
+if (UNIX)
+	target_link_libraries(ablb DeathHandler dl)
 endif()

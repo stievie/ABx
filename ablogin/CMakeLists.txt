@@ -12,5 +12,5 @@ add_executable(
 
 target_link_libraries(ablogin abscommon abshared)
 if (UNIX)
-	target_link_libraries(ablogin pthread DeathHandler dl uuid)
+	target_link_libraries(ablogin DeathHandler dl)
 endif()

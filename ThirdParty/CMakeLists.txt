@@ -28,6 +28,10 @@ add_subdirectory(PugiXml)
 
 set(RECASTNAVIGATION_STATIC ON)
 add_subdirectory(recastnavigation/Detour)
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	target_compile_options(Detour PRIVATE -Wno-class-memaccess)
+endif()
 add_subdirectory(recastnavigation/DetourTileCache)
 add_subdirectory(recastnavigation/Recast)
+
 add_subdirectory(tinyexpr)
