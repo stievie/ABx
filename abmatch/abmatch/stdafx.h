@@ -43,7 +43,9 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <AB/CommonConfig.h>
 #include <abscommon/DebugConfig.h>
 
+#if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
+#endif
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4592)
 #   include <asio.hpp>

@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.17)
 project (ablogin CXX)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Bin)
+
 file(GLOB_RECURSE ABLOGIN_SOURCES      ablogin/*.cpp ablogin/*.h)
 
 add_executable(
@@ -8,4 +10,7 @@ add_executable(
     ${ABLOGIN_SOURCES}
 )
 
-target_link_libraries(ablogin abscommon)
+target_link_libraries(ablogin abscommon abshared)
+if (UNIX)
+	target_link_libraries(ablogin pthread DeathHandler dl uuid)
+endif()

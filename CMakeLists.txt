@@ -13,10 +13,9 @@ if(MSVC)
     add_definitions(-D_UNICODE)
     add_definitions(-DUNICODE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4 /MP /Zc:__cplusplus /utf-8")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c++17 /W4 /MP /Zc:__cplusplus /utf-8")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c++17 /W4 /MP /utf-8")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -march=native")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17 -Wall -Wextra -march=native")
 endif(MSVC)
 
@@ -25,7 +24,7 @@ add_definitions(-DASIO_STANDALONE)
 include_directories(Include)
 include_directories(ThirdParty/EASTL/test/packages/EABase/include/Common)
 if (WIN32)
-link_directories(Lib/x64)
+    link_directories(Lib/x64)
 endif()
 
 option (ABX_ASSERT "Enable assert() in Release mode" TRUE)
@@ -63,3 +62,6 @@ add_subdirectory(abserv)
 add_subdirectory(dbtool)
 add_subdirectory(keygen)
 add_subdirectory(Tests)
+
+# Client
+# TODO:

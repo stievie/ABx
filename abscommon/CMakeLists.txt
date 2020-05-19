@@ -8,4 +8,5 @@ add_library(
     ${ABSCOMMON_SOURCES}
 )
 
+target_link_libraries(abscommon lua abcrypto)
 target_include_directories(abscommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

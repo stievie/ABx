@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.17)
 project (abserv CXX)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Bin)
+
 # For stdafx.h
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/abserv)
 
@@ -19,3 +21,6 @@ if (ABX_SCENE_VIEWER)
 endif(ABX_SCENE_VIEWER)
 
 target_link_libraries(abserv lua abscommon abcrypto absmath abai abipc abshared pugixml Detour DetourTileCache EASTL PugiXml)
+if (UNIX)
+	target_link_libraries(abserv pthread DeathHandler dl uuid)
+endif()
