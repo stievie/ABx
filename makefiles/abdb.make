@@ -1,7 +1,7 @@
 include makefile.common
 
 # This may change
-INCLUDES += -I../abscommon/abscommon -I/usr/include/postgresql
+INCLUDES += -I../abscommon -I/usr/include/postgresql
 TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabdb.a
 SOURDEDIR = ../abdb/abdb
