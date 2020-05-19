@@ -56,7 +56,7 @@ public:
         std::chrono::time_point<timer> end = timer::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start_).count();
         if (!name_.empty())
-            LOG_PROFILE << name_ << ": ";
+            LOG_PROFILE << name_ << "() ";
         if (duration < 1000)
             LOG_PROFILE << duration << "ns" << std::endl;
         else if (duration < 1000 * 1000)

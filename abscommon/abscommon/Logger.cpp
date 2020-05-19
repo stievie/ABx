@@ -49,6 +49,8 @@ Logger& Logger::Instance()
         else
             instance_ = std::make_unique<Logger>();
     }
+    else if (Utils::TimeElapsed(instance_->logStart_) > LOG_ROTATE_INTERVAL)
+        Logger::Rotate();
     return *instance_;
 }
 
@@ -108,7 +110,7 @@ Logger& Logger::Error(const char* function)
         }
         (*this) << "[ERROR] ";
         if (function)
-            (*this) << function << ": ";
+            (*this) << function << "() ";
     }
     return *this;
 }
@@ -119,7 +121,7 @@ Logger& Logger::Info(const char* function)
     {
         (*this) << "[Info] ";
         if (function)
-            (*this) << function << ": ";
+            (*this) << function << "() ";
     }
     return *this;
 }
@@ -139,7 +141,7 @@ Logger& Logger::Warning(const char* function)
         }
         (*this) << "[Warning] ";
         if (function)
-            (*this) << function << ": ";
+            (*this) << function << "() ";
     }
     return *this;
 }
@@ -179,7 +181,7 @@ Logger& Logger::Debug(const char* function)
         }
         (*this) << "[Debug] ";
         if (function)
-            (*this) << function << ": ";
+            (*this) << function << "() ";
 }
     return *this;
 }
