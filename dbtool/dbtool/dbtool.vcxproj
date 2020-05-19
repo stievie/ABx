@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;libpq.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -92,7 +92,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;libpq.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

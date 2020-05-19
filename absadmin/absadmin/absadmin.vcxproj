@@ -103,7 +103,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;abcrypto.lib;lz4.lib;PugiXml.lib;libeay32.lib;ssleay32.lib;libless.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -128,7 +128,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;abcrypto.lib;lz4.lib;PugiXml.lib;libeay32.lib;ssleay32.lib;libless.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -152,7 +152,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;abcrypto.lib;lz4.lib;PugiXml.lib;libeay32.lib;ssleay32.lib;libless.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -175,7 +175,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>lua.lib;abcrypto.lib;lz4.lib;PugiXml.lib;libeay32.lib;ssleay32.lib;libless.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -131,7 +131,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -156,7 +156,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -180,7 +180,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
