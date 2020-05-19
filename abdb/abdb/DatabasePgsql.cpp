@@ -24,7 +24,7 @@
 #ifdef USE_PGSQL
 
 #include "DatabasePgsql.h"
-#include "Logger.h"
+#include <abscommon/Logger.h>
 
 namespace DB {
 

@@ -33,7 +33,7 @@
 #ifdef USE_SQLITE
 #include "DatabaseSqlite.h"
 #endif
-#include "Logger.h"
+#include <abscommon/Logger.h>
 
 namespace DB {
 

@@ -42,7 +42,7 @@
 
 #include <AB/CommonConfig.h>
 #include <base64.h>
-#include "DebugConfig.h"
+#include <abscommon/DebugConfig.h>
 
 #if !defined(USE_MYSQL) && !defined(USE_PGSQL) && !defined(USE_ODBC) && !defined(USE_SQLITE)
 #error "Define at least one database driver"
