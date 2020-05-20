@@ -79,7 +79,6 @@ private:
         FunctionOnRemoved = 1 << 21,
     };
     kaguya::State luaState_;
-    ea::shared_ptr<Script> script_;
     ea::weak_ptr<Actor> target_;
     ea::weak_ptr<Actor> source_;
     bool persistent_{ false };

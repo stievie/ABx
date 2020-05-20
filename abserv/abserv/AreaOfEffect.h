@@ -46,7 +46,6 @@ private:
     ea::weak_ptr<Actor> source_;
     kaguya::State luaState_;
     bool luaInitialized_{ false };
-    ea::shared_ptr<Script> script_;
     /// Effect or skill index
     uint32_t index_{ 0 };
     Ranges range_{ Ranges::Adjecent };

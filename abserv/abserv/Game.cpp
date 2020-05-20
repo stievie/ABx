@@ -550,13 +550,13 @@ void Game::Load(const std::string& mapUuid)
 
     // Must be executed here because the player doesn't wait to fully load the game to join
     // Execute initialization code if any
-    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(data_.script);
-    if (!script_)
+    auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(data_.script);
+    if (!script)
     {
         LOG_ERROR << "Unable to get script " << data_.script << std::endl;
         return;
     }
-    if (!script_->Execute(luaState_))
+    if (!script->Execute(luaState_))
     {
         LOG_ERROR << "Error executing script " << data_.script << std::endl;
         return;

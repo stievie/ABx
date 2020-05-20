@@ -29,8 +29,8 @@
 #include "Player.h"
 #include "QuestComp.h"
 #include "ScriptManager.h"
-#include <abai/BevaviorCache.h>
 #include <Mustache/mustache.hpp>
+#include <abai/BevaviorCache.h>
 
 namespace Game {
 
@@ -104,10 +104,10 @@ Npc::~Npc()
 
 bool Npc::LoadScript(const std::string& fileName)
 {
-    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
-    if (!script_)
+    auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
+    if (!script)
         return false;
-    if (!script_->Execute(luaState_))
+    if (!script->Execute(luaState_))
         return false;
 
     name_ = static_cast<const char*>(luaState_["name"]);

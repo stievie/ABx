@@ -49,10 +49,10 @@ void Effect::InitializeLua()
 
 bool Effect::LoadScript(const std::string& fileName)
 {
-    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
-    if (!script_)
+    auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
+    if (!script)
         return false;
-    if (!script_->Execute(luaState_))
+    if (!script->Execute(luaState_))
         return false;
 
     persistent_ = luaState_["isPersistent"];

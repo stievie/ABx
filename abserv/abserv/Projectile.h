@@ -47,7 +47,6 @@ private:
     kaguya::State luaState_;
     bool luaInitialized_{ false };
     bool startSet_{ false };
-    ea::shared_ptr<Script> script_;
     Math::Vector3 startPos_;
     Math::Vector3 targetPos_;
     uint32_t targetMoveDir_{ AB::GameProtocol::MoveDirectionNone };

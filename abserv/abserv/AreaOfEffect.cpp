@@ -95,10 +95,10 @@ Actor* AreaOfEffect::_LuaGetSource()
 
 bool AreaOfEffect::LoadScript(const std::string& fileName)
 {
-    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
-    if (!script_)
+    auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
+    if (!script)
         return false;
-    if (!script_->Execute(luaState_))
+    if (!script->Execute(luaState_))
         return false;
 
     if (Lua::IsNumber(luaState_, "itemIndex"))

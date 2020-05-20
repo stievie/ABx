@@ -29,6 +29,7 @@
 #include "Model.h"
 #include "IOModel.h"
 #include "IOScript.h"
+#include <abscommon/Utils.h>
 
 namespace IO {
 
@@ -77,9 +78,17 @@ void DataProvider::CleanCache()
 #endif
     // Delete all assets that are only owned by the cache
     auto i = cache_.begin();
-    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
+    while ((i = ea::find_if(i, cache_.end(), [this](const auto& current) -> bool
     {
-        return current.second.use_count() == 1;
+        if (current.second.use_count() == 1)
+        {
+            const auto usageIt = usage_.find(current.first);
+            if (usageIt != usage_.end())
+                return Utils::TimeElapsed(usageIt->second) >= CACHE_KEEP_UNUSED_ASSETS;
+            // Not in usage_???
+            return true;
+        }
+        return false;
     })) != cache_.end())
         cache_.erase(i++);
 }

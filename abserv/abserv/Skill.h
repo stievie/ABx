@@ -82,7 +82,6 @@ class Skill
     friend class SkillBar;
 private:
     kaguya::State luaState_;
-    ea::shared_ptr<Script> script_;
     int64_t startUse_{ 0 };
     int64_t lastUse_{ 0 };
     int64_t recharged_{ 0 };

@@ -33,28 +33,27 @@
 
 namespace IO {
 
-typedef ea::pair<size_t, std::string> CacheKey;
-
-struct KeyHasher
-{
-    size_t operator()(const CacheKey& s) const noexcept
-    {
-        // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
-        // Compute individual hash values for first and second
-        // http://stackoverflow.com/a/1646913/126995
-        size_t res = 17;
-        // The first is already a hash
-        res = res * 31 + s.first;
-        res = res * 31 + std::hash<std::string>()(s.second);
-        return res;
-    }
-};
-
 class DataProvider
 {
 private:
+    using CacheKey = ea::pair<size_t, std::string>;
+    struct KeyHasher
+    {
+        size_t operator()(const CacheKey& s) const noexcept
+        {
+            // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+            // Compute individual hash values for first and second
+            // http://stackoverflow.com/a/1646913/126995
+            size_t res = 17;
+            // The first is already a hash
+            res = res * 31 + s.first;
+            res = res * 31 + std::hash<std::string>()(s.second);
+            return res;
+        }
+    };
     ea::map<size_t, ea::unique_ptr<IOAsset>> importers_;
     ea::unordered_map<CacheKey, ea::shared_ptr<Asset>, KeyHasher> cache_;
+    ea::unordered_map<CacheKey, int64_t, KeyHasher> usage_;
 public:
     DataProvider();
     ~DataProvider() = default;
@@ -66,23 +65,23 @@ public:
 
     /// Check if an asset exists in cache or as file
     template<class T>
-    bool Exists(const std::string& name)
+    bool Exists(const std::string& name) const
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, normal_name);
-        auto it = cache_.find(key);
+        const auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
         return FileExists(name);
     }
     template<class T>
-    bool IsCached(const std::string& name)
+    bool IsCached(const std::string& name) const
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, normal_name);
-        auto it = cache_.find(key);
+        const auto it = cache_.find(key);
         return (it != cache_.end());
     }
     /// Add an asset to the cache
@@ -93,10 +92,11 @@ public:
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, normal_name);
-        auto it = cache_.find(key);
+        const auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
         cache_[key] = asset;
+        usage_[key] = Utils::Tick();
         return true;
     }
     template<class T>
@@ -105,6 +105,10 @@ public:
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, normal_name);
+
+        auto usageIt = usage_.find(key);
+        if (usageIt != usage_.end())
+            usage_.erase(usageIt);
         auto it = cache_.find(key);
         if (it != cache_.end() && (*it).second.get() == asset.get())
         {
@@ -122,6 +126,7 @@ public:
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
+            usage_[key] = Utils::Tick();
             return ea::static_pointer_cast<T>((*it).second);
         }
         return ea::shared_ptr<T>();
@@ -130,6 +135,7 @@ public:
     void ClearCache()
     {
         cache_.clear();
+        usage_.clear();
     }
     /// Remove all objects that are only referenced by the cache, i.e. nobody
     /// else owns it anymore.
@@ -188,6 +194,7 @@ public:
             auto it = cache_.find(key);
             if (it != cache_.end())
             {
+                usage_[key] = Utils::Tick();
                 return ea::static_pointer_cast<T>((*it).second);
             }
         }
@@ -198,7 +205,10 @@ public:
         if (Import<T>(*asset, normal_name))
         {
             if (cacheAble)
+            {
+                usage_[key] = Utils::Tick();
                 cache_[key] = asset;
+            }
             return asset;
         }
         return ea::shared_ptr<T>();

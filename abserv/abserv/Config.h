@@ -54,8 +54,10 @@
 
 // Update server load every second
 #define UPDATE_SERVER_LOAD_MS (1000)
-// Clean assets cache every 10min
-#define CLEAN_CACHE_MS (1000 * 60 * 10)
+// Clean assets cache every 10min (ms)
+#define CACHE_CLEAN_INTERVAL (1000 * 60 * 10)
+// How long keep unused assets in cache (ms)
+#define CACHE_KEEP_UNUSED_ASSETS (1000 * 60 * 30)
 // Clean games all 10 sec
 #define CLEAN_GAMES_MS (1000 * 10)
 // Remove inactive players every 10sec

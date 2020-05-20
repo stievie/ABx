@@ -73,7 +73,6 @@ private:
     PlayersList players_;
     CrowdList crowds_;
     kaguya::State luaState_;
-    ea::shared_ptr<Script> script_;
     /// First player(s) triggering the creation of this game
     ea::vector<ea::shared_ptr<GameObject>> queuedObjects_;
     void InitializeLua();

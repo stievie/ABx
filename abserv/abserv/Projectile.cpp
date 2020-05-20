@@ -66,10 +66,10 @@ void Projectile::InitializeLua()
 
 bool Projectile::LoadScript(const std::string& fileName)
 {
-    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
-    if (!script_)
+    auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
+    if (!script)
         return false;
-    if (!script_->Execute(luaState_))
+    if (!script->Execute(luaState_))
         return false;
 
     if (Lua::IsFunction(luaState_, "onCollide"))

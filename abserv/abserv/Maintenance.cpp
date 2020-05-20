@@ -38,7 +38,7 @@ void Maintenance::CleanCacheTask()
     if (status_ == MaintenanceStatus::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
+            Asynch::CreateScheduledTask(CACHE_CLEAN_INTERVAL, std::bind(&Maintenance::CleanCacheTask, this))
         );
     }
 }
@@ -150,7 +150,7 @@ void Maintenance::Run()
     }
     auto* shed = GetSubsystem<Asynch::Scheduler>();
     shed->Add(
-        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
+        Asynch::CreateScheduledTask(CACHE_CLEAN_INTERVAL, std::bind(&Maintenance::CleanCacheTask, this))
     );
     shed->Add(
         Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))

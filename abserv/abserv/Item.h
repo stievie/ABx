@@ -78,7 +78,6 @@ private:
         FunctionGetSkillRecharge = 1 << 6,
     };
     kaguya::State luaState_;
-    ea::shared_ptr<Script> script_;
     uint32_t functions_{ FunctionNone };
     UpgradesMap upgrades_;
     int32_t baseMinDamage_{ 0 };

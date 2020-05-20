@@ -54,7 +54,6 @@ private:
     uint32_t level_{ 1 };
     uint32_t itemIndex_{ 0 };
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
-    ea::shared_ptr<Script> script_;
     /// Quests this NPC may have for the player
     ea::set<uint32_t> quests_;
     uint32_t functions_{ FunctionNone };
