@@ -15,6 +15,8 @@ add_library(
     ${ABSMATH_SOURCES}
 )
 
+target_precompile_headers(absmath PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/absmath/stdafx.h)
+
 target_link_libraries(absmath EASTL)
 
 target_include_directories(absmath PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

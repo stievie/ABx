@@ -11,4 +11,6 @@ add_executable(
     ${IMPORT_SOURCES}
 )
 
+target_precompile_headers(import PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/import/stdafx.h)
+
 target_link_libraries(import absmath abscommon assimp EASTL)

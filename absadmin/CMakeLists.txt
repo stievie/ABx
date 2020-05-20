@@ -9,6 +9,8 @@ add_executable(
     ${ABSADMIN_SOURCES}
 )
 
+target_precompile_headers(absadmin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/absadmin/stdafx.h)
+
 target_link_libraries(absadmin abscommon less PugiXml)
 if (WIN32)
     include_directories(../Include/openssl-1.0)

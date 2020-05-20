@@ -9,6 +9,8 @@ add_executable(
     ${ABLB_SOURCES}
 )
 
+target_precompile_headers(ablb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ablb/stdafx.h)
+
 target_link_libraries(ablb abscommon)
 if (UNIX)
     target_link_libraries(ablb DeathHandler)

@@ -360,7 +360,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
         rn.name = ch.name;
-        rn.expires = Utils::Tick() + NAME_RESERVATION_EXPIRES_MS;
+        rn.expires = Utils::Tick() + Auth::NAME_RESERVATION_EXPIRES_MS;
         client->Create(rn);
     }
     // Update character list

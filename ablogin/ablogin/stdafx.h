@@ -60,6 +60,3 @@ PRAGMA_WARNING_POP
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.
 // https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256
 #define SERVER_MAX_CONNECTIONS 3000
-
-// When a user deletes a character, the characters name is reserved for 1 week
-static constexpr int NAME_RESERVATION_EXPIRES_MS = 1000 * 60 * 60 * 24 * 7;

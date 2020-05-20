@@ -7,8 +7,10 @@ add_library(
     ${ABSCOMMON_SOURCES}
 )
 
+target_precompile_headers(abscommon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abscommon/stdafx.h)
+
 target_link_libraries(abscommon lua abcrypto)
 if (UNIX)
-	target_link_libraries(abscommon pthread uuid)
+    target_link_libraries(abscommon pthread uuid)
 endif()
 target_include_directories(abscommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

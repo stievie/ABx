@@ -21,6 +21,8 @@ add_executable(
     ${ABSERV_SOURCES}
 )
 
+target_precompile_headers(abserv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abserv/stdafx.h)
+
 if (ABX_SCENE_VIEWER)
   target_compile_definitions(abserv PRIVATE SCENE_VIEWER)
 endif(ABX_SCENE_VIEWER)

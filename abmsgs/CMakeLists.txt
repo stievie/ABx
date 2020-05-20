@@ -9,6 +9,8 @@ add_executable(
     ${ABSMGS_SOURCES}
 )
 
+target_precompile_headers(abmsgs PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abmsgs/stdafx.h)
+
 target_link_libraries(abmsgs abscommon EASTL)
 if (UNIX)
     target_link_libraries(abmsgs DeathHandler)

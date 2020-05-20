@@ -21,6 +21,8 @@ add_executable(
     ${FW_SOURCES}
 )
 
+target_precompile_headers(fw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abclient/stdafx.h)
+
 target_link_libraries(fw libabclient abshared abcrypto tinyexpr lz4 Urho3D)
 
 if (UNIX)
