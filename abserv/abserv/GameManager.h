@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "Game.h"
 #include <limits>
 #include <eastl.hpp>
 #include <abscommon/Service.h>
@@ -31,6 +30,7 @@
 namespace Game {
 
 class Player;
+class Game;
 
 class GameManager
 {

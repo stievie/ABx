@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GuildManager.h"
+#include "Guild.h"
 
 namespace Game {
 

@@ -22,15 +22,14 @@
 #pragma once
 
 #include "Actor.h"
-#include "Chat.h"
-#include "Script.h"
-#include "AiLoader.h"
-#include "TriggerComp.h"
 #include "AiComp.h"
+#include "AiLoader.h"
+#include "Chat.h"
+#include "TriggerComp.h"
 #include "WanderComp.h"
 #include <eastl.hpp>
-#include <set>
 #include <sa/Bits.h>
+#include <set>
 
 namespace Game {
 

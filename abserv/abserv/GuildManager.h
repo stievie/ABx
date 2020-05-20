@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Guild.h"
+#include <AB/Entities/Guild.h>
 #include <eastl.hpp>
 #include <multi_index_container.hpp>
 #include <multi_index/hashed_index.hpp>
@@ -29,6 +29,8 @@
 #include <multi_index/member.hpp>
 
 namespace Game {
+
+class Guild;
 
 class GuildManager
 {

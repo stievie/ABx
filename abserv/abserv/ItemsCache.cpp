@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "Item.h"
 #include "ItemsCache.h"
 #include <sa/Iteration.h>
 

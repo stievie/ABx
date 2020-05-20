@@ -22,7 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Skill.h>
-#include "Script.h"
 #include "GameObject.h"
 #include <AB/ProtocolCodes.h>
 #include <sa/Noncopyable.h>

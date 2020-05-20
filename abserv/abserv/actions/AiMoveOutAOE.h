@@ -22,7 +22,6 @@
 #pragma once
 
 #include <abai/Action.h>
-#include <absmath/Vector3.h>
 
 namespace Game {
 class Npc;

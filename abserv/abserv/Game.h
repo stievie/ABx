@@ -28,7 +28,6 @@
 #include "Map.h"
 #include "NavigationMesh.h"
 #include "PartyManager.h"
-#include "Script.h"
 #include <AB/Entities/Game.h>
 #include <AB/Entities/GameInstance.h>
 #include <CleanupNs.h>

@@ -36,6 +36,7 @@
 #include "PlayerManager.h"
 #include "Projectile.h"
 #include "ProtocolGame.h"
+#include "Script.h"
 #include "ScriptManager.h"
 #include "Skill.h"
 #include <AB/Packets/Packet.h>

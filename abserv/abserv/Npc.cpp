@@ -28,6 +28,7 @@
 #include "Group.h"
 #include "Player.h"
 #include "QuestComp.h"
+#include "Script.h"
 #include "ScriptManager.h"
 #include <Mustache/mustache.hpp>
 #include <abai/BevaviorCache.h>

@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "Npc.h"
 #include <kaguya/kaguya.hpp>
 #include "Group.h"
 

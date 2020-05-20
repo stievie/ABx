@@ -22,7 +22,6 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Script.h"
 #include "Skill.h"
 #include <sa/Bits.h>
 #include <eastl.hpp>

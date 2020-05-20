@@ -21,10 +21,11 @@
 
 #include "stdafx.h"
 #include "AreaOfEffect.h"
-#include "DataProvider.h"
-#include "ScriptManager.h"
 #include "Actor.h"
+#include "DataProvider.h"
 #include "Game.h"
+#include "Script.h"
+#include "ScriptManager.h"
 
 namespace Game {
 

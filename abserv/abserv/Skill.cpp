@@ -22,9 +22,10 @@
 #include "stdafx.h"
 #include "Skill.h"
 #include "Actor.h"
-#include "ScriptManager.h"
 #include "DataProvider.h"
 #include "ResourceComp.h"
+#include "Script.h"
+#include "ScriptManager.h"
 
 namespace Game {
 

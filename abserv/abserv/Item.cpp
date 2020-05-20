@@ -21,12 +21,13 @@
 
 #include "stdafx.h"
 #include "Item.h"
-#include "ScriptManager.h"
-#include "ItemFactory.h"
 #include "Actor.h"
-#include "Skill.h"
-#include "ItemsCache.h"
 #include "DataProvider.h"
+#include "ItemFactory.h"
+#include "ItemsCache.h"
+#include "Script.h"
+#include "ScriptManager.h"
+#include "Skill.h"
 
 namespace Game {
 

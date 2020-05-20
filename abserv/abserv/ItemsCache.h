@@ -22,10 +22,11 @@
 #pragma once
 
 #include <sa/IdGenerator.h>
-#include "Item.h"
 #include <eastl.hpp>
 
 namespace Game {
+
+class Item;
 
 // The owner of all items. Because Items move around alot, e.g. peaople trade items,
 // store them in chest inventory, i.e. would change ownership, and changing ownerhip

@@ -22,7 +22,6 @@
 #pragma once
 
 #include <eastl.hpp>
-#include "Item.h"
 #include <abshared/Damage.h>
 #include <abshared/Mechanic.h>
 #include <AB/Entities/Character.h>

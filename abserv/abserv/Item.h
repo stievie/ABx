@@ -22,7 +22,6 @@
 #pragma once
 
 #include "ItemStats.h"
-#include "Script.h"
 #include <AB/Entities/ConcreteItem.h>
 #include <AB/Entities/Item.h>
 #include <abshared/Attributes.h>

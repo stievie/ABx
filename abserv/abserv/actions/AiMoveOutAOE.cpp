@@ -21,10 +21,11 @@
 
 #include "stdafx.h"
 #include "AiMoveOutAOE.h"
-#include "../Npc.h"
 #include "../AiAgent.h"
-#include "../Game.h"
 #include "../AreaOfEffect.h"
+#include "../Game.h"
+#include "../Npc.h"
+#include <absmath/Vector3.h>
 
 //#define DEBUG_AI
 

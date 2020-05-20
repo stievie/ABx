@@ -21,11 +21,12 @@
 
 #include "stdafx.h"
 #include "GameManager.h"
-#include "Player.h"
-#include "Npc.h"
-#include "IOGame.h"
-#include "Group.h"
 #include "AiDebugServer.h"
+#include "Game.h"
+#include "Group.h"
+#include "IOGame.h"
+#include "Npc.h"
+#include "Player.h"
 #include <sa/Assert.h>
 
 namespace Game {

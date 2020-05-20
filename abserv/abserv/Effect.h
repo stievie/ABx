@@ -26,7 +26,6 @@
 #include <sa/PropStream.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Skill.h>
-#include "Script.h"
 #include <abshared/Damage.h>
 #include <abshared/Attributes.h>
 #include <sa/Noncopyable.h>
