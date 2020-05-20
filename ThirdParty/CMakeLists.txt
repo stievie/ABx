@@ -23,7 +23,7 @@ if (WIN32)
 endif()
 add_subdirectory(lz4)
 if (WIN32)
-#  add_subdirectory(PDCurses)
+  add_subdirectory(PDCurses)
 endif(WIN32)
 add_subdirectory(PugiXml)
 
