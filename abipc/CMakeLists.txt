@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (abipc CXX)
 
 file(GLOB_RECURSE ABIPC_SOURCES      abipc/*.cpp abipc/*.h)

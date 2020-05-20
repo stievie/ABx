@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (lz4 C)
 
 file(GLOB_RECURSE LZ4_SOURCES      lib/*.c lib/*.h)

@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (abscommon CXX)
 
 file(GLOB_RECURSE ABSCOMMON_SOURCES      abscommon/*.cpp abscommon/*.h)

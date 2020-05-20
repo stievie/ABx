@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (Tests CXX)
 
 file(GLOB_RECURSE TESTS_SOURCES      Tests/*.cpp Tests/*.h)

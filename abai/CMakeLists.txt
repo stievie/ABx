@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (abai CXX)
 
 file(GLOB_RECURSE ABAI_SOURCES      abai/*.cpp abai/*.h)

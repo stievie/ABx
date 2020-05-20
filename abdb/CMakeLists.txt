@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (abdb CXX)
 
 file(GLOB_RECURSE ABDB_SOURCES      abdb/*.cpp abdb/*.h)

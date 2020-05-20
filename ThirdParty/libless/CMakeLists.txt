@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (less CXX)
 
 file(GLOB_RECURSE LESS_SOURCES      src/*.cpp src/css/*.cpp src/less/*.cpp src/lessstylesheet/*.cpp src/stylesheet/*.cpp src/value/*.cpp

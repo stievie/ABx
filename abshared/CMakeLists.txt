@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 3.17)
 project (abshared CXX)
 
 file(GLOB_RECURSE ABSHARED_SOURCES      abshared/*.cpp abshared/*.h)
