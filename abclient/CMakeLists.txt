@@ -9,6 +9,8 @@ link_directories(../Lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    # Bullet will emit many warnings with -Wextra
+    string(REPLACE "-Wextra" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     add_compile_options(-Wno-maybe-uninitialized -Wno-unused-parameter)
 elseif(MSVC)
 endif()

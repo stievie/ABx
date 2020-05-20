@@ -6,10 +6,8 @@ endif(UNIX)
 add_subdirectory(EASTL)
 add_subdirectory(EASTL/test/packages/EABase)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    # Alta!
-    target_compile_options(EASTL PRIVATE -Wno-maybe-uninitialized -Wno-sign-compare -Wno-unused-function -Wno-class-memaccess -Wno-unused-local-typedefs -Wno-extra)
-    target_compile_options(EASTL PUBLIC -Wno-unused-variable -Wno-deprecated-copy -Wno-shift-negative-value -Wno-unused-parameter)
-#    target_compile_options(EAStdC PRIVATE -Wno-extra -Wno-tautological-compare)
+    target_compile_options(EASTL PRIVATE -Wno-strict-aliasing)
+    target_compile_options(EASTL PUBLIC -Wno-unused-variable -Wno-deprecated-copy)
 elseif(MSVC)
     # TODO: Silence warnings
 endif()

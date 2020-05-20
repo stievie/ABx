@@ -10,10 +10,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(-Wno-maybe-uninitialized)
 endif()
 
-file(GLOB_RECURSE ABSERV_SOURCES      abserv/*.cpp abserv/*.h
-                                      abserv/actions/*.cpp abserv/actions/*.h
-                                      abserv/conditions/*.cpp abserv/conditions/*.h
-                                      abserv/filters/*.cpp abserv/filters/*.h)
+file(GLOB_RECURSE ABSERV_SOURCES
+    abserv/*.cpp abserv/*.h
+    abserv/actions/*.cpp abserv/actions/*.h
+    abserv/conditions/*.cpp abserv/conditions/*.h
+    abserv/filters/*.cpp abserv/filters/*.h
+)
 
 add_executable(
     abserv

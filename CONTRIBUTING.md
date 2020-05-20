@@ -31,6 +31,8 @@ QtCreator to build the projects with the makefiles in the `makefiles` directory.
 
 ![QtCreator Build](/Doc/qtcreator_build.png?raw=true)
 
+You can also open the `CMakeLists.txt` file in the root directory with QtCreator.
+
 ## If you don't want to code
 
 That's also great, because a game doesn't need only code. In fact coding is the

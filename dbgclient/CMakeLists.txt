@@ -10,4 +10,9 @@ add_executable(
     ${DBGCLIENT_SOURCES}
 )
 
-target_link_libraries(dbgclient abscommon abipc abai ncurses panel)
+target_link_libraries(dbgclient abscommon abipc abai )
+if (UNIX)
+    target_link_libraries(dbgclient ncurses panel)
+elseif(WIN32)
+    target_link_libraries(dbgclient PDCurses)
+endif()

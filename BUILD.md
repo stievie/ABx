@@ -29,6 +29,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 * GCC 9 or later
 * GNU make
+* CMake (optional)
 * ccache (optional)
 
 ### Dependencies
@@ -78,17 +79,17 @@ export PRE_CXX=ccache
 
 On Linux you could also use CMake. If you are in the root directory:
 ~~~sh
-mkdir build
-cd build
-cmake ..
-make
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
 ~~~
 Of if you prefer Ninja:
 ~~~sh
-mkdir build
-cd build
-cmake -G Ninja ..
-ninja
+$ mkdir build
+$ cd build
+$ cmake -G Ninja ..
+$ ninja
 ~~~
 
 ### Client
