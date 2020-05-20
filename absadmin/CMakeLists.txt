@@ -11,8 +11,8 @@ add_executable(
 
 target_link_libraries(absadmin abscommon less PugiXml)
 if (WIN32)
- 	include_directories(../Include/openssl-1.0)
-	target_link_libraries(absadmin libeay32 ssleay32)
+    include_directories(../Include/openssl-1.0)
+    target_link_libraries(absadmin libeay32 ssleay32)
 else()
-	target_link_libraries(absadmin DeathHandler dl ssl crypto)
+    target_link_libraries(absadmin DeathHandler ssl crypto)
 endif()

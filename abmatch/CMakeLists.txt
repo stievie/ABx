@@ -11,5 +11,5 @@ add_executable(
 
 target_link_libraries(abmatch abscommon EASTL)
 if (UNIX)
-	target_link_libraries(abmatch DeathHandler dl)
+    target_link_libraries(abmatch DeathHandler)
 endif()

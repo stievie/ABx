@@ -11,5 +11,5 @@ add_executable(
 
 target_link_libraries(ablb abscommon)
 if (UNIX)
-	target_link_libraries(ablb DeathHandler dl)
+    target_link_libraries(ablb DeathHandler)
 endif()

@@ -38,13 +38,13 @@ endif()
 
 option (ABX_ASSERT "Enable assert() in Release mode" TRUE)
 option (ABX_SCENE_VIEWER "Compile with Scene viewer" FALSE)
-option (ABX_PGSQL "Use PostreSQL Database backend" TRUE)
+option (ABX_PGSQL "Use PostgreSQL Database backend" TRUE)
 # The other DB backends probably won't work
 #option (ABX_MYSQL "Use MySQL Database backend" FALSE)
 #option (ABX_ODBC "Use OODBC Database backend" FALSE)
 #option (ABX_SQLITE "Use SQLite Database backend" FALSE)
 if (WIN32)
-option (ABX_WINDOWS_SERVICE "Build Windows Service executeables" FALSE)
+    option (ABX_WINDOWS_SERVICE "Build Windows Service executeables" FALSE)
 endif()
 
 if (ABX_ASSERT)

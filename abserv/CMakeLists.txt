@@ -27,5 +27,5 @@ endif(ABX_SCENE_VIEWER)
 
 target_link_libraries(abserv abscommon abcrypto absmath abai abipc abshared Detour DetourTileCache EASTL PugiXml)
 if (UNIX)
-    target_link_libraries(abserv DeathHandler dl)
+    target_link_libraries(abserv DeathHandler)
 endif()

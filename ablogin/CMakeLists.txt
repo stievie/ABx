@@ -9,7 +9,8 @@ add_executable(
     ${ABLOGIN_SOURCES}
 )
 
+# We need some header files from abshared
 target_link_libraries(ablogin abscommon abshared)
 if (UNIX)
-	target_link_libraries(ablogin DeathHandler dl)
+    target_link_libraries(ablogin DeathHandler)
 endif()
