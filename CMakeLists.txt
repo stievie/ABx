@@ -43,10 +43,16 @@ option (ABX_PGSQL "Use PostreSQL Database backend" TRUE)
 #option (ABX_MYSQL "Use MySQL Database backend" FALSE)
 #option (ABX_ODBC "Use OODBC Database backend" FALSE)
 #option (ABX_SQLITE "Use SQLite Database backend" FALSE)
+if (WIN32)
+option (ABX_WINDOWS_SERVICE "Build Windows Service executeables" FALSE)
+endif()
 
 if (ABX_ASSERT)
   add_definitions(-DSA_ASSERT)
 endif(ABX_ASSERT)
+if (ABX_WINSERVICE)
+  add_definitions(-DWIN_SERVICE)
+endif(ABX_WINSERVICE)
 
 # Libraries
 add_subdirectory(ThirdParty)
