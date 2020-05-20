@@ -2,6 +2,7 @@ project (fw CXX)
 
 include_directories(../Include/Urho3D)
 include_directories(../Include/Urho3D/ThirdParty)
+include_directories(../Include/Urho3D/ThirdParty/SDL)
 link_directories(../Lib/x64)
 link_directories(../Lib)
 

@@ -37,7 +37,7 @@ if (WIN32)
 endif()
 
 option (ABX_ASSERT "Enable assert() in Release mode" TRUE)
-option (ABX_SCENE_VIEWER "Compile with Scene viewer" FALSE)
+option (ABX_SCENE_VIEWER "Compile Game Server with Scene viewer" FALSE)
 option (ABX_PGSQL "Use PostgreSQL Database backend" TRUE)
 # The other DB backends probably won't work
 #option (ABX_MYSQL "Use MySQL Database backend" FALSE)
@@ -46,6 +46,7 @@ option (ABX_PGSQL "Use PostgreSQL Database backend" TRUE)
 if (WIN32)
     option (ABX_WINDOWS_SERVICE "Build Windows Service executeables" FALSE)
 endif()
+# TODO: Make WRITE_MINIBUMP and PROFILING an option
 
 if (ABX_ASSERT)
   add_definitions(-DSA_ASSERT)
