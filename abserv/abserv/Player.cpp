@@ -281,7 +281,7 @@ void Player::TriggerTradeDialog(uint32_t targetId)
     auto* target = GetGame()->GetObject<Player>(targetId);
     if (!target)
         return;
-    float dist = GetDistance(target);
+    const float dist = GetDistance(target);
     if (dist > RANGE_PICK_UP)
         return;
 
@@ -896,8 +896,7 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
 void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t fields)
 {
     AB::Entities::Character ch;
-    bool found = IO::IOPlayer::GetPlayerInfoByAccount(accountUuid, ch);
-    if (!found)
+    if (!IO::IOPlayer::GetPlayerInfoByAccount(accountUuid, ch))
         // If there is no such thing, we just don't reply to this request
         return;
     SendPlayerInfo(ch, fields);
@@ -906,8 +905,7 @@ void Player::CRQGetPlayerInfoByAccount(const std::string accountUuid, uint32_t f
 void Player::CRQGetPlayerInfoByName(const std::string name, uint32_t fields)
 {
     AB::Entities::Character ch;
-    bool found = IO::IOPlayer::GetPlayerInfoByName(name, ch);
-    if (!found)
+    if (!IO::IOPlayer::GetPlayerInfoByName(name, ch))
         // If there is no such thing, we just don't reply to this request
         return;
     SendPlayerInfo(ch, fields);
@@ -1064,7 +1062,7 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 bool Player::RemoveMoney(uint32_t count)
 {
     auto msg = Net::NetworkMessage::GetNew();
-    uint32_t amount = inventoryComp_->RemoveChestMoney(count, msg.get());
+    const uint32_t amount = inventoryComp_->RemoveChestMoney(count, msg.get());
     WriteToOutput(*msg);
     return amount != 0;
 }
@@ -1072,7 +1070,7 @@ bool Player::RemoveMoney(uint32_t count)
 bool Player::AddMoney(uint32_t count)
 {
     auto msg = Net::NetworkMessage::GetNew();
-    uint32_t amount = inventoryComp_->AddInventoryMoney(count, msg.get());
+    const uint32_t amount = inventoryComp_->AddInventoryMoney(count, msg.get());
     WriteToOutput(*msg);
     return amount != 0;
 }
@@ -1122,23 +1120,23 @@ void Player::CRQPartyInvitePlayer(uint32_t playerId)
     if (party_->IsFull())
         return;
     ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (player)
+    if (!player)
+        return;
+
+    if (party_->Invite(player))
     {
-        if (party_->Invite(player))
-        {
-            auto nmsg = Net::NetworkMessage::GetNew();
-            nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerInvited);
-            AB::Packets::Server::PartyPlayerInvited packet = {
-                id_,
-                playerId,
-                party_->GetId()
-            };
-            AB::Packets::Add(packet, *nmsg);
-            // Send us confirmation
-            party_->WriteToMembers(*nmsg);
-            // Send player he was invited
-            player->WriteToOutput(*nmsg);
-        }
+        auto nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerInvited);
+        AB::Packets::Server::PartyPlayerInvited packet = {
+            id_,
+            playerId,
+            party_->GetId()
+        };
+        AB::Packets::Add(packet, *nmsg);
+        // Send us confirmation
+        party_->WriteToMembers(*nmsg);
+        // Send player he was invited
+        player->WriteToOutput(*nmsg);
     }
 }
 
@@ -1252,27 +1250,27 @@ void Player::CRQPartyAccept(uint32_t playerId)
         return;
 
     ea::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (leader)
+    if (!leader)
+        return;
+
+    // Leave current party
+    PartyLeave();
+    if (leader->GetParty()->Add(GetPtr<Player>()))
     {
-        // Leave current party
-        PartyLeave();
-        if (leader->GetParty()->Add(GetPtr<Player>()))
-        {
-            auto nmsg = Net::NetworkMessage::GetNew();
-            nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerAdded);
-            AB::Packets::Server::PartyPlayerAdded packet = {
-                id_,
-                playerId,
-                party_->GetId()
-            };
-            AB::Packets::Add(packet, *nmsg);
-            party_->WriteToMembers(*nmsg);
+        auto nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerAdded);
+        AB::Packets::Server::PartyPlayerAdded packet = {
+            id_,
+            playerId,
+            party_->GetId()
+        };
+        AB::Packets::Add(packet, *nmsg);
+        party_->WriteToMembers(*nmsg);
 #ifdef DEBUG_GAME
-            LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->GetId() << std::endl;
+        LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->GetId() << std::endl;
 #endif
-        }
-        // else party maybe full
     }
+    // else party maybe full
 }
 
 void Player::CRQPartyRejectInvite(uint32_t inviterId)
@@ -1281,58 +1279,59 @@ void Player::CRQPartyRejectInvite(uint32_t inviterId)
     if (!AB::Entities::IsOutpost(GetGame()->data_.type))
         return;
     ea::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
-    if (leader)
+    if (!leader)
+        return;
+
+    if (leader->GetParty()->RemoveInvite(GetPtr<Player>()))
     {
-        if (leader->GetParty()->RemoveInvite(GetPtr<Player>()))
-        {
-            auto nmsg = Net::NetworkMessage::GetNew();
-            nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyInviteRemoved);
-            AB::Packets::Server::PartyPlayerRemoved packet = {
-                inviterId,
-                id_,
-                leader->GetParty()->GetId()
-            };
-            AB::Packets::Add(packet, *nmsg);
-            // Inform the party
-            leader->GetParty()->WriteToMembers(*nmsg);
-            // Inform us
-            WriteToOutput(*nmsg);
-        }
+        auto nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyInviteRemoved);
+        AB::Packets::Server::PartyPlayerRemoved packet = {
+            inviterId,
+            id_,
+            leader->GetParty()->GetId()
+        };
+        AB::Packets::Add(packet, *nmsg);
+        // Inform the party
+        leader->GetParty()->WriteToMembers(*nmsg);
+        // Inform us
+        WriteToOutput(*nmsg);
     }
 }
 
 void Player::CRQPartyGetMembers(uint32_t partyId)
 {
     ea::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
-    if (party)
+    if (!party)
     {
-        auto nmsg = Net::NetworkMessage::GetNew();
-        nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyInfoMembers);
-        size_t count = party->GetMemberCount();
-        AB::Packets::Server::PartyMembersInfo packet;
-        packet.partyId = partyId;
-        packet.count = static_cast<uint8_t>(count);
-        packet.members.reserve(count);
-
-        // We also need invalid (i.e. not yet connected) members,
-        // therefore we can not use Party::VisitMembers()
-        const auto& members = party->GetMembers();
-        for (const auto& m : members)
-        {
-            if (auto sm = m.lock())
-                packet.members.push_back(sm->id_);
-            else
-                packet.members.push_back(0);
-        }
-        AB::Packets::Add(packet, *nmsg);
-        WriteToOutput(*nmsg);
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
-#endif
-    }
-#ifdef DEBUG_GAME
-    else
         LOG_DEBUG << "Party not found: " << partyId << std::endl;
+#endif
+        return;
+    }
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyInfoMembers);
+    size_t count = party->GetMemberCount();
+    AB::Packets::Server::PartyMembersInfo packet;
+    packet.partyId = partyId;
+    packet.count = static_cast<uint8_t>(count);
+    packet.members.reserve(count);
+
+    // We also need invalid (i.e. not yet connected) members,
+    // therefore we can not use Party::VisitMembers()
+    const auto& members = party->GetMembers();
+    for (const auto& m : members)
+    {
+        if (auto sm = m.lock())
+            packet.members.push_back(sm->id_);
+        else
+            packet.members.push_back(0);
+    }
+    AB::Packets::Add(packet, *nmsg);
+    WriteToOutput(*nmsg);
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
 #endif
 }
 
@@ -2277,7 +2276,6 @@ void Player::CRQHasQuests(uint32_t npcId)
     AB::Packets::Add(packet, *nmsg);
     WriteToOutput(*nmsg);
 }
-
 
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {

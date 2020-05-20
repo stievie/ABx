@@ -170,49 +170,49 @@ void Game::InitializeLua()
 
 void Game::Start()
 {
-    if (state_ == ExecutionState::Startup)
+    if (state_ != ExecutionState::Startup)
     {
-        auto* config = GetSubsystem<ConfigManager>();
-        startTime_ = Utils::Tick();
-        instanceData_.startTime = startTime_;
-        instanceData_.serverUuid = Application::Instance->GetServerId();
-        instanceData_.gameUuid = data_.uuid;
-        instanceData_.name = map_->name_;
-        LOG_INFO << "Starting game " << id_ << ", " << map_->name_ << std::endl;
-
-        if ((*config)[ConfigManager::Key::RecordGames])
-        {
-            writeStream_ = std::make_unique<IO::GameWriteStream>();
-            if (writeStream_->Open((*config)[ConfigManager::Key::RecordingsDir], this))
-                instanceData_.recording = writeStream_->GetFilename();
-        }
-        instanceData_.running = true;
-        CreateEntity(instanceData_);
-
-        lastUpdate_ = 0;
-        SetState(ExecutionState::Running);
-
-        // Now that we are running we can spawn the queued players
-        if (!queuedObjects_.empty())
-        {
-            auto it = queuedObjects_.begin();
-            while (it != queuedObjects_.end())
-            {
-                SendSpawnObject((*it));
-                it = queuedObjects_.erase(it);
-            }
-        }
-
-        // Initial game update
-        GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
-        );
-    }
 #ifdef DEBUG_GAME
-    else
         LOG_DEBUG << "Game state is not Startup it is " << static_cast<int>(state_.load()) << std::endl;
 #endif // DEBUG_GAME
+        return;
+    }
 
+    auto* config = GetSubsystem<ConfigManager>();
+    startTime_ = Utils::Tick();
+    instanceData_.startTime = startTime_;
+    instanceData_.serverUuid = Application::Instance->GetServerId();
+    instanceData_.gameUuid = data_.uuid;
+    instanceData_.name = map_->name_;
+    LOG_INFO << "Starting game " << id_ << ", " << map_->name_ << std::endl;
+
+    if ((*config)[ConfigManager::Key::RecordGames])
+    {
+        writeStream_ = std::make_unique<IO::GameWriteStream>();
+        if (writeStream_->Open((*config)[ConfigManager::Key::RecordingsDir], this))
+            instanceData_.recording = writeStream_->GetFilename();
+    }
+    instanceData_.running = true;
+    CreateEntity(instanceData_);
+
+    lastUpdate_ = 0;
+    SetState(ExecutionState::Running);
+
+    // Now that we are running we can spawn the queued players
+    if (!queuedObjects_.empty())
+    {
+        auto it = queuedObjects_.begin();
+        while (it != queuedObjects_.end())
+        {
+            SendSpawnObject((*it));
+            it = queuedObjects_.erase(it);
+        }
+    }
+
+    // Initial game update
+    GetSubsystem<Asynch::Dispatcher>()->Add(
+        Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
+    );
 }
 
 void Game::Update()
@@ -365,7 +365,7 @@ void Game::AddObjectInternal(ea::shared_ptr<GameObject> object)
 
 void Game::InternalRemoveObject(GameObject* object)
 {
-    auto it = objects_.find(object->id_);
+    const auto it = objects_.find(object->id_);
     if (it == objects_.end())
         return;
     Lua::CallFunction(luaState_, "onRemoveObject", object);
@@ -649,36 +649,36 @@ void Game::SendInitStateToPlayer(Player& player)
 void Game::PlayerJoin(uint32_t playerId)
 {
     ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (player)
+    if (!player)
+        return;
+
     {
-        {
-            std::scoped_lock lock(lock_);
-            players_[player->id_] = player.get();
-            if (AB::Entities::IsOutpost(data_.type))
-                player->data_.lastOutpostUuid = data_.uuid;
-            player->data_.instanceUuid = instanceData_.uuid;
-        }
-        UpdateEntity(player->data_);
-
-        Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
-        SendInitStateToPlayer(*player);
-
-        if (GetState() == ExecutionState::Running)
-        {
-            // In worst case (i.e. the game data is still loading): will be sent as
-            // soon as the game runs and entered the Update loop.
-            SendSpawnObject(player);
-        }
-        else
-            queuedObjects_.push_back(player);
-
-        // Notify other servers that a player joined, e.g. for friend list
-        GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedIn,
-                shared_from_this(),
-                player))
-        );
+        std::scoped_lock lock(lock_);
+        players_[player->id_] = player.get();
+        if (AB::Entities::IsOutpost(data_.type))
+            player->data_.lastOutpostUuid = data_.uuid;
+        player->data_.instanceUuid = instanceData_.uuid;
     }
+    UpdateEntity(player->data_);
+
+    Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
+    SendInitStateToPlayer(*player);
+
+    if (GetState() == ExecutionState::Running)
+    {
+        // In worst case (i.e. the game data is still loading): will be sent as
+        // soon as the game runs and entered the Update loop.
+        SendSpawnObject(player);
+    }
+    else
+        queuedObjects_.push_back(player);
+
+    // Notify other servers that a player joined, e.g. for friend list
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedIn,
+            shared_from_this(),
+            player))
+    );
 }
 
 void Game::RemoveObject(GameObject* object)
@@ -698,31 +698,31 @@ void Game::RemoveObject(GameObject* object)
 void Game::PlayerLeave(uint32_t playerId)
 {
     Player* player = GetPlayerById(playerId);
-    if (player)
-    {
-        std::scoped_lock lock(lock_);
-        player->SetGame(ea::shared_ptr<Game>());
-        auto it = players_.find(playerId);
-        if (it != players_.end())
-        {
-            Lua::CallFunction(luaState_, "onPlayerLeave", player);
-            players_.erase(it);
-        }
-        player->data_.instanceUuid = "";
-        UpdateEntity(player->data_);
+    if (!player)
+        return;
 
-        auto* sched = GetSubsystem<Asynch::Scheduler>();
-        sched->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::SendLeaveObject, shared_from_this(), playerId))
-        );
-        // Notify other servers that a player left, e.g. for friend list
-        sched->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
-                shared_from_this(),
-                player->GetPtr<Player>()))
-        );
-        InternalRemoveObject(player);
+    std::scoped_lock lock(lock_);
+    player->SetGame(ea::shared_ptr<Game>());
+    auto it = players_.find(playerId);
+    if (it != players_.end())
+    {
+        Lua::CallFunction(luaState_, "onPlayerLeave", player);
+        players_.erase(it);
     }
+    player->data_.instanceUuid = "";
+    UpdateEntity(player->data_);
+
+    auto* sched = GetSubsystem<Asynch::Scheduler>();
+    sched->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::SendLeaveObject, shared_from_this(), playerId))
+    );
+    // Notify other servers that a player left, e.g. for friend list
+    sched->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
+            shared_from_this(),
+            player->GetPtr<Player>()))
+    );
+    InternalRemoveObject(player);
 }
 
 Crowd* Game::AddCrowd()

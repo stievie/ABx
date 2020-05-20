@@ -169,27 +169,27 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
 void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3& velocity,
     const std::function<Iteration(GameObject& other, const Math::Vector3& move, bool& updateTrans)>& callback) const
 {
-    auto getShape = [this]() -> std::unique_ptr<Math::AbstractCollisionShape>
+    auto getShape = [this]() -> ea::unique_ptr<Math::AbstractCollisionShape>
     {
         switch (collisionShape_->shapeType_)
         {
         case Math::ShapeType::BoundingBox:
             using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
-            return std::make_unique<BBoxShape>(static_cast<BBoxShape&>(*collisionShape_), transformation_.GetMatrix());
+            return ea::make_unique<BBoxShape>(static_cast<BBoxShape&>(*collisionShape_), transformation_.GetMatrix());
         case Math::ShapeType::Sphere:
             using SphereShape = Math::CollisionShape<Math::Sphere>;
-            return std::make_unique<SphereShape>(static_cast<SphereShape&>(*collisionShape_), transformation_.GetMatrix());
+            return ea::make_unique<SphereShape>(static_cast<SphereShape&>(*collisionShape_), transformation_.GetMatrix());
         case Math::ShapeType::ConvexHull:
             using HullShape = Math::CollisionShape<Math::ConvexHull>;
-            return std::make_unique<HullShape>(static_cast<HullShape&>(*collisionShape_), transformation_.GetMatrix());
+            return ea::make_unique<HullShape>(static_cast<HullShape&>(*collisionShape_), transformation_.GetMatrix());
         case Math::ShapeType::HeightMap:
             using HeightShape = Math::CollisionShape<Math::HeightMap>;
-            return std::make_unique<HeightShape>(static_cast<HeightShape&>(*collisionShape_), transformation_.GetMatrix());
+            return ea::make_unique<HeightShape>(static_cast<HeightShape&>(*collisionShape_), transformation_.GetMatrix());
         default:
             ASSERT_FALSE();
         }
     };
-    std::unique_ptr<Math::AbstractCollisionShape> myTransformedShape = getShape();
+    ea::unique_ptr<Math::AbstractCollisionShape> myTransformedShape = getShape();
     bool transformationUpdated = false;
 
     for (size_t i = 0; i < count; ++i)

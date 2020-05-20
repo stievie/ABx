@@ -215,7 +215,7 @@ void AreaOfEffect::SetRange(Ranges range)
     range_ = range;
 
     // Update collision shape size
-    auto cs = GetCollisionShape();
+    auto* cs = GetCollisionShape();
     if (!cs)
         return;
 
@@ -277,7 +277,7 @@ bool AreaOfEffect::IsAlly(const Actor* other) const
 
 bool AreaOfEffect::IsInRange(const Actor* other) const
 {
-    float dist = transformation_.position_.Distance(other->GetPosition());
+    const float dist = transformation_.position_.Distance(other->GetPosition());
     return dist <= RangeDistances[static_cast<int>(range_)];
 }
 
