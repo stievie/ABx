@@ -137,6 +137,7 @@ PRAGMA_WARNING_POP
 #include <absmath/Vector3.h>
 #include <absmath/VectorMath.h>
 #include <base64.h>
+#define BRIGAND_NO_BOOST_SUPPORT
 #include <brigand/brigand.hpp>
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/member.hpp>

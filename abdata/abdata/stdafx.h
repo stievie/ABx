@@ -31,7 +31,6 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <stdio.h>
 
 #include <iostream>
-#include <map>
 #include <string>
 
 #include <AB/CommonConfig.h>
@@ -48,6 +47,7 @@ PRAGMA_WARNING_POP
 
 #include <uuid.h>
 #include <base64.h>
+#define BRIGAND_NO_BOOST_SUPPORT
 #include <brigand/brigand.hpp>
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/member.hpp>
