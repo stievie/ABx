@@ -34,6 +34,8 @@
 #include <AB/Entities/FriendList.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abscommon/BanManager.h>
+#include <abscommon/StringUtils.h>
 
 namespace Net {
 

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "PlayerManager.h"
 #include "Player.h"
+#include <abscommon/StringUtils.h>
 
 namespace Game {
 

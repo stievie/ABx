@@ -43,6 +43,9 @@
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/Random.h>
+#include <abscommon/ThreadPool.h>
 #include <sa/EAIterator.h>
 
 namespace Game {

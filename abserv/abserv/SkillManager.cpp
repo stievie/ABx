@@ -23,6 +23,7 @@
 #include "SkillManager.h"
 #include "DataProvider.h"
 #include <AB/Entities/Skill.h>
+#include <abscommon/DataClient.h>
 
 namespace Game {
 

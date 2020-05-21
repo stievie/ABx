@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GameStream.h"
 #include "Game.h"
+#include <abscommon/FileUtils.h>
 
 namespace IO {
 

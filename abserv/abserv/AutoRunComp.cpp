@@ -26,6 +26,7 @@
 #include "Player.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <absmath/VectorMath.h>
 #include <optional>
 
 //#define DEBUG_NAVIGATION

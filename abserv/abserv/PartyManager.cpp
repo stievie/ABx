@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "PartyManager.h"
+#include <abscommon/StringUtils.h>
+#include <abscommon/UuidUtils.h>
 
 namespace Game {
 

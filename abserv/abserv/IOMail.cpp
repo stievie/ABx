@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "IOMail.h"
 #include "IOPlayer.h"
+#include <abscommon/MessageClient.h>
 
 namespace IO {
 namespace IOMail {

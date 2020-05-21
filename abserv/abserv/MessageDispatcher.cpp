@@ -27,9 +27,11 @@
 #include "Player.h"
 #include "PlayerManager.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Service.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
+#include <abscommon/MessageClient.h>
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {

@@ -46,10 +46,16 @@
 #include <AB/ProtocolCodes.h>
 #include <abai/BevaviorCache.h>
 #include <abai/Dump.h>
+#include <abscommon/BanManager.h>
+#include <abscommon/CpuUsage.h>
 #include <abscommon/Logo.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/MessageMsg.h>
+#include <abscommon/Random.h>
 #include <abscommon/Service.h>
 #include <abscommon/StringUtils.h>
 #include <abscommon/Task.h>
+#include <abscommon/ThreadPool.h>
 #include <sa/ConditionSleep.h>
 
 Application* Application::Instance = nullptr;

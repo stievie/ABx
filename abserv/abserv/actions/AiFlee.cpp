@@ -25,8 +25,8 @@
 #include "../DamageComp.h"
 #include "../Game.h"
 #include "../Npc.h"
-#include <absmath/Matrix4.h>
 #include <abshared/Mechanic.h>
+#include <absmath/Matrix4.h>
 #include <absmath/Vector3.h>
 #include <absmath/VectorMath.h>
 

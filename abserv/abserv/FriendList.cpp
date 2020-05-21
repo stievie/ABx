@@ -24,6 +24,7 @@
 #include <sa/Transaction.h>
 #include "IOPlayer.h"
 #include <AB/Entities/FriendedMe.h>
+#include <abscommon/StringUtils.h>
 
 namespace Game {
 

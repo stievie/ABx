@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "Guild.h"
 #include <AB/Entities/GuildMembers.h>
+#include <abscommon/DataClient.h>
+#include <abscommon/UuidUtils.h>
 
 namespace Game {
 

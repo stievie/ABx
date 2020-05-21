@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "IOGame.h"
 #include <AB/Entities/GameList.h>
+#include <abscommon/UuidUtils.h>
 
 namespace IO {
 namespace IOGame {

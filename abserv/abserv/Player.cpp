@@ -50,6 +50,8 @@
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/StringTempl.h>
+#include <abscommon/MessageClient.h>
+#include <abscommon/StringUtils.h>
 #include <abshared/SkillsHelper.h>
 #include "TradeComp.h"
 

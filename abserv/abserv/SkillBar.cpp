@@ -25,6 +25,7 @@
 #include "EffectsComp.h"
 #include "SkillBar.h"
 #include "SkillManager.h"
+#include <abscommon/DataClient.h>
 #include <abshared/TemplEncoder.h>
 #include <abshared/SkillsHelper.h>
 

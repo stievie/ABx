@@ -26,6 +26,7 @@
 #include "../Game.h"
 #include "../Npc.h"
 #include <absmath/Vector3.h>
+#include <absmath/VectorMath.h>
 
 //#define DEBUG_AI
 

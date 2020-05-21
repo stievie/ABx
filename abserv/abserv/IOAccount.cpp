@@ -25,6 +25,7 @@
 #include <AB/Entities/AccountKey.h>
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
+#include <abscommon/UuidUtils.h>
 
 namespace IO {
 namespace IOAccount {

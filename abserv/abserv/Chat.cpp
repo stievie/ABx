@@ -29,6 +29,7 @@
 #include <AB/Entities/GuildMembers.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abscommon/MessageClient.h>
 
 namespace Game {
 

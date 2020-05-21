@@ -30,6 +30,7 @@
 #include "PlayerManager.h"
 #include <AB/Entities/Service.h>
 #include <abscommon/CpuUsage.h>
+#include <abscommon/DataClient.h>
 #include <abscommon/ThreadPool.h>
 
 void Maintenance::CleanCacheTask()

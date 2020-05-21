@@ -30,8 +30,8 @@
 #include "QuestComp.h"
 #include "Script.h"
 #include "ScriptManager.h"
-#include <Mustache/mustache.hpp>
 #include <abai/BevaviorCache.h>
+#include <Mustache/mustache.hpp>
 
 namespace Game {
 

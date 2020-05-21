@@ -24,6 +24,7 @@
 #include "Actor.h"
 #include "Game.h"
 #include "MoveComp.h"
+#include <absmath/Plane.h>
 
 #define DEBUG_COLLISION
 
