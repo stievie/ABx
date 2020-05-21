@@ -49,7 +49,6 @@ PRAGMA_WARNING_POP
 #include <uuid.h>
 #include <base64.h>
 
-#define WRITE_MINIBUMP
 #define PROFILING
 
 #include <abscommon/Logger.h>

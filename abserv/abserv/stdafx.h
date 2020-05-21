@@ -72,8 +72,6 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <time.h>
 #include <stdlib.h>
 
-#define WRITE_MINIBUMP
-
 #include <absmath/MathConfig.h>
 #include <pugixml.hpp>
 

@@ -35,8 +35,6 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 #include <memory>
 #include <iostream>
 
-#define WRITE_MINIBUMP
-
 #include <AB/CommonConfig.h>
 #include <abscommon/DebugConfig.h>
 

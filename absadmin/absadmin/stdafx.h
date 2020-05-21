@@ -73,5 +73,4 @@ PRAGMA_WARNING_POP
 #include <abscommon/Xml.h>
 
 
-#define WRITE_MINIBUMP
 #define PROFILING

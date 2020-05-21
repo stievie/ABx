@@ -51,7 +51,6 @@ PRAGMA_WARNING_POP
 
 #include <uuid.h>
 
-#define WRITE_MINIBUMP
 #define AB_UNUSED(P) (void)(P)
 
 #include <abscommon/Utils.h>

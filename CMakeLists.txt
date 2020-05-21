@@ -46,7 +46,8 @@ option (ABX_PGSQL "Use PostgreSQL Database backend" TRUE)
 if (WIN32)
     option (ABX_WINDOWS_SERVICE "Build Windows Service executeables" FALSE)
 endif()
-# TODO: Make WRITE_MINIBUMP and PROFILING an option
+option (ABX_NO_PROFILIING "No Profiling" FALSE)
+option (ABX_WRITE_MINIBUMP "Write Minidump and Stacktrace in case of crash" TRUE)
 
 if (ABX_ASSERT)
   add_definitions(-DSA_ASSERT)
@@ -54,6 +55,9 @@ endif(ABX_ASSERT)
 if (ABX_WINSERVICE)
   add_definitions(-DWIN_SERVICE)
 endif(ABX_WINSERVICE)
+if (ABX_NO_PROFILIING)
+  add_definitions(-DNPROFILING)
+endif(ABX_NO_PROFILIING)
 
 # Libraries
 add_subdirectory(ThirdParty)

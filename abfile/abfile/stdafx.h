@@ -54,5 +54,4 @@
 #include <abscommon/Utils.h>
 #include <abscommon/Profiler.h>
 
-#define WRITE_MINIBUMP
 #define PROFILING

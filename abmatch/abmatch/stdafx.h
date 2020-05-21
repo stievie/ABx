@@ -56,6 +56,5 @@ PRAGMA_WARNING_POP
 #include <abscommon/Utils.h>
 #include <abscommon/Logger.h>
 
-#define WRITE_MINIBUMP
 #define PROFILING
 #define DEBUG_MATCH
