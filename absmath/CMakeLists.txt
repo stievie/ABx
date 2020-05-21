@@ -5,7 +5,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess")
 endif()
 
-file(GLOB_RECURSE ABSMATH_SOURCES
+file(GLOB ABSMATH_SOURCES
     absmath/*.cpp
     absmath/*.h
 )

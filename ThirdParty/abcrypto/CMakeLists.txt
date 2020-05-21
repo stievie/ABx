@@ -5,7 +5,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU")
 endif()
 
 # CPP/HPP files are just wrapper, not part of the library.
-file(GLOB_RECURSE ABCRYPTO_SOURCES      ./*.c ./*.h)
+file(GLOB ABCRYPTO_SOURCES      ./*.c ./*.h)
 
 add_library(
     abcrypto

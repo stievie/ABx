@@ -1,6 +1,6 @@
 project (abscommon CXX)
 
-file(GLOB_RECURSE ABSCOMMON_SOURCES      abscommon/*.cpp abscommon/*.h)
+file(GLOB ABSCOMMON_SOURCES      abscommon/*.cpp abscommon/*.h)
 
 add_library(
     abscommon

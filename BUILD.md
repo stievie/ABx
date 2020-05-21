@@ -83,6 +83,8 @@ $ mkdir build
 $ cd build
 $ cmake ..
 $ make
+# Copy executables to ../Bin and ../abclient/bin
+$ cmake --install . --component runtime
 ~~~
 Of if you prefer Ninja:
 ~~~sh

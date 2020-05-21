@@ -1,6 +1,6 @@
 project (abdb CXX)
 
-file(GLOB_RECURSE ABDB_SOURCES      abdb/*.cpp abdb/*.h)
+file(GLOB ABDB_SOURCES      abdb/*.cpp abdb/*.h)
 
 add_library(
     abdb

@@ -1,6 +1,6 @@
 project (tinyexpr C)
 
-file(GLOB_RECURSE TINYEXPR_SOURCES      ./tinyexpr.c ./tinyexpr.h)
+file(GLOB TINYEXPR_SOURCES      ./tinyexpr.c ./tinyexpr.h)
 
 add_library(
     tinyexpr

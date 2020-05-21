@@ -1,6 +1,6 @@
 project (libabclient CXX)
 
-file(GLOB_RECURSE LIBABCLIENT_SOURCES      libabclient/*.cpp libabclient/*.h)
+file(GLOB LIBABCLIENT_SOURCES      libabclient/*.cpp libabclient/*.h)
 
 add_library(
     libabclient

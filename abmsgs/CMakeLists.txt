@@ -1,8 +1,6 @@
 project (abmsgs CXX)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Bin)
-
-file(GLOB_RECURSE ABSMGS_SOURCES      abmsgs/*.cpp abmsgs/*.h)
+file(GLOB ABSMGS_SOURCES      abmsgs/*.cpp abmsgs/*.h)
 
 add_executable(
     abmsgs
@@ -15,3 +13,8 @@ target_link_libraries(abmsgs abscommon EASTL)
 if (UNIX)
     target_link_libraries(abmsgs DeathHandler)
 endif()
+
+install(TARGETS abmsgs
+    RUNTIME DESTINATION Bin
+    COMPONENT runtime
+)

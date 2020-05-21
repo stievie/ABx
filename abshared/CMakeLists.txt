@@ -1,6 +1,6 @@
 project (abshared CXX)
 
-file(GLOB_RECURSE ABSHARED_SOURCES      abshared/*.cpp abshared/*.h)
+file(GLOB ABSHARED_SOURCES      abshared/*.cpp abshared/*.h)
 
 add_library(
     abshared

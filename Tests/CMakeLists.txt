@@ -1,6 +1,6 @@
 project (Tests CXX)
 
-file(GLOB_RECURSE TESTS_SOURCES      Tests/*.cpp Tests/*.h)
+file(GLOB TESTS_SOURCES      Tests/*.cpp Tests/*.h)
 
 add_executable(
     Tests

@@ -1,6 +1,6 @@
 project (abai CXX)
 
-file(GLOB_RECURSE ABAI_SOURCES      abai/*.cpp abai/*.h)
+file(GLOB ABAI_SOURCES      abai/*.cpp abai/*.h)
 
 add_library(
     abai

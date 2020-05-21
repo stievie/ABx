@@ -6,8 +6,6 @@ include_directories(../Include/Urho3D/ThirdParty/SDL)
 link_directories(../Lib/x64)
 link_directories(../Lib)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # Bullet will emit many warnings with -Wextra
     string(REPLACE "-Wextra" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -15,7 +13,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 elseif(MSVC)
 endif()
 
-file(GLOB_RECURSE FW_SOURCES      abclient/*.cpp abclient/*.h)
+file(GLOB FW_SOURCES      abclient/*.cpp abclient/*.h)
 
 add_executable(
     fw
@@ -29,3 +27,8 @@ target_link_libraries(fw libabclient abshared abcrypto tinyexpr lz4 Urho3D)
 if (UNIX)
     target_link_libraries(fw pthread GL ssl crypto rt dl)
 endif()
+
+install(TARGETS fw
+    RUNTIME DESTINATION abclient/bin
+    COMPONENT runtime
+)

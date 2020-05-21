@@ -1,6 +1,6 @@
 project (abipc CXX)
 
-file(GLOB_RECURSE ABIPC_SOURCES      abipc/*.cpp abipc/*.h)
+file(GLOB ABIPC_SOURCES      abipc/*.cpp abipc/*.h)
 
 add_library(
     abipc

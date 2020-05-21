@@ -1,8 +1,6 @@
 project (abfile CXX)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Bin)
-
-file(GLOB_RECURSE ABFILE_SOURCES      abfile/*.cpp abfile/*.h)
+file(GLOB ABFILE_SOURCES      abfile/*.cpp abfile/*.h)
 
 add_executable(
     abfile
@@ -18,3 +16,8 @@ if (WIN32)
 else()
     target_link_libraries(abfile DeathHandler ssl crypto)
 endif()
+
+install(TARGETS abfile
+    RUNTIME DESTINATION Bin
+    COMPONENT runtime
+)
