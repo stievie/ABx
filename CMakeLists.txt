@@ -7,8 +7,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_DEBUG_POSTFIX "")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
+# Set default config for Ninja Multi-Config
+if(NOT CMAKE_DEFAULT_BUILD_TYPE)
+    set(CMAKE_DEFAULT_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build." FORCE)
+endif()
 
 include(CTest)
+
+add_custom_target(run
+    COMMAND ${CMAKE_SOURCE_DIR}/run
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+add_custom_target(stop
+    COMMAND ${CMAKE_SOURCE_DIR}/stop
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)

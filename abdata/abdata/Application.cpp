@@ -432,7 +432,7 @@ void Application::Stop()
 
     auto& provider = server_->GetStorageProvider();
     AB::Entities::Service serv;
-    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobalString("server_id", "");
+    serv.uuid = GetServerId();
     if (provider.EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
