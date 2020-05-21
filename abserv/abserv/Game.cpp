@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Game.h"
+#include "Application.h"
 #include "AreaOfEffect.h"
 #include "ConfigManager.h"
 #include "Crowd.h"
@@ -545,7 +546,7 @@ void Game::Load(const std::string& mapUuid)
         LOG_ERROR << "Error loading game " << mapUuid << std::endl;
         return;
     }
-    map_ = std::make_unique<Map>(shared_from_this());
+    map_ = ea::make_unique<Map>(shared_from_this());
     map_->name_ = data_.name;
     map_->directory_ = data_.directory;
 

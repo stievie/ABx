@@ -21,11 +21,12 @@
 
 #pragma once
 
-#include <AB/Entities/Skill.h>
 #include "GameObject.h"
+#include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
-#include <sa/Noncopyable.h>
 #include <eastl.hpp>
+#include <sa/Bits.h>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 

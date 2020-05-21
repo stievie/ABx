@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "ScriptManager.h"
+#include "Application.h"
 #include "AreaOfEffect.h"
 #include "Crowd.h"
 #include "DataProvider.h"

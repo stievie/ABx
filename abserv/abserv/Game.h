@@ -145,7 +145,7 @@ public:
     AB::Entities::Game data_;
     AB::Entities::GameInstance instanceData_;
 
-    std::unique_ptr<Map> map_;
+    ea::unique_ptr<Map> map_;
 
     int64_t GetUpdateTick() const { return lastUpdate_; }
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }

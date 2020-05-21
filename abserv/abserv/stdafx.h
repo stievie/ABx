@@ -91,17 +91,6 @@ PRAGMA_WARNING_POP
 #include <abshared/Mechanic.h>
 #include <abshared/Attributes.h>
 
-#include "Actor.h"
-#include "AiAgent.h"
-#include "Application.h"
-#include "CollisionComp.h"
-#include <abshared/Damage.h>
-#include "Game.h"
-#include "GameObject.h"
-#include "Map.h"
-#include "Player.h"
-#include "PlayerManager.h"
-#include "Script.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
@@ -110,6 +99,7 @@ PRAGMA_WARNING_POP
 #include <AB/Entities/Mail.h>
 #include <AB/Entities/MailList.h>
 #include <AB/Packets/ClientPackets.h>
+#include <AB/Entities/Service.h>
 #include <AB/ProtocolCodes.h>
 #include <abai/Agent.h>
 #include <abscommon/BanManager.h>
@@ -147,6 +137,7 @@ PRAGMA_WARNING_POP
 #include <absmath/Vector3.h>
 #include <absmath/VectorMath.h>
 #include <base64.h>
+#include <brigand/brigand.hpp>
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/member.hpp>
 #include <multi_index/ordered_index.hpp>

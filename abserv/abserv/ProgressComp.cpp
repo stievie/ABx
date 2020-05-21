@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "ProgressComp.h"
-#include "Actor.h"
+#include "Player.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 
@@ -133,9 +133,7 @@ void ProgressComp::AddXp(int value)
     const uint32_t level = owner_.GetLevel();
     if (level < LEVEL_CAP)
     {
-        unsigned nextLevel = level * 600 + 1400;
-        if (nextLevel > SKILLPOINT_ADVANCE_XP)
-            nextLevel = SKILLPOINT_ADVANCE_XP;
+        const uint32_t nextLevel = std::max(level * 600 + 1400, SKILLPOINT_ADVANCE_XP);
         if (owner_.GetXp() >= nextLevel)
         {
             AdvanceLevel();

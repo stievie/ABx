@@ -48,6 +48,11 @@ PRAGMA_WARNING_POP
 
 #include <uuid.h>
 #include <base64.h>
+#include <brigand/brigand.hpp>
+#include <multi_index/hashed_index.hpp>
+#include <multi_index/member.hpp>
+#include <multi_index/ordered_index.hpp>
+#include <multi_index_container.hpp>
 
 #define PROFILING
 

@@ -24,6 +24,7 @@
 #include "AiDebugServer.h"
 #include "AiLoader.h"
 #include "AiRegistry.h"
+#include "Chat.h"
 #include "ConfigManager.h"
 #include "DataProvider.h"
 #include "EffectManager.h"
