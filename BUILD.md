@@ -63,8 +63,10 @@ sudo apt-get install g++-9
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 # Install Dependencies
-sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev zlib1g-dev
+sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
 ~~~
+
+If you get a link error, like "Library -lz not found", you also need to install `zlib1g-dev`.
 
 ### Build
 
