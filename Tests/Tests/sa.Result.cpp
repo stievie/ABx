@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include <catch.hpp>
 
 #include <sa/Result.h>

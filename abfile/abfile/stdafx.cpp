@@ -19,8 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
-
 #if defined(_MSC_VER)
 #pragma warning(disable: 4503)
 #endif

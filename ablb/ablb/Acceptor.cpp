@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
 #include "Acceptor.h"
 #include <functional>
 #include <abscommon/Subsystems.h>

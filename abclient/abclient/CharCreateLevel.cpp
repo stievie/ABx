@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "CharCreateLevel.h"
 #include "Structs.h"
 #include "FwClient.h"

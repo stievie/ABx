@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "AiIsFighting.h"
 #include "../DamageComp.h"
 #include "../Npc.h"

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
 #include "Registry.h"
 #include "LogicConditions.h"
 #include "FilterCondition.h"

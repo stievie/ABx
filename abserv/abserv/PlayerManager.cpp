@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "PlayerManager.h"
 #include "Player.h"
 #include <abscommon/StringUtils.h>

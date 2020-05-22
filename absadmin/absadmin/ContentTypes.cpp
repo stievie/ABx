@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "ContentTypes.h"
 
 const std::string& ContentTypes::Get(const std::string& ext) const

@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "Chat.h"
 #include "IOAccount.h"
 #include "IOPlayer.h"

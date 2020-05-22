@@ -26,7 +26,7 @@ $(TARGET): $(GCH) $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
-	$(PRE_CXX) $(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+	$(PRE_CXX) $(CXX) $(CXXFLAGS) -include $(PCH) -MMD -c $< -o $@
 
 # PCH
 $(GCH): $(PCH)

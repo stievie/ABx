@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include "stdafx.h"
+
 #include "Logger.h"
 #include <filesystem>
 #include "MiniDump.h"

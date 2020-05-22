@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "AudioManager.h"
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 #include <AB/Entities/Music.h>

@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "ServerApp.h"
 #if defined(__linux__) || defined(__unix__)
 #include <unistd.h>

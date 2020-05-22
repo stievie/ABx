@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "Options.h"
 #include <SDL/SDL_filesystem.h>
 #include "Shortcuts.h"

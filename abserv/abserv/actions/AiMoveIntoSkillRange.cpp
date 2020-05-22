@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "AiMoveIntoSkillRange.h"
 #include "../AiAgent.h"
 #include "../Npc.h"

@@ -41,7 +41,7 @@
 // THE SOFTWARE.
 //
 
-#include "stdafx.h"
+
 
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Core/CoreEvents.h>

@@ -14,7 +14,7 @@
 * WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 \***************************************************************************/
 
-#include "stdafx.h"
+
 #ifdef AB_WINDOWS
 
 #include <stdio.h>

@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "CreateAccountLevel.h"
 #include "FwClient.h"
 #include <AB/Entities/Limits.h>

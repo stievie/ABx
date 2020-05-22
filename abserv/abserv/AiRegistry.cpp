@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "AiRegistry.h"
 #include "actions/AiAttackSelection.h"
 #include "actions/AiDie.h"

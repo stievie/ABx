@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Character.h>

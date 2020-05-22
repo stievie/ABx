@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
+
 #include "ProtocolGame.h"
 #include "ConfigManager.h"
 #include "Game.h"
@@ -29,7 +29,7 @@
 #include "IOPlayer.h"
 #include "Player.h"
 #include "PlayerManager.h"
-#include "stdafx.h"
+
 #include <AB/DHKeys.hpp>
 #include <AB/Entities/FriendList.h>
 #include <AB/Packets/Packet.h>

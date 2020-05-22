@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "NameIndex.h"
 #include <sa/StringHash.h>
 #include <abscommon/StringUtils.h>

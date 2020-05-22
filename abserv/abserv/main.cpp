@@ -21,7 +21,7 @@
 
 // Entry point
 
-#include "stdafx.h"
+
 #include "Application.h"
 
 #if !defined(WIN_SERVICE)

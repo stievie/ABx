@@ -19,7 +19,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-#include "stdafx.h"
+
 
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Input/Input.h>

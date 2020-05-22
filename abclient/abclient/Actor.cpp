@@ -21,7 +21,7 @@
 
 // Most of it taken from the Character Demo
 
-#include "stdafx.h"
+
 #include "Actor.h"
 #include "BaseLevel.h"
 #include "ChatFilter.h"

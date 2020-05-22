@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "stdafx.h"
 #include "MatchQueues.h"
 
 void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
