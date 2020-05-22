@@ -53,37 +53,33 @@ enum class TargetClass
     Foe
 };
 
-static constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = sa::StringHash("OnKnockedDown");
-static constexpr sa::event_t EVENT_ON_HEALED = sa::StringHash("OnHealed");
-static constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");                                    // Arguments: Actor* (who died), Actor* (who killed the poor victim)
-static constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
-static constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
-static constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
-static constexpr sa::event_t EVENT_ON_CHESTFULL = sa::StringHash("OnChestFull");
-static constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
-static constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
-static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
-static constexpr sa::event_t EVENT_ON_USESKILL = sa::StringHash("OnUseSkill");
-static constexpr sa::event_t EVENT_ON_SKILLTARGETED = sa::StringHash("OnSkillTargeted");
-static constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = sa::StringHash("OnGetCriticalHit");
-static constexpr sa::event_t EVENT_ON_ENDUSESKILL = sa::StringHash("OnEndUseSkill");
-static constexpr sa::event_t EVENT_ON_STARTUSESKILL = sa::StringHash("OnStartUseSkill");
-static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = sa::StringHash("OnHandleCommand");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnInterruptingAttack");
-static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
-static constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
-static constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
-static constexpr sa::event_t EVENT_ON_INCMORALE = sa::StringHash("OnIncMorale");
-static constexpr sa::event_t EVENT_ON_DECMORALE = sa::StringHash("OnDecMorale");
-static constexpr sa::event_t EVENT_ON_KILLEDFOE = sa::StringHash("OnKilledFoe");
-
-// This BB is really small for an Actor, but the Actor should stuck only when there is really no way.
-static constexpr Math::Vector3 CREATURTE_BB_MIN { -0.1f, 0.0f, -0.1f };
-static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.1f, 1.7f, 0.1f };
+inline constexpr sa::event_t EVENT_ON_ARRIVED = sa::StringHash("OnArrived");
+inline constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = sa::StringHash("OnInterruptedAttack");
+inline constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = sa::StringHash("OnInterruptedSkill");
+inline constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = sa::StringHash("OnKnockedDown");
+inline constexpr sa::event_t EVENT_ON_HEALED = sa::StringHash("OnHealed");
+inline constexpr sa::event_t EVENT_ON_DIED = sa::StringHash("OnDied");                                    // Arguments: Actor* (who died), Actor* (who killed the poor victim)
+inline constexpr sa::event_t EVENT_ON_RESURRECTED = sa::StringHash("OnResurrected");
+inline constexpr sa::event_t EVENT_ON_PINGOBJECT = sa::StringHash("OnPingObject");
+inline constexpr sa::event_t EVENT_ON_INVENTORYFULL = sa::StringHash("OnInventoryFull");
+inline constexpr sa::event_t EVENT_ON_CHESTFULL = sa::StringHash("OnChestFull");
+inline constexpr sa::event_t EVENT_ON_ATTACK = sa::StringHash("OnAttack");
+inline constexpr sa::event_t EVENT_ON_ATTACKED = sa::StringHash("OnAttacked");
+inline constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = sa::StringHash("OnGettingAttacked");
+inline constexpr sa::event_t EVENT_ON_USESKILL = sa::StringHash("OnUseSkill");
+inline constexpr sa::event_t EVENT_ON_SKILLTARGETED = sa::StringHash("OnSkillTargeted");
+inline constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = sa::StringHash("OnGetCriticalHit");
+inline constexpr sa::event_t EVENT_ON_ENDUSESKILL = sa::StringHash("OnEndUseSkill");
+inline constexpr sa::event_t EVENT_ON_STARTUSESKILL = sa::StringHash("OnStartUseSkill");
+inline constexpr sa::event_t EVENT_ON_HANDLECOMMAND = sa::StringHash("OnHandleCommand");
+inline constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = sa::StringHash("OnInterruptingAttack");
+inline constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = sa::StringHash("OnInterruptingSkill");
+inline constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = sa::StringHash("OnKnockingDown");
+inline constexpr sa::event_t EVENT_ON_HEALING = sa::StringHash("OnHealing");
+inline constexpr sa::event_t EVENT_ON_STUCK = sa::StringHash("OnStuck");
+inline constexpr sa::event_t EVENT_ON_INCMORALE = sa::StringHash("OnIncMorale");
+inline constexpr sa::event_t EVENT_ON_DECMORALE = sa::StringHash("OnDecMorale");
+inline constexpr sa::event_t EVENT_ON_KILLEDFOE = sa::StringHash("OnKilledFoe");
 
 class AreaOfEffect;
 class Group;

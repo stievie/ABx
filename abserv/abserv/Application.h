@@ -23,19 +23,22 @@
 
 #include "Version.h"
 #include <abscommon/ServerApp.h>
-#if defined(SCENE_VIEWER)
-#include "SceneViewer.h"
-#endif
+#include <asio.hpp>
+#include <eastl.hpp>
+#include <mutex>
 #include <numeric>
 #include <sa/CircularQueue.h>
-#include <asio.hpp>
-#include <mutex>
-#include <eastl.hpp>
 
 namespace Net {
 class MessageMsg;
 class ServiceManager;
 }
+
+#if defined(SCENE_VIEWER)
+namespace Debug {
+class SceneViewer;
+}
+#endif
 
 class MessageDispatcher;
 class Maintenance;

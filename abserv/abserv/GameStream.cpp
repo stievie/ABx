@@ -26,6 +26,8 @@
 
 namespace IO {
 
+static constexpr int16_t REC_FILE_VERSION = 1;
+
 GameWriteStream::~GameWriteStream()
 {
     Close();

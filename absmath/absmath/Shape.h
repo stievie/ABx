@@ -55,14 +55,14 @@ public:
     }
     explicit Shape(const ea::vector<Vector3>& vertices) :
         vertexData_(vertices),
-        vertexCount_(static_cast<unsigned>(vertexData_.size())),
+        vertexCount_(vertexData_.size()),
         indexCount_(0)
     { }
-    Shape(const ea::vector<Vector3>& vertices, const ea::vector<unsigned>& indices) :
+    Shape(const ea::vector<Vector3>& vertices, const ea::vector<size_t>& indices) :
         vertexData_(vertices),
         indexData_(indices),
-        vertexCount_(static_cast<unsigned>(vertexData_.size())),
-        indexCount_(static_cast<unsigned>(indexData_.size()))
+        vertexCount_(vertexData_.size()),
+        indexCount_(indexData_.size())
     {}
     ~Shape() = default;
 
@@ -103,13 +103,13 @@ public:
             return ((indexCount_ % 3) == 0);
         return (vertexCount_ % 3) == 0;
     }
-    unsigned GetTriangleCount() const
+    size_t GetTriangleCount() const
     {
         if (IsTriangles())
             return GetCount() / 3;
         return 0;
     }
-    ea::array<Vector3, 3> GetTriangle(unsigned i) const
+    ea::array<Vector3, 3> GetTriangle(size_t i) const
     {
         ea::array<Vector3, 3> result;
         result[0] = GetVertex(i * 3);
@@ -120,13 +120,13 @@ public:
     /// Check if the triangle face points outside. This only depends on the order of the points.
     bool IsFacingOutside(const ea::array<Vector3, 3>& triangle) const;
 
-    Vector3 GetVertex(unsigned index) const
+    Vector3 GetVertex(size_t index) const
     {
         if (indexCount_)
             return matrix_ * vertexData_[indexData_[index]];
         return matrix_ * vertexData_[index];
     }
-    unsigned GetCount() const
+    ssize_t GetCount() const
     {
         if (indexCount_)
             return indexCount_;
@@ -146,9 +146,9 @@ public:
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;
     ea::vector<Vector3> vertexData_;
-    ea::vector<unsigned> indexData_;
-    unsigned vertexCount_;
-    unsigned indexCount_;
+    ea::vector<size_t> indexData_;
+    size_t vertexCount_;
+    size_t indexCount_;
 };
 
 }

@@ -82,7 +82,7 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Sliding from " << safePos << " to "
-        << newPos.ToString() <<
+        << newPos <<
         " intersection at " << manifold.intersectionPoint << std::endl;
 #endif
 

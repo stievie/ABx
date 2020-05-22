@@ -32,6 +32,8 @@
 
 namespace Game {
 
+static constexpr const char* MONEY_ITEM_UUID = "08fbf9bd-b84f-412f-ae4a-bc499784fadf";
+
 ItemFactory::ItemFactory() = default;
 
 void ItemFactory::Initialize()

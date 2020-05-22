@@ -24,12 +24,15 @@
 #include "Actor.h"
 #include "Effect.h"
 #include "Game.h"
-#include "ProtocolGame.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
 #include <set>
 #include <eastl.hpp>
+
+namespace Net {
+class ProtocolGame;
+}
 
 namespace Game {
 

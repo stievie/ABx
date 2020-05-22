@@ -47,6 +47,10 @@
 
 namespace Game {
 
+// This BB is really small for an Actor, but the Actor should stuck only when there is really no way.
+static constexpr Math::Vector3 CREATURTE_BB_MIN { -0.1f, 0.0f, -0.1f };
+static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.1f, 1.7f, 0.1f };
+
 void Actor::RegisterLua(kaguya::State& state)
 {
     state["Actor"].setClass(kaguya::UserdataMetatable<Actor, GameObject>()

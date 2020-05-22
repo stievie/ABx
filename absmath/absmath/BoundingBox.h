@@ -185,9 +185,13 @@ public:
     {
         if (IsOriented() || box.IsOriented())
         {
+#if defined(HAVE_DIRECTX_MATH)
             XMath::BoundingOrientedBox me = static_cast<XMath::BoundingOrientedBox>(*this);
             XMath::ContainmentType ct = me.Contains(static_cast<XMath::BoundingOrientedBox>(box));
             return ct == XMath::DISJOINT ? Intersection::Outside : (ct == XMath::INTERSECTS ? Intersection::Intersects : Intersection::Inside);
+#else
+#error DirectXMath needed
+#endif
         }
 
         if (box.max_.x_ < min_.x_ || box.min_.x_ > max_.x_ || box.max_.y_ < min_.y_ || box.min_.y_ > max_.y_ ||

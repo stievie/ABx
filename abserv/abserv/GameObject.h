@@ -69,12 +69,12 @@ class Player;
 class AreaOfEffect;
 class Skill;
 
-static constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
-static constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
-static constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
-static constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
-static constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
-static constexpr sa::event_t EVENT_ON_STATECHANGE = sa::StringHash("OnStateChange");
+inline constexpr sa::event_t EVENT_ON_CLICKED = sa::StringHash("OnClicked");
+inline constexpr sa::event_t EVENT_ON_COLLIDE = sa::StringHash("OnCollide");
+inline constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
+inline constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
+inline constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
+inline constexpr sa::event_t EVENT_ON_STATECHANGE = sa::StringHash("OnStateChange");
 
 using GameObjectEvents = sa::Events<
     void(void),
@@ -97,7 +97,7 @@ using GameObjectEvents = sa::Events<
     void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)
 >;
 
-static const float AVERAGE_BB_EXTENDS = 0.3f;
+inline const float AVERAGE_BB_EXTENDS = 0.3f;
 
 class GameObject : public ea::enable_shared_from_this<GameObject>
 {

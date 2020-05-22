@@ -38,6 +38,9 @@
 #include "PlayerManager.h"
 #include "ProtocolGame.h"
 #include "Skill.h"
+#if defined(SCENE_VIEWER)
+#include "SceneViewer.h"
+#endif
 #include "SkillManager.h"
 #include "Version.h"
 #include <AB/DHKeys.hpp>

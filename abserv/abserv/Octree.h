@@ -33,8 +33,8 @@ class GameObject;
 
 namespace Math {
 
-static constexpr int NUM_OCTANTS = 8;
-static constexpr unsigned ROOT_INDEX = std::numeric_limits<unsigned>::max();
+inline constexpr int NUM_OCTANTS = 8;
+inline constexpr unsigned ROOT_INDEX = std::numeric_limits<unsigned>::max();
 
 class Octree;
 

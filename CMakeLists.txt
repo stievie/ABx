@@ -42,10 +42,10 @@ else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -march=native -fdiagnostics-color=always")
 endif(MSVC)
 
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-#    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-endif(CCACHE_FOUND)
+find_program(CCACHE_EXECUTABLE ccache)
+if(CCACHE_EXECUTABLE)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_EXECUTABLE})
+endif(CCACHE_EXECUTABLE)
 
 add_definitions(-DASIO_STANDALONE)
 
