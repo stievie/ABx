@@ -29,7 +29,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 * GCC 9 or later
 * GNU make
-* CMake (optional)
+* CMake 3.16 (optional)
 * ccache (optional)
 
 ### Dependencies
@@ -63,7 +63,7 @@ sudo apt-get install g++-9
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
 # Install Dependencies
-sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
+sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev zlib1g-dev
 ~~~
 
 ### Build

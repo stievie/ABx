@@ -34,5 +34,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 endif()
 add_subdirectory(recastnavigation/DetourTileCache)
 add_subdirectory(recastnavigation/Recast)
+add_subdirectory(recastnavigation/DebugUtils)
 
 add_subdirectory(tinyexpr)
