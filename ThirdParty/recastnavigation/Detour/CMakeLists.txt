@@ -19,11 +19,11 @@ set_target_properties(Detour PROPERTIES
         VERSION ${VERSION}
         )
 
-install(TARGETS Detour
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        COMPONENT library
-        )
+#install(TARGETS Detour
+#        ARCHIVE DESTINATION lib
+#        LIBRARY DESTINATION lib
+#        COMPONENT library
+#        )
 
 file(GLOB INCLUDES Include/*.h)
-install(FILES ${INCLUDES} DESTINATION include)
+#install(FILES ${INCLUDES} DESTINATION include)

@@ -68,7 +68,6 @@ endif()
 option (ABX_NO_PROFILIING "No Profiling" FALSE)
 option (ABX_WRITE_MINIBUMP "Write Minidump and Stacktrace in case of crash" TRUE)
 option (ABX_BUILD_TOOLS "Build Tools (may require assimp to be installed)" FALSE)
-option (ABX_BUILD_CLIENT "Build Client (requires Urho3D to be installed)" FALSE)
 
 if (ABX_ASSERT)
     add_definitions(-DSA_ASSERT)

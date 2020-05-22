@@ -24,11 +24,11 @@ set_target_properties(DetourTileCache PROPERTIES
         )
 
 
-install(TARGETS DetourTileCache
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        COMPONENT library
-        )
+#install(TARGETS DetourTileCache
+#        ARCHIVE DESTINATION lib
+#        LIBRARY DESTINATION lib
+#        COMPONENT library
+#        )
 
 file(GLOB INCLUDES Include/*.h)
-install(FILES ${INCLUDES} DESTINATION include)
+#install(FILES ${INCLUDES} DESTINATION include)
