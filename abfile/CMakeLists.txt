@@ -9,7 +9,7 @@ add_executable(
 
 target_precompile_headers(abfile PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abfile/stdafx.h)
 
-target_link_libraries(abfile abscommon abcrypto lua PugiXml)
+target_link_libraries(abfile abscommon abcrypto PugiXml)
 if (WIN32)
     include_directories(../Include/openssl-1.0)
     target_link_libraries(abfile libeay32 ssleay32)
