@@ -10,7 +10,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set default config for Ninja Multi-Config
 if (CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
-    if(NOT MAKE_DEFAULT_BUILD_TYPE)
+    if(NOT CMAKE_DEFAULT_BUILD_TYPE)
         set(CMAKE_DEFAULT_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build." FORCE)
     endif()
 endif()
