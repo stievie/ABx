@@ -110,7 +110,7 @@ Logger& Logger::Error(const char* function)
         }
         (*this) << "[ERROR] ";
         if (function)
-            (*this) << function << "() ";
+            (*this) << function << " ";
     }
     return *this;
 }
@@ -121,7 +121,7 @@ Logger& Logger::Info(const char* function)
     {
         (*this) << "[Info] ";
         if (function)
-            (*this) << function << "() ";
+            (*this) << function << " ";
     }
     return *this;
 }
@@ -141,7 +141,7 @@ Logger& Logger::Warning(const char* function)
         }
         (*this) << "[Warning] ";
         if (function)
-            (*this) << function << "() ";
+            (*this) << function << " ";
     }
     return *this;
 }
@@ -181,7 +181,7 @@ Logger& Logger::Debug(const char* function)
         }
         (*this) << "[Debug] ";
         if (function)
-            (*this) << function << "() ";
+            (*this) << function << " ";
 }
     return *this;
 }

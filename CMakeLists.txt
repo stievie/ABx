@@ -8,10 +8,10 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_DEBUG_POSTFIX "")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Set default config for Ninja Multi-Config
+# Set default config for Ninja Multi-Config. Possible values: Debug;Release;RelWithDebInfo
 if (CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
     if(NOT CMAKE_DEFAULT_BUILD_TYPE)
-        set(CMAKE_DEFAULT_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build." FORCE)
+        set(CMAKE_DEFAULT_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
     endif()
 endif()
 
