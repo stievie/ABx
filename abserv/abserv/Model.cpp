@@ -19,15 +19,25 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Model.h"
+#include <absmath/Shape.h>
 
 namespace Game {
 
 Model::Model() :
-    IO::Asset(),
-    shape_(nullptr)
+    IO::Asset()
 {
+}
+
+Math::BoundingBox Model::GetBoundingBox()
+{
+    if (!shape_)
+        return Math::BoundingBox();
+    if (!boundingBox_.IsDefined())
+    {
+        boundingBox_.Merge(shape_->vertexData_.data(), shape_->vertexCount_);
+    }
+    return boundingBox_;
 }
 
 }

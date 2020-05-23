@@ -23,8 +23,11 @@
 
 #include <memory>
 #include "Asset.h"
-#include <absmath/Shape.h>
 #include <absmath/BoundingBox.h>
+
+namespace Math {
+class Shape;
+}
 
 namespace Game {
 
@@ -33,17 +36,7 @@ class Model final : public IO::Asset
 {
 public:
     Model();
-
-    Math::BoundingBox GetBoundingBox()
-    {
-        if (!shape_)
-            return Math::BoundingBox();
-        if (!boundingBox_.IsDefined())
-        {
-            boundingBox_.Merge(shape_->vertexData_.data(), shape_->vertexCount_);
-        }
-        return boundingBox_;
-    }
+    Math::BoundingBox GetBoundingBox();
 
     std::unique_ptr<Math::Shape> shape_;
     Math::BoundingBox boundingBox_;

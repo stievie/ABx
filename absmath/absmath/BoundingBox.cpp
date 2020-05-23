@@ -179,7 +179,7 @@ void BoundingBox::Merge(const Vector3& vertex)
         max_.z_ = vertex.z_;
 }
 
-void BoundingBox::Merge(const Vector3* vertices, unsigned count)
+void BoundingBox::Merge(const Vector3* vertices, size_t count)
 {
     while (count--)
         Merge(*vertices++);

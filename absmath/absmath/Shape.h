@@ -126,7 +126,7 @@ public:
             return matrix_ * vertexData_[indexData_[index]];
         return matrix_ * vertexData_[index];
     }
-    ssize_t GetCount() const
+    size_t GetCount() const
     {
         if (indexCount_)
             return indexCount_;

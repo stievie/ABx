@@ -19,9 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Shape.h"
-#include "Vector4.h"
 #include "VectorMath.h"
 
 namespace Math {
@@ -55,7 +53,7 @@ bool Shape::IsFacingOutside(const ea::array<Vector3, 3>& triangle) const
 Vector3 Shape::Center() const
 {
     Vector3 result;
-    for (unsigned i = 0; i < GetCount(); ++i)
+    for (size_t i = 0; i < GetCount(); ++i)
         result += GetVertex(i);
     result /= static_cast<float>(GetCount());
     return result;
@@ -63,11 +61,11 @@ Vector3 Shape::Center() const
 
 Vector3 Shape::GetFarsetPointInDirection(const Vector3& direction) const
 {
-    unsigned best = 0;
+    size_t best = 0;
     float farest = GetVertex(0).DotProduct(direction);
 
-    const unsigned count = GetCount();
-    for (unsigned i = 1; i < count; ++i)
+    const size_t count = GetCount();
+    for (size_t i = 1; i < count; ++i)
     {
         float d = GetVertex(i).DotProduct(direction);
         if (farest < d)

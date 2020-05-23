@@ -118,7 +118,7 @@ public:
     std::vector<Line> GetEdges() const;
     void Merge(float x, float y, float z);
     void Merge(const Vector3& vertex);
-    void Merge(const Vector3* vertices, unsigned count);
+    void Merge(const Vector3* vertices, size_t count);
     void Reset();
     void AddSize(float value);
 
