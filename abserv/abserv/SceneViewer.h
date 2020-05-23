@@ -32,9 +32,10 @@ PRAGMA_WARNING_DISABLE_MSVC(4505)
 #include <GL/freeglut.h>
 PRAGMA_WARNING_POP
 
-#include "Vector3.h"
+#include <absmath/Vector3.h>
 #include "Game.h"
-#include "Point.h"
+#include <absmath/Point.h>
+#include <eastl.hpp>
 
 namespace Debug {
 
@@ -64,7 +65,7 @@ private:
     Math::Point<int> mousePos_{ 0, 0 };
     float cameraDistance_;
     Camera camera_;
-    std::weak_ptr<Game::Game> game_;
+    ea::weak_ptr<Game::Game> game_;
     int menuId_{ 0 };
     GLuint vertexShader_;
     GLuint fragmentShader_;

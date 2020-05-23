@@ -240,7 +240,7 @@ IF(WIN32)
     IF(MSVC)
         SET( CMAKE_DEBUG_POSTFIX "d" )
     ENDIF(MSVC)
-    
+
     # enable the use of Win2000 APIs (needed for really old compilers like MSVC6)
     ADD_DEFINITIONS(-D_WIN32_WINNT=0x0500)
     ADD_DEFINITIONS(-DWINVER=0x0500)
@@ -370,20 +370,20 @@ ELSE()
     #   or special-cased FreeGLUT long ago (e.g. .so.4 on OpenBSD), so
     #   the lack of support for current:revision:age in CMake should
     #   not be a problem.
-	# - the output library should be named glut so it'll be linkable with -lglut
-	#   (unless FREEGLUT_REPLACE_GLUT is false).
+    # - the output library should be named glut so it'll be linkable with -lglut
+    #   (unless FREEGLUT_REPLACE_GLUT is false).
     # - the shared library should link to the dependency libraries so that the user
     #   won't have to link them explicitly (they shouldn't have to know that we depend
     #   on Xrandr or Xxf86vm)
     IF(FREEGLUT_GLES)
-		SET(LIBNAME freeglut-gles)
+        SET(LIBNAME freeglut-gles)
     ELSE()
-		IF(FREEGLUT_REPLACE_GLUT)
-			SET(LIBNAME glut)
-		ELSE()
-			SET(LIBNAME freeglut)
-		ENDIF()
-	ENDIF()
+        IF(FREEGLUT_REPLACE_GLUT)
+            SET(LIBNAME glut)
+        ELSE()
+            SET(LIBNAME freeglut)
+        ENDIF()
+    ENDIF()
 
     IF(FREEGLUT_BUILD_SHARED_LIBS)
       SET_TARGET_PROPERTIES(freeglut PROPERTIES VERSION ${SO_MAJOR}.${SO_MINOR}.${SO_REV} SOVERSION ${SO_MAJOR} OUTPUT_NAME ${LIBNAME})
@@ -410,31 +410,31 @@ IF(FREEGLUT_BUILD_STATIC_LIBS)
     TARGET_LINK_LIBRARIES(freeglut_static ${LIBS})
 ENDIF()
 
-IF(FREEGLUT_BUILD_SHARED_LIBS)
-    INSTALL(TARGETS freeglut
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
-    IF(INSTALL_PDB)
-        INSTALL(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/freeglut${CMAKE_DEBUG_POSTFIX}.pdb
-            DESTINATION bin
-			CONFIGURATIONS Debug)
-    ENDIF()
-ENDIF()
-IF(FREEGLUT_BUILD_STATIC_LIBS)
-    INSTALL(TARGETS freeglut_static
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
-    IF(INSTALL_PDB)
-        INSTALL(FILES ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/Debug/freeglut_static${CMAKE_DEBUG_POSTFIX}.pdb
-            DESTINATION lib
-			CONFIGURATIONS Debug)
-    ENDIF()
-ENDIF()
-INSTALL(FILES ${FREEGLUT_HEADERS} DESTINATION include/GL)
+#IF(FREEGLUT_BUILD_SHARED_LIBS)
+#    INSTALL(TARGETS freeglut
+#            RUNTIME DESTINATION bin
+#            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    )
+#    IF(INSTALL_PDB)
+#        INSTALL(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/freeglut${CMAKE_DEBUG_POSTFIX}.pdb
+#            DESTINATION bin
+#            CONFIGURATIONS Debug)
+#    ENDIF()
+#ENDIF()
+#IF(FREEGLUT_BUILD_STATIC_LIBS)
+#    INSTALL(TARGETS freeglut_static
+#            RUNTIME DESTINATION bin
+#            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    )
+#    IF(INSTALL_PDB)
+#        INSTALL(FILES ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/Debug/freeglut_static${CMAKE_DEBUG_POSTFIX}.pdb
+#            DESTINATION lib
+#            CONFIGURATIONS Debug)
+#    ENDIF()
+#ENDIF()
+#INSTALL(FILES ${FREEGLUT_HEADERS} DESTINATION include/GL)
 
 
 
@@ -446,52 +446,6 @@ SET(DEMO_LIBS ${OPENGL_glu_LIBRARY} ${LIBS})
 IF (NOT WIN32)
     LIST(APPEND DEMO_LIBS m)
 ENDIF()
-
-MACRO(ADD_DEMO name)
-    IF( FREEGLUT_BUILD_DEMOS )
-        IF(FREEGLUT_BUILD_SHARED_LIBS)
-            ADD_EXECUTABLE(${name} ${ARGN})
-            TARGET_LINK_LIBRARIES(${name} ${DEMO_LIBS} freeglut)
-            IF(WIN32 AND MSVC)
-                SET_TARGET_PROPERTIES(${name} PROPERTIES DEBUG_POSTFIX d)
-            ENDIF()
-        ENDIF()
-        IF(FREEGLUT_BUILD_STATIC_LIBS)
-            ADD_EXECUTABLE(${name}_static ${ARGN})
-            TARGET_LINK_LIBRARIES(${name}_static ${DEMO_LIBS} freeglut_static)
-            SET_TARGET_PROPERTIES(${name}_static PROPERTIES COMPILE_FLAGS -DFREEGLUT_STATIC)
-            IF(WIN32 AND MSVC)
-                SET_TARGET_PROPERTIES(${name}_static PROPERTIES DEBUG_POSTFIX d)
-            ENDIF()
-        ENDIF()
-    ENDIF()
-ENDMACRO()
-
-ADD_DEMO(CallbackMaker   progs/demos/CallbackMaker/CallbackMaker.c)
-ADD_DEMO(Fractals        progs/demos/Fractals/fractals.c)
-ADD_DEMO(Fractals_random progs/demos/Fractals_random/fractals_random.c)
-ADD_DEMO(Lorenz          progs/demos/Lorenz/lorenz.c)
-IF (NOT WIN32)
-    ADD_DEMO(One             progs/demos/One/one.c)
-ELSE()
-    ADD_DEMO(One             progs/demos/One/one.c
-                             progs/demos/One/one.rc)
-ENDIF()
-ADD_DEMO(Resizer         progs/demos/Resizer/Resizer.cpp)
-ADD_DEMO(multi-touch     progs/demos/multi-touch/multi-touch.c)
-ADD_DEMO(shapes          progs/demos/shapes/shapes.c
-                         progs/demos/shapes/glmatrix.h
-                         progs/demos/shapes/glmatrix.c)
-ADD_DEMO(smooth_opengl3  progs/demos/smooth_opengl3/smooth_opengl3.c)
-IF(UNIX)
-    ADD_DEMO(spaceball       progs/demos/spaceball/spaceball.c
-                             progs/demos/spaceball/vmath.c
-                             progs/demos/spaceball/vmath.h)
-ENDIF()
-ADD_DEMO(subwin          progs/demos/subwin/subwin.c)
-ADD_DEMO(timer           progs/demos/timer/timer.c)
-
-
 
 # pkg-config support, to install at $(libdir)/pkgconfig
 # Define static build dependencies
@@ -522,6 +476,6 @@ IF(FREEGLUT_GLES)
   SET(PC_FILENAME "freeglut-gles.pc")
 ENDIF()
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/freeglut.pc.in ${CMAKE_BINARY_DIR}/freeglut.pc @ONLY)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/freeglut.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ RENAME ${PC_FILENAME})
+#INSTALL(FILES ${CMAKE_BINARY_DIR}/freeglut.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ RENAME ${PC_FILENAME})
 # TODO: change the library and .pc name when building for GLES,
 # e.g. -lglut-GLES

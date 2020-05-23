@@ -125,7 +125,7 @@ void SceneViewer::Update()
             game_ = (*games.begin()).second;
         }
 
-        if (std::shared_ptr<Game::Game> g = game_.lock())
+        if (ea::shared_ptr<Game::Game> g = game_.lock())
         {
             if (g->GetPlayerCount() != 0)
             {
@@ -142,7 +142,7 @@ void SceneViewer::Update()
                     Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + Math::M_PIF);
                     Math::Quaternion dir = rot * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, pitch_);
                     Math::Vector3 aimPoint;
-                    static constexpr Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
+//                    static constexpr Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
                     aimPoint = p->transformation_.position_;// +rot * CAM_POS;
                     Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
