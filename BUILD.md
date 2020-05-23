@@ -36,7 +36,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 * `uuid-dev`
 * `libmysqlclient-dev` or MariaDB when building with `USE_MYSQL`
-* `libpq-dev` when building with `USE_PGSQL`
+* `libpq-dev` when building with `USE_PGSQL`, (`postgresql-server-dev-all` when using CMake on Ubuntu)
 * `libsqlite3-dev` when building with `USE_SQLITE`
 * `libssl-dev`
 * `libldap2-dev` for PostgreSQL, when building with `USE_PGSQL`
@@ -67,6 +67,10 @@ sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-d
 ~~~
 
 If you get a link error, like "Library -lz not found", you also need to install `zlib1g-dev`.
+
+If CMake complains about missing PostgreSQL although you installed `ibpq-dev`, also install
+`postgresql-server-dev-all`, see https://stackoverflow.com/questions/13920383/findpostgresql-cmake-wont-work-on-ubuntu#40027295.
+
 
 ### Build
 

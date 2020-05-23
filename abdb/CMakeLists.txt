@@ -8,6 +8,7 @@ add_library(
 )
 
 if (ABX_PGSQL)
+    # postgresql-server-dev-all
     include(FindPostgreSQL)
     if (PostgreSQL_FOUND)
         target_include_directories(abdb PRIVATE ${PostgreSQL_INCLUDE_DIRS})

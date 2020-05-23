@@ -33,7 +33,6 @@ if (ABX_SCENE_VIEWER)
 endif(ABX_SCENE_VIEWER)
 add_subdirectory(libless)
 
-include(FindLua)
 if(NOT LUA_FOUND)
     # On Unix use installed version
     add_subdirectory(lua)

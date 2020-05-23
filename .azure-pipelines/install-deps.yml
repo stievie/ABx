@@ -1,7 +1,7 @@
 steps:
   - bash: |
       sudo -E apt-get update
-      sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
+      sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev postgresql-server-dev-all libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
     displayName: 'Install dependencies'
 
 # apt-get install zlib1g-dev

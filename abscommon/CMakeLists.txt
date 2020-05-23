@@ -15,7 +15,8 @@ endif(ABX_WRITE_MINIBUMP)
 target_link_libraries(abscommon abcrypto)
 
 if(LUA_FOUND)
-    target_link_libraries(abscommon ${LUA_LIBRARIES})
+    # ${LUA_LIBRARIES} does not work on Ubuntu
+    target_link_libraries(abscommon lua5.3)
 else()
     target_link_libraries(abscommon lua)
 endif()

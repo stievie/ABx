@@ -17,6 +17,7 @@ if (CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
 endif()
 
 include(CTest)
+include(FindLua)
 
 add_custom_target(run
     COMMAND ${CMAKE_SOURCE_DIR}/run
@@ -109,6 +110,8 @@ if(ABX_BUILD_TOOLS)
     if (assimp_FOUND)
         add_subdirectory(import)
         add_subdirectory(genavmesh)
+    else()
+        message(WARNING "Can not find assimp, Tools are not built")
     endif()
 endif()
 if(BUILD_TESTING)
