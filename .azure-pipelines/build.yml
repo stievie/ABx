@@ -3,4 +3,11 @@ parameters:
   configuration: 'Release'
 
 steps:
-  - script: cd makefiles && make config=${{ parameters.configuration }}
+  - bash: |
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=${{ parameters.configuration }} ..
+    make
+    ctest
+  displayName: 'Building'
+#  - script: cd makefiles && make config=${{ parameters.configuration }}

@@ -9,4 +9,5 @@ steps:
       sudo apt-get install g++-${{ parameters.major_version }}
       sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ parameters.major_version }} 90
       sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ parameters.major_version }} 90
-    displayName: 'Install GCC'
+      sudo snap install cmake --classic
+    displayName: 'Install GCC and Tools'
