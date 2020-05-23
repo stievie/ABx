@@ -115,35 +115,13 @@ public:
         return *this;
     }
 
-    void AddError(const std::string& msg)
-    {
-        Error() << msg << std::endl;
-    }
-    void AddInfo(const std::string& msg)
-    {
-        Info() << msg << std::endl;
-    }
-    void AddWarning(const std::string& msg)
-    {
-        Warning() << msg << std::endl;
-    }
-#if defined(PROFILING)
-    void AddProfile(const std::string& msg)
-    {
-        Profile() << msg << std::endl;
-    }
-#endif
-    void AddDebug(const std::string& msg)
-    {
-        Debug() << msg << std::endl;
-    }
-    Logger& Error(const char* function = nullptr);
-    Logger& Info(const char* function = nullptr);
-    Logger& Warning(const char* function = nullptr);
+    Logger& Error(const char* function = nullptr, unsigned line = 0);
+    Logger& Info(const char* function = nullptr, unsigned line = 0);
+    Logger& Warning(const char* function = nullptr, unsigned line = 0);
 #if defined(PROFILING)
     Logger& Profile();
 #endif
-    Logger& Debug(const char* function = nullptr);
+    Logger& Debug(const char* function = nullptr, unsigned line = 0);
     static int PrintF(const char *__restrict __format, ...);
 
     static void Close()
@@ -166,10 +144,10 @@ public:
 #define LOG_PLAIN (IO::Logger::Instance())
 #define LOG_INFO (IO::Logger::Instance().Info())
 #define LOG_WARNING (IO::Logger::Instance().Warning(AB_PRETTY_FUNCTION))
-#define LOG_ERROR (IO::Logger::Instance().Error(AB_PRETTY_FUNCTION))
+#define LOG_ERROR (IO::Logger::Instance().Error(AB_PRETTY_FUNCTION, __LINE__))
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #elif !defined(LOG_PROFILE)
 #   define LOG_PROFILE
 #endif
-#define LOG_DEBUG (IO::Logger::Instance().Debug(AB_PRETTY_FUNCTION))
+#define LOG_DEBUG (IO::Logger::Instance().Debug(AB_PRETTY_FUNCTION, __LINE__))

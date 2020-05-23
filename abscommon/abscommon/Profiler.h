@@ -23,12 +23,16 @@
 
 #include "Logger.h"
 #include <chrono>
+#include <string_view>
 
 // Undefine PROFILING or define NPROFILING to disable profiling
 
 // Used by the profiler to generate a unique identifier
 #if (!defined(CONCAT))
 #define CONCAT(a, b) a ## b
+#endif
+#if (!defined(CONCAT2))
+#define CONCAT2(a, b, c) a ## b ## c
 #endif
 #if (!defined(UNIQUENAME))
 #define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)
@@ -41,14 +45,16 @@ class Profiler
 private:
     using timer = std::chrono::high_resolution_clock;
     std::chrono::time_point<timer> start_;
-    std::string name_;
+    std::string_view name_;
+    unsigned line_{ 0 };
 public:
     Profiler() :
         start_(timer::now())
     { }
-    Profiler(const std::string& name) :
+    Profiler(std::string_view name, unsigned line) :
         start_(timer::now()),
-        name_(name)
+        name_(name),
+        line_(line)
     { }
     ~Profiler()
     {
@@ -56,7 +62,12 @@ public:
         std::chrono::time_point<timer> end = timer::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start_).count();
         if (!name_.empty())
-            LOG_PROFILE << name_ << "() ";
+        {
+            LOG_PROFILE << name_;
+            if (line_ != 0)
+                LOG_PROFILE << "#" << line_;
+            LOG_PROFILE << " ";
+        }
         if (duration < 1000)
             LOG_PROFILE << duration << "ns" << std::endl;
         else if (duration < 1000 * 1000)
@@ -72,7 +83,7 @@ public:
 }
 
 #if defined(PROFILING) && !defined(NPROFILING)
-#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(AB_PRETTY_FUNCTION)
+#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(AB_PRETTY_FUNCTION, __LINE__)
 #else
 #   define AB_PROFILE
 #endif
