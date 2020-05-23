@@ -1,6 +1,9 @@
 add_subdirectory(abcrypto)
 if (UNIX)
   add_subdirectory(DeathHandler)
+  if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+      target_compile_options(DeathHandler PRIVATE -Wno-unused-result)
+  endif()
 endif(UNIX)
 
 add_subdirectory(EASTL)
