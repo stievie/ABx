@@ -33,7 +33,7 @@ if (ABX_SCENE_VIEWER)
 endif(ABX_SCENE_VIEWER)
 add_subdirectory(libless)
 
-if(NOT LUA_FOUND)
+if(NOT LUA_FOUND OR (NOT ${LUA_VERSION_SHORT} MATCHES "5.3"))
     # On Unix use installed version
     add_subdirectory(lua)
 endif()

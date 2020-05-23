@@ -19,6 +19,10 @@ endif()
 include(CTest)
 include(FindLua)
 
+if(LUA_FOUND)
+    set(LUA_VERSION_SHORT "${LUA_VERSION_MAJOR}.${LUA_VERSION_MINOR}")
+endif()
+
 add_custom_target(run
     COMMAND ${CMAKE_SOURCE_DIR}/run
     USES_TERMINAL

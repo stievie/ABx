@@ -14,7 +14,7 @@ endif(ABX_WRITE_MINIBUMP)
 
 target_link_libraries(abscommon abcrypto)
 
-if(LUA_FOUND)
+if(LUA_FOUND AND (${LUA_VERSION_SHORT} MATCHES "5.3"))
     # ${LUA_LIBRARIES} does not work on Ubuntu
     target_link_libraries(abscommon lua5.3)
 else()
