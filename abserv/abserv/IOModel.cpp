@@ -21,6 +21,7 @@
 
 #include "IOModel.h"
 #include <absmath/Shape.h>
+#include <eastl.hpp>
 
 namespace IO {
 
@@ -42,18 +43,17 @@ bool IOModel::Import(Game::Model& asset, const std::string& name)
     input.read((char*)asset.boundingBox_.max_.Data(), sizeof(float) * 3);
 
     // Read shape data
-    asset.shape_ = std::make_unique<Math::Shape>();
+    asset.SetShape(ea::make_unique<Math::Shape>());
+    Math::Shape* modelShape = asset.GetShape();
 
-    input.read(reinterpret_cast<char*>(&asset.shape_->vertexCount_), sizeof(asset.shape_->vertexCount_));
-    asset.shape_->vertexData_.resize(asset.shape_->vertexCount_);
-    for (unsigned i = 0; i < asset.shape_->vertexCount_; ++i)
-    {
-        input.read((char*)asset.shape_->vertexData_[i].Data(), sizeof(float) * 3);
-    }
+    input.read(reinterpret_cast<char*>(&modelShape->vertexCount_), sizeof(modelShape->vertexCount_));
+    modelShape->vertexData_.resize(modelShape->vertexCount_);
+    for (unsigned i = 0; i < modelShape->vertexCount_; ++i)
+        input.read((char*)modelShape->vertexData_[i].Data(), sizeof(float) * 3);
 
-    input.read(reinterpret_cast<char*>(&asset.shape_->indexCount_), sizeof(asset.shape_->indexCount_));
-    asset.shape_->indexData_.resize(asset.shape_->indexCount_);
-    input.read((char*)asset.shape_->indexData_.data(), sizeof(unsigned) * asset.shape_->indexCount_);
+    input.read(reinterpret_cast<char*>(&modelShape->indexCount_), sizeof(modelShape->indexCount_));
+    modelShape->indexData_.resize(modelShape->indexCount_);
+    input.read((char*)modelShape->indexData_.data(), sizeof(unsigned) * modelShape->indexCount_);
 
     return true;
 }

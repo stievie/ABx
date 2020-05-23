@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <memory>
+#include <eastl.hpp>
 #include "Asset.h"
 #include <absmath/BoundingBox.h>
 
@@ -34,11 +34,17 @@ namespace Game {
 /// 3D Model
 class Model final : public IO::Asset
 {
+private:
+    ea::unique_ptr<Math::Shape> shape_;
 public:
     Model();
-    Math::BoundingBox GetBoundingBox();
+    void SetShape(ea::unique_ptr<Math::Shape>&& shape);
+    Math::BoundingBox GetBoundingBox() const
+    {
+        return boundingBox_;
+    }
+    Math::Shape* GetShape() const;
 
-    std::unique_ptr<Math::Shape> shape_;
     Math::BoundingBox boundingBox_;
 };
 

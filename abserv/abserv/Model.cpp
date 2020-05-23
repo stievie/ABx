@@ -29,15 +29,16 @@ Model::Model() :
 {
 }
 
-Math::BoundingBox Model::GetBoundingBox()
+void Model::SetShape(ea::unique_ptr<Math::Shape>&& shape)
 {
-    if (!shape_)
-        return Math::BoundingBox();
-    if (!boundingBox_.IsDefined())
-    {
+    shape_ = std::move(shape);
+    if (shape_)
         boundingBox_.Merge(shape_->vertexData_.data(), shape_->vertexCount_);
-    }
-    return boundingBox_;
+}
+
+Math::Shape* Model::GetShape() const
+{
+    return shape_.get();
 }
 
 }

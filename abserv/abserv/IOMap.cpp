@@ -192,7 +192,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 #endif
                                 object->SetCollisionShape(
                                     ea::make_unique<Math::CollisionShape<Math::ConvexHull>>(
-                                        Math::ShapeType::ConvexHull, model->shape_->vertexData_)
+                                        Math::ShapeType::ConvexHull, model->GetShape()->vertexData_)
                                 );
                             }
                         }
