@@ -32,10 +32,13 @@ if (ABX_SCENE_VIEWER)
     add_subdirectory(glew)
 endif(ABX_SCENE_VIEWER)
 add_subdirectory(libless)
-if (WIN32)
+
+include(FindLua)
+if(NOT LUA_FOUND)
     # On Unix use installed version
     add_subdirectory(lua)
 endif()
+
 add_subdirectory(lz4)
 if (WIN32)
   add_subdirectory(PDCurses)

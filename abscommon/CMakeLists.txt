@@ -13,9 +13,14 @@ if (ABX_WRITE_MINIBUMP)
 endif(ABX_WRITE_MINIBUMP)
 
 target_link_libraries(abscommon abcrypto)
-if (WIN32)
+
+if(LUA_FOUND)
+    target_link_libraries(abscommon ${LUA_LIBRARIES})
+else()
     target_link_libraries(abscommon lua)
-else (UNIX)
-    target_link_libraries(abscommon pthread lua5.3 uuid)
 endif()
-target_include_directories(abscommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+if (UNIX)
+    target_link_libraries(abscommon pthread  uuid)
+endif()
+target_include_directories(abscommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${LUA_INCLUDE_DIR})
