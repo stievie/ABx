@@ -83,7 +83,7 @@ public:
 }
 
 #if defined(PROFILING) && !defined(NPROFILING)
-#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(SA_FUNCTION_SIG, __LINE__)
+#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(SA_FUNCTION, __LINE__)
 #else
 #   define AB_PROFILE
 #endif

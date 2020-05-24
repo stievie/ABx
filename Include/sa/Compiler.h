@@ -52,6 +52,7 @@
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
+// GCC's __FUNCTION__ does not resolve namespace
 #   define SA_FUNCTION __PRETTY_FUNCTION__
 #elif defined(_MSC_VER)
 #   define SA_FUNCTION __FUNCTION__
