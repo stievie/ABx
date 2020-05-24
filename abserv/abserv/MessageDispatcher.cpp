@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Chat.h"
 #include "IOAccount.h"
 #include "IOPlayer.h"
@@ -32,6 +31,32 @@
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
 #include <abscommon/MessageClient.h>
+#include <abscommon/NetworkMessage.h>
+
+void MessageDispatcher::DispatchAdminMessage(const Net::MessageMsg& msg)
+{
+    sa::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    std::string message;
+    if (!stream.ReadString(message))
+        return;
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    auto* playerMngr = GetSubsystem<Game::PlayerManager>();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
+    AB::Packets::Server::ServerMessage packet = {
+        static_cast<uint8_t>(AB::GameProtocol::ServerMessageType::AdminMessage),
+        "Admin",
+        message
+    };
+    AB::Packets::Add(packet, *nmsg);
+    playerMngr->VisitPlayers([&nmsg](Game::Player& player)
+    {
+        player.WriteToOutput(*nmsg);
+        return Iteration::Continue;
+    });
+}
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -292,6 +317,9 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
     {
+    case Net::MessageType::AdminMessage:
+        DispatchAdminMessage(msg);
+        break;
     case Net::MessageType::GuildChat:
         DispatchGuildChat(msg);
         break;
