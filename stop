@@ -3,7 +3,7 @@
 killall abserv
 killall abmatch
 killall ablogin
-sleep 1
+killall absadmin
 killall abfile
 sleep 1
 killall abmsgs
