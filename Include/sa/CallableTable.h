@@ -23,7 +23,7 @@
 
 #include <unordered_map>
 #include <functional>
-#include <cassert>
+#include <sa/Assert.h>
 
 namespace sa {
 
@@ -49,7 +49,8 @@ public:
     {
         return callables_.find(index) != callables_.end();
     }
-    FunctionType& operator [](IndexType index) {
+    FunctionType& operator [](IndexType index)
+    {
         assert(Exists(index));
         return callables_[index];
     }
