@@ -32,6 +32,9 @@ namespace Game {
 void ItemDrop::RegisterLua(kaguya::State& state)
 {
     state["ItemDrop"].setClass(kaguya::UserdataMetatable<ItemDrop, GameObject>()
+       .addFunction("GetSource", &ItemDrop::_LuaGetSource)
+       .addFunction("GetTarget", &ItemDrop::_LuaGetTarget)
+       .addFunction("GetItem", &ItemDrop::_LuaGetItem)
     );
 }
 
@@ -62,6 +65,25 @@ ItemDrop::~ItemDrop()
         auto* factory = GetSubsystem<ItemFactory>();
         factory->DeleteConcrete(concreteUuid_);
     }
+}
+
+Actor* ItemDrop::_LuaGetSource()
+{
+    if (auto sharedSource = source_.lock())
+        return sharedSource.get();
+    return nullptr;
+}
+
+Actor* ItemDrop::_LuaGetTarget()
+{
+    if (actorId_ == 0)
+        return nullptr;
+    return GetGame()->GetObject<Actor>(actorId_);
+}
+
+Item* ItemDrop::_LuaGetItem()
+{
+    return const_cast<Item*>(GetItem());
 }
 
 uint32_t ItemDrop::GetItemIndex() const

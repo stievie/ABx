@@ -41,6 +41,9 @@ private:
     /// Dropper
     ea::weak_ptr<Actor> source_;
     void PickUp(Actor* actor);
+    Actor* _LuaGetSource();
+    Actor* _LuaGetTarget();
+    Item* _LuaGetItem();
 protected:
     void OnClicked(Actor* actor);
     void OnSelected(Actor* actor);
