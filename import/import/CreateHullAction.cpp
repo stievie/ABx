@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include "CreateHullAction.h"
 #include <absmath/Hull.h>
 PRAGMA_WARNING_PUSH

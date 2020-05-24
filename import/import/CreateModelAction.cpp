@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include "CreateModelAction.h"
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_GCC("-Wdeprecated-copy")

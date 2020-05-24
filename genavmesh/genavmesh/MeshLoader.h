@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include <string>
 
 PRAGMA_WARNING_PUSH
