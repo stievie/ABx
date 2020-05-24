@@ -42,6 +42,8 @@ enum class MessageType : uint8_t
     ClearCache,
     ReloadDropChances,
 
+    AdminMessage,
+
     GuildChat,
     TradeChat,
     Whipser,

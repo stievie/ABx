@@ -342,6 +342,7 @@ enum class ServerMessageType : uint8_t
 
     Instances,
     GMInfo,
+    AdminMessage,
 
     PlayerNotFound,
 

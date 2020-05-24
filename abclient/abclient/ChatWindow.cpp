@@ -385,6 +385,9 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageType::GMInfo:
         HandleServerMessageGMInfo(eventData);
         break;
+    case AB::GameProtocol::ServerMessageType::AdminMessage:
+        HandleServerMessageAdminMessage(eventData);
+        break;
     case AB::GameProtocol::ServerMessageType::PlayerNotFound:
         HandleServerMessagePlayerNotFound(eventData);
         break;
@@ -760,6 +763,14 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
 }
 
 void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
+{
+    using namespace Events::ServerMessage;
+    const String& sender = eventData[P_SENDER].GetString();
+    const String& message = eventData[P_DATA].GetString();
+    AddLine(sender, message, "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageAdminMessage(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();

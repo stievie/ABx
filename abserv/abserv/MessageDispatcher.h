@@ -28,6 +28,7 @@ class MessageMsg;
 class MessageDispatcher
 {
 private:
+    void DispatchAdminMessage(const Net::MessageMsg& msg);
     void DispatchGuildChat(const Net::MessageMsg& msg);
     void DispatchTradeChat(const Net::MessageMsg& msg);
     void DispatchWhipserChat(const Net::MessageMsg& msg);
