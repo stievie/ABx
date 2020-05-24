@@ -23,6 +23,4 @@
 #pragma once
 #endif
 
-#include "targetver.h"
-
 #include <stdio.h>
