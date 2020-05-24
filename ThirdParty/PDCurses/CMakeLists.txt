@@ -13,4 +13,8 @@ add_library(
     ${PDCURSES_SOURCES}
 )
 
+if (MSVC)
+    target_compile_options(PDCurses PRIVATE /wd4100 /wd4244 /wd4245 /wd4267 /wd4996)
+endif()
+
 target_include_directories(PDCurses PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -19,4 +19,8 @@ add_library(
     ${LESS_SOURCES}
 )
 
-target_include_directories(EASTL PUBLIC include/less)
+if (MSVC)
+    target_compile_options(less PRIVATE /wd4458 /wd4702 /wd4706)
+endif()
+
+target_include_directories(less PUBLIC include/less)
