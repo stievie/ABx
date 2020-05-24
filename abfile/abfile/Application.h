@@ -66,7 +66,7 @@ private:
     bool requireAuth_;
     std::shared_ptr<asio::io_service> ioService_;
     int64_t startTime_;
-    uint64_t bytesSent_;
+    size_t bytesSent_;
     uint32_t uptimeRound_;
     int64_t statusMeasureTime_;
     int64_t lastLoadCalc_;

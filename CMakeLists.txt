@@ -23,6 +23,7 @@ if(LUA_FOUND)
     set(LUA_VERSION_SHORT "${LUA_VERSION_MAJOR}.${LUA_VERSION_MINOR}")
 endif()
 
+if (UNIX)
 add_custom_target(run
     COMMAND ${CMAKE_SOURCE_DIR}/run
     USES_TERMINAL
@@ -33,6 +34,7 @@ add_custom_target(stop
     USES_TERMINAL
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+endif(UNIX)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)

@@ -22,10 +22,12 @@ add_executable(
 
 target_precompile_headers(fw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abclient/stdafx.h)
 
-target_link_libraries(fw libabclient abshared abcrypto tinyexpr lz4 Urho3D)
+target_link_libraries(fw libabclient abshared abcrypto tinyexpr Urho3D)
 
-if (UNIX)
-    target_link_libraries(fw pthread GL ssl crypto rt dl)
+if (WIN32)
+    target_link_libraries(fw libeay32 ssleay32)
+else()
+    target_link_libraries(fw pthread GL)
 endif()
 
 install(TARGETS fw
