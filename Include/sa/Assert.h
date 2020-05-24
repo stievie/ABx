@@ -33,12 +33,6 @@
 
 #ifdef NDEBUG
 
-#if defined(__GNUC__) || defined(__clang__)
-#   define SA_ASSERT_FUNCTION __PRETTY_FUNCTION__
-#elif defined(_MSC_VER)
-#   define SA_ASSERT_FUNCTION __FUNCTION__
-#endif
-
 namespace sa {
 namespace details {
 
@@ -54,7 +48,7 @@ namespace details {
 #if defined(assert)
 #undef assert
 #endif
-#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa::details::assertion_failed(#expr, __FILE__, __LINE__, SA_ASSERT_FUNCTION))
+#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa::details::assertion_failed(#expr, __FILE__, __LINE__, SA_FUNCTION_SIG))
 
 #endif  // NDEBUG
 

@@ -87,7 +87,7 @@ On Linux you could also use CMake. If you are in the root directory:
 ~~~sh
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make
 # Copy executables to ../Bin and ../abclient/bin
 $ cmake --install . --component runtime
@@ -96,7 +96,7 @@ Of if you prefer Ninja:
 ~~~sh
 $ mkdir build
 $ cd build
-$ cmake -G Ninja ..
+$ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
 $ ninja
 ~~~
 

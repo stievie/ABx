@@ -50,3 +50,16 @@
 #elif defined(_MSC_VER)
 #   define SA_ALWAYS_INLINE __forceinline
 #endif
+
+#if defined(__GNUC__) || defined(__clang__)
+#   define SA_FUNCTION __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+#   define SA_FUNCTION __FUNCTION__
+#endif
+
+// Function with signature
+#if defined(__GNUC__) || defined(__clang__)
+#   define SA_FUNCTION_SIG __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+#   define SA_FUNCTION_SIG __FUNCSIG__
+#endif

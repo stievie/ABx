@@ -29,14 +29,8 @@
 #include "Utils.h"
 #include <stdarg.h>
 #include "ConsoleColor.h"
+#include <sa/Compiler.h>
 
-#if !defined(AB_PRETTY_FUNCTION)
-#   if defined __GNUC__
-#       define AB_PRETTY_FUNCTION __PRETTY_FUNCTION__
-#   elif defined _MSC_VER
-#       define AB_PRETTY_FUNCTION __FUNCTION__
-#   endif
-#endif
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
 
@@ -143,11 +137,11 @@ public:
 
 #define LOG_PLAIN (IO::Logger::Instance())
 #define LOG_INFO (IO::Logger::Instance().Info())
-#define LOG_WARNING (IO::Logger::Instance().Warning(AB_PRETTY_FUNCTION))
-#define LOG_ERROR (IO::Logger::Instance().Error(AB_PRETTY_FUNCTION, __LINE__))
+#define LOG_WARNING (IO::Logger::Instance().Warning(SA_FUNCTION))
+#define LOG_ERROR (IO::Logger::Instance().Error(SA_FUNCTION, __LINE__))
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #elif !defined(LOG_PROFILE)
 #   define LOG_PROFILE
 #endif
-#define LOG_DEBUG (IO::Logger::Instance().Debug(AB_PRETTY_FUNCTION, __LINE__))
+#define LOG_DEBUG (IO::Logger::Instance().Debug(SA_FUNCTION, __LINE__))
