@@ -23,7 +23,7 @@
 #include "LessFileResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 #include <less/less/LessTokenizer.h>
 PRAGMA_WARNING_PUSH

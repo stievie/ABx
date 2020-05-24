@@ -23,7 +23,7 @@
 
 #if defined(SCENE_VIEWER)
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 extern "C" {
 #include <GL/glew.h>
 }

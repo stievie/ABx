@@ -21,7 +21,7 @@
 
 #include <iostream>
 #include <sa/ArgParser.h>
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include <AB/CommonConfig.h>
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4592)

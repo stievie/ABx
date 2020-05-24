@@ -26,7 +26,7 @@
 #include <string>
 #include <string.h>
 #include <algorithm>
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 class TinyExpr
 {

@@ -30,11 +30,12 @@
 #include "PartyManager.h"
 #include <AB/Entities/Game.h>
 #include <AB/Entities/GameInstance.h>
-#include <CleanupNs.h>
 #include <abscommon/NetworkMessage.h>
 #include <atomic>
+#include <CleanupNs.h>
 #include <eastl.hpp>
 #include <mutex>
+#include <sa/Compiler.h>
 #include <sa/Iteration.h>
 
 namespace Game {
@@ -252,10 +253,7 @@ public:
 
 // Shortcut function. No need to test and cast, because all objects are GameObjects
 template <>
-#if defined(__GNUC__)
-[[gnu::always_inline]]
-#endif
-inline GameObject* Game::GetObject<GameObject>(uint32_t id)
+SA_ALWAYS_INLINE GameObject* Game::GetObject<GameObject>(uint32_t id)
 {
     const auto it = objects_.find(id);
     if (it == objects_.end())

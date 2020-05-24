@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 PRAGMA_WARNING_PUSH
     PRAGMA_WARNING_DISABLE_MSVC(4310 4100)

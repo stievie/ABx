@@ -24,7 +24,7 @@
 #include "MathDefs.h"
 #include "MathUtils.h"
 #include "Matrix4.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 namespace Math {
 

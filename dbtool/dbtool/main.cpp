@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
 #   include <lua.hpp>

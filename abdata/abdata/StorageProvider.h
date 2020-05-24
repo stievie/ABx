@@ -24,7 +24,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <vector>
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include "CacheIndex.h"
 #include "NameIndex.h"
 #include <eastl.hpp>

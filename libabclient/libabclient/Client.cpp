@@ -24,7 +24,7 @@
 #include "ProtocolLogin.h"
 #include "ProtocolGame.h"
 #include "Connection.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include <iostream>
 #include <fstream>
 #include "Random.h"

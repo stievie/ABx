@@ -29,7 +29,7 @@
 #include <cctype>
 #include <sstream>
 #include <memory>
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 namespace sa {
 namespace arg_parser {

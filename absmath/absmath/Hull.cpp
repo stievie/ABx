@@ -34,7 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sa/Assert.h>
 #include <math.h>
 #include <float.h>
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 #include "Hull.h"
 

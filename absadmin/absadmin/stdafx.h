@@ -34,7 +34,7 @@
 #endif
 
 #include "targetver.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 #include <stdio.h>
 #include <stdint.h>

@@ -38,7 +38,7 @@ std::string GetDumpDir()
 
 #if defined(AB_WINDOWS)
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include "StringUtils.h"
 #include <cstdio>
 #include <io.h>

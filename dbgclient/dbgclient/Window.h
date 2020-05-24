@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 #include <string>
 #include <functional>
 #include <AB/CommonConfig.h>

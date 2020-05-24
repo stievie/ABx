@@ -67,7 +67,7 @@
 #if defined(__linux__)
 #include <linux/version.h>
 #endif
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 //#include <Urho3D/DebugNew.h>
 

@@ -27,14 +27,7 @@
 #include <cassert>
 #include <stdlib.h>
 #include <iostream>
-
-#if defined(__GNUC__)
-#   define SA_ASSERT_INLINE [[gnu::always_inline]] inline
-#elif defined(__clang__)
-#   define SA_ASSERT_INLINE inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-#   define SA_ASSERT_INLINE __forceinline
-#endif
+#include <sa/Compiler.h>
 
 #ifdef SA_ASSERT
 
@@ -49,7 +42,7 @@
 namespace sa {
 namespace details {
 
-[[noreturn]] SA_ASSERT_INLINE void assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
+[[noreturn]] SA_ALWAYS_INLINE void assertion_failed(const char* msg, const char* file, unsigned line, const char* func)
 {
     std::cerr << "Assertion failed: " << msg << " in " << file << ":" << line << " " << func << std::endl;
     abort();

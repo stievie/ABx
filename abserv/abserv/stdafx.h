@@ -24,7 +24,7 @@
 #endif
 
 #include "targetver.h"
-#include <sa/PragmaWarning.h>
+#include <sa/Compiler.h>
 
 PRAGMA_WARNING_DISABLE_MSVC(4307)
 
