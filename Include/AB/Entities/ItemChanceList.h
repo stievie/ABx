@@ -38,6 +38,14 @@ namespace Entities {
 
 static constexpr auto KEY_ITEMCHANCELIST = "game_item_chances_list";
 
+struct ItemChance
+{
+    std::string itemUuid;
+    // Chance in promille (0..1000)
+    uint32_t chance;
+    bool canDrop;
+};
+
 struct ItemChanceList : Entity
 {
     static constexpr const char* KEY()
@@ -48,14 +56,15 @@ struct ItemChanceList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(items, Limits::MAX_ITEMS, [&s](std::pair<std::string, float>& c)
+        s.container(items, Limits::MAX_ITEMS, [&s](ItemChance& c)
         {
-            s.text1b(c.first, Limits::MAX_UUID);
-            s.value4b(c.second);
+            s.text1b(c.itemUuid, Limits::MAX_UUID);
+            s.value4b(c.chance);
+            s.value1b(c.canDrop);
         });
     }
 
-    std::vector<std::pair<std::string, float>> items;
+    std::vector<ItemChance> items;
 };
 
 }

@@ -65,6 +65,7 @@ private:
     void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
     bool CreateDBItem(const AB::Entities::ConcreteItem& item);
     ea::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
+    void InternalLoadDropChances(const std::string mapUuid, bool force);
 public:
     ItemFactory();
     ~ItemFactory() = default;
@@ -83,6 +84,7 @@ public:
     void DeleteItem(Item* item);
     /// mapUuid is not a reference because it's called asynchronously
     void LoadDropChances(const std::string mapUuid);
+    void ReloadDropChances();
     /// Delete drop chances for this map
     void DeleteMap(const std::string& uuid);
     uint32_t CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,

@@ -40,6 +40,7 @@ enum class MessageType : uint8_t
     /// Tell a game server to spawn a new instance. Body contains UUID of the server which should spawn a new server.
     Spawn,
     ClearCache,
+    ReloadDropChances,
 
     GuildChat,
     TradeChat,
@@ -55,7 +56,7 @@ enum class MessageType : uint8_t
     TeamsEnterMatch,
     CreateGameInstance,
 
-    Last
+    __Count
 };
 
 /// Message server message
@@ -158,7 +159,7 @@ public:
             bodyLength_ = 0;
             return false;
         }
-        if (type_ > MessageType::Last)
+        if (type_ > MessageType::__Count)
         {
             type_ = MessageType::Unknown;
             return false;

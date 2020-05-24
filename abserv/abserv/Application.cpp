@@ -251,6 +251,16 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         }
         break;
     }
+    case Net::MessageType::ReloadDropChances:
+    {
+        std::string serverId = msg.GetBodyString();
+        if (Utils::Uuid::IsEqual(serverId, serverId_))
+        {
+            auto* factory = GetSubsystem<Game::ItemFactory>();
+            GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Game::ItemFactory::ReloadDropChances, factory);
+        }
+        break;
+    }
     case Net::MessageType::ServerJoined:
     case Net::MessageType::ServerLeft:
     {

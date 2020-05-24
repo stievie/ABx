@@ -51,12 +51,11 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
     query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        il.items.push_back(
-            std::make_pair<std::string, float>(
-                result->GetString("item_uuid"),
-                static_cast<float>(result->GetUInt("chance")) / 1000.0f
-            )
-        );
+        il.items.push_back({
+            result->GetString("item_uuid"),
+            result->GetUInt("chance"),
+            result->GetUInt("can_drop") == 1
+        });
     }
     return true;
 }

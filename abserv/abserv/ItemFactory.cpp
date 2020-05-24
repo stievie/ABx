@@ -460,12 +460,15 @@ void ItemFactory::DeleteItem(Item* item)
     DeleteConcrete(item->concreteItem_.uuid);
 }
 
-void ItemFactory::LoadDropChances(const std::string mapUuid)
+void ItemFactory::InternalLoadDropChances(const std::string mapUuid, bool force)
 {
-    auto it = dropChances_.find(mapUuid);
-    if (it != dropChances_.end())
-        // Already loaded
-        return;
+    if (!force)
+    {
+        auto it = dropChances_.find(mapUuid);
+        if (it != dropChances_.end())
+            // Already loaded
+            return;
+    }
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::ItemChanceList il;
@@ -478,11 +481,36 @@ void ItemFactory::LoadDropChances(const std::string mapUuid)
 
     std::unique_ptr<ItemSelector> selector = std::make_unique<ItemSelector>();
     for (const auto& i : il.items)
-        selector->Add(i.first, i.second);
+    {
+        if (i.canDrop)
+            selector->Add(i.itemUuid, static_cast<float>(i.chance) / 1000.0f);
+    }
     selector->Update();
 
     std::scoped_lock lock(lock_);
     dropChances_.emplace(mapUuid, std::move(selector));
+}
+
+void ItemFactory::LoadDropChances(const std::string mapUuid)
+{
+    InternalLoadDropChances(mapUuid, false);
+}
+
+void ItemFactory::ReloadDropChances()
+{
+    ea::vector<std::string> mapsToLoad;
+    mapsToLoad.reserve(dropChances_.size());
+    for (const auto& c : dropChances_)
+        mapsToLoad.push_back(c.first);
+
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    for (const auto& mapUuid : mapsToLoad)
+    {
+        AB::Entities::ItemChanceList il;
+        il.uuid = mapUuid;
+        client->Invalidate(il);
+        InternalLoadDropChances(mapUuid, true);
+    }
 }
 
 void ItemFactory::DeleteMap(const std::string& uuid)
