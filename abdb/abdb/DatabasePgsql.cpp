@@ -25,6 +25,7 @@
 
 #include "DatabasePgsql.h"
 #include <abscommon/Logger.h>
+#include <sa/Assert.h>
 
 namespace DB {
 
@@ -279,22 +280,30 @@ PgsqlResult::~PgsqlResult()
 
 int32_t PgsqlResult::GetInt(const std::string& col)
 {
-    return atoi(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())));
+    int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return atoi(PQgetvalue(handle_, cursor_, column));
 }
 
 uint32_t PgsqlResult::GetUInt(const std::string& col)
 {
-    return static_cast<uint32_t>(atoi(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()))));
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return static_cast<uint32_t>(atoi(PQgetvalue(handle_, cursor_, column)));
 }
 
 int64_t PgsqlResult::GetLong(const std::string& col)
 {
-    return atoll(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())));
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return atoll(PQgetvalue(handle_, cursor_, column));
 }
 
 uint64_t PgsqlResult::GetULong(const std::string& col)
 {
-    return strtoull(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())), nullptr, 0);
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return strtoull(PQgetvalue(handle_, cursor_, column), nullptr, 0);
 }
 
 time_t PgsqlResult::GetTime(const std::string& col)
@@ -304,19 +313,25 @@ time_t PgsqlResult::GetTime(const std::string& col)
 
 std::string PgsqlResult::GetString(const std::string& col)
 {
-    return std::string(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())));
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return std::string(PQgetvalue(handle_, cursor_, column));
 }
 
 std::string PgsqlResult::GetStream(const std::string& col)
 {
-    size_t size = PQgetlength(handle_, cursor_, PQfnumber(handle_, col.c_str()));
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    size_t size = PQgetlength(handle_, cursor_, column);
     char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
     return base64::decode(buf, size);
 }
 
 bool PgsqlResult::IsNull(const std::string& col)
 {
-    return PQgetisnull(handle_, cursor_, PQfnumber(handle_, col.c_str())) != 0;
+    const int column = PQfnumber(handle_, col.c_str());
+    assert(column >= 0);
+    return PQgetisnull(handle_, cursor_, column) != 0;
 }
 
 std::shared_ptr<DBResult> PgsqlResult::Next()
