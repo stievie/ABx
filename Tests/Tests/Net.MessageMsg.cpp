@@ -27,7 +27,7 @@
 TEST_CASE("MessageMsg Copy")
 {
     Net::MessageMsg msg1;
-    msg1.type_ = Net::MessageType::Last;
+    msg1.type_ = Net::MessageType::__Count;
     sa::PropWriteStream stream;
     stream.WriteString("Stuff");
     stream.Write<unsigned>(10);
@@ -51,7 +51,7 @@ TEST_CASE("MessageMsg Copy")
 TEST_CASE("MessageMsg PropStream")
 {
     Net::MessageMsg msg1;
-    msg1.type_ = Net::MessageType::Last;
+    msg1.type_ = Net::MessageType::__Count;
     sa::PropWriteStream stream;
     stream.WriteString("Stuff");
     stream.Write<unsigned>(10);
