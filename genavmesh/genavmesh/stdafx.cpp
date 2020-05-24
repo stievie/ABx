@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <sa/Compiler.h>
 
 PRAGMA_WARNING_PUSH

@@ -1,7 +1,3 @@
-// genavmesh.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
-//
-
-#include "stdafx.h"
 #include <iostream>
 #include "InputGeom.h"
 #include "BuildContext.h"
