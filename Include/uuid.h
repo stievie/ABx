@@ -11,7 +11,7 @@
 #include <memory>
 #include <functional>
 #include <type_traits>
-#include <assert.h>
+#include <sa/Assert.h>
 
 #ifdef _WIN32
 #include <objbase.h>
@@ -343,8 +343,7 @@ struct uuid
 
         self_type & operator++ ()
         {
-            if (index >= uuid::state_size)
-                throw std::out_of_range("Iterator cannot be incremented past the end of the data.");
+            assert(index < uuid::state_size);
             ++index;
             return *this;
         }
@@ -369,15 +368,13 @@ struct uuid
 
         reference operator* () const
         {
-            if (ptr == nullptr)
-                throw std::bad_function_call();
+            assert(ptr != nullptr);
             return *(ptr + index);
         }
 
         reference operator-> () const
         {
-            if (ptr == nullptr)
-                throw std::bad_function_call();
+            assert(ptr != nullptr);
             return *(ptr + index);
         }
 
@@ -385,8 +382,7 @@ struct uuid
 
         self_type & operator--()
         {
-            if (index <= 0)
-                throw std::out_of_range("Iterator cannot be decremented past the beginning of the data.");
+            assert(index > 0);
             --index;
             return *this;
         }
@@ -439,9 +435,8 @@ struct uuid
 
         self_type & operator+=(difference_type const offset)
         {
-            if (static_cast<difference_type>(index) + offset < 0 ||
-                static_cast<difference_type>(index) + offset > 16)
-                throw std::out_of_range("Iterator cannot be incremented outside data bounds.");
+            assert(static_cast<difference_type>(index) + offset >= 0 &&
+                static_cast<difference_type>(index) + offset <= 16);
 
             index += offset;
             return *this;
@@ -488,8 +483,7 @@ struct uuid
 
         self_type & operator++ ()
         {
-            if (index >= uuid::state_size)
-                throw std::out_of_range("Iterator cannot be incremented past the end of the data.");
+            assert(index < uuid::state_size);
             ++index;
             return *this;
         }
@@ -514,15 +508,13 @@ struct uuid
 
         reference operator* () const
         {
-            if (ptr == nullptr)
-                throw std::bad_function_call();
+            assert(ptr != nullptr);
             return *(ptr + index);
         }
 
         reference operator-> () const
         {
-            if (ptr == nullptr)
-                throw std::bad_function_call();
+            assert(ptr != nullptr);
             return *(ptr + index);
         }
 
@@ -530,8 +522,7 @@ struct uuid
 
         self_type & operator--()
         {
-            if (index <= 0)
-                throw std::out_of_range("Iterator cannot be decremented past the beginning of the data.");
+            assert(index > 0);
             --index;
             return *this;
         }
@@ -584,9 +575,8 @@ struct uuid
 
         self_type & operator+=(difference_type const offset)
         {
-            if (static_cast<difference_type>(index) + offset < 0 ||
-                static_cast<difference_type>(index) + offset > 16)
-                throw std::out_of_range("Iterator cannot be incremented outside data bounds.");
+            assert(static_cast<difference_type>(index) + offset >= 0 &&
+                static_cast<difference_type>(index) + offset <= 16);
 
             index += offset;
             return *this;

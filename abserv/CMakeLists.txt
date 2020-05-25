@@ -1,9 +1,5 @@
 project (abserv CXX)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    add_compile_options(-Wno-maybe-uninitialized)
-endif()
-
 file(GLOB ABSERV_SOURCES
     abserv/*.cpp abserv/*.h
     abserv/actions/*.cpp abserv/actions/*.h
@@ -16,6 +12,9 @@ add_executable(
     ${ABSERV_SOURCES}
 )
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(abserv PRIVATE -Wno-maybe-uninitialized)
+endif()
 target_precompile_headers(abserv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abserv/stdafx.h)
 
 if (ABX_SCENE_VIEWER)

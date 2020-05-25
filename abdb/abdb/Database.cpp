@@ -94,7 +94,7 @@ std::shared_ptr<DBResult> Database::VerifyResult(std::shared_ptr<DBResult> resul
 
 void Database::FreeResult(DBResult*)
 {
-    throw std::runtime_error("No database driver loaded, yet a DBResult was freed.");
+    LOG_ERROR << "No database driver loaded, yet a DBResult was freed.";
 }
 
 DBResult::~DBResult() = default;

@@ -7,8 +7,14 @@ add_library(
     ${ABDB_SOURCES}
 )
 
+if (CMAKE_C_COMPILER_ID MATCHES "GNU")
+    target_compile_options(abdb PRIVATE -fno-exceptions -fno-rtti)
+elseif(MSVC)
+    target_compile_options(abdb PRIVATE /GR-)
+endif()
+
 if (ABX_PGSQL)
-    # postgresql-server-dev-all
+    # On Ubuntu also postgresql-server-dev-all must be installed
     include(FindPostgreSQL)
     if (PostgreSQL_FOUND)
         target_include_directories(abdb PRIVATE ${PostgreSQL_INCLUDE_DIRS})
