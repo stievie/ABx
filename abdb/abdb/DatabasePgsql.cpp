@@ -241,11 +241,12 @@ std::shared_ptr<DBResult> DatabasePgsql::InternalSelectQuery(const std::string& 
 
 std::string DatabasePgsql::Parse(const std::string& s)
 {
-    std::string query = "";
+    std::string query;
+    query.reserve(s.length());
 
     bool inString = false;
     uint8_t ch;
-    for (size_t a = 0; a < s.length(); a++)
+    for (size_t a = 0; a < s.length(); ++a)
     {
         ch = s[a];
 
@@ -282,28 +283,28 @@ int32_t PgsqlResult::GetInt(const std::string& col)
 {
     int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
-    return atoi(PQgetvalue(handle_, cursor_, column));
+    return strtol(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 uint32_t PgsqlResult::GetUInt(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
-    return static_cast<uint32_t>(atoi(PQgetvalue(handle_, cursor_, column)));
+    return strtoul(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 int64_t PgsqlResult::GetLong(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
-    return atoll(PQgetvalue(handle_, cursor_, column));
+    return strtoll(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 uint64_t PgsqlResult::GetULong(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
-    return strtoull(PQgetvalue(handle_, cursor_, column), nullptr, 0);
+    return strtoull(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 time_t PgsqlResult::GetTime(const std::string& col)
@@ -315,7 +316,8 @@ std::string PgsqlResult::GetString(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
-    return std::string(PQgetvalue(handle_, cursor_, column));
+    size_t size = PQgetlength(handle_, cursor_, column);
+    return std::string(PQgetvalue(handle_, cursor_, column), size);
 }
 
 std::string PgsqlResult::GetStream(const std::string& col)
@@ -323,7 +325,7 @@ std::string PgsqlResult::GetStream(const std::string& col)
     const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
     size_t size = PQgetlength(handle_, cursor_, column);
-    char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
+    char* buf = PQgetvalue(handle_, cursor_, column);
     return base64::decode(buf, size);
 }
 
