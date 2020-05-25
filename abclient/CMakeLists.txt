@@ -20,6 +20,7 @@ add_executable(
     ${FW_SOURCES}
 )
 
+set_property(TARGET fw PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 target_precompile_headers(fw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abclient/stdafx.h)
 
 target_link_libraries(fw libabclient abshared abcrypto tinyexpr Urho3D)

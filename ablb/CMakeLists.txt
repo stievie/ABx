@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(ablb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ablb/stdafx.h)
+set_property(TARGET ablb PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(ablb abscommon)
 if (UNIX)

@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(abfile PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abfile/stdafx.h)
+set_property(TARGET abfile PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abfile abscommon abcrypto PugiXml)
 if (WIN32)

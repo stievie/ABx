@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(ablogin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/ablogin/stdafx.h)
+set_property(TARGET ablogin PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 # We need some header files from abshared
 target_link_libraries(ablogin abscommon abshared)

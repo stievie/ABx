@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(absadmin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/absadmin/stdafx.h)
+set_property(TARGET absadmin PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(absadmin abscommon less PugiXml)
 if (WIN32)

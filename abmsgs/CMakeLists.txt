@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(abmsgs PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abmsgs/stdafx.h)
+set_property(TARGET abmsgs PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abmsgs abscommon EASTL)
 if (UNIX)

@@ -15,6 +15,10 @@ add_library(
     ${ABSMATH_SOURCES}
 )
 
+if (CMAKE_C_COMPILER_ID MATCHES "GNU")
+    target_compile_options(absmath PRIVATE -fno-exceptions)
+endif()
+
 target_precompile_headers(absmath PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/absmath/stdafx.h)
 
 target_link_libraries(absmath EASTL)

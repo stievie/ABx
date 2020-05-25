@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(abmatch PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abmatch/stdafx.h)
+set_property(TARGET abmatch PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abmatch abscommon EASTL)
 if (UNIX)

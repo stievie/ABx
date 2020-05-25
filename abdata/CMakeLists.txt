@@ -8,6 +8,7 @@ add_executable(
 )
 
 target_precompile_headers(abdata PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abdata/stdafx.h)
+set_property(TARGET abdata PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abdata abdb abscommon EASTL)
 if (UNIX)
