@@ -3,6 +3,7 @@ BasedOnStyle: Mozilla
 IndentWidth: '4'
 ---
 Language: Cpp
+AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveDeclarations: 'false'
 AlignEscapedNewlines: Left
@@ -19,7 +20,22 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: 'false'
 BinPackParameters: 'false'
-BreakBeforeBraces: Allman
+BraceWrapping:
+  AfterClass:       true
+  AfterControlStatement: true
+  AfterEnum:        true
+  AfterFunction:    true
+  AfterNamespace:   false
+  AfterObjCDeclaration: true
+  AfterStruct:      true
+  AfterUnion:       true
+  BeforeCatch:      true
+  BeforeElse:       true
+# clang-format 11
+#  BeforeLambdaBody: true
+  IndentBraces:     false
+BreakBeforeBraces: Custom
+#BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: 'false'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 BreakConstructorInitializers: AfterColon
@@ -27,14 +43,17 @@ ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: 4
 ColumnLimit: '0'
 Cpp11BracedListStyle: 'false'
+CompactNamespaces: true
 IndentCaseLabels: 'false'
+IncludeBlocks: Preserve
 NamespaceIndentation: None
 PointerAlignment: Left
 SortIncludes: 'false'
 SortUsingDeclarations: 'false'
 SpaceAfterCStyleCast: 'false'
-SpaceAfterTemplateKeyword: 'true'
+SpaceAfterTemplateKeyword: 'false'
 SpaceBeforeParens: ControlStatements
+SpaceBeforeCpp11BracedList: 'false'
 SpacesInParentheses: 'false'
 SpacesInSquareBrackets: 'false'
 TabWidth: '4'
