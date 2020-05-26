@@ -30,6 +30,7 @@
 #include <abscommon/DataCodes.h>
 #include <asio.hpp>
 #include <eastl.hpp>
+#include <mutex>
 
 class ConnectionManager;
 
@@ -84,6 +85,7 @@ private:
     ConnectionManager& connectionManager_;
     StorageProvider& storageProvider_;
     IO::OpCodes opcode_;
+    std::mutex lock_;
 
     IO::DataKey key_;
     ea::shared_ptr<StorageData> data_;

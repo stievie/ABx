@@ -259,13 +259,19 @@ void Connection::Stop()
 void Connection::HandleUpdateReadRawData(const asio::error_code& error,
     size_t bytes_transferred, size_t expected)
 {
+    // Network/main thread
     if (!error)
     {
         if (bytes_transferred != expected)
             SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
-            if (storageProvider_.Update(key_, data_))
+            bool res = false;
+            {
+                std::scoped_lock lock(lock_);
+                res = storageProvider_.Update(key_, data_);
+            }
+            if (res)
                 SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
                 SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
@@ -281,13 +287,19 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
 void Connection::HandleCreateReadRawData(const asio::error_code& error,
     size_t bytes_transferred, size_t expected)
 {
+    // Network/main thread
     if (!error)
     {
         if (bytes_transferred != expected)
             SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
-            if (storageProvider_.Create(key_, data_))
+            bool res = false;
+            {
+                std::scoped_lock lock(lock_);
+                res = storageProvider_.Create(key_, data_);
+            }
+            if (res)
                 SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
                 SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
@@ -302,6 +314,7 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
 
 void Connection::HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
 {
+    // Network/main thread
     if (error)
     {
         LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
@@ -319,7 +332,13 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
         return;
     }
 
-    if (!storageProvider_.Read(key_, data_))
+    bool res = false;
+    {
+        std::scoped_lock lock(lock_);
+        res = storageProvider_.Read(key_, data_);
+    }
+
+    if (!res)
     {
         SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
         return;
@@ -353,13 +372,19 @@ void Connection::HandleWriteReqResponse(const asio::error_code& error)
 
 void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
 {
+    // Network/main thread
     if (!error)
     {
         if (bytes_transferred != expected)
             SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
-            if (storageProvider_.Exists(key_, data_))
+            bool res = false;
+            {
+                std::scoped_lock lock(lock_);
+                res = storageProvider_.Exists(key_, data_);
+            }
+            if (res)
                 SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
                 SendStatusAndRestart(IO::ErrorCodes::NotExists, "Record does not exist");
