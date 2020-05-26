@@ -4,7 +4,7 @@ If you want to contribute to this project, please fork the repository and
 submit pull requests.
 
 If you have questions, you can reach me via Email with the Email address shown in
-my profile. You can also join the `#abxgameserver` IRC channel on the Freenode 
+my profile. You can also join the `#abxgameserver` IRC channel on the Freenode
 network.
 
 ## Rules
@@ -15,7 +15,8 @@ fails when a test fails.
 * You are encouraged to use new C++ features. Partly this project is also a playground
 to explore modern C++.
 * The code should be readable and it should be obvious what it does.
-* Please stick to the coding style.
+* Please stick to the coding style. There is a `.clang-format` file in the root directory,
+ou could just run it with `clang-format -style=.clang-format [<file> ...]`.
 
 ## Windows
 
