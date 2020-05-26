@@ -306,7 +306,7 @@ bool Application::LoadMain()
 #if defined(WIN_SERVICE)
         configFile_ = Utils::ConcatPath(path_, "abserv_svc.lua");
 #else
-        configFile_ = Utils::ConcatPath(path_, + CONFIG_FILE);
+        configFile_ = Utils::ConcatPath(path_, CONFIG_FILE);
 #endif
     }
 

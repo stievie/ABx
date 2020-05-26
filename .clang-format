@@ -10,6 +10,7 @@ AlignEscapedNewlines: Left
 AlignOperands: 'false'
 AlignTrailingComments: 'true'
 AllowAllArgumentsOnNextLine: 'true'
+AllowAllConstructorInitializersOnNextLine: false
 AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: InlineOnly
@@ -21,6 +22,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: 'false'
 BinPackParameters: 'false'
 BraceWrapping:
+  AfterCaseLabel:   true
   AfterClass:       true
   AfterControlStatement: true
   AfterEnum:        true
@@ -37,11 +39,13 @@ BraceWrapping:
 BreakBeforeBraces: Custom
 #BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: 'false'
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: 4
-ColumnLimit: '0'
+ColumnLimit: '100'
 Cpp11BracedListStyle: 'false'
 CompactNamespaces: true
 IndentCaseLabels: 'false'
