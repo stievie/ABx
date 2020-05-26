@@ -33,6 +33,8 @@
 #include <httplib.h>
 #include <sa/ScopeGuard.h>
 
+#define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
+
 namespace Client {
 
 Client::Client(Receiver& receiver) :
@@ -177,6 +179,7 @@ void Client::OnProtocolError(AB::ErrorCodes err)
 void Client::OnPong(int lastPing)
 {
     gotPong_ = true;
+    lastPongTick_ = AbTick();
     pings_.Enqueue(lastPing);
 }
 
@@ -331,6 +334,12 @@ void Client::Update(int timeElapsed)
                 protoGame_->Ping();
             }
             lastPing_ = 0;
+        }
+        if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < AbTick()))
+        {
+            protoGame_->Disconnect();
+            OnNetworkError(ConnectionError::Disconnect, {});
+            return;
         }
     }
 

@@ -33,6 +33,7 @@ enum class ConnectionError
     ConnectTimeout,
     ReadTimeout,
     WriteTimeout,
+    Disconnect,
 };
 
 }
