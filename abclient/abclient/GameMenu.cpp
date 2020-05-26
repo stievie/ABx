@@ -38,6 +38,7 @@ GameMenu::GameMenu(Context* context) :
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     CreateMenuBar();
     SubscribeToEvent(Events::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));
+    SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(GameMenu, HandleLevelReady));
     SetAlignment(HA_LEFT, VA_TOP);
 }
 
@@ -187,7 +188,6 @@ void GameMenu::HandleServerUsed(StringHash, VariantMap& eventData)
     if (!id.Empty() && id.Compare(client->GetCurrentServerId()) != 0)
     {
         client->ChangeServer(id);
-        UpdateServers();
     }
 }
 
@@ -262,6 +262,11 @@ void GameMenu::HandleMissionMapUsed(StringHash, VariantMap&)
 }
 
 void GameMenu::HandleGotServices(StringHash, VariantMap&)
+{
+    UpdateServers();
+}
+
+void GameMenu::HandleLevelReady(StringHash, VariantMap&)
 {
     UpdateServers();
 }
