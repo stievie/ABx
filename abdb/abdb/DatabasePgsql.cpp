@@ -163,7 +163,7 @@ std::string DatabasePgsql::EscapeString(const std::string& s)
     size_t len = PQescapeStringConn(handle_, output, s.c_str(), s.length(), &error);
     if (error != 0)
     {
-        LOG_ERROR << "PQescapeStringConn(): error" << std::endl;
+        LOG_ERROR << "PQescapeStringConn(): error " << error << std::endl;
     }
     return "'" + std::string(output, len) + "'";
 }
@@ -228,7 +228,10 @@ TryAgain:
         if (CheckConnection())
         {
             if (numTries < 3)
+            {
+                LOG_INFO << "Reconnected to database, trying again" << std::endl;
                 goto TryAgain;
+            }
         }
         return false;
     }
@@ -261,7 +264,10 @@ TryAgain:
         if (CheckConnection())
         {
             if (numTries < 3)
+            {
+                LOG_INFO << "Reconnected to database, trying again" << std::endl;
                 goto TryAgain;
+            }
         }
 
         return std::shared_ptr<DBResult>();
@@ -314,7 +320,7 @@ PgsqlResult::~PgsqlResult()
 
 int32_t PgsqlResult::GetInt(const std::string& col)
 {
-    int column = PQfnumber(handle_, col.c_str());
+    const int column = PQfnumber(handle_, col.c_str());
     assert(column >= 0);
     return strtol(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
