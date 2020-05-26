@@ -174,21 +174,22 @@ void DatabasePgsql::FreeResult(DBResult* res)
     delete (PgsqlResult*)res;
 }
 
-void DatabasePgsql::CheckConnection()
+bool DatabasePgsql::CheckConnection()
 {
     if (dns_.empty())
-        return;
+        return false;
 
     PGresult* res = PQexec(handle_, "SELECT 1");
     ExecStatusType stat = PQresultStatus(res);
     if (stat == PGRES_COMMAND_OK || stat == PGRES_TUPLES_OK)
         // OK
-        return;
+        return true;
 
     connected_ = false;
     PGPing ping = PQping(dns_.c_str());
     if (ping == PQPING_OK)
-        Connect();
+        return Connect();
+    return false;
 }
 
 bool DatabasePgsql::InternalQuery(const std::string& query)
@@ -200,6 +201,10 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
     LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
 #endif
 
+    int numTries = 0;
+TryAgain:
+
+    ++numTries;
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
 
@@ -207,6 +212,12 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
     {
         LOG_ERROR << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
         PQclear(res);
+
+        if (CheckConnection())
+        {
+            if (numTries < 3)
+                goto TryAgain;
+        }
         return false;
     }
 
@@ -223,6 +234,10 @@ std::shared_ptr<DBResult> DatabasePgsql::InternalSelectQuery(const std::string& 
     LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
 #endif
 
+    int numTries = 0;
+TryAgain:
+
+    ++numTries;
     // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
@@ -231,6 +246,12 @@ std::shared_ptr<DBResult> DatabasePgsql::InternalSelectQuery(const std::string& 
     {
         LOG_ERROR << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
         PQclear(res);
+        if (CheckConnection())
+        {
+            if (numTries < 3)
+                goto TryAgain;
+        }
+
         return std::shared_ptr<DBResult>();
     }
 

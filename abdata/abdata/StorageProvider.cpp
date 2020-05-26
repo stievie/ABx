@@ -515,7 +515,6 @@ void StorageProvider::FlushCache()
     AB_PROFILE;
     int written = 0;
     auto i = cache_.begin();
-    auto* tp = GetSubsystem<Asynch::ThreadPool>();
     while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         // Don't return deleted, these are flushed in CleanCache()
@@ -525,13 +524,8 @@ void StorageProvider::FlushCache()
     {
         ++written;
         const IO::DataKey& key = (*i).first;
-        auto res = tp->EnqueueWithResult(&StorageProvider::FlushData, this, key);
-        bool bRes = false;
-        {
-            std::scoped_lock lock(lock_);
-            bRes = res.get();
-        }
-        if (!bRes)
+        bool res = FlushData(key);
+        if (!res)
         {
             LOG_WARNING << "Error flushing " << key.format() << std::endl;
             // Error, break for now and try  the next time.

@@ -22,6 +22,7 @@
 
 #include "PlayerManager.h"
 #include "Player.h"
+#include <abscommon/Logger.h>
 #include <abscommon/StringUtils.h>
 
 namespace Game {
@@ -117,6 +118,7 @@ void PlayerManager::CleanPlayers()
     })) != players_.end())
     {
         ea::shared_ptr<Player> p = (*i).second;
+        LOG_INFO << "No ping from player " << p->GetName() << " for " << p->GetInactiveTime() << "ms, logging out now" << std::endl;
         ++i;
         // Calls PlayerManager::RemovePlayer()
         p->PartyLeave();

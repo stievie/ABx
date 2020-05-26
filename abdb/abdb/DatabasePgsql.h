@@ -50,7 +50,7 @@ public:
     std::string EscapeString(const std::string& s) override;
     std::string EscapeBlob(const char* s, size_t length) override;
     void FreeResult(DBResult* res) override;
-    void CheckConnection() override;
+    bool CheckConnection() override;
 };
 
 class PgsqlResult final : public DBResult
