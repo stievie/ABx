@@ -31,6 +31,7 @@ namespace Game {
 
 void AreaOfEffect::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["AreaOfEffect"].setClass(kaguya::UserdataMetatable<AreaOfEffect, GameObject>()
         .addFunction("SetRange", &AreaOfEffect::SetRange)
         .addFunction("GetRange", &AreaOfEffect::GetRange)
@@ -46,6 +47,7 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
 
         .addFunction("Index", &AreaOfEffect::GetIndex)
     );
+    // clang-format on
 }
 
 AreaOfEffect::AreaOfEffect() :

@@ -35,6 +35,7 @@ namespace Game {
 
 void Party::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Party"].setClass(kaguya::UserdataMetatable<Party, Group>()
         .addFunction("ChangeInstance", &Party::ChangeInstance)
         .addFunction("Defeat", &Party::Defeat)
@@ -46,6 +47,7 @@ void Party::RegisterLua(kaguya::State& state)
         .addFunction("GetVarNumber", &Party::_LuaGetVarNumber)
         .addFunction("SetVarNumber", &Party::_LuaSetVarNumber)
     );
+    // clang-format on
 }
 
 Party::Party() :

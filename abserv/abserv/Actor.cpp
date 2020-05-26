@@ -53,6 +53,7 @@ static constexpr Math::Vector3 CREATURTE_BB_MAX { 0.1f, 1.7f, 0.1f };
 
 void Actor::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Actor"].setClass(kaguya::UserdataMetatable<Actor, GameObject>()
         .addFunction("GetLevel", &Actor::GetLevel)
         .addFunction("GetSkillBar", &Actor::GetSkillBar)
@@ -135,6 +136,7 @@ void Actor::RegisterLua(kaguya::State& state)
 
         .addFunction("GetAttributeRank", &Actor::GetAttributeRank)
     );
+    // clang-format on
 }
 
 Actor::Actor() :

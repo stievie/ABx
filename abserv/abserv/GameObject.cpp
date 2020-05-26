@@ -36,6 +36,7 @@ sa::IdGenerator<uint32_t> GameObject::objectIds_;
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
         .addFunction("GetId",            &GameObject::GetId)
         .addFunction("GetGame",          &GameObject::_LuaGetGame)
@@ -84,6 +85,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("Remove",           &GameObject::Remove)
         .addFunction("RemoveIn",         &GameObject::RemoveIn)
     );
+    // clang-format on
 }
 
 GameObject::GameObject() :

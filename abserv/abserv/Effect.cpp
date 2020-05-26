@@ -32,6 +32,7 @@ namespace Game {
 
 void Effect::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Effect"].setClass(kaguya::UserdataMetatable<Effect>()
         .addFunction("GetStartTime", &Effect::GetStartTime)
         .addFunction("GetEndTime", &Effect::GetEndTime)
@@ -40,6 +41,7 @@ void Effect::RegisterLua(kaguya::State& state)
         .addFunction("GetTarget", &Effect::_LuaGetTarget)
         .addFunction("Index", &Effect::GetIndex)
     );
+    // clang-format on
 }
 
 void Effect::InitializeLua()

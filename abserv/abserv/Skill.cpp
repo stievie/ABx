@@ -31,6 +31,7 @@ namespace Game {
 
 void Skill::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Skill"].setClass(kaguya::UserdataMetatable<Skill>()
         .addFunction("GetName",      &Skill::_LuaGetName)
         .addFunction("Disable",      &Skill::Disable)
@@ -50,6 +51,7 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("IsType",       &Skill::IsType)
         .addFunction("Index",        &Skill::GetIndex)   // Hm, GetIndex name throws an exception...
     );
+    // clang-format on
 }
 
 void Skill::InitializeLua()

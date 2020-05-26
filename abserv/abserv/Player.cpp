@@ -59,6 +59,7 @@ namespace Game {
 
 void Player::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
         .addFunction("GetParty", &Player::_LuaGetParty)
         .addFunction("ChangeMap", &Player::ChangeMap)
@@ -67,6 +68,7 @@ void Player::RegisterLua(kaguya::State& state)
         .addFunction("GetQuestReward", &Player::GetQuestReward)
         .addFunction("SatisfyQuestRequirements", &Player::SatisfyQuestRequirements)
     );
+    // clang-format on
 }
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :

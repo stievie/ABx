@@ -34,6 +34,7 @@ namespace Game {
 
 void Quest::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Quest"].setClass(kaguya::UserdataMetatable<Quest>()
         .addFunction("GetOwner", &Quest::_LuaGetOwner)
         .addFunction("IsCompleted", &Quest::IsCompleted)
@@ -43,6 +44,7 @@ void Quest::RegisterLua(kaguya::State& state)
         .addFunction("GetVarNumber", &Quest::_LuaGetVarNumber)
         .addFunction("SetVarNumber", &Quest::_LuaSetVarNumber)
     );
+    // clang-format on
 }
 
 Quest::Quest(Player& owner,

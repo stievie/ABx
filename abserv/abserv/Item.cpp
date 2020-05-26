@@ -33,6 +33,7 @@ namespace Game {
 
 void Item::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Item"].setClass(kaguya::UserdataMetatable<Item>()
         .addFunction("GetWeaponRange", &Item::GetWeaponRange)
         .addFunction("GetWeaponAttackSpeed", &Item::GetWeaponAttackSpeed)
@@ -41,6 +42,7 @@ void Item::RegisterLua(kaguya::State& state)
         .addFunction("GetType", &Item::GetType)
         .addFunction("IsStackable", &Item::IsStackable)
     );
+    // clang-format on
 }
 
 void Item::InitializeLua()

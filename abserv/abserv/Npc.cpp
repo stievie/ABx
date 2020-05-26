@@ -44,6 +44,7 @@ void Npc::InitializeLua()
 
 void Npc::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
         .addFunction("IsServerOnly", &Npc::IsServerOnly)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
@@ -60,6 +61,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("AddWanderPoints", &Npc::_LuaAddWanderPoints)
         .addFunction("AddQuest", &Npc::_LuaAddQuest)
     );
+    // clang-format on
 }
 
 Npc::Npc() :

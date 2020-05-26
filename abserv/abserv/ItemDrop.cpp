@@ -31,11 +31,13 @@ namespace Game {
 
 void ItemDrop::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["ItemDrop"].setClass(kaguya::UserdataMetatable<ItemDrop, GameObject>()
        .addFunction("GetSource", &ItemDrop::_LuaGetSource)
        .addFunction("GetTarget", &ItemDrop::_LuaGetTarget)
        .addFunction("GetItem", &ItemDrop::_LuaGetItem)
     );
+    // clang-format on
 }
 
 ItemDrop::ItemDrop(uint32_t itemId) :

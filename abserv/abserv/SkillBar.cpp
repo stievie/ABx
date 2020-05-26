@@ -33,6 +33,7 @@ namespace Game {
 
 void SkillBar::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["SkillBar"].setClass(kaguya::UserdataMetatable<SkillBar>()
         .addFunction("GetSkill", &SkillBar::_LuaGetSkill)
         .addFunction("SetSkill", &SkillBar::_LuaSetSkill)
@@ -48,6 +49,7 @@ void SkillBar::RegisterLua(kaguya::State& state)
         .addFunction("GetAttributeRank", &SkillBar::GetAttributeRank)
         .addFunction("Load", &SkillBar::Load)
     );
+    // clang-format on
 }
 
 Skill* SkillBar::_LuaGetSkill(int pos)

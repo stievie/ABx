@@ -30,12 +30,14 @@ namespace Game {
 
 void Projectile::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Projectile"].setClass(kaguya::UserdataMetatable<Projectile, Actor>()
         .addFunction("GetSource", &Projectile::_LuaGetSource)
         .addFunction("GetTarget", &Projectile::_LuaGetTarget)
         .addFunction("GetLifeTime", &Projectile::GetLifeTime)
         .addFunction("SetLifeTime", &Projectile::SetLifeTime)
         );
+    // clang-format on
 }
 
 Projectile::Projectile(const std::string& itemUuid) :

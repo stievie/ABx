@@ -27,8 +27,10 @@ namespace Game {
 
 void Crowd::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Crowd"].setClass(kaguya::UserdataMetatable<Crowd, Group>()
     );
+    // clang-format on
 }
 
 Crowd::Crowd() :

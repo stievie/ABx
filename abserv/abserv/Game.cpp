@@ -144,6 +144,7 @@ void Game::BroadcastPlayerChanged(const Player& player, uint32_t fields)
 
 void Game::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
         .addFunction("GetName", &Game::GetName)
         .addFunction("GetType", &Game::_LuaGetType)
@@ -165,6 +166,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("AddProjectile", &Game::_LuaAddProjectile)
         .addFunction("AddRandomItemDrop", &Game::_LuaAddItemDrop)
     );
+    // clang-format on
 }
 
 void Game::InitializeLua()

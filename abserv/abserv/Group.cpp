@@ -30,6 +30,7 @@ sa::IdGenerator<uint32_t> Group::groupIds_;
 
 void Group::RegisterLua(kaguya::State& state)
 {
+    // clang-format off
     state["Group"].setClass(kaguya::UserdataMetatable<Group>()
         .addFunction("GetId", &Group::GetId)
         .addFunction("GetLeader", &Group::GetLeader)
@@ -52,6 +53,7 @@ void Group::RegisterLua(kaguya::State& state)
         .addFunction("GetRandomMember", &Group::GetRandomMember)
         .addFunction("GetRandomMemberInRange", &Group::GetRandomMemberInRange)
     );
+    // clang-format on
 }
 
 Group::Group(uint32_t id) :
