@@ -359,17 +359,6 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
     SendResponseAndStart(bufs, data_->size() + 4);
 }
 
-void Connection::HandleWriteReqResponse(const asio::error_code& error)
-{
-    if (!error)
-        Start();
-    else
-    {
-        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
-        connectionManager_.Stop(shared_from_this());
-    }
-}
-
 void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
 {
     // Network/main thread
@@ -390,6 +379,17 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
                 SendStatusAndRestart(IO::ErrorCodes::NotExists, "Record does not exist");
         }
     }
+    else
+    {
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
+        connectionManager_.Stop(shared_from_this());
+    }
+}
+
+void Connection::HandleWriteReqResponse(const asio::error_code& error)
+{
+    if (!error)
+        Start();
     else
     {
         LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;

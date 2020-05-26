@@ -63,8 +63,9 @@ private:
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
-    void HandleWriteReqResponse(const asio::error_code& error);
     void HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
+    void HandleWriteReqResponse(const asio::error_code& error);
+
     void StartClientRequestedOp();
     void StartReadKey(uint16_t keySize);
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);

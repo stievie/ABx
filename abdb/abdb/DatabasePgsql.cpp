@@ -216,7 +216,10 @@ TryAgain:
         if (CheckConnection())
         {
             if (numTries < 3)
+            {
+                LOG_INFO << "Reconnected to database, trying again" << std::endl;
                 goto TryAgain;
+            }
         }
         return false;
     }
@@ -249,7 +252,10 @@ TryAgain:
         if (CheckConnection())
         {
             if (numTries < 3)
+            {
+                LOG_INFO << "Reconnected to database, trying again" << std::endl;
                 goto TryAgain;
+            }
         }
 
         return std::shared_ptr<DBResult>();
