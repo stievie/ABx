@@ -16,7 +16,7 @@ fails when a test fails.
 to explore modern C++.
 * The code should be readable and it should be obvious what it does.
 * Please stick to the coding style. There is a `.clang-format` file in the root directory,
-ou could just run it with `clang-format -style=.clang-format [<file> ...]`.
+you could just run it with `clang-format -style=.clang-format [<file> ...]`.
 
 ## Windows
 
