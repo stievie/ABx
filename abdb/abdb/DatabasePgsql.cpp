@@ -26,6 +26,9 @@
 #include "DatabasePgsql.h"
 #include <abscommon/Logger.h>
 #include <sa/Assert.h>
+#include <sa/ScopeGuard.h>
+
+#define PG_OK(stat) (stat == PGRES_COMMAND_OK || stat == PGRES_TUPLES_OK)
 
 namespace DB {
 
@@ -131,17 +134,18 @@ uint64_t DatabasePgsql::GetLastInsertId()
 
     PGresult* res = PQexec(handle_, "SELECT LASTVAL() as last;");
     ExecStatusType stat = PQresultStatus(res);
+    sa::ScopeGuard deleteGguard([res]()
+    {
+        PQclear(res);
+    });
 
-    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    if (!PG_OK(stat))
     {
         LOG_ERROR << "PQexec(): failed to fetch last row: " << PQresultErrorMessage(res) << std::endl;
-        PQclear(res);
         return 0;
     }
 
-    uint64_t id = strtoul(PQgetvalue(res, 0, PQfnumber(res, "last")), nullptr, 0);
-    PQclear(res);
-    return id;
+    return strtoull(PQgetvalue(res, 0, PQfnumber(res, "last")), nullptr, 0);
 }
 
 std::string DatabasePgsql::EscapeString(const std::string& s)
@@ -151,12 +155,17 @@ std::string DatabasePgsql::EscapeString(const std::string& s)
 
     int32_t error;
     char* output = new char[s.length() * 2 + 1];
+    sa::ScopeGuard deleteGguard([output]()
+    {
+        delete[] output;
+    });
 
-    PQescapeStringConn(handle_, output, s.c_str(), s.length(), reinterpret_cast<int*>(&error));
-    std::stringstream r;
-    r << "'" << output << "'";
-    delete[] output;
-    return r.str();
+    size_t len = PQescapeStringConn(handle_, output, s.c_str(), s.length(), &error);
+    if (error != 0)
+    {
+        LOG_ERROR << "PQescapeStringConn(): error" << std::endl;
+    }
+    return "'" + std::string(output, len) + "'";
 }
 
 std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
@@ -164,9 +173,7 @@ std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
     if (!s || length == 0)
         return std::string("''");
 
-    std::stringstream r;
-    r << "'" << base64::encode((const unsigned char*)s, length) << "'";
-    return r.str();
+    return EscapeString(base64::encode((const unsigned char*)s, length));
 }
 
 void DatabasePgsql::FreeResult(DBResult* res)
@@ -181,7 +188,12 @@ bool DatabasePgsql::CheckConnection()
 
     PGresult* res = PQexec(handle_, "SELECT 1");
     ExecStatusType stat = PQresultStatus(res);
-    if (stat == PGRES_COMMAND_OK || stat == PGRES_TUPLES_OK)
+    sa::ScopeGuard deleteGguard([res]()
+    {
+        PQclear(res);
+    });
+
+    if (PG_OK(stat))
         // OK
         return true;
 
@@ -208,7 +220,7 @@ TryAgain:
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
 
-    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    if (!PG_OK(stat))
     {
         LOG_ERROR << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
         PQclear(res);
@@ -242,7 +254,7 @@ TryAgain:
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
 
-    if (stat != PGRES_COMMAND_OK && stat != PGRES_TUPLES_OK)
+    if (!PG_OK(stat))
     {
         LOG_ERROR << "PQexec(): " << query << ": " << PQresultErrorMessage(res) << std::endl;
         PQclear(res);
