@@ -60,15 +60,15 @@ Node::Status RunningAction::DoAction(Agent&, uint32_t)
 Node::Status Running2Action::DoAction(Agent& agent, uint32_t)
 {
     uint32_t runs = 0;
-    if (agent.context_.Has<counter_type>(id_))
-        runs = agent.context_.Get<counter_type>(id_);
+    if (agent.context_.Has<CounterType>(id_))
+        runs = agent.context_.Get<CounterType>(id_);
     ++runs;
     if (runs == 1)
     {
-        agent.context_.Set<counter_type>(id_, runs);
+        agent.context_.Set<CounterType>(id_, runs);
         return Status::Running;
     }
-    agent.context_.Set<counter_type>(id_, runs);
+    agent.context_.Set<CounterType>(id_, runs);
     return Status::Finished;
 }
 

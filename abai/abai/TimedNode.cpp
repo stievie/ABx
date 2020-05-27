@@ -38,8 +38,8 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         return ReturnStatus(agent, Status::CanNotExecute);
 
     uint32_t timer = NOT_STARTED;
-    if (agent.context_.Has<timer_type>(id_))
-        timer = agent.context_.Get<timer_type>(id_);
+    if (agent.context_.Has<TimerType>(id_))
+        timer = agent.context_.Get<TimerType>(id_);
 
     if (timer == NOT_STARTED)
     {
@@ -47,7 +47,7 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteStart(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.context_.Set<timer_type>(id_, timer);
+        agent.context_.Set<TimerType>(id_, timer);
         return ReturnStatus(agent, status);
     }
 
@@ -57,11 +57,11 @@ Node::Status TimedNode::Execute(Agent& agent, uint32_t timeElapsed)
         Status status = ExecuteRunning(agent, timeElapsed);
         if (status == Status::Finished)
             timer = NOT_STARTED;
-        agent.context_.Set<timer_type>(id_, timer);
+        agent.context_.Set<TimerType>(id_, timer);
         return ReturnStatus(agent, status);
     }
 
-    agent.context_.Set<timer_type>(id_, timer);
+    agent.context_.Set<TimerType>(id_, timer);
     return ReturnStatus(agent, ExecuteExpired(agent, timeElapsed));
 }
 

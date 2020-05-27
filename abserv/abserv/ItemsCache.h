@@ -28,7 +28,7 @@ namespace Game {
 
 class Item;
 
-// The owner of all items. Because Items move around alot, e.g. peaople trade items,
+// The owner of all items. Because Items move around alot, e.g. people trade items,
 // store them in chest inventory, i.e. would change ownership, and changing ownerhip
 // of unique_ptr's is a bit cumbersome, the real owners of the items store only the
 // IDs in this cache.

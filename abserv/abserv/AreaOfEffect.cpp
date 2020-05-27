@@ -90,10 +90,7 @@ void AreaOfEffect::_LuaSetSource(Actor* source)
 
 Actor* AreaOfEffect::_LuaGetSource()
 {
-    auto source = GetSource();
-    if (source)
-        return source.get();
-    return nullptr;
+    return GetSource().get();
 }
 
 bool AreaOfEffect::LoadScript(const std::string& fileName)

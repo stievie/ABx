@@ -49,13 +49,13 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
     {
         float distance;
         auto& aia = GetAgent(agent);
-        if (aia.aiContext_.Has<distance_type>(id_))
-            distance = aia.aiContext_.Get<distance_type>(id_);
+        if (aia.aiContext_.Has<DistanceType>(id_))
+            distance = aia.aiContext_.Get<DistanceType>(id_);
         else
         {
             auto* rnd = GetSubsystem<Crypto::Random>();
             distance = Game::AT_POSITION_THRESHOLD + rnd->Get<float>(-1.0f, 1.0f);
-            aia.aiContext_.Set<distance_type>(id_, distance);
+            aia.aiContext_.Set<DistanceType>(id_, distance);
         }
 
         // If we are in a crowd and we are not the leader, follow the leader

@@ -36,15 +36,15 @@ Node::Status Limit::Execute(Agent& agent, uint32_t timeElapsed)
         return ReturnStatus(agent, Node::Status::CanNotExecute);
 
     size_t executions = 0;
-    if (agent.context_.Has<limit_type>(id_))
-        executions = agent.context_.Get<limit_type>(id_);
+    if (agent.context_.Has<LimitType>(id_))
+        executions = agent.context_.Get<LimitType>(id_);
 
     if (executions >= limit_)
         return ReturnStatus(agent, Node::Status::Finished);
 
     auto status = child_->Execute(agent, timeElapsed);
 
-    agent.context_.Set<limit_type>(id_, executions + 1);
+    agent.context_.Set<LimitType>(id_, executions + 1);
     if (status == Node::Status::Running)
         return ReturnStatus(agent, Node::Status::Running);
 

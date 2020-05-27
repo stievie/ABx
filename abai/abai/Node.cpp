@@ -52,7 +52,7 @@ Node::Status Node::Execute(Agent& agent, uint32_t)
 
 Node::Status Node::ReturnStatus(Agent& agent, Node::Status value)
 {
-    agent.context_.Set<node_status_type>(id_, value);
+    agent.context_.Set<NodeStatusType>(id_, value);
     return value;
 }
 

@@ -21,14 +21,14 @@
 
 #pragma once
 
+#include "Action.h"
+#include "AiDefines.h"
+#include "Context.h"
+#include "Node.h"
+#include <memory>
+#include <sa/StrongType.h>
 #include <stdint.h>
 #include <vector>
-#include <memory>
-#include "AiDefines.h"
-#include "Node.h"
-#include "Context.h"
-#include <sa/StrongType.h>
-#include "Action.h"
 
 namespace AI {
 
@@ -36,17 +36,17 @@ class Root;
 class Zone;
 
 // To create distinct types
-using limit_type = sa::StrongType<size_t, struct LimitTag>;
-using timer_type = sa::StrongType<uint32_t, struct TimerTag>;
-using counter_type = sa::StrongType<uint32_t, struct CounterTag>;
-using id_type = sa::StrongType<Id, struct IdTag>;
-using node_status_type = sa::StrongType<Node::Status, struct NodeStatusTag>;
+using LimitType = sa::StrongType<size_t, struct LimitTag>;
+using TimerType = sa::StrongType<uint32_t, struct TimerTag>;
+using CounterType = sa::StrongType<uint32_t, struct CounterTag>;
+using IdType = sa::StrongType<Id, struct IdTag>;
+using NodeStatusType = sa::StrongType<Node::Status, struct NodeStatusTag>;
 
 using AgentIds = std::vector<Id>;
 // Once the BT is loaded it must not be modified, so the iterators are not invalidated.
 // This is a bit unflexible when an application needs to store other types, but
 // you could create a second context in the subclass.
-class AgentContext : public Context<id_type, node_status_type, limit_type, timer_type, counter_type, Nodes::iterator>
+class AgentContext : public Context<IdType, NodeStatusType, LimitType, TimerType, CounterType, Nodes::iterator>
 {
 public:
     std::weak_ptr<Action> currentAction_;
