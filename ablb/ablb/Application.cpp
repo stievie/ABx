@@ -223,7 +223,7 @@ bool Application::ParseServerList(const std::string& fileName)
     // <host>:<port>\n
     while (std::getline(file, line))
     {
-        const std::vector<std::string> lineParts = Utils::Split(line, ":");
+        const std::vector<std::string> lineParts = sa::Split(line, ":");
         if (lineParts.size() == 2)
         {
             serviceList_.push_back({

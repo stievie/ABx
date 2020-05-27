@@ -28,6 +28,7 @@
 #include "Model.h"
 #include "Game.h"
 #include <eastl.hpp>
+#include <sa/StringTempl.h>
 
 namespace IO {
 namespace IOMap {
@@ -127,7 +128,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     case AttrModel:
                     {
                         std::string modelValue = valueAttr.as_string();
-                        std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
+                        std::vector<std::string> modelFile = sa::Split(modelValue, ";");
                         if (modelFile.size() == 2)
                         {
                             if (dataProvider->Exists<Game::Model>(modelFile[1]))

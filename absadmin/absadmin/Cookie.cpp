@@ -54,11 +54,11 @@ Cookies::Cookies(const HttpsServer::Request& request)
     if (it == header.end())
         return;
     auto cHeader = (*it).second;
-    std::vector<std::string> parts = Utils::Split(cHeader, ";");
+    std::vector<std::string> parts = sa::Split(cHeader, ";");
     for (const auto& part : parts)
     {
         std::string trimPart = sa::Trim(part);
-        std::vector<std::string> c = Utils::Split(trimPart, "=");
+        std::vector<std::string> c = sa::Split(trimPart, "=");
         if (c.size() == 2)
         {
             cookies_.emplace(c[0], c[1]);

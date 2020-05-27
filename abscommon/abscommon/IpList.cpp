@@ -22,6 +22,7 @@
 
 #include "IpList.h"
 #include "StringUtils.h"
+#include <sa/StringTempl.h>
 
 namespace Net {
 
@@ -39,7 +40,7 @@ void IpList::AddList(const std::string& ips)
 {
     if (ips.empty())
         return;
-    const std::vector<std::string> ipVec = Utils::Split(ips, ";");
+    const std::vector<std::string> ipVec = sa::Split(ips, ";");
     for (const std::string& ip : ipVec)
         Add(ip);
 }

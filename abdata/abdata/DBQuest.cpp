@@ -95,7 +95,7 @@ bool DBQuest::Load(AB::Entities::Quest& v)
     v.dependsOn = result->GetString("depends_on_uuid");
     v.rewardXp = result->GetInt("reward_xp");
     v.rewardMoney = result->GetInt("reward_money");
-    v.rewardItems = Utils::Split(result->GetString("reward_items"), ";");
+    v.rewardItems = sa::Split(result->GetString("reward_items"), ";");
 
     return true;
 }

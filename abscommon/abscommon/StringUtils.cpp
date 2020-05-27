@@ -132,30 +132,6 @@ std::string ConcatPath(const std::string& path, const std::string& name, const s
     return result;
 }
 
-std::vector<std::string> Split(const std::string& str, const std::string& delim)
-{
-    std::vector<std::string> parts;
-    char* input = (char*)str.c_str();
-    const char* d = delim.c_str();
-#ifdef _MSC_VER
-    char* next;
-    char* pos = strtok_s(input, d, &next);
-    while (pos != NULL)
-    {
-        parts.push_back(std::string(pos));
-        pos = strtok_s(NULL, d, &next);
-    }
-#else
-    char* pos = strtok(input, d);
-    while (pos != NULL)
-    {
-        parts.push_back(std::string(pos));
-        pos = strtok(NULL, d);
-    }
-#endif
-    return parts;
-}
-
 bool IsNumber(const std::string& s)
 {
     std::string::const_iterator it = s.begin();

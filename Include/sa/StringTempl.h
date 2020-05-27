@@ -56,6 +56,17 @@ std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
     return str.substr(strBegin, std::basic_string<charType>::npos);
 }
 
+template <typename charType>
+std::basic_string<charType> RightTrim(const std::basic_string<charType>& str,
+    const std::basic_string<charType>& whitespace = " \t")
+{
+    const auto strEnd = str.find_last_not_of(whitespace);
+    if (strEnd == std::basic_string<charType>::npos)
+        return ""; // no content
+
+    return str.substr(0, strEnd + 1);
+}
+
 /// Replace all occurrences of search with replace in subject
 /// Returns true if it replaced something
 template <typename charType>
@@ -65,14 +76,26 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
 {
     if (search.empty())
         return false;
-    typename std::basic_string<charType>::size_type pos = 0;
     bool result = false;
-    while ((pos = subject.find(search, pos)) != std::basic_string<charType>::npos)
+
+    using string_type = std::basic_string<charType>;
+    string_type newString;
+    newString.reserve(subject.length());
+
+    size_t lastPos = 0;
+    size_t findPos;
+
+    while ((findPos = subject.find(search, lastPos)) != string_type::npos)
     {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
+        newString.append(subject, lastPos, findPos - lastPos);
+        newString += replace;
+        lastPos = findPos + search.length();
         result = true;
     }
+
+    newString += subject.substr(lastPos);
+
+    subject.swap(newString);
     return result;
 }
 
@@ -86,9 +109,49 @@ void MakeIdent(std::basic_string<charType>& s)
     std::transform(s.begin(), s.end(), s.begin(), [](auto c) {
         return (invalidChars.find(c) == std::basic_string<charType>::npos) ? c : '_';
     });
-    static string_type digits("1234567890");
+    static const string_type digits("1234567890");
     if (digits.find(s.front()) != string_type::npos)
         s.erase(s.begin());
+}
+
+inline bool IsWhite(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isspace(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+inline std::vector<std::string> Split(const std::string& str, const std::string& delim, bool keepEmpty = false, bool keepWhite = true)
+{
+    std::vector<std::string> result;
+
+    size_t beg = 0;
+    for (size_t end = 0; (end = str.find(delim, end)) != std::string::npos; ++end)
+    {
+        auto substring = str.substr(beg, end - beg);
+        beg = end + delim.length();
+        if (!keepEmpty && substring.empty())
+            continue;
+        if (!keepWhite && IsWhite(substring))
+            continue;
+        result.push_back(substring);
+    }
+
+    auto substring = str.substr(beg);
+    if (substring.empty())
+    {
+        if (keepEmpty)
+            result.push_back(substring);
+    }
+    else if (IsWhite(substring))
+    {
+        if (keepWhite)
+            result.push_back(substring);
+    }
+    else
+        result.push_back(substring);
+
+    return result;
 }
 
 template <typename charType>

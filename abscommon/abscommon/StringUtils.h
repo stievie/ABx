@@ -43,7 +43,6 @@ std::string ExtractFileDir(const std::string& fn);
 std::string ExtractFileName(const std::string& fn);
 std::string ConcatPath(const std::string& path, const std::string& name, const std::string& ext = "");
 
-std::vector<std::string> Split(const std::string& str, const std::string& delim);
 bool IsNumber(const std::string& s);
 std::string ConvertSize(size_t size);
 uint32_t ConvertStringToIP(const std::string& ip);
