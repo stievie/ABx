@@ -24,6 +24,7 @@
 #include "MathUtils.h"
 #include "Vector4.h"
 #include "MathUtils.h"
+#include <sa/StringTempl.h>
 
 namespace Math {
 
@@ -44,7 +45,7 @@ Vector3::Vector3(const Vector4& vector) noexcept :
 
 Vector3::Vector3(const std::string& str)
 {
-    std::vector<std::string> parts = Math::Split(str, ' ');
+    std::vector<std::string> parts = sa::Split(str, " ");
     if (parts.size() == 3)
     {
         x_ = std::stof(parts.at(0));

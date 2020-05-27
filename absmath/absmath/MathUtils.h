@@ -29,18 +29,6 @@
 
 namespace Math {
 
-inline std::vector<std::string> Split(const std::string& s, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter))
-    {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
 template <typename T>
 inline T Clamp(T value, T min, T max)
 {

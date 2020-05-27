@@ -23,6 +23,7 @@
 #include "Quaternion.h"
 #include "MathUtils.h"
 #include "Matrix4.h"
+#include <sa/StringTempl.h>
 
 namespace Math {
 
@@ -34,12 +35,12 @@ Quaternion::Quaternion(float x, float y, float z)
     y *= 0.5f;
     z *= 0.5f;
 
-    float sinX = sinf(x);
-    float cosX = cosf(x);
-    float sinY = sinf(y);
-    float cosY = cosf(y);
-    float sinZ = sinf(z);
-    float cosZ = cosf(z);
+    const float sinX = sinf(x);
+    const float cosX = cosf(x);
+    const float sinY = sinf(y);
+    const float cosY = cosf(y);
+    const float sinZ = sinf(z);
+    const float cosZ = cosf(z);
 
     w_ = cosY * cosX * cosZ + sinY * sinX * sinZ;
     x_ = cosY * sinX * cosZ + sinY * cosX * sinZ;
@@ -49,7 +50,7 @@ Quaternion::Quaternion(float x, float y, float z)
 
 Quaternion::Quaternion(const std::string& str)
 {
-    std::vector<std::string> parts = Math::Split(str, ' ');
+    std::vector<std::string> parts = sa::Split(str, " ");
 
     if (parts.size() < 3)
     {
@@ -96,12 +97,12 @@ Quaternion Quaternion::FromLookAt(const Vector3& from, const Vector3& to)
 Quaternion Quaternion::FromAxisAngle(const Vector3& axis, float angle)
 {
     const Math::Vector3 normalAxis = axis.Normal();
-    float factor = sin(angle * 0.5f);
-    float x = normalAxis.x_ * factor;
-    float y = normalAxis.y_ * factor;
-    float z = normalAxis.z_ * factor;
+    const float factor = sin(angle * 0.5f);
+    const float x = normalAxis.x_ * factor;
+    const float y = normalAxis.y_ * factor;
+    const float z = normalAxis.z_ * factor;
 
-    float w = cos(angle / 2.0f);
+    const float w = cos(angle / 2.0f);
     return Quaternion(w, x, y, z);
 }
 
@@ -111,7 +112,7 @@ Vector4 Quaternion::AxisAngle() const
     if (abs(q.w_) > 1.0f)
         q.Normalize();
 
-    float den = sqrt(1.0f - q.w_ * q.w_);
+    const float den = sqrt(1.0f - q.w_ * q.w_);
     if (den > 0.0001f)
     {
         return Vector4(
@@ -121,22 +122,19 @@ Vector4 Quaternion::AxisAngle() const
             2.0f * acos(q.w_)   // Angle
         );
     }
-    else
-    {
-        return Vector4(
-            Vector3::UnitX.x_,
-            Vector3::UnitY.y_,
-            Vector3::UnitZ.z_,
-            2.0f * acos(q.w_)   // Angle
-        );
-    }
+    return Vector4(
+        Vector3::UnitX.x_,
+        Vector3::UnitY.y_,
+        Vector3::UnitZ.z_,
+        2.0f * acos(q.w_)   // Angle
+    );
 }
 
 Vector3 Quaternion::EulerAngles() const
 {
     // Derivation from http://www.geometrictools.com/Documentation/EulerAngles.pdf
     // Order of rotations: Z first, then X, then Y
-    float check = 2.0f * (-y_ * z_ + w_ * x_);
+    const float check = 2.0f * (-y_ * z_ + w_ * x_);
 
     if (check < -0.995f)
     {
@@ -146,7 +144,7 @@ Vector3 Quaternion::EulerAngles() const
             -atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
         );
     }
-    else if (check > 0.995f)
+    if (check > 0.995f)
     {
         return Vector3(
             float(M_PIHALF),
@@ -154,14 +152,11 @@ Vector3 Quaternion::EulerAngles() const
             atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
         );
     }
-    else
-    {
-        return Vector3(
-            asinf(check),
-            atan2f(2.0f * (x_ * z_ + w_ * y_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)),
-            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (x_ * x_ + z_ * z_))
-        );
-    }
+    return Vector3(
+        asinf(check),
+        atan2f(2.0f * (x_ * z_ + w_ * y_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)),
+        atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (x_ * x_ + z_ * z_))
+    );
 }
 
 Quaternion Quaternion::Inverse() const
