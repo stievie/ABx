@@ -147,6 +147,7 @@ void PlayerManager::KickPlayer(uint32_t playerId)
     if (it != players_.end())
     {
         ea::shared_ptr<Player> p = (*it).second;
+        LOG_INFO << "Kicking player " << p->GetName() << std::endl;
         p->PartyLeave();
         p->Logout();
     }
@@ -154,6 +155,7 @@ void PlayerManager::KickPlayer(uint32_t playerId)
 
 void PlayerManager::KickAllPlayers()
 {
+    LOG_INFO << "Kicking all players" << std::endl;
     while (!players_.empty())
     {
         auto it = players_.begin();

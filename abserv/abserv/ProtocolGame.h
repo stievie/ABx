@@ -61,14 +61,8 @@ private:
     /// The client requests to enter a game. Find/create it, add the player and return success.
     void EnterGame();
 public:
-    explicit ProtocolGame(std::shared_ptr<Connection> connection) :
-        Protocol(connection)
-    {
-        checksumEnabled_ = ProtocolGame::UseChecksum;
-        compressionEnabled_ = ENABLE_GAME_COMPRESSION;
-        encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
-        SetEncKey(AB::ENC_KEY);
-    }
+    explicit ProtocolGame(std::shared_ptr<Connection> connection);
+    ~ProtocolGame() override;
 
     void Logout();
     /// Tells the client to change the instance. The client will disconnect and reconnect to enter the instance.

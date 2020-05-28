@@ -29,6 +29,8 @@
 #include "NetworkMessage.h"
 #include <sa/Noncopyable.h>
 
+#define DEBUG_NET
+
 namespace Net {
 
 class ServicePort;

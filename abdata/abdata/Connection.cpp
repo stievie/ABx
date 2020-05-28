@@ -32,8 +32,7 @@ Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     maxKeySize_(maxKey),
     socket_(io_service),
     connectionManager_(manager),
-    storageProvider_(storage),
-    opcode_(IO::OpCodes::None)
+    storageProvider_(storage)
 { }
 
 asio::ip::tcp::socket& Connection::GetSocket()

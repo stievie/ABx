@@ -85,7 +85,7 @@ private:
     asio::ip::tcp::socket socket_;
     ConnectionManager& connectionManager_;
     StorageProvider& storageProvider_;
-    IO::OpCodes opcode_;
+    IO::OpCodes opcode_{ IO::OpCodes::None };
     std::mutex lock_;
 
     IO::DataKey key_;

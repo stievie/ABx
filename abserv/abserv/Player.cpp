@@ -156,7 +156,7 @@ void Player::Initialize()
 
 void Player::Logout()
 {
-#ifdef DEBUG_GAME
+#ifndef DEBUG_GAME
     LOG_DEBUG << "Player logging out " << GetName() << std::endl;
 #endif // DEBUG_GAME
     if (queueing_)

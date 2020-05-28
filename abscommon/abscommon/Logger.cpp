@@ -112,7 +112,7 @@ Logger& Logger::Error(const char* function, unsigned line)
         {
             (*this) << function;
             if (line != 0)
-                (*this) << "#" << line;
+                (*this) << ":" << line;
             (*this) << " ";
         }
     }
@@ -128,7 +128,7 @@ Logger& Logger::Info(const char* function, unsigned line)
         {
             (*this) << function;
             if (line != 0)
-                (*this) << "#" << line;
+                (*this) << ":" << line;
             (*this) << " ";
         }
     }
@@ -153,7 +153,7 @@ Logger& Logger::Warning(const char* function, unsigned line)
         {
             (*this) << function;
             if (line != 0)
-                (*this) << "#" << line;
+                (*this) << ":" << line;
             (*this) << " ";
         }
     }
@@ -198,7 +198,7 @@ Logger& Logger::Debug(const char* function, unsigned line)
         {
             (*this) << function;
             if (line != 0)
-                (*this) << "#" << line;
+                (*this) << ":" << line;
             (*this) << " ";
         }
     }

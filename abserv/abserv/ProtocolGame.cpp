@@ -41,6 +41,18 @@ namespace Net {
 
 std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;
 
+ProtocolGame::ProtocolGame(std::shared_ptr<Connection> connection) :
+    Protocol(connection)
+{
+    checksumEnabled_ = ProtocolGame::UseChecksum;
+    compressionEnabled_ = ENABLE_GAME_COMPRESSION;
+    encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
+    SetEncKey(AB::ENC_KEY);
+}
+
+ProtocolGame::~ProtocolGame()
+{ }
+
 inline void ProtocolGame::AddPlayerInput(Game::InputType type, Utils::VariantMap&& data)
 {
     if (auto p = player_.lock())
@@ -122,7 +134,9 @@ void ProtocolGame::Logout()
     auto player = GetPlayer();
     if (!player)
         return;
-
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Logging out user " << player->account_.name << std::endl;
+#endif
     player->logoutTime_ = Utils::Tick();
     IO::IOPlayer::SavePlayer(*player);
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
@@ -583,11 +597,21 @@ void ProtocolGame::Connect()
 {
     if (IsConnectionExpired())
     {
-        // ProtocolGame::release() has been called at this point and the Connection object
-        // no longer exists, so we return to prevent leakage of the Player.
+        // This can happen when Connection::ParseHeader() gets an error,
+        // e.g. when the client closes the connection. But why is it doing this???
         LOG_ERROR << "Connection expired" << std::endl;
+        if (auto player = player_.lock())
+        {
+            LOG_INFO << "Logging out player " << player->GetName() << std::endl;
+            player->PartyLeave();
+            player->Logout();
+        }
+        else
+            LOG_INFO << "Player also expired" << std::endl;
+
         return;
     }
+
     auto player = player_.lock();
     if (!player)
     {

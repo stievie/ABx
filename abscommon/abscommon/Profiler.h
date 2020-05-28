@@ -65,7 +65,7 @@ public:
         {
             LOG_PROFILE << name_;
             if (line_ != 0)
-                LOG_PROFILE << "#" << line_;
+                LOG_PROFILE << ":" << line_;
             LOG_PROFILE << " ";
         }
         if (duration < 1000)

@@ -338,6 +338,7 @@ void Client::Update(int timeElapsed)
         if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < AbTick()))
         {
             protoGame_->Disconnect();
+            state_ = State::Disconnected;
             OnNetworkError(ConnectionError::Disconnect, {});
             return;
         }

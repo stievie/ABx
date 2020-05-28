@@ -453,6 +453,7 @@ void StorageProvider::CleanCache()
     // Delete deleted records from DB and remove them from cache.
     if (cache_.size() == 0)
         return;
+    std::scoped_lock lock(lock_);
     size_t oldSize = currentSize_;
     int removed = 0;
     auto i = cache_.begin();
@@ -513,6 +514,7 @@ void StorageProvider::FlushCache()
     if (cache_.size() == 0)
         return;
     AB_PROFILE;
+    std::scoped_lock lock(lock_);
     int written = 0;
     auto i = cache_.begin();
     while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool

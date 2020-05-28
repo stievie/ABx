@@ -33,7 +33,6 @@
 #include <AB/Entities/ServiceList.h>
 #include <abscommon/Utils.h>
 #include <abscommon/Subsystems.h>
-#include <abscommon/ThreadPool.h>
 #include <abscommon/UuidUtils.h>
 #include <filesystem>
 #include <sa/StringTempl.h>
@@ -50,7 +49,6 @@ Application::Application() :
     serverType_ = AB::Entities::ServiceTypeDataServer;
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
-    Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>(1);
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 
     std::stringstream dbDrivers;
@@ -203,12 +201,14 @@ bool Application::LoadConfig()
     if (serverPort_ == 0)
     {
         LOG_ERROR << "Port is 0" << std::endl;
+        return false;
     }
     if (maxSize_ == 0)
     {
         LOG_ERROR << "Cache size is 0" << std::endl;
+        return false;
     }
-    return (serverPort_ != 0) && (maxSize_ != 0);
+    return true;
 }
 
 void Application::PrintServerInfo()
@@ -220,7 +220,6 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << serverPort_ << std::endl;
-    LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Readonly mode: " << (readonly_ ? "TRUE" : "false") << std::endl;
@@ -389,7 +388,6 @@ void Application::Run()
 {
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
-    GetSubsystem<Asynch::ThreadPool>()->Start();
 
     server_ = ea::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_, whiteList_);
     auto& provider = server_->GetStorageProvider();

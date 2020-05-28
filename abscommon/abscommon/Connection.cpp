@@ -147,6 +147,9 @@ void Connection::Accept()
         readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
+#ifdef DEBUG_NET
+        LOG_DEBUG << "Accepted connection, calling ParseHeader() when we got enough data" << std::endl;
+#endif
         // Read size of packet
         asio::async_read(socket_,
             asio::buffer(msg_->GetBuffer(), NetworkMessage::HeaderLength),
@@ -171,7 +174,8 @@ void Connection::ParseHeader(const asio::error_code& error)
 #ifdef DEBUG_NET
         // Maybe disconnect
 //        if (error.value() != 995)
-            LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
+            LOG_ERROR << "Network " << error.default_error_condition().value() << " " <<
+                error.default_error_condition().message() << std::endl;
 #endif
         Close(true);
         return;
@@ -236,6 +240,10 @@ void Connection::ParsePacket(const asio::error_code& error)
 
     if (error)
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Network " << error.default_error_condition().value() << " " <<
+            error.default_error_condition().message() << std::endl;
+#endif
         Close(true);
         return;
     }
@@ -272,6 +280,7 @@ void Connection::ParsePacket(const asio::error_code& error)
             protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, *msg_, shared_from_this());
             if (!protocol_)
             {
+                LOG_ERROR << "Failed to create Protocol" << std::endl;
                 Close(true);
                 return;
             }
@@ -376,6 +385,9 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
 
 void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Releasing connection" << std::endl;
+#endif
     std::scoped_lock<std::mutex> lockClass(lock_);
     connections_.erase(connection);
 }
