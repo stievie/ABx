@@ -40,6 +40,7 @@ enum class Intersection
     Inside
 };
 
+// These types are used for Lua
 using StdVector3 = std::array<float, 3>;
 using StdVector4 = std::array<float, 4>;
 

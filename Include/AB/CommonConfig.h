@@ -21,20 +21,16 @@
 
 #pragma once
 
-#if defined(_WIN32)
+#include <sa/Compiler.h>
+
+#if defined(SA_PLATFORM_WIN)
 #   define AB_WINDOWS
-#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+#elif defined(SA_PLATFORM_LINUX) || defined(SA_PLATFORM_UNIX)
 #   define AB_UNIX
 #endif
 
 #if !defined(AB_WINDOWS) && !defined(AB_UNIX)
 #error Unsuppoprted platform
-#endif
-
-#if defined(_M_X64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__)
-#define AB_ARCH_64BIT
-#else
-#define AB_ARCH_32BIT
 #endif
 
 // Configurations shared by the server and client

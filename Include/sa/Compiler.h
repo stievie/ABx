@@ -41,6 +41,12 @@
 #   endif
 #endif
 
+#if defined(_M_X64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__)
+#   define SA_ARCH_64BIT
+#else
+#   define SA_ARCH_32BIT
+#endif
+
 #if defined(_WIN32)
 #   define SA_PLATFORM_WIN
 #elif defined(__APPLE__)
