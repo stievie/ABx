@@ -89,7 +89,7 @@ $ mkdir build
 $ cd build
 $ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make
-# Copy executables to ../Bin and ../abclient/bin
+# Copy executables to ../bin and ../abclient/bin
 $ cmake --install . --component runtime
 ~~~
 Of if you prefer Ninja:

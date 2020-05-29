@@ -15,6 +15,6 @@ target_include_directories(import PRIVATE ${assimp_INCLUDE_DIRS})
 target_link_libraries(import absmath abscommon ${assimp_LIBRARIES} EASTL)
 
 install(TARGETS import
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

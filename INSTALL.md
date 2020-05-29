@@ -1,14 +1,14 @@
 # Install and run
 
-All binaries of the *Server* are located in `./Bin`.
+All binaries of the *Server* are located in `./bin`.
 
 The binary of the *Client* is located in `./abclient/bin` and has the name
 `fw`, `fw_d` (Debug), `fw.exe` (Windows) or `fw_d.exe` (Windows Debug).
 
 ## Server
 
-1. Build the server, see [BUILD.md](BUILD.md). After that all server executables are located in the `Bin` directory.
-2. On Windows copy the *OpenSSL* and *PostgreSQL* client libraries to the `Bin` directory.
+1. Build the server, see [BUILD.md](BUILD.md). After that all server executables are located in the `bin` directory.
+2. On Windows copy the *OpenSSL* and *PostgreSQL* client libraries to the `bin` directory.
     * `libeay32.dll` (OpenSSL)
     * `ssleay32.dll` (OpenSSL)
     * `libiconv-2.dll` (PostgreSQL)
@@ -16,7 +16,7 @@ The binary of the *Client* is located in `./abclient/bin` and has the name
     * `libpq.dll` (PostgreSQL)
     * `libwinpthread-1.dll` (PostgreSQL)
 3. [Setup a PosgreSQL server](https://wiki.archlinux.org/index.php/PostgreSQL)
-4. Create a `db_private.lua` file in `Bin/config` directory to enter the DB configuration, example:
+4. Create a `db_private.lua` file in `bin/config` directory to enter the DB configuration, example:
 ~~~lua
 -- Postgres
 db_host = "database.host"
@@ -28,14 +28,14 @@ db_pass = "password"
 ~~~sh
 $ createdb forgottenwars
 ~~~
-6. Run `./Bin/dbtool -a update` to create the database structure. Then run `./Bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
-7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `Bin/data` directory. Don't overwrite files that are in the git repository.
-8. Run the `./Bin/keygen` tool to create the DH server keys.
-9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `Bin` directory to create self-signed keys and certificate for the HTTPS file server.
+6. Run `./bin/dbtool -a update` to create the database structure. Then run `./bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
+7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `bin/data` directory. Don't overwrite files that are in the git repository.
+8. Run the `./bin/keygen` tool to create the DH server keys.
+9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `bin` directory to create self-signed keys and certificate for the HTTPS file server.
 10. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
 11. You may want to create an account key to be able to create an account. To do so, run the `dbtool`:
 ~~~sh
-$ ./Bin/dbtool -a genacckey
+$ ./bin/dbtool -a genacckey
 ~~~
 
 To stop the servers in the correct order, you can use `.stop` in the root directory.

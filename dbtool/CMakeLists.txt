@@ -13,6 +13,6 @@ add_executable(
 target_link_libraries(dbtool abdb abscommon)
 
 install(TARGETS dbtool
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

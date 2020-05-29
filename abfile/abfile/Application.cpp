@@ -273,7 +273,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
     {
         LOG_ERROR << ex.what() << std::endl;
         LOG_INFO << "If SSL keys are missing, create them by running `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout \"" <<
-                    key << "\" -out \"" << cert << "\"` in the Bin directory" << std::endl;
+                    key << "\" -out \"" << cert << "\"` in the `bin` directory" << std::endl;
         return false;
     }
 

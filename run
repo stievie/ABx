@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd Bin
+cd bin
 
 # Start these only if they are not running
 ps auxw | grep abdata | grep -v grep > /dev/null

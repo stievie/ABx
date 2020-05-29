@@ -17,6 +17,6 @@ target_include_directories(genavmesh PRIVATE ../Include/stb ${assimp_INCLUDE_DIR
 target_link_libraries(genavmesh absmath abscommon ${assimp_LIBRARIES} EASTL DebugUtils Recast Detour DetourTileCache)
 
 install(TARGETS genavmesh
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

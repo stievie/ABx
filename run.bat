@@ -1,7 +1,7 @@
 @echo off
 mode con:cols=150 lines=50
 
-cd Bin
+cd bin
 
 rem Start these only if they are not running
 tasklist /nh /fi "imagename eq abdata.exe" | find /i "abdata.exe" > nul || (start abdata.exe && timeout /t 1)

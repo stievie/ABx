@@ -19,6 +19,6 @@ else()
 endif()
 
 install(TARGETS abfile
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

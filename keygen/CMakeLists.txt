@@ -12,6 +12,6 @@ target_precompile_headers(keygen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/keygen/stda
 target_link_libraries(keygen abscommon)
 
 install(TARGETS keygen
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

@@ -17,6 +17,6 @@ if (UNIX)
 endif()
 
 install(TARGETS ablogin
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )

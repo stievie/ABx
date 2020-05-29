@@ -19,6 +19,6 @@ elseif(WIN32)
 endif()
 
 install(TARGETS dbgclient
-    RUNTIME DESTINATION Bin
+    RUNTIME DESTINATION bin
     COMPONENT runtime
 )
