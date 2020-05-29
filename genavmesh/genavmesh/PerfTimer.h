@@ -16,6 +16,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+#pragma once
+
 #ifndef PERFTIMER_H
 #define PERFTIMER_H
 
