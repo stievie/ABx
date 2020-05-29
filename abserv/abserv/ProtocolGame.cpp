@@ -603,8 +603,7 @@ void ProtocolGame::Connect()
         if (auto player = player_.lock())
         {
             LOG_INFO << "Logging out player " << player->GetName() << std::endl;
-            player->PartyLeave();
-            player->Logout();
+            player->Logout(true);
         }
         else
             LOG_INFO << "Player also expired" << std::endl;

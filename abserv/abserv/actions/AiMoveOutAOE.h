@@ -35,7 +35,7 @@ class MoveOutAOE final : public Action
 {
     NODE_CLASS(MoveOutAOE)
 private:
-    bool TryMove(Game::Npc& npc, Game::AreaOfEffect& damager, Math::Vector3& destination);
+    static bool TryMove(Game::Npc& npc, Game::AreaOfEffect& damager, Math::Vector3& destination);
 protected:
     Status DoAction(Agent& agent, uint32_t timeElapsed) override;
 public:

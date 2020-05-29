@@ -154,13 +154,15 @@ void Player::Initialize()
     GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Player::LoadFriendList, this)));
 }
 
-void Player::Logout()
+void Player::Logout(bool leavePary)
 {
 #ifndef DEBUG_GAME
     LOG_DEBUG << "Player logging out " << GetName() << std::endl;
 #endif // DEBUG_GAME
     if (queueing_)
         CRQUnqueueForMatch();
+    if (leavePary)
+        PartyLeave();
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
@@ -188,7 +190,8 @@ void Player::CRQChangeMap(const std::string mapUuid)
 
 void Player::CRQLogout()
 {
-    Logout();
+    // This is also called when changing an instance, so we want to stay in the party.
+    Logout(false);
 }
 
 void Player::CRQPing(int64_t clientTick)

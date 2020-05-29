@@ -121,8 +121,7 @@ void PlayerManager::CleanPlayers()
         LOG_INFO << "No ping from player " << p->GetName() << " for " << p->GetInactiveTime() << "ms, logging out now" << std::endl;
         ++i;
         // Calls PlayerManager::RemovePlayer()
-        p->PartyLeave();
-        p->Logout();
+        p->Logout(true);
    }
 }
 
@@ -148,8 +147,7 @@ void PlayerManager::KickPlayer(uint32_t playerId)
     {
         ea::shared_ptr<Player> p = (*it).second;
         LOG_INFO << "Kicking player " << p->GetName() << std::endl;
-        p->PartyLeave();
-        p->Logout();
+        p->Logout(true);
     }
 }
 
@@ -160,8 +158,7 @@ void PlayerManager::KickAllPlayers()
     {
         auto it = players_.begin();
         ea::shared_ptr<Player> p = (*it).second;
-        p->PartyLeave();
-        p->Logout();
+        p->Logout(true);
     }
 }
 

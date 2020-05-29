@@ -55,6 +55,6 @@ TEST_CASE("Right Trim")
 TEST_CASE("Replace")
 {
     std::string input = "this is a string";
-    REQUIRE(sa::ReplaceSubstring(input, std::string(" is "), std::string(" is not ")));
+    REQUIRE(sa::ReplaceSubstring<char>(input, " is ", " is not "));
     REQUIRE(input == "this is not a string");
 }

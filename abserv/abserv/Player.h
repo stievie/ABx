@@ -138,7 +138,7 @@ public:
     bool IsQueueing() const { return queueing_; }
 
     void Initialize() override;
-    void Logout();
+    void Logout(bool leavePary);
     void TriggerDialog(uint32_t triggererId, uint32_t dialogIndex);
     void TriggerQuestSelectionDialog(uint32_t triggererId, const ea::set<uint32_t>& quests);
     void TriggerQuestDialog(uint32_t triggererId, uint32_t index);
