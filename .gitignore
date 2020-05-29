@@ -6,7 +6,6 @@ Debug Static
 Release Static
 ipch
 bin
-Bin
 obj
 *.autosave
 .vs
