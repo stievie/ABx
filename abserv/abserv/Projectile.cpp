@@ -36,7 +36,7 @@ void Projectile::RegisterLua(kaguya::State& state)
         .addFunction("GetTarget", &Projectile::_LuaGetTarget)
         .addFunction("GetLifeTime", &Projectile::GetLifeTime)
         .addFunction("SetLifeTime", &Projectile::SetLifeTime)
-        );
+    );
     // clang-format on
 }
 
