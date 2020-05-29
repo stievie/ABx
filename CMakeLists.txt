@@ -121,7 +121,7 @@ if(ABX_BUILD_TOOLS)
     endif()
 endif()
 if(BUILD_TESTING)
-    add_subdirectory(Tests)
+    add_subdirectory(abtests)
 endif()
 
 # Client
