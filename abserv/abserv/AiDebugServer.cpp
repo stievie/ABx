@@ -186,7 +186,7 @@ void DebugServer::Update()
     if (games_.size() == 0 || selectedGames_.size() == 0)
         return;
 
-    for (auto weakGame : games_)
+    for (const auto& weakGame : games_)
     {
         if (auto sGame = weakGame.lock())
             BroadcastGame(*sGame);
