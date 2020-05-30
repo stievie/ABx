@@ -99,7 +99,19 @@ void DataProvider::CleanCache()
         }
         return false;
     })) != cache_.end())
+    {
+        auto& key = (*i).first;
+        auto usageIt = usage_.find(key);
+        if (usageIt != usage_.end())
+            usage_.erase(usageIt);
+        auto watcherIt = watcher_.find(key);
+        if (watcherIt != watcher_.end())
+        {
+            (*watcherIt).second->Stop();
+            watcher_.erase(watcherIt);
+        }
         cache_.erase(i++);
+    }
 }
 
 }

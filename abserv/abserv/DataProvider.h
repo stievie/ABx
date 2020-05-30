@@ -177,6 +177,7 @@ public:
     /// Remove all objects from the cache
     void ClearCache()
     {
+        watcher_.clear();
         cache_.clear();
         usage_.clear();
     }
