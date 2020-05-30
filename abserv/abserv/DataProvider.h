@@ -39,7 +39,7 @@ class DataProvider
 {
 private:
     using DataProviderEvents = sa::Events<
-        void(const std::string&, Asset&)
+        void(const Asset&)
     >;
     using CacheKey = ea::pair<size_t, std::string>;
     struct KeyHasher
@@ -79,7 +79,7 @@ private:
                 assert(Import<T>(static_cast<T&>(*pAsset), fileName));
                 constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
                 const CacheKey key = ea::make_pair(hash, fileName);
-                events_.CallAll<void(const std::string&, Asset&)>(KeyHasher()(key), fileName, *pAsset);
+                events_.CallAll<void(const Asset&)>(KeyHasher()(key), *pAsset);
             });
             watcher->Start();
             watcher_[key] = std::move(watcher);
@@ -87,22 +87,22 @@ private:
         return true;
     }
 public:
+    static std::string GetDataFile(const std::string& name);
+    static const std::string& GetDataDir();
+    static bool FileExists(const std::string& name);
+    static std::string GetFile(const std::string& name);
+
     DataProvider();
-    ~DataProvider() = default;
+    ~DataProvider();
     void Update();
 
     template <typename T>
-    size_t SubscribeAssetChangedEvent(const T& asset, std::function<void(const std::string&, Asset&)>&& func)
+    size_t SubscribeAssetChangedEvent(const T& asset, std::function<void(const Asset&)>&& func)
     {
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, asset.GetFileName());
-        return events_.Subscribe<void(const std::string&, Asset&)>(KeyHasher()(key), std::move(func));
+        return events_.Subscribe<void(const Asset&)>(KeyHasher()(key), std::move(func));
     }
-
-    std::string GetDataFile(const std::string& name) const;
-    const std::string& GetDataDir() const;
-    bool FileExists(const std::string& name) const;
-    std::string GetFile(const std::string& name) const;
 
     /// Check if an asset exists in cache or as file
     template<class T>

@@ -49,8 +49,8 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         bool isSpawnPoint = false;
         for (const auto& attr : node.children("attribute"))
         {
-            const pugi::xml_attribute& nameAttr = attr.attribute("name");
-            const pugi::xml_attribute& valueAttr = attr.attribute("value");
+            const pugi::xml_attribute nameAttr = attr.attribute("name");
+            const pugi::xml_attribute valueAttr = attr.attribute("value");
             const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
             switch (nameHash)
             {
@@ -103,7 +103,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
         uint32_t colisionMask = 0xFFFFFFFF;
         for (const auto& comp : node.children("component"))
         {
-            const pugi::xml_attribute& type_attr = comp.attribute("type");
+            const pugi::xml_attribute type_attr = comp.attribute("type");
             const size_t type_hash = sa::StringHashRt(type_attr.as_string());
             // StaticModel must be first component
             switch (type_hash)
@@ -299,15 +299,15 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 static bool LoadScene(Game::Map& map, const std::string& name)
 {
     // Game load thread
-    const std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.directory_) + name);
+    const std::string file = DataProvider::GetDataFile(Utils::ConcatPath(map.directory_, name));
     pugi::xml_document doc;
-    const pugi::xml_parse_result& result = doc.load_file(file.c_str());
+    const pugi::xml_parse_result result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
     {
         LOG_ERROR << "Error loading file " << file << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node& sceneNode = doc.child("scene");
+    const pugi::xml_node sceneNode = doc.child("scene");
     if (!sceneNode)
     {
         LOG_ERROR << "File " << file << " does not have a scene node" << std::endl;
@@ -343,15 +343,15 @@ bool Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
-    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(Utils::AddSlash(map.directory_) + "index.xml");
+    std::string file = DataProvider::GetDataFile(Utils::ConcatPath(map.directory_, "index.xml"));
     pugi::xml_document doc;
-    const pugi::xml_parse_result& result = doc.load_file(file.c_str());
+    const pugi::xml_parse_result result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
     {
         LOG_ERROR << "Error loading file " << file << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node& indexNode = doc.child("index");
+    const pugi::xml_node indexNode = doc.child("index");
     if (!indexNode)
     {
         LOG_ERROR << "File " << file << " does not have an index node" << std::endl;

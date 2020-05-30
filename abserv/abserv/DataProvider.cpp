@@ -30,6 +30,7 @@
 #include "IOModel.h"
 #include "IOScript.h"
 #include <abscommon/Utils.h>
+#include <abscommon/StringUtils.h>
 
 namespace IO {
 
@@ -42,32 +43,33 @@ DataProvider::DataProvider()
     AddImporter<Game::Script, IO::IOScript>();
 }
 
+DataProvider::~DataProvider() = default;
+
 void DataProvider::Update()
 {
     if (!watchFiles_)
         return;
 
-    for (auto& watcher : watcher_)
+    for (const auto& watcher : watcher_)
         watcher.second->Update();
 }
 
-std::string DataProvider::GetDataFile(const std::string& name) const
+std::string DataProvider::GetDataFile(const std::string& name)
 {
-    static std::string dataDir = (*GetSubsystem<ConfigManager>())[ConfigManager::DataDir].GetString();
-    return dataDir + name;
+    return Utils::ConcatPath(GetDataDir(), name);
 }
 
-const std::string& DataProvider::GetDataDir() const
+const std::string& DataProvider::GetDataDir()
 {
     return (*GetSubsystem<ConfigManager>())[ConfigManager::DataDir].GetString();
 }
 
-bool DataProvider::FileExists(const std::string& name) const
+bool DataProvider::FileExists(const std::string& name)
 {
     return Utils::FileExists(name);
 }
 
-std::string DataProvider::GetFile(const std::string& name) const
+std::string DataProvider::GetFile(const std::string& name)
 {
     if (Utils::FileExists(name))
         return name;
@@ -100,7 +102,7 @@ void DataProvider::CleanCache()
         return false;
     })) != cache_.end())
     {
-        auto& key = (*i).first;
+        const auto& key = (*i).first;
         auto usageIt = usage_.find(key);
         if (usageIt != usage_.end())
             usage_.erase(usageIt);
