@@ -57,14 +57,14 @@ void Octree::SetSize(const BoundingBox& box, unsigned numLevels)
 
 void Octree::AddObjectUpdate(Game::GameObject* object)
 {
-    auto it = std::find(objectUpdate_.begin(), objectUpdate_.end(), object);
+    auto it = ea::find(objectUpdate_.begin(), objectUpdate_.end(), object);
     if (it == objectUpdate_.end())
         objectUpdate_.push_back(object);
 }
 
 void Octree::RemoveObjectUpdate(Game::GameObject* object)
 {
-    auto it = std::find(objectUpdate_.begin(), objectUpdate_.end(), object);
+    auto it = ea::find(objectUpdate_.begin(), objectUpdate_.end(), object);
     if (it != objectUpdate_.end())
     {
         objectUpdate_.erase(it);
@@ -130,10 +130,10 @@ void Octree::Update()
     for (Game::GameObject* o : objectUpdate_)
     {
         Octant* octant = o->GetOctant();
-        const BoundingBox& box = o->GetWorldBoundingBox();
         // Skip if no octant or does not belong to this octree anymore
         if (!octant || octant->GetRoot() != this)
             continue;
+        const BoundingBox box = o->GetWorldBoundingBox();
         // Skip if still fits the current octant
         if (o->occludee_ && octant->GetCullingBox().IsInside(box) == Intersection::Inside && octant->CheckObjectFit(box))
             continue;
@@ -202,7 +202,7 @@ Octant* Octant::GetOrCreateChild(unsigned index)
 
 void Octant::InsertObject(Game::GameObject* object)
 {
-    const BoundingBox& box = object->GetWorldBoundingBox();
+    const BoundingBox box = object->GetWorldBoundingBox();
 
     // If root octant, insert all non-occludees here, so that octant occlusion does not hide the object.
     // Also if object is outside the root octant bounds, insert to root
@@ -291,7 +291,7 @@ void Octant::AddObject(Game::GameObject* object)
 void Octant::RemoveObject(Game::GameObject* object, bool resetOctant /* = true */)
 {
     root_->RemoveObjectUpdate(object);
-    auto it = std::find(objects_.begin(), objects_.end(), object);
+    auto it = ea::find(objects_.begin(), objects_.end(), object);
     if (it != objects_.end())
     {
         objects_.erase(it);

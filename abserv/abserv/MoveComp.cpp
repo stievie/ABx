@@ -84,8 +84,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
 
 void MoveComp::StickToGround()
 {
-    const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
-    owner_.transformation_.position_.y_ = y;
+    owner_.GetGame()->map_->UpdatePointHeight(owner_.transformation_.position_);
 }
 
 void MoveComp::HeadTo(const Math::Vector3& pos)

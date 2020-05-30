@@ -119,14 +119,14 @@ public:
     void GetObjects(OctreeQuery& query) const;
     /// Return drawable objects by a ray query.
     void Raycast(RayOctreeQuery& query) const;
-    /// Return the closest drawable object by a ray query.
+    /// Return the closest object by a ray query.
     void RaycastSingle(RayOctreeQuery& query) const;
 
     /// Subdivision level.
     unsigned numLevels_;
     ea::vector<Game::GameObject*> objectUpdate_;
 private:
-    /// Ray query temporary list of drawables.
+    /// Ray query temporary list of objects.
     mutable ea::vector<Game::GameObject*> rayQueryObjects_;
 };
 

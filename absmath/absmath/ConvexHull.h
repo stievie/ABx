@@ -27,7 +27,6 @@
 
 namespace Math {
 
-class Vector3;
 class HeightMap;
 
 class ConvexHull : public Shape
