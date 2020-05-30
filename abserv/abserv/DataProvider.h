@@ -35,15 +35,12 @@
 
 namespace IO {
 
-inline constexpr sa::event_t EVENT_ON_FILECHANGED = sa::StringHash("OnFileChanged");
-
-using DataProviderEvents = sa::Events<
-    void(const std::string&, Asset&)
->;
-
 class DataProvider
 {
 private:
+    using DataProviderEvents = sa::Events<
+        void(const std::string&, Asset&)
+    >;
     using CacheKey = ea::pair<size_t, std::string>;
     struct KeyHasher
     {
@@ -78,7 +75,11 @@ private:
             {
                 assert(asset);
                 Asset* pAsset = reinterpret_cast<Asset*>(asset);
-                events_.CallAll<void(const std::string&, Asset&)>(EVENT_ON_FILECHANGED, fileName, *pAsset);
+                LOG_INFO << "Reloading Asset file " << fileName << " because it changed" << std::endl;
+                assert(Import<T>(static_cast<T&>(*pAsset), fileName));
+                constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+                const CacheKey key = ea::make_pair(hash, fileName);
+                events_.CallAll<void(const std::string&, Asset&)>(KeyHasher()(key), fileName, *pAsset);
             });
             watcher->Start();
             watcher_[key] = std::move(watcher);
@@ -89,10 +90,13 @@ public:
     DataProvider();
     ~DataProvider() = default;
     void Update();
-    template <typename Signature>
-    size_t SubscribeEvent(sa::event_t id, std::function<Signature>&& func)
+
+    template <typename T>
+    size_t SubscribeAssetChangedEvent(const T& asset, std::function<void(const std::string&, Asset&)>&& func)
     {
-        return events_.Subscribe<Signature>(id, std::move(func));
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = ea::make_pair(hash, asset.GetFileName());
+        return events_.Subscribe<void(const std::string&, Asset&)>(KeyHasher()(key), std::move(func));
     }
 
     std::string GetDataFile(const std::string& name) const;

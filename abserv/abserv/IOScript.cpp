@@ -44,6 +44,7 @@ bool IOScript::Import(Game::Script& asset, const std::string& name)
     lua_State* L;
     L = luaL_newstate();
 
+    asset.GetBuffer().clear();
     sa::ScopeGuard luaGuard([&L]()
     {
         lua_close(L);
