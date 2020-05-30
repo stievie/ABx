@@ -292,7 +292,8 @@ void Client::GetServers()
 }
 
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-    const std::string& host /* = "" */, uint16_t port /* = 0 */, const std::string& instanceId /* = "" */)
+    const std::string& host /* = "" */, uint16_t port /* = 0 */,
+    const std::string& instanceId /* = "" */)
 {
     assert(!accountUuid_.empty());
     assert(!authToken_.empty());

@@ -132,19 +132,24 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 void ProtocolGame::Logout()
 {
     auto player = GetPlayer();
-    if (!player)
-        return;
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Logging out user " << player->account_.name << std::endl;
+    LOG_DEBUG << "Logging out user " << (player ? player->account_.name : "(null)") << std::endl;
 #endif
+    OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
+    Disconnect();
+    player_.reset();
+
+    if (!player)
+    {
+        LOG_ERROR << "Player == null" << std::endl;
+        return;
+    }
     player->logoutTime_ = Utils::Tick();
+    player->data_.instanceUuid = Utils::Uuid::EMPTY_UUID;
     IO::IOPlayer::SavePlayer(*player);
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
-    Disconnect();
-    OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
     LOG_INFO << "User " << player->account_.name << " logged out" << std::endl;
-    player_.reset();
 }
 
 void ProtocolGame::ParsePacket(NetworkMessage& message)
@@ -663,6 +668,7 @@ void ProtocolGame::EnterGame()
         // Create new instance
         success = true;
         instance = gameMan->GetInstance(player->data_.instanceUuid);
+        assert(instance);
     }
 
     if (success)

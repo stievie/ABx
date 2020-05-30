@@ -116,6 +116,7 @@ void ProtocolGame::Login(const std::string& accountUuid,
     const std::string& instanceUuid,
     const std::string& host, uint16_t port)
 {
+    loggingOut_ = false;
     Connect(host, port, [=]()
     {
         firstRevc_ = true;
