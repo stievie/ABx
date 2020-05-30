@@ -32,6 +32,7 @@
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
 #include <sa/ScopeGuard.h>
+#include <sa/Compiler.h>
 
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 
@@ -68,7 +69,7 @@ void Client::Poll()
 
 void Client::Run()
 {
-#ifdef _WIN32
+#ifdef SA_PLATFORM_WIN
     ioService_->run();
 #else
     if (state_ != State::World)
@@ -78,7 +79,7 @@ void Client::Run()
             ioService_->reset();
     }
     ioService_->poll();
-#endif // _WIN32
+#endif // SA_PLATFORM_WIN
 }
 
 void Client::Terminate()
@@ -269,7 +270,11 @@ void Client::Logout()
     {
         state_ = State::Disconnected;
         protoGame_->Logout();
+#ifdef SA_PLATFORM_WIN
         Run();
+#else
+        ioService_->run();
+#endif
     }
 }
 

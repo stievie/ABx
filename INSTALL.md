@@ -77,7 +77,4 @@ This lists all account keys, pick one.
 
 ### Known issues
 
-The client should work on Windows and Linux, however there are some minor issues
-on Linux:
-
-* Just closing the client does not log you out from the server, use Logout first and then close the client.
+Nothing special so far.
