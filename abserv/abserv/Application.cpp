@@ -335,6 +335,7 @@ bool Application::LoadMain()
     if (serverLocation_.empty())
         serverLocation_ = (*config)[ConfigManager::Key::Location].GetString();
     Net::ProtocolGame::serverId_ = GetServerId();
+    GetSubsystem<IO::DataProvider>()->watchFiles_ = (*config)[ConfigManager::Key::WatchAssets].GetBool();
 
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     // Not relevant for the game server since it does not count login attempts,

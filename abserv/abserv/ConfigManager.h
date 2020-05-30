@@ -54,7 +54,8 @@ public:
         AiServer,
         AiServerIp,
         AiServerPort,
-        AiUpdateInterval
+        AiUpdateInterval,
+        WatchAssets,
     };
 public:
     ConfigManager();

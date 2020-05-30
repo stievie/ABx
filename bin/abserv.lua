@@ -11,6 +11,7 @@ require("config/data_server")
 data_dir = "data"
 recordings_dir = "recordings"
 record_games = false
+watch_assets = true
 
 base_port = 2749          -- 0xABE
 

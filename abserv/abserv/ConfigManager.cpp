@@ -66,6 +66,8 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::AiServerPort] = static_cast<int>(GetGlobalInt("ai_server_port", 12345ll));
     config_[Key::AiUpdateInterval] = static_cast<int>(GetGlobalInt("ai_server_interval", 1000ll));
 
+    config_[Key::WatchAssets] = GetGlobalBool("watch_assets", true);
+
     Close();
     return true;
 }
