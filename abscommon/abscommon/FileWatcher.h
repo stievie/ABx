@@ -22,24 +22,25 @@
 #pragma once
 
 #include <string>
-#include <memory>
 #include <filesystem>
 #include <functional>
 
-namespace fs = std::filesystem;
-
 namespace IO {
 
-class FileWatcher : std::enable_shared_from_this<FileWatcher>
+namespace fs = std::filesystem;
+
+class FileWatcher
 {
 private:
+    std::string fileName_;
     fs::path path_;
     void* userData_{ nullptr };
-    std::function<void(const std::string, void*)> onChanged_;
+    std::function<void(const std::string&, void*)> onChanged_;
     fs::file_time_type lastTime_{ fs::file_time_type::min() };
     bool enabled_{ false };
 public:
     FileWatcher(const std::string& fileName, void* userData, std::function<void(const std::string, void*)>&& onChanged) :
+        fileName_(fileName),
         path_(fileName),
         userData_(userData),
         onChanged_(std::move(onChanged))

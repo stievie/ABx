@@ -51,7 +51,7 @@ void FileWatcher::Update()
         if (lastTime_ != fs::file_time_type::min())
         {
             if (onChanged_)
-                onChanged_(path_, userData_);
+                onChanged_(fileName_, userData_);
         }
         lastTime_ = lastWriteTime;
     }
