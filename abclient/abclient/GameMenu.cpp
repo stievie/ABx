@@ -23,6 +23,7 @@
 #include "GameMenu.h"
 #include "FwClient.h"
 #include "Shortcuts.h"
+#include <AB/Entities/Game.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -266,9 +267,13 @@ void GameMenu::HandleGotServices(StringHash, VariantMap&)
     UpdateServers();
 }
 
-void GameMenu::HandleLevelReady(StringHash, VariantMap&)
+void GameMenu::HandleLevelReady(StringHash, VariantMap& eventData)
 {
     UpdateServers();
+    using namespace Events::LevelReady;
+    AB::Entities::GameType type = static_cast<AB::Entities::GameType>(eventData[P_TYPE].GetInt());
+    bool visible = AB::Entities::IsOutpost(type);
+    serversMenu_->SetVisible(visible);
 }
 
 void GameMenu::HandleFriendsUsed(StringHash, VariantMap&)
@@ -288,8 +293,10 @@ void GameMenu::HandleGuildWindowUsed(StringHash, VariantMap&)
 void GameMenu::UpdateServers()
 {
     FwClient* client = GetSubsystem<FwClient>();
+
     Window* popup = static_cast<Window*>(serversMenu_->GetPopup());
     popup->RemoveAllChildren();
+
     popup->SetLayout(LM_VERTICAL, 1);
     serversMenu_->SetPopupOffset(IntVector2(menu_->GetPopup()->GetWidth(), 0));
     String cId = client->GetCurrentServerId();

@@ -45,6 +45,7 @@ URHO3D_EVENT(E_SETLEVEL, SetLevel)
 URHO3D_EVENT(E_LEVELREADY, LevelReady)
 {
     URHO3D_PARAM(P_NAME, Name);        // String
+    URHO3D_PARAM(P_TYPE, Type);        // int
 }
 
 URHO3D_EVENT(E_WHISPERTO, WhisperTo)

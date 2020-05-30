@@ -50,6 +50,7 @@ PvpCombatLevel::PvpCombatLevel(Context* context) :
     VariantMap& eData = GetEventDataMap();
     using namespace Events::LevelReady;
     eData[P_NAME] = "PvpCombatLevel";
+    eData[P_TYPE] = static_cast<int>(mapType_);
     SendEvent(Events::E_LEVELREADY, eData);
 
     chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
