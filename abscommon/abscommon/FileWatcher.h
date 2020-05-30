@@ -30,24 +30,25 @@ namespace fs = std::filesystem;
 
 namespace IO {
 
-inline constexpr uint32_t FILEWATCHER_INTERVAL = 1000;
-
 class FileWatcher : std::enable_shared_from_this<FileWatcher>
 {
 private:
     fs::path path_;
+    void* userData_{ nullptr };
+    std::function<void(const std::string, void*)> onChanged_;
     fs::file_time_type lastTime_{ fs::file_time_type::min() };
-    bool watching_{ false };
-    void Update();
+    bool enabled_{ false };
 public:
-    explicit FileWatcher(const std::string& fileName) :
-        path_(fileName)
+    FileWatcher(const std::string& fileName, void* userData, std::function<void(const std::string, void*)>&& onChanged) :
+        path_(fileName),
+        userData_(userData),
+        onChanged_(std::move(onChanged))
     { }
     ~FileWatcher();
+    void Update();
     void Start();
     void Stop();
-    bool IsWatching() const { return watching_; }
-    std::function<void()> onChanged_;
+    bool IsEnabled() const { return enabled_; }
 };
 
 }

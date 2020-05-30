@@ -31,6 +31,7 @@
 #include <AB/Entities/Service.h>
 #include <abscommon/CpuUsage.h>
 #include <abscommon/DataClient.h>
+#include <abscommon/FileWatcher.h>
 #include <abscommon/ThreadPool.h>
 
 void Maintenance::CleanCacheTask()
@@ -115,6 +116,17 @@ void Maintenance::UpdateServerLoadTask()
     );
 }
 
+void Maintenance::FileWatchTask()
+{
+    GetSubsystem<IO::DataProvider>()->Update();
+    if (status_ == MaintenanceStatus::Runnig)
+    {
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&Maintenance::FileWatchTask, this))
+        );
+    }
+}
+
 void Maintenance::CheckAutoTerminate()
 {
     if (GetSubsystem<Game::PlayerManager>()->GetIdleTime() >= CHECK_AUTOTERMINATE_IDLE_MS)
@@ -161,6 +173,9 @@ void Maintenance::Run()
     );
     shed->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
+    );
+    shed->Add(
+        Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&Maintenance::FileWatchTask, this))
     );
     if (Application::Instance->autoTerminate_)
     {

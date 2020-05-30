@@ -42,6 +42,15 @@ DataProvider::DataProvider()
     AddImporter<Game::Script, IO::IOScript>();
 }
 
+void DataProvider::Update()
+{
+    if (!watchFiles_)
+        return;
+
+    for (auto& watcher : watcher_)
+        watcher.second->Update();
+}
+
 std::string DataProvider::GetDataFile(const std::string& name) const
 {
     static std::string dataDir = (*GetSubsystem<ConfigManager>())[ConfigManager::DataDir].GetString();

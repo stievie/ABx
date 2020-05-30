@@ -21,32 +21,29 @@
 
 
 #include "FileWatcher.h"
-#include "Subsystems.h"
-#include "Scheduler.h"
 
 namespace IO {
 
 FileWatcher::~FileWatcher()
 {
-    watching_ = false;
+    enabled_ = false;
 }
 
 void FileWatcher::Start()
 {
-    if (watching_)
+    if (enabled_)
         return;
-    watching_ = true;
-    Update();
+    enabled_ = true;
 }
 
 void FileWatcher::Stop()
 {
-    watching_ = false;
+    enabled_ = false;
 }
 
 void FileWatcher::Update()
 {
-    if (!watching_)
+    if (!enabled_)
         return;
     auto lastWriteTime = fs::last_write_time(path_);
     if (lastWriteTime > lastTime_)
@@ -54,12 +51,10 @@ void FileWatcher::Update()
         if (lastTime_ != fs::file_time_type::min())
         {
             if (onChanged_)
-                onChanged_();
+                onChanged_(path_, userData_);
         }
         lastTime_ = lastWriteTime;
     }
-    auto* shed = GetSubsystem<Asynch::Scheduler>();
-    shed->Add(Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&FileWatcher::Update, shared_from_this())));
 }
 
 }

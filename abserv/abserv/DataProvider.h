@@ -24,14 +24,22 @@
 #include "Asset.h"
 #include "IOAsset.h"
 #include <abscommon/FileUtils.h>
+#include <abscommon/FileWatcher.h>
 #include <abscommon/Logger.h>
 #include <abscommon/StringUtils.h>
 #include <eastl.hpp>
 #include <sa/Assert.h>
+#include <sa/Events.h>
 #include <sa/StringHash.h>
 #include <sa/TypeName.h>
 
 namespace IO {
+
+inline constexpr sa::event_t EVENT_ON_FILECHANGED = sa::StringHash("OnFileChanged");
+
+using DataProviderEvents = sa::Events<
+    void(const std::string&, Asset&)
+>;
 
 class DataProvider
 {
@@ -51,12 +59,41 @@ private:
             return res;
         }
     };
+    DataProviderEvents events_;
     ea::map<size_t, ea::unique_ptr<IOAsset>> importers_;
     ea::unordered_map<CacheKey, ea::shared_ptr<Asset>, KeyHasher> cache_;
     ea::unordered_map<CacheKey, int64_t, KeyHasher> usage_;
+    ea::map<CacheKey, ea::unique_ptr<FileWatcher>> watcher_;
+    template<class T>
+    bool InternalAddToCache(const std::string& normalName, const CacheKey& key, ea::shared_ptr<T> asset)
+    {
+        const auto it = cache_.find(key);
+        if (it != cache_.end())
+            return false;
+        cache_[key] = asset;
+        usage_[key] = Utils::Tick();
+        if (watchFiles_)
+        {
+            auto watcher = ea::make_unique<FileWatcher>(normalName, asset.get(), [this](const std::string& fileName, void* asset)
+            {
+                assert(asset);
+                Asset* pAsset = reinterpret_cast<Asset*>(asset);
+                events_.CallAll<void(const std::string&, Asset&)>(EVENT_ON_FILECHANGED, fileName, *pAsset);
+            });
+            watcher->Start();
+            watcher_[key] = std::move(watcher);
+        }
+        return true;
+    }
 public:
     DataProvider();
     ~DataProvider() = default;
+    void Update();
+    template <typename Signature>
+    size_t SubscribeEvent(sa::event_t id, std::function<Signature>&& func)
+    {
+        return events_.Subscribe<Signature>(id, std::move(func));
+    }
 
     std::string GetDataFile(const std::string& name) const;
     const std::string& GetDataDir() const;
@@ -92,12 +129,7 @@ public:
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
         const CacheKey key = ea::make_pair(hash, normal_name);
-        const auto it = cache_.find(key);
-        if (it != cache_.end())
-            return false;
-        cache_[key] = asset;
-        usage_[key] = Utils::Tick();
-        return true;
+        return InternalAddToCache<T>(normal_name, key, asset);
     }
     template<class T>
     bool RemoveFromCache(ea::shared_ptr<T> asset, const std::string& name)
@@ -109,6 +141,13 @@ public:
         auto usageIt = usage_.find(key);
         if (usageIt != usage_.end())
             usage_.erase(usageIt);
+        auto watcherIt = watcher_.find(key);
+        if (watcherIt != watcher_.end())
+        {
+            (*watcherIt).second->Stop();
+            watcher_.erase(watcherIt);
+        }
+
         auto it = cache_.find(key);
         if (it != cache_.end() && (*it).second.get() == asset.get())
         {
@@ -205,14 +244,12 @@ public:
         if (Import<T>(*asset, normal_name))
         {
             if (cacheAble)
-            {
-                usage_[key] = Utils::Tick();
-                cache_[key] = asset;
-            }
+                InternalAddToCache<T>(normal_name, key, asset);
             return asset;
         }
         return ea::shared_ptr<T>();
     }
+    bool watchFiles_{ true };
 };
 
 }

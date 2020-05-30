@@ -39,6 +39,7 @@ private:
     void CleanPlayersTask();
     void CleanChatsTask();
     void UpdateServerLoadTask();
+    void FileWatchTask();
     void CheckAutoTerminate();
     void UpdateAiServer();
 public:
