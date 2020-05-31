@@ -26,13 +26,15 @@ a solution file (`absall/absall.sln`) which contains all server projects.
 
 ## Linux
 
-As C++ IDE on Linux I prefer QtCreator. There are QtCreator project
-files (`.creator`) in the subdirectories of the projects. You can also setup
-QtCreator to build the projects with the makefiles in the `makefiles` directory.
+As C++ IDE on Linux I prefer QtCreator. QtCreator has excellent support for CMake,
+so you can just open the top level `CMakeLists.txt` file with it.
+
+![QtCreator](/Doc/qtcreator.png?raw=true)
+
+Then you can configure QtCreator to build the project for you with GNU make or,
+like in my case, Ninja.
 
 ![QtCreator Build](/Doc/qtcreator_build.png?raw=true)
-
-You can also open the `CMakeLists.txt` file in the root directory with QtCreator.
 
 ## If you don't want to code
 

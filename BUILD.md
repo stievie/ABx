@@ -29,7 +29,7 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 
 * GCC 9 or later
 * GNU make
-* CMake 3.16 (optional)
+* CMake 3.16
 * ccache (optional)
 
 ### Dependencies
@@ -75,15 +75,7 @@ If CMake complains about missing PostgreSQL although you installed `ibpq-dev`, a
 ### Build
 
 1. Install the required packages.
-2. `cd` to `./makefiles`
-3. Type `make`.
-
-It can use ccache to speedup compilation. Export the `PRE_CXX` environment variable.
-~~~sh
-export PRE_CXX=ccache
-~~~
-
-On Linux you could also use CMake. If you are in the root directory:
+2. Use CMake to build it (assuming you want to use GNU make):
 ~~~sh
 $ mkdir build
 $ cd build
@@ -92,13 +84,8 @@ $ make
 # Copy executables to ../bin and ../abclient/bin
 $ cmake --install . --component runtime
 ~~~
-Of if you prefer Ninja:
-~~~sh
-$ mkdir build
-$ cd build
-$ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
-$ ninja
-~~~
+
+After that, you can update easily with just (1) pulling the latest HEAD from GitHub, (2) cd into the previously created `build` directory and (3) type `make`.
 
 ### Client
 
@@ -135,15 +122,15 @@ bin
 
 #### Build
 
-`cd` to `./makefiles` and type:
+Since everything has the same top level CMakeLists.txt file, the client is built with the server. But you must configure it to build the client. To change the above commands to build the client too:
 ~~~sh
-$ make -f client.make
+$ mkdir build
+$ cd build
+$ cmake -DABX_BUILD_CLIENT=ON -DCMAKE_BUILD_TYPE=Release ..
+$ make
+# Copy executables to ../bin and ../abclient/bin
+$ cmake --install . --component runtime
 ~~~
 
-## Troubleshooting
-
-If you have built it before and it doesn't build anymore, try to clean it before:
-
-~~~sh
-$ make clean && make
-~~~
+Again, to update just pull from GitHub and type `make` in the `build` directory,
+no need to run CMake again.
