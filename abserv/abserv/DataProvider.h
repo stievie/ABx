@@ -41,6 +41,12 @@ private:
     using DataProviderEvents = sa::Events<
         void(const Asset&)
     >;
+    struct CacheItem
+    {
+        ea::shared_ptr<Asset> asset;
+        int64_t lastUsed;
+        ea::unique_ptr<FileWatcher> watcher;
+    };
     using CacheKey = ea::pair<size_t, std::string>;
     struct KeyHasher
     {
@@ -58,20 +64,19 @@ private:
     };
     DataProviderEvents events_;
     ea::map<size_t, ea::unique_ptr<IOAsset>> importers_;
-    ea::unordered_map<CacheKey, ea::shared_ptr<Asset>, KeyHasher> cache_;
-    ea::unordered_map<CacheKey, int64_t, KeyHasher> usage_;
-    ea::map<CacheKey, ea::unique_ptr<FileWatcher>> watcher_;
+    ea::unordered_map<CacheKey, CacheItem, KeyHasher> cache_;
     template<class T>
     bool InternalAddToCache(const std::string& normalName, const CacheKey& key, ea::shared_ptr<T> asset)
     {
         const auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
-        cache_[key] = asset;
-        usage_[key] = Utils::Tick();
+        CacheItem item;
+        item.asset = asset;
+        item.lastUsed = Utils::Tick();
         if (watchFiles_)
         {
-            auto watcher = ea::make_unique<FileWatcher>(normalName, asset.get(), [this](const std::string& fileName, void* asset)
+            item.watcher = ea::make_unique<FileWatcher>(normalName, asset.get(), [this](const std::string& fileName, void* asset)
             {
                 assert(asset);
                 Asset* pAsset = reinterpret_cast<Asset*>(asset);
@@ -80,10 +85,9 @@ private:
                 constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
                 const CacheKey key = ea::make_pair(hash, fileName);
                 events_.CallAll<void(const Asset&)>(KeyHasher()(key), *pAsset);
-            });
-            watcher->Start();
-            watcher_[key] = std::move(watcher);
+            }, false);
         }
+        cache_.emplace(key, std::move(item));
         return true;
     }
 public:
@@ -108,9 +112,9 @@ public:
     template<class T>
     bool Exists(const std::string& name) const
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normalName);
         const auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
@@ -119,9 +123,9 @@ public:
     template<class T>
     bool IsCached(const std::string& name) const
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normalName);
         const auto it = cache_.find(key);
         return (it != cache_.end());
     }
@@ -130,30 +134,20 @@ public:
     template<class T>
     bool AddToCache(ea::shared_ptr<T> asset, const std::string& name)
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
-        return InternalAddToCache<T>(normal_name, key, asset);
+        const CacheKey key = ea::make_pair(hash, normalName);
+        return InternalAddToCache<T>(normalName, key, asset);
     }
     template<class T>
     bool RemoveFromCache(ea::shared_ptr<T> asset, const std::string& name)
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
-
-        auto usageIt = usage_.find(key);
-        if (usageIt != usage_.end())
-            usage_.erase(usageIt);
-        auto watcherIt = watcher_.find(key);
-        if (watcherIt != watcher_.end())
-        {
-            (*watcherIt).second->Stop();
-            watcher_.erase(watcherIt);
-        }
+        const CacheKey key = ea::make_pair(hash, normalName);
 
         auto it = cache_.find(key);
-        if (it != cache_.end() && (*it).second.get() == asset.get())
+        if (it != cache_.end() && (*it).second.asset.get() == asset.get())
         {
             cache_.erase(it);
             return true;
@@ -163,23 +157,21 @@ public:
     template<class T>
     ea::shared_ptr<T> GetCached(const std::string& name)
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normalName);
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
-            usage_[key] = Utils::Tick();
-            return ea::static_pointer_cast<T>((*it).second);
+            (*it).second.lastUsed = Utils::Tick();
+            return ea::static_pointer_cast<T>((*it).second.asset);
         }
         return ea::shared_ptr<T>();
     }
     /// Remove all objects from the cache
     void ClearCache()
     {
-        watcher_.clear();
         cache_.clear();
-        usage_.clear();
     }
     /// Remove all objects that are only referenced by the cache, i.e. nobody
     /// else owns it anymore.
@@ -229,27 +221,27 @@ public:
     template<class T>
     ea::shared_ptr<T> GetAsset(const std::string& name, bool cacheAble = true)
     {
-        const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
+        const std::string normalName = GetFile(Utils::NormalizeFilename(name));
         constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
-        const CacheKey key = ea::make_pair(hash, normal_name);
+        const CacheKey key = ea::make_pair(hash, normalName);
         // Lookup in cache
         if (cacheAble)
         {
             auto it = cache_.find(key);
             if (it != cache_.end())
             {
-                usage_[key] = Utils::Tick();
-                return ea::static_pointer_cast<T>((*it).second);
+                (*it).second.lastUsed = Utils::Tick();
+                return ea::static_pointer_cast<T>((*it).second.asset);
             }
         }
 
         // Not in cache make a new one and load it
         ea::shared_ptr<T> asset = ea::make_shared<T>();
         assert(asset);
-        if (Import<T>(*asset, normal_name))
+        if (Import<T>(*asset, normalName))
         {
             if (cacheAble)
-                InternalAddToCache<T>(normal_name, key, asset);
+                InternalAddToCache<T>(normalName, key, asset);
             return asset;
         }
         return ea::shared_ptr<T>();

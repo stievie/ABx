@@ -50,8 +50,11 @@ void DataProvider::Update()
     if (!watchFiles_)
         return;
 
-    for (const auto& watcher : watcher_)
-        watcher.second->Update();
+    for (const auto& item : cache_)
+    {
+        if (item.second.watcher)
+            item.second.watcher->Update();
+    }
 }
 
 std::string DataProvider::GetDataFile(const std::string& name)
@@ -89,29 +92,13 @@ void DataProvider::CleanCache()
 #endif
     // Delete all assets that are only owned by the cache
     auto i = cache_.begin();
-    while ((i = ea::find_if(i, cache_.end(), [this](const auto& current) -> bool
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
-        if (current.second.use_count() == 1)
-        {
-            const auto usageIt = usage_.find(current.first);
-            if (usageIt != usage_.end())
-                return Utils::TimeElapsed(usageIt->second) >= CACHE_KEEP_UNUSED_ASSETS;
-            // Not in usage_???
-            return true;
-        }
+        if (current.second.asset.use_count() == 1)
+            return Utils::TimeElapsed(current.second.lastUsed) >= CACHE_KEEP_UNUSED_ASSETS;
         return false;
     })) != cache_.end())
     {
-        const auto& key = (*i).first;
-        auto usageIt = usage_.find(key);
-        if (usageIt != usage_.end())
-            usage_.erase(usageIt);
-        auto watcherIt = watcher_.find(key);
-        if (watcherIt != watcher_.end())
-        {
-            (*watcherIt).second->Stop();
-            watcher_.erase(watcherIt);
-        }
         cache_.erase(i++);
     }
 }

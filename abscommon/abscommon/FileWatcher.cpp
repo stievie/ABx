@@ -24,6 +24,16 @@
 
 namespace IO {
 
+FileWatcher::FileWatcher(const std::string& fileName, void* userData, std::function<void(const std::string, void*)>&& onChanged, bool defer) :
+    fileName_(fileName),
+    path_(fileName),
+    userData_(userData),
+    onChanged_(std::move(onChanged))
+{
+    if (!defer)
+        Start();
+}
+
 FileWatcher::~FileWatcher()
 {
     enabled_ = false;

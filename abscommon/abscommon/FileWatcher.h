@@ -39,12 +39,7 @@ private:
     fs::file_time_type lastTime_{ fs::file_time_type::min() };
     bool enabled_{ false };
 public:
-    FileWatcher(const std::string& fileName, void* userData, std::function<void(const std::string, void*)>&& onChanged) :
-        fileName_(fileName),
-        path_(fileName),
-        userData_(userData),
-        onChanged_(std::move(onChanged))
-    { }
+    FileWatcher(const std::string& fileName, void* userData, std::function<void(const std::string, void*)>&& onChanged, bool defer);
     ~FileWatcher();
     void Update();
     void Start();
