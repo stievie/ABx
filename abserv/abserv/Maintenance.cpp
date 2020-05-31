@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Maintenance.h"
 #include "AiDebugServer.h"
 #include "Application.h"
@@ -37,7 +36,7 @@
 void Maintenance::CleanCacheTask()
 {
     GetSubsystem<IO::DataProvider>()->CleanCache();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CACHE_CLEAN_INTERVAL, std::bind(&Maintenance::CleanCacheTask, this))
@@ -48,7 +47,7 @@ void Maintenance::CleanCacheTask()
 void Maintenance::CleanGamesTask()
 {
     GetSubsystem<Game::GameManager>()->CleanGames();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))
@@ -61,7 +60,7 @@ void Maintenance::CleanPlayersTask()
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
     playerMan->CleanPlayers();
     playerMan->RefreshAuthTokens();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
@@ -72,7 +71,7 @@ void Maintenance::CleanPlayersTask()
 void Maintenance::CleanChatsTask()
 {
     GetSubsystem<Game::Chat>()->CleanChats();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_CHATS_MS, std::bind(&Maintenance::CleanChatsTask, this))
@@ -82,7 +81,7 @@ void Maintenance::CleanChatsTask()
 
 void Maintenance::UpdateServerLoadTask()
 {
-    if (status_ != MaintenanceStatus::Runnig)
+    if (status_ != Status::Runnig)
         return;
 
 #ifdef DEBUG_POOLALLOCATOR
@@ -119,7 +118,7 @@ void Maintenance::UpdateServerLoadTask()
 void Maintenance::FileWatchTask()
 {
     GetSubsystem<IO::DataProvider>()->Update();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&Maintenance::FileWatchTask, this))
@@ -136,7 +135,7 @@ void Maintenance::CheckAutoTerminate()
         GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::Stop, Application::Instance);
         return;
     }
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
@@ -147,7 +146,7 @@ void Maintenance::CheckAutoTerminate()
 void Maintenance::UpdateAiServer()
 {
     GetSubsystem<AI::DebugServer>()->Update();
-    if (status_ == MaintenanceStatus::Runnig)
+    if (status_ == Status::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(aiUpdateInterval_, std::bind(&Maintenance::UpdateAiServer, this))
@@ -158,8 +157,9 @@ void Maintenance::UpdateAiServer()
 void Maintenance::Run()
 {
     {
-        std::scoped_lock lock(lock_);
-        status_ = MaintenanceStatus::Runnig;
+        std::mutex mutex;
+        std::scoped_lock lock(mutex);
+        status_ = Status::Runnig;
     }
     auto* shed = GetSubsystem<Asynch::Scheduler>();
     shed->Add(
@@ -193,6 +193,7 @@ void Maintenance::Run()
 
 void Maintenance::Stop()
 {
-    std::scoped_lock lock(lock_);
-    status_ = MaintenanceStatus::Runnig;
+    std::mutex mutex;
+    std::scoped_lock lock(mutex);
+    status_ = Status::Runnig;
 }

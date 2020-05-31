@@ -27,13 +27,12 @@
 class Maintenance
 {
 private:
-    std::mutex lock_;
-    enum class MaintenanceStatus
+    enum class Status
     {
         Runnig,
         Terminated
     };
-    MaintenanceStatus status_;
+    Status status_;
     void CleanCacheTask();
     void CleanGamesTask();
     void CleanPlayersTask();
@@ -44,7 +43,7 @@ private:
     void UpdateAiServer();
 public:
     Maintenance() :
-        status_(MaintenanceStatus::Terminated)
+        status_(Status::Terminated)
     {}
     ~Maintenance() = default;
 
