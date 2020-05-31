@@ -273,7 +273,7 @@ void Client::Logout()
 #ifdef SA_PLATFORM_WIN
         Run();
 #else
-        ioService_->run();
+        ioService_->run_one();
 #endif
     }
 }
