@@ -323,7 +323,6 @@ private:
     size_t currentSize_;
 
     ea::unordered_map<IO::DataKey, CacheItem, std::hash<IO::DataKey>> cache_;
-    std::mutex lock_;
     /// Name -> Cache Key
     NameIndex namesCache_;
     CacheIndex index_;
