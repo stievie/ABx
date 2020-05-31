@@ -54,7 +54,7 @@ void Connection::Start()
             if (keySize <= maxKeySize_)
                 StartReadKey(keySize);
             else
-                SendStatusAndRestart(IO::ErrorCodes::KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + std::to_string(maxKeySize_));
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + std::to_string(maxKeySize_));
         }
         else
         {
@@ -74,7 +74,7 @@ void Connection::StartReadKey(uint16_t keySize)
         if (!error)
         {
             if (static_cast<uint16_t>(byteTransferred) != keySize)
-                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data sent is not equal to the expected size");
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Data sent is not equal to the expected size");
             else
                 StartClientRequestedOp();
         }
@@ -109,7 +109,7 @@ void Connection::StartCreateOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -142,7 +142,7 @@ void Connection::StartUpdateDataOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -175,7 +175,7 @@ void Connection::StartReadOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -232,7 +232,7 @@ void Connection::StartExistsOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -268,7 +268,7 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
 
     if (bytes_transferred != expected)
     {
-        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         return;
     }
 
@@ -297,7 +297,7 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
 
     if (bytes_transferred != expected)
     {
-        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         return;
     }
 
@@ -325,12 +325,12 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
 
     if (!data_)
     {
-        SendStatusAndRestart(IO::ErrorCodes::NoSuchKey, "Requested data not in cache");
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::NoSuchKey, "Requested data not in cache");
         return;
     }
     if (bytes_transferred != expected)
     {
-        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         return;
     }
 
@@ -374,7 +374,7 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
 
     if (bytes_transferred != expected)
     {
-        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         return;
     }
 
