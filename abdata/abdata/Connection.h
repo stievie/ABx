@@ -60,6 +60,11 @@ private:
     void StartExistsOperation();
     void StartClearOperation();
 
+    void CreateDataTask();
+    void ReadDataTask();
+    void ExistsDataTask();
+    void UpdateDataTask();
+
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);

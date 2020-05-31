@@ -259,56 +259,58 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
     size_t bytes_transferred, size_t expected)
 {
     // Network/main thread
-    if (!error)
-    {
-        if (bytes_transferred != expected)
-            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
-        else
-        {
-            bool res = false;
-            {
-                std::scoped_lock lock(lock_);
-                res = storageProvider_.Update(key_, data_);
-            }
-            if (res)
-                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
-            else
-                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
-        }
-    }
-    else
+    if (error)
     {
         LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+        return;
     }
+
+    if (bytes_transferred != expected)
+    {
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        return;
+    }
+
+    AddTask(&Connection::UpdateDataTask);
+}
+
+void Connection::UpdateDataTask()
+{
+    bool res = storageProvider_.Update(key_, data_);
+    if (res)
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
 }
 
 void Connection::HandleCreateReadRawData(const asio::error_code& error,
     size_t bytes_transferred, size_t expected)
 {
     // Network/main thread
-    if (!error)
-    {
-        if (bytes_transferred != expected)
-            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
-        else
-        {
-            bool res = false;
-            {
-                std::scoped_lock lock(lock_);
-                res = storageProvider_.Create(key_, data_);
-            }
-            if (res)
-                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
-            else
-                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
-        }
-    }
-    else
+    if (error)
     {
         LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+        return;
     }
+
+    if (bytes_transferred != expected)
+    {
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        return;
+    }
+
+    AddTask(&Connection::CreateDataTask);
+}
+
+void Connection::CreateDataTask()
+{
+    bool res = storageProvider_.Create(key_, data_);
+    if (res)
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
 }
 
 void Connection::HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
@@ -320,6 +322,7 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
         connectionManager_.Stop(shared_from_this());
         return;
     }
+
     if (!data_)
     {
         SendStatusAndRestart(IO::ErrorCodes::NoSuchKey, "Requested data not in cache");
@@ -331,11 +334,12 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
         return;
     }
 
-    bool res = false;
-    {
-        std::scoped_lock lock(lock_);
-        res = storageProvider_.Read(key_, data_);
-    }
+    AddTask(&Connection::ReadDataTask);
+}
+
+void Connection::ReadDataTask()
+{
+    bool res = storageProvider_.Read(key_, data_);
 
     if (!res)
     {
@@ -361,28 +365,29 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
 void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
 {
     // Network/main thread
-    if (!error)
-    {
-        if (bytes_transferred != expected)
-            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
-        else
-        {
-            bool res = false;
-            {
-                std::scoped_lock lock(lock_);
-                res = storageProvider_.Exists(key_, data_);
-            }
-            if (res)
-                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
-            else
-                SendStatusAndRestart(IO::ErrorCodes::NotExists, "Record does not exist");
-        }
-    }
-    else
+    if (error)
     {
         LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+        return;
     }
+
+    if (bytes_transferred != expected)
+    {
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
+        return;
+    }
+
+    AddTask(&Connection::ExistsDataTask);
+}
+
+void Connection::ExistsDataTask()
+{
+    bool res = storageProvider_.Exists(key_, data_);
+    if (res)
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::NotExists, "Record does not exist");
 }
 
 void Connection::HandleWriteReqResponse(const asio::error_code& error)

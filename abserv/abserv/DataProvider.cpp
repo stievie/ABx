@@ -31,6 +31,7 @@
 #include "IOScript.h"
 #include <abscommon/Utils.h>
 #include <abscommon/StringUtils.h>
+#include <abscommon/Subsystems.h>
 
 namespace IO {
 
