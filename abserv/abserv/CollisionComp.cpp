@@ -26,7 +26,7 @@
 #include "MoveComp.h"
 #include <absmath/Plane.h>
 
-#define DEBUG_COLLISION
+//#define DEBUG_COLLISION
 
 namespace Game {
 namespace Components {
@@ -36,7 +36,7 @@ static constexpr float CloseDistance = 0.005f * UnitScale;
 
 bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other)
 {
-    AB_PROFILE;
+//    AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
     const Math::Vector3& safePos = mc.GetSafePosition();
 

@@ -128,7 +128,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(PlayerError)                 \
     ENUMERATE_SERVER_PACKET_CODE(PlayerAutoRun)               \
     ENUMERATE_SERVER_PACKET_CODE(GameStart)                   \
-    ENUMERATE_SERVER_PACKET_CODE(GameEnter)                   \
+    ENUMERATE_SERVER_PACKET_CODE(EnterWorld)                  \
     ENUMERATE_SERVER_PACKET_CODE(GameUpdate)                  \
     ENUMERATE_SERVER_PACKET_CODE(GamePong)                    \
     ENUMERATE_SERVER_PACKET_CODE(GameSpawnObjectExisting)     \
@@ -369,6 +369,20 @@ enum class ServerPacketType : uint8_t
 #undef ENUMERATE_SERVER_PACKET_CODE
     __Last = 0xFF
 };
+
+inline const char* GetServerPacketTypeName(ServerPacketType type)
+{
+    switch (type)
+    {
+    case ServerPacketType::__First: return "__First";
+#define ENUMERATE_SERVER_PACKET_CODE(v) case ServerPacketType::v: return #v;
+        ENUMERATE_SERVER_PACKET_CODES
+#undef ENUMERATE_SERVER_PACKET_CODE
+    case ServerPacketType::__Last: return "__Last";
+    default:
+        return "Unknown";
+    }
+}
 
 enum class ObjectCallType : uint8_t
 {

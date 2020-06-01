@@ -97,36 +97,39 @@ void BaseLevel::PostRenderUpdate(StringHash, VariantMap&)
 
 void BaseLevel::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
-    URHO3D_LOGERRORF("Network error (%d): %s", err.default_error_condition().value(), err.message().c_str());
     String msg;
     switch (connectionError)
     {
     case Client::ConnectionError::ResolveError:
-        msg = "Resolve error: ";
+        msg = "Resolve error";
         break;
     case Client::ConnectionError::WriteError:
-        msg = "Write error: ";
+        msg = "Write error";
         break;
     case Client::ConnectionError::ConnectError:
-        msg = "Connect error: ";
+        msg = "Connect error";
         break;
     case Client::ConnectionError::ReceiveError:
-        msg = "Read error: ";
+        msg = "Read error";
         break;
     case Client::ConnectionError::ConnectTimeout:
-        msg = "Connect timeout: ";
+        msg = "Connect timeout";
         break;
     case Client::ConnectionError::ReadTimeout:
-        msg = "Read timeout: ";
+        msg = "Read timeout";
         break;
     case Client::ConnectionError::WriteTimeout:
-        msg = "Write timeout: ";
+        msg = "Write timeout";
+        break;
+    case Client::ConnectionError::DisconnectNoPong:
+        msg = "Disconnect no Pong";
         break;
     default:
-        msg = "Network Error: ";
+        msg = "Other Error " + String(static_cast<unsigned>(connectionError));
         break;
     }
-    msg += String(err.message().c_str());
+    URHO3D_LOGERRORF("Network error [%s]: (%d) %s", msg.CString(), err.default_error_condition().value(), err.message().c_str());
+    msg += ": " + String(err.message().c_str());
     ShowError(msg, "Network Error");
 }
 

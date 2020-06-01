@@ -193,9 +193,6 @@ void Connection::Close()
 
     connecting_ = false;
     connected_ = false;
-    connectCallback_ = nullptr;
-    errorCallback_ = nullptr;
-    recvCallback_ = nullptr;
 
     resolver_.cancel();
     connectTimer_.cancel();

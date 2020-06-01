@@ -58,7 +58,10 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
     if (auto conn = GetConnection())
     {
         conn->Send(std::move(message));
+        return;
     }
+    LOG_ERROR << "Connection expired" << std::endl;
+    Release();
 }
 
 sa::SharedPtr<OutputMessage>& Protocol::GetCurrentBuffer()

@@ -112,4 +112,8 @@ PoolWrapper::MessagePool* PoolWrapper::GetOutputMessagePool()
     return pool;
 }
 
+OutputMessage::OutputMessage() :
+    NetworkMessage()
+{ }
+
 }

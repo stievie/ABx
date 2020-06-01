@@ -44,7 +44,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ServerJoined, ServerPacketType::ServerJoined>();
     AddHandler<AB::Packets::Server::ServerLeft, ServerPacketType::ServerLeft>();
     AddHandler<AB::Packets::Server::ChangeInstance, ServerPacketType::ChangeInstance>();
-    AddHandler<AB::Packets::Server::EnterWorld, ServerPacketType::GameEnter>();
+    AddHandler<AB::Packets::Server::EnterWorld, ServerPacketType::EnterWorld>();
     AddHandler<AB::Packets::Server::GameError, ServerPacketType::PlayerError>();
     AddHandler<AB::Packets::Server::PlayerAutorun, ServerPacketType::PlayerAutoRun>();
     AddHandler<AB::Packets::Server::MailHeaders, ServerPacketType::MailHeaders>();
@@ -189,6 +189,17 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         ServerPacketType prevCode = opCode;
         opCode = static_cast<ServerPacketType>(message.Get<uint8_t>());
 
+#if 0
+        if (opCode != ServerPacketType::GameUpdate && opCode != ServerPacketType::__Last)
+        {
+            std::stringstream ss3;
+            ss3 << "ProtocolGame::ParseMessage(): Code " << static_cast<int>(opCode) << " " << GetServerPacketTypeName(opCode) <<
+                " last code " << static_cast<int>(prevCode) << " " << GetServerPacketTypeName(prevCode) <<
+                " unread size " << message.GetUnreadSize();
+            LogMessage(ss3.str());
+        }
+#endif
+
         if (packetHandlers_.Exists(opCode))
         {
             packetHandlers_.Call(opCode, message);
@@ -234,8 +245,8 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         default:
         {
             std::stringstream ss2;
-            ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) <<
-                " last code " << static_cast<int>(prevCode) <<
+            ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) << " " << GetServerPacketTypeName(opCode) <<
+                " last code " << static_cast<int>(prevCode) << " " << GetServerPacketTypeName(prevCode) <<
                 " unread size " << message.GetUnreadSize();
             LogMessage(ss2.str());
             // Unknown packet, discard whole message

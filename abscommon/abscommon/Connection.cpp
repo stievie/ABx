@@ -56,7 +56,10 @@ bool Connection::Send(sa::SharedPtr<OutputMessage>&& message)
 {
 
     if (state_ != State::Open)
+    {
+        LOG_ERROR << "State not open " << static_cast<int>(state_.load()) << std::endl;
         return false;
+    }
 
     OutputMessage& msg = *message;
     bool noPendingWrite = messageQueue_.empty();

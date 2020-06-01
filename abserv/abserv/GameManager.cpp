@@ -73,6 +73,9 @@ ea::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
         std::scoped_lock lock(lock_);
         GetSubsystem<AI::DebugServer>()->AddGame(game);
     }
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Created game " << mapUuid << " " << game->GetName() << std::endl;
+#endif
     return game;
 }
 

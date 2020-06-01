@@ -54,8 +54,7 @@ private:
         info_.length += sizeof(T);
     }
 public:
-    OutputMessage() = default;
-    ~OutputMessage() {}
+    OutputMessage();
 
     uint8_t* GetOutputBuffer() { return buffer_ + outputBufferStart_; }
     void AddCryptoHeader(bool addChecksum)
@@ -125,7 +124,6 @@ inline SharedPtr<::Net::OutputMessage> MakeShared()
     std::scoped_lock lock(Net::PoolWrapper::lock_);
     auto* ptr = pool->allocate(1, nullptr);
     assert(ptr);
-    ptr->Reset();
     return sa::SharedPtr<::Net::OutputMessage>(ptr);
 }
 

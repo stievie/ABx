@@ -168,7 +168,6 @@ void Protocol::OnError(ConnectionError connectionError, const asio::error_code& 
 {
     if (errorCallback_)
         errorCallback_(connectionError, err);
-    Disconnect();
 }
 
 }

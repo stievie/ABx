@@ -117,6 +117,7 @@ void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authT
     else
         // If file host is empty use the login host
         fileHost_ = loginHost_;
+    lastPongTick_ = 0;
 
     receiver_.OnLoggedIn(accountUuid_, authToken_, accType);
 }
@@ -203,6 +204,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     accountName_ = name;
     password_ = pass;
+    lastPongTick_ = 0;
 
     // 1. Login to login server -> get character list
     GetProtoLogin().Login(loginHost_, loginPort_, name, pass,
@@ -276,6 +278,7 @@ void Client::Logout()
         ioService_->run_one();
 #endif
     }
+    lastPongTick_ = 0;
 }
 
 void Client::GetOutposts()
@@ -345,7 +348,7 @@ void Client::Update(int timeElapsed)
         {
             protoGame_->Disconnect();
             state_ = State::Disconnected;
-            OnNetworkError(ConnectionError::Disconnect, {});
+            OnNetworkError(ConnectionError::DisconnectNoPong, {});
             return;
         }
     }

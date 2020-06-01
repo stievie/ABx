@@ -126,7 +126,13 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
     LOG_INFO << "User " << player->account_.name << " logged in with " << player->data_.name << " entering " << g.name << std::endl;
     player_ = player;
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Connecting player " << (player ? player->account_.name : "(null)") << std::endl;
+#endif
     Connect();
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Player " << (player ? player->account_.name : "(null)") << " connected" << std::endl;
+#endif
 }
 
 void ProtocolGame::Logout()
@@ -135,9 +141,6 @@ void ProtocolGame::Logout()
 #ifdef DEBUG_NET
     LOG_DEBUG << "Logging out user " << (player ? player->account_.name : "(null)") << std::endl;
 #endif
-    OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
-    Disconnect();
-    player_.reset();
 
     if (!player)
     {
@@ -146,9 +149,14 @@ void ProtocolGame::Logout()
     }
     player->logoutTime_ = Utils::Tick();
     player->data_.instanceUuid = Utils::Uuid::EMPTY_UUID;
-    IO::IOPlayer::SavePlayer(*player);
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
+    IO::IOPlayer::SavePlayer(*player);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
+
+    OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
+    Disconnect();
+    player_.reset();
+
     LOG_INFO << "User " << player->account_.name << " logged out" << std::endl;
 }
 
@@ -581,6 +589,18 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
+    GetSubsystem<Asynch::Dispatcher>()->Add(
+        Asynch::CreateTask(
+            std::bind(&ProtocolGame::SendKeyExchange, GetPtr())
+        )
+    );
+}
+
+void ProtocolGame::SendKeyExchange()
+{
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Sending KeyExchange" << std::endl;
+#endif
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::KeyExchange);
     auto* keys = GetSubsystem<Crypto::DHKeys>();
@@ -629,7 +649,7 @@ void ProtocolGame::Connect()
 
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::EnterGame, GetPtr())
+            std::bind(&ProtocolGame::EnterGame, GetPtr(), player)
         )
     );
 }
@@ -639,12 +659,11 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
     GetOutputBuffer(message.GetSize())->Append(message);
 }
 
-void ProtocolGame::EnterGame()
+void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
 {
-    auto player = GetPlayer();
     if (!player)
     {
-        LOG_ERROR << "GetPlayer returned null" << std::endl;
+        LOG_ERROR << "player is null" << std::endl;
         DisconnectClient(AB::ErrorCodes::CannotEnterGame);
         return;
     }
@@ -671,23 +690,25 @@ void ProtocolGame::EnterGame()
         assert(instance);
     }
 
-    if (success)
+    if (!success)
     {
-        auto output = OutputMessagePool::GetOutputMessage();
-        output->AddByte(AB::GameProtocol::ServerPacketType::GameEnter);
-        AB::Packets::Server::EnterWorld packet = {
-            ProtocolGame::serverId_,
-            player->data_.currentMapUuid,
-            player->data_.instanceUuid,
-            player->id_,
-            static_cast<uint8_t>(instance->data_.type),
-            instance->data_.partySize
-        };
-        AB::Packets::Add(packet, *output);
-        Send(std::move(output));
-    }
-    else
         DisconnectClient(AB::ErrorCodes::CannotEnterGame);
+        return;
+    }
+
+    auto output = OutputMessagePool::GetOutputMessage();
+    output->AddByte(AB::GameProtocol::ServerPacketType::EnterWorld);
+    LOG_DEBUG << "Sending EnterWorld message to player " << player->GetName() << std::endl;
+    AB::Packets::Server::EnterWorld packet = {
+        ProtocolGame::serverId_,
+        player->data_.currentMapUuid,
+        player->data_.instanceUuid,
+        player->id_,
+        static_cast<uint8_t>(instance->data_.type),
+        instance->data_.partySize
+    };
+    AB::Packets::Add(packet, *output);
+    WriteToOutput(*output);
 }
 
 void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,
@@ -710,12 +731,16 @@ void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,
         serverUuid, mapUuid, instanceUuid, player->data_.uuid
     };
     AB::Packets::Add(packet, *output);
-    Send(std::move(output));
+    WriteToOutput(*output);
 }
 
 void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
     ChangeServerInstance(ProtocolGame::serverId_, mapUuid, instanceUuid);
+}
+
+void ProtocolGame::Release()
+{
 }
 
 }

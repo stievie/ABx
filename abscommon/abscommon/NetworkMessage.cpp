@@ -75,6 +75,11 @@ unsigned NetworkMessage::GetPoolUsage()
     return 0;
 }
 
+NetworkMessage::NetworkMessage()
+{
+    Reset();
+}
+
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 {
     if (len == 0)

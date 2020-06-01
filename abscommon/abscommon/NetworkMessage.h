@@ -44,11 +44,16 @@ class NetworkMessage
 public:
     using MessagePool = sa::PoolAllocator<NetworkMessage, NETWORKMESSAGE_MAXSIZE>;
     using MsgSize_t = uint16_t;
+    // Headers:
+    // 2 bytes for unencrypted message size
+    // 4 bytes for checksum
+    // 2 bytes for encrypted message size
+    static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
     static void Delete(NetworkMessage* p);
     static std::unique_ptr<NetworkMessage> GetNew();
     static sa::PoolInfo GetPoolInfo();
     static unsigned GetPoolUsage();
-    NetworkMessage() = default;
+    NetworkMessage();
 protected:
     struct NetworkMessageInfo
     {
@@ -56,11 +61,6 @@ protected:
         MsgSize_t position = INITIAL_BUFFER_POSITION;
     };
 public:
-    // Headers:
-    // 2 bytes for unencrypted message size
-    // 4 bytes for checksum
-    // 2 bytes for encrypted message size
-    static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
     static constexpr size_t NETWORKMESSAGE_BUFFER_SIZE = NETWORKMESSAGE_MAXSIZE - sizeof(NetworkMessageInfo);
     enum { HeaderLength = 2 };
     enum { ChecksumLength = 4 };
@@ -90,7 +90,9 @@ protected:
 public:
     void Reset()
     {
-        info_ = {};
+        info_.length = 0;
+        info_.position = INITIAL_BUFFER_POSITION;
+        memset(buffer_, 0xFF, NETWORKMESSAGE_BUFFER_SIZE);
     }
 
     /// Read functions
