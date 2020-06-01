@@ -669,26 +669,23 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
     }
 
     auto* gameMan = GetSubsystem<Game::GameManager>();
-    bool success = false;
     ea::shared_ptr<Game::Game> instance;
     if (!Utils::Uuid::IsEmpty(player->data_.instanceUuid))
     {
         // Enter an existing instance
         instance = gameMan->GetInstance(player->data_.instanceUuid);
-        if (instance)
-            success = true;
-        else
+        if (!instance)
             LOG_ERROR << "Game instance not found " << player->data_.instanceUuid << std::endl;
     }
     else
     {
         // Create new instance
         instance = gameMan->GetGame(player->data_.currentMapUuid, true);
-        if (instance)
-            success = true;
+        if (!instance)
+            LOG_ERROR << "Unable to create instance for game " << player->data_.currentMapUuid << std::endl;
     }
 
-    if (!success)
+    if (!instance)
     {
         DisconnectClient(AB::ErrorCodes::CannotEnterGame);
         return;

@@ -92,7 +92,6 @@ public:
     {
         info_.length = 0;
         info_.position = INITIAL_BUFFER_POSITION;
-        memset(buffer_, 0xFF, NETWORKMESSAGE_BUFFER_SIZE);
     }
 
     /// Read functions

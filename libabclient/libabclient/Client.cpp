@@ -723,6 +723,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInsta
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
 {
+    lastPongTick_ = AbTick();
     state_ = State::World;
     receiver_.OnPacket(updateTick, packet);
 }
