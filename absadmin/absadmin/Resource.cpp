@@ -19,10 +19,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Resource.h"
 #include <uuid.h>
 #include "Application.h"
+#include <abscommon/SimpleConfigManager.h>
 #include <sa/StringHash.h>
 
 namespace Resources {
@@ -72,11 +72,14 @@ Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
     }
     // Update expiry date/time
     session_->Touch();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     HTTP::Cookie respSessCookie;
     respSessCookie.content_ = sessId;
     respSessCookie.expires_ = session_->expires_;
     respSessCookie.domain_ = Application::Instance->GetHost();
     respSessCookie.httpOnly_ = true;
+    respSessCookie.sameSite_ = static_cast<HTTP::Cookie::SameSite>(config->GetGlobalInt("cookie_samesite", 0));
+    respSessCookie.secure_ = config->GetGlobalBool("cookie_secure", false);
     responseCookies_->Add("SESSION_ID", respSessCookie);
 }
 

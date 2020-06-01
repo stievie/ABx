@@ -30,6 +30,12 @@ namespace HTTP {
 class Cookie
 {
 public:
+    enum class SameSite
+    {
+        Lax = 0,
+        Strict,
+        None
+    };
     Cookie();
     Cookie(const std::string& content);
     ~Cookie() = default;
@@ -38,6 +44,8 @@ public:
     std::string path_;
     time_t expires_;
     bool httpOnly_;
+    SameSite sameSite_{ SameSite::Lax };
+    bool secure_{ false };
     std::string content_;
 };
 

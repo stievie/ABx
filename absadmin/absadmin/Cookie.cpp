@@ -80,9 +80,22 @@ void Cookies::Write(SimpleWeb::CaseInsensitiveMultimap& header)
         c += "path=" + cookie.second.path_ + "; ";
         if (!cookie.second.domain_.empty())
             c += "domain=." + cookie.second.domain_ + "; ";
+        switch (cookie.second.sameSite_)
+        {
+        case Cookie::SameSite::Lax:
+            c += "SameSite=Lax; ";
+            break;
+        case Cookie::SameSite::Strict:
+            c += "SameSite=Strict; ";
+            break;
+        case Cookie::SameSite::None:
+            c += "SameSite=None; ";
+            break;
+        }
+        if (cookie.second.secure_)
+            c += "Secure; ";
         if (cookie.second.httpOnly_)
             c += "HttpOnly; ";
-
         c = c.substr(0, c.size() - 2);
         cookies.push_back(c);
     }

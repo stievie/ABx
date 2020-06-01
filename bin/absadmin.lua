@@ -21,6 +21,13 @@ root_dir = "admin/root"
 -- 60min
 session_lifetime = 1000 * 60 * 60
 
+local COOKIE_SAMESITE_LAX = 0
+local COOKIE_SAMESITE_STRICT = 1
+local COOKIE_SAMESITE_NONE = 2
+
+cookie_samesite = COOKIE_SAMESITE_NONE
+cookie_secure = true
+
 require("config/data_server")
 require("config/msg_server")
 require("config/login")
