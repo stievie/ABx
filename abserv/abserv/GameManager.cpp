@@ -171,20 +171,6 @@ ea::shared_ptr<Game> GameManager::Get(uint32_t gameId)
     return ea::shared_ptr<Game>();
 }
 
-bool GameManager::AddPlayer(const std::string& mapUuid, ea::shared_ptr<Player> player)
-{
-    ea::shared_ptr<Game> game = GetGame(mapUuid, true);
-    if (!game)
-    {
-        LOG_ERROR << "Unable to get game, Map UUID: " << mapUuid << std::endl;
-        return false;
-    }
-
-    // No need to wait until assets loaded
-    game->PlayerJoin(player->id_);
-    return true;
-}
-
 void GameManager::CleanGames()
 {
     if (games_.size() == 0)

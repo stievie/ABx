@@ -72,7 +72,6 @@ public:
     /// Returns the game with the mapName. If no such game exists it creates one.
     ea::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
     ea::shared_ptr<Game> Get(uint32_t gameId);
-    bool AddPlayer(const std::string& mapUuid, ea::shared_ptr<Player> player);
     // Delete all games with no players
     void CleanGames();
     AB::Entities::GameType GetGameType(const std::string& mapUuid);

@@ -667,6 +667,7 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         DisconnectClient(AB::ErrorCodes::CannotEnterGame);
         return;
     }
+
     auto* gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
     ea::shared_ptr<Game::Game> instance;
@@ -675,19 +676,16 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         // Enter an existing instance
         instance = gameMan->GetInstance(player->data_.instanceUuid);
         if (instance)
-        {
-            instance->PlayerJoin(player->id_);
             success = true;
-        }
         else
             LOG_ERROR << "Game instance not found " << player->data_.instanceUuid << std::endl;
     }
-    else if (gameMan->AddPlayer(player->data_.currentMapUuid, player))
+    else
     {
         // Create new instance
-        success = true;
-        instance = gameMan->GetInstance(player->data_.instanceUuid);
-        assert(instance);
+        instance = gameMan->GetGame(player->data_.currentMapUuid, true);
+        if (instance)
+            success = true;
     }
 
     if (!success)
@@ -696,6 +694,7 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         return;
     }
 
+    // (1) First send the EnterWorld message
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::EnterWorld);
     LOG_DEBUG << "Sending EnterWorld message to player " << player->GetName() << std::endl;
@@ -709,6 +708,9 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
     };
     AB::Packets::Add(packet, *output);
     WriteToOutput(*output);
+
+    // (2) Then we can send all the rest that happens when entering an game
+    instance->PlayerJoin(player->id_);
 }
 
 void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,
