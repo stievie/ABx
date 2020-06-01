@@ -75,21 +75,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
     <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelNoProfiling|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
