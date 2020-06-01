@@ -237,7 +237,6 @@ public:
 
         // Not in cache make a new one and load it
         ea::shared_ptr<T> asset = ea::make_shared<T>();
-        assert(asset);
         if (Import<T>(*asset, normalName))
         {
             if (cacheAble)
