@@ -21,7 +21,6 @@
 
 #include "Logger.h"
 #include "StringUtils.h"
-#include <thread>
 
 namespace IO {
 

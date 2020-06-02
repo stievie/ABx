@@ -738,8 +738,4 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
     ChangeServerInstance(ProtocolGame::serverId_, mapUuid, instanceUuid);
 }
 
-void ProtocolGame::Release()
-{
-}
-
 }

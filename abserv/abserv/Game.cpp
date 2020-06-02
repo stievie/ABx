@@ -48,6 +48,8 @@
 #include <abscommon/ThreadPool.h>
 #include <sa/EAIterator.h>
 
+#define DEBUG_GAME
+
 namespace Game {
 
 Game::Game()
@@ -205,17 +207,6 @@ void Game::Start()
     lastUpdate_ = 0;
     SetState(ExecutionState::Running);
 
-    // Now that we are running we can spawn the queued players
-    if (!queuedObjects_.empty())
-    {
-        auto it = queuedObjects_.begin();
-        while (it != queuedObjects_.end())
-        {
-            SendSpawnObject((*it));
-            it = queuedObjects_.erase(it);
-        }
-    }
-
     // Initial game update
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
@@ -229,6 +220,17 @@ void Game::Update()
     {
         if (lastUpdate_ == 0)
         {
+            // Now that we are running we can spawn the queued players
+            if (!queuedObjects_.empty())
+            {
+                auto it = queuedObjects_.begin();
+                while (it != queuedObjects_.end())
+                {
+                    SendSpawnObject((*it));
+                    it = queuedObjects_.erase(it);
+                }
+            }
+
             noplayerTime_ = 0;
             Lua::CallFunction(luaState_, "onStart");
             // Add start tick at the beginning
@@ -708,12 +710,12 @@ void Game::PlayerLeave(uint32_t playerId)
     if (!player)
         return;
 
-    std::scoped_lock lock(lock_);
     player->SetGame(ea::shared_ptr<Game>());
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
         Lua::CallFunction(luaState_, "onPlayerLeave", player);
+        std::scoped_lock lock(lock_);
         players_.erase(it);
     }
     player->data_.instanceUuid = "";

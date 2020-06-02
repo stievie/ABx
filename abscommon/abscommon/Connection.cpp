@@ -63,8 +63,10 @@ bool Connection::Send(sa::SharedPtr<OutputMessage>&& message)
 
     OutputMessage& msg = *message;
     bool noPendingWrite = messageQueue_.empty();
-    std::scoped_lock<std::mutex> lockClass(lock_);
-    messageQueue_.emplace_back(std::move(message));
+    {
+        std::scoped_lock<std::mutex> lockClass(lock_);
+        messageQueue_.emplace_back(std::move(message));
+    }
     if (noPendingWrite)
         InternalSend(msg);
 
@@ -92,9 +94,11 @@ void Connection::InternalSend(OutputMessage& message)
 
 void Connection::OnWriteOperation(const asio::error_code& error)
 {
-    std::scoped_lock<std::mutex> lockClass(lock_);
     writeTimer_.cancel();
-    messageQueue_.pop_front();
+    {
+        std::scoped_lock<std::mutex> lockClass(lock_);
+        messageQueue_.pop_front();
+    }
 
     if (error)
     {
@@ -397,9 +401,9 @@ void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection
 
 void ConnectionManager::CloseAll()
 {
-    std::scoped_lock<std::mutex> lockClass(lock_);
     for (const auto& conn : connections_)
         conn->CloseSocket();
+    std::scoped_lock<std::mutex> lockClass(lock_);
     connections_.clear();
 }
 
