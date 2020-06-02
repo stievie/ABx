@@ -107,6 +107,13 @@ public:
         const CacheKey key = ea::make_pair(hash, asset.GetFileName());
         return events_.Subscribe<void(const Asset&)>(KeyHasher()(key), std::move(func));
     }
+    template <typename T>
+    void UnsubscribeAssetChangedEvent(const T& asset, size_t id)
+    {
+        constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
+        const CacheKey key = ea::make_pair(hash, asset.GetFileName());
+        events_.Unsubscribe<void(const Asset&)>(KeyHasher()(key), id);
+    }
 
     /// Check if an asset exists in cache or as file
     template<class T>
