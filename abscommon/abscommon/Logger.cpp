@@ -21,6 +21,7 @@
 
 #include "Logger.h"
 #include "StringUtils.h"
+#include <thread>
 
 namespace IO {
 
@@ -107,7 +108,7 @@ Logger& Logger::Error(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, red.code_);
 #endif
         }
-        (*this) << "[ERROR] ";
+        (*this) << "[ERROR " << std::this_thread::get_id() << "] ";
         if (function)
         {
             (*this) << function;
@@ -123,7 +124,7 @@ Logger& Logger::Info(const char* function, unsigned line)
 {
     if (nextIsBegin_)
     {
-        (*this) << "[Info] ";
+        (*this) << "[Info " << std::this_thread::get_id() << "] ";
         if (function)
         {
             (*this) << function;
@@ -148,7 +149,7 @@ Logger& Logger::Warning(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, yellow.code_);
 #endif
         }
-        (*this) << "[Warning] ";
+        (*this) << "[Warning " << std::this_thread::get_id() << "] ";
         if (function)
         {
             (*this) << function;
@@ -174,7 +175,7 @@ Logger& Logger::Profile()
             SetConsoleTextAttribute(hConsole_, green.code_);
 #endif
         }
-        (*this) << "[Profile] ";
+        (*this) << "[Profile " << std::this_thread::get_id() << "] ";
     }
     return *this;
 }
@@ -193,7 +194,7 @@ Logger& Logger::Debug(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, grey.code_);
 #endif
         }
-        (*this) << "[Debug] ";
+        (*this) << "[Debug " << std::this_thread::get_id() << "] ";
         if (function)
         {
             (*this) << function;
