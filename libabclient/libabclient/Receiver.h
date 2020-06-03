@@ -88,7 +88,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet) = 0;
-    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerError& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet) = 0;

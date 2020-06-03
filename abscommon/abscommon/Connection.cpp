@@ -226,6 +226,7 @@ void Connection::ParseHeader(const asio::error_code& error)
 
         // Read content
         msg_->SetSize(size + NetworkMessage::HeaderLength);
+        msg_->SetReadPos(2);
         asio::async_read(socket_,
             asio::buffer(msg_->GetBodyBuffer(), static_cast<size_t>(size)),
             std::bind(&Connection::ParsePacket, shared_from_this(), std::placeholders::_1));

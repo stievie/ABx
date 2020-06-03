@@ -603,15 +603,17 @@ void ProtocolGame::SendKeyExchange()
 #endif
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::KeyExchange);
+    AB::Packets::Server::KeyExchange packet;
     auto* keys = GetSubsystem<Crypto::DHKeys>();
-    output->AddBytes(reinterpret_cast<const char*>(&keys->GetPublickKey()), DH_KEY_LENGTH);
+    memcpy(&packet.key[0], keys->GetPublickKey(), DH_KEY_LENGTH);
+    AB::Packets::Add(packet, *output);
     Send(std::move(output));
 }
 
 void ProtocolGame::DisconnectClient(AB::ErrorCodes error)
 {
     auto output = OutputMessagePool::GetOutputMessage();
-    output->AddByte(AB::GameProtocol::ServerPacketType::Error);
+    output->AddByte(AB::GameProtocol::ServerPacketType::ProtocolError);
     AB::Packets::Server::ProtocolError packet = { static_cast<uint8_t>(error) };
     AB::Packets::Add(packet, *output);
     Send(std::move(output));

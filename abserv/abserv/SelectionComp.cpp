@@ -48,7 +48,7 @@ void SelectionComp::Write(Net::NetworkMessage& message)
     if (prevObjectId_ == currObjectId_)
         return;
 
-    message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSelectTarget);
+    message.AddByte(AB::GameProtocol::ServerPacketType::ObjectTargetSelected);
     AB::Packets::Server::ObjectTargetSelected packet = {
         owner_.id_,
         currObjectId_

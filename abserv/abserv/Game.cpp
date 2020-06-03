@@ -330,7 +330,7 @@ void Game::SendStatus()
     for (const auto& p : players_)
     {
         // Write to buffered, auto-sent output message
-        p.second->WriteToOutput(*gameStatus_);
+        p.second->SendGameStatus(*gameStatus_);
     }
 
     if (writeStream_ && writeStream_->IsOpen())
@@ -498,7 +498,7 @@ void Game::SpawnItemDrop(ea::shared_ptr<ItemDrop> item)
     // Also adds it to the objects array
     SendSpawnObject(item);
 
-    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameObjectDropItem);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::ObjectDroppedItem);
     const Item* pItem = item->GetItem();
     AB::Packets::Server::ObjectDroppedItem packet = {
         item->GetSourceId(),
@@ -595,14 +595,14 @@ void Game::SendSpawnObject(ea::shared_ptr<GameObject> object)
         object->transformation_.SetYRotation(p.rotation.EulerAngles().y_);
     }
 
-    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameSpawnObject);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::ObjectSpawn);
     object->WriteSpawnData(*gameStatus_);
     AddObject(object);
 }
 
 void Game::SendLeaveObject(uint32_t objectId)
 {
-    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::GameLeaveObject);
+    gameStatus_->AddByte(AB::GameProtocol::ServerPacketType::ObjectDespawn);
     AB::Packets::Server::ObjectDespawn packet = {
         objectId
     };
@@ -624,7 +624,7 @@ void Game::SendInitStateToPlayer(Player& player)
             // Don't send spawn of our self
             return;
 
-        msg.AddByte(AB::GameProtocol::ServerPacketType::GameSpawnObjectExisting);
+        msg.AddByte(AB::GameProtocol::ServerPacketType::ObjectSpawnExisting);
         o.WriteSpawnData(msg);
     };
 

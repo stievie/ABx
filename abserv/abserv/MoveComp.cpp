@@ -169,7 +169,7 @@ void MoveComp::Write(Net::NetworkMessage& message)
     if (speedDirty_)
     {
         speedDirty_ = false;
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectMoveSpeedChange);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSpeedChanged);
         AB::Packets::Server::ObjectSpeedChanged packet = {
             owner_.id_,
             GetSpeedFactor()
@@ -180,9 +180,9 @@ void MoveComp::Write(Net::NetworkMessage& message)
     if (moved_ || forcePosition_)
     {
         if (forcePosition_)
-            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetPosition);
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSetPosition);
         else
-            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectPositionChange);
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectPosUpdate);
         AB::Packets::Server::ObjectPosUpdate packet = {
             owner_.id_,
             {
@@ -199,7 +199,7 @@ void MoveComp::Write(Net::NetworkMessage& message)
     // The rotation may change in 2 ways: Turn and SetWorldDirection
     if (turned_ || directionSet_)
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectRotationChange);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectRotationUpdate);
         AB::Packets::Server::ObjectRotationUpdate packet = {
             owner_.id_,
             owner_.transformation_.GetYRotation(),

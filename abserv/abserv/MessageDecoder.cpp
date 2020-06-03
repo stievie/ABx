@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,42 +19,35 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "MessageDecoder.h"
+#include <abscommon/NetworkMessage.h>
 
-#include "HealComp.h"
-#include "Actor.h"
-#include "Skill.h"
-#include <AB/Packets/Packet.h>
-#include <AB/Packets/ServerPackets.h>
+namespace Net {
 
-namespace Game {
-namespace Components {
+MessageDecoder::MessageDecoder(const uint8_t* ptr, size_t size) :
+    ptr_(ptr),
+    size_(size),
+    pos_(0)
+{ }
 
-void HealComp::Healing(Actor* source, uint32_t index, int value)
+AB::GameProtocol::ServerPacketType MessageDecoder::GetNext()
 {
-    if (owner_.IsDead())
-        return;
-
-    healings_.push_back({ source ? source->id_ : 0, index, value, Utils::Tick() });
-    owner_.resourceComp_->SetHealth(Components::SetValueType::Increase, value);
+    if (!CanRead(sizeof(AB::GameProtocol::ServerPacketType)))
+        return AB::GameProtocol::ServerPacketType::__Last;
+    return Get< AB::GameProtocol::ServerPacketType>();
 }
 
-void HealComp::Write(Net::NetworkMessage& message)
+std::string MessageDecoder::GetString()
 {
-    if (healings_.size() == 0)
-        return;
-    for (const auto& d : healings_)
-    {
-        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectHealed);
-        AB::Packets::Server::ObjectHealed packet = {
-            owner_.id_,
-            d.actorId,
-            static_cast<uint16_t>(d.index),
-            static_cast<int16_t>(d.value)
-        };
-        AB::Packets::Add(packet, message);
-    }
-    healings_.clear();
+    size_t len = Get<uint16_t>();
+    if (len >= (NetworkMessage::NETWORKMESSAGE_BUFFER_SIZE - pos_))
+        return std::string();
+    if (!CanRead(len))
+        return std::string();
+
+    const char* v = reinterpret_cast<const char*>(ptr_) + pos_;
+    pos_ += len;
+    return std::string(v, len);
 }
 
-}
 }

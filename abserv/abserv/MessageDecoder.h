@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,42 +19,53 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
 
-#include "HealComp.h"
-#include "Actor.h"
-#include "Skill.h"
-#include <AB/Packets/Packet.h>
-#include <AB/Packets/ServerPackets.h>
+#include <AB/ProtocolCodes.h>
+#include <sa/Compiler.h>
 
-namespace Game {
-namespace Components {
+namespace Net {
 
-void HealComp::Healing(Actor* source, uint32_t index, int value)
+class MessageDecoder
 {
-    if (owner_.IsDead())
-        return;
-
-    healings_.push_back({ source ? source->id_ : 0, index, value, Utils::Tick() });
-    owner_.resourceComp_->SetHealth(Components::SetValueType::Increase, value);
-}
-
-void HealComp::Write(Net::NetworkMessage& message)
-{
-    if (healings_.size() == 0)
-        return;
-    for (const auto& d : healings_)
+private:
+    const uint8_t* ptr_;
+    size_t size_;
+    size_t pos_;
+    bool CanRead(size_t size) const
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectHealed);
-        AB::Packets::Server::ObjectHealed packet = {
-            owner_.id_,
-            d.actorId,
-            static_cast<uint16_t>(d.index),
-            static_cast<int16_t>(d.value)
-        };
-        AB::Packets::Add(packet, message);
+        return pos_ + size <= size_;
     }
-    healings_.clear();
+    std::string GetString();
+public:
+    MessageDecoder(const uint8_t* ptr, size_t size);
+    template <typename T>
+    T Get()
+    {
+        if (!CanRead(sizeof(T)))
+            return { };
+        T v;
+#ifdef SA_MSVC
+        memcpy_s(&v, sizeof(T), ptr_ + pos_, sizeof(T));
+#else
+        memcpy(&v, ptr_ + pos_, sizeof(T));
+#endif
+        pos_ += sizeof(T);
+        return v;
+    }
+
+    AB::GameProtocol::ServerPacketType GetNext();
+};
+
+template <>
+inline std::string MessageDecoder::Get<std::string>()
+{
+    return GetString();
+}
+template <>
+inline bool MessageDecoder::Get<bool>()
+{
+    return Get<uint8_t>() != 0;
 }
 
-}
 }

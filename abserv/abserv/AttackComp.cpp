@@ -194,7 +194,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
 {
     if (attackSpeedDirty_)
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetAttackSpeed);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSetAttackSpeed);
         AB::Packets::Server::ObjectSetAttackSpeed packet = {
             owner_.id_,
             static_cast<uint8_t>(owner_.GetAttackSpeedIncrease(attackSpeed_) * 100.0f)
@@ -204,7 +204,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
     }
     if (lastError_ != AB::GameProtocol::AttackError::None)
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectAttackFailure);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectAttackFailure);
         AB::Packets::Server::ObjectAttackFailure packet = {
             owner_.id_,
             static_cast<uint8_t>(lastError_)

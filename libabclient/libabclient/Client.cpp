@@ -813,7 +813,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectState
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerError& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

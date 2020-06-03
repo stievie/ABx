@@ -45,8 +45,8 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ServerLeft, ServerPacketType::ServerLeft>();
     AddHandler<AB::Packets::Server::ChangeInstance, ServerPacketType::ChangeInstance>();
     AddHandler<AB::Packets::Server::EnterWorld, ServerPacketType::EnterWorld>();
-    AddHandler<AB::Packets::Server::GameError, ServerPacketType::PlayerError>();
-    AddHandler<AB::Packets::Server::PlayerAutorun, ServerPacketType::PlayerAutoRun>();
+    AddHandler<AB::Packets::Server::PlayerError, ServerPacketType::PlayerError>();
+    AddHandler<AB::Packets::Server::PlayerAutorun, ServerPacketType::PlayerAutorun>();
     AddHandler<AB::Packets::Server::MailHeaders, ServerPacketType::MailHeaders>();
     AddHandler<AB::Packets::Server::MailComplete, ServerPacketType::MailComplete>();
     AddHandler<AB::Packets::Server::InventoryContent, ServerPacketType::InventoryContent>();
@@ -55,28 +55,28 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ChestContent, ServerPacketType::ChestContent>();
     AddHandler<AB::Packets::Server::ChestItemUpdate, ServerPacketType::ChestItemUpdate>();
     AddHandler<AB::Packets::Server::ChestItemDelete, ServerPacketType::ChestItemDelete>();
-    AddHandler<AB::Packets::Server::ObjectSpawnExisting, ServerPacketType::GameSpawnObjectExisting>();
-    AddHandler<AB::Packets::Server::ObjectSpawn, ServerPacketType::GameSpawnObject>();
-    AddHandler<AB::Packets::Server::ObjectDespawn, ServerPacketType::GameLeaveObject>();
-    AddHandler<AB::Packets::Server::ObjectPosUpdate, ServerPacketType::GameObjectPositionChange>();
-    AddHandler<AB::Packets::Server::ObjectRotationUpdate, ServerPacketType::GameObjectRotationChange>();
-    AddHandler<AB::Packets::Server::ObjectStateChanged, ServerPacketType::GameObjectStateChange>();
-    AddHandler<AB::Packets::Server::ObjectSpeedChanged, ServerPacketType::GameObjectMoveSpeedChange>();
-    AddHandler<AB::Packets::Server::ObjectTargetSelected, ServerPacketType::GameObjectSelectTarget>();
-    AddHandler<AB::Packets::Server::ObjectSkillFailure, ServerPacketType::GameObjectSkillFailure>();
-    AddHandler<AB::Packets::Server::ObjectUseSkill, ServerPacketType::GameObjectUseSkill>();
-    AddHandler<AB::Packets::Server::ObjectSkillSuccess, ServerPacketType::GameObjectEndUseSkill>();
-    AddHandler<AB::Packets::Server::ObjectAttackFailure, ServerPacketType::GameObjectAttackFailure>();
-    AddHandler<AB::Packets::Server::ObjectPingTarget, ServerPacketType::GameObjectPingTarget>();
-    AddHandler<AB::Packets::Server::ObjectEffectAdded, ServerPacketType::GameObjectEffectAdded>();
-    AddHandler<AB::Packets::Server::ObjectEffectRemoved, ServerPacketType::GameObjectEffectRemoved>();
-    AddHandler<AB::Packets::Server::ObjectDamaged, ServerPacketType::GameObjectDamaged>();
-    AddHandler<AB::Packets::Server::ObjectHealed, ServerPacketType::GameObjectHealed>();
-    AddHandler<AB::Packets::Server::ObjectProgress, ServerPacketType::GameObjectProgress>();
-    AddHandler<AB::Packets::Server::ObjectDroppedItem, ServerPacketType::GameObjectDropItem>();
-    AddHandler<AB::Packets::Server::ObjectSetPosition, ServerPacketType::GameObjectSetPosition>();
-    AddHandler<AB::Packets::Server::ObjectGroupMaskChanged, ServerPacketType::GameObjectGroupMaskChanged>();
-    AddHandler<AB::Packets::Server::ObjectSetAttackSpeed, ServerPacketType::GameObjectSetAttackSpeed>();
+    AddHandler<AB::Packets::Server::ObjectSpawnExisting, ServerPacketType::ObjectSpawnExisting>();
+    AddHandler<AB::Packets::Server::ObjectSpawn, ServerPacketType::ObjectSpawn>();
+    AddHandler<AB::Packets::Server::ObjectDespawn, ServerPacketType::ObjectDespawn>();
+    AddHandler<AB::Packets::Server::ObjectPosUpdate, ServerPacketType::ObjectPosUpdate>();
+    AddHandler<AB::Packets::Server::ObjectRotationUpdate, ServerPacketType::ObjectRotationUpdate>();
+    AddHandler<AB::Packets::Server::ObjectStateChanged, ServerPacketType::ObjectStateChanged>();
+    AddHandler<AB::Packets::Server::ObjectSpeedChanged, ServerPacketType::ObjectSpeedChanged>();
+    AddHandler<AB::Packets::Server::ObjectTargetSelected, ServerPacketType::ObjectTargetSelected>();
+    AddHandler<AB::Packets::Server::ObjectSkillFailure, ServerPacketType::ObjectSkillFailure>();
+    AddHandler<AB::Packets::Server::ObjectUseSkill, ServerPacketType::ObjectUseSkill>();
+    AddHandler<AB::Packets::Server::ObjectSkillSuccess, ServerPacketType::ObjectSkillSuccess>();
+    AddHandler<AB::Packets::Server::ObjectAttackFailure, ServerPacketType::ObjectAttackFailure>();
+    AddHandler<AB::Packets::Server::ObjectPingTarget, ServerPacketType::ObjectPingTarget>();
+    AddHandler<AB::Packets::Server::ObjectEffectAdded, ServerPacketType::ObjectEffectAdded>();
+    AddHandler<AB::Packets::Server::ObjectEffectRemoved, ServerPacketType::ObjectEffectRemoved>();
+    AddHandler<AB::Packets::Server::ObjectDamaged, ServerPacketType::ObjectDamaged>();
+    AddHandler<AB::Packets::Server::ObjectHealed, ServerPacketType::ObjectHealed>();
+    AddHandler<AB::Packets::Server::ObjectProgress, ServerPacketType::ObjectProgress>();
+    AddHandler<AB::Packets::Server::ObjectDroppedItem, ServerPacketType::ObjectDroppedItem>();
+    AddHandler<AB::Packets::Server::ObjectSetPosition, ServerPacketType::ObjectSetPosition>();
+    AddHandler<AB::Packets::Server::ObjectGroupMaskChanged, ServerPacketType::ObjectGroupMaskChanged>();
+    AddHandler<AB::Packets::Server::ObjectSetAttackSpeed, ServerPacketType::ObjectSetAttackSpeed>();
     AddHandler<AB::Packets::Server::ServerMessage, ServerPacketType::ServerMessage>();
     AddHandler<AB::Packets::Server::ChatMessage, ServerPacketType::ChatMessage>();
     AddHandler<AB::Packets::Server::PartyPlayerInvited, ServerPacketType::PartyPlayerInvited>();
@@ -85,8 +85,8 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::PartyInviteRemoved, ServerPacketType::PartyInviteRemoved>();
     AddHandler<AB::Packets::Server::PartyResigned, ServerPacketType::PartyResigned>();
     AddHandler<AB::Packets::Server::PartyDefeated, ServerPacketType::PartyDefeated>();
-    AddHandler<AB::Packets::Server::PartyMembersInfo, ServerPacketType::PartyInfoMembers>();
-    AddHandler<AB::Packets::Server::ObjectResourceChanged, ServerPacketType::GameObjectResourceChange>();
+    AddHandler<AB::Packets::Server::PartyMembersInfo, ServerPacketType::PartyMembersInfo>();
+    AddHandler<AB::Packets::Server::ObjectResourceChanged, ServerPacketType::ObjectResourceChanged>();
     AddHandler<AB::Packets::Server::DialogTrigger, ServerPacketType::DialogTrigger>();
     AddHandler<AB::Packets::Server::FriendList, ServerPacketType::FriendList>();
     AddHandler<AB::Packets::Server::FriendAdded, ServerPacketType::FriendAdded>();
@@ -96,17 +96,17 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::GuildMemberList, ServerPacketType::GuildMemberList>();
     AddHandler<AB::Packets::Server::QuestSelectionDialogTrigger, ServerPacketType::QuestSelectionDialogTrigger>();
     AddHandler<AB::Packets::Server::QuestDialogTrigger, ServerPacketType::QuestDialogTrigger>();
-    AddHandler<AB::Packets::Server::NpcHasQuest, ServerPacketType::QuestNpcHasQuest>();
+    AddHandler<AB::Packets::Server::NpcHasQuest, ServerPacketType::NpcHasQuest>();
     AddHandler<AB::Packets::Server::QuestDeleted, ServerPacketType::QuestDeleted>();
     AddHandler<AB::Packets::Server::QuestRewarded, ServerPacketType::QuestRewarded>();
     AddHandler<AB::Packets::Server::PlayerInfo, ServerPacketType::PlayerInfo>();
-    AddHandler<AB::Packets::Server::SetObjectAttributeValue, ServerPacketType::ObjectSetAttributeValue>();
+    AddHandler<AB::Packets::Server::SetObjectAttributeValue, ServerPacketType::SetObjectAttributeValue>();
     AddHandler<AB::Packets::Server::ObjectSecProfessionChanged, ServerPacketType::ObjectSecProfessionChanged>();
     AddHandler<AB::Packets::Server::ObjectSetSkill, ServerPacketType::ObjectSetSkill>();
-    AddHandler<AB::Packets::Server::SkillTemplateLoaded, ServerPacketType::PlayerSkillTemplLoaded>();
+    AddHandler<AB::Packets::Server::SkillTemplateLoaded, ServerPacketType::SkillTemplateLoaded>();
     AddHandler<AB::Packets::Server::TradeDialogTrigger, ServerPacketType::TradeDialogTrigger>();
     AddHandler<AB::Packets::Server::TradeCancel, ServerPacketType::TradeCancel>();
-    AddHandler<AB::Packets::Server::TradeOffer, ServerPacketType::TradeGotOffer>();
+    AddHandler<AB::Packets::Server::TradeOffer, ServerPacketType::TradeOffer>();
     AddHandler<AB::Packets::Server::TradeAccepted, ServerPacketType::TradeAccepted>();
 }
 
@@ -212,7 +212,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         case ServerPacketType::KeyExchange:
             ParseKeyExchange(message);
             break;
-        case ServerPacketType::Error:
+        case ServerPacketType::ProtocolError:
         {
             auto packet = AB::Packets::Get<AB::Packets::Server::ProtocolError>(message);
             if (packet.code != 0)
@@ -225,7 +225,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             break;
         case ServerPacketType::GamePong:
         {
-            auto packet = AB::Packets::Get<AB::Packets::Server::Pong>(message);
+            auto packet = AB::Packets::Get<AB::Packets::Server::GamePong>(message);
             // Clock difference between client and server
             clockDiff_ = static_cast<int64_t>(packet.clockDiff);
             // Round trip time

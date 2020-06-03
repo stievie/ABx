@@ -120,7 +120,7 @@ void DamageComp::Write(Net::NetworkMessage& message)
         if (!d.dirty)
             continue;
 
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectDamaged);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectDamaged);
         AB::Packets::Server::ObjectDamaged packet = {
             owner_.id_,
             d.damage.actorId,

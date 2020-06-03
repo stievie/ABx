@@ -67,6 +67,12 @@ private:
     size_t indices_{ 0 };
     size_t NewIndex() { return ++indices_; }
 public:
+    template <typename Signature>
+    bool HasSubscribers(event_t id)
+    {
+        auto& events = GetEventsT<Signature>().events_[id];
+        return events.size() != 0;
+    }
     /// Is used with std::bind()
     template <typename Signature>
     size_t Subscribe(event_t id, std::function<Signature>&& func)

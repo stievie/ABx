@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,42 +19,50 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
 
-#include "HealComp.h"
-#include "Actor.h"
-#include "Skill.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abscommon/NetworkMessage.h>
+#include <sa/Events.h>
+#include <sa/TypeName.h>
 
-namespace Game {
-namespace Components {
+namespace Net {
 
-void HealComp::Healing(Actor* source, uint32_t index, int value)
+// Oh, well, I'm not sure about this...
+// It looks a bit like read-only code.
+
+class MessageFilter
 {
-    if (owner_.IsDead())
-        return;
-
-    healings_.push_back({ source ? source->id_ : 0, index, value, Utils::Tick() });
-    owner_.resourceComp_->SetHealth(Components::SetValueType::Increase, value);
-}
-
-void HealComp::Write(Net::NetworkMessage& message)
-{
-    if (healings_.size() == 0)
-        return;
-    for (const auto& d : healings_)
+private:
+    using FilterEvents = sa::Events<
+#define ENUMERATE_SERVER_PACKET_CODE(v) bool(AB::Packets::Server::v&),
+        ENUMERATE_SERVER_PACKET_CODES
+#undef ENUMERATE_SERVER_PACKET_CODE
+        bool(void)
+    >;
+    const NetworkMessage& source_;
+    NetworkMessage& dest_;
+    FilterEvents events_;
+    template<typename T>
+    void PassThrough(AB::GameProtocol::ServerPacketType type, T& packet)
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectHealed);
-        AB::Packets::Server::ObjectHealed packet = {
-            owner_.id_,
-            d.actorId,
-            static_cast<uint16_t>(d.index),
-            static_cast<int16_t>(d.value)
-        };
-        AB::Packets::Add(packet, message);
+        dest_.AddByte(type);
+        AB::Packets::Add(packet, dest_);
     }
-    healings_.clear();
-}
+public:
+    MessageFilter(const NetworkMessage& source, NetworkMessage& dest) :
+        source_(source),
+        dest_(dest)
+    { }
 
-}
+    template<typename T, typename Callback>
+    size_t Subscribe(Callback&& callback)
+    {
+        constexpr size_t id = sa::StringHash(sa::TypeName<T>::Get());
+        return events_.Subscribe<bool(T&)>(id, std::move(callback));
+    }
+    void Execute();
+};
+
 }

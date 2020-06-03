@@ -1680,7 +1680,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSta
     QueueEvent(Events::E_OBJECTSTATEUPDATE, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet)
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerError& packet)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace Events::PlayerError;

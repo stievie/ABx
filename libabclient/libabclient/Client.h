@@ -141,7 +141,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectRotationUpdate& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectTargetSelected& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectStateChanged& packet) override;
-    void OnPacket(int64_t updateTick, const AB::Packets::Server::GameError& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PlayerError& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillFailure& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectUseSkill& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSkillSuccess& packet) override;

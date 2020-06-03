@@ -115,8 +115,7 @@ const uint32_t ENC_KEY[4] = {
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
-    ENUMERATE_SERVER_PACKET_CODE(NoError)                     \
-    ENUMERATE_SERVER_PACKET_CODE(Error)                       \
+    ENUMERATE_SERVER_PACKET_CODE(ProtocolError)               \
     ENUMERATE_SERVER_PACKET_CODE(KeyExchange)                 \
     ENUMERATE_SERVER_PACKET_CODE(ServerJoined)                \
     ENUMERATE_SERVER_PACKET_CODE(ServerLeft)                  \
@@ -126,39 +125,39 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(MailComplete)                \
     ENUMERATE_SERVER_PACKET_CODE(ChangeInstance)              \
     ENUMERATE_SERVER_PACKET_CODE(PlayerError)                 \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerAutoRun)               \
+    ENUMERATE_SERVER_PACKET_CODE(PlayerAutorun)               \
     ENUMERATE_SERVER_PACKET_CODE(GameStart)                   \
     ENUMERATE_SERVER_PACKET_CODE(EnterWorld)                  \
     ENUMERATE_SERVER_PACKET_CODE(GameUpdate)                  \
     ENUMERATE_SERVER_PACKET_CODE(GamePong)                    \
-    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObjectExisting)     \
-    ENUMERATE_SERVER_PACKET_CODE(GameSpawnObject)             \
-    ENUMERATE_SERVER_PACKET_CODE(GameLeaveObject)             \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectPositionChange)    \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectRotationChange)    \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSelectTarget)      \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectStateChange)       \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectMoveSpeedChange)   \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectResourceChange)    \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectUseSkill)          \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEndUseSkill)       \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSkillFailure)      \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectAttackFailure)     \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectAdded)       \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectEffectRemoved)     \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectDamaged)           \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectHealed)            \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectProgress)          \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectPingTarget)        \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectDropItem)          \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSetPosition)       \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectGroupMaskChanged)  \
-    ENUMERATE_SERVER_PACKET_CODE(GameObjectSetAttackSpeed)    \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSpawnExisting)         \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSpawn)                 \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectDespawn)               \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectPosUpdate)             \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectRotationUpdate)        \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectTargetSelected)        \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectStateChanged)          \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSpeedChanged)          \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectResourceChanged)       \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectUseSkill)              \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSkillSuccess)          \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSkillFailure)          \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectAttackFailure)         \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectEffectAdded)           \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectEffectRemoved)         \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectDamaged)               \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectHealed)                \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectProgress)              \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectPingTarget)            \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectDroppedItem)           \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSetPosition)           \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectGroupMaskChanged)      \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectSetAttackSpeed)        \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerRemoved)          \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerAdded)            \
     ENUMERATE_SERVER_PACKET_CODE(PartyInviteRemoved)          \
-    ENUMERATE_SERVER_PACKET_CODE(PartyInfoMembers)            \
+    ENUMERATE_SERVER_PACKET_CODE(PartyMembersInfo)            \
     ENUMERATE_SERVER_PACKET_CODE(PartyResigned)               \
     ENUMERATE_SERVER_PACKET_CODE(PartyDefeated)               \
     ENUMERATE_SERVER_PACKET_CODE(InventoryContent)            \
@@ -176,17 +175,17 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(DialogTrigger)               \
     ENUMERATE_SERVER_PACKET_CODE(QuestSelectionDialogTrigger) \
     ENUMERATE_SERVER_PACKET_CODE(QuestDialogTrigger)          \
-    ENUMERATE_SERVER_PACKET_CODE(QuestNpcHasQuest)            \
+    ENUMERATE_SERVER_PACKET_CODE(NpcHasQuest)                 \
     ENUMERATE_SERVER_PACKET_CODE(QuestDeleted)                \
     ENUMERATE_SERVER_PACKET_CODE(QuestRewarded)               \
     ENUMERATE_SERVER_PACKET_CODE(PlayerInfo)                  \
-    ENUMERATE_SERVER_PACKET_CODE(ObjectSetAttributeValue)     \
+    ENUMERATE_SERVER_PACKET_CODE(SetObjectAttributeValue)     \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSecProfessionChanged)  \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetSkill)              \
-    ENUMERATE_SERVER_PACKET_CODE(PlayerSkillTemplLoaded)      \
+    ENUMERATE_SERVER_PACKET_CODE(SkillTemplateLoaded)         \
     ENUMERATE_SERVER_PACKET_CODE(TradeDialogTrigger)          \
     ENUMERATE_SERVER_PACKET_CODE(TradeCancel)                 \
-    ENUMERATE_SERVER_PACKET_CODE(TradeGotOffer)               \
+    ENUMERATE_SERVER_PACKET_CODE(TradeOffer)                  \
     ENUMERATE_SERVER_PACKET_CODE(TradeAccepted)
 
 #define ENUMERATE_CREATURE_STATES          \
@@ -363,7 +362,9 @@ enum class ChatChannel : uint8_t
 /// Packets sent by the server
 enum class ServerPacketType : uint8_t
 {
-    __First = 0, // Let's start with 1
+    __First = 0,
+    NoError = __First,
+    // Let's start with 1
 #define ENUMERATE_SERVER_PACKET_CODE(v) v,
     ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE

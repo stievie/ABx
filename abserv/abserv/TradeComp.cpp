@@ -36,7 +36,7 @@ void TradeComp::WriteError(TradeError error, Net::NetworkMessage& message)
         return;
 
     message.AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-    AB::Packets::Server::GameError packet;
+    AB::Packets::Server::PlayerError packet;
     switch (error)
     {
     case Components::TradeComp::TradeError::None:
@@ -137,7 +137,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
     ourOffer_ = std::move(items);
     ourOfferedMoney_ = money;
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::TradeGotOffer);
+    msg->AddByte(AB::GameProtocol::ServerPacketType::TradeOffer);
     AB::Packets::Server::TradeOffer packet;
     packet.money = money;
     auto& invComp = *owner_.inventoryComp_;

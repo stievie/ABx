@@ -54,7 +54,20 @@ struct UpgradeableItem : public Item
     uint8_t upgrades{ 0 };
     std::array<Item, ITEM_UPGRADE_COUNT> mods;
 };
-}
+}  // namespace Internal
+
+struct KeyExchange
+{
+    unsigned char key[16];
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        for (size_t i = 0; i < 16; ++i)
+        {
+            ar.value(key[i]);
+        }
+    }
+};
 
 struct ProtocolError
 {
@@ -66,7 +79,7 @@ struct ProtocolError
     }
 };
 
-struct GameError
+struct PlayerError
 {
     uint8_t code;
     template<typename _Ar>
@@ -111,7 +124,7 @@ struct GameStart
     }
 };
 
-struct Pong
+struct GamePong
 {
     int32_t clockDiff;
     template<typename _Ar>

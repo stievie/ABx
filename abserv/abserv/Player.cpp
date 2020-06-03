@@ -35,6 +35,7 @@
 #include "ItemFactory.h"
 #include "ItemsCache.h"
 #include "MailBox.h"
+#include "MessageFilter.h"
 #include "Npc.h"
 #include "Party.h"
 #include "PartyManager.h"
@@ -200,7 +201,7 @@ void Player::CRQPing(int64_t clientTick)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::GamePong);
     // Depending on the timezone of server and client the server may also be behind, i.e. difference is negative.
-    AB::Packets::Server::Pong packet = { static_cast<int32_t>(clientTick - Utils::Tick()) };
+    AB::Packets::Server::GamePong packet = { static_cast<int32_t>(clientTick - Utils::Tick()) };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
@@ -429,7 +430,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
         // to reorder the items while trading.
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::GameError packet = {
+        AB::Packets::Server::PlayerError packet = {
             static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotAllowedWhileTrading)
         };
         AB::Packets::Add(packet, *msg);
@@ -991,10 +992,28 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
         client_->WriteToOutput(message);
 }
 
+void Player::SendGameStatus(const Net::NetworkMessage& message)
+{
+    // TODO: Parse message and send only messages relevant to the player,
+    // e.g. stuff that happens in a certain range around the player.
+#if 0
+    auto msg = Net::NetworkMessage::GetNew();
+    Net::MessageFilter filter(message, *msg);
+    filter.Subscribe<AB::Packets::Server::ObjectPosUpdate>([](AB::Packets::Server::ObjectPosUpdate& packet) -> bool
+    {
+        LOG_INFO << "Object " << packet.id << " new pos " << std::endl;
+        return true;
+    });
+    filter.Execute();
+#endif
+    WriteToOutput(message);
+}
+
+
 void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
 {
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::GameObjectPingTarget);
+    msg->AddByte(AB::GameProtocol::ServerPacketType::ObjectPingTarget);
     AB::Packets::Server::ObjectPingTarget packet = {
         id_,
         targetId,
@@ -1009,7 +1028,7 @@ void Player::OnInventoryFull()
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-    AB::Packets::Server::GameError packet = {
+    AB::Packets::Server::PlayerError packet = {
         static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::InventoryFull)
     };
     AB::Packets::Add(packet, *msg);
@@ -1020,7 +1039,7 @@ void Player::OnChestFull()
 {
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-    AB::Packets::Server::GameError packet = {
+    AB::Packets::Server::PlayerError packet = {
         static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::ChestFull)
     };
     AB::Packets::Add(packet, *msg);
@@ -1318,7 +1337,7 @@ void Player::CRQPartyGetMembers(uint32_t partyId)
     }
 
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyInfoMembers);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyMembersInfo);
     size_t count = party->GetMemberCount();
     AB::Packets::Server::PartyMembersInfo packet;
     packet.partyId = partyId;
@@ -1413,7 +1432,7 @@ void Player::CRQSetAttributeValue(uint32_t attribIndex, uint8_t value)
     uint32_t newValue = skills_->GetAttributeRank(index);
     int remaining = static_cast<int>(GetAttributePoints()) - skills_->GetUsedAttributePoints();
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::ObjectSetAttributeValue);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::SetObjectAttributeValue);
     AB::Packets::Server::SetObjectAttributeValue packet {
         id_,
         attribIndex,
@@ -1549,7 +1568,7 @@ void Player::CRQLoadSkillTemplate(std::string templ)
 
     const std::string newTempl = skills_->Encode();
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PlayerSkillTemplLoaded);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::SkillTemplateLoaded);
     AB::Packets::Server::SkillTemplateLoaded packet{
         id_,
         newTempl
@@ -1851,7 +1870,7 @@ void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& messag
 
 void Player::HandleStuckCommand(const std::string&, Net::NetworkMessage& message)
 {
-    message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectSetPosition);
+    message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSetPosition);
     AB::Packets::Server::ObjectPosUpdate packet = {
         id_,
         {
@@ -2275,7 +2294,7 @@ void Player::CRQHasQuests(uint32_t npcId)
         return;
 
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerPacketType::QuestNpcHasQuest);
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::NpcHasQuest);
     AB::Packets::Server::NpcHasQuest packet = {
         npcId,
         npc->HaveQuestsForPlayer(*this)

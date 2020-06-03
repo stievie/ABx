@@ -93,7 +93,7 @@ void StateComp::Write(Net::NetworkMessage& message)
 #ifdef DEBUG_GAME
 //        LOG_DEBUG << "New state of " << owner_ << ": " << (int)GetState() << std::endl;
 #endif
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectStateChange);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectStateChanged);
         AB::Packets::Server::ObjectStateChanged packet = {
             owner_.id_,
             static_cast<uint8_t>(GetState())
@@ -102,7 +102,7 @@ void StateComp::Write(Net::NetworkMessage& message)
     }
     if (groupMaskChanged_ && Is<Actor>(owner_))
     {
-        message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectGroupMaskChanged);
+        message.AddByte(AB::GameProtocol::ServerPacketType::ObjectGroupMaskChanged);
         AB::Packets::Server::ObjectGroupMaskChanged packet = {
             owner_.id_,
             To<Actor>(owner_).groupMask_

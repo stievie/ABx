@@ -154,6 +154,7 @@ public:
     bool SatisfyQuestRequirements(uint32_t index) const;
 
     void WriteToOutput(const Net::NetworkMessage& message);
+    void SendGameStatus(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
 
     void SetParty(ea::shared_ptr<Party> party);

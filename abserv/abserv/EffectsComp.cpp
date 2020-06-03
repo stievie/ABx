@@ -183,7 +183,7 @@ void EffectsComp::Write(Net::NetworkMessage& message)
         {
             if (effect->IsInternal())
                 continue;
-            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectEffectRemoved);
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectEffectRemoved);
             AB::Packets::Server::ObjectEffectRemoved packet = {
                 owner_.id_,
                 effect->data_.index
@@ -199,7 +199,7 @@ void EffectsComp::Write(Net::NetworkMessage& message)
         {
             if (effect->IsInternal())
                 continue;
-            message.AddByte(AB::GameProtocol::ServerPacketType::GameObjectEffectAdded);
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectEffectAdded);
             AB::Packets::Server::ObjectEffectAdded packet = {
                 owner_.id_,
                 effect->data_.index,
