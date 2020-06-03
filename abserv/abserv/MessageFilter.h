@@ -25,6 +25,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include <abscommon/NetworkMessage.h>
 #include <sa/Events.h>
+#include <sa/StringHash.h>
 #include <sa/TypeName.h>
 
 namespace Net {

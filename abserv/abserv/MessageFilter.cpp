@@ -21,6 +21,7 @@
 
 #include "MessageFilter.h"
 #include "MessageDecoder.h"
+#include <sa/Assert.h>
 
 namespace Net {
 
@@ -35,6 +36,9 @@ void MessageFilter::Execute()
 
         switch (code)
         {
+        case AB::GameProtocol::ServerPacketType::__First:
+        case AB::GameProtocol::ServerPacketType::__Last:
+            ASSERT_FALSE();
 #define ENUMERATE_SERVER_PACKET_CODE(v) case AB::GameProtocol::ServerPacketType::v:                 \
             {                                                                                       \
                 AB::Packets::Server::v packet = AB::Packets::Get<AB::Packets::Server::v>(decoder);  \
