@@ -34,6 +34,10 @@ class Shape;
 
 class HeightMap
 {
+private:
+    /// Transformation matrix
+    Matrix4 matrix_ = Matrix4::Identity;
+    Matrix4 inverseMatrix_;
 public:
     HeightMap();
     HeightMap(const HeightMap& other) :
@@ -98,6 +102,7 @@ public:
     {
         return *this;
     }
+    void SetMatrix(const Matrix4& matrix);
 
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
@@ -124,8 +129,6 @@ public:
     Point<int> numVertices_;
     ea::vector<float> heightData_;
     BoundingBox boundingBox_;
-    /// Transformation matrix
-    Matrix4 matrix_ = Matrix4::Identity;
 };
 
 }

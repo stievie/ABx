@@ -39,6 +39,7 @@ class Terrain final : public IO::Asset
 private:
     // Must be shared_ptr CollisionShape may also own it
     ea::shared_ptr<Math::HeightMap> heightMap_;
+    mutable bool matrixDirty_{ true };
 public:
     Terrain();
     ~Terrain() override;

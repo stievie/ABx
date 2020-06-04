@@ -34,6 +34,7 @@ HeightMap::HeightMap() :
     minHeight_(std::numeric_limits<float>::max()),
     maxHeight_(std::numeric_limits<float>::lowest())
 {
+    inverseMatrix_ = matrix_.Inverse();
 }
 
 HeightMap::HeightMap(const ea::vector<float>& data, const Point<int>& size) :
@@ -42,6 +43,7 @@ HeightMap::HeightMap(const ea::vector<float>& data, const Point<int>& size) :
     numVertices_(size),
     heightData_(data)
 {
+    inverseMatrix_ = matrix_.Inverse();
     ProcessData();
 }
 
@@ -101,7 +103,7 @@ Vector3 HeightMap::GetRawNormal(int x, int z) const
 float HeightMap::GetHeight(const Vector3& world) const
 {
     // Get local
-    const Vector3 position = matrix_.Inverse() * world;
+    const Vector3 position = inverseMatrix_ * world;
     const float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
     const float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
@@ -138,7 +140,7 @@ float HeightMap::GetHeight(const Vector3& world) const
 
 Vector3 HeightMap::GetNormal(const Vector3& world) const
 {
-    const Vector3 position = matrix_.Inverse() * world;
+    const Vector3 position = inverseMatrix_ * world;
     const float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
     const float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
@@ -162,6 +164,12 @@ Vector3 HeightMap::GetNormal(const Vector3& world) const
 
     const Vector3 n = (n1 * (1.0f - xFrac - zFrac) + n2 * xFrac + n3 * zFrac).Normal();
     return matrix_.Rotation() * n;
+}
+
+void HeightMap::SetMatrix(const Matrix4& matrix)
+{
+    matrix_ = matrix;
+    inverseMatrix_ = matrix_.Inverse();
 }
 
 bool HeightMap::Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const
@@ -241,7 +249,7 @@ Shape HeightMap::GetShape() const
 
 Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
 {
-    const Vector3 pos = matrix_.Inverse() * world;
+    const Vector3 pos = inverseMatrix_ * world;
     int xPos = static_cast<int>(pos.x_ / spacing_.x_ + 0.5f);
     int zPos = static_cast<int>(pos.z_ / spacing_.z_ + 0.5f);
     xPos = Clamp(xPos, 0, numVertices_.x_ - 1);
