@@ -20,21 +20,20 @@
  */
 
 #include "MessageDecoder.h"
-#include <abscommon/NetworkMessage.h>
 
 namespace Net {
 
-MessageDecoder::MessageDecoder(const uint8_t* ptr, size_t size) :
-    ptr_(ptr),
-    size_(size),
-    pos_(0)
+MessageDecoder::MessageDecoder(const NetworkMessage& message) :
+    ptr_(message.GetBuffer()),
+    size_(message.GetSize()),
+    pos_(NetworkMessage::INITIAL_BUFFER_POSITION)
 { }
 
-AB::GameProtocol::ServerPacketType MessageDecoder::GetNext()
+std::optional<AB::GameProtocol::ServerPacketType> MessageDecoder::GetNext()
 {
-    if (!CanRead(sizeof(AB::GameProtocol::ServerPacketType)))
-        return AB::GameProtocol::ServerPacketType::__Last;
-    return Get< AB::GameProtocol::ServerPacketType>();
+    if (!CanRead(1))
+        return {};
+    return static_cast<AB::GameProtocol::ServerPacketType>(ptr_[pos_++]);
 }
 
 std::string MessageDecoder::GetString()

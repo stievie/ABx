@@ -75,6 +75,7 @@ void Player::RegisterLua(kaguya::State& state)
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
+    messageFilter_(ea::make_unique<Net::MessageFilter>()),
     questComp_(ea::make_unique<Components::QuestComp>(*this)),
     tradeComp_(ea::make_unique<Components::TradeComp>(*this))
 {
@@ -998,15 +999,17 @@ void Player::SendGameStatus(const Net::NetworkMessage& message)
     // e.g. stuff that happens in a certain range around the player.
 #if 0
     auto msg = Net::NetworkMessage::GetNew();
-    Net::MessageFilter filter;
-    filter.Subscribe<AB::Packets::Server::ObjectPosUpdate>([](AB::Packets::Server::ObjectPosUpdate& packet) -> bool
+/*    filter.Subscribe<AB::Packets::Server::ObjectPosUpdate>([](AB::Packets::Server::ObjectPosUpdate& packet) -> bool
     {
         LOG_INFO << "Object " << packet.id << " new pos " << std::endl;
         return true;
     });
-    filter.Execute(message, *msg);
-#endif
+    */
+    messageFilter_->Execute(message, *msg);
+    WriteToOutput(*msg);
+#else
     WriteToOutput(message);
+#endif
 }
 
 

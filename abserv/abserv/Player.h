@@ -32,6 +32,7 @@
 
 namespace Net {
 class ProtocolGame;
+class MessageFilter;
 }
 
 namespace Game {
@@ -55,6 +56,7 @@ private:
     ea::unique_ptr<MailBox> mailBox_;
     ea::unique_ptr<FriendList> friendList_;
     ea::shared_ptr<Party> party_;
+    ea::unique_ptr<Net::MessageFilter> messageFilter_;
     bool resigned_{ false  };
     bool queueing_{ false };
     Party* _LuaGetParty();

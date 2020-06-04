@@ -22,23 +22,21 @@
 #include "MessageFilter.h"
 #include "MessageDecoder.h"
 #include <sa/Assert.h>
+#include <abscommon/Logger.h>
 
 namespace Net {
 
 void MessageFilter::Execute(const NetworkMessage& source, NetworkMessage& dest)
 {
-    MessageDecoder decoder(source.GetBodyBuffer(), source.GetSize());
+    MessageDecoder decoder(source);
     for (;;)
     {
         auto code = decoder.GetNext();
-        if (code == AB::GameProtocol::ServerPacketType::__Last)
-            break;
+        if (!code.has_value())
+            return;
 
-        switch (code)
+        switch (code.value())
         {
-        case AB::GameProtocol::ServerPacketType::__First:
-        case AB::GameProtocol::ServerPacketType::__Last:
-            ASSERT_FALSE();
 #define ENUMERATE_SERVER_PACKET_CODE(v) case AB::GameProtocol::ServerPacketType::v:                 \
             {                                                                                       \
                 AB::Packets::Server::v packet = AB::Packets::Get<AB::Packets::Server::v>(decoder);  \
@@ -53,6 +51,9 @@ void MessageFilter::Execute(const NetworkMessage& source, NetworkMessage& dest)
             }
             ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
+        default:
+            dest.Add(code.value());
+            break;
         }
     }
 }

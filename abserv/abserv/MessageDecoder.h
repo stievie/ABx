@@ -23,6 +23,8 @@
 
 #include <AB/ProtocolCodes.h>
 #include <sa/Compiler.h>
+#include <optional>
+#include <abscommon/NetworkMessage.h>
 
 namespace Net {
 
@@ -38,7 +40,7 @@ private:
     }
     std::string GetString();
 public:
-    MessageDecoder(const uint8_t* ptr, size_t size);
+    explicit MessageDecoder(const NetworkMessage& message);
     template <typename T>
     T Get()
     {
@@ -54,7 +56,7 @@ public:
         return v;
     }
 
-    AB::GameProtocol::ServerPacketType GetNext();
+    std::optional<AB::GameProtocol::ServerPacketType> GetNext();
 };
 
 template <>
