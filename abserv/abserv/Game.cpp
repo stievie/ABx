@@ -62,7 +62,15 @@ void Game::InitMessageFilter()
     using namespace AB::Packets::Server;
     messageFilter = ea::make_unique<Net::MessageFilter>();
     // Subscribe to all messages we may filter out
-    messageFilter->Subscribe<ObjectPosUpdate>([](const Game& game, const Player& player, ObjectPosUpdate& packet) -> bool {
+    messageFilter->Subscribe<ObjectPosUpdate>([](const Game& game, const Player& player, ObjectPosUpdate& packet) -> bool
+    {
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::TwoCompass, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectRotationUpdate>([](const Game& game, const Player& player, ObjectRotationUpdate& packet) -> bool
+    {
         const auto* object = game.GetObject<GameObject>(packet.id);
         if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
