@@ -998,13 +998,13 @@ void Player::SendGameStatus(const Net::NetworkMessage& message)
     // e.g. stuff that happens in a certain range around the player.
 #if 0
     auto msg = Net::NetworkMessage::GetNew();
-    Net::MessageFilter filter(message, *msg);
+    Net::MessageFilter filter;
     filter.Subscribe<AB::Packets::Server::ObjectPosUpdate>([](AB::Packets::Server::ObjectPosUpdate& packet) -> bool
     {
         LOG_INFO << "Object " << packet.id << " new pos " << std::endl;
         return true;
     });
-    filter.Execute();
+    filter.Execute(message, *msg);
 #endif
     WriteToOutput(message);
 }

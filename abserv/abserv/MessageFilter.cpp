@@ -25,9 +25,9 @@
 
 namespace Net {
 
-void MessageFilter::Execute()
+void MessageFilter::Execute(const NetworkMessage& source, NetworkMessage& dest)
 {
-    MessageDecoder decoder(source_.GetBodyBuffer(), source_.GetSize());
+    MessageDecoder decoder(source.GetBodyBuffer(), source.GetSize());
     for (;;)
     {
         auto code = decoder.GetNext();
@@ -43,13 +43,12 @@ void MessageFilter::Execute()
             {                                                                                       \
                 AB::Packets::Server::v packet = AB::Packets::Get<AB::Packets::Server::v>(decoder);  \
                 constexpr size_t id = sa::StringHash(sa::TypeName<AB::Packets::Server::v>::Get());  \
-                bool pass = true;                                                                   \
                 if (events_.HasSubscribers<bool(AB::Packets::Server::v&)>(id))                      \
                 {                                                                                   \
-                    pass = events_.CallOne<bool(AB::Packets::Server::v&)>(id, packet);              \
+                    if (!events_.CallOne<bool(AB::Packets::Server::v&)>(id, packet))                \
+                        continue;                                                                   \
                 }                                                                                   \
-                if (pass)                                                                           \
-                    PassThrough(AB::GameProtocol::ServerPacketType::v, packet);                     \
+                PassThrough(dest, AB::GameProtocol::ServerPacketType::v, packet);                   \
                 break;                                                                              \
             }
             ENUMERATE_SERVER_PACKET_CODES

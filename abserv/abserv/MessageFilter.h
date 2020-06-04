@@ -31,7 +31,6 @@
 namespace Net {
 
 // Oh, well, I'm not sure about this...
-// It looks a bit like read-only code.
 
 class MessageFilter
 {
@@ -42,19 +41,15 @@ private:
 #undef ENUMERATE_SERVER_PACKET_CODE
         bool(void)
     >;
-    const NetworkMessage& source_;
-    NetworkMessage& dest_;
     FilterEvents events_;
     template<typename T>
-    void PassThrough(AB::GameProtocol::ServerPacketType type, T& packet)
+    static void PassThrough(NetworkMessage& dest, AB::GameProtocol::ServerPacketType type, T& packet)
     {
-        dest_.AddByte(type);
-        AB::Packets::Add(packet, dest_);
+        dest.AddByte(type);
+        AB::Packets::Add(packet, dest);
     }
 public:
-    MessageFilter(const NetworkMessage& source, NetworkMessage& dest) :
-        source_(source),
-        dest_(dest)
+    MessageFilter()
     { }
 
     template<typename T, typename Callback>
@@ -63,7 +58,7 @@ public:
         constexpr size_t id = sa::StringHash(sa::TypeName<T>::Get());
         return events_.Subscribe<bool(T&)>(id, std::move(callback));
     }
-    void Execute();
+    void Execute(const NetworkMessage& source, NetworkMessage& dest);
 };
 
 }
