@@ -41,22 +41,22 @@ private:
 public:
     HeightMap();
     HeightMap(const HeightMap& other) :
+        matrix_(other.matrix_),
         spacing_(other.spacing_),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(other.numVertices_),
         heightData_(other.heightData_),
-        boundingBox_(other.boundingBox_),
-        matrix_(other.matrix_)
+        boundingBox_(other.boundingBox_)
     {}
     HeightMap(HeightMap&& other) noexcept :
+        matrix_(std::move(other.matrix_)),
         spacing_(std::move(other.spacing_)),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(other.numVertices_),
         heightData_(std::move(other.heightData_)),
-        boundingBox_(std::move(other.boundingBox_)),
-        matrix_(std::move(other.matrix_))
+        boundingBox_(std::move(other.boundingBox_))
     {}
     HeightMap(const ea::vector<float>& data, const Point<int>& size);
     ~HeightMap() = default;
