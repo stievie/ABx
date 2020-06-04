@@ -64,6 +64,8 @@ void Game::InitMessageFilter()
     // Subscribe to all messages we may filter out
     messageFilter->Subscribe<ObjectPosUpdate>([](const Game& game, const Player& player, ObjectPosUpdate& packet) -> bool
     {
+        if (packet.id == player.id_)
+            return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
         if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
@@ -71,6 +73,8 @@ void Game::InitMessageFilter()
     });
     messageFilter->Subscribe<ObjectRotationUpdate>([](const Game& game, const Player& player, ObjectRotationUpdate& packet) -> bool
     {
+        if (packet.id == player.id_)
+            return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
         if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
@@ -355,10 +359,13 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
+#if 0
         auto msg = Net::NetworkMessage::GetNew();
         messageFilter->Execute(*this, *p.second, *gameStatus_, *msg);
-        // Write to buffered, auto-sent output message
         p.second->WriteToOutput(*msg);
+#else
+        p.second->WriteToOutput(*gameStatus_);
+#endif
     }
 
     if (writeStream_ && writeStream_->IsOpen())
