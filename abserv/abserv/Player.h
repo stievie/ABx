@@ -27,12 +27,11 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
-#include <set>
 #include <eastl.hpp>
+#include <set>
 
 namespace Net {
 class ProtocolGame;
-class MessageFilter;
 }
 
 namespace Game {
@@ -56,7 +55,6 @@ private:
     ea::unique_ptr<MailBox> mailBox_;
     ea::unique_ptr<FriendList> friendList_;
     ea::shared_ptr<Party> party_;
-    ea::unique_ptr<Net::MessageFilter> messageFilter_;
     bool resigned_{ false  };
     bool queueing_{ false };
     Party* _LuaGetParty();
@@ -156,7 +154,6 @@ public:
     bool SatisfyQuestRequirements(uint32_t index) const;
 
     void WriteToOutput(const Net::NetworkMessage& message);
-    void SendGameStatus(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
 
     void SetParty(ea::shared_ptr<Party> party);

@@ -28,6 +28,7 @@
 #include "ConfigManager.h"
 #include "DataProvider.h"
 #include "EffectManager.h"
+#include "Game.h"
 #include "GameManager.h"
 #include "GuildManager.h"
 #include "ItemFactory.h"
@@ -468,6 +469,7 @@ bool Application::LoadMain()
     {
         LOG_ERROR << "Port can not be 0" << std::endl;
     }
+    Game::Game::InitMessageFilter();
 
     // Done -------------------------------------------------------------------
     uint32_t loadingTime = Utils::TimeElapsed(startLoading);

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Game.h"
 #include "Application.h"
 #include "AreaOfEffect.h"
@@ -32,6 +31,7 @@
 #include "IOMap.h"
 #include "ItemDrop.h"
 #include "ItemFactory.h"
+#include "MessageFilter.h"
 #include "Npc.h"
 #include "Player.h"
 #include "PlayerManager.h"
@@ -46,11 +46,29 @@
 #include <abscommon/MessageClient.h>
 #include <abscommon/Random.h>
 #include <abscommon/ThreadPool.h>
+#include <sa/Assert.h>
 #include <sa/EAIterator.h>
 
 #define DEBUG_GAME
 
 namespace Game {
+
+ea::unique_ptr<Net::MessageFilter> Game::messageFilter;
+
+void Game::InitMessageFilter()
+{
+    // This is static because it's heavy and does not need to store anything.
+    assert(!messageFilter);
+    using namespace AB::Packets::Server;
+    messageFilter = ea::make_unique<Net::MessageFilter>();
+    // Subscribe to all messages we may filter out
+    messageFilter->Subscribe<ObjectPosUpdate>([](const Game& game, const Player& player, ObjectPosUpdate& packet) -> bool {
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::TwoCompass, object))
+            return false;
+        return true;
+    });
+}
 
 Game::Game()
 {
@@ -329,8 +347,10 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
+        auto msg = Net::NetworkMessage::GetNew();
+        messageFilter->Execute(*this, *p.second, *gameStatus_, *msg);
         // Write to buffered, auto-sent output message
-        p.second->SendGameStatus(*gameStatus_);
+        p.second->WriteToOutput(*msg);
     }
 
     if (writeStream_ && writeStream_->IsOpen())

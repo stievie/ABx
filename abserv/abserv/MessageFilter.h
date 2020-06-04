@@ -28,15 +28,21 @@
 #include <sa/StringHash.h>
 #include <sa/TypeName.h>
 
+namespace Game {
+class Game;
+class Player;
+}
+
 namespace Net {
 
 // Oh, well, I'm not sure about this...
 
 class MessageFilter
 {
+public:
 private:
     using FilterEvents = sa::Events<
-#define ENUMERATE_SERVER_PACKET_CODE(v) bool(AB::Packets::Server::v&),
+#define ENUMERATE_SERVER_PACKET_CODE(v) bool(const Game::Game&, const Game::Player&, AB::Packets::Server::v&),
         ENUMERATE_SERVER_PACKET_CODES
 #undef ENUMERATE_SERVER_PACKET_CODE
         bool(void)
@@ -56,9 +62,9 @@ public:
     size_t Subscribe(Callback&& callback)
     {
         constexpr size_t id = sa::StringHash(sa::TypeName<T>::Get());
-        return events_.Subscribe<bool(T&)>(id, std::move(callback));
+        return events_.Subscribe<bool(const Game::Game&, const Game::Player&, T&)>(id, std::move(callback));
     }
-    void Execute(const NetworkMessage& source, NetworkMessage& dest);
+    void Execute(const Game::Game& game, const Game::Player& player, const NetworkMessage& source, NetworkMessage& dest);
 };
 
 }

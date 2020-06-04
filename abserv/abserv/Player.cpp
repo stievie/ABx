@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
+#include "Player.h"
 #include "Application.h"
 #include "Chat.h"
 #include "FriendList.h"
@@ -35,26 +35,24 @@
 #include "ItemFactory.h"
 #include "ItemsCache.h"
 #include "MailBox.h"
-#include "MessageFilter.h"
 #include "Npc.h"
 #include "Party.h"
 #include "PartyManager.h"
-#include "Player.h"
 #include "PlayerManager.h"
 #include "ProtocolGame.h"
 #include "QuestComp.h"
 #include "SkillManager.h"
+#include "TradeComp.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
-#include <sa/StringTempl.h>
 #include <abscommon/MessageClient.h>
 #include <abscommon/StringUtils.h>
 #include <abshared/SkillsHelper.h>
-#include "TradeComp.h"
+#include <sa/StringTempl.h>
 
 namespace Game {
 
@@ -75,7 +73,6 @@ void Player::RegisterLua(kaguya::State& state)
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
-    messageFilter_(ea::make_unique<Net::MessageFilter>()),
     questComp_(ea::make_unique<Components::QuestComp>(*this)),
     tradeComp_(ea::make_unique<Components::TradeComp>(*this))
 {
@@ -992,26 +989,6 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
     if (message.GetSize() != 0)
         client_->WriteToOutput(message);
 }
-
-void Player::SendGameStatus(const Net::NetworkMessage& message)
-{
-    // TODO: Parse message and send only messages relevant to the player,
-    // e.g. stuff that happens in a certain range around the player.
-#if 0
-    auto msg = Net::NetworkMessage::GetNew();
-/*    filter.Subscribe<AB::Packets::Server::ObjectPosUpdate>([](AB::Packets::Server::ObjectPosUpdate& packet) -> bool
-    {
-        LOG_INFO << "Object " << packet.id << " new pos " << std::endl;
-        return true;
-    });
-    */
-    messageFilter_->Execute(message, *msg);
-    WriteToOutput(*msg);
-#else
-    WriteToOutput(message);
-#endif
-}
-
 
 void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
 {

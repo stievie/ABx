@@ -86,6 +86,7 @@ inline constexpr float RANGE_BASE         = 80.0f;
 inline constexpr float RANGE_AGGRO        = GetPercent(RANGE_BASE, 24.0f);
 inline constexpr float RANGE_COMPASS      = GetPercent(RANGE_BASE, 95.0f);
 inline constexpr float RANGE_HALF_COMPASS = RANGE_COMPASS / 2.0f;
+inline constexpr float RANGE_TWO_COMPASS  = RANGE_COMPASS * 2.0f;
 inline constexpr float RANGE_SPIRIT       = RANGE_AGGRO * 1.6f;                   // Longbow, spirits
 inline constexpr float RANGE_EARSHOT      = RANGE_AGGRO;
 inline constexpr float RANGE_CASTING      = RANGE_AGGRO * 1.35f;
@@ -117,6 +118,7 @@ enum class Ranges : uint8_t
     Touch,
     Adjecent,
     Visible,
+    TwoCompass,
     Map                        // Whole map, must be last
 };
 

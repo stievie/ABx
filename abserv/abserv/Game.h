@@ -38,6 +38,10 @@
 #include <sa/Compiler.h>
 #include <sa/Iteration.h>
 
+namespace Net {
+class MessageFilter;
+}
+
 namespace Game {
 
 class Player;
@@ -55,6 +59,10 @@ using CrowdList = ea::unordered_map<uint32_t, ea::unique_ptr<Crowd>>;
 
 class Game : public ea::enable_shared_from_this<Game>
 {
+private:
+    static ea::unique_ptr<Net::MessageFilter> messageFilter;
+public:
+    static void InitMessageFilter();
 public:
     enum class ExecutionState
     {
@@ -168,6 +176,16 @@ public:
             return To<T>(o);
         return nullptr;
     }
+    template <typename T>
+    const T* GetObject(uint32_t id) const
+    {
+        const GameObject* o = GetObject<GameObject>(id);
+        if (!o)
+            return nullptr;
+        if (Is<T>(o))
+            return To<T>(o);
+        return nullptr;
+    }
     void AddObject(ea::shared_ptr<GameObject> object);
     void AddObjectInternal(ea::shared_ptr<GameObject> object);
     Group* GetGroup(uint32_t id);
@@ -254,6 +272,14 @@ public:
 // Shortcut function. No need to test and cast, because all objects are GameObjects
 template <>
 SA_ALWAYS_INLINE GameObject* Game::GetObject<GameObject>(uint32_t id)
+{
+    const auto it = objects_.find(id);
+    if (it == objects_.end())
+        return nullptr;
+    return (*it).second.get();
+}
+template <>
+SA_ALWAYS_INLINE const GameObject* Game::GetObject<GameObject>(uint32_t id) const
 {
     const auto it = objects_.find(id);
     if (it == objects_.end())
