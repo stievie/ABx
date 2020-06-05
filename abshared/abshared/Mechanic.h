@@ -135,6 +135,8 @@ inline constexpr float RangeDistances[] = {
     RANGE_TOUCH,
     RANGE_ADJECENT,
     RANGE_VISIBLE,
+    RANGE_TWO_COMPASS,
+    RANGE_INTEREST,
     std::numeric_limits<float>::max()
 };
 
