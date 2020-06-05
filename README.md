@@ -35,7 +35,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Instanced world.
 * Encrypted Game and Login Protocol.
 * Lag compensation: Entity interpolation, client prediction.
-* Compression: Delta compression (send only state changes), Interest management (send only messages to the player in a certain range).
+* Network traffic compression: Delta compression (send only state changes), Interest management (send only messages to the player in a certain range).
 * Spawn any number of server which may have heavy load (game, file server) even on different hardware.
 * Automatically spawn File and Game Server when needed.
 * Local (map), Guild, Team, Trade chat and whisper is currently working, even across different game server.
