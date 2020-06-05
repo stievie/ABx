@@ -105,7 +105,7 @@ void GameObject::UpdateRanges()
     ea::vector<GameObject*> res;
 
     // Compass radius
-    if (QueryObjects(res, RANGE_COMPASS))
+    if (QueryObjects(res, RANGE_INTEREST))
     {
         const Math::Vector3& myPos = GetPosition();
         for (const auto& o : res)
