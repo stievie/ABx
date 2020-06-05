@@ -30,6 +30,7 @@ namespace Net {
 
 void MessageFilter::Execute(const Game::Game& game, const Game::Player& player, const NetworkMessage& source, NetworkMessage& dest)
 {
+    using namespace AB::Packets::Server;
     MessageDecoder decoder(source);
     for (;;)
     {
@@ -41,11 +42,11 @@ void MessageFilter::Execute(const Game::Game& game, const Game::Player& player, 
         {
 #define ENUMERATE_SERVER_PACKET_CODE(v) case AB::GameProtocol::ServerPacketType::v:                 \
             {                                                                                       \
-                AB::Packets::Server::v packet = AB::Packets::Get<AB::Packets::Server::v>(decoder);  \
-                constexpr size_t id = sa::StringHash(sa::TypeName<AB::Packets::Server::v>::Get());  \
-                if (events_.HasSubscribers<bool(const Game::Game&, const Game::Player&, AB::Packets::Server::v&)>(id))                      \
+                v packet = AB::Packets::Get<v>(decoder);                                            \
+                constexpr size_t id = sa::StringHash(sa::TypeName<v>::Get());                       \
+                if (events_.HasSubscribers<bool(const Game::Game&, const Game::Player&, v&)>(id))   \
                 {                                                                                   \
-                    if (!events_.CallOne<bool(const Game::Game&, const Game::Player&, AB::Packets::Server::v&)>(id, game, player, packet))  \
+                    if (!events_.CallOne<bool(const Game::Game&, const Game::Player&, v&)>(id, game, player, packet))  \
                         continue;                                                                   \
                 }                                                                                   \
                 PassThrough(dest, AB::GameProtocol::ServerPacketType::v, packet);                   \
