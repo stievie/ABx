@@ -112,33 +112,32 @@ void GameObject::UpdateRanges()
         {
             if (o->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer)
             {
-                auto so = o->shared_from_this();
                 const Math::Vector3& objectPos = o->GetPosition();
                 const float dist = myPos.Distance(objectPos) - AVERAGE_BB_EXTENDS;
                 if (dist <= RANGE_AGGRO)
-                    ranges_[Ranges::Aggro].push_back(so);
+                    ranges_[Ranges::Aggro].emplace(o->id_);
                 if (dist <= RANGE_COMPASS)
-                    ranges_[Ranges::Compass].push_back(so);
+                    ranges_[Ranges::Compass].emplace(o->id_);
                 if (dist <= RANGE_SPIRIT)
-                    ranges_[Ranges::Spirit].push_back(so);
+                    ranges_[Ranges::Spirit].emplace(o->id_);
                 if (dist <= RANGE_EARSHOT)
-                    ranges_[Ranges::Earshot].push_back(so);
+                    ranges_[Ranges::Earshot].emplace(o->id_);
                 if (dist <= RANGE_CASTING)
-                    ranges_[Ranges::Casting].push_back(so);
+                    ranges_[Ranges::Casting].emplace(o->id_);
                 if (dist <= RANGE_PROJECTILE)
-                    ranges_[Ranges::Projectile].push_back(so);
+                    ranges_[Ranges::Projectile].emplace(o->id_);
                 if (dist <= RANGE_HALF_COMPASS)
-                    ranges_[Ranges::HalfCompass].push_back(so);
+                    ranges_[Ranges::HalfCompass].emplace(o->id_);
                 if (dist <= RANGE_TOUCH)
-                    ranges_[Ranges::Touch].push_back(so);
+                    ranges_[Ranges::Touch].emplace(o->id_);
                 if (dist <= RANGE_ADJECENT)
-                    ranges_[Ranges::Adjecent].push_back(so);
+                    ranges_[Ranges::Adjecent].emplace(o->id_);
                 if (dist <= RANGE_VISIBLE)
-                    ranges_[Ranges::Visible].push_back(so);
+                    ranges_[Ranges::Visible].emplace(o->id_);
                 if (dist <= RANGE_TWO_COMPASS)
-                    ranges_[Ranges::TwoCompass].push_back(so);
+                    ranges_[Ranges::TwoCompass].emplace(o->id_);
                 if (dist <= RANGE_INTEREST)
-                    ranges_[Ranges::Interest].push_back(so);
+                    ranges_[Ranges::Interest].emplace(o->id_);
             }
         }
     }
@@ -504,12 +503,7 @@ bool GameObject::IsInRange(Ranges range, const GameObject* object) const
     if (rIt == ranges_.end())
         return false;
     const auto& r = (*rIt).second;
-    const auto it = ea::find_if(r.begin(), r.end(), [&object](const ea::weak_ptr<GameObject>& current) -> bool
-    {
-        if (auto c = current.lock())
-            return c->id_ == object->id_;
-        return false;
-    });
+    const auto it = r.find(object->id_);
     return it != r.end();
 }
 
@@ -791,4 +785,23 @@ void GameObject::SetTrigger(bool value)
         triggerComp_ = ea::make_unique<Components::TriggerComp>(*this);
     triggerComp_->trigger_ = value;
 }
+
+void GameObject::VisitInRange(Ranges range, const std::function<Iteration(GameObject&)>& func) const
+{
+    auto game = GetGame();
+    assert(game);
+    const auto r = ranges_.find(range);
+    if (r == ranges_.end())
+        return;
+    for (uint32_t objectId : (*r).second)
+    {
+        auto* object = game->GetObject<GameObject>(objectId);
+        if (object)
+        {
+            if (func(*object) != Iteration::Continue)
+                break;
+        }
+    }
+}
+
 }

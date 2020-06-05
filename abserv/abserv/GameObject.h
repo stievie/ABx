@@ -148,7 +148,7 @@ protected:
     /// Octree octant.
     Math::Octant* octant_{ nullptr };
     float sortValue_{ 0.0f };
-    ea::map<Ranges, ea::vector<ea::weak_ptr<GameObject>>> ranges_;
+    ea::map<Ranges, ea::set<uint32_t>> ranges_;
     void UpdateRanges();
     uint32_t GetNewId()
     {
@@ -221,19 +221,7 @@ public:
     /// Check if the object is within maxDist
     bool IsCloserThan(float maxDist, const GameObject* object) const;
     /// Allows to execute a functor/lambda on the objects in range
-    template<typename Func>
-    void VisitInRange(Ranges range, Func&& func) const
-    {
-        const auto r = ranges_.find(range);
-        if (r == ranges_.end())
-            return;
-        for (const auto& o : (*r).second)
-        {
-            if (auto so = o.lock())
-                if (func(*so) != Iteration::Continue)
-                    break;
-        }
-    }
+    void VisitInRange(Ranges range, const std::function<Iteration(GameObject&)>& func) const;
     /// Returns the closest actor or nullptr
     /// @param[in] undestroyable If true include undestroyable actors
     /// @param[in] unselectable If true includes unselectable actors
