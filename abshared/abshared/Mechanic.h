@@ -91,6 +91,7 @@ inline constexpr float RANGE_SPIRIT       = RANGE_AGGRO * 1.6f;                 
 inline constexpr float RANGE_EARSHOT      = RANGE_AGGRO;
 inline constexpr float RANGE_CASTING      = RANGE_AGGRO * 1.35f;
 inline constexpr float RANGE_PROJECTILE   = RANGE_AGGRO;
+inline constexpr float RANGE_INTEREST     = RANGE_COMPASS * 3.0f;                 // What happens inside this range is sent to the player
 
 inline constexpr float RANGE_LONGBOW      = RANGE_AGGRO * 1.6f;
 inline constexpr float RANGE_FLATBOW      = RANGE_AGGRO * 1.6f;
@@ -119,6 +120,7 @@ enum class Ranges : uint8_t
     Adjecent,
     Visible,
     TwoCompass,
+    Interest,
     Map                        // Whole map, must be last
 };
 

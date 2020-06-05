@@ -67,7 +67,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::TwoCompass, object))
+        if (!player.IsInRange(Ranges::Interest, object))
             return false;
         return true;
     });
@@ -76,7 +76,43 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::TwoCompass, object))
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectSkillFailure>([](const Game& game, const Player& player, ObjectSkillFailure& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectUseSkill>([](const Game& game, const Player& player, ObjectUseSkill& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectSkillSuccess>([](const Game& game, const Player& player, ObjectSkillSuccess& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectAttackFailure>([](const Game& game, const Player& player, ObjectAttackFailure& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
             return false;
         return true;
     });
@@ -359,7 +395,7 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
-#if 0
+#if 1
         auto msg = Net::NetworkMessage::GetNew();
         messageFilter->Execute(*this, *p.second, *gameStatus_, *msg);
         p.second->WriteToOutput(*msg);

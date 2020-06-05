@@ -531,7 +531,19 @@ struct ObjectPosUpdate
     }
 };
 
-struct ObjectSetPosition : ObjectPosUpdate {};
+struct ObjectSetPosition
+{
+    uint32_t id;
+    std::array<float, 3> pos;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(pos[0]);
+        ar.value(pos[1]);
+        ar.value(pos[2]);
+    }
+};
 
 struct ObjectRotationUpdate
 {

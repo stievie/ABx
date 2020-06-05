@@ -77,7 +77,7 @@ protected:
     }
     bool CanRead(size_t size)
     {
-        if ((info_.position + static_cast<uint16_t>(size)) > (info_.length + 8) ||
+        if ((info_.position + static_cast<uint16_t>(size)) > (info_.length + INITIAL_BUFFER_POSITION) ||
             static_cast<uint16_t>(size) >= (NETWORKMESSAGE_BUFFER_SIZE - info_.position))
         {
             return false;

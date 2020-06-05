@@ -25,7 +25,7 @@ namespace Net {
 
 MessageDecoder::MessageDecoder(const NetworkMessage& message) :
     ptr_(message.GetBuffer()),
-    size_(message.GetSize()),
+    size_(message.GetSize() + NetworkMessage::INITIAL_BUFFER_POSITION),
     pos_(NetworkMessage::INITIAL_BUFFER_POSITION)
 { }
 

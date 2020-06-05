@@ -137,6 +137,8 @@ void GameObject::UpdateRanges()
                     ranges_[Ranges::Visible].push_back(so);
                 if (dist <= RANGE_TWO_COMPASS)
                     ranges_[Ranges::TwoCompass].push_back(so);
+                if (dist <= RANGE_INTEREST)
+                    ranges_[Ranges::Interest].push_back(so);
             }
         }
     }

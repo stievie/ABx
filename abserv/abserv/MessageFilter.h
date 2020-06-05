@@ -58,6 +58,7 @@ public:
     MessageFilter()
     { }
 
+    // Return true to keep the packet, false to drop it
     template<typename T, typename Callback>
     size_t Subscribe(Callback&& callback)
     {
