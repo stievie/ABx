@@ -77,12 +77,16 @@ private:
         FunctionGetSkillRecharge = 1 << 20,
         FunctionOnRemoved = 1 << 21,
     };
+    int64_t startTime_;
+    int64_t endTime_;
+    /// Duration
+    uint32_t ticks_;
     kaguya::State luaState_;
     ea::weak_ptr<Actor> target_;
     ea::weak_ptr<Actor> source_;
     bool persistent_{ false };
     uint32_t functions_{ FunctionNone };
-    /// Internal effects are not visible to the player, e.g. Effects from the equipments (+armor from Armor, Shield...).
+    /// Internal effects are not visible to the player.
     bool internal_{ false };
     bool UnserializeProp(EffectAttr attr, sa::PropReadStream& stream);
     void InitializeLua();
@@ -97,10 +101,10 @@ public:
 
     Effect() = delete;
     explicit Effect(const AB::Entities::Effect& effect) :
-        data_(effect),
         startTime_(0),
         endTime_(0),
         ticks_(0),
+        data_(effect),
         ended_(false),
         cancelled_(false)
     {
@@ -160,15 +164,12 @@ public:
 
     AB::Entities::Effect data_;
 
-    int64_t startTime_;
-    int64_t endTime_;
-    /// Duration
-    uint32_t ticks_;
     bool ended_;
     bool cancelled_;
 
     int64_t GetStartTime() const { return startTime_; }
     int64_t GetEndTime() const { return endTime_; }
+    // Get base time
     uint32_t GetTicks() const { return ticks_; }
     uint32_t GetRemainingTime() const;
 };

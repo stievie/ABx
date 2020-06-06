@@ -26,6 +26,7 @@
 #include "Crowd.h"
 #include "DataProvider.h"
 #include "Effect.h"
+#include "EffectManager.h"
 #include "GameManager.h"
 #include "IOGame.h"
 #include "IOMap.h"
@@ -146,14 +147,17 @@ void Game::InitMessageFilter()
     {
         if (packet.id == player.id_)
             return true;
-        // Pass long lasting effects, in case the player comes into range
-        const auto* object = game.GetObject<Actor>(packet.id);
-        const auto* effect = object->effectsComp_->GetEffect(packet.effectIndex);
+
+        // Can't get the Effect object from the Actor because it was removed
+        auto* effectMngr = GetSubsystem<EffectManager>();
+        auto effect = effectMngr->Get(packet.effectIndex);
         if (!effect)
             return false;
-        if (effect->GetRemainingTime() > 10000)
+        // Pass long lasting effects, in case the player comes into range
+        if (effect->IsPersistent() || effect->GetTicks() > 10000)
             return true;
 
+        const auto* object = game.GetObject<GameObject>(packet.id);
         if (!player.IsInRange(Ranges::Interest, object))
             return false;
         return true;
