@@ -24,6 +24,8 @@
 #include "MathUtils.h"
 #include "FwClient.h"
 #include "TimeUtils.h"
+#include "LevelManager.h"
+#include "Player.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -74,6 +76,22 @@ void GameObject::MoveTo(int64_t, const Vector3& newPos)
 void GameObject::ForcePosition(int64_t, const Vector3& newPos)
 {
     GetNode()->SetWorldPosition(newPos);
+}
+
+float GameObject::GetDistance(const Vector3& pos) const
+{
+    return GetNode()->GetWorldPosition().DistanceToPoint(pos);
+}
+
+float GameObject::GetDistanceToPlayer() const
+{
+    if (Is<Player>(this))
+        return 0.0f;
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* player = lm->GetPlayer();
+    if (!player)
+        return std::numeric_limits<float>::max();
+    return GetDistance(player->GetNode()->GetWorldPosition());
 }
 
 IntVector2 GameObject::WorldToScreenPoint()

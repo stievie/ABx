@@ -101,6 +101,8 @@ public:
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
     virtual void ForcePosition(int64_t time, const Vector3& newPos);
+    float GetDistance(const Vector3& pos) const;
+    float GetDistanceToPlayer() const;
     bool IsSelectable() const { return selectable_; }
     IntVector2 WorldToScreenPoint();
     IntVector2 WorldToScreenPoint(Vector3 pos);

@@ -364,8 +364,10 @@ void Actor::Update(float timeStep)
     IntVector2 screenPos = WorldToScreenPoint(pos);
     IntVector2 hpTop = WorldToScreenPoint(headPos);
 
-    bool highlight = sc->IsTriggered(Events::E_SC_HIGHLIGHTOBJECTS);
-    if (hovered_ || playerSelected_ || highlight || IsSpeechBubbleVisible())
+    const bool highlight = sc->IsTriggered(Events::E_SC_HIGHLIGHTOBJECTS);
+    const bool inRange = GetDistanceToPlayer() <= Game::RANGE_SELECT;
+
+    if ((hovered_ || playerSelected_ || highlight || IsSpeechBubbleVisible()) && inRange)
     {
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
@@ -399,15 +401,15 @@ void Actor::Update(float timeStep)
     }
 
     if (nameWindow_)
-        nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
+        nameWindow_->SetVisible((highlight || hovered_ || playerSelected_) && inRange);
     if (hpBar_ && !undestroyable_)
     {
         hpBar_->SetValues(stats_.maxHealth, stats_.health);
-        hpBar_->SetVisible((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight);
+        hpBar_->SetVisible(((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight) && inRange);
     }
     else if (classLevel_)
     {
-        classLevel_->SetVisible((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight);
+        classLevel_->SetVisible(((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight) && inRange);
     }
     if (IsSpeechBubbleVisible())
     {
@@ -738,6 +740,8 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
 void Actor::ShowSpeechBubble(const String& text)
 {
     if (text.Empty())
+        return;
+    if (GetDistanceToPlayer() > Game::RANGE_SELECT)
         return;
 
     speechBubbleWindow_->SetSize(0, 0);
