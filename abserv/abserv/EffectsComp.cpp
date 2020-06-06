@@ -149,11 +149,11 @@ bool EffectsComp::HasEffect(uint32_t index) const
 
 Effect* EffectsComp::GetEffect(uint32_t index) const
 {
-    const auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
+    const auto it = ea::find_if(effects_.rbegin(), effects_.rend(), [index](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
-    if (it != effects_.end())
+    if (it != effects_.rend())
         return (*it).get();
     return nullptr;
 }
