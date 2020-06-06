@@ -135,7 +135,7 @@ void Game::InitMessageFilter()
         const auto* effect = object->effectsComp_->GetEffect(packet.effectIndex);
         if (!effect)
             return false;
-        if (effect->GetRemainingTime() > 1000)
+        if (effect->GetRemainingTime() > 10000)
             return true;
 
         if (!player.IsInRange(Ranges::Interest, object))
@@ -151,7 +151,7 @@ void Game::InitMessageFilter()
         const auto* effect = object->effectsComp_->GetEffect(packet.effectIndex);
         if (!effect)
             return false;
-        if (effect->GetRemainingTime() > 1000)
+        if (effect->GetRemainingTime() > 10000)
             return true;
 
         if (!player.IsInRange(Ranges::Interest, object))
