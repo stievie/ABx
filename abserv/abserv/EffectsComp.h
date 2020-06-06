@@ -79,7 +79,7 @@ public:
     bool HasEffect(uint32_t index) const;
     Effect* GetEffect(uint32_t index) const;
     bool HasEffectOf(AB::Entities::EffectCategory category);
-    ea::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
+    Effect* GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
     /// Get real cost of a skill

@@ -423,10 +423,7 @@ void Actor::RemoveFriendFoe(uint32_t frnd, uint32_t foe)
 
 Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
 {
-    auto effect = effectsComp_->GetLast(category);
-    if (effect)
-        return effect.get();
-    return nullptr;
+    return effectsComp_->GetLast(category);
 }
 
 GameObject* Actor::_LuaGetSelectedObject()

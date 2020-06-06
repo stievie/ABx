@@ -159,14 +159,14 @@ Effect* EffectsComp::GetEffect(uint32_t index) const
 }
 
 
-ea::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory category)
+Effect* EffectsComp::GetLast(AB::Entities::EffectCategory category)
 {
     for (auto i = effects_.rbegin(); i != effects_.rend(); ++i)
     {
         if ((*i)->data_.category == category)
-            return (*i);
+            return (*i).get();
     }
-    return ea::shared_ptr<Effect>();
+    return nullptr;
 }
 
 void EffectsComp::Update(uint32_t timeElapsed)
