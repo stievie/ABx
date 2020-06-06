@@ -86,7 +86,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -95,7 +95,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -104,7 +104,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -113,7 +113,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -167,7 +167,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_ || packet.sourceId == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -176,7 +176,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_ || packet.sourceId == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
@@ -185,7 +185,7 @@ void Game::InitMessageFilter()
         if (packet.id == player.id_)
             return true;
         const auto* object = game.GetObject<GameObject>(packet.id);
-        if (!player.IsInRange(Ranges::Interest, object))
+        if (!player.IsInRange(Ranges::TwoCompass, object))
             return false;
         return true;
     });
