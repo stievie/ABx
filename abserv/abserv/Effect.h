@@ -170,6 +170,7 @@ public:
     int64_t GetStartTime() const { return startTime_; }
     int64_t GetEndTime() const { return endTime_; }
     uint32_t GetTicks() const { return ticks_; }
+    uint32_t GetRemainingTime() const;
 };
 
 /// effects are fist-in-last-out

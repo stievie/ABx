@@ -76,7 +76,8 @@ public:
     void DeleteEffect(uint32_t index);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
-    bool HasEffect(uint32_t index);
+    bool HasEffect(uint32_t index) const;
+    Effect* GetEffect(uint32_t index) const;
     bool HasEffectOf(AB::Entities::EffectCategory category);
     ea::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);

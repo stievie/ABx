@@ -139,6 +139,18 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
+uint32_t Effect::GetRemainingTime() const
+{
+    if (IsPersistent())
+        return std::numeric_limits<uint32_t>::max();
+    if (endTime_ == 0)
+        return 0;
+    int64_t tick = Utils::Tick();
+    if (endTime_ < tick)
+        return 0;
+    return static_cast<uint32_t>(endTime_ - tick);
+}
+
 bool Effect::Start(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target, uint32_t time)
 {
     target_ = target;

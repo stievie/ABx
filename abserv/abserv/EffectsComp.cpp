@@ -138,14 +138,26 @@ void EffectsComp::RemoveEffect(uint32_t index)
     }
 }
 
-bool EffectsComp::HasEffect(uint32_t index)
+bool EffectsComp::HasEffect(uint32_t index) const
 {
-    auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
+    const auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
     return it != effects_.end();
 }
+
+Effect* EffectsComp::GetEffect(uint32_t index) const
+{
+    const auto it = ea::find_if(effects_.begin(), effects_.end(), [index](const ea::shared_ptr<Effect>& current)
+    {
+        return current->data_.index == index;
+    });
+    if (it != effects_.end())
+        return (*it).get();
+    return nullptr;
+}
+
 
 ea::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory category)
 {

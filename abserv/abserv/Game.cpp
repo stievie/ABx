@@ -129,7 +129,15 @@ void Game::InitMessageFilter()
     {
         if (packet.id == player.id_)
             return true;
-        const auto* object = game.GetObject<GameObject>(packet.id);
+
+        // Pass long lasting effects, in case the player comes into range
+        const auto* object = game.GetObject<Actor>(packet.id);
+        const auto* effect = object->effectsComp_->GetEffect(packet.effectIndex);
+        if (!effect)
+            return false;
+        if (effect->GetRemainingTime() > 1000)
+            return true;
+
         if (!player.IsInRange(Ranges::Interest, object))
             return false;
         return true;
@@ -138,7 +146,14 @@ void Game::InitMessageFilter()
     {
         if (packet.id == player.id_)
             return true;
-        const auto* object = game.GetObject<GameObject>(packet.id);
+        // Pass long lasting effects, in case the player comes into range
+        const auto* object = game.GetObject<Actor>(packet.id);
+        const auto* effect = object->effectsComp_->GetEffect(packet.effectIndex);
+        if (!effect)
+            return false;
+        if (effect->GetRemainingTime() > 1000)
+            return true;
+
         if (!player.IsInRange(Ranges::Interest, object))
             return false;
         return true;
