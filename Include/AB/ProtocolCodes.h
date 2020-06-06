@@ -133,7 +133,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(ObjectSpawnExisting)         \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSpawn)                 \
     ENUMERATE_SERVER_PACKET_CODE(ObjectDespawn)               \
-    ENUMERATE_SERVER_PACKET_CODE(ObjectPosUpdate)             \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectPositionUpdate)        \
     ENUMERATE_SERVER_PACKET_CODE(ObjectRotationUpdate)        \
     ENUMERATE_SERVER_PACKET_CODE(ObjectTargetSelected)        \
     ENUMERATE_SERVER_PACKET_CODE(ObjectStateChanged)          \
@@ -150,7 +150,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(ObjectProgress)              \
     ENUMERATE_SERVER_PACKET_CODE(ObjectPingTarget)            \
     ENUMERATE_SERVER_PACKET_CODE(ObjectDroppedItem)           \
-    ENUMERATE_SERVER_PACKET_CODE(ObjectSetPosition)           \
+    ENUMERATE_SERVER_PACKET_CODE(ObjectForcePosition)         \
     ENUMERATE_SERVER_PACKET_CODE(ObjectGroupMaskChanged)      \
     ENUMERATE_SERVER_PACKET_CODE(ObjectSetAttackSpeed)        \
     ENUMERATE_SERVER_PACKET_CODE(PartyPlayerInvited)          \

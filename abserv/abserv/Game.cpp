@@ -62,7 +62,7 @@ void Game::InitMessageFilter()
     using namespace AB::Packets::Server;
     messageFilter = ea::make_unique<Net::MessageFilter>();
     // Subscribe to all messages we may filter out
-    messageFilter->Subscribe<ObjectPosUpdate>([](const Game& game, const Player& player, ObjectPosUpdate& packet) -> bool
+    messageFilter->Subscribe<ObjectPositionUpdate>([](const Game& game, const Player& player, ObjectPositionUpdate& packet) -> bool
     {
         if (packet.id == player.id_)
             return true;
@@ -108,6 +108,60 @@ void Game::InitMessageFilter()
         return true;
     });
     messageFilter->Subscribe<ObjectAttackFailure>([](const Game& game, const Player& player, ObjectAttackFailure& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectTargetSelected>([](const Game& game, const Player& player, ObjectTargetSelected& packet) -> bool
+    {
+        if (packet.id == player.id_ || packet.targetId == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Compass, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectEffectAdded>([](const Game& game, const Player& player, ObjectEffectAdded& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectEffectRemoved>([](const Game& game, const Player& player, ObjectEffectRemoved& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectDamaged>([](const Game& game, const Player& player, ObjectDamaged& packet) -> bool
+    {
+        if (packet.id == player.id_ || packet.sourceId == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectHealed>([](const Game& game, const Player& player, ObjectHealed& packet) -> bool
+    {
+        if (packet.id == player.id_ || packet.sourceId == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Interest, object))
+            return false;
+        return true;
+    });
+    messageFilter->Subscribe<ObjectResourceChanged>([](const Game& game, const Player& player, ObjectResourceChanged& packet) -> bool
     {
         if (packet.id == player.id_)
             return true;

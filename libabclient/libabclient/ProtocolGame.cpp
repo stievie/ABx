@@ -58,7 +58,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ObjectSpawnExisting, ServerPacketType::ObjectSpawnExisting>();
     AddHandler<AB::Packets::Server::ObjectSpawn, ServerPacketType::ObjectSpawn>();
     AddHandler<AB::Packets::Server::ObjectDespawn, ServerPacketType::ObjectDespawn>();
-    AddHandler<AB::Packets::Server::ObjectPosUpdate, ServerPacketType::ObjectPosUpdate>();
+    AddHandler<AB::Packets::Server::ObjectPositionUpdate, ServerPacketType::ObjectPositionUpdate>();
     AddHandler<AB::Packets::Server::ObjectRotationUpdate, ServerPacketType::ObjectRotationUpdate>();
     AddHandler<AB::Packets::Server::ObjectStateChanged, ServerPacketType::ObjectStateChanged>();
     AddHandler<AB::Packets::Server::ObjectSpeedChanged, ServerPacketType::ObjectSpeedChanged>();
@@ -74,7 +74,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ObjectHealed, ServerPacketType::ObjectHealed>();
     AddHandler<AB::Packets::Server::ObjectProgress, ServerPacketType::ObjectProgress>();
     AddHandler<AB::Packets::Server::ObjectDroppedItem, ServerPacketType::ObjectDroppedItem>();
-    AddHandler<AB::Packets::Server::ObjectSetPosition, ServerPacketType::ObjectSetPosition>();
+    AddHandler<AB::Packets::Server::ObjectForcePosition, ServerPacketType::ObjectForcePosition>();
     AddHandler<AB::Packets::Server::ObjectGroupMaskChanged, ServerPacketType::ObjectGroupMaskChanged>();
     AddHandler<AB::Packets::Server::ObjectSetAttackSpeed, ServerPacketType::ObjectSetAttackSpeed>();
     AddHandler<AB::Packets::Server::ServerMessage, ServerPacketType::ServerMessage>();

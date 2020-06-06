@@ -239,7 +239,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MailHeaders& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MailComplete& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDespawn& packet) override;
-    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPositionUpdate& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpeedChanged& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryContent& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemUpdate& packet) override;
@@ -262,7 +262,7 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) override;
-    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectForcePosition& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) override;

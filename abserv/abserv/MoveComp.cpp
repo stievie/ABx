@@ -180,10 +180,10 @@ void MoveComp::Write(Net::NetworkMessage& message)
     if (moved_ || forcePosition_)
     {
         if (forcePosition_)
-            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSetPosition);
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectForcePosition);
         else
-            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectPosUpdate);
-        AB::Packets::Server::ObjectPosUpdate packet = {
+            message.AddByte(AB::GameProtocol::ServerPacketType::ObjectPositionUpdate);
+        AB::Packets::Server::ObjectPositionUpdate packet = {
             owner_.id_,
             {
                 owner_.transformation_.position_.x_,

@@ -517,7 +517,7 @@ struct ObjectGroupMaskChanged
     }
 };
 
-struct ObjectPosUpdate
+struct ObjectPositionUpdate
 {
     uint32_t id;
     std::array<float, 3> pos;
@@ -531,7 +531,7 @@ struct ObjectPosUpdate
     }
 };
 
-struct ObjectSetPosition
+struct ObjectForcePosition
 {
     uint32_t id;
     std::array<float, 3> pos;

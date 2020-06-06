@@ -77,7 +77,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::MailHeaders& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::MailComplete& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDespawn& packet) = 0;
-    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPositionUpdate& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSpeedChanged& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryContent& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::InventoryItemUpdate& packet) = 0;
@@ -100,7 +100,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectHealed& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectProgress& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDroppedItem& packet) = 0;
-    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectForcePosition& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectGroupMaskChanged& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetAttackSpeed& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ServerMessage& packet) = 0;

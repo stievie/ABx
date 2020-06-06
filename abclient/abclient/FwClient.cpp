@@ -1473,7 +1473,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDes
     QueueEvent(Events::E_OBJECTDESPAWN, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet)
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPositionUpdate& packet)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ObjectPosUpdate;
@@ -1852,7 +1852,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDro
     QueueEvent(Events::E_OBJECTITEMDROPPED, eData);
 }
 
-void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet)
+void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectForcePosition& packet)
 {
     using namespace Events::ObjectSetPosition;
     VariantMap& eData = GetEventDataMap();

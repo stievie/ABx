@@ -758,7 +758,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDespa
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPosUpdate& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectPositionUpdate& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }
@@ -873,7 +873,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDropp
     receiver_.OnPacket(updateTick, packet);
 }
 
-void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectSetPosition& packet)
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectForcePosition& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

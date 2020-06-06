@@ -1850,8 +1850,8 @@ void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& messag
 
 void Player::HandleStuckCommand(const std::string&, Net::NetworkMessage& message)
 {
-    message.AddByte(AB::GameProtocol::ServerPacketType::ObjectSetPosition);
-    AB::Packets::Server::ObjectPosUpdate packet = {
+    message.AddByte(AB::GameProtocol::ServerPacketType::ObjectForcePosition);
+    AB::Packets::Server::ObjectPositionUpdate packet = {
         id_,
         {
             transformation_.position_.x_,

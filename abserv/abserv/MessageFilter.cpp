@@ -49,7 +49,7 @@ void MessageFilter::Execute(const Game::Game& game, const Game::Player& player, 
                     if (!events_.CallOne<bool(const Game::Game&, const Game::Player&, v&)>(id, game, player, packet))  \
                         continue;                                                                   \
                 }                                                                                   \
-                PassThrough(dest, AB::GameProtocol::ServerPacketType::v, packet);                   \
+                Insert(dest, AB::GameProtocol::ServerPacketType::v, packet);                        \
                 break;                                                                              \
             }
             ENUMERATE_SERVER_PACKET_CODES

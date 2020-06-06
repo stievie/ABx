@@ -49,7 +49,7 @@ private:
     >;
     FilterEvents events_;
     template<typename T>
-    static void PassThrough(NetworkMessage& dest, AB::GameProtocol::ServerPacketType type, T& packet)
+    static void Insert(NetworkMessage& dest, AB::GameProtocol::ServerPacketType type, T& packet)
     {
         dest.AddByte(type);
         AB::Packets::Add(packet, dest);
