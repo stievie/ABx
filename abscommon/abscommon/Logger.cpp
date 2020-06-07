@@ -22,7 +22,6 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include <memory>
-#include <thread>
 
 namespace IO {
 
@@ -138,13 +137,13 @@ Logger& Logger::Error(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, red.code_);
 #endif
         }
-        stream_ << "[ERROR " << std::this_thread::get_id() << "] ";
+        (*this) << "[ERROR " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            stream_ << function;
+            (*this) << function;
             if (line != 0)
-                stream_ << ":" << line;
-            stream_ << " ";
+                (*this) << ":" << line;
+            (*this) << " ";
         }
     }
     return *this;
@@ -154,13 +153,13 @@ Logger& Logger::Info(const char* function, unsigned line)
 {
     if (nextIsBegin_)
     {
-        stream_ << "[Info " << std::this_thread::get_id() << "] ";
+        (*this) << "[Info " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            stream_ << function;
+            (*this) << function;
             if (line != 0)
-                stream_ << ":" << line;
-            stream_ << " ";
+                (*this) << ":" << line;
+            (*this) << " ";
         }
     }
     return *this;
@@ -179,13 +178,13 @@ Logger& Logger::Warning(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, yellow.code_);
 #endif
         }
-        stream_ << "[Warning " << std::this_thread::get_id() << "] ";
+        (*this) << "[Warning " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            stream_ << function;
+            (*this) << function;
             if (line != 0)
-                stream_ << ":" << line;
-            stream_ << " ";
+                (*this) << ":" << line;
+            (*this) << " ";
         }
     }
     return *this;
@@ -205,7 +204,7 @@ Logger& Logger::Profile()
             SetConsoleTextAttribute(hConsole_, green.code_);
 #endif
         }
-        stream_ << "[Profile " << std::this_thread::get_id() << "] ";
+        (*this) << "[Profile " << std::this_thread::get_id() << "] ";
     }
     return *this;
 }
@@ -224,13 +223,13 @@ Logger& Logger::Debug(const char* function, unsigned line)
             SetConsoleTextAttribute(hConsole_, grey.code_);
 #endif
         }
-        stream_ << "[Debug " << std::this_thread::get_id() << "] ";
+        (*this) << "[Debug " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            stream_ << function;
+            (*this) << function;
             if (line != 0)
-                stream_ << ":" << line;
-            stream_ << " ";
+                (*this) << ":" << line;
+            (*this) << " ";
         }
     }
     return *this;

@@ -31,6 +31,7 @@
 #include <sa/Assert.h>
 #include <sa/Compiler.h>
 #include <memory>
+#include <thread>
 
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
@@ -71,6 +72,13 @@ public:
     Logger& operator << (bool value)
     {
         stream_ << (value ? "true" : "false");
+        return *this;
+    }
+    Logger& operator << (const std::thread::id& value)
+    {
+        std::ios_base::fmtflags f(stream_.flags());
+        stream_ << std::hex << value;
+        stream_.flags(f);
         return *this;
     }
     // Everything else
