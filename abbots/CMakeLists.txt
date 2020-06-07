@@ -1,4 +1,4 @@
-project (abmatch CXX)
+project (abbots CXX)
 
 file(GLOB ABBOTS_SOURCES      abbots/*.cpp abbots/*.h)
 
