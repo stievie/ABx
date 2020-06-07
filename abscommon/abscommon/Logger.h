@@ -30,6 +30,7 @@
 #include "ConsoleColor.h"
 #include <sa/Assert.h>
 #include <sa/Compiler.h>
+#include <memory>
 
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
@@ -43,7 +44,6 @@ private:
     static std::unique_ptr<Logger> loggerInstance;
     enum class Mode
     {
-        Unknown,
         Stream,
         File
     };
@@ -54,9 +54,9 @@ private:
 #endif
     std::ofstream fstream_;
     std::ostream& stream_;
+    Mode mode_;
     int64_t logStart_;
     bool nextIsBegin_{ true };
-    Mode mode_{ Mode::Unknown };
     using EndlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
