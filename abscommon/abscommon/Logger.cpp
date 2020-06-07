@@ -22,6 +22,7 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include <memory>
+#include <thread>
 
 namespace IO {
 
@@ -97,7 +98,6 @@ Logger::Logger(const std::string& fileName) :
 
 Logger::~Logger()
 {
-    std::cout << "~Logger()" << std::endl;
     if (mode_ == Mode::File)
     {
         fstream_.flush();

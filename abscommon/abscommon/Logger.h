@@ -30,7 +30,6 @@
 #include "ConsoleColor.h"
 #include <sa/Assert.h>
 #include <sa/Compiler.h>
-#include <thread>
 
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
