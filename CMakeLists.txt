@@ -108,6 +108,7 @@ add_subdirectory(absadmin)
 add_subdirectory(abserv)
 
 # Tools
+add_subdirectory(abbots)
 add_subdirectory(dbgclient)
 add_subdirectory(dbtool)
 add_subdirectory(keygen)

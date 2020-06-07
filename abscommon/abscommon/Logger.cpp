@@ -21,15 +21,16 @@
 
 #include "Logger.h"
 #include "StringUtils.h"
+#include <memory>
 
 namespace IO {
 
-std::unique_ptr<Logger> Logger::instance_ = nullptr;
+static std::unique_ptr<Logger> loggerInstance;
 std::string Logger::logDir_ = "";
 
 Logger& Logger::Instance()
 {
-    if (!instance_)
+    if (!loggerInstance)
     {
         if (!logDir_.empty())
         {
@@ -43,17 +44,32 @@ Logger& Logger::Instance()
             strftime(chr, 50, "%g-%m-%d-%H-%M-%S", p);
 
             std::string logFile = Utils::ConcatPath(logDir_, std::string(chr), ".log");
-            instance_ = std::make_unique<Logger>(logFile);
+            loggerInstance = std::make_unique<Logger>(logFile);
         }
         else
-            instance_ = std::make_unique<Logger>();
+            loggerInstance = std::make_unique<Logger>(std::cout);
     }
-    else if (Utils::TimeElapsed(instance_->logStart_) > LOG_ROTATE_INTERVAL)
-        Logger::Rotate();
-    return *instance_;
+    else if (Utils::TimeElapsed(loggerInstance->logStart_) > LOG_ROTATE_INTERVAL)
+        Rotate();
+    assert(loggerInstance);
+    return *loggerInstance;
 }
 
-Logger::Logger(std::ostream& stream /* = std::cout */) :
+void Logger::Close()
+{
+    loggerInstance.reset();
+}
+
+void Logger::Rotate()
+{
+    if (!Logger::logDir_.empty())
+    {
+        Close();
+        Logger::Instance();
+    }
+}
+
+Logger::Logger(std::ostream& stream) :
     stream_(stream),
     mode_(Mode::Stream),
     logStart_(Utils::Tick())
@@ -70,6 +86,23 @@ Logger::Logger(std::ostream& stream /* = std::cout */) :
         SetConsoleOutputCP(CP_UTF8);
     }
 #endif
+}
+
+Logger::Logger(const std::string& fileName) :
+    fstream_(fileName),
+    stream_(fstream_),
+    mode_(Mode::File),
+    logStart_(Utils::Tick())
+{}
+
+Logger::~Logger()
+{
+    std::cout << "~Logger()" << std::endl;
+    if (mode_ == Mode::File)
+    {
+        fstream_.flush();
+        fstream_.close();
+    }
 }
 
 Logger& Logger::operator << (EndlType endl)

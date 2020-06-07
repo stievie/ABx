@@ -22,13 +22,13 @@
 #pragma once
 
 #include <fstream>
-#include <memory>
 #include <iostream>
 #include <chrono>
 #include <ctime>
 #include "Utils.h"
 #include <stdarg.h>
 #include "ConsoleColor.h"
+#include <sa/Assert.h>
 #include <sa/Compiler.h>
 #include <thread>
 
@@ -43,10 +43,10 @@ class Logger
 private:
     enum class Mode
     {
+        Unknown,
         Stream,
         File
     };
-    static std::unique_ptr<Logger> instance_;
 #if defined(AB_WINDOWS)
     HANDLE hConsole_{ 0 };
     short foregroundDefault_{ 0 };
@@ -54,28 +54,16 @@ private:
 #endif
     std::ofstream fstream_;
     std::ostream& stream_;
-    Mode mode_;
+    Mode mode_{ Mode::Unknown };
     int64_t logStart_;
     bool nextIsBegin_{ true };
     using EndlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
 
-    explicit Logger(std::ostream& stream = std::cout);
-    explicit Logger(const std::string& fileName) :
-        fstream_(fileName),
-        stream_(fstream_),
-        mode_(Mode::File),
-        logStart_(Utils::Tick())
-    {}
-    ~Logger()
-    {
-        if (mode_ == Mode::File)
-        {
-            fstream_.flush();
-            fstream_.close();
-        }
-    }
+    explicit Logger(std::ostream& stream);
+    explicit Logger(const std::string& fileName);
+    ~Logger();
 
     // Overload for std::endl only:
     Logger& operator << (EndlType endl);
@@ -87,28 +75,7 @@ public:
     }
     // Everything else
     template <typename T>
-    Logger& operator << (const T& data)
-    {
-        if (nextIsBegin_)
-        {
-            //set time_point to current time
-            std::chrono::time_point<std::chrono::system_clock> time_point;
-            time_point = std::chrono::system_clock::now();
-            std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
-            struct tm* p;
-            p = localtime(&ttp);
-            char chr[50] = { 0 };
-            strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", p);
-
-            stream_ << std::string(chr) << " " << data;
-            nextIsBegin_ = false;
-        }
-        else
-        {
-            stream_ << data;
-        }
-        return *this;
-    }
+    Logger& operator << (const T& data);
 
     Logger& Error(const char* function = nullptr, unsigned line = 0);
     Logger& Info(const char* function = nullptr, unsigned line = 0);
@@ -119,20 +86,34 @@ public:
     Logger& Debug(const char* function = nullptr, unsigned line = 0);
     static int PrintF(const char *__restrict __format, ...);
 
-    static void Close()
-    {
-        Logger::instance_.reset();
-    }
-    static void Rotate()
-    {
-        if (!Logger::logDir_.empty())
-        {
-            Close();
-            Logger::Instance();
-        }
-    }
+    static void Close();
+    static void Rotate();
     static Logger& Instance();
 };
+
+template <typename T>
+inline Logger& Logger::operator << (const T& data)
+{
+    if (nextIsBegin_)
+    {
+        //set time_point to current time
+        std::chrono::time_point<std::chrono::system_clock> time_point;
+        time_point = std::chrono::system_clock::now();
+        std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
+        struct tm* p;
+        p = localtime(&ttp);
+        char chr[50] = { 0 };
+        strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", p);
+
+        stream_ << std::string(chr) << " " << data;
+        nextIsBegin_ = false;
+    }
+    else
+    {
+        stream_ << data;
+    }
+    return *this;
+}
 
 }
 
