@@ -11,7 +11,9 @@ target_precompile_headers(abbots PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abbots/stda
 set_property(TARGET abbots PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abbots abscommon libabclient)
-if (UNIX)
+if (WIN32)
+    target_link_libraries(abbots libeay32 ssleay32)
+else()
     target_link_libraries(abbots DeathHandler)
 endif()
 
