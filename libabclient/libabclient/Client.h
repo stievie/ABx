@@ -74,7 +74,8 @@ private:
     ProtocolLogin& GetProtoLogin();
     void Terminate();
 public:
-    Client(Receiver& receiver);
+    explicit Client(Receiver& receiver);
+    Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive);
     ~Client() override;
 
     void ResetPoll();

@@ -36,6 +36,9 @@
 #include "Errors.h"
 #include "Receiver.h"
 #include "Structs.h"
+#include <memory>
+
+class Game;
 
 class BotClient final : public Client::Receiver
 {
@@ -45,11 +48,12 @@ private:
     std::string password_;
     std::string characterName_;
     std::string accounttoken_;
-
+    std::unique_ptr<Game> game_;
 public:
-    BotClient();
+    explicit BotClient(std::shared_ptr<asio::io_service> ioService);
     ~BotClient() override;
 
+    void Update(uint32_t timeElapsed);
     void Login(const std::string& username, const std::string& password, const std::string& characterName);
     void Logout();
 

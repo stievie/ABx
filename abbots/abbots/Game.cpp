@@ -19,32 +19,18 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "Game.h"
+#include "GameObject.h"
 
-#include <abscommon/ServerApp.h>
-#include <vector>
-#include <memory>
-
-class BotClient;
-
-class Application : public ServerApp
+Game::Game()
 {
-private:
-    std::shared_ptr<asio::io_service> ioService_;
-    int64_t lastUpdate_{ 0 };
-    std::vector<std::unique_ptr<BotClient>> clients_;
-    bool LoadMain();
-    void ShowVersion() override;
-    void ShowLogo();
-    void Update();
-    void MainLoop();
-    void CreateBots();
-    void Shutdown();
-public:
-    Application();
-    ~Application() override;
 
-    bool Initialize(const std::vector<std::string>& args) override;
-    void Run() override;
-    void Stop() override;
-};
+}
+
+void Game::Update(uint32_t timeElapsed)
+{
+    for (const auto& object : objects_)
+    {
+        object.second->Update(timeElapsed);
+    }
+}

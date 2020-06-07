@@ -21,9 +21,11 @@
 
 #include "BotClient.h"
 #include <abscommon/Logger.h>
+#include "Game.h"
+#include "GameObject.h"
 
-BotClient::BotClient() :
-    client_(*this)
+BotClient::BotClient(std::shared_ptr<asio::io_service> ioService) :
+    client_(*this, ioService)
 {
 }
 
@@ -31,16 +33,23 @@ BotClient::~BotClient()
 {
 }
 
+void BotClient::Update(uint32_t timeElapsed)
+{
+    if (game_)
+        game_->Update(timeElapsed);
+}
+
 void BotClient::Login(const std::string& username, const std::string& password, const std::string& characterName)
 {
     username_ = username;
     password_ = password;
     characterName_ = characterName;
+    client_.Login(username_, password_);
 }
 
 void BotClient::Logout()
 {
-
+    client_.Logout();
 }
 
 void BotClient::OnLog(const std::string& message)

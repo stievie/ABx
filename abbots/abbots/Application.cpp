@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "BotClient.h"
 #include "Version.h"
 #include <sa/Compiler.h>
 #include <AB/Entities/Service.h>
@@ -35,7 +36,7 @@
 
 Application::Application() :
     ServerApp(),
-    ioService_()
+    ioService_(std::make_shared<asio::io_service>())
 {
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
@@ -101,8 +102,27 @@ void Application::ShowLogo()
     std::cout << std::endl;
 }
 
+void Application::CreateBots()
+{
+    // TODO: Read Account data from config file and create all the bots.
+}
+
+void Application::Shutdown()
+{
+    for (const auto& client : clients_)
+    {
+        client->Logout();
+    }
+}
+
 void Application::Update()
 {
+    for (const auto& client : clients_)
+    {
+        // TODO: Calculate real time
+        client->Update(16);
+    }
+
     if (running_)
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
 }
@@ -112,7 +132,7 @@ void Application::MainLoop()
     // Main thread
     while (running_)
     {
-        ioService_.run();
+        ioService_->run();
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(16ms);
     }
@@ -134,6 +154,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
+    CreateBots();
 
     return true;
 }

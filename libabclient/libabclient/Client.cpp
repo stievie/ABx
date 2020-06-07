@@ -49,6 +49,17 @@ Client::Client(Receiver& receiver) :
     dhKeys_.GenerateKeys();
 }
 
+Client::Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive) :
+    receiver_(receiver),
+    ioService_(ioSerive),
+    loginHost_("127.0.0.1"),
+    loginPort_(2748)
+{
+    Utils::Random::Instance.Initialize();
+    // Always create new keys
+    dhKeys_.GenerateKeys();
+}
+
 Client::~Client()
 {
     Terminate();

@@ -21,30 +21,13 @@
 
 #pragma once
 
-#include <abscommon/ServerApp.h>
-#include <vector>
-#include <memory>
-
-class BotClient;
-
-class Application : public ServerApp
+class GameObject
 {
-private:
-    std::shared_ptr<asio::io_service> ioService_;
-    int64_t lastUpdate_{ 0 };
-    std::vector<std::unique_ptr<BotClient>> clients_;
-    bool LoadMain();
-    void ShowVersion() override;
-    void ShowLogo();
-    void Update();
-    void MainLoop();
-    void CreateBots();
-    void Shutdown();
 public:
-    Application();
-    ~Application() override;
+    GameObject();
 
-    bool Initialize(const std::vector<std::string>& args) override;
-    void Run() override;
-    void Stop() override;
+    void Update(uint32_t timeElapsed);
+
+    uint32_t id_{ 0 };
 };
+
