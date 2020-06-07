@@ -26,6 +26,7 @@
 #include "Item.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abscommon/NetworkMessage.h>
 
 namespace Game {
 namespace Components {

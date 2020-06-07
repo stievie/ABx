@@ -55,7 +55,8 @@ private:
     {
         if (!refs_)
         {
-            refs_ = new int;
+            // There seems to be some trouble with EASTLs allocator
+            refs_ = (int*)malloc(sizeof(int));
             *refs_ = 0;
         }
         ++(*refs_);
@@ -116,7 +117,7 @@ public:
                 DefaultDelete<T>()(ptr_);
             // Since we are the last and delete the pointer, we must also delete
             // the counter
-            delete refs_;
+            free(refs_);
         }
     }
 
@@ -140,7 +141,7 @@ public:
             }
             // Since we are the last and delete the pointer, we must also delete
             // the counter
-            delete refs_;
+            free(refs_);
             refs_ = nullptr;
         }
     }

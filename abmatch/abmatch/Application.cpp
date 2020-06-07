@@ -33,7 +33,7 @@
 #include <abscommon/UuidUtils.h>
 
 Application::Application() :
-    ServerApp::ServerApp(),
+    ServerApp(),
     ioService_()
 {
     serverType_ = AB::Entities::ServiceTypeMatchServer;
