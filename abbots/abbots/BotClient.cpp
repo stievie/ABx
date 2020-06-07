@@ -38,6 +38,11 @@ void BotClient::Login(const std::string& username, const std::string& password, 
     characterName_ = characterName;
 }
 
+void BotClient::Logout()
+{
+
+}
+
 void BotClient::OnLog(const std::string& message)
 {
     LOG_INFO << message << std::endl;
