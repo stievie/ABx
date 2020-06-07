@@ -26,11 +26,20 @@
 
 namespace IO {
 
-static std::unique_ptr<Logger> loggerInstance;
 std::string Logger::logDir_ = "";
+std::unique_ptr<Logger> Logger::loggerInstance = nullptr;
 
 Logger& Logger::Instance()
 {
+    if (loggerInstance)
+    {
+        if (Utils::TimeElapsed(loggerInstance->logStart_) > LOG_ROTATE_INTERVAL)
+        {
+            if (!Logger::logDir_.empty())
+                loggerInstance.reset();
+        }
+    }
+
     if (!loggerInstance)
     {
         if (!logDir_.empty())
@@ -50,8 +59,6 @@ Logger& Logger::Instance()
         else
             loggerInstance = std::make_unique<Logger>(std::cout);
     }
-    else if (Utils::TimeElapsed(loggerInstance->logStart_) > LOG_ROTATE_INTERVAL)
-        Rotate();
     assert(loggerInstance);
     return *loggerInstance;
 }
@@ -61,21 +68,12 @@ void Logger::Close()
     loggerInstance.reset();
 }
 
-void Logger::Rotate()
-{
-    if (!Logger::logDir_.empty())
-    {
-        Close();
-        Logger::Instance();
-    }
-}
-
 Logger::Logger(std::ostream& stream) :
     stream_(stream),
     mode_(Mode::Stream),
     logStart_(Utils::Tick())
 {
-#if defined(AB_WINDOWS)
+#if defined(SA_PLATFORM_WIN)
     // Get default console font color on Windows
     hConsole_ = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO Info;
@@ -107,20 +105,20 @@ Logger::~Logger()
 
 Logger& Logger::operator << (EndlType endl)
 {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
     static Color::Modifier def(Color::FG_DEFAULT);
 #endif
     nextIsBegin_ = true;
     if (mode_ == Mode::Stream)
     {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
         stream_ << def;
 #else
         SetConsoleTextAttribute(hConsole_, foregroundDefault_);
 #endif
     }
     stream_ << endl;
-#if defined(AB_WINDOWS)
+#if defined(SA_PLATFORM_WIN)
     if (isConsole_)
         stream_ << std::flush;
 #endif
@@ -134,19 +132,19 @@ Logger& Logger::Error(const char* function, unsigned line)
     {
         if (mode_ == Mode::Stream)
         {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
             stream_ << red;
 #else
             SetConsoleTextAttribute(hConsole_, red.code_);
 #endif
         }
-        (*this) << "[ERROR " << std::this_thread::get_id() << "] ";
+        stream_ << "[ERROR " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            (*this) << function;
+            stream_ << function;
             if (line != 0)
-                (*this) << ":" << line;
-            (*this) << " ";
+                stream_ << ":" << line;
+            stream_ << " ";
         }
     }
     return *this;
@@ -156,13 +154,13 @@ Logger& Logger::Info(const char* function, unsigned line)
 {
     if (nextIsBegin_)
     {
-        (*this) << "[Info " << std::this_thread::get_id() << "] ";
+        stream_ << "[Info " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            (*this) << function;
+            stream_ << function;
             if (line != 0)
-                (*this) << ":" << line;
-            (*this) << " ";
+                stream_ << ":" << line;
+            stream_ << " ";
         }
     }
     return *this;
@@ -175,19 +173,19 @@ Logger& Logger::Warning(const char* function, unsigned line)
     {
         if (mode_ == Mode::Stream)
         {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
             stream_ << yellow;
 #else
             SetConsoleTextAttribute(hConsole_, yellow.code_);
 #endif
         }
-        (*this) << "[Warning " << std::this_thread::get_id() << "] ";
+        stream_ << "[Warning " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            (*this) << function;
+            stream_ << function;
             if (line != 0)
-                (*this) << ":" << line;
-            (*this) << " ";
+                stream_ << ":" << line;
+            stream_ << " ";
         }
     }
     return *this;
@@ -201,13 +199,13 @@ Logger& Logger::Profile()
     {
         if (mode_ == Mode::Stream)
         {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
             stream_ << green;
 #else
             SetConsoleTextAttribute(hConsole_, green.code_);
 #endif
         }
-        (*this) << "[Profile " << std::this_thread::get_id() << "] ";
+        stream_ << "[Profile " << std::this_thread::get_id() << "] ";
     }
     return *this;
 }
@@ -220,19 +218,19 @@ Logger& Logger::Debug(const char* function, unsigned line)
     {
         if (mode_ == Mode::Stream)
         {
-#if !defined(AB_WINDOWS)
+#if !defined(SA_PLATFORM_WIN)
             stream_ << grey;
 #else
             SetConsoleTextAttribute(hConsole_, grey.code_);
 #endif
         }
-        (*this) << "[Debug " << std::this_thread::get_id() << "] ";
+        stream_ << "[Debug " << std::this_thread::get_id() << "] ";
         if (function)
         {
-            (*this) << function;
+            stream_ << function;
             if (line != 0)
-                (*this) << ":" << line;
-            (*this) << " ";
+                stream_ << ":" << line;
+            stream_ << " ";
         }
     }
     return *this;

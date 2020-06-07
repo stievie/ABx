@@ -40,22 +40,23 @@ namespace IO {
 class Logger
 {
 private:
+    static std::unique_ptr<Logger> loggerInstance;
     enum class Mode
     {
         Unknown,
         Stream,
         File
     };
-#if defined(AB_WINDOWS)
+#if defined(SA_PLATFORM_WIN)
     HANDLE hConsole_{ 0 };
     short foregroundDefault_{ 0 };
     bool isConsole_{ false };
 #endif
     std::ofstream fstream_;
     std::ostream& stream_;
-    Mode mode_{ Mode::Unknown };
     int64_t logStart_;
     bool nextIsBegin_{ true };
+    Mode mode_{ Mode::Unknown };
     using EndlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
@@ -86,7 +87,6 @@ public:
     static int PrintF(const char *__restrict __format, ...);
 
     static void Close();
-    static void Rotate();
     static Logger& Instance();
 };
 

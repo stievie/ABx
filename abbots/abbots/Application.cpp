@@ -22,8 +22,10 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include <sa/Compiler.h>
 #include <AB/Entities/Service.h>
 #include <abscommon/Dispatcher.h>
+#include <abscommon/Logger.h>
 #include <abscommon/Logo.h>
 #include <abscommon/Scheduler.h>
 #include <abscommon/SimpleConfigManager.h>
@@ -53,13 +55,14 @@ bool Application::LoadMain()
         configFile_ = Utils::ConcatPath(path_, "abbots.lua");
     }
 
-    LOG_INFO << "loading" << std::endl;
+    LOG_INFO << "Loading configuration...";
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     if (!config->Load(configFile_))
     {
-        std::cerr << "Failed to load config file" << std::endl;
+        LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
 
     if (Utils::Uuid::IsEmpty(serverId_))
         serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
@@ -111,7 +114,7 @@ void Application::MainLoop()
     {
         ioService_.run();
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(100ms);
+        std::this_thread::sleep_for(16ms);
     }
 }
 
@@ -140,12 +143,12 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
 
     running_ = true;
-    std::cout << "Running" << std::endl;
+    LOG_INFO << "Bot Army is running" << std::endl;
     MainLoop();
 }
 
 void Application::Stop()
 {
     running_ = false;
-    std::cout << "Stopped" << std::endl;
+    LOG_INFO << "Bot Army stopped" << std::endl;
 }
