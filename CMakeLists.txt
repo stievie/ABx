@@ -96,6 +96,7 @@ add_subdirectory(abipc)
 add_subdirectory(abscommon)
 add_subdirectory(abshared)
 add_subdirectory(absmath)
+add_subdirectory(libabclient)
 
 # Servers
 add_subdirectory(abdata)
@@ -127,6 +128,5 @@ endif()
 
 # Client
 if(ABX_BUILD_CLIENT)
-    add_subdirectory(libabclient)
     add_subdirectory(abclient)
 endif()
