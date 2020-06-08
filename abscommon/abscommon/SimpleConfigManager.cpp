@@ -97,6 +97,38 @@ bool SimpleConfigManager::GetGlobalBool(const std::string& ident, bool def)
     return val;
 }
 
+bool SimpleConfigManager::GetTable(const std::string& ident,
+    const std::function<Iteration(const std::string& name, const Utils::Variant& value)>& callback)
+{
+    lua_getglobal(L, ident.c_str());
+    lua_pushnil(L);
+    if (!lua_istable(L, -2))
+        return false;
+    while (lua_next(L, -2) != 0)
+    {
+        const char* name = lua_tostring(L, -2);
+        Utils::Variant value;
+        if (lua_isstring(L, -1))
+            value = std::string(lua_tostring(L, -1));
+        else if (lua_isboolean(L, -1))
+            value = (bool)lua_toboolean(L, -1);
+        else if (lua_isinteger(L, -1))
+            value = lua_tointeger(L, -1);
+        else if (lua_isnumber(L, -1))
+            value = static_cast<float>(lua_tonumber(L, -1));
+
+        if (value.GetType() != Utils::VariantType::None)
+        {
+            auto res = callback(name, value);
+            if (res != Iteration::Continue)
+                break;
+        }
+
+        lua_pop(L, 1);
+    }
+    return true;
+}
+
 void SimpleConfigManager::RegisterString(const std::string& name, const std::string& value)
 {
     lua_pushstring(L, value.c_str());

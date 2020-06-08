@@ -27,18 +27,27 @@
 
 class BotClient;
 
+struct Account
+{
+    std::string name;
+    std::string pass;
+    std::string character;
+};
+
 class Application : public ServerApp
 {
 private:
     std::shared_ptr<asio::io_service> ioService_;
-    int64_t lastUpdate_{ 0 };
     std::vector<std::unique_ptr<BotClient>> clients_;
+    std::vector<Account> accounts_;
+    int64_t lastUpdate_{ 0 };
     bool LoadMain();
     void ShowVersion() override;
     void ShowLogo();
     void Update();
     void MainLoop();
     void CreateBots();
+    void StartBots();
     void Shutdown();
 public:
     Application();

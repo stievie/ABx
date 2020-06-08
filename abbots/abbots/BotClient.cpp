@@ -39,11 +39,9 @@ void BotClient::Update(uint32_t timeElapsed)
         game_->Update(timeElapsed);
 }
 
-void BotClient::Login(const std::string& username, const std::string& password, const std::string& characterName)
+void BotClient::Login()
 {
-    username_ = username;
-    password_ = password;
-    characterName_ = characterName;
+    LOG_INFO << "Logging in with " << username_ << std::endl;
     client_.Login(username_, password_);
 }
 
@@ -70,12 +68,18 @@ void BotClient::OnPong(int lastPing)
     (void)lastPing;
 }
 
-void BotClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType)
+void BotClient::OnLoggedIn(const std::string& accountUuid,
+    const std::string& authToken,
+    AB::Entities::AccountType accType)
 {
+    accountUuid_ = accountUuid;
+    authToken_ = authToken;
+    accountType_ = accType;
 }
 
-void BotClient::OnGetCharlist(const AB::Entities::CharList&)
+void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
 {
+    chars_ = chars;
 }
 
 void BotClient::OnGetOutposts(const std::vector<AB::Entities::Game>&)

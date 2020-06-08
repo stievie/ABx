@@ -104,7 +104,52 @@ void Application::ShowLogo()
 
 void Application::CreateBots()
 {
-    // TODO: Read Account data from config file and create all the bots.
+    // TODO: Create all the bots.
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
+    int index = 1;
+    accounts_.push_back({});
+    while (config->GetTable("account" + std::to_string(index),
+        [this](const std::string& name, const Utils::Variant& value) -> Iteration
+    {
+        auto& current = accounts_.back();
+        if (name.compare("name") == 0)
+        {
+            current.name = value.GetString();
+        }
+        else if (name.compare("pass") == 0)
+        {
+            current.pass = value.GetString();
+        }
+        if (name.compare("char") == 0)
+        {
+            current.character = value.GetString();
+        }
+        return Iteration::Continue;
+    }))
+    {
+        accounts_.push_back({});
+        ++index;
+    }
+    // The last is empty
+    accounts_.pop_back();
+
+    for (const auto& account : accounts_)
+    {
+        auto client = std::make_unique<BotClient>(ioService_);
+        client->username_ = account.name;
+        client->password_ = account.pass;
+        client->characterName_ = account.character;
+        clients_.push_back(std::move(client));
+    }
+}
+
+void Application::StartBots()
+{
+    for (const auto& client : clients_)
+    {
+        LOG_INFO << "Starting Bot " << client->username_ << " with character " << client->characterName_ << std::endl;
+//        client->Login();
+    }
 }
 
 void Application::Shutdown()
@@ -117,14 +162,28 @@ void Application::Shutdown()
 
 void Application::Update()
 {
+    uint32_t time;
+    if (lastUpdate_ == 0)
+        time = 16;
+    else
+        time = Utils::TimeElapsed(lastUpdate_);
+
+    int64_t startTick = Utils::Tick();
     for (const auto& client : clients_)
     {
-        // TODO: Calculate real time
-        client->Update(16);
+        client->Update(time);
     }
+    uint32_t timeSpent = Utils::TimeElapsed(startTick);
+
+    lastUpdate_ = Utils::Tick();
+    uint32_t nextSchedule;
+    if (timeSpent < 16)
+        nextSchedule = 16 - timeSpent;
+    else
+        nextSchedule = 1;
 
     if (running_)
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(nextSchedule, std::bind(&Application::Update, this)));
 }
 
 void Application::MainLoop()
@@ -164,6 +223,7 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
 
     running_ = true;
+    StartBots();
     LOG_INFO << "Bot Army is running" << std::endl;
     MainLoop();
 }

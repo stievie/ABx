@@ -44,17 +44,21 @@ class BotClient final : public Client::Receiver
 {
 private:
     Client::Client client_;
+    std::string authToken_;
+    std::string accountUuid_;
+    AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
+    AB::Entities::CharList chars_;
+    std::unique_ptr<Game> game_;
+public:
     std::string username_;
     std::string password_;
     std::string characterName_;
-    std::string accounttoken_;
-    std::unique_ptr<Game> game_;
-public:
+
     explicit BotClient(std::shared_ptr<asio::io_service> ioService);
     ~BotClient() override;
 
     void Update(uint32_t timeElapsed);
-    void Login(const std::string& username, const std::string& password, const std::string& characterName);
+    void Login();
     void Logout();
 
     void OnLog(const std::string& message) override;
