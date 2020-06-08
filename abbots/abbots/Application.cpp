@@ -104,7 +104,6 @@ void Application::ShowLogo()
 
 void Application::CreateBots()
 {
-    // TODO: Create all the bots.
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     int index = 1;
     accounts_.push_back({});
