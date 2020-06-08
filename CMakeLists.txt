@@ -78,6 +78,10 @@ option (ABX_WRITE_MINIBUMP "Write Minidump and Stacktrace in case of crash" TRUE
 option (ABX_BUILD_TOOLS "Build Tools (may require assimp to be installed)" FALSE)
 option (ABX_BUILD_CLIENT "Build Game Client (requires Urho3D to be installed)" FALSE)
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_definitions(-DNOMINMAX)
+endif()
+
 if (ABX_ASSERT)
     add_definitions(-DSA_ASSERT)
 endif(ABX_ASSERT)
