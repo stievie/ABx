@@ -23,6 +23,7 @@ endif(ABX_SCENE_VIEWER)
 set_property(TARGET abserv PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 if(MSVC)
     set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/abserv/MessageFilter.cpp PROPERTIES COMPILE_FLAGS /bigobj)
+    set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/abserv/Game.cpp PROPERTIES COMPILE_FLAGS /bigobj)
 endif()
 
 target_link_libraries(abserv abscommon abcrypto absmath abai abipc abshared Detour DetourTileCache EASTL PugiXml)
