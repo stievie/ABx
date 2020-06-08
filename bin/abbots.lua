@@ -9,4 +9,15 @@ server_name = "abbots"
 login_host = "localhost"
 login_port = 2748
 
+-- File containing bot accounts. Format is:
+--account1 = {
+--    name = "loginname1",
+--    pass = "password",
+--    char = "Character Name"
+--}
+--account2 = {
+--    name = "loginname1",
+--    pass = "password",
+--    char = "Character Name"
+--}
 require("config/bots_private")
