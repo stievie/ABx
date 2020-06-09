@@ -35,6 +35,7 @@ Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeMessageServer;
 
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();

@@ -37,6 +37,7 @@ Application::Application() :
     ioService_(),
     lbType_(AB::Entities::ServiceTypeUnknown)
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeLoadBalancer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();

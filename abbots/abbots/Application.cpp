@@ -38,6 +38,7 @@ Application::Application() :
     ServerApp(),
     ioService_(std::make_shared<asio::io_service>())
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
@@ -190,7 +191,6 @@ void Application::MainLoop()
     // Main thread
     while (running_)
     {
-        ioService_->run();
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(16ms);
     }

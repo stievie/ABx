@@ -64,6 +64,7 @@ Application::Application() :
     assert(Application::Instance == nullptr);
     Application::Instance = this;
 
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeAdminServer;
 
     ioService_ = std::make_shared<asio::io_service>();

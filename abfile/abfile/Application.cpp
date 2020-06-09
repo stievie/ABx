@@ -70,6 +70,7 @@ Application::Application() :
     lastLoadCalc_(0),
     temporary_(false)
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeFileServer;
     ioService_ = std::make_shared<asio::io_service>();
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();

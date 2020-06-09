@@ -46,6 +46,7 @@ Application::Application() :
     flushInterval_(FLUSH_CACHE_MS),
     cleanInterval_(CLEAN_CACHE_MS)
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeDataServer;
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();

@@ -307,8 +307,16 @@ struct help
     std::vector<std::string> lines;
 };
 
+enum class help_format
+{
+    plain,
+    markdown,
+};
+
 // Generate help for the given command line interface
-inline help get_help(const std::string& prog, const cli& arg)
+inline help get_help(const std::string& prog, const cli& arg,
+    const std::string description = "",
+    help_format format = help_format::plain)
 {
     auto get_type_string = [](const option& o) -> std::string
     {
@@ -327,12 +335,31 @@ inline help get_help(const std::string& prog, const cli& arg)
         }
     };
 
-    help result;
-    if (!prog.empty())
+    auto get_heading = [&](const std::string& heading) -> std::string
     {
-        result.lines.push_back("SYNOPSIS");
+        switch (format)
+        {
+        case help_format::markdown:
+            return "## " + heading + "\n";
+        default:
+            return heading;
+        }
+    };
+
+    auto get_code = [&](const std::string& value) -> std::string
+    {
+        switch (format)
+        {
+        case help_format::markdown:
+            return "`" + value + "`";
+        default:
+            return value;
+        }
+    };
+
+    auto get_synopsis = [&]() -> std::string
+    {
         std::stringstream synopsis;
-        synopsis << "    ";
         synopsis << prog << " ";
         for (const auto& o : arg)
         {
@@ -346,10 +373,41 @@ inline help get_help(const std::string& prog, const cli& arg)
                 sw << "]";
             synopsis << sw.str() << " ";
         }
-        result.lines.push_back(synopsis.str());
+
+        switch (format)
+        {
+        case help_format::markdown:
+            return "~~~sh\n$ " + synopsis.str() + "\n~~~";
+        default:
+            return "    " + synopsis.str();
+        }
+    };
+
+    auto get_switches_line = [&](const std::string& switches)
+    {
+        switch (format)
+        {
+        case help_format::markdown:
+            return switches;
+        default:
+            return "    " + switches;
+        }
+    };
+
+    help result;
+
+    if (!description.empty())
+    {
+        result.lines.push_back(description);
         result.lines.push_back("");
     }
-    result.lines.push_back("OPTIONS");
+    if (!prog.empty())
+    {
+        result.lines.push_back(get_heading("SYNOPSIS"));
+        result.lines.push_back(get_synopsis());
+        result.lines.push_back("");
+    }
+    result.lines.push_back(get_heading("OPTIONS"));
     std::vector<std::pair<std::string, std::string>> shp;
     size_t maxLength = 0;
     size_t maxHelp = 0;
@@ -362,13 +420,13 @@ inline help get_help(const std::string& prog, const cli& arg)
         {
             if (switches.size() > 1)
                 switches += ", ";
-            switches += a;
+            switches += get_code(a);
         }
         if (o.has_argument)
             switches += " <" + get_type_string(o) + ">";
         if (!o.mandatory)
             switches += "]";
-        std::string line = "    " + switches;
+        std::string line = get_switches_line(switches);
         shp.push_back({ line, o.help });
         if (maxLength < line.size())
             maxLength = line.size();
@@ -376,23 +434,35 @@ inline help get_help(const std::string& prog, const cli& arg)
             maxHelp = o.help.length();
     }
 
-    bool wrap = maxLength + maxHelp > 72;
-    for (const auto& l : shp)
+    if (format == help_format::plain)
     {
-        std::string f = l.first;
+        bool wrap = maxLength + maxHelp > 72;
+        for (const auto& l : shp)
+        {
+            std::string f = l.first;
 
-        if (wrap)
-        {
-            // Wrap long lines
-            result.lines.push_back(l.first);
-            result.lines.push_back("        " + l.second);
-        }
-        else
-        {
-            f.insert(f.size(), maxLength - f.size(), ' ');
-            result.lines.push_back(f + "   " + l.second);
+            if (wrap)
+            {
+                // Wrap long lines
+                result.lines.push_back(l.first);
+                result.lines.push_back("        " + l.second);
+            }
+            else
+            {
+                f.insert(f.size(), maxLength - f.size(), ' ');
+                result.lines.push_back(f + "   " + l.second);
+            }
         }
     }
+    else if (format == help_format::markdown)
+    {
+        for (const auto& l : shp)
+        {
+            std::string f = l.first;
+            result.lines.push_back("* " + l.first + ": " + l.second);
+        }
+    }
+
     return result;
 }
 

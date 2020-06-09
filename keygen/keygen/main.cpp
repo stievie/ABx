@@ -58,8 +58,7 @@ static void ShowLogo()
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
-    std::cout << "This program generates a Diffie Hellman key pair for the server." << std::endl << std::endl;
-    std::cout << sa::arg_parser::get_help("keygen", _cli);
+    std::cout << sa::arg_parser::get_help("keygen", _cli, "This program generates a Diffie Hellman key pair for the server.");
 }
 
 int main(int argc, char** argv)

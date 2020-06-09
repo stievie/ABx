@@ -69,9 +69,7 @@ static void ShowLogo()
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
-    std::cout << "Database administration tool" << std::endl;
-    std::cout << std::endl;
-    std::cout << sa::arg_parser::get_help("dbtool", _cli);
+    std::cout << sa::arg_parser::get_help("dbtool", _cli, "Database administration tool");
     std::cout << std::endl;
     std::cout << "ACTIONS" << std::endl;
     sa::tab::table table;

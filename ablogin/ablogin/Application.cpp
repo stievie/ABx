@@ -43,6 +43,7 @@ Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
 {
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeLoginServer;
 
     static constexpr size_t EXPECTED_CONNECTIONS = 128;

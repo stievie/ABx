@@ -71,6 +71,7 @@ Application::Application() :
     assert(Application::Instance == nullptr);
     Application::Instance = this;
 
+    programDescription_ = SERVER_PRODUCT_NAME;
     serverType_ = AB::Entities::ServiceTypeGameServer;
 
     static constexpr size_t EXPECTED_CONNECTIONS = 4096;

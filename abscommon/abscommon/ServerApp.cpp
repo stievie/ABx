@@ -179,9 +179,7 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
 
 void ServerApp::ShowHelp()
 {
-    if (!programDescription_.empty())
-        std::cout << programDescription_ << std::endl << std::endl;
-    std::cout << sa::arg_parser::get_help(Utils::ExtractFileName(exeFile_), cli_);
+    std::cout << sa::arg_parser::get_help(Utils::ExtractFileName(exeFile_), cli_, programDescription_);
 }
 
 void ServerApp::ShowCommandlineError(const sa::arg_parser::result& err)

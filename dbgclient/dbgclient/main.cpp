@@ -41,8 +41,7 @@ PRAGMA_WARNING_POP
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
-    std::cout << std::endl;
-    std::cout << sa::arg_parser::get_help("dbgclient", _cli);
+    std::cout << sa::arg_parser::get_help("dbgclient", _cli, "Debug Client");
 }
 
 int main(int argc, char** argv)
