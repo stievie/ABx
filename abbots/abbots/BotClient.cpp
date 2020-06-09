@@ -31,10 +31,12 @@ BotClient::BotClient(std::shared_ptr<asio::io_service> ioService) :
 
 BotClient::~BotClient()
 {
+    Logout();
 }
 
 void BotClient::Update(uint32_t timeElapsed)
 {
+    client_.Update(timeElapsed, true);
     if (game_)
         game_->Update(timeElapsed);
 }
@@ -48,19 +50,55 @@ void BotClient::Login()
 void BotClient::Logout()
 {
     client_.Logout();
+    client_.ResetPoll();
+    client_.Run();
 }
 
 void BotClient::OnLog(const std::string& message)
 {
-    LOG_INFO << message << std::endl;
+    LOG_INFO << "(" << username_ << "): " << message << std::endl;
 }
 
-void BotClient::OnNetworkError(Client::ConnectionError, const std::error_code&)
+void BotClient::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
+    std::string msg;
+    switch (connectionError)
+    {
+    case Client::ConnectionError::ResolveError:
+        msg = "Resolve error";
+        break;
+    case Client::ConnectionError::WriteError:
+        msg = "Write error";
+        break;
+    case Client::ConnectionError::ConnectError:
+        msg = "Connect error";
+        break;
+    case Client::ConnectionError::ReceiveError:
+        msg = "Read error";
+        break;
+    case Client::ConnectionError::ConnectTimeout:
+        msg = "Connect timeout";
+        break;
+    case Client::ConnectionError::ReadTimeout:
+        msg = "Read timeout";
+        break;
+    case Client::ConnectionError::WriteTimeout:
+        msg = "Write timeout";
+        break;
+    case Client::ConnectionError::DisconnectNoPong:
+        msg = "Disconnect no Pong";
+        break;
+    default:
+        msg = "Other Error " + std::to_string(static_cast<unsigned>(connectionError));
+        break;
+    }
+    LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" << err.default_error_condition().value() <<
+        ") " << err.message() << std::endl;
 }
 
-void BotClient::OnProtocolError(AB::ErrorCodes)
+void BotClient::OnProtocolError(AB::ErrorCodes err)
 {
+    LOG_ERROR << "Protocol error (" << username_ << "): " << Client::Client::GetProtocolErrorMessage(err) << std::endl;
 }
 
 void BotClient::OnPong(int lastPing)
@@ -75,11 +113,28 @@ void BotClient::OnLoggedIn(const std::string& accountUuid,
     accountUuid_ = accountUuid;
     authToken_ = authToken;
     accountType_ = accType;
+    LOG_INFO << "Logged in with account UUID " << accountUuid_ << std::endl;
 }
 
 void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
 {
     chars_ = chars;
+    if (chars_.empty())
+    {
+        LOG_ERROR << "Account " << username_ << " does not have characters" << std::endl;
+        return;
+    }
+    const auto it = std::find_if(chars_.begin(), chars_.end(), [this](const AB::Entities::Character& current)
+    {
+        return current.name.compare(characterName_) == 0;
+    });
+    if (it == chars_.end())
+    {
+        LOG_ERROR << "Account " << username_ << " does not have a character with name " << characterName_ << std::endl;
+        return;
+    }
+
+    client_.EnterWorld((*it).uuid, (*it).lastOutpostUuid);
 }
 
 void BotClient::OnGetOutposts(const std::vector<AB::Entities::Game>&)
@@ -116,10 +171,12 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ServerLeft&)
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ChangeInstance&)
 {
+    LOG_DEBUG << "ChangeInstance" << std::endl;
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld& packet)
 {
+    LOG_INFO << characterName_ << " entered " << packet.mapUuid << std::endl;
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerAutorun&)

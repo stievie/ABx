@@ -39,9 +39,14 @@ Application::Application() :
     ioService_(std::make_shared<asio::io_service>())
 {
     programDescription_ = SERVER_PRODUCT_NAME;
+
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+
+    cli_.push_back({ "user", { "-u", "--user-name" }, "Login username", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "pass", { "-p", "--password" }, "Login Password", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "char", { "-c", "--character" }, "Character name", false, true, sa::arg_parser::option_type::string });
 }
 
 Application::~Application()
@@ -105,6 +110,18 @@ void Application::ShowLogo()
 
 void Application::CreateBots()
 {
+    auto user = sa::arg_parser::get_value<std::string>(parsedArgs_, "user");
+    if (user.has_value())
+    {
+        auto pass = sa::arg_parser::get_value<std::string>(parsedArgs_, "pass");
+        auto character = sa::arg_parser::get_value<std::string>(parsedArgs_, "char");
+        client_ = std::make_unique<BotClient>(ioService_);
+        client_->username_ = user.value();
+        client_->password_ = pass.value();
+        client_->characterName_ = character.value();
+        return;
+    }
+
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     int index = 1;
     accounts_.push_back({});
@@ -135,29 +152,47 @@ void Application::CreateBots()
 
     for (const auto& account : accounts_)
     {
-        auto client = std::make_unique<BotClient>(ioService_);
-        client->username_ = account.name;
-        client->password_ = account.pass;
-        client->characterName_ = account.character;
-        clients_.push_back(std::move(client));
+        // Spawn ab instance for each account
+        Spawn("-u \"" + account.name + "\" -p \"" + account.pass + "\" -c \"" + account.character + "\"");
     }
 }
 
 void Application::StartBots()
 {
-    for (const auto& client : clients_)
+    if (client_)
     {
-        LOG_INFO << "Starting Bot " << client->username_ << " with character " << client->characterName_ << std::endl;
-//        client->Login();
+        LOG_INFO << "Starting Bot " << client_->username_ << " with character " << client_->characterName_ << std::endl;
+        client_->Login();
     }
 }
 
 void Application::Shutdown()
 {
-    for (const auto& client : clients_)
+    client_->Logout();
+}
+
+bool Application::ParseCommandLine()
+{
+    if (!ServerApp::ParseCommandLine())
+        return false;
+    auto user = sa::arg_parser::get_value<std::string>(parsedArgs_, "user");
+    if (user.has_value())
     {
-        client->Logout();
+        auto pass = sa::arg_parser::get_value<std::string>(parsedArgs_, "pass");
+        if (!pass.has_value())
+        {
+            std::cout << "Missing password command line option (-p)" << std::endl;
+            return false;
+        }
+        auto character = sa::arg_parser::get_value<std::string>(parsedArgs_, "char");
+        if (!character.has_value())
+        {
+            std::cout << "Missing password command line option (-c)" << std::endl;
+            return false;
+        }
     }
+
+    return true;
 }
 
 void Application::Update()
@@ -168,11 +203,8 @@ void Application::Update()
     else
         time = Utils::TimeElapsed(lastUpdate_);
 
+    client_->Update(time);
     int64_t startTick = Utils::Tick();
-    for (const auto& client : clients_)
-    {
-        client->Update(time);
-    }
     uint32_t timeSpent = Utils::TimeElapsed(startTick);
 
     lastUpdate_ = Utils::Tick();
@@ -181,6 +213,8 @@ void Application::Update()
         nextSchedule = 16 - timeSpent;
     else
         nextSchedule = 1;
+
+    ioService_->poll();
 
     if (running_)
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(nextSchedule, std::bind(&Application::Update, this)));
@@ -219,7 +253,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
 void Application::Run()
 {
-    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
+    if (client_)
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
 
     running_ = true;
     StartBots();

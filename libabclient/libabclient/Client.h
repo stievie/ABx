@@ -74,6 +74,7 @@ private:
     ProtocolLogin& GetProtoLogin();
     void Terminate();
 public:
+    static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
     explicit Client(Receiver& receiver);
     Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive);
     ~Client() override;
@@ -98,7 +99,7 @@ public:
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         const std::string& host = "", uint16_t port = 0, const std::string& instanceId = "");
-    void Update(int timeElapsed);
+    void Update(uint32_t timeElapsed, bool noRun);
 
     bool HttpRequest(const std::string& path, std::ostream& out);
     bool HttpRequest(const std::string& path, std::function<bool(const char* data, uint64_t size)>&& callback);

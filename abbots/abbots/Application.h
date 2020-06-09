@@ -38,7 +38,7 @@ class Application : public ServerApp
 {
 private:
     std::shared_ptr<asio::io_service> ioService_;
-    std::vector<std::unique_ptr<BotClient>> clients_;
+    std::unique_ptr<BotClient> client_;
     std::vector<Account> accounts_;
     int64_t lastUpdate_{ 0 };
     bool LoadMain();
@@ -49,6 +49,8 @@ private:
     void CreateBots();
     void StartBots();
     void Shutdown();
+protected:
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application() override;

@@ -38,6 +38,67 @@
 
 namespace Client {
 
+const char* Client::GetProtocolErrorMessage(AB::ErrorCodes err)
+{
+    switch (err)
+    {
+    case AB::ErrorCodes::IPBanned:
+        return "Your IP Address is banned.";
+    case AB::ErrorCodes::TooManyConnectionsFromThisIP:
+        return "Too many connection from this IP.";
+    case AB::ErrorCodes::InvalidAccountName:
+        return "Invalid Account name.";
+    case AB::ErrorCodes::InvalidPassword:
+        return "Invalid password.";
+    case AB::ErrorCodes::NamePasswordMismatch:
+        return "Name or password wrong.";
+    case AB::ErrorCodes::AlreadyLoggedIn:
+        return "You are already logged in.";
+    case AB::ErrorCodes::ErrorLoadingCharacter:
+        return "Error loading character.";
+    case AB::ErrorCodes::AccountBanned:
+        return "Your account is banned.";
+    case AB::ErrorCodes::WrongProtocolVersion:
+        return "Outdated client. Please update the game client.";
+    case AB::ErrorCodes::InvalidEmail:
+        return "Invalid Email.";
+    case AB::ErrorCodes::InvalidAccountKey:
+        return "Invalid Account Key.";
+    case AB::ErrorCodes::UnknownError:
+        return "Internal Error.";
+    case AB::ErrorCodes::AccountNameExists:
+        return "Login Name already exists.";
+    case AB::ErrorCodes::InvalidCharacterName:
+        return "Invalid character name.";
+    case AB::ErrorCodes::InvalidProfession:
+        return "Invalid profession.";
+    case AB::ErrorCodes::PlayerNameExists:
+        return "Character name already exists.";
+    case AB::ErrorCodes::InvalidAccount:
+        return "Invalid Account.";
+    case AB::ErrorCodes::InvalidPlayerSex:
+        return "Invalid character gender.";
+    case AB::ErrorCodes::InvalidCharacter:
+        return "Invalid character.";
+    case AB::ErrorCodes::InvalidCharactersInString:
+        return "The string contains invalid characters.";
+    case AB::ErrorCodes::NoMoreCharSlots:
+        return "You have no free character slots.";
+    case AB::ErrorCodes::InvalidGame:
+        return "Invalid Game.";
+    case AB::ErrorCodes::AllServersFull:
+        return "All Servers are full, please try again later.";
+    case AB::ErrorCodes::ErrorException:
+        return "Exception";
+    case AB::ErrorCodes::TokenAuthFailure:
+        return "Token authentication failure";
+    case AB::ErrorCodes::AccountKeyAlreadyAdded:
+        return "This account key was already added to the account";
+    default:
+        return "";
+    }
+}
+
 Client::Client(Receiver& receiver) :
     receiver_(receiver),
     ioService_(std::make_shared<asio::io_service>()),
@@ -341,7 +402,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         gameHost_, gamePort_);
 }
 
-void Client::Update(int timeElapsed)
+void Client::Update(uint32_t timeElapsed, bool noRun)
 {
     if (state_ == State::World)
     {
@@ -370,7 +431,8 @@ void Client::Update(int timeElapsed)
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update
         lastRun_ = 0;
-        Run();
+        if (!noRun)
+            Run();
     }
     if (state_ == State::World)
         lastPing_ += timeElapsed;
