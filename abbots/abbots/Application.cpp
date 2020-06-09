@@ -261,12 +261,14 @@ void Application::Run()
 
     running_ = true;
     StartBots();
-    LOG_INFO << "Bot Army is running" << std::endl;
+    if (!client_)
+        LOG_INFO << "Bot Army is running" << std::endl;
     MainLoop();
 }
 
 void Application::Stop()
 {
     running_ = false;
-    LOG_INFO << "Bot Army stopped" << std::endl;
+    if (!client_)
+        LOG_INFO << "Bot Army stopped" << std::endl;
 }
