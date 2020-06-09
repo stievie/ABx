@@ -69,6 +69,7 @@ static void ShowLogo()
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
+    std::cout << "Database administration tool" << std::endl;
     std::cout << std::endl;
     std::cout << sa::arg_parser::get_help("dbtool", _cli);
     std::cout << std::endl;
@@ -404,13 +405,12 @@ enum class Action
 
 int main(int argc, char** argv)
 {
-    ShowLogo();
 
     const std::string exeFile = Utils::GetExeName();
     const std::string path = Utils::ExtractFileDir(exeFile);
 
     sa::arg_parser::cli _cli{ {
-        { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none }
+        { "help", { "-h", "--help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none }
     } };
     InitCli(_cli);
 
@@ -422,6 +422,7 @@ int main(int argc, char** argv)
         ShowHelp(_cli);
         return EXIT_SUCCESS;
     }
+    ShowLogo();
     if (!cmdres)
     {
         std::cout << cmdres << std::endl;

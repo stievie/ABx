@@ -47,7 +47,7 @@ ServerApp::ServerApp() :
     serverLocation_(""),
     serverPort_(std::numeric_limits<uint16_t>::max())
 {
-    cli_.push_back({ "help", { "-h", "-help", "-?" }, "Show this help", false, false, sa::arg_parser::option_type::none });
+    cli_.push_back({ "help", { "-h", "--help", "-?" }, "Show this help", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "version", { "-v", "--version" }, "Show program version", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "nologo", { "--no-logo" }, "Do not show logo at program start", false, false, sa::arg_parser::option_type::none });
     cli_.push_back({ "config", { "-conf", "--config-file" }, "Config file", false, true, sa::arg_parser::option_type::string });
@@ -179,6 +179,8 @@ void ServerApp::UpdateService(AB::Entities::Service& service)
 
 void ServerApp::ShowHelp()
 {
+    if (!programDescription_.empty())
+        std::cout << programDescription_ << std::endl << std::endl;
     std::cout << sa::arg_parser::get_help(Utils::ExtractFileName(exeFile_), cli_);
 }
 
@@ -198,15 +200,17 @@ bool ServerApp::ParseCommandLine()
     }
     if (sa::arg_parser::get_value<bool>(parsedArgs_, "help", false))
     {
-        // -help was there
+        // --help was there
+        // By GNU recommendation, when --help was given, the program should exit with
+        // success.
         ShowHelp();
-        return false;
+        exit(EXIT_SUCCESS);
     }
     if (sa::arg_parser::get_value<bool>(parsedArgs_, "version", false))
     {
         // -help was there
         ShowVersion();
-        return false;
+        exit(EXIT_SUCCESS);
     }
 
     configFile_ = sa::arg_parser::get_value<std::string>(parsedArgs_, "config", configFile_);

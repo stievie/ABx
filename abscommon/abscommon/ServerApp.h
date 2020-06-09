@@ -54,6 +54,7 @@ protected:
     std::string serverHost_;
     std::string serverIp_;
     uint16_t serverPort_;
+    std::string programDescription_;
     sa::arg_parser::cli cli_;
     sa::arg_parser::values parsedArgs_;
     /// Get a generic currently unique server name

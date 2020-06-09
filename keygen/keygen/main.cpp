@@ -64,12 +64,11 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 
 int main(int argc, char** argv)
 {
-    ShowLogo();
     const std::string exeFile = Utils::GetExeName();
     const std::string path = Utils::ExtractFileDir(exeFile);
 
     sa::arg_parser::cli _cli{ {
-        { "help", { "-h", "-help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
+        { "help", { "-h", "--help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
         { "file", { "-o", "--output-file" }, "Output file", false, true, sa::arg_parser::option_type::string },
         { "force", { "-f", "--force" }, "Overwrite existing file without asking", false, false, sa::arg_parser::option_type::none }
     } };
@@ -81,6 +80,7 @@ int main(int argc, char** argv)
         ShowHelp(_cli);
         return EXIT_SUCCESS;
     }
+    ShowLogo();
     if (!cmdres)
     {
         std::cout << cmdres << std::endl;
