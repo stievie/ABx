@@ -69,6 +69,8 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    loginHost_ = config->GetGlobalString("login_host", "localhost");
+    loginPort_ = static_cast<uint16_t>(config->GetGlobalInt("login_port", 2748));
     LOG_INFO << "[done]" << std::endl;
 
     if (Utils::Uuid::IsEmpty(serverId_))
@@ -115,10 +117,11 @@ void Application::CreateBots()
     {
         auto pass = sa::arg_parser::get_value<std::string>(parsedArgs_, "pass");
         auto character = sa::arg_parser::get_value<std::string>(parsedArgs_, "char");
-        client_ = std::make_unique<BotClient>(ioService_);
+        client_ = std::make_unique<BotClient>(ioService_, loginHost_, loginPort_);
         client_->username_ = user.value();
         client_->password_ = pass.value();
         client_->characterName_ = character.value();
+        LOG_INFO << "Login Server: " << loginHost_ << ":" << loginPort_ << std::endl;
         return;
     }
 

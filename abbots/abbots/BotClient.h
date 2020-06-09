@@ -54,7 +54,7 @@ public:
     std::string password_;
     std::string characterName_;
 
-    explicit BotClient(std::shared_ptr<asio::io_service> ioService);
+    BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort);
     ~BotClient() override;
 
     void Update(uint32_t timeElapsed);

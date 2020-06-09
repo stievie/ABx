@@ -38,6 +38,8 @@ class Application : public ServerApp
 {
 private:
     std::shared_ptr<asio::io_service> ioService_;
+    std::string loginHost_;
+    uint16_t loginPort_{ 0 };
     std::unique_ptr<BotClient> client_;
     std::vector<Account> accounts_;
     int64_t lastUpdate_{ 0 };

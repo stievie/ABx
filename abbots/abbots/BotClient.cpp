@@ -24,9 +24,11 @@
 #include "Game.h"
 #include "GameObject.h"
 
-BotClient::BotClient(std::shared_ptr<asio::io_service> ioService) :
+BotClient::BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort) :
     client_(*this, ioService)
 {
+    client_.loginHost_ = loginHost;
+    client_.loginPort_ = loginPort;
 }
 
 BotClient::~BotClient()
