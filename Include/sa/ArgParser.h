@@ -21,15 +21,16 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <optional>
-#include <map>
-#include <cstdlib>
+#include <algorithm>
 #include <cctype>
-#include <sstream>
+#include <cstdlib>
+#include <map>
 #include <memory>
+#include <optional>
 #include <sa/Compiler.h>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace sa {
 namespace arg_parser {

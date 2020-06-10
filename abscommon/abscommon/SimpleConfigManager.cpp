@@ -97,7 +97,7 @@ bool SimpleConfigManager::GetGlobalBool(const std::string& ident, bool def)
     return val;
 }
 
-bool SimpleConfigManager::GetTable(const std::string& ident,
+bool SimpleConfigManager::GetGlobalTable(const std::string& ident,
     const std::function<Iteration(const std::string& name, const Utils::Variant& value)>& callback)
 {
     lua_getglobal(L, ident.c_str());
@@ -127,6 +127,17 @@ bool SimpleConfigManager::GetTable(const std::string& ident,
         lua_pop(L, 1);
     }
     return true;
+}
+
+std::map<std::string, Utils::Variant> SimpleConfigManager::GetGlobalTable(const std::string& ident)
+{
+    std::map<std::string, Utils::Variant> result;
+    GetGlobalTable(ident, [&result](const std::string& name, const Utils::Variant& value) -> Iteration
+    {
+        result.emplace(name, value);
+        return Iteration::Continue;
+    });
+    return result;
 }
 
 void SimpleConfigManager::RegisterString(const std::string& name, const std::string& value)

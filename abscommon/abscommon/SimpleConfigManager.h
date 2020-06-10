@@ -21,12 +21,13 @@
 
 #pragma once
 
-#include <lua.hpp>
-#include <string>
-#include <sa/Noncopyable.h>
-#include <functional>
-#include <sa/Iteration.h>
 #include "Variant.h"
+#include <functional>
+#include <lua.hpp>
+#include <map>
+#include <sa/Iteration.h>
+#include <sa/Noncopyable.h>
+#include <string>
 
 namespace IO {
 
@@ -48,8 +49,9 @@ public:
     int64_t GetGlobalInt(const std::string& ident, int64_t def);
     float GetGlobalFloat(const std::string& ident, float def);
     bool GetGlobalBool(const std::string& ident, bool def);
-    bool GetTable(const std::string& ident,
+    bool GetGlobalTable(const std::string& ident,
         const std::function<Iteration(const std::string& name, const Utils::Variant& value)>& callback);
+    std::map<std::string, Utils::Variant> GetGlobalTable(const std::string& ident);
 
     bool Load(const std::string& file);
     void Close();

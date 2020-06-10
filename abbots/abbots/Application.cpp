@@ -47,9 +47,9 @@ Application::Application() :
     sa::arg_parser::remove_option("ip", cli_);
     sa::arg_parser::remove_option("port", cli_);
     sa::arg_parser::remove_option("host", cli_);
-    cli_.push_back({ "user", { "-u", "--user-name" }, "Login username", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "pass", { "-p", "--password" }, "Login Password", false, true, sa::arg_parser::option_type::string });
-    cli_.push_back({ "char", { "-c", "--character" }, "Character name", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "user", { "-u", "--user-name" }, "Account login username", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "pass", { "-p", "--password" }, "Account login Password", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "char", { "-c", "--character" }, "Character name. If `random` it uses a random character", false, true, sa::arg_parser::option_type::string });
 }
 
 Application::~Application()
@@ -131,7 +131,7 @@ void Application::CreateBots()
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     int index = 1;
     accounts_.push_back({});
-    while (config->GetTable("account" + std::to_string(index),
+    while (config->GetGlobalTable("account" + std::to_string(index),
         [this](const std::string& name, const Utils::Variant& value) -> Iteration
     {
         auto& current = accounts_.back();
@@ -196,7 +196,7 @@ bool Application::ParseCommandLine()
         auto character = sa::arg_parser::get_value<std::string>(parsedArgs_, "char");
         if (!character.has_value())
         {
-            std::cout << "Missing password command line option (-c)" << std::endl;
+            std::cout << "Missing character command line option (-c)" << std::endl;
             return false;
         }
     }

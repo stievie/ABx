@@ -23,6 +23,8 @@
 #include <abscommon/Logger.h>
 #include "Game.h"
 #include "GameObject.h"
+#include <sa/Assert.h>
+#include <sa/Iterator.h>
 
 BotClient::BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort) :
     client_(*this, ioService)
@@ -64,8 +66,8 @@ void BotClient::OnLog(const std::string& message)
 void BotClient::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
     const char* msg = Client::Client::GetNetworkErrorMessage(connectionError);
-    LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" <<
-        err.default_error_condition().value() << ") " << err.message() << std::endl;
+    LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" << err.default_error_condition().value()
+              << ") " << err.message() << std::endl;
 }
 
 void BotClient::OnProtocolError(AB::ErrorCodes err)
@@ -96,17 +98,33 @@ void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
         LOG_ERROR << "Account " << username_ << " does not have characters" << std::endl;
         return;
     }
-    const auto it = std::find_if(chars_.begin(), chars_.end(), [this](const AB::Entities::Character& current)
+
+    std::string charUuid;
+    std::string mapUuid;
+
+    if (characterName_ != "random")
     {
-        return current.name.compare(characterName_) == 0;
-    });
-    if (it == chars_.end())
+        const auto it = std::find_if(chars_.begin(), chars_.end(), [this](const AB::Entities::Character& current) {
+            return current.name.compare(characterName_) == 0;
+        });
+        if (it == chars_.end())
+        {
+            LOG_ERROR << "Account " << username_ << " does not have a character with name " << characterName_
+                      << std::endl;
+            return;
+        }
+        charUuid = (*it).uuid;
+        mapUuid = (*it).lastOutpostUuid;
+    }
+    else
     {
-        LOG_ERROR << "Account " << username_ << " does not have a character with name " << characterName_ << std::endl;
-        return;
+        const auto it = sa::SelectRandomly(chars_.begin(), chars_.end());
+        assert(it != chars_.end());
+        charUuid = (*it).uuid;
+        mapUuid = (*it).lastOutpostUuid;
     }
 
-    client_.EnterWorld((*it).uuid, (*it).lastOutpostUuid);
+    client_.EnterWorld(charUuid, mapUuid);
 }
 
 void BotClient::OnGetOutposts(const std::vector<AB::Entities::Game>& outposts)
@@ -149,8 +167,7 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ChangeInstance&)
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld& packet)
 {
-    const auto it = std::find_if(outposts_.begin(), outposts_.end(), [&packet](const AB::Entities::Game& current)
-    {
+    const auto it = std::find_if(outposts_.begin(), outposts_.end(), [&packet](const AB::Entities::Game& current) {
         return current.uuid.compare(packet.mapUuid) == 0;
     });
     const std::string mapName = (it != outposts_.end() ? (*it).name : "Unknown");
