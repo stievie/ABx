@@ -44,6 +44,9 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 
+    sa::arg_parser::remove_option("ip", cli_);
+    sa::arg_parser::remove_option("port", cli_);
+    sa::arg_parser::remove_option("host", cli_);
     cli_.push_back({ "user", { "-u", "--user-name" }, "Login username", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "pass", { "-p", "--password" }, "Login Password", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "char", { "-c", "--character" }, "Character name", false, true, sa::arg_parser::option_type::string });

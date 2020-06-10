@@ -46,7 +46,7 @@ enum class option_type
 
 struct option
 {
-    const std::string name;
+    std::string name;
     std::vector<std::string> switches;
     std::string help;
     bool mandatory;
@@ -90,6 +90,15 @@ inline T get_value(const values& vals, const std::string& name, T def)
 
 // Command line interface
 typedef std::vector<option> cli;
+
+inline void remove_option(const std::string& name, cli& _cli)
+{
+    auto it = std::find_if(_cli.begin(), _cli.end(), [&name](const option& current) {
+        return current.name.compare(name) == 0;
+    });
+    if (it != _cli.end())
+        _cli.erase(it);
+}
 
 // Parsing result
 struct result
