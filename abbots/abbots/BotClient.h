@@ -48,6 +48,7 @@ private:
     std::string accountUuid_;
     AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
     AB::Entities::CharList chars_;
+    std::vector<AB::Entities::Game> outposts_;
     std::unique_ptr<Game> game_;
 public:
     std::string username_;

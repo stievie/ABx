@@ -740,4 +740,13 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
     ChangeServerInstance(ProtocolGame::serverId_, mapUuid, instanceUuid);
 }
 
+void ProtocolGame::Release()
+{
+    if (auto p = player_.lock())
+    {
+        LOG_ERROR << "Release() called while we still have the player " << p->GetName() << std::endl;
+        p->Logout(true);
+    }
+}
+
 }

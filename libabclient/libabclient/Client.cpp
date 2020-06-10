@@ -99,6 +99,31 @@ const char* Client::GetProtocolErrorMessage(AB::ErrorCodes err)
     }
 }
 
+const char* Client::GetNetworkErrorMessage(ConnectionError connectionError)
+{
+    switch (connectionError)
+    {
+    case ConnectionError::ResolveError:
+        return "Resolve error";
+    case ConnectionError::WriteError:
+        return "Write error";
+    case ConnectionError::ConnectError:
+        return "Connect error";
+    case ConnectionError::ReceiveError:
+        return "Read error";
+    case ConnectionError::ConnectTimeout:
+        return "Connect timeout";
+    case ConnectionError::ReadTimeout:
+        return "Read timeout";
+    case ConnectionError::WriteTimeout:
+        return "Write timeout";
+    case ConnectionError::DisconnectNoPong:
+        return "Disconnect no Pong";
+    default:
+        return "Other Error";
+    }
+}
+
 Client::Client(Receiver& receiver) :
     receiver_(receiver),
     ioService_(std::make_shared<asio::io_service>()),

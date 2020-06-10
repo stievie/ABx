@@ -156,7 +156,10 @@ void Application::CreateBots()
     for (const auto& account : accounts_)
     {
         // Spawn ab instance for each account
-        Spawn("-u \"" + account.name + "\" -p \"" + account.pass + "\" -c \"" + account.character + "\"");
+        Spawn("--no-logo -u \"" + account.name + "\" -p \"" + account.pass + "\" -c \"" + account.character + "\"");
+        // The Login server doesn't allow too many connection in a too short time from the same IP
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(500ms);
     }
 }
 

@@ -63,39 +63,9 @@ void BotClient::OnLog(const std::string& message)
 
 void BotClient::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
-    std::string msg;
-    switch (connectionError)
-    {
-    case Client::ConnectionError::ResolveError:
-        msg = "Resolve error";
-        break;
-    case Client::ConnectionError::WriteError:
-        msg = "Write error";
-        break;
-    case Client::ConnectionError::ConnectError:
-        msg = "Connect error";
-        break;
-    case Client::ConnectionError::ReceiveError:
-        msg = "Read error";
-        break;
-    case Client::ConnectionError::ConnectTimeout:
-        msg = "Connect timeout";
-        break;
-    case Client::ConnectionError::ReadTimeout:
-        msg = "Read timeout";
-        break;
-    case Client::ConnectionError::WriteTimeout:
-        msg = "Write timeout";
-        break;
-    case Client::ConnectionError::DisconnectNoPong:
-        msg = "Disconnect no Pong";
-        break;
-    default:
-        msg = "Other Error " + std::to_string(static_cast<unsigned>(connectionError));
-        break;
-    }
-    LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" << err.default_error_condition().value() <<
-        ") " << err.message() << std::endl;
+    const char* msg = Client::Client::GetNetworkErrorMessage(connectionError);
+    LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" <<
+        err.default_error_condition().value() << ") " << err.message() << std::endl;
 }
 
 void BotClient::OnProtocolError(AB::ErrorCodes err)
@@ -139,8 +109,9 @@ void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
     client_.EnterWorld((*it).uuid, (*it).lastOutpostUuid);
 }
 
-void BotClient::OnGetOutposts(const std::vector<AB::Entities::Game>&)
+void BotClient::OnGetOutposts(const std::vector<AB::Entities::Game>& outposts)
 {
+    outposts_ = outposts;
 }
 
 void BotClient::OnGetServices(const std::vector<AB::Entities::Service>&)
@@ -178,7 +149,12 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ChangeInstance&)
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld& packet)
 {
-    LOG_INFO << characterName_ << " entered " << packet.mapUuid << std::endl;
+    const auto it = std::find_if(outposts_.begin(), outposts_.end(), [&packet](const AB::Entities::Game& current)
+    {
+        return current.uuid.compare(packet.mapUuid) == 0;
+    });
+    const std::string mapName = (it != outposts_.end() ? (*it).name : "Unknown");
+    LOG_INFO << characterName_ << " entered " << mapName << std::endl;
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerAutorun&)

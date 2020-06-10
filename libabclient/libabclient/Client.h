@@ -75,6 +75,7 @@ private:
     void Terminate();
 public:
     static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
+    static const char* GetNetworkErrorMessage(ConnectionError connectionError);
     explicit Client(Receiver& receiver);
     Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive);
     ~Client() override;
