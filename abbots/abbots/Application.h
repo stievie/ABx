@@ -34,7 +34,7 @@ struct Account
     std::string character;
 };
 
-class Application : public ServerApp
+class Application final : public ServerApp
 {
 private:
     std::shared_ptr<asio::io_service> ioService_;
@@ -49,7 +49,7 @@ private:
     void Update();
     void MainLoop();
     void CreateBots();
-    void StartBots();
+    void StartBot();
     void Shutdown();
 protected:
     bool ParseCommandLine() override;

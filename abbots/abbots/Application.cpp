@@ -160,7 +160,7 @@ void Application::CreateBots()
     }
 }
 
-void Application::StartBots()
+void Application::StartBot()
 {
     if (client_)
     {
@@ -260,7 +260,7 @@ void Application::Run()
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(16, std::bind(&Application::Update, this)));
 
     running_ = true;
-    StartBots();
+    StartBot();
     if (!client_)
         LOG_INFO << "Bot Army is running" << std::endl;
     MainLoop();
