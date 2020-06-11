@@ -31,6 +31,7 @@
 namespace Game {
 namespace Components {
 
+#ifdef DEBUG_AI
 static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
 {
     switch (error)
@@ -41,6 +42,7 @@ static std::string GetSkillErrorString(AB::GameProtocol::SkillError error)
     }
     return "(Unknown)";
 }
+#endif
 
 SkillsComp::SkillsComp(Actor& owner) :
     owner_(owner),
