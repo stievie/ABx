@@ -226,6 +226,13 @@ void LoginLevel::DoLogin()
     button_->SetEnabled(false);
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
+    SetEnvironment();
+    FwClient* net = GetSubsystem<FwClient>();
+    net->Login(name, pass);
+}
+
+void LoginLevel::SetEnvironment()
+{
     Options* opts = GetSubsystem<Options>();
     auto& envs = opts->environments_;
     unsigned selEnv = environmentsList_->GetSelection();
@@ -236,7 +243,6 @@ void LoginLevel::DoLogin()
         net->SetEnvironment(env);
         opts->SetSelectedEnvironment(env->name);
     }
-    net->Login(name, pass);
 }
 
 void LoginLevel::HandleLoginClicked(StringHash, VariantMap&)
@@ -246,6 +252,7 @@ void LoginLevel::HandleLoginClicked(StringHash, VariantMap&)
 
 void LoginLevel::HandleCreateAccountClicked(StringHash, VariantMap&)
 {
+    SetEnvironment();
     VariantMap& e = GetEventDataMap();
     using namespace Events::SetLevel;
     e[P_NAME] = "CreateAccountLevel";

@@ -252,6 +252,7 @@ FwClient::FwClient(Context* context) :
     Options* o = context->GetSubsystem<Options>();
     client_.loginHost_ = std::string(o->loginHost_.CString());
     client_.loginPort_ = o->loginPort_;
+    URHO3D_LOGINFOF("Login %s:%u", client_.loginHost_.c_str(), client_.loginPort_);
     lastState_ = client_.GetState();
     SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
@@ -268,6 +269,7 @@ void FwClient::SetEnvironment(const Environment* env)
         return;
     client_.loginHost_ = std::string(env->host.CString());
     client_.loginPort_ = env->port;
+    URHO3D_LOGINFOF("Login %s:%u", client_.loginHost_.c_str(), client_.loginPort_);
 }
 
 void FwClient::UpdateServers()
