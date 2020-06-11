@@ -42,6 +42,7 @@ protected:
     bool checksumEnabled_;
     bool compressionEnabled_;
     bool encryptionEnabled_;
+    size_t writeWhileDisconnected_{ 0 };
     DH_KEY encKey_;
     void XTEAEncrypt(OutputMessage& msg) const;
     bool XTEADecrypt(NetworkMessage& msg) const;

@@ -25,7 +25,7 @@
 #include "../AiAgent.h"
 #include "../Game.h"
 
-//#define DEBUG_AI
+#undef DEBUG_AI
 
 namespace AI {
 namespace Actions {

@@ -26,7 +26,7 @@
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 
-#define DEBUG_AI
+//#define DEBUG_AI
 
 namespace Game {
 namespace Components {

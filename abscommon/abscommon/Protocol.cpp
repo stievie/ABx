@@ -58,10 +58,17 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
     if (auto conn = GetConnection())
     {
         conn->Send(std::move(message));
+        if (writeWhileDisconnected_ > 0)
+            --writeWhileDisconnected_;
         return;
     }
-    LOG_ERROR << "Connection expired" << std::endl;
-    Release();
+    ++writeWhileDisconnected_;
+    if (writeWhileDisconnected_ > 5)
+    {
+        LOG_ERROR << "Connection expired, disconnecting" << std::endl;
+        Release();
+        Disconnect();
+    }
 }
 
 sa::SharedPtr<OutputMessage>& Protocol::GetCurrentBuffer()

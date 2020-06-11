@@ -318,6 +318,7 @@ void Game::InitializeLua()
 
 void Game::Start()
 {
+    // Game, load thread
     if (state_ != ExecutionState::Startup)
     {
 #ifdef DEBUG_GAME
@@ -400,7 +401,8 @@ void Game::Update()
             {
                 if (!o.second)
                     return;
-                o.second->Update(delta, *gameStatus_);
+                if (o.second->HasGame())
+                    o.second->Update(delta, *gameStatus_);
             }
         }
 

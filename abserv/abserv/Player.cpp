@@ -155,6 +155,7 @@ void Player::Initialize()
 
 void Player::Logout(bool leavePary)
 {
+    // Maybe called from Main Thread
 #ifndef DEBUG_GAME
     LOG_DEBUG << "Player logging out " << GetName() << std::endl;
 #endif // DEBUG_GAME
@@ -163,7 +164,9 @@ void Player::Logout(bool leavePary)
     if (leavePary)
         PartyLeave();
     if (auto g = GetGame())
-        g->PlayerLeave(id_);
+    {
+        GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Game::PlayerLeave, g, id_)));
+    }
     client_->Logout();
 }
 

@@ -74,9 +74,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     ea::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(packet.charUuid);
     if (foundPlayer)
     {
-#ifdef DEBUG_NET
-        LOG_DEBUG << "Player " << foundPlayer->GetName() << " already logged in" << std::endl;
-#endif
+        LOG_WARNING << "Player " << foundPlayer->GetName() << " already logged in" << std::endl;
         DisconnectClient(AB::ErrorCodes::AlreadyLoggedIn);
         return;
     }
@@ -162,10 +160,17 @@ void ProtocolGame::Logout()
 
 void ProtocolGame::ParsePacket(NetworkMessage& message)
 {
+    auto* gameMan = GetSubsystem<Game::GameManager>();
     if (!acceptPackets_ ||
-        GetSubsystem<Game::GameManager>()->GetState() != Game::GameManager::State::Running ||
+        gameMan->GetState() != Game::GameManager::State::Running ||
         message.GetSize() == 0)
+    {
+        if (!acceptPackets_)
+            LOG_ERROR << "Not accepting packets at this time" << std::endl;
+        if (gameMan->GetState() != Game::GameManager::State::Running)
+            LOG_ERROR << "GameManager state is not running, it is " << static_cast<int>(gameMan->GetState()) << std::endl;
         return;
+    }
 
     using namespace AB::GameProtocol;
 
@@ -181,8 +186,10 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case ClientPacketTypes::Logout:
     {
-        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::Logout>(message);
-        AddPlayerTask(&Game::Player::CRQLogout);
+        if (auto player = GetPlayer())
+            player->Logout(false);
+//        /* auto packet = */ AB::Packets::Get<AB::Packets::Client::Logout>(message);
+//        AddPlayerTask(&Game::Player::CRQLogout);
         break;
     }
     case ClientPacketTypes::ChangeMap:
@@ -539,10 +546,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Receiving first message" << std::endl;
+#endif
     if (encryptionEnabled_)
     {
         if (!XTEADecrypt(msg))
         {
+#ifdef DEBUG_NET
+            LOG_ERROR << "Failed to decrypt message" << std::endl;
+#endif
             Disconnect();
             return;
         }
@@ -551,6 +564,9 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     auto packet = AB::Packets::Get<AB::Packets::Client::GameLogin>(msg);
     if (packet.protocolVersion != AB::PROTOCOL_VERSION)
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Wrong protocol version" << std::endl;
+#endif
         DisconnectClient(AB::ErrorCodes::WrongProtocolVersion);
         return;
     }
@@ -580,8 +596,8 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    GetSubsystem<Asynch::Dispatcher>()->Add(
-        Asynch::CreateTask(
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(10,
             std::bind(&ProtocolGame::Login, GetPtr(), packet)
         )
     );
@@ -589,6 +605,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
+    // Network thread
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
             std::bind(&ProtocolGame::SendKeyExchange, GetPtr())
@@ -622,6 +639,9 @@ void ProtocolGame::DisconnectClient(AB::ErrorCodes error)
 
 void ProtocolGame::Connect()
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Connecting..." << std::endl;
+#endif
     if (IsConnectionExpired())
     {
         // This can happen when Connection::ParseHeader() gets an error,
@@ -649,8 +669,8 @@ void ProtocolGame::Connect()
 
     acceptPackets_ = true;
 
-    GetSubsystem<Asynch::Dispatcher>()->Add(
-        Asynch::CreateTask(
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(
             std::bind(&ProtocolGame::EnterGame, GetPtr(), player)
         )
     );
@@ -693,10 +713,14 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         return;
     }
 
+    outputBuffer_ = OutputMessagePool::GetOutputMessage();
+
     // (1) First send the EnterWorld message
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::EnterWorld);
+#ifdef DEBUG_NET
     LOG_DEBUG << "Sending EnterWorld message to player " << player->GetName() << std::endl;
+#endif
     AB::Packets::Server::EnterWorld packet = {
         ProtocolGame::serverId_,
         player->data_.currentMapUuid,
@@ -723,7 +747,7 @@ void ProtocolGame::ChangeServerInstance(const std::string& serverUuid,
     }
 
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Player changing instance to " << mapUuid << std::endl;
+    LOG_DEBUG << "Player " << player->GetName() << " changing instance to " << mapUuid << std::endl;
 #endif
 
     auto output = OutputMessagePool::GetOutputMessage();
@@ -742,6 +766,11 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
 
 void ProtocolGame::Release()
 {
+    if (auto p = player_.lock())
+    {
+        LOG_WARNING << "Released Protocol while we have a player, logging out" << std::endl;
+        p->Logout(true);
+    }
 }
 
 }

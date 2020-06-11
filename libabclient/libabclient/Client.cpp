@@ -420,8 +420,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         gamePort_ = port;
 
     // 2. Login to game server
-    if (!protoGame_)
-        protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_);
+    protoGame_ = std::make_shared<ProtocolGame>(*this, dhKeys_, *ioService_);
 
     protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);

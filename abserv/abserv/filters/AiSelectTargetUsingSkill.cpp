@@ -24,7 +24,7 @@
 #include "../Npc.h"
 #include <abscommon/Random.h>
 
-//#define DEBUG_AI
+#undef DEBUG_AI
 
 namespace AI {
 namespace Filters {

@@ -108,6 +108,7 @@ public:
     static sa::IdGenerator<uint32_t> objectIds_;
 private:
     int64_t removeAt_{ 0 };
+    bool hasGame_{ false };
     ea::unique_ptr<Math::AbstractCollisionShape> collisionShape_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(const Math::StdVector3& direction);
@@ -190,7 +191,9 @@ public:
         game_ = game;
         if (game)
             AddToOctree();
+        hasGame_ = !!game;
     }
+    bool HasGame() const { return hasGame_; }
     bool IsSelectable() const { return selectable_; }
     void SetSelectable(bool value) { selectable_ = value; }
     void SetCollisionMask(uint32_t mask)

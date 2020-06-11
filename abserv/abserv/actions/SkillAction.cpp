@@ -27,7 +27,7 @@
 #include "../Npc.h"
 #include <AB/ProtocolCodes.h>
 
-//#define DEBUG_AI
+#undef DEBUG_AI
 
 namespace AI {
 namespace Actions {
