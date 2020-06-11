@@ -2202,3 +2202,17 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
     VariantMap& eData = GetEventDataMap();
     QueueEvent(Events::E_TRADEACCEPTED, eData);
 }
+
+std::vector<AB::Entities::Service> FwClient::GetServices() const
+{
+    std::vector<AB::Entities::Service> result;
+    for (const auto& s : services_)
+    {
+        result.push_back(s.second);
+    }
+    std::sort(result.begin(), result.end(), [](const AB::Entities::Service& a, const AB::Entities::Service& b)
+    {
+        return a.name.compare(b.name);
+    });
+    return result;
+}

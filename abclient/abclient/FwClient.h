@@ -303,10 +303,7 @@ public:
             loggedIn_ = false;
         client_.SetState(state);
     }
-    const std::map<std::string, AB::Entities::Service>& GetServices() const
-    {
-        return services_;
-    }
+    std::vector<AB::Entities::Service> GetServices() const;
     const String& GetCurrentServerId() const
     {
         return currentServerId_;

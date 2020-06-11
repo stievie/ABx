@@ -300,11 +300,11 @@ void GameMenu::UpdateServers()
     popup->SetLayout(LM_VERTICAL, 1);
     serversMenu_->SetPopupOffset(IntVector2(menu_->GetPopup()->GetWidth(), 0));
     String cId = client->GetCurrentServerId();
-    const std::map<std::string, AB::Entities::Service>& servs = client->GetServices();
+    auto servs = client->GetServices();
     for (const auto& serv : servs)
     {
-        String sId = String(serv.first.c_str());
-        Menu* mnu = CreateMenuItem(popup, String(serv.second.name.c_str()), String::EMPTY,
+        String sId = String(serv.uuid.c_str());
+        Menu* mnu = CreateMenuItem(popup, String(serv.name.c_str()), String::EMPTY,
             URHO3D_HANDLER(GameMenu, HandleServerUsed));
         mnu->SetSelected(sId.Compare(cId) == 0);
         mnu->SetVar("Server ID", sId);
