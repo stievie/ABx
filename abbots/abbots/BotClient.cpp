@@ -48,6 +48,7 @@ void BotClient::Update(uint32_t timeElapsed)
 void BotClient::Login()
 {
     LOG_INFO << "Logging in with " << username_ << std::endl;
+    state_ = State::LoggingIn;
     client_.Login(username_, password_);
 }
 
@@ -68,6 +69,7 @@ void BotClient::OnNetworkError(Client::ConnectionError connectionError, const st
     const char* msg = Client::Client::GetNetworkErrorMessage(connectionError);
     LOG_ERROR << "Network error [" << msg << "] (" << username_ << "): (" << err.default_error_condition().value()
               << ") " << err.message() << std::endl;
+    state_ = State::Disconnected;
 }
 
 void BotClient::OnProtocolError(AB::ErrorCodes err)
@@ -115,6 +117,7 @@ void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
         }
         charUuid = (*it).uuid;
         mapUuid = (*it).lastOutpostUuid;
+        currentName_ = characterName_;
     }
     else
     {
@@ -122,6 +125,7 @@ void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
         assert(it != chars_.end());
         charUuid = (*it).uuid;
         mapUuid = (*it).lastOutpostUuid;
+        currentName_ = (*it).name;
     }
 
     client_.EnterWorld(charUuid, mapUuid);
@@ -167,11 +171,12 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ChangeInstance&)
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld& packet)
 {
+    state_ = State::World;
     const auto it = std::find_if(outposts_.begin(), outposts_.end(), [&packet](const AB::Entities::Game& current) {
         return current.uuid.compare(packet.mapUuid) == 0;
     });
     const std::string mapName = (it != outposts_.end() ? (*it).name : "Unknown");
-    LOG_INFO << characterName_ << " entered " << mapName << std::endl;
+    LOG_INFO << currentName_ << " entered " << mapName << std::endl;
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerAutorun&)

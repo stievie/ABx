@@ -42,14 +42,23 @@ class Game;
 
 class BotClient final : public Client::Receiver
 {
+public:
+    enum class State
+    {
+        Disconnected,
+        LoggingIn,
+        World
+    };
 private:
     Client::Client client_;
     std::string authToken_;
     std::string accountUuid_;
     AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
+    State state_{ State::Disconnected };
     AB::Entities::CharList chars_;
     std::vector<AB::Entities::Game> outposts_;
     std::unique_ptr<Game> game_;
+    std::string currentName_;
 public:
     std::string username_;
     std::string password_;
@@ -57,6 +66,8 @@ public:
 
     BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort);
     ~BotClient() override;
+
+    State GetState() const { return state_; }
 
     void Update(uint32_t timeElapsed);
     void Login();

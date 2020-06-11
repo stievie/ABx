@@ -225,6 +225,12 @@ void Application::Update()
 
     ioService_->poll();
 
+    if (client_->GetState() == BotClient::State::Disconnected)
+    {
+        LOG_INFO << "Disconnected, stopping" << std::endl;
+        running_ = false;
+    }
+
     if (running_)
         GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(nextSchedule, std::bind(&Application::Update, this)));
 }
