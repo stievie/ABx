@@ -281,6 +281,13 @@ void Application::Run()
 void Application::Stop()
 {
     running_ = false;
+    if (client_)
+    {
+        LOG_INFO << "Logging out " << client_->username_ << std::endl;
+        GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&BotClient::Logout, client_.get())));
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(10ms);
+    }
     if (!client_)
         LOG_INFO << "Bot Army stopped" << std::endl;
 }

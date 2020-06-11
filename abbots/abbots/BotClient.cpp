@@ -35,7 +35,6 @@ BotClient::BotClient(std::shared_ptr<asio::io_service> ioService, const std::str
 
 BotClient::~BotClient()
 {
-    Logout();
 }
 
 void BotClient::Update(uint32_t timeElapsed)
