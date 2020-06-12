@@ -28,6 +28,8 @@
 #include <abcrypto.hpp>
 #include "Connection.h"
 #include "OutputMessage.h"
+#include "Subsystems.h"
+#include "Dispatcher.h"
 
 namespace Net {
 
@@ -58,17 +60,10 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
     if (auto conn = GetConnection())
     {
         conn->Send(std::move(message));
-        if (writeWhileDisconnected_ > 0)
-            --writeWhileDisconnected_;
         return;
     }
-    ++writeWhileDisconnected_;
-    if (writeWhileDisconnected_ > 5)
-    {
-        LOG_ERROR << "Connection expired, disconnecting" << std::endl;
-        Release();
-        Disconnect();
-    }
+    LOG_ERROR << "Connection expired, disconnecting" << std::endl;
+    Release();
 }
 
 sa::SharedPtr<OutputMessage>& Protocol::GetCurrentBuffer()

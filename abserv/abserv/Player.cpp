@@ -165,7 +165,7 @@ void Player::Logout(bool leavePary)
         PartyLeave();
     if (auto g = GetGame())
     {
-        GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Game::PlayerLeave, g, id_)));
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(std::bind(&Game::PlayerLeave, g, id_)));
     }
     client_->Logout();
 }

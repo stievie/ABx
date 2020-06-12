@@ -71,7 +71,7 @@ void Scheduler::SchedulerThread()
             lockUnique.unlock();
 
             task->SetDontExpires();
-            auto disp = GetSubsystem<Asynch::Dispatcher>();
+            auto* disp = GetSubsystem<Asynch::Dispatcher>();
             if (disp)
                 disp->Add(task, true);
         }
@@ -87,35 +87,36 @@ void Scheduler::SchedulerThread()
 uint32_t Scheduler::Add(ScheduledTask* task)
 {
     bool doSignal = false;
-    lock_.lock();
 
-    if (state_ == State::Running)
     {
-        // Check for valid ID
-        if (task->GetEventId() == 0)
-            // Generate new ID
-            task->SetEventId(idGenerator_.Next());
-        // Insert this ID in the list of active events
-        eventIds_.insert(task->GetEventId());
+        std::scoped_lock lock(lock_);
 
-        // Add it to the Queue
-        events_.push(task);
-        // Signal if the list was empty or this event is at the top
-        doSignal = (task == events_.top());
+        if (state_ == State::Running)
+        {
+            // Check for valid ID
+            if (task->GetEventId() == 0)
+                // Generate new ID
+                task->SetEventId(idGenerator_.Next());
+            // Insert this ID in the list of active events
+            eventIds_.insert(task->GetEventId());
+
+            // Add it to the Queue
+            events_.push(task);
+            // Signal if the list was empty or this event is at the top
+            doSignal = (task == events_.top());
 
 #ifdef DEBUG_SCHEDULER
-        LOG_DEBUG << "Added event " << task->GetEventId() << std::endl;
+            LOG_DEBUG << "Added event " << task->GetEventId() << std::endl;
 #endif
-    }
-    else
-    {
-        LOG_ERROR << "Scheduler thread not running" << std::endl;
-        lock_.unlock();
-        delete task;
-        return 0;
+        }
+        else
+        {
+            LOG_ERROR << "Scheduler thread not running" << std::endl;
+            delete task;
+            return 0;
+        }
     }
 
-    lock_.unlock();
     if (doSignal)
         signal_.notify_one();
 
@@ -131,18 +132,16 @@ bool Scheduler::StopEvent(uint32_t eventId)
     LOG_DEBUG << "Stopping event " << eventId;
 #endif
 
-    lock_.lock();
+    std::scoped_lock lock(lock_);
 
     auto it = eventIds_.find(eventId);
     if (it != eventIds_.end())
     {
         eventIds_.erase(it);
-        lock_.unlock();
         return true;
     }
 
     // Not found
-    lock_.unlock();
     return false;
 }
 
@@ -159,16 +158,18 @@ void Scheduler::Stop()
 {
     if (state_ == State::Running)
     {
-        lock_.lock();
-        state_ = State::Terminated;
-        while (!events_.empty())
         {
-            ScheduledTask* task = events_.top();
-            events_.pop();
-            delete task;
+            std::scoped_lock lock(lock_);
+            state_ = State::Terminated;
+            while (!events_.empty())
+            {
+                ScheduledTask* task = events_.top();
+                events_.pop();
+                delete task;
+            }
+            eventIds_.clear();
         }
-        eventIds_.clear();
-        lock_.unlock();
+
         signal_.notify_one();
         thread_.join();
     }

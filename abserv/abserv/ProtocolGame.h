@@ -60,7 +60,6 @@ private:
     void Login(AB::Packets::Client::GameLogin packet);
     /// The client requests to enter a game. Find/create it, add the player and return success.
     void EnterGame(ea::shared_ptr<Game::Player> player);
-    void SendKeyExchange();
     void Release() override;
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection);

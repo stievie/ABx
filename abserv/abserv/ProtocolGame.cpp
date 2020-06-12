@@ -597,7 +597,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     }
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(10,
+        Asynch::CreateScheduledTask(
             std::bind(&ProtocolGame::Login, GetPtr(), packet)
         )
     );
@@ -605,16 +605,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
-    // Network thread
-    GetSubsystem<Asynch::Dispatcher>()->Add(
-        Asynch::CreateTask(
-            std::bind(&ProtocolGame::SendKeyExchange, GetPtr())
-        )
-    );
-}
-
-void ProtocolGame::SendKeyExchange()
-{
+    // Dispatcher thread
 #ifdef DEBUG_NET
     LOG_DEBUG << "Sending KeyExchange" << std::endl;
 #endif
@@ -639,6 +630,7 @@ void ProtocolGame::DisconnectClient(AB::ErrorCodes error)
 
 void ProtocolGame::Connect()
 {
+    // Dispatcher thread
 #ifdef DEBUG_NET
     LOG_DEBUG << "Connecting..." << std::endl;
 #endif
@@ -669,20 +661,27 @@ void ProtocolGame::Connect()
 
     acceptPackets_ = true;
 
-    GetSubsystem<Asynch::Scheduler>()->Add(
+    EnterGame(player);
+/*    GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(
             std::bind(&ProtocolGame::EnterGame, GetPtr(), player)
         )
-    );
+    );*/
 }
 
 void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 {
+#ifdef DEBUG_NET
+    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+#endif
     GetOutputBuffer(message.GetSize())->Append(message);
 }
 
 void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
 {
+#ifdef DEBUG_NET
+    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+#endif
     if (!player)
     {
         LOG_ERROR << "player is null" << std::endl;
@@ -712,8 +711,6 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         DisconnectClient(AB::ErrorCodes::CannotEnterGame);
         return;
     }
-
-    outputBuffer_ = OutputMessagePool::GetOutputMessage();
 
     // (1) First send the EnterWorld message
     auto output = OutputMessagePool::GetOutputMessage();
