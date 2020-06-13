@@ -52,6 +52,7 @@
 #include <abscommon/MessageClient.h>
 #include <abscommon/StringUtils.h>
 #include <abshared/SkillsHelper.h>
+#include <sa/Assert.h>
 #include <sa/StringTempl.h>
 
 namespace Game {
@@ -2230,8 +2231,8 @@ void Player::CRQQueueForMatch()
     if (!GetParty()->IsLeader(*this))
         return;
 
+    assert(HasGame());
     auto game = GetGame();
-    assert(game);
     if (Utils::Uuid::IsEmpty(game->data_.queueMapUuid))
         return;
 

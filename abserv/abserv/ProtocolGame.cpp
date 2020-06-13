@@ -189,7 +189,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         // Don't add a task to logout, because when changing the map the client may be more quickly reconnect
         // before it was logged out.
         if (auto player = GetPlayer())
-            player->Logout(false);
+            player->CRQLogout();
         break;
     }
     case ClientPacketTypes::ChangeMap:

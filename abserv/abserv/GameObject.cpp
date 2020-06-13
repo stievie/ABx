@@ -29,6 +29,7 @@
 #include "Npc.h"
 #include "Player.h"
 #include "TriggerComp.h"
+#include <sa/Assert.h>
 
 namespace Game {
 
@@ -445,6 +446,7 @@ std::vector<GameObject*> GameObject::_LuaGetObjectsInside()
     if (!triggerComp_)
         return result;
 
+    assert(HasGame());
     auto game = GetGame();
     triggerComp_->VisitObjectInside([&](uint32_t id) -> Iteration
     {

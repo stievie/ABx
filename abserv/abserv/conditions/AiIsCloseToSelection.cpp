@@ -24,6 +24,8 @@
 #include "../Game.h"
 #include "../Npc.h"
 #include "../GameObject.h"
+#include "CleanupNs.h"
+#include <sa/Assert.h>
 
 namespace AI {
 namespace Conditions {
@@ -41,6 +43,8 @@ bool IsCloseToSelection::Evaluate(Agent& agent, const Node&)
         return false;
 
     auto& npc = AI::GetNpc(agent);
+    assert(npc.HasGame());
+
     auto game = npc.GetGame();
 
     const auto& ownPos = npc.GetPosition();

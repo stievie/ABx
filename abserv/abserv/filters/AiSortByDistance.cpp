@@ -23,6 +23,8 @@
 #include "AiSortByDistance.h"
 #include "../Game.h"
 #include "../Npc.h"
+#include <sa/Assert.h>
+#include <CleanupNs.h>
 
 namespace AI {
 namespace Filters {
@@ -34,6 +36,8 @@ void SortByDistance::Execute(Agent& agent)
         return;
 
     Game::Npc& chr = GetNpc(agent);
+    assert(chr.HasGame());
+
     auto& game = *chr.GetGame();
     std::map<uint32_t, float> sorting;
 

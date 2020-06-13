@@ -25,6 +25,7 @@
 #include "AutoRunComp.h"
 #include "Game.h"
 #include "Map.h"
+#include <sa/Assert.h>
 
 //#define DEBUG_NAVIGATION
 
@@ -37,6 +38,7 @@ WanderComp::WanderComp(Npc& owner) :
 
 void WanderComp::Initialize()
 {
+    assert(owner_.HasGame());
     // Calculate Y value once
     const auto& map = *owner_.GetGame()->map_;
     for (auto& p : route_)

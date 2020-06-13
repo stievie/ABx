@@ -24,6 +24,8 @@
 #include "../Game.h"
 #include "../Npc.h"
 #include "../GameObject.h"
+#include <sa/Assert.h>
+#include <CleanupNs.h>
 
 namespace AI {
 namespace Conditions {
@@ -35,6 +37,7 @@ bool IsSelectionAlive::Evaluate(Agent& agent, const Node&)
         return false;
 
     auto& npc = AI::GetNpc(agent);
+    assert(npc.HasGame());
     auto game = npc.GetGame();
 
     for (auto id : selection)

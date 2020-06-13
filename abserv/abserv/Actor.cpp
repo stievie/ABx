@@ -185,9 +185,9 @@ void Actor::Initialize()
 
 bool Actor::SetSpawnPoint(const std::string& group)
 {
-    auto game = GetGame();
-    if (!game)
+    if (!HasGame())
         return false;
+    auto game = GetGame();
     const auto sps = game->map_->GetSpawnPoints(group);
     const auto sp = game->map_->GetFreeSpawnPoint(sps);
     if (sp.Empty())
@@ -332,6 +332,9 @@ bool Actor::AddToInventory(uint32_t itemId)
 
 void Actor::DropRandomItem()
 {
+    if (!HasGame())
+        return;
+
     auto game = GetGame();
     if (auto killer = killedBy_.lock())
     {

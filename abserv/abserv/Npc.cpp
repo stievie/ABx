@@ -32,6 +32,7 @@
 #include "ScriptManager.h"
 #include <abai/BevaviorCache.h>
 #include <Mustache/mustache.hpp>
+#include <sa/Assert.h>
 
 namespace Game {
 
@@ -406,6 +407,7 @@ bool Npc::SayQuote(ChatType channel, int index)
 
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 {
+    assert(HasGame());
     auto game = GetGame();
     game->AddProjectile(itemUuid, GetPtr<Actor>(), target->GetPtr<Actor>());
 }
