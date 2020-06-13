@@ -36,6 +36,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4307)
 
 #include <stdint.h>
 #include <sa/Assert.h>
+#include <absmath/MathConfig.h>
 
 #if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
@@ -53,4 +54,3 @@ PRAGMA_WARNING_POP
 
 #include <abscommon/Utils.h>
 #include <abscommon/Logger.h>
-#include <absmath/MathConfig.h>
