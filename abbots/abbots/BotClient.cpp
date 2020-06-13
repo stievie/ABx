@@ -23,6 +23,7 @@
 #include <abscommon/Logger.h>
 #include "Game.h"
 #include "GameObject.h"
+#include "Player.h"
 #include <sa/Assert.h>
 #include <sa/Iterator.h>
 
@@ -176,18 +177,65 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::EnterWorld& packet)
     });
     const std::string mapName = (it != outposts_.end() ? (*it).name : "Unknown");
     LOG_INFO << currentName_ << " entered " << mapName << std::endl;
+    playerId_ = packet.playerId;
+    game_ = std::make_unique<Game>(static_cast<AB::Entities::GameType>(packet.gameType));
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerAutorun&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawn&)
+void BotClient::SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
+    const Math::Vector3& pos, const Math::Vector3& scale, const Math::Quaternion& rot)
 {
+    std::unique_ptr<GameObject> object;
+    switch (type)
+    {
+    case AB::GameProtocol::GameObjectType::Unknown:
+    case AB::GameProtocol::GameObjectType::Static:
+    case AB::GameProtocol::GameObjectType::TerrainPatch:
+    case AB::GameProtocol::GameObjectType::__SentToPlayer:
+        break;
+    case AB::GameProtocol::GameObjectType::ItemDrop:
+        object = std::make_unique<GameObject>(GameObject::Type::ItemDrop, id);
+        break;
+    case AB::GameProtocol::GameObjectType::AreaOfEffect:
+        object = std::make_unique<GameObject>(GameObject::Type::AOE, id);
+        break;
+    case AB::GameProtocol::GameObjectType::Projectile:
+        object = std::make_unique<GameObject>(GameObject::Type::Projectile, id);
+        break;
+    case AB::GameProtocol::GameObjectType::Npc:
+        object = std::make_unique<GameObject>(GameObject::Type::Npc, id);
+        break;
+    case AB::GameProtocol::GameObjectType::Player:
+        if (id == playerId_)
+            object = std::make_unique<Player>(GameObject::Type::Self, id);
+        else
+            object = std::make_unique<GameObject>(GameObject::Type::Player, id);
+        break;
+    }
+    if (object)
+    {
+        object->transformation_.position_ = pos;
+        object->transformation_.scale_ = scale;
+        object->transformation_.oriention_ = rot;
+        game_->AddObject(std::move(object));
+    }
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawnExisting&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawn& packet)
 {
+    Math::Quaternion direction = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, packet.rot);
+    SpawnObject(static_cast<AB::GameProtocol::GameObjectType>(packet.type), packet.id,
+        packet.pos, packet.scale, direction);
+}
+
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawnExisting& packet)
+{
+    Math::Quaternion direction = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, packet.rot);
+    SpawnObject(static_cast<AB::GameProtocol::GameObjectType>(packet.type), packet.id,
+        packet.pos, packet.scale, direction);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::MailHeaders&)
@@ -198,12 +246,17 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::MailComplete&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectDespawn&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectDespawn& packet)
 {
+    game_->RemoveObject(packet.id);
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectPositionUpdate&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectPositionUpdate& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (!object)
+        return;
+    object->transformation_.position_ = packet.pos;
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpeedChanged&)
@@ -294,8 +347,12 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectDroppedItem&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectForcePosition&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectForcePosition& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (!object)
+        return;
+    object->transformation_.position_ = packet.pos;
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectGroupMaskChanged&)

@@ -22,9 +22,9 @@
 #include "Game.h"
 #include "GameObject.h"
 
-Game::Game()
+Game::Game(AB::Entities::GameType type) :
+    type_(type)
 {
-
 }
 
 void Game::Update(uint32_t timeElapsed)
@@ -33,4 +33,25 @@ void Game::Update(uint32_t timeElapsed)
     {
         object.second->Update(timeElapsed);
     }
+}
+
+void Game::AddObject(std::unique_ptr<GameObject>&& object)
+{
+    uint32_t id = object->id_;
+    objects_.emplace(id, std::move(object));
+}
+
+void Game::RemoveObject(uint32_t id)
+{
+    auto it = objects_.find(id);
+    if (it != objects_.end())
+        objects_.erase(it);
+}
+
+GameObject* Game::GetObject(uint32_t id)
+{
+    const auto it = objects_.find(id);
+    if (it != objects_.end())
+        return (*it).second.get();
+    return nullptr;
 }

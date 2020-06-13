@@ -37,6 +37,7 @@
 #include "Receiver.h"
 #include "Structs.h"
 #include <memory>
+#include <absmath/Transformation.h>
 
 class Game;
 
@@ -59,6 +60,9 @@ private:
     std::vector<AB::Entities::Game> outposts_;
     std::unique_ptr<Game> game_;
     std::string currentName_;
+    uint32_t playerId_{ 0 };
+    void SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
+        const Math::Vector3& pos, const Math::Vector3& scale, const Math::Quaternion& rot);
 public:
     std::string username_;
     std::string password_;

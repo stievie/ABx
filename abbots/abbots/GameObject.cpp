@@ -21,7 +21,9 @@
 
 #include "GameObject.h"
 
-GameObject::GameObject()
+GameObject::GameObject(Type type, uint32_t id) :
+    type_(type),
+    id_(id)
 {
 
 }

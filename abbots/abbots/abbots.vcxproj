@@ -61,7 +61,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalOptions>/Zc:__cplusplus /utf-8</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient;$(SolutionDir)..\abscommon;$(SolutionDir)..\libabclient\libabclient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient;$(SolutionDir)..\abscommon;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -82,7 +82,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalOptions>/Zc:__cplusplus /utf-8</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient;$(SolutionDir)..\abscommon;$(SolutionDir)..\libabclient\libabclient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient;$(SolutionDir)..\abscommon;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -105,6 +105,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -115,12 +116,16 @@
     <ClInclude Include="BotClient.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
       <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
+      <Project>{c7a029e7-b69c-43ff-8d8d-ba2a46283558}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\libabclient\libabclient\libabclient.vcxproj">
       <Project>{093fa600-c39d-400d-8a12-9e71e636066a}</Project>

@@ -21,13 +21,26 @@
 
 #pragma once
 
+#include <absmath/Transformation.h>
+
 class GameObject
 {
 public:
-    GameObject();
+    enum class Type
+    {
+        ItemDrop,
+        AOE,
+        Projectile,
+        Npc,
+        Player,
+        Self,
+    };
 
-    void Update(uint32_t timeElapsed);
+    GameObject(Type type, uint32_t id);
 
+    virtual void Update(uint32_t timeElapsed);
+
+    Type type_;
     uint32_t id_{ 0 };
+    Math::Transformation transformation_;
 };
-

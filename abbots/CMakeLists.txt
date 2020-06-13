@@ -10,7 +10,7 @@ add_executable(
 target_precompile_headers(abbots PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abbots/stdafx.h)
 set_property(TARGET abbots PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-target_link_libraries(abbots abscommon libabclient)
+target_link_libraries(abbots abscommon absmath libabclient)
 if (WIN32)
     target_link_libraries(abbots libeay32 ssleay32)
 else()

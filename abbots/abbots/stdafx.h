@@ -45,5 +45,12 @@ PRAGMA_WARNING_DISABLE_MSVC(4592)
 #   include <asio.hpp>
 PRAGMA_WARNING_POP
 
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4702 4127)
+#   include <lua.hpp>
+#   include <kaguya/kaguya.hpp>
+PRAGMA_WARNING_POP
+
 #include <abscommon/Utils.h>
 #include <abscommon/Logger.h>
+#include <absmath/MathConfig.h>

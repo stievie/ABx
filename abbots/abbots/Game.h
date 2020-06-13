@@ -23,16 +23,22 @@
 
 #include <map>
 #include <memory>
+#include <AB/Entities/Game.h>
+#include <CleanupNs.h>
 
 class GameObject;
 
 class Game
 {
 private:
+    AB::Entities::GameType type_;
     std::map<uint32_t, std::unique_ptr<GameObject>> objects_;
 public:
-    Game();
+    Game(AB::Entities::GameType type);
 
     void Update(uint32_t timeElapsed);
+    void AddObject(std::unique_ptr<GameObject>&& object);
+    void RemoveObject(uint32_t id);
+    GameObject* GetObject(uint32_t id);
 };
 
