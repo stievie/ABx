@@ -22,12 +22,14 @@
 #include "Game.h"
 #include "GameObject.h"
 #include <sa/Assert.h>
+#include <algorithm>
 
 void Game::RegisterLua(kaguya::State& state)
 {
     // clang-format off
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
         .addFunction("GetObject", &Game::GetObject)
+        .addFunction("GetObjectByName", &Game::GetObjectByName)
     );
     // clang-format on
 }
@@ -66,6 +68,16 @@ void Game::RemoveObject(uint32_t id)
 GameObject* Game::GetObject(uint32_t id)
 {
     const auto it = objects_.find(id);
+    if (it != objects_.end())
+        return (*it).second.get();
+    return nullptr;
+}
+
+GameObject* Game::GetObjectByName(const std::string& name)
+{
+    const auto it = std::find_if(objects_.begin(), objects_.end(), [&name](const auto& current) {
+        return current.second->name_.compare(name) == 0;
+    });
     if (it != objects_.end())
         return (*it).second.get();
     return nullptr;

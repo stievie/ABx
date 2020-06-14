@@ -23,6 +23,7 @@
 
 #include <absmath/Transformation.h>
 #include <kaguya/kaguya.hpp>
+#include <sa/PropStream.h>
 
 class Game;
 
@@ -46,9 +47,18 @@ public:
 
     virtual void Update(uint32_t timeElapsed);
     Game* GetGame() const;
+    unsigned GetState() const { return state_; }
     void SetGame(Game* game);
+    void SetData(sa::PropReadStream& data);
+
+    virtual void OnStateChanged(unsigned);
 
     Type type_;
     uint32_t id_{ 0 };
     Math::Transformation transformation_;
+    uint32_t level_{ 0 };
+    bool pvpCharacter_{ false };
+    uint32_t itemIndex_{ 0 };
+    std::string name_;
+    unsigned state_{ 0 };
 };

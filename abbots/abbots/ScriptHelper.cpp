@@ -23,7 +23,13 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Player.h"
+#include <abscommon/Subsystems.h>
+#include <abscommon/SimpleConfigManager.h>
 #include <abscommon/Logger.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/FileUtils.h>
+#include <sa/StringTempl.h>
+#include <abscommon/Random.h>
 
 static void LuaErrorHandler(int errCode, const char* message)
 {
@@ -33,7 +39,42 @@ static void LuaErrorHandler(int errCode, const char* message)
 void InitLuaState(kaguya::State& state)
 {
     state.setErrorHandler(LuaErrorHandler);
+    state["Tick"] = kaguya::function([]
+    {
+        return Utils::Tick();
+    });
+    state["Random"] = kaguya::overload(
+        [] { return GetSubsystem<Crypto::Random>()->GetFloat(); },
+        [](float max) { return GetSubsystem<Crypto::Random>()->Get<float>(0.0f, max); },
+        [](float min, float max) { return GetSubsystem<Crypto::Random>()->Get<float>(min, max); }
+    );
+    state["include"] = kaguya::function([&state](const std::string& file)
+    {
+        auto script = GetDataFile(file);
+        if (Utils::FileExists(script))
+        {
+            // Make something like an include guard
+            std::string ident(file);
+            sa::MakeIdent(ident);
+            ident = "__included_" + ident + "__";
+            if (IsBool(state, ident))
+                return;
+            if (state.dofile(script.c_str()))
+                state[ident] = true;
+        }
+    });
     Game::RegisterLua(state);
     GameObject::RegisterLua(state);
     Player::RegisterLua(state);
+}
+
+std::string GetDataDir()
+{
+    auto* cfg = GetSubsystem<IO::SimpleConfigManager>();
+    return cfg->GetGlobalString("data_dir", "");
+}
+
+std::string GetDataFile(const std::string& name)
+{
+    return Utils::ConcatPath(GetDataDir(), name);
 }

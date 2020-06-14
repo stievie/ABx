@@ -23,12 +23,20 @@
 #include "stdafx.h"
 #include "BotClient.h"
 #include "ScriptHelper.h"
+#include <absmath/MathUtils.h>
 
 void Player::RegisterLua(kaguya::State& state)
 {
     // clang-format off
     state["Player"].setClass(kaguya::UserdataMetatable<Player, GameObject>()
         .addFunction("SelectObject", &Player::SelectObject)
+        .addFunction("FollowObject", &Player::FollowObject)
+        .addFunction("Goto", &Player::Goto)
+        .addFunction("Move", &Player::Move)
+        .addFunction("Turn", &Player::Turn)
+        .addFunction("SetDirection", &Player::SetDirection)
+        .addFunction("Say", &Player::Say)
+        .addFunction("Command", &Player::Command)
     );
     // clang-format on
 }
@@ -58,10 +66,73 @@ void Player::Update(uint32_t timeElapsed)
 {
     GameObject::Update(timeElapsed);
     if (IsFunction(luaState_, "onUpdate"))
-        luaState_["onUpdate"]();
+        luaState_["onUpdate"](timeElapsed);
 }
 
 void Player::SelectObject(uint32_t id)
 {
     client_.SelectObject(id_, id);
+}
+
+void Player::FollowObject(uint32_t id)
+{
+    client_.FollowObject(id, false);
+}
+
+void Player::Goto(const Math::StdVector3& pos)
+{
+    client_.GotoPos({ pos[0], pos[1], pos[2] });
+}
+
+void Player::Move(unsigned direction)
+{
+    client_.Move(static_cast<uint8_t>(direction));
+}
+
+void Player::Turn(unsigned direction)
+{
+    client_.Turn(static_cast<uint8_t>(direction));
+}
+
+void Player::SetDirection(float deg)
+{
+    client_.SetDirection(Math::DegToRad(deg));
+}
+
+void Player::Say(unsigned channel, const std::string& message)
+{
+    AB::GameProtocol::CommandType cmd = AB::GameProtocol::CommandType::Unknown;
+    switch (channel)
+    {
+    case 1:
+        cmd = AB::GameProtocol::CommandType::ChatGeneral;
+        break;
+    case 2:
+        cmd = AB::GameProtocol::CommandType::ChatGuild;
+        break;
+    case 3:
+        cmd = AB::GameProtocol::CommandType::ChatParty;
+        break;
+    case 4:
+        cmd = AB::GameProtocol::CommandType::ChatTrade;
+        break;
+    case 5:
+        cmd = AB::GameProtocol::CommandType::ChatWhisper;
+        break;
+    default:
+        return;;
+    }
+    Command(static_cast<unsigned>(cmd), message);
+}
+
+void Player::Command(unsigned type, const std::string& data)
+{
+    client_.Command(static_cast<AB::GameProtocol::CommandType>(type), data);
+}
+
+void Player::OnStateChanged(unsigned state)
+{
+    GameObject::OnStateChanged(state);
+    if (IsFunction(luaState_, "onStateChanged"))
+        luaState_["onStateChanged"](state);
 }

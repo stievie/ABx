@@ -8,8 +8,8 @@ server_name = "AT1"
 
 require("config/data_server")
 
-data_dir = "data"
-recordings_dir = "recordings"
+data_dir = EXE_PATH .. "/data"
+recordings_dir = EXE_PATH .. "/recordings"
 record_games = false
 watch_assets = true
 

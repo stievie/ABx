@@ -21,12 +21,14 @@
 
 #include "GameObject.h"
 #include "Game.h"
+#include <AB/ProtocolCodes.h>
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
     // clang-format off
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
         .addFunction("GetGame", &GameObject::GetGame)
+        .addFunction("GetState", &GameObject::GetState)
     );
     // clang-format on
 }
@@ -48,4 +50,60 @@ Game* GameObject::GetGame() const
 void GameObject::SetGame(Game* game)
 {
     game_ = game;
+}
+
+void GameObject::SetData(sa::PropReadStream& data)
+{
+    using namespace AB::GameProtocol;
+
+    uint32_t validFields;
+    if (!data.Read<uint32_t>(validFields))
+        return;
+
+    if (validFields & ObjectSpawnDataFieldName)
+    {
+        std::string str;
+        if (data.ReadString(str))
+            name_ = str;
+    }
+
+    if (validFields & ObjectSpawnDataFieldLevel)
+        data.Read(level_);
+    if (validFields & ObjectSpawnDataFieldPvpCharacter)
+    {
+        uint8_t isPvp;
+        if (data.Read(isPvp))
+            pvpCharacter_ = isPvp != 0;
+    }
+
+    if (validFields & ObjectSpawnDataFieldSex)
+    {
+        uint8_t s;
+        data.Read(s);
+    }
+
+    if (validFields & ObjectSpawnDataFieldProf)
+    {
+        {
+            uint32_t p;
+            data.Read(p);
+        }
+        {
+            uint32_t p;
+            data.Read(p);
+        }
+    }
+    if (validFields & ObjectSpawnDataFieldModelIndex)
+        data.Read(itemIndex_);
+
+    if (validFields & ObjectSpawnDataFieldSkills)
+    {
+        std::string skills;
+        data.ReadString(skills);
+    }
+}
+
+void GameObject::OnStateChanged(unsigned state)
+{
+    state_ = state;;
 }

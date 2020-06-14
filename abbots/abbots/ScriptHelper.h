@@ -25,6 +25,8 @@
 #include <string>
 
 void InitLuaState(kaguya::State& state);
+std::string GetDataDir();
+std::string GetDataFile(const std::string& name);
 
 inline bool IsFunction(kaguya::State& state, const std::string& name)
 {

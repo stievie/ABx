@@ -26,6 +26,7 @@
 #include "Player.h"
 #include <sa/Assert.h>
 #include <sa/Iterator.h>
+#include <sa/PropStream.h>
 
 BotClient::BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort) :
     client_(*this, ioService)
@@ -186,7 +187,8 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerAutorun&)
 }
 
 void BotClient::SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
-    const Math::Vector3& pos, const Math::Vector3& scale, const Math::Quaternion& rot)
+    const Math::Vector3& pos, const Math::Vector3& scale, const Math::Quaternion& rot,
+    const std::string data)
 {
     std::unique_ptr<GameObject> object;
     switch (type)
@@ -217,9 +219,11 @@ void BotClient::SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
     }
     if (object)
     {
+        sa::PropReadStream stream(data.c_str(), data.length());
         object->transformation_.position_ = pos;
         object->transformation_.scale_ = scale;
         object->transformation_.oriention_ = rot;
+        object->SetData(stream);
         game_->AddObject(std::move(object));
     }
 }
@@ -228,14 +232,14 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawn& packet
 {
     Math::Quaternion direction = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, packet.rot);
     SpawnObject(static_cast<AB::GameProtocol::GameObjectType>(packet.type), packet.id,
-        packet.pos, packet.scale, direction);
+        packet.pos, packet.scale, direction, packet.data);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectSpawnExisting& packet)
 {
     Math::Quaternion direction = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, packet.rot);
     SpawnObject(static_cast<AB::GameProtocol::GameObjectType>(packet.type), packet.id,
-        packet.pos, packet.scale, direction);
+        packet.pos, packet.scale, direction, packet.data);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::MailHeaders&)
@@ -287,16 +291,24 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ChestItemDelete&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectRotationUpdate&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectRotationUpdate& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (object)
+    {
+        object->transformation_.SetYRotation(packet.yRot);
+    }
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectTargetSelected&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectStateChanged&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectStateChanged& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (object)
+        object->OnStateChanged(packet.state);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::PlayerError&)

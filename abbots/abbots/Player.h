@@ -24,6 +24,8 @@
 #include "GameObject.h"
 #include <kaguya/kaguya.hpp>
 #include <Client.h>
+#include <absmath/MathDefs.h>
+#include <DirectXMath\DirectXMath.h>
 
 class Player final : public GameObject
 {
@@ -32,6 +34,16 @@ private:
     kaguya::State luaState_;
     void LoadScript(const std::string& script);
     void SelectObject(uint32_t id);
+    void FollowObject(uint32_t id);
+    void Goto(const Math::StdVector3& pos);
+    void Move(unsigned direction);
+    void Turn(unsigned direction);
+    void SetDirection(float deg);
+    void Say(unsigned channel, const std::string& message);
+    void Command(unsigned type, const std::string& data);
+
+    void OnStateChanged(unsigned state) override;
+
 public:
     static void RegisterLua(kaguya::State& state);
     Player(Type type, uint32_t id, Client::Client& client, const std::string& script);

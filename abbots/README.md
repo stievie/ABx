@@ -13,21 +13,25 @@ Place Login data in `./bin/config/bots_private.lua`:
 account1 = {
     name = "botaccount1",
     pass = "password",
-    char = "Name 1"
+    char = "Name 1",
+    script = "scripts/bots/nothing.lua"
 }
 account2 = {
     name = "botaccount2",
     pass = "password",
-    char = "Name 2"
+    char = "Name 2",
+    script = "scripts/bots/nothing.lua"
 }
 account3 = {
     name = "botaccount3",
     pass = "password",
-    char = "Name 3"
+    char = "Name 3",
+    script = "scripts/bots/nothing.lua"
 }
 account4 = {
     name = "botaccount4",
     pass = "password",
-    char = "Name 4"
+    char = "Name 4",
+    script = "scripts/bots/nothing.lua"
 }
 ~~~

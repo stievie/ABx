@@ -41,5 +41,6 @@ public:
     void AddObject(std::unique_ptr<GameObject>&& object);
     void RemoveObject(uint32_t id);
     GameObject* GetObject(uint32_t id);
+    GameObject* GetObjectByName(const std::string& name);
 };
 

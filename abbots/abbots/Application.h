@@ -32,6 +32,7 @@ struct Account
     std::string name;
     std::string pass;
     std::string character;
+    std::string script;
 };
 
 class Application final : public ServerApp

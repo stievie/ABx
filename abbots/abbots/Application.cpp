@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "BotClient.h"
 #include "Version.h"
+#include "ScriptHelper.h"
 #include <sa/Compiler.h>
 #include <AB/Entities/Service.h>
 #include <abscommon/Dispatcher.h>
@@ -32,6 +33,7 @@
 #include <abscommon/SimpleConfigManager.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/StringUtils.h>
+#include <abscommon/Random.h>
 #include <iostream>
 
 Application::Application() :
@@ -43,6 +45,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<Crypto::Random>();
 
     sa::arg_parser::remove_option("ip", cli_);
     sa::arg_parser::remove_option("port", cli_);
@@ -127,7 +130,7 @@ void Application::CreateBots()
         client_->characterName_ = character.value();
         auto script = sa::arg_parser::get_value<std::string>(parsedArgs_, "script");
         if (script.has_value())
-            client_->script_ = script.value();
+            client_->script_ = GetDataFile(script.value());
         LOG_INFO << "Login Server: " << loginHost_ << ":" << loginPort_ << std::endl;
         return;
     }
@@ -151,6 +154,10 @@ void Application::CreateBots()
         {
             current.character = value.GetString();
         }
+        if (name.compare("script") == 0)
+        {
+            current.script = value.GetString();
+        }
         return Iteration::Continue;
     }))
     {
@@ -163,7 +170,11 @@ void Application::CreateBots()
     for (const auto& account : accounts_)
     {
         // Spawn ab instance for each account
-        Spawn("--no-logo -u \"" + account.name + "\" -p \"" + account.pass + "\" -c \"" + account.character + "\"");
+        std::stringstream ss;
+        ss << "--no-logo -u \"" << account.name << "\" -p \"" << account.pass << "\" -c \"" << account.character << "\"";
+        if (!account.script.empty())
+            ss << " -s \"" << account.script << "\"";
+        Spawn(ss.str());
         // The Login server doesn't allow too many connection in a too short time from the same IP
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(500ms);
