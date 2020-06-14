@@ -169,7 +169,7 @@ void Application::CreateBots()
 
     for (const auto& account : accounts_)
     {
-        // Spawn ab instance for each account
+        // Spawn an instance for each account
         std::stringstream ss;
         ss << "--no-logo -u \"" << account.name << "\" -p \"" << account.pass << "\" -c \"" << account.character << "\"";
         if (!account.script.empty())

@@ -120,7 +120,7 @@ void Player::Say(unsigned channel, const std::string& message)
         cmd = AB::GameProtocol::CommandType::ChatWhisper;
         break;
     default:
-        return;;
+        return;
     }
     Command(static_cast<unsigned>(cmd), message);
 }
