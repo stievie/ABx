@@ -31,6 +31,7 @@ class Player final : public GameObject
 private:
     Client::Client& client_;
     kaguya::State luaState_;
+    bool firstUpdate_{ true };
     void LoadScript(const std::string& script);
     void SelectObject(uint32_t id);
     void FollowObject(uint32_t id);

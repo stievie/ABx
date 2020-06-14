@@ -65,6 +65,12 @@ void Player::LoadScript(const std::string& script)
 void Player::Update(uint32_t timeElapsed)
 {
     GameObject::Update(timeElapsed);
+    if (firstUpdate_)
+    {
+        if (IsFunction(luaState_, "onEnter"))
+            luaState_["onEnter"]();
+        firstUpdate_ = false;
+    }
     if (IsFunction(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
 }
