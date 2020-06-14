@@ -25,7 +25,6 @@
 #include <kaguya/kaguya.hpp>
 #include <Client.h>
 #include <absmath/MathDefs.h>
-#include <DirectXMath\DirectXMath.h>
 
 class Player final : public GameObject
 {
