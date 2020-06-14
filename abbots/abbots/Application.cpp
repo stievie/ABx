@@ -132,6 +132,10 @@ void Application::CreateBots()
         if (script.has_value())
             client_->script_ = GetDataFile(script.value());
         LOG_INFO << "Login Server: " << loginHost_ << ":" << loginPort_ << std::endl;
+        LOG_INFO << "  Username: " << user.value_or("(empty)") << std::endl;
+        LOG_INFO << "  Password: " << (pass.has_value() ? "*****" : "(empty)") << std::endl;
+        LOG_INFO << "  Character: " << character.value_or("(empty") << std::endl;
+        LOG_INFO << "  Script: " << script.value_or("(none)") << std::endl;
         return;
     }
 
@@ -211,7 +215,7 @@ bool Application::ParseCommandLine()
         auto character = sa::arg_parser::get_value<std::string>(parsedArgs_, "char");
         if (!character.has_value())
         {
-            std::cout << "Missing character command line option (-c)" << std::endl;
+            std::cout << "Missing character command line option (-c). Use `random` to use a random character." << std::endl;
             return false;
         }
     }
