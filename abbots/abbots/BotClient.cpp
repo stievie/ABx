@@ -210,7 +210,7 @@ void BotClient::SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
         break;
     case AB::GameProtocol::GameObjectType::Player:
         if (id == playerId_)
-            object = std::make_unique<Player>(GameObject::Type::Self, id);
+            object = std::make_unique<Player>(GameObject::Type::Self, id, client_, script_);
         else
             object = std::make_unique<GameObject>(GameObject::Type::Player, id);
         break;

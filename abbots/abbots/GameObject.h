@@ -22,9 +22,14 @@
 #pragma once
 
 #include <absmath/Transformation.h>
+#include <kaguya/kaguya.hpp>
+
+class Game;
 
 class GameObject
 {
+private:
+    Game* game_{ nullptr };
 public:
     enum class Type
     {
@@ -35,10 +40,13 @@ public:
         Player,
         Self,
     };
+    static void RegisterLua(kaguya::State& state);
 
     GameObject(Type type, uint32_t id);
 
     virtual void Update(uint32_t timeElapsed);
+    Game* GetGame() const;
+    void SetGame(Game* game);
 
     Type type_;
     uint32_t id_{ 0 };

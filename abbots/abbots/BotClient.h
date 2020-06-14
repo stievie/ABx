@@ -67,6 +67,7 @@ public:
     std::string username_;
     std::string password_;
     std::string characterName_;
+    std::string script_;
 
     BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort);
     ~BotClient() override;

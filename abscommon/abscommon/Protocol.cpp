@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Protocol.h"
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
@@ -28,8 +27,6 @@
 #include <abcrypto.hpp>
 #include "Connection.h"
 #include "OutputMessage.h"
-#include "Subsystems.h"
-#include "Dispatcher.h"
 
 namespace Net {
 

@@ -21,6 +21,16 @@
 
 #include "Game.h"
 #include "GameObject.h"
+#include <sa/Assert.h>
+
+void Game::RegisterLua(kaguya::State& state)
+{
+    // clang-format off
+    state["Game"].setClass(kaguya::UserdataMetatable<Game>()
+        .addFunction("GetObject", &Game::GetObject)
+    );
+    // clang-format on
+}
 
 Game::Game(AB::Entities::GameType type) :
     type_(type)
@@ -37,12 +47,17 @@ void Game::Update(uint32_t timeElapsed)
 
 void Game::AddObject(std::unique_ptr<GameObject>&& object)
 {
+    assert(object);
     uint32_t id = object->id_;
+    object->SetGame(this);
     objects_.emplace(id, std::move(object));
 }
 
 void Game::RemoveObject(uint32_t id)
 {
+    auto* object = GetObject(id);
+    if (object)
+        object->SetGame(nullptr);
     auto it = objects_.find(id);
     if (it != objects_.end())
         objects_.erase(it);

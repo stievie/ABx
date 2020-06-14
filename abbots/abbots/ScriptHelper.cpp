@@ -19,33 +19,21 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "GameObject.h"
+#include "ScriptHelper.h"
 #include "Game.h"
+#include "GameObject.h"
+#include "Player.h"
+#include <abscommon/Logger.h>
 
-void GameObject::RegisterLua(kaguya::State& state)
+static void LuaErrorHandler(int errCode, const char* message)
 {
-    // clang-format off
-    state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
-        .addFunction("GetGame", &GameObject::GetGame)
-    );
-    // clang-format on
+    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
 }
 
-GameObject::GameObject(Type type, uint32_t id) : type_(type), id_(id)
+void InitLuaState(kaguya::State& state)
 {
-}
-
-void GameObject::Update(uint32_t timeElapsed)
-{
-    (void)timeElapsed;
-}
-
-Game* GameObject::GetGame() const
-{
-    return game_;
-}
-
-void GameObject::SetGame(Game* game)
-{
-    game_ = game;
+    state.setErrorHandler(LuaErrorHandler);
+    Game::RegisterLua(state);
+    GameObject::RegisterLua(state);
+    Player::RegisterLua(state);
 }

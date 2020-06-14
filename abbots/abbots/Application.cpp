@@ -50,6 +50,7 @@ Application::Application() :
     cli_.push_back({ "user", { "-u", "--user-name" }, "Account login username", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "pass", { "-p", "--password" }, "Account login Password", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "char", { "-c", "--character" }, "Character name. If `random` it uses a random character", false, true, sa::arg_parser::option_type::string });
+    cli_.push_back({ "script", { "-s", "--script" }, "Lua script file to control the bot", false, true, sa::arg_parser::option_type::string });
 }
 
 Application::~Application()
@@ -124,6 +125,9 @@ void Application::CreateBots()
         client_->username_ = user.value();
         client_->password_ = pass.value();
         client_->characterName_ = character.value();
+        auto script = sa::arg_parser::get_value<std::string>(parsedArgs_, "script");
+        if (script.has_value())
+            client_->script_ = script.value();
         LOG_INFO << "Login Server: " << loginHost_ << ":" << loginPort_ << std::endl;
         return;
     }

@@ -662,11 +662,6 @@ void ProtocolGame::Connect()
     acceptPackets_ = true;
 
     EnterGame(player);
-/*    GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(
-            std::bind(&ProtocolGame::EnterGame, GetPtr(), player)
-        )
-    );*/
 }
 
 void ProtocolGame::WriteToOutput(const NetworkMessage& message)

@@ -19,33 +19,40 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "GameObject.h"
-#include "Game.h"
+#pragma once
 
-void GameObject::RegisterLua(kaguya::State& state)
+#include <kaguya/kaguya.hpp>
+#include <string>
+
+void InitLuaState(kaguya::State& state);
+
+inline bool IsFunction(kaguya::State& state, const std::string& name)
 {
-    // clang-format off
-    state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
-        .addFunction("GetGame", &GameObject::GetGame)
-    );
-    // clang-format on
+    return state[name].type() == LUA_TFUNCTION;
 }
 
-GameObject::GameObject(Type type, uint32_t id) : type_(type), id_(id)
+inline bool IsVariable(kaguya::State& state, const std::string& name)
 {
+    auto t = state[name].type();
+    return t == LUA_TBOOLEAN || t == LUA_TNUMBER || t == LUA_TSTRING;
 }
 
-void GameObject::Update(uint32_t timeElapsed)
+inline bool IsString(kaguya::State& state, const std::string& name)
 {
-    (void)timeElapsed;
+    return state[name].type() == LUA_TSTRING;
 }
 
-Game* GameObject::GetGame() const
+inline bool IsBool(kaguya::State& state, const std::string& name)
 {
-    return game_;
+    return state[name].type() == LUA_TBOOLEAN;
 }
 
-void GameObject::SetGame(Game* game)
+inline bool IsNumber(kaguya::State& state, const std::string& name)
 {
-    game_ = game;
+    return state[name].type() == LUA_TNUMBER;
+}
+
+inline bool IsNil(kaguya::State& state, const std::string& name)
+{
+    return state[name].type() == LUA_TNIL;
 }

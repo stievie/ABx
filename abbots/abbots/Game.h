@@ -34,6 +34,7 @@ private:
     AB::Entities::GameType type_;
     std::map<uint32_t, std::unique_ptr<GameObject>> objects_;
 public:
+    static void RegisterLua(kaguya::State& state);
     Game(AB::Entities::GameType type);
 
     void Update(uint32_t timeElapsed);
