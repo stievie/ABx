@@ -33,16 +33,27 @@ private:
     kaguya::State luaState_;
     bool firstUpdate_{ true };
     void LoadScript(const std::string& script);
-    void SelectObject(uint32_t id);
-    void FollowObject(uint32_t id);
+    void SelectObject(GameObject* object);
+    void FollowObject(GameObject* object);
     void Goto(const Math::StdVector3& pos);
     void Move(unsigned direction);
     void Turn(unsigned direction);
     void SetDirection(float deg);
     void Say(unsigned channel, const std::string& message);
     void Command(unsigned type, const std::string& data);
+    void Attack();
+    void Cancel();
+    void ChangeMap(const std::string& mapUuid);
+    void ClickObject(GameObject* object);
+    void LoadSkills(const std::string& templ);
+    void UseSkill(int pos);
 
     void OnStateChanged(unsigned state) override;
+    void OnDamaged(GameObject* source) override;
+    void OnHealed(GameObject* source) override;
+    void OnRecourceChanged(uint8_t type, uint16_t value) override;
+    void ObjectSpawn(GameObject* object) override;
+    void ObjectDespawn(GameObject* object) override;
 
 public:
     static void RegisterLua(kaguya::State& state);

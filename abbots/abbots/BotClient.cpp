@@ -343,12 +343,22 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectEffectRemoved
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectDamaged&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectDamaged& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (!object)
+        return;
+    auto* source = game_->GetObject(packet.sourceId);
+    object->OnDamaged(source);
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectHealed&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectHealed& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (!object)
+        return;
+    auto* source = game_->GetObject(packet.sourceId);
+    object->OnHealed(source);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectProgress&)
@@ -411,8 +421,12 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::PartyMembersInfo&)
 {
 }
 
-void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectResourceChanged&)
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectResourceChanged& packet)
 {
+    auto* object = game_->GetObject(packet.id);
+    if (!object)
+        return;
+    object->OnRecourceChanged(packet.type, packet.value);
 }
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::DialogTrigger&)

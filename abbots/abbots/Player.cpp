@@ -37,6 +37,12 @@ void Player::RegisterLua(kaguya::State& state)
         .addFunction("SetDirection", &Player::SetDirection)
         .addFunction("Say", &Player::Say)
         .addFunction("Command", &Player::Command)
+        .addFunction("Attack", &Player::Attack)
+        .addFunction("Cancel", &Player::Cancel)
+        .addFunction("ChangeMap", &Player::ChangeMap)
+        .addFunction("ClickObject", &Player::ClickObject)
+        .addFunction("LoadSkills", &Player::LoadSkills)
+        .addFunction("UseSkill", &Player::UseSkill)
     );
     // clang-format on
 }
@@ -75,14 +81,16 @@ void Player::Update(uint32_t timeElapsed)
         luaState_["onUpdate"](timeElapsed);
 }
 
-void Player::SelectObject(uint32_t id)
+void Player::SelectObject(GameObject* object)
 {
-    client_.SelectObject(id_, id);
+    if (object)
+        client_.SelectObject(id_, object->id_);
 }
 
-void Player::FollowObject(uint32_t id)
+void Player::FollowObject(GameObject* object)
 {
-    client_.FollowObject(id, false);
+    if (object)
+        client_.FollowObject(object->id_, false);
 }
 
 void Player::Goto(const Math::StdVector3& pos)
@@ -136,9 +144,71 @@ void Player::Command(unsigned type, const std::string& data)
     client_.Command(static_cast<AB::GameProtocol::CommandType>(type), data);
 }
 
+void Player::Attack()
+{
+    client_.Attack(false);
+}
+
+void Player::Cancel()
+{
+    client_.Cancel();
+}
+
+void Player::ChangeMap(const std::string& mapUuid)
+{
+    // Like clicking on an outpost on the maps window
+    client_.ChangeMap(mapUuid);
+}
+
+void Player::ClickObject(GameObject* object)
+{
+    if (object)
+        client_.ClickObject(id_, object->id_);
+}
+
+void Player::LoadSkills(const std::string& templ)
+{
+    client_.LoadSkillTemplate(templ);
+}
+
+void Player::UseSkill(int pos)
+{
+    client_.UseSkill(pos, false);
+}
+
 void Player::OnStateChanged(unsigned state)
 {
     GameObject::OnStateChanged(state);
     if (IsFunction(luaState_, "onStateChanged"))
         luaState_["onStateChanged"](state);
+}
+
+void Player::OnDamaged(GameObject* source)
+{
+    if (IsFunction(luaState_, "onDamaged"))
+        luaState_["onDamaged"](source);
+}
+
+void Player::OnHealed(GameObject* source)
+{
+    if (IsFunction(luaState_, "onHealed"))
+        luaState_["onHealed"](source);
+}
+
+void Player::OnRecourceChanged(uint8_t type, uint16_t value)
+{
+    if (IsFunction(luaState_, "onResourceChanged"))
+        luaState_["onResourceChanged"](type, value);
+}
+
+void Player::ObjectSpawn(GameObject* object)
+{
+    if (IsFunction(luaState_, "onObjectSpawn"))
+        luaState_["onObjectSpawn"](object);
+}
+
+void Player::ObjectDespawn(GameObject* object)
+{
+    if (IsFunction(luaState_, "onObjectDespawn"))
+        luaState_["onObjectDespawn"](object);
 }

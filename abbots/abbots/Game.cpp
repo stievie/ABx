@@ -52,14 +52,22 @@ void Game::AddObject(std::unique_ptr<GameObject>&& object)
     assert(object);
     uint32_t id = object->id_;
     object->SetGame(this);
+    auto* obj = object.get();
+
     objects_.emplace(id, std::move(object));
+    for (const auto& o : objects_)
+        o.second->ObjectSpawn(obj);
 }
 
 void Game::RemoveObject(uint32_t id)
 {
     auto* object = GetObject(id);
-    if (object)
-        object->SetGame(nullptr);
+    if (!object)
+        return;
+    for (const auto& o : objects_)
+        o.second->ObjectDespawn(object);
+
+    object->SetGame(nullptr);
     auto it = objects_.find(id);
     if (it != objects_.end())
         objects_.erase(it);

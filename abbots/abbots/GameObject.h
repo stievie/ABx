@@ -52,6 +52,11 @@ public:
     void SetData(sa::PropReadStream& data);
 
     virtual void OnStateChanged(unsigned);
+    virtual void OnDamaged(GameObject*) { }
+    virtual void OnHealed(GameObject*) { }
+    virtual void OnRecourceChanged(uint8_t, uint16_t) { }
+    virtual void ObjectSpawn(GameObject*) { }
+    virtual void ObjectDespawn(GameObject*) { }
 
     Type type_;
     uint32_t id_{ 0 };

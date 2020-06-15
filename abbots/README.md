@@ -35,3 +35,9 @@ account4 = {
     script = "scripts/bots/nothing.lua"
 }
 ~~~
+
+`script` is optional. If not provided, the Bot does nothing. Otherwise the script
+can be used to control the Bot. Scripts are located in the `bin/data/scripts/bots`
+directory.
+
+If `char` is `random` it uses a random character from the account.

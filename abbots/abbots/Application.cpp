@@ -225,6 +225,8 @@ bool Application::ParseCommandLine()
 
 void Application::Update()
 {
+    ioService_->poll();
+
     uint32_t time;
     if (lastUpdate_ == 0)
         time = 16;
@@ -241,8 +243,6 @@ void Application::Update()
         nextSchedule = 16 - timeSpent;
     else
         nextSchedule = 1;
-
-    ioService_->poll();
 
     if (client_->GetState() == BotClient::State::Disconnected)
     {
