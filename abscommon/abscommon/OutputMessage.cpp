@@ -40,13 +40,9 @@ void OutputMessagePool::SendAll()
     // Dispatcher Thread
     for (const auto& proto : bufferedProtocols_)
     {
-        auto& msg = proto->GetCurrentBuffer();
+        auto msg = proto->TakeCurrentBuffer();
         if (msg && msg->GetSize() > 0)
-        {
-            sa::SharedPtr<OutputMessage> msgCopy = msg;
-            proto->Send(std::move(msgCopy));
-            proto->ResetOutputBuffer();
-        }
+            proto->Send(std::move(msg));
     }
 
     if (!bufferedProtocols_.empty())

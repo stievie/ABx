@@ -757,6 +757,7 @@ void Game::SendLeaveObject(uint32_t objectId)
 
 void Game::SendInitStateToPlayer(Player& player)
 {
+    LOG_DEBUG << "Sending initial game state to " << player.GetName() << std::endl;
     // Send all already existing objects to the player, excluding the player itself.
     // This is sent to all players when they enter a game.
     // Only called when the player enters a game. All spawns during the game are sent
@@ -803,20 +804,18 @@ void Game::SendInitStateToPlayer(Player& player)
 
 void Game::PlayerJoin(uint32_t playerId)
 {
+#ifdef DEBUG_NET
+    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+#endif
     ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (!player)
         return;
 
-    {
-        std::scoped_lock lock(lock_);
-        players_[player->id_] = player.get();
-        if (AB::Entities::IsOutpost(data_.type))
-            player->data_.lastOutpostUuid = data_.uuid;
-        player->data_.instanceUuid = instanceData_.uuid;
-    }
+    if (AB::Entities::IsOutpost(data_.type))
+        player->data_.lastOutpostUuid = data_.uuid;
+    player->data_.instanceUuid = instanceData_.uuid;
     UpdateEntity(player->data_);
 
-    Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
     SendInitStateToPlayer(*player);
 
     if (GetState() == ExecutionState::Running)
@@ -827,6 +826,10 @@ void Game::PlayerJoin(uint32_t playerId)
     }
     else
         queuedObjects_.push_back(player);
+
+    // From now on the player receives the game status
+    players_[player->id_] = player.get();
+    Lua::CallFunction(luaState_, "onPlayerJoin", player.get());
 
     // Notify other servers that a player joined, e.g. for friend list
     GetSubsystem<Asynch::Scheduler>()->Add(
@@ -852,6 +855,9 @@ void Game::RemoveObject(GameObject* object)
 
 void Game::PlayerLeave(uint32_t playerId)
 {
+#ifdef DEBUG_NET
+    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+#endif
     Player* player = GetPlayerById(playerId);
     if (!player)
         return;
@@ -861,7 +867,6 @@ void Game::PlayerLeave(uint32_t playerId)
     if (it != players_.end())
     {
         Lua::CallFunction(luaState_, "onPlayerLeave", player);
-        std::scoped_lock lock(lock_);
         players_.erase(it);
     }
     player->data_.instanceUuid = "";

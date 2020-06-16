@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ProtocolGame.h"
 #include "ConfigManager.h"
 #include "Game.h"
@@ -29,7 +28,6 @@
 #include "IOPlayer.h"
 #include "Player.h"
 #include "PlayerManager.h"
-
 #include <AB/DHKeys.hpp>
 #include <AB/Entities/FriendList.h>
 #include <AB/Packets/Packet.h>
@@ -612,8 +610,9 @@ void ProtocolGame::OnConnect()
     auto output = OutputMessagePool::GetOutputMessage();
     output->AddByte(AB::GameProtocol::ServerPacketType::KeyExchange);
     AB::Packets::Server::KeyExchange packet;
-    auto* keys = GetSubsystem<Crypto::DHKeys>();
-    memcpy(&packet.key[0], keys->GetPublickKey(), DH_KEY_LENGTH);
+    const auto& key = GetSubsystem<Crypto::DHKeys>()->GetPublickKey();
+    for (size_t i = 0; i < DH_KEY_LENGTH; ++i)
+        packet.key[i] = key[i];
     AB::Packets::Add(packet, *output);
     Send(std::move(output));
 }
@@ -722,7 +721,7 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         instance->data_.partySize
     };
     AB::Packets::Add(packet, *output);
-    WriteToOutput(*output);
+    Send(std::move(output));
 
     // (2) Then we can send all the rest that happens when entering an game
     instance->PlayerJoin(player->id_);

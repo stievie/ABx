@@ -74,7 +74,7 @@ public:
     sa::SharedPtr<OutputMessage> GetOutputBuffer(int32_t size);
     void ResetOutputBuffer();
     uint32_t GetIP();
-    sa::SharedPtr<OutputMessage>& GetCurrentBuffer();
+    sa::SharedPtr<OutputMessage> TakeCurrentBuffer();
 
     void Send(sa::SharedPtr<OutputMessage>&& message);
 };

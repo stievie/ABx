@@ -181,7 +181,7 @@ void Application::CreateBots()
         Spawn(ss.str());
         // The Login server doesn't allow too many connection in a too short time from the same IP
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(500ms);
+        std::this_thread::sleep_for(100ms);
     }
 }
 

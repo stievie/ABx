@@ -295,7 +295,6 @@
     <ClInclude Include="ItemsCache.h" />
     <ClInclude Include="ItemStats.h" />
     <ClInclude Include="Mechanic.h" />
-    <ClInclude Include="MessageDecoder.h" />
     <ClInclude Include="MessageFilter.h" />
     <ClInclude Include="PartyManager.h" />
     <ClInclude Include="ProgressComp.h" />
@@ -438,7 +437,6 @@
     <ClCompile Include="ItemFactory.cpp" />
     <ClCompile Include="ItemsCache.cpp" />
     <ClCompile Include="ItemStats.cpp" />
-    <ClCompile Include="MessageDecoder.cpp" />
     <ClCompile Include="MessageFilter.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">/bigobj %(AdditionalOptions)</AdditionalOptions>

@@ -39,7 +39,6 @@ namespace Net {
 
 class MessageFilter
 {
-public:
 private:
     using FilterEvents = sa::Events<
 #define ENUMERATE_SERVER_PACKET_CODE(v) bool(const Game::Game&, const Game::Player&, AB::Packets::Server::v&),

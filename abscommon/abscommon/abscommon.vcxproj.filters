@@ -141,6 +141,12 @@
     <ClInclude Include="EANew.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MessageDecoder.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageAnalyzer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -240,6 +246,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="EANew.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDecoder.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageAnalyzer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

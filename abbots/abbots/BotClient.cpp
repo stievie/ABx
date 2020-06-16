@@ -306,6 +306,7 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectTargetSelecte
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectStateChanged& packet)
 {
+    assert(game_);
     auto* object = game_->GetObject(packet.id);
     if (object)
         object->OnStateChanged(packet.state);

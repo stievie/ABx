@@ -20,7 +20,7 @@
  */
 
 #include "MessageFilter.h"
-#include "MessageDecoder.h"
+#include <abscommon/MessageDecoder.h>
 #include <sa/Assert.h>
 #include <abscommon/Logger.h>
 #include "Game.h"

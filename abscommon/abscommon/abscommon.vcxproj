@@ -180,6 +180,8 @@
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="IpList.h" />
     <ClInclude Include="Logo.h" />
+    <ClInclude Include="MessageAnalyzer.h" />
+    <ClInclude Include="MessageDecoder.h" />
     <ClInclude Include="ServiceConfig.h" />
     <ClInclude Include="ServiceInstaller.h" />
     <ClInclude Include="TimeUtils.h" />
@@ -219,6 +221,8 @@
     <ClCompile Include="EANew.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="IpList.cpp" />
+    <ClCompile Include="MessageAnalyzer.cpp" />
+    <ClCompile Include="MessageDecoder.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ServiceInstaller.cpp" />
     <ClCompile Include="Subsystems.cpp" />

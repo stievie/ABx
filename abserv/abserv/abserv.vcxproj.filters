@@ -444,9 +444,6 @@
     <ClInclude Include="TradeComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="MessageDecoder.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="MessageFilter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -849,9 +846,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TradeComp.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageDecoder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MessageFilter.cpp">

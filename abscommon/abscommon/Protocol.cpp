@@ -27,6 +27,7 @@
 #include <abcrypto.hpp>
 #include "Connection.h"
 #include "OutputMessage.h"
+#include "MessageAnalyzer.h"
 
 namespace Net {
 
@@ -54,6 +55,14 @@ uint32_t Protocol::GetIP()
 
 void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
 {
+#if 0
+    MessageAnalyzer ma;
+    ma.onPacket_ = [](auto type)
+    {
+        LOG_DEBUG << "MessageType " << AB::GameProtocol::GetServerPacketTypeName(type) << std::endl;
+    };
+    ma.Analyze(*message);
+#endif
     if (auto conn = GetConnection())
     {
         conn->Send(std::move(message));
@@ -63,9 +72,11 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
     Release();
 }
 
-sa::SharedPtr<OutputMessage>& Protocol::GetCurrentBuffer()
+sa::SharedPtr<OutputMessage> Protocol::TakeCurrentBuffer()
 {
-    return outputBuffer_;
+    auto curr = std::move(outputBuffer_);
+    ResetOutputBuffer();
+    return curr;
 }
 
 void Protocol::XTEAEncrypt(OutputMessage& msg) const
@@ -137,7 +148,7 @@ sa::SharedPtr<OutputMessage> Protocol::GetOutputBuffer(int32_t size)
     {
         outputBuffer_ = OutputMessagePool::GetOutputMessage();
     }
-    else if ((outputBuffer_->GetSize() + size) > NetworkMessage::MaxProtocolBodyLength)
+    else if (outputBuffer_->GetSpace() < size)
     {
         Send(std::move(outputBuffer_));
         outputBuffer_ = OutputMessagePool::GetOutputMessage();

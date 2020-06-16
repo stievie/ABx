@@ -24,7 +24,7 @@
 #include <AB/ProtocolCodes.h>
 #include <sa/Compiler.h>
 #include <optional>
-#include <abscommon/NetworkMessage.h>
+#include "NetworkMessage.h"
 
 namespace Net {
 

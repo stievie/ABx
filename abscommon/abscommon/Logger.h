@@ -76,9 +76,9 @@ public:
     }
     Logger& operator << (const std::thread::id& value)
     {
-        std::ios_base::fmtflags f(stream_.flags());
-        stream_ << std::hex << value;
-        stream_.flags(f);
+        std::stringstream ss;
+        ss << std::hex << value;
+        stream_ << ss.str();
         return *this;
     }
     // Everything else
