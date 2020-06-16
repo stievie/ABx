@@ -66,6 +66,9 @@ inline void ProtocolGame::AddPlayerInput(Game::InputType type)
 void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 {
 #ifdef DEBUG_NET
+    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+#endif
+#ifdef DEBUG_NET
     LOG_DEBUG << "Player " << packet.charUuid << " logging in" << std::endl;
 #endif
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
