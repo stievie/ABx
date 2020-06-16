@@ -14,7 +14,7 @@ class MessageAnalyzer
 public:
     void Analyze(const NetworkMessage& message);
 
-    std::function<void(AB::GameProtocol::ServerPacketType type)> onPacket_;
+    std::function<void(AB::GameProtocol::ServerPacketType type, void* packet)> onPacket_;
 };
 
 }

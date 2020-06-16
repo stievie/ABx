@@ -18,9 +18,9 @@ void MessageAnalyzer::Analyze(const NetworkMessage& message)
         {
 #define ENUMERATE_SERVER_PACKET_CODE(v) case AB::GameProtocol::ServerPacketType::v:                 \
             {                                                                                       \
-                [[maybe_unused]] v packet = AB::Packets::Get<v>(decoder);                           \
+                v packet = AB::Packets::Get<v>(decoder);                                            \
                 if (onPacket_)                                                                      \
-                    onPacket_(code.value());                                                        \
+                    onPacket_(code.value(), &packet);                                               \
                 break;                                                                              \
             }
             ENUMERATE_SERVER_PACKET_CODES

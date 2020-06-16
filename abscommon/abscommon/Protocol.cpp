@@ -57,7 +57,7 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
 {
 #if 0
     MessageAnalyzer ma;
-    ma.onPacket_ = [](auto type)
+    ma.onPacket_ = [](auto type, void*)
     {
         LOG_DEBUG << "MessageType " << AB::GameProtocol::GetServerPacketTypeName(type) << std::endl;
     };
