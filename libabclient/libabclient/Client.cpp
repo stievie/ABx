@@ -376,6 +376,7 @@ void Client::Logout()
 #endif
     }
     lastPongTick_ = 0;
+    enterWorldMessage_ = 0;
 }
 
 void Client::GetOutposts()
@@ -440,12 +441,16 @@ void Client::Update(uint32_t timeElapsed, bool noRun)
             }
             lastPing_ = 0;
         }
-        if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < AbTick()))
+        if (enterWorldMessage_ != 0 && AbTick() - enterWorldMessage_ > PLAYER_INACTIVE_TIME_KICK * 2)
         {
-            protoGame_->Disconnect();
-            state_ = State::Disconnected;
-            OnNetworkError(ConnectionError::DisconnectNoPong, {});
-            return;
+            // When we enter a Game it may take some time the client loaded everything.
+            if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < AbTick()))
+            {
+                protoGame_->Disconnect();
+                state_ = State::Disconnected;
+                OnNetworkError(ConnectionError::DisconnectNoPong, {});
+                return;
+            }
         }
     }
 
@@ -820,7 +825,8 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInsta
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
 {
-    lastPongTick_ = AbTick();
+    lastPongTick_ = 0;
+    enterWorldMessage_ = AbTick();
     state_ = State::World;
     receiver_.OnPacket(updateTick, packet);
 }

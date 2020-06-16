@@ -67,6 +67,7 @@ private:
     int lastRun_{ 0 };
     int lastPing_{ 0 };
     int64_t lastPongTick_{ 0 };
+    int64_t enterWorldMessage_{ 0 };
     bool gotPong_{ true };
     // Our (client) key pair
     Crypto::DHKeys dhKeys_;
