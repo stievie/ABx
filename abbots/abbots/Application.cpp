@@ -50,6 +50,7 @@ Application::Application() :
     sa::arg_parser::remove_option("ip", cli_);
     sa::arg_parser::remove_option("port", cli_);
     sa::arg_parser::remove_option("host", cli_);
+    cli_.push_back({ "delay", { "-d", "--delay" }, "Milliseconds to wait between spawning bots", false, true, sa::arg_parser::option_type::integer });
     cli_.push_back({ "user", { "-u", "--user-name" }, "Account login username", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "pass", { "-p", "--password" }, "Account login Password", false, true, sa::arg_parser::option_type::string });
     cli_.push_back({ "char", { "-c", "--character" }, "Character name. If `random` it uses a random character", false, true, sa::arg_parser::option_type::string });
@@ -171,6 +172,9 @@ void Application::CreateBots()
     // The last is empty
     accounts_.pop_back();
 
+    int delay = static_cast<int>(config->GetGlobalInt("delay", 500));
+    delay = sa::arg_parser::get_value<int>(parsedArgs_, "delay", delay);
+
     for (const auto& account : accounts_)
     {
         // Spawn an instance for each account
@@ -180,8 +184,7 @@ void Application::CreateBots()
             ss << " -s \"" << account.script << "\"";
         Spawn(ss.str());
         // The Login server doesn't allow too many connection in a too short time from the same IP
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(500ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
 }
 
@@ -196,7 +199,8 @@ void Application::StartBot()
 
 void Application::Shutdown()
 {
-    client_->Logout();
+    if (client_)
+        client_->Logout();
 }
 
 bool Application::ParseCommandLine()

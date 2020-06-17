@@ -10,5 +10,7 @@ data_dir = EXE_PATH .. "/data"
 
 login_host = "localhost"
 login_port = 2748
+-- Milliseconds to wait between spawning bots
+delay = 500
 
 require("config/bots_private")
