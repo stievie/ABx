@@ -232,7 +232,7 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
 
     if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
         return false;
-    uint32_t amount = item->concreteItem_.value == 0 * item->concreteItem_.count == 0;
+    uint32_t amount = item->concreteItem_.value * item->concreteItem_.count;
     if (amount == 0)
         return false;
     if (!CheckInventoryCapacity(amount, 0))
