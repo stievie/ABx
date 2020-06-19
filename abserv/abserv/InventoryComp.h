@@ -68,6 +68,7 @@ public:
 
     void Update(uint32_t timeElapsed);
 
+    Item* SplitStack(Item* item, uint32_t count, AB::Entities::StoragePlace newItemPlace, uint16_t newItemPos);
     EquipPos SetEquipment(uint32_t itemId);
     Item* GetEquipment(EquipPos pos) const;
     uint32_t RemoveEquipment(EquipPos pos);
@@ -76,6 +77,7 @@ public:
 
     bool SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message,
         uint16_t newPos = 0);
+    bool SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyInventoryItem(ItemPos pos)
     {

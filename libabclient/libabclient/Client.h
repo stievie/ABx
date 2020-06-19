@@ -232,6 +232,7 @@ public:
     void ChestDestroyItem(uint16_t pos);
     void DepositMoney(uint32_t amount);
     void WithdrawMoney(uint32_t amount);
+    void SellItem(uint16_t pos, uint32_t count);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void GetPlayerInfoByName(const std::string& name, uint32_t fields);

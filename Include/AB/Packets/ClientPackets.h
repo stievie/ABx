@@ -117,6 +117,18 @@ struct SetItemPos
     }
 };
 
+struct SellItem
+{
+    uint16_t pos;
+    uint32_t count;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(pos);
+        ar.value(count);
+    }
+};
+
 struct DespositWithdrawMoney
 {
     uint32_t amount;

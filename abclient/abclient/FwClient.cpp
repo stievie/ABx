@@ -880,6 +880,12 @@ void FwClient::WithdrawMoney(uint32_t amount)
         client_.WithdrawMoney(amount);
 }
 
+void FwClient::SellItem(uint16_t pos, uint32_t count)
+{
+    if (loggedIn_)
+        client_.SellItem(pos, count);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)

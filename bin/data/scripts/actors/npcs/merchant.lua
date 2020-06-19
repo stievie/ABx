@@ -18,22 +18,24 @@ function onUpdate(timeElapsed)
 end
 
 function onClicked(creature)
-  if (creature ~= nil) then
-    self:FaceObject(creature)
+  if (creature == nil) then
+    return
   end
+  self:FaceObject(creature)
+  if (not self:IsInRange(RANGE_ADJECENT, creature)) then
+    return
+  end
+  
+  local player = creature:AsPlayer()
+  if (player == nil) then
+    return
+  end
+  player:TriggerDialog(self:GetId(), DIALOG_MERCHANT_ITEMS)
 end
 
 -- self was selected by creature
 function onSelected(creature)
-  if (creature == nil) then
-    return;
-  end
-
-  if (creature:IsDead()) then
-    self:Say(CHAT_CHANNEL_GENERAL, "Wow, how did you manage to die here? Noob!")
-  else
-    self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
-  end
+  self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
 end
 
 function onAttacked(source, _type, damage, success)

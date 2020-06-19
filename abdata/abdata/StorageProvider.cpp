@@ -151,6 +151,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBPlayerQuest, AB::Entities::PlayerQuest>();
     AddEntityClass<DB::DBPlayerQuestList, AB::Entities::PlayerQuestList>();
     AddEntityClass<DB::DBPlayerQuestListRewarded, AB::Entities::PlayerQuestListRewarded>();
+    AddEntityClass<DB::DBMerchantItemList, AB::Entities::MerchantItemList>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data)

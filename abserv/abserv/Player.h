@@ -244,6 +244,7 @@ public:
     void CRQTradeCancel();
     void CRQTradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>> items);
     void CRQTradeAccept();
+    void CRQSellItem(uint16_t pos, uint32_t count);
     //}
 
     AB::Entities::Character data_;

@@ -550,13 +550,9 @@ void Player::CRQDropInventoryItem(uint16_t pos, uint32_t count)
     else
     {
         // Split it
-        auto* cache = GetSubsystem<ItemsCache>();
-        auto* factory = GetSubsystem<ItemFactory>();
-        uint32_t itemId = factory->CreatePlayerItem(*this, item->data_.uuid, count);
-        item->concreteItem_.count -= count;
-        auto newItem = cache->Get(itemId);
-        newItem->concreteItem_.storagePlace = AB::Entities::StoragePlace::Scene;
-        newItem->concreteItem_.storagePos = 0;
+        auto* newItem = inventoryComp_->SplitStack(item, count, AB::Entities::StoragePlace::Scene, 0);
+        if (!newItem)
+            return;
         auto rng = GetSubsystem<Crypto::Random>();
         ea::shared_ptr<ItemDrop> drop = ea::make_shared<ItemDrop>(newItem->id_);
         drop->transformation_.position_ = transformation_.position_;
@@ -1595,6 +1591,22 @@ void Player::CRQTradeAccept()
     if (!tradeComp_->IsTrading())
         return;
     tradeComp_->Accept();
+}
+
+void Player::CRQSellItem(uint16_t pos, uint32_t count)
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    bool ret = inventoryComp_->SellItem(pos, count, msg.get());
+
+    if (ret)
+    {
+        AB::Entities::InventoryItems inv;
+        inv.uuid = data_.uuid;
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+        cli->Invalidate(inv);
+    }
+
+    WriteToOutput(*msg);
 }
 
 bool Player::IsIgnored(const Player& player) const

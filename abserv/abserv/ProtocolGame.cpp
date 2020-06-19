@@ -265,6 +265,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQDepositMoney, packet.amount);
         break;
     }
+    case ClientPacketTypes::SellItem:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SellItem>(message);
+        AddPlayerTask(&Game::Player::CRQSellItem, packet.pos, packet.count);
+        break;
+    }
     case ClientPacketTypes::GetChest:
     {
         /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);

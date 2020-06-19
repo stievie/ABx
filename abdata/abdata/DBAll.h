@@ -49,6 +49,7 @@
 #include "DBItemList.h"
 #include "DBMail.h"
 #include "DBMailList.h"
+#include "DBMerchantItemList.h"
 #include "DBMusic.h"
 #include "DBMusicList.h"
 #include "DBPlayerItemList.h"

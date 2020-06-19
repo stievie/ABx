@@ -27,6 +27,8 @@
 #include <sa/Transaction.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <abscommon/Logger.h>
+#include <AB/Entities/MerchantItemList.h>
 
 namespace Game {
 namespace Components {
@@ -206,6 +208,113 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
     if (!ret)
         owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
     return ret;
+}
+
+bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* message)
+{
+    assert(!Is<Player>(owner_));
+
+    if (pos == 0)
+        // Can not sell money
+        return false;
+    if (count == 0)
+        return false;
+    // Only items in inventory can be sold
+    auto* item = inventory_->GetItem(pos);
+    if (!item)
+        return false;
+    if (item->concreteItem_.count < count)
+    {
+        LOG_WARNING << "CHEAT: Player " << owner_.GetName() << " tries to sell more items " << count <<
+            " than available " << item->concreteItem_.count << std::endl;
+        return false;
+    }
+
+    if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
+        return false;
+    uint32_t amount = item->concreteItem_.value == 0 * item->concreteItem_.count == 0;
+    if (amount == 0)
+        return false;
+    if (!CheckInventoryCapacity(amount, 0))
+    {
+        owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        return false;
+    }
+
+    bool resellable = AB::Entities::IsItemResellable(item->data_.itemFlags);
+    auto* dc = GetSubsystem<IO::DataClient>();
+    auto* factory = GetSubsystem<ItemFactory>();
+    if (item->concreteItem_.count == count)
+    {
+        // Sell all
+        RemoveInventoryItem(pos);
+
+        if (resellable)
+        {
+            item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
+            item->concreteItem_.storagePos = 0;
+        }
+        else
+        {
+            factory->DeleteItem(item);
+        }
+        if (message)
+        {
+            message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+            AB::Packets::Server::InventoryItemDelete packet{
+                pos
+            };
+            AB::Packets::Add(packet, *message);
+        }
+    }
+    else
+    {
+        // Split stack
+        auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Merchant, 0);
+        if (!newItem)
+            return false;
+
+        InventoryComp::WriteItemUpdate(item, message);
+        if (resellable)
+        {
+            // Update it, because otherwiese the merchant does not get it when AB::Entities::MerchantItemList is loaded
+            dc->Update(newItem->concreteItem_);
+        }
+        else
+        {
+            factory->DeleteItem(newItem);
+        }
+    }
+
+    if (resellable)
+    {
+        // Merchant got new items.
+        AB::Entities::MerchantItemList ml;
+        dc->Invalidate(ml);
+    }
+
+    AddInventoryMoney(amount, message);
+    return true;
+}
+
+Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::StoragePlace newItemPlace, uint16_t newItemPos)
+{
+    assert(!Is<Player>(owner_));
+    assert(count > 0);
+    // Count must be less than available, otherwise the whole stack should be moved
+    if (item->concreteItem_.count <= count)
+        return nullptr;
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* factory = GetSubsystem<ItemFactory>();
+    uint32_t itemId = factory->CreatePlayerItem(To<Player>(owner_), item->data_.uuid, count);
+    item->concreteItem_.count -= count;
+    auto* newItem = cache->Get(itemId);
+    // Splitting a stack should never fail
+    assert(newItem);
+    newItem->concreteItem_.storagePlace = newItemPlace;
+    newItem->concreteItem_.storagePos = newItemPos;
+    return newItem;
 }
 
 bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message, uint16_t newPos)

@@ -356,6 +356,14 @@ void ProtocolGame::WithdrawMoney(uint32_t amount)
     SendPacket(AB::GameProtocol::ClientPacketTypes::WithdrawMoney, packet);
 }
 
+void ProtocolGame::SellItem(uint16_t pos, uint32_t count)
+{
+    AB::Packets::Client::SellItem packet = {
+        pos, count
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SellItem, packet);
+}
+
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
     AB::Packets::Client::GetMail packet = {

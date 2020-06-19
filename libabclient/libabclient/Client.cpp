@@ -586,6 +586,12 @@ void Client::WithdrawMoney(uint32_t amount)
         protoGame_->WithdrawMoney(amount);
 }
 
+void Client::SellItem(uint16_t pos, uint32_t count)
+{
+    if (state_ == State::World)
+        protoGame_->SellItem(pos, count);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == State::World)

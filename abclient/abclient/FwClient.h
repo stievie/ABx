@@ -178,6 +178,7 @@ public:
     void ChestDestroyItem(uint16_t pos);
     void DepositMoney(uint32_t amount);
     void WithdrawMoney(uint32_t amount);
+    void SellItem(uint16_t pos, uint32_t count);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

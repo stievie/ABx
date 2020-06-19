@@ -123,6 +123,9 @@ enum ItemFlag : uint32_t
     ItemFlagIdentifyable = 1 << 1,
     ItemFlagTradeable = 1 << 2,
     ItemFlagUpgradeable = 1 << 3,
+    // When you sell an item to the merchant, the merchant may resell the item to other players.
+    // Items sold to the merchant without this flag, get data nirvana'd.
+    ItemFlagResellable = 1 << 4,
 };
 
 struct Item : Entity
@@ -176,6 +179,11 @@ inline bool IsItemIdentifyable(uint32_t flags)
 inline bool IsItemTradeable(uint32_t flags)
 {
     return (flags & ItemFlagTradeable) == ItemFlagTradeable;
+}
+
+inline bool IsItemResellable(uint32_t flags)
+{
+    return (flags & ItemFlagResellable) == ItemFlagResellable;
 }
 
 inline bool IsItemUpgradeable(uint32_t flags)
