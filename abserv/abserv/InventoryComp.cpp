@@ -57,7 +57,8 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         item->concreteItem_.value,
         item->concreteItem_.itemStats,
         static_cast<uint8_t>(item->concreteItem_.storagePlace),
-        item->concreteItem_.storagePos
+        item->concreteItem_.storagePos,
+        item->concreteItem_.flags
     }};
     AB::Packets::Add(packet, *message);
 }

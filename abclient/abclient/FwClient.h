@@ -53,6 +53,7 @@ struct ConcreteItem
     uint32_t count;
     uint16_t value;
     HashMap<Game::ItemStatIndex, Variant> stats;
+    uint32_t flags;
 };
 
 bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream);

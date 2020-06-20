@@ -158,6 +158,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
         offeredItem.stats = item->concreteItem_.itemStats;
         offeredItem.type = static_cast<uint8_t>(item->data_.type);
         offeredItem.value = item->concreteItem_.value;
+        offeredItem.flags = item->concreteItem_.flags;
         for (size_t i = 0; i < static_cast<size_t>(ItemUpgrade::__Count); ++i)
         {
             if (auto* upgradeItem = item->GetUpgrade(static_cast<ItemUpgrade>(i)))
@@ -170,6 +171,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
                 upgrade.stats = upgradeItem->concreteItem_.itemStats;
                 upgrade.type = static_cast<uint8_t>(upgradeItem->data_.type);
                 upgrade.value = upgradeItem->concreteItem_.value;
+                upgrade.flags = upgradeItem->concreteItem_.flags;
             }
         }
         packet.items.push_back(std::move(offeredItem));

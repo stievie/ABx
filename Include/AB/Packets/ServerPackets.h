@@ -48,6 +48,7 @@ struct Item
     std::string stats;
     uint8_t place{ 0 };
     uint16_t pos{ 0 };
+    uint32_t flags{ 0 };
 };
 struct UpgradeableItem : public Item
 {
@@ -618,6 +619,7 @@ struct InventoryContent
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
+            ar.value(item.flags);
         }
     }
 };
@@ -643,6 +645,7 @@ struct MerchantItems
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
+            ar.value(item.flags);
         }
     }
 };
@@ -660,6 +663,7 @@ struct InventoryItemUpdate
         ar.value(item.count);
         ar.value(item.value);
         ar.value(item.stats);
+        ar.value(item.flags);
     }
 };
 
@@ -797,6 +801,7 @@ struct TradeOffer
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
+            ar.value(item.flags);
             ar.value(item.upgrades);
             for (size_t mi = 0; mi < Internal::ITEM_UPGRADE_COUNT; ++mi)
             {
@@ -808,6 +813,7 @@ struct TradeOffer
                     ar.value(mod.count);
                     ar.value(mod.value);
                     ar.value(mod.stats);
+                    ar.value(mod.flags);
                 }
             }
         }

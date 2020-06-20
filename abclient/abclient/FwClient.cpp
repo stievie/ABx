@@ -1467,6 +1467,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::InventoryContent& pa
         ci.count = item.count;
         ci.value = item.value;
         LoadStatsFromString(ci.stats, item.stats);
+        ci.flags = item.flags;
         inventory_.push_back(std::move(ci));
     }
     VariantMap& eData = GetEventDataMap();
@@ -1489,6 +1490,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
         it->count = packet.item.count;
         it->value = packet.item.value;
         LoadStatsFromString(it->stats, packet.item.stats);
+        it->flags = packet.item.flags;
     }
     else
     {
@@ -1501,6 +1503,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::Inventory
         item.count = packet.item.count;
         item.value = packet.item.value;
         LoadStatsFromString(item.stats, packet.item.stats);
+        item.flags = packet.item.flags;
         inventory_.push_back(std::move(item));
     }
 
@@ -1545,6 +1548,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ChestContent& packet
         ci.count = item.count;
         ci.value = item.value;
         LoadStatsFromString(ci.stats, item.stats);
+        ci.flags = item.flags;
         chest_.push_back(std::move(ci));
     }
     VariantMap& eData = GetEventDataMap();
@@ -1566,6 +1570,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItem
         it->pos = packet.item.pos;
         it->count = packet.item.count;
         it->value = packet.item.value;
+        it->flags = packet.item.flags;
         LoadStatsFromString(it->stats, packet.item.stats);
     }
     else
@@ -1579,6 +1584,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ChestItem
         item.count = packet.item.count;
         item.value = packet.item.value;
         LoadStatsFromString(item.stats, packet.item.stats);
+        item.flags = packet.item.flags;
         chest_.push_back(std::move(item));
     }
 
@@ -2228,6 +2234,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
         ci.pos = item.pos;
         ci.count = item.count;
         ci.value = item.value;
+        ci.flags = item.flags;
         LoadStatsFromString(ci.stats, item.stats);
         merchantItems_.push_back(std::move(ci));
     }

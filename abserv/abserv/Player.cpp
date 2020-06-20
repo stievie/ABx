@@ -363,7 +363,8 @@ void Player::CRQGetInventory()
             current.concreteItem_.value,
             current.concreteItem_.itemStats,
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
-            current.concreteItem_.storagePos
+            current.concreteItem_.storagePos,
+            current.concreteItem_.flags
         });
         return Iteration::Continue;
     });
@@ -590,7 +591,8 @@ void Player::CRQGetChest()
             current.concreteItem_.value,
             current.concreteItem_.itemStats,
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
-            current.concreteItem_.storagePos
+            current.concreteItem_.storagePos,
+            current.concreteItem_.flags
         });
         return Iteration::Continue;
     });

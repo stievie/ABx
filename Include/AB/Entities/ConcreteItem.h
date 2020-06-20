@@ -37,6 +37,11 @@ enum class StoragePlace : uint8_t
     Merchant,       // Merchant has this item and may be bought by a player
 };
 
+enum ConcreteItemFlag : uint32_t
+{
+    ConcreteItemFlagCustomized = 1,
+};
+
 static constexpr auto KEY_CONCRETE_ITEMS = "concrete_items";
 
 struct ConcreteItem : Entity
@@ -65,6 +70,7 @@ struct ConcreteItem : Entity
         s.value2b(value);
         s.text1b(instanceUuid, Limits::MAX_UUID);
         s.text1b(mapUuid, Limits::MAX_UUID);
+        s.value4b(flags);
     }
 
     std::string playerUuid{ EMPTY_GUID };
@@ -82,7 +88,13 @@ struct ConcreteItem : Entity
     uint16_t value{ 0 };
     std::string instanceUuid{ EMPTY_GUID };
     std::string mapUuid{ EMPTY_GUID };
+    uint32_t flags{ 0 };
 };
+
+inline bool IsItemCustomized(uint32_t flags)
+{
+    return (flags & ConcreteItemFlagCustomized) == ConcreteItemFlagCustomized;
+}
 
 }
 }

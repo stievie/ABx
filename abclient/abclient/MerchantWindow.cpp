@@ -215,4 +215,7 @@ void MerchantWindow::Initialize(uint32_t npcId)
 
 void MerchantWindow::Clear()
 {
+    npcId_ = 0;
+    sellItems_->RemoveAllItems();
+    buyItems_->RemoveAllItems();
 }

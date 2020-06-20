@@ -38,7 +38,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `concrete_items` (`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, " <<
-        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, `map_uuid`";
+        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, `map_uuid`, `flags`";
     query << ") VALUES (";
 
     query << db->EscapeString(item.uuid) << ", ";
@@ -56,7 +56,8 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     query << item.deleted << ", ";
     query << static_cast<int>(item.value) << ", ";
     query << db->EscapeString(item.instanceUuid) << ", ";
-    query << db->EscapeString(item.mapUuid);
+    query << db->EscapeString(item.mapUuid) << ", ";
+    query << item.flags;
 
     query << ")";
 
@@ -108,6 +109,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
     item.instanceUuid = result->GetString("instance_uuid");
     item.mapUuid = result->GetString("map_uuid");
+    item.flags = static_cast<uint32_t>(result->GetUInt("flags"));
 
     return true;
 }
@@ -140,7 +142,8 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     query << " `deleted` = " << item.deleted << ", ";
     query << " `value` = " << static_cast<int>(item.value) << ", ";
     query << " `instance_uuid` = " << db->EscapeString(item.instanceUuid) << ", ";
-    query << " `map_uuid` = " << db->EscapeString(item.mapUuid);
+    query << " `map_uuid` = " << db->EscapeString(item.mapUuid) << ", ";
+    query << " `flags` = " << item.flags;
 
     query << " WHERE `uuid` = " << db->EscapeString(item.uuid);
 

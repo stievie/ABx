@@ -180,6 +180,7 @@ void TradeDialog::HandlePartnersOffer(StringHash, VariantMap&)
         ci.count = item.count;
         ci.value = item.value;
         LoadStatsFromString(ci.stats, item.stats);
+        ci.flags = item.flags;
         CreateItem(container, index, ci);
         ++index;
     }
