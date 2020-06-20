@@ -291,6 +291,7 @@
     <ClCompile Include="FilePicker.cpp" />
     <ClCompile Include="InputBox.cpp" />
     <ClCompile Include="ItemUIElement.cpp" />
+    <ClCompile Include="MerchantWindow.cpp" />
     <ClCompile Include="NumberInputBox.cpp" />
     <ClCompile Include="SkillCostElement.cpp" />
     <ClCompile Include="SkillsWindow.cpp" />
@@ -357,6 +358,7 @@
     <ClInclude Include="FilePicker.h" />
     <ClInclude Include="InputBox.h" />
     <ClInclude Include="ItemUIElement.h" />
+    <ClInclude Include="MerchantWindow.h" />
     <ClInclude Include="NumberInputBox.h" />
     <ClInclude Include="SkillCostElement.h" />
     <ClInclude Include="SkillsWindow.h" />

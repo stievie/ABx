@@ -268,7 +268,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case ClientPacketTypes::SellItem:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::SellItem>(message);
-        AddPlayerTask(&Game::Player::CRQSellItem, packet.pos, packet.count);
+        AddPlayerTask(&Game::Player::CRQSellItem, packet.npcId, packet.pos, packet.count);
+        break;
+    }
+    case ClientPacketTypes::GetMerchantItems:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::GetMerchantItems>(message);
+        AddPlayerTask(&Game::Player::CRQGetMerchantItems, packet.npcId);
         break;
     }
     case ClientPacketTypes::GetChest:

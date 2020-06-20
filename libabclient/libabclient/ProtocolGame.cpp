@@ -108,6 +108,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::TradeCancel, ServerPacketType::TradeCancel>();
     AddHandler<AB::Packets::Server::TradeOffer, ServerPacketType::TradeOffer>();
     AddHandler<AB::Packets::Server::TradeAccepted, ServerPacketType::TradeAccepted>();
+    AddHandler<AB::Packets::Server::MerchantItems, ServerPacketType::MerchantItems>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -356,12 +357,20 @@ void ProtocolGame::WithdrawMoney(uint32_t amount)
     SendPacket(AB::GameProtocol::ClientPacketTypes::WithdrawMoney, packet);
 }
 
-void ProtocolGame::SellItem(uint16_t pos, uint32_t count)
+void ProtocolGame::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 {
     AB::Packets::Client::SellItem packet = {
-        pos, count
+        npcId, pos, count
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::SellItem, packet);
+}
+
+void ProtocolGame::GetMerchantItems(uint32_t npcId)
+{
+    AB::Packets::Client::GetMerchantItems packet = {
+        npcId
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetMerchantItems, packet);
 }
 
 void ProtocolGame::GetMail(const std::string& mailUuid)

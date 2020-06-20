@@ -1,5 +1,6 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
+include("/scripts/includes/dialogs.lua")
 
 name = "Telemachos Makos (Merchant)"
 level = 20

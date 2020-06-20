@@ -497,4 +497,8 @@ URHO3D_EVENT(E_TRADEACCEPTED, TradeAccepted)
 {
 }
 
+URHO3D_EVENT(E_MERCHANT_ITEMS, MerchantItems)
+{
+}
+
 }

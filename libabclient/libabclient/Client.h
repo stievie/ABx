@@ -74,40 +74,6 @@ private:
     State state_{ State::Disconnected };
     ProtocolLogin& GetProtoLogin();
     void Terminate();
-public:
-    static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
-    static const char* GetNetworkErrorMessage(ConnectionError connectionError);
-    explicit Client(Receiver& receiver);
-    Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive);
-    ~Client() override;
-
-    void ResetPoll();
-    void Poll();
-    void Run();
-
-    /// Login to login server
-    void Login(const std::string& name, const std::string& pass);
-    void Logout();
-    void GetOutposts();
-    void GetServers();
-    void CreateAccount(const std::string& name, const std::string& pass,
-        const std::string& email, const std::string& accKey);
-    void CreatePlayer(const std::string& charName, const std::string& profUuid,
-        uint32_t modelIndex,
-        AB::Entities::CharacterSex sex, bool isPvp);
-    void DeleteCharacter(const std::string& uuid);
-    void AddAccountKey(const std::string& newKey);
-
-    /// Connect to game server -> authenticate -> enter game
-    void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-        const std::string& host = "", uint16_t port = 0, const std::string& instanceId = "");
-    void Update(uint32_t timeElapsed, bool noRun);
-
-    bool HttpRequest(const std::string& path, std::ostream& out);
-    bool HttpRequest(const std::string& path, std::function<bool(const char* data, uint64_t size)>&& callback);
-    bool HttpDownload(const std::string& path, const std::string& outFile);
-
-    uint32_t GetIp() const;
 
     // Receiver
     void OnLog(const std::string& message) override;
@@ -191,6 +157,41 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
+public:
+    static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
+    static const char* GetNetworkErrorMessage(ConnectionError connectionError);
+    explicit Client(Receiver& receiver);
+    Client(Receiver& receiver, std::shared_ptr<asio::io_service> ioSerive);
+    ~Client() override;
+
+    void ResetPoll();
+    void Poll();
+    void Run();
+
+    /// Login to login server
+    void Login(const std::string& name, const std::string& pass);
+    void Logout();
+    void GetOutposts();
+    void GetServers();
+    void CreateAccount(const std::string& name, const std::string& pass,
+        const std::string& email, const std::string& accKey);
+    void CreatePlayer(const std::string& charName, const std::string& profUuid,
+        uint32_t modelIndex,
+        AB::Entities::CharacterSex sex, bool isPvp);
+    void DeleteCharacter(const std::string& uuid);
+    void AddAccountKey(const std::string& newKey);
+
+    /// Connect to game server -> authenticate -> enter game
+    void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
+        const std::string& host = "", uint16_t port = 0, const std::string& instanceId = "");
+    void Update(uint32_t timeElapsed, bool noRun);
+
+    bool HttpRequest(const std::string& path, std::ostream& out);
+    bool HttpRequest(const std::string& path, std::function<bool(const char* data, uint64_t size)>&& callback);
+    bool HttpDownload(const std::string& path, const std::string& outFile);
+
+    uint32_t GetIp() const;
 
     std::string accountUuid_;
     std::string password_;
@@ -232,7 +233,8 @@ public:
     void ChestDestroyItem(uint16_t pos);
     void DepositMoney(uint32_t amount);
     void WithdrawMoney(uint32_t amount);
-    void SellItem(uint16_t pos, uint32_t count);
+    void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
+    void GetMerchantItems(uint32_t npcId);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void GetPlayerInfoByName(const std::string& name, uint32_t fields);

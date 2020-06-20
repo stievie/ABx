@@ -624,6 +624,29 @@ struct InventoryContent
 
 struct ChestContent : public InventoryContent { };
 
+struct MerchantItems
+{
+    uint16_t count;
+    std::vector<Internal::Item> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        items.resize(count);
+        for (uint16_t i = 0; i < count; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item.type);
+            ar.value(item.index);
+            ar.value(item.place);
+            ar.value(item.pos);
+            ar.value(item.count);
+            ar.value(item.value);
+            ar.value(item.stats);
+        }
+    }
+};
+
 struct InventoryItemUpdate
 {
     Internal::Item item;

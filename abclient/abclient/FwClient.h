@@ -94,6 +94,7 @@ private:
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::vector<ConcreteItem> inventory_;
     std::vector<ConcreteItem> chest_;
+    std::vector<ConcreteItem> merchantItems_;
     InventoryLimit inventoryLimit_;
     InventoryLimit chestLimit_;
     std::vector<std::string> friendList_;
@@ -123,96 +124,6 @@ private:
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);
     void UpdatePlayer(const AB::Packets::Server::PlayerInfo& player);
-public:
-    static String GetProtocolErrorMessage(AB::ErrorCodes err);
-    static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
-    static String GetAttackErrorMessage(AB::GameProtocol::AttackError err);
-    static String GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err);
-
-    FwClient(Context* context);
-    ~FwClient() override;
-
-    void SetEnvironment(const Environment* env);
-    uint32_t GetIp() const
-    {
-        if (loggedIn_)
-            return client_.GetIp();
-        return 0;
-    }
-    /// Get difference of server and client clock
-    int64_t GetClockDiff() const
-    {
-        if (loggedIn_)
-            return client_.GetClockDiff();
-        return 0;
-    }
-    AB::Entities::AccountType GetAccountType() const { return accountType_; }
-    void UpdateServers();
-    void AddAccountKey(const String& newKey);
-    void DeleteCharacter(const String& uuid);
-    bool Start();
-    void Stop();
-    void Update(float timeStep);
-    void Login(const String& name, const String& pass);
-    void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
-    void CreatePlayer(const String& name, const String& profUuid, uint32_t modelIndex,
-        AB::Entities::CharacterSex sex, bool isPvp);
-    void EnterWorld(const String& charUuid, const String& mapUuid);
-    void ChangeWorld(const String& mapUuid);
-    /// Causes the server to change the map for the whole party
-    void ChangeMap(const String& mapUuid);
-    void ChangeServer(const String& serverId);
-    void Logout();
-    void GetMailHeaders();
-    void ReadMail(const std::string& uuid);
-    void DeleteMail(const std::string& uuid);
-    void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
-    void GetPlayerInfoByName(const std::string& name, uint32_t fields);
-    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields, bool refresh = false);
-    void UpdateInventory();
-    void InventoryDestroyItem(uint16_t pos);
-    void InventoryDropItem(uint16_t pos, uint32_t count);
-    void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
-        AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count);
-    void UpdateChest();
-    void ChestDestroyItem(uint16_t pos);
-    void DepositMoney(uint32_t amount);
-    void WithdrawMoney(uint32_t amount);
-    void SellItem(uint16_t pos, uint32_t count);
-    void Move(uint8_t direction);
-    void Turn(uint8_t direction);
-    void SetDirection(float rad);
-    void ClickObject(uint32_t sourceId, uint32_t targetId);
-    void SelectObject(uint32_t sourceId, uint32_t targetId);
-    void Command(AB::GameProtocol::CommandType type, const String& data);
-    void GotoPos(const Vector3& pos);
-    void FollowObject(uint32_t objectId);
-    void SetPlayerState(AB::GameProtocol::CreatureState newState);
-    void UseSkill(uint32_t index);
-    void Attack();
-    void Cancel();
-    void AddFriend(const String& name, AB::Entities::FriendRelation relation);
-    void RemoveFriend(const String& accountUuid);
-    void RenameFriend(const String& accountUuid, const String& newName);
-    void UpdateFriendList();
-    void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
-    void PartyInvitePlayer(uint32_t objectId);
-    /// Remove as party member or remove invitation
-    void PartyKickPlayer(uint32_t objectId);
-    void PartyAcceptInvite(uint32_t inviterId);
-    void PartyRejectInvite(uint32_t inviterId);
-    void PartyGetMembers(uint32_t partyId);
-    void PartyLeave();
-    void QueueMatch();
-    void UnqueueMatch();
-    void SetSecondaryProfession(uint32_t profIndex);
-    void SetAttributeValue(uint32_t attribIndex, uint8_t value);
-    void EquipSkill(uint32_t skillIndex, uint8_t pos);
-    void LoadSkillTemplate(const std::string& templ);
-    void TradeRequest(uint32_t targetId);
-    void TradeCancel();
-    void TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
-    void TradeAccept();
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -297,6 +208,98 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
+public:
+    static String GetProtocolErrorMessage(AB::ErrorCodes err);
+    static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
+    static String GetAttackErrorMessage(AB::GameProtocol::AttackError err);
+    static String GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err);
+
+    FwClient(Context* context);
+    ~FwClient() override;
+
+    void SetEnvironment(const Environment* env);
+    uint32_t GetIp() const
+    {
+        if (loggedIn_)
+            return client_.GetIp();
+        return 0;
+    }
+    /// Get difference of server and client clock
+    int64_t GetClockDiff() const
+    {
+        if (loggedIn_)
+            return client_.GetClockDiff();
+        return 0;
+    }
+    AB::Entities::AccountType GetAccountType() const { return accountType_; }
+    void UpdateServers();
+    void AddAccountKey(const String& newKey);
+    void DeleteCharacter(const String& uuid);
+    bool Start();
+    void Stop();
+    void Update(float timeStep);
+    void Login(const String& name, const String& pass);
+    void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
+    void CreatePlayer(const String& name, const String& profUuid, uint32_t modelIndex,
+        AB::Entities::CharacterSex sex, bool isPvp);
+    void EnterWorld(const String& charUuid, const String& mapUuid);
+    void ChangeWorld(const String& mapUuid);
+    /// Causes the server to change the map for the whole party
+    void ChangeMap(const String& mapUuid);
+    void ChangeServer(const String& serverId);
+    void Logout();
+    void GetMailHeaders();
+    void ReadMail(const std::string& uuid);
+    void DeleteMail(const std::string& uuid);
+    void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
+    void GetPlayerInfoByName(const std::string& name, uint32_t fields);
+    void GetPlayerInfoByAccount(const std::string& accountUuid, uint32_t fields, bool refresh = false);
+    void UpdateInventory();
+    void InventoryDestroyItem(uint16_t pos);
+    void InventoryDropItem(uint16_t pos, uint32_t count);
+    void SetItemPos(AB::Entities::StoragePlace currentPlace, uint16_t currentPos,
+        AB::Entities::StoragePlace place, uint16_t newPos, uint32_t count);
+    void UpdateChest();
+    void ChestDestroyItem(uint16_t pos);
+    void DepositMoney(uint32_t amount);
+    void WithdrawMoney(uint32_t amount);
+    void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
+    void GetMerchantItems(uint32_t npcId);
+    void Move(uint8_t direction);
+    void Turn(uint8_t direction);
+    void SetDirection(float rad);
+    void ClickObject(uint32_t sourceId, uint32_t targetId);
+    void SelectObject(uint32_t sourceId, uint32_t targetId);
+    void Command(AB::GameProtocol::CommandType type, const String& data);
+    void GotoPos(const Vector3& pos);
+    void FollowObject(uint32_t objectId);
+    void SetPlayerState(AB::GameProtocol::CreatureState newState);
+    void UseSkill(uint32_t index);
+    void Attack();
+    void Cancel();
+    void AddFriend(const String& name, AB::Entities::FriendRelation relation);
+    void RemoveFriend(const String& accountUuid);
+    void RenameFriend(const String& accountUuid, const String& newName);
+    void UpdateFriendList();
+    void SetOnlineStatus(AB::Packets::Server::PlayerInfo::Status status);
+    void PartyInvitePlayer(uint32_t objectId);
+    /// Remove as party member or remove invitation
+    void PartyKickPlayer(uint32_t objectId);
+    void PartyAcceptInvite(uint32_t inviterId);
+    void PartyRejectInvite(uint32_t inviterId);
+    void PartyGetMembers(uint32_t partyId);
+    void PartyLeave();
+    void QueueMatch();
+    void UnqueueMatch();
+    void SetSecondaryProfession(uint32_t profIndex);
+    void SetAttributeValue(uint32_t attribIndex, uint8_t value);
+    void EquipSkill(uint32_t skillIndex, uint8_t pos);
+    void LoadSkillTemplate(const std::string& templ);
+    void TradeRequest(uint32_t targetId);
+    void TradeCancel();
+    void TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
+    void TradeAccept();
 
     void SetState(Client::State state)
     {
@@ -421,6 +424,10 @@ public:
         }
 
         return (*it);
+    }
+    const std::vector<ConcreteItem>& GetMerchantItems() const
+    {
+        return merchantItems_;
     }
 
     const std::vector<std::string>& GetFriendList() const

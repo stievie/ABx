@@ -34,6 +34,7 @@
 #include "InventoryWindow.h"
 #include "MailWindow.h"
 #include "MapWindow.h"
+#include "MerchantWindow.h"
 #include "MissionMapWindow.h"
 #include "NewMailWindow.h"
 #include "Options.h"
@@ -227,7 +228,18 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog, bool canCre
         break;
     }
     case AB::DialogMerchantItems:
+    {
+        UIElement* root = GetSubsystem<UI>()->GetRoot();
+        UIElement* wnd = root->GetChild(MerchantWindow::GetTypeNameStatic());
+        if (!wnd && canCreate)
+        {
+            wnd = new MerchantWindow(context_);
+            static_cast<MerchantWindow*>(wnd)->Initialize();
+            root->AddChild(wnd);
+        }
+        result = dynamic_cast<DialogWindow*>(wnd);
         break;
+    }
     case AB::DialogSmithItems:
         break;
     default:

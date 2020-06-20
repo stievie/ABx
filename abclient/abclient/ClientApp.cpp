@@ -42,6 +42,7 @@
 #include "ItemUIElement.h"
 #include "LoginLevel.h"
 #include "MailWindow.h"
+#include "MerchantWindow.h"
 #include "MissionMapWindow.h"
 #include "MultiLineEdit.h"
 #include "NewMailWindow.h"
@@ -208,6 +209,7 @@ ClientApp::ClientApp(Context* context) :
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
     MailWindow::RegisterObject(context);
+    MerchantWindow::RegisterObject(context);
     NewMailWindow::RegisterObject(context);
     PartyWindow::RegisterObject(context);
     MissionMapWindow::RegisterObject(context);

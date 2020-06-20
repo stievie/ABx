@@ -45,6 +45,7 @@
 #include "TradeComp.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
+#include <AB/Entities/MerchantItemList.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
@@ -1593,8 +1594,12 @@ void Player::CRQTradeAccept()
     tradeComp_->Accept();
 }
 
-void Player::CRQSellItem(uint16_t pos, uint32_t count)
+void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 {
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+
     auto msg = Net::NetworkMessage::GetNew();
     bool ret = inventoryComp_->SellItem(pos, count, msg.get());
 
@@ -1606,6 +1611,47 @@ void Player::CRQSellItem(uint16_t pos, uint32_t count)
         cli->Invalidate(inv);
     }
 
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetMerchantItems(uint32_t npcId)
+{
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+    if (!IsInRange(Ranges::Adjecent, npc))
+        return;
+
+    auto* cli = GetSubsystem<IO::DataClient>();
+    AB::Entities::MerchantItemList ml;
+    if (!cli->Read(ml))
+    {
+        LOG_ERROR << "Error reading merchant item list" << std::endl;
+        return;
+    }
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
+    AB::Packets::Server::MerchantItems packet;
+    packet.count = static_cast<uint16_t>(ml.itemUuids.size());
+    auto* factory = GetSubsystem<ItemFactory>();
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (const auto& itemUuid : ml.itemUuids)
+    {
+        uint32_t itemId = factory->GetConcreteId(itemUuid);
+        auto* item = cache->Get(itemId);
+        // I guess this shouldn't happen
+        assert(item);
+        packet.items.push_back({
+            item->data_.index,
+            static_cast<uint16_t>(item->data_.type),
+            item->concreteItem_.count,
+            item->concreteItem_.value,
+            item->concreteItem_.itemStats,
+            static_cast<uint8_t>(item->concreteItem_.storagePlace),
+            item->concreteItem_.storagePos
+        });
+    }
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 

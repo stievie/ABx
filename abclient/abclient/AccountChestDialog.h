@@ -32,7 +32,7 @@ static const int CHEST_ITEM_SIZE_Y = 48;
 class Item;
 class NumberInputBox;
 
-class AccountChestDialog : public DialogWindow
+class AccountChestDialog final : public DialogWindow
 {
     URHO3D_OBJECT(AccountChestDialog, DialogWindow)
 private:

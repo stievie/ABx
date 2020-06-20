@@ -98,7 +98,8 @@ public:
     void ChestDestroyItem(uint16_t pos);
     void DepositMoney(uint32_t amount);
     void WithdrawMoney(uint32_t amount);
-    void SellItem(uint16_t pos, uint32_t count);
+    void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
+    void GetMerchantItems(uint32_t npcId);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

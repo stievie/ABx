@@ -586,10 +586,16 @@ void Client::WithdrawMoney(uint32_t amount)
         protoGame_->WithdrawMoney(amount);
 }
 
-void Client::SellItem(uint16_t pos, uint32_t count)
+void Client::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 {
     if (state_ == State::World)
-        protoGame_->SellItem(pos, count);
+        protoGame_->SellItem(npcId, pos, count);
+}
+
+void Client::GetMerchantItems(uint32_t npcId)
+{
+    if (state_ == State::World)
+        protoGame_->GetMerchantItems(npcId);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)
@@ -1148,6 +1154,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer&
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

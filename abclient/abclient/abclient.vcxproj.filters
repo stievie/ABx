@@ -243,6 +243,9 @@
     <ClInclude Include="Conversions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MerchantWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -444,6 +447,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Conversions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

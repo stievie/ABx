@@ -244,7 +244,8 @@ public:
     void CRQTradeCancel();
     void CRQTradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>> items);
     void CRQTradeAccept();
-    void CRQSellItem(uint16_t pos, uint32_t count);
+    void CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count);
+    void CRQGetMerchantItems(uint32_t npcId);
     //}
 
     AB::Entities::Character data_;

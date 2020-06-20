@@ -880,10 +880,16 @@ void FwClient::WithdrawMoney(uint32_t amount)
         client_.WithdrawMoney(amount);
 }
 
-void FwClient::SellItem(uint16_t pos, uint32_t count)
+void FwClient::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 {
     if (loggedIn_)
-        client_.SellItem(pos, count);
+        client_.SellItem(npcId, pos, count);
+}
+
+void FwClient::GetMerchantItems(uint32_t npcId)
+{
+    if (loggedIn_)
+        client_.GetMerchantItems(npcId);
 }
 
 void FwClient::Move(uint8_t direction)
@@ -2207,6 +2213,26 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
     using namespace Events::TradeAccepted;
     VariantMap& eData = GetEventDataMap();
     QueueEvent(Events::E_TRADEACCEPTED, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packet)
+{
+    merchantItems_.clear();
+    merchantItems_.reserve(packet.count);
+    for (const auto& item : packet.items)
+    {
+        ConcreteItem ci;
+        ci.type = static_cast<AB::Entities::ItemType>(item.type);
+        ci.index = item.index;
+        ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
+        ci.pos = item.pos;
+        ci.count = item.count;
+        ci.value = item.value;
+        LoadStatsFromString(ci.stats, item.stats);
+        merchantItems_.push_back(std::move(ci));
+    }
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(Events::E_MERCHANT_ITEMS, eData);
 }
 
 std::vector<AB::Entities::Service> FwClient::GetServices() const

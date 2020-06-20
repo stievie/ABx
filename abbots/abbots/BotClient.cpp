@@ -513,3 +513,7 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::TradeOffer&)
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
 {
 }
+
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems&)
+{
+}

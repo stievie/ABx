@@ -119,6 +119,7 @@ struct SetItemPos
 
 struct SellItem
 {
+    uint32_t npcId;
     uint16_t pos;
     uint32_t count;
     template<typename _Ar>
@@ -126,6 +127,16 @@ struct SellItem
     {
         ar.value(pos);
         ar.value(count);
+    }
+};
+
+struct GetMerchantItems
+{
+    uint32_t npcId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(npcId);
     }
 };
 

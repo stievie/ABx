@@ -64,20 +64,6 @@ private:
     void SpawnObject(AB::GameProtocol::GameObjectType type, uint32_t id,
         const Math::Vector3& pos, const Math::Vector3& scale, const Math::Quaternion& rot,
         const std::string data);
-public:
-    std::string username_;
-    std::string password_;
-    std::string characterName_;
-    std::string script_;
-
-    BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort);
-    ~BotClient() override;
-
-    State GetState() const { return state_; }
-
-    void Update(uint32_t timeElapsed);
-    void Login();
-    void Logout();
 
     void OnLog(const std::string& message) override;
     void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;
@@ -162,4 +148,19 @@ public:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeCancel& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
+public:
+    std::string username_;
+    std::string password_;
+    std::string characterName_;
+    std::string script_;
+
+    BotClient(std::shared_ptr<asio::io_service> ioService, const std::string& loginHost, uint16_t loginPort);
+    ~BotClient() override;
+
+    State GetState() const { return state_; }
+
+    void Update(uint32_t timeElapsed);
+    void Login();
+    void Logout();
 };
