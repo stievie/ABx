@@ -60,7 +60,7 @@ protected:
 public:
     AccountChestDialog(Context* context);
     ~AccountChestDialog() override;
-    void Initialize() override;
+    void Initialize(uint32_t) override;
     void DropItem(const IntVector2& screenPos, const ConcreteItem& ci);
     void Clear();
 

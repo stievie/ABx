@@ -34,6 +34,7 @@ private:
     SharedPtr<TabGroup> tabgroup_;
     SharedPtr<ListView> sellItems_;
     SharedPtr<ListView> buyItems_;
+    uint32_t npcId_{ 0 };
     void CreateUI();
     void SubscribeEvents();
     TabElement* CreateTab(TabGroup* tabs, const String& page);
@@ -48,7 +49,7 @@ private:
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;
-    void Initialize() override;
+    void Initialize(uint32_t npcId) override;
     void Clear();
 };
 

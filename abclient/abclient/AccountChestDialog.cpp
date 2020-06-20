@@ -281,7 +281,7 @@ void AccountChestDialog::SubscribeEvents()
     SubscribeToEvent(withdrawButton, E_RELEASED, URHO3D_HANDLER(AccountChestDialog, HandleWithdrawClicked));
 }
 
-void AccountChestDialog::Initialize()
+void AccountChestDialog::Initialize(uint32_t)
 {
     if (!initializted_)
     {

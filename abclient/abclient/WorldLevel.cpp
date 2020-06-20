@@ -1024,7 +1024,7 @@ void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
     DialogWindow* wnd = wm->GetDialog(dialog, true);
     if (wnd)
     {
-        wnd->Initialize();
+        wnd->Initialize(id);
         wnd->SetVisible(true);
         wnd->BringToFront();
     }

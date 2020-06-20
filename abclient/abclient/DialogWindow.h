@@ -42,7 +42,7 @@ protected:
 public:
     DialogWindow(Context* context);
     ~DialogWindow() override;
-    virtual void Initialize() { }
+    virtual void Initialize(uint32_t) { }
     void Close();
     void Center();
 };

@@ -198,6 +198,7 @@ void MerchantWindow::HandleMerchantItems(StringHash, VariantMap&)
 
 void MerchantWindow::HandleGoodByeClicked(StringHash, VariantMap&)
 {
+    npcId_ = 0;
     Close();
 }
 
@@ -205,9 +206,10 @@ void MerchantWindow::HandleItemClicked(StringHash, VariantMap&)
 {
 }
 
-void MerchantWindow::Initialize()
+void MerchantWindow::Initialize(uint32_t npcId)
 {
     Clear();
+    npcId_ = npcId;
     GetSubsystem<FwClient>()->GetMerchantItems();
 }
 

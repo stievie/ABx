@@ -221,7 +221,6 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog, bool canCre
         if (!wnd && canCreate)
         {
             wnd = new AccountChestDialog(context_);
-            static_cast<AccountChestDialog*>(wnd)->Initialize();
             root->AddChild(wnd);
         }
         result = dynamic_cast<DialogWindow*>(wnd);
@@ -234,7 +233,6 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog, bool canCre
         if (!wnd && canCreate)
         {
             wnd = new MerchantWindow(context_);
-            static_cast<MerchantWindow*>(wnd)->Initialize();
             root->AddChild(wnd);
         }
         result = dynamic_cast<DialogWindow*>(wnd);

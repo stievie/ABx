@@ -125,6 +125,7 @@ struct SellItem
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(npcId);
         ar.value(pos);
         ar.value(count);
     }
