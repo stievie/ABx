@@ -253,6 +253,8 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
         {
             item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
             item->concreteItem_.storagePos = 0;
+            dc->Update(item->concreteItem_);
+            dc->Invalidate(item->concreteItem_);
         }
         else
         {
@@ -279,6 +281,7 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
         {
             // Update it, because otherwiese the merchant does not get it when AB::Entities::MerchantItemList is loaded
             dc->Update(newItem->concreteItem_);
+            dc->Invalidate(newItem->concreteItem_);
         }
         else
         {
