@@ -141,9 +141,58 @@ void Spinner::HandleDecreaseClicked(StringHash, VariantMap&)
     Decrease();
 }
 
+void Spinner::HandleEditTextFinished(StringHash, VariantMap&)
+{
+    const String value = edit_->GetText();
+    if (value.Empty())
+        return;
+
+    const char* pVal = value.CString();
+    char* pEnd;
+    value_ = strtol(pVal, &pEnd, 10);
+
+    Validate();
+}
+
+void Spinner::HandleEditTextEntry(StringHash, VariantMap& eventData)
+{
+    using namespace TextEntry;
+    String text = eventData[P_TEXT].GetString();
+    String newText;
+    for (auto it = text.Begin(); it != text.End(); it++)
+    {
+        if (isdigit(*it))
+            newText += (*it);
+    }
+    eventData[P_TEXT] = newText;
+}
+
+void Spinner::HandleEditTextChanged(StringHash, VariantMap&)
+{
+}
+
+void Spinner::HandleEditDefocused(StringHash, VariantMap&)
+{
+    const String value = edit_->GetText();
+    if (value.Empty())
+        return;
+
+    const char* pVal = value.CString();
+    char* pEnd;
+    value_ = strtol(pVal, &pEnd, 10);
+    Validate();
+}
+
 void Spinner::SetEdit(SharedPtr<LineEdit> value)
 {
     edit_ = value;
+    if (edit_)
+    {
+        SubscribeToEvent(edit_, E_TEXTFINISHED, URHO3D_HANDLER(Spinner, HandleEditTextFinished));
+        SubscribeToEvent(edit_, E_TEXTENTRY, URHO3D_HANDLER(Spinner, HandleEditTextEntry));
+        SubscribeToEvent(edit_, E_TEXTCHANGED, URHO3D_HANDLER(Spinner, HandleEditTextChanged));
+        SubscribeToEvent(edit_, E_DEFOCUSED, URHO3D_HANDLER(Spinner, HandleEditDefocused));
+    }
     Validate();
 }
 

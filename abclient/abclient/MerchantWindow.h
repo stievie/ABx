@@ -50,7 +50,7 @@ private:
     unsigned GetSellItemIndex(uint16_t pos);
     UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
-    void HandleSellClicked(StringHash eventType, VariantMap& eventData);
+    void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);
     void HandleInventory(StringHash eventType, VariantMap& eventData);
     void HandleInventoryItemUpdate(StringHash eventType, VariantMap& eventData);

@@ -47,6 +47,10 @@ private:
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
     void HandleIncreaseClicked(StringHash eventType, VariantMap& eventData);
     void HandleDecreaseClicked(StringHash eventType, VariantMap& eventData);
+    void HandleEditTextFinished(StringHash eventType, VariantMap& eventData);
+    void HandleEditTextEntry(StringHash eventType, VariantMap& eventData);
+    void HandleEditTextChanged(StringHash eventType, VariantMap& eventData);
+    void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
     void Validate();
     void SendValueChangedEvent();
 public:

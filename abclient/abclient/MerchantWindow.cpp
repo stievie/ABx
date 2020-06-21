@@ -84,8 +84,8 @@ void MerchantWindow::CreateUI()
 void MerchantWindow::SubscribeEvents()
 {
     DialogWindow::SubscribeEvents();
-    Button* sellButton = GetChildStaticCast<Button>("SellButton", true);
-    SubscribeToEvent(sellButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleSellClicked));
+    Button* doitButton = GetChildStaticCast<Button>("DoItButton", true);
+    SubscribeToEvent(doitButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleDoItClicked));
     Button* closeButton = GetChildStaticCast<Button>("GoodByeButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleGoodByeClicked));
     SubscribeToEvent(Events::E_MERCHANT_ITEMS, URHO3D_HANDLER(MerchantWindow, HandleMerchantItems));
@@ -121,6 +121,7 @@ void MerchantWindow::CreatePageSell(TabElement* tabElement)
     LoadWindow(wnd, "UI/MerchantWindowPageItems.xml");
     sellItems_ = wnd->GetChildStaticCast<ListView>("ItemsListView", true);
     sellItems_->SetStyleAuto();
+    sellItems_->SetHighlightMode(HM_ALWAYS);
     page->UpdateLayout();
 }
 
@@ -132,6 +133,7 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     LoadWindow(wnd, "UI/MerchantWindowPageItems.xml");
     buyItems_ = wnd->GetChildStaticCast<ListView>("ItemsListView", true);
     buyItems_->SetStyleAuto();
+    buyItems_->SetHighlightMode(HM_ALWAYS);
     page->UpdateLayout();
 }
 
@@ -154,10 +156,17 @@ void MerchantWindow::LoadWindow(Window* wnd, const String& fileName)
 
 void MerchantWindow::UpdateSellList()
 {
+    uint16_t oldSel = 0;
+    auto sel = sellItems_->GetSelectedItem();
+    if (sel)
+        oldSel = static_cast<uint16_t>(sel->GetVar("Pos").GetUInt());
+
     sellItems_->RemoveAllItems();
     auto* client = GetSubsystem<FwClient>();
     auto* itemsCache = GetSubsystem<ItemsCache>();
     const auto& items = client->GetInventoryItems();
+    unsigned index = 0;
+    unsigned selIndex = M_MAX_UNSIGNED;
     for (const auto& ci : items)
     {
         auto item = itemsCache->Get(ci.index);
@@ -169,8 +178,14 @@ void MerchantWindow::UpdateSellList()
             continue;
 
         CreateItem(*sellItems_, ci);
+        if (oldSel != 0 && ci.pos == oldSel)
+            selIndex = index;
+        ++index;
     }
     sellItems_->UpdateLayout();
+    if (selIndex != M_MAX_UNSIGNED)
+        sellItems_->SetSelection(selIndex);
+
     URHO3D_LOGINFOF("Sell items count %d", sellItems_->GetNumItems());
 }
 
@@ -249,7 +264,7 @@ void MerchantWindow::HandleMerchantItems(StringHash, VariantMap&)
     }
 }
 
-void MerchantWindow::HandleSellClicked(StringHash, VariantMap&)
+void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
 {
     if (tabgroup_->GetSelectedIndex() == 0)
     {
@@ -321,6 +336,7 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
     if (index == M_MAX_UNSIGNED || !item)
     {
         countText_->SetVisible(false);
+        countSpinner_->SetVisible(false);
         return;
     }
 
@@ -328,6 +344,7 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
     if (count > 1)
     {
         countText_->SetVisible(true);
+        countSpinner_->SetVisible(true);
         countSpinner_->SetMin(1);
         countSpinner_->SetMax(count);
         countSpinner_->SetValue(count);
@@ -335,6 +352,7 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
     else
     {
         countText_->SetVisible(false);
+        countSpinner_->SetVisible(true);
     }
     URHO3D_LOGINFOF("Sell item selected %d, count %d", index, count);
 }

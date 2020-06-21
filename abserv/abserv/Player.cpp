@@ -1600,7 +1600,10 @@ void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 {
     auto* npc = GetGame()->GetObject<Npc>(npcId);
     if (!npc)
+    {
+        LOG_ERROR << "No NPC with id " << npcId << std::endl;
         return;
+    }
 
     auto msg = Net::NetworkMessage::GetNew();
     bool ret = inventoryComp_->SellItem(pos, count, msg.get());
