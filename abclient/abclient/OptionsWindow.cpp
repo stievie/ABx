@@ -66,7 +66,7 @@ OptionsWindow::OptionsWindow(Context* context) :
     CreatePageInput(CreateTab(tabgroup_, "Input"));
 
     tabgroup_->SetEnabled(true);
-    SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
+    SubscribeToEvent(tabgroup_, E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
 
     SetSize(400, 433);
     auto* graphics = GetSubsystem<Graphics>();

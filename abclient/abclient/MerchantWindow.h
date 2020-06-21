@@ -26,6 +26,7 @@
 #include "FwClient.h"
 #include "TabGroup.h"
 #include "ItemUIElement.h"
+#include "Spinner.h"
 
 class MerchantWindow final : public DialogWindow
 {
@@ -34,6 +35,9 @@ private:
     SharedPtr<TabGroup> tabgroup_;
     SharedPtr<ListView> sellItems_;
     SharedPtr<ListView> buyItems_;
+    SharedPtr<LineEdit> countText_;
+    SharedPtr<Spinner> countSpinner_;
+    SharedPtr<Button> doItButton_;
     uint32_t npcId_{ 0 };
     void CreateUI();
     void SubscribeEvents();
@@ -42,10 +46,17 @@ private:
     void CreatePageBuy(TabElement* tabElement);
     void LoadWindow(Window* wnd, const String& fileName);
     void UpdateSellList();
-    UISelectable* CreateItem(ListView* container, const ConcreteItem& iItem);
+    UIElement* GetSellItem(uint16_t pos);
+    unsigned GetSellItemIndex(uint16_t pos);
+    UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
+    void HandleSellClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);
-    void HandleItemClicked(StringHash eventType, VariantMap& eventData);
+    void HandleInventory(StringHash eventType, VariantMap& eventData);
+    void HandleInventoryItemUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleInventoryItemRemove(StringHash eventType, VariantMap& eventData);
+    void HandleTabSelected(StringHash eventType, VariantMap& eventData);
+    void HandleSellItemSelected(StringHash eventType, VariantMap& eventData);
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;

@@ -41,7 +41,7 @@ ItemUIElement::~ItemUIElement()
 
 void ItemUIElement::CreateToolTip()
 {
-    auto* tooltip = CreateChild<ToolTip>();
+    auto* tooltip = CreateChild<ToolTip>("Tooltip");
     tooltip->SetLayoutMode(LM_HORIZONTAL);
     Window* ttWindow = tooltip->CreateChild<Window>();
     ttWindow->SetLayoutMode(LM_VERTICAL);
@@ -55,6 +55,7 @@ void ItemUIElement::CreateToolTip()
     tooltip->SetStyleAuto();
     tooltip->SetOpacity(0.9f);
     tooltip->SetPosition(IntVector2(-5, -50));
+    hasTooltip_ = true;
 }
 
 Window* ItemUIElement::GetDragItem(int buttons, const IntVector2& position)
@@ -155,4 +156,19 @@ void ItemUIElement::SetStats(const String& value)
         return;
 
     stats_ = value;
+}
+
+void ItemUIElement::SetHasTooltip(bool value)
+{
+    if (hasTooltip_ == value)
+        return;
+    hasTooltip_ = value;
+    if (hasTooltip_)
+        CreateToolTip();
+    else
+    {
+        auto* tooltip = GetChildStaticCast<ToolTip>("Tooltip", true);
+        if (tooltip)
+            tooltip->Remove();
+    }
 }

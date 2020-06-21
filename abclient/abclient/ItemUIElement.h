@@ -28,6 +28,7 @@ class ItemUIElement : public Button
 {
     URHO3D_OBJECT(ItemUIElement, Button)
 private:
+    bool hasTooltip_{ false };
     SharedPtr<Text> tooltipLine1_;
     SharedPtr<Text> tooltipLine2_;
     void CreateToolTip();
@@ -44,6 +45,7 @@ public:
     void SetCount(unsigned value);
     void SetValue(unsigned value);
     void SetStats(const String& value);
+    void SetHasTooltip(bool value);
 
     String name_;
     unsigned pos_{ 0 };
