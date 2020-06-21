@@ -68,7 +68,7 @@ sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-d
 
 If you get a link error, like "Library -lz not found", you also need to install `zlib1g-dev`.
 
-If CMake complains about missing PostgreSQL although you installed `ibpq-dev`, also install
+If CMake complains about missing PostgreSQL although you installed `libpq-dev`, also install
 `postgresql-server-dev-all`, see https://stackoverflow.com/questions/13920383/findpostgresql-cmake-wont-work-on-ubuntu#40027295.
 
 
