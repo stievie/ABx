@@ -16,7 +16,7 @@ Assets, Data, Art made by me is licensed under the [CC BY 4.0](https://creativec
 
 ## ETA
 
-Christmas 2117 +/- some years. That's still a negative stardate so I think we are fine.
+Christmas 2117 +/- some years.
 
 ## The Goals
 
@@ -36,8 +36,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Encrypted Game and Login Protocol.
 * Lag compensation: Entity interpolation, client prediction.
 * Network traffic compression: Delta compression (send only state changes), Interest management (send only messages to the player in a certain range).
-* Spawn any number of server which may have heavy load (game, file server) even on different hardware.
-* Automatically spawn File and Game Server when needed.
+* The system is designed to scale: It can spawn any number of server which may have heavy load (game, file server) even on different hardware. Automatically spawn File and Game Server when needed.
 * Local (map), Guild, Team, Trade chat and whisper is currently working, even across different game server.
 * Friend/ignore list
 * Persistent Mail
@@ -48,8 +47,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 * Client runs on Windows and Linux
 * Game AI, Behavior Tree
 * [Mumble](https://www.mumble.info/) voice chat integration.
-* Player inventory and account chest (account wide storage).
-* Players can exchange Items and Money.
+* Item system: Player inventory and account chest (account wide storage), Players can exchange Items and Money, Player can sell items that dropped or otherwise obtained to a Merchant and gain money.
 
 ## Screenshot
 
