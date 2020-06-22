@@ -75,7 +75,7 @@ struct ConcreteItem : Entity
 
     std::string playerUuid{ EMPTY_GUID };
     std::string accountUuid{ EMPTY_GUID };
-    StoragePlace storagePlace{ StoragePlace::Scene };
+    StoragePlace storagePlace{ StoragePlace::None };
     uint16_t storagePos{ 0 };
     std::string upgrade1Uuid{ EMPTY_GUID };
     std::string upgrade2Uuid{ EMPTY_GUID };

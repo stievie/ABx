@@ -134,6 +134,7 @@ public:
     AB::Entities::ItemType GetType() const;
     bool IsStackable() const { return AB::Entities::IsItemStackable(data_.itemFlags); }
     bool IsTradeable() const { return AB::Entities::IsItemTradeable(data_.itemFlags); }
+    bool IsResellable() const { return AB::Entities::IsItemResellable(data_.itemFlags); }
     bool IsArmor() const
     {
         return AB::Entities::IsArmorItem(data_.type);

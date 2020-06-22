@@ -77,7 +77,8 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
 {
-    if (Utils::Uuid::IsEmpty(item.uuid))
+    // 2 ways to select a concrete item: (1) by UUID, (2) by item UUID and storage place
+    if (Utils::Uuid::IsEmpty(item.uuid) && (Utils::Uuid::IsEmpty(item.itemUuid) || item.storagePlace == AB::Entities::StoragePlace::None))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -87,7 +88,16 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
 
     std::ostringstream query;
     query << "SELECT * FROM `concrete_items` WHERE ";
-    query << "`uuid` = " << db->EscapeString(item.uuid);
+    if (!Utils::Uuid::IsEmpty(item.uuid))
+        query << "`uuid` = " << db->EscapeString(item.uuid);
+    else if (!Utils::Uuid::IsEmpty(item.itemUuid) && item.storagePlace != AB::Entities::StoragePlace::None)
+    {
+        // This makes only sense for merchant items, and actually only when item is stackable
+        assert(item.storagePlace == AB::Entities::StoragePlace::Merchant);
+        query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.itemUuid) << " AND `storage_place` = " << static_cast<int>(item.storagePos) << " LIMIT 1";
+    }
+    else
+        ASSERT_FALSE();
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -110,6 +120,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.instanceUuid = result->GetString("instance_uuid");
     item.mapUuid = result->GetString("map_uuid");
     item.flags = static_cast<uint32_t>(result->GetUInt("flags"));
+
 
     return true;
 }

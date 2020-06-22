@@ -24,6 +24,8 @@
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
 #include <AB/Entities/ItemChanceList.h>
+#include <AB/Entities/MerchantItem.h>
+#include <AB/Entities/MerchantItemList.h>
 #include <AB/Entities/TypedItemList.h>
 #include "Player.h"
 #include "ItemsCache.h"
@@ -541,6 +543,49 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
         return 0;
 
     return CreateItem({ itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid });
+}
+
+void ItemFactory::MoveToMerchant(Item* item)
+{
+    if (item->IsResellable())
+    {
+        auto* dc = GetSubsystem<IO::DataClient>();
+
+        if (item->IsStackable())
+        {
+            // Merge stackable items
+            AB::Entities::MerchantItem mi;
+            mi.uuid = item->concreteItem_.itemUuid;
+            if (dc->Read(mi))
+            {
+                AB::Entities::ConcreteItem ci;
+                ci.uuid = mi.concreteUuid;
+                assert(dc->Read(ci));
+                // There is not stack size for merchants, they have a huuuuge bag
+                ci.count += item->concreteItem_.count;
+                dc->Update(item->concreteItem_);
+                DeleteItem(item);
+                return;
+            }
+        }
+
+        // Update it, because otherwiese the merchant does not get it when AB::Entities::MerchantItemList is loaded
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
+        item->concreteItem_.storagePos = 0;
+        dc->Update(item->concreteItem_);
+        dc->Invalidate(item->concreteItem_);
+        // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
+        auto* cache = GetSubsystem<ItemsCache>();
+        cache->Remove(item->id_);
+        // Merchant got new items.
+        AB::Entities::MerchantItemList ml;
+        dc->Invalidate(ml);
+    }
+    else
+    {
+        // Only resellable items are kept by the Merchant, all others get deleted.
+        DeleteItem(item);
+    }
 }
 
 }

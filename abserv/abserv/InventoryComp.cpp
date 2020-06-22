@@ -249,18 +249,8 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
     {
         // Sell all
         RemoveInventoryItem(pos);
+        factory->MoveToMerchant(item);
 
-        if (resellable)
-        {
-            item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
-            item->concreteItem_.storagePos = 0;
-            dc->Update(item->concreteItem_);
-            dc->Invalidate(item->concreteItem_);
-        }
-        else
-        {
-            factory->DeleteItem(item);
-        }
         if (message)
         {
             message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
@@ -278,23 +268,7 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
             return false;
 
         InventoryComp::WriteItemUpdate(item, message);
-        if (resellable)
-        {
-            // Update it, because otherwiese the merchant does not get it when AB::Entities::MerchantItemList is loaded
-            dc->Update(newItem->concreteItem_);
-            dc->Invalidate(newItem->concreteItem_);
-        }
-        else
-        {
-            factory->DeleteItem(newItem);
-        }
-    }
-
-    if (resellable)
-    {
-        // Merchant got new items.
-        AB::Entities::MerchantItemList ml;
-        dc->Invalidate(ml);
+        factory->MoveToMerchant(newItem);
     }
 
     AddInventoryMoney(amount, message);
