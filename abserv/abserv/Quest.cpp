@@ -124,7 +124,7 @@ bool Quest::CollectReward()
     auto* factory = GetSubsystem<ItemFactory>();
     for (const auto& item : q.rewardItems)
     {
-        uint32_t id = factory->CreatePlayerItem(owner_, item, 1);
+        uint32_t id = factory->CreatePlayerItem(owner_, item, AB::Entities::StoragePlace::Inventory, 1);
         if (id != 0)
             owner_.AddToInventory(id);
     }

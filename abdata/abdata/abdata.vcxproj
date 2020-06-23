@@ -222,6 +222,7 @@
     <ClInclude Include="DBItemList.h" />
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
+    <ClInclude Include="DBMerchantItem.h" />
     <ClInclude Include="DBMerchantItemList.h" />
     <ClInclude Include="DBMusic.h" />
     <ClInclude Include="DBMusicList.h" />
@@ -281,6 +282,7 @@
     <ClCompile Include="DBItemList.cpp" />
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />
+    <ClCompile Include="DBMerchantItem.cpp" />
     <ClCompile Include="DBMerchantItemList.cpp" />
     <ClCompile Include="DBMusic.cpp" />
     <ClCompile Include="DBMusicList.cpp" />

@@ -100,7 +100,7 @@ void InventoryComp::ExchangeItem(Item& item, uint32_t count,
 
     // We must split the stack into 2 items.
     // This also means the item is stackable and therefore can not have upgrades.
-    uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, count);
+    uint32_t itemId = factory->CreatePlayerItem(addTo, item.data_.uuid, AB::Entities::StoragePlace::Inventory, count);
     addtoInv.SetInventoryItem(itemId, &addMessage);
 
     item.concreteItem_.count -= count;
@@ -213,7 +213,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
 
 bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* message)
 {
-    assert(!Is<Player>(owner_));
+    assert(Is<Player>(owner_));
 
     if (pos == 0)
         // Can not sell money
@@ -242,14 +242,12 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
         return false;
     }
 
-    bool resellable = AB::Entities::IsItemResellable(item->data_.itemFlags);
-    auto* dc = GetSubsystem<IO::DataClient>();
     auto* factory = GetSubsystem<ItemFactory>();
     if (item->concreteItem_.count == count)
     {
         // Sell all
         RemoveInventoryItem(pos);
-        factory->MoveToMerchant(item);
+        factory->MoveToMerchant(item, count);
 
         if (message)
         {
@@ -262,13 +260,8 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
     }
     else
     {
-        // Split stack
-        auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Merchant, 0);
-        if (!newItem)
-            return false;
-
+        factory->MoveToMerchant(item, count);
         InventoryComp::WriteItemUpdate(item, message);
-        factory->MoveToMerchant(newItem);
     }
 
     AddInventoryMoney(amount, message);
@@ -277,7 +270,7 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
 
 Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::StoragePlace newItemPlace, uint16_t newItemPos)
 {
-    assert(!Is<Player>(owner_));
+    assert(Is<Player>(owner_));
     assert(count > 0);
     // Count must be less than available, otherwise the whole stack should be moved
     if (item->concreteItem_.count <= count)
@@ -285,12 +278,12 @@ Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::Storag
 
     auto* cache = GetSubsystem<ItemsCache>();
     auto* factory = GetSubsystem<ItemFactory>();
-    uint32_t itemId = factory->CreatePlayerItem(To<Player>(owner_), item->data_.uuid, count);
+    // Can not defer create merchant items
+    uint32_t itemId = factory->CreatePlayerItem(To<Player>(owner_), item->data_.uuid, newItemPlace, count);
     item->concreteItem_.count -= count;
     auto* newItem = cache->Get(itemId);
     // Splitting a stack should never fail
     assert(newItem);
-    newItem->concreteItem_.storagePlace = newItemPlace;
     newItem->concreteItem_.storagePos = newItemPos;
     return newItem;
 }

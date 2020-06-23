@@ -352,7 +352,7 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
     else
     {
         countText_->SetVisible(false);
-        countSpinner_->SetVisible(true);
+        countSpinner_->SetVisible(false);
     }
     URHO3D_LOGINFOF("Sell item selected %d, count %d", index, count);
 }

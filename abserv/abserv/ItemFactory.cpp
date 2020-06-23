@@ -206,6 +206,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
     ci.instanceUuid = info.instanceUuid;
     ci.mapUuid = info.mapUuid;
     ci.creation = Utils::Tick();
+    ci.storagePlace = info.storagePlace;
     CalculateValue(gameItem, info.level, ci);
     if (info.count != 0)
         ci.count = info.count;
@@ -230,7 +231,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
     return cache->Add(std::move(result));
 }
 
-uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, uint32_t count /* = 1 */)
+uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, AB::Entities::StoragePlace place, uint32_t count /* = 1 */)
 {
     return CreateItem({ itemUuid,
         forPlayer.GetGame()->instanceData_.uuid,
@@ -238,12 +239,12 @@ uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::strin
         forPlayer.data_.level,
         true,
         forPlayer.account_.uuid,
-        forPlayer.data_.uuid, count });
+        forPlayer.data_.uuid, count, 0, place });
 }
 
 uint32_t ItemFactory::CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count)
 {
-    return CreatePlayerItem(forPlayer, MONEY_ITEM_UUID, count);
+    return CreatePlayerItem(forPlayer, MONEY_ITEM_UUID, AB::Entities::StoragePlace::Inventory, count);
 }
 
 ea::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
@@ -372,7 +373,7 @@ uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item& forIt
 
     return CreateItem({ (*(*selIt)).first,
         forItem.concreteItem_.instanceUuid, forItem.concreteItem_.mapUuid,
-        level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid });
+        level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid, 0, 0, forItem.concreteItem_.storagePlace });
 }
 
 void ItemFactory::IdentiyItem(Item& item, Player& player)
@@ -542,50 +543,91 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
         // There is a chance that nothing drops
         return 0;
 
-    return CreateItem({ itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid });
+    return CreateItem({ itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid,
+        0, 0, AB::Entities::StoragePlace::Scene });
 }
 
-void ItemFactory::MoveToMerchant(Item* item)
+void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
-    if (item->IsResellable())
-    {
-        auto* dc = GetSubsystem<IO::DataClient>();
-
-        if (item->IsStackable())
-        {
-            // Merge stackable items
-            AB::Entities::MerchantItem mi;
-            mi.uuid = item->concreteItem_.itemUuid;
-            if (dc->Read(mi))
-            {
-                AB::Entities::ConcreteItem ci;
-                ci.uuid = mi.concreteUuid;
-                assert(dc->Read(ci));
-                // There is not stack size for merchants, they have a huuuuge bag
-                ci.count += item->concreteItem_.count;
-                dc->Update(item->concreteItem_);
-                DeleteItem(item);
-                return;
-            }
-        }
-
-        // Update it, because otherwiese the merchant does not get it when AB::Entities::MerchantItemList is loaded
-        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
-        item->concreteItem_.storagePos = 0;
-        dc->Update(item->concreteItem_);
-        dc->Invalidate(item->concreteItem_);
-        // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
-        auto* cache = GetSubsystem<ItemsCache>();
-        cache->Remove(item->id_);
-        // Merchant got new items.
-        AB::Entities::MerchantItemList ml;
-        dc->Invalidate(ml);
-    }
-    else
+    if (!item->IsResellable())
     {
         // Only resellable items are kept by the Merchant, all others get deleted.
         DeleteItem(item);
+        return;
     }
+    assert(count <= item->concreteItem_.count);
+
+    auto* dc = GetSubsystem<IO::DataClient>();
+    auto* cache = GetSubsystem<ItemsCache>();
+
+    if (!item->IsStackable())
+    {
+        // If not stackable we just move the existing item to the merchant
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
+        item->concreteItem_.storagePos = 0;
+        item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
+        item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
+        dc->Update(item->concreteItem_);
+        dc->Invalidate(item->concreteItem_);
+        // Merchant got new items.
+        AB::Entities::MerchantItemList ml;
+        dc->Invalidate(ml);
+        // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
+        cache->Remove(item->id_);
+        return;
+    }
+
+    // The item is stackable -> Merge it if the merchant has already an item of this type
+    AB::Entities::MerchantItem mi;
+    mi.uuid = item->concreteItem_.itemUuid;
+    if (dc->Read(mi))
+    {
+        AB::Entities::ConcreteItem ci;
+        ci.uuid = mi.concreteUuid;
+        // At this point the concrete item must exist
+        assert(dc->Read(ci));
+        // There is not stack size for merchants, they have a huuuuge bag
+        ci.count += count;
+        dc->Update(ci);
+        if (item->concreteItem_.count == count)
+            // The player gave us all so delete the player item
+            DeleteItem(item);
+        else
+            item->concreteItem_.count -= count;
+        return;
+    }
+
+    // First time we get an item of this type
+    if (item->concreteItem_.count == count)
+    {
+        // If the player gave us all we can just move the whole stack
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Merchant;
+        item->concreteItem_.storagePos = 0;
+        item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
+        item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
+        dc->Update(item->concreteItem_);
+        dc->Invalidate(item->concreteItem_);
+        // Merchant got new items.
+        AB::Entities::MerchantItemList ml;
+        dc->Invalidate(ml);
+        // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
+        cache->Remove(item->id_);
+        return;
+    }
+
+    // We don't have this item yet, and the player didn't give us all, so we need to create a new concrete item
+    AB::Entities::ConcreteItem ci = item->concreteItem_;
+    ci.uuid = Utils::Uuid::New();
+    ci.count = count;
+    ci.storagePlace = AB::Entities::StoragePlace::Merchant;
+    ci.storagePos = 0;
+    ci.playerUuid = Utils::Uuid::EMPTY_UUID;
+    ci.accountUuid = Utils::Uuid::EMPTY_UUID;
+    dc->Create(ci);
+    AB::Entities::MerchantItemList ml;
+    dc->Invalidate(ml);
+
+    item->concreteItem_.count -= count;
 }
 
 }
