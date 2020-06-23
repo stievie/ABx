@@ -623,7 +623,12 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     ci.storagePos = 0;
     ci.playerUuid = Utils::Uuid::EMPTY_UUID;
     ci.accountUuid = Utils::Uuid::EMPTY_UUID;
-    dc->Create(ci);
+    if (!dc->Create(ci))
+    {
+        // This should really not happen
+        LOG_ERROR << "Error creating concrete item with uuid " << ci.uuid << std::endl;
+        return;
+    }
     AB::Entities::MerchantItemList ml;
     dc->Invalidate(ml);
 
