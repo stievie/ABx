@@ -1627,6 +1627,8 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     if (!IsInRange(Ranges::Adjecent, npc))
         return;
 
+    calculatedItemPrices_.clear();
+
     auto* cli = GetSubsystem<IO::DataClient>();
     AB::Entities::MerchantItemList ml;
     if (!cli->Read(ml))
@@ -1637,25 +1639,38 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
     AB::Packets::Server::MerchantItems packet;
-    packet.count = static_cast<uint16_t>(ml.itemUuids.size());
     auto* factory = GetSubsystem<ItemFactory>();
     auto* cache = GetSubsystem<ItemsCache>();
+    uint16_t count = 0;
     for (const auto& itemUuid : ml.itemUuids)
     {
+        AB::Entities::ItemPrice price;
+        price.uuid = itemUuid;
+        if (!cli->Read(price))
+        {
+            LOG_ERROR << "Error reading item price for " << itemUuid << std::endl;
+            continue;
+        }
+
+        ++count;
         uint32_t itemId = factory->GetConcreteId(itemUuid);
         auto* item = cache->Get(itemId);
         // I guess this shouldn't happen
         assert(item);
-        packet.items.push_back({
-            item->data_.index,
-            static_cast<uint16_t>(item->data_.type),
-            item->concreteItem_.count,
-            item->concreteItem_.value,
-            item->concreteItem_.itemStats,
-            static_cast<uint8_t>(item->concreteItem_.storagePlace),
-            item->concreteItem_.storagePos
-        });
+        AB::Packets::Server::Internal::MerchantItem merchantItem;
+        merchantItem.index = item->data_.index;
+        merchantItem.type = static_cast<uint16_t>(item->data_.type);
+        merchantItem.count = item->concreteItem_.count;
+        merchantItem.value = item->concreteItem_.value;
+        merchantItem.stats = item->concreteItem_.itemStats;
+        merchantItem.buyPrice = price.priceBuy;
+        merchantItem.sellPrice = price.priceSell;
+
+        packet.items.push_back(std::move(merchantItem));
+
+        calculatedItemPrices_.emplace(itemUuid, std::move(price));
     }
+    packet.count = count;
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }

@@ -220,6 +220,7 @@
     <ClInclude Include="DBItem.h" />
     <ClInclude Include="DBItemChanceList.h" />
     <ClInclude Include="DBItemList.h" />
+    <ClInclude Include="DBItemPrice.h" />
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
     <ClInclude Include="DBMerchantItem.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="DBItem.cpp" />
     <ClCompile Include="DBItemChanceList.cpp" />
     <ClCompile Include="DBItemList.cpp" />
+    <ClCompile Include="DBItemPrice.cpp" />
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />
     <ClCompile Include="DBMerchantItem.cpp" />

@@ -21,30 +21,20 @@
 
 #pragma once
 
-#include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
+#include <AB/Entities/ItemPrice.h>
 
-namespace AB {
-namespace Entities {
+namespace DB {
 
-static constexpr auto KEY_ITEM_PRICE = "item_price";
-
-// Item that belongs to the merchant. UUID is the Item UUID.
-struct MerchantItem : Entity
+class DBItemPrice
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ITEM_PRICE;
-    }
-    template<typename S>
-    void serialize(S& s)
-    {
-        s.ext(*this, BaseClass<Entity>{});
-        s.text1b(concreteUuid, Limits::MAX_UUID);
-    }
+public:
+    DBItemPrice() = delete;
 
-    std::string concreteUuid;
+    static bool Create(AB::Entities::ItemPrice& item);
+    static bool Load(AB::Entities::ItemPrice& item);
+    static bool Save(const AB::Entities::ItemPrice& item);
+    static bool Delete(const AB::Entities::ItemPrice& item);
+    static bool Exists(const AB::Entities::ItemPrice& item);
 };
 
-}
 }

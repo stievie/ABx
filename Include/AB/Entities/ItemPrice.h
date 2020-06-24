@@ -27,23 +27,31 @@
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ITEM_PRICE = "item_price";
+static constexpr auto KEY_MERCHANT_ITEMS = "item_price";
 
-// Item that belongs to the merchant. UUID is the Item UUID.
-struct MerchantItem : Entity
+// Check price of item. Not cached.
+struct ItemPrice : Entity
 {
     static constexpr const char* KEY()
     {
-        return KEY_ITEM_PRICE;
+        return KEY_MERCHANT_ITEMS;
     }
     template<typename S>
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.text1b(concreteUuid, Limits::MAX_UUID);
+        s.value8b(lastCalc);
+        s.value4b(countAvail);
+        s.value4b(priceSell);
+        s.value4b(priceBuy);
+        s.value4b(priceBase);
     }
 
-    std::string concreteUuid;
+    timestamp_t lastCalc{ 0 };
+    uint32_t countAvail{ 0 };
+    uint32_t priceSell{ 0 };
+    uint32_t priceBuy{ 0 };
+    uint32_t priceBase{ 0 };
 };
 
 }

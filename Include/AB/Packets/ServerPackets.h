@@ -55,6 +55,11 @@ struct UpgradeableItem : public Item
     uint8_t upgrades{ 0 };
     std::array<Item, ITEM_UPGRADE_COUNT> mods;
 };
+struct MerchantItem : public Item
+{
+    uint32_t sellPrice{ 0 };
+    uint32_t buyPrice{ 0 };
+};
 }  // namespace Internal
 
 struct KeyExchange
@@ -629,7 +634,7 @@ struct ChestContent : public InventoryContent { };
 struct MerchantItems
 {
     uint16_t count;
-    std::vector<Internal::Item> items;
+    std::vector<Internal::MerchantItem> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -640,12 +645,11 @@ struct MerchantItems
             auto& item = items[i];
             ar.value(item.type);
             ar.value(item.index);
-            ar.value(item.place);
-            ar.value(item.pos);
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
-            ar.value(item.flags);
+            ar.value(item.sellPrice);
+            ar.value(item.buyPrice);
         }
     }
 };

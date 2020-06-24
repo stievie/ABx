@@ -78,6 +78,7 @@ static constexpr size_t KEY_RUNEITEMLIST_HASH = sa::StringHash(AB::Entities::Typ
 static constexpr size_t KEY_WEAPONPREFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponPrefix::KEY());
 static constexpr size_t KEY_WEAPONSUFFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponSuffix::KEY());
 static constexpr size_t KEY_WEAPONINSCRIPTIONITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponInscription::KEY());
+static constexpr size_t KEY_ITEMPRICE_HASH = sa::StringHash(AB::Entities::ItemPrice::KEY());
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     flushInterval_(FLUSH_CACHE_MS),
@@ -153,6 +154,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBPlayerQuestListRewarded, AB::Entities::PlayerQuestListRewarded>();
     AddEntityClass<DB::DBMerchantItemList, AB::Entities::MerchantItemList>();
     AddEntityClass<DB::DBMerchantItem, AB::Entities::MerchantItem>();
+    AddEntityClass<DB::DBItemPrice, AB::Entities::ItemPrice>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
@@ -249,8 +251,8 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
 
     cache_[key] = { flags, data };
 
+    const size_t tableHash = sa::StringHashRt(table.c_str());
     // Special case for player names
-    size_t tableHash = sa::StringHashRt(table.data());
     if (tableHash == KEY_CHARACTERS_HASH)
     {
         AB::Entities::Character ch;
@@ -516,29 +518,54 @@ void StorageProvider::FlushCache()
     if (cache_.size() == 0)
         return;
     AB_PROFILE;
-    int written = 0;
-    auto i = cache_.begin();
-    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
+
     {
-        // Don't return deleted, these are flushed in CleanCache()
-        return ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
-            !IsDeleted(current.second.flags));
-    })) != cache_.end())
-    {
-        ++written;
-        const IO::DataKey& key = (*i).first;
-        bool res = FlushData(key);
-        if (!res)
+        int written = 0;
+        auto i = cache_.begin();
+        while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
         {
-            LOG_WARNING << "Error flushing " << key.format() << std::endl;
-            // Error, break for now and try  the next time.
-            // In case of lost connection it would try forever.
-            break;
+            // Don't return deleted, these are flushed in CleanCache()
+            if ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
+                !IsDeleted(current.second.flags))
+                return true;
+
+            return false;
+        })) != cache_.end())
+        {
+            ++written;
+            const IO::DataKey& key = (*i).first;
+            bool res = FlushData(key);
+            if (!res)
+            {
+                LOG_WARNING << "Error flushing " << key.format() << std::endl;
+                // Error, break for now and try  the next time.
+                // In case of lost connection it would try forever.
+                break;
+            }
+        }
+        if (written > 0)
+        {
+            LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
         }
     }
-    if (written > 0)
+
     {
-        LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
+        // Get rid of item prices to recalculate them once in a while
+        auto i = cache_.begin();
+        while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
+        {
+            std::string table;
+            uuids::uuid id;
+            current.first.decode(table, id);
+            size_t tableHash = sa::StringHashRt(table.c_str());
+            if (tableHash == KEY_ITEMPRICE_HASH)
+                return true;
+
+            return false;
+        })) != cache_.end())
+        {
+            RemoveData((*i).first);
+        }
     }
 }
 

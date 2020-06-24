@@ -27,6 +27,7 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/FriendList.h>
+#include <AB/Entities/ItemPrice.h>
 #include <eastl.hpp>
 #include <set>
 
@@ -57,6 +58,7 @@ private:
     ea::shared_ptr<Party> party_;
     bool resigned_{ false  };
     bool queueing_{ false };
+    ea::map<std::string, AB::Entities::ItemPrice> calculatedItemPrices_;
     Party* _LuaGetParty();
     void LoadFriendList();
     MailBox& GetMailBox();

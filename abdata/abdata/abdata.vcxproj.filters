@@ -192,6 +192,9 @@
     <ClInclude Include="DBMerchantItem.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBItemPrice.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -363,6 +366,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBMerchantItem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBItemPrice.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

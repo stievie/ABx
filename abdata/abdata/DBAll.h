@@ -47,6 +47,7 @@
 #include "DBItem.h"
 #include "DBItemChanceList.h"
 #include "DBItemList.h"
+#include "DBItemPrice.h"
 #include "DBMail.h"
 #include "DBMailList.h"
 #include "DBMerchantItem.h"
