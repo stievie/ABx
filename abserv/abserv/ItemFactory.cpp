@@ -590,8 +590,11 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         ci.count += count;
         dc->Update(ci);
         if (item->concreteItem_.count == count)
+        {
             // The player gave us all so delete the player item
             DeleteItem(item);
+            cache->Remove(item->id_);
+        }
         else
             item->concreteItem_.count -= count;
         return;

@@ -42,6 +42,8 @@ public:
     Item* Get(uint32_t id);
     uint32_t GetConcreteId(const std::string& uuid) const;
     uint32_t Add(ea::unique_ptr<Item>&& item);
+    // Item IDs are not reused, so removing an item from the cache, the item also
+    // disapperas from the players inventory/chest
     void Remove(uint32_t id);
     void RemoveConcrete(const std::string& uuid);
 };

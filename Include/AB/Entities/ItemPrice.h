@@ -29,7 +29,7 @@ namespace Entities {
 
 static constexpr auto KEY_MERCHANT_ITEMS = "item_price";
 
-// Check price of item. Not cached.
+// Check price of item. Only cached for a very short time.
 struct ItemPrice : Entity
 {
     static constexpr const char* KEY()

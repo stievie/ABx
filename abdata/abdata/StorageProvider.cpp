@@ -29,56 +29,17 @@
 #include <abscommon/ThreadPool.h>
 #include <sstream>
 
-static constexpr size_t KEY_ACCOUNTS_HASH = sa::StringHash(AB::Entities::Account::KEY());
-static constexpr size_t KEY_CHARACTERS_HASH = sa::StringHash(AB::Entities::Character::KEY());
-static constexpr size_t KEY_GAMES_HASH = sa::StringHash(AB::Entities::Game::KEY());
-static constexpr size_t KEY_GAMELIST_HASH = sa::StringHash(AB::Entities::GameList::KEY());
-static constexpr size_t KEY_IPBANS_HASH = sa::StringHash(AB::Entities::IpBan::KEY());
-static constexpr size_t KEY_ACCOUNTBANS_HASH = sa::StringHash(AB::Entities::AccountBan::KEY());
-static constexpr size_t KEY_BANS_HASH = sa::StringHash(AB::Entities::Ban::KEY());
-static constexpr size_t KEY_FRIENDLIST_HASH = sa::StringHash(AB::Entities::FriendList::KEY());
-static constexpr size_t KEY_ACCOUNTKEYS_HASH = sa::StringHash(AB::Entities::AccountKey::KEY());
-static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = sa::StringHash(AB::Entities::AccountKeyAccounts::KEY());
-static constexpr size_t KEY_MAIL_HASH = sa::StringHash(AB::Entities::Mail::KEY());
-static constexpr size_t KEY_MAILLIST_HASH = sa::StringHash(AB::Entities::MailList::KEY());
-static constexpr size_t KEY_PROFESSIONS_HASH = sa::StringHash(AB::Entities::Profession::KEY());
-static constexpr size_t KEY_SKILLS_HASH = sa::StringHash(AB::Entities::Skill::KEY());
-static constexpr size_t KEY_EFFECTS_HASH = sa::StringHash(AB::Entities::Effect::KEY());
-static constexpr size_t KEY_ATTRIBUTES_HASH = sa::StringHash(AB::Entities::Attribute::KEY());
-static constexpr size_t KEY_SKILLLIST_HASH = sa::StringHash(AB::Entities::SkillList::KEY());
-static constexpr size_t KEY_EFFECTLIST_HASH = sa::StringHash(AB::Entities::EffectList::KEY());
-static constexpr size_t KEY_PROFESSIONLIST_HASH = sa::StringHash(AB::Entities::ProfessionList::KEY());
-static constexpr size_t KEY_VERSIONS_HASH = sa::StringHash(AB::Entities::Version::KEY());
-static constexpr size_t KEY_ATTRIBUTELIST_HASH = sa::StringHash(AB::Entities::AttributeList::KEY());
-static constexpr size_t KEY_SERVICE_HASH = sa::StringHash(AB::Entities::Service::KEY());
-static constexpr size_t KEY_SERVICELIST_HASH = sa::StringHash(AB::Entities::ServiceList::KEY());
-static constexpr size_t KEY_GUILD_HASH = sa::StringHash(AB::Entities::Guild::KEY());
-static constexpr size_t KEY_GUILDMEMBERS_HASH = sa::StringHash(AB::Entities::GuildMembers::KEY());
-static constexpr size_t KEY_RESERVEDNAME_HASH = sa::StringHash(AB::Entities::ReservedName::KEY());
-static constexpr size_t KEY_GAMEINSTANCES_HASH = sa::StringHash(AB::Entities::GameInstance::KEY());
-static constexpr size_t KEY_ITEMS_HASH = sa::StringHash(AB::Entities::Item::KEY());
-static constexpr size_t KEY_ITEMLIST_HASH = sa::StringHash(AB::Entities::ItemList::KEY());
-static constexpr size_t KEY_VERSIONLIST_HASH = sa::StringHash(AB::Entities::VersionList::KEY());
-static constexpr size_t KEY_ACCOUNTLIST_HASH = sa::StringHash(AB::Entities::AccountList::KEY());
-static constexpr size_t KEY_CHARACTERLIST_HASH = sa::StringHash(AB::Entities::CharacterList::KEY());
-static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = sa::StringHash(AB::Entities::AccountKeyList::KEY());
-static constexpr size_t KEY_MUSIC_HASH = sa::StringHash(AB::Entities::Music::KEY());
-static constexpr size_t KEY_MUSICLIST_HASH = sa::StringHash(AB::Entities::MusicList::KEY());
-static constexpr size_t KEY_PARTIES_HASH = sa::StringHash(AB::Entities::Party::KEY());
-static constexpr size_t KEY_CONCRETEITEMS_HASH = sa::StringHash(AB::Entities::ConcreteItem::KEY());
-static constexpr size_t KEY_ACCOUNTITEMLIST_HASH = sa::StringHash(AB::Entities::AccountItemList::KEY());
-static constexpr size_t KEY_CHESTITEMLIST_HASH = sa::StringHash(AB::Entities::ChestItems::KEY());
-static constexpr size_t KEY_PLAYERITEMLIST_HASH = sa::StringHash(AB::Entities::PlayerItemList::KEY());
-static constexpr size_t KEY_INVENTORYITEMLIST_HASH = sa::StringHash(AB::Entities::InventoryItems::KEY());
-static constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = sa::StringHash(AB::Entities::EquippedItems::KEY());
-static constexpr size_t KEY_ITEMCHANCELIST_HASH = sa::StringHash(AB::Entities::ItemChanceList::KEY());
-static constexpr size_t KEY_TYPEDITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemList::KEY());
-static constexpr size_t KEY_INSIGNIAITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsInsignia::KEY());
-static constexpr size_t KEY_RUNEITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsRunes::KEY());
-static constexpr size_t KEY_WEAPONPREFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponPrefix::KEY());
-static constexpr size_t KEY_WEAPONSUFFIXITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponSuffix::KEY());
-static constexpr size_t KEY_WEAPONINSCRIPTIONITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemsWeaponInscription::KEY());
-static constexpr size_t KEY_ITEMPRICE_HASH = sa::StringHash(AB::Entities::ItemPrice::KEY());
+inline constexpr size_t KEY_CHARACTERS_HASH = sa::StringHash(AB::Entities::Character::KEY());
+inline constexpr size_t KEY_SERVICE_HASH = sa::StringHash(AB::Entities::Service::KEY());
+inline constexpr size_t KEY_SERVICELIST_HASH = sa::StringHash(AB::Entities::ServiceList::KEY());
+inline constexpr size_t KEY_GAMEINSTANCES_HASH = sa::StringHash(AB::Entities::GameInstance::KEY());
+inline constexpr size_t KEY_PARTIES_HASH = sa::StringHash(AB::Entities::Party::KEY());
+inline constexpr size_t KEY_ACCOUNTITEMLIST_HASH = sa::StringHash(AB::Entities::AccountItemList::KEY());
+inline constexpr size_t KEY_PLAYERITEMLIST_HASH = sa::StringHash(AB::Entities::PlayerItemList::KEY());
+inline constexpr size_t KEY_INVENTORYITEMLIST_HASH = sa::StringHash(AB::Entities::InventoryItems::KEY());
+inline constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = sa::StringHash(AB::Entities::EquippedItems::KEY());
+inline constexpr size_t KEY_TYPEDITEMLIST_HASH = sa::StringHash(AB::Entities::TypedItemList::KEY());
+inline constexpr size_t KEY_ITEMPRICE_HASH = sa::StringHash(AB::Entities::ItemPrice::KEY());
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     flushInterval_(FLUSH_CACHE_MS),
@@ -96,6 +57,9 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     );
     sched->Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
+    );
+    sched->Add(
+        Asynch::CreateScheduledTask(CLEAR_PRICES_MS, std::bind(&StorageProvider::ClearPricesTask, this))
     );
 }
 
@@ -237,7 +201,6 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
 
     const IO::DataKey key(table, id);
 
-    // we check if its already in cache
     if (cache_.find(key) == cache_.end())
     {
         index_.Add(key);
@@ -513,59 +476,65 @@ void StorageProvider::CleanTask()
     }
 }
 
+void StorageProvider::ClearPrices()
+{
+    // Remove prices from cache for force recalculate
+    auto i = cache_.begin();
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
+    {
+        std::string table;
+        uuids::uuid id;
+        current.first.decode(table, id);
+        const size_t tableHash = sa::StringHashRt(table.c_str());
+        return (tableHash == KEY_ITEMPRICE_HASH);
+    })) != cache_.end())
+    {
+        RemoveData((*i).first);
+    }
+}
+
 void StorageProvider::FlushCache()
 {
     if (cache_.size() == 0)
         return;
-    AB_PROFILE;
 
+    int written = 0;
+    auto i = cache_.begin();
+    while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
-        int written = 0;
-        auto i = cache_.begin();
-        while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
-        {
-            // Don't return deleted, these are flushed in CleanCache()
-            if ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
-                !IsDeleted(current.second.flags))
-                return true;
+        // Don't return deleted, these are flushed in CleanCache()
+        if ((IsModified(current.second.flags) || !IsCreated(current.second.flags)) &&
+            !IsDeleted(current.second.flags))
+            return true;
 
-            return false;
-        })) != cache_.end())
+        return false;
+    })) != cache_.end())
+    {
+        ++written;
+        const IO::DataKey& key = (*i).first;
+        bool res = FlushData(key);
+        if (!res)
         {
-            ++written;
-            const IO::DataKey& key = (*i).first;
-            bool res = FlushData(key);
-            if (!res)
-            {
-                LOG_WARNING << "Error flushing " << key.format() << std::endl;
-                // Error, break for now and try  the next time.
-                // In case of lost connection it would try forever.
-                break;
-            }
-        }
-        if (written > 0)
-        {
-            LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
+            LOG_WARNING << "Error flushing " << key.format() << std::endl;
+            // Error, break for now and try  the next time.
+            // In case of lost connection it would try forever.
+            break;
         }
     }
-
+    if (written > 0)
     {
-        // Get rid of item prices to recalculate them once in a while
-        auto i = cache_.begin();
-        while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
-        {
-            std::string table;
-            uuids::uuid id;
-            current.first.decode(table, id);
-            size_t tableHash = sa::StringHashRt(table.c_str());
-            if (tableHash == KEY_ITEMPRICE_HASH)
-                return true;
+        LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
+    }
+}
 
-            return false;
-        })) != cache_.end())
-        {
-            RemoveData((*i).first);
-        }
+void StorageProvider::ClearPricesTask()
+{
+    ClearPrices();
+    if (running_)
+    {
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(CLEAR_PRICES_MS, std::bind(&StorageProvider::ClearPricesTask, this))
+        );
     }
 }
 

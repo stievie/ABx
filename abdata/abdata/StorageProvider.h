@@ -48,6 +48,8 @@ PRAGMA_WARNING_POP
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Flush cache every minute
 #define FLUSH_CACHE_MS (1000 * 60)
+// Clear prices all 5sec, is this a good value?
+#define CLEAR_PRICES_MS (1000 * 5)
 
 struct CacheFlag
 {
@@ -156,12 +158,10 @@ public:
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return Invalidate(aKey);
     }
-    /// Flush all
     void Shutdown();
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
 private:
-    /// first = flags, second = data
     struct CacheItem
     {
         CacheFlags flags{ 0 };
@@ -212,6 +212,8 @@ private:
     void CleanTask();
     void FlushCache();
     void FlushCacheTask();
+    void ClearPrices();
+    void ClearPricesTask();
 
     /// Loads Data from DB
     bool LoadData(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
@@ -234,14 +236,13 @@ private:
     }
 
     /// Save data to DB or delete from DB.
-    /// So synchronize this item with the DB. Depending on the data header calls
-    /// CreateInDB(), SaveToDB() and/or DeleteFromDB()
+    /// Depending on the data header calls CreateInDB(), SaveToDB() and/or DeleteFromDB()
     bool FlushData(const IO::DataKey& key);
     template<typename D, typename E>
     bool FlushRecord(CacheItem& data)
     {
         bool succ = true;
-        // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
+        // These flags are not mutually exclusive, howerer creating it implies it is no longer modified
         if (!IsCreated(data.flags))
         {
             succ = CreateInDB<D, E>(*data.data);
@@ -313,8 +314,7 @@ private:
     static size_t SetEntity(const E& e, StorageData& buffer)
     {
         using OutputAdapter = bitsery::OutputBufferAdapter<StorageData>;
-        auto writtenSize = bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
-        return writtenSize;
+        return bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
     }
 
     bool readonly_;
@@ -323,7 +323,7 @@ private:
     size_t currentSize_;
 
     ea::unordered_map<IO::DataKey, CacheItem, std::hash<IO::DataKey>> cache_;
-    /// Name -> Cache Key
+    /// Name (Playername, Guildname etc.) -> Cache Key
     NameIndex namesCache_;
     CacheIndex index_;
 };
