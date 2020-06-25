@@ -226,8 +226,6 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
 
 bool StorageProvider::Read(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
-//    AB_PROFILE;
-
     auto _data = cache_.find(key);
     if (_data != cache_.end())
     {
@@ -463,7 +461,6 @@ void StorageProvider::CleanCache()
 
 void StorageProvider::CleanTask()
 {
-    AB_PROFILE;
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
     DB::DBReservedName::DeleteExpired(this);
