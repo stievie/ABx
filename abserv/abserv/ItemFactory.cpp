@@ -549,16 +549,17 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
 
 void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
     if (!item->IsResellable())
     {
         // Only resellable items are kept by the Merchant, all others get deleted.
         DeleteItem(item);
+        cache->Remove(item->id_);
         return;
     }
     assert(count <= item->concreteItem_.count);
 
     auto* dc = GetSubsystem<IO::DataClient>();
-    auto* cache = GetSubsystem<ItemsCache>();
 
     if (!item->IsStackable())
     {
