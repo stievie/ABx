@@ -278,7 +278,6 @@ Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::Storag
 
     auto* cache = GetSubsystem<ItemsCache>();
     auto* factory = GetSubsystem<ItemFactory>();
-    // Can not defer create merchant items
     uint32_t itemId = factory->CreatePlayerItem(To<Player>(owner_), item->data_.uuid, newItemPlace, count);
     item->concreteItem_.count -= count;
     auto* newItem = cache->Get(itemId);

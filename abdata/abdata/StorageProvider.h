@@ -22,7 +22,6 @@
 #pragma once
 
 #include <mutex>
-#include <unordered_map>
 #include <vector>
 #include <sa/Compiler.h>
 #include "CacheIndex.h"
