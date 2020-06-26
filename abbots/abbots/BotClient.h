@@ -149,6 +149,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
 public:
     std::string username_;
     std::string password_;

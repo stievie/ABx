@@ -115,12 +115,12 @@ public:
 
     size_t Size() const { return size_; }
     bool IsEmpty() const { return size_ == 0; }
-    const T& At(size_t index) const
+    [[nodiscard]] const T& At(size_t index) const
     {
         return Elements()[(head_ + index) % Capacity];
     }
-    const T& First() const { return At(0); }
-    const T& Last() const { return At(size_ - 1); }
+    [[nodiscard]] const T& First() const { return At(0); }
+    [[nodiscard]] const T& Last() const { return At(size_ - 1); }
 
     class ConstIterator
     {

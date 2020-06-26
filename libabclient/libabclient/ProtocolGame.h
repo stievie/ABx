@@ -139,6 +139,7 @@ public:
     void TradeCancel();
     void TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
     void TradeAccept();
+    void GetItemPrice(const std::vector<uint16_t>& items);
 
     int64_t GetUpdateTick() const
     {

@@ -248,6 +248,7 @@ public:
     void CRQTradeAccept();
     void CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void CRQGetMerchantItems(uint32_t npcId);
+    void CRQGetItemPrice(std::vector<uint16_t> items);
     //}
 
     AB::Entities::Character data_;

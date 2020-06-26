@@ -1675,6 +1675,44 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     WriteToOutput(*msg);
 }
 
+void Player::CRQGetItemPrice(std::vector<uint16_t> items)
+{
+    if (items.size() == 0)
+        return;
+
+    auto* cli = GetSubsystem<IO::DataClient>();
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::ItemPrice);
+
+    AB::Packets::Server::ItemPrice packet;
+
+    for (auto pos : items)
+    {
+        Item* item = inventoryComp_->GetInventoryItem(pos);
+        if (!item)
+            continue;
+
+        // If the player explicitely requests an item price always load it, don't use local cache.
+        AB::Entities::ItemPrice price;
+        price.uuid = item->concreteItem_.uuid;
+        if (!cli->Read(price))
+        {
+            LOG_ERROR << "Error reading item price for " << item->data_.uuid << std::endl;
+            continue;
+        }
+
+        packet.items.push_back({
+            pos, price.priceSell, price.priceBuy
+        });
+        calculatedItemPrices_.emplace(item->concreteItem_.uuid, std::move(price));
+    }
+
+    packet.count = static_cast<uint8_t>(packet.items.size());
+    AB::Packets::Add(packet, *msg);
+
+    WriteToOutput(*msg);
+}
+
 bool Player::IsIgnored(const Player& player) const
 {
     return GetFriendList().IsIgnored(player.account_.uuid);

@@ -654,6 +654,31 @@ struct MerchantItems
     }
 };
 
+struct ItemPrice
+{
+    uint8_t count;
+    struct Price
+    {
+        uint16_t pos;
+        uint32_t sellPrice;
+        uint32_t buyPrice;
+    };
+    std::vector<Price> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        items.resize(count);
+        for (uint8_t i = 0; i < count; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item.pos);
+            ar.value(item.sellPrice);
+            ar.value(item.buyPrice);
+        }
+    }
+};
+
 struct InventoryItemUpdate
 {
     Internal::Item item;

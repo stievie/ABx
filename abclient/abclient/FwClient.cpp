@@ -1104,6 +1104,12 @@ void FwClient::TradeAccept()
         client_.TradeAccept();
 }
 
+void FwClient::GetItemPrice(const std::vector<uint16_t>& items)
+{
+    if (loggedIn_)
+        client_.GetItemPrice(items);
+}
+
 void FwClient::OnLog(const std::string& message)
 {
     String msg(message.c_str(), static_cast<unsigned>(message.length()));
@@ -2240,6 +2246,19 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
     }
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_MERCHANT_ITEMS, eData);
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
+{
+    using namespace Events::ItemPrice;
+    for (const auto& price : packet.items)
+    {
+        VariantMap& eData = GetEventDataMap();
+        eData[P_ITEMPOS] = price.pos;
+        eData[P_SELLPRICE] = price.sellPrice;
+        eData[P_BUYPRICE] = price.buyPrice;
+        SendEvent(Events::E_ITEM_PRICE, eData);
+    }
 }
 
 std::vector<AB::Entities::Service> FwClient::GetServices() const

@@ -131,6 +131,23 @@ struct SellItem
     }
 };
 
+struct GetItemPrice
+{
+    uint8_t count;
+    std::vector<uint16_t> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(count);
+        items.resize(count);
+        for (uint8_t i = 0; i < count; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item);
+        }
+    }
+};
+
 struct GetMerchantItems
 {
     uint32_t npcId;

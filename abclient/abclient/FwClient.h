@@ -210,6 +210,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeOffer& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
 public:
     static String GetProtocolErrorMessage(AB::ErrorCodes err);
     static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
@@ -301,6 +302,7 @@ public:
     void TradeCancel();
     void TradeOffer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>&& items);
     void TradeAccept();
+    void GetItemPrice(const std::vector<uint16_t>& items);
 
     void SetState(Client::State state)
     {

@@ -109,6 +109,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::TradeOffer, ServerPacketType::TradeOffer>();
     AddHandler<AB::Packets::Server::TradeAccepted, ServerPacketType::TradeAccepted>();
     AddHandler<AB::Packets::Server::MerchantItems, ServerPacketType::MerchantItems>();
+    AddHandler<AB::Packets::Server::ItemPrice, ServerPacketType::ItemPrice>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -668,6 +669,14 @@ void ProtocolGame::TradeAccept()
 {
     AB::Packets::Client::TradeAccept packet = { };
     SendPacket(AB::GameProtocol::ClientPacketTypes::TradeAccept, packet);
+}
+
+void ProtocolGame::GetItemPrice(const std::vector<uint16_t>& items)
+{
+    AB::Packets::Client::GetItemPrice packet;
+    packet.count = static_cast<uint8_t>(items.size());
+    packet.items = items;
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetItemsPrice, packet);
 }
 
 }

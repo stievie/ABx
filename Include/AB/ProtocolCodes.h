@@ -113,7 +113,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(TradeOffer)             \
     ENUMERATE_CLIENT_PACKET_CODE(TradeAccept)            \
     ENUMERATE_CLIENT_PACKET_CODE(SellItem)               \
-    ENUMERATE_CLIENT_PACKET_CODE(GetMerchantItems)
+    ENUMERATE_CLIENT_PACKET_CODE(GetMerchantItems)       \
+    ENUMERATE_CLIENT_PACKET_CODE(GetItemsPrice)
 
 // Packet types sent from the server to the client
 #define ENUMERATE_SERVER_PACKET_CODES                         \
@@ -189,7 +190,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(TradeCancel)                 \
     ENUMERATE_SERVER_PACKET_CODE(TradeOffer)                  \
     ENUMERATE_SERVER_PACKET_CODE(TradeAccepted)               \
-    ENUMERATE_SERVER_PACKET_CODE(MerchantItems)
+    ENUMERATE_SERVER_PACKET_CODE(MerchantItems)               \
+    ENUMERATE_SERVER_PACKET_CODE(ItemPrice)
 
 #define ENUMERATE_CREATURE_STATES          \
     ENUMERATE_CREATURE_STATE(Unknown)      \

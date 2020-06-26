@@ -820,6 +820,12 @@ void Client::TradeAccept()
         protoGame_->TradeAccept();
 }
 
+void Client::GetItemPrice(const std::vector<uint16_t>& items)
+{
+    if (state_ == State::World)
+        protoGame_->GetItemPrice(items);
+}
+
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ServerJoined& packet)
 {
     receiver_.OnPacket(updateTick, packet);
@@ -1159,6 +1165,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccept
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }
