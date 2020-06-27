@@ -1645,7 +1645,7 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     }
     if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
     {
-        LOG_WARNING << "CHEAT: Player " << GetGame() << " want to buy an item whioch does not belong to the merchant" << std::endl;
+        LOG_WARNING << "CHEAT: Player " << GetName() << " wants to buy an item which does not belong to the merchant" << std::endl;
         return;
     }
 
