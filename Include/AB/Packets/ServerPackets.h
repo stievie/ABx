@@ -57,6 +57,7 @@ struct UpgradeableItem : public Item
 };
 struct MerchantItem : public Item
 {
+    uint32_t id{ 0 };
     uint32_t sellPrice{ 0 };
     uint32_t buyPrice{ 0 };
 };
@@ -643,6 +644,7 @@ struct MerchantItems
         for (uint16_t i = 0; i < count; ++i)
         {
             auto& item = items[i];
+            ar.value(item.id);
             ar.value(item.type);
             ar.value(item.index);
             ar.value(item.count);
@@ -660,8 +662,7 @@ struct ItemPrice
     struct Price
     {
         uint16_t pos;
-        uint32_t sellPrice;
-        uint32_t buyPrice;
+        uint32_t price;
     };
     std::vector<Price> items;
     template<typename _Ar>
@@ -673,8 +674,7 @@ struct ItemPrice
         {
             auto& item = items[i];
             ar.value(item.pos);
-            ar.value(item.sellPrice);
-            ar.value(item.buyPrice);
+            ar.value(item.price);
         }
     }
 };

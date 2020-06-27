@@ -1605,8 +1605,17 @@ void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
         return;
     }
 
+    auto* item = inventoryComp_->GetInventoryItem(pos);
+    if (!item)
+        return;
+
+    uint32_t price = item->concreteItem_.value;
+    const auto it = calculatedItemPrices_.find(item->data_.uuid);
+    if (it != calculatedItemPrices_.end())
+        price = (*it).second.priceBuy;
+
     auto msg = Net::NetworkMessage::GetNew();
-    bool ret = inventoryComp_->SellItem(pos, count, msg.get());
+    bool ret = inventoryComp_->SellItem(pos, count, price, msg.get());
 
     if (ret)
     {
@@ -1614,6 +1623,61 @@ void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
         inv.uuid = data_.uuid;
         IO::DataClient* cli = GetSubsystem<IO::DataClient>();
         cli->Invalidate(inv);
+    }
+
+    WriteToOutput(*msg);
+}
+
+void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
+{
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+    if (!IsInRange(Ranges::Adjecent, npc))
+        return;
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(id);
+    if (!item)
+    {
+        LOG_ERROR << "Item " << id << " not in cache" << std::endl;
+        return;
+    }
+    if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
+    {
+        LOG_WARNING << "CHEAT: Player " << GetGame() << " want to buy an item whioch does not belong to the merchant" << std::endl;
+        return;
+    }
+
+    const auto it = calculatedItemPrices_.find(item->data_.uuid);
+    if (it == calculatedItemPrices_.end())
+    {
+        LOG_ERROR << "Item " << item->data_.uuid << " not in price cache" << std::endl;
+        return;
+    }
+
+    uint32_t price = (*it).second.priceSell;
+    auto msg = Net::NetworkMessage::GetNew();
+
+    if (price * count <= inventoryComp_->GetInventoryMoney())
+    {
+        bool ret = inventoryComp_->BuyItem(item, count, price, msg.get());
+
+        if (ret)
+        {
+            AB::Entities::InventoryItems inv;
+            inv.uuid = data_.uuid;
+            IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+            cli->Invalidate(inv);
+        }
+    }
+    else
+    {
+        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::PlayerError packet = {
+            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotEnoughMoney)
+        };
+        AB::Packets::Add(packet, *msg);
     }
 
     WriteToOutput(*msg);
@@ -1642,22 +1706,23 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     auto* factory = GetSubsystem<ItemFactory>();
     auto* cache = GetSubsystem<ItemsCache>();
     uint16_t count = 0;
-    for (const auto& itemUuid : ml.itemUuids)
+    for (const auto& itemPair : ml.itemUuids)
     {
         AB::Entities::ItemPrice price;
-        price.uuid = itemUuid;
+        price.uuid = itemPair.second;
         if (!cli->Read(price))
         {
-            LOG_ERROR << "Error reading item price for " << itemUuid << std::endl;
+            LOG_ERROR << "Error reading item price for " << itemPair.second << std::endl;
             continue;
         }
 
         ++count;
-        uint32_t itemId = factory->GetConcreteId(itemUuid);
+        uint32_t itemId = factory->GetConcreteId(itemPair.first);
         auto* item = cache->Get(itemId);
         // I guess this shouldn't happen
         assert(item);
         AB::Packets::Server::Internal::MerchantItem merchantItem;
+        merchantItem.id = itemId;
         merchantItem.index = item->data_.index;
         merchantItem.type = static_cast<uint16_t>(item->data_.type);
         merchantItem.count = item->concreteItem_.count;
@@ -1668,7 +1733,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
 
         packet.items.push_back(std::move(merchantItem));
 
-        calculatedItemPrices_.emplace(itemUuid, std::move(price));
+        calculatedItemPrices_.emplace(itemPair.second, std::move(price));
     }
     packet.count = count;
     AB::Packets::Add(packet, *msg);
@@ -1692,9 +1757,15 @@ void Player::CRQGetItemPrice(std::vector<uint16_t> items)
         if (!item)
             continue;
 
-        // If the player explicitely requests an item price always load it, don't use local cache.
+        const auto it = calculatedItemPrices_.find(item->data_.uuid);
+        if (it != calculatedItemPrices_.end())
+        {
+            packet.items.push_back({ pos, (*it).second.priceBuy });
+            continue;
+        }
+
         AB::Entities::ItemPrice price;
-        price.uuid = item->concreteItem_.uuid;
+        price.uuid = item->data_.uuid;
         if (!cli->Read(price))
         {
             LOG_ERROR << "Error reading item price for " << item->data_.uuid << std::endl;
@@ -1702,10 +1773,13 @@ void Player::CRQGetItemPrice(std::vector<uint16_t> items)
         }
 
         packet.items.push_back({
-            pos, price.priceSell, price.priceBuy
+            pos, price.priceBuy
         });
-        calculatedItemPrices_.emplace(item->concreteItem_.uuid, std::move(price));
+        calculatedItemPrices_.emplace(item->data_.uuid, std::move(price));
     }
+
+    if (packet.items.size() == 0)
+        return;
 
     packet.count = static_cast<uint8_t>(packet.items.size());
     AB::Packets::Add(packet, *msg);

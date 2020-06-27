@@ -598,6 +598,7 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         }
         else
             item->concreteItem_.count -= count;
+        dc->Invalidate(mi);
         return;
     }
 

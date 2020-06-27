@@ -51,14 +51,16 @@ struct MerchantItemList : Entity
     {
         s.ext(*this, BaseClass<Entity>{});
         s.value1b(storagePlace);
-        s.container(itemUuids, Limits::MAX_ITEMS, [&s](std::string& c)
+        s.container(itemUuids, Limits::MAX_ITEMS, [&s](std::pair<std::string, std::string>& c)
         {
-            s.text1b(c, Limits::MAX_UUID);
+            s.text1b(c.first, Limits::MAX_UUID);
+            s.text1b(c.second, Limits::MAX_UUID);
         });
     }
 
     StoragePlace storagePlace = StoragePlace::Merchant;
-    std::vector<std::string> itemUuids;
+    // First concrete uuid, second item uuid
+    std::vector<std::pair<std::string, std::string>> itemUuids;
 };
 
 }

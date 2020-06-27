@@ -131,6 +131,20 @@ struct SellItem
     }
 };
 
+struct BuyItem
+{
+    uint32_t npcId;
+    uint32_t id;
+    uint32_t count;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(npcId);
+        ar.value(id);
+        ar.value(count);
+    }
+};
+
 struct GetItemPrice
 {
     uint8_t count;

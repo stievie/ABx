@@ -592,6 +592,12 @@ void Client::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
         protoGame_->SellItem(npcId, pos, count);
 }
 
+void Client::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
+{
+    if (state_ == State::World)
+        protoGame_->BuyItem(npcId, id, count);
+}
+
 void Client::GetMerchantItems(uint32_t npcId)
 {
     if (state_ == State::World)

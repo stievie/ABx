@@ -27,7 +27,7 @@
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ITEM_PRICE = "item_price";
+static constexpr auto KEY_ITEM_PRICE = "merchant_item";
 
 // Item that belongs to the merchant. UUID is the Item UUID.
 struct MerchantItem : Entity

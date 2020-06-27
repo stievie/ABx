@@ -237,6 +237,8 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "Trading partner is queueing for a match";
     case AB::GameProtocol::PlayerErrorValue::TradingPartnerTrading:
         return "The trading partner is trading with another player";
+    case AB::GameProtocol::PlayerErrorValue::NotEnoughMoney:
+        return "You don't have enough money";
     case AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget:
         // Just ignore this
         return String::EMPTY;
@@ -886,7 +888,13 @@ void FwClient::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
         client_.SellItem(npcId, pos, count);
 }
 
-void FwClient::GetMerchantItems(uint32_t npcId)
+void FwClient::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
+{
+    if (loggedIn_)
+        client_.BuyItem(npcId, id, count);
+}
+
+void FwClient::RequestMerchantItems(uint32_t npcId)
 {
     if (loggedIn_)
         client_.GetMerchantItems(npcId);
@@ -2234,6 +2242,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
     for (const auto& item : packet.items)
     {
         ConcreteItem ci;
+        ci.id = item.id;
         ci.type = static_cast<AB::Entities::ItemType>(item.type);
         ci.index = item.index;
         ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
@@ -2255,8 +2264,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
     {
         VariantMap& eData = GetEventDataMap();
         eData[P_ITEMPOS] = price.pos;
-        eData[P_SELLPRICE] = price.sellPrice;
-        eData[P_BUYPRICE] = price.buyPrice;
+        eData[P_PRICE] = price.price;
         SendEvent(Events::E_ITEM_PRICE, eData);
     }
 }

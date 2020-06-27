@@ -46,7 +46,8 @@ private:
     void CreatePageBuy(TabElement* tabElement);
     void LoadWindow(Window* wnd, const String& fileName);
     void UpdateSellList();
-    UIElement* GetSellItem(uint16_t pos);
+    void UpdateBuyList();
+    UISelectable* GetSellItem(uint16_t pos);
     unsigned GetSellItemIndex(uint16_t pos);
     UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
@@ -57,6 +58,7 @@ private:
     void HandleInventoryItemRemove(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleSellItemSelected(StringHash eventType, VariantMap& eventData);
+    void HandleItemPrice(StringHash eventType, VariantMap& eventData);
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;

@@ -92,6 +92,7 @@ void MerchantWindow::SubscribeEvents()
     SubscribeToEvent(Events::E_INVENTORY, URHO3D_HANDLER(MerchantWindow, HandleInventory));
     SubscribeToEvent(Events::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(MerchantWindow, HandleInventoryItemUpdate));
     SubscribeToEvent(Events::E_INVENTORYITEMDELETE, URHO3D_HANDLER(MerchantWindow, HandleInventoryItemRemove));
+    SubscribeToEvent(Events::E_ITEM_PRICE, URHO3D_HANDLER(MerchantWindow, HandleItemPrice));
 }
 
 TabElement* MerchantWindow::CreateTab(TabGroup* tabs, const String& page)
@@ -167,6 +168,8 @@ void MerchantWindow::UpdateSellList()
     const auto& items = client->GetInventoryItems();
     unsigned index = 0;
     unsigned selIndex = M_MAX_UNSIGNED;
+
+    std::vector<uint16_t> priceItems;
     for (const auto& ci : items)
     {
         auto item = itemsCache->Get(ci.index);
@@ -177,6 +180,7 @@ void MerchantWindow::UpdateSellList()
         if (ci.value == 0 || ci.count == 0)
             continue;
 
+        priceItems.push_back(ci.pos);
         CreateItem(*sellItems_, ci);
         if (oldSel != 0 && ci.pos == oldSel)
             selIndex = index;
@@ -186,10 +190,37 @@ void MerchantWindow::UpdateSellList()
     if (selIndex != M_MAX_UNSIGNED)
         sellItems_->SetSelection(selIndex);
 
-    URHO3D_LOGINFOF("Sell items count %d", sellItems_->GetNumItems());
+    client->GetItemPrice(priceItems);
 }
 
-UIElement* MerchantWindow::GetSellItem(uint16_t pos)
+void MerchantWindow::UpdateBuyList()
+{
+    uint16_t oldSel = 0;
+    auto sel = buyItems_->GetSelectedItem();
+    if (sel)
+        oldSel = static_cast<uint16_t>(sel->GetVar("ID").GetUInt());
+
+    buyItems_->RemoveAllItems();
+
+    unsigned index = 0;
+    unsigned selIndex = M_MAX_UNSIGNED;
+
+    auto* client = GetSubsystem<FwClient>();
+    const auto& items = client->GetMerchantItems();
+    for (const auto& item : items)
+    {
+        URHO3D_LOGINFOF("Item ID %d", item.id);
+        CreateItem(*buyItems_, item);
+        if (oldSel != 0 && item.id == oldSel)
+            selIndex = index;
+        ++index;
+    }
+    buyItems_->UpdateLayout();
+    if (selIndex != M_MAX_UNSIGNED)
+        buyItems_->SetSelection(selIndex);
+}
+
+UISelectable* MerchantWindow::GetSellItem(uint16_t pos)
 {
     for (unsigned i = 0; i < sellItems_->GetNumItems(); ++i)
     {
@@ -197,7 +228,7 @@ UIElement* MerchantWindow::GetSellItem(uint16_t pos)
         if (!item)
             continue;
         if (item->GetVar("Pos").GetUInt() == pos)
-            return item;
+            return static_cast<UISelectable*>(item);
     }
     return nullptr;
 }
@@ -225,13 +256,14 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
 
     UISelectable* uiS = container.CreateChild<UISelectable>("Item" + String(iItem.pos));
     uiS->SetLayoutSpacing(4);
+    uiS->SetVar("ID", iItem.id);
     uiS->SetVar("Pos", iItem.pos);
     uiS->SetVar("Count", iItem.count);
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
 
-    UIElement* textContainer = uiS->CreateChild<UIElement>();
+    UIElement* textContainer = uiS->CreateChild<UIElement>("TextContainer");
     textContainer->SetInternal(true);
 
     Text* nameElem = textContainer->CreateChild<Text>("Name");
@@ -242,8 +274,10 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
         countElem->SetText(String(iItem.count) + " x");
     countElem->SetInternal(true);
     Text* valueElem = textContainer->CreateChild<Text>("Value");
-    valueElem->SetText(FormatMoney(iItem.value * iItem.count) + " Drachma");
+    valueElem->SetText(FormatMoney(iItem.value * iItem.count) + " D");
     valueElem->SetInternal(true);
+    Text* priceElem = textContainer->CreateChild<Text>("Price");
+    priceElem->SetInternal(true);
 
     uiS->SetStyle("MerchantListItem");
     Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
@@ -256,12 +290,7 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
 
 void MerchantWindow::HandleMerchantItems(StringHash, VariantMap&)
 {
-    auto* client = GetSubsystem<FwClient>();
-    const auto& items = client->GetMerchantItems();
-    for (const auto& item : items)
-    {
-        (void)item;
-    }
+    UpdateBuyList();
 }
 
 void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
@@ -277,12 +306,22 @@ void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
         uint32_t count = 1;
         if (item->GetVar("Count").GetUInt() > 1)
             count = countSpinner_->GetValue();
-        URHO3D_LOGINFOF("Selling %d, count %d", pos, count);
         client->SellItem(npcId_, pos, count);
     }
     else
     {
         // Buy
+        auto* client = GetSubsystem<FwClient>();
+        auto* item = buyItems_->GetSelectedItem();
+        if (!item)
+            return;
+        uint32_t id = item->GetVar("ID").GetUInt();
+        uint32_t count = 1;
+        if (item->GetVar("Count").GetUInt() > 1)
+            count = countSpinner_->GetValue();
+        client->BuyItem(npcId_, id, count);
+        // TODO: Make this more selective not requesting the whole list again.
+        client->RequestMerchantItems(npcId_);
     }
 }
 
@@ -324,6 +363,8 @@ void MerchantWindow::HandleTabSelected(StringHash, VariantMap& eventData)
     {
         Text* txt = doItButton_->GetChildStaticCast<Text>("DoItButtonText", true);
         txt->SetText("Buy");
+        auto* client = GetSubsystem<FwClient>();
+        client->RequestMerchantItems(npcId_);
     }
     UpdateLayout();
 }
@@ -354,7 +395,24 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
         countText_->SetVisible(false);
         countSpinner_->SetVisible(false);
     }
-    URHO3D_LOGINFOF("Sell item selected %d, count %d", index, count);
+}
+
+void MerchantWindow::HandleItemPrice(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ItemPrice;
+    auto* item = GetSellItem(static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt()));
+    if (!item)
+        return;
+
+    unsigned price = eventData[P_PRICE].GetUInt();
+    unsigned count = item->GetVar("Count").GetUInt();
+    Text* priceText = item->GetChildStaticCast<Text>("Price", true);
+    String txt;
+    if (count > 1)
+        txt.AppendWithFormat("%s D (%u D each)", FormatMoney(price * count).CString(), price);
+    else
+        txt.AppendWithFormat("%s D", FormatMoney(price).CString());
+    priceText->SetText(txt);
 }
 
 void MerchantWindow::Initialize(uint32_t npcId)
@@ -363,8 +421,6 @@ void MerchantWindow::Initialize(uint32_t npcId)
     npcId_ = npcId;
     auto* client = GetSubsystem<FwClient>();
     client->UpdateInventory();
-
-    client->GetMerchantItems();
 }
 
 void MerchantWindow::Clear()

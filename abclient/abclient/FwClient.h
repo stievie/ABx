@@ -46,6 +46,7 @@ struct EventItem
 
 struct ConcreteItem
 {
+    uint32_t id{ 0 };               // Server ID
     AB::Entities::ItemType type;
     uint32_t index;
     AB::Entities::StoragePlace place;
@@ -267,7 +268,8 @@ public:
     void DepositMoney(uint32_t amount);
     void WithdrawMoney(uint32_t amount);
     void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
-    void GetMerchantItems(uint32_t npcId);
+    void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
+    void RequestMerchantItems(uint32_t npcId);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

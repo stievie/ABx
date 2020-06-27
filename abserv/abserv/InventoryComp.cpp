@@ -211,7 +211,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
     return ret;
 }
 
-bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* message)
+bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
 {
     assert(Is<Player>(owner_));
 
@@ -233,7 +233,7 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
 
     if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
         return false;
-    uint32_t amount = item->concreteItem_.value * item->concreteItem_.count;
+    uint32_t amount = pricePer * count;
     if (amount == 0)
         return false;
     if (!CheckInventoryCapacity(amount, 0))
@@ -265,6 +265,59 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, Net::NetworkMessage* m
     }
 
     AddInventoryMoney(amount, message);
+    return true;
+}
+
+bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
+{
+    assert(Is<Player>(owner_));
+    assert(item);
+    if (count == 0)
+        return false;
+
+    if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
+        return false;
+    if (!AB::Entities::IsItemResellable(item->data_.itemFlags))
+        return false;
+    uint32_t amount = pricePer * count;
+    if (amount == 0)
+        return false;
+
+    if (!CheckInventoryCapacity(0, 1))
+    {
+        owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        return false;
+    }
+
+    auto& player = To<Player>(owner_);
+    auto* dc = GetSubsystem<IO::DataClient>();
+
+    if (!item->IsStackable() || item->concreteItem_.count == count)
+    {
+        // If the item is not stackable just move to the player
+        item->concreteItem_.accountUuid = player.account_.uuid;
+        item->concreteItem_.playerUuid = player.data_.uuid;
+        if (!SetInventoryItem(item->id_, message))
+            return false;
+        dc->Update(item->concreteItem_);
+        dc->Invalidate(item->concreteItem_);
+        // Merchant got new items.
+        AB::Entities::MerchantItemList ml;
+        dc->Invalidate(ml);
+    }
+    else
+    {
+        auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Inventory, 0);
+        if (SetInventoryItem(newItem->id_, message))
+        {
+            dc->Update(item->concreteItem_);
+            dc->Invalidate(item->concreteItem_);
+            return true;
+        }
+        return false;
+    }
+
+    RemoveInventoryMoney(amount, message);
     return true;
 }
 

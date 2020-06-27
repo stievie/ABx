@@ -113,6 +113,7 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(TradeOffer)             \
     ENUMERATE_CLIENT_PACKET_CODE(TradeAccept)            \
     ENUMERATE_CLIENT_PACKET_CODE(SellItem)               \
+    ENUMERATE_CLIENT_PACKET_CODE(BuyItem)                \
     ENUMERATE_CLIENT_PACKET_CODE(GetMerchantItems)       \
     ENUMERATE_CLIENT_PACKET_CODE(GetItemsPrice)
 
@@ -447,7 +448,8 @@ enum class PlayerErrorValue : uint8_t
     TradingPartnerInvalid,
     TradingPartnerQueueing,
     TradingPartnerTrading,
-    AlreadyTradingWithThisTarget
+    AlreadyTradingWithThisTarget,
+    NotEnoughMoney
 };
 
 enum class GameObjectType : uint8_t

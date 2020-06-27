@@ -366,6 +366,14 @@ void ProtocolGame::SellItem(uint32_t npcId, uint16_t pos, uint32_t count)
     SendPacket(AB::GameProtocol::ClientPacketTypes::SellItem, packet);
 }
 
+void ProtocolGame::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
+{
+    AB::Packets::Client::BuyItem packet = {
+        npcId, id, count
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::BuyItem, packet);
+}
+
 void ProtocolGame::GetMerchantItems(uint32_t npcId)
 {
     AB::Packets::Client::GetMerchantItems packet = {

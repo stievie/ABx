@@ -450,6 +450,10 @@
             <element type="Text" internal="true">
                 <attribute name="Font Size" value="8" />
             </element>
+            <!-- Calculated price -->
+            <element type="Text" internal="true">
+                <attribute name="Font Size" value="8" />
+            </element>
         </element>
     </element>
     <element type="SkillListItem" auto="false">

@@ -49,7 +49,9 @@ struct ItemPrice : Entity
 
     timestamp_t lastCalc{ 0 };
     uint32_t countAvail{ 0 };
+    // How much the merchant charges
     uint32_t priceSell{ 0 };
+    // How much the merchant pays
     uint32_t priceBuy{ 0 };
     uint32_t priceBase{ 0 };
 };
