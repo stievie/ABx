@@ -117,10 +117,6 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     item.priceSell = static_cast<uint32_t>(item.priceBase * sellFactor);
     item.priceBuy = std::max(minValue, static_cast<uint32_t>(item.priceBase * buyFactor));
 
-    LOG_INFO << "Sell " << item.priceSell << " Buy " << item.priceBuy <<
-        " Sell factor " << sellFactor << " Buy factor " << buyFactor <<
-        " Chance " << ((float)dropChance / 100.0f) << std::endl;
-
     return true;
 }
 
