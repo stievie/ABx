@@ -1721,6 +1721,10 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
         auto* item = cache->Get(itemId);
         // I guess this shouldn't happen
         assert(item);
+
+        if (item->concreteItem_.count == 0)
+            continue;
+
         AB::Packets::Server::Internal::MerchantItem merchantItem;
         merchantItem.id = itemId;
         merchantItem.index = item->data_.index;

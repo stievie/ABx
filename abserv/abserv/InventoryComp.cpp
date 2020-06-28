@@ -308,13 +308,11 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
     else
     {
         auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Inventory, 0);
-        if (SetInventoryItem(newItem->id_, message))
-        {
-            dc->Update(item->concreteItem_);
-            dc->Invalidate(item->concreteItem_);
-            return true;
-        }
-        return false;
+        assert(newItem);
+        if (!SetInventoryItem(newItem->id_, message))
+            return false;
+        dc->Update(item->concreteItem_);
+        dc->Invalidate(item->concreteItem_);
     }
 
     RemoveInventoryMoney(amount, message);
