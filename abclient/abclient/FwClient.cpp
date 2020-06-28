@@ -2248,7 +2248,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
         ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
         ci.pos = item.pos;
         ci.count = item.count;
-        ci.value = item.value;
+        ci.value = item.sellPrice;
         ci.flags = item.flags;
         LoadStatsFromString(ci.stats, item.stats);
         merchantItems_.push_back(std::move(ci));

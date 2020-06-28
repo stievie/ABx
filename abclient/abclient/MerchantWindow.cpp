@@ -76,6 +76,7 @@ void MerchantWindow::CreateUI()
     UpdateSellList();
 
     SubscribeToEvent(sellItems_, E_ITEMSELECTED, URHO3D_HANDLER(MerchantWindow, HandleSellItemSelected));
+    SubscribeToEvent(buyItems_, E_ITEMSELECTED, URHO3D_HANDLER(MerchantWindow, HandleBuyItemSelected));
     SubscribeToEvent(tabgroup_, E_TABSELECTED, URHO3D_HANDLER(MerchantWindow, HandleTabSelected));
     tabgroup_->SetEnabled(true);
     tabgroup_->SetSelectedIndex(0);
@@ -118,9 +119,7 @@ void MerchantWindow::CreatePageSell(TabElement* tabElement)
 {
     BorderImage* page = tabElement->tabBody_;
 
-    Window* wnd = page->CreateChild<Window>();
-    LoadWindow(wnd, "UI/MerchantWindowPageItems.xml");
-    sellItems_ = wnd->GetChildStaticCast<ListView>("ItemsListView", true);
+    sellItems_ = page->CreateChild<ListView>("SellItemsListView");
     sellItems_->SetStyleAuto();
     sellItems_->SetHighlightMode(HM_ALWAYS);
     page->UpdateLayout();
@@ -130,29 +129,10 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
 {
     BorderImage* page = tabElement->tabBody_;
 
-    Window* wnd = page->CreateChild<Window>();
-    LoadWindow(wnd, "UI/MerchantWindowPageItems.xml");
-    buyItems_ = wnd->GetChildStaticCast<ListView>("ItemsListView", true);
+    buyItems_ = page->CreateChild<ListView>("BuyItemsListView");
     buyItems_->SetStyleAuto();
     buyItems_->SetHighlightMode(HM_ALWAYS);
     page->UpdateLayout();
-}
-
-void MerchantWindow::LoadWindow(Window* wnd, const String& fileName)
-{
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* xml = cache->GetResource<XMLFile>(fileName);
-    wnd->LoadXML(xml->GetRoot());
-    // It seems this isn't loaded from the XML file
-    wnd->SetLayoutMode(LM_VERTICAL);
-    wnd->SetLayoutBorder(IntRect(4, 4, 4, 4));
-    wnd->SetPivot(0, 0);
-    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
-    wnd->SetTexture(tex);
-    wnd->SetImageRect(IntRect(48, 0, 64, 16));
-    wnd->SetBorder(IntRect(4, 4, 4, 4));
-    wnd->SetImageBorder(IntRect(0, 0, 0, 0));
-    wnd->SetResizeBorder(IntRect(8, 8, 8, 8));
 }
 
 void MerchantWindow::UpdateSellList()
@@ -186,7 +166,6 @@ void MerchantWindow::UpdateSellList()
             selIndex = index;
         ++index;
     }
-    sellItems_->UpdateLayout();
     if (selIndex != M_MAX_UNSIGNED)
         sellItems_->SetSelection(selIndex);
 
@@ -209,13 +188,11 @@ void MerchantWindow::UpdateBuyList()
     const auto& items = client->GetMerchantItems();
     for (const auto& item : items)
     {
-        URHO3D_LOGINFOF("Item ID %d", item.id);
         CreateItem(*buyItems_, item);
         if (oldSel != 0 && item.id == oldSel)
             selIndex = index;
         ++index;
     }
-    buyItems_->UpdateLayout();
     if (selIndex != M_MAX_UNSIGNED)
         buyItems_->SetSelection(selIndex);
 }
@@ -259,6 +236,7 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
     uiS->SetVar("ID", iItem.id);
     uiS->SetVar("Pos", iItem.pos);
     uiS->SetVar("Count", iItem.count);
+    uiS->SetVar("Flags", iItem.flags);
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
@@ -273,11 +251,20 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
     if (iItem.count > 1)
         countElem->SetText(String(iItem.count) + " x");
     countElem->SetInternal(true);
-    Text* valueElem = textContainer->CreateChild<Text>("Value");
-    valueElem->SetText(FormatMoney(iItem.value * iItem.count) + " D");
-    valueElem->SetInternal(true);
+
     Text* priceElem = textContainer->CreateChild<Text>("Price");
     priceElem->SetInternal(true);
+    if (&container == sellItems_.Get())
+    {
+        priceElem->SetText(FormatMoney(iItem.value * iItem.count) + " D");
+    }
+    else
+    {
+        if (AB::Entities::IsItemStackable(iItem.flags))
+            priceElem->SetText(FormatMoney(iItem.value) + " D each");
+        else
+            priceElem->SetText(FormatMoney(iItem.value) + " D");
+    }
 
     uiS->SetStyle("MerchantListItem");
     Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
@@ -286,6 +273,18 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
     container.AddItem(uiS);
 
     return uiS;
+}
+
+void MerchantWindow::ShowCountSpinner(bool b, uint32_t min, uint32_t max, uint32_t value)
+{
+    countText_->SetVisible(b);
+    countSpinner_->SetVisible(b);
+    if (min != 0)
+        countSpinner_->SetMin(min);
+    if (max != 0)
+        countSpinner_->SetMax(max);
+    if (value != 0)
+        countSpinner_->SetValue(value);
 }
 
 void MerchantWindow::HandleMerchantItems(StringHash, VariantMap&)
@@ -352,12 +351,15 @@ void MerchantWindow::HandleInventoryItemRemove(StringHash, VariantMap& eventData
 
 void MerchantWindow::HandleTabSelected(StringHash, VariantMap& eventData)
 {
+    ShowCountSpinner(false);
+
     using namespace TabSelected;
     int index = eventData[P_INDEX].GetInt();
     if (index == 0)
     {
         Text* txt = doItButton_->GetChildStaticCast<Text>("DoItButtonText", true);
         txt->SetText("Sell");
+        UpdateSellList();
     }
     else
     {
@@ -376,25 +378,33 @@ void MerchantWindow::HandleSellItemSelected(StringHash, VariantMap& eventData)
     auto* item = sellItems_->GetItem(index);
     if (index == M_MAX_UNSIGNED || !item)
     {
-        countText_->SetVisible(false);
-        countSpinner_->SetVisible(false);
+        ShowCountSpinner(false);
         return;
     }
 
     unsigned count = item->GetVar("Count").GetUInt();
     if (count > 1)
-    {
-        countText_->SetVisible(true);
-        countSpinner_->SetVisible(true);
-        countSpinner_->SetMin(1);
-        countSpinner_->SetMax(count);
-        countSpinner_->SetValue(count);
-    }
+        ShowCountSpinner(true, 1, count, count);
     else
+        ShowCountSpinner(false);
+}
+
+void MerchantWindow::HandleBuyItemSelected(StringHash, VariantMap& eventData)
+{
+    using namespace ItemSelected;
+    unsigned index = eventData[P_SELECTION].GetUInt();
+    auto* item = buyItems_->GetItem(index);
+    if (index == M_MAX_UNSIGNED || !item)
     {
-        countText_->SetVisible(false);
-        countSpinner_->SetVisible(false);
+        ShowCountSpinner(false);
+        return;
     }
+
+    unsigned flags = item->GetVar("Flags").GetUInt();
+    if (AB::Entities::IsItemStackable(flags))
+        ShowCountSpinner(true, 1, 10, 10);
+    else
+        ShowCountSpinner(false);
 }
 
 void MerchantWindow::HandleItemPrice(StringHash, VariantMap& eventData)

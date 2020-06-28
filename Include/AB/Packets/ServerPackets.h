@@ -650,6 +650,7 @@ struct MerchantItems
             ar.value(item.count);
             ar.value(item.value);
             ar.value(item.stats);
+            ar.value(item.flags);
             ar.value(item.sellPrice);
             ar.value(item.buyPrice);
         }

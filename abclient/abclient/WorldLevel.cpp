@@ -484,7 +484,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         switch (object->objectType_)
         {
         case ObjectType::Player:
-            if (!existing)
+            if (!existing && !AB::Entities::IsOutpost(mapType_))
                 chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         case ObjectType::Self:
@@ -521,7 +521,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
         }
         object->RemoveFromScene();
         object->GetNode()->Remove();
-        if (object->objectType_ == ObjectType::Player)
+        if (object->objectType_ == ObjectType::Player && !AB::Entities::IsOutpost(mapType_))
         {
             Actor* act = To<Actor>(object);
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");

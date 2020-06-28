@@ -38,7 +38,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
         static_cast<int>(AB::Entities::StoragePlace::Merchant);
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        il.itemUuids.push_back({ result->GetString("uuid"), result->GetString("item_uuid") });
+        il.items.push_back({ result->GetString("uuid"), result->GetString("item_uuid") });
     }
     return true;
 }

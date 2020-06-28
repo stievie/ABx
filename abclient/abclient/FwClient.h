@@ -52,7 +52,7 @@ struct ConcreteItem
     AB::Entities::StoragePlace place;
     uint16_t pos;
     uint32_t count;
-    uint16_t value;
+    uint32_t value;
     HashMap<Game::ItemStatIndex, Variant> stats;
     uint32_t flags;
 };

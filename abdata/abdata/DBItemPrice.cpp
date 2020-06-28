@@ -30,6 +30,18 @@ bool DBItemPrice::Create(AB::Entities::ItemPrice&)
     return true;
 }
 
+uint32_t DBItemPrice::GetDropChanche(const std::string& itemUuid)
+{
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "SELECT AVG(chance) AS avg_chance FROM `game_item_chances` WHERE `item_uuid` = " << db->EscapeString(itemUuid) <<
+        " GROUP BY `item_uuid`";
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return 0;
+    return result->GetUInt("avg_chance");
+}
+
 bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
 {
     if (Utils::Uuid::IsEmpty(item.uuid))
@@ -41,15 +53,18 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream itemQuery;
-    itemQuery << "SELECT `type`, `value` FROM `game_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
+    itemQuery << "SELECT `type`, `item_flags`, `value` FROM `game_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
     std::shared_ptr<DB::DBResult> itemResult = db->StoreQuery(itemQuery.str());
     if (!itemResult)
         return false;
     AB::Entities::ItemType type = static_cast<AB::Entities::ItemType>(itemResult->GetUInt("type"));
+    uint32_t itemFlags = itemResult->GetUInt("item_flags");
 
     uint32_t value = itemResult->GetUInt("value");
     uint32_t avail = 0;
     uint32_t minValue = 1;
+
+    uint32_t dropChance = GetDropChanche(item.uuid);
 
     if (type != AB::Entities::ItemType::Material)
     {
@@ -78,12 +93,33 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     item.countAvail = avail;
     item.priceBase = value;
 
-    // TODO: For now lets just take the merchant 10%. In the future the price should be calculated according supply and demand.
-    float sellFactor = 1.1f;
-    float buyFactor = 0.9f;
+    uint32_t aimCount = AB::Entities::IsItemStackable(itemFlags) ? 500 : 2;
+    float sellFactor = 1.25f;
+    float buyFactor = 0.85f;
+    if (avail > aimCount)
+    {
+        sellFactor += 9.0f / (float)avail;
+        buyFactor += 5.5f / (float)avail;
+    }
+    else
+    {
+        sellFactor += 9.0f;
+        buyFactor += 5.5f;
+    }
+    if (dropChance != 0)
+    {
+        // Although the chance is in promille, we devide by 100 because the chance should't have
+        // such a great impact on the price.
+        sellFactor /= ((float)dropChance / 100.0f);
+        buyFactor /= ((float)dropChance / 100.0f);
+    }
 
-    item.priceSell = static_cast<int>(item.priceBase * sellFactor);
+    item.priceSell = static_cast<uint32_t>(item.priceBase * sellFactor);
     item.priceBuy = std::max(minValue, static_cast<uint32_t>(item.priceBase * buyFactor));
+
+    LOG_INFO << "Sell " << item.priceSell << " Buy " << item.priceBuy <<
+        " Sell factor " << sellFactor << " Buy factor " << buyFactor <<
+        " Chance " << ((float)dropChance / 100.0f) << std::endl;
 
     return true;
 }

@@ -46,21 +46,23 @@ struct MerchantItemList : Entity
     {
         return KEY_MERCHANT_ITEMLIST;
     }
+    struct Uuids
+    {
+        std::string concreteUuid;
+        std::string itemUuid;
+    };
     template<typename S>
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.value1b(storagePlace);
-        s.container(itemUuids, Limits::MAX_ITEMS, [&s](std::pair<std::string, std::string>& c)
+        s.container(items, Limits::MAX_ITEMS, [&s](Uuids& c)
         {
-            s.text1b(c.first, Limits::MAX_UUID);
-            s.text1b(c.second, Limits::MAX_UUID);
+            s.text1b(c.concreteUuid, Limits::MAX_UUID);
+            s.text1b(c.itemUuid, Limits::MAX_UUID);
         });
     }
 
-    StoragePlace storagePlace = StoragePlace::Merchant;
-    // First concrete uuid, second item uuid
-    std::vector<std::pair<std::string, std::string>> itemUuids;
+    std::vector<Uuids> items;
 };
 
 }

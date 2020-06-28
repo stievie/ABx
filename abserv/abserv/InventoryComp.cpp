@@ -272,13 +272,12 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 {
     assert(Is<Player>(owner_));
     assert(item);
-    if (count == 0)
-        return false;
 
     if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
         return false;
     if (!AB::Entities::IsItemResellable(item->data_.itemFlags))
         return false;
+
     uint32_t amount = pricePer * count;
     if (amount == 0)
         return false;

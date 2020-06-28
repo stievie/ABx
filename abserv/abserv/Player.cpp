@@ -1659,6 +1659,8 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     uint32_t price = (*it).second.priceSell;
     auto msg = Net::NetworkMessage::GetNew();
 
+    count = std::max(item->concreteItem_.count, count);
+
     if (price * count <= inventoryComp_->GetInventoryMoney())
     {
         bool ret = inventoryComp_->BuyItem(item, count, price, msg.get());
@@ -1706,18 +1708,17 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     auto* factory = GetSubsystem<ItemFactory>();
     auto* cache = GetSubsystem<ItemsCache>();
     uint16_t count = 0;
-    for (const auto& itemPair : ml.itemUuids)
+    for (const auto& itemUuids : ml.items)
     {
         AB::Entities::ItemPrice price;
-        price.uuid = itemPair.second;
+        price.uuid = itemUuids.itemUuid;
         if (!cli->Read(price))
         {
-            LOG_ERROR << "Error reading item price for " << itemPair.second << std::endl;
+            LOG_ERROR << "Error reading item price for " << itemUuids.itemUuid << std::endl;
             continue;
         }
 
-        ++count;
-        uint32_t itemId = factory->GetConcreteId(itemPair.first);
+        uint32_t itemId = factory->GetConcreteId(itemUuids.concreteUuid);
         auto* item = cache->Get(itemId);
         // I guess this shouldn't happen
         assert(item);
@@ -1725,19 +1726,22 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
         if (item->concreteItem_.count == 0)
             continue;
 
+        ++count;
         AB::Packets::Server::Internal::MerchantItem merchantItem;
         merchantItem.id = itemId;
         merchantItem.index = item->data_.index;
         merchantItem.type = static_cast<uint16_t>(item->data_.type);
-        merchantItem.count = item->concreteItem_.count;
+        // The player doesn't need to know how many items we have
+        merchantItem.count = 0;
         merchantItem.value = item->concreteItem_.value;
         merchantItem.stats = item->concreteItem_.itemStats;
+        merchantItem.flags = item->data_.itemFlags;
         merchantItem.buyPrice = price.priceBuy;
         merchantItem.sellPrice = price.priceSell;
 
         packet.items.push_back(std::move(merchantItem));
 
-        calculatedItemPrices_.emplace(itemPair.second, std::move(price));
+        calculatedItemPrices_.emplace(itemUuids.itemUuid, std::move(price));
     }
     packet.count = count;
     AB::Packets::Add(packet, *msg);
