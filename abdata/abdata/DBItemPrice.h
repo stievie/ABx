@@ -28,7 +28,7 @@ namespace DB {
 class DBItemPrice
 {
 private:
-    static uint32_t GetDropChanche(const std::string& itemUuid);
+    static uint32_t GetDropChance(const std::string& itemUuid);
 public:
     DBItemPrice() = delete;
 

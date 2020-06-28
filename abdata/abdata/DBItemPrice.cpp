@@ -30,7 +30,7 @@ bool DBItemPrice::Create(AB::Entities::ItemPrice&)
     return true;
 }
 
-uint32_t DBItemPrice::GetDropChanche(const std::string& itemUuid)
+uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
 {
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
@@ -64,7 +64,7 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     uint32_t avail = 0;
     uint32_t minValue = 1;
 
-    uint32_t dropChance = GetDropChanche(item.uuid);
+    uint32_t dropChance = GetDropChance(item.uuid);
 
     if (type != AB::Entities::ItemType::Material)
     {
