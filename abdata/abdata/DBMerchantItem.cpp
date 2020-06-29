@@ -46,12 +46,7 @@ bool DBMerchantItem::Load(AB::Entities::MerchantItem& item)
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
-    {
-        LOG_DEBUG << "No concrtete item for " << item.uuid << std::endl;
-        LOG_DEBUG << query.str() << std::endl;
         return false;
-    }
-    LOG_DEBUG << result->GetString("uuid") << std::endl;
     item.concreteUuid = result->GetString("uuid");
     return true;
 }
