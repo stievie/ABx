@@ -31,6 +31,7 @@
 #include <asio.hpp>
 #include <eastl.hpp>
 #include <mutex>
+#include <sa/IdGenerator.h>
 
 class ConnectionManager;
 
@@ -42,7 +43,9 @@ public:
     asio::ip::tcp::socket& GetSocket();
     void Start();
     void Stop();
+    uint32_t GetId() const { return id_; }
 private:
+    static sa::IdGenerator<uint32_t> idGenerator;
     template <typename Callable, typename... Args>
     void AddTask(Callable&& function, Args&&... args)
     {
@@ -51,6 +54,8 @@ private:
         );
     }
 
+    void StartLockOperation();
+    void StartUnlockOperation();
     void StartCreateOperation();
     void StartUpdateDataOperation();
     void StartReadOperation();
@@ -85,6 +90,7 @@ private:
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
+    uint32_t id_;
     size_t maxDataSize_;
     uint16_t maxKeySize_;
     asio::ip::tcp::socket socket_;

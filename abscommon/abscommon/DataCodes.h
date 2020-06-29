@@ -29,6 +29,8 @@ enum class OpCodes : uint8_t
 {
     None = 0,
     // Requests
+    Lock,
+    Unlock,
     Create,
     Update,
     Read,

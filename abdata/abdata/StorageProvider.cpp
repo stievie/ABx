@@ -121,7 +121,29 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBItemPrice, AB::Entities::ItemPrice>();
 }
 
-bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
+bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
+{
+    auto _data = cache_.find(key);
+    if (_data == cache_.end())
+        return false;
+    if (_data->second.locker != 0)
+        return false;
+    _data->second.locker = clientId;
+    return true;
+}
+
+bool StorageProvider::Unlock(uint32_t clientId, const IO::DataKey& key)
+{
+    auto _data = cache_.find(key);
+    if (_data == cache_.end())
+        return false;
+    if (_data->second.locker != clientId)
+        return false;
+    _data->second.locker = 0;
+    return true;
+}
+
+bool StorageProvider::Create(uint32_t clientId, const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     auto _data = cache_.find(key);
 
@@ -130,7 +152,7 @@ bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData>
         // If there is a deleted record we must delete it from DB now or we may get
         // a constraint violation.
         if (IsDeleted((*_data).second.flags))
-            FlushData(key);
+            FlushData(clientId, key);
         else
             // Already exists
             return false;
@@ -153,16 +175,16 @@ bool StorageProvider::Create(const IO::DataKey& key, ea::shared_ptr<StorageData>
 
     // Unfortunately we must flush the data for create operations. Or we find a way
     // to check constraints, unique columns etc.
-    if (!FlushData(key))
+    if (!FlushData(clientId, key))
     {
         // Failed delete from cache
-        RemoveData(key);
+        RemoveData(clientId, key);
         return false;
     }
     return true;
 }
 
-bool StorageProvider::Update(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
+bool StorageProvider::Update(uint32_t, const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     std::string table;
     uuids::uuid id;
@@ -212,7 +234,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
         currentSize_ = (currentSize_ - cache_[key].data->size()) + data->size();
     }
 
-    cache_[key] = { flags, data };
+    cache_[key] = { flags, 0, data };
 
     const size_t tableHash = sa::StringHashRt(table.c_str());
     // Special case for player names
@@ -224,7 +246,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     }
 }
 
-bool StorageProvider::Read(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
+bool StorageProvider::Read(uint32_t, const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     auto _data = cache_.find(key);
     if (_data != cache_.end())
@@ -294,7 +316,7 @@ bool StorageProvider::Read(const IO::DataKey& key, ea::shared_ptr<StorageData> d
 
 }
 
-bool StorageProvider::Delete(const IO::DataKey& key)
+bool StorageProvider::Delete(uint32_t clientId, const IO::DataKey& key)
 {
     // You can only delete what you've loaded before
     auto data = cache_.find(key);
@@ -302,18 +324,21 @@ bool StorageProvider::Delete(const IO::DataKey& key)
     {
         return false;
     }
+    if (!IsUnlockedFor(clientId, data->second))
+        return false;
+
     sa::bits::set((*data).second.flags, CacheFlag::Deleted);
     return true;
 }
 
-bool StorageProvider::Invalidate(const IO::DataKey& key)
+bool StorageProvider::Invalidate(uint32_t clientId, const IO::DataKey& key)
 {
-    if (!FlushData(key))
+    if (!FlushData(clientId, key))
     {
         LOG_ERROR << "Error flushing " << key.format() << std::endl;
         return false;
     }
-    return RemoveData(key);
+    return RemoveData(clientId, key);
 }
 
 void StorageProvider::PreloadTask(IO::DataKey key)
@@ -347,7 +372,7 @@ void StorageProvider::PreloadTask(IO::DataKey key)
     }
 }
 
-bool StorageProvider::Preload(const IO::DataKey& key)
+bool StorageProvider::Preload(uint32_t, const IO::DataKey& key)
 {
     auto _data = cache_.find(key);
     if (_data == cache_.end())
@@ -360,7 +385,7 @@ bool StorageProvider::Preload(const IO::DataKey& key)
     return true;
 }
 
-bool StorageProvider::Exists(const IO::DataKey& key, ea::shared_ptr<StorageData> data)
+bool StorageProvider::Exists(uint32_t, const IO::DataKey& key, ea::shared_ptr<StorageData> data)
 {
     auto _data = cache_.find(key);
 
@@ -370,7 +395,7 @@ bool StorageProvider::Exists(const IO::DataKey& key, ea::shared_ptr<StorageData>
     return ExistsData(key, *data);
 }
 
-bool StorageProvider::Clear(const IO::DataKey&)
+bool StorageProvider::Clear(uint32_t clientId, const IO::DataKey&)
 {
     std::vector<IO::DataKey> toDelete;
 
@@ -386,7 +411,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
             // Can not delete these
             continue;
 
-        if (FlushData(key))
+        if (FlushData(clientId, key))
         {
             currentSize_ -= ci.second.data->size();
             toDelete.push_back(key);
@@ -409,7 +434,7 @@ void StorageProvider::Shutdown()
     std::scoped_lock lock(mutex);
     running_ = false;
     for (const auto& c : cache_)
-        FlushData(c.first);
+        FlushData(MY_CLIENT_ID, c.first);
 
     DB::DBAccount::LogoutAll();
 }
@@ -432,7 +457,7 @@ void StorageProvider::CleanCache()
         if (IsCreated((*i).second.flags))
         {
             // If it's in DB (created == true) update changed data in DB
-            ok = FlushData(key);
+            ok = FlushData(MY_CLIENT_ID, key);
         }
         if (ok)
         {
@@ -486,7 +511,7 @@ void StorageProvider::ClearPrices()
         return (tableHash == KEY_ITEMPRICE_HASH);
     })) != cache_.end())
     {
-        RemoveData((*i).first);
+        RemoveData(MY_CLIENT_ID, (*i).first);
     }
 }
 
@@ -509,7 +534,7 @@ void StorageProvider::FlushCache()
     {
         ++written;
         const IO::DataKey& key = (*i).first;
-        bool res = FlushData(key);
+        bool res = FlushData(MY_CLIENT_ID, key);
         if (!res)
         {
             LOG_WARNING << "Error flushing " << key.format() << std::endl;
@@ -568,18 +593,21 @@ void StorageProvider::CreateSpace(size_t size)
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
         const IO::DataKey key = index_.Next();
-        if (FlushData(key))
-            RemoveData(key);
+        if (FlushData(MY_CLIENT_ID, key))
+            RemoveData(MY_CLIENT_ID, key);
         else
             break;
     }
 }
 
-bool StorageProvider::RemoveData(const IO::DataKey& key)
+bool StorageProvider::RemoveData(uint32_t clientId, const IO::DataKey& key)
 {
     auto data = cache_.find(key);
     if (data != cache_.end())
     {
+        if (!IsUnlockedFor(clientId, data->second))
+            return false;
+
         RemovePlayerFromCache(key);
 
         currentSize_ -= (*data).second.data->size();
@@ -627,7 +655,7 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     return false;
 }
 
-bool StorageProvider::FlushData(const IO::DataKey& key)
+bool StorageProvider::FlushData(uint32_t clientId, const IO::DataKey& key)
 {
     if (readonly_)
     {
@@ -645,6 +673,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     // No need to save to DB when not modified
     if (!IsModified(item.flags) && !IsDeleted(item.flags) && IsCreated(item.flags))
         return true;
+
+    if (!IsUnlockedFor(clientId, item))
+        return false;
 
     std::string table;
     uuids::uuid id;
@@ -689,6 +720,13 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     if (!succ)
         LOG_ERROR << "Unable to write data" << std::endl;
     return succ;
+}
+
+bool StorageProvider::IsUnlockedFor(uint32_t clientId, const CacheItem& item)
+{
+    if (item.locker == 0)
+        return true;
+    return item.locker == clientId;
 }
 
 bool StorageProvider::ExistsData(const IO::DataKey& key, StorageData& data)

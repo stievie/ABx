@@ -82,14 +82,16 @@ class StorageProvider
 public:
     StorageProvider(size_t maxSize, bool readonly);
 
-    bool Create(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
-    bool Update(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
-    bool Read(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
-    bool Delete(const IO::DataKey& key);
-    bool Invalidate(const IO::DataKey& key);
-    bool Preload(const IO::DataKey& key);
-    bool Exists(const IO::DataKey& key, ea::shared_ptr<StorageData> data);
-    bool Clear(const IO::DataKey& key);
+    bool Lock(uint32_t clientId, const IO::DataKey& key);
+    bool Unlock(uint32_t clientId, const IO::DataKey& key);
+    bool Create(uint32_t clientId, const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Update(uint32_t clientId, const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Read(uint32_t clientId, const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Delete(uint32_t clientId, const IO::DataKey& key);
+    bool Invalidate(uint32_t clientId, const IO::DataKey& key);
+    bool Preload(uint32_t clientId, const IO::DataKey& key);
+    bool Exists(uint32_t clientId, const IO::DataKey& key, ea::shared_ptr<StorageData> data);
+    bool Clear(uint32_t clientId, const IO::DataKey& key);
 
     // Client compatible Methods
     template<typename E>
@@ -98,7 +100,7 @@ public:
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         SetEntity<E>(entity, *data);
-        if (!Read(aKey, data))
+        if (!Read(MY_CLIENT_ID, aKey, data))
             return false;
         if (GetEntity(*data.get(), entity))
             return true;
@@ -108,7 +110,7 @@ public:
     bool EntityDelete(const E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        return Delete(aKey);
+        return Delete(MY_CLIENT_ID, aKey);
     }
     template<typename E>
     bool EntityUpdateOrCreate(E& entity)
@@ -124,7 +126,7 @@ public:
         ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
-        return Update(aKey, data);
+        return Update(MY_CLIENT_ID, aKey, data);
     }
     template<typename E>
     bool EntityCreate(E& entity)
@@ -133,13 +135,13 @@ public:
         ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
-        return Create(aKey, data);
+        return Create(MY_CLIENT_ID, aKey, data);
     }
     template<typename E>
     bool EntityPreload(const E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        return Preload(aKey);
+        return Preload(MY_CLIENT_ID, aKey);
     }
     template<typename E>
     bool EntityExists(const E& entity)
@@ -148,22 +150,24 @@ public:
         ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (SetEntity<E>(entity, *data) == 0)
             return false;
-        return Exists(aKey, data);
+        return Exists(MY_CLIENT_ID, aKey, data);
     }
     /// Flushes an entity and removes it from cache
     template<typename E>
     bool EntityInvalidate(const E& entity)
     {
         const IO::DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        return Invalidate(aKey);
+        return Invalidate(MY_CLIENT_ID, aKey);
     }
     void Shutdown();
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
 private:
+    static constexpr uint32_t MY_CLIENT_ID = std::numeric_limits<uint32_t>::max();
     struct CacheItem
     {
         CacheFlags flags{ 0 };
+        uint32_t locker{ 0 };
         ea::shared_ptr<StorageData> data;
     };
     sa::CallableTable<size_t, bool, StorageData&> exitsCallables_;
@@ -201,7 +205,7 @@ private:
     void CacheData(const std::string& table, const uuids::uuid& id,
         ea::shared_ptr<StorageData> data,
         CacheFlags flags);
-    bool RemoveData(const IO::DataKey& key);
+    bool RemoveData(uint32_t clientId, const IO::DataKey& key);
     void PreloadTask(IO::DataKey key);
     bool ExistsData(const IO::DataKey& key, StorageData& data);
     /// If the data is a player and it's in playerNames_ remove it from playerNames_
@@ -236,7 +240,7 @@ private:
 
     /// Save data to DB or delete from DB.
     /// Depending on the data header calls CreateInDB(), SaveToDB() and/or DeleteFromDB()
-    bool FlushData(const IO::DataKey& key);
+    bool FlushData(uint32_t clientId, const IO::DataKey& key);
     template<typename D, typename E>
     bool FlushRecord(CacheItem& data)
     {
@@ -315,6 +319,7 @@ private:
         using OutputAdapter = bitsery::OutputBufferAdapter<StorageData>;
         return bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
     }
+    bool IsUnlockedFor(uint32_t clientId, const CacheItem& item);
 
     bool readonly_;
     bool running_;

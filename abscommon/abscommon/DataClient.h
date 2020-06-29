@@ -51,6 +51,20 @@ public:
 
     void Connect(const std::string& host, uint16_t port);
 
+    // Lock this entity so it can only be modified by this client.
+    template<typename E>
+    bool Lock(const E& entity)
+    {
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
+        return LockData(aKey);
+    }
+    // Unlock: Make it editable for all.
+    template<typename E>
+    bool Unlock(const E& entity)
+    {
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
+        return UnlockData(aKey);
+    }
     template<typename E>
     bool Read(E& entity)
     {
@@ -180,6 +194,8 @@ private:
 
     bool MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data);
     bool MakeRequestNoData(OpCodes opCode, const DataKey& key);
+    bool LockData(const DataKey& key);
+    bool UnlockData(const DataKey& key);
     bool ReadData(const DataKey& key, DataBuff& data);
     bool DeleteData(const DataKey& key);
     bool ExistsData(const DataKey& key, DataBuff& data);
@@ -213,5 +229,33 @@ private:
     asio::ip::tcp::resolver resolver_;
     bool connected_{ false };
 };
+
+// RAII Entity locker
+template<typename E>
+class EntityLocker
+{
+private:
+    const E& entity_;
+    DataClient& client_;
+    bool locked_;
+public:
+    EntityLocker(DataClient& client, const E& entity) :
+        entity_(entity),
+        client_(client),
+        locked_(false)
+    { }
+    ~EntityLocker()
+    {
+        if (locked_)
+            client_.Unlock(entity_);
+    }
+    bool Lock()
+    {
+        locked_ = client_.Lock(entity);
+        return locked_;
+    }
+};
+
+template <typename E> EntityLocker(DataClient& client, const E&) -> EntityLocker<E>;
 
 }

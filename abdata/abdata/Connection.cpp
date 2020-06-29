@@ -26,8 +26,11 @@
 #include "ConnectionManager.h"
 #include "StorageProvider.h"
 
+sa::IdGenerator<uint32_t> Connection::idGenerator;
+
 Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     StorageProvider& storage, size_t maxData, uint16_t maxKey) :
+    id_(idGenerator.Next()),
     maxDataSize_(maxData),
     maxKeySize_(maxKey),
     socket_(io_service),
@@ -84,6 +87,22 @@ void Connection::StartReadKey(uint16_t keySize)
             connectionManager_.Stop(self);
         }
     });
+}
+
+void Connection::StartLockOperation()
+{
+    if (storageProvider_.Lock(id_, key_))
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
+}
+
+void Connection::StartUnlockOperation()
+{
+    if (storageProvider_.Unlock(id_, key_))
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
 }
 
 void Connection::StartCreateOperation()
@@ -187,7 +206,7 @@ void Connection::StartReadOperation()
 
 void Connection::StartDeleteOperation()
 {
-    if (storageProvider_.Delete(key_))
+    if (storageProvider_.Delete(id_, key_))
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
         SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
@@ -195,7 +214,7 @@ void Connection::StartDeleteOperation()
 
 void Connection::StartInvalidateOperation()
 {
-    if (storageProvider_.Invalidate(key_))
+    if (storageProvider_.Invalidate(id_, key_))
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
         SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
@@ -203,7 +222,7 @@ void Connection::StartInvalidateOperation()
 
 void Connection::StartPreloadOperation()
 {
-    if (storageProvider_.Preload(key_))
+    if (storageProvider_.Preload(id_, key_))
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
         SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
@@ -244,7 +263,7 @@ void Connection::StartExistsOperation()
 
 void Connection::StartClearOperation()
 {
-    if (storageProvider_.Clear(key_))
+    if (storageProvider_.Clear(id_, key_))
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
         SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Other Error");
@@ -277,7 +296,7 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
 
 void Connection::UpdateDataTask()
 {
-    bool res = storageProvider_.Update(key_, data_);
+    bool res = storageProvider_.Update(id_, key_, data_);
     if (res)
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
@@ -306,7 +325,7 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
 
 void Connection::CreateDataTask()
 {
-    bool res = storageProvider_.Create(key_, data_);
+    bool res = storageProvider_.Create(id_, key_, data_);
     if (res)
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
@@ -339,7 +358,7 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
 
 void Connection::ReadDataTask()
 {
-    bool res = storageProvider_.Read(key_, data_);
+    bool res = storageProvider_.Read(id_, key_, data_);
 
     if (!res)
     {
@@ -383,7 +402,7 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
 
 void Connection::ExistsDataTask()
 {
-    bool res = storageProvider_.Exists(key_, data_);
+    bool res = storageProvider_.Exists(id_, key_, data_);
     if (res)
         SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
@@ -406,6 +425,12 @@ void Connection::StartClientRequestedOp()
     // All this executed in dispatcher thread
     switch (opcode_)
     {
+    case IO::OpCodes::Lock:
+        AddTask(&Connection::StartLockOperation);
+        break;
+    case IO::OpCodes::Unlock:
+        AddTask(&Connection::StartUnlockOperation);
+        break;
     case IO::OpCodes::Create:
         AddTask(&Connection::StartCreateOperation);
         break;

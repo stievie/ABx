@@ -76,7 +76,7 @@ void Server::HandleAccept(const asio::error_code& error)
         const auto endp = newConnection_->GetSocket().remote_endpoint();
         if (IsIpAllowed(endp))
         {
-            LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;
+            LOG_INFO << "Connection (" << newConnection_->GetId() << ") from " << endp.address() << ":" << endp.port() << std::endl;
             connectionManager_.Start(newConnection_);
         }
     }

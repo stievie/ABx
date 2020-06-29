@@ -114,6 +114,16 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     return false;
 }
 
+bool DataClient::LockData(const DataKey& key)
+{
+    return MakeRequestNoData(OpCodes::Lock, key);
+}
+
+bool DataClient::UnlockData(const DataKey& key)
+{
+    return MakeRequestNoData(OpCodes::Unlock, key);
+}
+
 bool DataClient::ReadData(const DataKey& key, DataBuff& data)
 {
     return MakeRequest(OpCodes::Read, key, data);
