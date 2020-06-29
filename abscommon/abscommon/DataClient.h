@@ -51,7 +51,7 @@ public:
 
     void Connect(const std::string& host, uint16_t port);
 
-    // Lock this entity so it can only be modified by this client.
+    // Lock this entity so it can only be modified by this client, i.e. make it read-only for all other clients.
     template<typename E>
     bool Lock(const E& entity)
     {
@@ -256,6 +256,6 @@ public:
     }
 };
 
-template <typename E> EntityLocker(DataClient& client, const E&) -> EntityLocker<E>;
+template <typename E> EntityLocker(DataClient&, const E&) -> EntityLocker<E>;
 
 }

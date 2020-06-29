@@ -319,7 +319,7 @@ private:
         using OutputAdapter = bitsery::OutputBufferAdapter<StorageData>;
         return bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
     }
-    bool IsUnlockedFor(uint32_t clientId, const CacheItem& item);
+    static bool IsUnlockedFor(uint32_t clientId, const CacheItem& item);
 
     bool readonly_;
     bool running_;
