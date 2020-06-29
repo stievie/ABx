@@ -550,7 +550,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
 void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
     auto* cache = GetSubsystem<ItemsCache>();
-    if (!item->IsResellable())
+    if (!item->IsResellable() || AB::Entities::IsItemCustomized(item->concreteItem_.flags))
     {
         // Only resellable items are kept by the Merchant, all others get deleted.
         DeleteItem(item);

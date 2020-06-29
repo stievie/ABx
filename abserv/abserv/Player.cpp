@@ -1610,9 +1610,12 @@ void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
         return;
 
     uint32_t price = item->concreteItem_.value;
-    const auto it = calculatedItemPrices_.find(item->data_.uuid);
-    if (it != calculatedItemPrices_.end())
-        price = (*it).second.priceBuy;
+    if (!AB::Entities::IsItemCustomized(item->concreteItem_.flags))
+    {
+        const auto it = calculatedItemPrices_.find(item->data_.uuid);
+        if (it != calculatedItemPrices_.end())
+            price = (*it).second.priceBuy;
+    }
 
     auto msg = Net::NetworkMessage::GetNew();
     bool ret = inventoryComp_->SellItem(pos, count, price, msg.get());
@@ -1765,25 +1768,36 @@ void Player::CRQGetItemPrice(std::vector<uint16_t> items)
         if (!item)
             continue;
 
-        const auto it = calculatedItemPrices_.find(item->data_.uuid);
-        if (it != calculatedItemPrices_.end())
+        if (!AB::Entities::IsItemCustomized(item->concreteItem_.flags))
         {
-            packet.items.push_back({ pos, (*it).second.priceBuy });
-            continue;
-        }
 
-        AB::Entities::ItemPrice price;
-        price.uuid = item->data_.uuid;
-        if (!cli->Read(price))
+            const auto it = calculatedItemPrices_.find(item->data_.uuid);
+            if (it != calculatedItemPrices_.end())
+            {
+                packet.items.push_back({ pos, (*it).second.priceBuy });
+                continue;
+            }
+
+            AB::Entities::ItemPrice price;
+            price.uuid = item->data_.uuid;
+            if (!cli->Read(price))
+            {
+                LOG_ERROR << "Error reading item price for " << item->data_.uuid << std::endl;
+                continue;
+            }
+
+            packet.items.push_back({
+                pos, price.priceBuy
+                });
+            calculatedItemPrices_.emplace(item->data_.uuid, std::move(price));
+        }
+        else
         {
-            LOG_ERROR << "Error reading item price for " << item->data_.uuid << std::endl;
-            continue;
+            // If the item is customized the merchant pays only the value
+            packet.items.push_back({
+                pos, item->concreteItem_.value
+            });
         }
-
-        packet.items.push_back({
-            pos, price.priceBuy
-        });
-        calculatedItemPrices_.emplace(item->data_.uuid, std::move(price));
     }
 
     if (packet.items.size() == 0)
