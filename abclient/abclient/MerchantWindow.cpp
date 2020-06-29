@@ -303,7 +303,7 @@ void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
             return;
         uint16_t pos = static_cast<uint16_t>(item->GetVar("Pos").GetUInt());
         uint32_t count = 1;
-        if (item->GetVar("Count").GetUInt() > 1)
+        if (countSpinner_->IsVisible())
             count = countSpinner_->GetValue();
         client->SellItem(npcId_, pos, count);
     }
@@ -316,7 +316,7 @@ void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
             return;
         uint32_t id = item->GetVar("ID").GetUInt();
         uint32_t count = 1;
-        if (item->GetVar("Count").GetUInt() > 1)
+        if (countSpinner_->IsVisible())
             count = countSpinner_->GetValue();
         client->BuyItem(npcId_, id, count);
         // TODO: Make this more selective not requesting the whole list again.

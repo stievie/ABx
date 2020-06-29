@@ -549,6 +549,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
 
 void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
+    assert(count <= item->concreteItem_.count);
     auto* cache = GetSubsystem<ItemsCache>();
     if (!item->IsResellable() || AB::Entities::IsItemCustomized(item->concreteItem_.flags))
     {
@@ -557,7 +558,6 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         cache->Remove(item->id_);
         return;
     }
-    assert(count <= item->concreteItem_.count);
 
     auto* dc = GetSubsystem<IO::DataClient>();
 

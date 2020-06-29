@@ -29,6 +29,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include <abscommon/Logger.h>
 #include <AB/Entities/MerchantItemList.h>
+#include <sa/Transaction.h>
 
 namespace Game {
 namespace Components {
@@ -270,12 +271,30 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net
 
 bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
 {
+    // If more than one player on different servers buy the same item at the same time, the Merchant may sell
+    // a couple more items than he owns. Let's not care too much about this.
     assert(Is<Player>(owner_));
     assert(item);
 
     if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
         return false;
     if (!AB::Entities::IsItemResellable(item->data_.itemFlags))
+        return false;
+
+    auto* dc = GetSubsystem<IO::DataClient>();
+
+    // Note: To avoid data races we lock the entity for writing for other clients
+    // (i.e. game servers) while the transaction is in progress.
+    IO::EntityLocker locker(*dc, item->concreteItem_);
+    if (!locker.Lock())
+    {
+        LOG_ERROR << "Unable to lock entitiy " << item->concreteItem_.uuid << std::endl;
+        return false;
+    }
+    // Re-read the item, in case it was sold meanwhile to a different player.
+    if (!dc->Read(item->concreteItem_))
+        return false;
+    if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
         return false;
 
     uint32_t amount = pricePer * count;
@@ -289,10 +308,10 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
     }
 
     auto& player = To<Player>(owner_);
-    auto* dc = GetSubsystem<IO::DataClient>();
 
     if (!item->IsStackable() || item->concreteItem_.count == count)
     {
+        LOG_INFO << "Moving stack" << std::endl;
         // If the item is not stackable just move to the player
         item->concreteItem_.accountUuid = player.account_.uuid;
         item->concreteItem_.playerUuid = player.data_.uuid;
@@ -306,10 +325,13 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
     }
     else
     {
+        LOG_INFO << "Splitting stack" << std::endl;
+        sa::Transaction transaction(item->concreteItem_);
         auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Inventory, 0);
         assert(newItem);
         if (!SetInventoryItem(newItem->id_, message))
             return false;
+        transaction.Commit();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
     }

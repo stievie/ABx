@@ -1661,8 +1661,8 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
 
     uint32_t price = (*it).second.priceSell;
     auto msg = Net::NetworkMessage::GetNew();
-
-    count = std::max(item->concreteItem_.count, count);
+    if (item->concreteItem_.count < count)
+        count = item->concreteItem_.count;
 
     if (price * count <= inventoryComp_->GetInventoryMoney())
     {

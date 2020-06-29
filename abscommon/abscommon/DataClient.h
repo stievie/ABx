@@ -251,7 +251,7 @@ public:
     }
     bool Lock()
     {
-        locked_ = client_.Lock(entity);
+        locked_ = client_.Lock(entity_);
         return locked_;
     }
 };
