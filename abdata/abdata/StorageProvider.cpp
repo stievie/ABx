@@ -125,9 +125,16 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
 {
     auto _data = cache_.find(key);
     if (_data == cache_.end())
+    {
+        // This should not happen
+        LOG_WARNING << clientId << " is trying to lock an entity that is not in cache" << std::endl;
         return false;
+    }
     if (_data->second.locker != 0)
+    {
+        LOG_WARNING << clientId << " is trying to lock an locked entity by " << _data->second.locker << std::endl;
         return false;
+    }
     _data->second.locker = clientId;
     return true;
 }
@@ -136,9 +143,15 @@ bool StorageProvider::Unlock(uint32_t clientId, const IO::DataKey& key)
 {
     auto _data = cache_.find(key);
     if (_data == cache_.end())
+    {
+        // This frequently happens when unlocking an item that was invalidated before
         return false;
+    }
     if (_data->second.locker != clientId)
+    {
+        LOG_WARNING << clientId << " is trying to unlock an locked entity, locker " << _data->second.locker << std::endl;
         return false;
+    }
     _data->second.locker = 0;
     return true;
 }

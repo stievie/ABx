@@ -285,6 +285,10 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 
     auto* dc = GetSubsystem<IO::DataClient>();
 
+    // Re-read the item, in case it was sold meanwhile to a different player.
+    // We do it before locking it because otherwise it may not be in cache.
+    if (!dc->Read(item->concreteItem_))
+        return false;
     // Note: To avoid data races we lock the entity for writing for other clients
     // (i.e. game servers) while the transaction is in progress.
     IO::EntityLocker locker(*dc, item->concreteItem_);
@@ -293,9 +297,6 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
         LOG_ERROR << "Unable to lock entitiy " << item->concreteItem_.uuid << std::endl;
         return false;
     }
-    // Re-read the item, in case it was sold meanwhile to a different player.
-    if (!dc->Read(item->concreteItem_))
-        return false;
     if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
         return false;
 
