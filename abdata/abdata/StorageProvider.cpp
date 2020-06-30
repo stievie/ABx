@@ -529,7 +529,6 @@ void StorageProvider::FlushCache()
     if (cache_.size() == 0)
         return;
 
-    int written = 0;
     auto i = cache_.begin();
     while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
@@ -541,7 +540,6 @@ void StorageProvider::FlushCache()
         return false;
     })) != cache_.end())
     {
-        ++written;
         const IO::DataKey& key = (*i).first;
         bool res = FlushData(MY_CLIENT_ID, key);
         if (!res)
@@ -551,10 +549,6 @@ void StorageProvider::FlushCache()
             // In case of lost connection it would try forever.
             break;
         }
-    }
-    if (written > 0)
-    {
-        LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
     }
 }
 
