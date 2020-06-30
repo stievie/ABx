@@ -38,6 +38,12 @@ Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     storageProvider_(storage)
 { }
 
+Connection::~Connection()
+{
+    // If we die, i guess it's a good idea to unlock all entities locked by us
+    storageProvider_.UnlockAll(id_);
+}
+
 asio::ip::tcp::socket& Connection::GetSocket()
 {
     return socket_;
@@ -474,14 +480,15 @@ void Connection::StartClientRequestedOp()
 void Connection::SendStatusAndRestart(IO::ErrorCodes code, const std::string& message)
 {
     data_.reset(new StorageData);
+    size_t length = std::min((size_t)255, message.length());
+    data_->reserve(length + 5);
     data_->push_back(static_cast<uint8_t>(IO::OpCodes::Status));
     data_->push_back(static_cast<uint8_t>(code));
     data_->push_back(0);
     data_->push_back(0);
     data_->push_back(0);
 
-    //push message length
-    data_->push_back(std::min(static_cast<uint8_t>(255), static_cast<uint8_t>(message.length())));
+    data_->push_back(static_cast<uint8_t>(length));
     size_t len = 0;
     for (const auto& letter : message)
     {
@@ -500,4 +507,3 @@ void Connection::SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, s
         std::bind(&Connection::HandleWriteReqResponse,
             shared_from_this(), std::placeholders::_1));
 }
-

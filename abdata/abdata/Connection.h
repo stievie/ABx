@@ -38,8 +38,9 @@ class ConnectionManager;
 class Connection : public ea::enable_shared_from_this<Connection>
 {
 public:
-    explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
+    Connection(asio::io_service& io_service, ConnectionManager& manager,
         StorageProvider& storage, size_t maxData, uint16_t maxKeySize_);
+    ~Connection();
     asio::ip::tcp::socket& GetSocket();
     void Start();
     void Stop();

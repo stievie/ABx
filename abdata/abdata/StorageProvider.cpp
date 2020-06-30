@@ -439,6 +439,15 @@ void StorageProvider::Shutdown()
     DB::DBAccount::LogoutAll();
 }
 
+void StorageProvider::UnlockAll(uint32_t clientId)
+{
+    for (auto& c : cache_)
+    {
+        if (c.second.locker != 0 && c.second.locker == clientId)
+            c.second.locker = 0;
+    }
+}
+
 void StorageProvider::CleanCache()
 {
     // Delete deleted records from DB and remove them from cache.

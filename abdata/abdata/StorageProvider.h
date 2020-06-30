@@ -160,6 +160,7 @@ public:
         return Invalidate(MY_CLIENT_ID, aKey);
     }
     void Shutdown();
+    void UnlockAll(uint32_t clientId);
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
 private:
