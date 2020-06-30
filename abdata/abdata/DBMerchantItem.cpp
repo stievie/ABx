@@ -41,7 +41,7 @@ bool DBMerchantItem::Load(AB::Entities::MerchantItem& item)
 
     std::ostringstream query;
     query << "SELECT uuid FROM `concrete_items` WHERE ";
-    query << "`deleted` = 0 AND `count` > 0 AND `item_uuid` = " << db->EscapeString(item.uuid) <<
+    query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.uuid) <<
         " AND `storage_place` = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());

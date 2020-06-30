@@ -92,6 +92,7 @@ private:
     }
 
     uint32_t id_;
+    bool started_{ false };
     size_t maxDataSize_;
     uint16_t maxKeySize_;
     asio::ip::tcp::socket socket_;

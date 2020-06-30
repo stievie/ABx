@@ -41,7 +41,8 @@ Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
 Connection::~Connection()
 {
     // If we die, i guess it's a good idea to unlock all entities locked by us
-    storageProvider_.UnlockAll(id_);
+    if (started_)
+        storageProvider_.UnlockAll(id_);
 }
 
 asio::ip::tcp::socket& Connection::GetSocket()
@@ -51,6 +52,7 @@ asio::ip::tcp::socket& Connection::GetSocket()
 
 void Connection::Start()
 {
+    started_ = true;
     data_.reset(new StorageData(3));
     auto self(shared_from_this());
     asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(3),

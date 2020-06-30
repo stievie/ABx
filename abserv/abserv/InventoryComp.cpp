@@ -247,8 +247,9 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net
     if (item->concreteItem_.count == count)
     {
         // Sell all
+        if (!factory->MoveToMerchant(item, count))
+            return false;
         RemoveInventoryItem(pos);
-        factory->MoveToMerchant(item, count);
 
         if (message)
         {
@@ -261,7 +262,8 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net
     }
     else
     {
-        factory->MoveToMerchant(item, count);
+        if (!factory->MoveToMerchant(item, count))
+            return false;
         InventoryComp::WriteItemUpdate(item, message);
     }
 

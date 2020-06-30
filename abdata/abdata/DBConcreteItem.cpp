@@ -77,8 +77,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
 {
-    // 2 ways to select a concrete item: (1) by UUID, (2) by item UUID and storage place
-    if (Utils::Uuid::IsEmpty(item.uuid) && (Utils::Uuid::IsEmpty(item.itemUuid) || item.storagePlace == AB::Entities::StoragePlace::None))
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -87,17 +86,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `concrete_items` WHERE ";
-    if (!Utils::Uuid::IsEmpty(item.uuid))
-        query << "`uuid` = " << db->EscapeString(item.uuid);
-    else if (!Utils::Uuid::IsEmpty(item.itemUuid) && item.storagePlace != AB::Entities::StoragePlace::None)
-    {
-        // This makes only sense for merchant items, and actually only when item is stackable
-        assert(item.storagePlace == AB::Entities::StoragePlace::Merchant);
-        query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.itemUuid) << " AND `storage_place` = " << static_cast<int>(item.storagePos) << " LIMIT 1";
-    }
-    else
-        ASSERT_FALSE();
+    query << "SELECT * FROM `concrete_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -120,7 +109,6 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.instanceUuid = result->GetString("instance_uuid");
     item.mapUuid = result->GetString("map_uuid");
     item.flags = static_cast<uint32_t>(result->GetUInt("flags"));
-
 
     return true;
 }
@@ -177,6 +165,7 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
+    LOG_INFO << "Delete " << item.uuid << std::endl;
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `concrete_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
@@ -213,6 +202,7 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
 
 void DBConcreteItem::Clean(StorageProvider* sp)
 {
+    LOG_INFO << "Cleaning concrete items" << std::endl;
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;

@@ -30,6 +30,8 @@
 
 #define PG_OK(stat) (stat == PGRES_COMMAND_OK || stat == PGRES_TUPLES_OK)
 
+//#define DEBUG_SQL
+
 namespace DB {
 
 DatabasePgsql::DatabasePgsql() :

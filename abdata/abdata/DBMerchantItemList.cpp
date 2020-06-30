@@ -34,7 +34,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
     Database* db = GetSubsystem<Database>();
     // AB::Entities::StoragePlace::Merchant
     std::ostringstream query;
-    query << "SELECT `uuid`, `item_uuid` FROM `concrete_items` WHERE `deleted` = 0 AND `count` > 0 AND `storage_place` = " <<
+    query << "SELECT `uuid`, `item_uuid` FROM `concrete_items` WHERE `deleted` = 0 AND `storage_place` = " <<
         static_cast<int>(AB::Entities::StoragePlace::Merchant);
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {

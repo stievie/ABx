@@ -92,7 +92,7 @@ public:
         uint32_t level, Player* player);
     uint32_t CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count);
     uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, AB::Entities::StoragePlace place, uint32_t count = 1);
-    void MoveToMerchant(Item* item, uint32_t count);
+    bool MoveToMerchant(Item* item, uint32_t count);
 };
 
 }

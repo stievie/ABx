@@ -31,6 +31,8 @@
 #include "ItemsCache.h"
 #include <sa/EAIterator.h>
 #include <sa/Iterator.h>
+#include <sa/Transaction.h>
+#include <sa/Assert.h>
 
 namespace Game {
 
@@ -547,7 +549,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
         0, 0, AB::Entities::StoragePlace::Scene });
 }
 
-void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
+bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
     assert(count <= item->concreteItem_.count);
     auto* cache = GetSubsystem<ItemsCache>();
@@ -556,7 +558,7 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         // Only resellable items are kept by the Merchant, all others get deleted.
         DeleteItem(item);
         cache->Remove(item->id_);
-        return;
+        return true;
     }
 
     auto* dc = GetSubsystem<IO::DataClient>();
@@ -575,7 +577,7 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         dc->Invalidate(ml);
         // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
         cache->Remove(item->id_);
-        return;
+        return true;
     }
 
     // The item is stackable -> Merge it if the merchant has already an item of this type
@@ -586,8 +588,19 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         AB::Entities::ConcreteItem ci;
         ci.uuid = mi.concreteUuid;
         // At this point the concrete item must exist
-        assert(dc->Read(ci));
+        if (!dc->Read(ci))
+        {
+            LOG_ERROR << "Unable to read concrete item " << ci.uuid << std::endl;
+            return false;
+        }
+        IO::EntityLocker locker(*dc, ci);
+        if (!locker.Lock())
+        {
+            LOG_ERROR << "Unable to lock concrete item " << ci.uuid << std::endl;
+            return false;
+        }
         // There is not stack size for merchants, they have a huuuuge bag
+        assert(!Utils::WouldExceed(ci.count, count, std::numeric_limits<decltype(ci.count)>::max()));
         ci.count += count;
         dc->Update(ci);
         if (item->concreteItem_.count == count)
@@ -598,8 +611,9 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         }
         else
             item->concreteItem_.count -= count;
+        dc->Invalidate(ci);
         dc->Invalidate(mi);
-        return;
+        return true;
     }
 
     // First time we get an item of this type
@@ -617,7 +631,7 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         dc->Invalidate(ml);
         // The ItemsCache is only used for player owned items, i.e. items in their inventory or chest.
         cache->Remove(item->id_);
-        return;
+        return true;
     }
 
     // We don't have this item yet, and the player didn't give us all, so we need to create a new concrete item
@@ -632,12 +646,15 @@ void ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     {
         // This should really not happen
         LOG_ERROR << "Error creating concrete item with uuid " << ci.uuid << std::endl;
-        return;
+        return false;
     }
+    dc->Invalidate(ci);
     AB::Entities::MerchantItemList ml;
     dc->Invalidate(ml);
 
     item->concreteItem_.count -= count;
+    dc->Update(item->concreteItem_);
+    return true;
 }
 
 }
