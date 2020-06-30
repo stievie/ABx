@@ -94,15 +94,11 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Item() = delete;
-    explicit Item(const AB::Entities::Item& item) :
-        data_(item)
-    {
-        InitializeLua();
-    }
+    explicit Item(const AB::Entities::Item& item);
+    ~Item();
 
-    ~Item() = default;
-
+    // Careful this will destroy the item.
+    void RemoveFromCache();
     bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats);

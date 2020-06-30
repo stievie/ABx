@@ -45,10 +45,24 @@ void Item::RegisterLua(kaguya::State& state)
     // clang-format on
 }
 
+Item::Item(const AB::Entities::Item& item) :
+    data_(item)
+{
+    InitializeLua();
+}
+
+Item::~Item() = default;
+
 void Item::InitializeLua()
 {
     Lua::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
+}
+
+void Item::RemoveFromCache()
+{
+    auto* cache = GetSubsystem<ItemsCache>();
+    cache->Remove(id_);
 }
 
 bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)

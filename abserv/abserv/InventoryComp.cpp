@@ -273,8 +273,6 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net
 
 bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
 {
-    // If more than one player on different servers buy the same item at the same time, the Merchant may sell
-    // a couple more items than he owns. Let's not care too much about this.
     assert(Is<Player>(owner_));
     assert(item);
 
@@ -297,8 +295,15 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
         LOG_ERROR << "Unable to lock entitiy " << item->concreteItem_.uuid << std::endl;
         return false;
     }
+    if (item->concreteItem_.count == 0)
+        return false;
     if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
         return false;
+
+    // It may be possible that the player requests more items than the merchant owns.
+    // But count must always be smaller or equal than available.
+    if (count > item->concreteItem_.count)
+        count = item->concreteItem_.count;
 
     uint32_t amount = pricePer * count;
     if (amount == 0)
@@ -314,7 +319,6 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 
     if (!item->IsStackable() || item->concreteItem_.count == count)
     {
-        LOG_INFO << "Moving stack" << std::endl;
         // If the item is not stackable just move to the player
         item->concreteItem_.accountUuid = player.account_.uuid;
         item->concreteItem_.playerUuid = player.data_.uuid;
@@ -328,12 +332,14 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
     }
     else
     {
-        LOG_INFO << "Splitting stack" << std::endl;
         sa::Transaction transaction(item->concreteItem_);
         auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Inventory, 0);
         assert(newItem);
         if (!SetInventoryItem(newItem->id_, message))
+        {
+            item->RemoveFromCache();
             return false;
+        }
         transaction.Commit();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
