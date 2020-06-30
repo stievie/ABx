@@ -47,8 +47,8 @@ PRAGMA_WARNING_POP
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Flush cache every minute
 #define FLUSH_CACHE_MS (1000 * 60)
-// Clear prices all 5sec, is this a good value?
-#define CLEAR_PRICES_MS (1000 * 5)
+// Clear prices all 1 minute, is this a good value?
+#define CLEAR_PRICES_MS (1000 * 60)
 
 struct CacheFlag
 {
