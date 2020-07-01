@@ -133,6 +133,8 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
             return false;
         }
         _data = cache_.find(key);
+        if (_data == cache_.end())
+            return false;
     }
     if (_data->second.locker != 0)
     {
