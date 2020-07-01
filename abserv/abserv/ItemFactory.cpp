@@ -587,16 +587,16 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     {
         AB::Entities::ConcreteItem ci;
         ci.uuid = mi.concreteUuid;
-        // At this point the concrete item must exist
-        if (!dc->Read(ci))
-        {
-            LOG_ERROR << "Unable to read concrete item " << ci.uuid << std::endl;
-            return false;
-        }
         IO::EntityLocker locker(*dc, ci);
         if (!locker.Lock())
         {
             LOG_ERROR << "Unable to lock concrete item " << ci.uuid << std::endl;
+            return false;
+        }
+        // At this point the concrete item must exist
+        if (!dc->Read(ci))
+        {
+            LOG_ERROR << "Unable to read concrete item " << ci.uuid << std::endl;
             return false;
         }
         // There is not stack size for merchants, they have a huuuuge bag

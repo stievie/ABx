@@ -126,9 +126,13 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
     auto _data = cache_.find(key);
     if (_data == cache_.end())
     {
-        // This should not happen
-        LOG_WARNING << clientId << " is trying to lock an entity that is not in cache" << std::endl;
-        return false;
+        ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
+        if (!Read(clientId, key, data))
+        {
+            LOG_WARNING << clientId << " is trying to lock an entity which does not exist" << std::endl;
+            return false;
+        }
+        _data = cache_.find(key);
     }
     if (_data->second.locker != 0)
     {
