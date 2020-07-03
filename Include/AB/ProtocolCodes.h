@@ -449,7 +449,8 @@ enum class PlayerErrorValue : uint8_t
     TradingPartnerQueueing,
     TradingPartnerTrading,
     AlreadyTradingWithThisTarget,
-    NotEnoughMoney
+    NotEnoughMoney,
+    ItemNotAvailable,
 };
 
 enum class GameObjectType : uint8_t

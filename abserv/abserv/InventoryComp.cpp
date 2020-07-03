@@ -283,21 +283,43 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 
     auto* dc = GetSubsystem<IO::DataClient>();
 
+    auto itemNotAvail = [&]()
+    {
+        // Meanwhile the item may be sold to another player
+        if (!message)
+            return;
+        message->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::PlayerError packet = {
+            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::ItemNotAvailable)
+        };
+        AB::Packets::Add(packet, *message);
+    };
+
     // Note: To avoid data races we lock the entity for writing for other clients
     // (i.e. game servers) while the transaction is in progress.
     IO::EntityLocker locker(*dc, item->concreteItem_);
     if (!locker.Lock())
     {
-        LOG_ERROR << "Unable to lock entitiy " << item->concreteItem_.uuid << std::endl;
+        // This can also happen when the item was sold already
+        itemNotAvail();
         return false;
     }
     // Re-read the item, in case it was sold meanwhile to a different player.
     if (!dc->Read(item->concreteItem_))
+    {
+        itemNotAvail();
         return false;
+    }
     if (item->concreteItem_.count == 0)
+    {
+        itemNotAvail();
         return false;
+    }
     if (item->concreteItem_.storagePlace != AB::Entities::StoragePlace::Merchant)
+    {
+        itemNotAvail();
         return false;
+    }
 
     // It may be possible that the player requests more items than the merchant owns.
     // But count must always be smaller or equal than available.
