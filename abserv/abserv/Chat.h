@@ -103,6 +103,7 @@ public:
     WhisperChatChannel(const std::string& playerUuid);
     bool Talk(Player& player, const std::string& text) override;
     bool Talk(const std::string& playerName, const std::string& text);
+    bool TalkNpc(Npc& npc, const std::string& text) override;
 };
 
 /// Trade channel, all players on all servers will get it

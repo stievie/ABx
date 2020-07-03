@@ -146,7 +146,7 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
 
     itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
     unsigned selected = 0;
-    for (unsigned i = 0; i < static_cast<unsigned>(AB::Entities::ItemType::__Last); ++i)
+    for (int i = static_cast<int>(AB::Entities::ItemType::__Last) - 1; i > 0; --i)
     {
         String text = FwClient::GetItemTypeName(static_cast<AB::Entities::ItemType>(i));
         if (text.Empty())
@@ -156,8 +156,11 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
         itemTypesList_->AddItem(createDropdownItem(text, static_cast<AB::Entities::ItemType>(i)));
     }
     itemTypesList_->SetSelection(selected);
+    SubscribeToEvent(itemTypesList_, E_ITEMSELECTED, URHO3D_HANDLER(MerchantWindow, HandleItemTypeSelected));
 
     searchNameEdit_ = wnd->GetChildStaticCast<LineEdit>("SearchTextBox", true);
+    SubscribeToEvent(searchNameEdit_, E_TEXTFINISHED, URHO3D_HANDLER(MerchantWindow, HandleSearchItemEditTextFinished));
+
     auto* searchButton = wnd->GetChildStaticCast<Button>("SearchButton", true);
     SubscribeToEvent(searchButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleSearchButtonClicked));
     wnd->SetLayoutMode(LM_VERTICAL);
@@ -477,6 +480,16 @@ void MerchantWindow::HandleItemPrice(StringHash, VariantMap& eventData)
 }
 
 void MerchantWindow::HandleSearchButtonClicked(StringHash, VariantMap&)
+{
+    RequestBuyItems();
+}
+
+void MerchantWindow::HandleItemTypeSelected(StringHash, VariantMap&)
+{
+    RequestBuyItems();
+}
+
+void MerchantWindow::HandleSearchItemEditTextFinished(StringHash, VariantMap&)
 {
     RequestBuyItems();
 }

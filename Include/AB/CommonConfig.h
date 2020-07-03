@@ -62,4 +62,5 @@ namespace Auth {
 // Auth token expires in 1 hr of inactivity
 inline constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
 // When a user deletes a character, the characters name is reserved for 1 week
-inline constexpr int NAME_RESERVATION_EXPIRES_MS = 1000 * 60 * 60 * 24 * 7;}
+inline constexpr int NAME_RESERVATION_EXPIRES_MS = 1000 * 60 * 60 * 24 * 7;
+}

@@ -65,6 +65,8 @@ private:
     void HandleBuyItemSelected(StringHash eventType, VariantMap& eventData);
     void HandleItemPrice(StringHash eventType, VariantMap& eventData);
     void HandleSearchButtonClicked(StringHash eventType, VariantMap& eventData);
+    void HandleItemTypeSelected(StringHash eventType, VariantMap& eventData);
+    void HandleSearchItemEditTextFinished(StringHash eventType, VariantMap& eventData);
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;

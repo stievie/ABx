@@ -251,6 +251,28 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
     return false;
 }
 
+bool WhisperChatChannel::TalkNpc(Npc& npc, const std::string& text)
+{
+    if (auto p = player_.lock())
+    {
+        if (!p->IsOnline())
+            return false;
+
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ServerPacketType::ChatMessage);
+        AB::Packets::Server::ChatMessage packet = {
+            static_cast<uint8_t>(AB::GameProtocol::ChatChannel::Whisper),
+            npc.id_,
+            npc.GetName(),
+            text
+        };
+        AB::Packets::Add(packet, *msg);
+        p->WriteToOutput(*msg);
+        return true;
+    }
+    return false;
+}
+
 bool GuildChatChannel::Talk(Player& player, const std::string& text)
 {
     Net::MessageMsg msg;

@@ -137,6 +137,7 @@ public:
 
     void Say(ChatType channel, const std::string& message);
     bool SayQuote(ChatType channel, int index);
+    void Whisper(Player* player, const std::string& message);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
     ea::set<uint32_t> GetQuestsForPlayer(const Player& player) const;

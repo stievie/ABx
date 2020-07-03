@@ -54,6 +54,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetName", &Npc::_LuaSetName)   // After the spawn has been sent to the client it can not be changed
         .addFunction("Say", &Npc::Say)
         .addFunction("SayQuote", &Npc::SayQuote)
+        .addFunction("Whisper", &Npc::Whisper)
         .addFunction("ShootAt", &Npc::ShootAt)
         .addFunction("SetBehavior", &Npc::SetBehavior)
         .addFunction("IsWander", &Npc::IsWander)
@@ -403,6 +404,16 @@ bool Npc::SayQuote(ChatType channel, int index)
 
     Say(channel, t);
     return true;
+}
+
+void Npc::Whisper(Player* player, const std::string& message)
+{
+    if (!player)
+        return;
+
+    ea::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Whisper, static_cast<uint64_t>(player->id_));
+    if (ch)
+        ch->TalkNpc(*this, message);
 }
 
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)

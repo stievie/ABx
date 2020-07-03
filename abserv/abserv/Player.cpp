@@ -1757,6 +1757,10 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         packet.items.push_back(std::move(merchantItem));
 
         calculatedItemPrices_.emplace(itemUuids.itemUuid, std::move(price));
+
+        // Return maximum 20 items. The user should narrow the search.
+        if (count >= MAX_MERCHANTITEMS_RETURNED)
+            break;
     }
     packet.count = count;
     AB::Packets::Add(packet, *msg);

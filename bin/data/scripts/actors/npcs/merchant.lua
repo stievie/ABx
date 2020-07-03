@@ -36,7 +36,10 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
+  local player = creature:AsPlayer()
+  if (player ~= nil) then
+    self:Whisper(player, "Pssst. I have some nice stuff to sell, come here and see!")
+  end
 end
 
 function onAttacked(source, _type, damage, success)
