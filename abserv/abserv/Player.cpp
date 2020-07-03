@@ -1688,7 +1688,7 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     WriteToOutput(*msg);
 }
 
-void Player::CRQGetMerchantItems(uint32_t npcId)
+void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName)
 {
     auto* npc = GetGame()->GetObject<Npc>(npcId);
     if (!npc)
@@ -1711,8 +1711,20 @@ void Player::CRQGetMerchantItems(uint32_t npcId)
     auto* factory = GetSubsystem<ItemFactory>();
     auto* cache = GetSubsystem<ItemsCache>();
     uint16_t count = 0;
+    const std::string utf8search = "*" + Utils::Utf8ToLower(searchName) + "*";
     for (const auto& itemUuids : ml.items)
     {
+        if (itemType != AB::Entities::ItemType::Unknown)
+        {
+            if (itemUuids.type != itemType)
+                continue;
+        }
+        if (!searchName.empty())
+        {
+            const std::string name = "_" + Utils::Utf8ToLower(itemUuids.name) + "_";
+            if (!sa::PatternMatch(name, utf8search))
+                continue;
+        }
         AB::Entities::ItemPrice price;
         price.uuid = itemUuids.itemUuid;
         if (!cli->Read(price))

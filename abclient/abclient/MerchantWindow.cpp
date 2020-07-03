@@ -129,7 +129,42 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
 {
     BorderImage* page = tabElement->tabBody_;
 
-    buyItems_ = page->CreateChild<ListView>("BuyItemsListView");
+    page->SetLayoutMode(LM_VERTICAL);
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/MerchantWindowBuyPage.xml");
+    wnd->SetPosition(0, 0);
+    wnd->UpdateLayout();
+
+    auto createDropdownItem = [this](const String& text, AB::Entities::ItemType type)
+    {
+        Text* result = new Text(context_);
+        result->SetText(text);
+        result->SetStyle("DropDownItemEnumText");
+        result->SetVar("Type", static_cast<unsigned>(type));
+        return result;
+    };
+
+    itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
+    unsigned selected = 0;
+    for (unsigned i = 0; i < static_cast<unsigned>(AB::Entities::ItemType::__Last); ++i)
+    {
+        String text = FwClient::GetItemTypeName(static_cast<AB::Entities::ItemType>(i));
+        if (text.Empty())
+            continue;
+        if (static_cast<AB::Entities::ItemType>(i) == AB::Entities::ItemType::Material)
+            selected = itemTypesList_->GetNumItems();
+        itemTypesList_->AddItem(createDropdownItem(text, static_cast<AB::Entities::ItemType>(i)));
+    }
+    itemTypesList_->SetSelection(selected);
+
+    searchNameEdit_ = wnd->GetChildStaticCast<LineEdit>("SearchTextBox", true);
+    auto* searchButton = wnd->GetChildStaticCast<Button>("SearchButton", true);
+    SubscribeToEvent(searchButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleSearchButtonClicked));
+    wnd->SetLayoutMode(LM_VERTICAL);
+
+    auto* listContainer = wnd->GetChild("MerchantListContainer", true);
+    listContainer->SetLayoutMode(LM_VERTICAL);
+    buyItems_ = listContainer->CreateChild<ListView>("BuyItemsListView");
     buyItems_->SetStyleAuto();
     buyItems_->SetHighlightMode(HM_ALWAYS);
     page->UpdateLayout();
@@ -210,7 +245,7 @@ UISelectable* MerchantWindow::GetSellItem(uint16_t pos)
     return nullptr;
 }
 
-unsigned MerchantWindow::GetSellItemIndex(uint16_t pos)
+unsigned MerchantWindow::GetSellItemIndex(uint16_t pos) const
 {
     for (unsigned i = 0; i < sellItems_->GetNumItems(); ++i)
     {
@@ -275,6 +310,23 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
     return uiS;
 }
 
+uint16_t MerchantWindow::GetSelectedItemType() const
+{
+    auto* item = itemTypesList_->GetSelectedItem();
+    if (!item)
+        return 0;
+
+    unsigned type = item->GetVar("Type").GetUInt();
+    return static_cast<uint16_t>(type);
+}
+
+void MerchantWindow::RequestBuyItems()
+{
+    auto* client = GetSubsystem<FwClient>();
+    const String& search = searchNameEdit_->GetText();
+    client->RequestMerchantItems(npcId_, GetSelectedItemType(), search);
+}
+
 void MerchantWindow::ShowCountSpinner(bool b, uint32_t min, uint32_t max, uint32_t value)
 {
     countText_->SetVisible(b);
@@ -320,7 +372,7 @@ void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
             count = countSpinner_->GetValue();
         client->BuyItem(npcId_, id, count);
         // TODO: Make this more selective not requesting the whole list again.
-        client->RequestMerchantItems(npcId_);
+        RequestBuyItems();
     }
 }
 
@@ -365,8 +417,7 @@ void MerchantWindow::HandleTabSelected(StringHash, VariantMap& eventData)
     {
         Text* txt = doItButton_->GetChildStaticCast<Text>("DoItButtonText", true);
         txt->SetText("Buy");
-        auto* client = GetSubsystem<FwClient>();
-        client->RequestMerchantItems(npcId_);
+        RequestBuyItems();
     }
     UpdateLayout();
 }
@@ -423,6 +474,11 @@ void MerchantWindow::HandleItemPrice(StringHash, VariantMap& eventData)
     else
         txt.AppendWithFormat("%s D", FormatMoney(price).CString());
     priceText->SetText(txt);
+}
+
+void MerchantWindow::HandleSearchButtonClicked(StringHash, VariantMap&)
+{
+    RequestBuyItems();
 }
 
 void MerchantWindow::Initialize(uint32_t npcId)

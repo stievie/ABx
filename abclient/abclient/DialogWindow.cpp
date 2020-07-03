@@ -38,6 +38,23 @@ DialogWindow::~DialogWindow()
     UnsubscribeFromAllEvents();
 }
 
+void DialogWindow::LoadWindow(Window* wnd, const String& fileName)
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* xml = cache->GetResource<XMLFile>(fileName);
+    wnd->LoadXML(xml->GetRoot());
+    // It seems this isn't loaded from the XML file
+    wnd->SetLayoutMode(LM_VERTICAL);
+    wnd->SetLayoutBorder(IntRect(4, 4, 4, 4));
+    wnd->SetPivot(0, 0);
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
+    wnd->SetTexture(tex);
+    wnd->SetImageRect(IntRect(48, 0, 64, 16));
+    wnd->SetBorder(IntRect(4, 4, 4, 4));
+    wnd->SetImageBorder(IntRect(0, 0, 0, 0));
+    wnd->SetResizeBorder(IntRect(8, 8, 8, 8));
+}
+
 void DialogWindow::Close()
 {
     using namespace DialogClose;
@@ -65,25 +82,11 @@ void DialogWindow::SubscribeEvents()
 
 void DialogWindow::LoadLayout(const String& fileName)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-
-    SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-    XMLFile* file = cache->GetResource<XMLFile>(fileName);
-    LoadXML(file->GetRoot());
-
-    // It seems this isn't loaded from the XML file
-    SetLayoutMode(LM_VERTICAL);
-    SetLayoutBorder(IntRect(4, 4, 4, 4));
+    LoadWindow(this, fileName);
     SetPivot(0, 0);
     SetOpacity(0.9f);
     SetResizable(false);
     SetMovable(true);
-    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
-    SetTexture(tex);
-    SetImageRect(IntRect(48, 0, 64, 16));
-    SetBorder(IntRect(4, 4, 4, 4));
-    SetImageBorder(IntRect(0, 0, 0, 0));
-    SetResizeBorder(IntRect(8, 8, 8, 8));
 }
 
 void DialogWindow::Center()

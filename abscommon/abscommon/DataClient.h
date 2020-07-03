@@ -52,6 +52,8 @@ public:
     void Connect(const std::string& host, uint16_t port);
 
     // Lock this entity so it can only be modified by this client, i.e. make it read-only for all other clients.
+    // If it is not in the cache it loads it, so you can call Lock() before Read() and be sure the data you have
+    // will not be changed by another client.
     template<typename E>
     bool Lock(const E& entity)
     {

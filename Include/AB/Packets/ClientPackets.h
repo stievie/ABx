@@ -165,10 +165,14 @@ struct GetItemPrice
 struct GetMerchantItems
 {
     uint32_t npcId;
+    uint16_t itemType;
+    std::string searchName;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(npcId);
+        ar.value(itemType);
+        ar.value(searchName);
     }
 };
 

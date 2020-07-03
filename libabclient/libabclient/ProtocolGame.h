@@ -100,7 +100,7 @@ public:
     void WithdrawMoney(uint32_t amount);
     void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
-    void GetMerchantItems(uint32_t npcId);
+    void GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

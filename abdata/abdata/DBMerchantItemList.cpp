@@ -32,13 +32,20 @@ bool DBMerchantItemList::Create(AB::Entities::MerchantItemList&)
 bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
 {
     Database* db = GetSubsystem<Database>();
-    // AB::Entities::StoragePlace::Merchant
     std::ostringstream query;
-    query << "SELECT `uuid`, `item_uuid` FROM `concrete_items` WHERE `deleted` = 0 AND `storage_place` = " <<
-        static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    query << "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, " <<
+        "game_items.type AS `type`, game_items.name AS `name` " <<
+        "FROM `concrete_items` " <<
+        "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid " <<
+        "WHERE `deleted` = 0 AND `storage_place` = " <<
+        static_cast<int>(AB::Entities::StoragePlace::Merchant) << " " <<
+        "ORDER BY type, name";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        il.items.push_back({ result->GetString("uuid"), result->GetString("item_uuid") });
+        il.items.push_back({ static_cast<AB::Entities::ItemType>(result->GetUInt("type")),
+            result->GetString("name"),
+            result->GetString("concrete_uuid"),
+            result->GetString("item_uuid") });
     }
     return true;
 }

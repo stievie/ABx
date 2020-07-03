@@ -136,6 +136,10 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
         if (_data == cache_.end())
             return false;
     }
+    if (IsDeleted(_data->second.flags))
+    {
+        return false;
+    }
     if (_data->second.locker != 0)
     {
         LOG_WARNING << clientId << " is trying to lock an locked entity by " << _data->second.locker << std::endl;

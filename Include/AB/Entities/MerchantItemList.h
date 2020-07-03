@@ -31,6 +31,7 @@
 #include <bitsery/ext/inheritance.h>
 #include <AB/Entities/Limits.h>
 #include <AB/Entities/ConcreteItem.h>
+#include <AB/Entities/Item.h>
 
 using bitsery::ext::BaseClass;
 
@@ -46,8 +47,10 @@ struct MerchantItemList : Entity
     {
         return KEY_MERCHANT_ITEMLIST;
     }
-    struct Uuids
+    struct Item
     {
+        ItemType type;
+        std::string name;
         std::string concreteUuid;
         std::string itemUuid;
     };
@@ -55,14 +58,16 @@ struct MerchantItemList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(items, Limits::MAX_ITEMS, [&s](Uuids& c)
+        s.container(items, Limits::MAX_ITEMS, [&s](Item& c)
         {
+            s.value2b(c.type);
+            s.text1b(c.name, Limits::MAX_ITEM_NAME);
             s.text1b(c.concreteUuid, Limits::MAX_UUID);
             s.text1b(c.itemUuid, Limits::MAX_UUID);
         });
     }
 
-    std::vector<Uuids> items;
+    std::vector<Item> items;
 };
 
 }

@@ -35,6 +35,7 @@ private:
     SharedPtr<Window> overlay_;
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
 protected:
+    void LoadWindow(Window* wnd, const String& fileName);
     UIElement* uiRoot_;
     void SubscribeEvents();
     void LoadLayout(const String& fileName);

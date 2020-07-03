@@ -598,10 +598,10 @@ void Client::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
         protoGame_->BuyItem(npcId, id, count);
 }
 
-void Client::GetMerchantItems(uint32_t npcId)
+void Client::GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName)
 {
     if (state_ == State::World)
-        protoGame_->GetMerchantItems(npcId);
+        protoGame_->GetMerchantItems(npcId, itemType, searchName);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)

@@ -166,6 +166,61 @@ String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats)
     return String(s, static_cast<unsigned>(ssize));
 }
 
+const char* FwClient::GetItemTypeName(AB::Entities::ItemType type)
+{
+    switch (type)
+    {
+    case AB::Entities::ItemType::ArmorHead:
+        return "Armor head";
+    case AB::Entities::ItemType::ArmorChest:
+        return "Armor chest";
+    case AB::Entities::ItemType::ArmorHands:
+        return "Armor hands";
+    case AB::Entities::ItemType::ArmorLegs:
+        return "Armor legs";
+    case AB::Entities::ItemType::ArmorFeet:
+        return "Armor feet";
+    case AB::Entities::ItemType::ModifierInsignia:
+        return "Insignias";
+    case AB::Entities::ItemType::ModifierRune:
+        return "Runes";
+    case AB::Entities::ItemType::ModifierWeaponPrefix:
+        return "Weapon prefixes";
+    case AB::Entities::ItemType::ModifierWeaponSuffix:
+        return "Weapon suffixes";
+    case AB::Entities::ItemType::ModifierWeaponInscription:
+        return "Weapon Inscriptions";
+    case AB::Entities::ItemType::Axe:
+        return "Axes";
+    case AB::Entities::ItemType::Sword:
+        return "Swords";
+    case AB::Entities::ItemType::Hammer:
+        return "Hammers";
+    case AB::Entities::ItemType::Flatbow:
+        return "Flatbows";
+    case AB::Entities::ItemType::Hornbow:
+        return "Hornbows";
+    case AB::Entities::ItemType::Shortbow:
+        return "Shortbows";
+    case AB::Entities::ItemType::Longbow:
+        return "Longbows";
+    case AB::Entities::ItemType::Recurvebow:
+        return "Recurvebows";
+    case AB::Entities::ItemType::Staff:
+        return "Staffs";
+    case AB::Entities::ItemType::Wand:
+        return "Wands";
+    case AB::Entities::ItemType::Focus:
+        return "Focuses";
+    case AB::Entities::ItemType::Shield:
+        return "Shields";
+    case AB::Entities::ItemType::Material:
+        return "Material";
+    default:
+        return "";
+    }
+}
+
 String FwClient::GetProtocolErrorMessage(AB::ErrorCodes err)
 {
     return Client::Client::GetProtocolErrorMessage(err);
@@ -894,10 +949,10 @@ void FwClient::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
         client_.BuyItem(npcId, id, count);
 }
 
-void FwClient::RequestMerchantItems(uint32_t npcId)
+void FwClient::RequestMerchantItems(uint32_t npcId, uint16_t itemType, const String& searchName)
 {
     if (loggedIn_)
-        client_.GetMerchantItems(npcId);
+        client_.GetMerchantItems(npcId, itemType, std::string(searchName.CString(), static_cast<size_t>(searchName.Length())));
 }
 
 void FwClient::Move(uint8_t direction)

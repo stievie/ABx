@@ -83,6 +83,8 @@ enum class ItemType : uint16_t
     Material = 1000,                       // Material, e.g. Iron
     Tropy,                                 // Nothing useful
 
+    __Last,
+
     Money = 65534
 };
 
