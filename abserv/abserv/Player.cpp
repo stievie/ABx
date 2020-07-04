@@ -1708,7 +1708,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         return;
     }
 
-    const std::string utf8search = "*" + Utils::Utf8ToLower(searchName) + "*";
+    const std::string utf8search = "*" + searchName + "*";
     std::vector<size_t> itemIndices;
     itemIndices.reserve(ml.items.size());
     size_t index = 0;
@@ -1721,7 +1721,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         }
         if (!searchName.empty())
         {
-            const std::string name = "_" + Utils::Utf8ToLower(it->name) + "_";
+            const std::string name = "_" + it->name + "_";
             if (!sa::PatternMatch(name, utf8search))
                 continue;
         }

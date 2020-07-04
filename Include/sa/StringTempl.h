@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <cwctype>
+#include <sa/Assert.h>
 
 // Some string templates.
 
@@ -178,6 +180,37 @@ std::basic_string<charType> CombinePath(const std::basic_string<charType>& path,
 }
 
 template <typename charType>
+inline charType ToLower(charType c)
+{
+    ASSERT_FALSE();
+}
+template <>
+inline char ToLower<char>(char c)
+{
+    return static_cast<char>(std::tolower(c));
+}
+template <>
+inline wchar_t ToLower<wchar_t>(wchar_t c)
+{
+    return std::towlower(c);
+}
+template <typename charType>
+inline charType ToUpper(charType c)
+{
+    ASSERT_FALSE();
+}
+template <>
+inline char ToUpper<char>(char c)
+{
+    return static_cast<char>(std::toupper(c));
+}
+template <>
+inline wchar_t ToUpper<wchar_t>(wchar_t c)
+{
+    return std::towupper(c);
+}
+
+template <typename charType>
 bool PatternMatch(const std::basic_string<charType>& str,
     const std::basic_string<charType>& pattern)
 {
@@ -217,7 +250,7 @@ bool PatternMatch(const std::basic_string<charType>& str,
         switch (state)
         {
         case State::Exact:
-            match = *s == *p;
+            match = ToLower<charType>(*s) == ToLower<charType>(*p);
             ++s;
             ++p;
             break;
@@ -229,17 +262,17 @@ bool PatternMatch(const std::basic_string<charType>& str,
         case State::AnyRepeat:
             match = true;
             ++s;
-            if (*s == *q)
+            if (ToLower<charType>(*s) == ToLower<charType>(*q))
                 ++p;
             break;
         }
     }
 
     if (state == State::AnyRepeat)
-        return *s == *q;
+        return ToLower<charType>(*s) == ToLower<charType>(*q);
     if (state == State::Any)
-        return *s == *p;
-    return match && (*s == *p);
+        return ToLower<charType>(*s) == ToLower<charType>(*p);
+    return match && (ToLower<charType>(*s) == ToLower<charType>(*p));
 }
 
 }
