@@ -1729,58 +1729,60 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     }
 
     size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
-    if (offset >= itemIndices.size())
-        return;
-    auto it = itemIndices.begin();
-    std::advance(it, offset);
-    if (it == itemIndices.end())
-        return;
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
     AB::Packets::Server::MerchantItems packet;
 
-    auto* factory = GetSubsystem<ItemFactory>();
-    auto* cache = GetSubsystem<ItemsCache>();
     uint16_t count = 0;
-    for (; it != itemIndices.end(); ++it)
+    if (offset < itemIndices.size())
     {
-        const auto& listItem = ml.items.at((*it));
-        AB::Entities::ItemPrice price;
-        price.uuid = listItem.itemUuid;
-        if (!cli->Read(price))
+        auto it = itemIndices.begin();
+        std::advance(it, offset);
+        if (it != itemIndices.end())
         {
-            LOG_ERROR << "Error reading item price for " << listItem.itemUuid << std::endl;
-            continue;
+            auto* factory = GetSubsystem<ItemFactory>();
+            auto* cache = GetSubsystem<ItemsCache>();
+            for (; it != itemIndices.end(); ++it)
+            {
+                const auto& listItem = ml.items.at((*it));
+                AB::Entities::ItemPrice price;
+                price.uuid = listItem.itemUuid;
+                if (!cli->Read(price))
+                {
+                    LOG_ERROR << "Error reading item price for " << listItem.itemUuid << std::endl;
+                    continue;
+                }
+
+                uint32_t itemId = factory->GetConcreteId(listItem.concreteUuid);
+                auto* item = cache->Get(itemId);
+                // I guess this shouldn't happen
+                assert(item);
+
+                if (item->concreteItem_.count == 0)
+                    continue;
+
+                ++count;
+                AB::Packets::Server::Internal::MerchantItem merchantItem;
+                merchantItem.id = itemId;
+                merchantItem.index = item->data_.index;
+                merchantItem.type = static_cast<uint16_t>(item->data_.type);
+                // The player doesn't need to know how many items we have
+                merchantItem.count = 0;
+                merchantItem.value = item->concreteItem_.value;
+                merchantItem.stats = item->concreteItem_.itemStats;
+                merchantItem.flags = item->data_.itemFlags;
+                merchantItem.buyPrice = price.priceBuy;
+                merchantItem.sellPrice = price.priceSell;
+
+                packet.items.push_back(std::move(merchantItem));
+
+                calculatedItemPrices_.emplace(listItem.itemUuid, std::move(price));
+
+                if (count >= MERCHANTITEMS_PAGESIZE)
+                    break;
+            }
         }
-
-        uint32_t itemId = factory->GetConcreteId(listItem.concreteUuid);
-        auto* item = cache->Get(itemId);
-        // I guess this shouldn't happen
-        assert(item);
-
-        if (item->concreteItem_.count == 0)
-            continue;
-
-        ++count;
-        AB::Packets::Server::Internal::MerchantItem merchantItem;
-        merchantItem.id = itemId;
-        merchantItem.index = item->data_.index;
-        merchantItem.type = static_cast<uint16_t>(item->data_.type);
-        // The player doesn't need to know how many items we have
-        merchantItem.count = 0;
-        merchantItem.value = item->concreteItem_.value;
-        merchantItem.stats = item->concreteItem_.itemStats;
-        merchantItem.flags = item->data_.itemFlags;
-        merchantItem.buyPrice = price.priceBuy;
-        merchantItem.sellPrice = price.priceSell;
-
-        packet.items.push_back(std::move(merchantItem));
-
-        calculatedItemPrices_.emplace(listItem.itemUuid, std::move(price));
-
-        if (count >= MERCHANTITEMS_PAGESIZE)
-            break;
     }
     packet.page = page;
     packet.count = count;
