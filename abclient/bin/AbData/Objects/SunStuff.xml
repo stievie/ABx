@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="SunStuff"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/SunStuff.mdl"/>
+		<attribute name="Material" value="Material;Materials/SunStaff_Sun.xml;Materials/SunStuff_Shaft.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0343506 0.17928 1.47466"/>
+		<attribute name="Offset Position" value="1.86265e-08 -1.36346e-05 0.135763"/>
+	</component>
+</node>
