@@ -185,11 +185,11 @@ const char* FwClient::GetItemTypeName(AB::Entities::ItemType type)
     case AB::Entities::ItemType::ModifierRune:
         return "Runes";
     case AB::Entities::ItemType::ModifierWeaponPrefix:
-        return "Weapon prefixes";
+        return "Prefixes";
     case AB::Entities::ItemType::ModifierWeaponSuffix:
-        return "Weapon suffixes";
+        return "Suffixes";
     case AB::Entities::ItemType::ModifierWeaponInscription:
-        return "Weapon Inscriptions";
+        return "Inscriptions";
     case AB::Entities::ItemType::Axe:
         return "Axes";
     case AB::Entities::ItemType::Sword:

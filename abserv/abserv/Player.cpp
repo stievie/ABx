@@ -1708,8 +1708,8 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         return;
     }
 
-    const std::string utf8search = "*" + searchName + "*";
-    std::vector<size_t> itemIndices;
+    const std::string utf8search = "*" + Utils::Utf8ToLower(searchName) + "*";
+    ea::vector<size_t> itemIndices;
     itemIndices.reserve(ml.items.size());
     size_t index = 0;
     for (auto it = ml.items.begin(); it != ml.items.end(); ++it, ++index)

@@ -145,6 +145,7 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     };
 
     itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
+    itemTypesList_->SetResizePopup(true);
     unsigned selected = 0;
     for (int i = static_cast<int>(AB::Entities::ItemType::__Last) - 1; i > 0; --i)
     {
