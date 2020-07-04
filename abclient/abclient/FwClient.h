@@ -97,6 +97,7 @@ private:
     std::vector<ConcreteItem> inventory_;
     std::vector<ConcreteItem> chest_;
     std::vector<ConcreteItem> merchantItems_;
+    uint32_t merchantItemsPage_{ 1 };
     InventoryLimit inventoryLimit_;
     InventoryLimit chestLimit_;
     std::vector<std::string> friendList_;
@@ -270,7 +271,7 @@ public:
     void WithdrawMoney(uint32_t amount);
     void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
-    void RequestMerchantItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "");
+    void RequestMerchantItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "", uint32_t page = 1);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
@@ -435,6 +436,7 @@ public:
     {
         return merchantItems_;
     }
+    uint32_t GetMerchantItemsPage() const { return merchantItemsPage_; }
 
     const std::vector<std::string>& GetFriendList() const
     {

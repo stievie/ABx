@@ -374,10 +374,10 @@ void ProtocolGame::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     SendPacket(AB::GameProtocol::ClientPacketTypes::BuyItem, packet);
 }
 
-void ProtocolGame::GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName)
+void ProtocolGame::GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page)
 {
     AB::Packets::Client::GetMerchantItems packet = {
-        npcId, itemType, searchName
+        npcId, itemType, searchName, static_cast<uint8_t>(page)
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::GetMerchantItems, packet);
 }

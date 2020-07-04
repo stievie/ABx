@@ -40,6 +40,7 @@ private:
     SharedPtr<Button> doItButton_;
     SharedPtr<LineEdit> searchNameEdit_;
     SharedPtr<DropDownList> itemTypesList_;
+    SharedPtr<Text> currentPage_;
     uint32_t npcId_{ 0 };
     void CreateUI();
     void SubscribeEvents();
@@ -52,7 +53,7 @@ private:
     unsigned GetSellItemIndex(uint16_t pos) const;
     UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
     uint16_t GetSelectedItemType() const;
-    void RequestBuyItems();
+    void RequestBuyItems(uint32_t page = 1);
     void ShowCountSpinner(bool b, uint32_t min = 0, uint32_t max = 0, uint32_t value = 0);
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
     void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
@@ -67,6 +68,8 @@ private:
     void HandleSearchButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemTypeSelected(StringHash eventType, VariantMap& eventData);
     void HandleSearchItemEditTextFinished(StringHash eventType, VariantMap& eventData);
+    void HandlePrevPageButtonClicked(StringHash eventType, VariantMap& eventData);
+    void HandleNextPageButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;

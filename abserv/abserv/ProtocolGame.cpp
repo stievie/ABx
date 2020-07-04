@@ -288,7 +288,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         auto packet = AB::Packets::Get<AB::Packets::Client::GetMerchantItems>(message);
         AddPlayerTask(&Game::Player::CRQGetMerchantItems, packet.npcId,
             static_cast<AB::Entities::ItemType>(packet.itemType),
-            packet.searchName);
+            packet.searchName, packet.page);
         break;
     }
     case ClientPacketTypes::GetChest:

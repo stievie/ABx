@@ -77,7 +77,7 @@
 #define AI_SERVER_UPDATE_INTERVAL (1000)
 #define FILEWATCHER_INTERVAL (1000)
 // Merchant returns a maximum of 20 items. The user should narrow the search.
-#define MAX_MERCHANTITEMS_RETURNED 20
+#define MERCHANTITEMS_PAGESIZE 20
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

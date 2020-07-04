@@ -634,11 +634,13 @@ struct ChestContent : public InventoryContent { };
 
 struct MerchantItems
 {
+    uint8_t page;
     uint16_t count;
     std::vector<Internal::MerchantItem> items;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(page);
         ar.value(count);
         items.resize(count);
         for (uint16_t i = 0; i < count; ++i)

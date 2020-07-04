@@ -1688,12 +1688,14 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     WriteToOutput(*msg);
 }
 
-void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName)
+void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page)
 {
     auto* npc = GetGame()->GetObject<Npc>(npcId);
     if (!npc)
         return;
     if (!IsInRange(Ranges::Adjecent, npc))
+        return;
+    if (page == 0)
         return;
 
     calculatedItemPrices_.clear();
@@ -1705,35 +1707,54 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         LOG_ERROR << "Error reading merchant item list" << std::endl;
         return;
     }
-    auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
-    AB::Packets::Server::MerchantItems packet;
-    auto* factory = GetSubsystem<ItemFactory>();
-    auto* cache = GetSubsystem<ItemsCache>();
-    uint16_t count = 0;
+
     const std::string utf8search = "*" + Utils::Utf8ToLower(searchName) + "*";
-    for (const auto& itemUuids : ml.items)
+    std::vector<size_t> itemIndices;
+    itemIndices.reserve(ml.items.size());
+    size_t index = 0;
+    for (auto it = ml.items.begin(); it != ml.items.end(); ++it, ++index)
     {
         if (itemType != AB::Entities::ItemType::Unknown)
         {
-            if (itemUuids.type != itemType)
+            if (it->type != itemType)
                 continue;
         }
         if (!searchName.empty())
         {
-            const std::string name = "_" + Utils::Utf8ToLower(itemUuids.name) + "_";
+            const std::string name = "_" + Utils::Utf8ToLower(it->name) + "_";
             if (!sa::PatternMatch(name, utf8search))
                 continue;
         }
+        itemIndices.push_back(index);
+    }
+
+    size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
+    if (offset >= itemIndices.size())
+        return;
+    auto it = itemIndices.begin();
+    std::advance(it, offset);
+    if (it == itemIndices.end())
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
+    AB::Packets::Server::MerchantItems packet;
+
+    auto* factory = GetSubsystem<ItemFactory>();
+    auto* cache = GetSubsystem<ItemsCache>();
+    uint16_t count = 0;
+    for (; it != itemIndices.end(); ++it)
+    {
+        const auto& listItem = ml.items.at((*it));
         AB::Entities::ItemPrice price;
-        price.uuid = itemUuids.itemUuid;
+        price.uuid = listItem.itemUuid;
         if (!cli->Read(price))
         {
-            LOG_ERROR << "Error reading item price for " << itemUuids.itemUuid << std::endl;
+            LOG_ERROR << "Error reading item price for " << listItem.itemUuid << std::endl;
             continue;
         }
 
-        uint32_t itemId = factory->GetConcreteId(itemUuids.concreteUuid);
+        uint32_t itemId = factory->GetConcreteId(listItem.concreteUuid);
         auto* item = cache->Get(itemId);
         // I guess this shouldn't happen
         assert(item);
@@ -1756,12 +1777,12 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
 
         packet.items.push_back(std::move(merchantItem));
 
-        calculatedItemPrices_.emplace(itemUuids.itemUuid, std::move(price));
+        calculatedItemPrices_.emplace(listItem.itemUuid, std::move(price));
 
-        // Return maximum 20 items. The user should narrow the search.
-        if (count >= MAX_MERCHANTITEMS_RETURNED)
+        if (count >= MERCHANTITEMS_PAGESIZE)
             break;
     }
+    packet.page = page;
     packet.count = count;
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);

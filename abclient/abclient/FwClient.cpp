@@ -951,10 +951,14 @@ void FwClient::BuyItem(uint32_t npcId, uint32_t id, uint32_t count)
         client_.BuyItem(npcId, id, count);
 }
 
-void FwClient::RequestMerchantItems(uint32_t npcId, uint16_t itemType, const String& searchName)
+void FwClient::RequestMerchantItems(uint32_t npcId, uint16_t itemType, const String& searchName, uint32_t page)
 {
     if (loggedIn_)
-        client_.GetMerchantItems(npcId, itemType, std::string(searchName.CString(), static_cast<size_t>(searchName.Length())));
+    {
+        client_.GetMerchantItems(npcId, itemType,
+            std::string(searchName.CString(), static_cast<size_t>(searchName.Length())),
+            page);
+    }
 }
 
 void FwClient::Move(uint8_t direction)
@@ -2310,6 +2314,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
         LoadStatsFromString(ci.stats, item.stats);
         merchantItems_.push_back(std::move(ci));
     }
+    merchantItemsPage_ = packet.page;
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_MERCHANT_ITEMS, eData);
 }

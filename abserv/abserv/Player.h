@@ -248,7 +248,7 @@ public:
     void CRQTradeAccept();
     void CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count);
-    void CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName);
+    void CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page);
     void CRQGetItemPrice(std::vector<uint16_t> items);
     //}
 
