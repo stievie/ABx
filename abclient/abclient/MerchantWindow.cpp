@@ -146,6 +146,7 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
 
     itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
     itemTypesList_->SetResizePopup(true);
+    itemTypesList_->AddItem(createDropdownItem("(Everything)", static_cast<AB::Entities::ItemType>(0)));
     unsigned selected = 0;
     for (int i = static_cast<int>(AB::Entities::ItemType::__Last) - 1; i > 0; --i)
     {
@@ -520,18 +521,23 @@ void MerchantWindow::HandlePrevPageButtonClicked(StringHash, VariantMap&)
 void MerchantWindow::HandleNextPageButtonClicked(StringHash, VariantMap&)
 {
     auto* client = GetSubsystem<FwClient>();
-    RequestBuyItems(client->GetMerchantItemsPage() + 1);
+    uint32_t page = client->GetMerchantItemsPage() + 1;
+    if (page <= client->GetMerchantItemsPageCount())
+        RequestBuyItems(page);
 }
 
 void MerchantWindow::HandleFirstPageButtonClicked(StringHash, VariantMap&)
 {
-    RequestBuyItems(1);
+    auto* client = GetSubsystem<FwClient>();
+    if (client->GetMerchantItemsPage() != 1)
+        RequestBuyItems(1);
 }
 
 void MerchantWindow::HandleLastPageButtonClicked(StringHash, VariantMap&)
 {
     auto* client = GetSubsystem<FwClient>();
-    RequestBuyItems(client->GetMerchantItemsPageCount());
+    if (client->GetMerchantItemsPage() != client->GetMerchantItemsPageCount())
+        RequestBuyItems(client->GetMerchantItemsPageCount());
 }
 
 void MerchantWindow::Initialize(uint32_t npcId)

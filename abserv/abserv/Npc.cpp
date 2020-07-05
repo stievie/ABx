@@ -167,6 +167,15 @@ bool Npc::LoadScript(const std::string& fileName)
     if (Lua::IsFunction(luaState_, "onGetQuote"))
         sa::bits::set(functions_, FunctionOnGetQuote);
 
+    if (Lua::IsFunction(luaState_, "getSellingItemTypes"))
+    {
+        std::vector<uint32_t> types = luaState_["getSellingItemTypes"]();
+        for (auto type : types)
+        {
+            sellItemTypes_.emplace(static_cast<AB::Entities::ItemType>(type));
+        }
+    }
+
     GetSkillBar()->InitAttributes();
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
     Initialize();
@@ -584,6 +593,11 @@ bool Npc::HaveQuestsForPlayer(const Player& player) const
             return true;
     }
     return false;
+}
+
+bool Npc::IsSellingItemType(AB::Entities::ItemType type)
+{
+    return sellItemTypes_.find(type) != sellItemTypes_.end();
 }
 
 }

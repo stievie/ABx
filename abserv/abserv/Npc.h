@@ -55,6 +55,7 @@ private:
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
     /// Quests this NPC may have for the player
     ea::set<uint32_t> quests_;
+    ea::set<AB::Entities::ItemType> sellItemTypes_;
     uint32_t functions_{ FunctionNone };
     bool HaveFunction(Function func) const
     {
@@ -142,6 +143,7 @@ public:
     void ShootAt(const std::string& itemUuid, Actor* target);
     ea::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
     bool HaveQuestsForPlayer(const Player& player) const;
+    bool IsSellingItemType(AB::Entities::ItemType type);
 
     ea::unique_ptr<Components::AiComp> aiComp_;
     ea::unique_ptr<Components::WanderComp> wanderComp_;

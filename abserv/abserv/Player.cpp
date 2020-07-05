@@ -1712,6 +1712,8 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     size_t index = 0;
     for (auto it = ml.items.begin(); it != ml.items.end(); ++it, ++index)
     {
+        if (!npc->IsSellingItemType(it->type))
+            continue;
         if (itemType != AB::Entities::ItemType::Unknown)
         {
             if (it->type != itemType)
