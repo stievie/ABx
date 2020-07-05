@@ -1666,9 +1666,7 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
 
     if (price * count <= inventoryComp_->GetInventoryMoney())
     {
-        bool ret = inventoryComp_->BuyItem(item, count, price, msg.get());
-
-        if (ret)
+        if (inventoryComp_->BuyItem(item, count, price, msg.get()))
         {
             AB::Entities::InventoryItems inv;
             inv.uuid = data_.uuid;
