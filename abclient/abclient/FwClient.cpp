@@ -2315,6 +2315,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
         merchantItems_.push_back(std::move(ci));
     }
     merchantItemsPage_ = packet.page;
+    merchantItemsPageCount_ = packet.pageCount;
     VariantMap& eData = GetEventDataMap();
     SendEvent(Events::E_MERCHANT_ITEMS, eData);
 }

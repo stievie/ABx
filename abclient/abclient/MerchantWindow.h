@@ -70,6 +70,8 @@ private:
     void HandleSearchItemEditTextFinished(StringHash eventType, VariantMap& eventData);
     void HandlePrevPageButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleNextPageButtonClicked(StringHash eventType, VariantMap& eventData);
+    void HandleFirstPageButtonClicked(StringHash eventType, VariantMap& eventData);
+    void HandleLastPageButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
     MerchantWindow(Context* context);
     ~MerchantWindow() override;

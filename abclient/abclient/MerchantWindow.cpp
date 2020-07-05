@@ -166,10 +166,14 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     SubscribeToEvent(searchButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleSearchButtonClicked));
 
     currentPage_ = wnd->GetChildStaticCast<Text>("CurrentPageText", true);
+    auto* firstButton = wnd->GetChildStaticCast<Button>("FirstPageButton", true);
+    SubscribeToEvent(firstButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleFirstPageButtonClicked));
     auto* prevButton = wnd->GetChildStaticCast<Button>("PrevPageButton", true);
     SubscribeToEvent(prevButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandlePrevPageButtonClicked));
     auto* nextButton = wnd->GetChildStaticCast<Button>("NextPageButton", true);
     SubscribeToEvent(nextButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleNextPageButtonClicked));
+    auto* lastButton = wnd->GetChildStaticCast<Button>("LastPageButton", true);
+    SubscribeToEvent(lastButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleLastPageButtonClicked));
 
     wnd->SetLayoutMode(LM_VERTICAL);
 
@@ -231,7 +235,9 @@ void MerchantWindow::UpdateBuyList()
     unsigned selIndex = M_MAX_UNSIGNED;
 
     auto* client = GetSubsystem<FwClient>();
-    currentPage_->SetText(String(client->GetMerchantItemsPage()));
+    String pagingText;
+    pagingText.AppendWithFormat("%d/%d", client->GetMerchantItemsPage(), client->GetMerchantItemsPageCount());
+    currentPage_->SetText(pagingText);
     const auto& items = client->GetMerchantItems();
     for (const auto& item : items)
     {
@@ -515,6 +521,17 @@ void MerchantWindow::HandleNextPageButtonClicked(StringHash, VariantMap&)
 {
     auto* client = GetSubsystem<FwClient>();
     RequestBuyItems(client->GetMerchantItemsPage() + 1);
+}
+
+void MerchantWindow::HandleFirstPageButtonClicked(StringHash, VariantMap&)
+{
+    RequestBuyItems(1);
+}
+
+void MerchantWindow::HandleLastPageButtonClicked(StringHash, VariantMap&)
+{
+    auto* client = GetSubsystem<FwClient>();
+    RequestBuyItems(client->GetMerchantItemsPageCount());
 }
 
 void MerchantWindow::Initialize(uint32_t npcId)

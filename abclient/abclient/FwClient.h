@@ -98,6 +98,7 @@ private:
     std::vector<ConcreteItem> chest_;
     std::vector<ConcreteItem> merchantItems_;
     uint32_t merchantItemsPage_{ 1 };
+    uint32_t merchantItemsPageCount_{ 0 };
     InventoryLimit inventoryLimit_;
     InventoryLimit chestLimit_;
     std::vector<std::string> friendList_;
@@ -437,6 +438,7 @@ public:
         return merchantItems_;
     }
     uint32_t GetMerchantItemsPage() const { return merchantItemsPage_; }
+    uint32_t GetMerchantItemsPageCount() const { return merchantItemsPageCount_; }
 
     const std::vector<std::string>& GetFriendList() const
     {

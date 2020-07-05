@@ -1732,6 +1732,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
     AB::Packets::Server::MerchantItems packet;
 
+    size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
     uint16_t count = 0;
     if (offset < itemIndices.size())
     {
@@ -1782,7 +1783,9 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
             }
         }
     }
+
     packet.page = page;
+    packet.pageCount = static_cast<uint8_t>(pageCount);
     packet.count = count;
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
