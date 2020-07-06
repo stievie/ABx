@@ -595,7 +595,7 @@ bool Npc::HaveQuestsForPlayer(const Player& player) const
     return false;
 }
 
-bool Npc::IsSellingItemType(AB::Entities::ItemType type)
+bool Npc::IsSellingItemType(AB::Entities::ItemType type) const
 {
     return sellItemTypes_.find(type) != sellItemTypes_.end();
 }

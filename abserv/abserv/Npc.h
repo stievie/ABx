@@ -143,7 +143,7 @@ public:
     void ShootAt(const std::string& itemUuid, Actor* target);
     ea::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
     bool HaveQuestsForPlayer(const Player& player) const;
-    bool IsSellingItemType(AB::Entities::ItemType type);
+    bool IsSellingItemType(AB::Entities::ItemType type) const;
 
     ea::unique_ptr<Components::AiComp> aiComp_;
     ea::unique_ptr<Components::WanderComp> wanderComp_;

@@ -55,6 +55,22 @@ TEST_CASE("PatternMatch * 3")
     REQUIRE(!sa::PatternMatch(s1, s3));
 }
 
+TEST_CASE("PatternMatch * 4")
+{
+    std::string s1 = "foobarbaz";
+    std::string s2 = "*foo*";
+    REQUIRE(sa::PatternMatch(s1, s2));
+}
+
+TEST_CASE("PatternMatch * 5")
+{
+    std::string s1 = "Insignia";
+    std::string s2 = "*ins*";
+    REQUIRE(sa::PatternMatch(s1, s2));
+    std::string s3 = "*ignia*";
+    REQUIRE(sa::PatternMatch(s1, s3));
+}
+
 TEST_CASE("PatternMatch wchar_t *")
 {
     std::wstring s1 = L"foobarbaz";

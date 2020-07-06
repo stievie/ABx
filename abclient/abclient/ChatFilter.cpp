@@ -55,7 +55,7 @@ bool ChatFilter::Matches(const String& value)
     if (filterPatterns_.Size() == 0)
         return false;
 
-    const std::string str = "_" + std::string(value.CString()) + "_";
+    const std::string str = std::string(value.CString());
     for (const auto& pattern : filterPatterns_)
     {
         if (sa::PatternMatch(str, std::string(pattern.CString())))

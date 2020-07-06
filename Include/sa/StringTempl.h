@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <cwctype>
+#include <regex>
 #include <sa/Assert.h>
 
 // Some string templates.
@@ -211,68 +212,48 @@ inline wchar_t ToUpper<wchar_t>(wchar_t c)
 }
 
 template <typename charType>
-bool PatternMatch(const std::basic_string<charType>& str,
+bool PatternMatch(const std::basic_string<charType>& string,
     const std::basic_string<charType>& pattern)
 {
-    enum class State
+    // http://xoomer.virgilio.it/acantato/dev/wildcard/wildmatch.html#evolution
+    bool star = false;
+    const charType* s;
+    const charType* p;
+    const charType* str = string.c_str();
+    const charType* pat = pattern.c_str();
+
+loopStart:
+    for (s = str, p = pat; *s; ++s, ++p)
     {
-        Exact,
-        Any,
-        AnyRepeat
-    };
-
-    const charType* s = str.c_str();
-    const charType* p = pattern.c_str();
-    const charType* q = 0;
-    State state = State::Exact;
-
-    bool match = true;
-
-    while (match && *p)
-    {
-        switch (*p)
-        {
-        case '*':
-            state = State::AnyRepeat;
-            q = p + 1;
-            break;
+        switch (*p) {
         case '?':
-            state = State::Any;
+            if (*s == '.')
+                goto starCheck;
             break;
+        case '*':
+            star = true;
+            str = s, pat = p;
+            do
+            {
+                ++pat;
+            } while (*pat == '*');
+            if (!*pat)
+                return true;
+            goto loopStart;
         default:
-            state = State::Exact;
-            break;
-        }
-
-        if (*s == 0)
-            break;
-
-        switch (state)
-        {
-        case State::Exact:
-            match = ToLower<charType>(*s) == ToLower<charType>(*p);
-            ++s;
-            ++p;
-            break;
-        case State::Any:
-            match = true;
-            ++s;
-            ++p;
-            break;
-        case State::AnyRepeat:
-            match = true;
-            ++s;
-            if (ToLower<charType>(*s) == ToLower<charType>(*q))
-                ++p;
+            if (ToLower<charType>(*s) != ToLower<charType>(*p))
+                goto starCheck;
             break;
         }
     }
-
-    if (state == State::AnyRepeat)
-        return ToLower<charType>(*s) == ToLower<charType>(*q);
-    if (state == State::Any)
-        return ToLower<charType>(*s) == ToLower<charType>(*p);
-    return match && (ToLower<charType>(*s) == ToLower<charType>(*p));
+    while (*p == '*')
+        ++p;
+    return (!*p);
+starCheck:
+    if (!star)
+        return false;
+    str++;
+    goto loopStart;
 }
 
 }
