@@ -24,6 +24,19 @@
 
 namespace DB {
 
+static AB::Entities::timestamp_t KeepUntil()
+{
+    static constexpr int64_t weekMs = (1000 * 60 * 60 * 24 * 7);
+    return Utils::Tick() + weekMs;
+}
+
+static bool KeepIt(AB::Entities::timestamp_t sold)
+{
+    if (sold == 0)
+        return true;
+    return sold > KeepUntil();
+}
+
 bool DBMerchantItemList::Create(AB::Entities::MerchantItemList&)
 {
     return true;
@@ -33,8 +46,8 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
 {
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, " <<
-        "game_items.type AS `type`, game_items.name AS `name` " <<
+    query << "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, concrete_items.sold AS `sold`, " <<
+        "game_items.type AS `type`, game_items.name AS `name`, game_items.item_flags AS `item_flags` " <<
         "FROM `concrete_items` " <<
         "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid " <<
         "WHERE `deleted` = 0 AND `storage_place` = " <<
@@ -42,6 +55,11 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
         "ORDER BY type, name";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
+        if (AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
+        {
+            if (!KeepIt(result->GetLong("sold")))
+                continue;
+        }
         il.items.push_back({ static_cast<AB::Entities::ItemType>(result->GetUInt("type")),
             result->GetString("name"),
             result->GetString("concrete_uuid"),

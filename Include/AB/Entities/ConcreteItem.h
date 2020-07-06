@@ -89,6 +89,7 @@ struct ConcreteItem : Entity
     std::string instanceUuid{ EMPTY_GUID };
     std::string mapUuid{ EMPTY_GUID };
     uint32_t flags{ 0 };
+    timestamp_t sold{ 0 };
 };
 
 inline bool IsItemCustomized(uint32_t flags)

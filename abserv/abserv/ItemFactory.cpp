@@ -570,6 +570,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         item->concreteItem_.storagePos = 0;
         item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
         item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
+        item->concreteItem_.sold = Utils::Tick();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
         // Merchant got new items.
@@ -602,6 +603,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         // There is not stack size for merchants, they have a huuuuge bag
         assert(!Utils::WouldExceed(ci.count, count, std::numeric_limits<decltype(ci.count)>::max()));
         ci.count += count;
+        ci.sold = Utils::Tick();
         dc->Update(ci);
         if (item->concreteItem_.count == count)
         {
@@ -624,6 +626,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         item->concreteItem_.storagePos = 0;
         item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
         item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
+        item->concreteItem_.sold = Utils::Tick();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
         // Merchant got new items.
@@ -642,6 +645,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     ci.storagePos = 0;
     ci.playerUuid = Utils::Uuid::EMPTY_UUID;
     ci.accountUuid = Utils::Uuid::EMPTY_UUID;
+    ci.sold = Utils::Tick();
     if (!dc->Create(ci))
     {
         // This should really not happen
