@@ -55,7 +55,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
         "ORDER BY type, name";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        if (AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
+        if (!AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
         {
             if (!KeepIt(result->GetLong("sold")))
                 continue;
