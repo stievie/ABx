@@ -89,11 +89,10 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     if (result)
         avail = result->GetUInt("available");
 
-    item.lastCalc = Utils::Tick();
     item.countAvail = avail;
     item.priceBase = value;
 
-    uint32_t aimCount = AB::Entities::IsItemStackable(itemFlags) ? 500 : 2;
+    const uint32_t aimCount = AB::Entities::IsItemStackable(itemFlags) ? 250 : 1;
     float sellFactor = 1.25f;
     float buyFactor = 0.85f;
     if (avail > aimCount)

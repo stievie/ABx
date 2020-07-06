@@ -40,14 +40,12 @@ struct ItemPrice : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.value8b(lastCalc);
         s.value4b(countAvail);
         s.value4b(priceSell);
         s.value4b(priceBuy);
         s.value4b(priceBase);
     }
 
-    timestamp_t lastCalc{ 0 };
     uint32_t countAvail{ 0 };
     // How much the merchant charges
     uint32_t priceSell{ 0 };
