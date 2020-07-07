@@ -636,6 +636,8 @@ struct MerchantItems
 {
     uint8_t page;
     uint8_t pageCount;
+    uint16_t typesCount;
+    std::vector<uint16_t> types;
     uint16_t count;
     std::vector<Internal::MerchantItem> items;
     template<typename _Ar>
@@ -643,6 +645,13 @@ struct MerchantItems
     {
         ar.value(page);
         ar.value(pageCount);
+        ar.value(typesCount);
+        types.resize(typesCount);
+        for (uint16_t i = 0; i < typesCount; ++i)
+        {
+            auto& item = types[i];
+            ar.value(item);
+        }
         ar.value(count);
         items.resize(count);
         for (uint16_t i = 0; i < count; ++i)

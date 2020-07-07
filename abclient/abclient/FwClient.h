@@ -97,6 +97,7 @@ private:
     std::vector<ConcreteItem> inventory_;
     std::vector<ConcreteItem> chest_;
     std::vector<ConcreteItem> merchantItems_;
+    std::vector<AB::Entities::ItemType> merchantItemTypes_;
     uint32_t merchantItemsPage_{ 1 };
     uint32_t merchantItemsPageCount_{ 0 };
     InventoryLimit inventoryLimit_;
@@ -436,6 +437,10 @@ public:
     const std::vector<ConcreteItem>& GetMerchantItems() const
     {
         return merchantItems_;
+    }
+    const std::vector<AB::Entities::ItemType>& GetMerchantItemTypes() const
+    {
+        return merchantItemTypes_;
     }
     uint32_t GetMerchantItemsPage() const { return merchantItemsPage_; }
     uint32_t GetMerchantItemsPageCount() const { return merchantItemsPageCount_; }

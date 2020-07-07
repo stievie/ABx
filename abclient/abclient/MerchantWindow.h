@@ -55,6 +55,7 @@ private:
     uint16_t GetSelectedItemType() const;
     void RequestBuyItems(uint32_t page = 1);
     void ShowCountSpinner(bool b, uint32_t min = 0, uint32_t max = 0, uint32_t value = 0);
+    void PopulateBuyItemTypes();
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
     void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);

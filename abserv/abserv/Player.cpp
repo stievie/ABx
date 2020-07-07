@@ -1706,6 +1706,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         return;
     }
 
+    ea::set<AB::Entities::ItemType> availTypes;
     const std::string search = "*" + searchName + "*";
     ea::vector<size_t> itemIndices;
     itemIndices.reserve(ml.items.size());
@@ -1714,6 +1715,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     {
         if (!npc->IsSellingItemType(it->type))
             continue;
+        availTypes.emplace(it->type);
         if (itemType != AB::Entities::ItemType::Unknown)
         {
             if (it->type != itemType)
@@ -1721,8 +1723,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         }
         if (!searchName.empty())
         {
-            const auto res = sa::PatternMatch(it->name, search);
-            if (!res)
+            if (!sa::PatternMatch(it->name, search))
                 continue;
         }
         itemIndices.push_back(index);
@@ -1785,6 +1786,12 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
             }
         }
     }
+
+    for (auto it = availTypes.rbegin(); it != availTypes.rend(); ++it)
+    {
+        packet.types.push_back(static_cast<uint16_t>(*it));
+    }
+    packet.typesCount = static_cast<uint16_t>(packet.types.size());
 
     packet.page = page;
     packet.pageCount = static_cast<uint8_t>(pageCount);

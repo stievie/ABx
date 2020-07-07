@@ -2298,6 +2298,10 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::TradeAccepted&)
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packet)
 {
+    merchantItemTypes_.clear();
+    merchantItemTypes_.reserve(packet.types.size());
+    for (auto type : packet.types)
+        merchantItemTypes_.push_back(static_cast<AB::Entities::ItemType>(type));
     merchantItems_.clear();
     merchantItems_.reserve(packet.count);
     for (const auto& item : packet.items)

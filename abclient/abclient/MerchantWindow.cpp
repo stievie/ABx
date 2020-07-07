@@ -135,29 +135,8 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     wnd->SetPosition(0, 0);
     wnd->UpdateLayout();
 
-    auto createDropdownItem = [this](const String& text, AB::Entities::ItemType type)
-    {
-        Text* result = new Text(context_);
-        result->SetText(text);
-        result->SetStyle("DropDownItemEnumText");
-        result->SetVar("Type", static_cast<unsigned>(type));
-        return result;
-    };
-
     itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
     itemTypesList_->SetResizePopup(true);
-    itemTypesList_->AddItem(createDropdownItem("(Everything)", static_cast<AB::Entities::ItemType>(0)));
-    unsigned selected = 0;
-    for (int i = static_cast<int>(AB::Entities::ItemType::__Last) - 1; i > 0; --i)
-    {
-        String text = FwClient::GetItemTypeName(static_cast<AB::Entities::ItemType>(i));
-        if (text.Empty())
-            continue;
-        if (static_cast<AB::Entities::ItemType>(i) == AB::Entities::ItemType::Material)
-            selected = itemTypesList_->GetNumItems();
-        itemTypesList_->AddItem(createDropdownItem(text, static_cast<AB::Entities::ItemType>(i)));
-    }
-    itemTypesList_->SetSelection(selected);
     SubscribeToEvent(itemTypesList_, E_ITEMSELECTED, URHO3D_HANDLER(MerchantWindow, HandleItemTypeSelected));
 
     searchNameEdit_ = wnd->GetChildStaticCast<LineEdit>("SearchTextBox", true);
@@ -225,6 +204,7 @@ void MerchantWindow::UpdateSellList()
 
 void MerchantWindow::UpdateBuyList()
 {
+    PopulateBuyItemTypes();
     uint16_t oldSel = 0;
     auto sel = buyItems_->GetSelectedItem();
     if (sel)
@@ -356,6 +336,47 @@ void MerchantWindow::ShowCountSpinner(bool b, uint32_t min, uint32_t max, uint32
         countSpinner_->SetMax(max);
     if (value != 0)
         countSpinner_->SetValue(value);
+}
+
+void MerchantWindow::PopulateBuyItemTypes()
+{
+    auto createDropdownItem = [this](const String& text, AB::Entities::ItemType type)
+    {
+        Text* result = new Text(context_);
+        result->SetText(text);
+        result->SetStyle("DropDownItemEnumText");
+        result->SetVar("Type", static_cast<unsigned>(type));
+        return result;
+    };
+
+    uint16_t sel = GetSelectedItemType();
+    itemTypesList_ = GetChildStaticCast<DropDownList>("ItemTypeList", true);
+    itemTypesList_->RemoveAllItems();
+
+    auto* client = GetSubsystem<FwClient>();
+    itemTypesList_->AddItem(createDropdownItem("(Everything)", static_cast<AB::Entities::ItemType>(0)));
+    const auto& types = client->GetMerchantItemTypes();
+    if (types.size() > 1)
+    {
+        unsigned selected = 0;
+        for (auto type : types)
+        {
+            String text = FwClient::GetItemTypeName(type);
+            if (text.Empty())
+                continue;
+            if (type == static_cast<AB::Entities::ItemType>(sel))
+                selected = itemTypesList_->GetNumItems();
+            itemTypesList_->AddItem(createDropdownItem(text, type));
+        }
+        itemTypesList_->SetSelection(selected);
+        itemTypesList_->SetVisible(true);
+    }
+    else
+    {
+        // If there is just one type we can hide it as well, because there isn't much to choose from.
+        itemTypesList_->SetSelection(0);
+        itemTypesList_->SetVisible(false);
+    }
 }
 
 void MerchantWindow::HandleMerchantItems(StringHash, VariantMap&)
