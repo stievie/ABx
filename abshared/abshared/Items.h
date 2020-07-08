@@ -64,6 +64,16 @@ enum class ItemStatIndex : size_t
     ArmorDark,
     ArmorChaos,
 
+    // Crafing price, salvage outcome
+    Material1Index = 500,
+    Material1Count,
+    Material2Index,
+    Material2Count,
+    Material3Index,
+    Material3Count,
+    Material4Index,
+    Material4Count,
+
     // Attributes
     AttributeOffset = 1000
 };

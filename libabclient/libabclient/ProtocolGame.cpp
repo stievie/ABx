@@ -110,6 +110,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::TradeAccepted, ServerPacketType::TradeAccepted>();
     AddHandler<AB::Packets::Server::MerchantItems, ServerPacketType::MerchantItems>();
     AddHandler<AB::Packets::Server::ItemPrice, ServerPacketType::ItemPrice>();
+    AddHandler<AB::Packets::Server::CraftsmanItems, ServerPacketType::CraftsmanItems>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -380,6 +381,14 @@ void ProtocolGame::GetMerchantItems(uint32_t npcId, uint16_t itemType, const std
         npcId, itemType, searchName, static_cast<uint8_t>(page)
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::GetMerchantItems, packet);
+}
+
+void ProtocolGame::GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page)
+{
+    AB::Packets::Client::GetCraftsmanItems packet = {
+        npcId, itemType, searchName, static_cast<uint8_t>(page)
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::GetCraftsmanItems, packet);
 }
 
 void ProtocolGame::GetMail(const std::string& mailUuid)

@@ -159,6 +159,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet) override;
 public:
     static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
     static const char* GetNetworkErrorMessage(ConnectionError connectionError);
@@ -237,6 +238,7 @@ public:
     void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
     void GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page);
+    void GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void GetPlayerInfoByName(const std::string& name, uint32_t fields);

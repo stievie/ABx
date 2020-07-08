@@ -250,6 +250,7 @@ public:
     void CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count);
     void CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page);
     void CRQGetItemPrice(std::vector<uint16_t> items);
+    void CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page);
     //}
 
     AB::Entities::Character data_;

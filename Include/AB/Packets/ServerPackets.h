@@ -670,6 +670,41 @@ struct MerchantItems
     }
 };
 
+struct CraftsmanItems
+{
+    uint8_t page;
+    uint8_t pageCount;
+    uint16_t typesCount;
+    std::vector<uint16_t> types;
+    uint16_t count;
+    std::vector<Internal::Item> items;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(page);
+        ar.value(pageCount);
+        ar.value(typesCount);
+        types.resize(typesCount);
+        for (uint16_t i = 0; i < typesCount; ++i)
+        {
+            auto& item = types[i];
+            ar.value(item);
+        }
+        ar.value(count);
+        items.resize(count);
+        for (uint16_t i = 0; i < count; ++i)
+        {
+            auto& item = items[i];
+            ar.value(item.type);
+            ar.value(item.index);
+            ar.value(item.count);
+            ar.value(item.value);
+            ar.value(item.stats);
+            ar.value(item.flags);
+        }
+    }
+};
+
 struct ItemPrice
 {
     uint8_t count;

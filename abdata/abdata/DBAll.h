@@ -34,6 +34,7 @@
 #include "DBCharacter.h"
 #include "DBCharacterList.h"
 #include "DBConcreteItem.h"
+#include "DBCraftableItemList.h"
 #include "DBEffect.h"
 #include "DBEffectList.h"
 #include "DBFriendList.h"

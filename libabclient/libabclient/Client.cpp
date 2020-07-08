@@ -604,6 +604,12 @@ void Client::GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::stri
         protoGame_->GetMerchantItems(npcId, itemType, searchName, page);
 }
 
+void Client::GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page)
+{
+    if (state_ == State::World)
+        protoGame_->GetCraftsmanItems(npcId, itemType, searchName, page);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == State::World)
@@ -1176,6 +1182,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantIte
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

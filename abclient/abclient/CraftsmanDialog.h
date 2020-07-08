@@ -24,57 +24,30 @@
 #include "DialogWindow.h"
 #include "AB/Entities/ConcreteItem.h"
 #include "FwClient.h"
-#include "TabGroup.h"
-#include "Spinner.h"
 
-class MerchantWindow final : public DialogWindow
+class CraftsmanDialog final : public DialogWindow
 {
-    URHO3D_OBJECT(MerchantWindow, DialogWindow)
+    URHO3D_OBJECT(CraftsmanDialog, DialogWindow)
 private:
-    SharedPtr<TabGroup> tabgroup_;
-    SharedPtr<ListView> sellItems_;
-    SharedPtr<ListView> buyItems_;
-    SharedPtr<LineEdit> countText_;
-    SharedPtr<Spinner> countSpinner_;
-    SharedPtr<Button> doItButton_;
-    SharedPtr<LineEdit> searchNameEdit_;
-    SharedPtr<DropDownList> itemTypesList_;
-    SharedPtr<Text> currentPage_;
     uint32_t npcId_{ 0 };
+    SharedPtr<ListView> items_;
+    SharedPtr<DropDownList> itemTypesList_;
+    SharedPtr<LineEdit> searchNameEdit_;
+    SharedPtr<Text> currentPage_;
     void CreateUI();
     void SubscribeEvents();
-    TabElement* CreateTab(TabGroup* tabs, const String& page);
-    void CreatePageSell(TabElement* tabElement);
-    void CreatePageBuy(TabElement* tabElement);
-    void UpdateSellList();
-    void UpdateBuyList();
-    UISelectable* GetSellItem(uint16_t pos);
-    unsigned GetSellItemIndex(uint16_t pos) const;
-    UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
-    uint16_t GetSelectedItemType() const;
-    void RequestBuyItems(uint32_t page = 1);
-    void ShowCountSpinner(bool b, uint32_t min = 0, uint32_t max = 0, uint32_t value = 0);
-    void PopulateBuyItemTypes();
-    void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
     void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);
-    void HandleInventory(StringHash eventType, VariantMap& eventData);
-    void HandleInventoryItemUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleInventoryItemRemove(StringHash eventType, VariantMap& eventData);
-    void HandleTabSelected(StringHash eventType, VariantMap& eventData);
-    void HandleSellItemSelected(StringHash eventType, VariantMap& eventData);
-    void HandleBuyItemSelected(StringHash eventType, VariantMap& eventData);
-    void HandleItemPrice(StringHash eventType, VariantMap& eventData);
-    void HandleSearchButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemTypeSelected(StringHash eventType, VariantMap& eventData);
     void HandleSearchItemEditTextFinished(StringHash eventType, VariantMap& eventData);
     void HandlePrevPageButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleNextPageButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleFirstPageButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleLastPageButtonClicked(StringHash eventType, VariantMap& eventData);
+    void HandleSearchButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
-    MerchantWindow(Context* context);
-    ~MerchantWindow() override;
+    CraftsmanDialog(Context* context);
+    ~CraftsmanDialog() override;
     void Initialize(uint32_t npcId) override;
     void Clear();
 };

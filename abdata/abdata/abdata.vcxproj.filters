@@ -195,6 +195,9 @@
     <ClInclude Include="DBItemPrice.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBCraftableItemList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -369,6 +372,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBItemPrice.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBCraftableItemList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

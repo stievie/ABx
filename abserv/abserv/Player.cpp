@@ -45,6 +45,7 @@
 #include "TradeComp.h"
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
+#include <AB/Entities/CraftableItemList.h>
 #include <AB/Entities/MerchantItemList.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Packets/Packet.h>
@@ -1695,6 +1696,8 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         return;
     if (page == 0)
         return;
+    if (itemType != AB::Entities::ItemType::Unknown && !npc->IsSellingItemType(itemType))
+        return;
 
     calculatedItemPrices_.clear();
 
@@ -1747,7 +1750,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
             auto* cache = GetSubsystem<ItemsCache>();
             for (; it != itemIndices.end(); ++it)
             {
-                const auto& listItem = ml.items.at((*it));
+                const auto& listItem = ml.items.at(*it);
                 AB::Entities::ItemPrice price;
                 price.uuid = listItem.itemUuid;
                 if (!cli->Read(price))
@@ -1835,17 +1838,13 @@ void Player::CRQGetItemPrice(std::vector<uint16_t> items)
                 continue;
             }
 
-            packet.items.push_back({
-                pos, price.priceBuy
-                });
+            packet.items.push_back({ pos, price.priceBuy });
             calculatedItemPrices_.emplace(item->data_.uuid, std::move(price));
         }
         else
         {
             // If the item is customized the merchant pays only the value
-            packet.items.push_back({
-                pos, item->concreteItem_.value
-            });
+            packet.items.push_back({ pos, item->concreteItem_.value });
         }
     }
 
@@ -1855,6 +1854,99 @@ void Player::CRQGetItemPrice(std::vector<uint16_t> items)
     packet.count = static_cast<uint8_t>(packet.items.size());
     AB::Packets::Add(packet, *msg);
 
+    WriteToOutput(*msg);
+}
+
+void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page)
+{
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+    if (!IsInRange(Ranges::Adjecent, npc))
+        return;
+    if (page == 0)
+        return;
+    if (itemType != AB::Entities::ItemType::Unknown && !npc->IsSellingItemType(itemType))
+        return;
+
+    auto* cli = GetSubsystem<IO::DataClient>();
+    AB::Entities::CraftableItemList ml;
+    if (!cli->Read(ml))
+    {
+        LOG_ERROR << "Error reading craftable item list" << std::endl;
+        return;
+    }
+
+    ea::set<AB::Entities::ItemType> availTypes;
+    const std::string search = "*" + searchName + "*";
+    ea::vector<size_t> itemIndices;
+    itemIndices.reserve(ml.items.size());
+    size_t index = 0;
+    for (auto it = ml.items.begin(); it != ml.items.end(); ++it, ++index)
+    {
+        if (!npc->IsSellingItemType(it->type))
+            continue;
+        availTypes.emplace(it->type);
+        if (itemType != AB::Entities::ItemType::Unknown)
+        {
+            if (it->type != itemType)
+                continue;
+        }
+        if (!searchName.empty())
+        {
+            if (!sa::PatternMatch(it->name, search))
+                continue;
+        }
+        itemIndices.push_back(index);
+    }
+
+    size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::CraftsmanItems);
+    AB::Packets::Server::CraftsmanItems packet;
+
+    size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
+    uint16_t count = 0;
+    if (offset < itemIndices.size())
+    {
+        auto it = itemIndices.begin();
+        std::advance(it, offset);
+        if (it != itemIndices.end())
+        {
+            auto* factory = GetSubsystem<ItemFactory>();
+            for (; it != itemIndices.end(); ++it)
+            {
+                const auto& listItem = ml.items.at(*it);
+
+                ++count;
+                AB::Packets::Server::Internal::Item craftsmanItem;
+                craftsmanItem.index = listItem.index;
+                craftsmanItem.type = static_cast<uint16_t>(listItem.type);
+                craftsmanItem.count = 0;
+                craftsmanItem.value = listItem.value;
+                // How much is to pay is stored in stats
+                craftsmanItem.stats = factory->GetMaxItemStats(listItem.uuid, npc->GetLevel());
+                craftsmanItem.flags = listItem.itemFlags;
+
+                packet.items.push_back(std::move(craftsmanItem));
+
+                if (count >= MERCHANTITEMS_PAGESIZE)
+                    break;
+            }
+        }
+    }
+
+    for (auto it = availTypes.rbegin(); it != availTypes.rend(); ++it)
+    {
+        packet.types.push_back(static_cast<uint16_t>(*it));
+    }
+    packet.typesCount = static_cast<uint16_t>(packet.types.size());
+
+    packet.page = page;
+    packet.pageCount = static_cast<uint8_t>(pageCount);
+    packet.count = count;
+    AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
 

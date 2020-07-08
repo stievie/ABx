@@ -8,7 +8,7 @@ function getRandomStat(maxVal, level, minVal)
   local p = level / 20
   local val = maxVal * p
   local res = val - (2 * Random())
-  if (res < minVal) then
+  if (minVal ~= nil and res < minVal) then
     res = minVal
   end
   return math.floor(res)
@@ -54,4 +54,20 @@ function getHealthStats(level, maxStats)
     return dropStats["Health"]
   end
   return getRandomStat(dropStats["Health"], level)
+end
+
+function getValueStat(index, level, maxStat)
+  if (materialStats == nil) then
+    return 0, 0
+  end
+  if (materialStats[index] == nil) then
+    print("ERROR: materialStats[" .. index .. "] == nil", materialStats)
+    return 0, 0
+  end
+  local itemIndex = materialStats[index][1]
+  local itemCount = materialStats[index][2]
+  if (maxStat) then
+    return itemIndex, itemCount
+  end
+  return itemIndex, getRandomStat(itemCount, level)
 end

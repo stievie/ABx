@@ -24,6 +24,7 @@
 #include "AccountChestDialog.h"
 #include "ActorResourceBar.h"
 #include "ChatWindow.h"
+#include "CraftsmanDialog.h"
 #include "DamageWindow.h"
 #include "EffectsWindow.h"
 #include "EquipmentWindow.h"
@@ -238,8 +239,18 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog, bool canCre
         result = dynamic_cast<DialogWindow*>(wnd);
         break;
     }
-    case AB::DialogSmithItems:
+    case AB::DialogCraftsmanItems:
+    {
+        UIElement* root = GetSubsystem<UI>()->GetRoot();
+        UIElement* wnd = root->GetChild(CraftsmanDialog::GetTypeNameStatic());
+        if (!wnd && canCreate)
+        {
+            wnd = new CraftsmanDialog(context_);
+            root->AddChild(wnd);
+        }
+        result = dynamic_cast<DialogWindow*>(wnd);
         break;
+    }
     default:
         break;
     }

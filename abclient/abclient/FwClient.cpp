@@ -961,6 +961,16 @@ void FwClient::RequestMerchantItems(uint32_t npcId, uint16_t itemType, const Str
     }
 }
 
+void FwClient::RequestCrafsmanItems(uint32_t npcId, uint16_t itemType, const String& searchName, uint32_t page)
+{
+    if (loggedIn_)
+    {
+        client_.GetCraftsmanItems(npcId, itemType,
+            std::string(searchName.CString(), static_cast<size_t>(searchName.Length())),
+            page);
+    }
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -2334,6 +2344,11 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
         eData[P_PRICE] = price.price;
         SendEvent(Events::E_ITEM_PRICE, eData);
     }
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::CraftsmanItems& packet)
+{
+    (void)packet;
 }
 
 std::vector<AB::Entities::Service> FwClient::GetServices() const

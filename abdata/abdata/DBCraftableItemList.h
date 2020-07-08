@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,21 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <AB/Entities/CraftableItemList.h>
 
-namespace AB {
+namespace DB {
 
-enum Dialogs
+class DBCraftableItemList
 {
-    DialogUnknown = 0,
-    DialogAccountChest,
-    DialogMerchantItems,
-    DialogCraftsmanItems,
+public:
+    DBCraftableItemList() = delete;
+    ~DBCraftableItemList() = delete;
+
+    static bool Create(AB::Entities::CraftableItemList& il);
+    static bool Load(AB::Entities::CraftableItemList& il);
+    static bool Save(const AB::Entities::CraftableItemList& il);
+    static bool Delete(const AB::Entities::CraftableItemList& il);
+    static bool Exists(const AB::Entities::CraftableItemList& il);
 };
 
 }

@@ -291,6 +291,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
             packet.searchName, packet.page);
         break;
     }
+    case ClientPacketTypes::GetCraftsmanItems:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::GetCraftsmanItems>(message);
+        AddPlayerTask(&Game::Player::CRQGetCraftsmanItems, packet.npcId,
+            static_cast<AB::Entities::ItemType>(packet.itemType),
+            packet.searchName, packet.page);
+        break;
+    }
     case ClientPacketTypes::GetChest:
     {
         /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);

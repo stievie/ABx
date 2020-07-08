@@ -215,6 +215,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::TradeAccepted& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet) override;
 public:
     static const char* GetItemTypeName(AB::Entities::ItemType type);
     static String GetProtocolErrorMessage(AB::ErrorCodes err);
@@ -274,6 +275,7 @@ public:
     void SellItem(uint32_t npcId, uint16_t pos, uint32_t count);
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
     void RequestMerchantItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "", uint32_t page = 1);
+    void RequestCrafsmanItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "", uint32_t page = 1);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

@@ -33,6 +33,7 @@
 #include <sa/Iterator.h>
 #include <sa/Transaction.h>
 #include <sa/Assert.h>
+#include <sa/StringHash.h>
 
 namespace Game {
 
@@ -659,6 +660,28 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     item->concreteItem_.count -= count;
     dc->Update(item->concreteItem_);
     return true;
+}
+
+std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t level)
+{
+    const ea::pair<size_t, uint32_t> key = ea::make_pair<size_t, uint32_t>(sa::StringHashRt(itemUuid.c_str()), level);
+    const auto it = maxItemStats_.find(key);
+    if (it != maxItemStats_.end())
+        return (*it).second;
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item item;
+    item.uuid = itemUuid;
+    if (!client->Read(item))
+        return "";
+    ea::unique_ptr<Item> pItem = ea::make_unique<Item>(item);
+    if (!pItem->LoadScript(item.script))
+        return "";
+    AB::Entities::ConcreteItem ci;
+    if (!pItem->GenerateConcrete(ci, level, true))
+        return "";
+    maxItemStats_.emplace(key, pItem->concreteItem_.itemStats);
+    return pItem->concreteItem_.itemStats;
 }
 
 }

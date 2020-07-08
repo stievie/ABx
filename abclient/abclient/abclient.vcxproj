@@ -282,6 +282,7 @@
     <ClCompile Include="ClientPrediction.cpp" />
     <ClCompile Include="ConfirmDeleteCharacter.cpp" />
     <ClCompile Include="Conversions.cpp" />
+    <ClCompile Include="CraftsmanDialog.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DamageWindow.cpp" />
@@ -353,6 +354,7 @@
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="ConfirmDeleteCharacter.h" />
     <ClInclude Include="Conversions.h" />
+    <ClInclude Include="CraftsmanDialog.h" />
     <ClInclude Include="DamageWindow.h" />
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="FilePicker.h" />

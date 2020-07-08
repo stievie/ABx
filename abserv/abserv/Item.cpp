@@ -115,6 +115,53 @@ bool Item::LoadScript(const std::string& fileName)
     return true;
 }
 
+void Item::CreateGeneralStats(uint32_t level, bool maxStats)
+{
+    if (!Lua::IsFunction(luaState_, "getValueStat"))
+        return;
+
+    {
+        uint32_t index;
+        uint32_t count;
+        kaguya::tie(index, count) = luaState_["getValueStat"](1, level, maxStats);
+        if (index != 0 && count != 0)
+        {
+            stats_.SetValue(ItemStatIndex::Material1Index, index);
+            stats_.SetValue(ItemStatIndex::Material1Count, count);
+        }
+    }
+    {
+        uint32_t index;
+        uint32_t count;
+        kaguya::tie(index, count) = luaState_["getValueStat"](2, level, maxStats);
+        if (index != 0 && count != 0)
+        {
+            stats_.SetValue(ItemStatIndex::Material2Index, index);
+            stats_.SetValue(ItemStatIndex::Material2Count, count);
+        }
+    }
+    {
+        uint32_t index;
+        uint32_t count;
+        kaguya::tie(index, count) = luaState_["getValueStat"](3, level, maxStats);
+        if (index != 0 && count != 0)
+        {
+            stats_.SetValue(ItemStatIndex::Material3Index, index);
+            stats_.SetValue(ItemStatIndex::Material3Count, count);
+        }
+    }
+    {
+        uint32_t index;
+        uint32_t count;
+        kaguya::tie(index, count) = luaState_["getValueStat"](4, level, maxStats);
+        if (index != 0 && count != 0)
+        {
+            stats_.SetValue(ItemStatIndex::Material4Index, index);
+            stats_.SetValue(ItemStatIndex::Material4Count, count);
+        }
+    }
+}
+
 void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
 {
     if (Lua::IsFunction(luaState_, "getHealthStats"))
@@ -158,6 +205,7 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
 {
     concreteItem_ = ci;
 
+    CreateGeneralStats(level, maxStats);
     switch (data_.type)
     {
     case AB::Entities::ItemType::ModifierInsignia:

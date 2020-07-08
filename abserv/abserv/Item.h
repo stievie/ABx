@@ -87,6 +87,7 @@ private:
     {
         return sa::bits::is_set(functions_, func);
     }
+    void CreateGeneralStats(uint32_t level, bool maxStats);
     void CreateInsigniaStats(uint32_t level, bool maxStats);
     void CreateWeaponStats(uint32_t level, bool maxStats);
     void CreateFocusStats(uint32_t level, bool maxStats);
