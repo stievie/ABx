@@ -664,7 +664,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 
 std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t level)
 {
-    const ea::pair<size_t, uint32_t> key = ea::make_pair<size_t, uint32_t>(sa::StringHashRt(itemUuid.c_str()), level);
+    const ea::pair<size_t, uint32_t> key = { sa::StringHashRt(itemUuid.c_str()), level };
     const auto it = maxItemStats_.find(key);
     if (it != maxItemStats_.end())
         return (*it).second;
