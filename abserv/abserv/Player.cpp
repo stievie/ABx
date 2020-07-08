@@ -1710,6 +1710,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     }
 
     ea::set<AB::Entities::ItemType> availTypes;
+    const bool doSearch = !searchName.empty();
     const std::string search = "*" + searchName + "*";
     ea::vector<size_t> itemIndices;
     itemIndices.reserve(ml.items.size());
@@ -1724,7 +1725,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
             if (it->type != itemType)
                 continue;
         }
-        if (!searchName.empty())
+        if (doSearch)
         {
             if (!sa::PatternMatch(it->name, search))
                 continue;
@@ -1732,13 +1733,13 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         itemIndices.push_back(index);
     }
 
-    size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
+    const size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::MerchantItems);
     AB::Packets::Server::MerchantItems packet;
 
-    size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
+    const size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
     uint16_t count = 0;
     if (offset < itemIndices.size())
     {
@@ -1878,6 +1879,7 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
     }
 
     ea::set<AB::Entities::ItemType> availTypes;
+    const bool doSearch = !searchName.empty();
     const std::string search = "*" + searchName + "*";
     ea::vector<size_t> itemIndices;
     itemIndices.reserve(ml.items.size());
@@ -1892,7 +1894,7 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
             if (it->type != itemType)
                 continue;
         }
-        if (!searchName.empty())
+        if (doSearch)
         {
             if (!sa::PatternMatch(it->name, search))
                 continue;
@@ -1900,13 +1902,13 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
         itemIndices.push_back(index);
     }
 
-    size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
+    const size_t offset = static_cast<size_t>(page - 1) * MERCHANTITEMS_PAGESIZE;
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::CraftsmanItems);
     AB::Packets::Server::CraftsmanItems packet;
 
-    size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
+    const size_t pageCount = (itemIndices.size() + MERCHANTITEMS_PAGESIZE - 1) / MERCHANTITEMS_PAGESIZE;
     uint16_t count = 0;
     if (offset < itemIndices.size())
     {
@@ -1925,7 +1927,7 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
                 craftsmanItem.type = static_cast<uint16_t>(listItem.type);
                 craftsmanItem.count = 0;
                 craftsmanItem.value = listItem.value;
-                // How much is to pay is stored in stats
+                // How much is to pay is stored in stats, and generatd when the concrete item is created (e.g. when dropped)
                 craftsmanItem.stats = factory->GetMaxItemStats(listItem.uuid, npc->GetLevel());
                 craftsmanItem.flags = listItem.itemFlags;
 
