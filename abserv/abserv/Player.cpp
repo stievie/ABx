@@ -1952,6 +1952,40 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
     WriteToOutput(*msg);
 }
 
+void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+{
+    (void)count;
+
+    if (index == 0 || count == 0)
+        return;
+
+    auto* npc = GetGame()->GetObject<Npc>(npcId);
+    if (!npc)
+        return;
+    if (!IsInRange(Ranges::Adjecent, npc))
+        return;
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item item;
+    item.index = index;
+    if (!client->Read(item))
+    {
+        LOG_ERROR << "Error reading item with index " << index << std::endl;
+        return;
+    }
+    if (!npc->IsSellingItemType(item.type))
+    {
+        return;
+    }
+
+    auto* factory = GetSubsystem<ItemFactory>();
+    // Stats contain the price
+    const std::string maxStats = factory->GetMaxItemStats(item.uuid, npc->GetLevel());
+    (void)maxStats;
+
+    // TODO: The rest!
+}
+
 bool Player::IsIgnored(const Player& player) const
 {
     return GetFriendList().IsIgnored(player.account_.uuid);

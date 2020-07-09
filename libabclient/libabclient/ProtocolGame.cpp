@@ -391,6 +391,14 @@ void ProtocolGame::GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const st
     SendPacket(AB::GameProtocol::ClientPacketTypes::GetCraftsmanItems, packet);
 }
 
+void ProtocolGame::CraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+{
+    AB::Packets::Client::CraftItem packet = {
+        npcId, index, count
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::CraftItem, packet);
+}
+
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
     AB::Packets::Client::GetMail packet = {

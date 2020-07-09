@@ -299,6 +299,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
             packet.searchName, packet.page);
         break;
     }
+    case ClientPacketTypes::CraftItem:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::CraftItem>(message);
+        AddPlayerTask(&Game::Player::CRQCraftItem, packet.npcId, packet.index, packet.count);
+        break;
+    }
     case ClientPacketTypes::GetChest:
     {
         /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);

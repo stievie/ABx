@@ -25,9 +25,9 @@
 #include "AB/Entities/ConcreteItem.h"
 #include "FwClient.h"
 
-class CraftsmanDialog final : public DialogWindow
+class CraftsmanWindow final : public DialogWindow
 {
-    URHO3D_OBJECT(CraftsmanDialog, DialogWindow)
+    URHO3D_OBJECT(CraftsmanWindow, DialogWindow)
 private:
     uint32_t npcId_{ 0 };
     SharedPtr<ListView> items_;
@@ -36,6 +36,12 @@ private:
     SharedPtr<Text> currentPage_;
     void CreateUI();
     void SubscribeEvents();
+    void UpdateList();
+    void RequestList(uint32_t page = 1);
+    uint16_t GetSelectedItemType() const;
+    UISelectable* CreateItem(const ConcreteItem& iItem);
+    void PopulateItemTypes();
+    void HandleCraftsmanItems(StringHash eventType, VariantMap& eventData);
     void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemTypeSelected(StringHash eventType, VariantMap& eventData);
@@ -46,8 +52,8 @@ private:
     void HandleLastPageButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleSearchButtonClicked(StringHash eventType, VariantMap& eventData);
 public:
-    CraftsmanDialog(Context* context);
-    ~CraftsmanDialog() override;
+    CraftsmanWindow(Context* context);
+    ~CraftsmanWindow() override;
     void Initialize(uint32_t npcId) override;
     void Clear();
 };

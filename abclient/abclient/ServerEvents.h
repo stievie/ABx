@@ -507,4 +507,8 @@ URHO3D_EVENT(E_ITEM_PRICE, ItemPrice)
     URHO3D_PARAM(P_PRICE, Price);
 }
 
+URHO3D_EVENT(E_CRAFTSMAN_ITEMS, CraftsmanItems)
+{
+}
+
 }

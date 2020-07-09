@@ -973,6 +973,12 @@ void FwClient::RequestCrafsmanItems(uint32_t npcId, uint16_t itemType, const Str
     }
 }
 
+void FwClient::CraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+{
+    if (loggedIn_)
+        client_.CraftItem(npcId, index, count);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -2350,7 +2356,29 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::CraftsmanItems& packet)
 {
-    (void)packet;
+    // We just reuse the merchant stuff, you can not have both opened
+    merchantItemTypes_.clear();
+    merchantItemTypes_.reserve(packet.types.size());
+    for (auto type : packet.types)
+        merchantItemTypes_.push_back(static_cast<AB::Entities::ItemType>(type));
+    merchantItems_.clear();
+    merchantItems_.reserve(packet.count);
+    for (const auto& item : packet.items)
+    {
+        ConcreteItem ci;
+        ci.type = static_cast<AB::Entities::ItemType>(item.type);
+        ci.index = item.index;
+        ci.place = static_cast<AB::Entities::StoragePlace>(item.place);
+        ci.pos = item.pos;
+        ci.count = item.count;
+        ci.flags = item.flags;
+        LoadStatsFromString(ci.stats, item.stats);
+        merchantItems_.push_back(std::move(ci));
+    }
+    merchantItemsPage_ = packet.page;
+    merchantItemsPageCount_ = packet.pageCount;
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(Events::E_CRAFTSMAN_ITEMS, eData);
 }
 
 std::vector<AB::Entities::Service> FwClient::GetServices() const

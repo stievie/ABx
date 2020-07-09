@@ -194,6 +194,20 @@ struct GetCraftsmanItems
     }
 };
 
+struct CraftItem
+{
+    uint32_t npcId;
+    uint32_t index;
+    uint32_t count;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(npcId);
+        ar.value(index);
+        ar.value(count);
+    }
+};
+
 struct DespositWithdrawMoney
 {
     uint32_t amount;

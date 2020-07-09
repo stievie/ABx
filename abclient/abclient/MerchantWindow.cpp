@@ -205,10 +205,10 @@ void MerchantWindow::UpdateSellList()
 void MerchantWindow::UpdateBuyList()
 {
     PopulateBuyItemTypes();
-    uint16_t oldSel = 0;
+    uint32_t oldSel = 0;
     auto sel = buyItems_->GetSelectedItem();
     if (sel)
-        oldSel = static_cast<uint16_t>(sel->GetVar("ID").GetUInt());
+        oldSel = sel->GetVar("ID").GetUInt();
 
     buyItems_->RemoveAllItems();
 
@@ -265,12 +265,13 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
     if (!item)
         return nullptr;
 
-    UISelectable* uiS = container.CreateChild<UISelectable>("Item" + String(iItem.pos));
+    UISelectable* uiS = container.CreateChild<UISelectable>("Item" + String(iItem.id));
     uiS->SetLayoutSpacing(4);
     uiS->SetVar("ID", iItem.id);
     uiS->SetVar("Pos", iItem.pos);
     uiS->SetVar("Count", iItem.count);
     uiS->SetVar("Flags", iItem.flags);
+    uiS->SetVar("Index", iItem.index);
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);

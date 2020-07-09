@@ -49,6 +49,15 @@ class WindowManager : public Object
     URHO3D_OBJECT(WindowManager, Object)
 private:
     HashMap<StringHash, SharedPtr<UIElement>> windows_;
+    template <typename D>
+    void CloseDialog()
+    {
+        UIElement* root = GetSubsystem<UI>()->GetRoot();
+        DialogWindow* wnd = dynamic_cast<DialogWindow*>(root->GetChild(D::GetTypeNameStatic()));
+        if (!wnd)
+            return;
+        wnd->Close();
+    }
 public:
     WindowManager(Context* context);
     ~WindowManager() override = default;

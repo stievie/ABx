@@ -246,7 +246,7 @@
     <ClInclude Include="MerchantWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CraftsmanDialog.h">
+    <ClInclude Include="CraftsmanWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -455,7 +455,7 @@
     <ClCompile Include="MerchantWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CraftsmanDialog.cpp">
+    <ClCompile Include="CraftsmanWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

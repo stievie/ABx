@@ -610,6 +610,12 @@ void Client::GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const std::str
         protoGame_->GetCraftsmanItems(npcId, itemType, searchName, page);
 }
 
+void Client::CraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+{
+    if (state_ == State::World)
+        protoGame_->CraftItem(npcId, index, count);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == State::World)

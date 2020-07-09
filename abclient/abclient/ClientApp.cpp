@@ -28,7 +28,7 @@
 #include "ChatFilter.h"
 #include "ChatWindow.h"
 #include "ClientPrediction.h"
-#include "CraftsmanDialog.h"
+#include "CraftsmanWindow.h"
 #include "CreateAccountLevel.h"
 #include "CreditsWindow.h"
 #include "DamageWindow.h"
@@ -206,7 +206,7 @@ ClientApp::ClientApp(Context* context) :
     Player::RegisterObject(context);
     ClientPrediction::RegisterObject(context);
     ChatWindow::RegisterObject(context);
-    CraftsmanDialog::RegisterObject(context);
+    CraftsmanWindow::RegisterObject(context);
     GameMenu::RegisterObject(context);
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
