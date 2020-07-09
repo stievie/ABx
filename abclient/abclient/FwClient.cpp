@@ -216,6 +216,8 @@ const char* FwClient::GetItemTypeName(AB::Entities::ItemType type)
         return "Shields";
     case AB::Entities::ItemType::Material:
         return "Material";
+    case AB::Entities::ItemType::Dye:
+        return "Dye";
     default:
         return "";
     }
