@@ -71,6 +71,7 @@ struct ConcreteItem : Entity
         s.text1b(instanceUuid, Limits::MAX_UUID);
         s.text1b(mapUuid, Limits::MAX_UUID);
         s.value4b(flags);
+        s.value8b(sold);
     }
 
     std::string playerUuid{ EMPTY_GUID };
