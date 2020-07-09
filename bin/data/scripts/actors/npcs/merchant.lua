@@ -42,7 +42,8 @@ function getSellingItemTypes()
     ITEMTYPE_Spear,
     ITEMTYPE_Focus,
     ITEMTYPE_Shield,
-    ITEMTYPE_Material
+    ITEMTYPE_Material,
+    ITEMTYPE_Dye
   }
 end
 
