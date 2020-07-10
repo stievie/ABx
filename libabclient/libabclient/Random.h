@@ -24,6 +24,7 @@
 #include <mutex>
 #include <limits>
 #include <abcrypto.hpp>
+#include <sa/Assert.h>
 
 namespace Client {
 namespace Utils {
@@ -66,7 +67,7 @@ public:
     template <typename T>
     T Get(T min, T max)
     {
-        assert(max > min);
+        ASSERT(max > min);
         return Get<T>(max - min) + min;
     }
 

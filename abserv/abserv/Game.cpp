@@ -59,7 +59,7 @@ ea::unique_ptr<Net::MessageFilter> Game::messageFilter;
 void Game::InitMessageFilter()
 {
     // This is static because it's heavy and does not need to store anything.
-    assert(!messageFilter);
+    ASSERT(!messageFilter);
     using namespace AB::Packets::Server;
     messageFilter = ea::make_unique<Net::MessageFilter>();
     // Subscribe to all messages we may filter out
@@ -238,8 +238,8 @@ void Game::_LuaAddProjectile(const std::string& itemUuid,
     Actor* source,
     Actor* target)
 {
-    assert(source);
-    assert(target);
+    ASSERT(source);
+    ASSERT(target);
     AddProjectile(itemUuid, source->GetPtr<Actor>(), target->GetPtr<Actor>());
 }
 
@@ -466,7 +466,7 @@ void Game::Update()
 void Game::SendStatus()
 {
     // Must not be empty. Update adds at least the time stamp.
-    assert(gameStatus_->GetSize() != 0);
+    ASSERT(gameStatus_->GetSize() != 0);
 
     for (const auto& p : players_)
     {
@@ -805,7 +805,7 @@ void Game::SendInitStateToPlayer(Player& player)
 void Game::PlayerJoin(uint32_t playerId)
 {
 #ifdef DEBUG_NET
-    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+    ASSERT(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
 #endif
     ea::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (!player)
@@ -856,7 +856,7 @@ void Game::RemoveObject(GameObject* object)
 void Game::PlayerLeave(uint32_t playerId)
 {
 #ifdef DEBUG_NET
-    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+    ASSERT(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
 #endif
     Player* player = GetPlayerById(playerId);
     if (!player)

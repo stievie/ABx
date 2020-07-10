@@ -33,7 +33,7 @@ namespace Actions {
 Node::Status AttackSelection::DoAction(Agent& agent, uint32_t)
 {
     Game::Npc& npc = GetNpc(agent);
-    assert(npc.HasGame());
+    ASSERT(npc.HasGame());
 
     const auto& selection = agent.filteredAgents_;
     if (selection.empty())

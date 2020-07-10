@@ -49,7 +49,7 @@ void Game::Update(uint32_t timeElapsed)
 
 void Game::AddObject(std::unique_ptr<GameObject>&& object)
 {
-    assert(object);
+    ASSERT(object);
     uint32_t id = object->id_;
     object->SetGame(this);
     auto* obj = object.get();

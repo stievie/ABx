@@ -19,19 +19,19 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "TemplateResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
 #include "Version.h"
 #include <sa/StringHash.h>
+#include <sa/Assert.h>
 #include <AB/Entities/Account.h>
 
 namespace Resources {
 
 bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
-    assert(Application::Instance);
+    ASSERT(Application::Instance);
     objects["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
     objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(sa::StringHashRt("username"));

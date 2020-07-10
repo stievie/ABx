@@ -60,7 +60,7 @@ void main()
 SceneViewer::SceneViewer() :
     cameraDistance_(CAMERA_INITIAL_DIST)
 {
-    assert(SceneViewer::instance_ == nullptr);
+    ASSERT(SceneViewer::instance_ == nullptr);
     SceneViewer::instance_ = this;
 }
 
@@ -72,43 +72,43 @@ SceneViewer::~SceneViewer()
 
 void SceneViewer::StaticRenderScene()
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->Render();
 }
 
 void SceneViewer::StaticChangeSize(GLsizei w, GLsizei h)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->ChangeSize(w, h);
 }
 
 void SceneViewer::StaticMouse(int button, int state, int x, int y)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->Mouse(button, state, x, y);
 }
 
 void SceneViewer::StaticMouseMove(int x, int y)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->MouseMove(x, y);
 }
 
 void SceneViewer::StaticMouseWheel(int button, int dir, int x, int y)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->MouseWheel(button, dir, x, y);
 }
 
 void SceneViewer::StaticMenu(int id)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->Menu(id);
 }
 
 void SceneViewer::StaticKeyboard(unsigned char key, int x, int y)
 {
-    assert(SceneViewer::instance_ != nullptr);
+    ASSERT(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->Keyboard(key, x, y);
 }
 

@@ -24,6 +24,7 @@
 #include <limits>
 #include <abcrypto.hpp>
 #include <mutex>
+#include <sa/Assert.h>
 
 namespace Crypto {
 
@@ -64,7 +65,7 @@ public:
     template <typename T>
     T Get(T min, T max)
     {
-        assert(max > min);
+        ASSERT(max > min);
         return static_cast<T>(GetFloat() * static_cast<float>(max - min)) + min;
     }
     /// Test if `test` is smaller or equal to `value` (value = constant value), with max. +/-

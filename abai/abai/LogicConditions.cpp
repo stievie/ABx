@@ -146,7 +146,7 @@ bool NotCondition::AddCondition(std::shared_ptr<Condition> condition)
 bool NotCondition::Evaluate(Agent& agent, const Node& node)
 {
     // A Not condition must have a condition assigned.
-    assert(condition_);
+    ASSERT(condition_);
     return !condition_->Evaluate(agent, node);
 }
 

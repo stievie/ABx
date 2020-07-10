@@ -165,12 +165,12 @@ public:
     }
     FriendList& GetFriendList()
     {
-        assert(friendList_);
+        ASSERT(friendList_);
         return *friendList_;
     }
     const FriendList& GetFriendList() const
     {
-        assert(friendList_);
+        ASSERT(friendList_);
         return *friendList_;
     }
 

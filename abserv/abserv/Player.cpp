@@ -131,7 +131,7 @@ void Player::SetLevel(uint32_t value)
 
 void Player::AddXp(int value)
 {
-    assert(value >= 0);
+    ASSERT(value >= 0);
     Actor::AddXp(value);
     data_.xp += static_cast<uint32_t>(value);
 }
@@ -1767,7 +1767,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
                 uint32_t itemId = factory->GetConcreteId(listItem.concreteUuid);
                 auto* item = cache->Get(itemId);
                 // I guess this shouldn't happen
-                assert(item);
+                ASSERT(item);
 
                 if (item->concreteItem_.count == 0)
                     continue;
@@ -2007,7 +2007,7 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
 
     auto msg = Net::NetworkMessage::GetNew();
     Components::InventoryComp& inv = *inventoryComp_;
-    auto notEnoughStuff = [this, &msg]()
+    auto notEnoughStuff = [&msg]()
     {
         msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
         AB::Packets::Server::PlayerError packet = {
@@ -2072,16 +2072,21 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
         auto* cache = GetSubsystem<ItemsCache>();
         // Update stats
         auto* pItem = cache->Get(newItemId);
-        assert(pItem);
+        ASSERT(pItem);
         pItem->stats_ = stats;
         pItem->concreteItem_.itemStats = pItem->GetEncodedStats();
         inv.SetInventoryItem(newItemId, msg.get());
         client->Update(pItem->concreteItem_);
 
-        assert(removeMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count));
-        assert(removeMats(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count));
-        assert(removeMats(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count));
-        assert(removeMats(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count));
+        success = removeMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count);
+        ASSERT(success);
+        success = removeMats(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count);
+        ASSERT(success);
+        success = removeMats(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count);
+        ASSERT(success);
+        success = removeMats(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count);
+        ASSERT(success);
+        (void)success;
     }
 
     WriteToOutput(*msg);
@@ -2717,11 +2722,11 @@ void Player::ChangeServerInstance(const std::string& serverUuid, const std::stri
 
 void Player::CRQQueueForMatch()
 {
-    assert(GetParty());
+    ASSERT(GetParty());
     if (!GetParty()->IsLeader(*this))
         return;
 
-    assert(HasGame());
+    ASSERT(HasGame());
     auto game = GetGame();
     if (Utils::Uuid::IsEmpty(game->data_.queueMapUuid))
         return;
@@ -2739,7 +2744,7 @@ void Player::CRQQueueForMatch()
 
 void Player::CRQUnqueueForMatch()
 {
-    assert(GetParty());
+    ASSERT(GetParty());
     if (!GetParty()->IsLeader(*this))
         return;
 

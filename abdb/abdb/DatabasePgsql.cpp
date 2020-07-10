@@ -323,28 +323,28 @@ PgsqlResult::~PgsqlResult()
 int32_t PgsqlResult::GetInt(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     return strtol(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 uint32_t PgsqlResult::GetUInt(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     return strtoul(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 int64_t PgsqlResult::GetLong(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     return strtoll(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
 uint64_t PgsqlResult::GetULong(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     return strtoull(PQgetvalue(handle_, cursor_, column), nullptr, 10);
 }
 
@@ -356,7 +356,7 @@ time_t PgsqlResult::GetTime(const std::string& col)
 std::string PgsqlResult::GetString(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     size_t size = PQgetlength(handle_, cursor_, column);
     return std::string(PQgetvalue(handle_, cursor_, column), size);
 }
@@ -364,7 +364,7 @@ std::string PgsqlResult::GetString(const std::string& col)
 std::string PgsqlResult::GetStream(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     size_t size = PQgetlength(handle_, cursor_, column);
     char* buf = PQgetvalue(handle_, cursor_, column);
     return base64::decode(buf, size);
@@ -373,7 +373,7 @@ std::string PgsqlResult::GetStream(const std::string& col)
 bool PgsqlResult::IsNull(const std::string& col)
 {
     const int column = PQfnumber(handle_, col.c_str());
-    assert(column >= 0);
+    ASSERT(column >= 0);
     return PQgetisnull(handle_, cursor_, column) != 0;
 }
 

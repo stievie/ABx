@@ -36,7 +36,7 @@ void SortByDistance::Execute(Agent& agent)
         return;
 
     Game::Npc& chr = GetNpc(agent);
-    assert(chr.HasGame());
+    ASSERT(chr.HasGame());
 
     auto& game = *chr.GetGame();
     std::map<uint32_t, float> sorting;

@@ -28,6 +28,7 @@
 #include "Dispatcher.h"
 #include "Subsystems.h"
 #include "Logger.h"
+#include <sa/Assert.h>
 
 namespace Net {
 
@@ -51,7 +52,7 @@ std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
         return std::unique_ptr<NetworkMessage>();
     }
     auto* ptr = pool->allocate(1, nullptr);
-    assert(ptr);
+    ASSERT(ptr);
     ptr->Reset();
     return std::unique_ptr<NetworkMessage>(ptr);
 }

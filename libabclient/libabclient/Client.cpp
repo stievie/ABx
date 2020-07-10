@@ -33,6 +33,7 @@
 #include <httplib.h>
 #include <sa/ScopeGuard.h>
 #include <sa/Compiler.h>
+#include <sa/Assert.h>
 
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 
@@ -290,7 +291,7 @@ ProtocolLogin& Client::GetProtoLogin()
         protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }
-    assert(protoLogin_);
+    ASSERT(protoLogin_);
     return *protoLogin_;
 }
 
@@ -401,8 +402,8 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
     const std::string& host /* = "" */, uint16_t port /* = 0 */,
     const std::string& instanceId /* = "" */)
 {
-    assert(!accountUuid_.empty());
-    assert(!authToken_.empty());
+    ASSERT(!accountUuid_.empty());
+    ASSERT(!authToken_.empty());
     // Enter or changing the world
     if (state_ != State::SelectChar && state_ != State::World)
         return;

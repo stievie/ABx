@@ -214,7 +214,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
 
 bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
 {
-    assert(Is<Player>(owner_));
+    ASSERT(Is<Player>(owner_));
 
     if (pos == 0)
         // Can not sell money
@@ -273,8 +273,8 @@ bool InventoryComp::SellItem(ItemPos pos, uint32_t count, uint32_t pricePer, Net
 
 bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::NetworkMessage* message)
 {
-    assert(Is<Player>(owner_));
-    assert(item);
+    ASSERT(Is<Player>(owner_));
+    ASSERT(item);
 
     if (!AB::Entities::IsItemTradeable(item->data_.itemFlags))
         return false;
@@ -355,7 +355,7 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
     {
         sa::Transaction transaction(item->concreteItem_);
         auto* newItem = SplitStack(item, count, AB::Entities::StoragePlace::Inventory, 0);
-        assert(newItem);
+        ASSERT(newItem);
         if (!SetInventoryItem(newItem->id_, message))
         {
             item->RemoveFromCache();
@@ -372,8 +372,8 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 
 Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::StoragePlace newItemPlace, uint16_t newItemPos)
 {
-    assert(Is<Player>(owner_));
-    assert(count > 0);
+    ASSERT(Is<Player>(owner_));
+    ASSERT(count > 0);
     // Count must be less than available, otherwise the whole stack should be moved
     if (item->concreteItem_.count <= count)
         return nullptr;
@@ -384,7 +384,7 @@ Item* InventoryComp::SplitStack(Item* item, uint32_t count, AB::Entities::Storag
     item->concreteItem_.count -= count;
     auto* newItem = cache->Get(itemId);
     // Splitting a stack should never fail
-    assert(newItem);
+    ASSERT(newItem);
     newItem->concreteItem_.storagePos = newItemPos;
     return newItem;
 }
@@ -624,7 +624,7 @@ bool InventoryComp::TakeInventoryItem(uint32_t itemIndex, uint32_t count, Net::N
         for (auto id : deleted)
         {
             auto* pItem = cache->Get(id);
-            assert(pItem);
+            ASSERT(pItem);
             factory->DeleteItem(pItem);
         }
     }

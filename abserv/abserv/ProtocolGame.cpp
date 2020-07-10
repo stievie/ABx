@@ -66,7 +66,7 @@ inline void ProtocolGame::AddPlayerInput(Game::InputType type)
 void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 {
 #ifdef DEBUG_NET
-    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+    ASSERT(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
 #endif
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player " << packet.charUuid << " logging in" << std::endl;
@@ -88,7 +88,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
     }
 
     ea::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetPtr());
-    assert(player);
+    ASSERT(player);
 
     // Load player and account data from DB
     if (!IO::IOPlayer::LoadPlayerByUuid(*player, packet.charUuid))
@@ -709,7 +709,7 @@ void ProtocolGame::Connect()
 void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 {
 #ifdef DEBUG_NET
-    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+    ASSERT(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
 #endif
     GetOutputBuffer(message.GetSize())->Append(message);
 }
@@ -717,7 +717,7 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
 {
 #ifdef DEBUG_NET
-    assert(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
+    ASSERT(GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread());
 #endif
     if (!player)
     {

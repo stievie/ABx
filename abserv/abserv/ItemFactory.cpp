@@ -123,7 +123,7 @@ void ItemFactory::Initialize()
 
 void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result)
 {
-    assert(level <= LEVEL_CAP);
+    ASSERT(level <= LEVEL_CAP);
     const uint32_t l = (LEVEL_CAP + 1) - level;
 
     auto* rng = GetSubsystem<Crypto::Random>();
@@ -552,7 +552,7 @@ uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std:
 
 bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
 {
-    assert(count <= item->concreteItem_.count);
+    ASSERT(count <= item->concreteItem_.count);
     auto* cache = GetSubsystem<ItemsCache>();
     if (!item->IsResellable() || AB::Entities::IsItemCustomized(item->concreteItem_.flags))
     {
@@ -602,7 +602,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
             return false;
         }
         // There is not stack size for merchants, they have a huuuuge bag
-        assert(!Utils::WouldExceed(ci.count, count, std::numeric_limits<decltype(ci.count)>::max()));
+        ASSERT(!Utils::WouldExceed(ci.count, count, std::numeric_limits<decltype(ci.count)>::max()));
         ci.count += count;
         ci.sold = Utils::Tick();
         dc->Update(ci);

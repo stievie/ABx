@@ -22,6 +22,7 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include <memory>
+#include <sa/Assert.h>
 
 namespace IO {
 
@@ -58,7 +59,7 @@ Logger& Logger::Instance()
         else
             loggerInstance = std::make_unique<Logger>(std::cout);
     }
-    assert(loggerInstance);
+    ASSERT(loggerInstance);
     return *loggerInstance;
 }
 

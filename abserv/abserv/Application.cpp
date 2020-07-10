@@ -61,6 +61,7 @@
 #include <abscommon/Task.h>
 #include <abscommon/ThreadPool.h>
 #include <sa/ConditionSleep.h>
+#include <sa/Assert.h>
 
 Application* Application::Instance = nullptr;
 
@@ -68,7 +69,7 @@ Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
 {
-    assert(Application::Instance == nullptr);
+    ASSERT(Application::Instance == nullptr);
     Application::Instance = this;
 
     programDescription_ = SERVER_PRODUCT_NAME;

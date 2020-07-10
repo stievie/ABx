@@ -45,13 +45,12 @@ namespace details {
 }
 }
 
-#if defined(assert)
-#undef assert
-#endif
-#define assert(expr) (static_cast<bool>(expr) ? (void)0 : sa::details::assertion_failed(#expr, __FILE__, __LINE__, SA_FUNCTION_SIG))
-
+#define ASSERT(expr) (static_cast<bool>(expr) ? (void)0 : sa::details::assertion_failed(#expr, __FILE__, __LINE__, SA_FUNCTION_SIG))
+#else
+#define ASSERT assert
 #endif  // NDEBUG
-
+#else
+#define ASSERT(expr)
 #endif  // SA_ASSERT
 
 // NOTE: ASSERT_FALSE() never returns, no matter what is defined, i.e. also not in release builds.

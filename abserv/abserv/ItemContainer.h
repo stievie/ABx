@@ -82,7 +82,7 @@ public:
     void SetSize(size_t value)
     {
         // Can not make smaller
-        assert(value + 1u > size_);
+        ASSERT(value + 1u > size_);
         // + 1 because Money doesn't count
         size_ = value + 1;
     }

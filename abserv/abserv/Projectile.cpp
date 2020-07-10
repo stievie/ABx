@@ -289,7 +289,7 @@ void Projectile::OnCollide(GameObject* other)
 bool Projectile::DoStart()
 {
     auto t = target_.lock();
-    assert(t);
+    ASSERT(t);
     bool ret = true;
     if (HaveFunction(FunctionOnStart))
         ret = luaState_["onStart"](t.get());

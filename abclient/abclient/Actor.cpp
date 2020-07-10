@@ -454,7 +454,7 @@ void Actor::AddActorUI()
         return;
     if (name_.Empty())
         return;
-    assert(name_.Compare("Unknown") != 0);
+    ASSERT(name_.Compare("Unknown") != 0);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");

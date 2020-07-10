@@ -25,6 +25,7 @@
 #include "Game.h"
 #include "MoveComp.h"
 #include <absmath/Plane.h>
+#include <sa/Assert.h>
 
 //#define DEBUG_COLLISION
 
@@ -176,7 +177,7 @@ void CollisionComp::ResolveCollisions()
 
 void CollisionComp::Update(uint32_t)
 {
-    assert(owner_.moveComp_);
+    ASSERT(owner_.moveComp_);
     if (owner_.moveComp_->moved_)
     {
         ResolveCollisions();

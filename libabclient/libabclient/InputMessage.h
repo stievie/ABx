@@ -23,7 +23,7 @@
 
 #include <string>
 #include <stdint.h>
-#include <cassert>
+#include <sa/Assert.h>
 
 namespace Client {
 
@@ -57,7 +57,7 @@ protected:
     }
     void SetHeaderSize(uint16_t size)
     {
-        assert(MaxHeaderSize - size >= 0);
+        ASSERT(MaxHeaderSize - size >= 0);
         headerPos_ = MaxHeaderSize - size;
         pos_ = headerPos_;
     }

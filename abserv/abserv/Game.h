@@ -206,7 +206,7 @@ public:
     ExecutionState GetState() const { return state_; }
     Net::NetworkMessage& GetGameStatus()
     {
-        assert(gameStatus_);
+        ASSERT(gameStatus_);
         return *gameStatus_;
     }
     bool IsInactive() const

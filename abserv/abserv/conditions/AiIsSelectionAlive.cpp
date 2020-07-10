@@ -37,7 +37,7 @@ bool IsSelectionAlive::Evaluate(Agent& agent, const Node&)
         return false;
 
     auto& npc = AI::GetNpc(agent);
-    assert(npc.HasGame());
+    ASSERT(npc.HasGame());
     auto game = npc.GetGame();
 
     for (auto id : selection)

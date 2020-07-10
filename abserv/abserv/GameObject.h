@@ -369,14 +369,14 @@ inline bool Is<GameObject>(const GameObject&)
 template <typename T>
 inline const T& To(const GameObject& obj)
 {
-    assert(Is<T>(obj));
+    ASSERT(Is<T>(obj));
     return static_cast<const T&>(obj);
 }
 
 template <typename T>
 inline T& To(GameObject& obj)
 {
-    assert(Is<T>(obj));
+    ASSERT(Is<T>(obj));
     return static_cast<T&>(obj);
 }
 

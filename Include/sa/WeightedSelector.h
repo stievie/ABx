@@ -24,7 +24,7 @@
 #include <memory>
 #include <vector>
 #include <random>
-#include <cassert>
+#include <sa/Assert.h>
 
 namespace sa {
 
@@ -118,8 +118,8 @@ public:
 #ifdef _MSC_VER
     const T& Get() const
     {
-        assert(initialized_);
-        assert(Count() != 0);
+        ASSERT(initialized_);
+        ASSERT(Count() != 0);
 
         static std::random_device rd;
         static std::mt19937 gen(rd());
@@ -131,10 +131,10 @@ public:
 #endif
     const T& Get(float rand1, float rand2) const
     {
-        assert(initialized_);
+        ASSERT(initialized_);
 
         auto i = GetIndex(rand1, rand2);
-        assert(Count() > i);
+        ASSERT(Count() > i);
         return values_[i];
     }
 };

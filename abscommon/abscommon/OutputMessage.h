@@ -28,6 +28,7 @@
 #include <sa/SmartPtr.h>
 #include <cstring>
 #include <mutex>
+#include <sa/Assert.h>
 
 namespace Net {
 
@@ -123,7 +124,7 @@ inline SharedPtr<::Net::OutputMessage> MakeShared()
         return sa::SharedPtr<::Net::OutputMessage>();
     std::scoped_lock lock(Net::PoolWrapper::lock_);
     auto* ptr = pool->allocate(1, nullptr);
-    assert(ptr);
+    ASSERT(ptr);
     return sa::SharedPtr<::Net::OutputMessage>(ptr);
 }
 

@@ -56,7 +56,7 @@ void GameManager::Stop()
 
 ea::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 {
-    assert(state_ == State::Running);
+    ASSERT(state_ == State::Running);
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Creating game " << mapUuid << std::endl;
 #endif

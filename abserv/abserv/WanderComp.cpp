@@ -38,7 +38,7 @@ WanderComp::WanderComp(Npc& owner) :
 
 void WanderComp::Initialize()
 {
-    assert(owner_.HasGame());
+    ASSERT(owner_.HasGame());
     // Calculate Y value once
     const auto& map = *owner_.GetGame()->map_;
     for (auto& p : route_)

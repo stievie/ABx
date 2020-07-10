@@ -252,7 +252,7 @@ void Octant::ResetRoot()
 
 void Octant::DeleteChild(unsigned index)
 {
-    assert(index < NUM_OCTANTS);
+    ASSERT(index < NUM_OCTANTS);
     delete children_[index];
     children_[index] = nullptr;
 }

@@ -32,6 +32,7 @@
 #else
 #include <sys/mman.h>
 #endif
+#include <sa/Assert.h>
 
 //#define DEBUG_POOLALLOCATOR
 
@@ -69,10 +70,10 @@ private:
     {
         (void)size;
         // size must be ChunkSize
-        assert(size == ChunkSize);
+        ASSERT(size == ChunkSize);
         Node* freePosition = freeList_.pop();
-        assert(freePosition != nullptr);
-        assert((((uintptr_t)freePosition - (uintptr_t)startPtr_) % ChunkSize) == 0);
+        ASSERT(freePosition != nullptr);
+        ASSERT((((uintptr_t)freePosition - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++allocs_;
         size_t curr = GetCurrentAllocations();
         if (curr > peak_)
@@ -83,9 +84,9 @@ private:
     void Free(void* ptr)
     {
         // Check if this pointer is ours
-        assert((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (size_ - ChunkSize));
+        ASSERT((uintptr_t)ptr >= (uintptr_t)startPtr_ && (uintptr_t)ptr <= (uintptr_t)startPtr_ + (size_ - ChunkSize));
         // Check if aligned to ChunkSize. If not something is wrong.
-        assert((((uintptr_t)ptr - (uintptr_t)startPtr_) % ChunkSize) == 0);
+        ASSERT((((uintptr_t)ptr - (uintptr_t)startPtr_) % ChunkSize) == 0);
         ++frees_;
         freeList_.push((Node*)ptr);
     }
@@ -118,13 +119,13 @@ public:
         size_(size)
     {
         // Check if ChunkSize is a multiple of size_.
-        assert(size_ % ChunkSize == 0);
+        ASSERT(size_ % ChunkSize == 0);
 #ifdef _WIN32
         startPtr_ = VirtualAlloc(0, size_, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-        assert(startPtr_);
+        ASSERT(startPtr_);
 #else
         startPtr_ = mmap(0, size_, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, 0, 0);
-        assert(startPtr_ != MAP_FAILED);
+        ASSERT(startPtr_ != MAP_FAILED);
 #endif
         Reset();
     }

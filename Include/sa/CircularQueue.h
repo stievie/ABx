@@ -26,6 +26,7 @@
 #include <cstddef>
 #include <utility>
 #include <type_traits>
+#include <sa/Assert.h>
 
 namespace sa {
 
@@ -84,7 +85,7 @@ public:
     }
     T Dequeue()
     {
-        assert(!IsEmpty());
+        ASSERT(!IsEmpty());
         if constexpr (std::is_compound<T>::value)
         {
             auto& item = Elements()[head_];

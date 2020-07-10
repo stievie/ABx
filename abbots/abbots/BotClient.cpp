@@ -123,7 +123,7 @@ void BotClient::OnGetCharlist(const AB::Entities::CharList& chars)
     else
     {
         const auto it = sa::SelectRandomly(chars_.begin(), chars_.end());
-        assert(it != chars_.end());
+        ASSERT(it != chars_.end());
         charUuid = (*it).uuid;
         mapUuid = (*it).lastOutpostUuid;
         currentName_ = (*it).name;
@@ -306,7 +306,7 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectTargetSelecte
 
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::ObjectStateChanged& packet)
 {
-    assert(game_);
+    ASSERT(game_);
     auto* object = game_->GetObject(packet.id);
     if (object)
         object->OnStateChanged(packet.state);

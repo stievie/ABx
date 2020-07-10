@@ -58,7 +58,7 @@ public:
         for (itr = order_.rbegin(); itr != order_.rend(); ++itr)
         {
             auto sit = systems_.find(*itr);
-            assert(sit != systems_.end());
+            ASSERT(sit != systems_.end());
             (*sit).second.reset();
         }
         systems_.clear();
@@ -108,7 +108,7 @@ public:
             auto it = std::find_if(order_.begin(), order_.end(), [&](size_t current) -> bool {
                 return current == key;
             });
-            assert(it != order_.end());
+            ASSERT(it != order_.end());
             order_.erase(it);
 
             systems_.erase(i);

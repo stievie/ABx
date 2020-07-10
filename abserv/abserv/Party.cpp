@@ -333,7 +333,7 @@ void Party::ChangeServerInstance(const std::string& serverUuid, const std::strin
 
 void Party::NotifyPlayersQueued()
 {
-    assert(GetLeader());
+    ASSERT(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {
@@ -347,7 +347,7 @@ void Party::NotifyPlayersQueued()
 
 void Party::NotifyPlayersUnqueued()
 {
-    assert(GetLeader());
+    ASSERT(GetLeader());
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);
     AB::Packets::Server::ServerMessage packet = {

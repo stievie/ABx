@@ -29,6 +29,7 @@
 #include "Spinner.h"
 #include "WindowManager.h"
 #include "ChatWindow.h"
+#include <sa/Assert.h>
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -350,7 +351,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             materialDropdown->SetSelection(3);
             break;
         default:
-            assert(false);
+            ASSERT_FALSE();
         }
         SubscribeToEvent(materialDropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
@@ -386,7 +387,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             textureQropdown->SetSelection(3);
             break;
         default:
-            assert(false);
+            ASSERT_FALSE();
         }
         SubscribeToEvent(textureQropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
         {
@@ -501,7 +502,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             dropdown->SetSelection(6);
             break;
         default:
-            assert(false);
+            ASSERT_FALSE();
         }
         SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {

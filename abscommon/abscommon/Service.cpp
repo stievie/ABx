@@ -27,6 +27,7 @@
 #include "Logger.h"
 #include <AB/CommonConfig.h>
 #include "Subsystems.h"
+#include <sa/Assert.h>
 
 namespace Net {
 
@@ -48,7 +49,7 @@ uint16_t ServiceManager::GetFreePort()
 
 void ServiceManager::Run()
 {
-    assert(!running_);
+    ASSERT(!running_);
     running_ = true;
 }
 

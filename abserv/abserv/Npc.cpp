@@ -427,7 +427,7 @@ void Npc::Whisper(Player* player, const std::string& message)
 
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 {
-    assert(HasGame());
+    ASSERT(HasGame());
     auto game = GetGame();
     game->AddProjectile(itemUuid, GetPtr<Actor>(), target->GetPtr<Actor>());
 }

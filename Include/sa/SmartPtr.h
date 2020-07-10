@@ -22,7 +22,7 @@
 #pragma once
 
 #include <utility>
-#include <cassert>
+#include <sa/Assert.h>
 
 namespace sa {
 
@@ -175,32 +175,32 @@ public:
     /// Get raw pointer
     T* Ptr() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     const T* Ptr() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     T* operator->() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     const T* operator->() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     T& operator *() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return *ptr_;
     }
     const T& operator *() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return *ptr_;
     }
 
@@ -276,32 +276,32 @@ public:
     /// Get raw pointer
     T* Ptr() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     const T* Ptr() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     T* operator->() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     const T* operator->() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return ptr_;
     }
     T& operator *() noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return *ptr_;
     }
     const T& operator *() const noexcept
     {
-        assert(ptr_);
+        ASSERT(ptr_);
         return *ptr_;
     }
 

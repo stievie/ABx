@@ -446,7 +446,7 @@ std::vector<GameObject*> GameObject::_LuaGetObjectsInside()
     if (!triggerComp_)
         return result;
 
-    assert(HasGame());
+    ASSERT(HasGame());
     auto game = GetGame();
     triggerComp_->VisitObjectInside([&](uint32_t id) -> Iteration
     {
@@ -791,7 +791,7 @@ void GameObject::SetTrigger(bool value)
 void GameObject::VisitInRange(Ranges range, const std::function<Iteration(GameObject&)>& func) const
 {
     auto game = GetGame();
-    assert(game);
+    ASSERT(game);
     const auto r = ranges_.find(range);
     if (r == ranges_.end())
         return;

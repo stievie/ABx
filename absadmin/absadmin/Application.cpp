@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Application.h"
 #include "AccountKeysResource.h"
 #include "AccountLogoutResource.h"
@@ -54,6 +53,7 @@
 #include <abscommon/Logo.h>
 #include <abscommon/SimpleConfigManager.h>
 #include <abscommon/StringUtils.h>
+#include <sa/Assert.h>
 
 Application* Application::Instance = nullptr;
 
@@ -61,7 +61,7 @@ Application::Application() :
     ServerApp::ServerApp(),
     startTime_(0)
 {
-    assert(Application::Instance == nullptr);
+    ASSERT(Application::Instance == nullptr);
     Application::Instance = this;
 
     programDescription_ = SERVER_PRODUCT_NAME;
@@ -393,7 +393,7 @@ void Application::Stop()
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 {
-    assert(Application::Instance);
+    ASSERT(Application::Instance);
     SimpleWeb::CaseInsensitiveMultimap result;
     result.emplace("Server", Application::Instance->serverName_);
     return result;

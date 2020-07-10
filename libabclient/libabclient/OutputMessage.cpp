@@ -26,6 +26,7 @@
 #include <abcrypto.hpp>
 #include <AB/ProtocolCodes.h>
 #include <lz4.h>
+#include <sa/Assert.h>
 
 namespace Client {
 
@@ -109,7 +110,7 @@ void OutputMessage::CheckWrite(int bytes)
 void OutputMessage::WriteChecksum()
 {
     uint32_t checksum = AdlerChecksum(buffer_ + info_.headerPos, info_.size);
-    assert(info_.headerPos - 4 >= 0);
+    ASSERT(info_.headerPos - 4 >= 0);
     info_.headerPos -= 4;
     Set<uint32_t>(info_.headerPos, checksum);
     info_.size += 4;
@@ -117,7 +118,7 @@ void OutputMessage::WriteChecksum()
 
 void OutputMessage::WriteMessageSize()
 {
-    assert(info_.headerPos - 2 >= 0);
+    ASSERT(info_.headerPos - 2 >= 0);
     info_.headerPos -= 2;
     Set<uint16_t>(info_.headerPos, info_.size);
     info_.size += 2;

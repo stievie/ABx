@@ -41,7 +41,7 @@ public:
     }
     ReturnType Call(IndexType index, _CArgs&& ... _Args)
     {
-        assert(Exists(index));
+        ASSERT(Exists(index));
         auto& c = callables_[index];
         return c(std::forward<_CArgs>(_Args)...);
     }
@@ -51,7 +51,7 @@ public:
     }
     FunctionType& operator [](IndexType index)
     {
-        assert(Exists(index));
+        ASSERT(Exists(index));
         return callables_[index];
     }
 };
