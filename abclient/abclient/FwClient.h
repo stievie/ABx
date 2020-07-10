@@ -276,7 +276,7 @@ public:
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
     void RequestMerchantItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "", uint32_t page = 1);
     void RequestCrafsmanItems(uint32_t npcId, uint16_t itemType = 0, const String& searchName = "", uint32_t page = 1);
-    void CraftItem(uint32_t npcId, uint32_t index, uint32_t count);
+    void CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t attributeIndex);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

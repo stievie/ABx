@@ -1,4 +1,6 @@
--- Get drop statistics for damage
+-- Get drop statistics
+
+include("/scripts/includes/attributes.lua")
 
 function getRandomStat(maxVal, level, minVal)
   if (level == 20 and Random() >= 0.3) then
@@ -54,6 +56,63 @@ function getHealthStats(level, maxStats)
     return dropStats["Health"]
   end
   return getRandomStat(dropStats["Health"], level)
+end
+
+function getAtttributes()
+  if (dropStats["Attributes"] == nil) then
+    print("ERROR: dropStats[Attributes] == nil")
+    return { ATTRIB_NONE }
+  end
+  return dropStats["Attributes"]
+end
+
+function getRandomAttribute()
+  if (dropStats["Attributes"] == nil) then
+    print("ERROR: dropStats[Attributes] == nil")
+    return ATTRIB_NONE
+  end
+  local rnd = math.floor(Random(1, #dropStats["Attributes"]))
+  
+  return dropStats["Attributes"][rnd]
+end
+
+function getRequirement(level, maxStat)
+  local tbl = {
+    0,             -- 1
+    0,             -- 2
+    1,             -- 3
+    1,             -- 4
+    2,             -- 5
+    2,             -- 6
+    3,             -- 7
+    4,             -- 8
+    5,             -- 9
+    5,             -- 10
+    6,             -- 11
+    6,             -- 12
+    7,             -- 13
+    7,             -- 14
+    8,             -- 15
+    8,             -- 16
+    9,             -- 17
+    9,             -- 18
+    9,             -- 19
+    9              -- 20
+  }
+
+  if (maxStat) then
+    return tbl[level]
+  end
+  local rnd = math.floor(Random(0, 4))
+  local val = tbl[level] + rnd;
+  if (val > 13) then
+    val = 13
+  end
+  return val
+end
+
+function getAttributeStats(level, maxStat)
+  return getRandomAttribute(), getRequirement(level, maxStat)
 end
 
 function getValueStat(index, level, maxStat)

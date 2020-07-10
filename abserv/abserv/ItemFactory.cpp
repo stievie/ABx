@@ -684,4 +684,33 @@ std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t l
     return pItem->concreteItem_.itemStats;
 }
 
+std::string ItemFactory::GetMaxItemStatsWithAttribute(const std::string& itemUuid, uint32_t level, Attribute attrib, int attribRank)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item item;
+    item.uuid = itemUuid;
+    if (!client->Read(item))
+        return "";
+    ea::unique_ptr<Item> pItem = ea::make_unique<Item>(item);
+    if (!pItem->LoadScript(item.script))
+        return "";
+    AB::Entities::ConcreteItem ci;
+    if (!pItem->GenerateConcrete(ci, level, true))
+        return "";
+    pItem->stats_.SetValue(ItemStatIndex::Attribute, static_cast<int>(attrib));
+    if (attribRank > -1)
+        pItem->stats_.SetValue(ItemStatIndex::AttributeValue, attribRank);
+    return pItem->GetEncodedStats();
+}
+
+uint32_t ItemFactory::GetItemIndexFromUuid(const std::string& uuid)
+{
+    AB::Entities::Item item;
+    item.uuid = uuid;
+    auto* client = GetSubsystem<IO::DataClient>();
+    if (!client->Read(item))
+        return 0;
+    return item.index;
+}
+
 }

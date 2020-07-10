@@ -145,6 +145,8 @@ public:
     uint32_t WithdrawMoney(uint32_t amount, Net::NetworkMessage* message);
     uint32_t GetChestMoney() const;
     uint32_t GetInventoryMoney() const;
+    bool HaveInventoryItem(uint32_t itemIndex, uint32_t count);
+    bool TakeInventoryItem(uint32_t itemIndex, uint32_t count, Net::NetworkMessage* message);
 
     void SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId);
     void RemoveUpgrade(Item& item, ItemUpgrade type);

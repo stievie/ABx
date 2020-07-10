@@ -81,13 +81,13 @@ private:
     UpgradesMap upgrades_;
     int32_t baseMinDamage_{ 0 };
     int32_t baseMaxDamage_{ 0 };
-    ItemStats stats_;
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
         return sa::bits::is_set(functions_, func);
     }
     void CreateGeneralStats(uint32_t level, bool maxStats);
+    void CreateAttributeStats(uint32_t level, bool maxStats);
     void CreateInsigniaStats(uint32_t level, bool maxStats);
     void CreateWeaponStats(uint32_t level, bool maxStats);
     void CreateFocusStats(uint32_t level, bool maxStats);
@@ -103,6 +103,7 @@ public:
     bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats);
+    std::string GetEncodedStats() const;
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
     Item* SetUpgrade(ItemUpgrade type, uint32_t id);
@@ -144,6 +145,7 @@ public:
     uint32_t id_{ std::numeric_limits<uint32_t>::min() };
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;
+    ItemStats stats_;
 };
 
 }

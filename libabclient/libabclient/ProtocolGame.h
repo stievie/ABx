@@ -102,7 +102,7 @@ public:
     void BuyItem(uint32_t npcId, uint32_t id, uint32_t count);
     void GetMerchantItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page);
     void GetCraftsmanItems(uint32_t npcId, uint16_t itemType, const std::string& searchName, uint32_t page);
-    void CraftItem(uint32_t npcId, uint32_t index, uint32_t count);
+    void CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t attributeIndex);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

@@ -95,6 +95,10 @@ public:
     uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, AB::Entities::StoragePlace place, uint32_t count = 1);
     bool MoveToMerchant(Item* item, uint32_t count);
     std::string GetMaxItemStats(const std::string& itemUuid, uint32_t level);
+    // Used to craft items with a certain attribute
+    std::string GetMaxItemStatsWithAttribute(const std::string& itemUuid, uint32_t level,
+        Attribute attrib, int attribRank);
+    uint32_t GetItemIndexFromUuid(const std::string& uuid);
 };
 
 }

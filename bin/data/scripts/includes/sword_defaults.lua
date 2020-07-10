@@ -1,3 +1,4 @@
+include("/scripts/includes/attributes.lua")
 -- Drop Stats ------------------------------------------------------------------
 dropStats = {}
 materialStats = {}
@@ -5,6 +6,8 @@ materialStats = {}
 -- the player/drop area
 dropStats["MinDamage"] = 15
 dropStats["MaxDamage"] = 22
+dropStats["Attributes"] = { ATTRIB_HAMMER_MASTERY }
+
 materialStats[1] = { 100000, 1000 }
 materialStats[2] = { 100001, 50 }
 materialStats[3] = { 0, 0 }

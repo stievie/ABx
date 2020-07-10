@@ -112,7 +112,7 @@ void CraftsmanWindow::RequestList(uint32_t page)
 {
     auto* client = GetSubsystem<FwClient>();
     const String& search = searchNameEdit_->GetText();
-    client->RequestMerchantItems(npcId_, GetSelectedItemType(), search, page);
+    client->RequestCrafsmanItems(npcId_, GetSelectedItemType(), search, page);
 }
 
 uint16_t CraftsmanWindow::GetSelectedItemType() const

@@ -47,7 +47,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, concrete_items.sold AS `sold`, " <<
-        "game_items.type AS `type`, game_items.name AS `name`, game_items.item_flags AS `item_flags` " <<
+        "game_items.type AS `type`, game_items.idx AS `idx`, game_items.name AS `name`, game_items.item_flags AS `item_flags` " <<
         "FROM `concrete_items` " <<
         "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid " <<
         "WHERE `deleted` = 0 AND `storage_place` = " <<
@@ -60,7 +60,9 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
             if (!KeepIt(result->GetLong("sold")))
                 continue;
         }
-        il.items.push_back({ static_cast<AB::Entities::ItemType>(result->GetUInt("type")),
+        il.items.push_back({
+            result->GetUInt("idx"),
+            static_cast<AB::Entities::ItemType>(result->GetUInt("type")),
             result->GetString("name"),
             result->GetString("concrete_uuid"),
             result->GetString("item_uuid") });

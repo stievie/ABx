@@ -144,6 +144,7 @@ public:
     ea::set<uint32_t> GetQuestsForPlayer(const Player& player) const;
     bool HaveQuestsForPlayer(const Player& player) const;
     bool IsSellingItemType(AB::Entities::ItemType type) const;
+    bool IsSellingItem(uint32_t itemIndex);
 
     ea::unique_ptr<Components::AiComp> aiComp_;
     ea::unique_ptr<Components::WanderComp> wanderComp_;

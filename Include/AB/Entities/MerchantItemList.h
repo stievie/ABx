@@ -49,6 +49,7 @@ struct MerchantItemList : Entity
     }
     struct Item
     {
+        uint32_t index;
         ItemType type;
         std::string name;
         std::string concreteUuid;
@@ -60,6 +61,7 @@ struct MerchantItemList : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.container(items, Limits::MAX_ITEMS, [&s](Item& c)
         {
+            s.value4b(c.index);
             s.value2b(c.type);
             s.text1b(c.name, Limits::MAX_ITEM_NAME);
             s.text1b(c.concreteUuid, Limits::MAX_UUID);

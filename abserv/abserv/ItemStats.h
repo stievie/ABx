@@ -25,14 +25,12 @@
 #include <sa/PropStream.h>
 #include <abscommon/Variant.h>
 #include <abshared/Attributes.h>
-#include <sa/Noncopyable.h>
 #include <abshared/Items.h>
 
 namespace Game {
 
 class ItemStats
 {
-    NON_COPYABLE(ItemStats)
 public:
     ItemStats();
     ~ItemStats() = default;
@@ -71,7 +69,7 @@ public:
     }
 
     bool Load(sa::PropReadStream& stream);
-    void Save(sa::PropWriteStream& stream);
+    void Save(sa::PropWriteStream& stream) const;
 
     Utils::VariantMap stats_;
 };

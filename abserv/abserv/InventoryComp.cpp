@@ -565,6 +565,72 @@ uint32_t InventoryComp::GetInventoryMoney() const
     return inventory_->GetMoney();
 }
 
+bool InventoryComp::HaveInventoryItem(uint32_t itemIndex, uint32_t count)
+{
+    uint32_t availCount = 0;
+    VisitInventory([&](const Item& current)
+    {
+        if (current.data_.index == itemIndex)
+            availCount += current.concreteItem_.count;
+        return Iteration::Continue;
+    });
+    return availCount >= count;
+}
+
+bool InventoryComp::TakeInventoryItem(uint32_t itemIndex, uint32_t count, Net::NetworkMessage* message)
+{
+    // Make sure the inventory contains enough before calling this function
+    uint32_t remaining = count;
+    ea::set<uint32_t> deleted;
+    VisitInventory([&](Item& current)
+    {
+        if (current.data_.index == itemIndex)
+        {
+            if (current.concreteItem_.count < remaining)
+            {
+                remaining -= current.concreteItem_.count;
+                current.concreteItem_.count = 0;
+            }
+            else
+            {
+                current.concreteItem_.count -= remaining;
+                remaining = 0;
+            }
+            if (current.concreteItem_.count == 0)
+            {
+                if (message)
+                {
+                    message->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+                    AB::Packets::Server::InventoryItemDelete packet = {
+                        current.concreteItem_.storagePos
+                    };
+                }
+                deleted.emplace(current.id_);
+            }
+            else
+            {
+                WriteItemUpdate(&current, message);
+            }
+        }
+        if (remaining > 0)
+            return Iteration::Continue;
+        return Iteration::Break;
+    });
+
+    if (deleted.size() != 0)
+    {
+        auto* cache = GetSubsystem<ItemsCache>();
+        auto* factory = GetSubsystem<ItemFactory>();
+        for (auto id : deleted)
+        {
+            auto* pItem = cache->Get(id);
+            assert(pItem);
+            factory->DeleteItem(pItem);
+        }
+    }
+    return remaining == 0;
+}
+
 void InventoryComp::SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId)
 {
     const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlace::Equipped;

@@ -2,6 +2,7 @@ include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/dialogs.lua")
 include("/scripts/includes/attributes.lua")
+include("/scripts/includes/items.lua")
 
 name = "Dimitris Sallas (Smith)"
 level = 20
@@ -44,6 +45,11 @@ function getSellingItemTypes()
     ITEMTYPE_Focus,
     ITEMTYPE_Shield
   }
+end
+
+function isSellingItem(itemIndex)
+  return (itemIndex == 500) or (itemIndex == 501) or (itemIndex == 502) or
+    (itemIndex == 506) or (itemIndex == 507) or (itemIndex == 509)
 end
 
 function onUpdate(timeElapsed)

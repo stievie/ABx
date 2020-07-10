@@ -1634,6 +1634,8 @@ void Player::CRQSellItem(uint32_t npcId, uint16_t pos, uint32_t count)
 
 void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
 {
+    if (count == 0 || count > MAX_INVENTORY_STACK_SIZE)
+        return;
     auto* npc = GetGame()->GetObject<Npc>(npcId);
     if (!npc)
         return;
@@ -1709,6 +1711,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         return;
     }
 
+    auto* factory = GetSubsystem<ItemFactory>();
     ea::set<AB::Entities::ItemType> availTypes;
     const bool doSearch = !searchName.empty();
     const std::string search = "*" + searchName + "*";
@@ -1718,6 +1721,8 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
     for (auto it = ml.items.begin(); it != ml.items.end(); ++it, ++index)
     {
         if (!npc->IsSellingItemType(it->type))
+            continue;
+        if (!npc->IsSellingItem(it->index))
             continue;
         availTypes.emplace(it->type);
         if (itemType != AB::Entities::ItemType::Unknown)
@@ -1747,7 +1752,6 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
         std::advance(it, offset);
         if (it != itemIndices.end())
         {
-            auto* factory = GetSubsystem<ItemFactory>();
             auto* cache = GetSubsystem<ItemsCache>();
             for (; it != itemIndices.end(); ++it)
             {
@@ -1888,6 +1892,8 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
     {
         if (!npc->IsSellingItemType(it->type))
             continue;
+        if (!npc->IsSellingItem(it->index))
+            continue;
         availTypes.emplace(it->type);
         if (itemType != AB::Entities::ItemType::Unknown)
         {
@@ -1952,9 +1958,12 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
     WriteToOutput(*msg);
 }
 
-void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t attributeIndex)
 {
-    (void)count;
+    if (count == 0 || count > MAX_INVENTORY_STACK_SIZE)
+        return;
+    if (attributeIndex >= static_cast<uint32_t>(Attribute::__Last))
+        return;
 
     if (index == 0 || count == 0)
         return;
@@ -1977,13 +1986,105 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count)
     {
         return;
     }
+    if (count != 1 && AB::Entities::IsItemStackable(item.itemFlags))
+    {
+        LOG_ERROR << "Can not create more than one item fro non stackable items" << std::endl;
+        return;
+    }
 
     auto* factory = GetSubsystem<ItemFactory>();
     // Stats contain the price
-    const std::string maxStats = factory->GetMaxItemStats(item.uuid, npc->GetLevel());
-    (void)maxStats;
+    const std::string maxStats = factory->GetMaxItemStatsWithAttribute(item.uuid, npc->GetLevel(),
+        static_cast<Attribute>(attributeIndex), -1);
+    ItemStats stats;
+    sa::PropReadStream stream;
+    stream.Init(maxStats.data(), maxStats.length());
+    if (!stats.Load(stream))
+    {
+        LOG_ERROR << "Error loading stats from stream" << std::endl;
+        return;
+    }
 
-    // TODO: The rest!
+    auto msg = Net::NetworkMessage::GetNew();
+    Components::InventoryComp& inv = *inventoryComp_;
+    auto notEnoughStuff = [this, &msg]()
+    {
+        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        AB::Packets::Server::PlayerError packet = {
+            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotEnoughMoney)
+        };
+        AB::Packets::Add(packet, *msg);
+    };
+
+    auto checkMats = [&](ItemStatIndex indexIndex, ItemStatIndex countIndex) -> bool
+    {
+        uint32_t _index = stats.GetValue(indexIndex, 0);
+        uint32_t _count = stats.GetValue(countIndex, 0) * count;
+        if (_index != 0 && _count != 0)
+        {
+            if (!inv.HaveInventoryItem(_index, _count))
+                return false;
+        }
+        return true;
+    };
+    auto removeMats = [&](ItemStatIndex indexIndex, ItemStatIndex countIndex) -> bool
+    {
+        uint32_t _index = stats.GetValue(indexIndex, 0);
+        uint32_t _count = stats.GetValue(countIndex, 0) * count;
+        if (_index != 0 && _count != 0)
+        {
+            if (!inv.TakeInventoryItem(_index, _count, msg.get()))
+                return false;
+        }
+        return true;
+    };
+
+    bool success = true;
+    if (!checkMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count))
+    {
+        notEnoughStuff();
+        success = false;
+    }
+    if (!checkMats(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count))
+    {
+        notEnoughStuff();
+        success = false;
+    }
+    if (!checkMats(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count))
+    {
+        notEnoughStuff();
+        success = false;
+    }
+    if (!checkMats(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count))
+    {
+        notEnoughStuff();
+        success = false;
+    }
+
+    if (success)
+    {
+        uint32_t newItemId = factory->CreatePlayerItem(*this, item.uuid, AB::Entities::StoragePlace::Inventory, count);
+        if (newItemId == 0)
+        {
+            LOG_ERROR << "Error creating item " << item.uuid << std::endl;
+            return;
+        }
+        auto* cache = GetSubsystem<ItemsCache>();
+        // Update stats
+        auto* pItem = cache->Get(newItemId);
+        assert(pItem);
+        pItem->stats_ = stats;
+        pItem->concreteItem_.itemStats = pItem->GetEncodedStats();
+        inv.SetInventoryItem(newItemId, msg.get());
+        client->Update(pItem->concreteItem_);
+
+        assert(removeMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count));
+        assert(removeMats(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count));
+        assert(removeMats(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count));
+        assert(removeMats(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count));
+    }
+
+    WriteToOutput(*msg);
 }
 
 bool Player::IsIgnored(const Player& player) const

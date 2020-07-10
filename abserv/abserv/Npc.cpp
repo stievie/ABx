@@ -600,4 +600,12 @@ bool Npc::IsSellingItemType(AB::Entities::ItemType type) const
     return sellItemTypes_.find(type) != sellItemTypes_.end();
 }
 
+bool Npc::IsSellingItem(uint32_t itemIndex)
+{
+    if (!Lua::IsFunction(luaState_, "isSellingItem"))
+        return false;
+    const bool result = luaState_["isSellingItem"](itemIndex);
+    return result;
+}
+
 }

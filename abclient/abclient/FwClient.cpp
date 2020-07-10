@@ -973,10 +973,10 @@ void FwClient::RequestCrafsmanItems(uint32_t npcId, uint16_t itemType, const Str
     }
 }
 
-void FwClient::CraftItem(uint32_t npcId, uint32_t index, uint32_t count)
+void FwClient::CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t attributeIndex)
 {
     if (loggedIn_)
-        client_.CraftItem(npcId, index, count);
+        client_.CraftItem(npcId, index, count, attributeIndex);
 }
 
 void FwClient::Move(uint8_t direction)

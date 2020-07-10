@@ -127,7 +127,7 @@ bool ItemStats::Load(sa::PropReadStream& stream)
     return Utils::VariantMapRead(stats_, stream);
 }
 
-void ItemStats::Save(sa::PropWriteStream& stream)
+void ItemStats::Save(sa::PropWriteStream& stream) const
 {
     Utils::VariantMapWrite(stats_, stream);
 }

@@ -162,6 +162,20 @@ void Item::CreateGeneralStats(uint32_t level, bool maxStats)
     }
 }
 
+void Item::CreateAttributeStats(uint32_t level, bool maxStats)
+{
+    if (Lua::IsFunction(luaState_, "getAttributeStats"))
+    {
+        int32_t attribIndex = 0;
+        int32_t attribValue = 0;
+        kaguya::tie(attribIndex, attribValue) = luaState_["getAttributeStats"](level, maxStats);
+        if (attribIndex > 0)
+            stats_.SetValue(ItemStatIndex::Attribute, attribIndex);
+        if (attribValue > -1)
+            stats_.SetValue(ItemStatIndex::AttributeValue, attribValue);
+    }
+}
+
 void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
 {
     if (Lua::IsFunction(luaState_, "getHealthStats"))
@@ -224,27 +238,35 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
     case AB::Entities::ItemType::Staff:
     case AB::Entities::ItemType::Daggers:
     case AB::Entities::ItemType::Scyte:
+        CreateAttributeStats(level, maxStats);
         CreateWeaponStats(level, maxStats);
         break;
     case AB::Entities::ItemType::Focus:
+        CreateAttributeStats(level, maxStats);
         CreateFocusStats(level, maxStats);
         break;
     case AB::Entities::ItemType::Shield:
+        CreateAttributeStats(level, maxStats);
         CreateShieldStats(level, maxStats);
         break;
     default:
         break;
     }
 
-    sa::PropWriteStream stream;
-    stats_.Save(stream);
-    size_t ssize = 0;
-    const char* s = stream.GetStream(ssize);
-    concreteItem_.itemStats = std::string(s, ssize);
+    concreteItem_.itemStats = GetEncodedStats();
 
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
     return true;
+}
+
+std::string Item::GetEncodedStats() const
+{
+    sa::PropWriteStream stream;
+    stats_.Save(stream);
+    size_t ssize = 0;
+    const char* s = stream.GetStream(ssize);
+    return std::string(s, ssize);
 }
 
 void Item::Update(uint32_t timeElapsed)

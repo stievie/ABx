@@ -47,6 +47,10 @@ function getSellingItemTypes()
   }
 end
 
+function isSellingItem(itemIndex)
+  return true;
+end
+
 function onUpdate(timeElapsed)
 
 end
