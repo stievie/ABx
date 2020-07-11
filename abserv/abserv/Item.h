@@ -104,6 +104,7 @@ public:
     bool LoadScript(const std::string& fileName);
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats);
     std::string GetEncodedStats() const;
+    bool IsPossibleAttribute(Attribute attribute);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
     Item* SetUpgrade(ItemUpgrade type, uint32_t id);

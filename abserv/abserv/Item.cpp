@@ -28,6 +28,7 @@
 #include "Script.h"
 #include "ScriptManager.h"
 #include "Skill.h"
+#include <abshared/Attributes.h>
 
 namespace Game {
 
@@ -120,46 +121,19 @@ void Item::CreateGeneralStats(uint32_t level, bool maxStats)
     if (!Lua::IsFunction(luaState_, "getValueStat"))
         return;
 
+    auto setValues = [&](int number)
     {
         uint32_t index;
         uint32_t count;
-        kaguya::tie(index, count) = luaState_["getValueStat"](1, level, maxStats);
+        kaguya::tie(index, count) = luaState_["getValueStat"](number, level, maxStats);
         if (index != 0 && count != 0)
         {
-            stats_.SetValue(ItemStatIndex::Material1Index, index);
-            stats_.SetValue(ItemStatIndex::Material1Count, count);
+            stats_.SetValue(static_cast<int>(ItemStatIndex::Material1Index) + ((number - 1) * 2), index);
+            stats_.SetValue(static_cast<int>(ItemStatIndex::Material1Count) + ((number - 1) * 2), count);
         }
-    }
-    {
-        uint32_t index;
-        uint32_t count;
-        kaguya::tie(index, count) = luaState_["getValueStat"](2, level, maxStats);
-        if (index != 0 && count != 0)
-        {
-            stats_.SetValue(ItemStatIndex::Material2Index, index);
-            stats_.SetValue(ItemStatIndex::Material2Count, count);
-        }
-    }
-    {
-        uint32_t index;
-        uint32_t count;
-        kaguya::tie(index, count) = luaState_["getValueStat"](3, level, maxStats);
-        if (index != 0 && count != 0)
-        {
-            stats_.SetValue(ItemStatIndex::Material3Index, index);
-            stats_.SetValue(ItemStatIndex::Material3Count, count);
-        }
-    }
-    {
-        uint32_t index;
-        uint32_t count;
-        kaguya::tie(index, count) = luaState_["getValueStat"](4, level, maxStats);
-        if (index != 0 && count != 0)
-        {
-            stats_.SetValue(ItemStatIndex::Material4Index, index);
-            stats_.SetValue(ItemStatIndex::Material4Count, count);
-        }
-    }
+    };
+    for (int i = 1; i <= 4; ++i)
+        setValues(i);
 }
 
 void Item::CreateAttributeStats(uint32_t level, bool maxStats)
@@ -267,6 +241,12 @@ std::string Item::GetEncodedStats() const
     size_t ssize = 0;
     const char* s = stream.GetStream(ssize);
     return std::string(s, ssize);
+}
+
+bool Item::IsPossibleAttribute(Attribute attribute)
+{
+    const auto attrib = GetPossibleItemAttributes(data_.type);
+    return attrib.find(attribute) != attrib.end();
 }
 
 void Item::Update(uint32_t timeElapsed)

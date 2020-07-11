@@ -21,6 +21,10 @@
 
 #include "CraftsmanWindow.h"
 #include "ItemsCache.h"
+#include "PriceUIElement.h"
+#include "SkillManager.h"
+#include <abshared/Items.h>
+#include <abshared/Attributes.h>
 
 CraftsmanWindow::CraftsmanWindow(Context* context) :
     DialogWindow(context)
@@ -67,6 +71,10 @@ void CraftsmanWindow::CreateUI()
     items_ = listContainer->CreateChild<ListView>("ItemsListView");
     items_->SetStyleAuto();
     items_->SetHighlightMode(HM_ALWAYS);
+    SubscribeToEvent(items_, E_ITEMSELECTED, URHO3D_HANDLER(CraftsmanWindow, HandleItemSelected));
+
+    attribDropdown_ = GetChildStaticCast<DropDownList>("AttribDropdown", true);
+    attribDropdown_->SetVisible(false);
 }
 
 void CraftsmanWindow::SubscribeEvents()
@@ -112,17 +120,26 @@ void CraftsmanWindow::RequestList(uint32_t page)
 {
     auto* client = GetSubsystem<FwClient>();
     const String& search = searchNameEdit_->GetText();
-    client->RequestCrafsmanItems(npcId_, GetSelectedItemType(), search, page);
+    client->RequestCrafsmanItems(npcId_, static_cast<uint16_t>(GetSelectedItemType()), search, page);
 }
 
-uint16_t CraftsmanWindow::GetSelectedItemType() const
+AB::Entities::ItemType CraftsmanWindow::GetSelectedItemType() const
 {
     auto* item = itemTypesList_->GetSelectedItem();
     if (!item)
-        return 0;
+        return AB::Entities::ItemType::Unknown;
 
     unsigned type = item->GetVar("Type").GetUInt();
-    return static_cast<uint16_t>(type);
+    return static_cast<AB::Entities::ItemType>(type);
+}
+
+uint32_t CraftsmanWindow::GetSelectedItemIndex() const
+{
+    auto* item = items_->GetSelectedItem();
+    if (!item)
+        return 0;
+
+    return item->GetVar("Index").GetUInt();
 }
 
 UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
@@ -141,6 +158,7 @@ UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
     uiS->SetVar("Count", iItem.count);
     uiS->SetVar("Flags", iItem.flags);
     uiS->SetVar("Index", iItem.index);
+    uiS->SetVar("Type", static_cast<unsigned>(iItem.type));
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
@@ -154,7 +172,24 @@ UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
 
     UIElement* priceContainer = textContainer->CreateChild<UIElement>("Price");
     priceContainer->SetInternal(true);
-    // TODO: Show price, mats and money
+    priceContainer->SetLayoutMode(LM_HORIZONTAL);
+
+    auto setValues = [&](int number)
+    {
+        auto indexIt = iItem.stats.Find(static_cast<Game::ItemStatIndex>(static_cast<int>(Game::ItemStatIndex::Material1Index) + ((number - 1) * 2)));
+        if (indexIt == iItem.stats.End())
+            return;
+        auto countIt = iItem.stats.Find(static_cast<Game::ItemStatIndex>(static_cast<int>(Game::ItemStatIndex::Material1Count) + ((number - 1) * 2)));
+        if (countIt == iItem.stats.End())
+            return;
+
+        uint32_t index = indexIt->second_.GetUInt();
+        uint32_t count = countIt->second_.GetUInt();
+        auto* elem = priceContainer->CreateChild<PriceUIElement>();
+        elem->Add(index, count);
+    };
+    for (int i = 1; i <= 4; ++i)
+        setValues(i);
 
     uiS->SetStyle("CraftsmanListItem");
     Texture2D* texture = cache->GetResource<Texture2D>(item->iconFile_);
@@ -176,7 +211,7 @@ void CraftsmanWindow::PopulateItemTypes()
         return result;
     };
 
-    uint16_t sel = GetSelectedItemType();
+    AB::Entities::ItemType sel = GetSelectedItemType();
     itemTypesList_ = GetChildStaticCast<DropDownList>("ItemTypeList", true);
     itemTypesList_->RemoveAllItems();
 
@@ -191,7 +226,7 @@ void CraftsmanWindow::PopulateItemTypes()
             String text = FwClient::GetItemTypeName(type);
             if (text.Empty())
                 continue;
-            if (type == static_cast<AB::Entities::ItemType>(sel))
+            if (type == sel)
                 selected = itemTypesList_->GetNumItems();
             itemTypesList_->AddItem(createDropdownItem(text, type));
         }
@@ -206,6 +241,46 @@ void CraftsmanWindow::PopulateItemTypes()
     }
 }
 
+void CraftsmanWindow::UpdateAttributeList()
+{
+    attribDropdown_->RemoveAllItems();
+    uint32_t itemIndex = GetSelectedItemIndex();
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto item = cache->Get(itemIndex);
+    if (!item)
+    {
+        attribDropdown_->SetVisible(false);
+        return;
+    }
+
+    auto createDropdownItem = [this](const AB::Entities::Attribute* attribute)
+    {
+        Text* result = new Text(context_);
+        result->SetText(attribute->name.c_str());
+        result->SetStyle("DropDownItemEnumText");
+        result->SetVar("Value", static_cast<unsigned>(attribute->index));
+        return result;
+    };
+
+    const auto attribs = Game::GetPossibleItemAttributes(item->type_);
+    auto* sm = GetSubsystem<SkillManager>();
+    for (auto a : attribs)
+    {
+        const auto* attr = sm->GetAttributeByIndex(static_cast<uint32_t>(a));
+        attribDropdown_->AddItem(createDropdownItem(attr));
+    }
+    attribDropdown_->SetVisible(attribDropdown_->GetNumItems() != 0);
+}
+
+uint32_t CraftsmanWindow::GetSelectedAttributeIndex() const
+{
+    auto* item = attribDropdown_->GetSelectedItem();
+    if (!item)
+        return 0;
+
+    return item->GetVar("Value").GetUInt();
+}
+
 void CraftsmanWindow::HandleCraftsmanItems(StringHash, VariantMap&)
 {
     UpdateList();
@@ -213,6 +288,12 @@ void CraftsmanWindow::HandleCraftsmanItems(StringHash, VariantMap&)
 
 void CraftsmanWindow::HandleDoItClicked(StringHash, VariantMap&)
 {
+    auto* client = GetSubsystem<FwClient>();
+    uint32_t index = GetSelectedItemIndex();
+    if (index == 0)
+        return;
+    uint32_t attrib = GetSelectedAttributeIndex();
+    client->CraftItem(npcId_, index, 1, attrib);
 }
 
 void CraftsmanWindow::HandleGoodByeClicked(StringHash, VariantMap&)
@@ -259,6 +340,11 @@ void CraftsmanWindow::HandleSearchButtonClicked(StringHash, VariantMap&)
 void CraftsmanWindow::HandleItemTypeSelected(StringHash, VariantMap&)
 {
     RequestList();
+}
+
+void CraftsmanWindow::HandleItemSelected(StringHash, VariantMap&)
+{
+    UpdateAttributeList();
 }
 
 void CraftsmanWindow::HandleSearchItemEditTextFinished(StringHash, VariantMap&)

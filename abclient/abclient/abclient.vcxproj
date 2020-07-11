@@ -294,6 +294,7 @@
     <ClCompile Include="ItemUIElement.cpp" />
     <ClCompile Include="MerchantWindow.cpp" />
     <ClCompile Include="NumberInputBox.cpp" />
+    <ClCompile Include="PriceUIElement.cpp" />
     <ClCompile Include="SkillCostElement.cpp" />
     <ClCompile Include="SkillsWindow.cpp" />
     <ClCompile Include="FormatText.cpp" />
@@ -362,6 +363,7 @@
     <ClInclude Include="ItemUIElement.h" />
     <ClInclude Include="MerchantWindow.h" />
     <ClInclude Include="NumberInputBox.h" />
+    <ClInclude Include="PriceUIElement.h" />
     <ClInclude Include="SkillCostElement.h" />
     <ClInclude Include="SkillsWindow.h" />
     <ClInclude Include="GuildWindow.h" />

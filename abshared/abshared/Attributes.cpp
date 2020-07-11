@@ -82,4 +82,63 @@ int GetUsedAttribPoints(const Attributes& attributes, int without)
     return result;
 }
 
+std::set<Attribute> GetPossibleItemAttributes(AB::Entities::ItemType type)
+{
+    switch (type)
+    {
+    case AB::Entities::ItemType::Axe:
+        return { Attribute::AxeMatery };
+    case AB::Entities::ItemType::Sword:
+        return { Attribute::SwordsManship };
+    case AB::Entities::ItemType::Wand:
+    case AB::Entities::ItemType::Staff:
+    case AB::Entities::ItemType::Focus:
+        return { Attribute::Air,
+            Attribute::Blood,
+            Attribute::Curses,
+            Attribute::Death,
+            Attribute::DevineFavour,
+            Attribute::Domination,
+            Attribute::Earth,
+            Attribute::EnergyStorage,
+            Attribute::FastCast,
+            Attribute::Fire,
+            Attribute::Healing,
+            Attribute::Illusion,
+            Attribute::Inspiration,
+            Attribute::Protection,
+            Attribute::Smiting,
+            Attribute::SoulReaping,
+            Attribute::Water };
+    case AB::Entities::ItemType::Spear:
+        return { };
+    case AB::Entities::ItemType::Hammer:
+        return { Attribute::HammerMastery };
+    case AB::Entities::ItemType::Flatbow:
+    case AB::Entities::ItemType::Hornbow:
+    case AB::Entities::ItemType::Shortbow:
+    case AB::Entities::ItemType::Longbow:
+    case AB::Entities::ItemType::Recurvebow:
+        return { Attribute::MarkMansship };
+    case AB::Entities::ItemType::Daggers:
+        return { };
+    case AB::Entities::ItemType::Scyte:
+        return { };
+    case AB::Entities::ItemType::Shield:
+        return { Attribute::Strength, Attribute::Tactics };
+    case AB::Entities::ItemType::ArmorHead:
+    case AB::Entities::ItemType::ArmorChest:
+    case AB::Entities::ItemType::ArmorHands:
+    case AB::Entities::ItemType::ArmorLegs:
+    case AB::Entities::ItemType::ArmorFeet:
+        return {
+#define ENUMERATE_ATTRIBUTE(v) Attribute::v,
+    ENUMERATE_ATTRIBUTES
+#undef ENUMERATE_ATTRIBUTE
+        };
+    default:
+        return { };
+    }
+}
+
 }

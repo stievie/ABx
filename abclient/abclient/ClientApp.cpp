@@ -54,6 +54,7 @@
 #include "PingDot.h"
 #include "Player.h"
 #include "PostProcessController.h"
+#include "PriceUIElement.h"
 #include "PvpCombatLevel.h"
 #include "SkillBarWindow.h"
 #include "SkillCostElement.h"
@@ -199,6 +200,7 @@ ClientApp::ClientApp(Context* context) :
     PartyItem::RegisterObject(context);
     SkillCostElement::RegisterObject(context);
     ItemUIElement::RegisterObject(context);
+    PriceUIElement::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

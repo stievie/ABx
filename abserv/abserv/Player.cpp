@@ -54,6 +54,7 @@
 #include <abscommon/MessageClient.h>
 #include <abscommon/StringUtils.h>
 #include <abshared/SkillsHelper.h>
+#include <abshared/Attributes.h>
 #include <sa/Assert.h>
 #include <sa/StringTempl.h>
 
@@ -1988,7 +1989,13 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
     }
     if (count != 1 && AB::Entities::IsItemStackable(item.itemFlags))
     {
-        LOG_ERROR << "Can not create more than one item fro non stackable items" << std::endl;
+        LOG_ERROR << "Can not create more than one item from non stackable items" << std::endl;
+        return;
+    }
+    const auto attribs = GetPossibleItemAttributes(item.type);
+    if (attribs.find(static_cast<Attribute>(attributeIndex)) == attribs.end())
+    {
+        LOG_WARNING << "CHEAT: Player " << GetName() << " trying to craft an impossible item" << std::endl;
         return;
     }
 

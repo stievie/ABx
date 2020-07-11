@@ -25,6 +25,8 @@
 #include <array>
 #include "Mechanic.h"
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/Item.h>
+#include <set>
 
 namespace Game
 {
@@ -80,5 +82,6 @@ uint32_t GetAttribRank(const Attributes& attributes, Attribute index);
 bool SetAttribRank(Attributes& attributes, Attribute index, uint32_t value);
 void InitProf2Attribs(Attributes& attributes, const AB::Entities::Profession& prof1, const AB::Entities::Profession* prof2);
 int GetUsedAttribPoints(const Attributes& attributes, int without = -1);
+std::set<Attribute> GetPossibleItemAttributes(AB::Entities::ItemType type);
 
 }
