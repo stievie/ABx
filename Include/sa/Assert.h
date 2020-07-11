@@ -59,7 +59,7 @@ namespace details {
 #define ASSERT_FALSE()           \
     do                           \
     {                            \
-        assert(false);           \
+        ASSERT(false);           \
         abort();                 \
     } while (0)
 #else
