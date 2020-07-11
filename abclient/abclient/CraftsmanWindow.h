@@ -44,6 +44,7 @@ private:
     UISelectable* CreateItem(const ConcreteItem& iItem);
     void PopulateItemTypes();
     void UpdateAttributeList();
+    uint32_t GetSelectedAttributeIndex() const;
     void HandleCraftsmanItems(StringHash eventType, VariantMap& eventData);
     void HandleDoItClicked(StringHash eventType, VariantMap& eventData);
     void HandleGoodByeClicked(StringHash eventType, VariantMap& eventData);
