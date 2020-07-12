@@ -47,7 +47,13 @@ Christmas 2117 +/- some years.
 * Client runs on Windows and Linux
 * Game AI, Behavior Tree
 * [Mumble](https://www.mumble.info/) voice chat integration.
-* Item system: Player inventory and account chest (account wide storage), Players can exchange Items and Money, Player can sell items that dropped or otherwise obtained to a Merchant and gain money, Players can buy items from the Merchant which the Merchant has in stock. Dynamic item price taking availability and drop chance into account.
+* Item system:
+    - Player inventory and account chest (account wide storage).
+    - Players can exchange Items and Money with other Players.
+    - Players can sell items that dropped or otherwise obtained to a Merchant and gain money.
+    - Players can buy items from the Merchant which the Merchant has in stock.
+    - Dynamic item price taking availability and drop chance into account.
+    - Players can craft new items for Materials and Money from special NPCs.
 
 ## Screenshot
 

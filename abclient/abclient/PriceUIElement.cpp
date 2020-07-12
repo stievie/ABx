@@ -22,6 +22,7 @@
 #include "PriceUIElement.h"
 #include "Item.h"
 #include "ItemsCache.h"
+#include <AB/Entities/Item.h>
 
 void PriceUIElement::RegisterObject(Context* context)
 {
@@ -53,7 +54,7 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
     icon->SetMaxSize({ 16, 16 });
     icon->SetMinSize({ 16, 16 });
 
-    Texture2D* texture = (index != 9999999) ? cache->GetResource<Texture2D>(item->iconFile_) :
+    Texture2D* texture = (index != AB::Entities::MONEY_ITEM_INDEX) ? cache->GetResource<Texture2D>(item->iconFile_) :
         cache->GetResource<Texture2D>("Textures/Icons/DrachmaCoin.png");
     icon->SetTexture(texture);
     icon->SetFullImageRect();

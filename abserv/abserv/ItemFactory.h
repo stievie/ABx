@@ -45,6 +45,7 @@ struct CreateItemInfo
     uint32_t count{ 0 };
     uint16_t value{ 0 };
     AB::Entities::StoragePlace storagePlace{ AB::Entities::StoragePlace::Scene };
+    std::string stats{ "" };
 };
 
 class ItemFactory
@@ -92,7 +93,8 @@ public:
     uint32_t CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level, Player* player);
     uint32_t CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count);
-    uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, AB::Entities::StoragePlace place, uint32_t count = 1);
+    uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid,
+        AB::Entities::StoragePlace place, uint32_t count = 1, const std::string stats = "");
     bool MoveToMerchant(Item* item, uint32_t count);
     std::string GetMaxItemStats(const std::string& itemUuid, uint32_t level);
     // Used to craft items with a certain attribute

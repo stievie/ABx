@@ -189,42 +189,49 @@ void Item::CreateShieldStats(uint32_t level, bool maxStats)
     }
 }
 
-bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats)
+bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats, const std::string stats)
 {
     concreteItem_ = ci;
 
-    CreateGeneralStats(level, maxStats);
-    switch (data_.type)
+    if (stats.empty())
     {
-    case AB::Entities::ItemType::ModifierInsignia:
-        CreateInsigniaStats(level, maxStats);
-        break;
-    case AB::Entities::ItemType::Axe:
-    case AB::Entities::ItemType::Sword:
-    case AB::Entities::ItemType::Wand:
-    case AB::Entities::ItemType::Spear:
-    case AB::Entities::ItemType::Hammer:
-    case AB::Entities::ItemType::Flatbow:
-    case AB::Entities::ItemType::Hornbow:
-    case AB::Entities::ItemType::Shortbow:
-    case AB::Entities::ItemType::Longbow:
-    case AB::Entities::ItemType::Recurvebow:
-    case AB::Entities::ItemType::Staff:
-    case AB::Entities::ItemType::Daggers:
-    case AB::Entities::ItemType::Scyte:
-        CreateAttributeStats(level, maxStats);
-        CreateWeaponStats(level, maxStats);
-        break;
-    case AB::Entities::ItemType::Focus:
-        CreateAttributeStats(level, maxStats);
-        CreateFocusStats(level, maxStats);
-        break;
-    case AB::Entities::ItemType::Shield:
-        CreateAttributeStats(level, maxStats);
-        CreateShieldStats(level, maxStats);
-        break;
-    default:
-        break;
+        CreateGeneralStats(level, maxStats);
+        switch (data_.type)
+        {
+        case AB::Entities::ItemType::ModifierInsignia:
+            CreateInsigniaStats(level, maxStats);
+            break;
+        case AB::Entities::ItemType::Axe:
+        case AB::Entities::ItemType::Sword:
+        case AB::Entities::ItemType::Wand:
+        case AB::Entities::ItemType::Spear:
+        case AB::Entities::ItemType::Hammer:
+        case AB::Entities::ItemType::Flatbow:
+        case AB::Entities::ItemType::Hornbow:
+        case AB::Entities::ItemType::Shortbow:
+        case AB::Entities::ItemType::Longbow:
+        case AB::Entities::ItemType::Recurvebow:
+        case AB::Entities::ItemType::Staff:
+        case AB::Entities::ItemType::Daggers:
+        case AB::Entities::ItemType::Scyte:
+            CreateAttributeStats(level, maxStats);
+            CreateWeaponStats(level, maxStats);
+            break;
+        case AB::Entities::ItemType::Focus:
+            CreateAttributeStats(level, maxStats);
+            CreateFocusStats(level, maxStats);
+            break;
+        case AB::Entities::ItemType::Shield:
+            CreateAttributeStats(level, maxStats);
+            CreateShieldStats(level, maxStats);
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        stats_.LoadFromString(stats);
     }
 
     concreteItem_.itemStats = GetEncodedStats();
@@ -236,11 +243,7 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
 
 std::string Item::GetEncodedStats() const
 {
-    sa::PropWriteStream stream;
-    stats_.Save(stream);
-    size_t ssize = 0;
-    const char* s = stream.GetStream(ssize);
-    return std::string(s, ssize);
+    return stats_.SaveToString();
 }
 
 bool Item::IsPossibleAttribute(Attribute attribute)

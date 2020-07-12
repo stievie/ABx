@@ -296,6 +296,8 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "The trading partner is trading with another player";
     case AB::GameProtocol::PlayerErrorValue::NotEnoughMoney:
         return "You don't have enough money";
+    case AB::GameProtocol::PlayerErrorValue::NoEnoughMaterials:
+        return "You don't have enough materials in your inventory";
     case AB::GameProtocol::PlayerErrorValue::ItemNotAvailable:
         return "This item is not available";
     case AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget:

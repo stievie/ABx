@@ -132,4 +132,24 @@ void ItemStats::Save(sa::PropWriteStream& stream) const
     Utils::VariantMapWrite(stats_, stream);
 }
 
+bool ItemStats::LoadFromString(const std::string& value)
+{
+    sa::PropReadStream stream;
+    stream.Init(value.data(), value.length());
+    if (!Load(stream))
+    {
+        return false;
+    }
+    return true;
+}
+
+std::string ItemStats::SaveToString() const
+{
+    sa::PropWriteStream stream;
+    Save(stream);
+    size_t ssize = 0;
+    const char* s = stream.GetStream(ssize);
+    return std::string(s, ssize);
+}
+
 }

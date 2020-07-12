@@ -219,7 +219,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
         ci.value = 0;
 
     // Create item stats for this drop
-    if (!result->GenerateConcrete(ci, info.level, info.maxStats))
+    if (!result->GenerateConcrete(ci, info.level, info.maxStats, info.stats))
     {
         LOG_ERROR << "Error generating concrete item" << std::endl;
         return 0;
@@ -234,7 +234,8 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
     return cache->Add(std::move(result));
 }
 
-uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid, AB::Entities::StoragePlace place, uint32_t count /* = 1 */)
+uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid,
+    AB::Entities::StoragePlace place, uint32_t count /* = 1 */, const std::string stats)
 {
     return CreateItem({ itemUuid,
         forPlayer.GetGame()->instanceData_.uuid,
@@ -242,7 +243,8 @@ uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::strin
         forPlayer.data_.level,
         true,
         forPlayer.account_.uuid,
-        forPlayer.data_.uuid, count, 0, place });
+        forPlayer.data_.uuid, count, 0, place,
+        stats });
 }
 
 uint32_t ItemFactory::CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count)

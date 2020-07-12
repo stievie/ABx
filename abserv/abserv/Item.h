@@ -102,7 +102,7 @@ public:
     void RemoveFromCache();
     bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
-    bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats);
+    bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats, const std::string stats = "");
     std::string GetEncodedStats() const;
     bool IsPossibleAttribute(Attribute attribute);
     void Update(uint32_t timeElapsed);

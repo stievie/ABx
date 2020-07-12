@@ -35,6 +35,7 @@ private:
     SharedPtr<LineEdit> searchNameEdit_;
     SharedPtr<Text> currentPage_;
     SharedPtr<DropDownList> attribDropdown_;
+    SharedPtr<UIElement> pagingContainer_;
     void CreateUI();
     void SubscribeEvents();
     void UpdateList();

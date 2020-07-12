@@ -454,6 +454,7 @@ enum class PlayerErrorValue : uint8_t
     TradingPartnerTrading,
     AlreadyTradingWithThisTarget,
     NotEnoughMoney,
+    NoEnoughMaterials,
     ItemNotAvailable,
 };
 

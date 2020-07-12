@@ -145,14 +145,15 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     auto* searchButton = wnd->GetChildStaticCast<Button>("SearchButton", true);
     SubscribeToEvent(searchButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleSearchButtonClicked));
 
-    currentPage_ = wnd->GetChildStaticCast<Text>("CurrentPageText", true);
-    auto* firstButton = wnd->GetChildStaticCast<Button>("FirstPageButton", true);
+    pagingContainer_ = wnd->GetChild("PageContainer", true);
+    currentPage_ = pagingContainer_->GetChildStaticCast<Text>("CurrentPageText", true);
+    auto* firstButton = pagingContainer_->GetChildStaticCast<Button>("FirstPageButton", true);
     SubscribeToEvent(firstButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleFirstPageButtonClicked));
-    auto* prevButton = wnd->GetChildStaticCast<Button>("PrevPageButton", true);
+    auto* prevButton = pagingContainer_->GetChildStaticCast<Button>("PrevPageButton", true);
     SubscribeToEvent(prevButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandlePrevPageButtonClicked));
-    auto* nextButton = wnd->GetChildStaticCast<Button>("NextPageButton", true);
+    auto* nextButton = pagingContainer_->GetChildStaticCast<Button>("NextPageButton", true);
     SubscribeToEvent(nextButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleNextPageButtonClicked));
-    auto* lastButton = wnd->GetChildStaticCast<Button>("LastPageButton", true);
+    auto* lastButton = pagingContainer_->GetChildStaticCast<Button>("LastPageButton", true);
     SubscribeToEvent(lastButton, E_RELEASED, URHO3D_HANDLER(MerchantWindow, HandleLastPageButtonClicked));
 
     wnd->SetLayoutMode(LM_VERTICAL);
@@ -229,6 +230,7 @@ void MerchantWindow::UpdateBuyList()
     }
     if (selIndex != M_MAX_UNSIGNED)
         buyItems_->SetSelection(selIndex);
+    pagingContainer_->SetVisible(client->GetMerchantItemsPageCount() > 1);
 }
 
 UISelectable* MerchantWindow::GetSellItem(uint16_t pos)

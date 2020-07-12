@@ -56,14 +56,15 @@ void CraftsmanWindow::CreateUI()
     auto* searchButton = GetChildStaticCast<Button>("SearchButton", true);
     SubscribeToEvent(searchButton, E_RELEASED, URHO3D_HANDLER(CraftsmanWindow, HandleSearchButtonClicked));
 
-    currentPage_ = GetChildStaticCast<Text>("CurrentPageText", true);
-    auto* firstButton = GetChildStaticCast<Button>("FirstPageButton", true);
+    pagingContainer_ = GetChild("PageContainer", true);
+    currentPage_ = pagingContainer_->GetChildStaticCast<Text>("CurrentPageText", true);
+    auto* firstButton = pagingContainer_->GetChildStaticCast<Button>("FirstPageButton", true);
     SubscribeToEvent(firstButton, E_RELEASED, URHO3D_HANDLER(CraftsmanWindow, HandleFirstPageButtonClicked));
-    auto* prevButton = GetChildStaticCast<Button>("PrevPageButton", true);
+    auto* prevButton = pagingContainer_->GetChildStaticCast<Button>("PrevPageButton", true);
     SubscribeToEvent(prevButton, E_RELEASED, URHO3D_HANDLER(CraftsmanWindow, HandlePrevPageButtonClicked));
-    auto* nextButton = GetChildStaticCast<Button>("NextPageButton", true);
+    auto* nextButton = pagingContainer_->GetChildStaticCast<Button>("NextPageButton", true);
     SubscribeToEvent(nextButton, E_RELEASED, URHO3D_HANDLER(CraftsmanWindow, HandleNextPageButtonClicked));
-    auto* lastButton = GetChildStaticCast<Button>("LastPageButton", true);
+    auto* lastButton = pagingContainer_->GetChildStaticCast<Button>("LastPageButton", true);
     SubscribeToEvent(lastButton, E_RELEASED, URHO3D_HANDLER(CraftsmanWindow, HandleLastPageButtonClicked));
 
     auto* listContainer = GetChild("ListContainer", true);
@@ -114,6 +115,7 @@ void CraftsmanWindow::UpdateList()
     }
     if (selIndex != M_MAX_UNSIGNED)
         items_->SetSelection(selIndex);
+    pagingContainer_->SetVisible(client->GetMerchantItemsPageCount() > 1);
 }
 
 void CraftsmanWindow::RequestList(uint32_t page)
@@ -364,4 +366,3 @@ void CraftsmanWindow::Clear()
     npcId_ = 0;
     items_->RemoveAllItems();
 }
-

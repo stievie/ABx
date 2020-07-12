@@ -46,6 +46,7 @@
 #include <AB/Entities/AccountItemList.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/CraftableItemList.h>
+#include <AB/Entities/Item.h>
 #include <AB/Entities/MerchantItemList.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Packets/Packet.h>
@@ -1999,26 +2000,33 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
         return;
     }
 
+    Components::InventoryComp& inv = *inventoryComp_;
+    if (!inv.CheckInventoryCapacity(0, 1))
+    {
+        CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        return;
+    }
+
     auto* factory = GetSubsystem<ItemFactory>();
     // Stats contain the price
     const std::string maxStats = factory->GetMaxItemStatsWithAttribute(item.uuid, npc->GetLevel(),
         static_cast<Attribute>(attributeIndex), -1);
     ItemStats stats;
-    sa::PropReadStream stream;
-    stream.Init(maxStats.data(), maxStats.length());
-    if (!stats.Load(stream))
+    if (!stats.LoadFromString(maxStats))
     {
         LOG_ERROR << "Error loading stats from stream" << std::endl;
         return;
     }
 
     auto msg = Net::NetworkMessage::GetNew();
-    Components::InventoryComp& inv = *inventoryComp_;
-    auto notEnoughStuff = [&msg]()
+    auto notEnoughStuff = [&msg](uint32_t itemIndex)
     {
         msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+        const AB::GameProtocol::PlayerErrorValue code = (itemIndex == AB::Entities::MONEY_ITEM_INDEX) ?
+            AB::GameProtocol::PlayerErrorValue::NotEnoughMoney :
+            AB::GameProtocol::PlayerErrorValue::NoEnoughMaterials;
         AB::Packets::Server::PlayerError packet = {
-            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotEnoughMoney)
+            static_cast<uint8_t>(code)
         };
         AB::Packets::Add(packet, *msg);
     };
@@ -2030,7 +2038,10 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
         if (_index != 0 && _count != 0)
         {
             if (!inv.HaveInventoryItem(_index, _count))
+            {
+                notEnoughStuff(_index);
                 return false;
+            }
         }
         return true;
     };
@@ -2048,42 +2059,23 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
 
     bool success = true;
     if (!checkMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count))
-    {
-        notEnoughStuff();
         success = false;
-    }
     if (!checkMats(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count))
-    {
-        notEnoughStuff();
         success = false;
-    }
     if (!checkMats(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count))
-    {
-        notEnoughStuff();
         success = false;
-    }
     if (!checkMats(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count))
-    {
-        notEnoughStuff();
         success = false;
-    }
 
     if (success)
     {
-        uint32_t newItemId = factory->CreatePlayerItem(*this, item.uuid, AB::Entities::StoragePlace::Inventory, count);
+        uint32_t newItemId = factory->CreatePlayerItem(*this, item.uuid, AB::Entities::StoragePlace::Inventory, count, maxStats);
         if (newItemId == 0)
         {
             LOG_ERROR << "Error creating item " << item.uuid << std::endl;
             return;
         }
-        auto* cache = GetSubsystem<ItemsCache>();
-        // Update stats
-        auto* pItem = cache->Get(newItemId);
-        ASSERT(pItem);
-        pItem->stats_ = stats;
-        pItem->concreteItem_.itemStats = pItem->GetEncodedStats();
         inv.SetInventoryItem(newItemId, msg.get());
-        client->Update(pItem->concreteItem_);
 
         success = removeMats(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count);
         ASSERT(success);

@@ -133,6 +133,8 @@ enum ItemFlag : uint32_t
     ItemFlagCraftable = 1 << 5,
 };
 
+inline constexpr uint32_t MONEY_ITEM_INDEX = 9999999;
+
 struct Item : Entity
 {
     static constexpr const char* KEY()

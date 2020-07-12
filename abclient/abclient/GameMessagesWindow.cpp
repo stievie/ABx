@@ -53,6 +53,8 @@ GameMessagesWindow::~GameMessagesWindow()
 
 void GameMessagesWindow::ShowError(const String& message)
 {
+    SetBringToBack(false);
+    SetPriority(10000);
     visibleTime_ = 0.0f;
     text_->SetText(message);
     text_->SetStyle("GameMessageError");

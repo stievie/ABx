@@ -40,6 +40,7 @@ private:
     SharedPtr<LineEdit> searchNameEdit_;
     SharedPtr<DropDownList> itemTypesList_;
     SharedPtr<Text> currentPage_;
+    SharedPtr<UIElement> pagingContainer_;
     uint32_t npcId_{ 0 };
     void CreateUI();
     void SubscribeEvents();
