@@ -34,10 +34,21 @@ Christmas 2117 +/- some years.
 * Database back-end is currently PostgreSQL.
 * Instanced world.
 * Encrypted Game and Login Protocol.
-* Lag compensation: Entity interpolation, client prediction.
-* Network traffic compression: Delta compression (send only state changes), Interest management (send only messages to the player in a certain range).
-* The system is designed to scale: It can spawn any number of server which may have heavy load (game, file server) even on different hardware. Automatically spawn File and Game Server when needed.
-* Local (map), Guild, Team, Trade chat and whisper is currently working, even across different game server.
+* Lag compensation:
+    - Entity interpolation
+    - Client prediction.
+* Network traffic compression:
+    - Delta compression (send only state changes)
+    - Send only relevant messages to each player, e.g. a Player doesn't need to know when an Actor moves far away from the Player
+* The system is designed to scale:
+    - It can spawn any number of server which may have heavy load (game, file server) even on different hardware.
+    - Automatically spawn File and Game Server when needed.
+* Chat system even across different game server:
+    - Local (map) chat
+    - Guild chat
+    - Team chat
+    - Trade chat
+    - Whisper
 * Friend/ignore list
 * Persistent Mail
 * Static objects are directly loaded from Urho3D's scene files.
@@ -48,6 +59,7 @@ Christmas 2117 +/- some years.
 * Game AI, Behavior Tree
 * [Mumble](https://www.mumble.info/) voice chat integration.
 * Item system:
+    - Item drops, when foes are killed they may or may not drop a random item. Each Item has a certain drop chance on a certain map.
     - Player inventory and account chest (account wide storage).
     - Players can exchange Items and Money with other Players.
     - Players can sell items that dropped or otherwise obtained to a Merchant and gain money.
