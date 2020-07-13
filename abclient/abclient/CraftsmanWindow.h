@@ -39,7 +39,7 @@ private:
     void CreateUI();
     void SubscribeEvents();
     void UpdateList();
-    void RequestList(uint32_t page = 1);
+    void RequestList(uint32_t page = 1, bool keepScrollPos = false);
     AB::Entities::ItemType GetSelectedItemType() const;
     uint32_t GetSelectedItemIndex() const;
     UISelectable* CreateItem(const ConcreteItem& iItem);

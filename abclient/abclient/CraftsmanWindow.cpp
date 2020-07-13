@@ -96,6 +96,8 @@ void CraftsmanWindow::UpdateList()
     if (sel)
         oldSel = sel->GetVar("Index").GetUInt();
 
+    const auto scrollPos = items_->GetViewPosition();
+    items_->DisableLayoutUpdate();
     items_->RemoveAllItems();
 
     unsigned index = 0;
@@ -115,13 +117,17 @@ void CraftsmanWindow::UpdateList()
     }
     if (selIndex != M_MAX_UNSIGNED)
         items_->SetSelection(selIndex);
+    items_->EnableLayoutUpdate();
+    items_->SetViewPosition(scrollPos);
     pagingContainer_->SetVisible(client->GetMerchantItemsPageCount() > 1);
 }
 
-void CraftsmanWindow::RequestList(uint32_t page)
+void CraftsmanWindow::RequestList(uint32_t page, bool keepScrollPos)
 {
     auto* client = GetSubsystem<FwClient>();
     const String& search = searchNameEdit_->GetText();
+    if (!keepScrollPos)
+        items_->SetViewPosition({ 0, 0 });
     client->RequestCrafsmanItems(npcId_, static_cast<uint16_t>(GetSelectedItemType()), search, page);
 }
 

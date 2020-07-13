@@ -28,6 +28,6 @@ dropStats["Attributes"] = {
 
 materialStats[1] = { 100001, 500 }
 materialStats[2] = { 100000, 100 }
-materialStats[3] = { 100002, 50 }
+materialStats[3] = { 100010, 20 }
 materialStats[4] = { 9999999, 1000 }
 -- /Drop Stats -----------------------------------------------------------------

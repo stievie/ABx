@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="BasicStuff"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/BasicStuff.mdl"/>
+		<attribute name="Material" value="Material;Materials/BasicStuff_Shaft.xml;Materials/BasicStaff_Sun.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0212433 0.0246358 1.33979"/>
+		<attribute name="Offset Position" value="2.09548e-08 3.72529e-09 0.00524259"/>
+	</component>
+</node>

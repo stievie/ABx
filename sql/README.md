@@ -19,3 +19,11 @@ table will be `<version>`. So each file must have
 UPDATE public.versions SET value = version WHERE name = 'schema';
 ~~~
 at the end to match the file version.
+
+## Fequently used
+
+Make sure the merchant has some materials:
+
+~~~sql
+update concrete_items set count = 4999961 where item_uuid in(select uuid from game_items where type = 1000) and storage_place = 5
+~~~

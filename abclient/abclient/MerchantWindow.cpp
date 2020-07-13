@@ -173,6 +173,8 @@ void MerchantWindow::UpdateSellList()
     if (sel)
         oldSel = static_cast<uint16_t>(sel->GetVar("Pos").GetUInt());
 
+    const auto scrollPos = sellItems_->GetViewPosition();
+    sellItems_->DisableLayoutUpdate();
     sellItems_->RemoveAllItems();
     auto* client = GetSubsystem<FwClient>();
     auto* itemsCache = GetSubsystem<ItemsCache>();
@@ -199,7 +201,8 @@ void MerchantWindow::UpdateSellList()
     }
     if (selIndex != M_MAX_UNSIGNED)
         sellItems_->SetSelection(selIndex);
-
+    sellItems_->EnableLayoutUpdate();
+    sellItems_->SetViewPosition(scrollPos);
     client->GetItemPrice(priceItems);
 }
 
@@ -211,6 +214,8 @@ void MerchantWindow::UpdateBuyList()
     if (sel)
         oldSel = sel->GetVar("ID").GetUInt();
 
+    const auto scrollPos = buyItems_->GetViewPosition();
+    buyItems_->DisableLayoutUpdate();
     buyItems_->RemoveAllItems();
 
     unsigned index = 0;
@@ -230,6 +235,8 @@ void MerchantWindow::UpdateBuyList()
     }
     if (selIndex != M_MAX_UNSIGNED)
         buyItems_->SetSelection(selIndex);
+    buyItems_->EnableLayoutUpdate();
+    buyItems_->SetViewPosition(scrollPos);
     pagingContainer_->SetVisible(client->GetMerchantItemsPageCount() > 1);
 }
 
@@ -322,8 +329,10 @@ uint16_t MerchantWindow::GetSelectedItemType() const
     return static_cast<uint16_t>(type);
 }
 
-void MerchantWindow::RequestBuyItems(uint32_t page)
+void MerchantWindow::RequestBuyItems(uint32_t page, bool keepScrollPos)
 {
+    if (!keepScrollPos)
+        buyItems_->SetViewPosition({ 0, 0 });
     auto* client = GetSubsystem<FwClient>();
     const String& search = searchNameEdit_->GetText();
     client->RequestMerchantItems(npcId_, GetSelectedItemType(), search, page);
@@ -415,7 +424,7 @@ void MerchantWindow::HandleDoItClicked(StringHash, VariantMap&)
             count = countSpinner_->GetValue();
         client->BuyItem(npcId_, id, count);
         // TODO: Make this more selective not requesting the whole list again.
-        RequestBuyItems();
+        RequestBuyItems(client->GetMerchantItemsPage(), true);
     }
 }
 

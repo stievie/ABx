@@ -235,7 +235,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
 }
 
 uint32_t ItemFactory::CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid,
-    AB::Entities::StoragePlace place, uint32_t count /* = 1 */, const std::string stats)
+    AB::Entities::StoragePlace place, uint32_t count /* = 1 */, const std::string& stats)
 {
     return CreateItem({ itemUuid,
         forPlayer.GetGame()->instanceData_.uuid,

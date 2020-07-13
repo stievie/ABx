@@ -35,6 +35,9 @@ namespace Utils {
 
 bool FileCopy(const std::string& src, const std::string& dst)
 {
+#ifdef AB_WINDOWS
+    return ::CopyFileA(src.c_str(), dst.c_str(), FALSE);
+#else
     std::ifstream fsrc(src, std::ios::binary);
     if (!fsrc.is_open())
         return false;
@@ -43,6 +46,7 @@ bool FileCopy(const std::string& src, const std::string& dst)
         return false;
     fdst << fsrc.rdbuf();
     return true;
+#endif
 }
 
 std::string NormalizeFilename(const std::string& filename)
@@ -57,7 +61,7 @@ std::string NormalizeFilename(const std::string& filename)
 
 bool FileExists(const std::string& name)
 {
-#if defined(_WIN32)
+#ifdef AB_WINDOWS
     DWORD dwAttrib = ::GetFileAttributesA(name.c_str());
     return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
         !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
@@ -82,7 +86,13 @@ bool IsHiddenFile(const std::string& path)
         (path != ".") &&
         ((path[0] == '.') || (path.find("/.") != std::string::npos)))
         return true;
-
+#ifdef AB_WINDOWS
+    DWORD attributes = ::GetFileAttributesA(path.c_str());
+    if (attributes & FILE_ATTRIBUTE_HIDDEN)
+        return true;
+    if (attributes & FILE_ATTRIBUTE_SYSTEM)
+        return true;
+#endif
     return false;
 }
 

@@ -10,6 +10,6 @@ dropStats["Attributes"] = { ATTRIB_HAMMER_MASTERY }
 
 materialStats[1] = { 100001, 250 }
 materialStats[2] = { 100000, 500 }
-materialStats[3] = { 0, 0 }
+materialStats[3] = { 100003, 20 }
 materialStats[4] = { 9999999, 1000 }
 -- /Drop Stats -----------------------------------------------------------------

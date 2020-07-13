@@ -49,7 +49,7 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
     container->SetLayoutMode(LM_HORIZONTAL);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    auto* icon = container->CreateChild<BorderImage>();
+    auto* icon = container->CreateChild<Button>();
     icon->SetSize({ 16, 16 });
     icon->SetMaxSize({ 16, 16 });
     icon->SetMinSize({ 16, 16 });
@@ -58,6 +58,16 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
         cache->GetResource<Texture2D>("Textures/Icons/DrachmaCoin.png");
     icon->SetTexture(texture);
     icon->SetFullImageRect();
+    auto* tooltip = icon->CreateChild<ToolTip>("Tooltip");
+    tooltip->SetLayoutMode(LM_HORIZONTAL);
+    Window* ttWindow = tooltip->CreateChild<Window>();
+    ttWindow->SetLayoutMode(LM_VERTICAL);
+    ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
+    ttWindow->SetStyleAuto();
+    auto* tttext = ttWindow->CreateChild<Text>();
+    tttext->SetText(item->name_);
+    tttext->SetStyleAuto();
+    tooltip->SetPosition(IntVector2(-5, -30));
 
     auto* countText = container->CreateChild<Text>();
     countText->SetText(String(count));

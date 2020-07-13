@@ -24,6 +24,7 @@
 #include <mutex>
 #include "Item.h"
 #include <abscommon/UuidUtils.h>
+#include <abscommon/StringUtils.h>
 #include <abshared/Mechanic.h>
 #include <sa/WeightedSelector.h>
 #include <eastl.hpp>
@@ -94,7 +95,7 @@ public:
         uint32_t level, Player* player);
     uint32_t CreatePlayerMoneyItem(const Player& forPlayer, uint32_t count);
     uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid,
-        AB::Entities::StoragePlace place, uint32_t count = 1, const std::string stats = "");
+        AB::Entities::StoragePlace place, uint32_t count = 1, const std::string& stats = Utils::EMPTY_STRING);
     bool MoveToMerchant(Item* item, uint32_t count);
     std::string GetMaxItemStats(const std::string& itemUuid, uint32_t level);
     // Used to craft items with a certain attribute

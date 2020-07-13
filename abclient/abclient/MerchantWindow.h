@@ -53,7 +53,7 @@ private:
     unsigned GetSellItemIndex(uint16_t pos) const;
     UISelectable* CreateItem(ListView& container, const ConcreteItem& iItem);
     uint16_t GetSelectedItemType() const;
-    void RequestBuyItems(uint32_t page = 1);
+    void RequestBuyItems(uint32_t page = 1, bool keepScrollPos = false);
     void ShowCountSpinner(bool b, uint32_t min = 0, uint32_t max = 0, uint32_t value = 0);
     void PopulateBuyItemTypes();
     void HandleMerchantItems(StringHash eventType, VariantMap& eventData);
