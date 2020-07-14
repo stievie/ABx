@@ -1,0 +1,6 @@
+<material>
+	<technique name="Techniques/Diff.xml"/>
+	<texture name="Textures/Item_BoldOfCloth.jpg" unit="diffuse"/>
+	<parameter name="MatDiffColor" value="0.5576 0.455865 0.041466 1"/>
+	<parameter name="MatSpecColor" value="0 0 0 16"/>
+</material>

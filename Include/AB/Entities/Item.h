@@ -131,6 +131,7 @@ enum ItemFlag : uint32_t
     ItemFlagResellable = 1 << 4,
     // Some craftsman may make a new of this one
     ItemFlagCraftable = 1 << 5,
+    ItemFlagSalvageable = 1 << 6,
 };
 
 inline constexpr uint32_t MONEY_ITEM_INDEX = 9999999;
@@ -201,6 +202,11 @@ inline bool IsItemUpgradeable(uint32_t flags)
 inline bool IsItemCraftable(uint32_t flags)
 {
     return (flags & ItemFlagCraftable) == ItemFlagCraftable;
+}
+
+inline bool IsItemSalvageable(uint32_t flags)
+{
+    return (flags & ItemFlagSalvageable) == ItemFlagSalvageable;
 }
 
 inline bool IsArmorItem(ItemType type)
