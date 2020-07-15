@@ -218,6 +218,8 @@ const char* FwClient::GetItemTypeName(AB::Entities::ItemType type)
         return "Material";
     case AB::Entities::ItemType::Dye:
         return "Dye";
+    case AB::Entities::ItemType::Consumeable:
+        return "Consumeable";
     default:
         return "";
     }

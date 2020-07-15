@@ -43,13 +43,15 @@ function getSellingItemTypes()
     ITEMTYPE_Scyte,
     ITEMTYPE_Spear,
     ITEMTYPE_Focus,
-    ITEMTYPE_Shield
+    ITEMTYPE_Shield,
+    ITEMTYPE_Consumeable
   }
 end
 
 function isSellingItem(itemIndex)
   return (itemIndex == 500) or (itemIndex == 501) or (itemIndex == 502) or
-    (itemIndex == 506) or (itemIndex == 507) or (itemIndex == 509) or (itemIndex == 511)
+    (itemIndex == 506) or (itemIndex == 507) or (itemIndex == 509) or (itemIndex == 511) or
+    (itemIndex == 100112)
 end
 
 function onUpdate(timeElapsed)

@@ -82,7 +82,8 @@ enum class ItemType : uint16_t
     // Other
     Material = 1000,                       // Material, e.g. Iron
     Dye,
-    Tropy,                                 // Nothing useful
+    Consumeable,
+    Tropy = 1100,                          // Nothing useful
 
     __Last,
 
