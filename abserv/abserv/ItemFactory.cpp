@@ -702,7 +702,7 @@ std::string ItemFactory::GetMaxItemStatsWithAttribute(const std::string& itemUui
     pItem->stats_.SetValue(ItemStatIndex::Attribute, static_cast<int>(attrib));
     if (attribRank > -1)
         pItem->stats_.SetValue(ItemStatIndex::AttributeValue, attribRank);
-    return pItem->GetEncodedStats();
+    return pItem->stats_.SaveToString();
 }
 
 uint32_t ItemFactory::GetItemIndexFromUuid(const std::string& uuid)

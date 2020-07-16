@@ -64,6 +64,9 @@ enum class ItemStatIndex : size_t
     ArmorDark,
     ArmorChaos,
 
+    // Consumeables
+    Usages,
+
     // Crafing price, salvage outcome
     Material1Index = 500,
     Material1Count,

@@ -224,5 +224,10 @@ inline bool IsWeaponItem(ItemType type)
     return type >= ItemType::__WeaponFirst && type <= ItemType::__WeaponLast;
 }
 
+inline bool IsConsumeableItem(ItemType type)
+{
+    return type >= ItemType::Consumeable;
+}
+
 }
 }

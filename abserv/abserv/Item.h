@@ -92,6 +92,7 @@ private:
     void CreateWeaponStats(uint32_t level, bool maxStats);
     void CreateFocusStats(uint32_t level, bool maxStats);
     void CreateShieldStats(uint32_t level, bool maxStats);
+    void CreateConsumeableStats(uint32_t level, bool maxStats);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -103,7 +104,6 @@ public:
     bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats, const std::string stats = "");
-    std::string GetEncodedStats() const;
     bool IsPossibleAttribute(Attribute attribute);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
@@ -134,6 +134,7 @@ public:
     bool IsStackable() const { return AB::Entities::IsItemStackable(data_.itemFlags); }
     bool IsTradeable() const { return AB::Entities::IsItemTradeable(data_.itemFlags); }
     bool IsResellable() const { return AB::Entities::IsItemResellable(data_.itemFlags); }
+    bool IsSalvageable() const { return AB::Entities::IsItemSalvageable(data_.itemFlags); }
     bool IsArmor() const
     {
         return AB::Entities::IsArmorItem(data_.type);
@@ -141,6 +142,10 @@ public:
     bool IsWeapon() const
     {
         return AB::Entities::IsWeaponItem(data_.type);
+    }
+    bool IsConsumeable() const
+    {
+        return AB::Entities::IsConsumeableItem(data_.type);
     }
 
     uint32_t id_{ std::numeric_limits<uint32_t>::min() };

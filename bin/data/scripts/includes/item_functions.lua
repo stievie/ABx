@@ -58,6 +58,13 @@ function getHealthStats(level, maxStats)
   return getRandomStat(dropStats["Health"], level)
 end
 
+function getUsagesStats(level, maxStats)
+  if (maxStats) then
+    return dropStats["Usages"]
+  end
+  return getRandomStat(dropStats["Usages"], level)
+end
+
 function getAtttributes()
   if (dropStats["Attributes"] == nil) then
     print("ERROR: dropStats[Attributes] == nil")

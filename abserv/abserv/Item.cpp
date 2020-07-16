@@ -189,6 +189,15 @@ void Item::CreateShieldStats(uint32_t level, bool maxStats)
     }
 }
 
+void Item::CreateConsumeableStats(uint32_t level, bool maxStats)
+{
+    if (Lua::IsFunction(luaState_, "getUsagesStats"))
+    {
+        int32_t usages = luaState_["getUsagesStats"](level, maxStats);
+        stats_.SetValue(ItemStatIndex::Usages, usages);
+    }
+}
+
 bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats, const std::string stats)
 {
     concreteItem_ = ci;
@@ -225,6 +234,9 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
             CreateAttributeStats(level, maxStats);
             CreateShieldStats(level, maxStats);
             break;
+        case AB::Entities::ItemType::Consumeable:
+            CreateConsumeableStats(level, maxStats);
+            break;
         default:
             break;
         }
@@ -234,16 +246,11 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
         stats_.LoadFromString(stats);
     }
 
-    concreteItem_.itemStats = GetEncodedStats();
+    concreteItem_.itemStats = stats_.SaveToString();
 
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
     return true;
-}
-
-std::string Item::GetEncodedStats() const
-{
-    return stats_.SaveToString();
 }
 
 bool Item::IsPossibleAttribute(Attribute attribute)

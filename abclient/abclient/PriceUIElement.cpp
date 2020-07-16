@@ -34,6 +34,7 @@ PriceUIElement::PriceUIElement(Context* context) :
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     SetLayoutMode(LM_HORIZONTAL);
+    SetLayoutSpacing(2);
 }
 
 PriceUIElement::~PriceUIElement() = default;
@@ -47,6 +48,7 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
 
     auto* container = CreateChild<UIElement>();
     container->SetLayoutMode(LM_HORIZONTAL);
+    container->SetLayoutSpacing(2);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     auto* icon = container->CreateChild<Button>();

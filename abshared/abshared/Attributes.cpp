@@ -127,15 +127,16 @@ std::set<Attribute> GetPossibleItemAttributes(AB::Entities::ItemType type)
     case AB::Entities::ItemType::Shield:
         return { Attribute::Strength, Attribute::Tactics };
     case AB::Entities::ItemType::ArmorHead:
-    case AB::Entities::ItemType::ArmorChest:
-    case AB::Entities::ItemType::ArmorHands:
-    case AB::Entities::ItemType::ArmorLegs:
-    case AB::Entities::ItemType::ArmorFeet:
         return {
 #define ENUMERATE_ATTRIBUTE(v) Attribute::v,
     ENUMERATE_ATTRIBUTES
 #undef ENUMERATE_ATTRIBUTE
         };
+    case AB::Entities::ItemType::ArmorChest:
+    case AB::Entities::ItemType::ArmorHands:
+    case AB::Entities::ItemType::ArmorLegs:
+    case AB::Entities::ItemType::ArmorFeet:
+        return { };
     default:
         return { };
     }
