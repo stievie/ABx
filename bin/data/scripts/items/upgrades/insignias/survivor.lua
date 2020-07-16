@@ -11,4 +11,4 @@ materialStats[2] = { 0, 0 }
 materialStats[3] = { 0, 0 }
 materialStats[4] = { 9999999, 30 }
 
-include("/scripts/includes/drop_stats.lua")
+include("/scripts/includes/item_functions.lua")
