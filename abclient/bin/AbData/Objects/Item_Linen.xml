@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_Linen"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_Linen.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_Linen_Cloth.xml;Materials/Item_Linen_Wood.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.749266 0.121154 0.125469"/>
+		<attribute name="Offset Position" value="0 0.00576895 0.00792612"/>
+	</component>
+</node>

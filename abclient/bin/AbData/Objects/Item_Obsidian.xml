@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_Obsidian"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_Obsidian.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_Obsidian.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0881584 0.0894165 0.091109"/>
+		<attribute name="Offset Position" value="0.000107631 0.0305996 -0.000372659"/>
+	</component>
+</node>

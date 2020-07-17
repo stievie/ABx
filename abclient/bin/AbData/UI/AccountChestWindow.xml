@@ -77,7 +77,7 @@
 					<attribute name="Max Anchor" value="0 0.5" />
 					<attribute name="Pivot" value="0 0.5" />
 					<attribute name="Texture" value="Texture2D;Textures/Icons/DrachmaCoin.png" />
-					<attribute name="Image Rect" value="0 0 174 174" />
+					<attribute name="Image Rect" value="0 0 256 256" />
 				</element>
 				<element type="Text">
 					<attribute name="Name" value="MoneyText" />

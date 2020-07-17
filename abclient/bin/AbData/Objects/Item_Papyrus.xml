@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_Papyrus"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_Papyrus.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_Papyrus.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.14044 0.0103275 0.210111"/>
+		<attribute name="Offset Position" value="7.1004e-06 -0.000199498 -0.00355757"/>
+	</component>
+</node>
