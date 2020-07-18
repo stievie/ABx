@@ -34,7 +34,7 @@ static bool KeepIt(AB::Entities::timestamp_t sold)
 {
     if (sold == 0)
         return true;
-    return sold > KeepUntil();
+    return KeepUntil() > sold;
 }
 
 bool DBMerchantItemList::Create(AB::Entities::MerchantItemList&)
@@ -57,6 +57,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
     {
         if (!AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
         {
+            // Trow out all not stackable items sold long time ago, otherise the merchant list may get messy.
             if (!KeepIt(result->GetLong("sold")))
                 continue;
         }
