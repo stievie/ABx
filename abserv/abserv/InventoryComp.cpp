@@ -340,9 +340,11 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
 
     if (!item->IsStackable() || item->concreteItem_.count == count)
     {
+        sa::Transaction transaction(item->concreteItem_);
         // If the item is not stackable just move to the player
         item->concreteItem_.accountUuid = player.account_.uuid;
         item->concreteItem_.playerUuid = player.data_.uuid;
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Inventory;
         if (!SetInventoryItem(item->id_, message))
             return false;
         dc->Update(item->concreteItem_);

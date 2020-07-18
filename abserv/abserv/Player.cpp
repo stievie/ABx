@@ -1964,7 +1964,8 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
 {
     if (count == 0 || count > MAX_INVENTORY_STACK_SIZE)
         return;
-    if (attributeIndex >= static_cast<uint32_t>(Attribute::__Last))
+    if (attributeIndex >= static_cast<uint32_t>(Attribute::__Last) &&
+        attributeIndex != static_cast<uint32_t>(Attribute::None))
         return;
 
     if (index == 0 || count == 0)

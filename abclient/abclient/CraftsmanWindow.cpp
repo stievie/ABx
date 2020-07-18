@@ -274,6 +274,8 @@ void CraftsmanWindow::UpdateAttributeList()
     auto* sm = GetSubsystem<SkillManager>();
     for (auto a : attribs)
     {
+        if (a == Game::Attribute::None)
+            continue;
         const auto* attr = sm->GetAttributeByIndex(static_cast<uint32_t>(a));
         attribDropdown_->AddItem(createDropdownItem(attr));
     }
@@ -284,7 +286,7 @@ uint32_t CraftsmanWindow::GetSelectedAttributeIndex() const
 {
     auto* item = attribDropdown_->GetSelectedItem();
     if (!item)
-        return 0;
+        return static_cast<uint32_t>(Game::Attribute::None);
 
     return item->GetVar("Value").GetUInt();
 }

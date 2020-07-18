@@ -136,7 +136,9 @@ std::set<Attribute> GetPossibleItemAttributes(AB::Entities::ItemType type)
     case AB::Entities::ItemType::ArmorHands:
     case AB::Entities::ItemType::ArmorLegs:
     case AB::Entities::ItemType::ArmorFeet:
-        return { };
+        return { Attribute::None };
+    case AB::Entities::ItemType::Consumeable:
+        return { Attribute::None };
     default:
         return { };
     }
