@@ -24,7 +24,6 @@
 #include "ItemFactory.h"
 #include "Player.h"
 #include "Skill.h"
-#include <sa/Transaction.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <abscommon/Logger.h>
@@ -347,9 +346,10 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
         item->concreteItem_.storagePlace = AB::Entities::StoragePlace::Inventory;
         if (!SetInventoryItem(item->id_, message))
             return false;
+        transaction.Commit();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
-        // Merchant got new items.
+        // The Merchant no longer has this item available
         AB::Entities::MerchantItemList ml;
         dc->Invalidate(ml);
     }
@@ -606,6 +606,7 @@ bool InventoryComp::TakeInventoryItem(uint32_t itemIndex, uint32_t count, Net::N
                     AB::Packets::Server::InventoryItemDelete packet = {
                         current.concreteItem_.storagePos
                     };
+                    AB::Packets::Add(packet, *message);
                 }
                 deleted.emplace(current.id_);
             }

@@ -53,6 +53,7 @@ void MerchantWindow::CreateUI()
     countSpinner_->SetFixedSize({ 22, 22 });
     countText_->SetVisible(false);
     countSpinner_->SetVisible(false);
+    countSpinner_->SetValue(10);
 
     UIElement* container = GetChild("Container", true);
     tabgroup_ = container->CreateChild<TabGroup>();
@@ -469,6 +470,7 @@ void MerchantWindow::HandleTabSelected(StringHash, VariantMap& eventData)
     {
         Text* txt = doItButton_->GetChildStaticCast<Text>("DoItButtonText", true);
         txt->SetText("Buy");
+        countSpinner_->SetValue(10);
         RequestBuyItems();
     }
     UpdateLayout();
@@ -505,7 +507,7 @@ void MerchantWindow::HandleBuyItemSelected(StringHash, VariantMap& eventData)
 
     unsigned flags = item->GetVar("Flags").GetUInt();
     if (AB::Entities::IsItemStackable(flags))
-        ShowCountSpinner(true, 1, 10, 10);
+        ShowCountSpinner(true, 1, 250, 0);
     else
         ShowCountSpinner(false);
 }
