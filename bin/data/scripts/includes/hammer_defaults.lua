@@ -8,8 +8,8 @@ dropStats["MinDamage"] = 19
 dropStats["MaxDamage"] = 35
 dropStats["Attributes"] = { ATTRIB_HAMMER_MASTERY }
 
-materialStats[1] = { 100001, 250 }
-materialStats[2] = { 100000, 500 }
-materialStats[3] = { 100003, 20 }
+materialStats[1] = { 100001, 50 }
+materialStats[2] = { 100000, 100 }
+materialStats[3] = { 100003, 10 }
 materialStats[4] = { 9999999, 1000 }
 -- /Drop Stats -----------------------------------------------------------------

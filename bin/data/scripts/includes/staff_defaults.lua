@@ -26,8 +26,8 @@ dropStats["Attributes"] = {
   ATTRIB_DEVINE_FAVOUR
 }
 
-materialStats[1] = { 100001, 500 }
-materialStats[2] = { 100000, 100 }
-materialStats[3] = { 100010, 20 }
+materialStats[1] = { 100001, 100 }
+materialStats[2] = { 100000, 50 }
+materialStats[3] = { 100010, 5 }
 materialStats[4] = { 9999999, 1000 }
 -- /Drop Stats -----------------------------------------------------------------
