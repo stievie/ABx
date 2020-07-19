@@ -24,13 +24,15 @@
 #include <Urho3DAll.h>
 #include "FwClient.h"
 
+class ItemStatsUIElement;
+
 class ItemUIElement : public Button
 {
     URHO3D_OBJECT(ItemUIElement, Button)
 private:
     bool hasTooltip_{ false };
     SharedPtr<Text> tooltipLine1_;
-    SharedPtr<Text> tooltipLine2_;
+    SharedPtr<ItemStatsUIElement> itemStats_;
     void CreateToolTip();
 public:
     static void RegisterObject(Context* context);

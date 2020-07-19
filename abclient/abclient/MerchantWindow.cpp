@@ -22,6 +22,7 @@
 #include "MerchantWindow.h"
 #include "FwClient.h"
 #include "ItemsCache.h"
+#include "ItemStatsUIElement.h"
 
 MerchantWindow::MerchantWindow(Context* context) :
     DialogWindow(context)
@@ -285,6 +286,21 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
+    if (!iItem.stats.Empty())
+    {
+        auto* tooltip = uiS->CreateChild<ToolTip>("Tooltip");
+        tooltip->SetLayoutMode(LM_HORIZONTAL);
+        Window* ttWindow = tooltip->CreateChild<Window>();
+        ttWindow->SetLayoutMode(LM_VERTICAL);
+        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
+        ttWindow->SetStyleAuto();
+        auto* itemStats = ttWindow->CreateChild<ItemStatsUIElement>();
+        itemStats->SetInternal(true);
+        itemStats->SetStats(SaveStatsToString(iItem.stats));
+        tooltip->SetStyleAuto();
+        tooltip->SetOpacity(0.9f);
+        tooltip->SetPosition(IntVector2(-5, -50));
+    }
 
     UIElement* textContainer = uiS->CreateChild<UIElement>("TextContainer");
     textContainer->SetInternal(true);

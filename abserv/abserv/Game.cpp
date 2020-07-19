@@ -355,6 +355,7 @@ void Game::Start()
 
 void Game::Update()
 {
+    const uint32_t frequency = GetUpdateFrequency();
     // Dispatcher Thread
     if (state_ != ExecutionState::Terminated)
     {
@@ -381,7 +382,7 @@ void Game::Update()
 
         int64_t tick = Utils::Tick();
         if (lastUpdate_ == 0)
-            lastUpdate_ = tick - NETWORK_TICK;
+            lastUpdate_ = tick - frequency;
         uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
         lastUpdate_ = tick;
 
@@ -439,9 +440,9 @@ void Game::Update()
         // Schedule next update
         const int64_t end = Utils::Tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
-        const uint32_t sleepTime = NETWORK_TICK > duration ?
-                    NETWORK_TICK - duration :
-                    0;
+        const uint32_t sleepTime = frequency > duration ?
+            frequency - duration :
+            0;
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
         );

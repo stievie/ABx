@@ -88,6 +88,12 @@ private:
     void Update();
     void SendStatus();
     void ResetStatus();
+    uint32_t GetUpdateFrequency() const
+    {
+        if (AB::Entities::IsOutpost(data_.type))
+            return NETWORK_TICK;
+        return NETWORK_TICK_GAME;
+    }
     /// Changes to the game are written to this message and sent to all players
     std::unique_ptr<Net::NetworkMessage> gameStatus_;
     /// Stream to record games

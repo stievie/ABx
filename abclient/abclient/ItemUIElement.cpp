@@ -22,6 +22,7 @@
 
 #include "ItemUIElement.h"
 #include "Item.h"
+#include "ItemStatsUIElement.h"
 
 void ItemUIElement::RegisterObject(Context* context)
 {
@@ -48,9 +49,10 @@ void ItemUIElement::CreateToolTip()
     ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
     ttWindow->SetStyleAuto();
     tooltipLine1_ = ttWindow->CreateChild<Text>();
+    tooltipLine1_->SetInternal(true);
     tooltipLine1_->SetStyleAuto();
-    tooltipLine2_ = ttWindow->CreateChild<Text>();
-    tooltipLine2_->SetStyleAuto();
+    itemStats_ = ttWindow->CreateChild<ItemStatsUIElement>();
+    itemStats_->SetInternal(true);
 
     tooltip->SetStyleAuto();
     tooltip->SetOpacity(0.9f);
@@ -136,8 +138,6 @@ void ItemUIElement::SetCount(unsigned value)
     String text = count_ > 1 ? String(count_) + " " : "";
     text += name_;
     tooltipLine1_->SetText(text);
-    String text2 = FormatMoney(count_ * value_) + " Drachma";
-    tooltipLine2_->SetText(text2);
 }
 
 void ItemUIElement::SetValue(unsigned value)
@@ -146,16 +146,13 @@ void ItemUIElement::SetValue(unsigned value)
         return;
 
     value_ = value;
-    String text2 = FormatMoney(count_ * value_) + " Drachma";
-    tooltipLine2_->SetText(text2);
 }
 
 void ItemUIElement::SetStats(const String& value)
 {
-    if (stats_.Compare(value) == 0)
-        return;
-
     stats_ = value;
+    if (itemStats_)
+        itemStats_->SetStats(stats_);
 }
 
 void ItemUIElement::SetHasTooltip(bool value)

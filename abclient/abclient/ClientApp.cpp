@@ -40,6 +40,7 @@
 #include "HealthBar.h"
 #include "HotkeyEdit.h"
 #include "InventoryWindow.h"
+#include "ItemStatsUIElement.h"
 #include "ItemUIElement.h"
 #include "LoginLevel.h"
 #include "MailWindow.h"
@@ -201,6 +202,7 @@ ClientApp::ClientApp(Context* context) :
     SkillCostElement::RegisterObject(context);
     ItemUIElement::RegisterObject(context);
     PriceUIElement::RegisterObject(context);
+    ItemStatsUIElement::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

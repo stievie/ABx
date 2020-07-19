@@ -423,6 +423,11 @@
         <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
         <attribute name="Color" value="0.95 0.95 0.95" />
     </element>
+    <element type="ItemStatsUIElement">
+        <element type="Text" internal="true">
+          <attribute name="Font Size" value="9" />
+        </element>
+    </element>
     <element type="MerchantListItem" auto="false">
         <attribute name="Min Size" value="0 44" />
         <attribute name="Max Size" value="2147483647 44" />

@@ -252,6 +252,9 @@
     <ClInclude Include="PriceUIElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemStatsUIElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -462,6 +465,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PriceUIElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemStatsUIElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

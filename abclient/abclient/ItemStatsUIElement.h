@@ -21,17 +21,23 @@
 
 #pragma once
 
-#include <Urho3DAll.h>
-#include <stdint.h>
+#include <Urho3D/Urho3DAll.h>
+#include <abshared/Items.h>
 
-class PriceUIElement final : public UIElement
+class ItemStatsUIElement final : public UIElement
 {
-    URHO3D_OBJECT(PriceUIElement, UIElement)
+    URHO3D_OBJECT(ItemStatsUIElement, UIElement)
 public:
     static void RegisterObject(Context* context);
 
-    PriceUIElement(Context* context);
-    ~PriceUIElement() override;
+    ItemStatsUIElement(Context* context);
+    ~ItemStatsUIElement() override;
 
-    void Add(uint32_t index, uint32_t count);
+    void SetStats(const String& value);
+    const String& GetStats() const { return stats_; }
+private:
+    void AddDamageStats(const HashMap<Game::ItemStatIndex, Variant>& stats);
+    void AddArmorStats(const HashMap<Game::ItemStatIndex, Variant>& stats);
+    String stats_;
 };
+

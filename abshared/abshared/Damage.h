@@ -46,6 +46,26 @@ enum class DamageType
     LifeDrain = 99
 };
 
+inline const char* GetDamageTypeName(DamageType type)
+{
+    switch (type)
+    {
+    case DamageType::Fire: return "Fire";
+    case DamageType::Cold: return "Cold";
+    case DamageType::Lightning: return "Lightning";
+    case DamageType::Earth: return "Earth";
+    case DamageType::Blunt: return "Blunt";
+    case DamageType::Piercing: return "Piercing";
+    case DamageType::Slashing: return "Slashing";
+    case DamageType::Holy: return "Holy";
+    case DamageType::Shadow: return "Shadow";
+    case DamageType::Typeless: return "";
+    case DamageType::Dark: return "Dark";
+    case DamageType::Chaos: return "Chaos";
+    default: return nullptr;
+    }
+}
+
 enum class DamageTypeCategory
 {
     Any = 0,
