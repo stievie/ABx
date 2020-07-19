@@ -2,12 +2,12 @@ include("/scripts/includes/attributes.lua")
 -- Drop Stats ------------------------------------------------------------------
 dropStats = {}
 materialStats = {}
--- When this item drops it has a damage in this range scaled to the level of 
+-- When this item drops it has a damage in this range scaled to the level of
 -- the player/drop area
 dropStats["MinDamage"] = 11
 dropStats["MaxDamage"] = 22
-dropStats["Attributes"] = { 
-  ATTRIB_FASTCAST, 
+dropStats["Attributes"] = {
+  ATTRIB_FASTCAST,
   ATTRIB_ILLUSION,
   ATTRIB_DOMINATION,
   ATTRIB_INSPIRATION,

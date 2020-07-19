@@ -6,7 +6,7 @@ materialStats = {}
 -- the player/drop area
 dropStats["MinDamage"] = 15
 dropStats["MaxDamage"] = 22
-dropStats["Attributes"] = { ATTRIB_HAMMER_MASTERY }
+dropStats["Attributes"] = { ATTRIB_SWORDS_MANSHIP }
 
 materialStats[1] = { 100000, 100 }
 materialStats[2] = { 100001, 50 }

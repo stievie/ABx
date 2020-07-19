@@ -1,6 +1,31 @@
--- Get drop statistics
+-- Function to generate items
 
 include("/scripts/includes/attributes.lua")
+include("/scripts/includes/damage.lua")
+
+local damageTypes = {}
+
+damageTypes[ATTRIB_FASTCAST] = DAMAGETYPE_CHAOS
+damageTypes[ATTRIB_ILLUSION] = DAMAGETYPE_CHAOS
+damageTypes[ATTRIB_DOMINATION] = DAMAGETYPE_CHAOS
+damageTypes[ATTRIB_INSPIRATION] = DAMAGETYPE_CHAOS
+damageTypes[ATTRIB_BLOOD] = DAMAGETYPE_DARK
+damageTypes[ATTRIB_DEATH] = DAMAGETYPE_DARK
+damageTypes[ATTRIB_SOUL_REAPING] = DAMAGETYPE_DARK
+damageTypes[ATTRIB_CURSES] = DAMAGETYPE_DARK
+damageTypes[ATTRIB_AIR] = DAMAGETYPE_LIGHTNING
+damageTypes[ATTRIB_EARTH] = DAMAGETYPE_EARTH
+damageTypes[ATTRIB_FIRE] = DAMAGETYPE_FIRE
+damageTypes[ATTRIB_WATER] = DAMAGETYPE_COLD
+damageTypes[ATTRIB_ENERGY_STORAGE] = DAMAGETYPE_FIRE
+damageTypes[ATTRIB_HEALING] = DAMAGETYPE_HOLY
+damageTypes[ATTRIB_SMITING] = DAMAGETYPE_HOLY
+damageTypes[ATTRIB_PROTECTION] = DAMAGETYPE_HOLY
+damageTypes[ATTRIB_DEVINE_FAVOUR] = DAMAGETYPE_HOLY
+damageTypes[ATTRIB_AXE_MASTERY] = DAMAGETYPE_SLASHING
+damageTypes[ATTRIB_HAMMER_MASTERY] = DAMAGETYPE_BLUNT
+damageTypes[ATTRIB_SWORDS_MANSHIP] = DAMAGETYPE_SLASHING
+damageTypes[ATTRIB_MARK_MANSSHIP] = DAMAGETYPE_PIERCING
 
 function getRandomStat(maxVal, level, minVal)
   if (level == 20 and Random() >= 0.3) then
@@ -27,7 +52,7 @@ function getDamageStats(level, maxStats)
     -- Max -> return max min damage
     return dropStats["MinDamage"], maxRes
   end
-  
+
   local diff = dropStats["MaxDamage"] - dropStats["MinDamage"]
   local p = level / 20
   local  minRes = math.floor(maxRes - (diff * p))
@@ -35,6 +60,13 @@ function getDamageStats(level, maxStats)
     minRes = 1
   end
   return minRes, maxRes
+end
+
+function getDamageTypeStats(level, maxStats, attribute)
+  if (damageTypes[attribute] == nil) then
+    return DAMAGETYPE_UNKNOWN
+  end
+  return damageTypes[attribute]
 end
 
 function getEnergyStats(level, maxStats)
@@ -79,7 +111,7 @@ function getRandomAttribute()
     return ATTRIB_NONE
   end
   local rnd = math.floor(Random(1, #dropStats["Attributes"]))
-  
+
   return dropStats["Attributes"][rnd]
 end
 

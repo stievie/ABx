@@ -169,6 +169,12 @@ void Item::CreateWeaponStats(uint32_t level, bool maxStats)
         stats_.SetValue(ItemStatIndex::MinDamage, minDamage);
         stats_.SetValue(ItemStatIndex::MaxDamage, maxDamage);
     }
+    if (Lua::IsFunction(luaState_, "getDamageTypeStats"))
+    {
+        int attrib = static_cast<int>(stats_.GetAttribute());
+        int32_t damageType = luaState_["getDamageTypeStats"](level, maxStats, attrib);
+        stats_.SetValue(ItemStatIndex::DamageType, damageType);
+    }
 }
 
 void Item::CreateFocusStats(uint32_t level, bool maxStats)

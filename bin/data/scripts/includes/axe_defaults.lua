@@ -1,4 +1,5 @@
 include("/scripts/includes/attributes.lua")
+include("/scripts/includes/damage.lua")
 -- Drop Stats ------------------------------------------------------------------
 dropStats = {}
 materialStats = {}
