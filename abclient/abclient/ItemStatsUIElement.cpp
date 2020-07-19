@@ -94,7 +94,7 @@ void ItemStatsUIElement::AddDamageStats(const HashMap<Game::ItemStatIndex, Varia
                 const auto itValue = stats.Find(Game::ItemStatIndex::AttributeValue);
                 if (itValue != stats.End())
                 {
-                    damageString.AppendWithFormat(" %d", attrIt->second_.GetInt());
+                    damageString.AppendWithFormat(" %d", itValue->second_.GetInt());
                 }
                 damageString.AppendWithFormat(" %s", attrib->name.c_str());
                 damageString.Append(")");
@@ -128,7 +128,7 @@ void ItemStatsUIElement::AddArmorStats(const HashMap<Game::ItemStatIndex, Varian
                 const auto itValue = stats.Find(Game::ItemStatIndex::AttributeValue);
                 if (itValue != stats.End())
                 {
-                    armorString.AppendWithFormat(" %d", attrIt->second_.GetInt());
+                    armorString.AppendWithFormat(" %d", itValue->second_.GetInt());
                 }
                 armorString.AppendWithFormat(" %s", attrib->name.c_str());
                 armorString.Append(")");
