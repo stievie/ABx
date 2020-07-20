@@ -664,29 +664,8 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     return true;
 }
 
-std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t level)
-{
-    const ea::pair<size_t, uint32_t> key = { sa::StringHashRt(itemUuid.c_str()), level };
-    const auto it = maxItemStats_.find(key);
-    if (it != maxItemStats_.end())
-        return (*it).second;
-
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Item item;
-    item.uuid = itemUuid;
-    if (!client->Read(item))
-        return "";
-    ea::unique_ptr<Item> pItem = ea::make_unique<Item>(item);
-    if (!pItem->LoadScript(item.script))
-        return "";
-    AB::Entities::ConcreteItem ci;
-    if (!pItem->GenerateConcrete(ci, level, true))
-        return "";
-    maxItemStats_.emplace(key, pItem->concreteItem_.itemStats);
-    return pItem->concreteItem_.itemStats;
-}
-
-std::string ItemFactory::GetMaxItemStatsWithAttribute(const std::string& itemUuid, uint32_t level, Attribute attrib, int attribRank)
+std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t level, int attrib, int attribRank,
+    int damageType)
 {
     auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item item;
@@ -699,9 +678,12 @@ std::string ItemFactory::GetMaxItemStatsWithAttribute(const std::string& itemUui
     AB::Entities::ConcreteItem ci;
     if (!pItem->GenerateConcrete(ci, level, true))
         return "";
-    pItem->stats_.SetValue(ItemStatIndex::Attribute, static_cast<int>(attrib));
+    if (attrib != -1)
+        pItem->stats_.SetValue(ItemStatIndex::Attribute, attrib);
     if (attribRank > -1)
         pItem->stats_.SetValue(ItemStatIndex::AttributeValue, attribRank);
+    if (damageType != -1)
+        pItem->stats_.SetValue(ItemStatIndex::DamageType, damageType);
     return pItem->stats_.SaveToString();
 }
 

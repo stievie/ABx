@@ -1935,8 +1935,12 @@ void Player::CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemTyp
                 craftsmanItem.type = static_cast<uint16_t>(listItem.type);
                 craftsmanItem.count = 0;
                 craftsmanItem.value = listItem.value;
+                const auto possibleAttribs = GetPossibleItemAttributes(listItem.type);
+                int attribIndex = possibleAttribs.size() == 1 ? static_cast<int>(*possibleAttribs.begin()) : static_cast<int>(Attribute::None);
+                int damageType = possibleAttribs.size() == 1 ? -1 : static_cast<int>(DamageType::Unknown);
                 // How much is to pay is stored in stats, and generatd when the concrete item is created (e.g. when dropped)
-                craftsmanItem.stats = factory->GetMaxItemStats(listItem.uuid, npc->GetLevel());
+                craftsmanItem.stats = factory->GetMaxItemStats(listItem.uuid, npc->GetLevel(),
+                    attribIndex, -1, damageType);
                 craftsmanItem.flags = listItem.itemFlags;
 
                 packet.items.push_back(std::move(craftsmanItem));
@@ -2010,8 +2014,8 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
 
     auto* factory = GetSubsystem<ItemFactory>();
     // Stats contain the price
-    const std::string maxStats = factory->GetMaxItemStatsWithAttribute(item.uuid, npc->GetLevel(),
-        static_cast<Attribute>(attributeIndex), -1);
+    const std::string maxStats = factory->GetMaxItemStats(item.uuid, npc->GetLevel(),
+        static_cast<int>(attributeIndex));
     ItemStats stats;
     if (!stats.LoadFromString(maxStats))
     {

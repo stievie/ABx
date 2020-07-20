@@ -47,8 +47,8 @@
 	</element>
 	<element>
 		<attribute name="Name" value="Container" />
-		<attribute name="Min Size" value="400 400" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Vertical" />
 	</element>
 	<element>
 		<attribute name="Min Size" value="0 28" />

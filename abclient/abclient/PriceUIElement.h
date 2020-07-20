@@ -27,6 +27,8 @@
 class PriceUIElement final : public UIElement
 {
     URHO3D_OBJECT(PriceUIElement, UIElement)
+private:
+    unsigned itemCount_{ 0 };
 public:
     static void RegisterObject(Context* context);
 

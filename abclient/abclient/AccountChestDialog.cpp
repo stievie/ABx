@@ -374,7 +374,7 @@ void AccountChestDialog::SetItem(Item* item, const ConcreteItem& iItem)
     itemElem->SetIndex(iItem.index);
     itemElem->SetCount(iItem.count);
     itemElem->SetValue(iItem.value);
-    itemElem->SetStats(SaveStatsToString(iItem.stats));
+    itemElem->SetStats(iItem.stats);
     SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(AccountChestDialog, HandleItemDragMove));
     SubscribeToEvent(itemElem, E_DRAGBEGIN, URHO3D_HANDLER(AccountChestDialog, HandleItemDragBegin));
     SubscribeToEvent(itemElem, E_DRAGCANCEL, URHO3D_HANDLER(AccountChestDialog, HandleItemDragCancel));

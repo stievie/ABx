@@ -35,6 +35,7 @@ CraftsmanWindow::CraftsmanWindow(Context* context) :
     SetMinSize({ 438, 461 });
     LoadLayout("UI/CraftsmanWindow.xml");
     CreateUI();
+    SetResizable(true);
     Center();
 
     SetStyleAuto();
@@ -162,6 +163,7 @@ UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
 
     UISelectable* uiS = container.CreateChild<UISelectable>("Item" + String(iItem.index));
     uiS->SetLayoutSpacing(4);
+    uiS->SetLayoutMode(LM_HORIZONTAL);
     uiS->SetVar("ID", iItem.id);
     uiS->SetVar("Pos", iItem.pos);
     uiS->SetVar("Count", iItem.count);
@@ -171,21 +173,6 @@ UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
-    if (!iItem.stats.Empty())
-    {
-        auto* tooltip = uiS->CreateChild<ToolTip>("Tooltip");
-        tooltip->SetLayoutMode(LM_HORIZONTAL);
-        Window* ttWindow = tooltip->CreateChild<Window>();
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
-        auto* itemStats = ttWindow->CreateChild<ItemStatsUIElement>();
-        itemStats->SetInternal(true);
-        itemStats->SetStats(SaveStatsToString(iItem.stats));
-        tooltip->SetStyleAuto();
-        tooltip->SetOpacity(0.9f);
-        tooltip->SetPosition(IntVector2(-5, -50));
-    }
 
     UIElement* textContainer = uiS->CreateChild<UIElement>("TextContainer");
     textContainer->SetInternal(true);
@@ -194,9 +181,15 @@ UISelectable* CraftsmanWindow::CreateItem(const ConcreteItem& iItem)
     nameElem->SetText(item->name_);
     nameElem->SetInternal(true);
 
-    UIElement* priceContainer = textContainer->CreateChild<UIElement>("Price");
+    if (!iItem.stats.Empty())
+    {
+        auto* itemStats = textContainer->CreateChild<ItemStatsUIElement>();
+        itemStats->SetInternal(true);
+        itemStats->SetStats(iItem.stats);
+    }
+
+    UIElement* priceContainer = uiS->CreateChild<UIElement>("Price");
     priceContainer->SetInternal(true);
-    priceContainer->SetLayoutMode(LM_HORIZONTAL);
 
     auto setValues = [&](int number)
     {

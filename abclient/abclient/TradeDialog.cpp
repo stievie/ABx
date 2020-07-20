@@ -315,7 +315,7 @@ ItemUIElement* TradeDialog::CreateItem(UIElement* container, int index, const Co
     itemElem->SetIndex(iItem.index);
     itemElem->SetCount(iItem.count);
     itemElem->SetValue(iItem.value);
-    itemElem->SetStats(SaveStatsToString(iItem.stats));
+    itemElem->SetStats(iItem.stats);
 
     SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(TradeDialog, HandleItemDragMove));
     SubscribeToEvent(itemElem, E_DRAGBEGIN, URHO3D_HANDLER(TradeDialog, HandleItemDragBegin));

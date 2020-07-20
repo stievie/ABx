@@ -46,6 +46,7 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
     if (!item)
         return;
 
+    ++itemCount_;
     auto* container = CreateChild<UIElement>();
     container->SetLayoutMode(LM_HORIZONTAL);
     container->SetLayoutSpacing(2);
@@ -76,5 +77,7 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
     countText->SetStyleAuto();
     countText->SetFontSize(8);
 
-    container->SetMinWidth(countText->GetWidth() + 24);
+    container->SetFixedWidth(50);
+    SetFixedWidth(50 * itemCount_);
+    UpdateLayout();
 }

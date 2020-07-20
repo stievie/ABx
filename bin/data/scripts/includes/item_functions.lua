@@ -3,8 +3,8 @@
 include("/scripts/includes/attributes.lua")
 include("/scripts/includes/damage.lua")
 
+-- The damage type of a weapon depends on the attribute of the weapon
 local damageTypes = {}
-
 damageTypes[ATTRIB_FASTCAST] = DAMAGETYPE_CHAOS
 damageTypes[ATTRIB_ILLUSION] = DAMAGETYPE_CHAOS
 damageTypes[ATTRIB_DOMINATION] = DAMAGETYPE_CHAOS
@@ -17,7 +17,7 @@ damageTypes[ATTRIB_AIR] = DAMAGETYPE_LIGHTNING
 damageTypes[ATTRIB_EARTH] = DAMAGETYPE_EARTH
 damageTypes[ATTRIB_FIRE] = DAMAGETYPE_FIRE
 damageTypes[ATTRIB_WATER] = DAMAGETYPE_COLD
-damageTypes[ATTRIB_ENERGY_STORAGE] = DAMAGETYPE_FIRE
+damageTypes[ATTRIB_ENERGY_STORAGE] = { DAMAGETYPE_LIGHTNING, DAMAGETYPE_EARTH, DAMAGETYPE_FIRE, DAMAGETYPE_COLD }
 damageTypes[ATTRIB_HEALING] = DAMAGETYPE_HOLY
 damageTypes[ATTRIB_SMITING] = DAMAGETYPE_HOLY
 damageTypes[ATTRIB_PROTECTION] = DAMAGETYPE_HOLY
@@ -66,7 +66,14 @@ function getDamageTypeStats(level, maxStats, attribute)
   if (damageTypes[attribute] == nil) then
     return DAMAGETYPE_UNKNOWN
   end
-  return damageTypes[attribute]
+  if (type(damageTypes[attribute]) == "number") then
+    return damageTypes[attribute]
+  end
+  if (type(damageTypes[attribute]) == "table") then
+    local rnd = math.floor(Random(1, #damageTypes[attribute]))
+    return damageTypes[attribute][rnd]
+  end
+  return DAMAGETYPE_UNKNOWN
 end
 
 function getEnergyStats(level, maxStats)

@@ -440,21 +440,26 @@
         </element>
         <element type="UIElement" internal="true">
             <!-- Text container -->
-            <attribute name="Layout Mode" value="Horizontal" />
+            <attribute name="Layout Mode" value="Vertical" />
             <!-- Name -->
             <element type="Text" internal="true">
                 <attribute name="Text Alignment" value="Left" />
                 <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
                 <attribute name="Font Size" value="10" />
             </element>
-            <!-- Count -->
-            <element type="Text" internal="true">
-                <attribute name="Font Size" value="8" />
+            <element type="ItemStatsUIElement" internal="true">
+                <element type="Text" internal="true">
+                  <attribute name="Font Size" value="9" />
+                </element>
             </element>
-            <!-- Calculated price -->
-            <element type="Text" internal="true">
-                <attribute name="Font Size" value="8" />
-            </element>
+        </element>
+        <!-- Count -->
+        <element type="Text" internal="true">
+            <attribute name="Font Size" value="8" />
+        </element>
+        <!-- Calculated price -->
+        <element type="Text" internal="true">
+            <attribute name="Font Size" value="8" />
         </element>
     </element>
     <element type="CraftsmanListItem" auto="false">
@@ -469,16 +474,22 @@
         </element>
         <element type="UIElement" internal="true">
             <!-- Text container -->
-            <attribute name="Layout Mode" value="Horizontal" />
+            <attribute name="Layout Mode" value="Vertical" />
             <!-- Name -->
             <element type="Text" internal="true">
                 <attribute name="Text Alignment" value="Left" />
                 <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
                 <attribute name="Font Size" value="10" />
             </element>
-            <!-- Price -->
-            <element type="UIElement" internal="true">
+            <element type="ItemStatsUIElement" internal="true">
+                <element type="Text" internal="true">
+                  <attribute name="Font Size" value="9" />
+                </element>
             </element>
+        </element>
+        <!-- Price -->
+        <element type="UIElement" internal="true">
+          <attribute name="Layout Mode" value="Horizontal" />
         </element>
     </element>
     <element type="SkillListItem" auto="false">

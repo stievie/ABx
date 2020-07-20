@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="CraftsmanWindow" />
 	<attribute name="Position" value="776 191" />
-	<attribute name="Size" value="438 461" />
+	<attribute name="Size" value="500 461" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Layout Mode" value="Vertical" />

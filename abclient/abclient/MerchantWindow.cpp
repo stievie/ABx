@@ -29,12 +29,14 @@ MerchantWindow::MerchantWindow(Context* context) :
 {
     SetName(MerchantWindow::GetTypeNameStatic());
 
+    SetMinSize({ 438, 461 });
     LoadLayout("UI/MerchantWindow.xml");
     CreateUI();
     Center();
 
     SetStyleAuto();
-
+    UpdateLayout();
+    SetResizable(true);
     SubscribeEvents();
     Clear();
 }
@@ -135,7 +137,6 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     Window* wnd = page->CreateChild<Window>();
     LoadWindow(wnd, "UI/MerchantWindowBuyPage.xml");
     wnd->SetPosition(0, 0);
-    wnd->UpdateLayout();
 
     itemTypesList_ = wnd->GetChildStaticCast<DropDownList>("ItemTypeList", true);
     itemTypesList_->SetResizePopup(true);
@@ -165,7 +166,7 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     buyItems_ = listContainer->CreateChild<ListView>("BuyItemsListView");
     buyItems_->SetStyleAuto();
     buyItems_->SetHighlightMode(HM_ALWAYS);
-    page->UpdateLayout();
+    wnd->UpdateLayout();
 }
 
 void MerchantWindow::UpdateSellList()
@@ -286,34 +287,26 @@ UISelectable* MerchantWindow::CreateItem(ListView& container, const ConcreteItem
 
     BorderImage* icon = uiS->CreateChild<BorderImage>("Icon");
     icon->SetInternal(true);
-    if (!iItem.stats.Empty())
-    {
-        auto* tooltip = uiS->CreateChild<ToolTip>("Tooltip");
-        tooltip->SetLayoutMode(LM_HORIZONTAL);
-        Window* ttWindow = tooltip->CreateChild<Window>();
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
-        auto* itemStats = ttWindow->CreateChild<ItemStatsUIElement>();
-        itemStats->SetInternal(true);
-        itemStats->SetStats(SaveStatsToString(iItem.stats));
-        tooltip->SetStyleAuto();
-        tooltip->SetOpacity(0.9f);
-        tooltip->SetPosition(IntVector2(-5, -50));
-    }
 
     UIElement* textContainer = uiS->CreateChild<UIElement>("TextContainer");
     textContainer->SetInternal(true);
-
     Text* nameElem = textContainer->CreateChild<Text>("Name");
     nameElem->SetText(item->name_);
     nameElem->SetInternal(true);
-    Text* countElem = textContainer->CreateChild<Text>("Count");
+
+    if (!iItem.stats.Empty())
+    {
+        auto* itemStats = textContainer->CreateChild<ItemStatsUIElement>();
+        itemStats->SetInternal(true);
+        itemStats->SetStats(iItem.stats);
+    }
+
+    Text* countElem = uiS->CreateChild<Text>("Count");
     if (iItem.count > 1)
         countElem->SetText(String(iItem.count) + " x");
     countElem->SetInternal(true);
 
-    Text* priceElem = textContainer->CreateChild<Text>("Price");
+    Text* priceElem = uiS->CreateChild<Text>("Price");
     priceElem->SetInternal(true);
     if (&container == sellItems_.Get())
     {

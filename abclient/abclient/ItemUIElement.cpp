@@ -81,7 +81,7 @@ Window* ItemUIElement::GetDragItem(int buttons, const IntVector2& position)
     dragItem->SetVar("Index", index_);
     dragItem->SetVar("Count", count_);
     dragItem->SetVar("Value", value_);
-    dragItem->SetVar("Stats", stats_);
+    dragItem->SetVar("Stats", SaveStatsToString(stats_));
 
     dragItem->SetPosition(position - dragItem->GetSize() / 2);
 
@@ -148,11 +148,13 @@ void ItemUIElement::SetValue(unsigned value)
     value_ = value;
 }
 
-void ItemUIElement::SetStats(const String& value)
+void ItemUIElement::SetStats(const HashMap<Game::ItemStatIndex, Variant>& value)
 {
     stats_ = value;
     if (itemStats_)
+    {
         itemStats_->SetStats(stats_);
+    }
 }
 
 void ItemUIElement::SetHasTooltip(bool value)

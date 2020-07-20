@@ -33,11 +33,12 @@ public:
     ItemStatsUIElement(Context* context);
     ~ItemStatsUIElement() override;
 
-    void SetStats(const String& value);
-    const String& GetStats() const { return stats_; }
+    void SetStats(const HashMap<Game::ItemStatIndex, Variant>& value);
+    const HashMap<Game::ItemStatIndex, Variant>& GetStats() const { return stats_; }
 private:
-    void AddDamageStats(const HashMap<Game::ItemStatIndex, Variant>& stats);
-    void AddArmorStats(const HashMap<Game::ItemStatIndex, Variant>& stats);
-    String stats_;
+    void AddDamageStats();
+    void AddArmorStats();
+    void AddOtherStats();
+    HashMap<Game::ItemStatIndex, Variant> stats_;
 };
 

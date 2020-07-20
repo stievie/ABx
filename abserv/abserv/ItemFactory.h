@@ -59,7 +59,6 @@ private:
     std::map<AB::Entities::ItemType, std::vector<TypedListValue>> typedItems_;
     std::mutex lock_;
     ea::map<std::string, AB::Entities::ConcreteItem> pendingCreates_;
-    ea::map<ea::pair<size_t, uint32_t>, std::string> maxItemStats_;
     void CreatePendingItems();
     void IdentifyArmor(Item& item, Player& player);
     void IdentifyWeapon(Item& item, Player& player);
@@ -97,10 +96,9 @@ public:
     uint32_t CreatePlayerItem(const Player& forPlayer, const std::string& itemUuid,
         AB::Entities::StoragePlace place, uint32_t count = 1, const std::string& stats = Utils::EMPTY_STRING);
     bool MoveToMerchant(Item* item, uint32_t count);
-    std::string GetMaxItemStats(const std::string& itemUuid, uint32_t level);
     // Used to craft items with a certain attribute
-    std::string GetMaxItemStatsWithAttribute(const std::string& itemUuid, uint32_t level,
-        Attribute attrib, int attribRank);
+    std::string GetMaxItemStats(const std::string& itemUuid, uint32_t level,
+        int attrib = -1, int attribRank = -1, int damageType = -1);
     uint32_t GetItemIndexFromUuid(const std::string& uuid);
 };
 

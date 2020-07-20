@@ -178,7 +178,7 @@ void InventoryWindow::SetItem(Item* item, const ConcreteItem& iItem)
     itemElem->SetIndex(iItem.index);
     itemElem->SetCount(iItem.count);
     itemElem->SetValue(iItem.value);
-    itemElem->SetStats(SaveStatsToString(iItem.stats));
+    itemElem->SetStats(iItem.stats);
 
     SubscribeToEvent(itemElem, E_CLICKEND, URHO3D_HANDLER(InventoryWindow, HandleItemClicked));
     SubscribeToEvent(itemElem, E_DRAGMOVE, URHO3D_HANDLER(InventoryWindow, HandleItemDragMove));
