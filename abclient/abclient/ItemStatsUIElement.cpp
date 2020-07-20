@@ -337,6 +337,8 @@ void ItemStatsUIElement::AddOtherStats()
             addStat(string);
             break;
         }
+        default:
+            break;
         }
     }
 }
