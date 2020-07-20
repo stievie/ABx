@@ -144,190 +144,147 @@ void ItemStatsUIElement::AddOtherStats()
         text->SetInternal(true);
         text->SetText(string);
     };
+    auto addStatSign = [this](const String& format, int value)
+    {
+        Text* text = CreateChild<Text>();
+        char sign = value > 0 ? '+' : '-';
+        String string = String(sign);
+        string.AppendWithFormat(format.CString(), value);
+        text->SetInternal(true);
+        text->SetText(string);
+    };
     for (const auto& stat : stats_)
     {
         switch (stat.first_)
         {
         case Game::ItemStatIndex::HealthRegen:
         {
-            String string;
-            string.AppendWithFormat("%d Health regeneration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Health regeneration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::EnergyRegen:
         {
-            String string;
-            string.AppendWithFormat("%d Energy regeneration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Energy regeneration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::Health:
         {
-            String string;
-            string.AppendWithFormat("%d Health", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Health", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::Energy:
         {
-            String string;
-            string.AppendWithFormat("%d Energy", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Energy", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::PhysicalDamageReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Damage", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::HexDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Hex duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Hex duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ConditionDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Condition duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Condition duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::BlindnessDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Blindness duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Blindness duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::WeaknessDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Weakness duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Weakness duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::DeseaseDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Desease duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Desease duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::PoisionDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Poison duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Poison duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::DazedDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Dazed duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Dazed duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::DeepWoundDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Deep wound duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Deep wound duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::BleedingDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Bleeding duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Bleeding duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::CrippledDurationReduction:
         {
-            String string;
-            string.AppendWithFormat("%d Crippled duration", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Crippled duration", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorElemental:
         {
-            String string;
-            string.AppendWithFormat("%d Elemental armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Elemental armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorFire:
         {
-            String string;
-            string.AppendWithFormat("%d Fire armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Fire armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorCold:
         {
-            String string;
-            string.AppendWithFormat("%d Cold armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Cold armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorLightning:
         {
-            String string;
-            string.AppendWithFormat("%d Lightning armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Lightning armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorEarth:
         {
-            String string;
-            string.AppendWithFormat("%d Earth armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Earth armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorPhysical:
         {
-            String string;
-            string.AppendWithFormat("%d Physical armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Physical armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorHoly:
         {
-            String string;
-            string.AppendWithFormat("%d Holy armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Holy armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorShadow:
         {
-            String string;
-            string.AppendWithFormat("%d Shadow armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Shadow armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorTypeless:
         {
-            String string;
-            string.AppendWithFormat("%d Typeless armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Typeless armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorDark:
         {
-            String string;
-            string.AppendWithFormat("%d Dark armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Dark armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorChaos:
         {
-            String string;
-            string.AppendWithFormat("%d Chaos armor", stat.second_.GetInt());
-            addStat(string);
+            addStatSign("%d Chaos armor", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::Usages:
