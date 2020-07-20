@@ -1910,6 +1910,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::ObjectDro
     eData[P_ITEMINDEX] = packet.itemIndex;
     eData[P_COUNT] = packet.count;
     eData[P_VALUE] = packet.value;
+    eData[P_STATS] = String(packet.stats.c_str(), (unsigned)packet.stats.length());
     QueueEvent(Events::E_OBJECTITEMDROPPED, eData);
 }
 

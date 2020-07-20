@@ -1078,6 +1078,7 @@ struct ObjectDroppedItem
     uint32_t itemIndex;
     uint32_t count;
     uint16_t value;
+    std::string stats;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
@@ -1087,6 +1088,7 @@ struct ObjectDroppedItem
         ar.value(itemIndex);
         ar.value(count);
         ar.value(value);
+        ar.value(stats);
     }
 };
 

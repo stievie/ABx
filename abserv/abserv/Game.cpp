@@ -653,7 +653,8 @@ void Game::SpawnItemDrop(ea::shared_ptr<ItemDrop> item)
         item->id_,
         item->GetItemIndex(),
         static_cast<uint32_t>(pItem ? pItem->concreteItem_.count : 1u),
-        static_cast<uint16_t>(pItem ? pItem->concreteItem_.value : 0u)
+        static_cast<uint16_t>(pItem ? pItem->concreteItem_.value : 0u),
+        pItem->concreteItem_.itemStats
     };
     AB::Packets::Add(packet, *gameStatus_);
 }

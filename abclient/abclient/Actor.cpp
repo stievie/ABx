@@ -29,6 +29,7 @@
 #include "FwClient.h"
 #include "HealthBar.h"
 #include "ItemsCache.h"
+#include "ItemStatsUIElement.h"
 #include "LevelManager.h"
 #include "MathUtils.h"
 #include "Shortcuts.h"
@@ -478,7 +479,7 @@ void Actor::AddActorUI()
     speechBubbleText_->SetVisible(true);
 
     nameWindow_ = uiRoot->CreateChild<Window>();
-    nameWindow_->SetLayoutMode(LM_HORIZONTAL);
+    nameWindow_->SetLayoutMode(LM_VERTICAL);
     nameWindow_->SetLayoutBorder(IntRect(8, 4, 8, 4));
     nameWindow_->SetPivot(0, 0);
     nameWindow_->SetTexture(tex);
@@ -858,6 +859,13 @@ void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
             nameLabel_->SetText(String(count_) + " " + name_);
         else
             nameLabel_->SetText(name_);
+        HashMap<Game::ItemStatIndex, Variant> stats;
+        LoadStatsFromString(stats, eventData[P_STATS].GetString());
+        if (stats.Size() != 0)
+        {
+            auto* statsElem = nameWindow_->CreateChild<ItemStatsUIElement>();
+            statsElem->SetStats(stats);
+        }
     }
 }
 
