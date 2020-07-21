@@ -44,7 +44,6 @@ void ItemStatsUIElement::SetStats(const HashMap<Game::ItemStatIndex, Variant>& v
     stats_ = value;
 
     RemoveAllChildren();
-    HashMap<Game::ItemStatIndex, Variant> stats;
     AddDamageStats();
     AddArmorStats();
     AddOtherStats();
