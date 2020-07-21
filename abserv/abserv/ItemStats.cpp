@@ -122,6 +122,19 @@ int ItemStats::GetEnergy() const
     return GetValue<int>(ItemStatIndex::Energy, 0);
 }
 
+int ItemStats::GetUsages() const
+{
+    return GetValue<int>(ItemStatIndex::Usages, 0);
+}
+
+void ItemStats::DescreaseUsages()
+{
+    int value = GetValue<int>(ItemStatIndex::Usages, 0);
+    if (value < 1)
+        return;
+    SetValue<int>(ItemStatIndex::Usages, value - 1);
+}
+
 bool ItemStats::Load(sa::PropReadStream& stream)
 {
     return Utils::VariantMapRead(stats_, stream);

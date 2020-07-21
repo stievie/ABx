@@ -130,6 +130,7 @@ public:
     /// Get value of this item with all mods
     uint32_t GetValue() const;
 
+    uint32_t GetIndex() const { return data_.index; }
     AB::Entities::ItemType GetType() const;
     bool IsStackable() const { return AB::Entities::IsItemStackable(data_.itemFlags); }
     bool IsTradeable() const { return AB::Entities::IsItemTradeable(data_.itemFlags); }
@@ -147,6 +148,7 @@ public:
     {
         return AB::Entities::IsConsumeableItem(data_.type);
     }
+    bool Consume();
 
     uint32_t id_{ std::numeric_limits<uint32_t>::min() };
     AB::Entities::Item data_;

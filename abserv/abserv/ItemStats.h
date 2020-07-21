@@ -44,6 +44,8 @@ public:
     uint32_t GetAttributeIncrease(Attribute index) const;
     int GetHealth() const;
     int GetEnergy() const;
+    int GetUsages() const;
+    void DescreaseUsages();
     template <typename T>
     T GetValue(ItemStatIndex index, T def) const
     {

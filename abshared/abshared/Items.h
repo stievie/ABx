@@ -77,8 +77,9 @@ enum class ItemStatIndex : size_t
     Material4Index,
     Material4Count,
 
-    // Items may increase the attribute rank by 1. Bellow a list of attributes it increases.
-    AttributeOffset = 1000
+    // Items may increase the attribute rank. Bellow a list of attributes it increases.
+    AttributeOffset = 1000,
+    __AttributeLast = AttributeOffset + 25
 };
 
 }

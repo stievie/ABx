@@ -46,6 +46,7 @@ void ItemStatsUIElement::SetStats(const HashMap<Game::ItemStatIndex, Variant>& v
     RemoveAllChildren();
     AddDamageStats();
     AddArmorStats();
+    AddAttributeIncreaseStats();
     AddOtherStats();
 
     SetVisible(GetNumChildren() != 0);
@@ -133,6 +134,31 @@ void ItemStatsUIElement::AddArmorStats()
         }
     }
     armorText->SetText(armorString);
+}
+
+void ItemStatsUIElement::AddAttributeIncreaseStats()
+{
+    auto addStat = [this](const char* name, uint32_t value)
+    {
+        Text* text = CreateChild<Text>();
+        String string;
+        string.AppendWithFormat("+%u %s", value, name);
+        text->SetInternal(true);
+        text->SetText(string);
+    };
+    auto* sm = GetSubsystem<SkillManager>();
+    for (size_t i = static_cast<size_t>(Game::ItemStatIndex::AttributeOffset); i <= static_cast<size_t>(Game::ItemStatIndex::__AttributeLast); ++i)
+    {
+        const auto it = stats_.Find(static_cast<Game::ItemStatIndex>(i));
+        if (it == stats_.End())
+            continue;
+        if (it->second_ == 0)
+            continue;
+        const auto* attrib = sm->GetAttributeByIndex(static_cast<uint32_t>(i - static_cast<size_t>(Game::ItemStatIndex::AttributeOffset)));
+        if (!attrib)
+            continue;
+        addStat(attrib->name.c_str(), it->second_.GetUInt());
+    }
 }
 
 void ItemStatsUIElement::AddOtherStats()
@@ -233,59 +259,41 @@ void ItemStatsUIElement::AddOtherStats()
         }
         case Game::ItemStatIndex::ArmorElemental:
         {
-            addStatSign("%d Elemental armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. elemental damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorFire:
         {
-            addStatSign("%d Fire armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. fire damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorCold:
         {
-            addStatSign("%d Cold armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. cold damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorLightning:
         {
-            addStatSign("%d Lightning armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. lightning damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorEarth:
         {
-            addStatSign("%d Earth armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. earth damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorPhysical:
         {
-            addStatSign("%d Physical armor", stat.second_.GetInt());
-            break;
-        }
-        case Game::ItemStatIndex::ArmorHoly:
-        {
-            addStatSign("%d Holy armor", stat.second_.GetInt());
-            break;
-        }
-        case Game::ItemStatIndex::ArmorShadow:
-        {
-            addStatSign("%d Shadow armor", stat.second_.GetInt());
-            break;
-        }
-        case Game::ItemStatIndex::ArmorTypeless:
-        {
-            addStatSign("%d Typeless armor", stat.second_.GetInt());
+            addStatSign("%d armor vs. physical damage", stat.second_.GetInt());
             break;
         }
         case Game::ItemStatIndex::ArmorDark:
-        {
-            addStatSign("%d Dark armor", stat.second_.GetInt());
-            break;
-        }
+        case Game::ItemStatIndex::ArmorTypeless:
+        case Game::ItemStatIndex::ArmorShadow:
+        case Game::ItemStatIndex::ArmorHoly:
         case Game::ItemStatIndex::ArmorChaos:
-        {
-            addStatSign("%d Chaos armor", stat.second_.GetInt());
-            break;
-        }
+            // Armor ignoring damage
+            ASSERT_FALSE();
         case Game::ItemStatIndex::Usages:
         {
             String string;

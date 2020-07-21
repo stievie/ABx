@@ -40,6 +40,7 @@ void Item::RegisterLua(kaguya::State& state)
         .addFunction("GetWeaponAttackSpeed", &Item::GetWeaponAttackSpeed)
         .addFunction("GetWeaponDamageType", &Item::GetWeaponDamageType)
         .addFunction("GetWeaponDamage", &Item::GetWeaponDamage)
+        .addFunction("Index", &Item::GetIndex)
         .addFunction("GetType", &Item::GetType)
         .addFunction("IsStackable", &Item::IsStackable)
     );
@@ -240,6 +241,7 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
             CreateAttributeStats(level, maxStats);
             CreateShieldStats(level, maxStats);
             break;
+        case AB::Entities::ItemType::Dye:
         case AB::Entities::ItemType::Consumeable:
             CreateConsumeableStats(level, maxStats);
             break;
@@ -692,6 +694,20 @@ uint32_t Item::GetValue() const
 AB::Entities::ItemType Item::GetType() const
 {
     return data_.type;
+}
+
+bool Item::Consume()
+{
+    if (data_.type != AB::Entities::ItemType::Consumeable && data_.type != AB::Entities::ItemType::Dye)
+        return false;
+    if (Lua::IsFunction(luaState_, "onConsume"))
+        return false;
+    if (stats_.GetUsages() < 1)
+        return false;
+    bool ret = luaState_["onConsume"]();
+    if (ret)
+        stats_.DescreaseUsages();
+    return ret;
 }
 
 void Item::GetWeaponDamage(int32_t& value, bool critical)

@@ -38,6 +38,7 @@ public:
 private:
     void AddDamageStats();
     void AddArmorStats();
+    void AddAttributeIncreaseStats();
     void AddOtherStats();
     HashMap<Game::ItemStatIndex, Variant> stats_;
 };
