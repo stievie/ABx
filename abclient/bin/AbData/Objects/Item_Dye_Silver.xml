@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_Dye_Silver"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_Dye.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_Dye_Silver.xml;Materials/Item_Dye_Kork.xml;Materials/Item_Dye_Glass.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0771618 0.0915084 0.0771618"/>
+		<attribute name="Offset Position" value="2.42144e-08 0.0431688 7.45058e-09"/>
+	</component>
+</node>
