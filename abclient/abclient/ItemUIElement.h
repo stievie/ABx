@@ -46,7 +46,7 @@ public:
     void SetIcon(const String& icon);
     void SetCount(unsigned value);
     void SetValue(unsigned value);
-    void SetStats(const HashMap<Game::ItemStatIndex, Variant>& value);
+    void SetStats(const ItemStats& value);
     void SetHasTooltip(bool value);
 
     String name_;
@@ -54,5 +54,5 @@ public:
     unsigned index_{ 0 };
     unsigned count_{ 0 };
     unsigned value_{ 0 };
-    HashMap<Game::ItemStatIndex, Variant> stats_;
+    ItemStats stats_;
 };

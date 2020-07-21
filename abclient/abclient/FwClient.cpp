@@ -40,7 +40,7 @@
 
 //#define LOG_ACTIONS
 
-bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream)
+bool VariantMapRead(ItemStats& vMap, sa::PropReadStream& stream)
 {
     vMap.Clear();
     if (stream.GetSize() == 0)
@@ -109,7 +109,7 @@ bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStr
     return true;
 }
 
-void VariantMapWrite(const HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropWriteStream& stream)
+void VariantMapWrite(const ItemStats& vMap, sa::PropWriteStream& stream)
 {
     stream.Write<uint16_t>(static_cast<uint16_t>(vMap.Size()));
     for (const auto& s : vMap)
@@ -144,7 +144,7 @@ void VariantMapWrite(const HashMap<Game::ItemStatIndex, Variant>& vMap, sa::Prop
     }
 }
 
-void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std::string& value)
+void LoadStatsFromString(ItemStats& stats, const std::string& value)
 {
     sa::PropReadStream stream;
     stream.Init(value.data(), value.length());
@@ -152,12 +152,12 @@ void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std
         URHO3D_LOGERROR("Error loading item stats");
 }
 
-void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const String& value)
+void LoadStatsFromString(ItemStats& stats, const String& value)
 {
     return LoadStatsFromString(stats, std::string(value.CString(), static_cast<size_t>(value.Length())));
 }
 
-String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats)
+String SaveStatsToString(const ItemStats& stats)
 {
     sa::PropWriteStream stream;
     VariantMapWrite(stats, stream);

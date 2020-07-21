@@ -20,7 +20,6 @@
  */
 
 #include "ItemStatsUIElement.h"
-#include "FwClient.h"
 #include "SkillManager.h"
 #include <abshared/Damage.h>
 
@@ -39,34 +38,32 @@ ItemStatsUIElement::ItemStatsUIElement(Context* context) :
 
 ItemStatsUIElement::~ItemStatsUIElement() = default;
 
-void ItemStatsUIElement::SetStats(const HashMap<Game::ItemStatIndex, Variant>& value)
+void ItemStatsUIElement::SetStats(const ItemStats& value)
 {
-    stats_ = value;
-
     RemoveAllChildren();
-    AddDamageStats();
-    AddArmorStats();
-    AddAttributeIncreaseStats();
-    AddOtherStats();
+    AddDamageStats(value);
+    AddArmorStats(value);
+    AddAttributeIncreaseStats(value);
+    AddOtherStats(value);
 
     SetVisible(GetNumChildren() != 0);
     SetStyleAuto();
     UpdateLayout();
 }
 
-void ItemStatsUIElement::AddDamageStats()
+void ItemStatsUIElement::AddDamageStats(const ItemStats& stats)
 {
-    const auto minDmgIt = stats_.Find(Game::ItemStatIndex::MinDamage);
-    const auto maxDmgIt = stats_.Find(Game::ItemStatIndex::MaxDamage);
-    const auto attrIt = stats_.Find(Game::ItemStatIndex::Attribute);
-    if (minDmgIt == stats_.End() && maxDmgIt == stats_.End())
+    const auto minDmgIt = stats.Find(Game::ItemStatIndex::MinDamage);
+    const auto maxDmgIt = stats.Find(Game::ItemStatIndex::MaxDamage);
+    const auto attrIt = stats.Find(Game::ItemStatIndex::Attribute);
+    if (minDmgIt == stats.End() && maxDmgIt == stats.End())
         return;
 
-    const auto dmgType = stats_.Find(Game::ItemStatIndex::DamageType);
+    const auto dmgType = stats.Find(Game::ItemStatIndex::DamageType);
     Text* damageText = CreateChild<Text>();
     damageText->SetInternal(true);
     String damageString;
-    if (dmgType != stats_.End())
+    if (dmgType != stats.End())
     {
         const char* dmgTypeName = Game::GetDamageTypeName(static_cast<Game::DamageType>(dmgType->second_.GetUInt()));
         if (dmgTypeName != nullptr)
@@ -75,12 +72,12 @@ void ItemStatsUIElement::AddDamageStats()
         }
     }
     damageString.Append("Damage: ");
-    if (minDmgIt != stats_.End())
+    if (minDmgIt != stats.End())
         damageString.AppendWithFormat("%d", minDmgIt->second_.GetUInt());
-    if (maxDmgIt != stats_.End())
+    if (maxDmgIt != stats.End())
         damageString.AppendWithFormat("-%d", maxDmgIt->second_.GetUInt());
 
-    if (attrIt != stats_.End())
+    if (attrIt != stats.End())
     {
         if (attrIt->second_.GetUInt() != static_cast<uint32_t>(Game::ItemStatIndex::None))
         {
@@ -89,8 +86,8 @@ void ItemStatsUIElement::AddDamageStats()
             if (attrib)
             {
                 damageString.Append(" (Requires");
-                const auto itValue = stats_.Find(Game::ItemStatIndex::AttributeValue);
-                if (itValue != stats_.End())
+                const auto itValue = stats.Find(Game::ItemStatIndex::AttributeValue);
+                if (itValue != stats.End())
                 {
                     damageString.AppendWithFormat(" %d", itValue->second_.GetInt());
                 }
@@ -102,11 +99,11 @@ void ItemStatsUIElement::AddDamageStats()
     damageText->SetText(damageString);
 }
 
-void ItemStatsUIElement::AddArmorStats()
+void ItemStatsUIElement::AddArmorStats(const ItemStats& stats)
 {
-    const auto armorIt = stats_.Find(Game::ItemStatIndex::Armor);
-    const auto attrIt = stats_.Find(Game::ItemStatIndex::Attribute);
-    if (armorIt == stats_.End())
+    const auto armorIt = stats.Find(Game::ItemStatIndex::Armor);
+    const auto attrIt = stats.Find(Game::ItemStatIndex::Attribute);
+    if (armorIt == stats.End())
         return;
 
     Text* armorText = CreateChild<Text>();
@@ -114,7 +111,7 @@ void ItemStatsUIElement::AddArmorStats()
     String armorString;
     armorString.AppendWithFormat("Armor: %d", armorIt->second_.GetUInt());
 
-    if (attrIt != stats_.End())
+    if (attrIt != stats.End())
     {
         if (attrIt->second_.GetUInt() != static_cast<uint32_t>(Game::ItemStatIndex::None))
         {
@@ -123,8 +120,8 @@ void ItemStatsUIElement::AddArmorStats()
             if (attrib)
             {
                 armorString.Append(" (Requires");
-                const auto itValue = stats_.Find(Game::ItemStatIndex::AttributeValue);
-                if (itValue != stats_.End())
+                const auto itValue = stats.Find(Game::ItemStatIndex::AttributeValue);
+                if (itValue != stats.End())
                 {
                     armorString.AppendWithFormat(" %d", itValue->second_.GetInt());
                 }
@@ -136,7 +133,7 @@ void ItemStatsUIElement::AddArmorStats()
     armorText->SetText(armorString);
 }
 
-void ItemStatsUIElement::AddAttributeIncreaseStats()
+void ItemStatsUIElement::AddAttributeIncreaseStats(const ItemStats& stats)
 {
     auto addStat = [this](const char* name, uint32_t value)
     {
@@ -149,8 +146,8 @@ void ItemStatsUIElement::AddAttributeIncreaseStats()
     auto* sm = GetSubsystem<SkillManager>();
     for (size_t i = static_cast<size_t>(Game::ItemStatIndex::AttributeOffset); i <= static_cast<size_t>(Game::ItemStatIndex::__AttributeLast); ++i)
     {
-        const auto it = stats_.Find(static_cast<Game::ItemStatIndex>(i));
-        if (it == stats_.End())
+        const auto it = stats.Find(static_cast<Game::ItemStatIndex>(i));
+        if (it == stats.End())
             continue;
         if (it->second_ == 0)
             continue;
@@ -161,7 +158,7 @@ void ItemStatsUIElement::AddAttributeIncreaseStats()
     }
 }
 
-void ItemStatsUIElement::AddOtherStats()
+void ItemStatsUIElement::AddOtherStats(const ItemStats& stats)
 {
     auto addStat = [this](const String& string)
     {
@@ -178,7 +175,7 @@ void ItemStatsUIElement::AddOtherStats()
         text->SetInternal(true);
         text->SetText(string);
     };
-    for (const auto& stat : stats_)
+    for (const auto& stat : stats)
     {
         switch (stat.first_)
         {

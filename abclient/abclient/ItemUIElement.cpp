@@ -148,7 +148,7 @@ void ItemUIElement::SetValue(unsigned value)
     value_ = value;
 }
 
-void ItemUIElement::SetStats(const HashMap<Game::ItemStatIndex, Variant>& value)
+void ItemUIElement::SetStats(const ItemStats& value)
 {
     stats_ = value;
     if (itemStats_)

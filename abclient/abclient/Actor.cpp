@@ -859,7 +859,7 @@ void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
             nameLabel_->SetText(String(count_) + " " + name_);
         else
             nameLabel_->SetText(name_);
-        HashMap<Game::ItemStatIndex, Variant> stats;
+        ItemStats stats;
         LoadStatsFromString(stats, eventData[P_STATS].GetString());
         if (stats.Size() != 0)
         {

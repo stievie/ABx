@@ -23,6 +23,7 @@
 
 #include <Urho3D/Urho3DAll.h>
 #include <abshared/Items.h>
+#include "FwClient.h"
 
 class ItemStatsUIElement final : public UIElement
 {
@@ -33,13 +34,11 @@ public:
     ItemStatsUIElement(Context* context);
     ~ItemStatsUIElement() override;
 
-    void SetStats(const HashMap<Game::ItemStatIndex, Variant>& value);
-    const HashMap<Game::ItemStatIndex, Variant>& GetStats() const { return stats_; }
+    void SetStats(const ItemStats& value);
 private:
-    void AddDamageStats();
-    void AddArmorStats();
-    void AddAttributeIncreaseStats();
-    void AddOtherStats();
-    HashMap<Game::ItemStatIndex, Variant> stats_;
+    void AddDamageStats(const ItemStats& stats);
+    void AddArmorStats(const ItemStats& stats);
+    void AddAttributeIncreaseStats(const ItemStats& stats);
+    void AddOtherStats(const ItemStats& stats);
 };
 

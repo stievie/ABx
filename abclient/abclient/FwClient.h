@@ -44,6 +44,7 @@ struct EventItem
     VariantMap eventData;
 };
 
+using ItemStats = HashMap<Game::ItemStatIndex, Variant>;
 struct ConcreteItem
 {
     uint32_t id{ 0 };               // Server ID
@@ -53,15 +54,16 @@ struct ConcreteItem
     uint16_t pos;
     uint32_t count;
     uint32_t value;
-    HashMap<Game::ItemStatIndex, Variant> stats;
+    ItemStats stats;
     uint32_t flags;
 };
 
-bool VariantMapRead(HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropReadStream& stream);
-void VariantMapWrite(const HashMap<Game::ItemStatIndex, Variant>& vMap, sa::PropWriteStream& stream);
-void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const std::string& value);
-void LoadStatsFromString(HashMap<Game::ItemStatIndex, Variant>& stats, const String& value);
-String SaveStatsToString(const HashMap<Game::ItemStatIndex, Variant>& stats);
+
+bool VariantMapRead(ItemStats& vMap, sa::PropReadStream& stream);
+void VariantMapWrite(const ItemStats& vMap, sa::PropWriteStream& stream);
+void LoadStatsFromString(ItemStats& stats, const std::string& value);
+void LoadStatsFromString(ItemStats& stats, const String& value);
+String SaveStatsToString(const ItemStats& stats);
 
 namespace Urho3D {
 template <>
