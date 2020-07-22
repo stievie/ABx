@@ -35,6 +35,7 @@ class ItemDrop final : public GameObject
     NON_COPYABLE(ItemDrop)
 private:
     uint32_t itemId_;
+    int64_t dropTick_;
     uint32_t itemIndex_{ 0 };
     std::string concreteUuid_;
     bool pickedUp_{ false };
@@ -44,6 +45,7 @@ private:
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
     Item* _LuaGetItem();
+    void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 protected:
     void OnClicked(Actor* actor);
     void OnSelected(Actor* actor);
@@ -69,7 +71,7 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
 
-    uint32_t actorId_{ 0 };
+    uint32_t targetId_{ 0 };
 };
 
 template <>

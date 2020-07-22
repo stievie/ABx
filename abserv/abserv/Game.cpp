@@ -613,7 +613,7 @@ ea::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targe
     result->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
     result->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
     result->SetSource(dropper->GetPtr<Actor>());
-    result->actorId_ = target->id_;
+    result->targetId_ = target->id_;
 
     SpawnItemDrop(result);
     return result;
@@ -649,7 +649,7 @@ void Game::SpawnItemDrop(ea::shared_ptr<ItemDrop> item)
     const Item* pItem = item->GetItem();
     AB::Packets::Server::ObjectDroppedItem packet = {
         item->GetSourceId(),
-        item->actorId_,
+        item->targetId_,
         item->id_,
         item->GetItemIndex(),
         static_cast<uint32_t>(pItem ? pItem->concreteItem_.count : 1u),

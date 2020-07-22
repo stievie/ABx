@@ -196,7 +196,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(TradeAccepted)               \
     ENUMERATE_SERVER_PACKET_CODE(MerchantItems)               \
     ENUMERATE_SERVER_PACKET_CODE(ItemPrice)                   \
-    ENUMERATE_SERVER_PACKET_CODE(CraftsmanItems)
+    ENUMERATE_SERVER_PACKET_CODE(CraftsmanItems)              \
+    ENUMERATE_SERVER_PACKET_CODE(DropTargetChanged)
 
 #define ENUMERATE_CREATURE_STATES          \
     ENUMERATE_CREATURE_STATE(Unknown)      \

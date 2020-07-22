@@ -111,6 +111,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::MerchantItems, ServerPacketType::MerchantItems>();
     AddHandler<AB::Packets::Server::ItemPrice, ServerPacketType::ItemPrice>();
     AddHandler<AB::Packets::Server::CraftsmanItems, ServerPacketType::CraftsmanItems>();
+    AddHandler<AB::Packets::Server::DropTargetChanged, ServerPacketType::DropTargetChanged>();
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,

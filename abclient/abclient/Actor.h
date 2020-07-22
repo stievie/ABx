@@ -159,6 +159,7 @@ private:
     void HandleSetSkill(StringHash eventType, VariantMap& eventData);
     void HandleGroupMaskChanged(StringHash eventType, VariantMap& eventData);
     void HandleSetAttackSpeed(StringHash eventType, VariantMap& eventData);
+    void HandleDropTargetChanged(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:

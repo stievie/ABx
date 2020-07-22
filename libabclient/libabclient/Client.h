@@ -160,6 +160,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::DropTargetChanged& packet) override;
 public:
     static const char* GetProtocolErrorMessage(AB::ErrorCodes err);
     static const char* GetNetworkErrorMessage(ConnectionError connectionError);

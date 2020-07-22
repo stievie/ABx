@@ -1198,4 +1198,9 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanIt
     receiver_.OnPacket(updateTick, packet);
 }
 
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::DropTargetChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
 }

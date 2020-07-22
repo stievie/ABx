@@ -2386,6 +2386,15 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::CraftsmanItems& pack
     SendEvent(Events::E_CRAFTSMAN_ITEMS, eData);
 }
 
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::DropTargetChanged& packet)
+{
+    using namespace Events::DropTargetChanged;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.id;
+    eData[P_TARGETID] = packet.newTargetId;
+    SendEvent(Events::E_DROPTARGET_CHANGED, eData);
+}
+
 std::vector<AB::Entities::Service> FwClient::GetServices() const
 {
     std::vector<AB::Entities::Service> result;

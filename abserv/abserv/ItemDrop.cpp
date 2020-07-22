@@ -26,6 +26,8 @@
 #include "ItemFactory.h"
 #include "Game.h"
 #include "ItemsCache.h"
+#include <AB/Packets/Packet.h>
+#include <AB/Packets/ServerPackets.h>
 
 namespace Game {
 
@@ -42,7 +44,8 @@ void ItemDrop::RegisterLua(kaguya::State& state)
 
 ItemDrop::ItemDrop(uint32_t itemId) :
     GameObject(),
-    itemId_(itemId)
+    itemId_(itemId),
+    dropTick_(Utils::Tick())
 {
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&ItemDrop::OnClicked, this, std::placeholders::_1));
     events_.Subscribe<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&ItemDrop::OnSelected, this, std::placeholders::_1));
@@ -78,14 +81,29 @@ Actor* ItemDrop::_LuaGetSource()
 
 Actor* ItemDrop::_LuaGetTarget()
 {
-    if (actorId_ == 0)
+    if (targetId_ == 0)
         return nullptr;
-    return GetGame()->GetObject<Actor>(actorId_);
+    return GetGame()->GetObject<Actor>(targetId_);
 }
 
 Item* ItemDrop::_LuaGetItem()
 {
     return const_cast<Item*>(GetItem());
+}
+
+void ItemDrop::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
+{
+    GameObject::Update(timeElapsed, message);
+    if ((targetId_ != 0) && Utils::TimeElapsed(dropTick_) >= (300 * 1000))
+    {
+        // If it wasn't picked up in 5 minutes it becomes available for all
+        targetId_ = 0;
+        AB::Packets::Server::DropTargetChanged packet = {
+            id_, targetId_
+        };
+        message.AddByte(AB::GameProtocol::ServerPacketType::DropTargetChanged);
+        AB::Packets::Add(packet, message);
+    }
 }
 
 uint32_t ItemDrop::GetItemIndex() const
@@ -103,8 +121,8 @@ void ItemDrop::PickUp(Actor* actor)
 {
     if (!actor)
         return;
-    // if actorId_ == 0 all can pick it up
-    if (actorId_ != 0 && actorId_ != actor->GetId())
+    // if targetId_ == 0 all can pick it up
+    if (targetId_ != 0 && targetId_ != actor->GetId())
         return;
     if (GetDistance(actor) > RANGE_PICK_UP)
         return;

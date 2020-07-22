@@ -137,6 +137,7 @@ public:
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::MerchantItems& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) = 0;
     virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet) = 0;
+    virtual void OnPacket(int64_t updateTick, const AB::Packets::Server::DropTargetChanged& packet) = 0;
 
 };
 

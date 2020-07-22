@@ -70,6 +70,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(Events::E_SET_SKILL, URHO3D_HANDLER(Actor, HandleSetSkill));
     SubscribeToEvent(Events::E_OBJECTGROUPMASKCHAGED, URHO3D_HANDLER(Actor, HandleGroupMaskChanged));
     SubscribeToEvent(Events::E_OBJECTSETATTACKSPEED, URHO3D_HANDLER(Actor, HandleSetAttackSpeed));
+    SubscribeToEvent(Events::E_DROPTARGET_CHANGED, URHO3D_HANDLER(Actor, HandleDropTargetChanged));
 }
 
 Actor::~Actor()
@@ -1415,4 +1416,15 @@ void Actor::HandleSetAttackSpeed(StringHash, VariantMap& eventData)
     const String& ani = animations_[ANIM_ATTACK];
     if (!ani.Empty())
         animController_->SetSpeed(ani, attackSpeed_);
+}
+
+void Actor::HandleDropTargetChanged(StringHash, VariantMap& eventData)
+{
+    using namespace Events::DropTargetChanged;
+    if (eventData[P_OBJECTID].GetUInt() != gameId_)
+        return;
+    dropTarget_ = eventData[P_TARGETID].GetUInt();
+    Text* targetName = nameWindow_->GetChildStaticCast<Text>("DropTarget", true);
+    if (targetName)
+        targetName->Remove();
 }

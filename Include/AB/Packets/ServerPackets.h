@@ -1092,6 +1092,18 @@ struct ObjectDroppedItem
     }
 };
 
+struct DropTargetChanged
+{
+    uint32_t id;
+    uint32_t newTargetId;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(id);
+        ar.value(newTargetId);
+    }
+};
+
 struct ObjectResourceChanged
 {
     uint32_t id;
