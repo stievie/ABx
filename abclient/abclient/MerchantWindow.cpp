@@ -29,14 +29,16 @@ MerchantWindow::MerchantWindow(Context* context) :
 {
     SetName(MerchantWindow::GetTypeNameStatic());
 
+    DisableLayoutUpdate();
     SetMinSize({ 438, 461 });
     LoadLayout("UI/MerchantWindow.xml");
     CreateUI();
     Center();
 
     SetStyleAuto();
-    UpdateLayout();
     SetResizable(true);
+    EnableLayoutUpdate();
+    UpdateLayout();
     SubscribeEvents();
     Clear();
 }
@@ -126,7 +128,6 @@ void MerchantWindow::CreatePageSell(TabElement* tabElement)
     sellItems_ = page->CreateChild<ListView>("SellItemsListView");
     sellItems_->SetStyleAuto();
     sellItems_->SetHighlightMode(HM_ALWAYS);
-    page->UpdateLayout();
 }
 
 void MerchantWindow::CreatePageBuy(TabElement* tabElement)
@@ -166,7 +167,6 @@ void MerchantWindow::CreatePageBuy(TabElement* tabElement)
     buyItems_ = listContainer->CreateChild<ListView>("BuyItemsListView");
     buyItems_->SetStyleAuto();
     buyItems_->SetHighlightMode(HM_ALWAYS);
-    wnd->UpdateLayout();
 }
 
 void MerchantWindow::UpdateSellList()
