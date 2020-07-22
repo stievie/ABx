@@ -32,6 +32,7 @@ CraftsmanWindow::CraftsmanWindow(Context* context) :
 {
     SetName(CraftsmanWindow::GetTypeNameStatic());
 
+    DisableLayoutUpdate();
     SetMinSize({ 438, 461 });
     LoadLayout("UI/CraftsmanWindow.xml");
     CreateUI();
@@ -39,6 +40,7 @@ CraftsmanWindow::CraftsmanWindow(Context* context) :
     Center();
 
     SetStyleAuto();
+    EnableLayoutUpdate();
     UpdateLayout();
 
     SubscribeEvents();

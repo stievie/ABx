@@ -464,10 +464,9 @@ void Actor::AddActorUI()
     speechBubbleWindow_ = uiRoot->CreateChild<Window>();
     speechBubbleWindow_->SetLayoutMode(LM_HORIZONTAL);
     speechBubbleWindow_->SetLayoutBorder(IntRect(6, 3, 6, 3));
-    speechBubbleWindow_->SetPivot(0, 0);
     speechBubbleWindow_->SetTexture(tex);
     speechBubbleWindow_->SetImageRect(IntRect(48, 0, 64, 16));
-    speechBubbleWindow_->SetBorder(IntRect(3, 3, 3, 3));
+    speechBubbleWindow_->SetBorder(IntRect(4, 4, 4, 4));
     speechBubbleWindow_->SetImageBorder(IntRect(0, 0, 0, 0));
     speechBubbleWindow_->SetVisible(false);
     speechBubbleWindow_->SetOpacity(0.8f);
@@ -481,7 +480,6 @@ void Actor::AddActorUI()
     nameWindow_ = uiRoot->CreateChild<Window>();
     nameWindow_->SetLayoutMode(LM_VERTICAL);
     nameWindow_->SetLayoutBorder(IntRect(8, 4, 8, 4));
-    nameWindow_->SetPivot(0, 0);
     nameWindow_->SetTexture(tex);
     nameWindow_->SetImageRect(IntRect(48, 0, 64, 16));
     nameWindow_->SetBorder(IntRect(4, 4, 4, 4));
@@ -865,6 +863,23 @@ void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
         {
             auto* statsElem = nameWindow_->CreateChild<ItemStatsUIElement>();
             statsElem->SetStats(stats);
+        }
+        dropTarget_ = eventData[P_TARGETID].GetUInt();
+        if (dropTarget_ != 0)
+        {
+            auto* lm = GetSubsystem<LevelManager>();
+            auto* target = lm->GetObject(dropTarget_);
+            if (target && Is<Actor>(target))
+            {
+                auto* targetActor = To<Actor>(target);
+                Text* targetName = nameWindow_->GetChildStaticCast<Text>("DropTarget", true);
+                if (!targetName)
+                {
+                    targetName = nameWindow_->CreateChild<Text>("DropTarget");
+                    targetName->SetStyle("DropTargetNameText");
+                }
+                targetName->SetText("For " + targetActor->name_);
+            }
         }
     }
 }

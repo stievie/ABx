@@ -600,6 +600,11 @@
         <attribute name="Font Size" value="9" />
         <attribute name="Color" value="0.85 0.85 0.85" />
     </element>
+    <element type="DropTargetNameText">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
+        <attribute name="Font Size" value="9" />
+        <attribute name="Color" value="0.85 0.85 0.85" />
+    </element>
     <element type="FileSelector" style="DialogWindow" auto="false">
         <attribute name="Size" value="400 300" />
         <attribute name="Is Resizable" value="true" />

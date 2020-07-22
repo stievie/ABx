@@ -294,7 +294,9 @@ void ItemStatsUIElement::AddOtherStats(const ItemStats& stats)
         case Game::ItemStatIndex::Usages:
         {
             String string;
-            string.AppendWithFormat("%d Usages", stat.second_.GetInt());
+            int value = stat.second_.GetInt();
+            const char* text = (value == 1) ? "%d Usage" : "%d Usages";
+            string.AppendWithFormat(text, value);
             addStat(string);
             break;
         }

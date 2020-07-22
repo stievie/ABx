@@ -186,6 +186,8 @@ public:
     Game::Attributes attributes_;
     /// Model or effect (in case of AOE) index
     uint32_t itemIndex_;
+    // If this is an item drop, the ID of the player for who it dropped
+    uint32_t dropTarget_{ 0 };
     AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
