@@ -291,6 +291,7 @@ void CraftsmanWindow::UpdateAttributeList()
         attribDropdown_->AddItem(createDropdownItem(attr));
     }
     attribDropdown_->SetVisible(attribDropdown_->GetNumItems() != 0);
+    attribDropdown_->GetParent()->UpdateLayout();
 }
 
 uint32_t CraftsmanWindow::GetSelectedAttributeIndex() const

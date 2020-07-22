@@ -358,6 +358,8 @@ void MerchantWindow::ShowCountSpinner(bool b, uint32_t min, uint32_t max, uint32
         countSpinner_->SetMax(max);
     if (value != 0)
         countSpinner_->SetValue(value);
+    countText_->SetChildOffset({ 0, 0 });
+    countText_->GetParent()->UpdateLayout();
 }
 
 void MerchantWindow::PopulateBuyItemTypes()
