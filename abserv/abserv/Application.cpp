@@ -293,7 +293,12 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         break;
     default:
         // All other message are delivered by the message dispatcher
-        msgDispatcher_->Dispatch(msg);
+        GetSubsystem<Asynch::Dispatcher>()->Add(
+            Asynch::CreateTask([this, msg]()
+        {
+            msgDispatcher_->Dispatch(msg);
+        })
+        );
         break;
     }
 }
