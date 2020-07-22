@@ -98,7 +98,7 @@ function getHealthStats(level, maxStats)
 end
 
 function getUsagesStats(level, maxStats)
-  if (maxStats) then
+  if (maxStats or dropStats["Usages"] == 1) then
     return dropStats["Usages"]
   end
   return getRandomStat(dropStats["Usages"], level)
