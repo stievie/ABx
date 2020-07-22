@@ -57,8 +57,6 @@ SkillsWindow::SkillsWindow(Context* context) :
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
-    SetBringToFront(true);
-    SetBringToBack(true);
     SetSize(450, 600);
     SetMinSize(450, 600);
     SetMaxSize(450, 600);
@@ -635,7 +633,6 @@ void SkillsWindow::UpdateSkills(const Actor& actor)
             skillIcon->SetBorder(IntRect(4, 4, 4, 4));
             skillIcon->SetHoverOffset(IntVector2(0, 0));
         }
-
         lv->AddItem(item);
     };
 

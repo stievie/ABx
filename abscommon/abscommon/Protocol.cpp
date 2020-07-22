@@ -103,7 +103,7 @@ bool Protocol::XTEADecrypt(NetworkMessage& msg) const
     return true;
 }
 
-void Protocol::OnSendMessage(OutputMessage& message) const
+bool Protocol::OnSendMessage(OutputMessage& message) const
 {
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Sending message" << std::endl;
@@ -116,8 +116,9 @@ void Protocol::OnSendMessage(OutputMessage& message) const
         message.Compress();
     if (encryptionEnabled_ || checksumEnabled_)
     {
-        message.AddCryptoHeader(checksumEnabled_);
+        return message.AddCryptoHeader(checksumEnabled_);
     }
+    return true;
 }
 
 void Protocol::OnRecvMessage(NetworkMessage& message)

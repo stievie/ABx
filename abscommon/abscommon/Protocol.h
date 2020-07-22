@@ -60,7 +60,7 @@ public:
         memcpy(&encKey_, key, sizeof(encKey_));
     }
 
-    virtual void OnSendMessage(OutputMessage& message) const;
+    virtual bool OnSendMessage(OutputMessage& message) const;
     void OnRecvMessage(NetworkMessage& message);
 
     virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;

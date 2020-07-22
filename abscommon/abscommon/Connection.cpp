@@ -75,7 +75,11 @@ bool Connection::Send(sa::SharedPtr<OutputMessage>&& message)
 
 void Connection::InternalSend(OutputMessage& message)
 {
-    protocol_->OnSendMessage(message);
+    if (!protocol_->OnSendMessage(message))
+    {
+        LOG_ERROR << "Message will be discarded" << std::endl;
+        return;
+    }
     try
     {
         writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));

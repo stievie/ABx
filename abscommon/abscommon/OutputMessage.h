@@ -42,34 +42,36 @@ private:
     friend class OutputMessagePool;
 
     template <typename T>
-    inline void AddHeader(T add)
+    inline bool AddHeader(T add)
     {
         if (static_cast<int32_t>(outputBufferStart_) < static_cast<int32_t>(sizeof(T)))
         {
-            LOG_ERROR << "outputBufferStart_(" << outputBufferStart_ << ") < " <<
+            LOG_ERROR << "outputBufferStart_ " << outputBufferStart_ << " < " <<
                 sizeof(T) << std::endl;
-            return;
+            return false;
         }
         outputBufferStart_ -= sizeof(T);
         memcpy(buffer_ + outputBufferStart_, &add, sizeof(T));
         info_.length += sizeof(T);
+        return true;
     }
 public:
     OutputMessage();
 
     uint8_t* GetOutputBuffer() { return buffer_ + outputBufferStart_; }
-    void AddCryptoHeader(bool addChecksum)
+    bool AddCryptoHeader(bool addChecksum)
     {
         if (addChecksum)
         {
-            uint32_t checksum = Utils::AdlerChecksum(reinterpret_cast<uint8_t*>(buffer_ + outputBufferStart_), info_.length);
-            AddHeader<uint32_t>(checksum);
+            const uint32_t checksum = Utils::AdlerChecksum(reinterpret_cast<uint8_t*>(buffer_ + outputBufferStart_), info_.length);
+            if (!AddHeader<uint32_t>(checksum))
+                return false;
         }
-        WriteMessageLength();
+        return WriteMessageLength();
     }
-    void WriteMessageLength()
+    bool WriteMessageLength()
     {
-        AddHeader<uint16_t>(info_.length);
+        return AddHeader<uint16_t>(info_.length);
     }
 
     void Append(const NetworkMessage& msg)
