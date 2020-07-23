@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_Diamond"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_Diamond.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_Diamond.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0810941 0.0630392 0.0810941"/>
+		<attribute name="Offset Position" value="0 0.0306196 1.86265e-09"/>
+	</component>
+</node>

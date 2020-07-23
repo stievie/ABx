@@ -59,7 +59,7 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.index = result->GetUInt("idx");
     item.model_class = static_cast<AB::Entities::ModelClass>(result->GetUInt("model_class"));
     item.name = result->GetString("name");
-    item.script = result->GetString("schript_file");
+    item.script = result->GetString("script_file");
     item.objectFile = result->GetString("object_file");
     item.iconFile = result->GetString("icon_file");
     item.type = static_cast<AB::Entities::ItemType>(result->GetUInt("type"));
