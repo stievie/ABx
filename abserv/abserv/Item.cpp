@@ -29,6 +29,7 @@
 #include "ScriptManager.h"
 #include "Skill.h"
 #include <abshared/Attributes.h>
+#include <sa/WeightedSelector.h>
 
 namespace Game {
 
@@ -689,6 +690,41 @@ uint32_t Item::GetValue() const
             result += item->concreteItem_.value;
     }
     return result;
+}
+
+ea::pair<uint32_t, uint32_t> Item::GetSalvageMaterial() const
+{
+    auto* rng = GetSubsystem<Crypto::Random>();
+    sa::WeightedSelector<ea::pair<uint32_t, uint32_t>> selector;
+    auto addMat = [&](ItemStatIndex indexIndex, ItemStatIndex countIndex)
+    {
+        uint32_t _index = stats_.GetValue(indexIndex, 0);
+        if (_index == AB::Entities::MONEY_ITEM_INDEX)
+            return;
+
+        uint32_t _count = stats_.GetValue(countIndex, 0);
+        if (_count == 0)
+            return;
+        float rnd = rng->Get<float>(0.1f, 0.6f);
+        uint32_t count = static_cast<uint32_t>(static_cast<float>(_count) * rnd);
+        if (count == 0)
+            count = 1;
+        selector.Add({ _index, count }, static_cast<float>(_count));
+    };
+    addMat(ItemStatIndex::Material1Index, ItemStatIndex::Material1Count);
+    addMat(ItemStatIndex::Material2Index, ItemStatIndex::Material2Count);
+    addMat(ItemStatIndex::Material3Index, ItemStatIndex::Material3Count);
+    addMat(ItemStatIndex::Material4Index, ItemStatIndex::Material4Count);
+    selector.Update();
+
+    if (selector.Count() == 0)
+        return { 0, 0 };
+
+    const float rnd1 = rng->GetFloat();
+    const float rnd2 = rng->GetFloat();
+
+    const auto& item = selector.Get(rnd2, rnd2);
+    return { item.first, item.second };
 }
 
 AB::Entities::ItemType Item::GetType() const

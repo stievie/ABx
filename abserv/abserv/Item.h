@@ -129,6 +129,8 @@ public:
     void OnUnequip(Actor* target);
     /// Get value of this item with all mods
     uint32_t GetValue() const;
+    // Return random material from this item. item index - count
+    ea::pair<uint32_t, uint32_t> GetSalvageMaterial() const;
 
     uint32_t GetIndex() const { return data_.index; }
     AB::Entities::ItemType GetType() const;
