@@ -400,6 +400,14 @@ void ProtocolGame::CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uin
     SendPacket(AB::GameProtocol::ClientPacketTypes::CraftItem, packet);
 }
 
+void ProtocolGame::SalvageItem(uint16_t pos)
+{
+    AB::Packets::Client::SalageItem packet = {
+        pos
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::SalvageItem, packet);
+}
+
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
     AB::Packets::Client::GetMail packet = {

@@ -2096,6 +2096,57 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
     WriteToOutput(*msg);
 }
 
+void Player::CRQSalvageItem(uint16_t pos)
+{
+    auto* item = inventoryComp_->GetInventoryItem(pos);
+    if (!item)
+        return;
+    if (!item->IsSalvageable())
+        return;
+
+    if (!inventoryComp_->CheckInventoryCapacity(0, 1))
+    {
+        CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        return;
+    }
+
+    const auto mat = item->GetSalvageMaterial();
+    if (mat.first == 0 || mat.second == 0)
+        return;
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item eitem;
+    eitem.index = mat.first;
+    if (!client->Read(eitem))
+    {
+        LOG_ERROR << "Error reading item with index " << mat.first << std::endl;
+        return;
+    }
+
+    auto msg = Net::NetworkMessage::GetNew();
+    auto* factory = GetSubsystem<ItemFactory>();
+    uint32_t newItemId = factory->CreatePlayerItem(*this, eitem.uuid, AB::Entities::StoragePlace::Inventory, mat.second);
+    if (newItemId == 0)
+    {
+        LOG_ERROR << "Error creating item " << eitem.uuid << std::endl;
+        return;
+    }
+
+    if (!inventoryComp_->DestroyInventoryItem(pos))
+    {
+        LOG_ERROR << "Error destroying item at position " << static_cast<int>(pos) << std::endl;
+        return;
+    }
+    msg->AddByte(AB::GameProtocol::ServerPacketType::InventoryItemDelete);
+    AB::Packets::Server::InventoryItemDelete deletePacket = {
+        pos
+    };
+    AB::Packets::Add(deletePacket, *msg);
+
+    inventoryComp_->SetInventoryItem(newItemId, msg.get());
+    WriteToOutput(*msg);
+}
+
 bool Player::IsIgnored(const Player& player) const
 {
     return GetFriendList().IsIgnored(player.account_.uuid);

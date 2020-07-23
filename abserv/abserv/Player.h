@@ -252,6 +252,7 @@ public:
     void CRQGetItemPrice(std::vector<uint16_t> items);
     void CRQGetCraftsmanItems(uint32_t npcId, AB::Entities::ItemType itemType, std::string searchName, uint8_t page);
     void CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t attributeIndex);
+    void CRQSalvageItem(uint16_t pos);
     //}
 
     AB::Entities::Character data_;

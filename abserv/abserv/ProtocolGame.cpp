@@ -305,6 +305,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::CRQCraftItem, packet.npcId, packet.index, packet.count, packet.attribute);
         break;
     }
+    case ClientPacketTypes::SalvageItem:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::SalageItem>(message);
+        AddPlayerTask(&Game::Player::CRQSalvageItem, packet.pos);
+        break;
+    }
     case ClientPacketTypes::GetChest:
     {
         /* auto packet = */ AB::Packets::Get<AB::Packets::Client::GetChest>(message);

@@ -617,6 +617,12 @@ void Client::CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_t 
         protoGame_->CraftItem(npcId, index, count, attributeIndex);
 }
 
+void Client::SalvageItem(uint16_t pos)
+{
+    if (state_ == State::World)
+        protoGame_->SalvageItem(pos);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == State::World)

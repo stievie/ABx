@@ -117,7 +117,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(GetMerchantItems)       \
     ENUMERATE_CLIENT_PACKET_CODE(GetItemsPrice)          \
     ENUMERATE_CLIENT_PACKET_CODE(GetCraftsmanItems)      \
-    ENUMERATE_CLIENT_PACKET_CODE(CraftItem)
+    ENUMERATE_CLIENT_PACKET_CODE(CraftItem)              \
+    ENUMERATE_CLIENT_PACKET_CODE(SalvageItem)
 
 
 // Packet types sent from the server to the client

@@ -983,6 +983,12 @@ void FwClient::CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_
         client_.CraftItem(npcId, index, count, attributeIndex);
 }
 
+void FwClient::SalvageItem(uint16_t pos)
+{
+    if (loggedIn_)
+        client_.SalvageItem(pos);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
