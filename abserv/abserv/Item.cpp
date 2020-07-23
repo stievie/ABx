@@ -699,7 +699,7 @@ ea::pair<uint32_t, uint32_t> Item::GetSalvageMaterial() const
     auto addMat = [&](ItemStatIndex indexIndex, ItemStatIndex countIndex)
     {
         uint32_t _index = stats_.GetValue(indexIndex, 0);
-        if (_index == AB::Entities::MONEY_ITEM_INDEX)
+        if (_index == AB::Entities::MONEY_ITEM_INDEX || _index == 0)
             return;
 
         uint32_t _count = stats_.GetValue(countIndex, 0);
@@ -723,7 +723,7 @@ ea::pair<uint32_t, uint32_t> Item::GetSalvageMaterial() const
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
 
-    const auto& item = selector.Get(rnd2, rnd2);
+    const auto& item = selector.Get(rnd1, rnd2);
     return { item.first, item.second };
 }
 
