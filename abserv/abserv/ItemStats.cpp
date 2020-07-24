@@ -156,7 +156,7 @@ bool ItemStats::LoadFromString(const std::string& value)
     return true;
 }
 
-std::string ItemStats::SaveToString() const
+std::string ItemStats::ToString() const
 {
     sa::PropWriteStream stream;
     Save(stream);

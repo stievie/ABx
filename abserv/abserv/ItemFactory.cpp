@@ -684,7 +684,7 @@ std::string ItemFactory::GetMaxItemStats(const std::string& itemUuid, uint32_t l
         pItem->stats_.SetValue(ItemStatIndex::AttributeValue, attribRank);
     if (damageType != -1)
         pItem->stats_.SetValue(ItemStatIndex::DamageType, damageType);
-    return pItem->stats_.SaveToString();
+    return pItem->stats_.ToString();
 }
 
 uint32_t ItemFactory::GetItemIndexFromUuid(const std::string& uuid)

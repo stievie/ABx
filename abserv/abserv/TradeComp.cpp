@@ -155,7 +155,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
         AB::Packets::Server::Internal::UpgradeableItem offeredItem;
         offeredItem.index = item->data_.index;
         offeredItem.count = itemPair.second;
-        offeredItem.stats = item->concreteItem_.itemStats;
+        offeredItem.stats = item->stats_.ToString();
         offeredItem.type = static_cast<uint8_t>(item->data_.type);
         offeredItem.value = item->concreteItem_.value;
         offeredItem.flags = item->concreteItem_.flags;
@@ -168,7 +168,7 @@ void TradeComp::Offer(uint32_t money, std::vector<std::pair<uint16_t, uint32_t>>
                 upgrade.index = upgradeItem->data_.index;
                 // An upgrade doesn't really have count (it's always 1), so just copy it
                 upgrade.count = upgradeItem->concreteItem_.count;
-                upgrade.stats = upgradeItem->concreteItem_.itemStats;
+                upgrade.stats = upgradeItem->stats_.ToString();
                 upgrade.type = static_cast<uint8_t>(upgradeItem->data_.type);
                 upgrade.value = upgradeItem->concreteItem_.value;
                 upgrade.flags = upgradeItem->concreteItem_.flags;

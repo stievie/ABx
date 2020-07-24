@@ -73,7 +73,7 @@ public:
     bool Load(sa::PropReadStream& stream);
     void Save(sa::PropWriteStream& stream) const;
     bool LoadFromString(const std::string& value);
-    std::string SaveToString() const;
+    std::string ToString() const;
 
     Utils::VariantMap stats_;
 };

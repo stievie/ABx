@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Item.h"
 #include "Actor.h"
 #include "DataProvider.h"
@@ -255,8 +254,7 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool
         stats_.LoadFromString(stats);
     }
 
-    concreteItem_.itemStats = stats_.SaveToString();
-
+    concreteItem_.itemStats = stats_.ToString();
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
     return true;
@@ -744,7 +742,7 @@ bool Item::Consume()
     if (ret)
     {
         stats_.DescreaseUsages();
-        concreteItem_.itemStats = stats_.SaveToString();
+        concreteItem_.itemStats = stats_.ToString();
     }
     return ret;
 }

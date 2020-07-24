@@ -55,7 +55,7 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
         static_cast<uint16_t>(item->data_.type),
         item->concreteItem_.count,
         item->concreteItem_.value,
-        item->concreteItem_.itemStats,
+        item->stats_.ToString(),
         static_cast<uint8_t>(item->concreteItem_.storagePlace),
         item->concreteItem_.storagePos,
         item->concreteItem_.flags

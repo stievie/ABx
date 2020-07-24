@@ -374,7 +374,7 @@ void Player::CRQGetInventory()
             static_cast<uint16_t>(current.data_.type),
             current.concreteItem_.count,
             current.concreteItem_.value,
-            current.concreteItem_.itemStats,
+            current.stats_.ToString(),
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
             current.concreteItem_.storagePos,
             current.concreteItem_.flags
@@ -598,7 +598,7 @@ void Player::CRQGetChest()
             static_cast<uint16_t>(current.data_.type),
             current.concreteItem_.count,
             current.concreteItem_.value,
-            current.concreteItem_.itemStats,
+            current.stats_.ToString(),
             static_cast<uint8_t>(current.concreteItem_.storagePlace),
             current.concreteItem_.storagePos,
             current.concreteItem_.flags
@@ -1776,7 +1776,7 @@ void Player::CRQGetMerchantItems(uint32_t npcId, AB::Entities::ItemType itemType
                 // The player doesn't need to know how many items we have
                 merchantItem.count = 0;
                 merchantItem.value = item->concreteItem_.value;
-                merchantItem.stats = item->concreteItem_.itemStats;
+                merchantItem.stats = item->stats_.ToString();
                 merchantItem.flags = item->data_.itemFlags;
                 merchantItem.buyPrice = price.priceBuy;
                 merchantItem.sellPrice = price.priceSell;
@@ -2099,12 +2099,6 @@ void Player::CRQSalvageItem(uint16_t kitPos, uint16_t pos)
     if (kit->data_.index != AB::Entities::SALVAGE_KIT_ITEM_INDEX)
         return;
 
-    if (!inventoryComp_->CheckInventoryCapacity(0, 1))
-    {
-        CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
-        return;
-    }
-
     const auto mat = item->GetSalvageMaterial();
     if (mat.first == 0 || mat.second == 0)
         return;
@@ -2118,9 +2112,15 @@ void Player::CRQSalvageItem(uint16_t kitPos, uint16_t pos)
         return;
     }
 
+    if (!inventoryComp_->CheckInventoryCapacity(0, 1))
+    {
+        CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        return;
+    }
+
     auto msg = Net::NetworkMessage::GetNew();
     auto* factory = GetSubsystem<ItemFactory>();
-    sa::Transaction transaction(kit->concreteItem_);
+    ItemTransaction statsTrans(*kit);
     if (!kit->Consume())
     {
         LOG_ERROR << "Error consuming" << std::endl;
@@ -2144,7 +2144,7 @@ void Player::CRQSalvageItem(uint16_t kitPos, uint16_t pos)
         pos
     };
     AB::Packets::Add(deletePacket, *msg);
-    transaction.Commit();
+    statsTrans.Commit();
     Components::InventoryComp::WriteItemUpdate(kit, msg.get());
 
     inventoryComp_->SetInventoryItem(newItemId, msg.get());

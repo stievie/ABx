@@ -30,6 +30,7 @@
 #include <kaguya/kaguya.hpp>
 #include <sa/Bits.h>
 #include <sa/Noncopyable.h>
+#include <sa/Transaction.h>
 
 namespace Game {
 
@@ -156,6 +157,24 @@ public:
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;
     ItemStats stats_;
+};
+
+class ItemTransaction
+{
+private:
+    sa::Transaction<AB::Entities::ConcreteItem> ct_;
+    sa::Transaction<ItemStats> st_;
+public:
+    ItemTransaction(Item& item) :
+        ct_(item.concreteItem_),
+        st_(item.stats_)
+    {
+    }
+    void Commit()
+    {
+        ct_.Commit();
+        st_.Commit();
+    }
 };
 
 }

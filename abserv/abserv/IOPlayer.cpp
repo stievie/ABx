@@ -82,7 +82,7 @@ static bool SavePlayerInventory(Game::Player& player)
     // Equipment
     player.inventoryComp_->VisitEquipement([client](Game::Item& item)
     {
-        item.concreteItem_.itemStats = item.stats_.SaveToString();
+        item.concreteItem_.itemStats = item.stats_.ToString();
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
         return Iteration::Continue;
@@ -91,7 +91,7 @@ static bool SavePlayerInventory(Game::Player& player)
     // Inventory
     player.inventoryComp_->VisitInventory([client](Game::Item& item)
     {
-        item.concreteItem_.itemStats = item.stats_.SaveToString();
+        item.concreteItem_.itemStats = item.stats_.ToString();
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
         return Iteration::Continue;
@@ -103,7 +103,7 @@ static bool SavePlayerInventory(Game::Player& player)
     // Chest
     player.inventoryComp_->VisitChest([client](Game::Item& item)
     {
-        item.concreteItem_.itemStats = item.stats_.SaveToString();
+        item.concreteItem_.itemStats = item.stats_.ToString();
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
         return Iteration::Continue;
