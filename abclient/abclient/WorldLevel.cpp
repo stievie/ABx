@@ -292,7 +292,7 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
         return;
 
-    Actor* object = GetObjectAt<Actor>(input->GetMousePosition());
+    Actor* object = GetObjectAt<Actor>(input->GetMousePosition(), true);
     HoverObject(object);
 }
 

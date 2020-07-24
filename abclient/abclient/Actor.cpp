@@ -479,6 +479,7 @@ void Actor::AddActorUI()
     speechBubbleText_->SetVisible(true);
 
     nameWindow_ = uiRoot->CreateChild<Window>();
+    nameWindow_->SetVar("Actor", this);
     nameWindow_->SetLayoutMode(LM_VERTICAL);
     nameWindow_->SetLayoutBorder(IntRect(8, 4, 8, 4));
     nameWindow_->SetTexture(tex);

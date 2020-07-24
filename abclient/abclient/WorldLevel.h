@@ -88,6 +88,8 @@ public:
             return objects_[objectId].Get();
         return nullptr;
     }
+    bool HoverObject(Actor* object);
+    const Actor* GetHoveredObject() const { return hoveredObject_.Get(); }
     TradeDialog* GetTradeDialog() const;
 protected:
     SharedPtr<ChatWindow> chatWindow_;
@@ -130,7 +132,7 @@ private:
     IntVector2 mouseDownPos_;
     bool rmbDown_ { false };
     template<typename T>
-    T* GetObjectAt(const IntVector2& pos)
+    T* GetObjectAt(const IntVector2& pos, bool withNameLabel = false)
     {
         if (!viewport_)
             return nullptr;
@@ -155,13 +157,27 @@ private:
                 }
             }
         }
-        return nullptr;
 
+        if (!withNameLabel)
+            return nullptr;
+
+        UI* ui = GetSubsystem<UI>();
+        auto* uiElem = ui->GetElementAt(pos, false);
+        while (uiElem && !uiElem->IsInstanceOf<Window>() && uiElem->GetParent() != nullptr)
+        {
+            uiElem = uiElem->GetParent();
+        }
+        if (!uiElem)
+            return nullptr;
+        auto* actor = (GameObject*)uiElem->GetVar("Actor").GetVoidPtr();
+        if (!Is<T>(actor))
+            return nullptr;
+
+        return To<T>(actor);
     }
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void RemoveUIWindows();
 
-    bool HoverObject(Actor* object);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
