@@ -212,10 +212,12 @@ struct CraftItem
 
 struct SalageItem
 {
+    uint16_t kitPos;
     uint16_t pos;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(kitPos);
         ar.value(pos);
     }
 };

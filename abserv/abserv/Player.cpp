@@ -58,6 +58,7 @@
 #include <abshared/Attributes.h>
 #include <sa/Assert.h>
 #include <sa/StringTempl.h>
+#include <sa/Transaction.h>
 
 namespace Game {
 
@@ -73,6 +74,15 @@ void Player::RegisterLua(kaguya::State& state)
         .addFunction("SatisfyQuestRequirements", &Player::SatisfyQuestRequirements)
     );
     // clang-format on
+}
+
+void Player::PlayerError(AB::GameProtocol::PlayerErrorValue error, Net::NetworkMessage& message)
+{
+    message.AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
+    AB::Packets::Server::PlayerError packet = {
+        static_cast<uint8_t>(error)
+    };
+    AB::Packets::Add(packet, message);
 }
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
@@ -436,11 +446,7 @@ void Player::CRQSetItemPos(AB::Entities::StoragePlace currentPlace,
         // Because we use the item position to identify the item that is traded, we don't allow
         // to reorder the items while trading.
         auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::PlayerError packet = {
-            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotAllowedWhileTrading)
-        };
-        AB::Packets::Add(packet, *msg);
+        PlayerError(AB::GameProtocol::PlayerErrorValue::NotAllowedWhileTrading, *msg);
         WriteToOutput(*msg);
         return;
     }
@@ -1013,22 +1019,14 @@ void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType ty
 void Player::OnInventoryFull()
 {
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-    AB::Packets::Server::PlayerError packet = {
-        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::InventoryFull)
-    };
-    AB::Packets::Add(packet, *msg);
+    PlayerError(AB::GameProtocol::PlayerErrorValue::InventoryFull, *msg);
     WriteToOutput(*msg);
 }
 
 void Player::OnChestFull()
 {
     auto msg = Net::NetworkMessage::GetNew();
-    msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-    AB::Packets::Server::PlayerError packet = {
-        static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::ChestFull)
-    };
-    AB::Packets::Add(packet, *msg);
+    PlayerError(AB::GameProtocol::PlayerErrorValue::ChestFull, *msg);
     WriteToOutput(*msg);
 }
 
@@ -1681,11 +1679,7 @@ void Player::CRQBuyItem(uint32_t npcId, uint32_t id, uint32_t count)
     }
     else
     {
-        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::PlayerError packet = {
-            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::NotEnoughMoney)
-        };
-        AB::Packets::Add(packet, *msg);
+        PlayerError(AB::GameProtocol::PlayerErrorValue::NotEnoughMoney, *msg);
     }
 
     WriteToOutput(*msg);
@@ -2026,14 +2020,9 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
     auto msg = Net::NetworkMessage::GetNew();
     auto notEnoughStuff = [&msg](uint32_t itemIndex)
     {
-        msg->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        const AB::GameProtocol::PlayerErrorValue code = (itemIndex == AB::Entities::MONEY_ITEM_INDEX) ?
+        PlayerError((itemIndex == AB::Entities::MONEY_ITEM_INDEX) ?
             AB::GameProtocol::PlayerErrorValue::NotEnoughMoney :
-            AB::GameProtocol::PlayerErrorValue::NoEnoughMaterials;
-        AB::Packets::Server::PlayerError packet = {
-            static_cast<uint8_t>(code)
-        };
-        AB::Packets::Add(packet, *msg);
+            AB::GameProtocol::PlayerErrorValue::NoEnoughMaterials, *msg);
     };
 
     auto checkMats = [&](ItemStatIndex indexIndex, ItemStatIndex countIndex) -> bool
@@ -2096,12 +2085,18 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
     WriteToOutput(*msg);
 }
 
-void Player::CRQSalvageItem(uint16_t pos)
+void Player::CRQSalvageItem(uint16_t kitPos, uint16_t pos)
 {
     auto* item = inventoryComp_->GetInventoryItem(pos);
     if (!item)
         return;
     if (!item->IsSalvageable())
+        return;
+
+    auto* kit = inventoryComp_->GetInventoryItem(kitPos);
+    if (!kit)
+        return;
+    if (kit->data_.index != AB::Entities::SALVAGE_KIT_ITEM_INDEX)
         return;
 
     if (!inventoryComp_->CheckInventoryCapacity(0, 1))
@@ -2125,6 +2120,13 @@ void Player::CRQSalvageItem(uint16_t pos)
 
     auto msg = Net::NetworkMessage::GetNew();
     auto* factory = GetSubsystem<ItemFactory>();
+    sa::Transaction transaction(kit->concreteItem_);
+    if (!kit->Consume())
+    {
+        LOG_ERROR << "Error consuming" << std::endl;
+        return;
+    }
+
     uint32_t newItemId = factory->CreatePlayerItem(*this, eitem.uuid, AB::Entities::StoragePlace::Inventory, mat.second);
     if (newItemId == 0)
     {
@@ -2142,6 +2144,8 @@ void Player::CRQSalvageItem(uint16_t pos)
         pos
     };
     AB::Packets::Add(deletePacket, *msg);
+    transaction.Commit();
+    Components::InventoryComp::WriteItemUpdate(kit, msg.get());
 
     inventoryComp_->SetInventoryItem(newItemId, msg.get());
     WriteToOutput(*msg);

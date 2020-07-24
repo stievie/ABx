@@ -10,5 +10,5 @@ materialStats[3] = { 0, 0 }
 materialStats[4] = { 0, 0 }
 
 function onConsume()
-  return false
+  return true
 end

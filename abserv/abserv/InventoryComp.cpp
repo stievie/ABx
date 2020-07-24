@@ -287,11 +287,7 @@ bool InventoryComp::BuyItem(Item* item, uint32_t count, uint32_t pricePer, Net::
         // Meanwhile the item may be sold to another player
         if (!message)
             return;
-        message->AddByte(AB::GameProtocol::ServerPacketType::PlayerError);
-        AB::Packets::Server::PlayerError packet = {
-            static_cast<uint8_t>(AB::GameProtocol::PlayerErrorValue::ItemNotAvailable)
-        };
-        AB::Packets::Add(packet, *message);
+        Player::PlayerError(AB::GameProtocol::PlayerErrorValue::ItemNotAvailable, *message);
     };
 
     // Note: To avoid data races we lock the entity for writing for other clients

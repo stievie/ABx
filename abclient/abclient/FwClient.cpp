@@ -983,10 +983,10 @@ void FwClient::CraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32_
         client_.CraftItem(npcId, index, count, attributeIndex);
 }
 
-void FwClient::SalvageItem(uint16_t pos)
+void FwClient::SalvageItem(uint16_t kitPos, uint16_t pos)
 {
     if (loggedIn_)
-        client_.SalvageItem(pos);
+        client_.SalvageItem(kitPos, pos);
 }
 
 void FwClient::Move(uint8_t direction)
@@ -2410,7 +2410,7 @@ std::vector<AB::Entities::Service> FwClient::GetServices() const
     }
     std::sort(result.begin(), result.end(), [](const AB::Entities::Service& a, const AB::Entities::Service& b)
     {
-        return a.name.compare(b.name);
+        return a.name.compare(b.name) > 0;
     });
     return result;
 }

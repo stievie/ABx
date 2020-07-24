@@ -742,7 +742,10 @@ bool Item::Consume()
         return false;
     bool ret = luaState_["onConsume"]();
     if (ret)
+    {
         stats_.DescreaseUsages();
+        concreteItem_.itemStats = stats_.SaveToString();
+    }
     return ret;
 }
 

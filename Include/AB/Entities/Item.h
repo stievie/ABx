@@ -136,6 +136,7 @@ enum ItemFlag : uint32_t
 };
 
 inline constexpr uint32_t MONEY_ITEM_INDEX = 9999999;
+inline constexpr uint32_t SALVAGE_KIT_ITEM_INDEX = 100112;
 
 struct Item : Entity
 {

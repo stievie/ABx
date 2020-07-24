@@ -308,7 +308,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case ClientPacketTypes::SalvageItem:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::SalageItem>(message);
-        AddPlayerTask(&Game::Player::CRQSalvageItem, packet.pos);
+        AddPlayerTask(&Game::Player::CRQSalvageItem, packet.kitPos, packet.pos);
         break;
     }
     case ClientPacketTypes::GetChest:
