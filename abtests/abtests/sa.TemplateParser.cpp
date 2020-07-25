@@ -73,3 +73,27 @@ TEST_CASE("TemplateParser quotes")
 
     REQUIRE(result.compare("SELECT FROM 'table' WHERE 'name' = 'a name' ORDER BY 'type' DESC, 'name' ASC") == 0);
 }
+
+TEST_CASE("TemplateParser nested quotes")
+{
+    std::string s1 = "SELECT FROM `table` WHERE `nam\"e\"` = ${name} ORDER BY `type` DESC, `name` ASC";
+    sa::TemplateParser parser;
+    auto templ = parser.Parse(s1);
+    templ.onEvaluate_ = [](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return "'a name'";
+            return "???";
+        case sa::Token::Type::Quote:
+            return "'";
+        default:
+            return "";
+        }
+    };
+    std::string result = templ.ToString();
+
+    REQUIRE(result.compare("SELECT FROM 'table' WHERE 'nam\"e\"' = 'a name' ORDER BY 'type' DESC, 'name' ASC") == 0);
+}

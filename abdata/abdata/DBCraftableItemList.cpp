@@ -22,10 +22,9 @@
 
 #include "DBCraftableItemList.h"
 #include <AB/Entities/Item.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
-
-sa::Template DBCraftableItemList::loadStatement_;
 
 bool DBCraftableItemList::Create(AB::Entities::CraftableItemList&)
 {
@@ -35,11 +34,12 @@ bool DBCraftableItemList::Create(AB::Entities::CraftableItemList&)
 bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
 {
     Database* db = GetSubsystem<Database>();
-    if (loadStatement_.IsEmpty())
+    static sa::Template statement;
+    if (statement.IsEmpty())
     {
         sa::TemplateParser parser;
-        loadStatement_ = parser.Parse("SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC");
-        loadStatement_.onEvaluate_ = [](const sa::Token& token) -> std::string
+        statement = parser.Parse("SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC");
+        statement.onEvaluate_ = [](const sa::Token& token) -> std::string
         {
             switch (token.type)
             {
@@ -54,7 +54,7 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
             }
         };
     }
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(loadStatement_.ToString()); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(statement.ToString()); result; result = result->Next())
     {
         il.items.push_back({ result->GetUInt("idx"),
             static_cast<AB::Entities::ItemType>(result->GetUInt("type")),

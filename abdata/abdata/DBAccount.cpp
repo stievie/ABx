@@ -22,11 +22,18 @@
 
 #include "DBAccount.h"
 #include <uuid.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
 bool DBAccount::Create(AB::Entities::Account& account)
 {
+    constexpr const char* SQL = "INSERT INTO `accounts` ("
+        "`uuid`, `name`, `password`, `email`, `type`, `status`, `creation`, "
+        "`char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`, `chest_size` "
+        ") VALUES ( "
+        "${uuid}, ${name}, ${password}, ${email}, ${type}, ${status}, ${creation}, "
+        "${char_slots}, ${current_server_uuid}, ${online_status}, ${guild_uuid}, ${chest_size})";
     if (Utils::Uuid::IsEmpty(account.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
@@ -34,29 +41,53 @@ bool DBAccount::Create(AB::Entities::Account& account)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
-        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`, `chest_size`) VALUES ( ";
-
-    query << db->EscapeString(account.uuid) << ", ";
-    query << db->EscapeString(account.name) << ", ";
-    query << db->EscapeString(account.password) << ", ";
-    query << db->EscapeString(account.email) << ", ";
-    query << static_cast<int>(account.type) << ", ";
-    query << static_cast<int>(account.status) << ", ";
-    query << account.creation << ", ";
-    query << account.charSlots << ", ";
-    query << db->EscapeString(account.currentServerUuid) << ", ";
-    query << static_cast<int>(account.onlineStatus) << ", ";
-    query << db->EscapeString(account.guildUuid) << ", ";
-    query << static_cast<int>(account.chest_size);
-
-    query << ")";
+    static sa::Template statement;
+    if (statement.IsEmpty())
+    {
+        sa::TemplateParser parser;
+        statement = parser.Parse(SQL);
+        statement.onEvaluate_ = [db, &account](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "uuid")
+                    return db->EscapeString(account.uuid);
+                if (token.value == "name")
+                    return db->EscapeString(account.name);
+                if (token.value == "password")
+                    return db->EscapeString(account.password);
+                if (token.value == "email")
+                    return db->EscapeString(account.email);
+                if (token.value == "type")
+                    return std::to_string(static_cast<int>(account.type));
+                if (token.value == "status")
+                    return std::to_string(static_cast<int>(account.status));
+                if (token.value == "creation")
+                    return std::to_string(account.creation);
+                if (token.value == "creation")
+                    return std::to_string(account.charSlots);
+                if (token.value == "current_server_uuid")
+                    return db->EscapeString(account.currentServerUuid);
+                if (token.value == "online_status")
+                    return std::to_string(static_cast<int>(account.onlineStatus));
+                if (token.value == "guild_uuid")
+                    return db->EscapeString(account.guildUuid);
+                if (token.value == "chest_size")
+                    return std::to_string(account.chest_size);
+                return "???";
+            case sa::Token::Type::Quote:
+                return "'";
+            default:
+                return token.value;
+            }
+        };
+    }
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(statement.ToString()))
         return false;
 
     // End transaction

@@ -88,6 +88,8 @@ class TemplateParser
 {
 private:
     size_t index_{ 0 };
+    char quote_{ '\0' };
+    bool inQuote_{ false };
     std::string_view source_;
     bool Eof() const { return index_ >= source_.size(); }
     char Next() { return source_.at(index_++); }
@@ -136,6 +138,8 @@ private:
             case '`':
             case '\'':
             case '"':
+                if (inQuote_ && quote_ != c)
+                    continue;
                 if (result.type == Token::Type::String)
                 {
                     result.end = index_ - 1;
@@ -143,14 +147,20 @@ private:
                     --index_;
                     return result;
                 }
-                else if (result.type == Token::Type::Invalid)
+                result.type = Token::Type::Quote;
+                result.end = index_ - 1;
+                result.value = c;
+                if (inQuote_)
                 {
-                    result.type = Token::Type::Quote;
-                    result.end = index_ - 1;
-                    result.value = c;
-                    return result;
+                    if (c == quote_)
+                        inQuote_ = false;
                 }
-                break;
+                else
+                {
+                    inQuote_ = true;
+                    quote_ = c;
+                }
+                return result;
             case '\0':
                 result.end = index_;
                 result.value = std::string(&source_[result.start], result.end - result.start);
