@@ -26,6 +26,7 @@
 #include "Actor.h"
 #include <sstream>
 #include <algorithm>
+#include <sa/TemplateParser.h>
 
 TemplateEvaluator::TemplateEvaluator(Actor& actor) :
     actor_(actor)
@@ -49,85 +50,13 @@ std::string TemplateEvaluator::Evaluate(const std::string& source)
     ENUMERATE_ATTRIBUTES
 #undef ENUMERATE_ATTRIBUTE
 
-    std::stringstream result;
-    TemplateParser parser;
+    sa::TemplateParser parser;
     auto tokens = parser.Parse(source);
-    for (const auto& token : tokens)
+    tokens.onEvaluate_ = [&expr](const sa::Token& token) -> std::string
     {
-        switch (token.type)
-        {
-        case TemplateParser::TokenType::Expression:
-            // NOTE: Decimals are just truncated also on the server.
-            result << static_cast<int>(expr.Evaluate(token.value));
-            break;
-        case TemplateParser::TokenType::String:
-            result << token.value;
-            break;
-        case TemplateParser::TokenType::Invalid:
-            break;
-        }
-    }
-
-    return result.str();
-}
-
-TemplateParser::Token TemplateParser::GetNextToken()
-{
-    Token result;
-    result.type = TokenType::Invalid;
-    result.start = index_;
-    while (!Eof())
-    {
-        char c = Next();
-        switch (c)
-        {
-        case '$':
-        {
-            char c2 = Peek(0);
-            if (c2 == '{')
-            {
-                if (result.type != TokenType::Invalid)
-                {
-                    result.end = index_ - 1;
-                    result.value = std::string(&source_[result.start], result.end - result.start);
-                    --index_;
-                    return result;
-                }
-                result.type = TokenType::Expression;
-                result.start += 2;
-                ++index_;
-            }
-            break;
-        }
-        case '}':
-            if (result.type == TokenType::Expression)
-            {
-                result.end = index_ - 1;
-                result.value = std::string(&source_[result.start], result.end - result.start);
-                return result;
-            }
-            break;
-        case '\0':
-            result.end = index_;
-            result.value = std::string(&source_[result.start], result.end - result.start);
-            return result;
-        default:
-            if (result.type == TokenType::Invalid)
-                result.type = TokenType::String;
-            break;
-        }
-    }
-    result.end = index_;
-    result.value = std::string(&source_[result.start], result.end - result.start);
-    return result;
-}
-
-std::vector<TemplateParser::Token> TemplateParser::Parse(std::string_view source)
-{
-    source_ = source;
-    std::vector<TemplateParser::Token> result;
-
-    while (!Eof())
-        result.push_back(GetNextToken());
-    return result;
+        if (token.type == sa::Token::Type::Expression)
+            return std::to_string(static_cast<int>(expr.Evaluate(token.value)));
+        return "";
+    };
+    return tokens.ToString();
 }

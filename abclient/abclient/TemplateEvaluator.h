@@ -26,7 +26,6 @@
 #include <string_view>
 
 class Actor;
-class TinyExpr;
 
 class TemplateEvaluator
 {
@@ -35,36 +34,4 @@ private:
 public:
     TemplateEvaluator(Actor& actor);
     std::string Evaluate(const std::string& source);
-};
-
-class TemplateParser
-{
-public:
-    enum class TokenType
-    {
-        Invalid,
-        String,
-        Expression
-    };
-    struct Token
-    {
-        TokenType type;
-        size_t start;
-        size_t end;
-        std::string value;
-    };
-private:
-    size_t index_{ 0 };
-    std::string_view source_;
-    bool Eof() const { return index_ >= source_.size(); }
-    char Next() { return source_.at(index_++); }
-    char Peek(size_t offset = 1) const
-    {
-        if (source_.size() > index_ + offset)
-            return source_.at(index_ + offset);
-        return 0;
-    }
-    Token GetNextToken();
-public:
-    std::vector<Token> Parse(std::string_view source);
 };

@@ -22,11 +22,14 @@
 #pragma once
 
 #include <AB/Entities/CraftableItemList.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
 class DBCraftableItemList
 {
+private:
+    static sa::Template loadStatement_;
 public:
     DBCraftableItemList() = delete;
     ~DBCraftableItemList() = delete;

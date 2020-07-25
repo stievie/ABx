@@ -138,6 +138,7 @@
     <ClCompile Include="sa.Result.cpp" />
     <ClCompile Include="sa.SharedPtr.cpp" />
     <ClCompile Include="sa.StringTempl.cpp" />
+    <ClCompile Include="sa.TemplateParser.cpp" />
     <ClCompile Include="sa.TypeName.cpp" />
     <ClCompile Include="TinyExpr.cpp" />
     <ClCompile Include="Utils.CallableTable.cpp" />
