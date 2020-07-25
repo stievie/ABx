@@ -133,7 +133,6 @@ private:
                     return result;
                 }
                 break;
-            case '´':
             case '`':
             case '\'':
             case '"':
