@@ -51,12 +51,12 @@ std::string TemplateEvaluator::Evaluate(const std::string& source)
 #undef ENUMERATE_ATTRIBUTE
 
     sa::TemplateParser parser;
+    parser.quotesSupport_ = false;
     auto tokens = parser.Parse(source);
-    tokens.onEvaluate_ = [&expr](const sa::Token& token) -> std::string
+    return tokens.ToString([&expr](const sa::Token& token) -> std::string
     {
         if (token.type == sa::Token::Type::Expression)
             return std::to_string(static_cast<int>(expr.Evaluate(token.value)));
         return "";
-    };
-    return tokens.ToString();
+    });
 }

@@ -34,12 +34,12 @@ bool DBCraftableItemList::Create(AB::Entities::CraftableItemList&)
 bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
 {
     Database* db = GetSubsystem<Database>();
-    static sa::Template statement;
-    if (statement.IsEmpty())
+    static std::string statement;
+    if (statement.empty())
     {
         sa::TemplateParser parser;
-        statement = parser.Parse("SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC");
-        statement.onEvaluate_ = [](const sa::Token& token) -> std::string
+        auto tokens = parser.Parse("SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC");
+        statement = tokens.ToString([](const sa::Token& token) -> std::string
         {
             switch (token.type)
             {
@@ -52,9 +52,9 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
             default:
                 return token.value;
             }
-        };
+        });
     }
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(statement.ToString()); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(statement); result; result = result->Next())
     {
         il.items.push_back({ result->GetUInt("idx"),
             static_cast<AB::Entities::ItemType>(result->GetUInt("type")),

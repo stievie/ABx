@@ -46,48 +46,48 @@ bool DBAccount::Create(AB::Entities::Account& account)
     {
         sa::TemplateParser parser;
         statement = parser.Parse(SQL);
-        statement.onEvaluate_ = [db, &account](const sa::Token& token) -> std::string
-        {
-            switch (token.type)
-            {
-            case sa::Token::Type::Expression:
-                if (token.value == "uuid")
-                    return db->EscapeString(account.uuid);
-                if (token.value == "name")
-                    return db->EscapeString(account.name);
-                if (token.value == "password")
-                    return db->EscapeString(account.password);
-                if (token.value == "email")
-                    return db->EscapeString(account.email);
-                if (token.value == "type")
-                    return std::to_string(static_cast<int>(account.type));
-                if (token.value == "status")
-                    return std::to_string(static_cast<int>(account.status));
-                if (token.value == "creation")
-                    return std::to_string(account.creation);
-                if (token.value == "creation")
-                    return std::to_string(account.charSlots);
-                if (token.value == "current_server_uuid")
-                    return db->EscapeString(account.currentServerUuid);
-                if (token.value == "online_status")
-                    return std::to_string(static_cast<int>(account.onlineStatus));
-                if (token.value == "guild_uuid")
-                    return db->EscapeString(account.guildUuid);
-                if (token.value == "chest_size")
-                    return std::to_string(account.chest_size);
-                return "???";
-            case sa::Token::Type::Quote:
-                return "'";
-            default:
-                return token.value;
-            }
-        };
     }
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(statement.ToString()))
+    auto callback = [db, &account](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(account.uuid);
+            if (token.value == "name")
+                return db->EscapeString(account.name);
+            if (token.value == "password")
+                return db->EscapeString(account.password);
+            if (token.value == "email")
+                return db->EscapeString(account.email);
+            if (token.value == "type")
+                return std::to_string(static_cast<int>(account.type));
+            if (token.value == "status")
+                return std::to_string(static_cast<int>(account.status));
+            if (token.value == "creation")
+                return std::to_string(account.creation);
+            if (token.value == "creation")
+                return std::to_string(account.charSlots);
+            if (token.value == "current_server_uuid")
+                return db->EscapeString(account.currentServerUuid);
+            if (token.value == "online_status")
+                return std::to_string(static_cast<int>(account.onlineStatus));
+            if (token.value == "guild_uuid")
+                return db->EscapeString(account.guildUuid);
+            if (token.value == "chest_size")
+                return std::to_string(account.chest_size);
+            return "???";
+        case sa::Token::Type::Quote:
+            return "'";
+        default:
+            return token.value;
+        }
+    };
+    if (!db->ExecuteQuery(statement.ToString(callback)))
         return false;
 
     // End transaction

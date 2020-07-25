@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 #include <string_view>
-#include <sstream>
-#include <functional>
 
 namespace sa {
 
@@ -51,37 +49,32 @@ class Template
 {
     friend class TemplateParser;
 private:
-    void AddToken(Token&& token)
-    {
-        tokens_.push_back(std::move(token));
-    }
     std::vector<Token> tokens_;
+    size_t reserve_{ 256 };
 public:
     bool IsEmpty() const { return tokens_.empty(); }
-    std::string ToString()
+    template<typename Callback>
+    std::string ToString(Callback&& callback)
     {
-        std::stringstream ss;
+        std::string result;
+        result.reserve(reserve_);
         for (const auto& token : tokens_)
         {
             switch (token.type)
             {
             case Token::Type::Expression:
             case Token::Type::Quote:
-                if (onEvaluate_)
-                    ss << onEvaluate_(token);
-                else
-                    ss << token.value;
+                result.append(callback(token));
                 break;
             case Token::Type::String:
-                ss << token.value;
+                result.append(token.value);
                 break;
             default:
                 break;
             }
         }
-        return ss.str();
+        return result;
     }
-    std::function<std::string(const Token& token)> onEvaluate_;
 };
 
 class TemplateParser
@@ -157,10 +150,7 @@ private:
                     result.end = index_ - 1;
                     result.value = c;
                     inQuote_ = !inQuote_;
-                    if (inQuote_)
-                        quote_ = c;
-                    else
-                        quote_ = '\0';
+                    quote_ = inQuote_ ? c : '\0';
                     return result;
                 }
                 // If not supporting quotes fall through default handler
@@ -180,9 +170,9 @@ public:
     {
         source_ = source;
         Template result;
-
+        result.reserve_ = source_.length();
         while (!Eof())
-            result.AddToken(std::move(GetNextToken()));
+            result.tokens_.push_back(GetNextToken());
         return result;
     }
     bool quotesSupport_{ true };
