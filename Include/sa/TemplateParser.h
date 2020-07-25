@@ -135,36 +135,36 @@ private:
                     return result;
                 }
                 break;
-            case '`':
-            case '\'':
-            case '"':
-                if (inQuote_ && quote_ != c)
-                    continue;
-                if (result.type == Token::Type::String)
-                {
-                    result.end = index_ - 1;
-                    result.value = std::string(&source_[result.start], result.end - result.start);
-                    --index_;
-                    return result;
-                }
-                result.type = Token::Type::Quote;
-                result.end = index_ - 1;
-                result.value = c;
-                if (inQuote_)
-                {
-                    if (c == quote_)
-                        inQuote_ = false;
-                }
-                else
-                {
-                    inQuote_ = true;
-                    quote_ = c;
-                }
-                return result;
             case '\0':
                 result.end = index_;
                 result.value = std::string(&source_[result.start], result.end - result.start);
                 return result;
+            case '`':
+            case '\'':
+            case '"':
+                if (quotesSupport_)
+                {
+                    if (inQuote_ && quote_ != c)
+                        continue;
+                    if (result.type == Token::Type::String)
+                    {
+                        result.end = index_ - 1;
+                        result.value = std::string(&source_[result.start], result.end - result.start);
+                        --index_;
+                        return result;
+                    }
+                    result.type = Token::Type::Quote;
+                    result.end = index_ - 1;
+                    result.value = c;
+                    inQuote_ = !inQuote_;
+                    if (inQuote_)
+                        quote_ = c;
+                    else
+                        quote_ = '\0';
+                    return result;
+                }
+                // If not supporting quotes fall through default handler
+                [[fallthrough]];
             default:
                 if (result.type == Token::Type::Invalid)
                     result.type = Token::Type::String;
@@ -185,6 +185,7 @@ public:
             result.AddToken(std::move(GetNextToken()));
         return result;
     }
+    bool quotesSupport_{ true };
 };
 
 }
