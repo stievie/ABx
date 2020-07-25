@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="Item_GlitteringDust"/>
+	<component id="16777216" type="StaticModel">
+		<attribute name="Model" value="Model;Models/Item_GlitteringDust.mdl"/>
+		<attribute name="Material" value="Material;Materials/Item_GlitteringDust.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.0605542 0.0409668 0.0544232"/>
+		<attribute name="Offset Position" value="-0.00191844 0.0180333 0.00177119"/>
+	</component>
+</node>

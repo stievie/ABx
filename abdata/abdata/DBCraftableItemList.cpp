@@ -38,7 +38,8 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
     // I'm not sure if it makes sense to index the item_flags column when we calculate with it...
     // Ahm, doesn't seem so. Anyway, this list does not change and doesn't need to be loaded frequently.
     query << "SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & " <<
-        static_cast<int>(AB::Entities::ItemFlagCraftable) << " = " << static_cast<int>(AB::Entities::ItemFlagCraftable);
+        static_cast<int>(AB::Entities::ItemFlagCraftable) << " = " << static_cast<int>(AB::Entities::ItemFlagCraftable) <<
+        " ORDER BY type DESC, name ASC";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         il.items.push_back({ result->GetUInt("idx"),

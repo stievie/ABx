@@ -52,7 +52,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
         "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid " <<
         "WHERE `deleted` = 0 AND `storage_place` = " <<
         static_cast<int>(AB::Entities::StoragePlace::Merchant) << " " <<
-        "ORDER BY type, name";
+        "ORDER BY type DESC, name ASC";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         if (!AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
