@@ -25,6 +25,7 @@
 #include <vector>
 #include <random>
 #include <sa/Assert.h>
+#include <sa/Noncopyable.h>
 
 namespace sa {
 
@@ -32,6 +33,7 @@ namespace sa {
 template <typename T>
 class WeightedSelector
 {
+    NON_COPYABLE(WeightedSelector)
 private:
     bool initialized_;
     std::vector<float> weights_;
@@ -48,10 +50,6 @@ public:
     WeightedSelector() :
         initialized_(false)
     { }
-    // non-copyable
-    WeightedSelector(const WeightedSelector&) = delete;
-    WeightedSelector& operator=(const WeightedSelector&) = delete;
-    ~WeightedSelector() = default;
 
     size_t Count() const { return values_.size(); }
     /// Add a value with a weight. After all values have been added call Update() then
@@ -115,20 +113,6 @@ public:
 
     bool IsInitialized() const { return initialized_; }
 
-#ifdef _MSC_VER
-    const T& Get() const
-    {
-        ASSERT(initialized_);
-        ASSERT(Count() != 0);
-
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        static const std::uniform_real_distribution<float> r_uni(0.0, 1.0);
-        float rand1 = r_uni(gen);
-        float rand2 = r_uni(gen);
-        return Get(rand1, rand2);
-    }
-#endif
     const T& Get(float rand1, float rand2) const
     {
         ASSERT(initialized_);
