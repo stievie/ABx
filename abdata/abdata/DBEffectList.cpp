@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBEffectList.h"
 
 namespace DB {
@@ -33,9 +32,8 @@ bool DBEffectList::Load(AB::Entities::EffectList& el)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT `uuid` FROM `game_effects`";
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static const std::string query = "SELECT `uuid` FROM `game_effects`";
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         el.effectUuids.push_back(result->GetString("uuid"));
     }

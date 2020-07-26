@@ -19,11 +19,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBConcreteItem.h"
 #include "StorageProvider.h"
 #include <AB/Entities/GameInstance.h>
 #include <abscommon/Utils.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -35,41 +35,79 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
         return false;
     }
 
+    static constexpr const char* SQL = "INSERT INTO `concrete_items` ("
+            "`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, "
+            "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, "
+            "`map_uuid`, `flags`, `sold`"
+        ") VALUES ("
+            "${uuid}, ${player_uuid}, ${storage_place}, ${storage_pos}, ${upgrade_1}, ${upgrade_2}, ${upgrade_3}, "
+            "${account_uuid}, ${item_uuid}, ${stats}, ${count}, ${creation}, ${deleted}, ${value}, ${instance_uuid}, "
+            "${map_uuid}, ${flags}, ${sold}"
+        ")";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO `concrete_items` (`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, " <<
-        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, `map_uuid`, `flags`, `sold`";
-    query << ") VALUES (";
 
-    query << db->EscapeString(item.uuid) << ", ";
-    query << db->EscapeString(item.playerUuid) << ", ";
-    query << static_cast<int>(item.storagePlace) << ", ";
-    query << static_cast<int>(item.storagePos) << ", ";
-    query << db->EscapeString(item.upgrade1Uuid) << ", ";
-    query << db->EscapeString(item.upgrade2Uuid) << ", ";
-    query << db->EscapeString(item.upgrade3Uuid) << ", ";
-    query << db->EscapeString(item.accountUuid) << ", ";
-    query << db->EscapeString(item.itemUuid) << ", ";
-    query << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
-    query << static_cast<int>(item.count) << ", ";
-    query << item.creation << ", ";
-    query << item.deleted << ", ";
-    query << static_cast<int>(item.value) << ", ";
-    query << db->EscapeString(item.instanceUuid) << ", ";
-    query << db->EscapeString(item.mapUuid) << ", ";
-    query << item.flags << ", ";
-    query << item.sold;
+    auto callback = [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            if (token.value == "player_uuid")
+                return db->EscapeString(item.playerUuid);
+            if (token.value == "storage_place")
+                return std::to_string(static_cast<int>(item.storagePlace));
+            if (token.value == "storage_pos")
+                return std::to_string(item.storagePos);
+            if (token.value == "upgrade_1")
+                return db->EscapeString(item.upgrade1Uuid);
+            if (token.value == "upgrade_2")
+                return db->EscapeString(item.upgrade2Uuid);
+            if (token.value == "upgrade_3")
+                return db->EscapeString(item.upgrade3Uuid);
+            if (token.value == "account_uuid")
+                return db->EscapeString(item.accountUuid);
+            if (token.value == "item_uuid")
+                return db->EscapeString(item.itemUuid);
+            if (token.value == "stats")
+                return db->EscapeBlob(item.itemStats.data(), item.itemStats.length());
+            if (token.value == "count")
+                return std::to_string(item.count);
+            if (token.value == "creation")
+                return std::to_string(item.creation);
+            if (token.value == "deleted")
+                return std::to_string(item.deleted);
+            if (token.value == "value")
+                return std::to_string(item.value);
+            if (token.value == "instance_uuid")
+                return db->EscapeString(item.instanceUuid);
+            if (token.value == "map_uuid")
+                return db->EscapeString(item.mapUuid);
+            if (token.value == "flags")
+                return std::to_string(item.flags);
+            if (token.value == "sold")
+                return std::to_string(item.sold);
 
-    query << ")";
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    };
+
+    const std::string query = sa::TemplateParser::Evaluate(SQL, callback);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     if (!transaction.Commit())
         return false;
 
@@ -84,12 +122,27 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
         return false;
     }
 
+    static constexpr const char* SQL = "SELECT * FROM `concrete_items` WHERE `uuid` = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
 
-    std::ostringstream query;
-    query << "SELECT * FROM `concrete_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
-
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -123,40 +176,87 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
+    static constexpr const char* SQL = "UPDATE `concrete_items` SET "
+        "`player_uuid` = ${player_uuid}, "
+        "`storage_place` = ${storage_place}, "
+        "`storage_pos` = ${storage_pos}, "
+        "`upgrade_1` = ${upgrade_1}, "
+        "`upgrade_2` = ${upgrade_2}, "
+        "`upgrade_3` = ${upgrade_3}, "
+        "`account_uuid` = ${account_uuid}, "
+        "`item_uuid` = ${item_uuid}, "
+        "`stats` = ${stats}, "
+        "`count` = ${count}, "
+        "`creation` = ${creation}, "
+        "`deleted` = ${deleted}, "
+        "`value` = ${value}, "
+        "`instance_uuid` = ${instance_uuid}, "
+        "`map_uuid` = ${map_uuid}, "
+        "`flags` = ${flags}, "
+        "`sold` = ${sold} "
+        "WHERE `uuid` = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE `concrete_items` SET ";
-
-    // Only these may be changed
-    query << " `player_uuid` = " << db->EscapeString(item.playerUuid) << ", ";
-    query << " `storage_place` = " << static_cast<int>(item.storagePlace) << ", ";
-    query << " `storage_pos` = " << static_cast<int>(item.storagePos) << ", ";
-    query << " `upgrade_1` = " << db->EscapeString(item.upgrade1Uuid) << ", ";
-    query << " `upgrade_2` = " << db->EscapeString(item.upgrade2Uuid) << ", ";
-    query << " `upgrade_3` = " << db->EscapeString(item.upgrade3Uuid) << ", ";
-    query << " `account_uuid` = " << db->EscapeString(item.accountUuid) << ", ";
-    query << " `item_uuid` = " << db->EscapeString(item.itemUuid) << ", ";
-    query << " `stats` = " << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
-    query << " `count` = " << static_cast<int>(item.count) << ", ";
-    query << " `creation` = " << item.creation << ", ";
-    query << " `deleted` = " << item.deleted << ", ";
-    query << " `value` = " << static_cast<int>(item.value) << ", ";
-    query << " `instance_uuid` = " << db->EscapeString(item.instanceUuid) << ", ";
-    query << " `map_uuid` = " << db->EscapeString(item.mapUuid) << ", ";
-    query << " `flags` = " << item.flags << ", ";
-    query << " `sold` = " << item.sold;
-
-    query << " WHERE `uuid` = " << db->EscapeString(item.uuid);
-
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    auto callback = [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            if (token.value == "player_uuid")
+                return db->EscapeString(item.playerUuid);
+            if (token.value == "storage_place")
+                return std::to_string(static_cast<int>(item.storagePlace));
+            if (token.value == "storage_pos")
+                return std::to_string(item.storagePos);
+            if (token.value == "upgrade_1")
+                return db->EscapeString(item.upgrade1Uuid);
+            if (token.value == "upgrade_2")
+                return db->EscapeString(item.upgrade2Uuid);
+            if (token.value == "upgrade_3")
+                return db->EscapeString(item.upgrade3Uuid);
+            if (token.value == "account_uuid")
+                return db->EscapeString(item.accountUuid);
+            if (token.value == "item_uuid")
+                return db->EscapeString(item.itemUuid);
+            if (token.value == "stats")
+                return db->EscapeBlob(item.itemStats.data(), item.itemStats.length());
+            if (token.value == "count")
+                return std::to_string(item.count);
+            if (token.value == "creation")
+                return std::to_string(item.creation);
+            if (token.value == "deleted")
+                return std::to_string(item.deleted);
+            if (token.value == "value")
+                return std::to_string(item.value);
+            if (token.value == "instance_uuid")
+                return db->EscapeString(item.instanceUuid);
+            if (token.value == "map_uuid")
+                return db->EscapeString(item.mapUuid);
+            if (token.value == "flags")
+                return std::to_string(item.flags);
+            if (token.value == "sold")
+                return std::to_string(item.sold);
+
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    };
+
+    const std::string query = sa::TemplateParser::Evaluate(SQL, callback);
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -168,18 +268,33 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    LOG_INFO << "Delete " << item.uuid << std::endl;
+    static constexpr const char* SQL = "DELETE FROM `concrete_items` WHERE `uuid` = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM `concrete_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -191,13 +306,29 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
+    static constexpr const char* SQL = "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE `uuid` = ${uuid}"
+        " AND `deleted` = 0";
+
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE ";
-    query << "`uuid` = " << db->EscapeString(item.uuid) << " AND `deleted` = 0";
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

@@ -57,7 +57,7 @@ public:
     std::string ToString(Callback&& callback) const
     {
         std::string result;
-        result.reserve(reserve_);
+        result.reserve(reserve_ + tokens_.size() * 10);
         for (const auto& token : tokens_)
         {
             switch (token.type)
@@ -165,15 +165,30 @@ private:
         result.value = std::string(&source_[result.start], result.end - result.start);
         return result;
     }
+    void Reset()
+    {
+        index_ = 0;
+        quote_ = '\0';
+        inQuote_ = false;
+    }
 public:
     Template Parse(std::string_view source)
     {
         source_ = source;
+        Reset();
         Template result;
         result.reserve_ = source_.length();
         while (!Eof())
             result.tokens_.push_back(GetNextToken());
         return result;
+    }
+    void Append(std::string_view source, Template& tokens)
+    {
+        source_ = source;
+        Reset();
+        tokens.reserve_ += source_.length();
+        while (!Eof())
+            tokens.tokens_.push_back(GetNextToken());
     }
     template<typename Callback>
     static std::string Evaluate(std::string_view source, Callback&& callback)

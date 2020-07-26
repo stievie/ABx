@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBCraftableItemList.h"
 #include <AB/Entities/Item.h>
 #include <sa/Assert.h>
@@ -38,9 +37,8 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
     static std::string statement;
     if (statement.empty())
     {
-        sa::TemplateParser parser;
-        auto tokens = parser.Parse("SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC");
-        statement = tokens.ToString([](const sa::Token& token) -> std::string
+        static constexpr const char* SQL = "SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC";
+        statement = sa::TemplateParser::Evaluate(SQL, [](const sa::Token& token) -> std::string
         {
             switch (token.type)
             {
@@ -49,7 +47,9 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
                     return std::to_string(static_cast<int>(AB::Entities::ItemFlagCraftable));
                 ASSERT_FALSE();
             case sa::Token::Type::Quote:
-                return "\"";
+                if (token.value == "`")
+                    return "\"";
+                return token.value;
             default:
                 return token.value;
             }

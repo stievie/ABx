@@ -29,6 +29,8 @@ class DBItemPrice
 {
 private:
     static uint32_t GetDropChance(const std::string& itemUuid);
+    static uint32_t GetAvgValue(const std::string& itemUuid);
+    static uint32_t GetAvailable(const std::string& itemUuid);
 public:
     DBItemPrice() = delete;
 

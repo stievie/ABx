@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBVersionList.h"
 
 namespace DB {
@@ -33,9 +32,8 @@ bool DBVersionList::Load(AB::Entities::VersionList& vl)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM `versions` WHERE `internal` = 0";
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static const std::string query = "SELECT * FROM `versions` WHERE `internal` = 0";
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         vl.versions.push_back({
             result->GetString("uuid"),

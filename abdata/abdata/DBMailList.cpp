@@ -19,8 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBMailList.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -42,19 +42,30 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
         return false;
     }
 
+    // Oldest first because the chat window scrolls down
+    static constexpr const char* SQL = "SELECT `uuid`, `from_name`, `subject`, `created`, `is_read` FROM `mails` "
+        "WHERE `to_account_uuid` = ${to_account_uuid} ORDER BY `created` ASC";
     Database* db = GetSubsystem<Database>();
 
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &ml](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "to_account_uuid")
+                return db->EscapeString(ml.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
     ml.mails.clear();
-    std::ostringstream query;
-    query << "SELECT `uuid`, `from_name`, `subject`, `created`, `is_read` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
-    // Oldest first because the chat window scrolls down
-    query << " ORDER BY `created` ASC";
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        // Maybe no mails
-        return true;
 
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         ml.mails.push_back({
             result->GetString("uuid"),

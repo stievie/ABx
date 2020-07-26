@@ -22,6 +22,7 @@
 #include "DBItemPrice.h"
 #include <AB/Entities/ConcreteItem.h>
 #include <AB/Entities/Item.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -32,14 +33,94 @@ bool DBItemPrice::Create(AB::Entities::ItemPrice&)
 
 uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
 {
-    Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "SELECT AVG(chance) AS avg_chance FROM `game_item_chances` WHERE `item_uuid` = " << db->EscapeString(itemUuid) <<
+    static constexpr const char* SQL = "SELECT AVG(chance) AS avg_chance FROM `game_item_chances` WHERE `item_uuid` = ${item_uuid}"
         " GROUP BY `item_uuid`";
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+
+    Database* db = GetSubsystem<Database>();
+
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "item_uuid")
+                return db->EscapeString(itemUuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return 0;
     return result->GetUInt("avg_chance");
+}
+
+uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
+{
+    static constexpr const char* SQL = "SELECT AVG(value) as avg_value FROM `concrete_items` WHERE deleted = 0 "
+        "AND item_uuid = ${item_uuid} GROUP BY item_uuid";
+
+    Database* db = GetSubsystem<Database>();
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "item_uuid")
+                return db->EscapeString(itemUuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
+    if (result)
+        return result->GetUInt("avg_value");
+    return 0;
+}
+
+uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
+{
+    // How many of that belongs to the merchant
+    static constexpr const char* SQL = "SELECT SUM(count) AS available FROM `concrete_items` "
+        "WHERE `deleted` = 0 AND storage_place = ${storage_place}"
+        " AND `item_uuid` = ${item_uuid}"
+        " GROUP BY `item_uuid`";
+
+    Database* db = GetSubsystem<Database>();
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "item_uuid")
+                return db->EscapeString(itemUuid);
+            if (token.value == "storage_place")
+                return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
+    if (result)
+        return result->GetUInt("available");
+    return 0;
+
 }
 
 bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
@@ -52,9 +133,25 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream itemQuery;
-    itemQuery << "SELECT `type`, `item_flags`, `value` FROM `game_items` WHERE `uuid` = " << db->EscapeString(item.uuid);
-    std::shared_ptr<DB::DBResult> itemResult = db->StoreQuery(itemQuery.str());
+    static constexpr const char* SQL = "SELECT `type`, `item_flags`, `value` FROM `game_items` WHERE `uuid` = ${uuid}";
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(item.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> itemResult = db->StoreQuery(query);
     if (!itemResult)
         return false;
     AB::Entities::ItemType type = static_cast<AB::Entities::ItemType>(itemResult->GetUInt("type"));
@@ -67,27 +164,11 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     uint32_t dropChance = GetDropChance(item.uuid);
 
     if (type != AB::Entities::ItemType::Material)
-    {
-        std::ostringstream query;
-        query << "SELECT AVG(value) as avg_value FROM `concrete_items` WHERE deleted = 0 " <<
-            " AND item_uuid = " <<
-            db->EscapeString(item.uuid) << " GROUP BY item_uuid";
-        std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-        if (result)
-            value = result->GetUInt("avg_value");
-    }
+        value = std::max(value, GetAvgValue(item.uuid));
     else
         minValue = value;
 
-    // How many of that belongs to the merchant
-    std::ostringstream query;
-    query << "SELECT SUM(count) AS available FROM `concrete_items` " <<
-        "WHERE `deleted` = 0 AND storage_place = " << static_cast<int>(AB::Entities::StoragePlace::Merchant) <<
-        " AND `item_uuid` = " << db->EscapeString(item.uuid) <<
-        " GROUP BY `item_uuid`";
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (result)
-        avail = result->GetUInt("available");
+    avail = std::max(avail, GetAvailable(item.uuid));
 
     item.countAvail = avail;
     item.priceBase = value;
@@ -137,13 +218,30 @@ bool DBItemPrice::Exists(const AB::Entities::ItemPrice& item)
         return false;
     }
 
+    static constexpr const char* SQL = "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE "
+        "`deleted` = 0 AND `item_uuid` = ${item_uuid} AND `storage_place` = ${storage_place}";
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` `concrete_items` WHERE ";
-    query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.uuid) << " AND `storage_place` = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "item_uuid")
+                return db->EscapeString(item.uuid);
+            if (token.value == "storage_place")
+                return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

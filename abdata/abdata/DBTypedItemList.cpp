@@ -19,8 +19,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBTypedItemList.h"
+#include <abscommon/Profiler.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -33,21 +34,40 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
 {
     Database* db = GetSubsystem<Database>();
 
-    /// il.uuid may also be an empty GUID
-    std::ostringstream query;
-    query << "SELECT game_item_chances.chance AS chance, game_items.type AS type, game_items.belongs_to AS belongs_to, game_items.uuid AS uuid, " <<
-        "game_item_chances.map_uuid AS map_uuid " <<
-        "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid " <<
-        "WHERE (map_uuid = " << db->EscapeString(il.uuid);
-    // Empty GUID means can drop an all maps
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("SELECT game_item_chances.chance AS chance, game_items.type AS type, game_items.belongs_to AS belongs_to, game_items.uuid AS uuid, "
+        "game_item_chances.map_uuid AS map_uuid "
+        "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid "
+        "WHERE (map_uuid = ${map_uuid}");
     if (!Utils::Uuid::IsEmpty(il.uuid))
-        query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
-    query << ")";
+        parser.Append(" OR `map_uuid` = ${empty_map_uuid}", tokens);
+    parser.Append(")", tokens);
     if (il.type != AB::Entities::ItemType::Unknown)
+        parser.Append(" AND `type` = ${type}", tokens);
+
+    auto callback = [db, &il](const sa::Token& token) -> std::string
     {
-        query << " AND `type` = " << static_cast<int>(il.type);
-    }
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "map_uuid")
+                return db->EscapeString(il.uuid);
+            if (token.value == "empty_map_uuid")
+                return db->EscapeString(Utils::Uuid::EMPTY_UUID);
+            if (token.value == "type")
+                return std::to_string(static_cast<int>(il.type));
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    };
+    const std::string query = tokens.ToString(callback);
+
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         AB::Entities::TypedListItem c;
         c.uuid = result->GetString("uuid");

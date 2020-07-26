@@ -19,8 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBVersion.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -34,19 +34,38 @@ bool DBVersion::Load(AB::Entities::Version& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM `versions` WHERE ";
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("SELECT * FROM `versions` WHERE ");
+
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "`uuid` = " << db->EscapeString(v.uuid);
+        parser.Append("`uuid` = ${uuid}", tokens);
     else if (!v.name.empty())
-        query << "`name` = " << db->EscapeString(v.name);
+        parser.Append("`name` = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString([db, &v](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(v.uuid);
+            if (token.value == "name")
+                return db->EscapeString(v.name);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -74,19 +93,39 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `versions` WHERE ";
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("SELECT COUNT(*) AS `count` FROM `versions` WHERE ");
+
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "`uuid` = " << db->EscapeString(v.uuid);
+        parser.Append("`uuid` = ${uuid}", tokens);
     else if (!v.name.empty())
-        query << "`name` = " << db->EscapeString(v.name);
+        parser.Append("`name` = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString([db, &v](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(v.uuid);
+            if (token.value == "name")
+                return db->EscapeString(v.name);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

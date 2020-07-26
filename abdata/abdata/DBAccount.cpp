@@ -23,6 +23,7 @@
 #include <sa/Assert.h>
 #include <sa/TemplateParser.h>
 #include <uuid.h>
+#include <abscommon/Profiler.h>
 
 namespace DB {
 
@@ -76,7 +77,9 @@ bool DBAccount::Create(AB::Entities::Account& account)
                 return std::to_string(account.chest_size);
             ASSERT_FALSE();
         case sa::Token::Type::Quote:
-            return "\"";
+            if (token.value == "`")
+                return "\"";
+            return token.value;
         default:
             return token.value;
         }
@@ -94,10 +97,10 @@ bool DBAccount::Load(AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL_UUID = "SELECT * FOM `accounts` WHERE `uuid`= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT * FOM `accounts` WHERE `name`= ${name}";
+    static constexpr const char* SQL_UUID = "SELECT * FROM `accounts` WHERE `uuid`= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT * FROM `accounts` WHERE `name`= ${name}";
 
-    std::string sql;
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))
         sql = SQL_UUID;
     else if (!account.name.empty())
@@ -107,6 +110,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
+    ASSERT(sql);
 
     auto callback = [db, &account](const sa::Token& token) -> std::string {
         switch (token.type)
@@ -118,7 +122,9 @@ bool DBAccount::Load(AB::Entities::Account& account)
                 return db->EscapeString(account.name);
             ASSERT_FALSE();
         case sa::Token::Type::Quote:
-            return "\"";
+            if (token.value == "`")
+                return "\"";
+            return token.value;
         default:
             return token.value;
         }
@@ -165,7 +171,9 @@ void DBAccount::LoadCharacters(AB::Entities::Account& account)
                 return db->EscapeString(account.uuid);
             ASSERT_FALSE();
         case sa::Token::Type::Quote:
-            return "\"";
+            if (token.value == "`")
+                return "\"";
+            return token.value;
         default:
             return token.value;
         }
@@ -186,19 +194,19 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     }
 
     static constexpr const char* SQL = "UPDATE `accounts` SET "
-                                       "`password` = ${password}, "
-                                       "`email` = ${email}, "
-                                       "`auth_token` = ${auth_token}, "
-                                       "`auth_token_expiry` = ${auth_token_expiry}, "
-                                       "`type` = ${type}, "
-                                       "`status` = ${status}, "
-                                       "`char_slots` = ${char_slots}, "
-                                       "`current_character_uuid` = ${current_character_uuid}, "
-                                       "`current_server_uuid` = ${current_server_uuid} , "
-                                       "`online_status` = ${online_status}, "
-                                       "`guild_uuid` = ${guild_uuid}, "
-                                       "`chest_size` = ${chest_size} "
-                                       "WHERE `uuid` = ${uuid}";
+        "`password` = ${password}, "
+        "`email` = ${email}, "
+        "`auth_token` = ${auth_token}, "
+        "`auth_token_expiry` = ${auth_token_expiry}, "
+        "`type` = ${type}, "
+        "`status` = ${status}, "
+        "`char_slots` = ${char_slots}, "
+        "`current_character_uuid` = ${current_character_uuid}, "
+        "`current_server_uuid` = ${current_server_uuid} , "
+        "`online_status` = ${online_status}, "
+        "`guild_uuid` = ${guild_uuid}, "
+        "`chest_size` = ${chest_size} "
+        "WHERE `uuid` = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
     DBTransaction transaction(db);
@@ -237,7 +245,9 @@ bool DBAccount::Save(const AB::Entities::Account& account)
                 return std::to_string(account.chest_size);
             ASSERT_FALSE();
         case sa::Token::Type::Quote:
-            return "\"";
+            if (token.value == "`")
+                return "\"";
+            return token.value;
         default:
             return token.value;
         }
@@ -258,14 +268,29 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM `accounts` WHERE `uuid` = " << db->EscapeString(account.uuid);
+
+    static constexpr const char* SQL = "DELETE FROM `accounts` WHERE `uuid` = ${uuid}";
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &account](const sa::Token& token) -> std::string {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(account.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    });
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     return transaction.Commit();
@@ -275,19 +300,42 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `accounts` WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS `count` FROM `accounts` WHERE `uuid`= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS `count` FROM `accounts` WHERE `name`= ${name}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))
-        query << "`uuid` = " << db->EscapeString(account.uuid);
+        sql = SQL_UUID;
     else if (!account.name.empty())
-        query << "`name` = " << db->EscapeString(account.name);
+        sql = SQL_NAME;
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
+    ASSERT(sql);
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    auto callback = [db, &account](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(account.uuid);
+            if (token.value == "name")
+                return db->EscapeString(account.name);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return token.value;
+        }
+    };
+    const std::string query = sa::TemplateParser::Evaluate(sql, callback);
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
@@ -296,13 +344,12 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 bool DBAccount::LogoutAll()
 {
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "UPDATE `accounts` SET `online_status` = 0";
+    static const std::string query = "UPDATE `accounts` SET `online_status` = 0";
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     return transaction.Commit();

@@ -19,8 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBMerchantItemList.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -46,14 +46,35 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
 {
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, concrete_items.sold AS `sold`, " <<
-        "game_items.type AS `type`, game_items.idx AS `idx`, game_items.name AS `name`, game_items.item_flags AS `item_flags` " <<
-        "FROM `concrete_items` " <<
-        "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid " <<
-        "WHERE `deleted` = 0 AND `storage_place` = " <<
-        static_cast<int>(AB::Entities::StoragePlace::Merchant) << " " <<
-        "ORDER BY type DESC, name ASC";
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static std::string statement;
+    if (statement.empty())
+    {
+        static constexpr const char* SQL = "SELECT concrete_items.uuid AS `concrete_uuid`, concrete_items.item_uuid AS `item_uuid`, concrete_items.sold AS `sold`, "
+            "game_items.type AS `type`, game_items.idx AS `idx`, game_items.name AS `name`, game_items.item_flags AS `item_flags` "
+            "FROM `concrete_items` "
+            "LEFT JOIN `game_items` on game_items.uuid = concrete_items.item_uuid "
+            "WHERE `deleted` = 0 AND `storage_place` = ${storage_place}"
+            "ORDER BY type DESC, name ASC";
+        statement = sa::TemplateParser::Evaluate(SQL, [](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "storage_place")
+                    return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
+                ASSERT_FALSE();
+            case sa::Token::Type::Quote:
+                if (token.value == "`")
+                    return "\"";
+                return token.value;
+            default:
+                return token.value;
+            }
+        });
+
+    }
+
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(statement); result; result = result->Next())
     {
         if (!AB::Entities::IsItemStackable(result->GetUInt("item_flags")))
         {

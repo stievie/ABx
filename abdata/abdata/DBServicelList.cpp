@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBServicelList.h"
 
 namespace DB {
@@ -33,9 +32,8 @@ bool DBServicelList::Load(AB::Entities::ServiceList& sl)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT `uuid` FROM `services` ORDER BY `type`";
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static const std::string query = "SELECT `uuid` FROM `services` ORDER BY `type`";
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         sl.uuids.push_back(result->GetString("uuid"));
     }

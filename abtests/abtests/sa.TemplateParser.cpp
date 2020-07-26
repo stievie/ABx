@@ -117,3 +117,37 @@ TEST_CASE("TemplateParser no quotes")
 
     REQUIRE(result.compare("SELECT FROM `table` WHERE `nam\"e\"` = 'a name' ORDER BY `type` DESC, `name` ASC") == 0);
 }
+
+TEST_CASE("TemplateParser append")
+{
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("SELECT game_item_chances.chance AS `chance`, "
+        "game_item_chances.map_uuid AS `map_uuid` "
+        "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid "
+        "WHERE (`map_uuid` = ${map_uuid}");
+    parser.Append(" OR `map_uuid` = ${empty_map_uuid}", tokens);
+    parser.Append(")", tokens);
+    parser.Append(" AND `type` = ${type}", tokens);
+    std::string result = tokens.ToString([](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "map_uuid")
+                return "map_uuid";
+            if (token.value == "empty_map_uuid")
+                return "empty_map_uuid";
+            if (token.value == "type")
+                return "type";
+            return "???";
+        case sa::Token::Type::Quote:
+            if (token.value == "`")
+                return "\"";
+            return token.value;
+        default:
+            return "";
+        }
+    });
+
+    REQUIRE(result.compare("SELECT game_item_chances.chance AS \"chance\", game_item_chances.map_uuid AS \"map_uuid\" FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid WHERE (\"map_uuid\" = map_uuid OR \"map_uuid\" = empty_map_uuid) AND \"type\" = type") == 0);
+}
