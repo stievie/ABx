@@ -22,6 +22,7 @@
 
 #include "DBCraftableItemList.h"
 #include <AB/Entities/Item.h>
+#include <sa/Assert.h>
 #include <sa/TemplateParser.h>
 
 namespace DB {
@@ -46,9 +47,9 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
             case sa::Token::Type::Expression:
                 if (token.value == "item_flags")
                     return std::to_string(static_cast<int>(AB::Entities::ItemFlagCraftable));
-                return "???";
+                ASSERT_FALSE();
             case sa::Token::Type::Quote:
-                return "'";
+                return "\"";
             default:
                 return token.value;
             }

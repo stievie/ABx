@@ -19,16 +19,17 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBAccount.h"
-#include <uuid.h>
+#include <sa/Assert.h>
 #include <sa/TemplateParser.h>
+#include <uuid.h>
 
 namespace DB {
 
 bool DBAccount::Create(AB::Entities::Account& account)
 {
-    constexpr const char* SQL = "INSERT INTO `accounts` ("
+    static constexpr const char* SQL =
+        "INSERT INTO `accounts` ("
         "`uuid`, `name`, `password`, `email`, `type`, `status`, `creation`, "
         "`char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`, `chest_size` "
         ") VALUES ( "
@@ -41,18 +42,11 @@ bool DBAccount::Create(AB::Entities::Account& account)
     }
 
     Database* db = GetSubsystem<Database>();
-    static sa::Template statement;
-    if (statement.IsEmpty())
-    {
-        sa::TemplateParser parser;
-        statement = parser.Parse(SQL);
-    }
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    auto callback = [db, &account](const sa::Token& token) -> std::string
-    {
+    auto callback = [db, &account](const sa::Token& token) -> std::string {
         switch (token.type)
         {
         case sa::Token::Type::Expression:
@@ -70,7 +64,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
                 return std::to_string(static_cast<int>(account.status));
             if (token.value == "creation")
                 return std::to_string(account.creation);
-            if (token.value == "creation")
+            if (token.value == "char_slots")
                 return std::to_string(account.charSlots);
             if (token.value == "current_server_uuid")
                 return db->EscapeString(account.currentServerUuid);
@@ -80,17 +74,16 @@ bool DBAccount::Create(AB::Entities::Account& account)
                 return db->EscapeString(account.guildUuid);
             if (token.value == "chest_size")
                 return std::to_string(account.chest_size);
-            return "???";
+            ASSERT_FALSE();
         case sa::Token::Type::Quote:
-            return "'";
+            return "\"";
         default:
             return token.value;
         }
     };
-    if (!db->ExecuteQuery(statement.ToString(callback)))
+    if (!db->ExecuteQuery(sa::TemplateParser::Evaluate(SQL, callback)))
         return false;
 
-    // End transaction
     if (!transaction.Commit())
         return false;
 
@@ -101,22 +94,40 @@ bool DBAccount::Load(AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM `accounts` WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT * FOM `accounts` WHERE `uuid`= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT * FOM `accounts` WHERE `name`= ${name}";
+
+    std::string sql;
     if (!Utils::Uuid::IsEmpty(account.uuid))
-        query << "`uuid` = " << db->EscapeString(account.uuid);
+        sql = SQL_UUID;
     else if (!account.name.empty())
-        query << "`name` = " << db->EscapeString(account.name);
+        sql = SQL_NAME;
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    auto callback = [db, &account](const sa::Token& token) -> std::string {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(account.uuid);
+            if (token.value == "name")
+                return db->EscapeString(account.name);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            return "\"";
+        default:
+            return token.value;
+        }
+    };
+    const std::string query = sa::TemplateParser::Evaluate(sql, callback);
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
     {
-        LOG_ERROR << "No record found for " << query.str() << std::endl;
+        LOG_ERROR << "No record found for " << query << std::endl;
         return false;
     }
 
@@ -136,17 +147,34 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.guildUuid = result->GetString("guild_uuid");
     account.chest_size = static_cast<uint16_t>(result->GetInt("chest_size"));
 
-    // load characters
+    LoadCharacters(account);
+
+    return true;
+}
+
+void DBAccount::LoadCharacters(AB::Entities::Account& account)
+{
+    Database* db = GetSubsystem<Database>();
     account.characterUuids.clear();
-    query.str("");
-    query << "SELECT `uuid`, `name` FROM `players` WHERE `account_uuid` = " << db->EscapeString(account.uuid) <<
-        " ORDER BY `name`";
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    static constexpr const char* SQL = "SELECT `uuid`, `name` FROM `players` WHERE `account_uuid` = ${account_uuid} ORDER BY `name`";
+    auto callback = [db, &account](const sa::Token& token) -> std::string {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "account_uuid")
+                return db->EscapeString(account.uuid);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            return "\"";
+        default:
+            return token.value;
+        }
+    };
+
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(sa::TemplateParser::Evaluate(SQL, callback)); result; result = result->Next())
     {
         account.characterUuids.push_back(result->GetString("uuid"));
     }
-
-    return true;
 }
 
 bool DBAccount::Save(const AB::Entities::Account& account)
@@ -157,34 +185,67 @@ bool DBAccount::Save(const AB::Entities::Account& account)
         return false;
     }
 
+    static constexpr const char* SQL = "UPDATE `accounts` SET "
+                                       "`password` = ${password}, "
+                                       "`email` = ${email}, "
+                                       "`auth_token` = ${auth_token}, "
+                                       "`auth_token_expiry` = ${auth_token_expiry}, "
+                                       "`type` = ${type}, "
+                                       "`status` = ${status}, "
+                                       "`char_slots` = ${char_slots}, "
+                                       "`current_character_uuid` = ${current_character_uuid}, "
+                                       "`current_server_uuid` = ${current_server_uuid} , "
+                                       "`online_status` = ${online_status}, "
+                                       "`guild_uuid` = ${guild_uuid}, "
+                                       "`chest_size` = ${chest_size} "
+                                       "WHERE `uuid` = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE `accounts` SET ";
-
-    query << " `password` = " << db->EscapeString(account.password) << ",";
-    query << " `email` = " << db->EscapeString(account.email) << ",";
-    query << " `auth_token` = " << db->EscapeString(account.authToken) << ",";
-    query << " `auth_token_expiry` = " << account.authTokenExpiry << ",";
-    query << " `type` = " << static_cast<int>(account.type) << ",";
-    query << " `status` = " << static_cast<int>(account.status) << ",";
-    query << " `char_slots` = " << account.charSlots << ",";
-    query << " `current_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
-    query << " `current_server_uuid` = " << db->EscapeString(account.currentServerUuid) << ",";
-    query << " `online_status` = " << static_cast<int>(account.onlineStatus) << ",";
-    query << " `guild_uuid` = " << db->EscapeString(account.guildUuid) << ",";
-    query << " `chest_size` = " << static_cast<int>(account.chest_size);
-
-    query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
-
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    auto callback = [db, &account](const sa::Token& token) -> std::string {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(account.uuid);
+            if (token.value == "password")
+                return db->EscapeString(account.password);
+            if (token.value == "email")
+                return db->EscapeString(account.email);
+            if (token.value == "auth_token")
+                return db->EscapeString(account.authToken);
+            if (token.value == "auth_token_expiry")
+                return std::to_string(account.authTokenExpiry);
+            if (token.value == "type")
+                return std::to_string(static_cast<int>(account.type));
+            if (token.value == "status")
+                return std::to_string(static_cast<int>(account.status));
+            if (token.value == "char_slots")
+                return std::to_string(account.charSlots);
+            if (token.value == "current_character_uuid")
+                return db->EscapeString(account.currentCharacterUuid);
+            if (token.value == "current_server_uuid")
+                return db->EscapeString(account.currentServerUuid);
+            if (token.value == "online_status")
+                return std::to_string(static_cast<int>(account.onlineStatus));
+            if (token.value == "guild_uuid")
+                return db->EscapeString(account.guildUuid);
+            if (token.value == "chest_size")
+                return std::to_string(account.chest_size);
+            ASSERT_FALSE();
+        case sa::Token::Type::Quote:
+            return "\"";
+        default:
+            return token.value;
+        }
+    };
+
+    if (!db->ExecuteQuery(sa::TemplateParser::Evaluate(SQL, callback)))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -207,7 +268,6 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -245,7 +305,6 @@ bool DBAccount::LogoutAll()
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 

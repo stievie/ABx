@@ -27,6 +27,8 @@ namespace DB {
 
 class DBAccount
 {
+private:
+    static void LoadCharacters(AB::Entities::Account& account);
 public:
     DBAccount() = delete;
     ~DBAccount() = delete;

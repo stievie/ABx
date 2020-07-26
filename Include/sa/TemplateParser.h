@@ -54,7 +54,7 @@ private:
 public:
     bool IsEmpty() const { return tokens_.empty(); }
     template<typename Callback>
-    std::string ToString(Callback&& callback)
+    std::string ToString(Callback&& callback) const
     {
         std::string result;
         result.reserve(reserve_);
@@ -174,6 +174,13 @@ public:
         while (!Eof())
             result.tokens_.push_back(GetNextToken());
         return result;
+    }
+    template<typename Callback>
+    static std::string Evaluate(std::string_view source, Callback&& callback)
+    {
+        TemplateParser parser;
+        const Template tokens = parser.Parse(source);
+        return tokens.ToString(std::forward<Callback>(callback));
     }
     bool quotesSupport_{ true };
 };
