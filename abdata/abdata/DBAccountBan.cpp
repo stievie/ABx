@@ -19,8 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBAccountBan.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -33,26 +33,38 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO account_bans (uuid, ban_uuid, account_uuid) VALUES (";
-    query << db->EscapeString(ban.uuid) << ", ";
-    query << db->EscapeString(ban.banUuid) << ", ";
-    query << db->EscapeString(ban.accountUuid);
-
-    query << ")";
-
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    static constexpr const char* SQL = "INSERT INTO account_bans ("
+                "uuid, ban_uuid, account_uuid"
+            ") VALUES ("
+                "${uuid}, ${ban_uuid}, ${account_uuid}"
+            ")";
+
+    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &ban](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "uuid")
+                return db->EscapeString(ban.uuid);
+            if (token.value == "ban_uuid")
+                return db->EscapeString(ban.banUuid);
+            if (token.value == "account_uuid")
+                return db->EscapeString(ban.accountUuid);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
+
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBAccountBan::Load(AB::Entities::AccountBan& ban)

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Npc.h"
 #include "Crowd.h"
 #include "DamageComp.h"
@@ -31,8 +30,8 @@
 #include "Script.h"
 #include "ScriptManager.h"
 #include <abai/BevaviorCache.h>
-#include <Mustache/mustache.hpp>
 #include <sa/Assert.h>
+#include <sa/TemplateParser.h>
 
 namespace Game {
 
@@ -398,18 +397,27 @@ void Npc::_LuaAddWanderPoints(const std::vector<Math::StdVector3>& points)
 
 bool Npc::SayQuote(ChatType channel, int index)
 {
-    std::string quote = GetQuote(index);
+    const std::string quote = GetQuote(index);
     if (quote.empty())
         return false;
 
-    kainjow::mustache::mustache tpl{ quote };
-    kainjow::mustache::data data;
-    if (auto sel = GetSelectedObject())
-        data.set("selected_name", sel->GetName());
-    else
-        data.set("selected_name", "");
-
-    std::string t = tpl.render(data);
+    const std::string t = sa::TemplateParser::Evaluate(quote, [this](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "selected_name")
+            {
+                if (auto sel = GetSelectedObject())
+                    return sel->GetName();
+                return "";
+            }
+            LOG_WARNING << "Not implemented placeholder " << token.value << std::endl;
+            return "";
+        default:
+            return token.value;
+        }
+    });
 
     Say(channel, t);
     return true;

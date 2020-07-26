@@ -13,7 +13,7 @@ prof2Index = PROFESSIONINDEX_NONE
 behavior = "marianna_gani"
 
 local quotes = {
-  "Oh {{selected_name}}, this was close!"
+  "Oh ${selected_name}, this was close!"
 }
 
 function onInit()
