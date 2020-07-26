@@ -35,7 +35,7 @@ bool DBMail::Create(AB::Entities::Mail& mail)
     std::ostringstream query;
 
     // Check if exceeding mail limit, if yes fail
-    query << "SELECT COUNT(*) AS `count` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(mail.toAccountUuid);
+    query << "SELECT COUNT(*) AS count FROM mails WHERE to_account_uuid = " << db->EscapeString(mail.toAccountUuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
@@ -43,8 +43,8 @@ bool DBMail::Create(AB::Entities::Mail& mail)
         return false;
 
     query.str("");
-    query << "INSERT INTO `mails` (`uuid`, `from_account_uuid`, `to_account_uuid`, `from_name`, `to_name`, " <<
-        "`subject`, `message`, `created`, `is_read`";
+    query << "INSERT INTO mails (uuid, from_account_uuid, to_account_uuid, from_name, to_name, " <<
+        "subject, message, created, is_read";
     query << ") VALUES (";
 
     query << db->EscapeString(mail.uuid) << ", ";
@@ -84,7 +84,7 @@ bool DBMail::Load(AB::Entities::Mail& mail)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);
+    query << "SELECT * FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
@@ -112,17 +112,17 @@ bool DBMail::Save(const AB::Entities::Mail& mail)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `mails` SET ";
-    query << " `from_account_uuid` = " << db->EscapeString(mail.fromAccountUuid) << ", ";
-    query << " `to_account_uuid` = " << db->EscapeString(mail.toAccountUuid) << ", ";
-    query << " `from_name` = " << db->EscapeString(mail.fromName) << ", ";
-    query << " `to_name` = " << db->EscapeString(mail.toName) << ", ";
-    query << " `subject` = " << db->EscapeString(mail.subject) << ", ";
-    query << " `message` = " << db->EscapeString(mail.message) << ", ";
-    query << " `created` = " << mail.created << ", ";
-    query << " `is_read` = " << (mail.isRead ? 1 : 0);
+    query << "UPDATE mails SET ";
+    query << " from_account_uuid = " << db->EscapeString(mail.fromAccountUuid) << ", ";
+    query << " to_account_uuid = " << db->EscapeString(mail.toAccountUuid) << ", ";
+    query << " from_name = " << db->EscapeString(mail.fromName) << ", ";
+    query << " to_name = " << db->EscapeString(mail.toName) << ", ";
+    query << " subject = " << db->EscapeString(mail.subject) << ", ";
+    query << " message = " << db->EscapeString(mail.message) << ", ";
+    query << " created = " << mail.created << ", ";
+    query << " is_read = " << (mail.isRead ? 1 : 0);
 
-    query << " WHERE `uuid` = " << db->EscapeString(mail.uuid);
+    query << " WHERE uuid = " << db->EscapeString(mail.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -145,7 +145,7 @@ bool DBMail::Delete(const AB::Entities::Mail& mail)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);
+    query << "DELETE FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -168,7 +168,7 @@ bool DBMail::Exists(const AB::Entities::Mail& mail)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);
+    query << "SELECT COUNT(*) AS count FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

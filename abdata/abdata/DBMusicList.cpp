@@ -32,7 +32,7 @@ bool DBMusicList::Load(AB::Entities::MusicList& il)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_music` ORDER BY `sorting`";
+    static const std::string query = "SELECT uuid FROM game_music ORDER BY sorting";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         il.musicUuids.push_back(result->GetString("uuid"));

@@ -32,7 +32,7 @@ bool DBGameList::Load(AB::Entities::GameList& game)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_maps`";
+    static const std::string query = "SELECT uuid FROM game_maps";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         game.gameUuids.push_back(result->GetString("uuid"));

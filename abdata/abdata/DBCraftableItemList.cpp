@@ -37,7 +37,8 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
     static std::string statement;
     if (statement.empty())
     {
-        static constexpr const char* SQL = "SELECT uuid, idx, type, item_flags, name, value FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC";
+        static constexpr const char* SQL = "SELECT uuid, idx, type, item_flags, name, value "
+            "FROM game_items WHERE item_flags & ${item_flags} = ${item_flags} ORDER BY type DESC, name ASC";
         statement = sa::TemplateParser::Evaluate(SQL, [](const sa::Token& token) -> std::string
         {
             switch (token.type)
@@ -46,10 +47,6 @@ bool DBCraftableItemList::Load(AB::Entities::CraftableItemList& il)
                 if (token.value == "item_flags")
                     return std::to_string(static_cast<int>(AB::Entities::ItemFlagCraftable));
                 ASSERT_FALSE();
-            case sa::Token::Type::Quote:
-                if (token.value == "`")
-                    return "\"";
-                return token.value;
             default:
                 return token.value;
             }

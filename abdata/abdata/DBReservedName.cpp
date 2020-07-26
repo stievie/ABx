@@ -38,7 +38,7 @@ bool DBReservedName::Create(AB::Entities::ReservedName& rn)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `reserved_names` (`uuid`, `name`, `is_reserved`, `reserved_for_account_uuid`, `expires`";
+    query << "INSERT INTO reserved_names (uuid, name, is_reserved, reserved_for_account_uuid, expires";
     query << ") VALUES (";
 
     query << db->EscapeString(rn.uuid) << ", ";
@@ -68,11 +68,11 @@ bool DBReservedName::Load(AB::Entities::ReservedName& n)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `reserved_names` WHERE ";
+    query << "SELECT * FROM reserved_names WHERE ";
     if (!Utils::Uuid::IsEmpty(n.uuid))
-        query << "`uuid` = " << db->EscapeString(n.uuid);
+        query << "uuid = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(n.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -103,13 +103,13 @@ bool DBReservedName::Save(const AB::Entities::ReservedName& rn)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `reserved_names` SET ";
+    query << "UPDATE reserved_names SET ";
 
     // Only these may be changed
-    query << " `is_reserved` = " << (rn.isReserved ? 1 : 0) << ", ";
-    query << " `expires` = " << rn.expires;
+    query << " is_reserved = " << (rn.isReserved ? 1 : 0) << ", ";
+    query << " expires = " << rn.expires;
 
-    query << " WHERE `uuid` = " << db->EscapeString(rn.uuid);
+    query << " WHERE uuid = " << db->EscapeString(rn.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -132,7 +132,7 @@ bool DBReservedName::Delete(const AB::Entities::ReservedName& rn)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `reserved_names` WHERE `uuid` = " << db->EscapeString(rn.uuid);
+    query << "DELETE FROM reserved_names WHERE uuid = " << db->EscapeString(rn.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -149,18 +149,18 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `reserved_names` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM reserved_names WHERE ";
     if (!Utils::Uuid::IsEmpty(n.uuid))
-        query << "`uuid` = " << db->EscapeString(n.uuid);
+        query << "uuid = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(n.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
     if (n.isReserved)
-        query << " AND `is_reserved` = 1";
+        query << " AND is_reserved = 1";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -173,8 +173,8 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
     // When expires == 0 it does not expire, otherwise it's the time stamp
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `reserved_names` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
+    query << "SELECT uuid FROM reserved_names WHERE ";
+    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -197,8 +197,8 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
 
     // Then delete from DB
     query.str("");
-    query << "DELETE FROM `reserved_names` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
+    query << "DELETE FROM reserved_names WHERE ";
+    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
 
     DBTransaction transaction(db);
     if (!transaction.Begin())

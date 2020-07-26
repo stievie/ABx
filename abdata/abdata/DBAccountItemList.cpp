@@ -46,9 +46,9 @@ bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
     Database* db = GetSubsystem<Database>();
 
     sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT `uuid` FROM `concrete_items` WHERE `account_uuid` = ${player_uuid} AND `deleted` = 0");
+    sa::Template tokens = parser.Parse("SELECT uuid FROM concrete_items WHERE account_uuid = ${player_uuid} AND deleted = 0");
     if (il.storagePlace != AB::Entities::StoragePlace::None)
-        parser.Append(" AND `storage_place` = ${storage_place}", tokens);
+        parser.Append(" AND storage_place = ${storage_place}", tokens);
     const std::string query = tokens.ToString([db, &il](const sa::Token& token) -> std::string
     {
         switch (token.type)
@@ -59,10 +59,6 @@ bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
             if (token.value == "storage_place")
                 return std::to_string(static_cast<int>(il.storagePlace));
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }

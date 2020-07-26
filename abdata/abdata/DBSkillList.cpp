@@ -32,7 +32,7 @@ bool DBSkillList::Load(AB::Entities::SkillList& sl)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_skills`";
+    static const std::string query = "SELECT uuid FROM game_skills";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         sl.skillUuids.push_back(result->GetString("uuid"));

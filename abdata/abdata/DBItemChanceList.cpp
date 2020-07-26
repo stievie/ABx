@@ -46,9 +46,9 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `item_uuid`, `chance`, `can_drop` FROM `game_item_chances` WHERE `map_uuid` = " << db->EscapeString(il.uuid);
+    query << "SELECT item_uuid, chance, can_drop FROM game_item_chances WHERE map_uuid = " << db->EscapeString(il.uuid);
     // Empty GUID means can drop an all maps
-    query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
+    query << " OR map_uuid = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         il.items.push_back({

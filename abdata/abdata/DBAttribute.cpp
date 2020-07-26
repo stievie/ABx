@@ -35,11 +35,11 @@ bool DBAttribute::Load(AB::Entities::Attribute& attr)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_attributes` WHERE ";
+    query << "SELECT * FROM game_attributes WHERE ";
     if (!Utils::Uuid::IsEmpty(attr.uuid))
-        query << "`uuid` = " << db->EscapeString(attr.uuid);
+        query << "uuid = " << db->EscapeString(attr.uuid);
     else if (attr.index != AB::Entities::INVALID_INDEX)
-        query << "`idx` = " << attr.index;
+        query << "idx = " << attr.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;
@@ -76,11 +76,11 @@ bool DBAttribute::Exists(const AB::Entities::Attribute& attr)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) FROM `game_attributes` WHERE ";
+    query << "SELECT COUNT(*) FROM game_attributes WHERE ";
     if (!Utils::Uuid::IsEmpty(attr.uuid))
-        query << "`uuid` = " << db->EscapeString(attr.uuid);
+        query << "uuid = " << db->EscapeString(attr.uuid);
     else if (attr.index != AB::Entities::INVALID_INDEX)
-        query << "`idx` = " << attr.index;
+        query << "idx = " << attr.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;

@@ -36,7 +36,6 @@ protected:
     bool Connect(int numTries = 1);
     bool InternalQuery(const std::string& query) override;
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) override;
-    std::string Parse(const std::string& s);
 public:
     DatabasePgsql();
     ~DatabasePgsql() override;

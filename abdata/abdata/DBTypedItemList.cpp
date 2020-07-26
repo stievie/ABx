@@ -40,10 +40,10 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
         "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid "
         "WHERE (map_uuid = ${map_uuid}");
     if (!Utils::Uuid::IsEmpty(il.uuid))
-        parser.Append(" OR `map_uuid` = ${empty_map_uuid}", tokens);
+        parser.Append(" OR map_uuid = ${empty_map_uuid}", tokens);
     parser.Append(")", tokens);
     if (il.type != AB::Entities::ItemType::Unknown)
-        parser.Append(" AND `type` = ${type}", tokens);
+        parser.Append(" AND type = ${type}", tokens);
 
     auto callback = [db, &il](const sa::Token& token) -> std::string
     {
@@ -57,10 +57,6 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
             if (token.value == "type")
                 return std::to_string(static_cast<int>(il.type));
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }

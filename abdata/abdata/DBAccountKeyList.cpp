@@ -34,7 +34,7 @@ bool DBAccountKeyList::Load(AB::Entities::AccountKeyList& al)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `account_keys`";
+    query << "SELECT uuid FROM account_keys";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         al.uuids.push_back(result->GetString("uuid"));

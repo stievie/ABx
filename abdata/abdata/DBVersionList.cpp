@@ -32,7 +32,7 @@ bool DBVersionList::Load(AB::Entities::VersionList& vl)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT * FROM `versions` WHERE `internal` = 0";
+    static const std::string query = "SELECT * FROM versions WHERE internal = 0";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         vl.versions.push_back({

@@ -37,9 +37,9 @@ bool DBCharacter::Create(AB::Entities::Character& character)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `profession_uuid`, `profession2_uuid`, `name`, `pvp`, " <<
-        "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
-        "`model_index`, `creation`, `inventory_size`";
+    query << "INSERT INTO players (uuid, profession, profession2, profession_uuid, profession2_uuid, name, pvp, " <<
+        "account_uuid, level, experience, skillpoints, sex, " <<
+        "model_index, creation, inventory_size";
     query << ") VALUES (";
 
     query << db->EscapeString(character.uuid) << ", ";
@@ -79,11 +79,11 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `players` WHERE ";
+    query << "SELECT * FROM players WHERE ";
     if (!Utils::Uuid::IsEmpty(character.uuid))
-        query << "`uuid` = " << db->EscapeString(character.uuid);
+        query << "uuid = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(character.name) << ")";
     else
     {
         LOG_ERROR << "UUID (" << character.uuid << ") and name (" << character.name << ") are empty" << std::endl;
@@ -132,25 +132,25 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `players` SET ";
+    query << "UPDATE players SET ";
 
     // Only these may be changed
-    query << " `profession2` = " << db->EscapeString(character.profession2) << ", ";
-    query << " `profession2_uuid` = " << db->EscapeString(character.profession2Uuid) << ", ";
-    query << " `skills` = " << db->EscapeString(character.skillTemplate) << ", ";
-    query << " `level` = " << static_cast<int>(character.level) << ", ";
-    query << " `experience` = " << character.xp << ", ";
-    query << " `skillpoints` = " << character.skillPoints << ", ";
-    query << " `lastlogin` = " << character.lastLogin << ", ";
-    query << " `lastlogout` = " << character.lastLogout << ", ";
-    query << " `onlinetime` = " << character.onlineTime << ", ";
-    query << " `deleted` = " << character.deletedTime << ", ";
-    query << " `current_map_uuid` = " << db->EscapeString(character.currentMapUuid) << ", ";
-    query << " `last_outpost_uuid` = " << db->EscapeString(character.lastOutpostUuid) << ", ";
-    query << " `inventory_size` = " << static_cast<int>(character.inventorySize) << ", ";
-    query << " `death_stats` = " << db->EscapeBlob(character.deathStats.data(), character.deathStats.length());
+    query << " profession2 = " << db->EscapeString(character.profession2) << ", ";
+    query << " profession2_uuid = " << db->EscapeString(character.profession2Uuid) << ", ";
+    query << " skills = " << db->EscapeString(character.skillTemplate) << ", ";
+    query << " level = " << static_cast<int>(character.level) << ", ";
+    query << " experience = " << character.xp << ", ";
+    query << " skillpoints = " << character.skillPoints << ", ";
+    query << " lastlogin = " << character.lastLogin << ", ";
+    query << " lastlogout = " << character.lastLogout << ", ";
+    query << " onlinetime = " << character.onlineTime << ", ";
+    query << " deleted = " << character.deletedTime << ", ";
+    query << " current_map_uuid = " << db->EscapeString(character.currentMapUuid) << ", ";
+    query << " last_outpost_uuid = " << db->EscapeString(character.lastOutpostUuid) << ", ";
+    query << " inventory_size = " << static_cast<int>(character.inventorySize) << ", ";
+    query << " death_stats = " << db->EscapeBlob(character.deathStats.data(), character.deathStats.length());
 
-    query << " WHERE `uuid` = " << db->EscapeString(character.uuid);
+    query << " WHERE uuid = " << db->EscapeString(character.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -173,7 +173,7 @@ bool DBCharacter::Delete(const AB::Entities::Character& character)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `players` WHERE `uuid` = " << db->EscapeString(character.uuid);
+    query << "DELETE FROM players WHERE uuid = " << db->EscapeString(character.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -190,11 +190,11 @@ bool DBCharacter::Exists(const AB::Entities::Character& character)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `players` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM players WHERE ";
     if (!Utils::Uuid::IsEmpty(character.uuid))
-        query << "`uuid` = " << db->EscapeString(character.uuid);
+        query << "uuid = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(character.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;

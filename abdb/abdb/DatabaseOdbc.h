@@ -51,8 +51,6 @@ protected:
     bool Commit() override;
     bool InternalQuery(const std::string& query) override;
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) override;
-    std::string Parse(const std::string& s);
-public:
     DatabaseOdbc();
     ~DatabaseOdbc() override;
 

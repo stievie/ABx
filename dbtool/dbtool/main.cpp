@@ -45,7 +45,6 @@ PRAGMA_WARNING_POP
 #include <streambuf>
 #include "LuaSkill.h"
 
-
 namespace fs = std::filesystem;
 
 static bool sReadOnly = false;
@@ -188,8 +187,8 @@ static int GetDBVersion(DB::Database& db)
     if (DB::Database::driver_ == "pgsql")
         query << "SET search_path TO schema, public; ";
 #endif
-    query << "SELECT `value` FROM `versions` WHERE ";
-    query << "`name` = " << db.EscapeString("schema");
+    query << "SELECT value FROM versions WHERE ";
+    query << "name = " << db.EscapeString("schema");
 
     std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str());
     if (!result)
@@ -232,7 +231,7 @@ static bool UpdateDatabase(DB::Database& db, const std::string& dir)
 static void ShowVersions(DB::Database& db)
 {
     std::ostringstream query;
-    query << "SELECT * FROM `versions` ORDER BY `name`";
+    query << "SELECT * FROM versions ORDER BY name";
     sa::tab::table table;
     table.table_sep_ = '=';
     table << sa::tab::head << "Name" << sa::tab::endc << "Value" << sa::tab::endr;
@@ -247,7 +246,7 @@ static void ShowVersions(DB::Database& db)
 static void ShowAccountKeys(DB::Database& db)
 {
     std::ostringstream query;
-    query << "SELECT * FROM `account_keys`";
+    query << "SELECT * FROM account_keys";
     sa::tab::table table;
     table.table_sep_ = '=';
     table.col_sep_ = " | ";
@@ -267,7 +266,7 @@ static std::string GenAccKey(DB::Database& db)
 {
     std::string uuid = Utils::Uuid::New();
     std::ostringstream query;
-    query << "INSERT INTO `account_keys` (`uuid`, `used`, `total`, `description`, `status`, `key_type`";
+    query << "INSERT INTO account_keys (uuid, used, total, description, status, key_type";
     query << ") VALUES (";
     query << db.EscapeString(uuid) << ",";
     query << "0,";
@@ -315,16 +314,16 @@ static bool UpdateSkill(DB::Database& db, const SkillStruct& skill)
         std::cout << "Updating: " << skill.filename << std::endl;
 
     std::ostringstream query;
-    query << "UPDATE `game_skills` SET ";
-    query << " `activation` = " << lSkill.GetActivation() << ", ";
-    query << " `recharge` = " << lSkill.GetRecharge() << ", ";
-    query << " `const_energy` = " << lSkill.GetEnergy() << ", ";
-    query << " `const_energy_regen` = " << lSkill.GetEnergyRegen() << ", ";
-    query << " `const_adrenaline` = " << lSkill.GetAdrenaline() << ", ";
-    query << " `const_overcast` = " << lSkill.GetOvercast() << ", ";
-    query << " `const_hp` = " << lSkill.GetHp();
+    query << "UPDATE game_skills SET ";
+    query << " activation = " << lSkill.GetActivation() << ", ";
+    query << " recharge = " << lSkill.GetRecharge() << ", ";
+    query << " const_energy = " << lSkill.GetEnergy() << ", ";
+    query << " const_energy_regen = " << lSkill.GetEnergyRegen() << ", ";
+    query << " const_adrenaline = " << lSkill.GetAdrenaline() << ", ";
+    query << " const_overcast = " << lSkill.GetOvercast() << ", ";
+    query << " const_hp = " << lSkill.GetHp();
 
-    query << " WHERE `uuid` = " << db.EscapeString(skill.uuid);
+    query << " WHERE uuid = " << db.EscapeString(skill.uuid);
     if (sVerbose)
         std::cout << query.str() << std::endl;
 
@@ -356,7 +355,7 @@ static bool UpdateSkills(DB::Database& db)
         std::cout << "Data directory: " << gDataDir << std::endl;
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_skills`";
+    query << "SELECT * FROM game_skills";
     for (std::shared_ptr<DB::DBResult> result = db.StoreQuery(query.str()); result; result = result->Next())
     {
         std::string file = result->GetString("script");

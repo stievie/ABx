@@ -47,7 +47,7 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
 
     fl.friends.clear();
     std::ostringstream query;
-    query << "SELECT * FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
+    query << "SELECT * FROM friend_list WHERE account_uuid = " << db->EscapeString(fl.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (result)
     {
@@ -81,7 +81,7 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
         return false;
 
     // First delete all
-    query << "DELETE FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
+    query << "DELETE FROM friend_list WHERE account_uuid = " << db->EscapeString(fl.uuid);
 
     if (!db->ExecuteQuery(query.str()))
         return false;
@@ -92,7 +92,7 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
         for (const auto& f : fl.friends)
         {
             query.str("");
-            query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `friend_name`, `relation`, `creation`) VALUES (";
+            query << "INSERT INTO friend_list (account_uuid, friend_uuid, friend_name, relation, creation) VALUES (";
             query << db->EscapeString(fl.uuid) << ", ";
             query << db->EscapeString(f.friendUuid) << ", ";
             query << db->EscapeString(f.friendName) << ", ";
@@ -118,7 +118,7 @@ bool DBFriendList::Delete(const AB::Entities::FriendList& fl)
     // Delete all friends of this account
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
+    query << "DELETE FROM friend_list WHERE account_uuid = " << db->EscapeString(fl.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;

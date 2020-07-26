@@ -33,8 +33,8 @@ bool DBItemPrice::Create(AB::Entities::ItemPrice&)
 
 uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
 {
-    static constexpr const char* SQL = "SELECT AVG(chance) AS avg_chance FROM `game_item_chances` WHERE `item_uuid` = ${item_uuid}"
-        " GROUP BY `item_uuid`";
+    static constexpr const char* SQL = "SELECT AVG(chance) AS avg_chance FROM game_item_chances WHERE item_uuid = ${item_uuid}"
+        " GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
 
@@ -46,10 +46,6 @@ uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
             if (token.value == "item_uuid")
                 return db->EscapeString(itemUuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -63,7 +59,7 @@ uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
 
 uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
 {
-    static constexpr const char* SQL = "SELECT AVG(value) as avg_value FROM `concrete_items` WHERE deleted = 0 "
+    static constexpr const char* SQL = "SELECT AVG(value) as avg_value FROM concrete_items WHERE deleted = 0 "
         "AND item_uuid = ${item_uuid} GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
@@ -75,10 +71,6 @@ uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
             if (token.value == "item_uuid")
                 return db->EscapeString(itemUuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -92,10 +84,10 @@ uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
 uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
 {
     // How many of that belongs to the merchant
-    static constexpr const char* SQL = "SELECT SUM(count) AS available FROM `concrete_items` "
-        "WHERE `deleted` = 0 AND storage_place = ${storage_place}"
-        " AND `item_uuid` = ${item_uuid}"
-        " GROUP BY `item_uuid`";
+    static constexpr const char* SQL = "SELECT SUM(count) AS available FROM concrete_items "
+        "WHERE deleted = 0 AND storage_place = ${storage_place}"
+        " AND item_uuid = ${item_uuid}"
+        " GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
@@ -108,10 +100,6 @@ uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
             if (token.value == "storage_place")
                 return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -133,7 +121,7 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
 
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL = "SELECT `type`, `item_flags`, `value` FROM `game_items` WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "SELECT type, item_flags, value FROM game_items WHERE uuid = ${uuid}";
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
     {
         switch (token.type)
@@ -142,10 +130,6 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -218,8 +202,8 @@ bool DBItemPrice::Exists(const AB::Entities::ItemPrice& item)
         return false;
     }
 
-    static constexpr const char* SQL = "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE "
-        "`deleted` = 0 AND `item_uuid` = ${item_uuid} AND `storage_place` = ${storage_place}";
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM concrete_items WHERE "
+        "deleted = 0 AND item_uuid = ${item_uuid} AND storage_place = ${storage_place}";
     Database* db = GetSubsystem<Database>();
 
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
@@ -232,10 +216,6 @@ bool DBItemPrice::Exists(const AB::Entities::ItemPrice& item)
             if (token.value == "storage_place")
                 return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }

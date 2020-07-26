@@ -34,8 +34,8 @@ bool DBGuild::Create(AB::Entities::Guild& g)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`, `guild_hall_uuid`, `creator_name`, `creator_player_uuid`, ";
-    query << "`guild_hall_instance_uuid`, `guild_hall_server_uuid`";
+    query << "INSERT INTO guilds (uuid, name, tag, creator_account_uuid, creation, guild_hall_uuid, creator_name, creator_player_uuid, ";
+    query << "guild_hall_instance_uuid, guild_hall_server_uuid";
     query << ") VALUES (";
 
     query << db->EscapeString(g.uuid) << ", ";
@@ -70,11 +70,11 @@ bool DBGuild::Load(AB::Entities::Guild& g)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `guilds` WHERE ";
+    query << "SELECT * FROM guilds WHERE ";
     if (!Utils::Uuid::IsEmpty(g.uuid))
-        query << "`uuid` = " << db->EscapeString(g.uuid);
+        query << "uuid = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(g.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(g.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -110,20 +110,20 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `guilds` SET ";
+    query << "UPDATE guilds SET ";
 
     // Only these may be changed
-    query << " `name` = " << db->EscapeString(g.name) << ", ";
-    query << " `tag` = " << db->EscapeString(g.tag) << ", ";
-    query << " `creator_account_uuid` = " << db->EscapeString(g.creatorAccountUuid) << ", ";
-    query << " `creation` = " << g.creation << ", ";
-    query << " `guild_hall_uuid` = " << db->EscapeString(g.guildHall) << ", ";
-    query << " `creator_name` = " << db->EscapeString(g.creatorName) << ", ";
-    query << " `creator_player_uuid` = " << db->EscapeString(g.creatorPlayerUuid) << ", ";
-    query << " `guild_hall_instance_uuid` = " << db->EscapeString(g.guildHallInstanceUuid) << ", ";
-    query << " `guild_hall_server_uuid` = " << db->EscapeString(g.guildHallServerUuid);
+    query << " name = " << db->EscapeString(g.name) << ", ";
+    query << " tag = " << db->EscapeString(g.tag) << ", ";
+    query << " creator_account_uuid = " << db->EscapeString(g.creatorAccountUuid) << ", ";
+    query << " creation = " << g.creation << ", ";
+    query << " guild_hall_uuid = " << db->EscapeString(g.guildHall) << ", ";
+    query << " creator_name = " << db->EscapeString(g.creatorName) << ", ";
+    query << " creator_player_uuid = " << db->EscapeString(g.creatorPlayerUuid) << ", ";
+    query << " guild_hall_instance_uuid = " << db->EscapeString(g.guildHallInstanceUuid) << ", ";
+    query << " guild_hall_server_uuid = " << db->EscapeString(g.guildHallServerUuid);
 
-    query << " WHERE `uuid` = " << db->EscapeString(g.uuid);
+    query << " WHERE uuid = " << db->EscapeString(g.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -146,7 +146,7 @@ bool DBGuild::Delete(const AB::Entities::Guild& g)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `guilds` WHERE `uuid` = " << db->EscapeString(g.uuid);
+    query << "DELETE FROM guilds WHERE uuid = " << db->EscapeString(g.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -163,11 +163,11 @@ bool DBGuild::Exists(const AB::Entities::Guild& g)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `guilds` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM guilds WHERE ";
     if (!Utils::Uuid::IsEmpty(g.uuid))
-        query << "`uuid` = " << db->EscapeString(g.uuid);
+        query << "uuid = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
-        query << "LOWER(`name`) = LOWER(" << db->EscapeString(g.name) << ")";
+        query << "LOWER(name) = LOWER(" << db->EscapeString(g.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;

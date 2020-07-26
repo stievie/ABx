@@ -34,7 +34,7 @@ bool DBBan::Create(AB::Entities::Ban& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `bans` (`uuid`, `expires`, `added`, `reason`, `active`, `admin_uuid`, `comment`) VALUES (";
+    query << "INSERT INTO bans (uuid, expires, added, reason, active, admin_uuid, comment) VALUES (";
     query << db->EscapeString(ban.uuid) << ", ";
     query << ban.expires << ", ";
     query << ban.added << ", ";
@@ -70,7 +70,7 @@ bool DBBan::Load(AB::Entities::Ban& ban)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << "SELECT * FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -98,15 +98,15 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `bans` SET ";
-    query << " `expires`" << ban.expires << ", ";
-    query << " `added`" << ban.added << ", ";
-    query << " `reason`" << static_cast<int>(ban.reason) << ", ";
-    query << " `active`" << (ban.active ? 1 : 0) << ", ";
-    query << " `admin_uuid`" << db->EscapeString(ban.adminUuid) << ", ";
-    query << " `comment`" << db->EscapeString(ban.comment);
+    query << "UPDATE bans SET ";
+    query << " expires" << ban.expires << ", ";
+    query << " added" << ban.added << ", ";
+    query << " reason" << static_cast<int>(ban.reason) << ", ";
+    query << " active" << (ban.active ? 1 : 0) << ", ";
+    query << " admin_uuid" << db->EscapeString(ban.adminUuid) << ", ";
+    query << " comment" << db->EscapeString(ban.comment);
 
-    query << " WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << " WHERE uuid = " << db->EscapeString(ban.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -129,7 +129,7 @@ bool DBBan::Delete(const AB::Entities::Ban& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << "DELETE FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -152,7 +152,7 @@ bool DBBan::Exists(const AB::Entities::Ban& ban)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << "SELECT COUNT(*) AS count FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

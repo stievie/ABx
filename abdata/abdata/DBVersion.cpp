@@ -35,12 +35,12 @@ bool DBVersion::Load(AB::Entities::Version& v)
     Database* db = GetSubsystem<Database>();
 
     sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT * FROM `versions` WHERE ");
+    sa::Template tokens = parser.Parse("SELECT * FROM versions WHERE ");
 
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        parser.Append("`uuid` = ${uuid}", tokens);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!v.name.empty())
-        parser.Append("`name` = ${name}", tokens);
+        parser.Append("name = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -57,10 +57,6 @@ bool DBVersion::Load(AB::Entities::Version& v)
             if (token.value == "name")
                 return db->EscapeString(v.name);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -94,12 +90,12 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
     Database* db = GetSubsystem<Database>();
 
     sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT COUNT(*) AS `count` FROM `versions` WHERE ");
+    sa::Template tokens = parser.Parse("SELECT COUNT(*) AS count FROM versions WHERE ");
 
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        parser.Append("`uuid` = ${uuid}", tokens);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!v.name.empty())
-        parser.Append("`name` = ${name}", tokens);
+        parser.Append("name = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -116,10 +112,6 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
             if (token.value == "name")
                 return db->EscapeString(v.name);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }

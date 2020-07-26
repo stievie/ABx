@@ -40,11 +40,11 @@ bool DBEffect::Load(AB::Entities::Effect& effect)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_effects` WHERE ";
+    query << "SELECT * FROM game_effects WHERE ";
     if (!Utils::Uuid::IsEmpty(effect.uuid))
-        query << "`uuid` = " << db->EscapeString(effect.uuid);
+        query << "uuid = " << db->EscapeString(effect.uuid);
     else if (effect.index != 0)
-        query << "`idx` = " << effect.index;
+        query << "idx = " << effect.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;
@@ -94,11 +94,11 @@ bool DBEffect::Exists(const AB::Entities::Effect& effect)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_effects WHERE ";
     if (!Utils::Uuid::IsEmpty(effect.uuid))
-        query << "`uuid` = " << db->EscapeString(effect.uuid);
+        query << "uuid = " << db->EscapeString(effect.uuid);
     else if (effect.index != 0)
-        query << "`idx` = " << effect.index;
+        query << "idx = " << effect.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;

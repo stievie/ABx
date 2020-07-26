@@ -35,8 +35,8 @@ bool DBQuest::Create(AB::Entities::Quest& v)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `game_quests` (`uuid`, `idx`, `name`, `script`, `repeatable`, `description` " <<
-        "`depends_on_uuid`, `reward_xp`, `reward_money`, `reward_items`";
+    query << "INSERT INTO game_quests (uuid, idx, name, script, repeatable, description " <<
+        "depends_on_uuid, reward_xp, reward_money, reward_items";
     query << ") VALUES (";
 
     query << db->EscapeString(v.uuid) << ", ";
@@ -71,9 +71,9 @@ bool DBQuest::Load(AB::Entities::Quest& v)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_quests` WHERE ";
+    query << "SELECT * FROM game_quests WHERE ";
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "`uuid` = " << db->EscapeString(v.uuid);
+        query << "uuid = " << db->EscapeString(v.uuid);
     else if (v.index != AB::Entities::INVALID_INDEX)
         query << "idx = " << v.index;
     else
@@ -111,19 +111,19 @@ bool DBQuest::Save(const AB::Entities::Quest& v)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `game_quests` SET ";
+    query << "UPDATE game_quests SET ";
 
     // Only these may be changed
-    query << " `name` = " << db->EscapeString(v.name) << ", ";
-    query << " `script` = " << db->EscapeString(v.script) << ", ";
-    query << " `repeatable` = " << (v.repeatable ? 1 : 0) << ", ";
-    query << " `description` = " << db->EscapeString(v.description) << ", ";
-    query << " `depends_on_uuid` = " << db->EscapeString(v.dependsOn) << ", ";
-    query << " `reward_xp` = " << v.rewardXp << ", ";
-    query << " `reward_money` = " << v.rewardMoney << ", ";
-    query << " `reward_items` = " << sa::CombineString(v.rewardItems, std::string(";"));
+    query << " name = " << db->EscapeString(v.name) << ", ";
+    query << " script = " << db->EscapeString(v.script) << ", ";
+    query << " repeatable = " << (v.repeatable ? 1 : 0) << ", ";
+    query << " description = " << db->EscapeString(v.description) << ", ";
+    query << " depends_on_uuid = " << db->EscapeString(v.dependsOn) << ", ";
+    query << " reward_xp = " << v.rewardXp << ", ";
+    query << " reward_money = " << v.rewardMoney << ", ";
+    query << " reward_items = " << sa::CombineString(v.rewardItems, std::string(";"));
 
-    query << " WHERE `uuid` = " << db->EscapeString(v.uuid);
+    query << " WHERE uuid = " << db->EscapeString(v.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -147,9 +147,9 @@ bool DBQuest::Exists(const AB::Entities::Quest& v)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_quests` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_quests WHERE ";
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "`uuid` = " << db->EscapeString(v.uuid);
+        query << "uuid = " << db->EscapeString(v.uuid);
     else if (v.index != AB::Entities::INVALID_INDEX)
         query << "idx = " << v.index << ")";
     else

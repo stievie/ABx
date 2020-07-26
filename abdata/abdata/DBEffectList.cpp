@@ -32,7 +32,7 @@ bool DBEffectList::Load(AB::Entities::EffectList& el)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_effects`";
+    static const std::string query = "SELECT uuid FROM game_effects";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         el.effectUuids.push_back(result->GetString("uuid"));

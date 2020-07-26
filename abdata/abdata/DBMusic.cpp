@@ -35,8 +35,8 @@ bool DBMusic::Create(AB::Entities::Music& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "INSERT INTO `game_music` (`uuid`, `map_uuid`, `local_file`, `remote_file`, `sorting`, " <<
-        "`style`";
+    query << "INSERT INTO game_music (uuid, map_uuid, local_file, remote_file, sorting, " <<
+        "style";
     query << ") VALUES (";
 
     query << db->EscapeString(item.uuid) << ", ";
@@ -73,8 +73,8 @@ bool DBMusic::Load(AB::Entities::Music& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_music` WHERE ";
-    query << "`uuid` = " << db->EscapeString(item.uuid);
+    query << "SELECT * FROM game_music WHERE ";
+    query << "uuid = " << db->EscapeString(item.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -101,14 +101,14 @@ bool DBMusic::Save(const AB::Entities::Music& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `game_music` SET ";
-    query << " `map_uuid` = " << db->EscapeString(item.mapUuid) << ", ";
-    query << " `local_file` = " << db->EscapeString(item.localFile) << ", ";
-    query << " `remote_file` = " << db->EscapeString(item.remoteFile) << ", ";
-    query << " `sorting` = " << static_cast<int>(item.sorting) << ", ";
-    query << " `style` = " << static_cast<int>(item.style);
+    query << "UPDATE game_music SET ";
+    query << " map_uuid = " << db->EscapeString(item.mapUuid) << ", ";
+    query << " local_file = " << db->EscapeString(item.localFile) << ", ";
+    query << " remote_file = " << db->EscapeString(item.remoteFile) << ", ";
+    query << " sorting = " << static_cast<int>(item.sorting) << ", ";
+    query << " style = " << static_cast<int>(item.style);
 
-    query << " WHERE `uuid` = " << db->EscapeString(item.uuid);
+    query << " WHERE uuid = " << db->EscapeString(item.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -131,7 +131,7 @@ bool DBMusic::Delete(const AB::Entities::Music& item)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `game_music` WHERE `uuid` = " << db->EscapeString(item.uuid);
+    query << "DELETE FROM game_music WHERE uuid = " << db->EscapeString(item.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -154,8 +154,8 @@ bool DBMusic::Exists(const AB::Entities::Music& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";
-    query << "`uuid` = " << db->EscapeString(item.uuid);
+    query << "SELECT COUNT(*) AS count FROM game_effects WHERE ";
+    query << "uuid = " << db->EscapeString(item.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

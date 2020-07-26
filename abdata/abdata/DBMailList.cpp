@@ -43,8 +43,8 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
     }
 
     // Oldest first because the chat window scrolls down
-    static constexpr const char* SQL = "SELECT `uuid`, `from_name`, `subject`, `created`, `is_read` FROM `mails` "
-        "WHERE `to_account_uuid` = ${to_account_uuid} ORDER BY `created` ASC";
+    static constexpr const char* SQL = "SELECT uuid, from_name, subject, created, is_read FROM mails "
+        "WHERE to_account_uuid = ${to_account_uuid} ORDER BY created ASC";
     Database* db = GetSubsystem<Database>();
 
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &ml](const sa::Token& token) -> std::string
@@ -55,10 +55,6 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
             if (token.value == "to_account_uuid")
                 return db->EscapeString(ml.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }

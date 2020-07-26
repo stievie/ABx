@@ -34,7 +34,7 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `account_bans` (`uuid`, `ban_uuid`, `account_uuid`) VALUES (";
+    query << "INSERT INTO account_bans (uuid, ban_uuid, account_uuid) VALUES (";
     query << db->EscapeString(ban.uuid) << ", ";
     query << db->EscapeString(ban.banUuid) << ", ";
     query << db->EscapeString(ban.accountUuid);
@@ -59,11 +59,11 @@ bool DBAccountBan::Load(AB::Entities::AccountBan& ban)
 {
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "SELECT * FROM `account_bans` WHERE ";
+    query << "SELECT * FROM account_bans WHERE ";
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "`uuid` = " << ban.uuid;
+        query << "uuid = " << ban.uuid;
     else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
-        query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);
+        query << "account_uuid = " << db->EscapeString(ban.accountUuid);
     else
     {
         LOG_ERROR << "UUID and Account UUID are empty" << std::endl;
@@ -92,11 +92,11 @@ bool DBAccountBan::Save(const AB::Entities::AccountBan& ban)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `account_bans` SET ";
-    query << " `ban_uuid`" << ban.banUuid << ", ";
-    query << " `account_uuid`" << ban.accountUuid;
+    query << "UPDATE account_bans SET ";
+    query << " ban_uuid" << ban.banUuid << ", ";
+    query << " account_uuid" << ban.accountUuid;
 
-    query << " WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << " WHERE uuid = " << db->EscapeString(ban.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -119,7 +119,7 @@ bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `account_bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << "DELETE FROM account_bans WHERE uuid = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -135,11 +135,11 @@ bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
 {
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `account_bans` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM account_bans WHERE ";
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "`uuid` = " << db->EscapeString(ban.uuid);
+        query << "uuid = " << db->EscapeString(ban.uuid);
     else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
-        query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);
+        query << "account_uuid = " << db->EscapeString(ban.accountUuid);
     else
     {
         LOG_ERROR << "UUID and Account UUID are empty" << std::endl;

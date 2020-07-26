@@ -40,12 +40,12 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_skills` WHERE ";
+    query << "SELECT * FROM game_skills WHERE ";
     if (!Utils::Uuid::IsEmpty(skill.uuid))
-        query << "`uuid` = " << db->EscapeString(skill.uuid);
+        query << "uuid = " << db->EscapeString(skill.uuid);
     else
         // 0 is a valid index, it is the None skill
-        query << "`idx` = " << skill.index;
+        query << "idx = " << skill.index;
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -103,11 +103,11 @@ bool DBSkill::Exists(const AB::Entities::Skill& skill)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_skills` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_skills WHERE ";
     if (!Utils::Uuid::IsEmpty(skill.uuid))
-        query << "`uuid` = " << db->EscapeString(skill.uuid);
+        query << "uuid = " << db->EscapeString(skill.uuid);
     else if (skill.index != 0)
-        query << "`idx` = " << skill.index;
+        query << "idx = " << skill.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;

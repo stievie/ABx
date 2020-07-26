@@ -47,7 +47,7 @@ bool DBFriendedMe::Load(AB::Entities::FriendedMe& fl)
 
     fl.friends.clear();
     std::ostringstream query;
-    query << "SELECT * FROM `friend_list` WHERE `friend_uuid` = " << db->EscapeString(fl.uuid);
+    query << "SELECT * FROM friend_list WHERE friend_uuid = " << db->EscapeString(fl.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (result)
     {

@@ -32,7 +32,7 @@ bool DBItemList::Load(AB::Entities::ItemList& il)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_items`";
+    static const std::string query = "SELECT uuid FROM game_items";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         il.itemUuids.push_back(result->GetString("uuid"));

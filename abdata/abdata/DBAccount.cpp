@@ -30,9 +30,9 @@ namespace DB {
 bool DBAccount::Create(AB::Entities::Account& account)
 {
     static constexpr const char* SQL =
-        "INSERT INTO `accounts` ("
-        "`uuid`, `name`, `password`, `email`, `type`, `status`, `creation`, "
-        "`char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`, `chest_size` "
+        "INSERT INTO accounts ("
+        "uuid, name, password, email, type, status, creation, "
+        "char_slots, current_server_uuid, online_status, guild_uuid, chest_size "
         ") VALUES ( "
         "${uuid}, ${name}, ${password}, ${email}, ${type}, ${status}, ${creation}, "
         "${char_slots}, ${current_server_uuid}, ${online_status}, ${guild_uuid}, ${chest_size})";
@@ -76,10 +76,6 @@ bool DBAccount::Create(AB::Entities::Account& account)
             if (token.value == "chest_size")
                 return std::to_string(account.chest_size);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -97,8 +93,8 @@ bool DBAccount::Load(AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL_UUID = "SELECT * FROM `accounts` WHERE `uuid`= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT * FROM `accounts` WHERE `name`= ${name}";
+    static constexpr const char* SQL_UUID = "SELECT * FROM accounts WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT * FROM accounts WHERE name= ${name}";
 
     const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))
@@ -121,10 +117,6 @@ bool DBAccount::Load(AB::Entities::Account& account)
             if (token.value == "name")
                 return db->EscapeString(account.name);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -162,7 +154,7 @@ void DBAccount::LoadCharacters(AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
     account.characterUuids.clear();
-    static constexpr const char* SQL = "SELECT `uuid`, `name` FROM `players` WHERE `account_uuid` = ${account_uuid} ORDER BY `name`";
+    static constexpr const char* SQL = "SELECT uuid, name FROM players WHERE account_uuid = ${account_uuid} ORDER BY name";
     auto callback = [db, &account](const sa::Token& token) -> std::string {
         switch (token.type)
         {
@@ -170,10 +162,6 @@ void DBAccount::LoadCharacters(AB::Entities::Account& account)
             if (token.value == "account_uuid")
                 return db->EscapeString(account.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -193,20 +181,20 @@ bool DBAccount::Save(const AB::Entities::Account& account)
         return false;
     }
 
-    static constexpr const char* SQL = "UPDATE `accounts` SET "
-        "`password` = ${password}, "
-        "`email` = ${email}, "
-        "`auth_token` = ${auth_token}, "
-        "`auth_token_expiry` = ${auth_token_expiry}, "
-        "`type` = ${type}, "
-        "`status` = ${status}, "
-        "`char_slots` = ${char_slots}, "
-        "`current_character_uuid` = ${current_character_uuid}, "
-        "`current_server_uuid` = ${current_server_uuid} , "
-        "`online_status` = ${online_status}, "
-        "`guild_uuid` = ${guild_uuid}, "
-        "`chest_size` = ${chest_size} "
-        "WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "UPDATE accounts SET "
+        "password = ${password}, "
+        "email = ${email}, "
+        "auth_token = ${auth_token}, "
+        "auth_token_expiry = ${auth_token_expiry}, "
+        "type = ${type}, "
+        "status = ${status}, "
+        "char_slots = ${char_slots}, "
+        "current_character_uuid = ${current_character_uuid}, "
+        "current_server_uuid = ${current_server_uuid} , "
+        "online_status = ${online_status}, "
+        "guild_uuid = ${guild_uuid}, "
+        "chest_size = ${chest_size} "
+        "WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
     DBTransaction transaction(db);
@@ -244,10 +232,6 @@ bool DBAccount::Save(const AB::Entities::Account& account)
             if (token.value == "chest_size")
                 return std::to_string(account.chest_size);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -269,7 +253,7 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
 
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL = "DELETE FROM `accounts` WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "DELETE FROM accounts WHERE uuid = ${uuid}";
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &account](const sa::Token& token) -> std::string {
         switch (token.type)
         {
@@ -277,10 +261,6 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -300,8 +280,8 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS `count` FROM `accounts` WHERE `uuid`= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS `count` FROM `accounts` WHERE `name`= ${name}";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM accounts WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS count FROM accounts WHERE name= ${name}";
 
     const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))
@@ -325,10 +305,6 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
             if (token.value == "name")
                 return db->EscapeString(account.name);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -344,7 +320,7 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 bool DBAccount::LogoutAll()
 {
     Database* db = GetSubsystem<Database>();
-    static const std::string query = "UPDATE `accounts` SET `online_status` = 0";
+    static const std::string query = "UPDATE accounts SET online_status = 0";
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;

@@ -35,10 +35,10 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    static constexpr const char* SQL = "INSERT INTO `concrete_items` ("
-            "`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, "
-            "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `deleted`, `value`, `instance_uuid`, "
-            "`map_uuid`, `flags`, `sold`"
+    static constexpr const char* SQL = "INSERT INTO concrete_items ("
+            "uuid, player_uuid, storage_place, storage_pos, upgrade_1, upgrade_2, upgrade_3, "
+            "account_uuid, item_uuid, stats, count, creation, deleted, value, instance_uuid, "
+            "map_uuid, flags, sold"
         ") VALUES ("
             "${uuid}, ${player_uuid}, ${storage_place}, ${storage_pos}, ${upgrade_1}, ${upgrade_2}, ${upgrade_3}, "
             "${account_uuid}, ${item_uuid}, ${stats}, ${count}, ${creation}, ${deleted}, ${value}, ${instance_uuid}, "
@@ -90,10 +90,6 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
                 return std::to_string(item.sold);
 
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -122,7 +118,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    static constexpr const char* SQL = "SELECT * FROM `concrete_items` WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "SELECT * FROM concrete_items WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
     const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
@@ -133,10 +129,6 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -176,25 +168,25 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    static constexpr const char* SQL = "UPDATE `concrete_items` SET "
-        "`player_uuid` = ${player_uuid}, "
-        "`storage_place` = ${storage_place}, "
-        "`storage_pos` = ${storage_pos}, "
-        "`upgrade_1` = ${upgrade_1}, "
-        "`upgrade_2` = ${upgrade_2}, "
-        "`upgrade_3` = ${upgrade_3}, "
-        "`account_uuid` = ${account_uuid}, "
-        "`item_uuid` = ${item_uuid}, "
-        "`stats` = ${stats}, "
-        "`count` = ${count}, "
-        "`creation` = ${creation}, "
-        "`deleted` = ${deleted}, "
-        "`value` = ${value}, "
-        "`instance_uuid` = ${instance_uuid}, "
-        "`map_uuid` = ${map_uuid}, "
-        "`flags` = ${flags}, "
-        "`sold` = ${sold} "
-        "WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "UPDATE concrete_items SET "
+        "player_uuid = ${player_uuid}, "
+        "storage_place = ${storage_place}, "
+        "storage_pos = ${storage_pos}, "
+        "upgrade_1 = ${upgrade_1}, "
+        "upgrade_2 = ${upgrade_2}, "
+        "upgrade_3 = ${upgrade_3}, "
+        "account_uuid = ${account_uuid}, "
+        "item_uuid = ${item_uuid}, "
+        "stats = ${stats}, "
+        "count = ${count}, "
+        "creation = ${creation}, "
+        "deleted = ${deleted}, "
+        "value = ${value}, "
+        "instance_uuid = ${instance_uuid}, "
+        "map_uuid = ${map_uuid}, "
+        "flags = ${flags}, "
+        "sold = ${sold} "
+        "WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
     DBTransaction transaction(db);
@@ -244,10 +236,6 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
                 return std::to_string(item.sold);
 
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -268,7 +256,7 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    static constexpr const char* SQL = "DELETE FROM `concrete_items` WHERE `uuid` = ${uuid}";
+    static constexpr const char* SQL = "DELETE FROM concrete_items WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
     DBTransaction transaction(db);
@@ -283,10 +271,6 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -306,8 +290,8 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
         return false;
     }
 
-    static constexpr const char* SQL = "SELECT COUNT(*) AS `count` FROM `concrete_items` WHERE `uuid` = ${uuid}"
-        " AND `deleted` = 0";
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM concrete_items WHERE uuid = ${uuid}"
+        " AND deleted = 0";
 
     Database* db = GetSubsystem<Database>();
 
@@ -319,10 +303,6 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
-        case sa::Token::Type::Quote:
-            if (token.value == "`")
-                return "\"";
-            return token.value;
         default:
             return token.value;
         }
@@ -340,8 +320,8 @@ void DBConcreteItem::Clean(StorageProvider* sp)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid`, `instance_uuid` FROM `concrete_items` WHERE storage_place = " <<
-        static_cast<int>(AB::Entities::StoragePlace::Scene) << " AND `deleted` = 0";
+    query << "SELECT uuid, instance_uuid FROM concrete_items WHERE storage_place = " <<
+        static_cast<int>(AB::Entities::StoragePlace::Scene) << " AND deleted = 0";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

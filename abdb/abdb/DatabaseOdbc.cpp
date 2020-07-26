@@ -19,8 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #ifdef USE_ODBC
 
 #ifndef _WIN32
@@ -241,8 +239,6 @@ bool DatabaseOdbc::InternalQuery(const std::string& query)
     LOG_DEBUG << "ODBC QUERY: " << query << std::endl;
 #endif
 
-    std::string buf = Parse(query);
-
     SQLHSTMT stmt;
 
     SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, handle_, &stmt);
@@ -252,7 +248,7 @@ bool DatabaseOdbc::InternalQuery(const std::string& query)
         return false;
     }
 
-    ret = SQLExecDirectA(stmt, (SQLCHAR*)buf.c_str(), (SQLINTEGER)buf.length());
+    ret = SQLExecDirectA(stmt, (SQLCHAR*)query.c_str(), (SQLINTEGER)query.length());
 
     if (!RETURN_SUCCESS(ret))
     {
@@ -272,8 +268,6 @@ std::shared_ptr<DBResult> DatabaseOdbc::InternalSelectQuery(const std::string& q
     LOG_DEBUG << "ODBC QUERY: " << query << std::endl;
 #endif
 
-    std::string buf = Parse(query);
-
     SQLHSTMT stmt;
 
     SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, handle_, &stmt);
@@ -283,7 +277,7 @@ std::shared_ptr<DBResult> DatabaseOdbc::InternalSelectQuery(const std::string& q
         return std::shared_ptr<DBResult>();
     }
 
-    ret = SQLExecDirectA(stmt, (SQLCHAR*)buf.c_str(), (SQLINTEGER)buf.length());
+    ret = SQLExecDirectA(stmt, (SQLCHAR*)query.c_str(), (SQLINTEGER)query.length());
 
     if (!RETURN_SUCCESS(ret))
     {
@@ -293,32 +287,6 @@ std::shared_ptr<DBResult> DatabaseOdbc::InternalSelectQuery(const std::string& q
 
     std::shared_ptr<DBResult> results(new OdbcResult(stmt), std::bind(&Database::FreeResult, this, std::placeholders::_1));
     return VerifyResult(results);
-}
-
-std::string DatabaseOdbc::Parse(const std::string& s)
-{
-    std::string query = "";
-
-    query.reserve(s.size());
-    bool inString = false;
-    uint8_t ch;
-    for (uint32_t a = 0; a < s.length(); a++) {
-        ch = s[a];
-
-        if (ch == '\'') {
-            if (inString && s[a + 1] != '\'')
-                inString = false;
-            else
-                inString = true;
-        }
-
-        if (ch == '`' && !inString)
-            ch = '"';
-
-        query += ch;
-    }
-
-    return query;
 }
 
 OdbcResult::OdbcResult(SQLHSTMT stmt)

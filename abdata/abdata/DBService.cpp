@@ -35,9 +35,9 @@ bool DBService::Create(AB::Entities::Service& s)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `location`, `host`, `port`, " <<
-        "`status`, `start_time`, `stop_time`, `run_time`, " <<
-        " `machine`, `file`, `path`, `arguments`, `version`) VALUES(";
+    query << "INSERT INTO services (uuid, name, type, location, host, port, " <<
+        "status, start_time, stop_time, run_time, " <<
+        " machine, file, path, arguments, version) VALUES (";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
@@ -82,8 +82,8 @@ bool DBService::Load(AB::Entities::Service& s)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `services` WHERE ";
-    query << "`uuid` = " << db->EscapeString(s.uuid);
+    query << "SELECT * FROM services WHERE ";
+    query << "uuid = " << db->EscapeString(s.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -119,23 +119,23 @@ bool DBService::Save(const AB::Entities::Service& s)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `services` SET ";
-    query << " `name` = " << db->EscapeString(s.name) << ", ";
-    query << " `type` = " << static_cast<int>(s.type) << ", ";
-    query << " `location` = " << db->EscapeString(s.location) << ", ";
-    query << " `host` = " << db->EscapeString(s.host) << ", ";
-    query << " `port` = " << s.port << ", ";
-    query << " `status` = " << static_cast<int>(s.status) << ", ";
-    query << " `start_time` = " << s.startTime << ", ";
-    query << " `stop_time` = " << s.stopTime << ", ";
-    query << " `run_time` = " << s.runTime << ", ";
-    query << " `machine` = " << db->EscapeString(s.machine) << ", ";
-    query << " `file` = " << db->EscapeString(s.file) << ", ";
-    query << " `path` = " << db->EscapeString(s.path) << ", ";
-    query << " `arguments` = " << db->EscapeString(s.arguments) << ", ";
-    query << " `version` = " << s.version;
+    query << "UPDATE services SET ";
+    query << " name = " << db->EscapeString(s.name) << ", ";
+    query << " type = " << static_cast<int>(s.type) << ", ";
+    query << " location = " << db->EscapeString(s.location) << ", ";
+    query << " host = " << db->EscapeString(s.host) << ", ";
+    query << " port = " << s.port << ", ";
+    query << " status = " << static_cast<int>(s.status) << ", ";
+    query << " start_time = " << s.startTime << ", ";
+    query << " stop_time = " << s.stopTime << ", ";
+    query << " run_time = " << s.runTime << ", ";
+    query << " machine = " << db->EscapeString(s.machine) << ", ";
+    query << " file = " << db->EscapeString(s.file) << ", ";
+    query << " path = " << db->EscapeString(s.path) << ", ";
+    query << " arguments = " << db->EscapeString(s.arguments) << ", ";
+    query << " version = " << s.version;
 
-    query << " WHERE `uuid` = " << db->EscapeString(s.uuid);
+    query << " WHERE uuid = " << db->EscapeString(s.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -158,7 +158,7 @@ bool DBService::Delete(const AB::Entities::Service& s)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `services` WHERE `uuid` = " << db->EscapeString(s.uuid);
+    query << "DELETE FROM services WHERE uuid = " << db->EscapeString(s.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -181,8 +181,8 @@ bool DBService::Exists(const AB::Entities::Service& s)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `services` WHERE ";
-    query << "`uuid` = " << db->EscapeString(s.uuid);
+    query << "SELECT COUNT(*) AS count FROM services WHERE ";
+    query << "uuid = " << db->EscapeString(s.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

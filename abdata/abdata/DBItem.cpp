@@ -39,11 +39,11 @@ bool DBItem::Load(AB::Entities::Item& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_items` WHERE ";
+    query << "SELECT * FROM game_items WHERE ";
     if (!Utils::Uuid::IsEmpty(item.uuid))
-        query << "`uuid` = " << db->EscapeString(item.uuid);
+        query << "uuid = " << db->EscapeString(item.uuid);
     else if (item.index != 0)
-        query << "`idx` = " << item.index;
+        query << "idx = " << item.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;
@@ -98,11 +98,11 @@ bool DBItem::Exists(const AB::Entities::Item& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_items` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_items WHERE ";
     if (!Utils::Uuid::IsEmpty(item.uuid))
-        query << "`uuid` = " << db->EscapeString(item.uuid);
+        query << "uuid = " << db->EscapeString(item.uuid);
     else if (item.index != 0)
-        query << "`idx` = " << item.index;
+        query << "idx = " << item.index;
     else
     {
         LOG_ERROR << "UUID and index are empty" << std::endl;

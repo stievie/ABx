@@ -35,8 +35,8 @@ bool DBInstance::Create(AB::Entities::GameInstance& inst)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "INSERT INTO `instances` (`uuid`, `game_uuid`, `server_uuid`, `name`, `recording`, " <<
-        "`start_time`, `stop_time`, `number`, `is_running`";
+    query << "INSERT INTO instances (uuid, game_uuid, server_uuid, name, recording, " <<
+        "start_time, stop_time, number, is_running";
     query << ") VALUES (";
 
     query << db->EscapeString(inst.uuid) << ", ";
@@ -70,11 +70,11 @@ bool DBInstance::Load(AB::Entities::GameInstance& inst)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `instances` WHERE ";
+    query << "SELECT * FROM instances WHERE ";
     if (!Utils::Uuid::IsEmpty(inst.uuid))
-        query << "`uuid` = " << db->EscapeString(inst.uuid);
+        query << "uuid = " << db->EscapeString(inst.uuid);
     else if (!inst.recording.empty())
-        query << "`recording` = " << db->EscapeString(inst.recording);
+        query << "recording = " << db->EscapeString(inst.recording);
     else
     {
         LOG_ERROR << "UUID and recording are empty" << std::endl;
@@ -109,17 +109,17 @@ bool DBInstance::Save(const AB::Entities::GameInstance& inst)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `instances` SET ";
-    query << " `game_uuid` = " << db->EscapeString(inst.gameUuid) << ", ";
-    query << " `server_uuid` = " << db->EscapeString(inst.serverUuid) << ", ";
-    query << " `name` = " << db->EscapeString(inst.name) << ", ";
-    query << " `recording` = " << db->EscapeString(inst.recording) << ", ";
-    query << " `start_time` = " << inst.startTime << ", ";
-    query << " `stop_time` = " << inst.stopTime << ", ";
-    query << " `number` = " << inst.number << ", ";
-    query << " `is_running` = " << (inst.running ? 1 : 0);
+    query << "UPDATE instances SET ";
+    query << " game_uuid = " << db->EscapeString(inst.gameUuid) << ", ";
+    query << " server_uuid = " << db->EscapeString(inst.serverUuid) << ", ";
+    query << " name = " << db->EscapeString(inst.name) << ", ";
+    query << " recording = " << db->EscapeString(inst.recording) << ", ";
+    query << " start_time = " << inst.startTime << ", ";
+    query << " stop_time = " << inst.stopTime << ", ";
+    query << " number = " << inst.number << ", ";
+    query << " is_running = " << (inst.running ? 1 : 0);
 
-    query << " WHERE `uuid` = " << db->EscapeString(inst.uuid);
+    query << " WHERE uuid = " << db->EscapeString(inst.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -142,7 +142,7 @@ bool DBInstance::Delete(const AB::Entities::GameInstance& inst)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `instances` WHERE `uuid` = " << db->EscapeString(inst.uuid);
+    query << "DELETE FROM instances WHERE uuid = " << db->EscapeString(inst.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -159,11 +159,11 @@ bool DBInstance::Exists(const AB::Entities::GameInstance& inst)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `instances` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM instances WHERE ";
     if (!Utils::Uuid::IsEmpty(inst.uuid))
-        query << "`uuid` = " << db->EscapeString(inst.uuid);
+        query << "uuid = " << db->EscapeString(inst.uuid);
     else if (!inst.recording.empty())
-        query << "`recording` = " << db->EscapeString(inst.recording);
+        query << "recording = " << db->EscapeString(inst.recording);
     else
     {
         LOG_ERROR << "UUID and recording are empty" << std::endl;

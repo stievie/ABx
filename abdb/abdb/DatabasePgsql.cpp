@@ -19,8 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #ifdef USE_PGSQL
 
 #include "DatabasePgsql.h"
@@ -219,7 +217,7 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
 TryAgain:
 
     ++numTries;
-    PGresult* res = PQexec(handle_, Parse(query).c_str());
+    PGresult* res = PQexec(handle_, query.c_str());
     ExecStatusType stat = PQresultStatus(res);
 
     if (!PG_OK(stat))
@@ -256,7 +254,7 @@ TryAgain:
 
     ++numTries;
     // executes query
-    PGresult* res = PQexec(handle_, Parse(query).c_str());
+    PGresult* res = PQexec(handle_, query.c_str());
     ExecStatusType stat = PQresultStatus(res);
 
     if (!PG_OK(stat))
@@ -278,34 +276,6 @@ TryAgain:
     // everything went fine
     std::shared_ptr<DBResult> results(new PgsqlResult(res), std::bind(&Database::FreeResult, this, std::placeholders::_1));
     return VerifyResult(results);
-}
-
-std::string DatabasePgsql::Parse(const std::string& s)
-{
-    std::string query;
-    query.reserve(s.length());
-
-    bool inString = false;
-    uint8_t ch;
-    for (size_t a = 0; a < s.length(); ++a)
-    {
-        ch = s[a];
-
-        if (ch == '\'')
-        {
-            if (inString && s[a + 1] != '\'')
-                inString = false;
-            else
-                inString = true;
-        }
-
-        if (ch == '`' && !inString)
-            ch = '"';
-
-        query += ch;
-    }
-
-    return query;
 }
 
 PgsqlResult::PgsqlResult(PGresult* res) :

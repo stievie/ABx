@@ -35,11 +35,11 @@ bool DBGame::Load(AB::Entities::Game& game)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_maps` WHERE ";
+    query << "SELECT * FROM game_maps WHERE ";
     if (!Utils::Uuid::IsEmpty(game.uuid))
-        query << "`uuid` = " << db->EscapeString(game.uuid);
+        query << "uuid = " << db->EscapeString(game.uuid);
     else if (!game.name.empty())
-        query << "`name` = " << db->EscapeString(game.name);
+        query << "name = " << db->EscapeString(game.name);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -85,11 +85,11 @@ bool DBGame::Exists(const AB::Entities::Game& game)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_maps` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_maps WHERE ";
     if (!Utils::Uuid::IsEmpty(game.uuid))
-        query << "`uuid` = " << db->EscapeString(game.uuid);
+        query << "uuid = " << db->EscapeString(game.uuid);
     else if (!game.name.empty())
-        query << "`name` = " << db->EscapeString(game.name);
+        query << "name = " << db->EscapeString(game.name);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;

@@ -45,9 +45,9 @@ bool DBPlayerQuestListRewarded::Load(AB::Entities::PlayerQuestListRewarded& g)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `quest_uuid` FROM `player_quests` WHERE ";
-    query << "`player_uuid` = " << db->EscapeString(g.uuid) << " AND ";
-    query << "`rewarded` = 1";
+    query << "SELECT quest_uuid FROM player_quests WHERE ";
+    query << "player_uuid = " << db->EscapeString(g.uuid) << " AND ";
+    query << "rewarded = 1";
 
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
@@ -89,9 +89,9 @@ bool DBPlayerQuestListRewarded::Exists(const AB::Entities::PlayerQuestListReward
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `player_quests` WHERE ";
-    query << "`player_uuid` = " << db->EscapeString(g.uuid) << " AND ";
-    query << "`rewarded` = 1";
+    query << "SELECT COUNT(*) AS count FROM player_quests WHERE ";
+    query << "player_uuid = " << db->EscapeString(g.uuid) << " AND ";
+    query << "rewarded = 1";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

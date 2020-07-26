@@ -34,7 +34,6 @@ class DatabaseSqlite final : public Database
 protected:
     sqlite3* handle_;
     std::recursive_mutex lock_;
-    std::string Parse(const std::string& s);
     bool InternalQuery(const std::string& query) override;
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) override;
 public:

@@ -32,7 +32,7 @@ bool DBAttributeList::Load(AB::Entities::AttributeList& al)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_attributes`";
+    static const std::string query = "SELECT uuid FROM game_attributes";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         al.uuids.push_back(result->GetString("uuid"));

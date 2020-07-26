@@ -32,7 +32,7 @@ bool DBServicelList::Load(AB::Entities::ServiceList& sl)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `services` ORDER BY `type`";
+    static const std::string query = "SELECT uuid FROM services ORDER BY type";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         sl.uuids.push_back(result->GetString("uuid"));

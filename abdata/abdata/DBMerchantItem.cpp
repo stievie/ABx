@@ -40,9 +40,9 @@ bool DBMerchantItem::Load(AB::Entities::MerchantItem& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT uuid FROM `concrete_items` WHERE ";
-    query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.uuid) <<
-        " AND `storage_place` = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    query << "SELECT uuid FROM concrete_items WHERE ";
+    query << "deleted = 0 AND item_uuid = " << db->EscapeString(item.uuid) <<
+        " AND storage_place = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -72,8 +72,8 @@ bool DBMerchantItem::Exists(const AB::Entities::MerchantItem& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` `concrete_items` WHERE ";
-    query << "`deleted` = 0 AND `item_uuid` = " << db->EscapeString(item.uuid) << " AND `storage_place` = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    query << "SELECT COUNT(*) AS count concrete_items WHERE ";
+    query << "deleted = 0 AND item_uuid = " << db->EscapeString(item.uuid) << " AND storage_place = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

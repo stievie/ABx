@@ -19,8 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #ifdef USE_SQLITE
 
 #include "DatabaseSqlite.h"
@@ -81,34 +79,6 @@ bool DatabaseSqlite::Commit()
     return ExecuteQuery("COMMIT");
 }
 
-std::string DatabaseSqlite::Parse(const std::string& s)
-{
-    std::string query = "";
-
-    query.reserve(s.size());
-    bool inString = false;
-    uint8_t ch;
-    for (uint32_t a = 0; a < s.length(); a++)
-    {
-        ch = s[a];
-
-        if (ch == '\'')
-        {
-            if (inString && s[a + 1] != '\'')
-                inString = false;
-            else
-                inString = true;
-        }
-
-        if (ch == '`' && !inString)
-            ch = '"';
-
-        query += ch;
-    }
-
-    return query;
-}
-
 bool DatabaseSqlite::InternalQuery(const std::string &query)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -120,12 +90,11 @@ bool DatabaseSqlite::InternalQuery(const std::string &query)
     LOG_DEBUG << "SQLITE QUERY: " << query << std::endl;
 #endif
 
-    std::string buf = Parse(query);
     sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(handle_, buf.c_str(), (int)buf.length(), &stmt, NULL) != SQLITE_OK)
+    if (sqlite3_prepare_v2(handle_, query.c_str(), (int)query.length(), &stmt, NULL) != SQLITE_OK)
     {
         sqlite3_finalize(stmt);
-        LOG_ERROR << "sqlite3_prepare_v2(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << buf << ")" << std::endl;
+        LOG_ERROR << "sqlite3_prepare_v2(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << query << ")" << std::endl;
         return false;
     }
 
@@ -133,7 +102,7 @@ bool DatabaseSqlite::InternalQuery(const std::string &query)
     if (ret != SQLITE_OK && ret != SQLITE_DONE && ret != SQLITE_ROW)
     {
         sqlite3_finalize(stmt);
-        LOG_ERROR << "sqlite3_step(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << buf << ")" << std::endl;
+        LOG_ERROR << "sqlite3_step(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << query << ")" << std::endl;
         return false;
     }
 
@@ -153,12 +122,11 @@ std::shared_ptr<DBResult> DatabaseSqlite::InternalSelectQuery(const std::string 
     LOG_DEBUG << "SQLITE QUERY: " << query << std::endl;
 #endif
 
-    std::string buf = Parse(query);
     sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(handle_, buf.c_str(), (int)buf.length(), &stmt, NULL) != SQLITE_OK)
+    if (sqlite3_prepare_v2(handle_, query.c_str(), (int)query.length(), &stmt, NULL) != SQLITE_OK)
     {
         sqlite3_finalize(stmt);
-        LOG_ERROR << "sqlite3_prepare_v2(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << buf << ")" << std::endl;
+        LOG_ERROR << "sqlite3_prepare_v2(): SQLITE ERROR: " << sqlite3_errmsg(handle_) << " (" << query << ")" << std::endl;
         return std::shared_ptr<DBResult>();
     }
 

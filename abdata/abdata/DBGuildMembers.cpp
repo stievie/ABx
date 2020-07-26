@@ -49,9 +49,9 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
     g.members.clear();
 
     std::ostringstream query;
-    query << "SELECT * FROM `guild_members` WHERE ";
-    query << "`guild_uuid` = " << db->EscapeString(g.uuid);
-    query << " AND (`expires` = 0 OR `expires` > " << Utils::Tick() << ")";
+    query << "SELECT * FROM guild_members WHERE ";
+    query << "guild_uuid = " << db->EscapeString(g.uuid);
+    query << " AND (expires = 0 OR expires > " << Utils::Tick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -111,8 +111,8 @@ void DBGuildMembers::DeleteExpired(StorageProvider* sp)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `guild_uuid` FROM `guild_members` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
+    query << "SELECT guild_uuid FROM guild_members WHERE ";
+    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -126,8 +126,8 @@ void DBGuildMembers::DeleteExpired(StorageProvider* sp)
     }
 
     query.str("");
-    query << "DELETE FROM `guild_members` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
+    query << "DELETE FROM guild_members WHERE ";
+    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
 
     DBTransaction transaction(db);
     if (!transaction.Begin())

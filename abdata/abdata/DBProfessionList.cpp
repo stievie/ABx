@@ -32,7 +32,7 @@ bool DBProfessionList::Load(AB::Entities::ProfessionList& pl)
 {
     Database* db = GetSubsystem<Database>();
 
-    static const std::string query = "SELECT `uuid` FROM `game_professions`";
+    static const std::string query = "SELECT uuid FROM game_professions";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         pl.profUuids.push_back(result->GetString("uuid"));

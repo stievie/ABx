@@ -34,8 +34,8 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream dbQuery;
-    dbQuery << "SELECT COUNT(*) as `count` FROM `ip_bans` WHERE ";
-    dbQuery << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
+    dbQuery << "SELECT COUNT(*) as count FROM ip_bans WHERE ";
+    dbQuery << "((" << ban.ip << " & " << ban.mask << " & mask) = (ip & mask & " << ban.mask << "))";
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(dbQuery.str());
     if (result && result->GetInt("count") != 0)
     {
@@ -44,7 +44,7 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
     }
 
     std::ostringstream query;
-    query << "INSERT INTO `ip_bans` (`uuid`, `ban_uuid`, `ip`, `mask`) VALUES (";
+    query << "INSERT INTO ip_bans (uuid, ban_uuid, ip, mask) VALUES (";
     query << db->EscapeString(ban.uuid) << ", ";
     query << db->EscapeString(ban.banUuid) << ", ";
     query << ban.ip << ", ";
@@ -71,9 +71,9 @@ bool DBIpBan::Load(AB::Entities::IpBan& ban)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `ip_bans` WHERE ";
+    query << "SELECT * FROM ip_bans WHERE ";
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "`uuid` = " << ban.uuid;
+        query << "uuid = " << ban.uuid;
     else if (ban.ip != 0)
     {
         if (ban.mask == 0)
@@ -81,7 +81,7 @@ bool DBIpBan::Load(AB::Entities::IpBan& ban)
             LOG_ERROR << "IP mask is 0 it would match all IPs" << std::endl;
             return false;
         }
-        query << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
+        query << "((" << ban.ip << " & " << ban.mask << " & mask) = (ip & mask & " << ban.mask << "))";
     }
     else
     {
@@ -112,12 +112,12 @@ bool DBIpBan::Save(const AB::Entities::IpBan& ban)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `ip_bans` SET ";
-    query << " `ban_uuid`" << db->EscapeString(ban.banUuid) << ", ";
-    query << " `ip`" << ban.ip << ", ";
-    query << " `mask`" << ban.ip;
+    query << "UPDATE ip_bans SET ";
+    query << " ban_uuid" << db->EscapeString(ban.banUuid) << ", ";
+    query << " ip" << ban.ip << ", ";
+    query << " mask" << ban.ip;
 
-    query << " WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << " WHERE uuid = " << db->EscapeString(ban.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -140,7 +140,7 @@ bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "DELETE FROM `ip_bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
+    query << "DELETE FROM ip_bans WHERE uuid = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
@@ -157,9 +157,9 @@ bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `ip_bans` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM ip_bans WHERE ";
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "`uuid` = " << db->EscapeString(ban.uuid);
+        query << "uuid = " << db->EscapeString(ban.uuid);
     else if (ban.ip != 0)
     {
         if (ban.mask == 0)
@@ -167,7 +167,7 @@ bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
             LOG_ERROR << "IP mask is 0 it would match all IPs" << std::endl;
             return false;
         }
-        query << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
+        query << "((" << ban.ip << " & " << ban.mask << " & mask) = (ip & mask & " << ban.mask << "))";
     }
     else
     {

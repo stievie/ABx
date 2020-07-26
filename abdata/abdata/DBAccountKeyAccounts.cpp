@@ -34,7 +34,7 @@ bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `account_account_keys` (`account_uuid`, `account_key_uuid`) VALUES ( ";
+    query << "INSERT INTO account_account_keys (account_uuid, account_key_uuid) VALUES ( ";
     query << db->EscapeString(ak.accountUuid) << ",";
     query << db->EscapeString(ak.uuid);
     query << ")";
@@ -64,9 +64,9 @@ bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `account_account_keys` WHERE ";
-    query << "`account_uuid` = " << db->EscapeString(ak.accountUuid);
-    query << " AND `account_key_uuid` = " << db->EscapeString(ak.uuid);
+    query << "SELECT * FROM account_account_keys WHERE ";
+    query << "account_uuid = " << db->EscapeString(ak.accountUuid);
+    query << " AND account_key_uuid = " << db->EscapeString(ak.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -100,9 +100,9 @@ bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `account_account_keys` WHERE ";
-    query << "`account_uuid` = " << db->EscapeString(ak.accountUuid);
-    query << " AND `account_key_uuid` = " << db->EscapeString(ak.uuid);
+    query << "SELECT COUNT(*) AS count FROM account_account_keys WHERE ";
+    query << "account_uuid = " << db->EscapeString(ak.accountUuid);
+    query << " AND account_key_uuid = " << db->EscapeString(ak.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

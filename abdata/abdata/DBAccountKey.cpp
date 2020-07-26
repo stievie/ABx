@@ -33,8 +33,8 @@ bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
 
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
-    query << "INSERT INTO `account_keys` (`uuid`, `used`, `total`, `description`, `status`, " <<
-        "`key_type`, `email`) VALUES ( ";
+    query << "INSERT INTO account_keys (uuid, used, total, description, status, " <<
+        "key_type, email) VALUES ( ";
 
     query << db->EscapeString(ak.uuid) << ", ";
     query << static_cast<int>(ak.used) << ", ";
@@ -70,11 +70,11 @@ bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `account_keys` WHERE `uuid` = " << db->EscapeString(ak.uuid);
+    query << "SELECT * FROM account_keys WHERE uuid = " << db->EscapeString(ak.uuid);
     if (ak.status != AB::Entities::AccountKeyStatus::KeyStatusUnknown)
-        query << " AND `status` = " << ak.status;
+        query << " AND status = " << ak.status;
     if (ak.type != AB::Entities::AccountKeyType::KeyTypeUnknown)
-        query << " AND `key_type` = " << ak.type;
+        query << " AND key_type = " << ak.type;
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -101,16 +101,16 @@ bool DBAccountKey::Save(const AB::Entities::AccountKey& ak)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
-    query << "UPDATE `account_keys` SET ";
+    query << "UPDATE account_keys SET ";
 
-    query << " `used` = " << ak.used << ",";
-    query << " `total` = " << ak.total << ",";
-    query << " `description` = " << db->EscapeString(ak.description) << ",";
-    query << " `status` = " << static_cast<int>(ak.status) << ",";
-    query << " `key_type` = " << static_cast<int>(ak.type) << ",";
-    query << " `email` = " << db->EscapeString(ak.email);
+    query << " used = " << ak.used << ",";
+    query << " total = " << ak.total << ",";
+    query << " description = " << db->EscapeString(ak.description) << ",";
+    query << " status = " << static_cast<int>(ak.status) << ",";
+    query << " key_type = " << static_cast<int>(ak.type) << ",";
+    query << " email = " << db->EscapeString(ak.email);
 
-    query << " WHERE `uuid` = " << db->EscapeString(ak.uuid);
+    query << " WHERE uuid = " << db->EscapeString(ak.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -140,11 +140,11 @@ bool DBAccountKey::Exists(const AB::Entities::AccountKey& ak)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `account_keys` WHERE `uuid` = " << db->EscapeString(ak.uuid);
+    query << "SELECT COUNT(*) AS count FROM account_keys WHERE uuid = " << db->EscapeString(ak.uuid);
     if (ak.status != AB::Entities::AccountKeyStatus::KeyStatusUnknown)
-        query << " AND `status` = " << ak.status;
+        query << " AND status = " << ak.status;
     if (ak.type != AB::Entities::AccountKeyType::KeyTypeUnknown)
-        query << " AND `key_type` = " << ak.type;
+        query << " AND key_type = " << ak.type;
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

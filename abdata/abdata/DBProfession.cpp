@@ -40,15 +40,15 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT * FROM `game_professions` WHERE ";
+    query << "SELECT * FROM game_professions WHERE ";
     if (!Utils::Uuid::IsEmpty(prof.uuid))
-        query << "`uuid` = " << db->EscapeString(prof.uuid);
+        query << "uuid = " << db->EscapeString(prof.uuid);
     else if (prof.index != 0)
-        query << "`idx` = " << prof.index;
+        query << "idx = " << prof.index;
     else if (!prof.name.empty())
-        query << "`name` = " << db->EscapeString(prof.name);
+        query << "name = " << db->EscapeString(prof.name);
     else if (!prof.abbr.empty())
-        query << "`abbr` = " << db->EscapeString(prof.abbr);
+        query << "abbr = " << db->EscapeString(prof.abbr);
     else
     {
         LOG_ERROR << "UUID, name, abbr and index are empty" << std::endl;
@@ -69,8 +69,8 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
 
     // Get attributes
     query.str("");
-    query << "SELECT `uuid`, `idx`, `is_primary` FROM `game_attributes` WHERE `profession_uuid` = " << db->EscapeString(prof.uuid);
-    query << " ORDER BY `idx`";
+    query << "SELECT uuid, idx, is_primary FROM game_attributes WHERE profession_uuid = " << db->EscapeString(prof.uuid);
+    query << " ORDER BY idx";
     std::shared_ptr<DB::DBResult> resAttrib = db->StoreQuery(query.str());
     prof.attributeCount= 0;
     prof.attributes.clear();
@@ -116,15 +116,15 @@ bool DBProfession::Exists(const AB::Entities::Profession& prof)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_professions` WHERE ";
+    query << "SELECT COUNT(*) AS count FROM game_professions WHERE ";
     if (!Utils::Uuid::IsEmpty(prof.uuid))
-        query << "`uuid` = " << db->EscapeString(prof.uuid);
+        query << "uuid = " << db->EscapeString(prof.uuid);
     else if (prof.index != 0)
-        query << "`idx` = " << prof.index;
+        query << "idx = " << prof.index;
     else if (!prof.name.empty())
-        query << "`name` = " << db->EscapeString(prof.name);
+        query << "name = " << db->EscapeString(prof.name);
     else if (!prof.abbr.empty())
-        query << "`abbr` = " << db->EscapeString(prof.abbr);
+        query << "abbr = " << db->EscapeString(prof.abbr);
     else
     {
         LOG_ERROR << "UUID, name, abbr and index are empty" << std::endl;

@@ -261,8 +261,8 @@ int Application::GetDatabaseVersion()
     if (DB::Database::driver_ == "pgsql")
         query << "SET search_path TO schema, public; ";
 #endif
-    query << "SELECT `value` FROM `versions` WHERE ";
-    query << "`name` = " << db->EscapeString("schema");
+    query << "SELECT value FROM versions WHERE ";
+    query << "name = " << db->EscapeString("schema");
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -320,7 +320,7 @@ bool Application::CheckDatabaseVersion()
     if (currVer == -1)
     {
         LOG_INFO << "[FAIL]" << std::endl;
-        LOG_ERROR << "Database is not initialized. Run `dbtool -a update`" << std::endl;
+        LOG_ERROR << "Database is not initialized. Run dbtool -a update" << std::endl;
         return false;
     }
     if (expectedVer == -1)
@@ -334,7 +334,7 @@ bool Application::CheckDatabaseVersion()
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Database has wrong version. Expected " << expectedVer << " but got " << currVer <<
-            ". Please run `dbtool -a update`" << std::endl;
+            ". Please run dbtool -a update" << std::endl;
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
