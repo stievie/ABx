@@ -47,10 +47,10 @@ bool DBAccount::Create(AB::Entities::Account& account)
     if (!transaction.Begin())
         return false;
 
-    auto callback = [db, &account](const sa::Token& token) -> std::string {
+    auto callback = [db, &account](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             if (token.value == "name")
@@ -80,7 +80,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
             return token.value;
         }
     };
-    if (!db->ExecuteQuery(sa::TemplateParser::Evaluate(SQL, callback)))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, callback)))
         return false;
 
     if (!transaction.Commit())
@@ -108,10 +108,10 @@ bool DBAccount::Load(AB::Entities::Account& account)
     }
     ASSERT(sql);
 
-    auto callback = [db, &account](const sa::Token& token) -> std::string {
+    auto callback = [db, &account](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             if (token.value == "name")
@@ -121,7 +121,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
             return token.value;
         }
     };
-    const std::string query = sa::TemplateParser::Evaluate(sql, callback);
+    const std::string query = sa::templ::Parser::Evaluate(sql, callback);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
     {
@@ -155,10 +155,10 @@ void DBAccount::LoadCharacters(AB::Entities::Account& account)
     Database* db = GetSubsystem<Database>();
     account.characterUuids.clear();
     static constexpr const char* SQL = "SELECT uuid, name FROM players WHERE account_uuid = ${account_uuid} ORDER BY name";
-    auto callback = [db, &account](const sa::Token& token) -> std::string {
+    auto callback = [db, &account](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "account_uuid")
                 return db->EscapeString(account.uuid);
             ASSERT_FALSE();
@@ -167,7 +167,7 @@ void DBAccount::LoadCharacters(AB::Entities::Account& account)
         }
     };
 
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(sa::TemplateParser::Evaluate(SQL, callback)); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(sa::templ::Parser::Evaluate(SQL, callback)); result; result = result->Next())
     {
         account.characterUuids.push_back(result->GetString("uuid"));
     }
@@ -201,10 +201,10 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     if (!transaction.Begin())
         return false;
 
-    auto callback = [db, &account](const sa::Token& token) -> std::string {
+    auto callback = [db, &account](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             if (token.value == "password")
@@ -237,7 +237,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
         }
     };
 
-    if (!db->ExecuteQuery(sa::TemplateParser::Evaluate(SQL, callback)))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, callback)))
         return false;
 
     return transaction.Commit();
@@ -254,10 +254,10 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
     Database* db = GetSubsystem<Database>();
 
     static constexpr const char* SQL = "DELETE FROM accounts WHERE uuid = ${uuid}";
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &account](const sa::Token& token) -> std::string {
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &account](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             ASSERT_FALSE();
@@ -295,11 +295,11 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
     }
     ASSERT(sql);
 
-    auto callback = [db, &account](const sa::Token& token) -> std::string
+    auto callback = [db, &account](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(account.uuid);
             if (token.value == "name")
@@ -309,7 +309,7 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
             return token.value;
         }
     };
-    const std::string query = sa::TemplateParser::Evaluate(sql, callback);
+    const std::string query = sa::templ::Parser::Evaluate(sql, callback);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)

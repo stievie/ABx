@@ -146,16 +146,16 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
     FwClient* client = GetSubsystem<FwClient>();
     const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
     static constexpr const char* TEMPLATE = "<${from}> on ${date}: ${subject}";
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse(TEMPLATE);
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse(TEMPLATE);
 
     for (const auto& header : headers)
     {
-        const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+        const std::string t = tokens.ToString([&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "from")
                     return header.fromName;
                 if (token.value == "date")

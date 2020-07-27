@@ -410,10 +410,10 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         if (actor)
         {
             static constexpr const char* TEMPLATE = "${name} got a skill point";
-            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [actor](const sa::Token& token) -> std::string {
+            const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [actor](const sa::templ::Token& token) -> std::string {
                 switch (token.type)
                 {
-                case sa::Token::Type::Expression:
+                case sa::templ::Token::Type::Variable:
                     if (token.value == "name")
                         return ToStdString(actor->name_);
                     ASSERT_FALSE();
@@ -432,11 +432,11 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         if (player && player->gameId_ == objectId)
         {
             static constexpr const char* TEMPLATE = "You got ${number} attribute points";
-            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&eventData](const sa::Token& token) -> std::string
+            const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&eventData](const sa::templ::Token& token) -> std::string
             {
                 switch (token.type)
                 {
-                case sa::Token::Type::Expression:
+                case sa::templ::Token::Type::Variable:
                     if (token.value == "number")
                         return std::to_string(eventData[P_VALUE].GetInt());
                     ASSERT_FALSE();
@@ -455,11 +455,11 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         if (actor)
         {
             static constexpr const char* TEMPLATE = "${name} advanced to level ${level}";
-            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [actor, &eventData](const sa::Token& token) -> std::string
+            const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [actor, &eventData](const sa::templ::Token& token) -> std::string
             {
                 switch (token.type)
                 {
-                case sa::Token::Type::Expression:
+                case sa::templ::Token::Type::Variable:
                     if (token.value == "name")
                         return ToStdString(actor->name_);
                     if (token.value == "level")
@@ -501,11 +501,11 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
     String max = message.Substring(p + 1);
 
     static constexpr const char* TEMPLATE = "${name} rolls ${res} on a ${max} sided die.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return ToStdString(sender);
             if (token.value == "res")
@@ -533,8 +533,8 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     uint32_t uPlayTime = static_cast<uint32_t>(std::atoi(playTime.CString()));
     Client::TimeSpan tAge(uAge);
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("You have played this character for ");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("You have played this character for ");
 
     uint32_t hours = uPlayTime / 3600;
     if (hours > 0)
@@ -550,10 +550,10 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     else
         parser.Append("${days} day(s).", tokens);
 
-    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string {
+    const std::string t = tokens.ToString([&](const sa::templ::Token& token) -> std::string {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "hours")
                 return std::to_string(hours);
             if (token.value == "minutes")
@@ -579,11 +579,11 @@ void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
 
     auto parts = message.Split('|');
 
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "currHp")
             {
                 if (parts.Size() < 1)
@@ -635,11 +635,11 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "xp")
                     return ToStdString(parts[0]);
                 if (token.value == "sp")
@@ -663,11 +663,11 @@ void ChatWindow::HandleServerMessageDeaths(VariantMap& eventData)
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "deaths")
                     return ToStdString(parts[0]);
                 if (token.value == "xp")
@@ -694,11 +694,11 @@ void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
     const String& name = eventData[P_DATA].GetString();
 
     static constexpr const char* TEMPLATE = "Player ${name} is not online.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return ToStdString(name);
             ASSERT_FALSE();
@@ -716,11 +716,11 @@ void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
     const String& data = eventData[P_DATA].GetString();
 
     static constexpr const char* TEMPLATE = "{${name}} ${data}";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return ToStdString(name);
             if (token.value == "data")
@@ -740,11 +740,11 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
     const String& count = eventData[P_DATA].GetString();
 
     static constexpr const char* TEMPLATE = "You got a new mail, total ${count} mail(s).";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "count")
                 return ToStdString(count);
             ASSERT_FALSE();
@@ -767,11 +767,11 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
     const String& name = eventData[P_SENDER].GetString();
 
     static constexpr const char* TEMPLATE = "Mail to ${recipient} was sent.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "recipient")
                 return ToStdString(name);
             ASSERT_FALSE();
@@ -788,11 +788,11 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
     const String& name = eventData[P_SENDER].GetString();
 
     static constexpr const char* TEMPLATE = "Mail to ${recipient} was not sent. Please check the name, or the mail box is full.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "recipient")
                 return ToStdString(name);
             ASSERT_FALSE();
@@ -809,11 +809,11 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
     const String& count = eventData[P_DATA].GetString();
 
     static constexpr const char* TEMPLATE = "Your mailbox is full! You have ${count} mails. Please delete some, so people are able to send you mails.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "count")
                 return ToStdString(count);
             ASSERT_FALSE();
@@ -910,11 +910,11 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
     const String& resigner = eventData[P_SENDER].GetString();
 
     static constexpr const char* TEMPLATE = "${name} has resigned";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return ToStdString(resigner);
             ASSERT_FALSE();
@@ -932,8 +932,8 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
     auto instVec = instances.Split(';');
 
     static constexpr const char* TEMPLATE = "${instance}: ${name} (${game})";
-    sa::TemplateParser parser;
-    const sa::Template tokens = parser.Parse(TEMPLATE);
+    sa::templ::Parser parser;
+    const sa::templ::Tokens tokens = parser.Parse(TEMPLATE);
 
     for (auto& inst : instVec)
     {
@@ -941,11 +941,11 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
         if (instData.Size() != 3)
             continue;
 
-        const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+        const std::string t = tokens.ToString([&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "instance")
                     return ToStdString(instData[0]);
                 if (token.value == "name")
@@ -983,11 +983,11 @@ void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)
     const String& name = eventData[P_DATA].GetString();
 
     static constexpr const char* TEMPLATE = "A Player with name ${name} does not exist.";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return ToStdString(name);
             ASSERT_FALSE();
@@ -1022,11 +1022,11 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
     static constexpr const char* TEMPLATE = "Party ${id} has resigned";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "id")
                 return std::to_string(partyId);
             ASSERT_FALSE();
@@ -1043,11 +1043,11 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
     static constexpr const char* TEMPLATE = "Party ${id} was defeated";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "id")
                 return std::to_string(partyId);
             ASSERT_FALSE();
@@ -1062,8 +1062,8 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectPingTarget;
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("I am");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("I am");
 
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
@@ -1098,11 +1098,11 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
         break;
     }
 
-    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+    const std::string t = tokens.ToString([&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "target")
                 return ToStdString(target->name_);
             if (token.value == "skill")
@@ -1138,17 +1138,17 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     // Item may not be spawned yet
     Item* item = items->Get(itemIndex);
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("${dropper} dropped");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("${dropper} dropped");
     if (count > 1)
         parser.Append(" ${count}", tokens);
     parser.Append(" ${item} for ${target}", tokens);
 
-    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+    const std::string t = tokens.ToString([&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "dropper")
                 return ToStdString(dropper->name_);
             if (token.value == "count")
@@ -1373,11 +1373,11 @@ void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
     const String& file = eventData[P_FILENAME].GetString();
 
     static constexpr const char* TEMPLATE = "Screenshot saved to ${file}";
-    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "file")
                 return ToStdString(file);
             ASSERT_FALSE();
@@ -1613,11 +1613,11 @@ void ChatWindow::SayHello(Player* player)
     if (firstStart && player)
     {
         static constexpr const char* TEMPLATE = "Hello ${name}, type /help for available commands.";
-        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "name")
                     return ToStdString(player->name_);
                 ASSERT_FALSE();

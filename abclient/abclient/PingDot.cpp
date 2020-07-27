@@ -76,18 +76,18 @@ void PingDot::Update(float timeStep)
         else
             SetImageRect(PingDot::PING_BAD);
 
-        static sa::Template tokens;
+        static sa::templ::Tokens tokens;
         if (tokens.IsEmpty())
         {
             static constexpr const char* TEMPLATE = "FPS: ${fps}\n\nAverage Ping: ${avg_ping}ms\nLast Ping: ${last_ping}ms";
-            sa::TemplateParser parser;
+            sa::templ::Parser parser;
             tokens = parser.Parse(TEMPLATE);
         }
-        const std::string text = tokens.ToString([&](const sa::Token& token) -> std::string
+        const std::string text = tokens.ToString([&](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "fps")
                     return std::to_string(fps);
                 if (token.value == "avg_ping")

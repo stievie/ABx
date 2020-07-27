@@ -26,8 +26,9 @@
 #include <string_view>
 
 namespace sa {
+namespace templ {
 
-class TemplateParser;
+class Parser;
 
 struct Token
 {
@@ -35,7 +36,7 @@ struct Token
     {
         Invalid,
         String,
-        Expression,
+        Variable,
         Quote
     };
 
@@ -45,9 +46,9 @@ struct Token
     std::string value;
 };
 
-class Template
+class Tokens
 {
-    friend class TemplateParser;
+    friend class Parser;
 private:
     std::vector<Token> tokens_;
     size_t reserve_{ 256 };
@@ -62,7 +63,7 @@ public:
         {
             switch (token.type)
             {
-            case Token::Type::Expression:
+            case Token::Type::Variable:
             case Token::Type::Quote:
                 result.append(callback(token));
                 break;
@@ -77,7 +78,7 @@ public:
     }
 };
 
-class TemplateParser
+class Parser
 {
 private:
     size_t index_{ 0 };
@@ -114,14 +115,14 @@ private:
                         --index_;
                         return result;
                     }
-                    result.type = Token::Type::Expression;
+                    result.type = Token::Type::Variable;
                     result.start += 2;
                     ++index_;
                 }
                 break;
             }
             case '}':
-                if (result.type == Token::Type::Expression)
+                if (result.type == Token::Type::Variable)
                 {
                     result.end = index_ - 1;
                     result.value = std::string(&source_[result.start], result.end - result.start);
@@ -172,17 +173,17 @@ private:
         inQuote_ = false;
     }
 public:
-    Template Parse(std::string_view source)
+    Tokens Parse(std::string_view source)
     {
         source_ = source;
         Reset();
-        Template result;
+        Tokens result;
         result.reserve_ = source_.length();
         while (!Eof())
             result.tokens_.push_back(GetNextToken());
         return result;
     }
-    void Append(std::string_view source, Template& tokens)
+    void Append(std::string_view source, Tokens& tokens)
     {
         source_ = source;
         Reset();
@@ -193,11 +194,12 @@ public:
     template<typename Callback>
     static std::string Evaluate(std::string_view source, Callback&& callback)
     {
-        TemplateParser parser;
-        const Template tokens = parser.Parse(source);
+        Parser parser;
+        const Tokens tokens = parser.Parse(source);
         return tokens.ToString(std::forward<Callback>(callback));
     }
     bool quotesSupport_{ true };
 };
 
+}
 }

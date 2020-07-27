@@ -44,15 +44,15 @@ bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
     }
 
     Database* db = GetSubsystem<Database>();
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT uuid FROM concrete_items WHERE player_uuid = ${player_uuid} AND deleted = 0");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT uuid FROM concrete_items WHERE player_uuid = ${player_uuid} AND deleted = 0");
     if (il.storagePlace != AB::Entities::StoragePlace::None)
         parser.Append(" AND storage_place = ${storage_place}", tokens);
-    const std::string query = tokens.ToString([db, &il](const sa::Token& token) -> std::string
+    const std::string query = tokens.ToString([db, &il](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "player_uuid")
                 return db->EscapeString(il.uuid);
             if (token.value == "storage_place")

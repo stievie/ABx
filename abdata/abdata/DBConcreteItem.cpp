@@ -47,11 +47,11 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    auto callback = [db, &item](const sa::Token& token) -> std::string
+    auto callback = [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             if (token.value == "player_uuid")
@@ -95,7 +95,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
         }
     };
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, callback);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, callback);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -121,11 +121,11 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     static constexpr const char* SQL = "SELECT * FROM concrete_items WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
@@ -193,11 +193,11 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     if (!transaction.Begin())
         return false;
 
-    auto callback = [db, &item](const sa::Token& token) -> std::string
+    auto callback = [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             if (token.value == "player_uuid")
@@ -241,7 +241,7 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
         }
     };
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, callback);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, callback);
     if (!db->ExecuteQuery(query))
         return false;
 
@@ -263,11 +263,11 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
     if (!transaction.Begin())
         return false;
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
@@ -295,11 +295,11 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();

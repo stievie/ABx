@@ -34,8 +34,8 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
 {
     Database* db = GetSubsystem<Database>();
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT game_item_chances.chance AS chance, game_items.type AS type, game_items.belongs_to AS belongs_to, game_items.uuid AS uuid, "
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT game_item_chances.chance AS chance, game_items.type AS type, game_items.belongs_to AS belongs_to, game_items.uuid AS uuid, "
         "game_item_chances.map_uuid AS map_uuid "
         "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid "
         "WHERE (map_uuid = ${map_uuid}");
@@ -45,11 +45,11 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
     if (il.type != AB::Entities::ItemType::Unknown)
         parser.Append(" AND type = ${type}", tokens);
 
-    auto callback = [db, &il](const sa::Token& token) -> std::string
+    auto callback = [db, &il](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "map_uuid")
                 return db->EscapeString(il.uuid);
             if (token.value == "empty_map_uuid")

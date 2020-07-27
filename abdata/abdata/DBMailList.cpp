@@ -47,11 +47,11 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
         "WHERE to_account_uuid = ${to_account_uuid} ORDER BY created ASC";
     Database* db = GetSubsystem<Database>();
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &ml](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &ml](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "to_account_uuid")
                 return db->EscapeString(ml.uuid);
             ASSERT_FALSE();

@@ -38,11 +38,11 @@ uint32_t DBItemPrice::GetDropChance(const std::string& itemUuid)
 
     Database* db = GetSubsystem<Database>();
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &itemUuid](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "item_uuid")
                 return db->EscapeString(itemUuid);
             ASSERT_FALSE();
@@ -63,11 +63,11 @@ uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
         "AND item_uuid = ${item_uuid} GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &itemUuid](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "item_uuid")
                 return db->EscapeString(itemUuid);
             ASSERT_FALSE();
@@ -90,11 +90,11 @@ uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
         " GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &itemUuid](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &itemUuid](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "item_uuid")
                 return db->EscapeString(itemUuid);
             if (token.value == "storage_place")
@@ -122,11 +122,11 @@ bool DBItemPrice::Load(AB::Entities::ItemPrice& item)
     Database* db = GetSubsystem<Database>();
 
     static constexpr const char* SQL = "SELECT type, item_flags, value FROM game_items WHERE uuid = ${uuid}";
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(item.uuid);
             ASSERT_FALSE();
@@ -206,11 +206,11 @@ bool DBItemPrice::Exists(const AB::Entities::ItemPrice& item)
         "deleted = 0 AND item_uuid = ${item_uuid} AND storage_place = ${storage_place}";
     Database* db = GetSubsystem<Database>();
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &item](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "item_uuid")
                 return db->EscapeString(item.uuid);
             if (token.value == "storage_place")

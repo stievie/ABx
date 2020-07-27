@@ -34,8 +34,8 @@ bool DBVersion::Load(AB::Entities::Version& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT * FROM versions WHERE ");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM versions WHERE ");
 
     if (!Utils::Uuid::IsEmpty(v.uuid))
         parser.Append("uuid = ${uuid}", tokens);
@@ -47,11 +47,11 @@ bool DBVersion::Load(AB::Entities::Version& v)
         return false;
     }
 
-    const std::string query = tokens.ToString([db, &v](const sa::Token& token) -> std::string
+    const std::string query = tokens.ToString([db, &v](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(v.uuid);
             if (token.value == "name")
@@ -89,8 +89,8 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT COUNT(*) AS count FROM versions WHERE ");
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM versions WHERE ");
 
     if (!Utils::Uuid::IsEmpty(v.uuid))
         parser.Append("uuid = ${uuid}", tokens);
@@ -102,11 +102,11 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
         return false;
     }
 
-    const std::string query = tokens.ToString([db, &v](const sa::Token& token) -> std::string
+    const std::string query = tokens.ToString([db, &v](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(v.uuid);
             if (token.value == "name")

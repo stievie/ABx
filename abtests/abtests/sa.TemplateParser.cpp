@@ -6,9 +6,9 @@
 TEST_CASE("TemplateParser parse")
 {
     std::string s1 = "SELECT * FROM table WHERE item_flags & ${ItemFlag} = ${ItemFlag} ORDER BY type DESC, name ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         if (token.value == "ItemFlag")
             return std::to_string(4);
@@ -21,9 +21,9 @@ TEST_CASE("TemplateParser parse")
 TEST_CASE("TemplateParser string escape")
 {
     std::string s1 = "SELECT * FROM table WHERE name = ${name} ORDER BY type DESC, name ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         if (token.value == "name")
             return "'a name'";
@@ -36,9 +36,9 @@ TEST_CASE("TemplateParser string escape")
 TEST_CASE("TemplateParser invalid param")
 {
     std::string s1 = "SELECT * FROM table WHERE name = ${invalid} ORDER BY type DESC, name ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         if (token.value == "name")
             return "'a name'";
@@ -51,17 +51,17 @@ TEST_CASE("TemplateParser invalid param")
 TEST_CASE("TemplateParser quotes")
 {
     std::string s1 = "SELECT FROM `table` WHERE `name` = ${name} ORDER BY `type` DESC, `name` ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return "'a name'";
             return "???";
-        case sa::Token::Type::Quote:
+        case sa::templ::Token::Type::Quote:
             return "'";
         default:
             return "";
@@ -74,17 +74,17 @@ TEST_CASE("TemplateParser quotes")
 TEST_CASE("TemplateParser nested quotes")
 {
     std::string s1 = "SELECT FROM `table` WHERE `nam\"e\"` = ${name} ORDER BY `type` DESC, `name` ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return "'a name'";
             return "???";
-        case sa::Token::Type::Quote:
+        case sa::templ::Token::Type::Quote:
             return "'";
         default:
             return "";
@@ -97,18 +97,18 @@ TEST_CASE("TemplateParser nested quotes")
 TEST_CASE("TemplateParser no quotes")
 {
     std::string s1 = "SELECT FROM `table` WHERE `nam\"e\"` = ${name} ORDER BY `type` DESC, `name` ASC";
-    sa::TemplateParser parser;
+    sa::templ::Parser parser;
     parser.quotesSupport_ = false;
     auto templ = parser.Parse(s1);
-    std::string result = templ.ToString([](const sa::Token& token) -> std::string
+    std::string result = templ.ToString([](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "name")
                 return "'a name'";
             return "???";
-        case sa::Token::Type::Quote:
+        case sa::templ::Token::Type::Quote:
             ASSERT_FALSE();
         default:
             return "";
@@ -120,19 +120,19 @@ TEST_CASE("TemplateParser no quotes")
 
 TEST_CASE("TemplateParser append")
 {
-    sa::TemplateParser parser;
-    sa::Template tokens = parser.Parse("SELECT game_item_chances.chance AS `chance`, "
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT game_item_chances.chance AS `chance`, "
         "game_item_chances.map_uuid AS `map_uuid` "
         "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid "
         "WHERE (`map_uuid` = ${map_uuid}");
     parser.Append(" OR `map_uuid` = ${empty_map_uuid}", tokens);
     parser.Append(")", tokens);
     parser.Append(" AND `type` = ${type}", tokens);
-    std::string result = tokens.ToString([](const sa::Token& token) -> std::string
+    std::string result = tokens.ToString([](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "map_uuid")
                 return "map_uuid";
             if (token.value == "empty_map_uuid")
@@ -140,7 +140,7 @@ TEST_CASE("TemplateParser append")
             if (token.value == "type")
                 return "type";
             return "???";
-        case sa::Token::Type::Quote:
+        case sa::templ::Token::Type::Quote:
             if (token.value == "`")
                 return "\"";
             return token.value;

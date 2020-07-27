@@ -43,11 +43,11 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
                 "${uuid}, ${ban_uuid}, ${account_uuid}"
             ")";
 
-    const std::string query = sa::TemplateParser::Evaluate(SQL, [db, &ban](const sa::Token& token) -> std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &ban](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "uuid")
                 return db->EscapeString(ban.uuid);
             if (token.value == "ban_uuid")

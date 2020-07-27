@@ -401,11 +401,11 @@ bool Npc::SayQuote(ChatType channel, int index)
     if (quote.empty())
         return false;
 
-    const std::string t = sa::TemplateParser::Evaluate(quote, [this](const sa::Token& token) -> std::string
+    const std::string t = sa::templ::Parser::Evaluate(quote, [this](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
-        case sa::Token::Type::Expression:
+        case sa::templ::Token::Type::Variable:
             if (token.value == "selected_name")
             {
                 if (auto sel = GetSelectedObject())

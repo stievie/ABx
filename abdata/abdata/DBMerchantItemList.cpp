@@ -55,11 +55,11 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
             "LEFT JOIN game_items on game_items.uuid = concrete_items.item_uuid "
             "WHERE deleted = 0 AND storage_place = ${storage_place}"
             "ORDER BY type DESC, name ASC";
-        statement = sa::TemplateParser::Evaluate(SQL, [](const sa::Token& token) -> std::string
+        statement = sa::templ::Parser::Evaluate(SQL, [](const sa::templ::Token& token) -> std::string
         {
             switch (token.type)
             {
-            case sa::Token::Type::Expression:
+            case sa::templ::Token::Type::Variable:
                 if (token.value == "storage_place")
                     return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
                 ASSERT_FALSE();
