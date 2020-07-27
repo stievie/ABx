@@ -19,17 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ChatWindow.h"
 #include "Conversions.h"
 #include "FwClient.h"
 #include "Utils.h"
 #include <TimeUtils.h>
 #include <sa/Compiler.h>
-PRAGMA_WARNING_PUSH
-    PRAGMA_WARNING_DISABLE_CLANG("-Wunused-lambda-capture")
-#   include <Mustache/mustache.hpp>
-PRAGMA_WARNING_POP
 #include "Shortcuts.h"
 #include "Options.h"
 #include "LevelManager.h"
@@ -40,6 +35,7 @@ PRAGMA_WARNING_POP
 #include "MultiLineEdit.h"
 #include <fstream>
 #include "ChatFilter.h"
+#include <sa/TemplateParser.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -413,10 +409,18 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         Actor* actor = To<Actor>(lm->GetObject(objectId));
         if (actor)
         {
-            kainjow::mustache::mustache tpl{ "{{name}} got a skill point" };
-            kainjow::mustache::data data;
-            data.set("name", ToStdString(actor->name_));
-            std::string t = tpl.render(data);
+            static constexpr const char* TEMPLATE = "${name} got a skill point";
+            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [actor](const sa::Token& token) -> std::string {
+                switch (token.type)
+                {
+                case sa::Token::Type::Expression:
+                    if (token.value == "name")
+                        return ToStdString(actor->name_);
+                    ASSERT_FALSE();
+                default:
+                    return token.value;
+                }
+            });
             AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
@@ -427,10 +431,19 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         auto player = lm->GetPlayer();
         if (player && player->gameId_ == objectId)
         {
-            kainjow::mustache::mustache tpl{ "You got {{number}} attribute points" };
-            kainjow::mustache::data data;
-            data.set("number", std::to_string(eventData[P_VALUE].GetInt()));
-            std::string t = tpl.render(data);
+            static constexpr const char* TEMPLATE = "You got ${number} attribute points";
+            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&eventData](const sa::Token& token) -> std::string
+            {
+                switch (token.type)
+                {
+                case sa::Token::Type::Expression:
+                    if (token.value == "number")
+                        return std::to_string(eventData[P_VALUE].GetInt());
+                    ASSERT_FALSE();
+                default:
+                    return token.value;
+                }
+            });
             AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
@@ -441,11 +454,21 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
         Actor* actor = To<Actor>(lm->GetObject(objectId));
         if (actor)
         {
-            kainjow::mustache::mustache tpl{ "{{name}} advanced to level {{level}}" };
-            kainjow::mustache::data data;
-            data.set("name", ToStdString(actor->name_));
-            data.set("level", std::to_string(eventData[P_VALUE].GetInt()));
-            std::string t = tpl.render(data);
+            static constexpr const char* TEMPLATE = "${name} advanced to level ${level}";
+            const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [actor, &eventData](const sa::Token& token) -> std::string
+            {
+                switch (token.type)
+                {
+                case sa::Token::Type::Expression:
+                    if (token.value == "name")
+                        return ToStdString(actor->name_);
+                    if (token.value == "level")
+                        return std::to_string(eventData[P_VALUE].GetInt());
+            ASSERT_FALSE();
+                default:
+                    return token.value;
+                }
+            });
             AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         }
         break;
@@ -476,12 +499,24 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
     unsigned p = message.Find(":");
     String res = message.Substring(0, p);
     String max = message.Substring(p + 1);
-    kainjow::mustache::mustache tpl{ "{{name}} rolls {{res}} on a {{max}} sided die." };
-    kainjow::mustache::data data;
-    data.set("name", ToStdString(sender));
-    data.set("res", ToStdString(res));
-    data.set("max", ToStdString(max));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "${name} rolls ${res} on a ${max} sided die.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return ToStdString(sender);
+            if (token.value == "res")
+                return ToStdString(res);
+            if (token.value == "max")
+                return ToStdString(max);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogChatText");
 }
 
@@ -497,8 +532,10 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     // Seconds
     uint32_t uPlayTime = static_cast<uint32_t>(std::atoi(playTime.CString()));
     Client::TimeSpan tAge(uAge);
-    std::stringstream ss;
-    ss << "You have played this character for ";
+
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("You have played this character for ");
+
     uint32_t hours = uPlayTime / 3600;
     if (hours > 0)
         uPlayTime -= hours * 3600;
@@ -506,39 +543,85 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     if (minutes > 0)
         uPlayTime -= minutes * 60;
     if (hours > 0)
-        ss << hours << " hour(s) ";
-    ss << minutes << " minute(s) over the past ";
+        parser.Append("${hours} hour(s) ", tokens);
+    parser.Append("${minutes} minute(s) over the past ", tokens);
     if (tAge.months > 0)
-        ss << tAge.months << " month(s).";
+        parser.Append("${months} month(s).", tokens);
     else
-        ss << tAge.days << " day(s).";
-    AddLine(ToUrhoString(ss.str()), "ChatLogServerInfoText");
+        parser.Append("${days} day(s).", tokens);
+
+    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "hours")
+                return std::to_string(hours);
+            if (token.value == "minutes")
+                return std::to_string(minutes);
+            if (token.value == "months")
+                return std::to_string(tAge.months);
+            if (token.value == "days")
+                return std::to_string(tAge.days);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "Health {{currHp}}/{{maxHp}}, Energy {{currE}}/{{maxE}}" };
-    kainjow::mustache::data data;
+
+    static constexpr const char* TEMPLATE = "Health ${currHp}/${maxHp}, Energy ${currE}/${maxE}";
+
     auto parts = message.Split('|');
-    if (parts.Size() > 0)
+
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
     {
-        unsigned p = parts[0].Find(":");
-        String currHp = parts[0].Substring(0, p);
-        String maxHp = parts[0].Substring(p + 1);
-        data.set("currHp", ToStdString(currHp));
-        data.set("maxHp", ToStdString(maxHp));
-    }
-    if (parts.Size() > 1)
-    {
-        unsigned p = parts[1].Find(":");
-        String currE = parts[1].Substring(0, p);
-        String maxE = parts[1].Substring(p + 1);
-        data.set("currE", ToStdString(currE));
-        data.set("maxE", ToStdString(maxE));
-    }
-    std::string t = tpl.render(data);
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "currHp")
+            {
+                if (parts.Size() < 1)
+                    return "";
+                unsigned p = parts[0].Find(":");
+                String currHp = parts[0].Substring(0, p);
+                return ToStdString(currHp);
+            }
+            if (token.value == "maxHp")
+            {
+                if (parts.Size() == 0)
+                    return "";
+                unsigned p = parts[0].Find(":");
+                String maxHp = parts[0].Substring(p + 1);
+                return ToStdString(maxHp);
+            }
+            if (token.value == "currE")
+            {
+                if (parts.Size() < 2)
+                    return "";
+                unsigned p = parts[1].Find(":");
+                String currE = parts[1].Substring(0, p);
+                return ToStdString(currE);
+            }
+            if (token.value == "maxE")
+            {
+                if (parts.Size() < 2)
+                    return "";
+                unsigned p = parts[1].Find(":");
+                String maxE = parts[1].Substring(p + 1);
+                return ToStdString(maxE);
+            }
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -546,14 +629,26 @@ void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "You have {{xp}} XP and {{sp}} Skill points" };
-    kainjow::mustache::data data;
+
+    static constexpr const char* TEMPLATE = "You have ${xp} XP and ${sp} Skill points";
+
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        data.set("xp", ToStdString(parts[0]));
-        data.set("sp", ToStdString(parts[1]));
-        std::string t = tpl.render(data);
+        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "xp")
+                    return ToStdString(parts[0]);
+                if (token.value == "sp")
+                    return ToStdString(parts[1]);
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
         AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
@@ -562,14 +657,26 @@ void ChatWindow::HandleServerMessageDeaths(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& message = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "You died {{deaths}} times. You gained {{xp}} XP since last death." };
-    kainjow::mustache::data data;
+
+    static constexpr const char* TEMPLATE = "You died ${deaths} times. You gained ${xp} XP since last death.";
+
     auto parts = message.Split('|');
     if (parts.Size() == 2)
     {
-        data.set("deaths", ToStdString(parts[0]));
-        data.set("xp", ToStdString(parts[1]));
-        std::string t = tpl.render(data);
+        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "deaths")
+                    return ToStdString(parts[0]);
+                if (token.value == "xp")
+                    return ToStdString(parts[1]);
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
         AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
@@ -585,10 +692,20 @@ void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& name = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "Player {{name}} is not online." };
-    kainjow::mustache::data data;
-    data.set("count", ToStdString(name));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "Player ${name} is not online.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return ToStdString(name);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -598,17 +715,44 @@ void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
     const String& name = eventData[P_SENDER].GetString();
     const String& data = eventData[P_DATA].GetString();
 
-    AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
+    static constexpr const char* TEMPLATE = "{${name}} ${data}";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return ToStdString(name);
+            if (token.value == "data")
+                return ToStdString(data);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
+    AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& count = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "You got a new mail, total {{count}} mail(s)." };
-    kainjow::mustache::data data;
-    data.set("count", ToStdString(count));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "You got a new mail, total ${count} mail(s).";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "count")
+                return ToStdString(count);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 
     VariantMap& eData = GetEventDataMap();
@@ -621,10 +765,20 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
-    kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
-    kainjow::mustache::data data;
-    data.set("recipient", ToStdString(name));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "Mail to ${recipient} was sent.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "recipient")
+                return ToStdString(name);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -632,10 +786,20 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& name = eventData[P_SENDER].GetString();
-    kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
-    kainjow::mustache::data data;
-    data.set("recipient", ToStdString(name));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "Mail to ${recipient} was not sent. Please check the name, or the mail box is full.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "recipient")
+                return ToStdString(name);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -643,10 +807,20 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& count = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
-    kainjow::mustache::data data;
-    data.set("count", ToStdString(count));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "Your mailbox is full! You have ${count} mails. Please delete some, so people are able to send you mails.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "count")
+                return ToStdString(count);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -734,10 +908,20 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& resigner = eventData[P_SENDER].GetString();
-    kainjow::mustache::mustache tpl{ "{{name}} has resigned" };
-    kainjow::mustache::data data;
-    data.set("name", ToStdString(resigner));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "${name} has resigned";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return ToStdString(resigner);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -746,18 +930,33 @@ void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
     using namespace Events::ServerMessage;
     const String& instances = eventData[P_DATA].GetString();
     auto instVec = instances.Split(';');
-    kainjow::mustache::mustache tpl{ "{{instance}}: {{name}} ({{game}})" };
+
+    static constexpr const char* TEMPLATE = "${instance}: ${name} (${game})";
+    sa::TemplateParser parser;
+    const sa::Template tokens = parser.Parse(TEMPLATE);
+
     for (auto& inst : instVec)
     {
         auto instData = inst.Split(',');
         if (instData.Size() != 3)
             continue;
 
-        kainjow::mustache::data data;
-        data.set("instance", ToStdString(instData[0]));
-        data.set("game", ToStdString(instData[1]));
-        data.set("name", ToStdString(instData[2]));
-        std::string t = tpl.render(data);
+        const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "instance")
+                    return ToStdString(instData[0]);
+                if (token.value == "name")
+                    return ToStdString(instData[1]);
+                if (token.value == "game")
+                    return ToStdString(instData[2]);
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
         AddLine(ToUrhoString(t), "ChatLogServerInfoText");
     }
 }
@@ -782,10 +981,20 @@ void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)
 {
     using namespace Events::ServerMessage;
     const String& name = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "A Player with name {{name}} does not exist." };
-    kainjow::mustache::data data;
-    data.set("name", ToStdString(name));
-    std::string t = tpl.render(data);
+
+    static constexpr const char* TEMPLATE = "A Player with name ${name} does not exist.";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "name")
+                return ToStdString(name);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -812,10 +1021,19 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
     using namespace Events::PartyResigned;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
-    kainjow::mustache::mustache tpl{ "Party {{id}} has resigned" };
-    kainjow::mustache::data data;
-    data.set("id", std::to_string(partyId));
-    std::string t = tpl.render(data);
+    static constexpr const char* TEMPLATE = "Party ${id} has resigned";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "id")
+                return std::to_string(partyId);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -824,10 +1042,19 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
     using namespace Events::PartyDefeated;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
-    kainjow::mustache::mustache tpl{ "Party {{id}} was defeated" };
-    kainjow::mustache::data data;
-    data.set("id", std::to_string(partyId));
-    std::string t = tpl.render(data);
+    static constexpr const char* TEMPLATE = "Party ${id} was defeated";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "id")
+                return std::to_string(partyId);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -835,7 +1062,9 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectPingTarget;
 
-    String message = "I am";
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("I am");
+
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
@@ -849,28 +1078,46 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ObjectCallType::Follow:
         if (!target)
             return;
-        message += " following " + target->name_;
+        parser.Append(" following ${target}", tokens);
         break;
     case AB::GameProtocol::ObjectCallType::Attack:
         if (!target)
             return;
-        message += " attacking " + target->name_;
+        parser.Append(" attacking ${target}", tokens);
         break;
     case AB::GameProtocol::ObjectCallType::UseSkill:
     {
         if (skillIndex <= 0)
             return;
-        const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[static_cast<size_t>(skillIndex) - 1]);
-        message += " using " + String(skill->name.c_str());
+        parser.Append(" using ${skill}", tokens);
         if (target)
-            message += " on " + target->name_;
+            parser.Append(" on ${target}", tokens);
         break;
     }
     default:
         break;
     }
-    AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannel::Party);
-    pinger->ShowSpeechBubble(message);
+
+    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "target")
+                return ToStdString(target->name_);
+            if (token.value == "skill")
+            {
+                ASSERT(skillIndex > 0);
+                const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[static_cast<size_t>(skillIndex) - 1]);
+                return skill->name;
+            }
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+    AddChatLine(objectId, pinger->name_, ToUrhoString(t), AB::GameProtocol::ChatChannel::Party);
+    pinger->ShowSpeechBubble(ToUrhoString(t));
 }
 
 void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
@@ -891,25 +1138,34 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     // Item may not be spawned yet
     Item* item = items->Get(itemIndex);
 
-    kainjow::mustache::mustache tplCount{ "{{dropper}} dropped {{count}} {{item}} for {{target}}" };
-    kainjow::mustache::mustache tpl{ "{{dropper}} dropped {{item}} for {{target}}" };
-    kainjow::mustache::data data;
-    data.set("dropper", ToStdString(dropper->name_));
-    if (item)
-        data.set("item", ToStdString(item->name_));
-    else
-    {
-        data.set("item", std::to_string(itemIndex));
-    }
-    data.set("target", ToStdString(target->name_));
-    std::string t;
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse("${dropper} dropped");
     if (count > 1)
+        parser.Append(" ${count}", tokens);
+    parser.Append(" ${item} for ${target}", tokens);
+
+    const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
     {
-        data.set("count", std::to_string(count));
-        t = tplCount.render(data);
-    }
-    else
-        t = tpl.render(data);
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "dropper")
+                return ToStdString(dropper->name_);
+            if (token.value == "count")
+                return std::to_string(count);
+            if (token.value == "item")
+            {
+                if (item)
+                    return ToStdString(item->name_);
+                return std::to_string(itemIndex);
+            }
+            if (token.value == "target")
+                return ToStdString(target->name_);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -1116,11 +1372,19 @@ void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
     using namespace Events::ScreenshotTaken;
     const String& file = eventData[P_FILENAME].GetString();
 
-    kainjow::mustache::mustache tpl{ "Screenshot saved to {{file}}" };
-    kainjow::mustache::data data;
-    data.set("file", ToStdString(file));
-    std::string t = tpl.render(data);
-
+    static constexpr const char* TEMPLATE = "Screenshot saved to ${file}";
+    const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::Token::Type::Expression:
+            if (token.value == "file")
+                return ToStdString(file);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
     AddLine(ToUrhoString(t), "ChatLogServerInfoText");
 }
 
@@ -1348,10 +1612,19 @@ void ChatWindow::SayHello(Player* player)
     static bool firstStart = true;
     if (firstStart && player)
     {
-        kainjow::mustache::mustache tpl{ "Hello {{name}}, type /help for available commands." };
-        kainjow::mustache::data data;
-        data.set("name", ToStdString(player->name_));
-        std::string t = tpl.render(data);
+        static constexpr const char* TEMPLATE = "Hello ${name}, type /help for available commands.";
+        const std::string t = sa::TemplateParser::Evaluate(TEMPLATE, [&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "name")
+                    return ToStdString(player->name_);
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
         AddLine(ToUrhoString(t), "ChatLogServerInfoText");
         firstStart = false;
     }

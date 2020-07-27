@@ -19,14 +19,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "PingDot.h"
 #include "FwClient.h"
+#include "Conversions.h"
 #include <sa/Compiler.h>
-PRAGMA_WARNING_PUSH
-PRAGMA_WARNING_DISABLE_CLANG("-Wunused-lambda-capture")
-#include <Mustache/mustache.hpp>
-PRAGMA_WARNING_POP
+#include <sa/TemplateParser.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -79,13 +76,30 @@ void PingDot::Update(float timeStep)
         else
             SetImageRect(PingDot::PING_BAD);
 
-        kainjow::mustache::mustache tmpl{ "FPS: {{fps}}\n\nAverage Ping: {{avg_ping}}ms\nLast Ping: {{last_ping}}ms" };
-        kainjow::mustache::data d;
-        d.set("fps", std::to_string(fps));
-        d.set("avg_ping", std::to_string(c->GetAvgPing()));
-        d.set("last_ping", std::to_string(c->GetLastPing()));
-        std::string text = tmpl.render(d);
-        tooltipText_->SetText(String(text.c_str()));
+        static sa::Template tokens;
+        if (tokens.IsEmpty())
+        {
+            static constexpr const char* TEMPLATE = "FPS: ${fps}\n\nAverage Ping: ${avg_ping}ms\nLast Ping: ${last_ping}ms";
+            sa::TemplateParser parser;
+            tokens = parser.Parse(TEMPLATE);
+        }
+        const std::string text = tokens.ToString([&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "fps")
+                    return std::to_string(fps);
+                if (token.value == "avg_ping")
+                    return std::to_string(c->GetAvgPing());
+                if (token.value == "last_ping")
+                    return std::to_string(c->GetLastPing());
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
+        tooltipText_->SetText(ToUrhoString(text));
 
         lastUpdate_ = 0.0f;
     }

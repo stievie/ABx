@@ -19,16 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "MailWindow.h"
 #include "Shortcuts.h"
 #include "FwClient.h"
+#include "Conversions.h"
 #include <sa/Compiler.h>
-PRAGMA_WARNING_PUSH
-PRAGMA_WARNING_DISABLE_CLANG("-Wunused-lambda-capture")
-#include <Mustache/mustache.hpp>
-PRAGMA_WARNING_POP
 #include <TimeUtils.h>
+#include <sa/TemplateParser.h>
 
 void MailWindow::RegisterObject(Context* context)
 {
@@ -148,16 +145,29 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
 
     FwClient* client = GetSubsystem<FwClient>();
     const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
-    kainjow::mustache::mustache tpl{ "<{{from}}> on {{date}}: {{subject}}" };
+    static constexpr const char* TEMPLATE = "<${from}> on ${date}: ${subject}";
+    sa::TemplateParser parser;
+    sa::Template tokens = parser.Parse(TEMPLATE);
+
     for (const auto& header : headers)
     {
-        kainjow::mustache::data data;
-        data.set("from", header.fromName);
-        data.set("subject", (header.subject.empty() ? "(No Subject)" : header.subject));
-        data.set("date", Client::format_tick(header.created));
-        std::string t = tpl.render(data);
-        AddItem(String(t.c_str()),
-            header.isRead ? "MailListItem" : "MailListItemUnread", header);
+        const std::string t = tokens.ToString([&](const sa::Token& token) -> std::string
+        {
+            switch (token.type)
+            {
+            case sa::Token::Type::Expression:
+                if (token.value == "from")
+                    return header.fromName;
+                if (token.value == "date")
+                    return Client::format_tick(header.created);
+                if (token.value == "subject")
+                    return header.subject.empty() ? "(No Subject)" : header.subject;
+                ASSERT_FALSE();
+            default:
+                return token.value;
+            }
+        });
+        AddItem(ToUrhoString(t), header.isRead ? "MailListItem" : "MailListItemUnread", header);
     }
 }
 

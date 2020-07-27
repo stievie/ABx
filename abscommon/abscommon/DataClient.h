@@ -253,6 +253,8 @@ public:
     }
     bool Lock()
     {
+        if (locked_)
+            return true;
         locked_ = client_.Lock(entity_);
         return locked_;
     }

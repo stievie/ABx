@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "CreditsWindow.h"
 
 String CreditsWindow::NAME = "CreditsWindow";
@@ -198,7 +197,6 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Client", 30, true);
     CreateSingleLine("Urho3D: https://urho3d.github.io/", 15);
     CreateLogo("Textures/FishBoneLogo.png", 0.5f);
-    CreateSingleLine("Mustache: https://github.com/kainjow/Mustache", 15);
     CreateSingleLine("PostProcessController: https://gist.github.com/lezak", 15);
     CreateSingleLine("Level manager: https://urho3d.prophpbb.com/topic2367.html", 15);
     CreateSingleLine("Entity Position Interpolation: https://github.com/jwatte/EPIC", 15);
