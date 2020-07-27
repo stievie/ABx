@@ -20,8 +20,33 @@
  */
 
 #include "DBMail.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+uint32_t DBMail::GetMailCount(AB::Entities::Mail& mail)
+{
+    Database* db = GetSubsystem<Database>();
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM mails WHERE to_account_uuid = ${to_account_uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "to_account_uuid")
+                return db->EscapeString(mail.toAccountUuid);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
+    if (!result)
+        // Something is wrong!
+        return std::numeric_limits<uint32_t>::max();
+    return result->GetUInt("count");
+}
 
 bool DBMail::Create(AB::Entities::Mail& mail)
 {
@@ -31,46 +56,57 @@ bool DBMail::Create(AB::Entities::Mail& mail)
         return false;
     }
 
-    Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
     // Check if exceeding mail limit, if yes fail
-    query << "SELECT COUNT(*) AS count FROM mails WHERE to_account_uuid = " << db->EscapeString(mail.toAccountUuid);
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        return false;
-    if (result->GetUInt("count") >= AB::Entities::Limits::MAX_MAIL_COUNT)
+    if (GetMailCount(mail) >= AB::Entities::Limits::MAX_MAIL_COUNT)
         return false;
 
-    query.str("");
-    query << "INSERT INTO mails (uuid, from_account_uuid, to_account_uuid, from_name, to_name, " <<
-        "subject, message, created, is_read";
-    query << ") VALUES (";
+    Database* db = GetSubsystem<Database>();
 
-    query << db->EscapeString(mail.uuid) << ", ";
-    query << db->EscapeString(mail.fromAccountUuid) << ", ";
-    query << db->EscapeString(mail.toAccountUuid) << ", ";
-    query << db->EscapeString(mail.fromName) << ", ";
-    query << db->EscapeString(mail.toName) << ", ";
-    query << db->EscapeString(mail.subject) << ", ";
-    query << db->EscapeString(mail.message) << ", ";
-    query << mail.created << ", ";
-    query << (mail.isRead ? 1 : 0);
+    static constexpr const char* SQL = "INSERT INTO mails ("
+        "uuid, from_account_uuid, to_account_uuid, from_name, to_name, subject, message, created, is_read"
+        ") VALUES ("
+        "${uuid}, ${from_account_uuid}, ${to_account_uuid}, ${from_name}, ${to_name}, ${subject}, ${message}, ${created}, ${is_read}"
+        ")";
 
-    query << ")";
+    auto callback = [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "uuid")
+                return db->EscapeString(mail.uuid);
+            if (token.value == "from_account_uuid")
+                return db->EscapeString(mail.fromAccountUuid);
+            if (token.value == "to_account_uuid")
+                return db->EscapeString(mail.toAccountUuid);
+            if (token.value == "from_name")
+                return db->EscapeString(mail.fromName);
+            if (token.value == "to_name")
+                return db->EscapeString(mail.toName);
+            if (token.value == "subject")
+                return db->EscapeString(mail.subject);
+            if (token.value == "message")
+                return db->EscapeString(mail.message);
+            if (token.value == "created")
+                return std::to_string(mail.created);
+            if (token.value == "is_read")
+                return std::to_string((mail.isRead ? 1 : 0));
+
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    };
+
+    const std::string query = sa::templ::Parser::Evaluate(SQL, callback);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
-
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return  transaction.Commit();
 }
 
 bool DBMail::Load(AB::Entities::Mail& mail)
@@ -83,9 +119,21 @@ bool DBMail::Load(AB::Entities::Mail& mail)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    static constexpr const char* SQL = "SELECT * FROM mails WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "uuid")
+                return db->EscapeString(mail.uuid);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -110,28 +158,55 @@ bool DBMail::Save(const AB::Entities::Mail& mail)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE mails SET ";
-    query << " from_account_uuid = " << db->EscapeString(mail.fromAccountUuid) << ", ";
-    query << " to_account_uuid = " << db->EscapeString(mail.toAccountUuid) << ", ";
-    query << " from_name = " << db->EscapeString(mail.fromName) << ", ";
-    query << " to_name = " << db->EscapeString(mail.toName) << ", ";
-    query << " subject = " << db->EscapeString(mail.subject) << ", ";
-    query << " message = " << db->EscapeString(mail.message) << ", ";
-    query << " created = " << mail.created << ", ";
-    query << " is_read = " << (mail.isRead ? 1 : 0);
+    static constexpr const char* SQL = "UPDATE mails SET "
+        "from_account_uuid = ${from_account_uuid}, "
+        "to_account_uuid = ${to_account_uuid}, "
+        "from_name = ${from_name}, "
+        "to_name = ${to_name}, "
+        "subject = ${subject}, "
+        "message = ${message}, "
+        "created = ${created}, "
+        "is_read = ${is_read} "
+        "WHERE uuid = ${uuid}";
 
-    query << " WHERE uuid = " << db->EscapeString(mail.uuid);
+    auto callback = [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "from_account_uuid")
+                return db->EscapeString(mail.fromAccountUuid);
+            if (token.value == "to_account_uuid")
+                return db->EscapeString(mail.toAccountUuid);
+            if (token.value == "from_name")
+                return db->EscapeString(mail.fromName);
+            if (token.value == "to_name")
+                return db->EscapeString(mail.toName);
+            if (token.value == "subject")
+                return db->EscapeString(mail.subject);
+            if (token.value == "message")
+                return db->EscapeString(mail.message);
+            if (token.value == "created")
+                return std::to_string(mail.created);
+            if (token.value == "is_read")
+                return std::to_string(mail.isRead ? 1 : 0);
+            if (token.value == "uuid")
+                return db->EscapeString(mail.uuid);
+
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    };
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, callback)))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -144,16 +219,27 @@ bool DBMail::Delete(const AB::Entities::Mail& mail)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
+
+    static constexpr const char* SQL = "DELETE FROM mails WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "uuid")
+                return db->EscapeString(mail.uuid);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
+
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
-
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -166,11 +252,21 @@ bool DBMail::Exists(const AB::Entities::Mail& mail)
     }
 
     Database* db = GetSubsystem<Database>();
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM mails WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &mail](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "uuid")
+                return db->EscapeString(mail.uuid);
+            ASSERT_FALSE();
+        default:
+            return token.value;
+        }
+    });
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM mails WHERE uuid = " << db->EscapeString(mail.uuid);
-
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

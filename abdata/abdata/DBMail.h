@@ -27,6 +27,8 @@ namespace DB {
 
 class DBMail
 {
+private:
+    static uint32_t GetMailCount(AB::Entities::Mail& mail);
 public:
     DBMail() = delete;
     ~DBMail() = delete;
