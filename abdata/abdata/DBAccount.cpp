@@ -63,6 +63,7 @@ static std::string PlaceholderCallback(Database* db, const AB::Entities::Account
         if (token.value == "chest_size")
             return std::to_string(account.chest_size);
         LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
     default:
         return token.value;
     }
