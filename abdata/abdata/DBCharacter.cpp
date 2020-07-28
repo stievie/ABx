@@ -24,6 +24,65 @@
 
 namespace DB {
 
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Character& character, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(character.uuid);
+        if (token.value == "profession")
+            return db->EscapeString(character.profession);
+        if (token.value == "profession2")
+            return db->EscapeString(character.profession2);
+        if (token.value == "profession_uuid")
+            return db->EscapeString(character.professionUuid);
+        if (token.value == "profession2_uuid")
+            return db->EscapeString(character.profession2Uuid);
+        if (token.value == "skills")
+            return db->EscapeString(character.skillTemplate);
+        if (token.value == "name")
+            return db->EscapeString(character.name);
+        if (token.value == "pvp")
+            return std::to_string(character.pvp ? 1 : 0);
+        if (token.value == "account_uuid")
+            return db->EscapeString(character.accountUuid);
+        if (token.value == "level")
+            return std::to_string(character.level);
+        if (token.value == "experience")
+            return std::to_string(character.xp);
+        if (token.value == "skillpoints")
+            return std::to_string(character.skillPoints);
+        if (token.value == "sex")
+            return std::to_string(static_cast<uint32_t>(character.sex));
+        if (token.value == "model_index")
+            return std::to_string(character.modelIndex);
+        if (token.value == "creation")
+            return std::to_string(character.creation);
+        if (token.value == "inventory_size")
+            return std::to_string(character.inventorySize);
+        if (token.value == "lastlogin")
+            return std::to_string(character.lastLogin);
+        if (token.value == "lastlogout")
+            return std::to_string(character.lastLogout);
+        if (token.value == "onlinetime")
+            return std::to_string(character.onlineTime);
+        if (token.value == "deleted")
+            return std::to_string(character.deletedTime);
+        if (token.value == "current_map_uuid")
+            return db->EscapeString(character.currentMapUuid);
+        if (token.value == "last_outpost_uuid")
+            return db->EscapeString(character.lastOutpostUuid);
+        if (token.value == "death_stats")
+            return db->EscapeBlob(character.deathStats.data(), character.deathStats.length());
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
+
 // Player names are case insensitive. The DB needs a proper index for that:
 // CREATE INDEX players_name_ci_index ON players USING btree (lower(name))
 
@@ -48,49 +107,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
             "${account_uuid}, ${level}, ${experience}, ${skillpoints}, ${sex}, ${model_index}, ${creation}, ${inventory_size}"
         ")";
 
-    auto callback = [db, &character](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(character.uuid);
-            if (token.value == "profession")
-                return db->EscapeString(character.profession);
-            if (token.value == "profession2")
-                return db->EscapeString(character.profession2);
-            if (token.value == "profession_uuid")
-                return db->EscapeString(character.professionUuid);
-            if (token.value == "profession2_uuid")
-                return db->EscapeString(character.profession2Uuid);
-            if (token.value == "name")
-                return db->EscapeString(character.name);
-            if (token.value == "pvp")
-                return std::to_string(character.pvp ? 1 : 0);
-            if (token.value == "account_uuid")
-                return db->EscapeString(character.accountUuid);
-            if (token.value == "level")
-                return std::to_string(character.level);
-            if (token.value == "experience")
-                return std::to_string(character.xp);
-            if (token.value == "skillpoints")
-                return std::to_string(character.skillPoints);
-            if (token.value == "sex")
-                return std::to_string(static_cast<uint32_t>(character.sex));
-            if (token.value == "model_index")
-                return std::to_string(character.modelIndex);
-            if (token.value == "creation")
-                return std::to_string(character.creation);
-            if (token.value == "inventory_size")
-                return std::to_string(character.inventorySize);
-
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    };
-
-    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, callback)))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, character, std::placeholders::_1))))
         return false;
 
     return transaction.Commit();
@@ -114,20 +131,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
         return false;
     }
 
-    const std::string query = sa::templ::Parser::Evaluate(sql, [db, &character](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(character.uuid);
-            if (token.value == "name")
-                return db->EscapeString(character.name);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, character, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
@@ -190,49 +194,7 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
         "death_stats = ${death_stats} "
         "WHERE uuid = ${uuid}";
 
-    auto callback = [db, &character](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "profession2")
-                return db->EscapeString(character.profession2);
-            if (token.value == "profession2_uuid")
-                return db->EscapeString(character.profession2Uuid);
-            if (token.value == "skills")
-                return db->EscapeString(character.skillTemplate);
-            if (token.value == "level")
-                return std::to_string(character.level);
-            if (token.value == "experience")
-                return std::to_string(character.xp);
-            if (token.value == "skillpoints")
-                return std::to_string(character.skillPoints);
-            if (token.value == "lastlogin")
-                return std::to_string(character.lastLogin);
-            if (token.value == "lastlogout")
-                return std::to_string(character.lastLogout);
-            if (token.value == "onlinetime")
-                return std::to_string(character.onlineTime);
-            if (token.value == "deleted")
-                return std::to_string(character.deletedTime);
-            if (token.value == "current_map_uuid")
-                return db->EscapeString(character.currentMapUuid);
-            if (token.value == "last_outpost_uuid")
-                return db->EscapeString(character.lastOutpostUuid);
-            if (token.value == "inventory_size")
-                return std::to_string(character.inventorySize);
-            if (token.value == "death_stats")
-                return db->EscapeBlob(character.deathStats.data(), character.deathStats.length());
-            if (token.value == "uuid")
-                return db->EscapeString(character.uuid);
-
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    };
-
-    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, callback)))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, character, std::placeholders::_1))))
         return false;
 
     return transaction.Commit();
@@ -252,18 +214,7 @@ bool DBCharacter::Delete(const AB::Entities::Character& character)
         return false;
 
     static constexpr const char* SQL = "DELETE FROM players WHERE uuid = ${uuid}";
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &character](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(character.uuid);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, character, std::placeholders::_1));
 
     if (!db->ExecuteQuery(query))
         return false;
@@ -289,20 +240,7 @@ bool DBCharacter::Exists(const AB::Entities::Character& character)
         return false;
     }
 
-    const std::string query = sa::templ::Parser::Evaluate(sql, [db, &character](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(character.uuid);
-            if (token.value == "name")
-                return db->EscapeString(character.name);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, character, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
