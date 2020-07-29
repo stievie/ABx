@@ -19,10 +19,31 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBProfession.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallbackProfession(Database* db, const AB::Entities::Profession& prof, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid" || token.value == "profession_uuid")
+            return db->EscapeString(prof.uuid);
+        if (token.value == "idx")
+            return std::to_string(prof.index);
+        if (token.value == "name")
+            return db->EscapeString(prof.name);
+        if (token.value == "abbr")
+            return db->EscapeString(prof.abbr);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBProfession::Create(AB::Entities::Profession& prof)
 {
@@ -39,23 +60,24 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_professions WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM game_professions WHERE ");
     if (!Utils::Uuid::IsEmpty(prof.uuid))
-        query << "uuid = " << db->EscapeString(prof.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (prof.index != 0)
-        query << "idx = " << prof.index;
+        parser.Append("idx = ${idx}", tokens);
     else if (!prof.name.empty())
-        query << "name = " << db->EscapeString(prof.name);
+        parser.Append("name = ${name}", tokens);
     else if (!prof.abbr.empty())
-        query << "abbr = " << db->EscapeString(prof.abbr);
+        parser.Append("abbr = ${abbr}", tokens);
     else
     {
         LOG_ERROR << "UUID, name, abbr and index are empty" << std::endl;
         return false;
     }
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallbackProfession, db, prof, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -68,15 +90,14 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     prof.position = static_cast<AB::Entities::ProfessionPosition>(result->GetUInt("position"));
 
     // Get attributes
-    query.str("");
-    query << "SELECT uuid, idx, is_primary FROM game_attributes WHERE profession_uuid = " << db->EscapeString(prof.uuid);
-    query << " ORDER BY idx";
-    std::shared_ptr<DB::DBResult> resAttrib = db->StoreQuery(query.str());
+    static constexpr const char* SQL_ATTR = "SELECT uuid, idx, is_primary FROM game_attributes WHERE profession_uuid = ${profession_uuid} ORDER BY idx";
+    const std::string queryAttr = sa::templ::Parser::Evaluate(SQL_ATTR, std::bind(&PlaceholderCallbackProfession, db, prof, std::placeholders::_1));
+    std::shared_ptr<DB::DBResult> resAttrib = db->StoreQuery(queryAttr);
     prof.attributeCount= 0;
     prof.attributes.clear();
     if (resAttrib)
     {
-        for (resAttrib = db->StoreQuery(query.str()); resAttrib; resAttrib = resAttrib->Next())
+        for (; resAttrib; resAttrib = resAttrib->Next())
         {
             ++prof.attributeCount;
             prof.attributes.push_back({
@@ -115,23 +136,24 @@ bool DBProfession::Exists(const AB::Entities::Profession& prof)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_professions WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM game_professions WHERE ");
     if (!Utils::Uuid::IsEmpty(prof.uuid))
-        query << "uuid = " << db->EscapeString(prof.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (prof.index != 0)
-        query << "idx = " << prof.index;
+        parser.Append("idx = ${idx}", tokens);
     else if (!prof.name.empty())
-        query << "name = " << db->EscapeString(prof.name);
+        parser.Append("name = ${name}", tokens);
     else if (!prof.abbr.empty())
-        query << "abbr = " << db->EscapeString(prof.abbr);
+        parser.Append("abbr = ${abbr}", tokens);
     else
     {
         LOG_ERROR << "UUID, name, abbr and index are empty" << std::endl;
         return false;
     }
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallbackProfession, db, prof, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

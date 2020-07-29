@@ -19,11 +19,34 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBReservedName.h"
 #include "StorageProvider.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::ReservedName& rn, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(rn.uuid);
+        if (token.value == "name")
+            return db->EscapeString(rn.name);
+        if (token.value == "is_reserved")
+            return std::to_string(rn.isReserved ? 1 : 0);
+        if (token.value == "reserved_for_account_uuid")
+            return db->EscapeString(rn.reservedForAccountUuid);
+        if (token.value == "expires")
+            return std::to_string(rn.expires);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 // Player names are case insensitive. The DB needs a proper index for that:
 // CREATE INDEX reserved_names_name_ci_index ON reserved_names USING btree (lower(name))
@@ -37,49 +60,40 @@ bool DBReservedName::Create(AB::Entities::ReservedName& rn)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO reserved_names (uuid, name, is_reserved, reserved_for_account_uuid, expires";
-    query << ") VALUES (";
-
-    query << db->EscapeString(rn.uuid) << ", ";
-    query << db->EscapeString(rn.name) << ", ";
-    query << (rn.isReserved ? 1 : 0) << ", ";
-    query << db->EscapeString(rn.reservedForAccountUuid) << ", ";
-    query << rn.expires;
-
-    query << ")";
+    static constexpr const char* SQL = "INSERT INTO reserved_names ("
+            "uuid, name, is_reserved, reserved_for_account_uuid, expires"
+        ") VALUES ("
+            "${uuid}, ${name}, ${is_reserved}, ${reserved_for_account_uuid}, ${expires}"
+        ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, rn, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBReservedName::Load(AB::Entities::ReservedName& n)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM reserved_names WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM reserved_names WHERE ");
     if (!Utils::Uuid::IsEmpty(n.uuid))
-        query << "uuid = " << db->EscapeString(n.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!n.name.empty())
-        query << "LOWER(name) = LOWER(" << db->EscapeString(n.name) << ")";
+        parser.Append("LOWER(name) = LOWER(${name})", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
-
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, n, std::placeholders::_1));
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -101,24 +115,21 @@ bool DBReservedName::Save(const AB::Entities::ReservedName& rn)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE reserved_names SET ";
 
     // Only these may be changed
-    query << " is_reserved = " << (rn.isReserved ? 1 : 0) << ", ";
-    query << " expires = " << rn.expires;
-
-    query << " WHERE uuid = " << db->EscapeString(rn.uuid);
+    static constexpr const char* SQL = "UPDATE reserved_names SET "
+        "is_reserved = ${is_reserved}, "
+        "expires = ${expires} "
+        "WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, rn, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -131,16 +142,16 @@ bool DBReservedName::Delete(const AB::Entities::ReservedName& rn)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM reserved_names WHERE uuid = " << db->EscapeString(rn.uuid);
+    static constexpr const char* SQL = "DELETE FROM reserved_names WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, rn, std::placeholders::_1));
+
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -148,21 +159,20 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM reserved_names WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM reserved_names WHERE ");
     if (!Utils::Uuid::IsEmpty(n.uuid))
-        query << "uuid = " << db->EscapeString(n.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!n.name.empty())
-        query << "LOWER(name) = LOWER(" << db->EscapeString(n.name) << ")";
+        parser.Append("LOWER(name) = LOWER(${name})", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
-    if (n.isReserved)
-        query << " AND is_reserved = 1";
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, n, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
@@ -172,17 +182,19 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
 {
     // When expires == 0 it does not expire, otherwise it's the time stamp
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "SELECT uuid FROM reserved_names WHERE ";
-    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    static constexpr const char* SQL = "SELECT uuid FROM reserved_names WHERE (expires <> 0 AND expires < ${expires})";
+    AB::Entities::ReservedName n;
+    n.expires = Utils::Tick();
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, n, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         // No matches
         return;
 
     std::vector<std::string> rns;
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (; result; result = result->Next())
     {
         rns.push_back(result->GetString("uuid"));
     }
@@ -196,20 +208,17 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
     }
 
     // Then delete from DB
-    query.str("");
-    query << "DELETE FROM reserved_names WHERE ";
-    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
+    static constexpr const char* SQL_DELETE =  "DELETE FROM reserved_names WHERE (expires <> 0 AND expires < ${expires})";
+    const std::string deleteQuery = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, n, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(deleteQuery))
         return;
 
-    // End transaction
-    if (!transaction.Commit())
-        return;
+    transaction.Commit();
 }
 
 }
