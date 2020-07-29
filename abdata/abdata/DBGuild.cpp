@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBGuild.h"
 
 namespace DB {
@@ -58,11 +57,7 @@ bool DBGuild::Create(AB::Entities::Guild& g)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBGuild::Load(AB::Entities::Guild& g)
@@ -132,7 +127,6 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -154,7 +148,6 @@ bool DBGuild::Delete(const AB::Entities::Guild& g)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 

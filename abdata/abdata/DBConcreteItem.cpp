@@ -27,6 +27,55 @@
 
 namespace DB {
 
+static std::string PlaceholderCallback(Database* db, const AB::Entities::ConcreteItem& item, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(item.uuid);
+        if (token.value == "player_uuid")
+            return db->EscapeString(item.playerUuid);
+        if (token.value == "storage_place")
+            return std::to_string(static_cast<int>(item.storagePlace));
+        if (token.value == "storage_pos")
+            return std::to_string(item.storagePos);
+        if (token.value == "upgrade_1")
+            return db->EscapeString(item.upgrade1Uuid);
+        if (token.value == "upgrade_2")
+            return db->EscapeString(item.upgrade2Uuid);
+        if (token.value == "upgrade_3")
+            return db->EscapeString(item.upgrade3Uuid);
+        if (token.value == "account_uuid")
+            return db->EscapeString(item.accountUuid);
+        if (token.value == "item_uuid")
+            return db->EscapeString(item.itemUuid);
+        if (token.value == "stats")
+            return db->EscapeBlob(item.itemStats.data(), item.itemStats.length());
+        if (token.value == "count")
+            return std::to_string(item.count);
+        if (token.value == "creation")
+            return std::to_string(item.creation);
+        if (token.value == "deleted")
+            return std::to_string(item.deleted);
+        if (token.value == "value")
+            return std::to_string(item.value);
+        if (token.value == "instance_uuid")
+            return db->EscapeString(item.instanceUuid);
+        if (token.value == "map_uuid")
+            return db->EscapeString(item.mapUuid);
+        if (token.value == "flags")
+            return std::to_string(item.flags);
+        if (token.value == "sold")
+            return std::to_string(item.sold);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
+
 bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 {
     if (Utils::Uuid::IsEmpty(item.uuid))
@@ -47,55 +96,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    auto callback = [db, &item](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(item.uuid);
-            if (token.value == "player_uuid")
-                return db->EscapeString(item.playerUuid);
-            if (token.value == "storage_place")
-                return std::to_string(static_cast<int>(item.storagePlace));
-            if (token.value == "storage_pos")
-                return std::to_string(item.storagePos);
-            if (token.value == "upgrade_1")
-                return db->EscapeString(item.upgrade1Uuid);
-            if (token.value == "upgrade_2")
-                return db->EscapeString(item.upgrade2Uuid);
-            if (token.value == "upgrade_3")
-                return db->EscapeString(item.upgrade3Uuid);
-            if (token.value == "account_uuid")
-                return db->EscapeString(item.accountUuid);
-            if (token.value == "item_uuid")
-                return db->EscapeString(item.itemUuid);
-            if (token.value == "stats")
-                return db->EscapeBlob(item.itemStats.data(), item.itemStats.length());
-            if (token.value == "count")
-                return std::to_string(item.count);
-            if (token.value == "creation")
-                return std::to_string(item.creation);
-            if (token.value == "deleted")
-                return std::to_string(item.deleted);
-            if (token.value == "value")
-                return std::to_string(item.value);
-            if (token.value == "instance_uuid")
-                return db->EscapeString(item.instanceUuid);
-            if (token.value == "map_uuid")
-                return db->EscapeString(item.mapUuid);
-            if (token.value == "flags")
-                return std::to_string(item.flags);
-            if (token.value == "sold")
-                return std::to_string(item.sold);
-
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    };
-
-    const std::string query = sa::templ::Parser::Evaluate(SQL, callback);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -121,18 +122,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     static constexpr const char* SQL = "SELECT * FROM concrete_items WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(item.uuid);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
@@ -193,55 +183,7 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     if (!transaction.Begin())
         return false;
 
-    auto callback = [db, &item](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(item.uuid);
-            if (token.value == "player_uuid")
-                return db->EscapeString(item.playerUuid);
-            if (token.value == "storage_place")
-                return std::to_string(static_cast<int>(item.storagePlace));
-            if (token.value == "storage_pos")
-                return std::to_string(item.storagePos);
-            if (token.value == "upgrade_1")
-                return db->EscapeString(item.upgrade1Uuid);
-            if (token.value == "upgrade_2")
-                return db->EscapeString(item.upgrade2Uuid);
-            if (token.value == "upgrade_3")
-                return db->EscapeString(item.upgrade3Uuid);
-            if (token.value == "account_uuid")
-                return db->EscapeString(item.accountUuid);
-            if (token.value == "item_uuid")
-                return db->EscapeString(item.itemUuid);
-            if (token.value == "stats")
-                return db->EscapeBlob(item.itemStats.data(), item.itemStats.length());
-            if (token.value == "count")
-                return std::to_string(item.count);
-            if (token.value == "creation")
-                return std::to_string(item.creation);
-            if (token.value == "deleted")
-                return std::to_string(item.deleted);
-            if (token.value == "value")
-                return std::to_string(item.value);
-            if (token.value == "instance_uuid")
-                return db->EscapeString(item.instanceUuid);
-            if (token.value == "map_uuid")
-                return db->EscapeString(item.mapUuid);
-            if (token.value == "flags")
-                return std::to_string(item.flags);
-            if (token.value == "sold")
-                return std::to_string(item.sold);
-
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    };
-
-    const std::string query = sa::templ::Parser::Evaluate(SQL, callback);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
     if (!db->ExecuteQuery(query))
         return false;
 
@@ -263,18 +205,7 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
     if (!transaction.Begin())
         return false;
 
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(item.uuid);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     if (!db->ExecuteQuery(query))
         return false;
@@ -295,18 +226,7 @@ bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &item](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(item.uuid);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
@@ -319,16 +239,19 @@ void DBConcreteItem::Clean(StorageProvider* sp)
     LOG_INFO << "Cleaning concrete items" << std::endl;
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT uuid, instance_uuid FROM concrete_items WHERE storage_place = " <<
-        static_cast<int>(AB::Entities::StoragePlace::Scene) << " AND deleted = 0";
+    static constexpr const char* SQL = "SELECT uuid, instance_uuid FROM concrete_items WHERE "
+        "storage_place = ${storage_place} "
+        "AND deleted = 0";
+    AB::Entities::ConcreteItem dummyItem;
+    dummyItem.storagePlace = AB::Entities::StoragePlace::Scene;
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, dummyItem, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return;
 
     std::vector<std::string> uuids;
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (result = db->StoreQuery(query); result; result = result->Next())
     {
         AB::Entities::GameInstance instance;
         instance.uuid = result->GetString("instance_uuid");

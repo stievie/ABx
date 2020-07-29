@@ -19,10 +19,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBGame.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Game& game, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(game.uuid);
+        if (token.value == "name")
+            return db->EscapeString(game.name);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBGame::Create(AB::Entities::Game&)
 {
@@ -34,19 +51,21 @@ bool DBGame::Load(AB::Entities::Game& game)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_maps WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM game_maps WHERE ");
     if (!Utils::Uuid::IsEmpty(game.uuid))
-        query << "uuid = " << db->EscapeString(game.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!game.name.empty())
-        query << "name = " << db->EscapeString(game.name);
+        parser.Append("name = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, game, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -84,19 +103,21 @@ bool DBGame::Exists(const AB::Entities::Game& game)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_maps WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM game_maps WHERE ");
     if (!Utils::Uuid::IsEmpty(game.uuid))
-        query << "uuid = " << db->EscapeString(game.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!game.name.empty())
-        query << "name = " << db->EscapeString(game.name);
+        parser.Append("name = ${name}", tokens);
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, game, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

@@ -21,8 +21,26 @@
 
 #include "DBMerchantItem.h"
 #include <AB/Entities/ConcreteItem.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::MerchantItem& item, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "item_uuid")
+            return db->EscapeString(item.uuid);
+        if (token.value == "storage_place")
+            return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBMerchantItem::Create(AB::Entities::MerchantItem&)
 {
@@ -39,12 +57,12 @@ bool DBMerchantItem::Load(AB::Entities::MerchantItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT uuid FROM concrete_items WHERE ";
-    query << "deleted = 0 AND item_uuid = " << db->EscapeString(item.uuid) <<
-        " AND storage_place = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    static constexpr const char* SQL = "SELECT uuid FROM concrete_items WHERE "
+        "deleted = 0 AND item_uuid = ${item_uuid} "
+        "AND storage_place = ${storage_place}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     item.concreteUuid = result->GetString("uuid");
@@ -71,11 +89,11 @@ bool DBMerchantItem::Exists(const AB::Entities::MerchantItem& item)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count concrete_items WHERE ";
-    query << "deleted = 0 AND item_uuid = " << db->EscapeString(item.uuid) << " AND storage_place = " << static_cast<int>(AB::Entities::StoragePlace::Merchant);
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count concrete_items WHERE "
+        "deleted = 0 AND item_uuid = ${item_uuid} AND storage_place = ${storage_place}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

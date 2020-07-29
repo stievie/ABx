@@ -20,8 +20,36 @@
  */
 
 #include "DBAccountKey.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::AccountKey& ak, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(ak.uuid);
+        if (token.value == "used")
+            return std::to_string(ak.used);
+        if (token.value == "total")
+            return std::to_string(ak.total);
+        if (token.value == "description")
+            return db->EscapeString(ak.description);
+        if (token.value == "status")
+            return std::to_string(static_cast<int>(ak.status));
+        if (token.value == "key_type")
+            return std::to_string(static_cast<int>(ak.type));
+        if (token.value == "email")
+            return db->EscapeString(ak.email);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
 {
@@ -32,24 +60,18 @@ bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO account_keys (uuid, used, total, description, status, " <<
-        "key_type, email) VALUES ( ";
+    static constexpr const char* SQL = "INSERT INTO account_keys ("
+            "uuid, used, total, description, status, key_type, email"
+        ") VALUES ( "
+            "${uuid}, ${used}, ${total}, ${description}, ${status}, ${key_type}, ${email}"
+        ")";
 
-    query << db->EscapeString(ak.uuid) << ", ";
-    query << static_cast<int>(ak.used) << ", ";
-    query << static_cast<int>(ak.total) << ", ";
-    query << db->EscapeString(ak.description) << ", ";
-    query << static_cast<int>(ak.status) << ", ";
-    query << static_cast<int>(ak.type) << ", ";
-    query << db->EscapeString(ak.email);
-
-    query << ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     // End transaction
@@ -69,14 +91,16 @@ bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM account_keys WHERE uuid = " << db->EscapeString(ak.uuid);
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM account_keys WHERE uuid = ${uuid}");
     if (ak.status != AB::Entities::AccountKeyStatus::KeyStatusUnknown)
-        query << " AND status = " << ak.status;
+        parser.Append(" AND status = ${status}", tokens);
     if (ak.type != AB::Entities::AccountKeyType::KeyTypeUnknown)
-        query << " AND key_type = " << ak.type;
+        parser.Append(" AND key_type = ${key_type}", tokens);
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -99,27 +123,25 @@ bool DBAccountKey::Save(const AB::Entities::AccountKey& ak)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE account_keys SET ";
+    static constexpr const char* SQL = "UPDATE account_keys SET "
+        "used = ${used}, "
+        "total = ${total}, "
+        "description = ${description}, "
+        "status = ${status}, "
+        "key_type = ${key_type}, "
+        "email = ${email} "
+        "WHERE uuid = ${uuid}";
 
-    query << " used = " << ak.used << ",";
-    query << " total = " << ak.total << ",";
-    query << " description = " << db->EscapeString(ak.description) << ",";
-    query << " status = " << static_cast<int>(ak.status) << ",";
-    query << " key_type = " << static_cast<int>(ak.type) << ",";
-    query << " email = " << db->EscapeString(ak.email);
-
-    query << " WHERE uuid = " << db->EscapeString(ak.uuid);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -139,14 +161,16 @@ bool DBAccountKey::Exists(const AB::Entities::AccountKey& ak)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM account_keys WHERE uuid = " << db->EscapeString(ak.uuid);
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM account_keys WHERE uuid = ${uuid}");
     if (ak.status != AB::Entities::AccountKeyStatus::KeyStatusUnknown)
-        query << " AND status = " << ak.status;
+        parser.Append(" AND status = ${status}", tokens);
     if (ak.type != AB::Entities::AccountKeyType::KeyTypeUnknown)
-        query << " AND key_type = " << ak.type;
+        parser.Append(" AND key_type = ${key_type}", tokens);
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

@@ -19,10 +19,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBSkill.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Skill& skill, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(skill.uuid);
+        if (token.value == "idx")
+            return std::to_string(skill.index);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBSkill::Create(AB::Entities::Skill& skill)
 {
@@ -39,15 +56,16 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_skills WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM game_skills WHERE ");
     if (!Utils::Uuid::IsEmpty(skill.uuid))
-        query << "uuid = " << db->EscapeString(skill.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else
         // 0 is a valid index, it is the None skill
-        query << "idx = " << skill.index;
+        parser.Append("idx = ${idx}", tokens);
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, skill, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -102,19 +120,16 @@ bool DBSkill::Exists(const AB::Entities::Skill& skill)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_skills WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM game_skills WHERE ");
     if (!Utils::Uuid::IsEmpty(skill.uuid))
-        query << "uuid = " << db->EscapeString(skill.uuid);
-    else if (skill.index != 0)
-        query << "idx = " << skill.index;
+        parser.Append("uuid = ${uuid}", tokens);
     else
-    {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
-        return false;
-    }
+        // 0 is a valid index, it is the None skill
+        parser.Append("idx = ${idx}", tokens);
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, skill, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
