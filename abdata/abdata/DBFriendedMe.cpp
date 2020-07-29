@@ -19,8 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBFriendedMe.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
 
@@ -45,23 +45,30 @@ bool DBFriendedMe::Load(AB::Entities::FriendedMe& fl)
 
     Database* db = GetSubsystem<Database>();
 
-    fl.friends.clear();
-    std::ostringstream query;
-    query << "SELECT * FROM friend_list WHERE friend_uuid = " << db->EscapeString(fl.uuid);
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (result)
+    static constexpr const char* SQL = "SELECT * FROM friend_list WHERE friend_uuid = ${friend_uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &fl](const sa::templ::Token& token) -> std::string
     {
-        for (result = db->StoreQuery(query.str()); result; result = result->Next())
+        switch (token.type)
         {
-            fl.friends.push_back({
-                result->GetString("account_uuid"),
-                static_cast<AB::Entities::FriendRelation>(result->GetUInt("relation"))
-            });
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "friend_uuid")
+                return db->EscapeString(fl.uuid);
+            LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+            return "";
+        default:
+            return token.value;
         }
-        return true;
-    }
+    });
 
-    return false;
+    fl.friends.clear();
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
+    {
+        fl.friends.push_back({
+            result->GetString("account_uuid"),
+            static_cast<AB::Entities::FriendRelation>(result->GetUInt("relation"))
+        });
+    }
+    return true;
 }
 
 bool DBFriendedMe::Save(const AB::Entities::FriendedMe& fl)

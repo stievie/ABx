@@ -19,10 +19,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBItemChanceList.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::ItemChanceList& il, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "map_uuid")
+            return db->EscapeString(il.uuid);
+        if (token.value == "empty_map_uuid")
+            return db->EscapeString(Utils::Uuid::EMPTY_UUID);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBItemChanceList::Create(AB::Entities::ItemChanceList& il)
 {
@@ -45,11 +62,11 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT item_uuid, chance, can_drop FROM game_item_chances WHERE map_uuid = " << db->EscapeString(il.uuid);
-    // Empty GUID means can drop an all maps
-    query << " OR map_uuid = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static constexpr const char* SQL = "SELECT item_uuid, chance, can_drop FROM game_item_chances WHERE "
+        "map_uuid = ${map_uuid} OR map_uuid = ${empty_map_uuid}";
+
+    static const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, il, std::placeholders::_1));
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         il.items.push_back({
             result->GetString("item_uuid"),

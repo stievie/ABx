@@ -24,6 +24,23 @@
 
 namespace DB {
 
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Version& v, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(v.uuid);
+        if (token.value == "name")
+            return db->EscapeString(v.name);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
+
 bool DBVersion::Create(AB::Entities::Version&)
 {
     // Do nothing
@@ -47,20 +64,7 @@ bool DBVersion::Load(AB::Entities::Version& v)
         return false;
     }
 
-    const std::string query = tokens.ToString([db, &v](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(v.uuid);
-            if (token.value == "name")
-                return db->EscapeString(v.name);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
@@ -102,20 +106,7 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
         return false;
     }
 
-    const std::string query = tokens.ToString([db, &v](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(v.uuid);
-            if (token.value == "name")
-                return db->EscapeString(v.name);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)

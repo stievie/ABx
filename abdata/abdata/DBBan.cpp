@@ -19,10 +19,37 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBBan.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Ban& ban, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(ban.uuid);
+        if (token.value == "expires")
+            return std::to_string(ban.expires);
+        if (token.value == "added")
+            return std::to_string(ban.added);
+        if (token.value == "reason")
+            return std::to_string(static_cast<int>(ban.reason));
+        if (token.value == "active")
+            return std::to_string(ban.active ? 1 : 0);
+        if (token.value == "admin_uuid")
+            return db->EscapeString(ban.adminUuid);
+        if (token.value == "comment")
+            return db->EscapeString(ban.comment);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBBan::Create(AB::Entities::Ban& ban)
 {
@@ -32,31 +59,24 @@ bool DBBan::Create(AB::Entities::Ban& ban)
         return false;
     }
 
-    Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO bans (uuid, expires, added, reason, active, admin_uuid, comment) VALUES (";
-    query << db->EscapeString(ban.uuid) << ", ";
-    query << ban.expires << ", ";
-    query << ban.added << ", ";
-    query << static_cast<int>(ban.reason) << ", ";
-    query << static_cast<int>(ban.active) << ", ";
-    query << db->EscapeString(ban.adminUuid) << ", ";
-    query << db->EscapeString(ban.comment);
+    static constexpr const char* SQL = "INSERT INTO bans ("
+            "uuid, expires, added, reason, active, admin_uuid, comment"
+        ") VALUES ("
+            "${uuid}, ${expires}, ${added}, ${reason}, ${active}, ${admin_uuid}, ${comment}"
+        ")";
 
-    query << ")";
+    Database* db = GetSubsystem<Database>();
+
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBBan::Load(AB::Entities::Ban& ban)
@@ -69,10 +89,10 @@ bool DBBan::Load(AB::Entities::Ban& ban)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
+    static constexpr const char* SQL = "SELECT * FROM bans WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -95,27 +115,25 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
         return false;
     }
 
+    static constexpr const char* SQL = "UPDATE bans SET "
+        "expires = ${expires}, "
+        "added = ${added}, "
+        "reason = ${reason}, "
+        "active = ${active}, "
+        "admin_uuid = ${admin_uuid}, "
+        "comment = ${comment} "
+        "WHERE uuid = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE bans SET ";
-    query << " expires" << ban.expires << ", ";
-    query << " added" << ban.added << ", ";
-    query << " reason" << static_cast<int>(ban.reason) << ", ";
-    query << " active" << (ban.active ? 1 : 0) << ", ";
-    query << " admin_uuid" << db->EscapeString(ban.adminUuid) << ", ";
-    query << " comment" << db->EscapeString(ban.comment);
-
-    query << " WHERE uuid = " << db->EscapeString(ban.uuid);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -127,17 +145,18 @@ bool DBBan::Delete(const AB::Entities::Ban& ban)
         return false;
     }
 
+    static constexpr const char* SQL = "DELETE FROM bans WHERE uuid = ${uuid}";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
+
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -151,10 +170,10 @@ bool DBBan::Exists(const AB::Entities::Ban& ban)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM bans WHERE uuid = " << db->EscapeString(ban.uuid);
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM bans WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

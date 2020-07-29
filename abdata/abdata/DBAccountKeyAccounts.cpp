@@ -19,10 +19,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBAccountKeyAccounts.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::AccountKeyAccounts& ak, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "account_uuid")
+            return db->EscapeString(ak.accountUuid);
+        if (token.value == "account_key_uuid")
+            return db->EscapeString(ak.uuid);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
 {
@@ -33,17 +50,19 @@ bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO account_account_keys (account_uuid, account_key_uuid) VALUES ( ";
-    query << db->EscapeString(ak.accountUuid) << ",";
-    query << db->EscapeString(ak.uuid);
-    query << ")";
+
+    static constexpr const char* SQL = "INSERT INTO account_account_keys ("
+            "account_uuid, account_key_uuid"
+        ") VALUES ( "
+            "${account_uuid}, ${account_key_uuid}"
+        ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     // End transaction
@@ -63,12 +82,12 @@ bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM account_account_keys WHERE ";
-    query << "account_uuid = " << db->EscapeString(ak.accountUuid);
-    query << " AND account_key_uuid = " << db->EscapeString(ak.uuid);
+    static constexpr const char* SQL = "SELECT * FROM account_account_keys WHERE "
+        "account_uuid = ${account_uuid} "
+        "AND account_key_uuid = ${account_key_uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -99,12 +118,12 @@ bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM account_account_keys WHERE ";
-    query << "account_uuid = " << db->EscapeString(ak.accountUuid);
-    query << " AND account_key_uuid = " << db->EscapeString(ak.uuid);
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM account_account_keys WHERE "
+        "account_uuid = ${account_uuid} "
+        "AND account_key_uuid = ${account_key_uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ak, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 

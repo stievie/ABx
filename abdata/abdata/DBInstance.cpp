@@ -19,10 +19,41 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBInstance.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::GameInstance& inst, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(inst.uuid);
+        if (token.value == "game_uuid")
+            return db->EscapeString(inst.gameUuid);
+        if (token.value == "server_uuid")
+            return db->EscapeString(inst.serverUuid);
+        if (token.value == "name")
+            return db->EscapeString(inst.name);
+        if (token.value == "recording")
+            return db->EscapeString(inst.recording);
+        if (token.value == "start_time")
+            return std::to_string(inst.startTime);
+        if (token.value == "stop_time")
+            return std::to_string(inst.stopTime);
+        if (token.value == "number")
+            return std::to_string(inst.number);
+        if (token.value == "is_running")
+            return std::to_string(inst.running ? 1 : 0);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBInstance::Create(AB::Entities::GameInstance& inst)
 {
@@ -33,55 +64,43 @@ bool DBInstance::Create(AB::Entities::GameInstance& inst)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "INSERT INTO instances (uuid, game_uuid, server_uuid, name, recording, " <<
-        "start_time, stop_time, number, is_running";
-    query << ") VALUES (";
+    static constexpr const char* SQL = "INSERT INTO instances ("
+            "uuid, game_uuid, server_uuid, name, recording, start_time, stop_time, number, is_running"
+        ") VALUES ("
+            "${uuid}, ${game_uuid}, ${server_uuid}, ${name}, ${recording}, ${start_time}, ${stop_time}, ${number}, ${is_running}"
+        ")";
 
-    query << db->EscapeString(inst.uuid) << ", ";
-    query << db->EscapeString(inst.gameUuid) << ", ";
-    query << db->EscapeString(inst.serverUuid) << ", ";
-    query << db->EscapeString(inst.name) << ", ";
-    query << db->EscapeString(inst.recording) << ", ";
-    query << inst.startTime << ", ";
-    query << inst.stopTime << ", ";
-    query << inst.number << ", ";
-    query << (inst.running ? 1 : 0);
-
-    query << ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBInstance::Load(AB::Entities::GameInstance& inst)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM instances WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT * FROM instances WHERE ");
     if (!Utils::Uuid::IsEmpty(inst.uuid))
-        query << "uuid = " << db->EscapeString(inst.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!inst.recording.empty())
-        query << "recording = " << db->EscapeString(inst.recording);
+        parser.Append("recording = ${recording}", tokens);
     else
     {
         LOG_ERROR << "UUID and recording are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -107,28 +126,27 @@ bool DBInstance::Save(const AB::Entities::GameInstance& inst)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE instances SET ";
-    query << " game_uuid = " << db->EscapeString(inst.gameUuid) << ", ";
-    query << " server_uuid = " << db->EscapeString(inst.serverUuid) << ", ";
-    query << " name = " << db->EscapeString(inst.name) << ", ";
-    query << " recording = " << db->EscapeString(inst.recording) << ", ";
-    query << " start_time = " << inst.startTime << ", ";
-    query << " stop_time = " << inst.stopTime << ", ";
-    query << " number = " << inst.number << ", ";
-    query << " is_running = " << (inst.running ? 1 : 0);
+    static constexpr const char* SQL = "UPDATE instances SET "
+        "game_uuid = ${game_uuid}, "
+        "server_uuid = ${server_uuid}, "
+        "name = ${name}, "
+        "recording = ${recording}, "
+        "start_time = ${start_time}, "
+        "stop_time = ${stop_time}, "
+        "number = ${number}, "
+        "is_running = ${is_running} "
+        "WHERE uuid = ${uuid}";
 
-    query << " WHERE uuid = " << db->EscapeString(inst.uuid);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -141,16 +159,15 @@ bool DBInstance::Delete(const AB::Entities::GameInstance& inst)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM instances WHERE uuid = " << db->EscapeString(inst.uuid);
+    static constexpr const char* SQL = "DELETE FROM instances WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -158,19 +175,21 @@ bool DBInstance::Exists(const AB::Entities::GameInstance& inst)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM instances WHERE ";
+    sa::templ::Parser parser;
+    sa::templ::Tokens tokens = parser.Parse("SELECT COUNT(*) AS count FROM instances WHERE ");
     if (!Utils::Uuid::IsEmpty(inst.uuid))
-        query << "uuid = " << db->EscapeString(inst.uuid);
+        parser.Append("uuid = ${uuid}", tokens);
     else if (!inst.recording.empty())
-        query << "recording = " << db->EscapeString(inst.recording);
+        parser.Append("recording = ${recording}", tokens);
     else
     {
         LOG_ERROR << "UUID and recording are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = tokens.ToString(std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
