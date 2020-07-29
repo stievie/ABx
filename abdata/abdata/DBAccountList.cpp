@@ -33,9 +33,8 @@ bool DBAccountList::Load(AB::Entities::AccountList& al)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT uuid FROM accounts";
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    static const std::string query = "SELECT uuid FROM accounts";
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         al.uuids.push_back(result->GetString("uuid"));
     }

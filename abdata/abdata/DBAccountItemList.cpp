@@ -58,7 +58,8 @@ bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
                 return db->EscapeString(il.uuid);
             if (token.value == "storage_place")
                 return std::to_string(static_cast<int>(il.storagePlace));
-            ASSERT_FALSE();
+            LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+            return "";
         default:
             return token.value;
         }

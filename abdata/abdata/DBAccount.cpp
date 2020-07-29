@@ -32,7 +32,7 @@ static std::string PlaceholderCallback(Database* db, const AB::Entities::Account
     switch (token.type)
     {
     case sa::templ::Token::Type::Variable:
-        if (token.value == "uuid")
+        if (token.value == "uuid" || token.value == "account_uuid")
             return db->EscapeString(account.uuid);
         if (token.value == "name")
             return db->EscapeString(account.name);
@@ -103,8 +103,8 @@ bool DBAccount::Load(AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL_UUID = "SELECT * FROM accounts WHERE uuid= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT * FROM accounts WHERE name= ${name}";
+    static constexpr const char* SQL_UUID = "SELECT * FROM accounts WHERE uuid = ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT * FROM accounts WHERE name = ${name}";
 
     const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))
@@ -220,8 +220,8 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 {
     Database* db = GetSubsystem<Database>();
 
-    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM accounts WHERE uuid= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS count FROM accounts WHERE name= ${name}";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM accounts WHERE uuid = ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS count FROM accounts WHERE name = ${name}";
 
     const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(account.uuid))

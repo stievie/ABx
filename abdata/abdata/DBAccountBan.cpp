@@ -24,6 +24,24 @@
 
 namespace DB {
 
+static std::string PlaceholderCallback(Database* db, const AB::Entities::AccountBan& ban, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(ban.uuid);
+        if (token.value == "ban_uuid")
+            return db->EscapeString(ban.banUuid);
+        if (token.value == "account_uuid")
+            return db->EscapeString(ban.accountUuid);
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
+
 bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
 {
     if (Utils::Uuid::IsEmpty(ban.uuid))
@@ -43,23 +61,7 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
                 "${uuid}, ${ban_uuid}, ${account_uuid}"
             ")";
 
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &ban](const sa::templ::Token& token) -> std::string
-    {
-        switch (token.type)
-        {
-        case sa::templ::Token::Type::Variable:
-            if (token.value == "uuid")
-                return db->EscapeString(ban.uuid);
-            if (token.value == "ban_uuid")
-                return db->EscapeString(ban.banUuid);
-            if (token.value == "account_uuid")
-                return db->EscapeString(ban.accountUuid);
-            ASSERT_FALSE();
-        default:
-            return token.value;
-        }
-    });
-
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
     if (!db->ExecuteQuery(query))
         return false;
@@ -70,19 +72,23 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
 bool DBAccountBan::Load(AB::Entities::AccountBan& ban)
 {
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "SELECT * FROM account_bans WHERE ";
+
+    static constexpr const char* SQL_UUID = "SELECT * FROM account_bans WHERE uuid = ${uuid}";
+    static constexpr const char* SQL_ACCOUNT = "SELECT * FROM account_bans WHERE account_uuid = ${account_uuid}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "uuid = " << ban.uuid;
-    else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
-        query << "account_uuid = " << db->EscapeString(ban.accountUuid);
+        sql = SQL_UUID;
+    else if (!ban.accountUuid.empty())
+        sql = SQL_ACCOUNT;
     else
     {
-        LOG_ERROR << "UUID and Account UUID are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -102,22 +108,19 @@ bool DBAccountBan::Save(const AB::Entities::AccountBan& ban)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE account_bans SET ";
-    query << " ban_uuid" << ban.banUuid << ", ";
-    query << " account_uuid" << ban.accountUuid;
-
-    query << " WHERE uuid = " << db->EscapeString(ban.uuid);
+    static constexpr const char* SQL = "UPDATE account_bans SET "
+        "ban_uuid = ${ban_uuid}, "
+        "account_uuid = ${account_uuid}, "
+        "WHERE uuid = ${uuid}";
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1))))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -130,35 +133,40 @@ bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM account_bans WHERE uuid = " << db->EscapeString(ban.uuid);
+    static constexpr const char* SQL = "DELETE FROM account_bans WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
+
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
 bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
 {
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM account_bans WHERE ";
+
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM account_bans WHERE uuid = ${uuid}";
+    static constexpr const char* SQL_ACCOUNT = "SELECT COUNT(*) AS count FROM account_bans WHERE account_uuid = ${account_uuid}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(ban.uuid))
-        query << "uuid = " << db->EscapeString(ban.uuid);
-    else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
-        query << "account_uuid = " << db->EscapeString(ban.accountUuid);
+        sql = SQL_UUID;
+    else if (!ban.accountUuid.empty())
+        sql = SQL_ACCOUNT;
     else
     {
         LOG_ERROR << "UUID and Account UUID are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 

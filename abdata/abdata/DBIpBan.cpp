@@ -59,11 +59,7 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBIpBan::Load(AB::Entities::IpBan& ban)
@@ -126,7 +122,6 @@ bool DBIpBan::Save(const AB::Entities::IpBan& ban)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -148,7 +143,6 @@ bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
