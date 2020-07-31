@@ -20,16 +20,12 @@
  */
 
 #include "LuaContext.h"
-#include <sa/StringTempl.h>
 
 LuaContext::LuaContext()
 {
     luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
-        std::string unescaped = value;
-        sa::ReplaceSubstring<char>(unescaped, "\\[", "[");
-        sa::ReplaceSubstring<char>(unescaped, "\\]", "]");
-        stream_ << unescaped;
+        stream_ << value;
     });
 }
 

@@ -98,13 +98,6 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
     return result;
 }
 
-inline std::string EscapeLiteral(const std::string& value)
-{
-    std::string result = value;
-    ReplaceSubstring<char>(result, "[", "\\[");
-    ReplaceSubstring<char>(result, "]", "\\]");
-    return result;
-}
 }
 
 class Tokenizer;
@@ -312,7 +305,7 @@ inline void Generate(const Tokens& tokens, Callback&& callback)
             // Use print() to print literals:
             // https://stackoverflow.com/questions/4508119/redirecting-redefining-print-for-embedded-lua
             if (!token.value.empty())
-                callback(WRITE_FUNC"([[" + details::EscapeLiteral(token.value) + "]])");
+                callback(WRITE_FUNC"([=[" + token.value + "]=])");
             break;
         }
         case Token::Type::Code:
