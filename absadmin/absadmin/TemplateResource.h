@@ -22,6 +22,8 @@
 #pragma once
 
 #include "Resource.h"
+#include <kaguya/kaguya.hpp>
+#include "LuaContext.h"
 
 namespace Resources {
 
@@ -35,7 +37,7 @@ protected:
     std::vector<std::string> footerScripts_;
     std::vector<std::string> styles_;
     std::string template_;
-    virtual bool GetObjects(std::map<std::string, ginger::object>& objects);
+    virtual bool GetContext(LuaContext& objects);
 public:
     explicit TemplateResource(std::shared_ptr<HttpsServer::Request> request);
     void Render(std::shared_ptr<HttpsServer::Response> response) override;

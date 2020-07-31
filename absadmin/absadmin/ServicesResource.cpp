@@ -28,24 +28,27 @@
 
 namespace Resources {
 
-bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool ServicesResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
-
-    std::vector<std::map<std::string, ginger::object>> xs;
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::ServiceList sl;
     if (!dataClient->Read(sl))
         return false;
+
+    kaguya::State& state = objects.GetState();
+    state["services"] = kaguya::NewTable();
+    int i = 0;
     for (const std::string& uuid : sl.uuids)
     {
         AB::Entities::Service s;
         s.uuid = uuid;
         if (!dataClient->Read(s))
             continue;
-        xs.push_back({
+
+        state["services"][++i] = kaguya::TableData{
             { "uuid", s.uuid },
             { "name", Utils::XML::Escape(s.name) },
             { "file", Utils::XML::Escape(s.file) },
@@ -59,10 +62,9 @@ bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects
             { "stop_time", s.stopTime },
             { "status", s.status },
             { "online", (bool)(s.status == AB::Entities::ServiceStatusOnline) },
-            { "type", s.type },
-        });
+            { "type", s.type }
+        };
     }
-    objects["services"] = xs;
 
     return true;
 }
@@ -70,7 +72,7 @@ bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects
 ServicesResource::ServicesResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
-    template_ = "../templates/services.html";
+    template_ = "../templates/services.lpp";
 
     footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
 }

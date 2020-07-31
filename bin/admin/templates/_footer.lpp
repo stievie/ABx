@@ -1,9 +1,9 @@
         <script>
-          $$(document).ready(function() {
-            $$("body").addClass("nav-md");
-            $$(".logout-button").bind("click", function(e) {
+          $(document).ready(function() {
+            $("body").addClass("nav-md");
+            $(".logout-button").bind("click", function(e) {
               e.preventDefault();
-              $$.post("post/logout", function(data, textStatus, xhr)
+              $.post("post/logout", function(data, textStatus, xhr)
               {
                 if (xhr.status == 200 && data.status === "OK")
                 {
@@ -16,7 +16,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            ${title} &ndash; &copy;${copy_year} <i class="icon-trill"></i>
+            <%= title %> &ndash; &copy;<%= copy_year %> <i class="icon-trill"></i>
           </div>
           <div class="clearfix"></div>
         </footer>
@@ -24,9 +24,8 @@
       </div>
     </div>
 
-    $for hs in footer_scripts {{
-      <script src="${hs.url}"></script>
-    }}
-
+    <% for i = 1, #footer_scripts do %>
+      <script src="<%= footer_scripts[i] %>"></script>
+    <% end %>
   </body>
 </html>

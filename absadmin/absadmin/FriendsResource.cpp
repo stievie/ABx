@@ -25,7 +25,7 @@
 
 namespace Resources {
 
-bool FriendsResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool FriendsResource::GetContext(LuaContext& objects)
 {
     // TODO: Implement this
     (void)objects;

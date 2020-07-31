@@ -184,7 +184,6 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("UUIDs: https://github.com/mariusbancila/stduuid", 15);
     CreateSingleLine("multi_index: https://github.com/Alexhuszagh/multi_index", 15);
     CreateSingleLine("Brigand: https://github.com/edouarda/brigand", 15);
-    CreateSingleLine("ginger Template Engine: https://github.com/melpon/ginger", 15);
     CreateSingleLine("SimpleJSON: https://github.com/nbsdx/SimpleJSON", 15);
     CreateSingleLine("LESS complier: https://github.com/BramvdKroef/clessc", 15);
     CreateSingleLine("Password hash: bcrypt OpenBSD https://www.openbsd.org/", 15);

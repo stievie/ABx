@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -31,75 +31,75 @@ $include {{_header.html}}
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">ID</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="uuid" name="uuid" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${uuid}">
+                        <input id="uuid" name="uuid" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= uuid %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${name}">
+                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= name %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Machine</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${machine}">
+                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= machine %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Location</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="location" name="location" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${location}">
+                        <input id="location" name="location" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= location %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Host</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="host" name="host" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${host}">
+                        <input id="host" name="host" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= host %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Listening</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="listening" name="listening" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${ip}:${port}">
+                        <input id="listening" name="listening" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= ip %>:<%= port %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">File</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="file" name="file" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${file}">
+                        <input id="file" name="file" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= file %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Path</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="path" name="path" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${path}">
+                        <input id="path" name="path" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= path %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Arguments</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="arguments" name="arguments" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${arguments}">
+                        <input id="arguments" name="arguments" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= arguments %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Uptime</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="arguments" name="arguments" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${uptime}">
+                        <input id="arguments" name="arguments" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= uptime %>">
                       </div>
                     </div>
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                        $if has_cache {{
-                        <input type="button" id="clearcache_button" data-uuid="${uuid}" data-name="${name}" class="btn btn-warning" value="Clear Cache">
-                        }}
-                        $if spawnable {{
-                        <input type="button" id="spawn_button" data-uuid="${uuid}" class="btn btn-success" value="Spawn">
-                        }}
-                        $if termable {{
-                        <input type="button" id="terminate_button" data-uuid="${uuid}" data-name="${name}" class="btn btn-danger" value="Terminate">
-                        }}
+                        <% if has_cache then %>
+                        <input type="button" id="clearcache_button" data-uuid="<%= uuid %>" data-name="<%= name %>" class="btn btn-warning" value="Clear Cache">
+                        <% end %>
+                        <% if spawnable then %>
+                        <input type="button" id="spawn_button" data-uuid="<%= uuid %>" class="btn btn-success" value="Spawn">
+                        <% end %>
+                        <% if termable then %>
+                        <input type="button" id="terminate_button" data-uuid="<%= uuid %>" data-name="<%= name %>" class="btn btn-danger" value="Terminate">
+                        <% end %>
                       </div>
                     </div>
                   </form>
@@ -112,11 +112,11 @@ $include {{_header.html}}
         <!-- /page content -->
 
 <script>
-$$(document).ready(function() {
+$(document).ready(function() {
   $if has_cache {{
-  $$("#clearcache_button").click(function() {
-    var _uuid = $$(this).data("uuid");
-    $$.post("post/clear_cache", { uuid: _uuid }, function(data, textStatus, xhr)
+  $("#clearcache_button").click(function() {
+    var _uuid = $(this).data("uuid");
+    $.post("post/clear_cache", { uuid: _uuid }, function(data, textStatus, xhr)
     {
       if (xhr.status == 200 && data.status === "OK")
       {
@@ -128,10 +128,10 @@ $$(document).ready(function() {
   });
   }}
 
-  $if spawnable {{
-  $$("#spawn_button").click(function() {
-    var _uuid = $$(this).data("uuid");
-    $$.post("post/spawn", { uuid: _uuid }, function(data, textStatus, xhr)
+  <% if spawnable then %>
+  $("#spawn_button").click(function() {
+    var _uuid = $(this).data("uuid");
+    $.post("post/spawn", { uuid: _uuid }, function(data, textStatus, xhr)
     {
       if (xhr.status == 200 && data.status === "OK")
       {
@@ -141,15 +141,15 @@ $$(document).ready(function() {
     });
 
   });
-  }}
+  <% end %>
 
-  $if termable {{
-  $$("#terminate_button").click(function() {
-    var _name = $$(this).data("name");
+  <% if termable then %>
+  $("#terminate_button").click(function() {
+    var _name = $(this).data("name");
     if (!confirm("Really Terminate Service " + _name))
       return;
-    var _uuid = $$(this).data("uuid");
-    $$.post("post/terminate", { uuid: _uuid }, function(data, textStatus, xhr)
+    var _uuid = $(this).data("uuid");
+    $.post("post/terminate", { uuid: _uuid }, function(data, textStatus, xhr)
     {
       if (xhr.status == 200 && data.status === "OK")
       {
@@ -160,8 +160,8 @@ $$(document).ready(function() {
     });
 
   });
-  }}
+  <% end %>
 });
 </script>
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

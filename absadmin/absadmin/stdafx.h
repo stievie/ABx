@@ -51,11 +51,6 @@
 #endif
 #include "Servers.h"
 
-PRAGMA_WARNING_PUSH
-    PRAGMA_WARNING_DISABLE_MSVC(4701 4702 4800)
-#   include <ginger.h>
-PRAGMA_WARNING_POP
-
 #include <json.hpp>
 
 #include <abscommon/DataClient.h>

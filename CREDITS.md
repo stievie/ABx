@@ -24,7 +24,6 @@ Creator: sa 2017-2019
 * https://github.com/mariusbancila/stduuid
 * https://github.com/Alexhuszagh/multi_index
 * https://github.com/edouarda/brigand
-* ginger Template Engine https://github.com/melpon/ginger
 * https://github.com/nbsdx/SimpleJSON
 * https://github.com/BramvdKroef/clessc
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server

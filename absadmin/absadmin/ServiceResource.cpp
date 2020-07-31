@@ -28,9 +28,9 @@
 
 namespace Resources {
 
-bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool ServiceResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
 
     if (id_.empty() || uuids::uuid(id_).nil())
@@ -42,23 +42,25 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
     if (!dataClient->Read(s))
         return false;
 
-    objects["uuid"] = s.uuid;
-    objects["machine"] = Utils::XML::Escape(s.machine);
-    objects["name"] = Utils::XML::Escape(s.name);
-    objects["location"] = Utils::XML::Escape(s.location);
-    objects["host"] = Utils::XML::Escape(s.host);
-    objects["port"] = std::to_string(s.port);
-    objects["ip"] = s.ip.empty() ? "0.0.0.0" : s.ip;
-    objects["file"] = Utils::XML::Escape(s.file);
-    objects["path"] = Utils::XML::Escape(s.path);
-    objects["arguments"] = Utils::XML::Escape(s.arguments);
-    objects["spawnable"] = (s.type == AB::Entities::ServiceTypeFileServer ||
+    kaguya::State& state = objects.GetState();
+
+    state["uuid"] = s.uuid;
+    state["machine"] = Utils::XML::Escape(s.machine);
+    state["name"] = Utils::XML::Escape(s.name);
+    state["location"] = Utils::XML::Escape(s.location);
+    state["host"] = Utils::XML::Escape(s.host);
+    state["port"] = std::to_string(s.port);
+    state["ip"] = s.ip.empty() ? "0.0.0.0" : s.ip;
+    state["file"] = Utils::XML::Escape(s.file);
+    state["path"] = Utils::XML::Escape(s.path);
+    state["arguments"] = Utils::XML::Escape(s.arguments);
+    state["spawnable"] = (s.type == AB::Entities::ServiceTypeFileServer ||
         s.type == AB::Entities::ServiceTypeGameServer) && (s.status == AB::Entities::ServiceStatusOnline);
-    objects["has_cache"] = (s.type == AB::Entities::ServiceTypeGameServer || s.type == AB::Entities::ServiceTypeDataServer) &&
+    state["has_cache"] = (s.type == AB::Entities::ServiceTypeGameServer || s.type == AB::Entities::ServiceTypeDataServer) &&
         (s.status == AB::Entities::ServiceStatusOnline);
-    objects["online"] = s.status == AB::Entities::ServiceStatusOnline;
+    state["online"] = s.status == AB::Entities::ServiceStatusOnline;
     // Temporary are always running
-    objects["termable"] = s.temporary;
+    state["termable"] = s.temporary;
     Utils::TimeSpan ts(static_cast<uint32_t>(s.runTime));
     std::stringstream ss;
     if (ts.months > 0)
@@ -67,7 +69,7 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
         ss << ts.days << " day(s) ";
     ss << ts.hours << "h " << ts.minutes << "m " << ts.seconds << "s";
 
-    objects["uptime"] = Utils::XML::Escape(ss.str());
+    state["uptime"] = Utils::XML::Escape(ss.str());
 
     return true;
 }
@@ -76,7 +78,7 @@ ServiceResource::ServiceResource(std::shared_ptr<HttpsServer::Request> request) 
     TemplateResource(request),
     id_("")
 {
-    template_ = "../templates/service.html";
+    template_ = "../templates/service.lpp";
 
     footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
 

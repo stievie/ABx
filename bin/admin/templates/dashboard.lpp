@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -22,8 +22,8 @@ $include {{_header.html}}
           <div class="row tile_count">
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Total Accounts</span>
-              <div class="count">${total_accounts}</div>
-              <span class="count_bottom">with ${total_chars} Characters</span>
+              <div class="count"><%= total_accounts %></div>
+              <span class="count_bottom">with <%= total_chars %> Characters</span>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
               <span class="count_top"><i class="fa fa-clock-o"></i> Total Uptime</span>
@@ -52,4 +52,4 @@ $include {{_header.html}}
         </div>
         <!-- /page content -->
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,34 +19,24 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
 
-#include "DownloadResource.h"
-#include <AB/Entities/Account.h>
+#include <kaguya/kaguya.hpp>
+#include <sstream>
+#define WRITE_FUNC "echo"
+#include <sa/lpp/lpp.h>
 
-namespace Resources {
-
-DownloadResource::DownloadResource(std::shared_ptr<HttpsServer::Request> request) :
-    TemplateResource(request)
+class LuaContext
 {
-    template_ = "../templates/download.lpp";
-}
+private:
+    kaguya::State luaState_;
+    std::stringstream stream_;
+public:
+    LuaContext();
+    kaguya::State& GetState() { return luaState_; };
+    const kaguya::State& GetState() const { return luaState_; }
+    const std::stringstream& GetStream() const { return stream_; }
+    std::stringstream& GetStream() { return stream_; }
+    bool Execute(const std::string& source);
+};
 
-bool DownloadResource::GetContext(LuaContext& objects)
-{
-    if (!TemplateResource::GetContext(objects))
-        return false;
-    return true;
-}
-
-void DownloadResource::Render(std::shared_ptr<HttpsServer::Response> response)
-{
-    if (!IsAllowed(AB::Entities::AccountType::Normal))
-    {
-        Redirect(response, "/");
-        return;
-    }
-
-    TemplateResource::Render(response);
-}
-
-}

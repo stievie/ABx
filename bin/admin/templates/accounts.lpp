@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -45,15 +45,15 @@ $include {{_header.html}}
         </div>
         <!-- /page content -->
         <script type="text/javascript">
-          $$(window).load(function () {
+          $(window).load(function () {
             // Initialize as last
-            if (typeof $$.fn.dataTable !== 'undefined')
+            if (typeof $.fn.dataTable !== 'undefined')
             {
-              $$('.data-table').each(function() {
+              $('.data-table').each(function() {
                 var rows = 10;
-                if ($$(this).data("rows"))
-                  rows = parseInt($$(this).data("rows"));
-                var table = $$(this).dataTable({
+                if ($(this).data("rows"))
+                  rows = parseInt($(this).data("rows"));
+                var table = $(this).dataTable({
                   responsive: true,
                   pageLength: rows,
                   "ajax": "get/accounts",
@@ -137,4 +137,4 @@ $include {{_header.html}}
           });
         </script>
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

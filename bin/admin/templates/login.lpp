@@ -1,4 +1,4 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div>
       <div class="login_wrapper">
@@ -19,8 +19,8 @@ $include {{_header.html}}
               <div class="clearfix"></div>
               <div class="separator">
                 <div>
-                  <h1>${title}</h1>
-                  <p>&copy;${copy_year} <i class="icon-trill"></i></p>
+                  <h1><%= title %></h1>
+                  <p>&copy;<%= copy_year %> <i class="icon-trill"></i></p>
                 </div>
               </div>
             </form>
@@ -30,11 +30,11 @@ $include {{_header.html}}
     </div>
 
     <script>
-      $$(document).ready(function() {
-        $$("body").addClass("login");
-        $$("#id_login_form").bind("submit", function(e) {
+      $(document).ready(function() {
+        $("body").addClass("login");
+        $("#id_login_form").bind("submit", function(e) {
           e.preventDefault();
-          $$.post($$(this).attr("action"), $$(this).serialize(), function(data, textStatus, xhr)
+          $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
           {
             if (xhr.status == 200 && data.status === "OK")
             {
@@ -46,9 +46,9 @@ $include {{_header.html}}
         });
       });
     </script>
-    $for hs in footer_scripts {{
-      <script src="${hs.url}"></script>
-    }}
 
+    <% for i = 1, #footer_scripts do %>
+      <script src="<%= footer_scripts[i] %>"></script>
+    <% end %>
   </body>
 </html>

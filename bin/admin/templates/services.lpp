@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -25,17 +25,17 @@ $include {{_header.html}}
         <!-- /page content -->
 
         <script>
-          $$(document).ready(function() {
+          $(document).ready(function() {
             function getServices() {
-              $$.get('get/services', function(data) {
-                $$.each($$("#services_container > .widget"), function(index, value) {
-                  if ($$.inArray($$(value).data("uuid"), data.uuids) === -1)
+              $.get('get/services', function(data) {
+                $.each($("#services_container > .widget"), function(index, value) {
+                  if ($.inArray($(value).data("uuid"), data.uuids) === -1)
                   {
-                    $$(value).remove();
+                    $(value).remove();
                   }
                 });
-                $$.each(data.services, function(index, value) {
-                  var elem = $$("#services_container > #service_" + value.uuid);
+                $.each(data.services, function(index, value) {
+                  var elem = $("#services_container > #service_" + value.uuid);
                   if (elem.length === 0)
                   {
                     var html =
@@ -57,7 +57,7 @@ $include {{_header.html}}
                       "  </div>" +
                       "</div>";
 
-                      elem = $$(html).appendTo("#services_container");
+                      elem = $(html).appendTo("#services_container");
                       elem.attr("id", "service_" + value.uuid);
                       elem.attr("data-uuid", value.uuid);
                       elem.find("h2 a").attr("href", "service?id=" + value.uuid);
@@ -105,12 +105,12 @@ $include {{_header.html}}
                 generateGradient: true,
               };
 
-              $$.each($$('.gauge-chart'), function(index, value) {
+              $.each($('.gauge-chart'), function(index, value) {
                 var chart_gauge = new Gauge(value).setOptions(chart_gauge_settings);
                 chart_gauge.minValue = 0;
                 chart_gauge.maxValue = 100;
                 chart_gauge.animationSpeed = 1;
-                var val = $$(this).data("value");
+                var val = $(this).data("value");
                 chart_gauge.set(val);
               });
             }
@@ -119,4 +119,4 @@ $include {{_header.html}}
           });
         </script>
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

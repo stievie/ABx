@@ -32,9 +32,9 @@
 
 namespace Resources {
 
-bool AccountsResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool AccountsResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
 
     return true;
@@ -43,7 +43,7 @@ bool AccountsResource::GetObjects(std::map<std::string, ginger::object>& objects
 AccountsResource::AccountsResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
-    template_ = "../templates/accounts.html";
+    template_ = "../templates/accounts.lpp";
 
     styles_.insert(styles_.begin(), "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css");
     styles_.insert(styles_.begin(), "vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css");

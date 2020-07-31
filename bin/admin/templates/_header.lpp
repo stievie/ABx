@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico"/>
 
-    <title>${title}</title>
-    $for hs in styles {{
-      <link href="${hs.url}" rel="stylesheet">
-    }}
+    <title><%= title %></title>
+    <% for i = 1, #styles do %>
+      <link href="<%= styles[i] %>" rel="stylesheet">
+    <% end %>
 
-    $for hs in header_scripts {{
-      <script src="${hs.url}"></script>
-    }}
+    <% for i = 1, #header_scripts do %>
+      <script src="<%= header_scripts[i] %>"></script>
+    <% end %>
   </head>
   <body>
-  

@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -36,35 +36,35 @@ $include {{_header.html}}
                         </tr>
                       </thead>
                       <tbody>
-                      $for ak in accountkeys {{
+                      <% for i = 1, #accountkeys do local ak = accountkeys[i] %>
                         <tr>
                           <td>
-                            <input type="text" id="key-${ak.uuid}" readonly value="${ak.uuid}" style="width:95%;"> <a href="#" class="copy-key" data-key="${ak.uuid}" title="Copy"><i class="fa fa-copy"></i></a>
+                            <input type="text" id="key-<%= ak.uuid %>" readonly value="<%= ak.uuid %>" style="width:95%;"> <a href="#" class="copy-key" data-key="<%= ak.uuid %>" title="Copy"><i class="fa fa-copy"></i></a>
                           </td>
                           <td>
-                            <select name="table_key_type" class="" data-uuid="${ak.uuid}" disabled>
-                              <option $if ak.is_type_unknown {{selected}} value="0">Unknown</option>
-                              <option $if ak.is_type_account {{selected}} value="1">Account</option>
-                              <option $if ak.is_type_charslot {{selected}} value="2">Character slot</option>
-                              <option $if ak.is_type_chestslot {{selected}} value="2">+10 Chest slots</option>
+                            <select name="table_key_type" class="" data-uuid="<%= ak.uuid %>" disabled>
+                              <option <% if ak.is_type_unknown then echo("selected") end %> value="0">Unknown</option>
+                              <option <% if ak.is_type_account then echo("selected") end %> value="1">Account</option>
+                              <option <% if ak.is_type_charslot then echo("selected") end %> value="2">Character slot</option>
+                              <option <% if ak.is_type_chestslot then echo("selected") end %> value="2">+10 Chest slots</option>
                             </select>
                           </td>
                           <td>
-                            <input name="table_count" required="required" class="" type="number" data-uuid="${ak.uuid}" value="${ak.total}">
+                            <input name="table_count" required="required" class="" type="number" data-uuid="<%= ak.uuid %>" value="<%= ak.total %>">
                           </td>
-                          <td>${ak.used}</td>
+                          <td><%= ak.used %></td>
                           <td>
-                            <select name="table_key_status" class="" data-uuid="${ak.uuid}">
-                              <option $if ak.is_status_unknown {{selected}} value="0">Unknown</option>
-                              <option $if ak.is_status_notactivated {{selected}} value="1">Not activated</option>
-                              <option $if ak.is_status_activated {{selected}} value="2">Ready for use</option>
-                              <option $if ak.is_status_banned {{selected}} value="3">Banned</option>
+                            <select name="table_key_status" class="" data-uuid="<%= ak.uuid %>">
+                              <option <% if ak.is_status_unknown then echo("selected") end %> value="0">Unknown</option>
+                              <option <% if ak.is_status_notactivated then echo("selected") end %> value="1">Not activated</option>
+                              <option <% if ak.is_status_activated then echo("selected") end %> value="2">Ready for use</option>
+                              <option <% if ak.is_status_banned then echo("selected") end %> value="3">Banned</option>
                             </select>
                           </td>
-                          <td>${ak.email}</td>
-                          <td>${ak.description}</td>
+                          <td><%= ak.email %></td>
+                          <td><%= ak.description %></td>
                         </tr>
-                      }}
+                      <% end %>
                       </tbody>
                   </table>
                 </div>
@@ -84,9 +84,9 @@ $include {{_header.html}}
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Key</label>
                       <div class="col-md-6 col-sm-6 col-xs-12 input-group">
-                        <input name="uuid" required="required" readonly="" class="form-control col-md-7 col-xs-12" type="text" value="${new_id}" id="key-${new_id}">
+                        <input name="uuid" required="required" readonly="" class="form-control col-md-7 col-xs-12" type="text" value="<%= new_id %>" id="key-<%= new_id %>">
 
-                        <a href="#" class="copy-key input-group-addon btn btn-info" data-key="${new_id}" title="Copy"><i class="fa fa-copy"></i></a>
+                        <a href="#" class="copy-key input-group-addon btn btn-info" data-key="<%= new_id %>" title="Copy"><i class="fa fa-copy"></i></a>
                       </div>
                     </div>
                     <div class="form-group">
@@ -143,22 +143,22 @@ $include {{_header.html}}
         </div>
         <!-- /page content -->
         <script type="text/javascript">
-          $$(".copy-key").on("click", function(e) {
+          $(".copy-key").on("click", function(e) {
             e.preventDefault();
-            var key = $$(this).data("key");
-            $$("#key-" + key).select();
+            var key = $(this).data("key");
+            $("#key-" + key).select();
             document.execCommand('copy');
           });
 
-          $$(window).load(function () {
+          $(window).load(function () {
             // Initialize as last
-            if (typeof $$.fn.dataTable !== 'undefined')
+            if (typeof $.fn.dataTable !== 'undefined')
             {
-              $$('.data-table').each(function() {
+              $('.data-table').each(function() {
                 var rows = 10;
-                if ($$(this).data("rows"))
-                  rows = parseInt($$(this).data("rows"));
-                $$(this).dataTable({
+                if ($(this).data("rows"))
+                  rows = parseInt($(this).data("rows"));
+                $(this).dataTable({
                   responsive: true,
                   pageLength: rows,
                 });
@@ -166,10 +166,10 @@ $include {{_header.html}}
             };
           });
 
-          $$("#new_key_form").bind("submit", function(e) {
+          $("#new_key_form").bind("submit", function(e) {
             e.preventDefault();
             NProgress.start();
-            $$.post($$(this).attr("action"), $$(this).serialize(), function(data, textStatus, xhr)
+            $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
             {
               NProgress.done();
               if (xhr.status == 200 && data.status === "OK")
@@ -181,9 +181,9 @@ $include {{_header.html}}
             });
           });
 
-          $$(document.body).on("change", "select[name='table_key_type']", function() {
+          $(document.body).on("change", "select[name='table_key_type']", function() {
             NProgress.start();
-            $$.post("post/updateaccountkey", {field: "type", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
+            $.post("post/updateaccountkey", {field: "type", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
               if (xhr.status == 200 && data.status === "OK")
@@ -196,9 +196,9 @@ $include {{_header.html}}
               }
             });
           });
-          $$(document.body).on("input", "input[name='table_count']", function() {
+          $(document.body).on("input", "input[name='table_count']", function() {
             NProgress.start();
-            $$.post("post/updateaccountkey", {field: "count", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
+            $.post("post/updateaccountkey", {field: "count", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
               if (xhr.status == 200 && data.status === "OK")
@@ -211,9 +211,9 @@ $include {{_header.html}}
               }
             });
           });
-          $$(document.body).on("change", "select[name='table_key_status']", function() {
+          $(document.body).on("change", "select[name='table_key_status']", function() {
             NProgress.start();
-            $$.post("post/updateaccountkey", {field: "status", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
+            $.post("post/updateaccountkey", {field: "status", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
               if (xhr.status == 200 && data.status === "OK")
@@ -228,4 +228,4 @@ $include {{_header.html}}
           });
         </script>
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

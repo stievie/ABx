@@ -133,6 +133,7 @@ void Application::InitContentTypes()
     auto* conT = GetSubsystem<ContentTypes>();
     conT->map_[".css"] = "text/css";
     conT->map_[".html"] = "text/html";
+    conT->map_[".lpp"] = "text/html";
     conT->map_[".js"] = "application/javascript";
     conT->map_[".json"] = "application/json";
     conT->map_[".pdf"] = "application/pdf";

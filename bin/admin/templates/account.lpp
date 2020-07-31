@@ -1,20 +1,20 @@
-$include {{_header.html}}
+<?# _header.html ?>
 
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="icon-trill"></i> <span>${title}</span></a>
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
             </div>
 
             <div class="clearfix"></div>
 
-            $include {{_sidebar.html}}
+            <?# _sidebar.lpp ?>
           </div>
         </div>
 
-        $include {{_topnav.html}}
+        <?# _topnav.lpp ?>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -23,21 +23,21 @@ $include {{_header.html}}
               <div class="x_panel">
                 <div class="x_title">
                   <h2>Account Details</h2>
-                  $if online_offline {{
+                  <% if online_offline then %>
                   <span class="badge bg-red pull-right">Offline</span>
-                  }}
-                  $if online_away {{
+                  <% end %>
+                  <% if online_away then %>
                   <span class="badge bg-orange pull-right">Away</span>
-                  }}
-                  $if online_dnd {{
+                  <% end %>
+                  <% if online_dnd then %>
                   <span class="badge bg-orange pull-right">Do not disturb</span>
-                  }}
-                  $if online_online {{
+                  <% end %>
+                  <% if online_online then %>
                   <span class="badge bg-green pull-right">Online</span>
-                  }}
-                  $if online_invisible {{
+                  <% end %>
+                  <% if online_invisible then %>
                   <span class="badge bg-purple pull-right">Invisible</span>
-                  }}
+                  <% end %>
                   <div class="clearfix"></div>
                 </div>
 
@@ -46,25 +46,25 @@ $include {{_header.html}}
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">ID</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="uuid" name="uuid" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${uuid}">
+                        <input id="uuid" name="uuid" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= uuid %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${name}">
+                        <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="<%= name %>">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Type</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <select name="account_type" class="form-control">
-                          <option $if type_unknown {{selected}} value="0">Unknown</option>
-                          <option $if type_normnal {{selected}} value="1">Normal</option>
-                          <option $if type_tutor {{selected}} value="2">Tutor</option>
-                          <option $if type_sentutor {{selected}} value="3">Senior Tutor</option>
-                          <option $if type_gm {{selected}} value="4">Game Master</option>
-                          <option $if type_god {{selected}} value="5">God</option>
+                          <option <% if type_unknown then echo("selected") end %> value="0">Unknown</option>
+                          <option <% if type_normnal then echo("selected") end %> value="1">Normal</option>
+                          <option <% if type_tutor then echo("selected") end %> value="2">Tutor</option>
+                          <option <% if type_sentutor then echo("selected") end %> value="3">Senior Tutor</option>
+                          <option <% if type_gm then echo("selected") %> value="4">Game Master</option>
+                          <option <% if type_god then echo("selected") %> value="5">God</option>
                         </select>
                       </div>
                     </div>
@@ -72,28 +72,28 @@ $include {{_header.html}}
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Status</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <select name="account_status" class="form-control">
-                          <option $if status_unknown {{selected}} value="0">Unknown</option>
-                          <option $if status_activated {{selected}} value="1">Activated</option>
-                          <option $if status_deleted {{selected}} value="2">Deleted</option>
+                          <option <% if status_unknown then echo("selected") end %> value="0">Unknown</option>
+                          <option <% if status_activated then echo("selected") end %> value="1">Activated</option>
+                          <option <% if status_deleted then echo("selected") end %>value="2">Deleted</option>
                         </select>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Character</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
-                        <a href="character?id=${curr_char}">${curr_char_name}</a>
+                        <a href="character?id=<%= curr_char %>"><%= curr_char_name %></a>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Instance</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
-                        <a href="game?id=${curr_inst}">${curr_inst_name}</a>
+                        <a href="game?id=<%= curr_inst %>"><%= curr_inst_name %></a>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Server</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
-                        <a href="service?id=${curr_server}">${curr_server_name}</a>
+                        <a href="service?id=<%= curr_server %>"><%= curr_server_name %></a>
                       </div>
                     </div>
 
@@ -101,9 +101,9 @@ $include {{_header.html}}
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                         <input type="submit" class="btn btn-success" value="Save">
-                        $if is_online {{
+                        <% if is_online then %>
                         <input type="button" id="logout_button" data-uuid="${uuid}" class="btn btn-danger" value="Log out">
-                        }}
+                        <% end %>
                       </div>
                     </div>
                   </form>
@@ -116,10 +116,10 @@ $include {{_header.html}}
         <!-- /page content -->
 
 <script>
-  $if is_online {{
-  $$("#logout_button").click(function() {
-    var _uuid = $$(this).data("uuid");
-    $$.post("post/account_logout", { uuid: _uuid }, function(data, textStatus, xhr)
+  <% if is_online %>
+  $("#logout_button").click(function() {
+    var _uuid = $(this).data("uuid");
+    $.post("post/account_logout", { uuid: _uuid }, function(data, textStatus, xhr)
     {
       if (xhr.status == 200 && data.status === "OK")
       {
@@ -130,12 +130,12 @@ $include {{_header.html}}
     });
 
   });
-  }}
+  <% end %>
 
-  $$("#account_form").bind("submit", function(e) {
+  $("#account_form").bind("submit", function(e) {
     e.preventDefault();
     NProgress.start();
-    $$.post($$(this).attr("action"), $$(this).serialize(), function(data, textStatus, xhr)
+    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
     {
       NProgress.done();
       if (xhr.status != 200 || data.status !== "OK")
@@ -144,4 +144,4 @@ $include {{_header.html}}
   });
 </script>
 
-$include {{_footer.html}}
+<?# _footer.lpp ?>

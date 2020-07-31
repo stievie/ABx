@@ -30,9 +30,9 @@
 
 namespace Resources {
 
-bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool IndexResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
     bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (!loggedIn)
@@ -42,12 +42,14 @@ bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
     AB::Entities::AccountList al;
     if (!dataClient->Read(al))
         return false;
-    objects["total_accounts"] = al.uuids.size();
+
+    kaguya::State& state = objects.GetState();
+    state["total_accounts"] = al.uuids.size();
 
     AB::Entities::CharacterList cl;
     if (!dataClient->Read(cl))
         return false;
-    objects["total_chars"] = cl.uuids.size();
+    state["total_chars"] = cl.uuids.size();
 
     return true;
 }
@@ -57,9 +59,9 @@ IndexResource::IndexResource(std::shared_ptr<HttpsServer::Request> request) :
 {
     bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
     if (loggedIn)
-        template_ = "../templates/dashboard.html";
+        template_ = "../templates/dashboard.lpp";
     else
-        template_ = "../templates/login.html";
+        template_ = "../templates/login.lpp";
 }
 
 }

@@ -29,12 +29,12 @@ namespace Resources {
 ProfileResource::ProfileResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
-    template_ = "../templates/profile.html";
+    template_ = "../templates/profile.lpp";
 }
 
-bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool ProfileResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
 
     const std::string& uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
@@ -44,12 +44,13 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
     if (!dataClient->Read(account))
         return false;
 
-    std::map<std::string, ginger::object> xs;
+    kaguya::State& state = objects.GetState();
+    std::map<std::string, std::string> xs;
     xs["uuid"] = account.uuid;
     xs["name"] = Utils::XML::Escape(account.name);
     xs["email"] = Utils::XML::Escape(account.email);
 
-    objects["account"] = xs;
+    state["account"] = xs;
     return true;
 }
 

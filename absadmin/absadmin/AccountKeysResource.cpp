@@ -28,26 +28,27 @@
 
 namespace Resources {
 
-bool AccountKeysResource::GetObjects(std::map<std::string, ginger::object>& objects)
+bool AccountKeysResource::GetContext(LuaContext& objects)
 {
-    if (!TemplateResource::GetObjects(objects))
+    if (!TemplateResource::GetContext(objects))
         return false;
-
-    std::vector<std::map<std::string, ginger::object>> xs;
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::AccountKeyList akl;
     if (!dataClient->Read(akl))
         return false;
 
-    for (const auto& a : akl.uuids)
+    kaguya::State& state = objects.GetState();
+    state["accountkeys"] = kaguya::NewTable();
+    int i = 0;
+    for (const std::string& a : akl.uuids)
     {
         AB::Entities::AccountKey ak;
         ak.uuid = a;
         if (!dataClient->Read(ak))
             continue;
 
-        xs.push_back({
+        state["accountkeys"][++i] = kaguya::TableData{
             { "uuid", ak.uuid },
             { "type", static_cast<int>(ak.type) },
             { "is_type_unknown", ak.type == AB::Entities::KeyTypeUnknown },
@@ -62,20 +63,17 @@ bool AccountKeysResource::GetObjects(std::map<std::string, ginger::object>& obje
             { "is_status_activated", ak.status == AB::Entities::KeryStatusReadyForUse },
             { "is_status_banned", ak.status == AB::Entities::KeyStatusBanned },
             { "email", Utils::XML::Escape(ak.email) },
-            { "description", Utils::XML::Escape(ak.description) },
-        });
+            { "description", Utils::XML::Escape(ak.description) }
+        };
     }
-
-    objects["new_id"] = Utils::Uuid::New();
-
-    objects["accountkeys"] = xs;
+    state["new_id"] = Utils::Uuid::New();
     return true;
 }
 
 AccountKeysResource::AccountKeysResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
-    template_ = "../templates/accountkeys.html";
+    template_ = "../templates/accountkeys.lpp";
 
     styles_.insert(styles_.begin(), "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css");
     styles_.insert(styles_.begin(), "vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css");

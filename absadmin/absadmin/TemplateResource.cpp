@@ -29,54 +29,52 @@
 
 namespace Resources {
 
-bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects)
+static std::string ReadFile(const std::string& fileName)
+{
+    std::ifstream f(fileName);
+    if (!f.is_open())
+    {
+        LOG_ERROR << "Unable to open file " << fileName << std::endl;
+        return "";
+    }
+
+    std::string line;
+    std::stringstream ss;
+    while (std::getline(f, line))
+    {
+        ss << line << '\n';
+    }
+    f.close();
+    return ss.str();
+}
+
+bool TemplateResource::GetContext(LuaContext& objects)
 {
     ASSERT(Application::Instance);
-    objects["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
-    objects["copy_year"] = SERVER_YEAR;
+    kaguya::State& state = objects.GetState();
+
+    state["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
+    state["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(sa::StringHashRt("username"));
     if (it != session_->values_.end())
     {
-        objects["user"] = Utils::XML::Escape((*it).second.GetString());
+        state["user"] = Utils::XML::Escape((*it).second.GetString());
     }
     else
-        objects["user"] = "";
+        state["user"] = "";
     auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
     AB::Entities::AccountType accType = AB::Entities::AccountType::Unknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
-    objects["is_user"] = accType >= AB::Entities::AccountType::Normal;
-    objects["is_tutor"] = accType >= AB::Entities::AccountType::Tutor;
-    objects["is_sentutor"] = accType >= AB::Entities::AccountType::SeniorTutor;
-    objects["is_gm"] = accType >= AB::Entities::AccountType::Gamemaster;
-    objects["is_god"] = accType >= AB::Entities::AccountType::God;
+    state["is_user"] = accType >= AB::Entities::AccountType::Normal;
+    state["is_tutor"] = accType >= AB::Entities::AccountType::Tutor;
+    state["is_sentutor"] = accType >= AB::Entities::AccountType::SeniorTutor;
+    state["is_gm"] = accType >= AB::Entities::AccountType::Gamemaster;
+    state["is_god"] = accType >= AB::Entities::AccountType::God;
 
-    std::vector<std::map<std::string, ginger::object>> s;
-    for (const auto& f : styles_)
-    {
-        s.push_back({
-            { "url", f }
-        });
-    }
-    objects["styles"] = s;
-
-    std::vector<std::map<std::string, ginger::object>> hs;
-    for (const auto& f : headerScripts_)
-    {
-        hs.push_back({
-            { "url", f }
-        });
-    }
-    objects["header_scripts"] = hs;
-
-    std::vector<std::map<std::string, ginger::object>> fs;
-    for (const auto& f : footerScripts_)
-    {
-        fs.push_back({
-            { "url", f }
-        });
-    }
-    objects["footer_scripts"] = fs;
+    state["styles"] = styles_;
+    state["header_scripts"] = headerScripts_;
+    state["footer_scripts"] = footerScripts_;
 
     return true;
 }
@@ -101,6 +99,8 @@ void TemplateResource::LoadTemplates(std::string& result)
     if (body.empty())
         return;
 
+    const std::string path = Utils::AddSlash(Utils::ExtractFileDir(template_));
+
     std::ifstream ifs(body, std::ifstream::in | std::ios::binary);
     if (!ifs)
     {
@@ -108,12 +108,19 @@ void TemplateResource::LoadTemplates(std::string& result)
         throw std::invalid_argument("Error opening file");
     }
 
-    ifs.seekg(0, std::ios::end);
-    size_t size = ifs.tellg();
-    size_t currSize = result.length();
-    result.resize(currSize + size);
-    ifs.seekg(0, std::ios::beg);
-    ifs.read(&result[currSize], size);
+    sa::lpp::Tokenizer t;
+    t.onGetFile_ = [this, &path](const std::string& f) -> std::string
+    {
+        return ReadFile(GetTemplateFile(path + f));
+    };
+    const std::string contents = ReadFile(body);
+    const sa::lpp::Tokens tokens = t.Parse(contents);
+    std::stringstream ss;
+    sa::lpp::Generate(tokens, [&ss](const std::string& value)
+    {
+        ss << value;
+    });
+    result = ss.str();
 }
 
 std::string TemplateResource::GetTemplateFile(const std::string& templ)
@@ -163,12 +170,9 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         return;
     }
 
-    std::map<std::string, ginger::object> t;
-    std::string templFile = GetTemplateFile(template_);
-    t["__template__"] = templFile;
-    t["__template_path__"] = Utils::ExtractFileDir(templFile);
+    LuaContext context;
 
-    if (!GetObjects(t))
+    if (!GetContext(context))
     {
         LOG_ERROR << "Failed to get objects" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found,
@@ -176,10 +180,9 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         return;
     }
 
-    try
+    if (context.Execute(buffer))
     {
-        std::stringstream ss;
-        ginger::parse(buffer, t, ginger::from_ios(ss));
+        std::stringstream& ss = context.GetStream();
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
@@ -187,11 +190,12 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         header.emplace("Content-Length", std::to_string(ssize));
         response->write(ss, header);
     }
-    catch (const ginger::parse_error& ex)
+    else
     {
-        LOG_ERROR << "Parse Error: " << ex.long_error() << std::endl;
+        LOG_ERROR << "Execution Error" << std::endl;
         response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
             "Internal Server Error " + request_->path);
+
     }
 }
 

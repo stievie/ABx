@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,34 +19,25 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "LuaContext.h"
+#include <sa/StringTempl.h>
 
-#include "DownloadResource.h"
-#include <AB/Entities/Account.h>
-
-namespace Resources {
-
-DownloadResource::DownloadResource(std::shared_ptr<HttpsServer::Request> request) :
-    TemplateResource(request)
+LuaContext::LuaContext()
 {
-    template_ = "../templates/download.lpp";
-}
-
-bool DownloadResource::GetContext(LuaContext& objects)
-{
-    if (!TemplateResource::GetContext(objects))
-        return false;
-    return true;
-}
-
-void DownloadResource::Render(std::shared_ptr<HttpsServer::Response> response)
-{
-    if (!IsAllowed(AB::Entities::AccountType::Normal))
+    luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
-        Redirect(response, "/");
-        return;
-    }
-
-    TemplateResource::Render(response);
+        std::string unescaped = value;
+        sa::ReplaceSubstring<char>(unescaped, "\\[", "[");
+        sa::ReplaceSubstring<char>(unescaped, "\\]", "]");
+        stream_ << unescaped;
+    });
 }
 
+bool LuaContext::Execute(const std::string& source)
+{
+    stream_.clear();
+    bool result = sa::lpp::Run(luaState_.state(), source);
+    if (!result)
+        std::cout << source;
+    return result;
 }
