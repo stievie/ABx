@@ -157,6 +157,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
     responseCookies_->Write(header);
 
+    int64_t start = Utils::Tick();
     std::string buffer;
     try
     {
@@ -182,11 +183,15 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     if (context.Execute(buffer))
     {
+        auto ct = contT->Get(Utils::GetFileExt(template_));
         std::stringstream& ss = context.GetStream();
+        if (ct == "text/html")
+            ss << "\n<!-- Generated in " << Utils::TimeElapsed(start) << "ms -->\n";
+
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
-        header.emplace("Content-Type", contT->Get(Utils::GetFileExt(template_)));
+        header.emplace("Content-Type", ct);
         header.emplace("Content-Length", std::to_string(ssize));
         response->write(ss, header);
     }

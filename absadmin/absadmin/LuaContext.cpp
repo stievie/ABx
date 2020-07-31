@@ -20,12 +20,17 @@
  */
 
 #include "LuaContext.h"
+#include <abscommon/Xml.h>
 
 LuaContext::LuaContext()
 {
     luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
         stream_ << value;
+    });
+    luaState_["escape"] = kaguya::function([](const std::string& value) -> std::string
+    {
+        return Utils::XML::Escape(value);
     });
 }
 
