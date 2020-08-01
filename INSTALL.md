@@ -45,7 +45,7 @@ To stop the servers in the correct order, you can use `./stop` in the root direc
 If you are behind a router and want that your friend can connect to your server running on your hardware, you must open the following ports:
 
 1. 2748: Login server
-2. 22749: Game server
+2. 2749: Game server
 3. 8081: File server
 
 This assumes you have the default configuration. You can change the ports in the respective configuration files:
