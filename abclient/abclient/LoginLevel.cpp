@@ -233,6 +233,9 @@ void LoginLevel::DoLogin()
 
 void LoginLevel::SetEnvironment()
 {
+    if (!environmentsList_)
+        return;
+
     Options* opts = GetSubsystem<Options>();
     auto& envs = opts->environments_;
     unsigned selEnv = environmentsList_->GetSelection();
