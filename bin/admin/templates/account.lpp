@@ -1,4 +1,4 @@
-<?# _header.html ?>
+<?# _header.lpp ?>
 
     <div class="container body">
       <div class="main_container">
@@ -63,8 +63,8 @@
                           <option <% if type_normnal then echo("selected") end %> value="1">Normal</option>
                           <option <% if type_tutor then echo("selected") end %> value="2">Tutor</option>
                           <option <% if type_sentutor then echo("selected") end %> value="3">Senior Tutor</option>
-                          <option <% if type_gm then echo("selected") %> value="4">Game Master</option>
-                          <option <% if type_god then echo("selected") %> value="5">God</option>
+                          <option <% if type_gm then echo("selected") end %> value="4">Game Master</option>
+                          <option <% if type_god then echo("selected") end %> value="5">God</option>
                         </select>
                       </div>
                     </div>
@@ -116,7 +116,7 @@
         <!-- /page content -->
 
 <script>
-  <% if is_online %>
+  <% if is_online then %>
   $("#logout_button").click(function() {
     var _uuid = $(this).data("uuid");
     $.post("post/account_logout", { uuid: _uuid }, function(data, textStatus, xhr)
