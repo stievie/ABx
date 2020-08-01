@@ -40,6 +40,20 @@ $ ./bin/dbtool -a genacckey
 
 To stop the servers in the correct order, you can use `./stop` in the root directory.
 
+### Running
+
+If you are behind a router and want that your friend can connect to your server running on your hardware, you must open the following ports:
+
+1. 2748: Login server
+2. 22749: Game server
+3. 8081: File server
+
+This assumes you have the default configuration. You can change the ports in the respective configuration files:
+
+1. `bin/ablogin.lua`: `login_port`
+2. `bin/abserv.lua`: `base_port` or `game_port`
+3. `bin/abfile.lua`: `file_port`
+
 ### Known issues
 
 The Server should run on Windows and Linux.
