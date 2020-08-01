@@ -153,9 +153,6 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     AB_PROFILE;
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    // Don't cache templates
-    header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
-    responseCookies_->Write(header);
 
     int64_t start = Utils::Tick();
     std::string buffer;
@@ -171,7 +168,13 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         return;
     }
 
-    LuaContext context;
+    // Don't cache templates
+    header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
+    responseCookies_->Write(header);
+    auto ct = contT->Get(Utils::GetFileExt(template_));
+    header.emplace("Content-Type", ct);
+
+    LuaContext context(&header);
 
     if (!GetContext(context))
     {
@@ -183,15 +186,18 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     if (context.Execute(buffer))
     {
-        auto ct = contT->Get(Utils::GetFileExt(template_));
+        std::string realCt = ct;
+        const auto it = header.find("Content-Type");
+        if (it != header.end())
+            realCt = (*it).second;
+
         std::stringstream& ss = context.GetStream();
-        if (ct == "text/html")
+        if (realCt == "text/html")
             ss << "\n<!-- Generated in " << Utils::TimeElapsed(start) << "ms -->\n";
 
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
-        header.emplace("Content-Type", ct);
         header.emplace("Content-Length", std::to_string(ssize));
         response->write(ss, header);
     }

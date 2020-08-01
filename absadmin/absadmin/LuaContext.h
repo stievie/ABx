@@ -31,8 +31,9 @@ class LuaContext
 private:
     kaguya::State luaState_;
     std::stringstream stream_;
+    SimpleWeb::CaseInsensitiveMultimap* headers_;
 public:
-    LuaContext();
+    LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers);
     kaguya::State& GetState() { return luaState_; };
     const kaguya::State& GetState() const { return luaState_; }
     const std::stringstream& GetStream() const { return stream_; }

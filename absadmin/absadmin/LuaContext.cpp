@@ -22,7 +22,8 @@
 #include "LuaContext.h"
 #include <abscommon/Xml.h>
 
-LuaContext::LuaContext()
+LuaContext::LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers) :
+    headers_(headers)
 {
     luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
@@ -31,6 +32,36 @@ LuaContext::LuaContext()
     luaState_["escape"] = kaguya::function([](const std::string& value) -> std::string
     {
         return Utils::XML::Escape(value);
+    });
+    luaState_["getHeader"] = kaguya::function([this](const std::string& key) -> std::string
+    {
+        if (!headers_)
+            return "";
+        const auto it = headers_->find(key);
+        if (it == headers_->end())
+            return "";
+        return (*it).second;
+    });
+    luaState_["setHeader"] = kaguya::function([this](const std::string& key, const std::string& value)
+    {
+        if (!headers_)
+            return;
+        headers_->emplace(key, value);
+    });
+    luaState_["getContentType"] = kaguya::function([this]() -> std::string
+    {
+        if (!headers_)
+            return "";
+        const auto it = headers_->find("Content-Type");
+        if (it == headers_->end())
+            return "";
+        return (*it).second;
+    });
+    luaState_["setContentType"] = kaguya::function([this](const std::string& value)
+    {
+        if (!headers_)
+            return;
+        headers_->emplace("Content-Type", value);
     });
 }
 
