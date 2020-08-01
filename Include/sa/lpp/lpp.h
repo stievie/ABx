@@ -281,7 +281,7 @@ private:
         while (!Eof())
             AddToken(tokens, GetNextToken(), includes);
     }
-    static bool IsIncluded(std::vector<std::string>& includes, const std::string& filename)
+    static bool IsIncluded(const std::vector<std::string>& includes, const std::string& filename)
     {
         const auto it = std::find_if(includes.begin(), includes.end(), [&filename](const auto& current)
         {
