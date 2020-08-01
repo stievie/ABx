@@ -70,6 +70,14 @@ bool LuaContext::Execute(const std::string& source)
     stream_.clear();
     bool result = sa::lpp::Run(luaState_.state(), source);
     if (!result)
-        std::cout << source;
+    {
+        std::istringstream ss(source);
+        int line = 0;
+        std::string ln;
+        while (std::getline(ss, ln))
+        {
+            std::cout << ++line << ": " << ln << std::endl;
+        }
+    }
     return result;
 }
