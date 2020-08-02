@@ -26,6 +26,10 @@
 #define WRITE_FUNC "echo"
 #include <sa/lpp/lpp.h>
 
+namespace HTTP {
+class Session;
+}
+
 class LuaContext
 {
 private:
@@ -33,7 +37,7 @@ private:
     std::stringstream stream_;
     SimpleWeb::CaseInsensitiveMultimap* headers_;
 public:
-    LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers);
+    LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers, HTTP::Session* session);
     kaguya::State& GetState() { return luaState_; };
     const kaguya::State& GetState() const { return luaState_; }
     const std::stringstream& GetStream() const { return stream_; }

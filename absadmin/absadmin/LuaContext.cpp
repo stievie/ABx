@@ -21,10 +21,13 @@
 
 #include "LuaContext.h"
 #include <abscommon/Xml.h>
+#include "Sessions.h"
 
-LuaContext::LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers) :
+LuaContext::LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers, HTTP::Session* session) :
     headers_(headers)
 {
+    HTTP::Session::RegisterLua(luaState_);
+    luaState_["session"] = session;
     luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
         stream_ << value;

@@ -174,7 +174,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto ct = contT->Get(Utils::GetFileExt(template_));
     header.emplace("Content-Type", ct);
 
-    LuaContext context(&header);
+    LuaContext context(&header, session_.get());
 
     if (!GetContext(context))
     {

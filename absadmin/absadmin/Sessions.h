@@ -27,24 +27,21 @@
 
 namespace HTTP {
 
-struct Session
+class Session
 {
+public:
     static uint32_t sessionLifetime_;
+    static void RegisterLua(kaguya::State& state);
+    Session();
+    void Touch();
+    bool GetBool(const std::string& key);
+    std::string GetString(const std::string& key);
+    float GetNumber(const std::string& key);
+    void SetBool(const std::string& key, bool value);
+    void SetString(const std::string& key, const std::string& value);
+    void SetNumber(const std::string& key, float value);
     time_t expires_;
     Utils::VariantMap values_;
-
-    Session()
-    {
-        Touch();
-    }
-
-    void Touch()
-    {
-        time(&expires_);
-        struct tm* tm = localtime(&expires_);
-        tm->tm_sec += sessionLifetime_ / 1000;
-        expires_ = mktime(tm);
-    }
 };
 
 class Sessions
