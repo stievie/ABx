@@ -65,7 +65,7 @@ std::string Session::GetString(const std::string& key)
 {
     const auto it = values_.find(sa::StringHashRt(key.c_str()));
     if (it == values_.end())
-        return false;
+        return "";
     return it->second.GetString();
 }
 
