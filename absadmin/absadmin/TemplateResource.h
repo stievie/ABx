@@ -41,6 +41,9 @@ protected:
 public:
     explicit TemplateResource(std::shared_ptr<HttpsServer::Request> request);
     void Render(std::shared_ptr<HttpsServer::Response> response) override;
+    HTTP::Session* GetSession() const;
+    HTTP::Cookies* GetRequestCookies() const;
+    HTTP::Cookies* GetResponseCookies() const;
 };
 
 }

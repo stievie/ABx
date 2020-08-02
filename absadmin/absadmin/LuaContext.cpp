@@ -22,12 +22,25 @@
 #include "LuaContext.h"
 #include <abscommon/Xml.h>
 #include "Sessions.h"
+#include "Cookie.h"
+#include "TemplateResource.h"
 
-LuaContext::LuaContext(SimpleWeb::CaseInsensitiveMultimap* headers, HTTP::Session* session) :
+static void LuaErrorHandler(int errCode, const char* message)
+{
+    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
+}
+
+LuaContext::LuaContext(Resources::TemplateResource& resource, SimpleWeb::CaseInsensitiveMultimap* headers) :
     headers_(headers)
 {
+    luaState_.setErrorHandler(LuaErrorHandler);
+    HTTP::Cookie::RegisterLua(luaState_);
+    HTTP::Cookies::RegisterLua(luaState_);
     HTTP::Session::RegisterLua(luaState_);
-    luaState_["session"] = session;
+    luaState_["session"] = resource.GetSession();
+    luaState_["requestCookies"] = resource.GetRequestCookies();
+    luaState_["responseCookies"] = resource.GetResponseCookies();
+    // The function which writes to the output stream
     luaState_["echo"] = kaguya::function([this](const std::string& value)
     {
         stream_ << value;

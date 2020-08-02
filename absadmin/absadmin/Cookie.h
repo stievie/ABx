@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "Servers.h"
+#include <sa/Iteration.h>
 
 namespace HTTP {
 
@@ -36,9 +37,13 @@ public:
         Strict,
         None
     };
+    static void RegisterLua(kaguya::State& state);
     Cookie();
-    Cookie(const std::string& content);
+    explicit Cookie(const std::string& content);
     ~Cookie() = default;
+
+    std::string GetContent() { return content_; }
+    void SetContent(const std::string& value) { content_ = value; }
 
     std::string domain_;
     std::string path_;
@@ -52,13 +57,27 @@ public:
 class Cookies
 {
 private:
-    std::map<std::string, Cookie> cookies_;
+    std::map<std::string, std::unique_ptr<Cookie>> cookies_;
 public:
+    static void RegisterLua(kaguya::State& state);
     Cookies() = default;
     explicit Cookies(const HttpsServer::Request& request);
     void Write(SimpleWeb::CaseInsensitiveMultimap& header);
-    void Add(const std::string& name, const Cookie& cookie);
+    Cookie* Add(const std::string& name);
     Cookie* Get(const std::string& name);
+    void Delete(const std::string& name);
+    template<typename Callback>
+    void VisitCookies(Callback&& callback)
+    {
+        for (const auto& cookie : cookies_)
+        {
+            if (cookie.second)
+            {
+                if (callback(cookie.first, *cookie.second.get()) == Iteration::Break)
+                    break;
+            }
+        }
+    }
 };
 
 }

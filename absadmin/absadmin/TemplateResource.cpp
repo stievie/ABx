@@ -174,7 +174,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto ct = contT->Get(Utils::GetFileExt(template_));
     header.emplace("Content-Type", ct);
 
-    LuaContext context(&header, session_.get());
+    LuaContext context(*this, &header);
 
     if (!GetContext(context))
     {
@@ -208,6 +208,21 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
             "Internal Server Error " + request_->path);
 
     }
+}
+
+HTTP::Session* TemplateResource::GetSession() const
+{
+    return session_.get();
+}
+
+HTTP::Cookies* TemplateResource::GetRequestCookies() const
+{
+    return requestCookies_.get();
+}
+
+HTTP::Cookies* TemplateResource::GetResponseCookies() const
+{
+    return responseCookies_.get();
 }
 
 }
