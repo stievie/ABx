@@ -20,8 +20,26 @@
  */
 
 #include "DBItem.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Item& item, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(item.uuid);
+        if (token.value == "idx")
+            return std::to_string(item.index);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBItem::Create(AB::Entities::Item& item)
 {
@@ -38,19 +56,23 @@ bool DBItem::Load(AB::Entities::Item& item)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_items WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT * FROM game_items WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_INDEX = "SELECT * FROM game_items WHERE idx = ${index}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(item.uuid))
-        query << "uuid = " << db->EscapeString(item.uuid);
-    else if (item.index != 0)
-        query << "idx = " << item.index;
+        sql = SQL_UUID;
+    else if (!item.index != 0)
+        sql = SQL_INDEX;
     else
     {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -97,19 +119,23 @@ bool DBItem::Exists(const AB::Entities::Item& item)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_items WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM game_items WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_INDEX = "SELECT COUNT(*) AS count FROM game_items WHERE idx = ${index}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(item.uuid))
-        query << "uuid = " << db->EscapeString(item.uuid);
-    else if (item.index != 0)
-        query << "idx = " << item.index;
+        sql = SQL_UUID;
+    else if (!item.index != 0)
+        sql = SQL_INDEX;
     else
     {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

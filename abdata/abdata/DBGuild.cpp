@@ -20,8 +20,42 @@
  */
 
 #include "DBGuild.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Guild& g, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(g.uuid);
+        if (token.value == "name")
+            return db->EscapeString(g.name);
+        if (token.value == "tag")
+            return db->EscapeString(g.tag);
+        if (token.value == "creator_account_uuid")
+            return db->EscapeString(g.creatorAccountUuid);
+        if (token.value == "creation")
+            return std::to_string(g.creation);
+        if (token.value == "guild_hall_uuid")
+            return db->EscapeString(g.guildHall);
+        if (token.value == "creator_name")
+            return db->EscapeString(g.creatorName);
+        if (token.value == "creator_player_uuid")
+            return db->EscapeString(g.creatorPlayerUuid);
+        if (token.value == "guild_hall_instance_uuid")
+            return db->EscapeString(g.guildHallInstanceUuid);
+        if (token.value == "guild_hall_server_uuid")
+            return db->EscapeString(g.guildHallServerUuid);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBGuild::Create(AB::Entities::Guild& g)
 {
@@ -31,30 +65,22 @@ bool DBGuild::Create(AB::Entities::Guild& g)
         return false;
     }
 
+    static constexpr const char* SQL = "INSERT INTO guilds ("
+            "uuid, name, tag, creator_account_uuid, creation, guild_hall_uuid, "
+            "creator_name, creator_player_uuid, guild_hall_instance_uuid, guild_hall_server_uuid"
+        ") VALUES ("
+            "${uuid}, ${name}, ${tag}, ${creator_account_uuid}, ${creation}, ${guild_hall_uuid}, "
+            "${creator_name}, ${creator_player_uuid}, ${guild_hall_instance_uuid}, ${guild_hall_server_uuid}"
+        ")";
+
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO guilds (uuid, name, tag, creator_account_uuid, creation, guild_hall_uuid, creator_name, creator_player_uuid, ";
-    query << "guild_hall_instance_uuid, guild_hall_server_uuid";
-    query << ") VALUES (";
-
-    query << db->EscapeString(g.uuid) << ", ";
-    query << db->EscapeString(g.name) << ", ";
-    query << db->EscapeString(g.tag) << ", ";
-    query << db->EscapeString(g.creatorAccountUuid) << ", ";
-    query << g.creation << ", ";
-    query << db->EscapeString(g.guildHall) << ", ";
-    query << db->EscapeString(g.creatorName) << ", ";
-    query << db->EscapeString(g.creatorPlayerUuid) << ", ";
-    query << db->EscapeString(g.guildHallInstanceUuid) << ", ";
-    query << db->EscapeString(g.guildHallServerUuid);
-
-    query << ")";
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
+    if (!db->ExecuteQuery(query))
         return false;
 
     return transaction.Commit();
@@ -64,19 +90,22 @@ bool DBGuild::Load(AB::Entities::Guild& g)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM guilds WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT * FROM guilds WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT * FROM guilds WHERE LOWER(name) = LOWER(${name})";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(g.uuid))
-        query << "uuid = " << db->EscapeString(g.uuid);
+        sql = SQL_UUID;
     else if (!g.name.empty())
-        query << "LOWER(name) = LOWER(" << db->EscapeString(g.name) << ")";
+        sql = SQL_NAME;
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -103,28 +132,26 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE guilds SET ";
+    static constexpr const char* SQL = "UPDATE guilds SET "
+        "name = ${name}, "
+        "tag = ${tag}, "
+        "creator_account_uuid = ${creator_account_uuid}, "
+        "creation = ${creation}, "
+        "guild_hall_uuid = ${guild_hall_uuid}, "
+        "creator_name = ${creator_name}, "
+        "creator_player_uuid = ${creator_player_uuid}, "
+        "guild_hall_instance_uuid = ${guild_hall_instance_uuid}, "
+        "guild_hall_server_uuid = ${guild_hall_server_uuid} "
+        "WHERE uuid = ${uuid}";
 
-    // Only these may be changed
-    query << " name = " << db->EscapeString(g.name) << ", ";
-    query << " tag = " << db->EscapeString(g.tag) << ", ";
-    query << " creator_account_uuid = " << db->EscapeString(g.creatorAccountUuid) << ", ";
-    query << " creation = " << g.creation << ", ";
-    query << " guild_hall_uuid = " << db->EscapeString(g.guildHall) << ", ";
-    query << " creator_name = " << db->EscapeString(g.creatorName) << ", ";
-    query << " creator_player_uuid = " << db->EscapeString(g.creatorPlayerUuid) << ", ";
-    query << " guild_hall_instance_uuid = " << db->EscapeString(g.guildHallInstanceUuid) << ", ";
-    query << " guild_hall_server_uuid = " << db->EscapeString(g.guildHallServerUuid);
-
-    query << " WHERE uuid = " << db->EscapeString(g.uuid);
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     return transaction.Commit();
@@ -139,13 +166,15 @@ bool DBGuild::Delete(const AB::Entities::Guild& g)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM guilds WHERE uuid = " << db->EscapeString(g.uuid);
+
+    static constexpr const char* SQL = "DELETE FROM guilds WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
+
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
     return transaction.Commit();
@@ -155,19 +184,23 @@ bool DBGuild::Exists(const AB::Entities::Guild& g)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM guilds WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM guilds WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_NAME = "SELECT COUNT(*) AS count FROM guilds WHERE LOWER(name) = LOWER(${name})";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(g.uuid))
-        query << "uuid = " << db->EscapeString(g.uuid);
+        sql = SQL_UUID;
     else if (!g.name.empty())
-        query << "LOWER(name) = LOWER(" << db->EscapeString(g.name) << ")";
+        sql = SQL_NAME;
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

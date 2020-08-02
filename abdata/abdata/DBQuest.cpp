@@ -19,11 +19,44 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBQuest.h"
 #include <sa/StringTempl.h>
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Quest& q, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(q.uuid);
+        if (token.value == "idx")
+            return std::to_string(q.index);
+        if (token.value == "name")
+            return db->EscapeString(q.name);
+        if (token.value == "script")
+            return db->EscapeString(q.script);
+        if (token.value == "repeatable")
+            return std::to_string(q.repeatable ? 1 : 0);
+        if (token.value == "description")
+            return db->EscapeString(q.description);
+        if (token.value == "depends_on_uuid")
+            return db->EscapeString(q.dependsOn);
+        if (token.value == "reward_xp")
+            return std::to_string(q.rewardXp);
+        if (token.value == "reward_money")
+            return std::to_string(q.rewardMoney);
+        if (token.value == "reward_items")
+            return db->EscapeString(sa::CombineString<char>(q.rewardItems, std::string(";")));
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBQuest::Create(AB::Entities::Quest& v)
 {
@@ -34,55 +67,44 @@ bool DBQuest::Create(AB::Entities::Quest& v)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO game_quests (uuid, idx, name, script, repeatable, description " <<
-        "depends_on_uuid, reward_xp, reward_money, reward_items";
-    query << ") VALUES (";
 
-    query << db->EscapeString(v.uuid) << ", ";
-    query << v.index << ", ";
-    query << db->EscapeString(v.name) << ", ";
-    query << db->EscapeString(v.script) << ", ";
-    query << (v.repeatable ? 1 : 0) << ", ";
-    query << db->EscapeString(v.description) << ", ";
-    query << db->EscapeString(v.dependsOn) << ", ";
-    query << v.rewardXp << ", ";
-    query << v.rewardMoney << ", ";
-    query << db->EscapeString(sa::CombineString(v.rewardItems, std::string(";")));
-
-    query << ")";
+    static constexpr const char* SQL = "INSERT INTO game_quests ("
+            "uuid, idx, name, script, repeatable, description, depends_on_uuid, reward_xp, reward_money, reward_items"
+        ") VALUES ("
+            "${uuid}, ${idx}, ${name}, ${script}, ${repeatable}, ${description}, ${depends_on_uuid}, ${reward_xp}, ${reward_money}, ${reward_items}"
+        ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBQuest::Load(AB::Entities::Quest& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_quests WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT * FROM game_quests WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_INDEX = "SELECT * FROM game_quests WHERE idx = ${index}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "uuid = " << db->EscapeString(v.uuid);
-    else if (v.index != AB::Entities::INVALID_INDEX)
-        query << "idx = " << v.index;
+        sql = SQL_UUID;
+    else if (!v.index != 0)
+        sql = SQL_INDEX;
     else
     {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -109,30 +131,27 @@ bool DBQuest::Save(const AB::Entities::Quest& v)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE game_quests SET ";
 
     // Only these may be changed
-    query << " name = " << db->EscapeString(v.name) << ", ";
-    query << " script = " << db->EscapeString(v.script) << ", ";
-    query << " repeatable = " << (v.repeatable ? 1 : 0) << ", ";
-    query << " description = " << db->EscapeString(v.description) << ", ";
-    query << " depends_on_uuid = " << db->EscapeString(v.dependsOn) << ", ";
-    query << " reward_xp = " << v.rewardXp << ", ";
-    query << " reward_money = " << v.rewardMoney << ", ";
-    query << " reward_items = " << sa::CombineString(v.rewardItems, std::string(";"));
-
-    query << " WHERE uuid = " << db->EscapeString(v.uuid);
+    static constexpr const char* SQL = "UPDATE game_quests SET "
+        "name = ${name}, "
+        "script = ${script}, "
+        "repeatable = ${repeatable}, "
+        "description = ${description}, "
+        "depends_on_uuid = ${depends_on_uuid}, "
+        "reward_xp = ${reward_xp}, "
+        "reward_money = ${reward_money}, "
+        "reward_items = ${reward_items} "
+        "WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -146,19 +165,22 @@ bool DBQuest::Exists(const AB::Entities::Quest& v)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_quests WHERE ";
+    static constexpr const char* SQL_UUID = "SELECT COUNT(*) AS count FROM game_quests WHERE uuid= ${uuid}";
+    static constexpr const char* SQL_INDEX = "SELECT COUNT(*) AS count FROM game_quests WHERE idx = ${index}";
+
+    const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(v.uuid))
-        query << "uuid = " << db->EscapeString(v.uuid);
-    else if (v.index != AB::Entities::INVALID_INDEX)
-        query << "idx = " << v.index << ")";
+        sql = SQL_UUID;
+    else if (!v.index != 0)
+        sql = SQL_INDEX;
     else
     {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
+    const std::string query = sa::templ::Parser::Evaluate(sql, std::bind(&PlaceholderCallback, db, v, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

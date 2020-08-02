@@ -19,10 +19,25 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBPlayerQuestList.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::PlayerQuestList& q, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "player_uuid")
+            return db->EscapeString(q.uuid);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBPlayerQuestList::Create(AB::Entities::PlayerQuestList& g)
 {
@@ -44,12 +59,11 @@ bool DBPlayerQuestList::Load(AB::Entities::PlayerQuestList& g)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT quests_uuid FROM player_quests WHERE ";
-    query << "player_uuid = " << db->EscapeString(g.uuid) << " AND ";
-    query << "rewarded = 0";
+    static constexpr const char* SQL = "SELECT quests_uuid FROM player_quests WHERE "
+        "player_uuid = ${player_uuid} AND rewarded = 0";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
-    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         g.questUuids.push_back(
             result->GetString("quests_uuid")
@@ -88,12 +102,11 @@ bool DBPlayerQuestList::Exists(const AB::Entities::PlayerQuestList& g)
     }
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM player_quests WHERE ";
-    query << "player_uuid = " << db->EscapeString(g.uuid) << " AND ";
-    query << "rewarded = 0";
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM player_quests WHERE "
+        "player_uuid = ${player_uuid} AND rewarded = 0";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

@@ -19,10 +19,43 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBPlayerQuest.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::PlayerQuest& q, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(q.uuid);
+        if (token.value == "quests_uuid")
+            return db->EscapeString(q.questUuid);
+        if (token.value == "player_uuid")
+            return db->EscapeString(q.playerUuid);
+        if (token.value == "completed")
+            return std::to_string(q.completed ? 1 : 0);
+        if (token.value == "rewarded")
+            return std::to_string(q.rewarded ? 1 : 0);
+        if (token.value == "progress")
+            return db->EscapeBlob(q.progress.data(), q.progress.size());
+        if (token.value == "picked_up_times")
+            return std::to_string(q.pickupTime);
+        if (token.value == "completed_time")
+            return std::to_string(q.completeTime);
+        if (token.value == "rewarded_time")
+            return std::to_string(q.rewardTime);
+        if (token.value == "deleted")
+            return std::to_string(q.deleted ? 1 : 0);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
 {
@@ -33,37 +66,22 @@ bool DBPlayerQuest::Create(AB::Entities::PlayerQuest& g)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "INSERT INTO player_quests (uuid, quests_uuid, player_uuid, " <<
-        "completed, rewarded, progress, picked_up_times, completed_time, rewarded_time, " <<
-        "deleted";
-    query << ") VALUES (";
 
-    query << db->EscapeString(g.uuid) << ", ";
-    query << db->EscapeString(g.questUuid) << ", ";
-    query << db->EscapeString(g.playerUuid) << ", ";
-    query << (g.completed ? 1 : 0) << ", ";
-    query << (g.rewarded ? 1 : 0) << ", ";
-    query << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
-    query << g.pickupTime << ", ";
-    query << g.completeTime << ", ";
-    query << g.rewardTime << ", ";
-    query << (g.deleted ? 1 : 0);
-
-    query << ")";
+    static constexpr const char* SQL = "INSERT INTO player_quests ("
+            "uuid, quests_uuid, player_uuid, completed, rewarded, progress, picked_up_times, completed_time, rewarded_time, deleted"
+        ") VALUES ("
+            "${uuid, ${quests_uuid}, ${player_uuid}, ${completed}, ${rewarded}, ${progress}, ${picked_up_times}, ${completed_time}, ${rewarded_time}, ${deleted}"
+        ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
@@ -74,12 +92,12 @@ bool DBPlayerQuest::Load(AB::Entities::PlayerQuest& g)
         return false;
     }
 
-    std::ostringstream query;
     Database* db = GetSubsystem<Database>();
-    query << "SELECT * FROM player_quests WHERE ";
-    query << "uuid = " << db->EscapeString(g.uuid) << " AND deleted = 0";
+    static constexpr const char* SQL = "SELECT * FROM player_quests WHERE "
+        "uuid = ${uuid} AND deleted = 0";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -106,29 +124,26 @@ bool DBPlayerQuest::Save(const AB::Entities::PlayerQuest& g)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-
-    query << "UPDATE player_quests SET ";
 
     // Only these may be changed
-    query << " completed = " << (g.completed ? 1 : 0) << ", ";
-    query << " rewarded = " << (g.rewarded ? 1 : 0) << ", ";
-    query << " progress = " << db->EscapeBlob(g.progress.data(), g.progress.length()) << ", ";
-    query << " picked_up_times = " << g.pickupTime << ", ";
-    query << " completed_time = " << g.completeTime << ", ";
-    query << " rewarded_time = " << g.rewardTime << ", ";
-    query << " deleted = " << (g.deleted ? 1 : 0);
-
-    query << " WHERE uuid = " << db->EscapeString(g.uuid);
+    static constexpr const char* SQL = "UPDATE player_quests SET "
+        "completed = ${completed}, "
+        "rewarded = ${rewarded}, "
+        "progress = ${progress}, "
+        "picked_up_times = ${picked_up_times}, "
+        "completed_time = ${completed_time}, "
+        "rewarded_time = ${rewarded_time}, "
+        "deleted = ${deleted} "
+        "WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -141,33 +156,31 @@ bool DBPlayerQuest::Delete(const AB::Entities::PlayerQuest& g)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM player_quests WHERE uuid = " << db->EscapeString(g.uuid);
+    static constexpr const char* SQL = "DELETE FROM player_quests WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
 bool DBPlayerQuest::Exists(const AB::Entities::PlayerQuest& g)
 {
-    if (Utils::Uuid::IsEmpty(g.uuid) || Utils::Uuid::IsEmpty(g.questUuid))
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID required" << std::endl;
         return false;
     }
     Database* db = GetSubsystem<Database>();
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM player_quests WHERE "
+        "uuid = ${uuid} AND deleted = 0";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM player_quests WHERE ";
-    query << "uuid = " << db->EscapeString(g.uuid) << " AND deleted = 0";
-
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;

@@ -19,11 +19,28 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBGuildMembers.h"
 #include "StorageProvider.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::GuildMembers& g, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "guild_uuid")
+            return db->EscapeString(g.uuid);
+        if (token.value == "expires")
+            return std::to_string(Utils::Tick());
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBGuildMembers::Create(AB::Entities::GuildMembers& g)
 {
@@ -46,19 +63,14 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
 
     Database* db = GetSubsystem<Database>();
 
+    static constexpr const char* SQL = "SELECT * FROM guild_members WHERE "
+        "guild_uuid = ${guild_uuid} "
+        "AND (expires = 0 OR expires > ${expires})";
+
     g.members.clear();
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, g, std::placeholders::_1));
 
-    std::ostringstream query;
-    query << "SELECT * FROM guild_members WHERE ";
-    query << "guild_uuid = " << db->EscapeString(g.uuid);
-    query << " AND (expires = 0 OR expires > " << Utils::Tick() << ")";
-
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        // No members
-        return true;
-
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
         AB::Entities::GuildMember gm;
         gm.accountUuid = result->GetString("account_uuid");
@@ -110,30 +122,45 @@ void DBGuildMembers::DeleteExpired(StorageProvider* sp)
 {
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT guild_uuid FROM guild_members WHERE ";
-    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
+    auto expires = Utils::Tick();
+    auto callback = [db, expires](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "expires")
+                return std::to_string(expires);
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+            LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+            return "";
+        default:
+            return token.value;
+        }
+    };
+    static constexpr const char* SQL_SELECT = "SELECT guild_uuid FROM guild_members WHERE "
+        "(expires <> 0 AND expires < ${expires})";
+    const std::string selectQuery = sa::templ::Parser::Evaluate(SQL_SELECT, callback);
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(selectQuery);
     if (!result)
         // No members
         return;
 
     std::vector<std::string> guilds;
-    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    for (; result; result = result->Next())
     {
         guilds.push_back(result->GetString("guild_uuid"));
     }
 
-    query.str("");
-    query << "DELETE FROM guild_members WHERE ";
-    query << "(expires <> 0 AND expires < " << Utils::Tick() << ")";
+    static constexpr const char* SQL_DELETE = "DELETE FROM guild_members WHERE "
+        "(expires <> 0 AND expires < ${expires})";
+    const std::string deleteQuery = sa::templ::Parser::Evaluate(SQL_SELECT, callback);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(deleteQuery))
         return;
 
     // End transaction

@@ -118,7 +118,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     Database* db = GetSubsystem<Database>();
 
     static constexpr const char* SQL_UUID = "SELECT * FROM players WHERE uuid= ${uuid}";
-    static constexpr const char* SQL_NAME = "SELECT * FROM accounts WHERE LOWER(name) = LOWER(${name})";
+    static constexpr const char* SQL_NAME = "SELECT * FROM players WHERE LOWER(name) = LOWER(${name})";
 
     const char* sql = nullptr;
     if (!Utils::Uuid::IsEmpty(character.uuid))

@@ -19,10 +19,35 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DBMusic.h"
+#include <sa/TemplateParser.h>
 
 namespace DB {
+
+static std::string PlaceholderCallback(Database* db, const AB::Entities::Music& item, const sa::templ::Token& token)
+{
+    switch (token.type)
+    {
+    case sa::templ::Token::Type::Variable:
+        if (token.value == "uuid")
+            return db->EscapeString(item.uuid);
+        if (token.value == "map_uuid")
+            return db->EscapeString(item.mapUuid);
+        if (token.value == "local_file")
+            return db->EscapeString(item.localFile);
+        if (token.value == "remote_file")
+            return db->EscapeString(item.remoteFile);
+        if (token.value == "sorting")
+            return std::to_string(item.sorting);
+        if (token.value == "style")
+            return std::to_string(item.style);
+
+        LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+        return "";
+    default:
+        return token.value;
+    }
+}
 
 bool DBMusic::Create(AB::Entities::Music& item)
 {
@@ -33,33 +58,23 @@ bool DBMusic::Create(AB::Entities::Music& item)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "INSERT INTO game_music (uuid, map_uuid, local_file, remote_file, sorting, " <<
-        "style";
-    query << ") VALUES (";
+    static constexpr const char* SQL = "INSERT INTO game_music ("
+            "uuid, map_uuid, local_file, remote_file, sorting, style"
+        ") VALUES ("
+            "${uuid}, ${map_uuid}, ${local_file}, ${remote_file}, ${sorting}, ${style}"
+        ")";
 
-    query << db->EscapeString(item.uuid) << ", ";
-    query << db->EscapeString(item.mapUuid) << ", ";
-    query << db->EscapeString(item.localFile) << ", ";
-    query << db->EscapeString(item.remoteFile) << ", ";
-    query << static_cast<int>(item.sorting) << ", ";
-    query << static_cast<int>(item.style);
-
-    query << ")";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
+    return transaction.Commit();
 }
 
 bool DBMusic::Load(AB::Entities::Music& item)
@@ -72,11 +87,10 @@ bool DBMusic::Load(AB::Entities::Music& item)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT * FROM game_music WHERE ";
-    query << "uuid = " << db->EscapeString(item.uuid);
+    static constexpr const char* SQL = "SELECT * FROM game_music WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
 
@@ -99,25 +113,23 @@ bool DBMusic::Save(const AB::Entities::Music& item)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
 
-    query << "UPDATE game_music SET ";
-    query << " map_uuid = " << db->EscapeString(item.mapUuid) << ", ";
-    query << " local_file = " << db->EscapeString(item.localFile) << ", ";
-    query << " remote_file = " << db->EscapeString(item.remoteFile) << ", ";
-    query << " sorting = " << static_cast<int>(item.sorting) << ", ";
-    query << " style = " << static_cast<int>(item.style);
-
-    query << " WHERE uuid = " << db->EscapeString(item.uuid);
+    static constexpr const char* SQL = "UPDATE game_music SET "
+        "map_uuid = ${map_uuid}, "
+        "local_file = ${local_file}, "
+        "remote_file = ${remote_file}, "
+        "sorting = ${sorting}, "
+        "style = ${style} "
+        "WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -130,16 +142,15 @@ bool DBMusic::Delete(const AB::Entities::Music& item)
     }
 
     Database* db = GetSubsystem<Database>();
-    std::ostringstream query;
-    query << "DELETE FROM game_music WHERE uuid = " << db->EscapeString(item.uuid);
+    static constexpr const char* SQL = "DELETE FROM game_music WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;
 
-    if (!db->ExecuteQuery(query.str()))
+    if (!db->ExecuteQuery(query))
         return false;
 
-    // End transaction
     return transaction.Commit();
 }
 
@@ -153,11 +164,10 @@ bool DBMusic::Exists(const AB::Entities::Music& item)
 
     Database* db = GetSubsystem<Database>();
 
-    std::ostringstream query;
-    query << "SELECT COUNT(*) AS count FROM game_effects WHERE ";
-    query << "uuid = " << db->EscapeString(item.uuid);
+    static constexpr const char* SQL = "SELECT COUNT(*) AS count FROM game_music WHERE uuid = ${uuid}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, item, std::placeholders::_1));
 
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
