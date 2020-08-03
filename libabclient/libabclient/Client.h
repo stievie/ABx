@@ -35,6 +35,7 @@
 #include <sa/CircularQueue.h>
 #include <numeric>
 #include <AB/Packets/ServerPackets.h>
+#include <deque>
 
 namespace httplib {
 class SSLClient;
@@ -56,7 +57,20 @@ enum class State
 
 class Client final : public Receiver
 {
+public:
+    using PingRequestCallback = std::function<void(const std::string& name, const std::string& host, uint16_t port, uint32_t time, bool success)>;
 private:
+    struct PingRequest
+    {
+        std::string name;
+        std::string host;
+        uint16_t port;
+        PingRequestCallback callback;
+        bool completed{ false };
+        uint32_t time{ 0 };
+        bool success{ false };
+    };
+
     Receiver& receiver_;
     std::shared_ptr<asio::io_service> ioService_;
     std::shared_ptr<ProtocolLogin> protoLogin_;
@@ -73,6 +87,7 @@ private:
     Crypto::DHKeys dhKeys_;
     State state_{ State::Disconnected };
     ProtocolLogin& GetProtoLogin();
+
     void Terminate();
 
     // Receiver
@@ -222,6 +237,8 @@ public:
         return 0;
     }
     int64_t GetClockDiff() const;
+    // Sends an UPD packet to the login server to see if it's online
+    void PingServer(const std::string& name, const std::string& host, uint16_t port, PingRequestCallback&& callback);
 
     /// Causes the server to change the map for the whole party
     void ChangeMap(const std::string& mapUuid);

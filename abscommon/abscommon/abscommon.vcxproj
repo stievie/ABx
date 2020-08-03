@@ -182,6 +182,7 @@
     <ClInclude Include="Logo.h" />
     <ClInclude Include="MessageAnalyzer.h" />
     <ClInclude Include="MessageDecoder.h" />
+    <ClInclude Include="PingServer.h" />
     <ClInclude Include="ServiceConfig.h" />
     <ClInclude Include="ServiceInstaller.h" />
     <ClInclude Include="TimeUtils.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="IpList.cpp" />
     <ClCompile Include="MessageAnalyzer.cpp" />
     <ClCompile Include="MessageDecoder.cpp" />
+    <ClCompile Include="PingServer.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ServiceInstaller.cpp" />
     <ClCompile Include="Subsystems.cpp" />

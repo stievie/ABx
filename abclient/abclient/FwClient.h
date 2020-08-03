@@ -79,9 +79,25 @@ struct InventoryLimit
     uint32_t maxItems{ 0 };
 };
 
+struct PingServerRequest
+{
+    PingServerRequest(const String& _name, const String& _host, uint16_t _port) :
+        name(_name),
+        host(_host),
+        port(_port)
+    { }
+    String name;
+    String host;
+    uint16_t port;
+    uint32_t time{ 0 };
+    bool success{ false };
+    bool operator != (const PingServerRequest& rhs) { return name.Compare(rhs.name) == 0; }
+};
+
 class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)
+    friend void PingServerWork(const WorkItem*, unsigned);
 private:
     String currentLevel_;
     String currentMapUuid_;
@@ -114,6 +130,7 @@ private:
     Mutex mutex_;
     HashMap<String, uint32_t> versions_;
     bool loggedIn_{ false };
+
     AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
     void LoadData();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
@@ -131,6 +148,7 @@ private:
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);
     void UpdatePlayer(const AB::Packets::Server::PlayerInfo& player);
+    void HandleWorkCompleted(StringHash eventType, VariantMap& eventData);
 
     void OnLog(const std::string& message) override;
     /// asio network error
@@ -230,6 +248,7 @@ public:
     ~FwClient() override;
 
     void SetEnvironment(const Environment* env);
+    void PingServer(const String& name, const String& host, uint16_t port);
     uint32_t GetIp() const
     {
         if (loggedIn_)

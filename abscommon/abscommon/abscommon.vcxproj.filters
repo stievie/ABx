@@ -147,6 +147,9 @@
     <ClInclude Include="MessageAnalyzer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="PingServer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -252,6 +255,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MessageAnalyzer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="PingServer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

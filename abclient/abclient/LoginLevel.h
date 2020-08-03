@@ -48,6 +48,7 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleServerPing(StringHash eventType, VariantMap& eventData);
     void DoLogin();
     void SetEnvironment();
     Text* CreateDropdownItem(const String& text, const String& value);

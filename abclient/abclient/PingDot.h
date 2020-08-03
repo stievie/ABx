@@ -29,11 +29,11 @@ class PingDot : public Button
 private:
     float lastUpdate_;
     SharedPtr<Text> tooltipText_;
+public:
     static const IntRect PING_NONE;
     static const IntRect PING_GOOD;
     static const IntRect PING_OKAY;
     static const IntRect PING_BAD;
-public:
     static void RegisterObject(Context* context);
 
     PingDot(Context* context);

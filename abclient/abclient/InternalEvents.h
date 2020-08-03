@@ -99,4 +99,13 @@ URHO3D_EVENT(E_ACTOR_SKILLS_CHANGED, ActorSkillsChanged)
     URHO3D_PARAM(P_UPDATEALL, UpdateAll);   // uint32_t
 }
 
+URHO3D_EVENT(E_SERVER_PING, ServerPing)
+{
+    URHO3D_PARAM(P_NAME, Name);
+    URHO3D_PARAM(P_HOST, Host);
+    URHO3D_PARAM(P_PORT, Port);
+    URHO3D_PARAM(P_SUCCESS, Success);
+    URHO3D_PARAM(P_PING_TIME, PingTime);
+}
+
 }

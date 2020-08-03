@@ -35,6 +35,7 @@
 #include "AudioManager.h"
 #include "SkillManager.h"
 #include "Shortcuts.h"
+#include "Conversions.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -321,6 +322,7 @@ FwClient::FwClient(Context* context) :
     lastState_ = client_.GetState();
     SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
+    SubscribeToEvent(E_WORKITEMCOMPLETED, URHO3D_HANDLER(FwClient, HandleWorkCompleted));
 }
 
 FwClient::~FwClient()
@@ -335,6 +337,61 @@ void FwClient::SetEnvironment(const Environment* env)
     client_.loginHost_ = std::string(env->host.CString());
     client_.loginPort_ = env->port;
     URHO3D_LOGINFOF("Login %s:%u", client_.loginHost_.c_str(), client_.loginPort_);
+}
+
+void PingServerWork(const WorkItem* item, unsigned)
+{
+    FwClient& client = *(reinterpret_cast<FwClient*>(item->aux_));
+    PingServerRequest* request = reinterpret_cast<PingServerRequest*>(item->start_);
+    if (!request)
+        return;
+
+    if (request)
+    {
+        client.client_.PingServer(ToStdString(request->name), ToStdString(request->host), request->port,
+            [request](const std::string&, const std::string&, uint16_t, uint32_t time, bool success)
+        {
+            request->success = success;
+            request->time = time;
+        });
+    }
+}
+
+void FwClient::HandleWorkCompleted(StringHash, VariantMap& eventData)
+{
+    using namespace WorkItemCompleted;
+    WorkItem* item = static_cast<WorkItem*>(eventData[P_ITEM].GetPtr());
+    if (item->aux_ != this)
+        return;
+    PingServerRequest* request = reinterpret_cast<PingServerRequest*>(item->start_);
+    if (!request)
+        return;
+
+    URHO3D_LOGINFOF("Ping %s %s:%u time %u, %s", request->name.CString(), request->host.CString(), request->port, request->time, request->success ? "Success" : "Failed");
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::ServerPing;
+    eData[P_NAME] = request->name;
+    eData[P_HOST] = request->host;
+    eData[P_PORT] = request->port;
+    eData[P_SUCCESS] = request->success;
+    eData[P_PING_TIME] = request->time;
+    SendEvent(Events::E_SERVER_PING, eData);
+    delete request;
+}
+
+void FwClient::PingServer(const String& name, const String& host, uint16_t port)
+{
+    if (host.Empty() || port == 0)
+        return;
+
+    auto* queue = GetSubsystem<WorkQueue>();
+    SharedPtr<WorkItem> item = queue->GetFreeItem();
+    item->aux_ = this;
+    item->workFunction_ = PingServerWork;
+    item->sendEvent_ = true;
+    item->start_ = new PingServerRequest(name, host, port);
+    item->end_ = item->start_;
+    queue->AddWorkItem(item);
 }
 
 void FwClient::UpdateServers()

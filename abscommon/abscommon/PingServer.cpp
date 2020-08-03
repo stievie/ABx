@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,31 +19,48 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "PingServer.h"
+#include "Logger.h"
 
-#include <abscommon/ServerApp.h>
-#include <abscommon/Service.h>
-#include <abscommon/MessageClient.h>
+namespace Net {
 
-class Application final : public ServerApp
+PingServer::PingServer() :
+    ioService_(std::make_shared<asio::io_service>()),
+    ownService_(true)
 {
-private:
-    std::shared_ptr<asio::io_service> ioService_;
-    std::unique_ptr<Net::ServiceManager> serviceManager_;
-    bool LoadMain();
-    void PrintServerInfo();
-    void HeartBeatTask();
-    void ShowLogo();
-    void HandleMessage(const Net::MessageMsg& msg);
-protected:
-    void ShowVersion() override;
-public:
-    Application();
-    ~Application() override;
+}
 
-    bool Initialize(const std::vector<std::string>& args) override;
-    void Run() override;
-    void Stop() override;
-    std::string GetKeysFile() const;
-};
+PingServer::PingServer(std::shared_ptr<asio::io_service> ioService) :
+    ioService_(ioService),
+    ownService_(false)
+{
+}
 
+void PingServer::Stop()
+{
+    running_ = false;
+    thread_.join();
+}
+
+void PingServer::Start()
+{
+    running_ = true;
+    thread_ = std::thread(&PingServer::ThreadFunc, this);
+}
+
+void PingServer::ThreadFunc()
+{
+    asio::ip::udp::socket socket{ *ioService_, asio::ip::udp::endpoint(asio::ip::udp::v4(), port_) };
+
+    char data[64];
+    asio::ip::udp::endpoint senderEndpoint;
+    while (running_)
+    {
+        socket.receive_from(asio::buffer(data, 64), senderEndpoint);
+        LOG_DEBUG << "Client pining us" << std::endl;
+        socket.send_to(asio::buffer(data, 64), senderEndpoint);
+    }
+    socket.close();
+}
+
+}

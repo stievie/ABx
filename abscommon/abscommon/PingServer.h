@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,27 @@
 
 #pragma once
 
-#include <abscommon/ServerApp.h>
-#include <abscommon/Service.h>
-#include <abscommon/MessageClient.h>
+#include <thread>
 
-class Application final : public ServerApp
+namespace Net {
+
+// Simple UPD echo server
+class PingServer
 {
 private:
     std::shared_ptr<asio::io_service> ioService_;
-    std::unique_ptr<Net::ServiceManager> serviceManager_;
-    bool LoadMain();
-    void PrintServerInfo();
-    void HeartBeatTask();
-    void ShowLogo();
-    void HandleMessage(const Net::MessageMsg& msg);
-protected:
-    void ShowVersion() override;
+    std::atomic<bool> running_{ false };
+    std::thread thread_;
+    bool ownService_{ false };
+    void ThreadFunc();
 public:
-    Application();
-    ~Application() override;
+    PingServer();
+    explicit PingServer(std::shared_ptr<asio::io_service> ioService);
 
-    bool Initialize(const std::vector<std::string>& args) override;
-    void Run() override;
-    void Stop() override;
-    std::string GetKeysFile() const;
+    void Start();
+    void Stop();
+
+    uint16_t port_;
 };
 
+}

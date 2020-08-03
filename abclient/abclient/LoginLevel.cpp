@@ -27,6 +27,8 @@
 #include "WindowManager.h"
 #include "PartyWindow.h"
 #include "MultiLineEdit.h"
+#include "InternalEvents.h"
+#include "PingDot.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -80,6 +82,7 @@ void LoginLevel::ShowError(const String& message, const String& title)
 void LoginLevel::CreateEnvironmentsList()
 {
     Options* opts = GetSubsystem<Options>();
+    FwClient* client = GetSubsystem<FwClient>();
     const auto& envs = opts->environments_;
     if (envs.Size() != 0)
     {
@@ -110,6 +113,7 @@ void LoginLevel::CreateEnvironmentsList()
                 }
             }
             ++i;
+            client->PingServer(env.name, env.host, env.port);
         }
         environmentsList_->SetMinWidth(width + 50);
         environmentsList_->SetWidth(width + 50);
@@ -117,6 +121,8 @@ void LoginLevel::CreateEnvironmentsList()
         environmentsList_->SetHeight(height + 4);
         environmentsList_->SetSelection(selIndex);
     }
+    else
+        client->PingServer("Default", opts->loginHost_, opts->loginPort_);
 }
 
 void LoginLevel::CreateUI()
@@ -147,6 +153,7 @@ void LoginLevel::CreateUI()
     SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
 
     FwClient* net = GetSubsystem<FwClient>();
+    Options* options = GetSubsystem<Options>();
     if (!net->accountName_.Empty() && !net->accountPass_.Empty())
     {
         nameEdit_->SetText(net->accountName_);
@@ -154,10 +161,10 @@ void LoginLevel::CreateUI()
     }
     else
     {
-        Options* options = GetSubsystem<Options>();
         nameEdit_->SetText(options->username_);
         passEdit_->SetText(options->password_);
     }
+
     button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
 
 #if 0
@@ -217,6 +224,67 @@ void LoginLevel::HandleKeyDown(StringHash, VariantMap&)
     button_->SetEnabled(!name.Empty() && !pass.Empty());
 }
 
+void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ServerPing;
+    if (!environmentsList_)
+    {
+        auto* cache = GetSubsystem<ResourceCache>();
+        auto* dot = uiRoot_->CreateChild<Button>("ServerPing");
+        dot->SetSize({ 16, 16 });
+        dot->SetPosition({ 10, -10 });
+        dot->SetAlignment(HA_LEFT, VA_BOTTOM);
+        auto tex = cache->GetResource<Texture2D>("Textures/PingDot.png");
+        dot->SetTexture(tex);
+        dot->SetImageRect(PingDot::PING_NONE);
+        if (eventData[P_PING_TIME].GetUInt() < 50)
+            dot->SetImageRect(PingDot::PING_GOOD);
+        else if (eventData[P_PING_TIME].GetUInt() < 100)
+            dot->SetImageRect(PingDot::PING_OKAY);
+        else
+            dot->SetImageRect(PingDot::PING_BAD);
+        auto* tooltip = dot->CreateChild<ToolTip>();
+        tooltip->SetLayoutMode(LM_HORIZONTAL);
+        tooltip->SetPosition({ 20, -40 });
+        tooltip->SetStyleAuto();
+        Window* ttWindow = tooltip->CreateChild<Window>();
+        ttWindow->SetLayoutMode(LM_VERTICAL);
+        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
+        ttWindow->SetStyleAuto();
+        Text* text = ttWindow->CreateChild<Text>();
+        text->SetStyleAuto();
+
+        String t = eventData[P_HOST].GetString();
+        t.AppendWithFormat(":%u ", eventData[P_PORT].GetUInt());
+        bool online = eventData[P_SUCCESS].GetBool();
+        if (!online)
+            t.Append("offline");
+        else
+            t.AppendWithFormat("online (%u ms)", eventData[P_PING_TIME].GetUInt());
+        text->SetText(t);
+        tooltip->SetMinSize({ 100, 30 });
+        return;
+    }
+
+    for (unsigned i = 0; i < environmentsList_->GetNumItems(); ++i)
+    {
+        auto* item = static_cast<Text*>(environmentsList_->GetItem(i));
+        if (item->GetVar("String Value").GetString() == eventData[P_NAME].GetString())
+        {
+            String t = eventData[P_NAME].GetString();
+            bool online = eventData[P_SUCCESS].GetBool();
+            if (!online)
+                t.Append(" offline");
+            else
+                t.AppendWithFormat(" online (%u ms)", eventData[P_PING_TIME].GetUInt());
+            item->SetText(t);
+            environmentsList_->SetMinWidth(item->GetWidth() + 10);
+            environmentsList_->UpdateLayout();
+            break;
+        }
+    }
+}
+
 void LoginLevel::DoLogin()
 {
     if (loggingIn_)
@@ -267,4 +335,5 @@ void LoginLevel::SubscribeToEvents()
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LoginLevel, HandleUpdate));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(LoginLevel, HandleKeyDown));
+    SubscribeToEvent(Events::E_SERVER_PING, URHO3D_HANDLER(LoginLevel, HandleServerPing));
 }
