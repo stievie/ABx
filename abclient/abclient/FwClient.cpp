@@ -339,6 +339,20 @@ void FwClient::SetEnvironment(const Environment* env)
     URHO3D_LOGINFOF("Login %s:%u", client_.loginHost_.c_str(), client_.loginPort_);
 }
 
+struct PingServerRequest
+{
+    PingServerRequest(const String& _name, const String& _host, uint16_t _port) :
+        name(_name),
+        host(_host),
+        port(_port)
+    { }
+    String name;
+    String host;
+    uint16_t port;
+    uint32_t time{ 0 };
+    bool success{ false };
+};
+
 void PingServerWork(const WorkItem* item, unsigned)
 {
     FwClient& client = *(reinterpret_cast<FwClient*>(item->aux_));
@@ -346,15 +360,8 @@ void PingServerWork(const WorkItem* item, unsigned)
     if (!request)
         return;
 
-    if (request)
-    {
-        client.client_.PingServer(ToStdString(request->name), ToStdString(request->host), request->port,
-            [request](const std::string&, const std::string&, uint16_t, uint32_t time, bool success)
-        {
-            request->success = success;
-            request->time = time;
-        });
-    }
+    std::tie(request->success, request->time) =
+        client.client_.PingServer(ToStdString(request->host), request->port);
 }
 
 void FwClient::HandleWorkCompleted(StringHash, VariantMap& eventData)
@@ -367,7 +374,8 @@ void FwClient::HandleWorkCompleted(StringHash, VariantMap& eventData)
     if (!request)
         return;
 
-    URHO3D_LOGINFOF("Ping %s %s:%u time %u, %s", request->name.CString(), request->host.CString(), request->port, request->time, request->success ? "Success" : "Failed");
+    URHO3D_LOGINFOF("Ping %s %s:%u time %u, %s", request->name.CString(), request->host.CString(), request->port,
+        request->time, request->success ? "Success" : "Failed");
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ServerPing;
     eData[P_NAME] = request->name;

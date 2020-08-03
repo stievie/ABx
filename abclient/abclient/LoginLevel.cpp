@@ -236,8 +236,7 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
         dot->SetAlignment(HA_LEFT, VA_BOTTOM);
         auto tex = cache->GetResource<Texture2D>("Textures/PingDot.png");
         dot->SetTexture(tex);
-        dot->SetImageRect(PingDot::PING_NONE);
-        if (eventData[P_PING_TIME].GetUInt() < 50)
+        if (eventData[P_PING_TIME].GetUInt() < 100)
             dot->SetImageRect(PingDot::PING_GOOD);
         else if (eventData[P_PING_TIME].GetUInt() < 100)
             dot->SetImageRect(PingDot::PING_OKAY);
@@ -245,14 +244,12 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
             dot->SetImageRect(PingDot::PING_BAD);
         auto* tooltip = dot->CreateChild<ToolTip>();
         tooltip->SetLayoutMode(LM_HORIZONTAL);
-        tooltip->SetPosition({ 20, -40 });
+        tooltip->SetPosition({ 20, -30 });
         tooltip->SetStyleAuto();
-        Window* ttWindow = tooltip->CreateChild<Window>();
-        ttWindow->SetLayoutMode(LM_VERTICAL);
-        ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
-        ttWindow->SetStyleAuto();
+        BorderImage* ttWindow = tooltip->CreateChild<BorderImage>();
+        ttWindow->SetStyle("ToolTipBorderImage");
         Text* text = ttWindow->CreateChild<Text>();
-        text->SetStyleAuto();
+        text->SetStyle("ToolTipText");
 
         String t = eventData[P_HOST].GetString();
         t.AppendWithFormat(":%u ", eventData[P_PORT].GetUInt());
@@ -262,7 +259,7 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
         else
             t.AppendWithFormat("online (%u ms)", eventData[P_PING_TIME].GetUInt());
         text->SetText(t);
-        tooltip->SetMinSize({ 100, 30 });
+        tooltip->SetMinSize({ 100, 20 });
         return;
     }
 

@@ -514,24 +514,23 @@ int64_t Client::GetClockDiff() const
     return 0;
 }
 
-void Client::PingServer(const std::string& name, const std::string& host, uint16_t port, PingRequestCallback&& callback)
+std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t port)
 {
     constexpr int64_t TIMEOUT = 1000;
 
     asio::io_service ioService;
     asio::ip::udp::socket socket(ioService, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
     asio::ip::udp::resolver resolver(ioService);
-    asio::ip::udp::endpoint senderEndpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
+    asio::ip::udp::endpoint endpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
     char senddata[64] = "Ping";
 
     bool result = false;
 
-    socket.send_to(asio::buffer(senddata, 64), senderEndpoint);
+    socket.send_to(asio::buffer(senddata, 64), endpoint);
 
-    asio::ip::udp::endpoint senderRndpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
     char recvdata[64] = {};
 
-    socket.async_receive_from(asio::buffer(recvdata, 64), senderRndpoint, [&](const asio::error_code&, size_t)
+    socket.async_receive_from(asio::buffer(recvdata, 64), endpoint, [&](const asio::error_code&, size_t)
     {
         result = true;
     });
@@ -540,10 +539,10 @@ void Client::PingServer(const std::string& name, const std::string& host, uint16
 
     while (!result && (AbTick() - start) < TIMEOUT)
     {
-        ioService.reset();
+//        ioService.reset();
         ioService.poll();
     }
-    callback(name, host, port, static_cast<uint32_t>(AbTick() - start), result);
+    return { result, static_cast<uint32_t>(AbTick() - start) };
 }
 
 void Client::ChangeMap(const std::string& mapUuid)

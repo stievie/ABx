@@ -57,20 +57,7 @@ enum class State
 
 class Client final : public Receiver
 {
-public:
-    using PingRequestCallback = std::function<void(const std::string& name, const std::string& host, uint16_t port, uint32_t time, bool success)>;
 private:
-    struct PingRequest
-    {
-        std::string name;
-        std::string host;
-        uint16_t port;
-        PingRequestCallback callback;
-        bool completed{ false };
-        uint32_t time{ 0 };
-        bool success{ false };
-    };
-
     Receiver& receiver_;
     std::shared_ptr<asio::io_service> ioService_;
     std::shared_ptr<ProtocolLogin> protoLogin_;
@@ -237,8 +224,8 @@ public:
         return 0;
     }
     int64_t GetClockDiff() const;
-    // Sends an UPD packet to the login server to see if it's online
-    void PingServer(const std::string& name, const std::string& host, uint16_t port, PingRequestCallback&& callback);
+    // Sends an UPD packet to the login server to see if it's online. This is blocking until the server responds or timeouts.
+    std::pair<bool, uint32_t> PingServer(const std::string& host, uint16_t port);
 
     /// Causes the server to change the map for the whole party
     void ChangeMap(const std::string& mapUuid);

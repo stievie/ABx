@@ -79,20 +79,6 @@ struct InventoryLimit
     uint32_t maxItems{ 0 };
 };
 
-struct PingServerRequest
-{
-    PingServerRequest(const String& _name, const String& _host, uint16_t _port) :
-        name(_name),
-        host(_host),
-        port(_port)
-    { }
-    String name;
-    String host;
-    uint16_t port;
-    uint32_t time{ 0 };
-    bool success{ false };
-};
-
 class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)
