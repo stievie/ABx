@@ -39,7 +39,7 @@ PingServer::PingServer(std::shared_ptr<asio::io_service> ioService) :
 void PingServer::Stop()
 {
     running_ = false;
-    thread_.join();
+    thread_.detach();
 }
 
 void PingServer::Start()

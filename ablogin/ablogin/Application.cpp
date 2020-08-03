@@ -351,8 +351,6 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown..." << std::endl;
 
-    GetSubsystem<Net::PingServer>()->Stop();
-
     auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
@@ -373,6 +371,7 @@ void Application::Stop()
     else
         LOG_ERROR << "Unable to read service" << std::endl;
 
+    GetSubsystem<Net::PingServer>()->Stop();
     ioService_->stop();
 }
 
