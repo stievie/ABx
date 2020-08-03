@@ -57,7 +57,6 @@ void PingServer::ThreadFunc()
     while (running_)
     {
         socket.receive_from(asio::buffer(data, 64), senderEndpoint);
-        LOG_DEBUG << "Client pining us" << std::endl;
         socket.send_to(asio::buffer(data, 64), senderEndpoint);
     }
     socket.close();
