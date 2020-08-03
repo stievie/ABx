@@ -91,7 +91,6 @@ struct PingServerRequest
     uint16_t port;
     uint32_t time{ 0 };
     bool success{ false };
-    bool operator != (const PingServerRequest& rhs) { return name.Compare(rhs.name) == 0; }
 };
 
 class FwClient final : public Object, public Client::Receiver
