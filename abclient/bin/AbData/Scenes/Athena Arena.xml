@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="0" />
 	<attribute name="Next Replicated Node ID" value="3" />
 	<attribute name="Next Replicated Component ID" value="6" />
-	<attribute name="Next Local Node ID" value="16780849" />
-	<attribute name="Next Local Component ID" value="16781182" />
+	<attribute name="Next Local Node ID" value="16780899" />
+	<attribute name="Next Local Component ID" value="16781243" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
@@ -171,6 +171,7 @@
 		<component type="StaticModel" id="16780525">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780526">
 			<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
@@ -218,6 +219,7 @@
 		<component type="StaticModel" id="16780531">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780532">
 			<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
@@ -241,6 +243,7 @@
 		<component type="StaticModel" id="16780534">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780535">
 			<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
@@ -264,6 +267,7 @@
 		<component type="StaticModel" id="16780537">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780538">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -287,6 +291,7 @@
 		<component type="StaticModel" id="16780540">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780541">
 			<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
@@ -310,6 +315,7 @@
 		<component type="StaticModel" id="16780543">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780544">
 			<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
@@ -333,6 +339,7 @@
 		<component type="StaticModel" id="16780546">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780547">
 			<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
@@ -356,6 +363,7 @@
 		<component type="StaticModel" id="16780549">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780550">
 			<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
@@ -379,6 +387,7 @@
 		<component type="StaticModel" id="16780552">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780553">
 			<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
@@ -402,6 +411,7 @@
 		<component type="StaticModel" id="16780558">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780559">
 			<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
@@ -425,6 +435,7 @@
 		<component type="StaticModel" id="16780623">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780624">
 			<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
@@ -448,6 +459,7 @@
 		<component type="StaticModel" id="16780626">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780627">
 			<attribute name="Physics Rotation" value="0.0871559 0 0.996195 0" />
@@ -471,6 +483,7 @@
 		<component type="StaticModel" id="16780629">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780630">
 			<attribute name="Physics Rotation" value="-0.0871559 0 0.996195 0" />
@@ -494,6 +507,7 @@
 		<component type="StaticModel" id="16780632">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780633">
 			<attribute name="Physics Position" value="1.7995 4.57625 -34.8393" />
@@ -516,6 +530,7 @@
 		<component type="StaticModel" id="16780635">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780636">
 			<attribute name="Physics Rotation" value="0.996195 0 0.0871557 0" />
@@ -539,6 +554,7 @@
 		<component type="StaticModel" id="16780638">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780639">
 			<attribute name="Physics Rotation" value="0.984808 0 0.173648 0" />
@@ -562,6 +578,7 @@
 		<component type="StaticModel" id="16780641">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780642">
 			<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
@@ -585,6 +602,7 @@
 		<component type="StaticModel" id="16780644">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780645">
 			<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
@@ -608,6 +626,7 @@
 		<component type="StaticModel" id="16780647">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780648">
 			<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
@@ -631,6 +650,7 @@
 		<component type="StaticModel" id="16780650">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780651">
 			<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
@@ -654,6 +674,7 @@
 		<component type="StaticModel" id="16780653">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780654">
 			<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
@@ -677,6 +698,7 @@
 		<component type="StaticModel" id="16780656">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780657">
 			<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
@@ -700,6 +722,7 @@
 		<component type="StaticModel" id="16780659">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780660">
 			<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
@@ -723,6 +746,7 @@
 		<component type="StaticModel" id="16780662">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780663">
 			<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
@@ -746,6 +770,7 @@
 		<component type="StaticModel" id="16780665">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780666">
 			<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
@@ -769,6 +794,7 @@
 		<component type="StaticModel" id="16780668">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780669">
 			<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
@@ -792,6 +818,7 @@
 		<component type="StaticModel" id="16780671">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780672">
 			<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
@@ -815,6 +842,7 @@
 		<component type="StaticModel" id="16780676">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780677">
 			<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
@@ -838,6 +866,7 @@
 		<component type="StaticModel" id="16780679">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780680">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
@@ -861,6 +890,7 @@
 		<component type="StaticModel" id="16780682">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780683">
 			<attribute name="Physics Rotation" value="0.996195 0 -0.0871557 0" />
@@ -884,6 +914,7 @@
 		<component type="StaticModel" id="16780685">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780686">
 			<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
@@ -907,6 +938,7 @@
 		<component type="StaticModel" id="16780691">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780692">
 			<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
@@ -930,6 +962,7 @@
 		<component type="StaticModel" id="16780694">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780695">
 			<attribute name="Physics Rotation" value="0.965926 0 0.258819 0" />
@@ -953,6 +986,7 @@
 		<component type="StaticModel" id="16780697">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780698">
 			<attribute name="Physics Rotation" value="0.939693 0 0.34202 0" />
@@ -976,6 +1010,7 @@
 		<component type="StaticModel" id="16780700">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780701">
 			<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
@@ -1023,6 +1058,7 @@
 		<component type="StaticModel" id="16780706">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780707">
 			<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
@@ -1046,6 +1082,7 @@
 		<component type="StaticModel" id="16780709">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780710">
 			<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
@@ -1069,6 +1106,7 @@
 		<component type="StaticModel" id="16780712">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780713">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -1092,6 +1130,7 @@
 		<component type="StaticModel" id="16780715">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780716">
 			<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
@@ -1115,6 +1154,7 @@
 		<component type="StaticModel" id="16780718">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780719">
 			<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
@@ -1138,6 +1178,7 @@
 		<component type="StaticModel" id="16780721">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780722">
 			<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
@@ -1161,6 +1202,7 @@
 		<component type="StaticModel" id="16780724">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780725">
 			<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
@@ -1184,6 +1226,7 @@
 		<component type="StaticModel" id="16780727">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780728">
 			<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
@@ -1207,6 +1250,7 @@
 		<component type="StaticModel" id="16780730">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780731">
 			<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
@@ -1230,6 +1274,7 @@
 		<component type="StaticModel" id="16780733">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780734">
 			<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
@@ -1253,6 +1298,7 @@
 		<component type="StaticModel" id="16780736">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780737">
 			<attribute name="Physics Rotation" value="0.0871559 0 0.996195 0" />
@@ -1276,6 +1322,7 @@
 		<component type="StaticModel" id="16780739">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780740">
 			<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
@@ -1299,6 +1346,7 @@
 		<component type="StaticModel" id="16780742">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780743">
 			<attribute name="Physics Rotation" value="-0.0871559 0 0.996195 0" />
@@ -1322,6 +1370,7 @@
 		<component type="StaticModel" id="16780745">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780746">
 			<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
@@ -1345,6 +1394,7 @@
 		<component type="StaticModel" id="16780748">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780749">
 			<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
@@ -1368,6 +1418,7 @@
 		<component type="StaticModel" id="16780751">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780752">
 			<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
@@ -1391,6 +1442,7 @@
 		<component type="StaticModel" id="16780754">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780755">
 			<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
@@ -1414,6 +1466,7 @@
 		<component type="StaticModel" id="16780757">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780758">
 			<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
@@ -1437,6 +1490,7 @@
 		<component type="StaticModel" id="16780760">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780761">
 			<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
@@ -1460,6 +1514,7 @@
 		<component type="StaticModel" id="16780763">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780764">
 			<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
@@ -1483,6 +1538,7 @@
 		<component type="StaticModel" id="16780766">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780767">
 			<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
@@ -1506,6 +1562,7 @@
 		<component type="StaticModel" id="16780769">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780770">
 			<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
@@ -1529,6 +1586,7 @@
 		<component type="StaticModel" id="16780772">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780773">
 			<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
@@ -1552,6 +1610,7 @@
 		<component type="StaticModel" id="16780775">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780776">
 			<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
@@ -1575,6 +1634,7 @@
 		<component type="StaticModel" id="16780778">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780779">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
@@ -1598,6 +1658,7 @@
 		<component type="StaticModel" id="16780781">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780782">
 			<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
@@ -1621,6 +1682,7 @@
 		<component type="StaticModel" id="16780784">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780785">
 			<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
@@ -1644,6 +1706,7 @@
 		<component type="StaticModel" id="16780787">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780788">
 			<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
@@ -1667,6 +1730,7 @@
 		<component type="StaticModel" id="16780790">
 			<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780791">
 			<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
@@ -1690,6 +1754,7 @@
 		<component type="StaticModel" id="16780896">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780897">
 			<attribute name="Physics Rotation" value="0.710442 0 0.703756 0" />
@@ -1713,6 +1778,7 @@
 		<component type="StaticModel" id="16780902">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780903">
 			<attribute name="Physics Rotation" value="0.755585 0 0.655051 0" />
@@ -1736,6 +1802,7 @@
 		<component type="StaticModel" id="16780905">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780906">
 			<attribute name="Physics Rotation" value="0.148077 -3.44768e-11 0.988976 2.30264e-10" />
@@ -1759,6 +1826,7 @@
 		<component type="StaticModel" id="16780908">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780909">
 			<attribute name="Physics Rotation" value="0.660832 3.07724e-10 0.750534 -3.49494e-10" />
@@ -1782,6 +1850,7 @@
 		<component type="StaticModel" id="16780911">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780912">
 			<attribute name="Physics Rotation" value="0.81705 0 0.576566 0" />
@@ -1805,6 +1874,7 @@
 		<component type="StaticModel" id="16780914">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780915">
 			<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
@@ -1828,6 +1898,7 @@
 		<component type="StaticModel" id="16780917">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780918">
 			<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
@@ -1851,6 +1922,7 @@
 		<component type="StaticModel" id="16780920">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780921">
 			<attribute name="Physics Rotation" value="0.569324 -1.32556e-10 0.822113 1.91413e-10" />
@@ -1874,6 +1946,7 @@
 		<component type="StaticModel" id="16780923">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780924">
 			<attribute name="Physics Rotation" value="0.439913 3.38003e-09 0.89804 -6.90001e-09" />
@@ -1897,6 +1970,7 @@
 		<component type="StaticModel" id="16780926">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780927">
 			<attribute name="Physics Rotation" value="0.309 2.51807e-09 0.951062 -7.75027e-09" />
@@ -1920,6 +1994,7 @@
 		<component type="StaticModel" id="16780929">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780930">
 			<attribute name="Physics Rotation" value="0.245908 1.83216e-09 0.969293 -7.2218e-09" />
@@ -1943,6 +2018,7 @@
 		<component type="StaticModel" id="16780932">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780933">
 			<attribute name="Physics Rotation" value="0.440874 0.0078326 0.897527 0.00384745" />
@@ -1966,6 +2042,7 @@
 		<component type="StaticModel" id="16780935">
 			<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
 			<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780936">
 			<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
@@ -2000,6 +2077,7 @@
 		<component type="StaticModel" id="16780832">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780833">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2023,6 +2101,7 @@
 		<component type="StaticModel" id="16780793">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780794">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2046,6 +2125,7 @@
 		<component type="StaticModel" id="16780829">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780830">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2069,6 +2149,7 @@
 		<component type="StaticModel" id="16780826">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780827">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2092,6 +2173,7 @@
 		<component type="StaticModel" id="16780823">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780824">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2115,6 +2197,7 @@
 		<component type="StaticModel" id="16780820">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780821">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2138,6 +2221,7 @@
 		<component type="StaticModel" id="16780817">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780818">
 			<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
@@ -2161,6 +2245,7 @@
 		<component type="StaticModel" id="16780814">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780815">
 			<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
@@ -2184,6 +2269,7 @@
 		<component type="StaticModel" id="16780811">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780812">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2207,6 +2293,7 @@
 		<component type="StaticModel" id="16780808">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780809">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2230,6 +2317,7 @@
 		<component type="StaticModel" id="16780805">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780806">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2253,6 +2341,7 @@
 		<component type="StaticModel" id="16780802">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780803">
 			<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
@@ -2276,6 +2365,7 @@
 		<component type="StaticModel" id="16780799">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780800">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
@@ -2299,6 +2389,7 @@
 		<component type="StaticModel" id="16780796">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780797">
 			<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
