@@ -50,6 +50,8 @@ private:
     SharedPtr<Button> button_;
     SharedPtr<Button> createAccountButton_;
     SharedPtr<DropDownList> environmentsList_;
+    SharedPtr<Button> pingDot_;
+    SharedPtr<Text> pingText_;
     void PingServers();
     void CreateScene() override;
     void HandleLoginClicked(StringHash eventType, VariantMap& eventData);

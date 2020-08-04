@@ -242,35 +242,31 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
     if (!environmentsList_)
     {
         auto* cache = GetSubsystem<ResourceCache>();
-        auto* dot = uiRoot_->GetChildStaticCast<Button>("ServerPing", true);
-        Text* text = nullptr;
-        if (!dot)
+        if (!pingDot_)
         {
-            dot = uiRoot_->CreateChild<Button>("ServerPing");
-            dot->SetSize({ 16, 16 });
-            dot->SetPosition({ 10, -10 });
-            dot->SetAlignment(HA_LEFT, VA_BOTTOM);
-            auto* tooltip = dot->CreateChild<ToolTip>();
+            pingDot_ = uiRoot_->CreateChild<Button>("ServerPing");
+            pingDot_->SetSize({ 16, 16 });
+            pingDot_->SetPosition({ 10, -10 });
+            pingDot_->SetAlignment(HA_LEFT, VA_BOTTOM);
+            auto* tooltip = pingDot_->CreateChild<ToolTip>();
             tooltip->SetLayoutMode(LM_HORIZONTAL);
             tooltip->SetPosition({ 20, -30 });
             tooltip->SetStyleAuto();
             BorderImage* ttWindow = tooltip->CreateChild<BorderImage>();
             ttWindow->SetStyle("ToolTipBorderImage");
-            text = ttWindow->CreateChild<Text>("ServerPingText");
-            text->SetStyle("ToolTipText");
+            pingText_ = ttWindow->CreateChild<Text>("ServerPingText");
+            pingText_->SetStyle("ToolTipText");
             tooltip->SetMinSize({ 100, 20 });
         }
-        else
-            text = dot->GetChildStaticCast<Text>("ServerPingText", true);
 
         auto tex = cache->GetResource<Texture2D>("Textures/PingDot.png");
-        dot->SetTexture(tex);
+        pingDot_->SetTexture(tex);
         if (eventData[P_PING_TIME].GetUInt() < 100)
-            dot->SetImageRect(PingDot::PING_GOOD);
+            pingDot_->SetImageRect(PingDot::PING_GOOD);
         else if (eventData[P_PING_TIME].GetUInt() < 100)
-            dot->SetImageRect(PingDot::PING_OKAY);
+            pingDot_->SetImageRect(PingDot::PING_OKAY);
         else
-            dot->SetImageRect(PingDot::PING_BAD);
+            pingDot_->SetImageRect(PingDot::PING_BAD);
         String t = eventData[P_HOST].GetString();
         t.AppendWithFormat(":%u ", eventData[P_PORT].GetUInt());
         bool online = eventData[P_SUCCESS].GetBool();
@@ -278,7 +274,7 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
             t.Append("offline");
         else
             t.AppendWithFormat("online (%u ms)", eventData[P_PING_TIME].GetUInt());
-        text->SetText(t);
+        pingText_->SetText(t);
         return;
     }
 
