@@ -539,7 +539,6 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
 
     while (!result && (AbTick() - start) < TIMEOUT)
     {
-//        ioService.reset();
         ioService.poll();
     }
     return { result, static_cast<uint32_t>(AbTick() - start) };
