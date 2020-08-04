@@ -43,6 +43,8 @@
 
 //#include <Urho3D/DebugNew.h>
 
+#define PLAYER_HEAD_ANIMATION
+
 Player::Player(Context* context) :
     Actor(context)
 {
@@ -505,17 +507,25 @@ void Player::PostUpdate(float timeStep)
     Node* headNode = characterNode->GetChild("Head", true);
 
 #ifdef PLAYER_HEAD_ANIMATION
-    // Turn head to camera pitch, but limit to avoid unnatural animation
-    float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
-    float _yaw = controls_.yaw_ - characterNode->GetRotation().YawAngle();
-    float yaw = _yaw - floor((_yaw + 180.0f) / 360.0f) * 360.0f;
-    float limitYaw = Clamp(yaw, -45.0f, 45.0f);
-    Quaternion headDir = characterNode->GetRotation() *
-        Quaternion(limitYaw, Vector3::UP) *
-        Quaternion(limitPitch, Vector3(1.0f, 0.0f, 0.0f));
-    // This could be expanded to look at an arbitrary target, now just look at a point in front
-    Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3(0.0f, 0.0f, -1.0f);
-    headNode->LookAt(headWorldTarget, Vector3(0.0f, 1.0f, 0.0f));
+    if (headNode)
+    {
+        // Turn head to camera pitch, but limit to avoid unnatural animation
+        float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
+        float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
+        // When the camera is in from of the player, i.e. looking into the face of the player, make the player look forward.
+        if (fabs(yaw2 - 180.0f) < 60.0f)
+            yaw2 = 0.0f;
+
+        float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
+        float limitYaw = Clamp(yaw3, -45.0f, 45.0f);
+        URHO3D_LOGINFOF("yaw2 %f, yaw3 %f, limitYaw %f", yaw2, yaw3, limitYaw);
+        Quaternion headDir = characterNode->GetRotation() *
+            Quaternion(limitYaw, Vector3::UP) *
+            Quaternion(limitPitch, Vector3(1.0f, 0.0f, 0.0f));
+        // This could be expanded to look at an arbitrary target, now just look at a point in front
+        Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3(0.0f, 0.0f, -1.0f);
+        headNode->LookAt(headWorldTarget, Vector3(0.0f, 1.0f, 0.0f));
+    }
 #endif
 
     // Third person camera: position behind the character
