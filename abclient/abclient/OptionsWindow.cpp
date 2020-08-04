@@ -205,6 +205,19 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         Options* opt = GetSubsystem<Options>();
         opt->stickCameraToHead_ = checked;
     });
+    CheckBox* slCheck = wnd->GetChildStaticCast<CheckBox>("SoundListenerToHeadCheck", true);
+    slCheck->SetChecked(opts->soundListenerToHead_);
+    SubscribeToEvent(slCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
+    {
+        using namespace Toggled;
+        bool checked = eventData[P_STATE].GetBool();
+        Options* opt = GetSubsystem<Options>();
+        opt->soundListenerToHead_ = checked;
+        auto* lm = GetSubsystem<LevelManager>();
+        auto* player = lm->GetPlayer();
+        if (player)
+            player->CreateSoundListener();
+    });
     CheckBox* mwCheck = wnd->GetChildStaticCast<CheckBox>("DisableMouseWalkingCheck", true);
     mwCheck->SetChecked(opts->disableMouseWalking_);
     SubscribeToEvent(mwCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)

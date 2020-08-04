@@ -1124,12 +1124,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     player_->PlayAnimation(ANIM_IDLE, true, 0.0f);
 
     cameraNode_ = player_->cameraNode_;
-    // Add sound listener to camera node, also Guild Wars does it so.
-    Node* listenerNode = cameraNode_->CreateChild("SoundListenerNode");
-    // Let's face the sound
-    listenerNode->SetDirection(Vector3(0.0f, M_HALF_PI, 0.0f));
-    SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
-    GetSubsystem<Audio>()->SetListener(soundListener);
+    player_->CreateSoundListener();
     SetupViewport();
     partyWindow_->SetPlayer(player_);
     chatWindow_->SayHello(player_);

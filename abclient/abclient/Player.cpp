@@ -118,6 +118,31 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     SetSkillBarSkills();
 }
 
+void Player::CreateSoundListener()
+{
+    if (soundListenerNode_)
+        soundListenerNode_->Remove();
+
+    // Add sound listener to camera node, also Guild Wars does it so.
+    auto* options = GetSubsystem<Options>();
+    Node* parentNode = nullptr;
+    if (options->soundListenerToHead_)
+    {
+        parentNode = GetNode()->GetChild("Head", true);
+        if (!parentNode)
+            parentNode = GetNode();
+    }
+    else
+        parentNode = cameraNode_;
+
+    soundListenerNode_ = parentNode->CreateChild("SoundListenerNode");
+    // Let's face the sound
+    soundListenerNode_->SetDirection(Vector3(0.0f, M_HALF_PI, 0.0f));
+    SoundListener* soundListener = soundListenerNode_->CreateComponent<SoundListener>();
+    auto* audio = GetSubsystem<Audio>();
+    audio->SetListener(soundListener);
+}
+
 void Player::HandleSkillsChanged(StringHash, VariantMap& eventData)
 {
     using namespace Events::ActorSkillsChanged;

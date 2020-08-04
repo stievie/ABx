@@ -66,6 +66,7 @@ public:
     Vector<Environment> environments_;
 
     bool stickCameraToHead_{ true };
+    bool soundListenerToHead_{ false };
     bool disableMouseWalking_{ false };
     bool enableMumble_{ false };
     float mouseSensitivity_{ 0.1f };

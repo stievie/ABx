@@ -283,6 +283,12 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "SoundListenerToHead");
+        param.SetString("type", "bool");
+        param.SetBool("value", soundListenerToHead_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "DisableMouseWalking");
         param.SetString("type", "bool");
         param.SetBool("value", disableMouseWalking_);
@@ -750,6 +756,10 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("StickCameraToHead") == 0)
         {
             stickCameraToHead_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("SoundListenerToHead") == 0)
+        {
+            soundListenerToHead_ = paramElem.GetBool("value");
         }
         else if (name.Compare("DisableMouseWalking") == 0)
         {

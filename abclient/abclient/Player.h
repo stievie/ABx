@@ -53,6 +53,7 @@ public:
     static Player* CreatePlayer(uint32_t id, Scene* scene);
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state) override;
+    void CreateSoundListener();
 
     /// Handle physics world update. Called by LogicComponent base class.
     void FixedUpdate(float timeStep) override;
@@ -60,6 +61,7 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
     SharedPtr<Node> cameraNode_;
+    SharedPtr<Node> soundListenerNode_;
     bool moveLock_{ false };
     float cameraDistance_{ CAMERA_INITIAL_DIST };
     void SetYRotation(int64_t time, float rad, bool updateYaw) override;
