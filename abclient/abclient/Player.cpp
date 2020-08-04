@@ -512,7 +512,7 @@ void Player::PostUpdate(float timeStep)
         // Turn head to camera pitch, but limit to avoid unnatural animation
         float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
         float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
-        // When the camera is in from of the player, i.e. looking into the face of the player, make the player look forward.
+        // When the camera is in front of the player, i.e. looking into the face of the player, make the player look forward.
         if (fabs(yaw2 - 180.0f) < 60.0f)
             yaw2 = 0.0f;
 
