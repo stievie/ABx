@@ -407,7 +407,7 @@ void Actor::Update(float timeStep)
     if (hpBar_ && !undestroyable_)
     {
         hpBar_->SetValues(stats_.maxHealth, stats_.health);
-        hpBar_->SetVisible(((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight) && inRange);
+        hpBar_->SetVisible(((hovered_ && objectType_ != ObjectType::Self) || playerSelected_ || highlight) && inRange && !IsDead());
     }
     else if (classLevel_)
     {
