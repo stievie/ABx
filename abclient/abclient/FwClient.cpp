@@ -395,6 +395,7 @@ void FwClient::PingServer(const String& name, const String& host, uint16_t port)
     auto* queue = GetSubsystem<WorkQueue>();
     SharedPtr<WorkItem> item = queue->GetFreeItem();
     item->aux_ = this;
+    item->priority_ = 0;
     item->workFunction_ = PingServerWork;
     item->sendEvent_ = true;
     item->start_ = new PingServerRequest(name, host, port);

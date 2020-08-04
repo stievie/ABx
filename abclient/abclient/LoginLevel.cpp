@@ -29,6 +29,7 @@
 #include "MultiLineEdit.h"
 #include "InternalEvents.h"
 #include "PingDot.h"
+#include "TimeUtils.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -48,6 +49,16 @@ LoginLevel::LoginLevel(Context* context) :
     SubscribeToEvents();
     FwClient* net = GetSubsystem<FwClient>();
     net->SetState(Client::State::Disconnected);
+}
+
+void LoginLevel::PingServers()
+{
+    lastPing_ = Client::AbTick();
+    auto* client = GetSubsystem<FwClient>();
+    for (auto it = servers_.Begin(); it != servers_.End(); ++it)
+    {
+        client->PingServer((*it).name, (*it).host, (*it).port);
+    }
 }
 
 void LoginLevel::CreateScene()
@@ -82,7 +93,6 @@ void LoginLevel::ShowError(const String& message, const String& title)
 void LoginLevel::CreateEnvironmentsList()
 {
     Options* opts = GetSubsystem<Options>();
-    FwClient* client = GetSubsystem<FwClient>();
     const auto& envs = opts->environments_;
     if (envs.Size() != 0)
     {
@@ -113,7 +123,7 @@ void LoginLevel::CreateEnvironmentsList()
                 }
             }
             ++i;
-            client->PingServer(env.name, env.host, env.port);
+            servers_.Push({ env.name, env.host, env.port });
         }
         environmentsList_->SetMinWidth(width + 50);
         environmentsList_->SetWidth(width + 50);
@@ -122,7 +132,7 @@ void LoginLevel::CreateEnvironmentsList()
         environmentsList_->SetSelection(selIndex);
     }
     else
-        client->PingServer("Default", opts->loginHost_, opts->loginPort_);
+        servers_.Push({ "Default", opts->loginHost_, opts->loginPort_ });
 }
 
 void LoginLevel::CreateUI()
@@ -200,6 +210,8 @@ void LoginLevel::HandleUpdate(StringHash, VariantMap& eventData)
     Quaternion rot;
     rot.FromAngleAxis(timeStep, Vector3(0.0f, 1.0f, 0.0f));
     cameraNode_->Rotate(rot);
+    if (Client::AbTick() - lastPing_ > 5000)
+        PingServers();
 }
 
 void LoginLevel::HandleTextFinished(StringHash, VariantMap&)
@@ -230,10 +242,27 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
     if (!environmentsList_)
     {
         auto* cache = GetSubsystem<ResourceCache>();
-        auto* dot = uiRoot_->CreateChild<Button>("ServerPing");
-        dot->SetSize({ 16, 16 });
-        dot->SetPosition({ 10, -10 });
-        dot->SetAlignment(HA_LEFT, VA_BOTTOM);
+        auto* dot = uiRoot_->GetChildStaticCast<Button>("ServerPing", true);
+        Text* text = nullptr;
+        if (!dot)
+        {
+            dot = uiRoot_->CreateChild<Button>("ServerPing");
+            dot->SetSize({ 16, 16 });
+            dot->SetPosition({ 10, -10 });
+            dot->SetAlignment(HA_LEFT, VA_BOTTOM);
+            auto* tooltip = dot->CreateChild<ToolTip>();
+            tooltip->SetLayoutMode(LM_HORIZONTAL);
+            tooltip->SetPosition({ 20, -30 });
+            tooltip->SetStyleAuto();
+            BorderImage* ttWindow = tooltip->CreateChild<BorderImage>();
+            ttWindow->SetStyle("ToolTipBorderImage");
+            text = ttWindow->CreateChild<Text>("ServerPingText");
+            text->SetStyle("ToolTipText");
+            tooltip->SetMinSize({ 100, 20 });
+        }
+        else
+            text = dot->GetChildStaticCast<Text>("ServerPingText", true);
+
         auto tex = cache->GetResource<Texture2D>("Textures/PingDot.png");
         dot->SetTexture(tex);
         if (eventData[P_PING_TIME].GetUInt() < 100)
@@ -242,15 +271,6 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
             dot->SetImageRect(PingDot::PING_OKAY);
         else
             dot->SetImageRect(PingDot::PING_BAD);
-        auto* tooltip = dot->CreateChild<ToolTip>();
-        tooltip->SetLayoutMode(LM_HORIZONTAL);
-        tooltip->SetPosition({ 20, -30 });
-        tooltip->SetStyleAuto();
-        BorderImage* ttWindow = tooltip->CreateChild<BorderImage>();
-        ttWindow->SetStyle("ToolTipBorderImage");
-        Text* text = ttWindow->CreateChild<Text>();
-        text->SetStyle("ToolTipText");
-
         String t = eventData[P_HOST].GetString();
         t.AppendWithFormat(":%u ", eventData[P_PORT].GetUInt());
         bool online = eventData[P_SUCCESS].GetBool();
@@ -259,7 +279,6 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
         else
             t.AppendWithFormat("online (%u ms)", eventData[P_PING_TIME].GetUInt());
         text->SetText(t);
-        tooltip->SetMinSize({ 100, 20 });
         return;
     }
 
