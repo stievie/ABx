@@ -516,13 +516,14 @@ int64_t Client::GetClockDiff() const
 
 std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t port)
 {
-    constexpr int64_t TIMEOUT = 1000;
+    // The login server should be able to reply within 500ms.
+    static constexpr int64_t TIMEOUT = 500;
 
     asio::io_service ioService;
     asio::ip::udp::socket socket(ioService, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
     asio::ip::udp::resolver resolver(ioService);
     asio::ip::udp::endpoint endpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
-    char senddata[64] = "Ping";
+    char senddata[64] = "ablogin";
 
     bool result = false;
 
@@ -532,7 +533,8 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
 
     socket.async_receive_from(asio::buffer(recvdata, 64), endpoint, [&](const asio::error_code&, size_t)
     {
-        result = true;
+        if (strcmp(senddata, recvdata) == 0)
+            result = true;
     });
 
     int64_t start = AbTick();
@@ -540,6 +542,7 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
     while (!result && (AbTick() - start) < TIMEOUT)
     {
         ioService.poll();
+        millisleep(1);
     }
     return { result, static_cast<uint32_t>(AbTick() - start) };
 }

@@ -261,7 +261,7 @@ void LoginLevel::HandleServerPing(StringHash, VariantMap& eventData)
 
         auto tex = cache->GetResource<Texture2D>("Textures/PingDot.png");
         pingDot_->SetTexture(tex);
-        if (eventData[P_PING_TIME].GetUInt() < 100)
+        if (eventData[P_PING_TIME].GetUInt() < 50)
             pingDot_->SetImageRect(PingDot::PING_GOOD);
         else if (eventData[P_PING_TIME].GetUInt() < 100)
             pingDot_->SetImageRect(PingDot::PING_OKAY);
