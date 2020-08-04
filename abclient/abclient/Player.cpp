@@ -518,7 +518,6 @@ void Player::PostUpdate(float timeStep)
 
         float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
         float limitYaw = Clamp(yaw3, -45.0f, 45.0f);
-        URHO3D_LOGINFOF("yaw2 %f, yaw3 %f, limitYaw %f", yaw2, yaw3, limitYaw);
         Quaternion headDir = characterNode->GetRotation() *
             Quaternion(limitYaw, Vector3::UP) *
             Quaternion(limitPitch, Vector3(1.0f, 0.0f, 0.0f));
