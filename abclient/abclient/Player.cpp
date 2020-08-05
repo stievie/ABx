@@ -535,7 +535,7 @@ void Player::PostUpdate(float timeStep)
         aimPoint = characterNode->GetWorldPosition() + rot * CAM_POS;
     }
 
-    Vector3 rayDir = dir * Vector3::BACK;
+    const Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
 
     if (cameraDistance_ < CAMERA_MIN_DIST)
