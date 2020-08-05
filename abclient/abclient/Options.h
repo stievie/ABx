@@ -41,8 +41,11 @@ enum class AntiAliasingMode
     MSAAx16
 };
 
-static constexpr float MIN_FOV = 45.0;
-static constexpr float MAX_FOV = 120.0;
+inline constexpr float MIN_FOV = 45.0;
+inline constexpr float MAX_FOV = 120.0;
+inline constexpr float CAMERA_MIN_DIST = 0.3f;
+inline constexpr float CAMERA_INITIAL_DIST = 10.0f;
+inline constexpr float CAMERA_MAX_DIST = 40.0f;
 
 struct Environment
 {
@@ -199,7 +202,7 @@ public:
     }
     float GetCameraNearClip() const
     {
-        return cameryNearClip_;
+        return cameraNearClip_;
     }
     float GetCameraFov() const
     {
@@ -247,13 +250,13 @@ private:
     bool resizeable_{ false };
     bool maximized_{ false };
     bool internalMaximized_{ false };
-    bool vSync_{ false };
+    bool vSync_{ true };
     int maxFps_{ 200 };
     bool tripleBuffer_{ false };
     bool highDPI_{ false };
     bool shadows_{ true };
     float cameraFarClip_{ 300.0f };
-    float cameryNearClip_{ 0.0f };
+    float cameraNearClip_{ 0.0f };
     float cameraFov_{ 60.0f };
     ShadowQuality shadowQuality_{ SHADOWQUALITY_VSM };
     MaterialQuality textureQuality_{ QUALITY_HIGH };

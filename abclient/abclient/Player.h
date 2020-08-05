@@ -24,20 +24,17 @@
 #include "Actor.h"
 #include <AB/ProtocolCodes.h>
 #include <vector>
+#include "Options.h"
 
 using namespace Urho3D;
 
-const int CTRL_MOVE_FORWARD = 1;
-const int CTRL_MOVE_BACK    = 1 << 1;
-const int CTRL_MOVE_LEFT    = 1 << 2;
-const int CTRL_MOVE_RIGHT   = 1 << 4;
-const int CTRL_TURN_RIGHT   = 1 << 5;
-const int CTRL_TURN_LEFT    = 1 << 6;
-const int CTRL_MOVE_LOCK    = 1 << 7;
-
-const float CAMERA_MIN_DIST = 0.0f;
-const float CAMERA_INITIAL_DIST = 10.0f;
-const float CAMERA_MAX_DIST = 40.0f;
+inline constexpr int CTRL_MOVE_FORWARD = 1;
+inline constexpr int CTRL_MOVE_BACK    = 1 << 1;
+inline constexpr int CTRL_MOVE_LEFT    = 1 << 2;
+inline constexpr int CTRL_MOVE_RIGHT   = 1 << 4;
+inline constexpr int CTRL_TURN_RIGHT   = 1 << 5;
+inline constexpr int CTRL_TURN_LEFT    = 1 << 6;
+inline constexpr int CTRL_MOVE_LOCK    = 1 << 7;
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Player final : public Actor

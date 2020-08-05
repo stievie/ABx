@@ -28,7 +28,6 @@
 #include "LevelManager.h"
 #include "MathUtils.h"
 #include "Mumble.h"
-#include "Options.h"
 #include "Shortcuts.h"
 #include "SkillBarWindow.h"
 #include "TimeUtils.h"
@@ -42,8 +41,6 @@
 #include <algorithm>
 
 //#include <Urho3D/DebugNew.h>
-
-#define PLAYER_HEAD_ANIMATION
 
 Player::Player(Context* context) :
     Actor(context)
@@ -87,8 +84,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
 {
     Actor::Init(scene, position, rotation, state);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
-    body->SetCollisionLayer(1);
-#ifdef PLAYER_HEAD_ANIMATION
+    body->SetCollisionLayer(1 || COLLISION_LAYER_CAMERA);
     AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true);
     if (animModel)
     {
@@ -96,7 +92,6 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
         if (headBone)
             headBone->animated_ = false;
     }
-#endif
     // Create camera
     Options* options = GetSubsystem<Options>();
     cameraNode_ = scene->CreateChild("CameraNode");
@@ -447,7 +442,7 @@ void Player::CameraZoom(bool increase)
         cameraDistance_ += diff;
     else
         cameraDistance_ -= diff;
-    cameraDistance_ = Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+    cameraDistance_ = Clamp(cameraDistance_, 0.0f, CAMERA_MAX_DIST);
 }
 
 void Player::UpdateYaw()
@@ -501,12 +496,12 @@ void Player::PostUpdate(float timeStep)
     if (scs->IsTriggered(Events::E_SC_REVERSECAMERA))
         yaw += 180.0f;
     // Get camera look at dir from character yaw + pitch
-    Quaternion rot = Quaternion(yaw, Vector3::UP);
-    Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
+    const Quaternion rot = Quaternion(yaw, Vector3::UP);
+    const Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
     Node* headNode = characterNode->GetChild("Head", true);
 
-#ifdef PLAYER_HEAD_ANIMATION
+    // Player looks in camera direstion or into the camera
     if (headNode)
     {
         // Turn head to camera pitch, but limit to avoid unnatural animation
@@ -522,14 +517,13 @@ void Player::PostUpdate(float timeStep)
 
         float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
         float limitYaw = Clamp(yaw3, -45.0f, 45.0f);
-        Quaternion headDir = characterNode->GetRotation() *
+        const Quaternion headDir = characterNode->GetRotation() *
             Quaternion(limitYaw, Vector3::UP) *
             Quaternion(limitPitch, Vector3::RIGHT);
         // This could be expanded to look at an arbitrary target, now just look at a point in front
-        Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3(0.0f, 0.0f, -1.0f);
-        headNode->LookAt(headWorldTarget, Vector3(0.0f, 1.0f, 0.0f));
+        const Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3::BACK;
+        headNode->LookAt(headWorldTarget, Vector3::UP);
     }
-#endif
 
     // Third person camera: position behind the character
     Vector3 aimPoint;
@@ -544,8 +538,13 @@ void Player::PostUpdate(float timeStep)
     Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
 
-    if (cameraDistance_ <= 0.2f)
+    if (cameraDistance_ < CAMERA_MIN_DIST)
+    {
+        // Hide Player model in 1st person perspective
         model_->SetViewMask(0);
+        // Snap to 1st person perspective under some threshold
+        rayDistance = 0.0f;
+    }
     else if (model_->GetViewMask() == 0)
         model_->SetViewMask(static_cast<unsigned>(-1));
 
@@ -553,15 +552,16 @@ void Player::PostUpdate(float timeStep)
     // Check the camera is not too close to the player model.
     if (!Equals(rayDistance, 0.0f))
     {
+        // Not in 1st person prespective, means the camera can collide with other objects.
         PhysicsRaycastResult result;
         node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
             Ray(aimPoint, rayDir), rayDistance);
-        if (result.body_)
-            rayDistance = Min(rayDistance, result.distance_ - 1.0f);
-        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+        rayDistance = Clamp(Min(rayDistance, result.distance_ - 1.0f), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+        cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     }
+    else
+        cameraNode_->SetPosition(aimPoint);
 
-    cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     cameraNode_->SetRotation(dir);
 
     Actor::PostUpdate(timeStep);
