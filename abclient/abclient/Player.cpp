@@ -513,14 +513,18 @@ void Player::PostUpdate(float timeStep)
         float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
         float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
         // When the camera is in front of the player, i.e. looking into the face of the player, make the player look forward.
-        if (fabs(yaw2 - 180.0f) < 60.0f)
-            yaw2 = 0.0f;
+        bool lookToCam = fabs(yaw2 - 180.0f) < 60.0f;
+        if (lookToCam)
+        {
+            yaw2 -= 180.0f;
+            limitPitch = -limitPitch;
+        }
 
         float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
         float limitYaw = Clamp(yaw3, -45.0f, 45.0f);
         Quaternion headDir = characterNode->GetRotation() *
             Quaternion(limitYaw, Vector3::UP) *
-            Quaternion(limitPitch, Vector3(1.0f, 0.0f, 0.0f));
+            Quaternion(limitPitch, Vector3::RIGHT);
         // This could be expanded to look at an arbitrary target, now just look at a point in front
         Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3(0.0f, 0.0f, -1.0f);
         headNode->LookAt(headWorldTarget, Vector3(0.0f, 1.0f, 0.0f));
