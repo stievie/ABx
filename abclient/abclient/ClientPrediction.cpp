@@ -68,6 +68,9 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     CollisionShape* collShape = node_->GetComponent<CollisionShape>(true);
     if (!collShape)
         return true;
+    RigidBody* rigidbody = node_->GetComponent<RigidBody>(true);
+    if (!rigidbody)
+        return true;
 
     LevelManager* lMan = GetSubsystem<LevelManager>();
     const bool isCollidingWithPlayers = !AB::Entities::IsOutpost(lMan->GetMapType());
@@ -96,8 +99,13 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
         auto actor = node->GetComponent<Actor>();
         if (!actor)
         {
-            // Always collide with static objects
-            return false;
+            // Always collide with static objects on the same collision layer
+            auto* otherRb = (*i)->GetNode()->GetComponent<RigidBody>(true);
+            if (!otherRb)
+                return true;
+            if (rigidbody->GetCollisionLayer() & otherRb->GetCollisionLayer())
+                return false;
+            return true;
         }
 
         const ObjectType type = actor->objectType_;

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="130.466" />
 	<attribute name="Next Replicated Node ID" value="10" />
 	<attribute name="Next Replicated Component ID" value="30" />
-	<attribute name="Next Local Node ID" value="16787429" />
-	<attribute name="Next Local Component ID" value="16787987" />
+	<attribute name="Next Local Node ID" value="16788391" />
+	<attribute name="Next Local Component ID" value="16788960" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -75,7 +75,7 @@
 			<attribute name="Shape Type" value="Terrain" />
 		</component>
 		<component type="RigidBody" id="16781470">
-			<attribute name="Collision Layer" value="0" />
+			<attribute name="Collision Layer" value="2" />
 		</component>
 	</node>
 	<node id="9">
