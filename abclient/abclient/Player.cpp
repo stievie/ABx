@@ -547,11 +547,15 @@ void Player::PostUpdate(float timeStep)
 
     PhysicsRaycastResult result;
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
-    node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
-        Ray(aimPoint, rayDir), rayDistance, COLLISION_LAYER_CAMERA);
-    if (result.body_)
-        rayDistance = Min(rayDistance, result.distance_ - 1.0f);
-    rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+    // Check the camera is not too close to the player model.
+    if (!Equals(rayDistance, 0.0f))
+    {
+        node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
+            Ray(aimPoint, rayDir), rayDistance, COLLISION_LAYER_CAMERA);
+        if (result.body_)
+            rayDistance = Min(rayDistance, result.distance_ - 1.0f);
+        rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+    }
 
     cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     cameraNode_->SetRotation(dir);
