@@ -7,6 +7,18 @@ If you have questions, you can reach me via Email with the Email address shown i
 my profile. You can also join the `#abxgameserver` IRC channel on the Freenode
 network.
 
+## Pull requests
+
+The normal way to make Pull Requests (PR) is to create a separate feature branch:
+~~~
+git branch my-awesome-feature
+~~~
+
+Then commit your changes to this newly created branch and push it to your fork.
+GitHub will asks you if you want to create a PR.
+
+After your PR has been merged you can delete this feature branch using Github.
+
 ## Rules
 
 * The license is MIT and submitted code must not be incompatible with it.
