@@ -143,7 +143,6 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
     PODVector<RayQueryResult> result;
     Octree* world = scene_->GetComponent<Octree>();
     RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
-    // Can not use RaycastSingle because it would also return drawables that are not game objects
     world->RaycastSingle(query);
     if (!result.Empty())
     {
@@ -195,7 +194,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
         return;
 
     Input* input = GetSubsystem<Input>();
-    if (input->GetMouseButtonDown(MOUSEB_RIGHT))
+    if (eventData[P_BUTTON].GetInt() == MOUSEB_RIGHT)
     {
         rmbDown_ = true;
         mouseDownPos_ = input->GetMousePosition();
@@ -203,7 +202,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
         return;
     }
 
-    if (input->GetMouseButtonDown(MOUSEB_LEFT))
+    if (eventData[P_BUTTON].GetInt() == MOUSEB_LEFT)
     {
         // Pick object
         GameObject* object = GetObjectAt<GameObject>(input->GetMousePosition());
@@ -229,15 +228,18 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
     }
 }
 
-void WorldLevel::HandleMouseUp(StringHash, VariantMap&)
+void WorldLevel::HandleMouseUp(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonUp;
     if (rmbDown_)
     {
-        Input* input = GetSubsystem<Input>();
-        rmbDown_ = false;
-        input->SetMousePosition(mouseDownPos_);
-        input->SetMouseMode(MM_ABSOLUTE);
+        if (eventData[P_BUTTON].GetInt() == MOUSEB_RIGHT)
+        {
+            Input* input = GetSubsystem<Input>();
+            rmbDown_ = false;
+            input->SetMousePosition(mouseDownPos_);
+            input->SetMouseMode(MM_ABSOLUTE);
+        }
     }
 }
 
@@ -283,17 +285,18 @@ bool WorldLevel::HoverObject(Actor* object)
     return true;
 }
 
-void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
+void WorldLevel::HandleMouseMove(StringHash, VariantMap& eventData)
 {
     if (!viewport_)
         // Not ready yet
         return;
 
+    using namespace MouseMove;
     // Hover object only when no mouse button is pressed
-    Input* input = GetSubsystem<Input>();
-    if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
+    if (eventData[P_BUTTONS].GetInt() & MOUSEB_LEFT || eventData[P_BUTTONS].GetInt() & MOUSEB_RIGHT)
         return;
 
+    Input* input = GetSubsystem<Input>();
     Actor* object = GetObjectAt<Actor>(input->GetMousePosition(), true);
     HoverObject(object);
 }
