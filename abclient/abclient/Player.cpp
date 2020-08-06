@@ -84,7 +84,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
 {
     Actor::Init(scene, position, rotation, state);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
-    body->SetCollisionLayer(1 || COLLISION_LAYER_CAMERA);
+    body->SetCollisionLayer(1);
     AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true);
     if (animModel)
     {
@@ -550,7 +550,6 @@ void Player::PostUpdate(float timeStep)
         aimPoint = characterNode->GetWorldPosition() + rot * CAM_POS;
     }
 
-    const Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
 
     if (cameraDistance_ < CAMERA_MIN_DIST)
@@ -568,9 +567,10 @@ void Player::PostUpdate(float timeStep)
     if (!Equals(rayDistance, 0.0f))
     {
         // Not in 1st person prespective, means the camera can collide with other objects.
+        const Vector3 rayDir = dir * Vector3::BACK;
         PhysicsRaycastResult result;
         node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
-            Ray(aimPoint, rayDir), rayDistance);
+            Ray(aimPoint, rayDir), rayDistance, COLLISION_LAYER_CAMERA);
         rayDistance = Clamp(Min(rayDistance, result.distance_ - 1.0f), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
         cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     }
