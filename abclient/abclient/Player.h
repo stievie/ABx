@@ -59,6 +59,7 @@ public:
     Controls controls_;
     SharedPtr<Node> cameraNode_;
     SharedPtr<Node> soundListenerNode_;
+    SharedPtr<Light> faceLight_;
     bool moveLock_{ false };
     float cameraDistance_{ CAMERA_INITIAL_DIST };
     void SetYRotation(int64_t time, float rad, bool updateYaw) override;

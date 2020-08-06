@@ -90,7 +90,22 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     {
         Bone* headBone = animModel->GetSkeleton().GetBone("Head");
         if (headBone)
+        {
             headBone->animated_ = false;
+            Node* headNode = headBone->node_.Lock();
+            if (headNode)
+            {
+                SharedPtr<Node> faceLightNode = MakeShared<Node>(context_);
+                headNode->AddChild(faceLightNode);
+                faceLightNode->SetPosition({ 0.0f, 0.0f, -0.5f });
+                faceLight_ = faceLightNode->CreateComponent<Light>();
+                faceLight_->SetColor({ 0.96f, 0.8f, 0.64f });
+                faceLight_->SetLightType(LIGHT_SPOT);
+                faceLight_->SetBrightness(0.5f);
+                faceLight_->SetRange(3.0f);
+                faceLight_->SetFov(60.0f);
+            }
+        }
     }
     // Create camera
     Options* options = GetSubsystem<Options>();
