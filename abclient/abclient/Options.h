@@ -43,7 +43,7 @@ enum class AntiAliasingMode
 
 inline constexpr float MIN_FOV = 45.0;
 inline constexpr float MAX_FOV = 120.0;
-inline constexpr float CAMERA_MIN_DIST = 0.5f;
+inline constexpr float CAMERA_MIN_DIST = 0.75f;
 inline constexpr float CAMERA_INITIAL_DIST = 10.0f;
 inline constexpr float CAMERA_MAX_DIST = 40.0f;
 

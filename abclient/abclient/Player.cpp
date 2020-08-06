@@ -569,8 +569,12 @@ void Player::PostUpdate(float timeStep)
         const Vector3 rayDir = dir * Vector3::BACK;
         PhysicsRaycastResult result;
         node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
-            Ray(aimPoint, rayDir), rayDistance, COLLISION_LAYER_CAMERA);
-        rayDistance = Clamp(Min(rayDistance, result.distance_ - 1.0f), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+            Ray(aimPoint, rayDir), rayDistance - CAMERA_MIN_DIST, COLLISION_LAYER_CAMERA);
+        if (result.body_)
+            rayDistance = Clamp(result.distance_ - 3.5f, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+        else
+            rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+
         cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     }
     else
