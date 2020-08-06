@@ -184,7 +184,7 @@ void WorldLevel::HandleServerJoinedLeft(StringHash, VariantMap&)
     SendEvent(Events::E_GOTSERVICES, eData);
 }
 
-void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
+void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
 
@@ -200,8 +200,10 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
         rmbDown_ = true;
         mouseDownPos_ = input->GetMousePosition();
         input->SetMouseMode(MM_RELATIVE);
+        return;
     }
-    else if (input->GetMouseButtonDown(MOUSEB_LEFT))
+
+    if (input->GetMouseButtonDown(MOUSEB_LEFT))
     {
         // Pick object
         GameObject* object = GetObjectAt<GameObject>(input->GetMousePosition());
@@ -210,18 +212,18 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
             player_->ClickObject(object->gameId_);
             if (object->IsSelectable())
                 player_->SelectObject(object->gameId_);
+            if (eventData[P_CLICKS].GetInt() == 2)
+                DefaultAction();
+            return;
         }
-        else
+        // If not object to pick check for mouse walking
+        Options* o = GetSubsystem<Options>();
+        if (!o->disableMouseWalking_)
         {
-            // If not object to pick check for mouse walking
-            Options* o = GetSubsystem<Options>();
-            if (!o->disableMouseWalking_)
+            Vector3 p;
+            if (TerrainRaycast(input->GetMousePosition(), p))
             {
-                Vector3 p;
-                if (TerrainRaycast(input->GetMousePosition(), p))
-                {
-                    player_->GotoPosition(p);
-                }
+                player_->GotoPosition(p);
             }
         }
     }
@@ -840,7 +842,7 @@ void WorldLevel::HandleHideUI(StringHash, VariantMap&)
     uiRoot_->SetVisible(!uiRoot_->IsVisible());
 }
 
-void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
+void WorldLevel::DefaultAction()
 {
     auto sel = player_->GetSelectedObject();
     if (!Is<Actor>(sel))
@@ -850,6 +852,11 @@ void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
         player_->Attack();
     else
         player_->FollowSelected();
+}
+
+void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
+{
+    DefaultAction();
 }
 
 void WorldLevel::HandleKeepRunning(StringHash, VariantMap&)

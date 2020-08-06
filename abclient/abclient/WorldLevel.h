@@ -177,6 +177,7 @@ private:
     }
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void RemoveUIWindows();
+    void DefaultAction();
 
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
