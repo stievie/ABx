@@ -514,10 +514,12 @@ void Player::PostUpdate(float timeStep)
     const Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
     Node* headNode = characterNode->GetChild("Head", true);
+    Vector3 headWorldPos;
 
     // Player looks in camera direstion or into the camera
     if (headNode)
     {
+        headWorldPos = headNode->GetWorldPosition();
         // Turn head to camera pitch, but limit to avoid unnatural animation
         float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
         float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
@@ -535,14 +537,14 @@ void Player::PostUpdate(float timeStep)
             Quaternion(limitYaw, Vector3::UP) *
             Quaternion(limitPitch, Vector3::RIGHT);
         // This could be expanded to look at an arbitrary target, now just look at a point in front
-        const Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3::BACK;
+        const Vector3 headWorldTarget = headWorldPos + headDir * Vector3::BACK;
         headNode->LookAt(headWorldTarget, Vector3::UP);
     }
 
     // Third person camera: position behind the character
     Vector3 aimPoint;
     if (GetSubsystem<Options>()->stickCameraToHead_ && headNode)
-        aimPoint = headNode->GetWorldPosition();
+        aimPoint = headWorldPos;
     else
     {
         static const Vector3 CAM_POS(0.0f, 1.5f, 0.0f);
@@ -569,11 +571,8 @@ void Player::PostUpdate(float timeStep)
         const Vector3 rayDir = dir * Vector3::BACK;
         PhysicsRaycastResult result;
         node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
-            Ray(aimPoint, rayDir), rayDistance - CAMERA_MIN_DIST, COLLISION_LAYER_CAMERA);
-        if (result.body_)
-            rayDistance = Clamp(result.distance_ - 3.5f, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
-        else
-            rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+            Ray(aimPoint, rayDir), rayDistance + 0.5f, COLLISION_LAYER_CAMERA);
+        rayDistance = Clamp(Min(result.distance_ - 1.5f, rayDistance), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 
         cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     }
