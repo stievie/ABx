@@ -92,11 +92,10 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
         if (headBone)
         {
             headBone->animated_ = false;
-            Node* headNode = headBone->node_.Lock();
+            Node* headNode = node_->GetChild("Head", true);
             if (headNode)
             {
-                SharedPtr<Node> faceLightNode = MakeShared<Node>(context_);
-                headNode->AddChild(faceLightNode);
+                auto* faceLightNode = headNode->CreateChild("FaceLightNode", LOCAL);
                 faceLightNode->SetPosition({ 0.0f, 0.0f, -0.5f });
                 faceLight_ = faceLightNode->CreateComponent<Light>();
                 faceLight_->SetColor({ 0.96f, 0.8f, 0.64f });
