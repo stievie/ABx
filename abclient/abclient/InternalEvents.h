@@ -65,6 +65,11 @@ URHO3D_EVENT(E_ACTORNAMECLICKED, ActorNameClicked)
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
 }
 
+URHO3D_EVENT(E_ACTORNAMEDOUBLECLICKED, ActorNameDoubleClicked)
+{
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
+}
+
 // Audio
 URHO3D_EVENT(E_AUDIOPLAY, AudioPlay)
 {

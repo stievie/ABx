@@ -498,6 +498,7 @@ void Actor::AddActorUI()
         nameLabel_->SetText(name_);
     nameLabel_->SetVisible(true);
     SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
+    SubscribeToEvent(nameWindow_, E_DOUBLECLICK, URHO3D_HANDLER(Actor, HandleNameDoubleClicked));
 
     if (HasHealthBar())
     {
@@ -716,6 +717,17 @@ void Actor::HandleNameClicked(StringHash, VariantMap&)
         using namespace Events::ActorNameClicked;
         eData[P_SOURCEID] = gameId_;
         SendEvent(Events::E_ACTORNAMECLICKED, eData);
+    }
+}
+
+void Actor::HandleNameDoubleClicked(StringHash, VariantMap&)
+{
+    if (nameLabel_->IsVisible())
+    {
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::ActorNameDoubleClicked;
+        eData[P_SOURCEID] = gameId_;
+        SendEvent(Events::E_ACTORNAMEDOUBLECLICKED, eData);
     }
 }
 

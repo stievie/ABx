@@ -47,6 +47,7 @@ Player::Player(Context* context) :
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
     SubscribeToEvent(Events::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
+    SubscribeToEvent(Events::E_ACTORNAMEDOUBLECLICKED, URHO3D_HANDLER(Player, HandleActorNameDoubleClicked));
     SubscribeToEvent(Events::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     SubscribeToEvent(Events::E_ACTOR_SKILLS_CHANGED, URHO3D_HANDLER(Player, HandleSkillsChanged));
     SubscribeToEvent(Events::E_SC_SELECTCLOSESTFOE, URHO3D_HANDLER(Player, HandleSelectClosestFoe));
@@ -597,6 +598,16 @@ void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
     {
         ClickObject(id);
         SelectObject(id);
+    }
+}
+
+void Player::HandleActorNameDoubleClicked(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ActorNameDoubleClicked;
+    uint32_t id = eventData[P_SOURCEID].GetUInt();
+    if (id != gameId_)
+    {
+        Interact();
     }
 }
 

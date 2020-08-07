@@ -147,6 +147,7 @@ private:
     String GetSoundEffect(const StringHash& hash);
     void UpdateMoveSpeed();
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleNameDoubleClicked(StringHash eventType, VariantMap& eventData);
     void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleSkillUse(StringHash eventType, VariantMap& eventData);

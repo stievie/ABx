@@ -97,6 +97,7 @@ private:
     void GetFoeSelectionCandidates();
     void GetFriendSelectionCandidates();
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleActorNameDoubleClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
     void HandleSkillsChanged(StringHash eventType, VariantMap& eventData);
     void HandleSelectClosestFoe(StringHash eventType, VariantMap& eventData);

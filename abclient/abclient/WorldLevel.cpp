@@ -205,7 +205,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
     if (eventData[P_BUTTON].GetInt() == MOUSEB_LEFT)
     {
         // Pick object
-        GameObject* object = GetObjectAt<GameObject>(input->GetMousePosition());
+        GameObject* object = GetObjectAt<GameObject>(input->GetMousePosition(), true);
         if (object)
         {
             player_->ClickObject(object->gameId_);
