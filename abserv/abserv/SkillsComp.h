@@ -53,8 +53,8 @@ private:
     int64_t lastSkillTime_;
     ea::weak_ptr<Skill> lastSkill_;
     void OnIncMorale(int morale);
+    void OnCancelAll();
 public:
-    SkillsComp() = delete;
     explicit SkillsComp(Actor& owner);
     ~SkillsComp() = default;
 

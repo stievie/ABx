@@ -437,6 +437,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::Attack, std::move(data));
         break;
     }
+    case ClientPacketTypes::Interact:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::Interact>(message);
+        Utils::VariantMap data;
+        data[Game::InputDataPingTarget] = packet.ping;
+        AddPlayerInput(Game::InputType::Interact, std::move(data));
+        break;
+    }
     case ClientPacketTypes::Select:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::SelectObject>(message);

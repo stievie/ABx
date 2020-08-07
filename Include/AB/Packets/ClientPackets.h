@@ -486,6 +486,16 @@ struct Attack
     }
 };
 
+struct Interact
+{
+    bool ping;
+    template<typename _Ar>
+    void Serialize(_Ar& ar)
+    {
+        ar.value(ping);
+    }
+};
+
 struct Cancel
 {
     template<typename _Ar>

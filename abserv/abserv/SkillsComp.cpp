@@ -55,6 +55,7 @@ SkillsComp::SkillsComp(Actor& owner) :
     lastSkillTime_(0)
 {
     owner_.SubscribeEvent<void(int)>(EVENT_ON_INCMORALE, std::bind(&SkillsComp::OnIncMorale, this, std::placeholders::_1));
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_CANCELALL, std::bind(&SkillsComp::OnCancelAll, this));
 }
 
 void SkillsComp::OnIncMorale(int)
@@ -63,6 +64,11 @@ void SkillsComp::OnIncMorale(int)
         current.SetRecharged(0);
         return Iteration::Continue;
     });
+}
+
+void SkillsComp::OnCancelAll()
+{
+    Cancel();
 }
 
 void SkillsComp::Update(uint32_t timeElapsed)

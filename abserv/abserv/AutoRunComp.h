@@ -61,10 +61,10 @@ private:
     void StopAutoRun();
     void OnCollide(GameObject* other);
     void OnStuck();
+    void OnCancelAll();
     Math::Vector3 AvoidObstaclesInternal(const Math::Vector3& destination, unsigned recursionLevel);
     Math::Vector3 AvoidObstacles(const Math::Vector3& destination);
 public:
-    AutoRunComp() = delete;
     explicit AutoRunComp(Actor& owner);
     ~AutoRunComp() = default;
 

@@ -770,6 +770,12 @@ void Client::Attack(bool ping)
         protoGame_->Attack(ping);
 }
 
+void Client::Interact(bool ping)
+{
+    if (state_ == State::World)
+        protoGame_->Interact(ping);
+}
+
 void Client::QueueMatch()
 {
     if (state_ == State::World)

@@ -447,6 +447,9 @@
     <ClInclude Include="MessageFilter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="InteractionComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -849,6 +852,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MessageFilter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -30,6 +30,12 @@
 namespace Game {
 namespace Components {
 
+AttackComp::AttackComp(Actor& owner) :
+    owner_(owner)
+{
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_CANCELALL, std::bind(&AttackComp::OnCancelAll, this));
+}
+
 bool AttackComp::CheckRange()
 {
     auto target = target_.lock();
@@ -136,6 +142,11 @@ void AttackComp::MoveToTarget(ea::shared_ptr<Actor> target)
             SetAttackState(false);
         }
     }
+}
+
+void AttackComp::OnCancelAll()
+{
+    Cancel();
 }
 
 void AttackComp::Update(uint32_t /* timeElapsed */)

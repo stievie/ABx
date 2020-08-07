@@ -53,6 +53,7 @@ private:
     uint32_t level_{ 1 };
     uint32_t itemIndex_{ 0 };
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
+    Ranges interactionRange_{ Ranges::Adjecent };
     /// Quests this NPC may have for the player
     ea::set<uint32_t> quests_;
     ea::set<AB::Entities::ItemType> sellItemTypes_;
@@ -93,6 +94,7 @@ private:
     void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& success);
     void OnUseSkill(Actor* target, Skill* skill, bool& success);
     void OnSkillTargeted(Actor* source, Skill* skill, bool& succcess);
+    void OnInteract(Actor* actor);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -119,6 +121,7 @@ public:
     {
         return sex_;
     }
+    Ranges GetInteractionRange() const { return interactionRange_; }
     bool SetBehavior(const std::string& name);
     float GetAggro(const Actor* other);
     int GetBestSkillIndex(SkillEffect effect, SkillEffectTarget target,

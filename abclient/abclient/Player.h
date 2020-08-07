@@ -67,6 +67,7 @@ public:
     void UpdateYaw();
     void FollowSelected();
     void Attack();
+    void Interact();
     void GotoPosition(const Vector3& pos);
     void ClickObject(uint32_t objectId);
     void SelectObject(uint32_t objectId);

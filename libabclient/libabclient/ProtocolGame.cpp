@@ -537,6 +537,14 @@ void ProtocolGame::Attack(bool ping)
     SendPacket(AB::GameProtocol::ClientPacketTypes::Attack, packet);
 }
 
+void ProtocolGame::Interact(bool ping)
+{
+    AB::Packets::Client::Attack packet = {
+        ping
+    };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::Interact, packet);
+}
+
 void ProtocolGame::Cancel()
 {
     AB::Packets::Client::Cancel packet = { };

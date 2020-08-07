@@ -120,6 +120,7 @@ public:
     void Follow(uint32_t targetId, bool ping);
     void UseSkill(uint32_t index, bool ping);
     void Attack(bool ping);
+    void Interact(bool ping);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void PartyInvitePlayer(uint32_t targetId);

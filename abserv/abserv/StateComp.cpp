@@ -29,6 +29,18 @@
 namespace Game {
 namespace Components {
 
+StateComp::StateComp(GameObject& owner) :
+    owner_(owner),
+    lastStateChange_(Utils::Tick())
+{
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_CANCELALL, std::bind(&StateComp::OnCancelAll, this));
+}
+
+void StateComp::OnCancelAll()
+{
+    Reset();
+}
+
 void StateComp::SetState(AB::GameProtocol::CreatureState state, bool apply /* = false */)
 {
     if (state != newState_)

@@ -43,6 +43,7 @@ enum class InputType
     Goto,
     Follow,
     SetState,
+    Interact,
 };
 
 enum InputDataType

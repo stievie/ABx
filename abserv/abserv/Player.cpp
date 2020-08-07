@@ -26,6 +26,7 @@
 #include "GameManager.h"
 #include "Guild.h"
 #include "GuildManager.h"
+#include "InteractionComp.h"
 #include "IOAccount.h"
 #include "IOGame.h"
 #include "IOMail.h"
@@ -89,7 +90,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
     questComp_(ea::make_unique<Components::QuestComp>(*this)),
-    tradeComp_(ea::make_unique<Components::TradeComp>(*this))
+    tradeComp_(ea::make_unique<Components::TradeComp>(*this)),
+    interactionComp_(ea::make_unique<Components::InteractionComp>(*this))
 {
     events_.Subscribe<void(AB::GameProtocol::CommandType, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
         std::bind(&Player::OnHandleCommand, this,
@@ -1061,6 +1063,7 @@ void Player::SetParty(ea::shared_ptr<Party> party)
 void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
+    interactionComp_->Update(timeElapsed);
     tradeComp_->Update(timeElapsed);
     questComp_->Update(timeElapsed);
     auto party = GetParty();

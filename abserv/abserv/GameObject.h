@@ -75,6 +75,8 @@ inline constexpr sa::event_t EVENT_ON_LEFTAREA = sa::StringHash("OnLeftArea");
 inline constexpr sa::event_t EVENT_ON_SELECTED = sa::StringHash("OnSelected");
 inline constexpr sa::event_t EVENT_ON_TRIGGER = sa::StringHash("OnTrigger");
 inline constexpr sa::event_t EVENT_ON_STATECHANGE = sa::StringHash("OnStateChange");
+inline constexpr sa::event_t EVENT_ON_INTERACT = sa::StringHash("OnInteract");
+inline constexpr sa::event_t EVENT_ON_CANCELALL = sa::StringHash("OnCancelAll");
 
 using GameObjectEvents = sa::Events<
     void(void),

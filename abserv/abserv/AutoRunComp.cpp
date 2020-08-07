@@ -39,6 +39,7 @@ AutoRunComp::AutoRunComp(Actor& owner) :
 {
     owner_.SubscribeEvent<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AutoRunComp::OnCollide, this, std::placeholders::_1));
     owner_.SubscribeEvent<void(void)>(EVENT_ON_STUCK, std::bind(&AutoRunComp::OnStuck, this));
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_CANCELALL, std::bind(&AutoRunComp::OnCancelAll, this));
 }
 
 bool AutoRunComp::Follow(ea::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
@@ -131,6 +132,11 @@ void AutoRunComp::StopAutoRun()
 void AutoRunComp::OnStuck()
 {
     StopAutoRun();
+}
+
+void AutoRunComp::OnCancelAll()
+{
+    Reset();
 }
 
 void AutoRunComp::OnCollide(GameObject* other)

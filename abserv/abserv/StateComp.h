@@ -46,12 +46,9 @@ private:
     int64_t lastStateChange_;
     int64_t knockdownEndTime_{ 0 };
     bool groupMaskChanged_{ false };
+    void OnCancelAll();
 public:
-    StateComp() = delete;
-    explicit StateComp(GameObject& owner) :
-        owner_(owner),
-        lastStateChange_(Utils::Tick())
-    { }
+    explicit StateComp(GameObject& owner);
     ~StateComp() = default;
 
     void SetState(AB::GameProtocol::CreatureState state, bool apply = false);

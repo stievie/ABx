@@ -94,6 +94,7 @@ Npc::Npc() :
     events_.Subscribe<void(uint32_t)>(EVENT_ON_KNOCKED_DOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
     events_.Subscribe<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
     events_.Subscribe<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Subscribe<void(Actor*)>(EVENT_ON_INTERACT, std::bind(&Npc::OnInteract, this, std::placeholders::_1));
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Group::GetNewId();
     InitializeLua();
@@ -119,6 +120,8 @@ bool Npc::LoadScript(const std::string& fileName)
     itemIndex_ = luaState_["itemIndex"];
     if (Lua::IsNumber(luaState_, "sex"))
         sex_ = luaState_["sex"];
+    if (Lua::IsNumber(luaState_, "interactionRange"))
+        interactionRange_ = static_cast<Ranges>(luaState_["interactionRange"]);
     if (Lua::IsNumber(luaState_, "group_id"))
         groupId_ = luaState_["group_id"];
     if (Lua::IsBool(luaState_, "wander"))
@@ -525,6 +528,12 @@ void Npc::OnSkillTargeted(Actor* source, Skill* skill, bool& success)
 {
     if (luaInitialized_)
         Lua::CallFunction(luaState_, "onSkillTargeted", source, skill, success);
+}
+
+void Npc::OnInteract(Actor* actor)
+{
+    if (luaInitialized_)
+        Lua::CallFunction(luaState_, "onInteract", actor);
 }
 
 void Npc::OnInterruptingAttack(bool& success)

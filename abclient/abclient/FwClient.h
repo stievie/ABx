@@ -296,6 +296,7 @@ public:
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void UseSkill(uint32_t index);
     void Attack();
+    void Interact();
     void Cancel();
     void AddFriend(const String& name, AB::Entities::FriendRelation relation);
     void RemoveFriend(const String& accountUuid);

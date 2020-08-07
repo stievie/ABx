@@ -12,6 +12,7 @@ creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_WARRIOR
 prof2Index = PROFESSIONINDEX_NONE
 behavior = "smith"
+interactionRange = RANGE_ADJECENT
 
 function onInit()
   local skillBar = self:GetSkillBar()
@@ -58,12 +59,12 @@ function onUpdate(timeElapsed)
 
 end
 
-function onClicked(creature)
+local function openDialog(creature)
   if (creature == nil) then
     return
   end
   self:FaceObject(creature)
-  if (not self:IsInRange(RANGE_ADJECENT, creature)) then
+  if (not self:IsInRange(interactionRange, creature)) then
     return
   end
   
@@ -72,6 +73,14 @@ function onClicked(creature)
     return
   end
   player:TriggerDialog(self:GetId(), DIALOG_CRAFTSMAN_ITEMS)
+end
+
+function onClicked(creature)
+  openDialog(creature)
+end
+
+function onInteract(creature)
+  openDialog(creature)
 end
 
 -- self was selected by creature

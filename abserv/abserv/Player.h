@@ -45,6 +45,7 @@ class Party;
 namespace Components {
 class QuestComp;
 class TradeComp;
+class InteractionComp;
 }
 
 class Player final : public Actor
@@ -264,6 +265,7 @@ public:
     int64_t lastPing_{ 0 };
     ea::unique_ptr<Components::QuestComp> questComp_;
     ea::unique_ptr<Components::TradeComp> tradeComp_;
+    ea::unique_ptr<Components::InteractionComp> interactionComp_;
 };
 
 template <>

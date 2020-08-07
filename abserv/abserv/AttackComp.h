@@ -60,11 +60,9 @@ private:
     void Hit(Actor& target);
     void FireWeapon(Actor& target);
     void MoveToTarget(ea::shared_ptr<Actor> target);
+    void OnCancelAll();
 public:
-    AttackComp() = delete;
-    explicit AttackComp(Actor& owner) :
-        owner_(owner)
-    { }
+    AttackComp(Actor& owner);
     ~AttackComp() = default;
 
     void Update(uint32_t timeElapsed);

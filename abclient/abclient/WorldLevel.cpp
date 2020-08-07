@@ -850,11 +850,7 @@ void WorldLevel::DefaultAction()
     auto sel = player_->GetSelectedObject();
     if (!Is<Actor>(sel))
         return;
-
-    if (!AB::Entities::IsOutpost(mapType_) && player_->IsEnemy(To<Actor>(sel)))
-        player_->Attack();
-    else
-        player_->FollowSelected();
+    player_->Interact();
 }
 
 void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
@@ -1026,7 +1022,7 @@ void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
         if (!actor)
             return;
         float dist = player_->GetNode()->GetPosition().DistanceToPoint(actor->GetNode()->GetPosition());
-        if (dist > Game::RANGE_PICK_UP)
+        if (dist > Game::RANGE_ADJECENT * 2.0f)
             return;
     }
     AB::Dialogs dialog = static_cast<AB::Dialogs>(eventData[P_DIALOGID].GetUInt());

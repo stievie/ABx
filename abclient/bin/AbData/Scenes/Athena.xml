@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="51" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787381" />
-	<attribute name="Next Local Component ID" value="16788945" />
+	<attribute name="Next Local Node ID" value="16787431" />
+	<attribute name="Next Local Component ID" value="16789006" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -1274,6 +1274,7 @@
 		<component type="StaticModel" id="16788695">
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
 			<attribute name="Material" value="Material;Materials/Pier1_Wood.xml;Materials/Pier1_Rope.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16788696">
 			<attribute name="Physics Rotation" value="0.99327 0 -0.115819 0" />

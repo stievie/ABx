@@ -481,6 +481,11 @@ void Player::Attack()
     client->Attack();
 }
 
+void Player::Interact()
+{
+    GetSubsystem<FwClient>()->Interact();
+}
+
 void Player::GotoPosition(const Vector3& pos)
 {
     FwClient* client = GetSubsystem<FwClient>();

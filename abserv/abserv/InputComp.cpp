@@ -24,6 +24,8 @@
 #include "Actor.h"
 #include "Game.h"
 #include "SelectionComp.h"
+#include "Player.h"
+#include "InteractionComp.h"
 
 namespace Game {
 namespace Components {
@@ -153,14 +155,23 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Attack:
         {
-                if (auto* target = owner_.GetSelectedObject())
+            if (auto* target = owner_.GetSelectedObject())
+            {
+                if (Is<Actor>(target))
                 {
-                    if (Is<Actor>(target))
-                    {
-                        bool ping = input.data[InputDataPingTarget].GetBool();
-                        owner_.Attack(To<Actor>(target), ping);
-                    }
+                    bool ping = input.data[InputDataPingTarget].GetBool();
+                    owner_.Attack(To<Actor>(target), ping);
                 }
+            }
+            break;
+        }
+        case InputType::Interact:
+        {
+            if (Is<Player>(owner_))
+            {
+                bool ping = input.data[InputDataPingTarget].GetBool();
+                To<Player>(owner_).interactionComp_->Interact(ping);
+            }
             break;
         }
         case InputType::UseSkill:

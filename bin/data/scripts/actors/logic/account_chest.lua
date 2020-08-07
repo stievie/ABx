@@ -8,6 +8,7 @@ sex = SEX_UNKNOWN
 creatureState = CREATURESTATE_CHEST_CLOSED
 prof1Index = 0
 prof2Index = 0
+interactionRange = RANGE_ADJECENT
 
 function onInit()
   self:SetBoundingSize({1.00349, 0.67497, 0.680545})
@@ -15,8 +16,8 @@ function onInit()
   return true
 end
 
-function onClicked(creature)
-  if (self:IsInRange(RANGE_ADJECENT, creature)) then
+local function openChest(creature)
+  if (self:IsInRange(interactionRange, creature)) then
     if (self:GetState() == CREATURESTATE_CHEST_OPEN) then
       self:SetState(CREATURESTATE_CHEST_CLOSED)
     else
@@ -27,4 +28,13 @@ function onClicked(creature)
       player:TriggerDialog(self:GetId(), DIALOG_ACCOUNTCHEST)
     end
   end
+end
+
+function onClicked(creature)
+  openChest(creature)
+end
+
+-- creature is interacting with self
+function onInteract(creature)
+  openChest(creature)
 end

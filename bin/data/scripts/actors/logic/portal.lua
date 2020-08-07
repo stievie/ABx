@@ -4,6 +4,7 @@ name = ""
 level = 20
 itemIndex = 11
 creatureState = CREATURESTATE_IDLE
+interactionRange = RANGE_ADJECENT
 
 function onInit()
   -- Player collides with BB. Make it a bit larget than the default BB.
@@ -16,7 +17,7 @@ function onInit()
   return true
 end
 
-function onTrigger(creature)
+local function teleport(creature)
   local player = creature:AsPlayer()
   if (player ~= nil) then
     local party = player:GetParty()
@@ -24,4 +25,12 @@ function onTrigger(creature)
       party:ChangeInstance(self:GetVarString("destination"))
     end
   end
+end
+
+function onTrigger(creature)
+  teleport(creature)
+end
+
+function onInteract(creature)
+  teleport(creature)
 end

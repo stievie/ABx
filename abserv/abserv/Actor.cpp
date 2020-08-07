@@ -306,10 +306,7 @@ bool Actor::UseSkill(int index, bool ping)
 
 void Actor::CancelAll()
 {
-    attackComp_->Cancel();
-    skillsComp_->Cancel();
-    autorunComp_->Reset();
-    stateComp_.Reset();
+    CallEvent<void(void)>(EVENT_ON_CANCELALL);
 }
 
 void Actor::CancelAction()

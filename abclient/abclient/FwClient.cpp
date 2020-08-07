@@ -1130,6 +1130,15 @@ void FwClient::Attack()
     }
 }
 
+void FwClient::Interact()
+{
+    if (loggedIn_)
+    {
+        auto* sc = GetSubsystem<Shortcuts>();
+        client_.Interact(sc->IsTriggered(Events::E_SC_PINGTARGET));
+    }
+}
+
 void FwClient::Cancel()
 {
     if (loggedIn_)
