@@ -1090,6 +1090,11 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
             return;
         parser.Append(" talking to ${target}", tokens);
         break;
+    case AB::GameProtocol::ObjectCallType::PickingUp:
+        if (!target)
+            return;
+        parser.Append(" picking up ${target}", tokens);
+        break;
     case AB::GameProtocol::ObjectCallType::Attack:
         if (!target)
             return;

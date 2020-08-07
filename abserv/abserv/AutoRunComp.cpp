@@ -44,24 +44,21 @@ AutoRunComp::AutoRunComp(Actor& owner) :
 
 bool AutoRunComp::Follow(ea::shared_ptr<GameObject> object, bool ping, float maxDist /* = RANGE_TOUCH */)
 {
-    auto actor = object->GetPtr<Actor>();
-    if (!actor)
-        return false;
     if (auto f = following_.lock())
     {
         // Already following this guy
-        if (f->id_ == actor->id_)
+        if (f->id_ == object->id_)
             return true;
     }
 
-    following_ = actor;
+    following_ = object;
     maxDist_ = maxDist;
     if (auto f = following_.lock())
     {
         wayPoints_.clear();
         bool succ = FindPath(f->transformation_.position_);
         if (succ && ping)
-            owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallType::Follow, 0);
+            owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, object->id_, AB::GameProtocol::ObjectCallType::Follow, 0);
         return succ;
     }
     return false;
@@ -325,12 +322,12 @@ void AutoRunComp::SetAutoRun(bool value)
     }
 }
 
-bool AutoRunComp::IsFollowing(const Actor& actor) const
+bool AutoRunComp::IsFollowing(const GameObject& object) const
 {
     if (!IsAutoRun())
         return false;
     if (auto f = following_.lock())
-        return f->id_ == actor.id_;
+        return f->id_ == object.id_;
     return false;
 }
 

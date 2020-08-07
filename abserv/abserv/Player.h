@@ -106,6 +106,7 @@ public:
     explicit Player(std::shared_ptr<Net::ProtocolGame> client);
     ~Player() override;
 
+    void SendError(AB::GameProtocol::PlayerErrorValue);
     /// We are entering a game
     void SetGame(ea::shared_ptr<Game> game) override;
     const std::string& GetName() const override { return data_.name; }

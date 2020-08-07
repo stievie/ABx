@@ -74,7 +74,7 @@ void TradeComp::Update(uint32_t)
             // We need to move to the target
             if (!CheckRange())
             {
-                MoveToTarget(target);
+                MoveToTarget(target.get());
                 return;
             }
             else
@@ -84,8 +84,10 @@ void TradeComp::Update(uint32_t)
                 StartTrading();
             }
         }
+        return;
     }
-    else
+
+    if (state_ != TradeState::Idle)
         Cancel();
 }
 
@@ -100,22 +102,22 @@ void TradeComp::Reset()
 
 void TradeComp::Cancel()
 {
-    if (state_ > TradeState::Idle)
+    if (state_ == TradeState::Idle)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ServerPacketType::TradeCancel);
+    AB::Packets::Server::TradeCancel packet;
+    AB::Packets::Add(packet, *msg);
+    owner_.WriteToOutput(*msg);
+
+    if (auto target = target_.lock())
     {
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ServerPacketType::TradeCancel);
-        AB::Packets::Server::TradeCancel packet;
-        AB::Packets::Add(packet, *msg);
-        owner_.WriteToOutput(*msg);
-
-        if (auto target = target_.lock())
-        {
-            target->WriteToOutput(*msg);
-            target->tradeComp_->Reset();
-        }
-
-        Reset();
+        target->WriteToOutput(*msg);
+        target->tradeComp_->Reset();
     }
+
+    Reset();
 }
 
 uint32_t TradeComp::GetTradePartnerId() const
@@ -310,7 +312,7 @@ TradeComp::TradeError TradeComp::TradeWith(ea::shared_ptr<Player> target)
         if (!CheckRange())
         {
             state_ = TradeState::MoveToTarget;
-            MoveToTarget(target);
+            MoveToTarget(target.get());
         }
         else
             StartTrading();
@@ -326,16 +328,11 @@ void TradeComp::TradeReqeust(Player& source)
     state_ = TradeState::Trading;
 }
 
-void TradeComp::MoveToTarget(ea::shared_ptr<Player> target)
+void TradeComp::MoveToTarget(Player* target)
 {
     if (!owner_.autorunComp_->IsAutoRun())
     {
-        if (owner_.autorunComp_->Follow(target, false, RANGE_PICK_UP))
-        {
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
-            owner_.autorunComp_->SetAutoRun(true);
-        }
-        else
+        if (!owner_.FollowObject(target, false, RANGE_TOUCH))
             // No way to get to the target
             Reset();
     }
@@ -347,7 +344,7 @@ bool TradeComp::CheckRange()
     if (!target)
         return false;
 
-    return owner_.GetDistance(target.get()) < RANGE_PICK_UP;
+    return owner_.IsInRange(Ranges::Adjecent, target.get());
 }
 
 void TradeComp::StartTrading()
@@ -386,7 +383,8 @@ void TradeComp::OnStateChange(AB::GameProtocol::CreatureState, AB::GameProtocol:
 {
     if (state_ == TradeState::MoveToTarget)
     {
-        if (newState != AB::GameProtocol::CreatureState::Moving)
+        if (newState != AB::GameProtocol::CreatureState::Moving &&
+            newState != AB::GameProtocol::CreatureState::Idle)
             Reset();
     }
 }

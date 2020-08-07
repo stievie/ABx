@@ -303,6 +303,8 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
         return "You don't have enough materials in your inventory";
     case AB::GameProtocol::PlayerErrorValue::ItemNotAvailable:
         return "This item is not available";
+    case AB::GameProtocol::PlayerErrorValue::DropForOtherPlayer:
+        return "This item is for another player";
     case AB::GameProtocol::PlayerErrorValue::AlreadyTradingWithThisTarget:
         // Just ignore this
         return String::EMPTY;

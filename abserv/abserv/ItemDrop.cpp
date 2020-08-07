@@ -26,6 +26,7 @@
 #include "ItemFactory.h"
 #include "Game.h"
 #include "ItemsCache.h"
+#include "Player.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 
@@ -48,7 +49,6 @@ ItemDrop::ItemDrop(uint32_t itemId) :
     dropTick_(Utils::Tick())
 {
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&ItemDrop::OnClicked, this, std::placeholders::_1));
-    events_.Subscribe<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&ItemDrop::OnSelected, this, std::placeholders::_1));
     // Drops can not hide other objects
     occluder_ = false;
     selectable_ = true;
@@ -121,16 +121,20 @@ void ItemDrop::PickUp(Actor* actor)
 {
     if (!actor)
         return;
+
     // if targetId_ == 0 all can pick it up
     if (targetId_ != 0 && targetId_ != actor->GetId())
+    {
+        if (Is<Player>(actor))
+            To<Player>(actor)->SendError(AB::GameProtocol::PlayerErrorValue::DropForOtherPlayer);
         return;
-    if (GetDistance(actor) > RANGE_PICK_UP)
-        return;
+    }
 
     if (actor->AddToInventory(itemId_))
     {
         pickedUp_ = true;
-        actor->SelectedObjectById(0);
+        if (actor->GetSelectedObjectId() == id_)
+            actor->SelectedObjectById(0);
         Remove();
     }
 }
@@ -142,19 +146,14 @@ uint32_t ItemDrop::GetSourceId()
     return 0;
 }
 
-void ItemDrop::OnSelected(Actor* actor)
-{
-    if (!actor)
-        return;
-    PickUp(actor);
-}
-
 void ItemDrop::OnClicked(Actor* actor)
 {
     if (!actor)
         return;
-    if (actor->GetSelectedObjectId() == id_)
-        PickUp(actor);
+    if (!IsInRange(Ranges::Adjecent, actor))
+        return;
+
+    PickUp(actor);
 }
 
 void ItemDrop::SetSource(ea::shared_ptr<Actor> source)

@@ -303,7 +303,7 @@ public:
     bool SelectedObject(GameObject* object);
     bool SelectedObjectById(uint32_t id);
     void GotoPosition(const Math::Vector3& pos);
-    bool FollowObject(GameObject* object, bool ping);
+    bool FollowObject(GameObject* object, bool ping, float maxDist = RANGE_TOUCH);
     bool FollowObjectById(uint32_t objectId, bool ping);
     bool UseSkill(int index, bool ping);
     bool Attack(Actor* target, bool ping);

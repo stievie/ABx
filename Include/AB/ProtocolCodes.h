@@ -405,7 +405,8 @@ enum class ObjectCallType : uint8_t
     Attack,
     UseSkill,
     Using,
-    TalkingTo
+    TalkingTo,
+    PickingUp
 };
 
 enum class ObjectProgressType : uint8_t
@@ -461,6 +462,7 @@ enum class PlayerErrorValue : uint8_t
     NotEnoughMoney,
     NoEnoughMaterials,
     ItemNotAvailable,
+    DropForOtherPlayer,
 };
 
 enum class GameObjectType : uint8_t

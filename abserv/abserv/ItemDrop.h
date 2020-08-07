@@ -41,14 +41,11 @@ private:
     bool pickedUp_{ false };
     /// Dropper
     ea::weak_ptr<Actor> source_;
-    void PickUp(Actor* actor);
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
     Item* _LuaGetItem();
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-protected:
     void OnClicked(Actor* actor);
-    void OnSelected(Actor* actor);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -69,7 +66,7 @@ public:
     void SetSource(ea::shared_ptr<Actor> source);
     bool Serialize(sa::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
-
+    void PickUp(Actor* actor);
 
     uint32_t targetId_{ 0 };
 };

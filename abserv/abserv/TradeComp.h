@@ -66,7 +66,7 @@ private:
     bool accepted_{ false };
     std::vector<std::pair<uint16_t, uint32_t>> ourOffer_;
     uint32_t ourOfferedMoney_{ 0 };
-    void MoveToTarget(ea::shared_ptr<Player> target);
+    void MoveToTarget(Player* target);
     bool CheckRange();
     void StartTrading();
     void OnStuck();

@@ -23,6 +23,7 @@
 #include "Player.h"
 #include "SelectionComp.h"
 #include "Npc.h"
+#include "ItemDrop.h"
 
 namespace Game {
 namespace Components {
@@ -50,9 +51,28 @@ void InteractionComp::Update(uint32_t)
     {
         auto& npc = To<Npc>(*interactingWith);
         Ranges range = npc.GetInteractionRange();
-        if (owner_.IsInRange(range, interactingWith.get()))
+        if (npc.IsInRange(range, &owner_))
         {
             npc.CallEvent<void(Actor*)>(EVENT_ON_INTERACT, &owner_);
+            interacting_ = false;
+        }
+        return;
+    }
+
+    if (Is<ItemDrop>(*interactingWith))
+    {
+        if (interactingWith->IsInRange(Ranges::Adjecent, &owner_))
+        {
+            To<ItemDrop>(*interactingWith).PickUp(&owner_);
+            interacting_ = false;
+        }
+        return;
+    }
+
+    if (Is<Player>(*interactingWith))
+    {
+        if (interactingWith->IsInRange(Ranges::Adjecent, &owner_))
+        {
             interacting_ = false;
         }
         return;
@@ -64,7 +84,7 @@ void InteractionComp::Interact(bool ping)
     auto* interactingWith = owner_.selectionComp_->GetSelectedObject();
     if (!interactingWith)
         return;
-    auto interactingWithSp = interactingWith->GetPtr<Actor>();
+    auto interactingWithSp = interactingWith->GetPtr<GameObject>();
     if (!interactingWithSp)
         return;
 
@@ -74,7 +94,7 @@ void InteractionComp::Interact(bool ping)
     {
         if (Is<Player>(interactingWith))
         {
-            owner_.autorunComp_->Follow(interactingWithSp, ping);
+            owner_.FollowObject(interactingWith, ping, RANGE_TOUCH);
             interacting_ = true;
             return;
         }
@@ -84,7 +104,7 @@ void InteractionComp::Interact(bool ping)
             Ranges range = npc.GetInteractionRange();
             if (!owner_.IsInRange(range, interactingWith))
             {
-                if (owner_.FollowObject(interactingWith, false))
+                if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
                 {
                     interacting_ = true;
                     if (ping)
@@ -102,17 +122,40 @@ void InteractionComp::Interact(bool ping)
         return;
     }
 
-    if (owner_.IsAlly(To<Actor>(interactingWith)))
+    if (Is<ItemDrop>(interactingWith))
     {
-        owner_.FollowObject(interactingWith, ping);
-        interacting_ = false;
+        if (!owner_.IsInRange(Ranges::Adjecent, interactingWith))
+        {
+            if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
+            {
+                interacting_ = true;
+                if (ping)
+                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
+            }
+        }
+        else
+        {
+            interacting_ = true;
+            if (ping)
+                owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
+        }
         return;
     }
-    if (owner_.IsEnemy(To<Actor>(interactingWith)))
+
+    if (Is<Actor>(interactingWith))
     {
-        owner_.Attack(To<Actor>(interactingWith), ping);
-        interacting_ = false;
-        return;
+        if (owner_.IsAlly(To<Actor>(interactingWith)))
+        {
+            owner_.FollowObject(interactingWith, ping);
+            interacting_ = false;
+            return;
+        }
+        if (owner_.IsEnemy(To<Actor>(interactingWith)))
+        {
+            owner_.Attack(To<Actor>(interactingWith), ping);
+            interacting_ = false;
+            return;
+        }
     }
 }
 

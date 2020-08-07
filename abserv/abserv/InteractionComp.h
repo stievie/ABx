@@ -27,6 +27,7 @@ namespace Game {
 
 class Player;
 class Actor;
+class GameObject;
 
 namespace Components {
 
@@ -37,7 +38,7 @@ class InteractionComp
 private:
     Player& owner_;
     bool interacting_{ false };
-    ea::weak_ptr<Actor> interactingWith_;
+    ea::weak_ptr<GameObject> interactingWith_;
     void OnCancelAll();
 public:
     explicit InteractionComp(Player& owner);

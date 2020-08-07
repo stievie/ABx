@@ -231,14 +231,14 @@ void Actor::GotoPosition(const Math::Vector3& pos)
     inputComp_->Add(InputType::Goto, std::move(data));
 }
 
-bool Actor::FollowObject(GameObject* object, bool ping)
+bool Actor::FollowObject(GameObject* object, bool ping, float maxDist /* = RANGE_TOUCH */)
 {
     if (!object)
         return false;
     if (IsImmobilized())
         return false;
 
-    bool result = autorunComp_->Follow(object->GetPtr<GameObject>(), ping);
+    bool result = autorunComp_->Follow(object->GetPtr<GameObject>(), ping, maxDist);
     if (result)
     {
         CancelAll();

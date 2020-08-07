@@ -50,7 +50,7 @@ private:
     bool autoRun_{ false };
     ea::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
-    ea::weak_ptr<Actor> following_;
+    ea::weak_ptr<GameObject> following_;
     // Remove the first way points
     void Pop();
     // Get next waypoint
@@ -79,7 +79,7 @@ public:
     void Update(uint32_t timeElapsed);
     void SetAutoRun(bool value);
     bool IsAutoRun() const { return autoRun_; }
-    bool IsFollowing(const Actor& actor) const;
+    bool IsFollowing(const GameObject& object) const;
 };
 
 }

@@ -106,6 +106,13 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 
 Player::~Player() = default;
 
+void Player::SendError(AB::GameProtocol::PlayerErrorValue value)
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    PlayerError(value, *msg);
+    WriteToOutput(*msg);
+}
+
 void Player::SetGame(ea::shared_ptr<Game> game)
 {
     Actor::SetGame(game);
@@ -232,7 +239,7 @@ void Player::TriggerDialog(uint32_t triggererId, uint32_t dialogIndex)
         if (!object)
             return;
         float dist = GetDistance(object);
-        if (dist > RANGE_PICK_UP)
+        if (dist > RANGE_ADJECENT)
             return;
     }
     auto msg = Net::NetworkMessage::GetNew();
@@ -253,7 +260,7 @@ void Player::TriggerQuestSelectionDialog(uint32_t triggererId, const ea::set<uin
         if (!object)
             return;
         float dist = GetDistance(object);
-        if (dist > RANGE_PICK_UP)
+        if (dist > RANGE_ADJECENT)
             return;
     }
 
@@ -284,7 +291,7 @@ void Player::TriggerQuestDialog(uint32_t triggererId, uint32_t index)
         if (!object)
             return;
         float dist = GetDistance(object);
-        if (dist > RANGE_PICK_UP)
+        if (dist > RANGE_ADJECENT)
             return;
     }
 
@@ -308,7 +315,7 @@ void Player::TriggerTradeDialog(uint32_t targetId)
     if (!target)
         return;
     const float dist = GetDistance(target);
-    if (dist > RANGE_PICK_UP)
+    if (dist > RANGE_ADJECENT)
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
@@ -2023,7 +2030,7 @@ void Player::CRQCraftItem(uint32_t npcId, uint32_t index, uint32_t count, uint32
     auto msg = Net::NetworkMessage::GetNew();
     auto notEnoughStuff = [&msg](uint32_t itemIndex)
     {
-        PlayerError((itemIndex == AB::Entities::MONEY_ITEM_INDEX) ?
+        Player::PlayerError((itemIndex == AB::Entities::MONEY_ITEM_INDEX) ?
             AB::GameProtocol::PlayerErrorValue::NotEnoughMoney :
             AB::GameProtocol::PlayerErrorValue::NoEnoughMaterials, *msg);
     };
