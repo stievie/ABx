@@ -72,6 +72,14 @@ public:
     }
 
     SharedPtr<UIElement> GetWindow(const StringHash& hash, bool addToUi = false);
+    template<typename T>
+    T* GetWindow(const StringHash& hash, bool addToUi = false)
+    {
+        auto w = GetWindow(hash, addToUi);
+        if (!w)
+            return nullptr;
+        return dynamic_cast<T*>(w.Get());
+    }
     SharedPtr<DialogWindow> GetDialog(AB::Dialogs dialog, bool canCreate = false);
 
     void SaveWindows();

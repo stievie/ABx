@@ -604,11 +604,11 @@ void Player::HandleSelectSelf(StringHash, VariantMap&)
 void Player::UpdateUI()
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    if (auto* w = dynamic_cast<EquipmentWindow*>(wm->GetWindow(WINDOW_EQUIPMENT).Get()))
+    if (auto* w = wm->GetWindow<EquipmentWindow>(WINDOW_EQUIPMENT))
         w->UpdateEquipment(this);
-    if (auto* w = dynamic_cast<ActorHealthBar*>(wm->GetWindow(WINDOW_HEALTHBAR).Get()))
+    if (auto* w = wm->GetWindow<ActorHealthBar>(WINDOW_HEALTHBAR))
         w->SetActor(SharedPtr<Actor>(this));
-    if (auto* w = dynamic_cast<ActorEnergyBar*>(wm->GetWindow(WINDOW_ENERGYBAR).Get()))
+    if (auto* w = wm->GetWindow<ActorEnergyBar>(WINDOW_ENERGYBAR))
         w->SetActor(SharedPtr<Actor>(this));
 }
 
