@@ -330,6 +330,7 @@ void ClientApp::Start()
     renderer->SetMaterialQuality(options->GetMaterialQuality());
     renderer->SetHDRRendering(options->GetHDRRendering());
     renderer->SetSpecularLighting(options->GetSpecularLightning());
+    renderer->SetShadowSoftness(0.5f);
     // https://discourse.urho3d.io/t/shadow-on-slopes/4629/5
     renderer->SetShadowMapSize(4096);
     Engine* engine = GetSubsystem<Engine>();

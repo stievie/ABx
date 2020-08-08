@@ -85,6 +85,5 @@ void OutpostLevel::CreateScene()
     }
     scene_->LoadXML(sceneFile->GetRoot());
 
-    InitSunProperties();
     InitModelAnimations();
 }

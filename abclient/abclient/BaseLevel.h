@@ -76,7 +76,6 @@ protected:
             return viewport_->GetScreenRay(pos.x_, pos.y_);
         return Ray();
     }
-    void InitSunProperties();
     void InitModelAnimations();
 
     Urho3D::UIElement* uiRoot_;

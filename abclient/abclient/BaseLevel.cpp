@@ -122,31 +122,6 @@ void BaseLevel::OnProtocolError(AB::ErrorCodes err)
         ShowError(msg, "Error");
 }
 
-void BaseLevel::InitSunProperties()
-{
-    // https://discourse.urho3d.io/t/better-shadows-possible-three-issues/1013/3
-    // https://discourse.urho3d.io/t/shadow-on-slopes/4629
-    Node* sunNode = scene_->GetChild("Sun", false);
-    if (sunNode)
-    {
-        Light* sun = sunNode->GetComponent<Light>();
-        if (sun)
-        {
-            sun->SetBrightness(1.0f);
-            sun->SetShadowFadeDistance(100.0f);
-            sun->SetShadowDistance(125.0f);
-
-            sun->SetShadowBias(BiasParameters(0.0000025f, 1.0f));
-            sun->SetShadowCascade(CascadeParameters(20.0f, 60.0f, 180.0f, 560.0f, 0.1f, 0.1f));
-            //sun->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
-            sun->SetShadowResolution(1.0);
-            sun->SetCastShadows(true);
-        }
-    }
-    else
-        URHO3D_LOGWARNING("No Sun node found");
-}
-
 void BaseLevel::InitModelAnimations()
 {
     PODVector<Node*> nodes;

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="51" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787431" />
-	<attribute name="Next Local Component ID" value="16789006" />
+	<attribute name="Next Local Node ID" value="16787481" />
+	<attribute name="Next Local Component ID" value="16789067" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -24,8 +24,8 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-64.7732 83.8265 0" />
-		<attribute name="Rotation" value="0.690694 0.68907 0.159545 -0.150565" />
+		<attribute name="Position" value="-70.7583 82.454 0" />
+		<attribute name="Rotation" value="0.699405 0.593864 0.386201 -0.0948129" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="16779339">
@@ -33,12 +33,15 @@
 			<attribute name="Color" value="0.9 0.9 0.9 1" />
 			<attribute name="Specular Intensity" value="0.5" />
 			<attribute name="Temperature" value="4000" />
-			<attribute name="Range" value="1000" />
 			<attribute name="Spot FOV" value="60" />
 			<attribute name="Can Be Occluded" value="false" />
 			<attribute name="Cast Shadows" value="true" />
-			<attribute name="Shadow Distance" value="200" />
+			<attribute name="Shadow Distance" value="80" />
 			<attribute name="Shadow Fade Distance" value="100" />
+			<attribute name="Shadow Intensity" value="0.3" />
+			<attribute name="Shadow Resolution" value="0.3" />
+			<attribute name="CSM Splits" value="200 0 0 0" />
+			<attribute name="Depth Constant Bias" value="0.001" />
 		</component>
 	</node>
 	<node id="16779919">
@@ -934,6 +937,7 @@
 		<component type="StaticModel" id="16788089">
 			<attribute name="Model" value="Model;Models/MarketTend1.mdl" />
 			<attribute name="Material" value="Material;Materials/TendWood.xml;Materials/TendRoof.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16788090">
 			<attribute name="Physics Rotation" value="8.74228e-08 0 1 0" />

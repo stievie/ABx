@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="130.466" />
 	<attribute name="Next Replicated Node ID" value="10" />
 	<attribute name="Next Replicated Component ID" value="30" />
-	<attribute name="Next Local Node ID" value="16788391" />
-	<attribute name="Next Local Component ID" value="16788960" />
+	<attribute name="Next Local Node ID" value="16789353" />
+	<attribute name="Next Local Component ID" value="16789933" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -22,7 +22,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-71.5 312.264 21.5" />
+		<attribute name="Position" value="-71.5 144.473 21.5" />
 		<attribute name="Rotation" value="0.0999411 -0.191984 0.865985 -0.450803" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -32,10 +32,12 @@
 			<attribute name="Radius" value="100" />
 			<attribute name="Length" value="100" />
 			<attribute name="Range" value="100" />
-			<attribute name="Spot FOV" value="160" />
+			<attribute name="Spot FOV" value="60" />
 			<attribute name="Attenuation Texture" value="Texture2D;Textures/Rhodes_LM.jpg" />
 			<attribute name="Light Shape Texture" value="Texture2D;Textures/Rhodes_SpecLM.png" />
 			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Shadow Distance" value="300" />
+			<attribute name="Shadow Fade Distance" value="250" />
 		</component>
 	</node>
 	<node id="5">
