@@ -60,7 +60,7 @@ private:
     }
 public:
     WindowManager(Context* context);
-    ~WindowManager() override = default;
+    ~WindowManager() override;
 
     const HashMap<StringHash, SharedPtr<UIElement>>& GetWindows() const
     {
@@ -73,9 +73,9 @@ public:
 
     SharedPtr<UIElement> GetWindow(const StringHash& hash, bool addToUi = false);
     template<typename T>
-    T* GetWindow(const StringHash& hash, bool addToUi = false)
+    T* GetWindow(const StringHash& hash)
     {
-        auto w = GetWindow(hash, addToUi);
+        auto w = GetWindow(hash, false);
         if (!w)
             return nullptr;
         return dynamic_cast<T*>(w.Get());

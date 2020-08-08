@@ -51,6 +51,8 @@ WindowManager::WindowManager(Context* context) :
 {
 }
 
+WindowManager::~WindowManager() = default;
+
 SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addToUi /* = false */)
 {
     Options* opts = GetSubsystem<Options>();
