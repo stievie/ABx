@@ -237,6 +237,7 @@ void Shortcuts::Init()
     shortcuts_[Events::E_SC_MOUSELOOK] = ShortcutEvent(Events::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[Events::E_SC_DEFAULTACTION] = ShortcutEvent(Events::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
     shortcuts_[Events::E_SC_PINGTARGET] = ShortcutEvent(Events::E_SC_PINGTARGET, "Call target", Trigger::None);
+    shortcuts_[Events::E_SC_SUPPRESSACTION] = ShortcutEvent(Events::E_SC_SUPPRESSACTION, "Suppress action", Trigger::None);
 
     // Skill
     shortcuts_[Events::E_SC_USESKILL1] = ShortcutEvent(Events::E_SC_USESKILL1, "Use Skill 1", Trigger::Down);
@@ -314,6 +315,7 @@ void Shortcuts::AddDefault()
     Add(Events::E_SC_REVERSECAMERA, { KEY_Y });
     Add(Events::E_SC_HIGHLIGHTOBJECTS, { KEY_LCTRL });
     Add(Events::E_SC_PINGTARGET, { KEY_LCTRL });
+    Add(Events::E_SC_SUPPRESSACTION, { KEY_LSHIFT });
 
     Add(Events::E_SC_DEFAULTACTION, { KEY_SPACE });
     Add(Events::E_SC_TOGGLEMAP, { KEY_M });
@@ -541,8 +543,7 @@ void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
             {
                 if (s.keyboardKey_ != KEY_UNKNOWN && s.keyboardKey_ != key)
                     continue;
-//                if (s.modifiers_ != 0 && !ModifiersMatch(s.modifiers_))
-                    // If we have modifiers also these must match
+                // If we have modifiers also these must match
                 if (ModifiersMatch(s.modifiers_))
                     SendEvent(sc.second_.event_, e);
             }
@@ -593,8 +594,7 @@ void Shortcuts::HandleMouseDown(StringHash, VariantMap& eventData)
             {
                 if (s.mouseButton_ == button)
                 {
-//                    if (s.modifiers_ != 0 && !ModifiersMatch(s.modifiers_))
-                        // If we have modifiers also these this
+                    // If we have modifiers also these this
                     if (ModifiersMatch(s.modifiers_))
                         SendEvent(sc.second_.event_, e);
                 }
@@ -618,8 +618,7 @@ void Shortcuts::HandleMouseUp(StringHash, VariantMap& eventData)
             {
                 if (s.mouseButton_ == button)
                 {
-//                    if (s.modifiers_ != 0 && !ModifiersMatch(s.modifiers_))
-                        // If we have modifiers also these this
+                    // If we have modifiers also these this
                     if (ModifiersMatch(s.modifiers_))
                         SendEvent(sc.second_.event_, e);
                 }
@@ -636,29 +635,12 @@ bool Shortcuts::ModifiersMatch(unsigned mods)
     if (m != 0 && mods == 0)
         return false;
     return ((m & mods) == mods);
-/*    Input* input = GetSubsystem<Input>();
-    return (((mods & SC_MOD_CTRL) == 0) || input->GetKeyDown(KEY_LCTRL) || input->GetKeyDown(KEY_RCTRL)) &&
-        (((mods & SC_MOD_LCTRL) == 0) || input->GetKeyDown(KEY_LCTRL)) &&
-        (((mods & SC_MOD_RCTRL) == 0) || input->GetKeyDown(KEY_RCTRL)) &&
-
-        (((mods & SC_MOD_SHIFT) == 0) || input->GetKeyDown(KEY_LSHIFT) || input->GetKeyDown(KEY_RSHIFT)) &&
-        (((mods & SC_MOD_LSHIFT) == 0) || input->GetKeyDown(KEY_LSHIFT)) &&
-        (((mods & SC_MOD_RSHIFT) == 0) || input->GetKeyDown(KEY_RSHIFT)) &&
-
-        (((mods & SC_MOD_ALT) == 0) || input->GetKeyDown(KEY_LALT) || input->GetKeyDown(KEY_RALT)) &&
-        (((mods & SC_MOD_LALT) == 0) || input->GetKeyDown(KEY_LALT)) &&
-        (((mods & SC_MOD_RALT) == 0) || input->GetKeyDown(KEY_RALT));*/
 }
 
 unsigned Shortcuts::GetModifiers() const
 {
     Input* input = GetSubsystem<Input>();
     unsigned result = 0;
-/*    if (input->GetKeyDown(KEY_LCTRL))
-    {
-        result |= SC_MOD_CTRL;
-        result |= SC_MOD_LCTRL;
-    }*/
     if (input->GetKeyDown(KEY_RCTRL))
     {
         result |= SC_MOD_CTRL;

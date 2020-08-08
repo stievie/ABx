@@ -511,15 +511,6 @@ void ProtocolGame::GotoPos(const Vec3& pos)
     SendPacket(AB::GameProtocol::ClientPacketTypes::Goto, packet);
 }
 
-void ProtocolGame::Follow(uint32_t targetId, bool ping)
-{
-    AB::Packets::Client::Follow packet = {
-        targetId,
-        ping
-    };
-    SendPacket(AB::GameProtocol::ClientPacketTypes::Follow, packet);
-}
-
 void ProtocolGame::UseSkill(uint32_t index, bool ping)
 {
     AB::Packets::Client::UseSkill packet = {
@@ -529,17 +520,10 @@ void ProtocolGame::UseSkill(uint32_t index, bool ping)
     SendPacket(AB::GameProtocol::ClientPacketTypes::UseSkill, packet);
 }
 
-void ProtocolGame::Attack(bool ping)
+void ProtocolGame::Interact(bool suppress, bool ping)
 {
-    AB::Packets::Client::Attack packet = {
-        ping
-    };
-    SendPacket(AB::GameProtocol::ClientPacketTypes::Attack, packet);
-}
-
-void ProtocolGame::Interact(bool ping)
-{
-    AB::Packets::Client::Attack packet = {
+    AB::Packets::Client::Interact packet = {
+        suppress,
         ping
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::Interact, packet);

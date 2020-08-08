@@ -43,7 +43,7 @@ private:
 public:
     explicit InteractionComp(Player& owner);
     void Update(uint32_t timeElapsed);
-    void Interact(bool ping);
+    void Interact(bool suppress, bool ping);
 };
 
 }

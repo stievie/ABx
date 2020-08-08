@@ -467,21 +467,6 @@ void Player::UpdateYaw()
     lastYaw_ = controls_.yaw_;
 }
 
-void Player::FollowSelected()
-{
-    if (auto so = selectedObject_.Lock())
-    {
-        FwClient* client = GetSubsystem<FwClient>();
-        client->FollowObject(so->gameId_);
-    }
-}
-
-void Player::Attack()
-{
-    FwClient* client = GetSubsystem<FwClient>();
-    client->Attack();
-}
-
 void Player::Interact()
 {
     GetSubsystem<FwClient>()->Interact();

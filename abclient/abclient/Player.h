@@ -65,8 +65,6 @@ public:
     void SetYRotation(int64_t time, float rad, bool updateYaw) override;
     void CameraZoom(bool increase);
     void UpdateYaw();
-    void FollowSelected();
-    void Attack();
     void Interact();
     void GotoPosition(const Vector3& pos);
     void ClickObject(uint32_t objectId);

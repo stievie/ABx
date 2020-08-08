@@ -401,15 +401,6 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::Goto, std::move(data));
         break;
     }
-    case ClientPacketTypes::Follow:
-    {
-        auto packet = AB::Packets::Get<AB::Packets::Client::Follow>(message);
-        Utils::VariantMap data;
-        data[Game::InputDataObjectId] = packet.targetId;
-        data[Game::InputDataPingTarget] = packet.ping;
-        AddPlayerInput(Game::InputType::Follow, std::move(data));
-        break;
-    }
     case ClientPacketTypes::UseSkill:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::UseSkill>(message);
@@ -429,18 +420,11 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::Cancel);
         break;
     }
-    case ClientPacketTypes::Attack:
-    {
-        auto packet = AB::Packets::Get<AB::Packets::Client::Attack>(message);
-        Utils::VariantMap data;
-        data[Game::InputDataPingTarget] = packet.ping;
-        AddPlayerInput(Game::InputType::Attack, std::move(data));
-        break;
-    }
     case ClientPacketTypes::Interact:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::Interact>(message);
         Utils::VariantMap data;
+        data[Game::InputDataSuppress] = packet.suppress;
         data[Game::InputDataPingTarget] = packet.ping;
         AddPlayerInput(Game::InputType::Interact, std::move(data));
         break;

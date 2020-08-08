@@ -79,7 +79,7 @@ void InteractionComp::Update(uint32_t)
     }
 }
 
-void InteractionComp::Interact(bool ping)
+void InteractionComp::Interact(bool suppress, bool ping)
 {
     auto* interactingWith = owner_.selectionComp_->GetSelectedObject();
     if (!interactingWith)
@@ -94,51 +94,73 @@ void InteractionComp::Interact(bool ping)
     {
         if (Is<Player>(interactingWith))
         {
-            owner_.FollowObject(interactingWith, ping, RANGE_TOUCH);
-            interacting_ = true;
+            if (!suppress)
+            {
+                owner_.FollowObject(interactingWith, ping, RANGE_TOUCH);
+                interacting_ = true;
+                return;
+            }
+            if (ping)
+                owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_,
+                    AB::GameProtocol::ObjectCallType::Follow, 0);
             return;
         }
         if (Is<Npc>(interactingWith))
         {
-            auto& npc = To<Npc>(*interactingWith);
-            Ranges range = npc.GetInteractionRange();
-            if (!owner_.IsInRange(range, interactingWith))
+            if (!suppress)
             {
-                if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
+                auto& npc = To<Npc>(*interactingWith);
+                Ranges range = npc.GetInteractionRange();
+                if (!owner_.IsInRange(range, interactingWith))
                 {
-                    interacting_ = true;
-                    if (ping)
-                        owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
+                    if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
+                    {
+                        interacting_ = true;
+                        if (ping)
+                            owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                                interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
+                    }
+                    return;
                 }
-            }
-            else
-            {
                 interacting_ = true;
                 if (ping)
-                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
+                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                        interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
+                return;
             }
-            return;
+            if (ping)
+                owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                    interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
         }
         return;
     }
 
     if (Is<ItemDrop>(interactingWith))
     {
+        if (suppress)
+        {
+            if (ping)
+                owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                    interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
+            return;
+        }
+
         if (!owner_.IsInRange(Ranges::Adjecent, interactingWith))
         {
             if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
             {
                 interacting_ = true;
                 if (ping)
-                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
+                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                        interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
             }
+            return;
         }
-        else
-        {
-            interacting_ = true;
-            if (ping)
-                owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
-        }
+
+        interacting_ = true;
+        if (ping)
+            owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
         return;
     }
 
@@ -146,14 +168,32 @@ void InteractionComp::Interact(bool ping)
     {
         if (owner_.IsAlly(To<Actor>(interactingWith)))
         {
-            owner_.FollowObject(interactingWith, ping);
-            interacting_ = false;
+            if (!suppress)
+            {
+                owner_.FollowObject(interactingWith, ping);
+                interacting_ = false;
+            }
+            else
+            {
+                if (ping)
+                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                        interactingWith->id_, AB::GameProtocol::ObjectCallType::Follow, 0);
+            }
             return;
         }
         if (owner_.IsEnemy(To<Actor>(interactingWith)))
         {
-            owner_.Attack(To<Actor>(interactingWith), ping);
-            interacting_ = false;
+            if (!suppress)
+            {
+                owner_.Attack(To<Actor>(interactingWith), ping);
+                interacting_ = false;
+            }
+            else
+            {
+                if (ping)
+                    owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+                        interactingWith->id_, AB::GameProtocol::ObjectCallType::Target, 0);
+            }
             return;
         }
     }

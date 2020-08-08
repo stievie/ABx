@@ -1100,6 +1100,11 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
             return;
         parser.Append(" attacking ${target}", tokens);
         break;
+    case AB::GameProtocol::ObjectCallType::Target:
+        if (!target)
+            return;
+        tokens = parser.Parse("${target} is my target");
+        break;
     case AB::GameProtocol::ObjectCallType::UseSkill:
     {
         if (skillIndex <= 0)

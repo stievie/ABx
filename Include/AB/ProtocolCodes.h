@@ -74,10 +74,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(Turn)                   \
     ENUMERATE_CLIENT_PACKET_CODE(SetDirection)           \
     ENUMERATE_CLIENT_PACKET_CODE(Goto)                   \
-    ENUMERATE_CLIENT_PACKET_CODE(Follow)                 \
     ENUMERATE_CLIENT_PACKET_CODE(SetState)               \
     ENUMERATE_CLIENT_PACKET_CODE(UseSkill)               \
-    ENUMERATE_CLIENT_PACKET_CODE(Attack)                 \
     ENUMERATE_CLIENT_PACKET_CODE(Interact)               \
     ENUMERATE_CLIENT_PACKET_CODE(Cancel)                 \
     ENUMERATE_CLIENT_PACKET_CODE(Select)                 \
@@ -406,7 +404,8 @@ enum class ObjectCallType : uint8_t
     UseSkill,
     Using,
     TalkingTo,
-    PickingUp
+    PickingUp,
+    Target,
 };
 
 enum class ObjectProgressType : uint8_t

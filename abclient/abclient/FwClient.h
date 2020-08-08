@@ -292,10 +292,8 @@ public:
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandType type, const String& data);
     void GotoPos(const Vector3& pos);
-    void FollowObject(uint32_t objectId);
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void UseSkill(uint32_t index);
-    void Attack();
     void Interact();
     void Cancel();
     void AddFriend(const String& name, AB::Entities::FriendRelation relation);

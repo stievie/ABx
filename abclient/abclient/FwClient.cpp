@@ -1099,15 +1099,6 @@ void FwClient::GotoPos(const Vector3& pos)
         client_.GotoPos({ pos.x_, pos.y_, pos.z_ });
 }
 
-void FwClient::FollowObject(uint32_t objectId)
-{
-    if (loggedIn_)
-    {
-        auto* sc = GetSubsystem<Shortcuts>();
-        client_.FollowObject(objectId, sc->IsTriggered(Events::E_SC_PINGTARGET));
-    }
-}
-
 void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
     if (loggedIn_)
@@ -1123,21 +1114,12 @@ void FwClient::UseSkill(uint32_t index)
     }
 }
 
-void FwClient::Attack()
-{
-    if (loggedIn_)
-    {
-        auto* sc = GetSubsystem<Shortcuts>();
-        client_.Attack(sc->IsTriggered(Events::E_SC_PINGTARGET));
-    }
-}
-
 void FwClient::Interact()
 {
     if (loggedIn_)
     {
         auto* sc = GetSubsystem<Shortcuts>();
-        client_.Interact(sc->IsTriggered(Events::E_SC_PINGTARGET));
+        client_.Interact(sc->IsTriggered(Events::E_SC_SUPPRESSACTION), sc->IsTriggered(Events::E_SC_PINGTARGET));
     }
 }
 

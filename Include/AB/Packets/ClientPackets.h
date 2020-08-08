@@ -452,18 +452,6 @@ struct GotoPos
     }
 };
 
-struct Follow
-{
-    uint32_t targetId;
-    bool ping;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(targetId);
-        ar.value(ping);
-    }
-};
-
 struct UseSkill
 {
     uint8_t index;
@@ -476,22 +464,14 @@ struct UseSkill
     }
 };
 
-struct Attack
-{
-    bool ping;
-    template<typename _Ar>
-    void Serialize(_Ar& ar)
-    {
-        ar.value(ping);
-    }
-};
-
 struct Interact
 {
+    bool suppress;
     bool ping;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
+        ar.value(suppress);
         ar.value(ping);
     }
 };

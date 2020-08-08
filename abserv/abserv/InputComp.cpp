@@ -169,8 +169,9 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             if (Is<Player>(owner_))
             {
-                bool ping = input.data[InputDataPingTarget].GetBool();
-                To<Player>(owner_).interactionComp_->Interact(ping);
+                const bool suppress = input.data[InputDataSuppress].GetBool();
+                const bool ping = input.data[InputDataPingTarget].GetBool();
+                To<Player>(owner_).interactionComp_->Interact(suppress, ping);
             }
             break;
         }

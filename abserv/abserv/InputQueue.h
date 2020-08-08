@@ -59,6 +59,7 @@ enum InputDataType
     InputDataVertexZ     = 10,
     InputDataState       = 11,
     InputDataPingTarget  = 12,
+    InputDataSuppress     = 13,
 };
 
 struct InputItem

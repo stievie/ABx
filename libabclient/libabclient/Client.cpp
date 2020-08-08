@@ -704,12 +704,6 @@ void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
         protoGame_->SelectObject(sourceId, targetId);
 }
 
-void Client::FollowObject(uint32_t targetId, bool ping)
-{
-    if (state_ == State::World)
-        protoGame_->Follow(targetId, ping);
-}
-
 void Client::Command(AB::GameProtocol::CommandType type, const std::string& data)
 {
     if (state_ == State::World)
@@ -764,16 +758,10 @@ void Client::UseSkill(uint32_t index, bool ping)
         protoGame_->UseSkill(index, ping);
 }
 
-void Client::Attack(bool ping)
+void Client::Interact(bool suppress, bool ping)
 {
     if (state_ == State::World)
-        protoGame_->Attack(ping);
-}
-
-void Client::Interact(bool ping)
-{
-    if (state_ == State::World)
-        protoGame_->Interact(ping);
+        protoGame_->Interact(suppress, ping);
 }
 
 void Client::QueueMatch()

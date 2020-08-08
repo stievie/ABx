@@ -95,6 +95,7 @@ $ cmake --install . --component runtime
 ~~~
 
 After that, you can update easily with just (1) pulling the latest HEAD from GitHub, (2) cd into the previously created `build` directory and (3) type `make`.
+If files were added ort removed, you may need to re run CMake.
 
 ### Client
 
@@ -132,6 +133,3 @@ $ make
 # Copy executables to ../bin and ../abclient/bin
 $ cmake --install . --component runtime
 ~~~
-
-Again, to update just pull from GitHub and type `make` in the `build` directory,
-no need to run CMake again.
