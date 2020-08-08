@@ -95,7 +95,7 @@ $ cmake --install . --component runtime
 ~~~
 
 After that, you can update easily with just (1) pulling the latest HEAD from GitHub, (2) cd into the previously created `build` directory and (3) type `make`.
-If files were added ort removed, you may need to re run CMake.
+If files were added or removed, you may need to re run CMake.
 
 ### Client
 
