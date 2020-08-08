@@ -34,15 +34,14 @@ private:
     bool firstUpdate_{ true };
     void LoadScript(const std::string& script);
     void SelectObject(GameObject* object);
-    void FollowObject(GameObject* object);
     void Goto(const Math::StdVector3& pos);
     void Move(unsigned direction);
     void Turn(unsigned direction);
     void SetDirection(float deg);
     void Say(unsigned channel, const std::string& message);
     void Command(unsigned type, const std::string& data);
-    void Attack();
     void Cancel();
+    void Interact();
     void ChangeMap(const std::string& mapUuid);
     void ClickObject(GameObject* object);
     void LoadSkills(const std::string& templ);

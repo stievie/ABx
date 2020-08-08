@@ -30,14 +30,13 @@ void Player::RegisterLua(kaguya::State& state)
     // clang-format off
     state["Player"].setClass(kaguya::UserdataMetatable<Player, GameObject>()
         .addFunction("SelectObject", &Player::SelectObject)
-        .addFunction("FollowObject", &Player::FollowObject)
         .addFunction("Goto", &Player::Goto)
         .addFunction("Move", &Player::Move)
         .addFunction("Turn", &Player::Turn)
         .addFunction("SetDirection", &Player::SetDirection)
         .addFunction("Say", &Player::Say)
         .addFunction("Command", &Player::Command)
-        .addFunction("Attack", &Player::Attack)
+        .addFunction("Interact", &Player::Interact)
         .addFunction("Cancel", &Player::Cancel)
         .addFunction("ChangeMap", &Player::ChangeMap)
         .addFunction("ClickObject", &Player::ClickObject)
@@ -85,12 +84,6 @@ void Player::SelectObject(GameObject* object)
 {
     if (object)
         client_.SelectObject(id_, object->id_);
-}
-
-void Player::FollowObject(GameObject* object)
-{
-    if (object)
-        client_.FollowObject(object->id_, false);
 }
 
 void Player::Goto(const Math::StdVector3& pos)
@@ -144,14 +137,14 @@ void Player::Command(unsigned type, const std::string& data)
     client_.Command(static_cast<AB::GameProtocol::CommandType>(type), data);
 }
 
-void Player::Attack()
-{
-    client_.Attack(false);
-}
-
 void Player::Cancel()
 {
     client_.Cancel();
+}
+
+void Player::Interact()
+{
+    client_.Interact(false, false);
 }
 
 void Player::ChangeMap(const std::string& mapUuid)
