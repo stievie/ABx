@@ -294,17 +294,8 @@ void Actor::UpdateTransformation()
 
     const Vector3& cp = node_->GetPosition();
     if (moveTo != Vector3::ZERO && !moveTo.Equals(cp))
-    {
         // Try to make moves smoother...
-        if ((cp - moveToPos_).LengthSquared() > 0.02f)
-        {
-            // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveTo, 0.5f);
-            node_->SetPosition(pos);
-        }
-        else
-            node_->SetPosition(moveTo);
-    }
+        node_->SetPosition(cp.Lerp(moveTo, 0.2f));
 
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
