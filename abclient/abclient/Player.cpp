@@ -572,15 +572,18 @@ void Player::PostUpdate(float timeStep)
         newCamPos = aimPoint + rayDir * rayDistance;
     }
 
-    if (oldCamPos_ != Vector3::ZERO)
-        newCamPos = oldCamPos_.Lerp(newCamPos, 0.3f);
-    if (oldCamDir_ != Quaternion::IDENTITY)
-        dir = oldCamDir_.Slerp(dir, 0.3f);
-
-    cameraNode_->SetPosition(newCamPos);
-    cameraNode_->SetRotation(dir);
-    oldCamPos_ = newCamPos;
-    oldCamDir_ = dir;
+    if ((oldCamPos_ != newCamPos || oldCamPos_ == Vector3::ZERO) ||
+        (oldCamDir_ != dir || oldCamDir_ == Quaternion::IDENTITY))
+    {
+        if (oldCamPos_ != Vector3::ZERO)
+            newCamPos = oldCamPos_.Lerp(newCamPos, 0.3f);
+        cameraNode_->SetPosition(newCamPos);
+        oldCamPos_ = newCamPos;
+        if (oldCamDir_ != Quaternion::IDENTITY)
+            dir = oldCamDir_.Slerp(dir, 0.3f);
+        cameraNode_->SetRotation(dir);
+        oldCamDir_ = dir;
+    }
 
     Actor::PostUpdate(timeStep);
 }
