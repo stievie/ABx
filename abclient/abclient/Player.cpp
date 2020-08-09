@@ -507,31 +507,37 @@ void Player::PostUpdate(float timeStep)
     Node* headNode = characterNode->GetChild("Head", true);
     Vector3 headWorldPos;
 
+    const bool firstPerson = cameraDistance_ < CAMERA_MIN_DIST;
+
     // Player looks in camera direstion or into the camera
     if (headNode)
     {
-        static constexpr float YAW_LIMIT = 60.0f;
-        static constexpr float PITCH_LIMIT = 30.0f;
         headWorldPos = headNode->GetWorldPosition();
-        // Turn head to camera pitch, but limit to avoid unnatural animation
-        float limitPitch = Clamp(controls_.pitch_, -PITCH_LIMIT, PITCH_LIMIT);
-        float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
-        // When the camera is in front of the player, i.e. looking into the face of the player, make the player look forward.
-        bool lookToCam = fabs(yaw2 - 180.0f) < YAW_LIMIT;
-        if (lookToCam)
-        {
-            yaw2 -= 180.0f;
-            limitPitch = -limitPitch;
-        }
 
-        float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
-        float limitYaw = Clamp(yaw3, -YAW_LIMIT, YAW_LIMIT);
-        const Quaternion headDir = characterNode->GetRotation() *
-            Quaternion(limitYaw, Vector3::UP) *
-            Quaternion(limitPitch, Vector3::RIGHT);
-        // This could be expanded to look at an arbitrary target, now just look at a point in front
-        const Vector3 headWorldTarget = headWorldPos + headDir * Vector3::BACK;
-        headNode->LookAt(headWorldTarget);
+        if (!firstPerson)
+        {
+            static constexpr float YAW_LIMIT = 60.0f;
+            static constexpr float PITCH_LIMIT = 30.0f;
+            // Turn head to camera pitch, but limit to avoid unnatural animation
+            float limitPitch = Clamp(controls_.pitch_, -PITCH_LIMIT, PITCH_LIMIT);
+            float yaw2 = controls_.yaw_ - characterNode->GetRotation().YawAngle();
+            // When the camera is in front of the player, i.e. looking into the face of the player, make the player look forward.
+            bool lookToCam = fabs(yaw2 - 180.0f) < YAW_LIMIT;
+            if (lookToCam)
+            {
+                yaw2 -= 180.0f;
+                limitPitch = -limitPitch;
+            }
+
+            float yaw3 = yaw2 - floor((yaw2 + 180.0f) / 360.0f) * 360.0f;
+            float limitYaw = Clamp(yaw3, -YAW_LIMIT, YAW_LIMIT);
+            const Quaternion headDir = characterNode->GetRotation() *
+                Quaternion(limitYaw, Vector3::UP) *
+                Quaternion(limitPitch, Vector3::RIGHT);
+            // This could be expanded to look at an arbitrary target, now just look at a point in front
+            const Vector3 headWorldTarget = headWorldPos + headDir * Vector3::BACK;
+            headNode->LookAt(headWorldTarget);
+        }
     }
 
     // Third person camera: position behind the character
@@ -546,7 +552,7 @@ void Player::PostUpdate(float timeStep)
 
     float rayDistance = cameraDistance_;
 
-    if (cameraDistance_ < CAMERA_MIN_DIST)
+    if (firstPerson)
     {
         // Hide Player model in 1st person perspective
         model_->SetViewMask(0);
@@ -560,7 +566,7 @@ void Player::PostUpdate(float timeStep)
 
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
     // Check the camera is not too close to the player model.
-    if (!Equals(rayDistance, 0.0f))
+    if (!firstPerson)
     {
         // Not in 1st person prespective, means the camera can collide with other objects.
         const Vector3 rayDir = dir * Vector3::BACK;
