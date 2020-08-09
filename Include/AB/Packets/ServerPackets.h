@@ -133,6 +133,7 @@ struct GameStart
 
 struct GamePong
 {
+    // Difference in ms. Negative = server behind, positive = client behind.
     int32_t clockDiff;
     template<typename _Ar>
     void Serialize(_Ar& ar)

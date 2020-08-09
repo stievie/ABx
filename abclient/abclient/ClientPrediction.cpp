@@ -231,7 +231,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     if (dist > 5.0f || (dist > 1.0f && player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
     {
         // If too far away or player is idle, Lerp to server position
-        player->moveToPos_ = serverPos;
+        player->moveToPos_.Lerp(serverPos, 0.5f);
     }
 }
 
@@ -242,8 +242,8 @@ void ClientPrediction::CheckServerRotation(int64_t time, float rad)
     const Quaternion& currRot = player->rotateTo_;
     float deg = RadToDeg(rad);
     NormalizeAngle(deg);
-    if (fabs(currRot.EulerAngles().y_ - deg) > 1.0f)
+    if (fabs(currRot.YawAngle() - deg) > 1.0f)
     {
-        player->rotateTo_.FromEulerAngles(0.0f, deg, 0.0f);
+        player->rotateTo_.FromAngleAxis(deg, Vector3::UP);
     }
 }

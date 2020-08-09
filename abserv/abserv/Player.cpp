@@ -226,7 +226,7 @@ void Player::CRQPing(int64_t clientTick)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::GamePong);
     // Depending on the timezone of server and client the server may also be behind, i.e. difference is negative.
-    AB::Packets::Server::GamePong packet = { static_cast<int32_t>(clientTick - Utils::Tick()) };
+    AB::Packets::Server::GamePong packet = { static_cast<int32_t>(Utils::Tick() - clientTick) };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }

@@ -240,7 +240,7 @@ public:
             return client_.GetIp();
         return 0;
     }
-    /// Get difference of server and client clock
+    /// Get difference of server and client clock. Negative = server behind, positive = client behind.
     int64_t GetClockDiff() const
     {
         if (loggedIn_)

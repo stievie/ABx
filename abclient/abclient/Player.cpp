@@ -556,6 +556,8 @@ void Player::PostUpdate(float timeStep)
     else if (model_->GetViewMask() == 0)
         model_->SetViewMask(static_cast<unsigned>(-1));
 
+    Vector3 newCamPos = aimPoint;
+
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
     // Check the camera is not too close to the player model.
     if (!Equals(rayDistance, 0.0f))
@@ -567,11 +569,10 @@ void Player::PostUpdate(float timeStep)
             Ray(aimPoint, rayDir), rayDistance + 0.5f, COLLISION_LAYER_CAMERA);
         rayDistance = Clamp(Min(result.distance_ - 1.5f, rayDistance), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 
-        cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
+        newCamPos = aimPoint + rayDir * rayDistance;
     }
-    else
-        cameraNode_->SetPosition(aimPoint);
 
+    cameraNode_->SetPosition(newCamPos);
     cameraNode_->SetRotation(dir);
 
     Actor::PostUpdate(timeStep);

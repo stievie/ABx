@@ -1325,7 +1325,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
             {
                 int64_t diff = client->GetClockDiff();
                 if (abs(diff) < 1000)
-                    return std::to_string(client->GetClockDiff()) + " ms";
+                    return std::to_string(diff) + " ms";
                 return std::to_string(diff / 1000) + " s";
             }
             ASSERT_FALSE();

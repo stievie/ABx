@@ -276,10 +276,10 @@ void Actor::UpdateTransformation()
         // Interpolate when:
         // 1. Creature is moving
         // 2. Player: no client prediction is used or auto running
-        FwClient* c = GetSubsystem<FwClient>();
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5
-        const double rtt = (static_cast<double>(c->GetLastPing()) * 0.5);
+        int lastPing = GetSubsystem<FwClient>()->GetLastPing();
+        const double rtt = (static_cast<double>(lastPing) * 0.5);
         const double forTime = GetClientTime() - rtt;
         float p[3];
         if (posExtrapolator_.ReadPosition(forTime, p))
@@ -299,7 +299,7 @@ void Actor::UpdateTransformation()
         if ((cp - moveToPos_).LengthSquared() > 0.02f)
         {
             // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveTo, 0.2f);
+            Vector3 pos = cp.Lerp(moveTo, 0.5f);
             node_->SetPosition(pos);
         }
         else
@@ -309,9 +309,9 @@ void Actor::UpdateTransformation()
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
     {
-        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 1.0f)
+        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 0.5f)
         {
-            Quaternion r = rot.Slerp(rotateTo_, 0.2f);
+            Quaternion r = rot.Slerp(rotateTo_, 0.1f);
             node_->SetRotation(r);
         }
         else
@@ -1108,8 +1108,6 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
         break;
     case AB::GameProtocol::CreatureState::Moving:
     {
-        const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
-        posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
         PlaySoundEffect(SOUND_FOOTSTEPS, true);
         break;
     }
