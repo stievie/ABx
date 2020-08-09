@@ -76,7 +76,8 @@ const HashMap<String, AB::GameProtocol::CommandType> ChatWindow::CHAT_COMMANDS =
     { "history", AB::GameProtocol::CommandType::History },
     { "ip", AB::GameProtocol::CommandType::Ip },
     { "prefpath", AB::GameProtocol::CommandType::PrefPath },
-    { "quit", AB::GameProtocol::CommandType::Quit }
+    { "quit", AB::GameProtocol::CommandType::Quit },
+    { "time", AB::GameProtocol::CommandType::Time }
 };
 
 ChatWindow::ChatWindow(Context* context) :
@@ -1271,6 +1272,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
         AddLine("  /clear: Clear chat log", "ChatLogServerInfoText");
         AddLine("  /history: Show chat input history", "ChatLogServerInfoText");
+        AddLine("  /time: Print Server and Client time", "ChatLogServerInfoText");
         AddLine("  /quit: Exit program", "ChatLogServerInfoText");
         break;
     case AB::GameProtocol::CommandType::Ip:
@@ -1303,6 +1305,32 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
     {
         VariantMap& e = GetEventDataMap();
         SendEvent(Events::E_SC_EXITPROGRAM, e);
+        break;
+    }
+    case AB::GameProtocol::CommandType::Time:
+    {
+        auto* client = GetSubsystem<FwClient>();
+        const std::string value = sa::templ::Parser::Evaluate("Server: ${server}, Client: ${client}, Difference: ${diff}",
+            [client](const sa::templ::Token& token) -> std::string
+        {
+            if (token.value == "server")
+            {
+                return Client::format_tick(client->GetServerTick());
+            }
+            if (token.value == "client")
+            {
+                return Client::format_tick(Client::AbTick());
+            }
+            if (token.value == "diff")
+            {
+                int64_t diff = client->GetClockDiff();
+                if (diff < 1000)
+                    return std::to_string(client->GetClockDiff()) + " ms";
+                return std::to_string(diff / 1000) + " s";
+            }
+            ASSERT_FALSE();
+        });
+        AddLine(ToUrhoString(value), "ChatLogServerInfoText");
         break;
     }
     case AB::GameProtocol::CommandType::Unknown:

@@ -224,6 +224,7 @@ public:
         return 0;
     }
     int64_t GetClockDiff() const;
+    int64_t GetServerTick() const;
     // Sends an UPD packet to the login server to see if it's online. This is blocking until the server responds or timeouts.
     std::pair<bool, uint32_t> PingServer(const std::string& host, uint16_t port);
 

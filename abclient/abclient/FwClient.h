@@ -247,6 +247,12 @@ public:
             return client_.GetClockDiff();
         return 0;
     }
+    int64_t GetServerTick() const
+    {
+        if (loggedIn_)
+            return client_.GetServerTick();
+        return 0;
+    }
     AB::Entities::AccountType GetAccountType() const { return accountType_; }
     void UpdateServers();
     void AddAccountKey(const String& newKey);

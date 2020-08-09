@@ -2206,6 +2206,7 @@ void Player::OnHandleCommand(AB::GameProtocol::CommandType type,
     case AB::GameProtocol::CommandType::Clear:
     case AB::GameProtocol::CommandType::History:
     case AB::GameProtocol::CommandType::Quit:
+    case AB::GameProtocol::CommandType::Time:
         // Client side only
         break;
     case AB::GameProtocol::CommandType::ChatGeneral:

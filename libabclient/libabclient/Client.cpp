@@ -514,6 +514,13 @@ int64_t Client::GetClockDiff() const
     return 0;
 }
 
+int64_t Client::GetServerTick() const
+{
+    if (protoGame_)
+        return protoGame_->GetUpdateTick();
+    return 0;
+}
+
 std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t port)
 {
     // The login server should be able to reply within 500ms.

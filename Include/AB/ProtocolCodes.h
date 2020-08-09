@@ -579,6 +579,7 @@ enum class CommandType : uint8_t
     ServerId,        // /id
     PrefPath,        // /prefpath
     Quit,
+    Time,
 };
 
 }

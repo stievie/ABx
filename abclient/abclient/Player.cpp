@@ -531,7 +531,7 @@ void Player::PostUpdate(float timeStep)
             Quaternion(limitPitch, Vector3::RIGHT);
         // This could be expanded to look at an arbitrary target, now just look at a point in front
         const Vector3 headWorldTarget = headWorldPos + headDir * Vector3::BACK;
-        headNode->LookAt(headWorldTarget, Vector3::UP);
+        headNode->LookAt(headWorldTarget);
     }
 
     // Third person camera: position behind the character
