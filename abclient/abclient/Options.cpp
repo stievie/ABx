@@ -211,6 +211,18 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "ShadowSoftness");
+        param.SetString("type", "float");
+        param.SetFloat("value", shadowSoftness_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "ShadowMapSize");
+        param.SetString("type", "int");
+        param.SetInt("value", shadowMapSize_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "Shadows");
         param.SetString("type", "bool");
         param.SetBool("value", shadows_);
@@ -342,6 +354,22 @@ void Options::SetTextureFilterMode(TextureFilterMode value)
         textureFilterMode_ = value;
         GetSubsystem<Renderer>()->SetTextureFilterMode(textureFilterMode_);
     }
+}
+
+void Options::SetShadowSoftness(float value)
+{
+    if (shadowSoftness_ == value)
+        return;
+    shadowSoftness_ = Clamp(value, 0.0f, 1.0f);
+    GetSubsystem<Renderer>()->SetShadowSoftness(shadowSoftness_);
+}
+
+void Options::SetShadowMapSize(unsigned value)
+{
+    if (shadowMapSize_ == value)
+        return;
+    shadowMapSize_ = value;
+    GetSubsystem<Renderer>()->SetShadowMapSize(shadowMapSize_);
 }
 
 void Options::SetSpecularLightning(bool value)
@@ -690,6 +718,14 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("TextureAnisotropy") == 0)
         {
             textureAnisotropyLevel_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("ShadowSoftness") == 0)
+        {
+            shadowSoftness_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("ShadowMapSize") == 0)
+        {
+            shadowMapSize_ = paramElem.GetUInt("value");
         }
         else if (name.Compare("Shadows") == 0)
         {

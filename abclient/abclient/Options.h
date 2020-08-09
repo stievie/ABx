@@ -176,6 +176,10 @@ public:
         return textureFilterMode_;
     }
     void SetTextureFilterMode(TextureFilterMode value);
+    float GetShadowSoftness() const { return shadowSoftness_; }
+    void SetShadowSoftness(float value);
+    unsigned GetShadowMapSize() const { return shadowMapSize_; }
+    void SetShadowMapSize(unsigned value);
     int GetTextureAnisotropyLevel() const
     {
         return textureAnisotropyLevel_;
@@ -262,6 +266,8 @@ private:
     MaterialQuality textureQuality_{ QUALITY_HIGH };
     MaterialQuality materialQuality_{ QUALITY_HIGH };
     TextureFilterMode textureFilterMode_{ FILTER_ANISOTROPIC };
+    float shadowSoftness_{ 0.5f };
+    unsigned shadowMapSize_{ 4096 };
     int textureAnisotropyLevel_{ 16 };
     AntiAliasingMode antiAliasingMode_{ AntiAliasingMode::FXAA3 };
     bool specularLightning_{ true };
