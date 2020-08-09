@@ -279,8 +279,8 @@ void Actor::UpdateTransformation()
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5
         int lastPing = GetSubsystem<FwClient>()->GetLastPing();
-        const double rtt = (static_cast<double>(lastPing) * 0.5);
-        const double forTime = GetClientTime() - rtt;
+        const double rtt = static_cast<double>(lastPing) * 0.5;
+        const double forTime = static_cast<double>(GetClientTime()) - rtt;
         float p[3];
         if (posExtrapolator_.ReadPosition(forTime, p))
             moveTo = Vector3(p[0], p[1], p[2]);
