@@ -409,6 +409,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         {
             Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = packet.index - 1;
+            data[Game::InputDataSuppress] = packet.supress;
             data[Game::InputDataPingTarget] = packet.ping;
             AddPlayerInput(Game::InputType::UseSkill, std::move(data));
         }

@@ -39,14 +39,12 @@ void InteractionComp::OnCancelAll()
     interacting_ = false;
 }
 
-void InteractionComp::Update(uint32_t)
+void InteractionComp::UpdateGeneric()
 {
-    if (!interacting_)
-        return;
-
-    auto interactingWith = interactingWith_.lock();
+    auto interactingWith = target_.lock();
     if (!interactingWith)
         return;
+
     if (Is<Npc>(*interactingWith))
     {
         auto& npc = To<Npc>(*interactingWith);
@@ -79,16 +77,45 @@ void InteractionComp::Update(uint32_t)
     }
 }
 
+void InteractionComp::UpdateSkill()
+{
+    auto interactingWith = target_.lock();
+    if (!interactingWith)
+        return;
+
+    if (Is<Actor>(*interactingWith))
+    {
+        if (interactingWith->IsInRange(skillRange_, &owner_))
+        {
+            owner_.UseSkill(skillIndex_, false);
+            interacting_ = false;
+        }
+        return;
+    }
+}
+
+void InteractionComp::Update(uint32_t)
+{
+    if (!interacting_)
+        return;
+
+    if (type_ == Type::Generic)
+        return UpdateGeneric();
+
+    return UpdateSkill();
+}
+
 void InteractionComp::Interact(bool suppress, bool ping)
 {
     auto* interactingWith = owner_.selectionComp_->GetSelectedObject();
     if (!interactingWith)
         return;
     auto interactingWithSp = interactingWith->GetPtr<GameObject>();
-    if (!interactingWithSp)
+    if (owner_.IsImmobilized() || owner_.IsDead())
         return;
 
-    interactingWith_ = interactingWithSp;
+    target_ = interactingWithSp;
+    type_ = Type::Generic;
 
     if (AB::Entities::IsOutpost(owner_.GetGame()->data_.type))
     {
@@ -197,6 +224,60 @@ void InteractionComp::Interact(bool suppress, bool ping)
             return;
         }
     }
+}
+
+void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
+{
+    if (skillIndex < 0 || skillIndex >= PLAYER_MAX_SKILLS)
+        return;
+    if (owner_.IsImmobilized() || owner_.IsDead())
+        return;
+
+    auto* interactingWith = owner_.selectionComp_->GetSelectedObject();
+    if (interactingWith)
+        target_ = interactingWith->GetPtr<GameObject>();
+    else
+        target_.reset();
+
+    skillIndex_ = skillIndex;
+    SkillBar* sb = owner_.GetSkillBar();
+    auto skill = sb->GetSkill(skillIndex);
+
+    if (suppress)
+    {
+        owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+            interactingWith ? interactingWith->id_ : 0,
+            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex);
+        return;
+    }
+
+    if (!skill)
+    {
+        // Will send an error to the player
+        owner_.UseSkill(skillIndex, ping);
+        return;
+    }
+    skillRange_ = skill->GetRange();
+    if (!skill->NeedsTarget())
+    {
+        // Can use it right away
+        owner_.UseSkill(skillIndex, ping);
+        return;
+    }
+    if (!interactingWith)
+    {
+        // Needs a target but we don't have one -> send an error to the player
+        owner_.UseSkill(skillIndex, ping);
+        return;
+    }
+
+    if (ping)
+        owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+            interactingWith ? interactingWith->id_ : 0,
+            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex);
+    owner_.FollowObject(interactingWith, false, RangeDistances[static_cast<size_t>(skillRange_)]);
+    interacting_ = true;
+    type_ = Type::Skill;
 }
 
 }

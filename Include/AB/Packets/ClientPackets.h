@@ -455,11 +455,13 @@ struct GotoPos
 struct UseSkill
 {
     uint8_t index;
+    bool supress;
     bool ping;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(index);
+        ar.value(supress);
         ar.value(ping);
     }
 };

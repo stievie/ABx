@@ -178,9 +178,13 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         case InputType::UseSkill:
         {
             // The index of the skill in the users skill bar, 0 based
+            const bool suppress = input.data[InputDataSuppress].GetBool();
             int skillIndex = input.data[InputDataSkillIndex].GetInt();
             bool ping = input.data[InputDataPingTarget].GetBool();
-            owner_.UseSkill(skillIndex, ping);
+            if (Is<Player>(owner_))
+                To<Player>(owner_).interactionComp_->UseSkill(suppress, skillIndex, ping);
+            else
+                owner_.UseSkill(skillIndex, ping);
             break;
         }
         case InputType::Select:

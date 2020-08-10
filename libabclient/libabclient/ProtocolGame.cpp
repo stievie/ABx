@@ -511,10 +511,11 @@ void ProtocolGame::GotoPos(const Vec3& pos)
     SendPacket(AB::GameProtocol::ClientPacketTypes::Goto, packet);
 }
 
-void ProtocolGame::UseSkill(uint32_t index, bool ping)
+void ProtocolGame::UseSkill(bool suppress, uint32_t index, bool ping)
 {
     AB::Packets::Client::UseSkill packet = {
         static_cast<uint8_t>(index),
+        suppress,
         ping
     };
     SendPacket(AB::GameProtocol::ClientPacketTypes::UseSkill, packet);

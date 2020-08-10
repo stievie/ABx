@@ -1110,7 +1110,7 @@ void FwClient::UseSkill(uint32_t index)
     if (loggedIn_)
     {
         auto* sc = GetSubsystem<Shortcuts>();
-        client_.UseSkill(index, sc->IsTriggered(Events::E_SC_PINGTARGET));
+        client_.UseSkill(sc->IsTriggered(Events::E_SC_SUPPRESSACTION), index, sc->IsTriggered(Events::E_SC_PINGTARGET));
     }
 }
 

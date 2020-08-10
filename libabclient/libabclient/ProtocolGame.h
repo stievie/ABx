@@ -117,7 +117,7 @@ public:
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandType type, const std::string& data);
     void GotoPos(const Vec3& pos);
-    void UseSkill(uint32_t index, bool ping);
+    void UseSkill(bool suppress, uint32_t index, bool ping);
     void Interact(bool suppress, bool ping);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);

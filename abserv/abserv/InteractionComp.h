@@ -36,14 +36,25 @@ class InteractionComp
     NON_COPYABLE(InteractionComp)
     NON_MOVEABLE(InteractionComp)
 private:
+    enum class Type
+    {
+        Generic,
+        Skill,
+    };
     Player& owner_;
     bool interacting_{ false };
-    ea::weak_ptr<GameObject> interactingWith_;
+    Type type_{ Type::Generic };
+    int skillIndex_{ -1 };
+    Ranges skillRange_{ Ranges::Aggro };
+    ea::weak_ptr<GameObject> target_;
     void OnCancelAll();
+    void UpdateGeneric();
+    void UpdateSkill();
 public:
     explicit InteractionComp(Player& owner);
     void Update(uint32_t timeElapsed);
     void Interact(bool suppress, bool ping);
+    void UseSkill(bool suppress, int skillIndex, bool ping);
 };
 
 }

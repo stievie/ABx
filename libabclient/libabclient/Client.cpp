@@ -759,10 +759,10 @@ void Client::PartyLeave()
         protoGame_->PartyLeave();
 }
 
-void Client::UseSkill(uint32_t index, bool ping)
+void Client::UseSkill(bool suppress, uint32_t index, bool ping)
 {
     if (state_ == State::World)
-        protoGame_->UseSkill(index, ping);
+        protoGame_->UseSkill(suppress, index, ping);
 }
 
 void Client::Interact(bool suppress, bool ping)
