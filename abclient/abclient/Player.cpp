@@ -101,7 +101,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
                 faceLight_ = faceLightNode->CreateComponent<Light>();
                 faceLight_->SetColor({ 0.96f, 0.8f, 0.64f });
                 faceLight_->SetLightType(LIGHT_SPOT);
-                faceLight_->SetBrightness(0.5f);
+                faceLight_->SetBrightness(0.45f);
                 faceLight_->SetRange(3.0f);
                 faceLight_->SetFov(60.0f);
             }
@@ -120,8 +120,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     Mumble* mumble = GetSubsystem<Mumble>();
     if (mumble)
     {
-        SharedPtr<Node> charNode = SharedPtr<Node>(GetNode());
-        mumble->SetAvatar(charNode);
+        mumble->SetAvatar(SharedPtr<Node>(GetNode()));
         mumble->SetCamera(cameraNode_);
         mumble->SetIdentity(name_);
     }
