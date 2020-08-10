@@ -36,7 +36,7 @@ InteractionComp::InteractionComp(Player& owner) :
 
 void InteractionComp::OnCancelAll()
 {
-    interacting_ = false;
+    type_ = Type::None;
 }
 
 void InteractionComp::UpdateGeneric()
@@ -52,7 +52,7 @@ void InteractionComp::UpdateGeneric()
         if (npc.IsInRange(range, &owner_))
         {
             npc.CallEvent<void(Actor*)>(EVENT_ON_INTERACT, &owner_);
-            interacting_ = false;
+            type_ = Type::None;
         }
         return;
     }
@@ -62,7 +62,7 @@ void InteractionComp::UpdateGeneric()
         if (interactingWith->IsInRange(Ranges::Adjecent, &owner_))
         {
             To<ItemDrop>(*interactingWith).PickUp(&owner_);
-            interacting_ = false;
+            type_ = Type::None;
         }
         return;
     }
@@ -71,7 +71,7 @@ void InteractionComp::UpdateGeneric()
     {
         if (interactingWith->IsInRange(Ranges::Adjecent, &owner_))
         {
-            interacting_ = false;
+            type_ = Type::None;
         }
         return;
     }
@@ -88,7 +88,7 @@ void InteractionComp::UpdateSkill()
         if (interactingWith->IsInRange(skillRange_, &owner_))
         {
             owner_.UseSkill(skillIndex_, false);
-            interacting_ = false;
+            type_ = Type::None;
         }
         return;
     }
@@ -96,9 +96,8 @@ void InteractionComp::UpdateSkill()
 
 void InteractionComp::Update(uint32_t)
 {
-    if (!interacting_)
+    if (type_ == Type::None)
         return;
-
     if (type_ == Type::Generic)
         return UpdateGeneric();
 
@@ -115,7 +114,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
         return;
 
     target_ = interactingWithSp;
-    type_ = Type::Generic;
+    type_ = Type::None;
 
     if (AB::Entities::IsOutpost(owner_.GetGame()->data_.type))
     {
@@ -124,7 +123,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
             if (!suppress)
             {
                 owner_.FollowObject(interactingWith, ping, RANGE_TOUCH);
-                interacting_ = true;
+                type_ = Type::Generic;
                 return;
             }
             if (ping)
@@ -142,14 +141,14 @@ void InteractionComp::Interact(bool suppress, bool ping)
                 {
                     if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
                     {
-                        interacting_ = true;
+                        type_ = Type::Generic;
                         if (ping)
                             owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
                                 interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
                     }
                     return;
                 }
-                interacting_ = true;
+                type_ = Type::Generic;
                 if (ping)
                     owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
                         interactingWith->id_, AB::GameProtocol::ObjectCallType::TalkingTo, 0);
@@ -176,7 +175,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
         {
             if (owner_.FollowObject(interactingWith, false, RANGE_TOUCH))
             {
-                interacting_ = true;
+                type_ = Type::Generic;
                 if (ping)
                     owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
                         interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
@@ -184,7 +183,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
             return;
         }
 
-        interacting_ = true;
+        type_ = Type::Generic;
         if (ping)
             owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
                 interactingWith->id_, AB::GameProtocol::ObjectCallType::PickingUp, 0);
@@ -198,7 +197,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
             if (!suppress)
             {
                 owner_.FollowObject(interactingWith, ping);
-                interacting_ = false;
+                type_ = Type::Generic;
             }
             else
             {
@@ -213,7 +212,7 @@ void InteractionComp::Interact(bool suppress, bool ping)
             if (!suppress)
             {
                 owner_.Attack(To<Actor>(interactingWith), ping);
-                interacting_ = false;
+                type_ = Type::Generic;
             }
             else
             {
@@ -247,7 +246,7 @@ void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
     {
         owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
             interactingWith ? interactingWith->id_ : 0,
-            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex);
+            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex + 1);
         return;
     }
 
@@ -274,9 +273,8 @@ void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
     if (ping)
         owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
             interactingWith ? interactingWith->id_ : 0,
-            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex);
+            AB::GameProtocol::ObjectCallType::UseSkill, skillIndex + 1);
     owner_.FollowObject(interactingWith, false, RangeDistances[static_cast<size_t>(skillRange_)]);
-    interacting_ = true;
     type_ = Type::Skill;
 }
 

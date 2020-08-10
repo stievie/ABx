@@ -38,12 +38,12 @@ class InteractionComp
 private:
     enum class Type
     {
+        None,
         Generic,
         Skill,
     };
     Player& owner_;
-    bool interacting_{ false };
-    Type type_{ Type::Generic };
+    Type type_{ Type::None };
     int skillIndex_{ -1 };
     Ranges skillRange_{ Ranges::Aggro };
     ea::weak_ptr<GameObject> target_;

@@ -166,7 +166,7 @@ void Player::LoadSkills(const std::string& templ)
 
 void Player::UseSkill(int pos)
 {
-    client_.UseSkill(pos, false);
+    client_.UseSkill(false, pos, false);
 }
 
 void Player::OnStateChanged(unsigned state)
