@@ -117,6 +117,15 @@ void Game::InitMessageFilter()
             return false;
         return true;
     });
+    messageFilter->Subscribe<ObjectSetAttackSpeed>([](const Game& game, const Player& player, ObjectSetAttackSpeed& packet) -> bool
+    {
+        if (packet.id == player.id_)
+            return true;
+        const auto* object = game.GetObject<GameObject>(packet.id);
+        if (!player.IsInRange(Ranges::Compass, object))
+            return false;
+        return true;
+    });
     messageFilter->Subscribe<ObjectTargetSelected>([](const Game& game, const Player& player, ObjectTargetSelected& packet) -> bool
     {
         if (packet.id == player.id_ || packet.targetId == player.id_)
