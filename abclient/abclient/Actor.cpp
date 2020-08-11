@@ -89,6 +89,7 @@ Actor* Actor::CreateActor(uint32_t id, Scene* scene,
     sa::PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
+    node->CreateComponent<SmoothedTransform>();
     Actor* result = node->CreateComponent<Actor>();
     result->gameId_ = id;
 
@@ -269,7 +270,7 @@ void Actor::AddModel(uint32_t itemIndex)
 void Actor::UpdateTransformation()
 {
     extern bool gNoClientPrediction;
-    Vector3 moveTo = {};
+    Vector3 moveTo = moveToPos_;
     if ((creatureState_ == AB::GameProtocol::CreatureState::Moving) &&
         (objectType_ != ObjectType::Self || gNoClientPrediction || autoRun_))
     {
@@ -287,27 +288,10 @@ void Actor::UpdateTransformation()
         else
             moveTo = moveToPos_;
     }
-    else
-    {
-        moveTo = moveToPos_;
-    }
 
-    const Vector3& cp = node_->GetPosition();
-    if (moveTo != Vector3::ZERO && !moveTo.Equals(cp))
-        // Try to make moves smoother...
-        node_->SetPosition(cp.Lerp(moveTo, 0.2f));
-
-    const Quaternion& rot = node_->GetRotation();
-    if (rotateTo_ != rot)
-    {
-        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 0.5f)
-        {
-            Quaternion r = rot.Slerp(rotateTo_, 0.1f);
-            node_->SetRotation(r);
-        }
-        else
-            node_->SetRotation(rotateTo_);
-    }
+    auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
+    smoothTransform->SetTargetPosition(moveTo);
+    smoothTransform->SetTargetRotation(rotateTo_);
 }
 
 Vector3 Actor::GetHeadPos() const

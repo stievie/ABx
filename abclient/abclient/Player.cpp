@@ -75,6 +75,7 @@ Player* Player::CreatePlayer(uint32_t id, Scene* scene)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
+    node->CreateComponent<SmoothedTransform>();
     node->CreateComponent<ClientPrediction>();
     result->gameId_ = id;
     return result;
@@ -112,6 +113,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     cameraNode_ = scene->CreateChild("CameraNode");
     cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = cameraNode_->CreateComponent<Camera>();
+    cameraNode_->CreateComponent<SmoothedTransform>();
     camera->SetFarClip(options->GetCameraFarClip());
     camera->SetNearClip(options->GetCameraNearClip());
     camera->SetFov(options->GetCameraFov());
@@ -577,18 +579,9 @@ void Player::PostUpdate(float timeStep)
         newCamPos = aimPoint + rayDir * rayDistance;
     }
 
-    if ((oldCamPos_ != newCamPos || oldCamPos_ == Vector3::ZERO) ||
-        (oldCamDir_ != dir || oldCamDir_ == Quaternion::IDENTITY))
-    {
-        if (oldCamPos_ != Vector3::ZERO)
-            newCamPos = oldCamPos_.Lerp(newCamPos, 0.3f);
-        cameraNode_->SetPosition(newCamPos);
-        oldCamPos_ = newCamPos;
-        if (oldCamDir_ != Quaternion::IDENTITY)
-            dir = oldCamDir_.Slerp(dir, 0.3f);
-        cameraNode_->SetRotation(dir);
-        oldCamDir_ = dir;
-    }
+    auto* smoothTransform = cameraNode_->GetComponent<SmoothedTransform>();
+    smoothTransform->SetTargetPosition(newCamPos);
+    smoothTransform->SetTargetRotation(dir);
 
     Actor::PostUpdate(timeStep);
 }

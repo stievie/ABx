@@ -85,8 +85,6 @@ private:
     int64_t lastFoeSelect_{ 0 };
     int friendSelectedIndex_{ -1 };
     int foeSelectedIndex_{ -1 };
-    Vector3 oldCamPos_;
-    Quaternion oldCamDir_;
     struct DistanceId
     {
         float distance;
