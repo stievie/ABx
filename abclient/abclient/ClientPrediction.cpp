@@ -239,7 +239,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     // FIXME: This sucks a bit, and needs some work.
     if ((dist > 3.0f) ||
-        (Client::TimeElapsed(lastStateChange_) > client->GetAvgPing() &&
+        (Client::TimeElapsed(lastStateChange_) > client->GetLastPing() &&
             player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
     {
         // If too far away or player is idle, Lerp to server position
