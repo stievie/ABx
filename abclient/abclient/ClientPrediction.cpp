@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ClientPrediction.h"
 #include "Player.h"
 #include "MathUtils.h"
@@ -27,6 +26,8 @@
 #include <Urho3D/Physics/CollisionShape.h>
 #include <Urho3D/Physics/RigidBody.h>
 #include "LevelManager.h"
+#include "FwClient.h"
+#include "TimeUtils.h"
 
 void ClientPrediction::RegisterObject(Context* context)
 {
@@ -35,7 +36,8 @@ void ClientPrediction::RegisterObject(Context* context)
 
 ClientPrediction::ClientPrediction(Context* context) :
     LogicComponent(context),
-    serverTime_(0)
+    serverTime_(0),
+    lastStateChange_(Client::AbTick())
 {
     serverPos_.y_ = std::numeric_limits<float>::max();
     SetUpdateEventMask(USE_FIXEDUPDATE);
@@ -163,17 +165,16 @@ void ClientPrediction::UpdateTurn(float timeStep, uint8_t direction, float speed
 
 void ClientPrediction::Turn(float yAngle)
 {
-    float deg = RadToDeg(yAngle);
-    NormalizeAngle(deg);
+    const float deg = NormalizedAngle(RadToDeg(yAngle));
     Player* player = node_->GetComponent<Player>();
-    const float newangle = player->rotateTo_.EulerAngles().y_ + deg;
+    const float newangle = player->rotateTo_.YawAngle() + deg;
     TurnAbsolute(newangle);
 }
 
 void ClientPrediction::TurnAbsolute(float yAngle)
 {
     Player* player = node_->GetComponent<Player>();
-    player->rotateTo_.FromEulerAngles(0.0f, yAngle, 0.0f);
+    player->rotateTo_.FromAngleAxis(yAngle, Vector3::UP);
 }
 
 void ClientPrediction::FixedUpdate(float timeStep)
@@ -187,6 +188,12 @@ void ClientPrediction::FixedUpdate(float timeStep)
     Player* player = node_->GetComponent<Player>();
 
     const AB::GameProtocol::CreatureState state = player->GetCreatureState();
+    if (lastState_ != state)
+    {
+        lastStateChange_ = Client::AbTick();
+        lastState_ = state;
+    }
+
     if (state != AB::GameProtocol::CreatureState::Idle && state != AB::GameProtocol::CreatureState::Moving)
         return;
 
@@ -224,14 +231,19 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
 {
     serverTime_ = time;
     this->serverPos_ = serverPos;
+
     Player* player = node_->GetComponent<Player>();
+    FwClient* client = GetSubsystem<FwClient>();
+
     const Vector3& currPos = player->moveToPos_;
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     // FIXME: This sucks a bit, and needs some work.
-    if (dist > 5.0f || (dist > 1.0f && player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
+    if ((dist > 3.0f) ||
+        (Client::TimeElapsed(lastStateChange_) > client->GetClockDiff() &&
+            player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
     {
         // If too far away or player is idle, Lerp to server position
-        player->moveToPos_.Lerp(serverPos, 0.5f);
+        player->moveToPos_ = serverPos;
     }
 }
 
@@ -240,8 +252,7 @@ void ClientPrediction::CheckServerRotation(int64_t time, float rad)
     serverTime_ = time;
     Player* player = node_->GetComponent<Player>();
     const Quaternion& currRot = player->rotateTo_;
-    float deg = RadToDeg(rad);
-    NormalizeAngle(deg);
+    const float deg = NormalizedAngle(RadToDeg(rad));
     if (fabs(currRot.YawAngle() - deg) > 1.0f)
     {
         player->rotateTo_.FromAngleAxis(deg, Vector3::UP);

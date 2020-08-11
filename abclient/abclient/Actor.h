@@ -140,7 +140,6 @@ private:
     SharedPtr<ValueBar> hpBar_;
     SharedPtr<Text> classLevel_;
     float speechBubbleVisible_{ false };
-    void UpdateTransformation();
     void RemoveActorUI();
     void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
@@ -175,6 +174,7 @@ protected:
     WeakPtr<GameObject> selectedObject_;
     StringHash currentAnimation_;
     static String GetClassSubdir(AB::Entities::ModelClass cls);
+    virtual void UpdateTransformation();
 public:
     static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
     Vector3 moveToPos_;

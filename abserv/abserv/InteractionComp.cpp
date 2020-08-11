@@ -83,14 +83,10 @@ void InteractionComp::UpdateSkill()
     if (!interactingWith)
         return;
 
-    if (Is<Actor>(*interactingWith))
+    if (interactingWith->IsInRange(skillRange_, &owner_))
     {
-        if (interactingWith->IsInRange(skillRange_, &owner_))
-        {
-            owner_.UseSkill(skillIndex_, false);
-            type_ = Type::None;
-        }
-        return;
+        owner_.UseSkill(skillIndex_, false);
+        type_ = Type::None;
     }
 }
 
@@ -242,6 +238,13 @@ void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
     SkillBar* sb = owner_.GetSkillBar();
     auto skill = sb->GetSkill(skillIndex);
 
+    if (!skill)
+    {
+        // Will send an error to the player
+        owner_.UseSkill(skillIndex, ping);
+        return;
+    }
+
     if (suppress)
     {
         owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
@@ -250,12 +253,6 @@ void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
         return;
     }
 
-    if (!skill)
-    {
-        // Will send an error to the player
-        owner_.UseSkill(skillIndex, ping);
-        return;
-    }
     skillRange_ = skill->GetRange();
     if (!skill->NeedsTarget())
     {
@@ -267,6 +264,12 @@ void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
     {
         // Needs a target but we don't have one -> send an error to the player
         owner_.UseSkill(skillIndex, ping);
+        return;
+    }
+
+    if (interactingWith->IsInRange(skillRange_, &owner_))
+    {
+        owner_.UseSkill(skillIndex_, ping);
         return;
     }
 

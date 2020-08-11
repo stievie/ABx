@@ -30,6 +30,13 @@ inline void NormalizeAngle(float& angle)
     angle = fmodf(angle + 360.0f, 360.0f);
 }
 
+inline float NormalizedAngle(float angle)
+{
+    float result = angle;
+    NormalizeAngle(result);
+    return result;
+}
+
 template <typename T>
 inline T DegToRad(T deg)
 {

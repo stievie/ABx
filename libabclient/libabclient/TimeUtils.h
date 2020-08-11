@@ -62,6 +62,10 @@ inline int64_t AbTick()
     );
     return ms.count();
 }
+inline int64_t TimeElapsed(int64_t since)
+{
+    return AbTick() - since;
+}
 
 struct TimeSpan
 {

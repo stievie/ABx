@@ -22,15 +22,18 @@
 #pragma once
 
 #include <Urho3DAll.h>
+#include <AB/ProtocolCodes.h>
 
 class ClientPrediction : public LogicComponent
 {
     URHO3D_OBJECT(ClientPrediction, LogicComponent)
 private:
     int64_t serverTime_;
+    int64_t lastStateChange_;
     Vector3 serverPos_;
     uint8_t lastMoveDir_ = 0;
     uint8_t lastTurnDir_ = 0;
+    AB::GameProtocol::CreatureState lastState_{ AB::GameProtocol::CreatureState::Idle };
     void UpdateMove(float timeStep, uint8_t direction, float speedFactor);
     void Move(float speed, const Vector3& amount);
     void UpdateTurn(float timeStep, uint8_t direction, float speedFactor);
