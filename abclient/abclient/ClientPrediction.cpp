@@ -204,6 +204,7 @@ void ClientPrediction::FixedUpdate(float timeStep)
         {
             TurnAbsolute(player->controls_.yaw_);
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
+            lastStateChange_ = Client::AbTick();
         }
         UpdateMove(timeStep, moveDir, player->GetSpeedFactor());
     }
@@ -212,7 +213,10 @@ void ClientPrediction::FixedUpdate(float timeStep)
     if (turnDir != 0)
     {
         if (state == AB::GameProtocol::CreatureState::Idle)
+        {
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
+            lastStateChange_ = Client::AbTick();
+        }
         UpdateTurn(timeStep, turnDir, player->GetSpeedFactor());
     }
 
@@ -220,7 +224,10 @@ void ClientPrediction::FixedUpdate(float timeStep)
     {
         if ((moveDir == 0 && lastMoveDir_ != 0) ||
             (turnDir == 0 && lastTurnDir_ != 0))
+        {
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Idle);
+            lastStateChange_ = Client::AbTick();
+        }
     }
 
     lastMoveDir_ = moveDir;
@@ -237,10 +244,12 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
 
     const Vector3& currPos = player->moveToPos_;
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
+    const float distThreshold = ((float)client->GetLastPing() * 3.0f) / 10000.0f;
+//    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
     // FIXME: This sucks a bit, and needs some work.
-    if ((dist > 3.0f) ||
-        (Client::TimeElapsed(lastStateChange_) > client->GetLastPing() &&
-            player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle))
+    if (dist > distThreshold &&
+        Client::TimeElapsed(lastStateChange_) > client->GetLastPing() + 50 &&
+        player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle)
     {
         // If too far away or player is idle, Lerp to server position
         player->moveToPos_ = serverPos;
