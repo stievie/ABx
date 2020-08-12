@@ -414,9 +414,8 @@ void Actor::ForcePosition(int64_t time, const Vector3& newPos)
 
 void Actor::SetYRotation(int64_t, float rad, bool)
 {
-    float deg = RadToDeg(rad);
-    NormalizeAngle(deg);
-    rotateTo_.FromEulerAngles(0.0f, deg, 0.0f);
+    const float deg = NormalizedAngle(RadToDeg(rad));
+    rotateTo_.FromAngleAxis(deg, Vector3::UP);
 }
 
 void Actor::RemoveFromScene()

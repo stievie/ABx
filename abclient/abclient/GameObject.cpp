@@ -46,10 +46,8 @@ double GameObject::GetClientTime() const
 
 void GameObject::SetYRotation(int64_t, float rad, bool)
 {
-    Quaternion direction;
-    float deg = RadToDeg(rad);
-    direction.FromAngleAxis(deg, Vector3::UP);
-    GetNode()->SetRotation(direction);
+    const float deg = NormalizedAngle(RadToDeg(rad));
+    GetNode()->SetRotation({ deg, Vector3::UP });
 }
 
 void GameObject::SetCreatureState(int64_t, AB::GameProtocol::CreatureState newState)
@@ -65,7 +63,7 @@ void GameObject::SetSpeedFactor(int64_t, float value)
 
 float GameObject::GetYRotation() const
 {
-    return DegToRad(GetNode()->GetRotation().EulerAngles().y_);
+    return DegToRad(GetNode()->GetRotation().YawAngle());
 }
 
 void GameObject::MoveTo(int64_t, const Vector3& newPos)
@@ -109,7 +107,7 @@ IntVector2 GameObject::WorldToScreenPoint(Vector3 pos)
     if (!cam)
         return IntVector2::ZERO;
 
-    Vector2 screenPoint = cam->WorldToScreenPoint(pos);
+    const Vector2 screenPoint = cam->WorldToScreenPoint(pos);
     int x;
     int y;
     /// \todo This is incorrect if the viewport is used on a texture rendertarget instead of the backbuffer, as it may have different dimensions.

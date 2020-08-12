@@ -495,6 +495,7 @@ void Player::SelectObject(uint32_t objectId)
 
 void Player::PostUpdate(float timeStep)
 {
+    Actor::PostUpdate(timeStep);
     Node* characterNode = GetNode();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
@@ -582,8 +583,6 @@ void Player::PostUpdate(float timeStep)
     auto* smoothTransform = cameraNode_->GetComponent<SmoothedTransform>();
     smoothTransform->SetTargetPosition(newCamPos);
     smoothTransform->SetTargetRotation(dir);
-
-    Actor::PostUpdate(timeStep);
 }
 
 void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
