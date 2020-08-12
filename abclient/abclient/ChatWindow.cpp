@@ -77,7 +77,8 @@ const HashMap<String, AB::GameProtocol::CommandType> ChatWindow::CHAT_COMMANDS =
     { "ip", AB::GameProtocol::CommandType::Ip },
     { "prefpath", AB::GameProtocol::CommandType::PrefPath },
     { "quit", AB::GameProtocol::CommandType::Quit },
-    { "time", AB::GameProtocol::CommandType::Time }
+    { "time", AB::GameProtocol::CommandType::Time },
+    { "cp", AB::GameProtocol::CommandType::ClientPrediction }
 };
 
 ChatWindow::ChatWindow(Context* context) :
@@ -1273,6 +1274,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         AddLine("  /clear: Clear chat log", "ChatLogServerInfoText");
         AddLine("  /history: Show chat input history", "ChatLogServerInfoText");
         AddLine("  /time: Print Server and Client time", "ChatLogServerInfoText");
+        AddLine("  /cp: Turn client prediction on/off", "ChatLogServerInfoText");
         AddLine("  /quit: Exit program", "ChatLogServerInfoText");
         break;
     case AB::GameProtocol::CommandType::Ip:
@@ -1331,6 +1333,15 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
             ASSERT_FALSE();
         });
         AddLine(ToUrhoString(value), "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandType::ClientPrediction:
+    {
+        extern bool gNoClientPrediction;
+        gNoClientPrediction = !gNoClientPrediction;
+        String value = gNoClientPrediction ? "Client prediction is off" :
+            "Client prediction is on";
+        AddLine(value, "ChatLogServerInfoText");
         break;
     }
     case AB::GameProtocol::CommandType::Unknown:

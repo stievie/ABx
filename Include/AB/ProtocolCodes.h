@@ -580,6 +580,7 @@ enum class CommandType : uint8_t
     PrefPath,        // /prefpath
     Quit,
     Time,
+    ClientPrediction,
 };
 
 }
