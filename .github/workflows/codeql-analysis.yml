@@ -36,8 +36,8 @@ jobs:
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    #- name: Autobuild
+    #  uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
@@ -46,9 +46,14 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - run: |
+       sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+       sudo apt-get update -qq
+       sudo apt-get install g++-9
+       sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+       sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+       sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev postgresql-server-dev-all libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
+       mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make && ctest
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
