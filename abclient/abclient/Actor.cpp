@@ -269,14 +269,18 @@ void Actor::AddModel(uint32_t itemIndex)
 
 void Actor::UpdateTransformation()
 {
-    extern bool gNoClientPrediction;
-    Vector3 moveTo = moveToPos_;
-    if ((creatureState_ == AB::GameProtocol::CreatureState::Moving) &&
-        (objectType_ != ObjectType::Self || gNoClientPrediction || autoRun_))
+    auto getMoveToPos = [&]() -> Vector3
     {
+        extern bool gNoClientPrediction;
         // Interpolate when:
         // 1. Creature is moving
         // 2. Player: no client prediction is used or auto running
+        if (creatureState_ != AB::GameProtocol::CreatureState::Moving)
+            return moveToPos_;
+        if (objectType_ == ObjectType::Self && !gNoClientPrediction && !autoRun_)
+            // We effectively use client prediction which smooths the movements by its own
+            return moveToPos_;
+
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5
         int lastPing = GetSubsystem<FwClient>()->GetLastPing();
@@ -284,13 +288,12 @@ void Actor::UpdateTransformation()
         const double forTime = static_cast<double>(GetClientTime()) - rtt;
         float p[3];
         if (posExtrapolator_.ReadPosition(forTime, p))
-            moveTo = Vector3(p[0], p[1], p[2]);
-        else
-            moveTo = moveToPos_;
-    }
+            return { p[0], p[1], p[2] };
+        return moveToPos_;
+    };
 
     auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
-    smoothTransform->SetTargetPosition(moveTo);
+    smoothTransform->SetTargetPosition(getMoveToPos());
     smoothTransform->SetTargetRotation(rotateTo_);
 }
 
@@ -400,16 +403,14 @@ void Actor::Update(float timeStep)
 
 void Actor::MoveTo(int64_t time, const Vector3& newPos)
 {
-    moveToPos_ = newPos;
-    const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
-    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
+    SetMoveToPos(newPos);
+    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), moveToPos_.Data());
 }
 
 void Actor::ForcePosition(int64_t time, const Vector3& newPos)
 {
-    moveToPos_ = newPos;
-    const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
-    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
+    SetMoveToPos(newPos);
+    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), moveToPos_.Data());
 }
 
 void Actor::SetYRotation(int64_t, float rad, bool)

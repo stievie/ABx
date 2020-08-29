@@ -84,6 +84,9 @@ void PvpCombatLevel::CreateScene()
         return;
     }
     scene_->LoadXML(sceneFile->GetRoot());
+    scene_->SetSmoothingConstant(15.0f);
+    // No Lerp if squared distance is > Snap
+    scene_->SetSnapThreshold(20.0f);
 
     InitModelAnimations();
 }

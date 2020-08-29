@@ -131,7 +131,8 @@ public:
     bool autoRun_{ false };
     bool pvpCharacter_{ false };
 private:
-    /// Player hovers
+    Vector3 moveToPos_;
+    Quaternion rotateTo_;
     bool hovered_{ false };
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;
@@ -177,8 +178,6 @@ protected:
     virtual void UpdateTransformation();
 public:
     static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
-    Vector3 moveToPos_;
-    Quaternion rotateTo_;
     String name_;
     AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSex::Unknown };
     uint32_t level_{ 0 };
@@ -193,6 +192,10 @@ public:
     AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
+    void SetMoveToPos(const Vector3& pos) { moveToPos_ = pos; };
+    const Vector3& GetMoveToPos() const { return moveToPos_; }
+    void SetRotateTo(const Quaternion& rot) { rotateTo_ = rot; }
+    const Quaternion& GetRotateTo() const { return rotateTo_; }
     void ResetSecondProfAttributes();
     bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();

@@ -132,8 +132,8 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
 void ClientPrediction::Move(float speed, const Vector3& amount)
 {
     Player* player = node_->GetComponent<Player>();
-    const Quaternion& oriention = player->rotateTo_;
-    Vector3 pos = player->moveToPos_;
+    const Quaternion& oriention = player->GetRotateTo();
+    Vector3 pos = player->GetMoveToPos();
     const Matrix3 m = oriention.RotationMatrix();
     const Vector3 a = amount * speed;
     const Vector3 v = m * a;
@@ -148,7 +148,7 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
     }
 
     if (CheckCollision(pos))
-        player->moveToPos_ = pos;
+        player->SetMoveToPos(pos);
 }
 
 void ClientPrediction::UpdateTurn(float timeStep, uint8_t direction, float speedFactor)
@@ -167,14 +167,14 @@ void ClientPrediction::Turn(float yAngle)
 {
     const float deg = NormalizedAngle(RadToDeg(yAngle));
     Player* player = node_->GetComponent<Player>();
-    const float newangle = player->rotateTo_.YawAngle() + deg;
+    const float newangle = player->GetRotateTo().YawAngle() + deg;
     TurnAbsolute(newangle);
 }
 
 void ClientPrediction::TurnAbsolute(float yAngle)
 {
     Player* player = node_->GetComponent<Player>();
-    player->rotateTo_.FromAngleAxis(yAngle, Vector3::UP);
+    player->SetRotateTo({ yAngle, Vector3::UP });
 }
 
 void ClientPrediction::FixedUpdate(float timeStep)
@@ -242,7 +242,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     Player* player = node_->GetComponent<Player>();
     FwClient* client = GetSubsystem<FwClient>();
 
-    const Vector3& currPos = player->moveToPos_;
+    const Vector3& currPos = player->GetMoveToPos();
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     const float distThreshold = ((float)client->GetLastPing() * 3.0f) / 10000.0f;
 //    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
@@ -252,7 +252,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
         player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle)
     {
         // If too far away or player is idle, Lerp to server position
-        player->moveToPos_ = serverPos;
+        player->SetMoveToPos(serverPos);
     }
 }
 
@@ -260,10 +260,10 @@ void ClientPrediction::CheckServerRotation(int64_t time, float rad)
 {
     serverTime_ = time;
     Player* player = node_->GetComponent<Player>();
-    const Quaternion& currRot = player->rotateTo_;
+    const Quaternion& currRot = player->GetRotateTo();
     const float deg = NormalizedAngle(RadToDeg(rad));
     if (fabs(currRot.YawAngle() - deg) > 1.0f)
     {
-        player->rotateTo_.FromAngleAxis(deg, Vector3::UP);
+        player->SetRotateTo({ deg, Vector3::UP });
     }
 }

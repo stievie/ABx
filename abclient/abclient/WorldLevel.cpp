@@ -1087,8 +1087,8 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     sa::PropReadStream& data)
 {
     Actor* result = Actor::CreateActor(id, scene_, position, direction, state, data);
-    result->moveToPos_ = position;
-    result->rotateTo_ = direction;
+    result->SetMoveToPos(position);
+    result->SetRotateTo(direction);
     result->GetNode()->SetScale(scale);
     return result;
 }
@@ -1121,8 +1121,8 @@ void WorldLevel::CreatePlayer(uint32_t id,
 {
     player_ = Player::CreatePlayer(id, scene_);
     skillBar_->SetActor(player_);
-    player_->moveToPos_ = position;
-    player_->rotateTo_ = direction;
+    player_->SetMoveToPos(position);
+    player_->SetRotateTo(direction);
     player_->GetNode()->SetScale(scale);
     player_->UpdateYaw();
     player_->Unserialize(data);
