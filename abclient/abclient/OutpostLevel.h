@@ -32,7 +32,6 @@ public:
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
-    void CreateScene() override;
 private:
 };
 

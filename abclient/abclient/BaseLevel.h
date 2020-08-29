@@ -59,6 +59,7 @@ protected:
     friend class FwClient;
     virtual void CreateUI();
     virtual void CreateScene();
+    void LoadScene(const String& file);
     virtual void Dispose();
     virtual void SubscribeToEvents();
     virtual void SetupViewport();

@@ -197,9 +197,7 @@ void CharCreateLevel::DoCancel()
 void CharCreateLevel::CreateScene()
 {
     BaseLevel::CreateScene();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateCharacter.xml");
-    scene_->LoadXML(sceneFile->GetRoot());
+    LoadScene("Scenes/CreateCharacter.xml");
 
     using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();

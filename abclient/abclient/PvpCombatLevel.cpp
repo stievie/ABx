@@ -71,22 +71,3 @@ void PvpCombatLevel::CreateUI()
     uiRoot_->AddChild(partyWindow_);
     partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 }
-
-void PvpCombatLevel::CreateScene()
-{
-    WorldLevel::CreateScene();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/" + mapName_ + ".xml");
-    if (!sceneFile)
-    {
-        URHO3D_LOGERRORF("Map %s not found", mapName_.CString());
-        ShowError("Map \"" + mapName_ + "\" not found", "Error");
-        return;
-    }
-    scene_->LoadXML(sceneFile->GetRoot());
-    scene_->SetSmoothingConstant(15.0f);
-    // No Lerp if squared distance is > Snap
-    scene_->SetSnapThreshold(20.0f);
-
-    InitModelAnimations();
-}

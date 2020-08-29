@@ -375,6 +375,10 @@ void WorldLevel::CreateScene()
     if (navMesh)
         navMesh->Build();
 
+    LoadScene("Scenes/" + mapName_ + ".xml");
+
+    InitModelAnimations();
+
     using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = mapUuid_;

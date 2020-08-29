@@ -139,9 +139,7 @@ void CreateAccountLevel::DoCancel()
 void CreateAccountLevel::CreateScene()
 {
     BaseLevel::CreateScene();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateAccount.xml");
-    scene_->LoadXML(sceneFile->GetRoot());
+    LoadScene("Scenes/CreateAccount.xml");
 
     using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();

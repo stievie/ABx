@@ -212,9 +212,7 @@ void CharSelectLevel::CreateUI()
 void CharSelectLevel::CreateScene()
 {
     BaseLevel::CreateScene();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
-    scene_->LoadXML(sceneFile->GetRoot());
+    LoadScene("Scenes/CharSelect.xml");
 
     using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();

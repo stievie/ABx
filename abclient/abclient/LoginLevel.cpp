@@ -64,9 +64,7 @@ void LoginLevel::PingServers()
 void LoginLevel::CreateScene()
 {
     BaseLevel::CreateScene();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/Login.xml");
-    scene_->LoadXML(sceneFile->GetRoot());
+    LoadScene("Scenes/Login.xml");
 }
 
 void LoginLevel::CreateCamera()
