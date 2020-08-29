@@ -516,7 +516,7 @@ void Player::PostUpdate(float timeStep)
     {
         headWorldPos = headNode->GetWorldPosition();
 
-        if (!firstPerson)
+        if (!firstPerson && !IsDead())
         {
             static constexpr float YAW_LIMIT = 60.0f;
             static constexpr float PITCH_LIMIT = 30.0f;
