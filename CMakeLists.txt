@@ -17,7 +17,7 @@ if (CMAKE_GENERATOR MATCHES "Ninja Multi-Config")
 endif()
 
 include(CTest)
-find_package(Lua 5.3 EXACT REQUIRED)
+find_package(Lua 5.3 EXACT)
 
 if(LUA_FOUND)
     set(LUA_VERSION_SHORT "${LUA_VERSION_MAJOR}.${LUA_VERSION_MINOR}")

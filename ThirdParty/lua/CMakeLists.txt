@@ -20,6 +20,6 @@ endif()
 
 if (MSVC)
     target_compile_options(lua PRIVATE /wd4244 /wd4702 /wd4324 /wd4310)
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+elseif (CMAKE_C_COMPILER_ID MATCHES "GNU")
     target_compile_options(lua PRIVATE -Wno-stringop-overflow)
 endif()
