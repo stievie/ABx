@@ -11,8 +11,6 @@ add_subdirectory(EASTL/test/packages/EABase)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(EASTL PRIVATE -Wno-strict-aliasing)
     target_compile_options(EASTL PUBLIC -Wno-unused-variable -Wno-deprecated-copy)
-elseif(MSVC)
-    # TODO: Silence warnings
 endif()
 
 if (ABX_SCENE_VIEWER)
