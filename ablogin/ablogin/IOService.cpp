@@ -132,6 +132,19 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
         }
         if (s.status != AB::Entities::ServiceStatusOnline)
             continue;
+        if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
+        {
+            // File and game server send a heart beat. Look if they are still alive.
+            if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
+            {
+                // Maybe dead
+                LOG_INFO << "No heart beat from service " << s.uuid << " for " << Utils::TimeElapsed(s.heartbeat) << " ms" << std::endl;
+                s.status = AB::Entities::ServiceStatusOffline;
+                dc->Update(s);
+                continue;
+            }
+        }
+
         if (s.type == type)
         {
             services.push_back(s);
