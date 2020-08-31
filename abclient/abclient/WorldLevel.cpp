@@ -474,7 +474,6 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         if (groupMask != 0)
             object->groupMask_ = groupMask;
 
-        const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor
         Actor* actor = To<Actor>(object);
         object->GetNode()->SetName(actor->name_);
