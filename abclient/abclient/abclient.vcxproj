@@ -378,7 +378,6 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="EffectsWindow.h" />
-    <ClInclude Include="Extrapolator.h" />
     <ClInclude Include="FormatText.h" />
     <ClInclude Include="FriendListWindow.h" />
     <ClInclude Include="FwClient.h" />

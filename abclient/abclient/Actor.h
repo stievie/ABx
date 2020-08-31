@@ -22,7 +22,6 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Extrapolator.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Item.h>
@@ -190,7 +189,6 @@ public:
     // If this is an item drop, the ID of the player for who it dropped
     uint32_t dropTarget_{ 0 };
     AB::Entities::ModelClass modelClass_;
-    Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
     void SetMoveToPos(const Vector3& pos) { moveToPos_ = pos; };
     const Vector3& GetMoveToPos() const { return moveToPos_; }

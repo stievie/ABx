@@ -36,7 +36,6 @@ Creator: sa 2017-2019
 * Urho3D https://urho3d.github.io/
 * PostProcessController https://gist.github.com/lezak
 * Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
-* Entity Position Interpolation https://github.com/jwatte/EPIC
 * http://kenney.nl/assets/particle-pack
 * Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
 * https://github.com/codeplea/tinyexpr

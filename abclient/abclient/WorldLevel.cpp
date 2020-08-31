@@ -477,8 +477,6 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor
         Actor* actor = To<Actor>(object);
-        actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
-            object->GetClientTime(), p);
         object->GetNode()->SetName(actor->name_);
         object->undestroyable_ = undestroyable;
         object->selectable_ = selectable;

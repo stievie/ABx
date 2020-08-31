@@ -34,9 +34,7 @@ Christmas 2117 +/- some years.
 * Database back-end is currently PostgreSQL.
 * Instanced world.
 * Encrypted Game and Login Protocol.
-* Lag compensation:
-    - Entity interpolation
-    - Client prediction.
+* Lag compensation: Client prediction.
 * Network traffic compression:
     - Delta compression (send only state changes)
     - Send only relevant messages to each player, e.g. a Player doesn't need to know when an Actor moves far away from the Player
