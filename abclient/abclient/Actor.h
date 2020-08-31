@@ -130,8 +130,6 @@ public:
     bool autoRun_{ false };
     bool pvpCharacter_{ false };
 private:
-    Vector3 moveToPos_;
-    Quaternion rotateTo_;
     bool hovered_{ false };
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;
@@ -174,7 +172,6 @@ protected:
     WeakPtr<GameObject> selectedObject_;
     StringHash currentAnimation_;
     static String GetClassSubdir(AB::Entities::ModelClass cls);
-    virtual void UpdateTransformation();
 public:
     static String GetAnimation(AB::Entities::ModelClass cls, const StringHash& hash);
     String name_;
@@ -190,10 +187,10 @@ public:
     uint32_t dropTarget_{ 0 };
     AB::Entities::ModelClass modelClass_;
     ActorStats stats_;
-    void SetMoveToPos(const Vector3& pos) { moveToPos_ = pos; };
-    const Vector3& GetMoveToPos() const { return moveToPos_; }
-    void SetRotateTo(const Quaternion& rot) { rotateTo_ = rot; }
-    const Quaternion& GetRotateTo() const { return rotateTo_; }
+    void SetMoveToPos(const Vector3& pos);
+    const Vector3& GetMoveToPos() const;
+    void SetRotateTo(const Quaternion& rot);
+    const Quaternion& GetRotateTo() const;
     void ResetSecondProfAttributes();
     bool IsDead() const { return stats_.health == 0; }
     void AddActorUI();

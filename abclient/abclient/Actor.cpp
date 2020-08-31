@@ -267,11 +267,28 @@ void Actor::AddModel(uint32_t itemIndex)
     }
 }
 
-void Actor::UpdateTransformation()
+void Actor::SetMoveToPos(const Vector3& pos)
 {
     auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
-    smoothTransform->SetTargetPosition(moveToPos_);
-    smoothTransform->SetTargetRotation(rotateTo_);
+    return smoothTransform->SetTargetPosition(pos);
+}
+
+const Vector3& Actor::GetMoveToPos() const
+{
+    auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
+    return smoothTransform->GetTargetPosition();
+}
+
+void Actor::SetRotateTo(const Quaternion& rot)
+{
+    auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
+    smoothTransform->SetTargetRotation(rot);
+}
+
+const Quaternion& Actor::GetRotateTo() const
+{
+    auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
+    return smoothTransform->GetTargetRotation();
 }
 
 Vector3 Actor::GetHeadPos() const
@@ -309,10 +326,6 @@ bool Actor::IsSpeechBubbleVisible() const
 
 void Actor::Update(float timeStep)
 {
-    Vector3 oldpos = node_->GetPosition();
-    UpdateTransformation();
-    velocity_ = ((oldpos - node_->GetPosition()) / timeStep).Abs();
-
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
     const Vector3& pos = node_->GetPosition();
@@ -390,8 +403,9 @@ void Actor::ForcePosition(int64_t, const Vector3& newPos)
 
 void Actor::SetYRotation(int64_t, float rad, bool)
 {
-    const float deg = NormalizedAngle(RadToDeg(rad));
-    rotateTo_.FromAngleAxis(deg, Vector3::UP);
+    auto* smoothTransform = node_->GetComponent<SmoothedTransform>();
+    const Quaternion rotateTo = { NormalizedAngle(RadToDeg(rad)), Vector3::UP };
+    smoothTransform->SetTargetRotation(rotateTo);
 }
 
 void Actor::RemoveFromScene()

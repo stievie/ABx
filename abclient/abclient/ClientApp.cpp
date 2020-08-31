@@ -23,6 +23,7 @@
 
 #include "ClientApp.h"
 #include "ActorResourceBar.h"
+#include "CameraTransform.h"
 #include "CharCreateLevel.h"
 #include "CharSelectLevel.h"
 #include "ChatFilter.h"
@@ -158,6 +159,7 @@ ClientApp::ClientApp(Context* context) :
     MultiLineEdit::RegisterObject(context);
     FormatText::RegisterObject(context);
 
+    context->RegisterFactory<CameraTransform>();
     // Register levels
     context->RegisterFactory<LoginLevel>();
     context->RegisterFactory<CreateAccountLevel>();

@@ -71,8 +71,8 @@ public:
     void SelectObject(uint32_t objectId);
     void UpdateMumbleContext();
     void UpdateUI();
-    uint8_t GetMoveDir();
-    uint8_t GetTurnDir();
+    uint8_t GetMoveDir() const;
+    uint8_t GetTurnDir() const;
     void MoveTo(int64_t time, const Vector3& newPos) override;
     float lastYaw_{ 0.0f };
 protected:

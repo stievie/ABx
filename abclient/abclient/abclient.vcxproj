@@ -275,6 +275,7 @@
     <ClCompile Include="AddAccountKeyDialog.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BaseLevel.cpp" />
+    <ClCompile Include="CameraTransform.cpp" />
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatFilter.cpp" />
@@ -348,6 +349,7 @@
     <ClInclude Include="ActorResourceBar.h" />
     <ClInclude Include="AddAccountKeyDialog.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="CameraTransform.h" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />
     <ClInclude Include="ChatFilter.h" />

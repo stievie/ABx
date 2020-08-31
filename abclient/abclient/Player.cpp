@@ -22,6 +22,7 @@
 
 #include "Player.h"
 #include "ActorResourceBar.h"
+#include "CameraTransform.h"
 #include "ClientPrediction.h"
 #include "EquipmentWindow.h"
 #include "FwClient.h"
@@ -113,7 +114,8 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     cameraNode_ = scene->CreateChild("CameraNode");
     cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = cameraNode_->CreateComponent<Camera>();
-    cameraNode_->CreateComponent<SmoothedTransform>();
+    CameraTransform* trans = cameraNode_->CreateComponent<CameraTransform>();
+    trans->SetSnapFactor(0.5f);                           // No smooth reverse camera
     camera->SetFarClip(options->GetCameraFarClip());
     camera->SetNearClip(options->GetCameraNearClip());
     camera->SetFov(options->GetCameraFov());
@@ -339,7 +341,7 @@ void Player::SetSkillBarSkills()
     skillsWin->SetSkills(skills_);
 }
 
-uint8_t Player::GetMoveDir()
+uint8_t Player::GetMoveDir() const
 {
     uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
     if (!(controls_.IsDown(CTRL_MOVE_FORWARD) && controls_.IsDown(CTRL_MOVE_BACK)))
@@ -359,7 +361,7 @@ uint8_t Player::GetMoveDir()
     return moveDir;
 }
 
-uint8_t Player::GetTurnDir()
+uint8_t Player::GetTurnDir() const
 {
     uint8_t turnDir = AB::GameProtocol::TurnDirectionNone;
     if (!(controls_.IsDown(CTRL_TURN_LEFT) && controls_.IsDown(CTRL_TURN_RIGHT)))
@@ -499,8 +501,9 @@ void Player::PostUpdate(float timeStep)
     Node* characterNode = GetNode();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
+    const bool reverseCamera = scs->IsTriggered(Events::E_SC_REVERSECAMERA);
     float yaw = controls_.yaw_;
-    if (scs->IsTriggered(Events::E_SC_REVERSECAMERA))
+    if (reverseCamera)
         yaw += 180.0f;
     // Get camera look at dir from character yaw + pitch
     const Quaternion rot = Quaternion(yaw, Vector3::UP);
@@ -580,9 +583,9 @@ void Player::PostUpdate(float timeStep)
         newCamPos = aimPoint + rayDir * rayDistance;
     }
 
-    auto* smoothTransform = cameraNode_->GetComponent<SmoothedTransform>();
-    smoothTransform->SetTargetPosition(newCamPos);
-    smoothTransform->SetTargetRotation(dir);
+    auto* camTransform = cameraNode_->GetComponent<CameraTransform>();
+    camTransform->SetTargetPosition(newCamPos);
+    camTransform->SetTargetRotation(dir);
 }
 
 void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
