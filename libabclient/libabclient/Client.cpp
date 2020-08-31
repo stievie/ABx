@@ -525,20 +525,21 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
 {
     // The login server should be able to reply within 500ms.
     static constexpr int64_t TIMEOUT = 500;
+    static constexpr size_t DATA_SIZE = 64;
 
     asio::io_service ioService;
     asio::ip::udp::socket socket(ioService, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
     asio::ip::udp::resolver resolver(ioService);
     asio::ip::udp::endpoint endpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
-    char senddata[64] = "ablogin";
+    const char senddata[DATA_SIZE] = "ablogin";
 
     bool result = false;
 
-    socket.send_to(asio::buffer(senddata, 64), endpoint);
+    socket.send_to(asio::buffer(senddata, DATA_SIZE), endpoint);
 
-    char recvdata[64] = {};
+    char recvdata[DATA_SIZE] = {};
 
-    socket.async_receive_from(asio::buffer(recvdata, 64), endpoint, [&](const asio::error_code&, size_t)
+    socket.async_receive_from(asio::buffer(recvdata, DATA_SIZE), endpoint, [&](const asio::error_code&, size_t)
     {
         if (strcmp(senddata, recvdata) == 0)
             result = true;
