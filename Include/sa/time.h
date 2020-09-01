@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <iomanip>
 #include <time.h>
 #include <sa/Compiler.h>
