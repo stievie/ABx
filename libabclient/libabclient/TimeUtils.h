@@ -67,28 +67,4 @@ inline int64_t TimeElapsed(int64_t since)
     return AbTick() - since;
 }
 
-struct TimeSpan
-{
-    uint32_t months = 0;
-    uint32_t days = 0;
-    uint32_t hours = 0;
-    uint32_t minutes = 0;
-    uint32_t seconds = 0;
-    TimeSpan(uint32_t sec)
-    {
-        const time_t secs(sec);
-        const std::tm p = sa::time::gmtime(secs);
-        if (p.tm_yday > 31)
-        {
-            months = p.tm_yday / 31;
-            days = p.tm_yday - (months * 31);
-        }
-        else
-            days = p.tm_yday;
-        hours = p.tm_hour;
-        minutes = p.tm_min;
-        seconds = p.tm_sec;
-    }
-};
-
 }

@@ -36,6 +36,7 @@
 #include <fstream>
 #include "ChatFilter.h"
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -533,7 +534,7 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     uint32_t uAge = static_cast<uint32_t>(std::atoi(age.CString()));
     // Seconds
     uint32_t uPlayTime = static_cast<uint32_t>(std::atoi(playTime.CString()));
-    Client::TimeSpan tAge(uAge);
+    const sa::time::time_span tAge = sa::time::get_time_span(uAge);
 
     sa::templ::Parser parser;
     sa::templ::Tokens tokens = parser.Parse("You have played this character for ");

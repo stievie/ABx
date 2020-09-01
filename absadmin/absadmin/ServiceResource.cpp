@@ -25,6 +25,7 @@
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Service.h>
 #include <uuid.h>
+#include <sa/time.h>
 
 namespace Resources {
 
@@ -61,7 +62,7 @@ bool ServiceResource::GetContext(LuaContext& objects)
     state["online"] = s.status == AB::Entities::ServiceStatusOnline;
     // Temporary are always running
     state["termable"] = s.temporary;
-    Utils::TimeSpan ts(static_cast<uint32_t>(s.runTime));
+    const sa::time::time_span ts = sa::time::get_time_span(static_cast<uint32_t>(s.runTime));
     std::stringstream ss;
     if (ts.months > 0)
         ss << ts.months << " month(s) ";

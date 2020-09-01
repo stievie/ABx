@@ -77,5 +77,32 @@ inline std::time_t systemtime_now()
     return std::chrono::system_clock::to_time_t(system_now);
 }
 
+struct time_span
+{
+    uint32_t months{ 0 };
+    uint32_t days{ 0 };
+    uint32_t hours{ 0 };
+    uint32_t minutes{ 0 };
+    uint32_t seconds{ 0 };
+};
+
+inline time_span get_time_span(uint32_t sec)
+{
+    time_span result;
+    const time_t secs(sec);
+    const std::tm p = gmtime(secs);
+    if (p.tm_yday > 31)
+    {
+        result.months = p.tm_yday / 31;
+        result.days = p.tm_yday - (result.months * 31);
+    }
+    else
+        result.days = p.tm_yday;
+    result.hours = p.tm_hour;
+    result.minutes = p.tm_min;
+    result.seconds = p.tm_sec;
+    return result;
+}
+
 }
 }
