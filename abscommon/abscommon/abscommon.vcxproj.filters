@@ -105,9 +105,6 @@
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="TimeUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="DataCodes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

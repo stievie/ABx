@@ -185,7 +185,6 @@
     <ClInclude Include="PingServer.h" />
     <ClInclude Include="ServiceConfig.h" />
     <ClInclude Include="ServiceInstaller.h" />
-    <ClInclude Include="TimeUtils.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Subsystems.h" />
     <ClInclude Include="ThreadPool.h" />
