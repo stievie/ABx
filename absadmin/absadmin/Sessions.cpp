@@ -21,6 +21,7 @@
 
 #include "Sessions.h"
 #include <sa/StringHash.h>
+#include <sa/time.h>
 
 namespace HTTP {
 
@@ -48,9 +49,9 @@ Session::Session()
 void Session::Touch()
 {
     time(&expires_);
-    struct tm* tm = localtime(&expires_);
-    tm->tm_sec += sessionLifetime_ / 1000;
-    expires_ = mktime(tm);
+    std::tm tm = sa::time::localtime(expires_);
+    tm.tm_sec += sessionLifetime_ / 1000;
+    expires_ = mktime(&tm);
 }
 
 bool Session::GetBool(const std::string& key)

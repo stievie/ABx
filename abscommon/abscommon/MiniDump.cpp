@@ -24,6 +24,7 @@
 #include "Logger.h"
 #include <filesystem>
 #include "MiniDump.h"
+#include <sa/time.h>
 
 namespace System {
 
@@ -110,11 +111,8 @@ int WriteMiniDump(const char* applicationName, EXCEPTION_POINTERS* exceptionPoin
     std::chrono::time_point<std::chrono::system_clock> time_point;
     time_point = std::chrono::system_clock::now();
     std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
-    tm p;
-    localtime_s(&p, &ttp);
-    char dateTime[50];
-    strftime(dateTime, 50, "%Y-%m-%d-%H-%M-%S", (const tm*)&p);
-    std::string dateTimeStr = std::string(dateTime);
+    std::tm p = sa::time::localtime(ttp);
+    std::string dateTimeStr = sa::time::put_time(&p, "%Y-%m-%d-%H-%M-%S");
 
     std::string fileName = GetDumpDir() + "\\" + dateTimeStr + "_" + std::string(applicationName);
     std::string miniDumpName = fileName + ".dmp";

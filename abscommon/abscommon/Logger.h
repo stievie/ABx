@@ -30,6 +30,7 @@
 #include "ConsoleColor.h"
 #include <sa/Assert.h>
 #include <sa/Compiler.h>
+#include <sa/time.h>
 #include <memory>
 #include <thread>
 
@@ -107,12 +108,8 @@ inline Logger& Logger::operator << (const T& data)
         std::chrono::time_point<std::chrono::system_clock> time_point;
         time_point = std::chrono::system_clock::now();
         std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
-        struct tm* p;
-        p = localtime(&ttp);
-        char chr[50] = { 0 };
-        strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", p);
-
-        stream_ << std::string(chr) << " " << data;
+        std::tm p = sa::time::localtime(ttp);
+        stream_ << sa::time::put_time(&p, "(%g-%m-%d %H:%M:%S)") << " " << data;
         nextIsBegin_ = false;
     }
     else

@@ -22,6 +22,7 @@
 
 #include "Cookie.h"
 #include <sa/StringTempl.h>
+#include <sa/time.h>
 
 namespace HTTP {
 
@@ -40,9 +41,9 @@ Cookie::Cookie() :
     httpOnly_(false)
 {
     time(&expires_);
-    struct tm* tm = localtime(&expires_);
-    tm->tm_year++;
-    expires_ = mktime(tm);
+    std::tm tm = sa::time::localtime(expires_);
+    tm.tm_year++;
+    expires_ = mktime(&tm);
 }
 
 Cookie::Cookie(const std::string& content) :
@@ -51,9 +52,9 @@ Cookie::Cookie(const std::string& content) :
     content_(content)
 {
     time(&expires_);
-    struct tm* tm = localtime(&expires_);
-    tm->tm_year++;
-    expires_ = mktime(tm);
+    std::tm tm = sa::time::localtime(expires_);
+    tm.tm_year++;
+    expires_ = mktime(&tm);
 }
 
 void Cookies::RegisterLua(kaguya::State& state)
@@ -93,12 +94,11 @@ void Cookies::Write(SimpleWeb::CaseInsensitiveMultimap& header)
 
     VisitCookies([&cookies](const std::string& name, const Cookie& cookie)
     {
-        char buf[64] = { 0 };
         std::string c = name + "=";
         c += cookie.content_ + "; ";
         // Sat, 26-Oct-2019 08:24:53 GMT
-        strftime(buf, sizeof(buf), "%a, %e-%b-%G %T GMT", gmtime(&cookie.expires_));
-        c += "expires=" + std::string(buf) + "; ";
+        std::tm p = sa::time::gmtime(cookie.expires_);
+        c += "expires=" + sa::time::put_time(&p, "%a, %e-%b-%G %T GMT") + "; ";
         c += "path=" + cookie.path_ + "; ";
         if (!cookie.domain_.empty())
             c += "domain=." + cookie.domain_ + "; ";

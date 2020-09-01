@@ -22,7 +22,6 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include <memory>
-#include <sa/Assert.h>
 
 namespace IO {
 
@@ -47,13 +46,10 @@ Logger& Logger::Instance()
             std::chrono::time_point<std::chrono::system_clock> time_point;
             time_point = std::chrono::system_clock::now();
             std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
+            std::tm p = sa::time::localtime(ttp);
+            std::string fn = sa::time::put_time(&p, "%g-%m-%d-%H-%M-%S");
 
-            struct tm* p;
-            p = localtime(&ttp);
-            char chr[50] = { 0 };
-            strftime(chr, 50, "%g-%m-%d-%H-%M-%S", p);
-
-            std::string logFile = Utils::ConcatPath(logDir_, std::string(chr), ".log");
+            std::string logFile = Utils::ConcatPath(logDir_, fn, ".log");
             loggerInstance = std::make_unique<Logger>(logFile);
         }
         else

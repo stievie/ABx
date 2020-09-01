@@ -56,21 +56,9 @@ void microsleep(size_t us)
 
 std::string format_tick(int64_t tick)
 {
-    time_t tm = tick / 1000;
-    char buff[256];
-#ifdef _MSC_VER
-    struct tm t1;
-    if (localtime_s(&t1, &tm))
-        return std::string();
-    size_t size = strftime(buff, 256, "%d %b %Y %H:%M", &t1);
-#else
-    struct tm* t1;
-    t1 = localtime (&tm);
-    if (!t1)
-        return std::string();
-    size_t size = strftime(buff, 256, "%d %b %Y %H:%M", t1);
-#endif
-    return std::string(buff, size);
+    const time_t tm = tick / 1000;
+    const std::tm t1 = sa::time::localtime(tm);
+    return sa::time::put_time(&t1, "%d %b %Y %H:%M");
 }
 
 }

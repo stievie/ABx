@@ -47,7 +47,7 @@
 #   define SA_ARCH_32BIT
 #endif
 
-#if defined(_WIN32)
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
 #   define SA_PLATFORM_WIN
 #elif defined(__APPLE__)
 #   include "TargetConditionals.h"

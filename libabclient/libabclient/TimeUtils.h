@@ -23,9 +23,9 @@
 
 #include <stdint.h>
 #include <sys/timeb.h>
-#include <time.h>
 #include <string>
 #include <chrono>
+#include <sa/time.h>
 
 namespace Client {
 
@@ -76,13 +76,8 @@ struct TimeSpan
     uint32_t seconds = 0;
     TimeSpan(uint32_t sec)
     {
-        time_t secs(sec); // you have to convert your input_seconds into time_t
-#ifdef _MSC_VER
-        struct tm p;
-        errno_t err = gmtime_s(&p, &secs); // convert to broken down time
-        if (err)
-            return;
-
+        const time_t secs(sec);
+        const std::tm p = sa::time::gmtime(secs);
         if (p.tm_yday > 31)
         {
             months = p.tm_yday / 31;
@@ -93,23 +88,6 @@ struct TimeSpan
         hours = p.tm_hour;
         minutes = p.tm_min;
         seconds = p.tm_sec;
-#else
-        struct tm* p;
-        p = gmtime(&secs); // convert to broken down time
-        if (!p)
-            return;
-
-        if (p->tm_yday > 31)
-        {
-            months = p->tm_yday / 31;
-            days = p->tm_yday - (months * 31);
-        }
-        else
-            days = p->tm_yday;
-        hours = p->tm_hour;
-        minutes = p->tm_min;
-        seconds = p->tm_sec;
-#endif
     }
 };
 
