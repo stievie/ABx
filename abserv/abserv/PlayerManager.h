@@ -32,6 +32,7 @@
 #include <multi_index/hashed_index.hpp>
 #include <multi_index/ordered_index.hpp>
 #include <multi_index/member.hpp>
+#include <sa/time.h>
 
 namespace Net {
 class ProtocolGame;
@@ -88,7 +89,7 @@ private:
     ea::map<uint32_t, ea::shared_ptr<Player>> players_;
 public:
     PlayerManager() :
-        idleTime_(Utils::Tick())
+        idleTime_(sa::time::tick())
     {}
     ~PlayerManager()
     {
@@ -122,7 +123,7 @@ public:
     {
         if (players_.size() != 0)
             return 0;
-        return Utils::Tick() - idleTime_;
+        return sa::time::tick() - idleTime_;
     }
     template<typename Callback>
     inline void VisitPlayers(Callback&& callback)

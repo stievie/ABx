@@ -19,13 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "AreaOfEffect.h"
 #include "Actor.h"
 #include "DataProvider.h"
 #include "Game.h"
 #include "Script.h"
 #include "ScriptManager.h"
+#include <sa/time.h>
 
 namespace Game {
 
@@ -52,7 +52,7 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
 
 AreaOfEffect::AreaOfEffect() :
     GameObject(),
-    startTime_(Utils::Tick())
+    startTime_(sa::time::tick())
 {
     events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AreaOfEffect::OnCollide, this, std::placeholders::_1));
     events_.Subscribe<void(GameObject*)>(EVENT_ON_TRIGGER, std::bind(&AreaOfEffect::OnTrigger, this, std::placeholders::_1));
@@ -139,7 +139,7 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     if (HaveFunction(FunctionUpdate))
         Lua::CallFunction(luaState_, "onUpdate", timeElapsed);
-    if (Utils::TimeElapsed(startTime_) > lifetime_)
+    if (sa::time::time_elapsed(startTime_) > lifetime_)
     {
         if (HaveFunction(FunctionEnded))
             Lua::CallFunction(luaState_, "onEnded");

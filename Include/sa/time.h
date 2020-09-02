@@ -104,5 +104,28 @@ inline time_span get_time_span(uint32_t sec)
     return result;
 }
 
+inline int64_t tick()
+{
+    using namespace std::chrono;
+    const milliseconds ms = duration_cast<milliseconds>(
+        system_clock::now().time_since_epoch()
+    );
+    return ms.count();
+}
+
+/// Return the time that's elapsed since in ms
+inline uint32_t time_elapsed(int64_t since)
+{
+    auto t = tick();
+    if (t > since)
+        return static_cast<uint32_t>(t - since);
+    return 0u;
+}
+
+inline bool is_expired(int64_t expiresAt)
+{
+    return expiresAt < tick();
+}
+
 }
 }

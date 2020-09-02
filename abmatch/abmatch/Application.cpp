@@ -31,6 +31,7 @@
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <sa/time.h>
 
 Application::Application() :
     ServerApp(),
@@ -131,7 +132,7 @@ void Application::PrintServerInfo()
 void Application::UpdateQueue()
 {
     // Dispatcher thread
-    int64_t tick = Utils::Tick();
+    int64_t tick = sa::time::tick();
     if (lastUpdate_ == 0)
         lastUpdate_ = tick - QUEUE_UPDATE_INTERVAL_MS;
     uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
@@ -141,7 +142,7 @@ void Application::UpdateQueue()
     if (running_)
     {
         // Schedule next update
-        const int64_t end = Utils::Tick();
+        const int64_t end = sa::time::tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         const uint32_t sleepTime = QUEUE_UPDATE_INTERVAL_MS > duration ?
             QUEUE_UPDATE_INTERVAL_MS - duration : 0;
@@ -271,8 +272,8 @@ void Application::Run()
     dataClient->Read(serv);
     UpdateService(serv);
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.startTime = Utils::Tick();
-    serv.heartbeat = Utils::Tick();
+    serv.startTime = sa::time::tick();
+    serv.heartbeat = sa::time::tick();
     serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
@@ -303,7 +304,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 

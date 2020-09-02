@@ -34,6 +34,7 @@
 #include <sa/ScopeGuard.h>
 #include <sa/Compiler.h>
 #include <sa/Assert.h>
+#include <sa/time.h>
 
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 
@@ -273,7 +274,7 @@ void Client::OnProtocolError(AB::ErrorCodes err)
 void Client::OnPong(int lastPing)
 {
     gotPong_ = true;
-    lastPongTick_ = AbTick();
+    lastPongTick_ = sa::time::tick();
     pings_.Enqueue(lastPing);
 }
 
@@ -436,10 +437,10 @@ void Client::Update(uint32_t timeElapsed, bool noRun)
             }
             lastPing_ = 0;
         }
-        if (enterWorldMessage_ != 0 && AbTick() - enterWorldMessage_ > PLAYER_INACTIVE_TIME_KICK * 2)
+        if (enterWorldMessage_ != 0 && sa::time::tick() - enterWorldMessage_ > PLAYER_INACTIVE_TIME_KICK * 2)
         {
             // When we enter a Game it may take some time the client loaded everything.
-            if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < AbTick()))
+            if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < sa::time::tick()))
             {
                 protoGame_->Disconnect();
                 state_ = State::Disconnected;
@@ -545,14 +546,14 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
             result = true;
     });
 
-    int64_t start = AbTick();
+    int64_t start = sa::time::tick();
 
-    while (!result && (AbTick() - start) < TIMEOUT)
+    while (!result && (sa::time::tick() - start) < TIMEOUT)
     {
         ioService.poll();
         millisleep(1);
     }
-    return { result, static_cast<uint32_t>(AbTick() - start) };
+    return { result, static_cast<uint32_t>(sa::time::tick() - start) };
 }
 
 void Client::ChangeMap(const std::string& mapUuid)
@@ -898,7 +899,7 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::ChangeInsta
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::EnterWorld& packet)
 {
     lastPongTick_ = 0;
-    enterWorldMessage_ = AbTick();
+    enterWorldMessage_ = sa::time::tick();
     state_ = State::World;
     receiver_.OnPacket(updateTick, packet);
 }

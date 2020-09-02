@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Projectile.h"
 #include "ScriptManager.h"
 #include "DataProvider.h"
@@ -294,7 +293,7 @@ bool Projectile::DoStart()
     if (HaveFunction(FunctionOnStart))
         ret = luaState_["onStart"](t.get());
     if (ret)
-        startTick_ = Utils::Tick();
+        startTick_ = sa::time::tick();
     return true;
 }
 

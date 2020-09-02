@@ -39,6 +39,7 @@
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <sa/time.h>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -239,7 +240,7 @@ void Application::HeartBeatTask()
         serv.uuid = serverId_;
         if (dataClient->Read(serv))
         {
-            serv.heartbeat = Utils::Tick();
+            serv.heartbeat = sa::time::tick();
             if (!dataClient->Update(serv))
                 LOG_ERROR << "Error updating service " << serverId_ << std::endl;
         }
@@ -322,8 +323,8 @@ void Application::Run()
     dataClient->Read(serv);
     UpdateService(serv);
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.startTime = Utils::Tick();
-    serv.heartbeat = Utils::Tick();
+    serv.startTime = sa::time::tick();
+    serv.heartbeat = serv.startTime;
     serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
@@ -357,7 +358,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 

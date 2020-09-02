@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Skill.h"
 #include "Actor.h"
 #include "DataProvider.h"
@@ -97,9 +96,9 @@ void Skill::Update(uint32_t)
 {
     if (startUse_ != 0)
     {
-        if (startUse_ + realActivation_ <= Utils::Tick())
+        if (startUse_ + realActivation_ <= sa::time::tick())
         {
-            recharged_ = Utils::Tick() + GetRecharge(recharge_);
+            recharged_ = sa::time::tick() + GetRecharge(recharge_);
             auto source = source_.lock();
             auto target = target_.lock();
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
@@ -111,7 +110,7 @@ void Skill::Update(uint32_t)
             {
                 // On success sacrifice the HP
                 source->resourceComp_->SetHealth(Components::SetValueType::DecreasePercent, realHp_);
-                lastUse_ = Utils::Tick();
+                lastUse_ = sa::time::tick();
             }
             if (source)
                 source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
@@ -229,7 +228,7 @@ AB::GameProtocol::SkillError Skill::StartUse(ea::shared_ptr<Actor> source, ea::s
     if (lastError_ != AB::GameProtocol::SkillError::None)
         return lastError_;
 
-    startUse_ = Utils::Tick();
+    startUse_ = sa::time::tick();
 
     source_ = source;
     target_ = target;

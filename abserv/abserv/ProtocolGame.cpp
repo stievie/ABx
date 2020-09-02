@@ -34,6 +34,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include <abscommon/BanManager.h>
 #include <abscommon/StringUtils.h>
+#include <sa/time.h>
 
 namespace Net {
 
@@ -118,7 +119,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 
     player->Initialize();
     player->data_.currentMapUuid = packet.mapUuid;
-    player->data_.lastLogin = Utils::Tick();
+    player->data_.lastLogin = sa::time::tick();
     if (!uuids::uuid(packet.instanceUuid).nil())
         player->data_.instanceUuid = packet.instanceUuid;
     client->Update(player->data_);
@@ -146,7 +147,7 @@ void ProtocolGame::Logout()
         LOG_ERROR << "Player == null" << std::endl;
         return;
     }
-    player->logoutTime_ = Utils::Tick();
+    player->logoutTime_ = sa::time::tick();
     player->data_.instanceUuid = Utils::Uuid::EMPTY_UUID;
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
     IO::IOPlayer::SavePlayer(*player);
@@ -698,7 +699,7 @@ void ProtocolGame::Connect()
         return;
     }
 
-    player->loginTime_ = Utils::Tick();
+    player->loginTime_ = sa::time::tick();
 
     acceptPackets_ = true;
 

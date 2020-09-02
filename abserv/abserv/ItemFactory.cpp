@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ItemFactory.h"
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
@@ -34,6 +33,7 @@
 #include <sa/Transaction.h>
 #include <sa/Assert.h>
 #include <sa/StringHash.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -208,7 +208,7 @@ uint32_t ItemFactory::CreateItem(const CreateItemInfo& info)
     ci.playerUuid = info.playerUuid;
     ci.instanceUuid = info.instanceUuid;
     ci.mapUuid = info.mapUuid;
-    ci.creation = Utils::Tick();
+    ci.creation = sa::time::tick();
     ci.storagePlace = info.storagePlace;
     CalculateValue(gameItem, info.level, ci);
     if (info.count != 0)
@@ -443,7 +443,7 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
         LOG_WARNING << "Unable to  read concrete item " << ci.uuid << std::endl;
         return;
     }
-    ci.deleted = Utils::Tick();
+    ci.deleted = sa::time::tick();
     if (client->Update(ci))
     {
         client->Invalidate(ci);
@@ -573,7 +573,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         item->concreteItem_.storagePos = 0;
         item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
         item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
-        item->concreteItem_.sold = Utils::Tick();
+        item->concreteItem_.sold = sa::time::tick();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
         // Merchant got new items.
@@ -606,7 +606,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         // There is not stack size for merchants, they have a huuuuge bag
         ASSERT(!Utils::WouldExceed(ci.count, count, std::numeric_limits<decltype(ci.count)>::max()));
         ci.count += count;
-        ci.sold = Utils::Tick();
+        ci.sold = sa::time::tick();
         dc->Update(ci);
         if (item->concreteItem_.count == count)
         {
@@ -629,7 +629,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
         item->concreteItem_.storagePos = 0;
         item->concreteItem_.playerUuid = Utils::Uuid::EMPTY_UUID;
         item->concreteItem_.accountUuid = Utils::Uuid::EMPTY_UUID;
-        item->concreteItem_.sold = Utils::Tick();
+        item->concreteItem_.sold = sa::time::tick();
         dc->Update(item->concreteItem_);
         dc->Invalidate(item->concreteItem_);
         // Merchant got new items.
@@ -648,7 +648,7 @@ bool ItemFactory::MoveToMerchant(Item* item, uint32_t count)
     ci.storagePos = 0;
     ci.playerUuid = Utils::Uuid::EMPTY_UUID;
     ci.accountUuid = Utils::Uuid::EMPTY_UUID;
-    ci.sold = Utils::Tick();
+    ci.sold = sa::time::tick();
     if (!dc->Create(ci))
     {
         // This should really not happen

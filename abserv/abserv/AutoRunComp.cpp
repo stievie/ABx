@@ -28,6 +28,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include <absmath/VectorMath.h>
 #include <optional>
+#include <sa/time.h>
 
 //#define DEBUG_NAVIGATION
 
@@ -109,7 +110,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     {
         wayPoints_ = wp;
         destination_ = dest;
-        lastCalc_ = Utils::Tick();
+        lastCalc_ = sa::time::tick();
         return true;
     }
     lastCalc_ = 0;
@@ -256,7 +257,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     const Math::Vector3& pos = owner_.transformation_.position_;
     if (auto f = following_.lock())
     {
-        if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > RECALCULATE_PATH_TIME)
+        if ((lastCalc_ != 0 && sa::time::time_elapsed(lastCalc_) > RECALCULATE_PATH_TIME)
             && (!destination_.Equals(f->transformation_.position_, AT_POSITION_THRESHOLD)))
         {
             // Find new path when following object moved and enough time passed

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "BanManager.h"
 #include "Utils.h"
 #include <AB/Entities/IpBan.h>
@@ -28,6 +27,7 @@
 #include "Profiler.h"
 #include "Subsystems.h"
 #include "UuidUtils.h"
+#include <sa/time.h>
 
 namespace Auth {
 
@@ -45,7 +45,7 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     if (IsIpDisabled(clientIP))
         return false;
 
-    int64_t currentTime = Utils::Tick();
+    int64_t currentTime = sa::time::tick();
     std::map<uint32_t, ConnectBlock>::iterator it = ipConnects_.find(clientIP);
     if (it == ipConnects_.end())
     {
@@ -101,7 +101,7 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
         return false;
     if (!_ban.active)
         return false;
-    return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick());
+    return (_ban.expires <= 0) || (_ban.expires >= sa::time::tick());
 }
 
 bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
@@ -121,7 +121,7 @@ bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
         return false;
     if (!_ban.active)
         return false;
-    return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick());
+    return (_ban.expires <= 0) || (_ban.expires >= sa::time::tick());
 }
 
 bool BanManager::IsIpDisabled(uint32_t clientIP) const
@@ -137,7 +137,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP) const
         return false;
 
     if ((it->second.numberOfLogins >= BanManager::LoginTries) &&
-        Utils::TimeElapsed(it->second.lastLoginTime) < BanManager::LoginRetryTimeout)
+        sa::time::time_elapsed(it->second.lastLoginTime) < BanManager::LoginRetryTimeout)
         return true;
 
     return false;
@@ -148,7 +148,7 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
     if (clientIP == 0)
         return;
 
-    int64_t currentTime = Utils::Tick();
+    int64_t currentTime = sa::time::tick();
     std::scoped_lock lock(lock_);
     auto it = ipLogins_.find(clientIP);
     if (it == ipLogins_.end())
@@ -182,7 +182,7 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int64_t expires, const std
     AB::Entities::Ban ban;
     ban.uuid = Utils::Uuid::New();
     ban.expires = expires;
-    ban.added = Utils::Tick();
+    ban.added = sa::time::tick();
     ban.reason = reason;
     ban.adminUuid = adminUuid;
     ban.comment = comment;
@@ -207,7 +207,7 @@ bool BanManager::AddAccountBan(const std::string& accountUuid, int64_t expires, 
     AB::Entities::Ban ban;
     ban.uuid = Utils::Uuid::New();
     ban.expires = expires;
-    ban.added = Utils::Tick();
+    ban.added = sa::time::tick();
     ban.reason = reason;
     ban.adminUuid = adminUuid;
     ban.comment = comment;

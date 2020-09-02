@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Quest.h"
 #include "DataProvider.h"
 #include "ItemFactory.h"
@@ -29,6 +28,7 @@
 #include "ScriptManager.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -130,7 +130,7 @@ bool Quest::CollectReward()
     }
 
     internalRewarded_ = true;
-    playerQuest_.rewardTime = Utils::Tick();
+    playerQuest_.rewardTime = sa::time::tick();
     return true;
 }
 

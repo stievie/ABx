@@ -31,7 +31,6 @@ namespace Client {
 
 typedef int64_t ticks_t;
 
-ticks_t time();
 ticks_t millis();
 ticks_t micros();
 void millisleep(size_t ms);
@@ -44,27 +43,12 @@ private:
     ticks_t start_;
 public:
     timer() :
-        start_(0)
-    {
-        restart();
-    }
+        start_(micros())
+    { }
     float elapsed_seconds() { return static_cast<float>(micros() - start_) / 1000000.0f; }
     ticks_t elapsed_millis() { return (micros() - start_) / 1000; }
     ticks_t elapsed_micros() { return micros() - start_; }
     void restart() { start_ = micros(); }
 };
-
-inline int64_t AbTick()
-{
-    using namespace std::chrono;
-    milliseconds ms = duration_cast<milliseconds>(
-        system_clock::now().time_since_epoch()
-    );
-    return ms.count();
-}
-inline int64_t TimeElapsed(int64_t since)
-{
-    return AbTick() - since;
-}
 
 }

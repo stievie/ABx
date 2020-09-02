@@ -19,13 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #if defined(AB_UNIX)
 
 #include <sys/times.h>
 #include "CpuUsage.h"
 #include "Utils.h"
+#include <sa/time.h>
 
 namespace System {
 
@@ -59,7 +58,7 @@ unsigned CpuUsage::GetUsage()
         nCpuCopy = cpuUsage_;
     }
 
-    lastRun_ = Utils::Tick();
+    lastRun_ = sa::time::tick();
 
     return nCpuCopy;
 }
@@ -67,7 +66,7 @@ unsigned CpuUsage::GetUsage()
 bool CpuUsage::EnoughTimePassed()
 {
     static const unsigned minElapsedMS = 250;   // milliseconds
-    return Utils::TimeElapsed(lastRun_) > minElapsedMS;
+    return sa::time::time_elapsed(lastRun_) > minElapsedMS;
 }
 
 }

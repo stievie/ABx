@@ -24,6 +24,7 @@
 #include "../DamageComp.h"
 #include "../Npc.h"
 #include "../Crowd.h"
+#include <sa/time.h>
 
 namespace AI {
 namespace Conditions {
@@ -34,14 +35,14 @@ bool IsFighting::Evaluate(Agent& agent, const Node&)
     Game::Group* crowd = npc.GetGroup();
     if (!crowd)
     {
-        return (Utils::TimeElapsed(npc.damageComp_->lastDamage_) < 1000) ||
+        return (sa::time::time_elapsed(npc.damageComp_->lastDamage_) < 1000) ||
             npc.attackComp_->IsAttackState();
     }
 
     bool result = false;
     crowd->VisitMembers([&result](const Game::Actor& current)
     {
-        result = (Utils::TimeElapsed(current.damageComp_->lastDamage_) < 1000) ||
+        result = (sa::time::time_elapsed(current.damageComp_->lastDamage_) < 1000) ||
             current.attackComp_->IsAttackState();
         if (result)
             return Iteration::Break;

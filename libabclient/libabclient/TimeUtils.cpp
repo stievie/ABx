@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "TimeUtils.h"
 #include <chrono>
 #include <ctime>
@@ -28,11 +27,6 @@
 namespace Client {
 
 const static auto gStartupTtime = std::chrono::high_resolution_clock::now();
-
-ticks_t time()
-{
-    return std::time(nullptr);
-}
 
 ticks_t millis()
 {

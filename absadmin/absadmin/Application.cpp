@@ -54,6 +54,7 @@
 #include <abscommon/SimpleConfigManager.h>
 #include <abscommon/StringUtils.h>
 #include <sa/Assert.h>
+#include <sa/time.h>
 
 Application* Application::Instance = nullptr;
 
@@ -342,14 +343,14 @@ bool Application::Initialize(const std::vector<std::string>& args)
 void Application::Run()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
-    startTime_ = Utils::Tick();
+    startTime_ = sa::time::tick();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient->Read(serv);
     UpdateService(serv);
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.startTime = startTime_;
-    serv.heartbeat = Utils::Tick();
+    serv.heartbeat = sa::time::tick();
     serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
@@ -376,7 +377,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         dataClient->Update(serv);

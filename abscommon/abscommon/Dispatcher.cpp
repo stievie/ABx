@@ -19,9 +19,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Dispatcher.h"
 #include "Utils.h"
+#include <sa/time.h>
 
 namespace Asynch {
 
@@ -89,7 +89,7 @@ void Dispatcher::DispatcherThread()
     {
         taskLockUnique.lock();
 
-        const int64_t observationStart = Utils::Tick();
+        const int64_t observationStart = sa::time::tick();
 
         if (tasks_.empty())
         {
@@ -114,13 +114,13 @@ void Dispatcher::DispatcherThread()
             // Execute the task
             if (!task->IsExpired())
             {
-                const int64_t startExecTime = Utils::Tick();
+                const int64_t startExecTime = sa::time::tick();
 
                 (*task)();
 
                 // https://technet.microsoft.com/en-us/library/cc181325.aspx
-                const uint32_t busyTime = Utils::TimeElapsed(startExecTime);
-                const uint32_t observationTime = Utils::TimeElapsed(observationStart);
+                const uint32_t busyTime = sa::time::time_elapsed(startExecTime);
+                const uint32_t observationTime = sa::time::time_elapsed(observationStart);
                 if (observationTime != 0)
                     utilization_ = static_cast<uint32_t>(busyTime / observationTime);
             }

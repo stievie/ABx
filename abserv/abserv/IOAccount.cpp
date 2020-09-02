@@ -19,13 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "IOAccount.h"
 #include "IOGame.h"
 #include <AB/Entities/AccountKey.h>
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
 #include <abscommon/UuidUtils.h>
+#include <sa/time.h>
 
 namespace IO {
 namespace IOAccount {
@@ -48,7 +48,7 @@ bool GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
         LOG_WARNING << "Wrong auth token " << authToken << " expected " << acc.authToken << std::endl;
         return false;
     }
-    if (Utils::IsExpired(acc.authTokenExpiry))
+    if (sa::time::is_expired(acc.authTokenExpiry))
     {
         LOG_INFO << "Expired auth token " << authToken << " of account " << acc.name << std::endl;
         return false;

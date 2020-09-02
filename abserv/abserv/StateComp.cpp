@@ -19,19 +19,19 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "StateComp.h"
 #include "GameObject.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include "Actor.h"
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
 
 StateComp::StateComp(GameObject& owner) :
     owner_(owner),
-    lastStateChange_(Utils::Tick())
+    lastStateChange_(sa::time::tick())
 {
     owner_.SubscribeEvent<void(void)>(EVENT_ON_CANCELALL, std::bind(&StateComp::OnCancelAll, this));
 }
@@ -57,14 +57,14 @@ bool StateComp::KnockDown(uint32_t time)
 {
     if (IsKnockedDown())
         return false;
-    knockdownEndTime_ = Utils::Tick() + time;
+    knockdownEndTime_ = sa::time::tick() + time;
     SetState(AB::GameProtocol::CreatureState::KnockedDown);
     return true;
 }
 
 void StateComp::Apply()
 {
-    lastStateChange_ = Utils::Tick();
+    lastStateChange_ = sa::time::tick();
     currentState_ = newState_;
 }
 
@@ -82,7 +82,7 @@ void StateComp::Update(uint32_t)
 {
     if (IsKnockedDown())
     {
-        if (knockdownEndTime_ <= Utils::Tick())
+        if (knockdownEndTime_ <= sa::time::tick())
         {
             SetState(AB::GameProtocol::CreatureState::Idle);
         }
@@ -90,7 +90,7 @@ void StateComp::Update(uint32_t)
     }
     if ((currentState_ > AB::GameProtocol::CreatureState::__EmoteStart &&
         currentState_ < AB::GameProtocol::CreatureState::__EmoteEnd)
-        && lastStateChange_ + 4000 < Utils::Tick())
+        && lastStateChange_ + 4000 < sa::time::tick())
     {
         // Reset some emotes after 4 seconds
         SetState(AB::GameProtocol::CreatureState::Idle);

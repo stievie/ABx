@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Actor.h"
 #include "AreaOfEffect.h"
 #include "CollisionComp.h"
@@ -30,6 +29,7 @@
 #include "Player.h"
 #include "TriggerComp.h"
 #include <sa/Assert.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -150,7 +150,7 @@ void GameObject::Update(uint32_t timeElapsed, Net::NetworkMessage&)
     if (triggerComp_)
         triggerComp_->Update(timeElapsed);
 
-    if (removeAt_ != 0 && removeAt_ <= Utils::Tick())
+    if (removeAt_ != 0 && removeAt_ <= sa::time::tick())
     {
         auto* disp = GetSubsystem<Asynch::Dispatcher>();
         disp->Add(Asynch::CreateTask(std::bind(&GameObject::Remove, shared_from_this())));
@@ -407,7 +407,7 @@ void GameObject::Remove()
 
 void GameObject::RemoveIn(uint32_t time)
 {
-    const int64_t newTick = Utils::Tick() + time;
+    const int64_t newTick = sa::time::tick() + time;
     if (removeAt_ == 0 || newTick < removeAt_)
         removeAt_ = newTick;
 }

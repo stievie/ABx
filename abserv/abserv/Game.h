@@ -37,6 +37,7 @@
 #include <mutex>
 #include <sa/Compiler.h>
 #include <sa/Iteration.h>
+#include <sa/time.h>
 
 namespace Net {
 class MessageFilter;
@@ -164,7 +165,7 @@ public:
 
     int64_t GetUpdateTick() const { return lastUpdate_; }
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
-    int64_t GetInstanceTime() const { return Utils::TimeElapsed(startTime_); }
+    int64_t GetInstanceTime() const { return sa::time::time_elapsed(startTime_); }
     std::string GetName() const { return map_->name_; }
     /// Default level on this map
     uint32_t GetDefaultLevel() const { return static_cast<uint32_t>(data_.defaultLevel); }

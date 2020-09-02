@@ -19,10 +19,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "IOMail.h"
 #include "IOPlayer.h"
 #include <abscommon/MessageClient.h>
+#include <sa/time.h>
 
 namespace IO {
 namespace IOMail {
@@ -74,7 +74,7 @@ bool SendMailToAccount(const std::string& accountUuid, const std::string& fromAc
     m.toName = toName;
     m.subject = subject;
     m.message = message;
-    m.created = Utils::Tick();
+    m.created = sa::time::tick();
 
     bool ret = client->Create(m);
     if (ret)

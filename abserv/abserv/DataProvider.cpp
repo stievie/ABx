@@ -96,7 +96,7 @@ void DataProvider::CleanCache()
     while ((i = ea::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         if (current.second.asset.use_count() == 1)
-            return Utils::TimeElapsed(current.second.lastUsed) >= CACHE_KEEP_UNUSED_ASSETS;
+            return sa::time::time_elapsed(current.second.lastUsed) >= CACHE_KEEP_UNUSED_ASSETS;
         return false;
     })) != cache_.end())
     {

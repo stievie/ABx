@@ -26,6 +26,7 @@
 #include <AB/Entities/Mail.h>
 #include <set>
 #include <AB/Packets/ClientPackets.h>
+#include <sa/time.h>
 
 namespace Client {
 
@@ -233,7 +234,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             // Clock difference between client and server
             clockDiff_ = static_cast<int64_t>(packet.clockDiff);
             // Round trip time
-            lastPing_ = static_cast<int>(AbTick() - pingTick_);
+            lastPing_ = static_cast<int>(sa::time::tick() - pingTick_);
             receiver_.OnPong(lastPing_);
             break;
         }
@@ -280,7 +281,7 @@ void ProtocolGame::Logout()
 
 void ProtocolGame::Ping()
 {
-    pingTick_ = AbTick();
+    pingTick_ = sa::time::tick();
     AB::Packets::Client::Ping packet = {
         pingTick_
     };

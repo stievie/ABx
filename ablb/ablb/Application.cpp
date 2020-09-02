@@ -31,6 +31,7 @@
 #include <abscommon/UuidUtils.h>
 #include <sa/StringTempl.h>
 #include <sa/Iterator.h>
+#include <sa/time.h>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -170,7 +171,7 @@ bool Application::GetServiceCallback(AB::Entities::Service& svc)
             s.type == AB::Entities::ServiceTypeGameServer ||
             s.type == AB::Entities::ServiceTypeLoginServer)
         {
-            if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
+            if (sa::time::time_elapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
                 // Maybe dead
                 continue;
         }
@@ -305,8 +306,8 @@ void Application::Run()
     serv.arguments = sa::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
-    serv.startTime = Utils::Tick();
-    serv.heartbeat = Utils::Tick();
+    serv.startTime = sa::time::tick();
+    serv.heartbeat = serv.startTime;
     serv.version = AB_SERVER_VERSION;
     dataClient_->UpdateOrCreate(serv);
 
@@ -334,7 +335,7 @@ void Application::Stop()
     if (dataClient_->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         dataClient_->Update(serv);

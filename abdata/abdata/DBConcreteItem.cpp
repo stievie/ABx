@@ -24,6 +24,7 @@
 #include <AB/Entities/GameInstance.h>
 #include <abscommon/Utils.h>
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 namespace DB {
 
@@ -273,7 +274,7 @@ void DBConcreteItem::Clean(StorageProvider* sp)
             // DB and cache may have different data.
             if (item.storagePlace == AB::Entities::StoragePlace::Scene)
             {
-                item.deleted = Utils::Tick();
+                item.deleted = sa::time::tick();
                 sp->EntityUpdate(item);
                 sp->EntityInvalidate(item);
             }

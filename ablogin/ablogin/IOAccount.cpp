@@ -34,6 +34,7 @@
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
 #include <abshared/Mechanic.h>
+#include <sa/time.h>
 
 namespace IO {
 
@@ -76,10 +77,10 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     acc.password = passwordHash;
     acc.email = email;
     acc.authToken = Utils::Uuid::New();
-    acc.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
+    acc.authTokenExpiry = sa::time::tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
     acc.type = AB::Entities::AccountType::Normal;
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
-    acc.creation = Utils::Tick();
+    acc.creation = sa::time::tick();
     acc.chest_size = AB::Entities::DEFAULT_CHEST_SIZE;
     if (!client->Create(acc))
     {
@@ -197,7 +198,7 @@ IOAccount::PasswordAuthResult IOAccount::PasswordAuth(const std::string& pass,
         return PasswordAuthResult::AlreadyLoggedIn;
 
     account.authToken = Utils::Uuid::New();
-    account.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
+    account.authTokenExpiry = sa::time::tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
     if (!client->Update(account))
         return PasswordAuthResult::InternalError;
 
@@ -215,11 +216,11 @@ bool IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& accou
     }
     if (!Utils::Uuid::IsEqual(account.authToken, token))
         return false;
-    if (Utils::IsExpired(account.authTokenExpiry))
+    if (sa::time::is_expired(account.authTokenExpiry))
         return false;
 
     // Refresh token
-    account.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
+    account.authTokenExpiry = sa::time::tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
     client->Update(account);
 
     return true;
@@ -259,7 +260,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     ch.sex = sex;
     ch.pvp = isPvp;
     ch.level = isPvp ? Game::LEVEL_CAP : 1;
-    ch.creation = Utils::Tick();
+    ch.creation = sa::time::tick();
     ch.inventorySize = AB::Entities::DEFAULT_INVENTORY_SIZE;
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))
@@ -359,7 +360,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
         rn.name = ch.name;
-        rn.expires = Utils::Tick() + Auth::NAME_RESERVATION_EXPIRES_MS;
+        rn.expires = sa::time::tick() + Auth::NAME_RESERVATION_EXPIRES_MS;
         client->Create(rn);
     }
     // Update character list
@@ -385,7 +386,7 @@ bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forA
         // Temporarily reserved for an account
         if (rn.expires != 0)
         {
-            if (rn.expires < Utils::Tick())
+            if (rn.expires < sa::time::tick())
             {
                 // Expired -> Delete it
                 client->Delete(rn);

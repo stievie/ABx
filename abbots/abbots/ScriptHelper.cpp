@@ -29,6 +29,7 @@
 #include <abscommon/StringUtils.h>
 #include <abscommon/FileUtils.h>
 #include <sa/StringTempl.h>
+#include <sa/time.h>
 #include <abscommon/Random.h>
 
 static void LuaErrorHandler(int errCode, const char* message)
@@ -41,7 +42,7 @@ void InitLuaState(kaguya::State& state)
     state.setErrorHandler(LuaErrorHandler);
     state["Tick"] = kaguya::function([]
     {
-        return Utils::Tick();
+        return sa::time::tick();
     });
     state["Random"] = kaguya::overload(
         [] { return GetSubsystem<Crypto::Random>()->GetFloat(); },

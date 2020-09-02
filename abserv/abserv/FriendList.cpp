@@ -19,12 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "FriendList.h"
 #include <sa/Transaction.h>
 #include "IOPlayer.h"
 #include <AB/Entities/FriendedMe.h>
 #include <abscommon/StringUtils.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -68,7 +68,7 @@ FriendList::Error FriendList::AddFriendAccount(const AB::Entities::Character& ch
         ch.accountUuid,
         ch.name,
         relation,
-        Utils::Tick()
+        sa::time::tick()
     });
 
     Save(true);

@@ -211,7 +211,7 @@ Game::Game()
 Game::~Game()
 {
     instanceData_.running = false;
-    instanceData_.stopTime = Utils::Tick();
+    instanceData_.stopTime = sa::time::tick();
     UpdateEntity(instanceData_);
     players_.clear();
     objects_.clear();
@@ -337,7 +337,7 @@ void Game::Start()
     }
 
     auto* config = GetSubsystem<ConfigManager>();
-    startTime_ = Utils::Tick();
+    startTime_ = sa::time::tick();
     instanceData_.startTime = startTime_;
     instanceData_.serverUuid = Application::Instance->GetServerId();
     instanceData_.gameUuid = data_.uuid;
@@ -389,7 +389,7 @@ void Game::Update()
             AB::Packets::Add(packet, *gameStatus_);
         }
 
-        int64_t tick = Utils::Tick();
+        int64_t tick = sa::time::tick();
         if (lastUpdate_ == 0)
             lastUpdate_ = tick - frequency;
         uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
@@ -447,7 +447,7 @@ void Game::Update()
         }
 
         // Schedule next update
-        const int64_t end = Utils::Tick();
+        const int64_t end = sa::time::tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         const uint32_t sleepTime = frequency > duration ?
             frequency - duration :

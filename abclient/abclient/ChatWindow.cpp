@@ -218,7 +218,6 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatChannel cha
     {
         UIElement* container = parent->CreateChild<UIElement>();
         container->SetSize(parent->GetSize());
-        //        container->SetLayoutMode(LM_HORIZONTAL);
         LineEdit* nameEdit = container->CreateChild<LineEdit>();
         nameEdit->SetPosition(0, 0);
         nameEdit->SetName("WhisperChatNameEdit");
@@ -467,7 +466,7 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
                         return ToStdString(actor->name_);
                     if (token.value == "level")
                         return std::to_string(eventData[P_VALUE].GetInt());
-            ASSERT_FALSE();
+                    ASSERT_FALSE();
                 default:
                     return token.value;
                 }
@@ -1322,7 +1321,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
             }
             if (token.value == "client")
             {
-                return Client::format_tick(Client::AbTick());
+                return Client::format_tick(sa::time::tick());
             }
             if (token.value == "diff")
             {

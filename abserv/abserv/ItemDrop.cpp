@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ItemDrop.h"
 #include "Item.h"
 #include "Actor.h"
@@ -29,6 +28,7 @@
 #include "Player.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -46,7 +46,7 @@ void ItemDrop::RegisterLua(kaguya::State& state)
 ItemDrop::ItemDrop(uint32_t itemId) :
     GameObject(),
     itemId_(itemId),
-    dropTick_(Utils::Tick())
+    dropTick_(sa::time::tick())
 {
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&ItemDrop::OnClicked, this, std::placeholders::_1));
     // Drops can not hide other objects
@@ -94,7 +94,7 @@ Item* ItemDrop::_LuaGetItem()
 void ItemDrop::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
-    if ((targetId_ != 0) && Utils::TimeElapsed(dropTick_) >= (300 * 1000))
+    if ((targetId_ != 0) && sa::time::time_elapsed(dropTick_) >= (300 * 1000))
     {
         // If it wasn't picked up in 5 minutes it becomes available for all
         targetId_ = 0;

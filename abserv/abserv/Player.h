@@ -30,6 +30,7 @@
 #include <AB/Entities/ItemPrice.h>
 #include <eastl.hpp>
 #include <set>
+#include <sa/time.h>
 
 namespace Net {
 class ProtocolGame;
@@ -138,7 +139,7 @@ public:
     {
         if (lastPing_ == 0)
             return 0;
-        return Utils::TimeElapsed(lastPing_);
+        return sa::time::time_elapsed(lastPing_);
     }
     bool IsQueueing() const { return queueing_; }
 

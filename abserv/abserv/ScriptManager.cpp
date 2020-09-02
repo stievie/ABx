@@ -35,6 +35,7 @@
 #include "Quest.h"
 #include "Script.h"
 #include <sa/StringTempl.h>
+#include <sa/time.h>
 
 namespace Game {
 namespace Lua {
@@ -53,7 +54,7 @@ void RegisterLuaAll(kaguya::State& state)
     // Some global function
     state["Tick"] = kaguya::function([]
     {
-        return Utils::Tick();
+        return sa::time::tick();
     });
     state["Random"] = kaguya::overload(
         [] { return GetSubsystem<Crypto::Random>()->GetFloat(); },

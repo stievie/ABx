@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "SkillManager.h"
 #include "TimeUtils.h"
+#include <sa/time.h>
 
 void DamageWindow::RegisterObject(Context* context)
 {
@@ -145,7 +146,7 @@ void DamageWindow::HandleUpdate(StringHash, VariantMap&)
     for (int i = static_cast<int>(items_.Size()) - 1; i >= 0; --i)
     {
         auto& item = items_.At(static_cast<unsigned>(i));
-        if (item->damageTick_ + KEEP_ITEMS_MS < Client::AbTick())
+        if (item->damageTick_ + KEEP_ITEMS_MS < sa::time::tick())
         {
             RemoveChild(item.Get());
             items_.Erase(static_cast<unsigned>(i), 1);
@@ -192,7 +193,7 @@ void DamageWindow::HandleObjectDamaged(StringHash, VariantMap& eventData)
     {
         item->value_ = eventData[P_DAMAGEVALUE].GetUInt();
         item->Touch();
-        item->damageTick_ = Client::AbTick();
+        item->damageTick_ = sa::time::tick();
     }
 
     if (changed)

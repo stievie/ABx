@@ -47,27 +47,4 @@ constexpr size_t CountOf(T(&)[N])
     return N;
 }
 
-inline int64_t Tick()
-{
-    using namespace std::chrono;
-    milliseconds ms = duration_cast<milliseconds>(
-        system_clock::now().time_since_epoch()
-    );
-    return ms.count();
-}
-
-inline bool IsExpired(int64_t expiresAt)
-{
-    return expiresAt < Tick();
-}
-
-/// Return the time that's elapsed since in ms
-inline uint32_t TimeElapsed(int64_t since)
-{
-    auto tick = Tick();
-    if (tick > since)
-        return static_cast<uint32_t>(tick - since);
-    return 0u;
-}
-
 }

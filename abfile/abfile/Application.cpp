@@ -21,7 +21,8 @@
 
 #include "Application.h"
 #include "Version.h"
-#include "sa/StringTempl.h"
+#include <sa/StringTempl.h>
+#include <sa/time.h>
 #include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Attribute.h>
 #include <AB/Entities/AttributeList.h>
@@ -150,20 +151,20 @@ void Application::UpdateBytesSent(size_t bytes)
     if (Utils::WouldExceed(bytesSent_, bytes, std::numeric_limits<size_t>::max()))
     {
         bytesSent_ = 0;
-        statusMeasureTime_ = Utils::Tick();
+        statusMeasureTime_ = sa::time::tick();
         ++uptimeRound_;
     }
     bytesSent_ += bytes;
 
     // Calculate load
-    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
+    if (sa::time::time_elapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
     {
-        lastLoadCalc_ = Utils::Tick();
+        lastLoadCalc_ = sa::time::tick();
 
         unsigned load = 0;
         if (maxThroughput_ != 0)
         {
-            uint64_t mesTime = Utils::TimeElapsed(statusMeasureTime_);
+            uint64_t mesTime = sa::time::time_elapsed(statusMeasureTime_);
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
             load = static_cast<unsigned>(ld);
@@ -182,7 +183,7 @@ void Application::HeartBeatTask()
         if (dataClient->Read(serv))
         {
             serv.load = static_cast<uint8_t>(GetAvgLoad());
-            serv.heartbeat = Utils::Tick();
+            serv.heartbeat = sa::time::tick();
             if (!dataClient->Update(serv))
                 LOG_ERROR << "Error updating service " << serverId_ << std::endl;
         }
@@ -370,7 +371,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
 void Application::Run()
 {
-    startTime_ = Utils::Tick();
+    startTime_ = sa::time::tick();
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
@@ -389,7 +390,7 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.startTime = startTime_;
     serv.temporary = temporary_;
-    serv.heartbeat = Utils::Tick();
+    serv.heartbeat = startTime_;
     serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
@@ -425,7 +426,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 
@@ -504,7 +505,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         banMan->AddLoginAttempt(ip, false);
         return false;
     }
-    if (Utils::IsExpired(acc.authTokenExpiry))
+    if (sa::time::is_expired(acc.authTokenExpiry))
     {
         // Expired auth token
         banMan->AddLoginAttempt(ip, false);

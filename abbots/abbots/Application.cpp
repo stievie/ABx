@@ -25,6 +25,7 @@
 #include "Version.h"
 #include "ScriptHelper.h"
 #include <sa/Compiler.h>
+#include <sa/time.h>
 #include <AB/Entities/Service.h>
 #include <abscommon/Dispatcher.h>
 #include <abscommon/Logger.h>
@@ -35,6 +36,7 @@
 #include <abscommon/StringUtils.h>
 #include <abscommon/Random.h>
 #include <iostream>
+#include <sa/time.h>
 
 Application::Application() :
     ServerApp(),
@@ -235,13 +237,13 @@ void Application::Update()
     if (lastUpdate_ == 0)
         time = 16;
     else
-        time = Utils::TimeElapsed(lastUpdate_);
+        time = sa::time::time_elapsed(lastUpdate_);
 
     client_->Update(time);
-    int64_t startTick = Utils::Tick();
-    uint32_t timeSpent = Utils::TimeElapsed(startTick);
+    int64_t startTick = sa::time::tick();
+    uint32_t timeSpent = sa::time::time_elapsed(startTick);
 
-    lastUpdate_ = Utils::Tick();
+    lastUpdate_ = sa::time::tick();
     uint32_t nextSchedule;
     if (timeSpent < 16)
         nextSchedule = 16 - timeSpent;

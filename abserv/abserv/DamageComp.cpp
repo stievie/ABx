@@ -19,12 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DamageComp.h"
 #include "Actor.h"
 #include <sa/WeightedSelector.h>
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
@@ -38,7 +38,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     if (owner_.IsDead())
         return;
 
-    lastDamage_ = Utils::Tick();
+    lastDamage_ = sa::time::tick();
     // Get a random pos where to hit
     const DamagePos pos = GetDamagePos();
     // Get the armor effect at this pos with the given damage type and armor penetration
@@ -64,7 +64,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
 
     const int currLife = owner_.resourceComp_->GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
-    lastDamage_ = Utils::Tick();
+    lastDamage_ = sa::time::tick();
     damages_.Enqueue({ { lastDamage_, DamageType::LifeDrain, DamagePos::NoPos, result, (source ? source->id_ : 0), index }, true });
     owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
@@ -74,7 +74,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
 
 void DamageComp::Touch()
 {
-    lastDamage_ = Utils::Tick();
+    lastDamage_ = sa::time::tick();
 }
 
 DamagePos DamageComp::GetDamagePos() const
@@ -95,12 +95,12 @@ DamagePos DamageComp::GetDamagePos() const
 
 uint32_t DamageComp::NoDamageTime() const
 {
-    return Utils::TimeElapsed(lastDamage_);
+    return sa::time::time_elapsed(lastDamage_);
 }
 
 bool DamageComp::IsGettingMeleeDamage() const
 {
-    return Utils::TimeElapsed(lastMeleeDamage_) <= 1000;
+    return sa::time::time_elapsed(lastMeleeDamage_) <= 1000;
 }
 
 bool DamageComp::IsLastDamager(const Actor& actor)
@@ -139,7 +139,7 @@ bool DamageComp::GotDamageType(DamageType type) const
         return false;
     for (const auto& d : damages_)
     {
-        if (Utils::TimeElapsed(d.damage.tick) > LAST_DAMAGE_TIME)
+        if (sa::time::time_elapsed(d.damage.tick) > LAST_DAMAGE_TIME)
             continue;
         if (d.damage.type == type)
             return true;
@@ -155,12 +155,12 @@ bool DamageComp::GotDamageCategory(DamageTypeCategory cat) const
     if (cat == DamageTypeCategory::Any)
     {
         const auto& last = damages_.Last();
-        return Utils::TimeElapsed(last.damage.tick) <= LAST_DAMAGE_TIME;
+        return sa::time::time_elapsed(last.damage.tick) <= LAST_DAMAGE_TIME;
     }
 
     for (const auto& d : damages_)
     {
-        if (Utils::TimeElapsed(d.damage.tick) > LAST_DAMAGE_TIME)
+        if (sa::time::time_elapsed(d.damage.tick) > LAST_DAMAGE_TIME)
             continue;
         if (IsDamageCategory(d.damage.type, cat))
             return true;

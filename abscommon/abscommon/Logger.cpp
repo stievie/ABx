@@ -22,6 +22,7 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include <memory>
+#include <sa/time.h>
 
 namespace IO {
 
@@ -32,7 +33,7 @@ Logger& Logger::Instance()
 {
     if (loggerInstance)
     {
-        if (Utils::TimeElapsed(loggerInstance->logStart_) > LOG_ROTATE_INTERVAL)
+        if (sa::time::time_elapsed(loggerInstance->logStart_) > LOG_ROTATE_INTERVAL)
         {
             if (!Logger::logDir_.empty())
                 loggerInstance.reset();
@@ -67,7 +68,7 @@ void Logger::Close()
 Logger::Logger(std::ostream& stream) :
     stream_(stream),
     mode_(Mode::Stream),
-    logStart_(Utils::Tick())
+    logStart_(sa::time::tick())
 {
 #if defined(SA_PLATFORM_WIN)
     // Get default console font color on Windows
@@ -87,7 +88,7 @@ Logger::Logger(const std::string& fileName) :
     fstream_(fileName),
     stream_(fstream_),
     mode_(Mode::File),
-    logStart_(Utils::Tick())
+    logStart_(sa::time::tick())
 {}
 
 Logger::~Logger()

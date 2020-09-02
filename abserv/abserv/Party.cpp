@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Party.h"
 #include "Player.h"
 #include "Actor.h"
@@ -30,6 +29,7 @@
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <sa/EAIterator.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -207,7 +207,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         });
         if (resigned == GetValidPlayerCount())
         {
-            defeatedTick_ = Utils::Tick();
+            defeatedTick_ = sa::time::tick();
             message.AddByte(AB::GameProtocol::ServerPacketType::PartyResigned);
             AB::Packets::Server::PartyResigned packet = { id_ };
             AB::Packets::Add(packet, message);
@@ -216,7 +216,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
         if (defeated_)
         {
-            defeatedTick_ = Utils::Tick();
+            defeatedTick_ = sa::time::tick();
             message.AddByte(AB::GameProtocol::ServerPacketType::PartyDefeated);
             AB::Packets::Server::PartyDefeated packet = { id_ };
             AB::Packets::Add(packet, message);
@@ -226,7 +226,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
     if (defeatedTick_ != 0)
     {
-        if (Utils::TimeElapsed(defeatedTick_) > PARTY_TELEPORT_BACK_TIME)
+        if (sa::time::time_elapsed(defeatedTick_) > PARTY_TELEPORT_BACK_TIME)
         {
             // Bring to the last outpost after 2 secs
             TeleportBack();

@@ -25,6 +25,7 @@
 #include <abscommon/Utils.h>
 #include <sa/Bits.h>
 #include <eastl.hpp>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -75,7 +76,7 @@ private:
     {
         if (startTick_ == 0)
             return false;
-        return Utils::IsExpired(startTick_ + lifeTime_);
+        return sa::time::is_expired(startTick_ + lifeTime_);
     }
 private:
     void OnCollide(GameObject* other);

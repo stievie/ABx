@@ -19,12 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "SkillsComp.h"
 #include "Actor.h"
 #include "Skill.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 //#define DEBUG_AI
 
@@ -114,7 +114,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     lastError_ = sb->UseSkill(index, target);
     usingSkill_ = lastError_ == AB::GameProtocol::SkillError::None;
     lastSkillIndex_ = index;
-    lastSkillTime_ = Utils::Tick();
+    lastSkillTime_ = sa::time::tick();
     lastSkill_ = skill;
     startDirty_ = true;
     endDirty_ = false;

@@ -28,6 +28,7 @@
 #include <abscommon/UuidUtils.h>
 #include <abscommon/MessageClient.h>
 #include <sa/ConditionSleep.h>
+#include <sa/time.h>
 
 namespace IO {
 
@@ -59,10 +60,10 @@ bool IOService::GetService(AB::Entities::ServiceType type,
         if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
         {
             // File and game server send a heart beat. Look if they are still alive.
-            if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
+            if (sa::time::time_elapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
             {
                 // Maybe dead
-                LOG_INFO << "No heart beat from service " << s.uuid << " for " << Utils::TimeElapsed(s.heartbeat) << " ms" << std::endl;
+                LOG_INFO << "No heart beat from service " << s.uuid << " for " << sa::time::time_elapsed(s.heartbeat) << " ms" << std::endl;
                 continue;
             }
         }
@@ -135,10 +136,10 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
         if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
         {
             // File and game server send a heart beat. Look if they are still alive.
-            if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
+            if (sa::time::time_elapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
             {
                 // Maybe dead
-                LOG_INFO << "No heart beat from service " << s.uuid << " for " << Utils::TimeElapsed(s.heartbeat) << " ms" << std::endl;
+                LOG_INFO << "No heart beat from service " << s.uuid << " for " << sa::time::time_elapsed(s.heartbeat) << " ms" << std::endl;
                 s.status = AB::Entities::ServiceStatusOffline;
                 dc->Update(s);
                 continue;

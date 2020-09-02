@@ -22,6 +22,7 @@
 #include "DBGuildMembers.h"
 #include "StorageProvider.h"
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 namespace DB {
 
@@ -33,7 +34,7 @@ static std::string PlaceholderCallback(Database* db, const AB::Entities::GuildMe
         if (token.value == "guild_uuid")
             return db->EscapeString(g.uuid);
         if (token.value == "expires")
-            return std::to_string(Utils::Tick());
+            return std::to_string(sa::time::tick());
 
         LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
         return "";
@@ -122,8 +123,8 @@ void DBGuildMembers::DeleteExpired(StorageProvider* sp)
 {
     Database* db = GetSubsystem<Database>();
 
-    auto expires = Utils::Tick();
-    auto callback = [db, expires](const sa::templ::Token& token) -> std::string
+    auto expires = sa::time::tick();
+    auto callback = [expires](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {

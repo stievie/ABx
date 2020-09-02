@@ -28,6 +28,7 @@
 #include "LevelManager.h"
 #include "FwClient.h"
 #include "TimeUtils.h"
+#include <sa/time.h>
 
 void ClientPrediction::RegisterObject(Context* context)
 {
@@ -37,7 +38,7 @@ void ClientPrediction::RegisterObject(Context* context)
 ClientPrediction::ClientPrediction(Context* context) :
     LogicComponent(context),
     serverTime_(0),
-    lastStateChange_(Client::AbTick())
+    lastStateChange_(sa::time::tick())
 {
     serverPos_.y_ = std::numeric_limits<float>::max();
     SetUpdateEventMask(USE_FIXEDUPDATE);
@@ -190,7 +191,7 @@ void ClientPrediction::FixedUpdate(float timeStep)
     const AB::GameProtocol::CreatureState state = player->GetCreatureState();
     if (lastState_ != state)
     {
-        lastStateChange_ = Client::AbTick();
+        lastStateChange_ = sa::time::tick();
         lastState_ = state;
     }
 
@@ -204,7 +205,7 @@ void ClientPrediction::FixedUpdate(float timeStep)
         {
             TurnAbsolute(player->controls_.yaw_);
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
-            lastStateChange_ = Client::AbTick();
+            lastStateChange_ = sa::time::tick();
         }
         UpdateMove(timeStep, moveDir, player->GetSpeedFactor());
     }
@@ -215,7 +216,7 @@ void ClientPrediction::FixedUpdate(float timeStep)
         if (state == AB::GameProtocol::CreatureState::Idle)
         {
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Moving);
-            lastStateChange_ = Client::AbTick();
+            lastStateChange_ = sa::time::tick();
         }
         UpdateTurn(timeStep, turnDir, player->GetSpeedFactor());
     }
@@ -226,7 +227,7 @@ void ClientPrediction::FixedUpdate(float timeStep)
             (turnDir == 0 && lastTurnDir_ != 0))
         {
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureState::Idle);
-            lastStateChange_ = Client::AbTick();
+            lastStateChange_ = sa::time::tick();
         }
     }
 
@@ -248,7 +249,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
 //    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
     // FIXME: This sucks a bit, and needs some work.
     if (dist > distThreshold &&
-        Client::TimeElapsed(lastStateChange_) > client->GetLastPing() + 50 &&
+        sa::time::is_expired(lastStateChange_) > client->GetLastPing() + 50 &&
         player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle)
     {
         // If too far away or player is idle, Lerp to server position

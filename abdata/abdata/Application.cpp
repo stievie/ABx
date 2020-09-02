@@ -36,6 +36,7 @@
 #include <abscommon/UuidUtils.h>
 #include <filesystem>
 #include <sa/StringTempl.h>
+#include <sa/time.h>
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -408,8 +409,8 @@ void Application::Run()
     serv.arguments = sa::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
-    serv.startTime = Utils::Tick();
-    serv.heartbeat = Utils::Tick();
+    serv.startTime = sa::time::tick();
+    serv.heartbeat = serv.startTime;
     serv.version = AB_SERVER_VERSION;
     provider.EntityUpdateOrCreate(serv);
 
@@ -435,7 +436,7 @@ void Application::Stop()
     if (provider.EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         provider.EntityUpdate(serv);

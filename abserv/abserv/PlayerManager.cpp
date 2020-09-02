@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "PlayerManager.h"
 #include "Player.h"
 #include <abscommon/Logger.h>
@@ -100,7 +99,7 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
         players_.erase(it);
 
         if (players_.size() == 0)
-            idleTime_ = Utils::Tick();
+            idleTime_ = sa::time::tick();
     }
 }
 
@@ -129,7 +128,7 @@ void PlayerManager::RefreshAuthTokens()
 {
     // No inactive players here
     auto* client = GetSubsystem<IO::DataClient>();
-    int64_t tick = Utils::Tick();
+    int64_t tick = sa::time::tick();
     for (const auto& player : players_)
     {
         if (tick - player.second->account_.authTokenExpiry < Auth::AUTH_TOKEN_EXPIRES_IN / 2)

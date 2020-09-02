@@ -32,6 +32,7 @@
 #include <sa/Events.h>
 #include <sa/StringHash.h>
 #include <sa/TypeName.h>
+#include <sa/time.h>
 
 namespace IO {
 
@@ -73,7 +74,7 @@ private:
             return false;
         CacheItem item;
         item.asset = asset;
-        item.lastUsed = Utils::Tick();
+        item.lastUsed = sa::time::tick();
         if (watchFiles_)
         {
             item.watcher = ea::make_unique<FileWatcher>(normalName, asset.get(), [this](const std::string& fileName, void* asset)
@@ -170,7 +171,7 @@ public:
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
-            (*it).second.lastUsed = Utils::Tick();
+            (*it).second.lastUsed = sa::time::tick();
             return ea::static_pointer_cast<T>((*it).second.asset);
         }
         return ea::shared_ptr<T>();
@@ -237,7 +238,7 @@ public:
             auto it = cache_.find(key);
             if (it != cache_.end())
             {
-                (*it).second.lastUsed = Utils::Tick();
+                (*it).second.lastUsed = sa::time::tick();
                 return ea::static_pointer_cast<T>((*it).second.asset);
             }
         }

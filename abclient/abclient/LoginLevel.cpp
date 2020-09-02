@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "LoginLevel.h"
 #include "FwClient.h"
 #include "Options.h"
@@ -30,6 +29,7 @@
 #include "InternalEvents.h"
 #include "PingDot.h"
 #include "TimeUtils.h"
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -53,7 +53,7 @@ LoginLevel::LoginLevel(Context* context) :
 
 void LoginLevel::PingServers()
 {
-    lastPing_ = Client::AbTick();
+    lastPing_ = sa::time::tick();
     auto* client = GetSubsystem<FwClient>();
     for (auto it = servers_.Begin(); it != servers_.End(); ++it)
     {
@@ -208,7 +208,7 @@ void LoginLevel::HandleUpdate(StringHash, VariantMap& eventData)
     Quaternion rot;
     rot.FromAngleAxis(timeStep, Vector3(0.0f, 1.0f, 0.0f));
     cameraNode_->Rotate(rot);
-    if (Client::AbTick() - lastPing_ > 5000)
+    if (sa::time::tick() - lastPing_ > 5000)
         PingServers();
 }
 

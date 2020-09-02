@@ -19,10 +19,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "TriggerComp.h"
 #include "GameObject.h"
 #include "Game.h"
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
@@ -38,7 +38,7 @@ void TriggerComp::DoTrigger(GameObject* other)
     if (!other)
         return;
 
-    const int64_t tick = Utils::Tick();
+    const int64_t tick = sa::time::tick();
     const auto it = triggered_.find(other->id_);
     const int64_t lastTrigger = (it != triggered_.end()) ? (*it).second : 0;
     if (lastTrigger == 0 || static_cast<uint32_t>(tick - lastTrigger) > retriggerTimeout_)

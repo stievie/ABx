@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Effect.h"
 #include "Actor.h"
 #include "DataProvider.h"
@@ -27,6 +26,7 @@
 #include "Script.h"
 #include "ScriptManager.h"
 #include "Skill.h"
+#include <sa/time.h>
 
 namespace Game {
 
@@ -132,7 +132,7 @@ void Effect::Update(uint32_t timeElapsed)
     auto target = target_.lock();
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](source.get(), target.get(), timeElapsed);
-    if (endTime_ <= Utils::Tick())
+    if (endTime_ <= sa::time::tick())
     {
         luaState_["onEnd"](source.get(), target.get());
         ended_ = true;
@@ -145,7 +145,7 @@ uint32_t Effect::GetRemainingTime() const
         return std::numeric_limits<uint32_t>::max();
     if (endTime_ == 0)
         return 0;
-    int64_t tick = Utils::Tick();
+    int64_t tick = sa::time::tick();
     if (endTime_ < tick)
         return 0;
     return static_cast<uint32_t>(endTime_ - tick);
@@ -155,7 +155,7 @@ bool Effect::Start(ea::shared_ptr<Actor> source, ea::shared_ptr<Actor> target, u
 {
     target_ = target;
     source_ = source;
-    startTime_ = Utils::Tick();
+    startTime_ = sa::time::tick();
     if (time == 0)
         ticks_ = luaState_["getDuration"](source.get(), target.get());
     else

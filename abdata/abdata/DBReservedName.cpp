@@ -22,6 +22,7 @@
 #include "DBReservedName.h"
 #include "StorageProvider.h"
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 namespace DB {
 
@@ -185,7 +186,7 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
 
     static constexpr const char* SQL = "SELECT uuid FROM reserved_names WHERE (expires <> 0 AND expires < ${expires})";
     AB::Entities::ReservedName n;
-    n.expires = Utils::Tick();
+    n.expires = sa::time::tick();
     const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, n, std::placeholders::_1));
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);

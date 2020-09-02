@@ -26,6 +26,7 @@
 #include <sa/StringHash.h>
 #include <sa/Assert.h>
 #include <AB/Entities/Account.h>
+#include <sa/time.h>
 
 namespace Resources {
 
@@ -154,7 +155,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
 
-    int64_t start = Utils::Tick();
+    int64_t start = sa::time::tick();
     std::string buffer;
     try
     {
@@ -193,7 +194,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
         std::stringstream& ss = context.GetStream();
         if (realCt == "text/html")
-            ss << "\n<!-- Generated in " << Utils::TimeElapsed(start) << "ms -->\n";
+            ss << "\n<!-- Generated in " << sa::time::time_elapsed(start) << "ms -->\n";
 
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();

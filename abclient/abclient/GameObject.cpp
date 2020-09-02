@@ -19,13 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "GameObject.h"
 #include "MathUtils.h"
 #include "FwClient.h"
 #include "TimeUtils.h"
 #include "LevelManager.h"
 #include "Player.h"
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -41,7 +41,7 @@ GameObject::~GameObject()
 double GameObject::GetClientTime() const
 {
     FwClient* c = GetSubsystem<FwClient>();
-    return static_cast<double>(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
+    return static_cast<double>(sa::time::tick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
 }
 
 void GameObject::SetYRotation(int64_t, float rad, bool)

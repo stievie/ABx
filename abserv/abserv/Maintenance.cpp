@@ -32,6 +32,7 @@
 #include <abscommon/DataClient.h>
 #include <abscommon/FileWatcher.h>
 #include <abscommon/ThreadPool.h>
+#include <sa/time.h>
 
 void Maintenance::CleanCacheTask()
 {
@@ -102,10 +103,10 @@ void Maintenance::UpdateServerLoadTask()
     if (cli->Read(serv))
     {
         uint8_t load = static_cast<uint8_t>(Application::Instance->GetLoad());
-        if (load != serv.load || Utils::TimeElapsed(serv.heartbeat) >= AB::Entities::HEARTBEAT_INTERVAL)
+        if (load != serv.load || sa::time::time_elapsed(serv.heartbeat) >= AB::Entities::HEARTBEAT_INTERVAL)
         {
             serv.load = load;
-            serv.heartbeat = Utils::Tick();
+            serv.heartbeat = sa::time::tick();
             cli->Update(serv);
         }
     }

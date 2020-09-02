@@ -19,13 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "AttackComp.h"
 #include "Actor.h"
 #include "Game.h"
 #include "DamageComp.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
@@ -63,9 +63,9 @@ void AttackComp::StartHit(Actor& target)
     }
     interrupted_ = false;
     owner_.FaceObject(&target);
-    if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_ / 2)
+    if (sa::time::time_elapsed(lastAttackTime_) >= attackSpeed_ / 2)
     {
-        lastAttackTime_ = Utils::Tick();
+        lastAttackTime_ = sa::time::tick();
         hitting_ = true;
         FireWeapon(target);
         damageType_ = owner_.GetAttackDamageType();
@@ -195,7 +195,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
         else
         {
             // Now we are really attacking. This can be interrupted.
-            if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_)
+            if (sa::time::time_elapsed(lastAttackTime_) >= attackSpeed_)
                 Hit(*target);
         }
     }

@@ -27,6 +27,7 @@
 #include <eastl.hpp>
 #include <sa/Bits.h>
 #include <sa/Noncopyable.h>
+#include <sa/time.h>
 
 namespace Game {
 
@@ -134,14 +135,14 @@ public:
     void Disable(uint32_t ticks)
     {
         if (recharged_ == 0)
-            recharged_ = Utils::Tick();
+            recharged_ = sa::time::tick();
         recharged_ += ticks;
     }
     bool Interrupt();
     AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
-    bool IsUsing() const { return (startUse_ != 0) && (Utils::TimeElapsed(startUse_) < static_cast<uint32_t>(activation_)); }
-    bool IsRecharged() const { return recharged_ <= Utils::Tick(); }
+    bool IsUsing() const { return (startUse_ != 0) && (sa::time::time_elapsed(startUse_) < static_cast<uint32_t>(activation_)); }
+    bool IsRecharged() const { return recharged_ <= sa::time::tick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type) const
     {

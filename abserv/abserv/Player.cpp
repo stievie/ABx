@@ -222,11 +222,11 @@ void Player::CRQLogout()
 
 void Player::CRQPing(int64_t clientTick)
 {
-    lastPing_ = Utils::Tick();
+    lastPing_ = sa::time::tick();
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ServerPacketType::GamePong);
     // Depending on the timezone of server and client the server may also be behind, i.e. difference is negative.
-    AB::Packets::Server::GamePong packet = { static_cast<int32_t>(Utils::Tick() - clientTick) };
+    AB::Packets::Server::GamePong packet = { static_cast<int32_t>(sa::time::tick() - clientTick) };
     AB::Packets::Add(packet, *msg);
     WriteToOutput(*msg);
 }
@@ -2436,9 +2436,9 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 {
     // In seconds
     const uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
-        static_cast<uint32_t>((Utils::Tick() - loginTime_) / 1000);
+        static_cast<uint32_t>((sa::time::tick() - loginTime_) / 1000);
     // In seconds
-    const uint32_t age = static_cast<uint32_t>((Utils::Tick() - data_.creation) / 1000);
+    const uint32_t age = static_cast<uint32_t>((sa::time::tick() - data_.creation) / 1000);
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::ServerMessage);

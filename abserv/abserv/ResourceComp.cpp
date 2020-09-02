@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ResourceComp.h"
 #include "Actor.h"
 #include "DamageComp.h"
@@ -27,6 +26,7 @@
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
 #include <AB/ProtocolCodes.h>
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
@@ -97,7 +97,7 @@ void ResourceComp::SetHealth(SetValueType t, int value)
     {
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
         if (health_ < oldVal)
-            lastHpDecrease_ = Utils::Tick();
+            lastHpDecrease_ = sa::time::tick();
     }
 }
 
@@ -282,15 +282,15 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
         uint32_t last = std::min(owner_.damageComp_->NoDamageTime(),
             GetLastHpDecrease());
         // Not using skills
-        last = std::min(Utils::TimeElapsed(owner_.skillsComp_->GetLastSkillTime()), last);
+        last = std::min(sa::time::time_elapsed(owner_.skillsComp_->GetLastSkillTime()), last);
         // Not attacking
-        last = std::min(Utils::TimeElapsed(owner_.attackComp_->GetLastAttackTime()), last);
+        last = std::min(sa::time::time_elapsed(owner_.attackComp_->GetLastAttackTime()), last);
         if (last > 5000 && healthRegen_ >= 0.0f)
         {
-            if ((Utils::TimeElapsed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
+            if ((sa::time::time_elapsed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
             {
                 ++naturalHealthRegen_;
-                lastRegenIncrease_ = Utils::Tick();
+                lastRegenIncrease_ = sa::time::tick();
                 dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
             }
             return;
@@ -307,7 +307,7 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
 
 uint32_t ResourceComp::GetLastHpDecrease() const
 {
-    return Utils::TimeElapsed(lastHpDecrease_);
+    return sa::time::time_elapsed(lastHpDecrease_);
 }
 
 void ResourceComp::Update(uint32_t timeElapsed)

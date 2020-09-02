@@ -21,13 +21,14 @@
 
 #include "DBMerchantItemList.h"
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 namespace DB {
 
 static AB::Entities::timestamp_t KeepUntil()
 {
     static constexpr int64_t weekMs = (1000 * 60 * 60 * 24 * 7);
-    return Utils::Tick() + weekMs;
+    return sa::time::tick() + weekMs;
 }
 
 static bool KeepIt(AB::Entities::timestamp_t sold)

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Connection.h"
 #include "Dispatcher.h"
 #include "Logger.h"
@@ -29,6 +28,7 @@
 #include "Service.h"
 #include "OutputMessage.h"
 #include "Subsystems.h"
+#include <sa/time.h>
 
 namespace Net {
 
@@ -177,7 +177,7 @@ void Connection::ParseHeader(const asio::error_code& error)
 {
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    lastReadHeader_ = Utils::Tick();
+    lastReadHeader_ = sa::time::tick();
 #endif
 
     if (error)
@@ -247,7 +247,7 @@ void Connection::ParsePacket(const asio::error_code& error)
 {
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    lastReadBody_ = Utils::Tick();
+    lastReadBody_ = sa::time::tick();
 #endif
 
     if (error)
@@ -337,7 +337,7 @@ void Connection::HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asi
     if (auto conn = weakConn.lock())
     {
 #ifdef DEBUG_NET
-        int64_t now = Utils::Tick();
+        int64_t now = sa::time::tick();
         LOG_DEBUG << "Read Timeout, closing connection. Error(" << error.value() << ") " << error.message()
             << ", lastreadheader " << (now - conn->lastReadHeader_)
             << ", lastreadbody " << (now - conn->lastReadBody_)

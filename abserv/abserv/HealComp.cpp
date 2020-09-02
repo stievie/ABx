@@ -19,12 +19,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "HealComp.h"
 #include "Actor.h"
 #include "Skill.h"
 #include <AB/Packets/Packet.h>
 #include <AB/Packets/ServerPackets.h>
+#include <sa/time.h>
 
 namespace Game {
 namespace Components {
@@ -34,7 +34,7 @@ void HealComp::Healing(Actor* source, uint32_t index, int value)
     if (owner_.IsDead())
         return;
 
-    healings_.push_back({ source ? source->id_ : 0, index, value, Utils::Tick() });
+    healings_.push_back({ source ? source->id_ : 0, index, value, sa::time::tick() });
     owner_.resourceComp_->SetHealth(Components::SetValueType::Increase, value);
 }
 

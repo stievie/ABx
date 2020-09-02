@@ -249,7 +249,7 @@ void Player::HandleSelectClosestAlly(StringHash, VariantMap&)
 {
     friendSelectionCandidates_.clear();
     GetFriendSelectionCandidates();
-    lastFriendSelect_ = Client::AbTick();
+    lastFriendSelect_ = sa::time::tick();
     if (friendSelectionCandidates_.size() == 0)
         return;
     friendSelectedIndex_ = 0;
@@ -261,7 +261,7 @@ void Player::HandleSelectClosestFoe(StringHash, VariantMap&)
 {
     foeSelectionCandidates_.clear();
     GetFoeSelectionCandidates();
-    lastFoeSelect_ = Client::AbTick();
+    lastFoeSelect_ = sa::time::tick();
     if (foeSelectionCandidates_.size() == 0)
         return;
     foeSelectedIndex_ = 0;
@@ -271,12 +271,12 @@ void Player::HandleSelectClosestFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectNextFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (sa::time::tick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
     if (foeSelectionCandidates_.size() == 0)
         return;
 
-    lastFoeSelect_ = Client::AbTick();
+    lastFoeSelect_ = sa::time::tick();
     ++foeSelectedIndex_;
     if (static_cast<unsigned>(foeSelectedIndex_) > foeSelectionCandidates_.size() - 1)
         foeSelectedIndex_ = 0;
@@ -287,12 +287,12 @@ void Player::HandleSelectNextFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (Client::AbTick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (sa::time::tick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
     if (foeSelectionCandidates_.size() == 0)
         return;
 
-    lastFoeSelect_ = Client::AbTick();
+    lastFoeSelect_ = sa::time::tick();
 
     --foeSelectedIndex_;
     if (foeSelectedIndex_ < 0)
@@ -304,12 +304,12 @@ void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectNextAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (sa::time::tick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
     if (friendSelectionCandidates_.size() == 0)
         return;
 
-    lastFriendSelect_ = Client::AbTick();
+    lastFriendSelect_ = sa::time::tick();
     ++friendSelectedIndex_;
     if (static_cast<unsigned>(friendSelectedIndex_) > friendSelectionCandidates_.size() - 1)
         friendSelectedIndex_ = 0;
@@ -320,12 +320,12 @@ void Player::HandleSelectNextAlly(StringHash, VariantMap&)
 
 void Player::HandleSelectPrevAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (Client::AbTick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (sa::time::tick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
     if (friendSelectionCandidates_.size() == 0)
         return;
 
-    lastFriendSelect_ = Client::AbTick();
+    lastFriendSelect_ = sa::time::tick();
     --friendSelectedIndex_;
     if (friendSelectedIndex_ < 0)
         friendSelectedIndex_ = static_cast<int>(friendSelectionCandidates_.size()) - 1;

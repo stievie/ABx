@@ -19,12 +19,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #if defined(AB_WINDOWS)
 
 #include "CpuUsage.h"
 #include "Utils.h"
+#include <sa/time.h>
 
 namespace System {
 
@@ -99,7 +98,7 @@ unsigned CpuUsage::GetUsage()
         prevProcKernel_ = ftProcKernel;
         prevProcUser_ = ftProcUser;
 
-        lastRun_ = Utils::Tick();
+        lastRun_ = sa::time::tick();
 
         nCpuCopy = cpuUsage_;
     }
@@ -124,7 +123,7 @@ ULONGLONG CpuUsage::SubtractTimes(const FILETIME& ftA, const FILETIME& ftB)
 bool CpuUsage::EnoughTimePassed()
 {
     static const unsigned minElapsedMS = 250;   // milliseconds
-    return Utils::TimeElapsed(lastRun_) > minElapsedMS;
+    return sa::time::time_elapsed(lastRun_) > minElapsedMS;
 }
 
 }

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Application.h"
 #include "AiDebugServer.h"
 #include "AiLoader.h"
@@ -62,6 +61,7 @@
 #include <abscommon/ThreadPool.h>
 #include <sa/ConditionSleep.h>
 #include <sa/Assert.h>
+#include <sa/time.h>
 
 Application* Application::Instance = nullptr;
 
@@ -305,7 +305,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
 
 bool Application::LoadMain()
 {
-    int64_t startLoading = Utils::Tick();
+    int64_t startLoading = sa::time::tick();
 
     LOG_INFO << "Loading..." << std::endl;
 
@@ -479,7 +479,7 @@ bool Application::LoadMain()
     Game::Game::InitMessageFilter();
 
     // Done -------------------------------------------------------------------
-    uint32_t loadingTime = Utils::TimeElapsed(startLoading);
+    uint32_t loadingTime = sa::time::time_elapsed(startLoading);
 
     PrintServerInfo();
 
@@ -573,8 +573,8 @@ void Application::Run()
     UpdateService(serv);
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.temporary = temporary_;
-    serv.startTime = Utils::Tick();
-    serv.heartbeat = Utils::Tick();
+    serv.startTime = sa::time::tick();
+    serv.heartbeat = sa::time::tick();
     serv.version = AB_SERVER_VERSION;
     dataClient->UpdateOrCreate(serv);
 
@@ -637,7 +637,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::Tick();
+        serv.stopTime = sa::time::tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 
@@ -686,9 +686,9 @@ std::string Application::GetKeysFile() const
 unsigned Application::GetLoad()
 {
     static System::CpuUsage usage;
-    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
+    if (sa::time::time_elapsed(lastLoadCalc_) > 1000 || loads_.IsEmpty())
     {
-        lastLoadCalc_ = Utils::Tick();
+        lastLoadCalc_ = sa::time::tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = (static_cast<float>(playerCount) / static_cast<float>(SERVER_MAX_CONNECTIONS)) * 100.0f;
         unsigned load = static_cast<unsigned>(ld);
