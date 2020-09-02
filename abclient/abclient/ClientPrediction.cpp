@@ -249,7 +249,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
 //    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
     // FIXME: This sucks a bit, and needs some work.
     if (dist > distThreshold &&
-        sa::time::is_expired(lastStateChange_) > client->GetLastPing() + 50 &&
+        (int)sa::time::time_elapsed(lastStateChange_) > client->GetLastPing() + 50 &&
         player->GetCreatureState() == AB::GameProtocol::CreatureState::Idle)
     {
         // If too far away or player is idle, Lerp to server position
