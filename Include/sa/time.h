@@ -127,5 +127,25 @@ inline bool is_expired(int64_t expiresAt)
     return expiresAt < tick();
 }
 
+inline std::string format_tick(int64_t tick)
+{
+    const time_t tm = tick / 1000;
+    const std::tm t1 = localtime(tm);
+    return put_time(&t1, "%d %b %Y %H:%M");
+}
+
+struct timer
+{
+private:
+    int64_t start_;
+public:
+    timer() :
+        start_(tick())
+    { }
+    float elapsed_seconds() const { return static_cast<float>(tick() - start_) / 1000.0f; }
+    int64_t elapsed_millis() const { return (tick() - start_); }
+    void restart() { start_ = tick(); }
+};
+
 }
 }

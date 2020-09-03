@@ -57,9 +57,6 @@
     <ClInclude Include="Structs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="TimeUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Errors.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -93,9 +90,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeUtils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

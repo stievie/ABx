@@ -24,8 +24,8 @@
 #include "FwClient.h"
 #include "Conversions.h"
 #include <sa/Compiler.h>
-#include <TimeUtils.h>
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 void MailWindow::RegisterObject(Context* context)
 {
@@ -159,7 +159,7 @@ void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
                 if (token.value == "from")
                     return header.fromName;
                 if (token.value == "date")
-                    return Client::format_tick(header.created);
+                    return sa::time::format_tick(header.created);
                 if (token.value == "subject")
                     return header.subject.empty() ? "(No Subject)" : header.subject;
                 ASSERT_FALSE();

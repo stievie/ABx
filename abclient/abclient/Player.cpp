@@ -31,7 +31,6 @@
 #include "Mumble.h"
 #include "Shortcuts.h"
 #include "SkillBarWindow.h"
-#include "TimeUtils.h"
 #include "WindowManager.h"
 #include "WorldLevel.h"
 #include <Urho3D/Container/Sort.h>
@@ -40,6 +39,7 @@
 #include <abshared/Attributes.h>
 #include <abshared/Mechanic.h>
 #include <algorithm>
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 

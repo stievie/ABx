@@ -23,7 +23,6 @@
 #include "Conversions.h"
 #include "FwClient.h"
 #include "Utils.h"
-#include <TimeUtils.h>
 #include <sa/Compiler.h>
 #include "Shortcuts.h"
 #include "Options.h"
@@ -1317,11 +1316,11 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatChan
         {
             if (token.value == "server")
             {
-                return Client::format_tick(client->GetServerTick());
+                return sa::time::format_tick(client->GetServerTick());
             }
             if (token.value == "client")
             {
-                return Client::format_tick(sa::time::tick());
+                return sa::time::format_tick(sa::time::tick());
             }
             if (token.value == "diff")
             {

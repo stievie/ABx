@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include "TimeUtils.h"
 #include "Errors.h"
 #include <list>
 #include <memory>
 #include <functional>
 #include <asio.hpp>
+#include <sa/time.h>
 
 namespace Client {
 
@@ -69,7 +69,7 @@ protected:
     static std::list<std::shared_ptr<asio::streambuf>> outputStreams_;
     std::shared_ptr<asio::streambuf> outputStream_;
     asio::streambuf inputStream_;
-    timer activityTimer_;
+    sa::time::timer activityTimer_;
 public:
     explicit Connection(asio::io_service& ioService);
     ~Connection();

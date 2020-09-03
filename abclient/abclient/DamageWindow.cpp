@@ -25,7 +25,6 @@
 #include "LevelManager.h"
 #include "Player.h"
 #include "SkillManager.h"
-#include "TimeUtils.h"
 #include <sa/time.h>
 
 void DamageWindow::RegisterObject(Context* context)

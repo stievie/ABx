@@ -50,7 +50,6 @@
 #include "SkillManager.h"
 #include "SkillsWindow.h"
 #include "TargetWindow.h"
-#include "TimeUtils.h"
 #include "TradeDialog.h"
 #include "WindowManager.h"
 #include <AB/ProtocolCodes.h>

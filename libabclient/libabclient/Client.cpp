@@ -524,8 +524,9 @@ int64_t Client::GetServerTick() const
 
 std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t port)
 {
+    // Worker thread
     // The login server should be able to reply within 500ms.
-    static constexpr int64_t TIMEOUT = 500;
+    static constexpr uint32_t TIMEOUT = 500;
     static constexpr size_t DATA_SIZE = 64;
 
     asio::io_service ioService;
@@ -548,10 +549,10 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
 
     int64_t start = sa::time::tick();
 
-    while (!result && (sa::time::tick() - start) < TIMEOUT)
+    while (!result && (sa::time::time_elapsed(start) < TIMEOUT))
     {
         ioService.poll();
-        millisleep(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return { result, static_cast<uint32_t>(sa::time::tick() - start) };
 }
