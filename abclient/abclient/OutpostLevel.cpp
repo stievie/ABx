@@ -41,12 +41,19 @@ OutpostLevel::OutpostLevel(Context* context) :
     // Create the scene content
     CreateScene();
 
-    // Create the UI content
-    CreateUI();
-
     // Subscribe to global events for camera movement
     SubscribeToEvents();
+}
 
+void OutpostLevel::SubscribeToEvents()
+{
+    WorldLevel::SubscribeToEvents();
+}
+
+void OutpostLevel::SceneLoadingFinished()
+{
+    CreateUI();
+    WorldLevel::SceneLoadingFinished();
     VariantMap& eData = GetEventDataMap();
     using namespace Events::LevelReady;
     eData[P_NAME] = "OutpostLevel";
@@ -56,14 +63,8 @@ OutpostLevel::OutpostLevel(Context* context) :
     chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
 }
 
-void OutpostLevel::SubscribeToEvents()
-{
-    WorldLevel::SubscribeToEvents();
-}
-
 void OutpostLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();

@@ -269,8 +269,11 @@ void GameMenu::HandleGotServices(StringHash, VariantMap&)
 
 void GameMenu::HandleLevelReady(StringHash, VariantMap& eventData)
 {
-    UpdateServers();
     using namespace Events::LevelReady;
+    if (eventData[P_TYPE].GetUInt() == 0)
+        return;
+
+    UpdateServers();
     AB::Entities::GameType type = static_cast<AB::Entities::GameType>(eventData[P_TYPE].GetInt());
     bool visible = AB::Entities::IsOutpost(type);
     serversMenu_->SetVisible(visible);

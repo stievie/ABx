@@ -33,6 +33,7 @@ public:
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
+    void SceneLoadingFinished() override;
 private:
     SharedPtr<LineEdit> nameEdit_;
     SharedPtr<DropDownList> professionDropdown_;

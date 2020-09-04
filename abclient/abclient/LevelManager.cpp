@@ -36,20 +36,25 @@ LevelManager::LevelManager(Context* context) :
 {
     // Listen to set level event
     SubscribeToEvent(Events::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
+    SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(LevelManager, HandleLevelReady));
 }
 
 LevelManager::~LevelManager()
 {
-    level_ = SharedPtr<Object>();
+    level_.Reset();
+}
+
+void LevelManager::HandleLevelReady(StringHash, VariantMap&)
+{
+    fadeTime_ = MAX_FADE_TIME;
+    readyToFadeIn_ = true;
 }
 
 void LevelManager::HandleSetLevelQueue(StringHash, VariantMap& eventData)
 {
     // Busy now
     if (levelQueue_.Size())
-    {
         return;
-    }
     // Push to queue
     levelQueue_.Push(eventData);
     using namespace Events::SetLevel;
@@ -103,9 +108,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 
         // Increase fade status
         if (fadeTime_ <= 0.0f)
-        {
             fadeStatus_++;
-        }
         break;
     }
     case 2:
@@ -118,13 +121,14 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
             break;
         }
         // We can not create new level here, or it may cause errors, we have to create it at the next update point.
-        level_ = SharedPtr<Object>();
+        level_.Reset();
         fadeStatus_++;
         break;
     }
     case 3:
     {
         // Create new level
+        readyToFadeIn_ = false;
         lastLevelName_ = levelName_;
         VariantMap& levelData = levelQueue_.Front();
         using namespace Events::SetLevel;
@@ -147,13 +151,14 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
     }
     case 4:
     {
-        // Fade in
-        fadeWindow_->SetOpacity(fadeTime_ / MAX_FADE_TIME);
-
-        // Increase fade status
-        if (fadeTime_ <= 0.0f)
+        if (readyToFadeIn_)
         {
-            fadeStatus_++;
+            // Fade in
+            fadeWindow_->SetOpacity(fadeTime_ / MAX_FADE_TIME);
+
+            // Increase fade status
+            if (fadeTime_ <= 0.0f)
+                fadeStatus_++;
         }
         break;
     }
@@ -162,7 +167,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         // Finished
         // Remove fade layer
         fadeWindow_->Remove();
-        fadeWindow_ = SharedPtr<Window>();
+        fadeWindow_.Reset();
 
         // Unsubscribe update event
         UnsubscribeFromEvent(E_UPDATE);
@@ -177,8 +182,9 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 
 void LevelManager::AddFadeLayer()
 {
-    fadeWindow_ = new Window(context_);
+    fadeWindow_ = MakeShared<Window>(context_);
     // Make the window a child of the root element, which fills the whole screen.
+    GetSubsystem<UI>()->GetRoot()->RemoveAllChildren();
     GetSubsystem<UI>()->GetRoot()->AddChild(fadeWindow_);
     auto* graphics = GetSubsystem<Graphics>();
     fadeWindow_->SetSize(graphics->GetWidth(), graphics->GetHeight());

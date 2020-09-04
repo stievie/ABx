@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "CreateAccountLevel.h"
 #include "FwClient.h"
 #include <AB/Entities/Limits.h>
@@ -32,16 +31,26 @@ CreateAccountLevel::CreateAccountLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
+
+    // Subscribe to global events for camera movement
+    SubscribeToEvents();
+    FwClient* net = GetSubsystem<FwClient>();
+    net->SetState(Client::State::CreateAccount);
+}
+
+void CreateAccountLevel::SceneLoadingFinished()
+{
     CreateCamera();
 
     // Create the UI content
     CreateUI();
     CreateLogo();
 
-    // Subscribe to global events for camera movement
-    SubscribeToEvents();
-    FwClient* net = GetSubsystem<FwClient>();
-    net->SetState(Client::State::CreateAccount);
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::LevelReady;
+    eData[P_NAME] = "CreateAccountLevel";
+    eData[P_TYPE] = 0;
+    SendEvent(Events::E_LEVELREADY, eData);
 }
 
 void CreateAccountLevel::DoCreateAccount()
@@ -167,7 +176,6 @@ void CreateAccountLevel::ShowError(const String& message, const String& title)
 
 void CreateAccountLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();

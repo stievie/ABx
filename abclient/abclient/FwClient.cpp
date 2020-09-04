@@ -420,9 +420,12 @@ void FwClient::Stop()
     Logout();
 }
 
-void FwClient::HandleLevelReady(StringHash, VariantMap&)
+void FwClient::HandleLevelReady(StringHash, VariantMap& eventData)
 {
     using namespace Events::LevelReady;
+    if (eventData[P_TYPE].GetUInt() == 0)
+        return;
+
     levelReady_ = true;
     // Level loaded, send queued events
     for (auto& e : queuedEvents_)

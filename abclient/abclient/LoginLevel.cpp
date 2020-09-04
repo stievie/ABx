@@ -68,6 +68,12 @@ void LoginLevel::SceneLoadingFinished()
     // Create the UI content
     CreateUI();
     CreateLogo();
+
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::LevelReady;
+    eData[P_NAME] = "LoginLevel";
+    eData[P_TYPE] = 0;
+    SendEvent(Events::E_LEVELREADY, eData);
 }
 
 void LoginLevel::CreateCamera()
@@ -138,7 +144,6 @@ void LoginLevel::CreateEnvironmentsList()
 
 void LoginLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();

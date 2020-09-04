@@ -61,7 +61,6 @@ void CharSelectLevel::SubscribeToEvents()
 
 void CharSelectLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -222,6 +221,12 @@ void CharSelectLevel::SceneLoadingFinished()
     // Create the UI content
     CreateUI();
     CreateLogo();
+
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::LevelReady;
+    eData[P_NAME] = "CharSelectLevel";
+    eData[P_TYPE] = 0;
+    SendEvent(Events::E_LEVELREADY, eData);
 }
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)

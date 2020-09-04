@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "PvpCombatLevel.h"
 #include "ChatWindow.h"
 #include "FwClient.h"
@@ -46,7 +45,18 @@ PvpCombatLevel::PvpCombatLevel(Context* context) :
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
+}
 
+void PvpCombatLevel::SubscribeToEvents()
+{
+    WorldLevel::SubscribeToEvents();
+}
+
+void PvpCombatLevel::SceneLoadingFinished()
+{
+    CreateUI();
+
+    WorldLevel::SceneLoadingFinished();
     VariantMap& eData = GetEventDataMap();
     using namespace Events::LevelReady;
     eData[P_NAME] = "PvpCombatLevel";
@@ -56,14 +66,8 @@ PvpCombatLevel::PvpCombatLevel(Context* context) :
     chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
 }
 
-void PvpCombatLevel::SubscribeToEvents()
-{
-    WorldLevel::SubscribeToEvents();
-}
-
 void PvpCombatLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();

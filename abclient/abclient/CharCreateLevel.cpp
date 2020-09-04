@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "CharCreateLevel.h"
 #include "Structs.h"
 #include "FwClient.h"
@@ -36,14 +35,24 @@ CharCreateLevel::CharCreateLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
+
+    // Subscribe to global events for camera movement
+    SubscribeToEvents();
+}
+
+void CharCreateLevel::SceneLoadingFinished()
+{
     CreateCamera();
 
     // Create the UI content
     CreateUI();
     CreateLogo();
 
-    // Subscribe to global events for camera movement
-    SubscribeToEvents();
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::LevelReady;
+    eData[P_NAME] = "CharCreateLevel";
+    eData[P_TYPE] = 0;
+    SendEvent(Events::E_LEVELREADY, eData);
 }
 
 void CharCreateLevel::CreateCamera()
@@ -66,7 +75,6 @@ void CharCreateLevel::SubscribeToEvents()
 
 void CharCreateLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();

@@ -41,6 +41,7 @@ public:
 private:
     void HandleSetLevelQueue(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void AddFadeLayer();
 
     List<VariantMap> levelQueue_;
@@ -56,6 +57,7 @@ private:
     float fadeTime_{ 0 };
     int fadeStatus_{ 0 };
     bool drawDebugGeometry_{ false };
+    bool readyToFadeIn_{ false };
     const float MAX_FADE_TIME = 0.7f;
 public:
     template<typename T>

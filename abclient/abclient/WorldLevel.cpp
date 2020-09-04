@@ -168,8 +168,12 @@ void WorldLevel::RemoveUIWindows()
     uiRoot_->RemoveChild(guildWindow_);
 }
 
-void WorldLevel::HandleLevelReady(StringHash, VariantMap&)
+void WorldLevel::HandleLevelReady(StringHash, VariantMap& eventData)
 {
+    using namespace Events::LevelReady;
+    if (eventData[P_TYPE].GetUInt() == 0)
+        return;
+
     partyWindow_->SetPartySize(partySize_);
     partyWindow_->SetMode(AB::Entities::IsOutpost(mapType_) ?
         PartyWindowMode::ModeOutpost : PartyWindowMode::ModeGame);
@@ -1155,13 +1159,12 @@ void WorldLevel::ToggleMap()
 
 void WorldLevel::CreateUI()
 {
-    uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();
 
     Options* op = GetSubsystem<Options>();
-    gameMenu_ = SharedPtr<GameMenu>(new GameMenu(context_));
+    gameMenu_ = MakeShared<GameMenu>(context_);
     op->LoadWindow(gameMenu_);
     gameMenu_->SetVisible(true);
     uiRoot_->AddChild(gameMenu_);
