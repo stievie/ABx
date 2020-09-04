@@ -113,7 +113,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     // Create camera
     Options* options = GetSubsystem<Options>();
     cameraNode_ = scene->CreateChild("CameraNode");
-    cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
+    cameraNode_->SetPosition(node_->GetPosition());
     Camera* camera = cameraNode_->CreateComponent<Camera>();
     cameraNode_->CreateComponent<CameraTransform>();
     camera->SetFarClip(options->GetCameraFarClip());
@@ -271,7 +271,7 @@ void Player::HandleSelectClosestFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectNextFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (sa::time::tick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (sa::time::time_elapsed(lastFoeSelect_) > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
     if (foeSelectionCandidates_.size() == 0)
         return;
@@ -287,7 +287,7 @@ void Player::HandleSelectNextFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
 {
-    if (lastFoeSelect_ == 0 || (sa::time::tick() - lastFoeSelect_ > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
+    if (lastFoeSelect_ == 0 || (sa::time::time_elapsed(lastFoeSelect_) > 2000) || foeSelectionCandidates_.empty() || foeSelectedIndex_ == -1)
         GetFoeSelectionCandidates();
     if (foeSelectionCandidates_.size() == 0)
         return;
@@ -304,7 +304,7 @@ void Player::HandleSelectPrevFoe(StringHash, VariantMap&)
 
 void Player::HandleSelectNextAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (sa::time::tick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (sa::time::time_elapsed(lastFriendSelect_) > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
     if (friendSelectionCandidates_.size() == 0)
         return;
@@ -320,7 +320,7 @@ void Player::HandleSelectNextAlly(StringHash, VariantMap&)
 
 void Player::HandleSelectPrevAlly(StringHash, VariantMap&)
 {
-    if (lastFriendSelect_ == 0 || (sa::time::tick() - lastFriendSelect_ > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
+    if (lastFriendSelect_ == 0 || (sa::time::time_elapsed(lastFriendSelect_) > 2000) || friendSelectionCandidates_.empty() || friendSelectedIndex_ == -1)
         GetFriendSelectionCandidates();
     if (friendSelectionCandidates_.size() == 0)
         return;
