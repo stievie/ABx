@@ -198,20 +198,25 @@ void BaseLevel::CreateUI()
 
 void BaseLevel::CreateScene()
 {
-    scene_ = new Scene(context_);
+    scene_ = MakeShared<Scene>(context_);
+    SubscribeToEvent(scene_, E_ASYNCLOADFINISHED, URHO3D_HANDLER(BaseLevel, HandleAsyncLoadFinished));
+}
+
+void BaseLevel::HandleAsyncLoadFinished(StringHash, VariantMap&)
+{
+    SceneLoadingFinished();
+    UnsubscribeFromEvent(E_ASYNCLOADFINISHED);
 }
 
 void BaseLevel::LoadScene(const String& file)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* sceneFile = cache->GetResource<XMLFile>(file);
-    if (!sceneFile)
+    if (!scene_->LoadAsyncXML(cache->GetFile(file)))
     {
         URHO3D_LOGERRORF("Scene file %s not found", file.CString());
         ShowError("Scene \"" + file + "\" not found", "Error");
         return;
     }
-    scene_->LoadXML(sceneFile->GetRoot());
     scene_->SetSmoothingConstant(15.0f);
     // No Lerp if squared distance is > Snap
     scene_->SetSnapThreshold(20.0f);

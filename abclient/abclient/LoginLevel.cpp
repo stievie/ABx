@@ -38,11 +38,6 @@ LoginLevel::LoginLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
-    CreateCamera();
-
-    // Create the UI content
-    CreateUI();
-    CreateLogo();
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
@@ -64,6 +59,15 @@ void LoginLevel::CreateScene()
 {
     BaseLevel::CreateScene();
     LoadScene("Scenes/Login.xml");
+}
+
+void LoginLevel::SceneLoadingFinished()
+{
+    CreateCamera();
+
+    // Create the UI content
+    CreateUI();
+    CreateLogo();
 }
 
 void LoginLevel::CreateCamera()

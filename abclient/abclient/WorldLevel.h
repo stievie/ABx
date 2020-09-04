@@ -128,6 +128,7 @@ protected:
     void SetupViewport() override;
     void CreateScene() override;
     void PostUpdate(StringHash eventType, VariantMap& eventData) override;
+    void SceneLoadingFinished() override;
 private:
     IntVector2 mouseDownPos_;
     bool rmbDown_ { false };

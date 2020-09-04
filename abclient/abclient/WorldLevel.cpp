@@ -357,11 +357,6 @@ void WorldLevel::SetupViewport()
     BaseLevel::SetupViewport();
     postProcess_->SetUseBloomHDR(true);
     postProcess_->SetUseColorCorrection(true);
-//    postProcess_->SetUseGammaCorrection(true);
-//    postProcess_->SetAutoExposureLumRange(Vector2(0.5f, 1.0f));
-//    postProcess_->SetAutoExposureAdaptRate(0.5f);
-//    postProcess_->SetAutoExposureMidGrey(1.0f);
-//    postProcess_->SetUseAutoExposure(true);
 
     if (equipWindow_ && equipWindow_->IsVisible())
         equipWindow_->Initialize(*postProcess_);
@@ -370,18 +365,17 @@ void WorldLevel::SetupViewport()
 void WorldLevel::CreateScene()
 {
     BaseLevel::CreateScene();
-    NavigationMesh* navMesh = scene_->GetComponent<NavigationMesh>();
-    if (navMesh)
-        navMesh->Build();
-
     LoadScene("Scenes/" + mapName_ + ".xml");
-
-    InitModelAnimations();
 
     using namespace Events::AudioPlayMapMusic;
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = mapUuid_;
     SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
+}
+
+void WorldLevel::SceneLoadingFinished()
+{
+    InitModelAnimations();
 }
 
 void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)

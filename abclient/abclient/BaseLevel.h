@@ -67,7 +67,7 @@ protected:
     virtual void Update(StringHash, VariantMap&) {}
     virtual void PostUpdate(StringHash, VariantMap&) {}
     virtual void PostRenderUpdate(StringHash eventType, VariantMap& eventData);
-
+    virtual void SceneLoadingFinished() { }
     virtual void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err);
     virtual void OnProtocolError(AB::ErrorCodes err);
 
@@ -115,4 +115,5 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleAsyncLoadFinished(StringHash eventType, VariantMap& eventData);
 };

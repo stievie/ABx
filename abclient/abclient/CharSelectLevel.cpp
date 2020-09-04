@@ -34,11 +34,6 @@ CharSelectLevel::CharSelectLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
-    CreateCamera();
-
-    // Create the UI content
-    CreateUI();
-    CreateLogo();
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
@@ -218,6 +213,15 @@ void CharSelectLevel::CreateScene()
     VariantMap& e = GetEventDataMap();
     e[P_MAPUUID] = "SelectCharacter";
     SendEvent(Events::E_AUDIOPLAYMAPMUSIC, e);
+}
+
+void CharSelectLevel::SceneLoadingFinished()
+{
+    CreateCamera();
+
+    // Create the UI content
+    CreateUI();
+    CreateLogo();
 }
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)

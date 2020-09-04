@@ -165,7 +165,7 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
     SceneResolver resolver;
     Node* adjNode = node_->CreateChild(0, LOCAL);
     resolver.AddNode(nodeId, adjNode);
-    adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
+    adjNode->SetRotation(Quaternion(270, Vector3::UP));
     if (adjNode->LoadXML(root, resolver, true, true))
     {
         resolver.Resolve();

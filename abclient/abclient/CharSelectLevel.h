@@ -35,6 +35,7 @@ public:
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
+    void SceneLoadingFinished() override;
 private:
     void CreateScene() override;
     void HandleCharClicked(StringHash eventType, VariantMap& eventData);
