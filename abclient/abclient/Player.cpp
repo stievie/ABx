@@ -114,8 +114,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     cameraNode_ = scene->CreateChild("CameraNode");
     cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = cameraNode_->CreateComponent<Camera>();
-    CameraTransform* trans = cameraNode_->CreateComponent<CameraTransform>();
-    trans->SetSnapFactor(0.5f);                           // No smooth reverse camera
+    cameraNode_->CreateComponent<CameraTransform>();
     camera->SetFarClip(options->GetCameraFarClip());
     camera->SetNearClip(options->GetCameraNearClip());
     camera->SetFov(options->GetCameraFov());
@@ -583,7 +582,10 @@ void Player::PostUpdate(float timeStep)
         newCamPos = aimPoint + rayDir * rayDistance;
     }
 
+    // If the camera is far away from the character, use a bigger snap factor.
+    const float snapFactor = ((node_->GetPosition() - newCamPos).LengthSquared() - 2.5f) / 250.0f;
     auto* camTransform = cameraNode_->GetComponent<CameraTransform>();
+    camTransform->SetSnapFactor(snapFactor);
     camTransform->SetTargetPosition(newCamPos);
     camTransform->SetTargetRotation(dir);
 }
