@@ -143,7 +143,8 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         // Add a fade layer
         if (!fadeWindow_)
             AddFadeLayer();
-        fadeWindow_->SetScene(baseLevel->GetScene());
+        if (mapType_ != AB::Entities::GameTypeUnknown)
+            fadeWindow_->SetScene(baseLevel->GetScene());
         fadeWindow_->SetOpacity(1.0f);
         fadeTime_ = MAX_FADE_TIME;
         fadeStatus_++;
