@@ -111,6 +111,7 @@ public:
             return postProcess_.Get();
         return nullptr;
     }
+    Scene* GetScene() const { return scene_.Get(); }
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

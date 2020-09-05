@@ -34,6 +34,7 @@
 #include "CreditsWindow.h"
 #include "DamageWindow.h"
 #include "EffectsWindow.h"
+#include "FadeWindow.h"
 #include "FormatText.h"
 #include "FriendListWindow.h"
 #include "GameMenu.h"
@@ -160,6 +161,7 @@ ClientApp::ClientApp(Context* context) :
     FormatText::RegisterObject(context);
 
     context->RegisterFactory<CameraTransform>();
+    context->RegisterFactory<FadeWindow>();
     // Register levels
     context->RegisterFactory<LoginLevel>();
     context->RegisterFactory<CreateAccountLevel>();

@@ -202,12 +202,13 @@ void CreateAccountLevel::CreateUI()
 
 void CreateAccountLevel::HandleUpdate(StringHash, VariantMap& eventData)
 {
+    if (!cameraNode_)
+        return;
     using namespace Update;
 
     // Take the frame time step, which is stored as a float
     float timeStep = eventData[P_TIMESTEP].GetFloat();
-    Quaternion rot;
-    rot.FromAngleAxis(timeStep, Vector3(0.0f, 1.0f, 0.0f));
+    const Quaternion rot{ timeStep, Vector3::UP };
     cameraNode_->Rotate(rot);
 }
 

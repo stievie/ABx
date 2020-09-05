@@ -1091,7 +1091,7 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     return result;
 }
 
-Actor* WorldLevel::GetActorByName(const String& name, ObjectType type /* = ObjectTypePlayer */)
+Actor* WorldLevel::GetActorByName(const String& name, ObjectType type /* = ObjectTypePlayer */) const
 {
     for (const auto& o : objects_)
     {

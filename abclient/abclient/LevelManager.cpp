@@ -26,13 +26,12 @@
 #include "GameMenu.h"
 #include "Actor.h"
 #include "FwClient.h"
+#include "FadeWindow.h"
 
 //#include <Urho3D/DebugNew.h>
 
 LevelManager::LevelManager(Context* context) :
-    Object(context),
-    level_(nullptr),
-    fadeWindow_(nullptr)
+    Object(context)
 {
     // Listen to set level event
     SubscribeToEvent(Events::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
@@ -58,13 +57,13 @@ void LevelManager::HandleSetLevelQueue(StringHash, VariantMap& eventData)
     // Push to queue
     levelQueue_.Push(eventData);
     using namespace Events::SetLevel;
-    instanceUuid_ = String(eventData[P_INSTANCEUUID].GetString());
+    instanceUuid_ = eventData[P_INSTANCEUUID].GetString();
 
     // Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LevelManager, HandleUpdate));
 
     // Init fade status
-    fadeStatus_ = 0;
+    fadeStatus_ = FadeStatusPrepare;
 }
 
 void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
@@ -79,7 +78,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 
     switch (fadeStatus_)
     {
-    case 0:
+    case FadeStatusPrepare:
     {
         // Prepare to fade out
         if (!level_)
@@ -95,7 +94,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         fadeStatus_++;
         break;
     }
-    case 1:
+    case FadeStatusFadeOut:
     {
         // Fade out
         if (!level_)
@@ -111,7 +110,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
             fadeStatus_++;
         break;
     }
-    case 2:
+    case FadeStatusReleaseOld:
     {
         // Release old level
         if (!level_)
@@ -125,7 +124,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         fadeStatus_++;
         break;
     }
-    case 3:
+    case FadeStatusCreateNew:
     {
         // Create new level
         readyToFadeIn_ = false;
@@ -144,15 +143,17 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         // Add a fade layer
         if (!fadeWindow_)
             AddFadeLayer();
+        fadeWindow_->SetScene(baseLevel->GetScene());
         fadeWindow_->SetOpacity(1.0f);
         fadeTime_ = MAX_FADE_TIME;
         fadeStatus_++;
         break;
     }
-    case 4:
+    case FadeStatusFadeIn:
     {
         if (readyToFadeIn_)
         {
+            fadeWindow_->SetScene(nullptr);
             // Fade in
             fadeWindow_->SetOpacity(fadeTime_ / MAX_FADE_TIME);
 
@@ -162,7 +163,7 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         }
         break;
     }
-    case 5:
+    case FadeStatusFinish:
     {
         // Finished
         // Remove fade layer
@@ -182,24 +183,10 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 
 void LevelManager::AddFadeLayer()
 {
-    fadeWindow_ = MakeShared<Window>(context_);
-    // Make the window a child of the root element, which fills the whole screen.
-    GetSubsystem<UI>()->GetRoot()->RemoveAllChildren();
-    GetSubsystem<UI>()->GetRoot()->AddChild(fadeWindow_);
-    auto* graphics = GetSubsystem<Graphics>();
-    fadeWindow_->SetSize(graphics->GetWidth(), graphics->GetHeight());
-    fadeWindow_->SetLayout(LM_FREE);
-    // Urho has three layouts: LM_FREE, LM_HORIZONTAL and LM_VERTICAL.
-    // In LM_FREE the child elements of this window can be arranged freely.
-    // In the other two they are arranged as a horizontal or vertical list.
-
-    // Center this window in it's parent element.
-    fadeWindow_->SetAlignment(HA_CENTER, VA_CENTER);
-    // Black color
-    fadeWindow_->SetColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
-    // Make it top most
-    fadeWindow_->SetBringToBack(false);
-    fadeWindow_->BringToFront();
+    auto* root = GetSubsystem<UI>()->GetRoot();
+    root->RemoveAllChildren();
+    fadeWindow_ = MakeShared<FadeWindow>(context_);
+    root->AddChild(fadeWindow_);
 }
 
 const AB::Entities::Game* LevelManager::GetGame() const
@@ -227,17 +214,17 @@ GameObject* LevelManager::GetObject(uint32_t objectId)
     return nullptr;
 }
 
-Actor* LevelManager::GetActorByName(const String& name)
+Actor* LevelManager::GetActorByName(const String& name) const
 {
-    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    const WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
         return lvl->GetActorByName(name);
     return nullptr;
 }
 
-Player* LevelManager::GetPlayer()
+Player* LevelManager::GetPlayer() const
 {
-    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    const WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
         return lvl->GetPlayer();
     return nullptr;
@@ -245,7 +232,7 @@ Player* LevelManager::GetPlayer()
 
 Camera* LevelManager::GetCamera() const
 {
-    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    const WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
         return lvl->GetCamera();
     return nullptr;

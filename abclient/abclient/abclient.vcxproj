@@ -290,6 +290,7 @@
     <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="EquipmentWindow.cpp" />
+    <ClCompile Include="FadeWindow.cpp" />
     <ClCompile Include="FilePicker.cpp" />
     <ClCompile Include="InputBox.cpp" />
     <ClCompile Include="ItemStatsUIElement.cpp" />
@@ -361,6 +362,7 @@
     <ClInclude Include="CraftsmanWindow.h" />
     <ClInclude Include="DamageWindow.h" />
     <ClInclude Include="EquipmentWindow.h" />
+    <ClInclude Include="FadeWindow.h" />
     <ClInclude Include="FilePicker.h" />
     <ClInclude Include="InputBox.h" />
     <ClInclude Include="ItemStatsUIElement.h" />

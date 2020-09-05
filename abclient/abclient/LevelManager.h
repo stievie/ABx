@@ -31,6 +31,7 @@ using namespace Urho3D;
 class GameObject;
 class Player;
 class Actor;
+class FadeWindow;
 
 class LevelManager : public Object
 {
@@ -39,6 +40,16 @@ public:
     LevelManager(Context* context);
     ~LevelManager() override;
 private:
+    static constexpr float MAX_FADE_TIME = 0.7f;
+    enum FadeStatus
+    {
+        FadeStatusPrepare = 0,
+        FadeStatusFadeOut,
+        FadeStatusReleaseOld,
+        FadeStatusCreateNew,
+        FadeStatusFadeIn,
+        FadeStatusFinish
+    };
     void HandleSetLevelQueue(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -53,12 +64,11 @@ private:
     String lastLevelName_;
     String instanceUuid_;
     SharedPtr<Object> level_;
-    SharedPtr<Window> fadeWindow_;
+    SharedPtr<FadeWindow> fadeWindow_;
     float fadeTime_{ 0 };
-    int fadeStatus_{ 0 };
+    int fadeStatus_{ FadeStatusPrepare };
     bool drawDebugGeometry_{ false };
     bool readyToFadeIn_{ false };
-    const float MAX_FADE_TIME = 0.7f;
 public:
     template<typename T>
     T* GetCurrentLevel() const { return dynamic_cast<T*>(level_.Get()); }
@@ -76,7 +86,7 @@ public:
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
     GameObject* GetObject(uint32_t objectId);
-    Actor* GetActorByName(const String& name);
-    Player* GetPlayer();
+    Actor* GetActorByName(const String& name) const;
+    Player* GetPlayer() const;
     Camera* GetCamera() const;
 };
