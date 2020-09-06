@@ -526,13 +526,14 @@ SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 }
 
 void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
-    const std::string& path, const sa::http::range& range)
+    const std::string& path,
+    const sa::http::range& range,
+    bool multipart, const std::string& boundary)
 {
     auto ifs = std::make_shared<std::ifstream>();
     ifs->open(path, std::ifstream::in | std::ios::binary | std::ios::ate);
     ASSERT(ifs);
 
-    bool isRange = range.end > 0;
     auto fileSize = (long)ifs->tellg();
     size_t start = range.start;
     size_t end = (range.end != 0) ? range.end : (size_t)fileSize;
@@ -542,19 +543,13 @@ void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
     ifs->seekg(start, std::ios::beg);
     UpdateBytesSent(static_cast<size_t>(length));
 
-    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
-
-    if (isRange)
+    if (multipart)
     {
-        header.emplace("Content-Length", std::to_string(range.length));
-        header.emplace("Content-Range", std::to_string(range.start) + "-" +
-        std::to_string(range.end) + "/" + std::to_string(fileSize));
-        response->write(SimpleWeb::StatusCode::success_partial_content, header);
-    }
-    else
-    {
-        header.emplace("Content-Length", std::to_string(fileSize));
-        response->write(header);
+        response->write("--" + boundary);
+        response->write("Content-Type: application/octet-stream\n");
+        response->write("Content-Range: " + std::to_string(range.start) + "-" +
+            std::to_string(range.end) + "/" + std::to_string(fileSize) + "\n");
+        response->write("\n");
     }
 
     struct FileServer
@@ -634,7 +629,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         if (!ifs)
             throw std::invalid_argument("could not read file");
 
-        auto length = ifs.tellg();
+        auto fileSize = ifs.tellg();
 
         const auto rangeHeaderIt = request->header.find("Range");
         sa::http::ranges ranges;
@@ -644,7 +639,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         }
         else
         {
-            if (!sa::http::parse_ranges(length, rangeHeaderIt->second, ranges))
+            if (!sa::http::parse_ranges(fileSize, rangeHeaderIt->second, ranges))
             {
                 response->write(SimpleWeb::StatusCode::client_error_range_not_satisfiable,
                     "Range Not Satisfiable");
@@ -652,10 +647,52 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             }
         }
 
-        for (const auto& range : ranges)
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
+        const bool multipart = ranges.size() > 1;
+        const bool isRange = !sa::http::is_full_range(fileSize, ranges[0]);
+        // Multipart not supported
+        if (multipart)
         {
-            SendFileRange(response, path.string(), range);
+            LOG_WARNING << "TODO: Multipart not supported" << std::endl;
+            response->write(SimpleWeb::StatusCode::client_error_range_not_satisfiable,
+                "Range Not Satisfiable");
+            return;
         }
+
+        const std::string boundary = "3d6b6a416f9b5";
+
+        SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+
+        if (isRange && !multipart)
+        {
+            // Single part of a file
+            header.emplace("Content-Type", "application/octet-stream\n");
+            header.emplace("Content-Length", std::to_string(ranges[0].length));
+            header.emplace("Content-Range", std::to_string(ranges[0].start) + "-" +
+                std::to_string(ranges[0].end) + "/" + std::to_string(fileSize));
+            response->write(SimpleWeb::StatusCode::success_partial_content, header);
+        }
+        else if (isRange && multipart)
+        {
+            // Multiple parts of a file in one response -> multipart message
+            header.emplace("Content-Type", "multipart/byteranges; boundary=" + boundary);
+            header.emplace("Content-Length", std::to_string(sa::http::content_length(ranges)));
+            response->write(SimpleWeb::StatusCode::success_partial_content, header);
+        }
+        else
+        {
+            // Whole file
+            header.emplace("Content-Type", "application/octet-stream\n");
+            header.emplace("Content-Length", std::to_string(fileSize));
+            response->write(SimpleWeb::StatusCode::success_ok, header);
+        }
+
+        SendFileRange(response, path.string(), ranges[0], multipart, boundary);
+
+#if 0
+        if (multipart)
+            response->write("--" + boundary + "--\n");
+#endif
     }
     catch (const std::exception& ex)
     {

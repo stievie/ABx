@@ -116,6 +116,23 @@ inline void combine_ranges(ranges& input)
 
 }
 
+inline bool is_full_range(size_t size, const range& range)
+{
+    if (range.end == 0)
+        return true;
+    if (range.start == 0 && (size_t)range.length >= size)
+        return true;
+    return false;
+}
+
+inline size_t content_length(const ranges& ranges)
+{
+    size_t result = 0;
+    for (const auto& r : ranges)
+        result += r.length;
+    return result;
+}
+
 // Parse Range header, return a sorted list of ranges that do not overlap.
 // size is the file size in bytes.
 inline bool parse_ranges(size_t size, std::string_view header, ranges& result)

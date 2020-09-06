@@ -87,7 +87,9 @@ private:
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void SendFileRange(std::shared_ptr<HttpsServer::Response> response,
-        const std::string& path, const sa::http::range& range);
+        const std::string& path,
+        const sa::http::range& range,
+        bool multipart, const std::string& boundary);
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,

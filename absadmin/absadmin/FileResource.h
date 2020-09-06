@@ -30,7 +30,8 @@ class FileResource : public Resource
 {
 private:
     void SendFileRange(std::shared_ptr<HttpsServer::Response> response,
-        const std::string& path, const sa::http::range& range);
+        const std::string& path, const sa::http::range& range,
+        bool multipart, const std::string& boundary);
 public:
     explicit FileResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
