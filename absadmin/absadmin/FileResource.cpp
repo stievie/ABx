@@ -34,9 +34,9 @@ void FileResource::SendFileRange(std::shared_ptr<HttpsServer::Response> response
     ASSERT(ifs);
 
     bool isRange = range.end > 0;
-    auto fileSize = ifs->tellg();
+    auto fileSize = (long)ifs->tellg();
     size_t start = range.start;
-    size_t end = (range.end != 0) ? range.end : fileSize;
+    size_t end = (range.end != 0) ? range.end : (size_t)fileSize;
     ASSERT(end > start);
     size_t length = end - start;
 
