@@ -397,6 +397,7 @@ SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 {
     ASSERT(Application::Instance);
     SimpleWeb::CaseInsensitiveMultimap result;
+    result.emplace("Accept-Ranges", "bytes");
     result.emplace("Server", Application::Instance->serverName_);
     return result;
 }

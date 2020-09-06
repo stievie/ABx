@@ -21,6 +21,7 @@
 
 #include "Application.h"
 #include "Version.h"
+#include <algorithm>
 #include <sa/StringTempl.h>
 #include <sa/time.h>
 #include <AB/Entities/AccountBan.h>
@@ -519,8 +520,80 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 {
     SimpleWeb::CaseInsensitiveMultimap result;
+    result.emplace("Accept-Ranges", "bytes");
     result.emplace("Server", "abfile");
     return result;
+}
+
+void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
+    const std::string& path, const sa::http::range& range)
+{
+    auto ifs = std::make_shared<std::ifstream>();
+    ifs->open(path, std::ifstream::in | std::ios::binary | std::ios::ate);
+    ASSERT(ifs);
+
+    bool isRange = range.end > 0;
+    auto fileSize = ifs->tellg();
+    size_t start = range.start;
+    size_t end = (range.end != 0) ? range.end : fileSize;
+    ASSERT(end > start);
+    size_t length = end - start;
+
+    ifs->seekg(start, std::ios::beg);
+    UpdateBytesSent(static_cast<size_t>(length));
+
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+
+    if (isRange)
+    {
+        header.emplace("Content-Length", std::to_string(range.length));
+        header.emplace("Content-Range", std::to_string(range.start) + "-" +
+        std::to_string(range.end) + "/" + std::to_string(fileSize));
+        response->write(SimpleWeb::StatusCode::success_partial_content, header);
+    }
+    else
+    {
+        header.emplace("Content-Length", std::to_string(fileSize));
+        response->write(header);
+    }
+
+    struct FileServer
+    {
+        static void ReadAndSend(uint64_t maxBitsPerSec, const std::shared_ptr<HttpsServer::Response>& response,
+            const std::shared_ptr<std::ifstream>& ifs, size_t remaining)
+        {
+            size_t chunkSize = std::min<size_t>(131072u, remaining);
+            std::vector<char> buffer;
+            buffer.resize(chunkSize);
+            std::streamsize read_length;
+            if ((read_length = ifs->read(&buffer[0], static_cast<std::streamsize>(buffer.size())).gcount()) > 0)
+            {
+                response->write(&buffer[0], read_length);
+                if (read_length == static_cast<std::streamsize>(buffer.size()))
+                {
+                    if (maxBitsPerSec > 0)
+                    {
+                        auto sleepMs = static_cast<unsigned long>(((float)(read_length * 8) / (float)maxBitsPerSec) * 1000.0f);
+                        // Throttle to meet max throughput
+                        std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
+                    }
+                    response->send([maxBitsPerSec, response, ifs, remaining, read_length](const SimpleWeb::error_code& ec)
+                    {
+                        if (!ec)
+                        {
+                            size_t newRemaining = remaining - read_length;
+                            if (newRemaining > 0)
+                                ReadAndSend(maxBitsPerSec, response, ifs, newRemaining);
+                        }
+                        else
+                            LOG_ERROR << "Connection interrupted " << ec.default_error_condition().value() << " " <<
+                            ec.default_error_condition().message() << std::endl;
+                    });
+                }
+            }
+        }
+    };
+    FileServer::ReadAndSend(maxThroughput_, response, ifs, length);
 }
 
 void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
@@ -557,54 +630,32 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             throw std::invalid_argument("hidden file");
         }
 
-        SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+        std::ifstream ifs(path.string(), std::ifstream::in | std::ios::binary | std::ios::ate);
+        if (!ifs)
+            throw std::invalid_argument("could not read file");
 
-        auto ifs = std::make_shared<std::ifstream>();
-        ifs->open(path.string(), std::ifstream::in | std::ios::binary | std::ios::ate);
+        auto length = ifs.tellg();
 
-        if (*ifs)
+        const auto rangeHeaderIt = request->header.find("Range");
+        sa::http::ranges ranges;
+        if (rangeHeaderIt == request->header.end())
         {
-            auto length = ifs->tellg();
-            ifs->seekg(0, std::ios::beg);
-            UpdateBytesSent(static_cast<size_t>(length));
-
-            header.emplace("Content-Length", to_string(length));
-            response->write(header);
-
-            // Trick to define a recursive function within this scope (for example purposes)
-            class FileServer
-            {
-            public:
-                static void read_and_send(uint64_t maxBitsPerSec, const std::shared_ptr<HttpsServer::Response> &response,
-                    const std::shared_ptr<std::ifstream> &ifs)
-                {
-                    // Read and send 128 KB at a time
-                    std::vector<char> buffer(131072);
-                    std::streamsize read_length;
-                    if ((read_length = ifs->read(&buffer[0], static_cast<std::streamsize>(buffer.size())).gcount()) > 0)
-                    {
-                        response->write(&buffer[0], read_length);
-                        if (read_length == static_cast<std::streamsize>(buffer.size()))
-                        {
-                            if (maxBitsPerSec > 0)
-                                // Throttle to meet max throughput
-                                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<unsigned long>(read_length * 8 * 1000) / maxBitsPerSec));
-                            response->send([maxBitsPerSec, response, ifs](const SimpleWeb::error_code& ec)
-                            {
-                                if (!ec)
-                                    read_and_send(maxBitsPerSec, response, ifs);
-                                else
-                                    LOG_ERROR << "Connection interrupted " << ec.default_error_condition().value() << " " <<
-                                              ec.default_error_condition().message() << std::endl;
-                            });
-                        }
-                    }
-                }
-            };
-            FileServer::read_and_send(maxThroughput_ * 8 /* Bit/sec */, response, ifs);
+            ranges.push_back({ 0, 0, 0 });
         }
         else
-            throw std::invalid_argument("could not read file");
+        {
+            if (!sa::http::parse_ranges(length, rangeHeaderIt->second, ranges))
+            {
+                response->write(SimpleWeb::StatusCode::client_error_range_not_satisfiable,
+                    "Range Not Satisfiable");
+                return;
+            }
+        }
+
+        for (const auto& range : ranges)
+        {
+            SendFileRange(response, path.string(), range);
+        }
     }
     catch (const std::exception& ex)
     {

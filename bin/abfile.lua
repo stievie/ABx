@@ -11,7 +11,7 @@ file_host = ""       -- emtpy use same host as for login
 file_port = 8081
 
 -- Used to calculate the load Byte/sec (100Mbit)
-max_throughput = (100 * 1024 * 1024) / 8
+max_throughput = (100 * 1024 * 1024)
 
 -- Create self signing Key/Cert with something like this:
 -- openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt

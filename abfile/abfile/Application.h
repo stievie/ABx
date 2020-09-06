@@ -36,6 +36,7 @@
 #include "Servers.h"
 #include <numeric>
 #include <sa/CircularQueue.h>
+#include <sa/http_range.h>
 
 #if __cplusplus < 201703L
 // C++14
@@ -85,6 +86,8 @@ private:
     void HeartBeatTask();
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
+    void SendFileRange(std::shared_ptr<HttpsServer::Response> response,
+        const std::string& path, const sa::http::range& range);
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,

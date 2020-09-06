@@ -26,11 +26,24 @@
 #include <vector>
 #include <cwctype>
 #include <regex>
+#include <optional>
 #include <sa/Assert.h>
 
 // Some string templates.
 
 namespace sa {
+
+template<typename T>
+inline std::optional<T> to_number(std::string_view number)
+{
+    T result;
+    std::string snumber(number);
+    std::istringstream iss(snumber);
+    iss >> result;
+    if (iss.fail())
+        return {};
+    return result;
+}
 
 template <typename charType>
 std::basic_string<charType> Trim(const std::basic_string<charType>& str,

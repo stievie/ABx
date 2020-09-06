@@ -22,11 +22,15 @@
 #pragma once
 
 #include "Resource.h"
+#include <sa/http_range.h>
 
 namespace Resources {
 
 class FileResource : public Resource
 {
+private:
+    void SendFileRange(std::shared_ptr<HttpsServer::Response> response,
+        const std::string& path, const sa::http::range& range);
 public:
     explicit FileResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
