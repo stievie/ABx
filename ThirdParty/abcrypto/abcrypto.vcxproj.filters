@@ -45,6 +45,9 @@
     <ClCompile Include="sha256.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="buzhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arc4random.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sha256.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buzhash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

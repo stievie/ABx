@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <ostream>
 #include <iostream>
+#include <string_view>
 
 namespace json {
 
@@ -45,17 +46,17 @@ namespace {
 class JSON
 {
     union BackingData {
-        BackingData( double d ) : Float( d ){}
-        BackingData( long   l ) : Int( l ){}
-        BackingData( bool   b ) : Bool( b ){}
-        BackingData( string s ) : String( new string( s ) ){}
+        BackingData( double    d ) : Float( d ){}
+        BackingData( long long l ) : Int( l ){}
+        BackingData( bool      b ) : Bool( b ){}
+        BackingData( string    s ) : String( new string( s ) ){}
         BackingData()           : Int( 0 ){}
 
         deque<JSON>        *List;
         map<string,JSON>   *Map;
         string             *String;
         double              Float;
-        long                Int;
+        long long           Int;
         bool                Bool;
     } Internal;
 
@@ -200,7 +201,7 @@ class JSON
             return ret;
         }
 
-        static JSON Load( const string & );
+        static JSON Load( const std::string_view & );
 
         template <typename T>
         void append( T arg ) {
@@ -297,8 +298,8 @@ class JSON
             return ok ? Internal.Float : 0.0;
         }
 
-        long ToInt() const { bool b; return ToInt( b ); }
-        long ToInt( bool &ok ) const {
+        long long ToInt() const { bool b; return ToInt( b ); }
+        long long ToInt( bool &ok ) const {
             ok = (Type == Class::Integral);
             return ok ? Internal.Int : 0;
         }
@@ -438,13 +439,13 @@ inline std::ostream& operator<<( std::ostream &os, const JSON &json ) {
 }
 
 namespace {
-    JSON parse_next( const string &, size_t & );
+    JSON parse_next( const std::string_view &, size_t & );
 
-    void consume_ws( const string &str, size_t &offset ) {
+    void consume_ws( const std::string_view& str, size_t &offset ) {
         while( isspace( str[offset] ) ) ++offset;
     }
 
-    JSON parse_object( const string &str, size_t &offset ) {
+    JSON parse_object( const std::string_view& str, size_t &offset ) {
         JSON Object = JSON::Make( JSON::Class::Object );
 
         ++offset;
@@ -480,7 +481,7 @@ namespace {
         return Object;
     }
 
-    JSON parse_array( const string &str, size_t &offset ) {
+    JSON parse_array( const std::string_view& str, size_t &offset ) {
         JSON Array = JSON::Make( JSON::Class::Array );
         unsigned index = 0;
 
@@ -509,7 +510,7 @@ namespace {
         return Array;
     }
 
-    JSON parse_string( const string &str, size_t &offset ) {
+    JSON parse_string( const std::string_view& str, size_t &offset ) {
         JSON String;
         string val;
         for( char c = str[++offset]; c != '\"' ; c = str[++offset] ) {
@@ -547,7 +548,7 @@ namespace {
         return String;
     }
 
-    JSON parse_number( const string &str, size_t &offset ) {
+    JSON parse_number( const std::string_view& str, size_t &offset ) {
         JSON Number;
         string val, exp_str;
         char c;
@@ -597,7 +598,7 @@ namespace {
         return Number;
     }
 
-    JSON parse_bool( const string &str, size_t &offset ) {
+    JSON parse_bool( const std::string_view& str, size_t &offset ) {
         JSON Bool;
         if( str.substr( offset, 4 ) == "true" )
             Bool = true;
@@ -611,7 +612,7 @@ namespace {
         return Bool;
     }
 
-    JSON parse_null( const string &str, size_t &offset ) {
+    JSON parse_null( const std::string_view& str, size_t &offset ) {
         JSON Null;
         if( str.substr( offset, 4 ) != "null" ) {
             std::cerr << "ERROR: Null: Expected 'null', found '" << str.substr( offset, 4 ) << "'\n";
@@ -621,7 +622,7 @@ namespace {
         return Null;
     }
 
-    JSON parse_next( const string &str, size_t &offset ) {
+    JSON parse_next( const std::string_view &str, size_t &offset ) {
         char value;
         consume_ws( str, offset );
         value = str[offset];
@@ -640,7 +641,7 @@ namespace {
     }
 }
 
-inline JSON JSON::Load( const string &str ) {
+inline JSON JSON::Load( const std::string_view &str ) {
     size_t offset = 0;
     return parse_next( str, offset );
 }

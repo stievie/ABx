@@ -42,12 +42,6 @@ void FileResource::SendFileRange(std::shared_ptr<HttpsServer::Response> response
 
     ifs->seekg(start, std::ios::beg);
 
-    SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
-    responseCookies_->Write(header);
-    auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
-    header.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
-
     if (multipart)
     {
         response->write("--" + boundary);

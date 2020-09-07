@@ -168,6 +168,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Catch2: https://github.com/catchorg/Catch2", 15);
     CreateSingleLine("stb: https://github.com/nothings/stb", 15);
     CreateSingleLine("LZ4: https://github.com/lz4/lz4", 15);
+    CreateSingleLine("zinc: https://github.com/rokups/zinc", 15);
 
     CreateSingleLine("Server", 30, true);
     CreateSingleLine("Recast & Detour: https://github.com/recastnavigation/recastnavigation", 15);

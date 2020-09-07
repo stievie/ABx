@@ -10,4 +10,4 @@ Some cryptographic methods compiled to a static library.
 * Blowfish encryption: OpenBSD
 * arc4random PRNG: OpenBSD
 * XTEA encrytpion
-
+* buzhash: https://github.com/borgbackup/borg/blob/master/src/borg/_chunker.c
