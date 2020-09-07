@@ -37,6 +37,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abipc", "..\abipc\abipc\abi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbgclient", "..\dbgclient\dbgclient\dbgclient.vcxproj", "{4E1E2190-34E9-4BA9-B59D-1A79026364E6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absync", "..\absync\absync\absync.vcxproj", "{15D36322-C60C-4667-AA1A-8661EDEE62CC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fhash", "..\fhash\fhash\fhash.vcxproj", "{07C469AD-FCE9-4550-9F71-895197FE285E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -181,6 +185,22 @@ Global
 		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelNoProfiling|x64.Build.0 = Release|x64
 		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{4E1E2190-34E9-4BA9-B59D-1A79026364E6}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.ActiveCfg = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.Build.0 = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelNoProfiling|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.Debug|x64.ActiveCfg = Debug|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.Debug|x64.Build.0 = Debug|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.Release|x64.ActiveCfg = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.Release|x64.Build.0 = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelNoProfiling|x64.Build.0 = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
