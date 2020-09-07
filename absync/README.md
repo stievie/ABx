@@ -1,3 +1,7 @@
 # absync
 
-Most of it is taken from https://github.com/rokups/zinc
+Most of it is from https://github.com/rokups/zinc
+
+## Dependencies
+
+* https://github.com/yhirose/cpp-httplib

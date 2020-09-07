@@ -45,3 +45,17 @@ TEST_CASE("HTTP Range parse overlap")
     REQUIRE(r2.start == 2000);
     REQUIRE(r2.end == 9000);
 }
+
+TEST_CASE("HTTP Range to_string")
+{
+    sa::http::range range{ 100, 300, 200 };
+    REQUIRE(sa::http::to_string(range) == "bytes=100-300");
+}
+
+TEST_CASE("HTTP Range to_string 2")
+{
+    sa::http::ranges ranges;
+    bool success = sa::http::parse_ranges(20000000, "bytes=200-1000, 2000-6576, 19000-", ranges);
+    REQUIRE(success);
+    REQUIRE(sa::http::to_string(ranges) == "bytes=200-1000, 2000-6576, 19000-20000000");
+}

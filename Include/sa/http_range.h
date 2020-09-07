@@ -161,5 +161,32 @@ inline bool parse_ranges(size_t size, std::string_view header, ranges& result)
     return !result.empty();
 }
 
+inline std::string to_string(const ranges& ranges)
+{
+    std::stringstream ss;
+    ss << "bytes=";
+    size_t i = 0;
+    for (const auto& range : ranges)
+    {
+        ++i;
+        ss << range.start << "-";
+        if (range.end != 0)
+            ss << range.end;
+        if (i < ranges.size())
+            ss << ", ";
+    }
+    return ss.str();
+}
+
+inline std::string to_string(const range& range)
+{
+    std::stringstream ss;
+    ss << "bytes=";
+    ss << range.start << "-";
+    if (range.end != 0)
+        ss << range.end;
+    return ss.str();
+}
+
 }
 }

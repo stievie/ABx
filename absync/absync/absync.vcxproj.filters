@@ -33,6 +33,9 @@
     <ClInclude Include="Synchronizer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="HttpRemoteBackend.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Partition.cpp">
@@ -48,6 +51,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Synchronizer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpRemoteBackend.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
