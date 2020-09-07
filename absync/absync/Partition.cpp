@@ -90,15 +90,15 @@ static void SplitBlocks(std::ifstream& ifs, BoundaryList& list, const Parameters
     for (auto it = list.begin(); it != list.end(); it++)
     {
         auto& split = *it;
-        auto block_size = split.start - prev_offset;
+        size_t block_size = split.start - prev_offset;
         prev_offset = split.start;
         if (block_size > params.maxBlockSize)
         {
-            auto new_blocks_count = block_size / params.maxBlockSize;
-            auto new_block_size = block_size / (new_blocks_count + 1);
+            size_t new_blocks_count = block_size / params.maxBlockSize;
+            size_t new_block_size = block_size / (new_blocks_count + 1);
             BoundaryList splits;
 
-            for (auto i = 1L; i < new_blocks_count + 1; i++)
+            for (size_t i = 1UL; i < new_blocks_count + 1; ++i)
             {
                 auto start = split.start - (i * new_block_size);
                 ifs.seekg(start, std::ios::beg);
