@@ -7,6 +7,9 @@
 #include <absync/HttpRemoteBackend.h>
 #include <absync/Synchronizer.h>
 #include <sa/StringTempl.h>
+extern "C" {
+#include <abcrypto/sha1.h>
+}
 
 namespace fs = std::filesystem;
 
@@ -20,9 +23,38 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << std::endl;
 }
 
+static std::string GetHash(const std::string& filename)
+{
+    std::ifstream ifs(filename, std::ifstream::in | std::ios::binary | std::ios::ate);
+    size_t fileSize = static_cast<size_t>((long)ifs.tellg());
+    if (fileSize == 0)
+        return "";
+
+    char sha_hash[20] = {};
+    sha1_ctx ctx;
+    sha1_init(&ctx);
+
+    ifs.seekg(0, std::ios::beg);
+    std::vector<char> buffer(4096);
+    while (std::streamsize readLength = ifs.read(&buffer[0], 4096).gcount() != 0)
+    {
+        sha1_update(&ctx, (const unsigned char*)&buffer[0], (long)readLength);
+    }
+    sha1_final(&ctx, (unsigned char*)sha_hash);
+
+    std::stringstream out;
+    out.flags(std::ios_base::hex);
+    for (size_t i = 0; i < 20; ++i)
+    {
+        out << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)sha_hash[i]);
+    }
+    return out.str();
+}
+
 static bool ProcessFile(const std::string& filename)
 {
-    std::cout << "Processing file " << filename << std::endl;
+    const std::string hash = GetHash(filename);
+    std::cout << "Processing file " << filename << " hash " << hash << std::endl;
     Sync::Synchronizer sync(*localBackend, *remoteBackend);
     sync.onProgress_ = [](size_t value, size_t max)
     {

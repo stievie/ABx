@@ -86,12 +86,14 @@ bool IsHiddenFile(const std::string& path)
         (path != ".") &&
         ((path[0] == '.') || (path.find("/.") != std::string::npos)))
         return true;
-#ifdef AB_WINDOWS
+#if defined(AB_WINDOWS)
+#if 0
     DWORD attributes = ::GetFileAttributesA(path.c_str());
     if (attributes & FILE_ATTRIBUTE_HIDDEN)
         return true;
     if (attributes & FILE_ATTRIBUTE_SYSTEM)
         return true;
+#endif
 #endif
     return false;
 }

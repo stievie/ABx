@@ -36,6 +36,8 @@ typedef SSIZE_T ssize_t;
 
 namespace Sync {
 
+static constexpr const char* META_FILE_EXT = ".meta";
+
 struct Boundary
 {
     size_t start{ 0 };

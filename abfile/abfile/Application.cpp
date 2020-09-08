@@ -306,6 +306,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_files_$"]["GET"] = std::bind(&Application::GetHandlerFiles, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
@@ -700,6 +702,58 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "Not found " + request->path);
     }
+}
+
+void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    // Return an index of files with checksum
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
+    auto root = doc.append_child("files");
+
+    auto web_root_path = fs::canonical(root_);
+    for (const auto& p : fs::recursive_directory_iterator(web_root_path))
+    {
+        if (p.is_directory())
+            continue;
+        if (p.path().extension() == ".meta" || p.path().extension() == ".sha1")
+            continue;
+
+        const std::string fullpath = p.path().string();
+        const std::string filename = p.path().filename().string();
+        if (Utils::IsHiddenFile(filename))
+            continue;
+
+        // There must be a correcponding meta file
+        if (!Utils::FileExists(fullpath + ".meta"))
+            continue;
+        if (!Utils::FileExists(fullpath + ".sha1"))
+            continue;
+
+        std::ifstream shafile(fullpath + ".sha1", std::ios::in);
+        shafile.seekg(0, std::ios::beg);
+        std::stringstream shastream;
+        if (shafile)
+            shastream << shafile.rdbuf();
+
+        std::string realitvename = fullpath.substr(web_root_path.string().size() + 1);
+        sa::ReplaceSubstring<char>(realitvename, "\\", "/");
+
+        auto gNd = root.append_child("file");
+        gNd.append_attribute("path").set_value(realitvename.c_str());
+        gNd.append_attribute("sha1").set_value(shastream.str().c_str());
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
 }
 
 void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,

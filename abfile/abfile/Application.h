@@ -92,6 +92,8 @@ private:
         bool multipart, const std::string& boundary);
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerFiles(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerSkills(std::shared_ptr<HttpsServer::Response> response,

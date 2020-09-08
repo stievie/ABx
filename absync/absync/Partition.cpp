@@ -194,7 +194,7 @@ void SaveBoundaryList(const std::string& filename, const BoundaryList& list)
         bd["fingerprint"] = b.fingerprint;
         obj["boundaries"].append(bd);
     }
-    std::ofstream out(filename + ".json");
+    std::ofstream out(filename + META_FILE_EXT);
     out << obj << std::endl;
 }
 

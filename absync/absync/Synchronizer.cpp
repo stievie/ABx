@@ -44,8 +44,8 @@ bool Synchronizer::Synchronize(const std::string& file)
     // Calculate hashes for local file
     const auto localHashes = PartitionFile(file, {});
 
-    // Download JSON from remote (<filename>.json)
-    const auto remoteJson = remote_.GetChunk("/" + ExtractFileName(file) + ".json");
+    // Download JSON from remote (<filename>.META_FILE_EXT)
+    const auto remoteJson = remote_.GetChunk("/" + ExtractFileName(file) + META_FILE_EXT);
     if (remoteJson.size() == 0)
         // Does not exist on server
         return false;
