@@ -46,6 +46,9 @@ bool Synchronizer::Synchronize(const std::string& file)
 
     // Download JSON from remote (<filename>.json)
     const auto remoteJson = remote_.GetChunk("/" + ExtractFileName(file) + ".json");
+    if (remoteJson.size() == 0)
+        // Does not exist on server
+        return false;
     const auto remoteHashes = LoadBoundaryList(remoteJson);
 
     const auto delta = CompareFiles(localHashes, remoteHashes);
