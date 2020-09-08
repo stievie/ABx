@@ -76,7 +76,7 @@ int main(int argc, char** argv)
     auto recursive = sa::arg_parser::get_value<bool>(parsedArgs, "recursive", false);
 
     auto dirarg = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
-    fs::path dir = dirarg.has_value() ? dirarg.value() : fs::current_path();
+    fs::path dir = dirarg.has_value() ? fs::path(dirarg.value()) : fs::current_path();
 
     std::cout << "Directory " << dir.string() << std::endl;
     sa::time::timer timer;
