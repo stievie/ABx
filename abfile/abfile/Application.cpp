@@ -705,7 +705,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
 }
 
 void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
+    std::shared_ptr<HttpsServer::Request>)
 {
     // Return an index of files with checksum
     pugi::xml_document doc;
