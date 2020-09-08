@@ -53,6 +53,7 @@ bool Synchronizer::Synchronize(const std::string& file)
     if (delta.size() == 0)
         return true;
 
+    size_t i = 0;
     for (const auto& op : delta)
     {
         const std::vector<char> buffer = (op.local == nullptr) ?
@@ -67,12 +68,21 @@ bool Synchronizer::Synchronize(const std::string& file)
         else
             copied_ += op.remote->length;
         local_.WriteChunk(file, buffer, op.remote->start, op.remote->length);
+        ++i;
+        CallProgress(i, delta.size());
     }
 
     filesize_ = remoteHashes.back().start + remoteHashes.back().length;
     local_.Truncate(file, filesize_);
 
     return true;
+}
+
+void Synchronizer::CallProgress(size_t value, size_t max)
+{
+    if (!onProgress_)
+        return;
+    onProgress_(value, max);
 }
 
 }

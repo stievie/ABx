@@ -22,6 +22,13 @@ static bool ProcessFile(const std::string& filename)
 {
     std::cout << "Processing file " << filename << std::endl;
     Sync::Synchronizer sync(*localBackend, *remoteBackend);
+    sync.onProgress_ = [](size_t value, size_t max)
+    {
+        std::cout << '\r';
+        std::cout << "[" << value << "/" << max << "]";
+        if (value == max)
+            std::cout << std::endl;
+    };
     if (!sync.Synchronize(filename))
     {
         std::cerr << "Error synchronizing " << filename;

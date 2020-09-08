@@ -24,6 +24,7 @@
 #include "LocalBackend.h"
 #include "RemoteBackend.h"
 #include <string>
+#include <functional>
 
 namespace Sync {
 
@@ -36,6 +37,7 @@ private:
     size_t copied_{ 0 };
     size_t filesize_{ 0 };
     bool different_{ false };
+    void CallProgress(size_t value, size_t max);
 public:
     Synchronizer(LocalBackend& local, RemoteBackend& remote);
     bool Synchronize(const std::string& file);
@@ -44,6 +46,8 @@ public:
     size_t GetCopied() const { return copied_; }
     size_t GetFilesize() const { return filesize_; }
     bool IsDifferent() const { return different_; }
+
+    std::function<void(size_t value, size_t max)> onProgress_;
 };
 
 }
