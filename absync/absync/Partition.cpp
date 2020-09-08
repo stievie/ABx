@@ -87,7 +87,7 @@ static void SplitBlocks(std::ifstream& ifs, BoundaryList& list, const Parameters
     size_t prev_offset = 0L;
     std::vector<char> buffer(params.windowLength);
 
-    for (auto it = list.begin(); it != list.end(); it++)
+    for (auto it = list.begin(); it != list.end(); ++it)
     {
         auto& split = *it;
         size_t block_size = split.start - prev_offset;
@@ -133,6 +133,7 @@ BoundaryList PartitionFile(const std::string& filename, const Parameters& params
         return {};
 
     BoundaryList result;
+    result.push_back({ });
     PartitionChunk(ifs, 0, fileSize, result, params);
     std::sort(result.begin(), result.end(), [](const Boundary& a, const Boundary& b) { return a.start < b.start; });
 

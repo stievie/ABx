@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abupdate", "abupdate\abupdate.vcxproj", "{F88FE566-66C7-4822-954E-61CDCEEFDF46}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absync", "..\absync\absync\absync.vcxproj", "{15D36322-C60C-4667-AA1A-8661EDEE62CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.ActiveCfg = Debug|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.Build.0 = Debug|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.ActiveCfg = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.ActiveCfg = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.Build.0 = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C01745C5-A909-4C02-BA04-E39B17D60222}
+	EndGlobalSection
+EndGlobal

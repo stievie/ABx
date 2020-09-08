@@ -591,9 +591,9 @@ namespace {
             Number = std::stod( val ) * std::pow( 10, exp );
         else {
             if( !exp_str.empty() )
-                Number = std::stol( val ) * std::pow( 10, exp );
+                Number = std::stoll( val ) * std::pow( 10, exp );
             else
-                Number = std::stol( val );
+                Number = std::stoll( val );
         }
         return Number;
     }

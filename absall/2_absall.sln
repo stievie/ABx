@@ -41,6 +41,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absync", "..\absync\absync\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fhash", "..\fhash\fhash\fhash.vcxproj", "{07C469AD-FCE9-4550-9F71-895197FE285E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abupdate", "..\abupdate\abupdate\abupdate.vcxproj", "{F88FE566-66C7-4822-954E-61CDCEEFDF46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -201,6 +203,14 @@ Global
 		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelNoProfiling|x64.Build.0 = Release|x64
 		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{07C469AD-FCE9-4550-9F71-895197FE285E}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.ActiveCfg = Debug|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.Build.0 = Debug|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.ActiveCfg = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.Build.0 = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.RelNoProfiling|x64.Build.0 = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

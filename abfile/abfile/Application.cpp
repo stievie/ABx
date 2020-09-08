@@ -666,7 +666,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         if (isRange && !multipart)
         {
             // Single part of a file
-            header.emplace("Content-Type", "application/octet-stream\n");
+            header.emplace("Content-Type", "application/octet-stream");
             header.emplace("Content-Length", std::to_string(ranges[0].length));
             header.emplace("Content-Range", std::to_string(ranges[0].start) + "-" +
                 std::to_string(ranges[0].end) + "/" + std::to_string(fileSize));
@@ -682,9 +682,9 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         else
         {
             // Whole file
-            header.emplace("Content-Type", "application/octet-stream\n");
+            header.emplace("Content-Type", "application/octet-stream");
             header.emplace("Content-Length", std::to_string(fileSize));
-            response->write(SimpleWeb::StatusCode::success_ok, header);
+            response->write(header);
         }
 
         SendFileRange(response, path.string(), ranges[0], multipart, boundary);

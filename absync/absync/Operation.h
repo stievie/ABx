@@ -29,8 +29,8 @@ namespace Sync {
 
 struct Operation
 {
-    const Boundary* local{ nullptr };
     const Boundary* remote{ nullptr };
+    const Boundary* local{ nullptr };
 };
 
 using OperationList = std::vector<Operation>;

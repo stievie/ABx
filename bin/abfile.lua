@@ -24,7 +24,7 @@ root_dir = "file_root"
 
 -- If true client must give Account UUID and Auth token obtained from login server in the HTTP header:
 -- Auth: UUID:AuthToken
-require_auth = true
+require_auth = false
 
 require("config/data_server")
 require("config/msg_server")

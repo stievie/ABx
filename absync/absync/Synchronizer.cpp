@@ -26,6 +26,14 @@
 
 namespace Sync {
 
+static std::string ExtractFileName(const std::string& fn)
+{
+    size_t pos = fn.find_last_of("\\/");
+    if (pos != std::string::npos)
+        return fn.substr(pos + 1);
+    return fn;
+}
+
 Synchronizer::Synchronizer(LocalBackend& local, RemoteBackend& remote) :
     local_(local),
     remote_(remote)
@@ -37,10 +45,11 @@ bool Synchronizer::Synchronize(const std::string& file)
     const auto localHashes = PartitionFile(file, {});
 
     // Download JSON from remote (<filename>.json)
-    const auto remoteJson = remote_.GetChunk(file + ".json");
+    const auto remoteJson = remote_.GetChunk("/" + ExtractFileName(file) + ".json");
     const auto remoteHashes = LoadBoundaryList(remoteJson);
 
     const auto delta = CompareFiles(localHashes, remoteHashes);
+    different_ = delta.size() > 0;
     if (delta.size() == 0)
         return true;
 
@@ -48,14 +57,20 @@ bool Synchronizer::Synchronize(const std::string& file)
     {
         const std::vector<char> buffer = (op.local == nullptr) ?
             // Download
-            remote_.GetChunk(file, op.remote->start, op.remote->length) :
+            remote_.GetChunk("/" + ExtractFileName(file), op.remote->start, op.remote->length) :
             // Copy
-            local_.GetChunk(file, op.remote->start, op.remote->length);
+            local_.GetChunk(file, op.local->start, op.local->length);
+        if (buffer.size() == 0)
+            return false;
+        if (op.local == nullptr)
+            downloaded_ += op.remote->length;
+        else
+            copied_ += op.remote->length;
         local_.WriteChunk(file, buffer, op.remote->start, op.remote->length);
     }
 
-    auto file_size = remoteHashes.back().start + remoteHashes.back().length;
-    local_.Truncate(file, file_size);
+    filesize_ = remoteHashes.back().start + remoteHashes.back().length;
+    local_.Truncate(file, filesize_);
 
     return true;
 }

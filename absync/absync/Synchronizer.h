@@ -29,11 +29,21 @@ namespace Sync {
 
 class Synchronizer
 {
+private:
     LocalBackend& local_;
     RemoteBackend& remote_;
+    size_t downloaded_{ 0 };
+    size_t copied_{ 0 };
+    size_t filesize_{ 0 };
+    bool different_{ false };
 public:
     Synchronizer(LocalBackend& local, RemoteBackend& remote);
     bool Synchronize(const std::string& file);
+
+    size_t GetDownloaded() const { return downloaded_; }
+    size_t GetCopied() const { return copied_; }
+    size_t GetFilesize() const { return filesize_; }
+    bool IsDifferent() const { return different_; }
 };
 
 }

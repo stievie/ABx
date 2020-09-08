@@ -50,7 +50,7 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
         return {};
 
     httplib::Headers header(headers_);
-    if (start != 0 && length != 0)
+    if (start != 0 || length != 0)
     {
         const sa::http::range range{ start, start + length, (ssize_t)length };
         header.emplace("Range", sa::http::to_string(range));
