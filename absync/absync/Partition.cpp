@@ -200,6 +200,8 @@ void SaveBoundaryList(const std::string& filename, const BoundaryList& list)
 
 BoundaryList LoadBoundaryList(const std::vector<char>& buffer)
 {
+    if (buffer.size() == 0)
+        return {};
     std::string_view sv(&buffer[0], buffer.size());
     return LoadBoundaryList(sv);
 }

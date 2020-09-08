@@ -6,11 +6,13 @@
 #include <absync/LocalBackend.h>
 #include <absync/HttpRemoteBackend.h>
 #include <absync/Synchronizer.h>
+#include <sa/StringTempl.h>
 
 namespace fs = std::filesystem;
 
 static std::unique_ptr<Sync::FileLocalBackend> localBackend;
 static std::unique_ptr<Sync::HttpRemoteBackend> remoteBackend;
+static std::vector<std::string> patterns = { "*.pak" };
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
@@ -27,7 +29,7 @@ static bool ProcessFile(const std::string& filename)
         std::cout << '\r';
         std::cout << "[" << value << "/" << max << "]";
         if (value == max)
-            std::cout << std::endl;
+            std::cout << " done" << std::endl;
     };
     if (!sync.Synchronize(filename))
     {
@@ -52,11 +54,21 @@ static bool ProcessEntry(const fs::directory_entry& p)
 {
     if (p.is_directory())
         return true;
-    if (p.path().extension().string() != ".pak")
-        return true;
 
     const std::string filename = p.path().string();
-    return ProcessFile(filename);
+    bool match = false;
+    for (const auto& pattern : patterns)
+    {
+        if (sa::PatternMatch<char>(filename, pattern))
+        {
+            match = true;
+            break;
+        }
+    }
+    if (match)
+        return ProcessFile(filename);
+    // Not an error
+    return true;
 }
 
 template<typename T>
@@ -80,6 +92,7 @@ int main(int argc, char** argv)
         { "port", { "-P", "--server-port" }, "Server port", true, true, sa::arg_parser::option_type::integer },
         { "account", { "-a", "--account" }, "Account", true, true, sa::arg_parser::option_type::string },
         { "token", { "-t", "--token" }, "Auth token to login", true, true, sa::arg_parser::option_type::string },
+        { "pattern", { "-p", "--pattern" }, "Filename pattern (default *.pak)", false, true, sa::arg_parser::option_type::string },
     } };
 
     sa::arg_parser::values parsedArgs;
@@ -117,6 +130,11 @@ int main(int argc, char** argv)
     {
         std::cerr << "No Auth token" << std::endl;
         return EXIT_FAILURE;
+    }
+    auto pattern = sa::arg_parser::get_value<std::string>(parsedArgs, "pattern");
+    if (pattern.has_value())
+    {
+        patterns = sa::Split(pattern.value(), ";", false, false);
     }
 
     httplib::Headers headers;
