@@ -43,6 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#_SrcPath}\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#_SrcPath}\bin\abupdate.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\bin\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\bin\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\Setup\config.xml"; DestDir: "{app}"; DestName: "config.xml"; Flags: ignoreversion
