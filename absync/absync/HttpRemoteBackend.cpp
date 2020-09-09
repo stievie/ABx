@@ -56,8 +56,11 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
         header.emplace("Range", sa::http::to_string(range));
     }
 
+    std::string remoteName(filename);
+    if (remoteName.front() != '/')
+        remoteName = "/" + remoteName;
     std::vector<char> result;
-    auto res = client->Get(filename.c_str(), header, [&](const char* data, uint64_t size) -> bool
+    auto res = client->Get(remoteName.c_str(), header, [&](const char* data, uint64_t size) -> bool
     {
         result.reserve(result.size() + size);
         std::copy(data, data + size, std::back_inserter(result));

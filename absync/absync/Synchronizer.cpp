@@ -38,7 +38,7 @@ bool Synchronizer::Synchronize(const std::string& localFile, const std::string& 
     const auto localHashes = PartitionFile(localFile, {});
 
     // Download JSON from remote (<filename>.META_FILE_EXT)
-    const auto remoteJson = remote_.GetChunk("/" + remoteFile + META_FILE_EXT);
+    const auto remoteJson = remote_.GetChunk(remoteFile + META_FILE_EXT);
     if (remoteJson.size() == 0)
         // Does not exist on server
         return false;
@@ -54,7 +54,7 @@ bool Synchronizer::Synchronize(const std::string& localFile, const std::string& 
     {
         const std::vector<char> buffer = (op.local == nullptr) ?
             // Download
-            remote_.GetChunk("/" + remoteFile, op.remote->start, op.remote->length) :
+            remote_.GetChunk(remoteFile, op.remote->start, op.remote->length) :
             // Copy
             local_.GetChunk(localFile, op.local->start, op.local->length);
         if (buffer.size() == 0)

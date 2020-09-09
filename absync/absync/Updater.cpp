@@ -67,7 +67,7 @@ bool Updater::ProcessFile(const RemoteFile& file)
     const auto rootPath = fs::canonical(localDir_);
     const auto localFile = rootPath / fs::path(file.name);
     const std::string localHash = HashFile(localFile.string());
-    if (localHash == file.hash)
+    if (strcasecmp(localHash.c_str(), file.hash.c_str()) == 0)
     {
         if (onDoneFile_)
             onDoneFile_(file.name, false, 0, 0, 0);
