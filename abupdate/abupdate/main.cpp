@@ -6,10 +6,9 @@
 #include <absync/LocalBackend.h>
 #include <absync/HttpRemoteBackend.h>
 #include <absync/Synchronizer.h>
+#include <absync/Hash.h>
 #include <sa/StringTempl.h>
-extern "C" {
-#include <abcrypto/sha1.h>
-}
+#include <absync/Updater.h>
 
 namespace fs = std::filesystem;
 
@@ -23,106 +22,10 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << std::endl;
 }
 
-static std::string GetHash(const std::string& filename)
-{
-    std::ifstream ifs(filename, std::ios::binary);
-    ifs.seekg(0, std::ios::end);
-    size_t fileSize = static_cast<size_t>((long)ifs.tellg());
-    if (fileSize == 0)
-        return "";
-
-    unsigned char sha_hash[20] = {};
-    sha1_ctx ctx;
-    sha1_init(&ctx);
-
-    ifs.seekg(0, std::ios::beg);
-    std::vector<char> buffer(4096);
-    while (ifs)
-    {
-        ifs.read(&buffer[0], 4096);
-        auto readLength = ifs.gcount();
-        sha1_update(&ctx, (const unsigned char*)&buffer[0], (long)readLength);
-    }
-    sha1_final(&ctx, sha_hash);
-
-    std::stringstream out;
-    out.flags(std::ios_base::hex);
-    for (size_t i = 0; i < 20; ++i)
-    {
-        out << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)sha_hash[i]);
-    }
-    return out.str();
-}
-
-static bool ProcessFile(const std::string& filename)
-{
-    const std::string hash = GetHash(filename);
-    std::cout << "Processing file " << filename << " hash " << hash << std::endl;
-    Sync::Synchronizer sync(*localBackend, *remoteBackend);
-    sync.onProgress_ = [](size_t value, size_t max)
-    {
-        std::cout << '\r';
-        std::cout << "[" << value << "/" << max << "]";
-        if (value == max)
-            std::cout << " done" << std::endl;
-    };
-    if (!sync.Synchronize(filename))
-    {
-        std::cerr << "Error synchronizing " << filename;
-        return false;
-    }
-    if (sync.IsDifferent())
-    {
-        std::cout << "  Copied " << sync.GetCopied() << " bytes" << std::endl;
-        std::cout << "  Downloaded " << sync.GetDownloaded() << " bytes" << std::endl;
-        std::cout << "  Download savings " << 100 - (100.0 / sync.GetFilesize() * sync.GetDownloaded()) << "%" << std::endl;
-    }
-    else
-    {
-        std::cout << "  File is up to date" << std::endl;
-    }
-
-    return true;
-}
-
-static bool ProcessEntry(const fs::directory_entry& p)
-{
-    if (p.is_directory())
-        return true;
-
-    const std::string filename = p.path().string();
-    bool match = false;
-    for (const auto& pattern : patterns)
-    {
-        if (sa::PatternMatch<char>(filename, pattern))
-        {
-            match = true;
-            break;
-        }
-    }
-    if (match)
-        return ProcessFile(filename);
-    // Not an error
-    return true;
-}
-
-template<typename T>
-static bool ProcessDirectory(const T& iterator)
-{
-    bool result = true;
-    for (const auto& p : iterator)
-    {
-        if (!ProcessEntry(p))
-            result = false;
-    }
-    return result;
-}
-
 int main(int argc, char** argv)
 {
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "--help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
-        { "recursive", { "-R", "--recursive" }, "Processs also subdirectores", false, false, sa::arg_parser::option_type::none },
         { "host", { "-H", "--server-host" }, "Server host", true, true, sa::arg_parser::option_type::string },
         { "port", { "-P", "--server-port" }, "Server port", true, true, sa::arg_parser::option_type::integer },
         { "account", { "-a", "--account" }, "Account", true, true, sa::arg_parser::option_type::string },
@@ -172,28 +75,56 @@ int main(int argc, char** argv)
         patterns = sa::Split(pattern.value(), ";", false, false);
     }
 
-    httplib::Headers headers;
     std::stringstream ss;
     ss << account << token;
-    httplib::Headers header = {
-        { "Auth", ss.str() }
-    };
-    remoteBackend = std::make_unique<Sync::HttpRemoteBackend>(host, port, headers);
-    localBackend = std::make_unique<Sync::FileLocalBackend>();
 
-    auto recursive = sa::arg_parser::get_value<bool>(parsedArgs, "recursive", false);
     auto dirarg = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
     fs::path dir = dirarg.has_value() ? fs::path(dirarg.value()) : fs::current_path();
+    Sync::Updater updater(host, port, ss.str(), dir.string());
+    updater.onProcessFile_ = [](const std::string filename) -> bool
+    {
+        bool match = false;
+        for (const auto& pattern : patterns)
+        {
+            if (sa::PatternMatch<char>(filename, pattern))
+            {
+                match = true;
+                break;
+            }
+        }
+        if (match)
+        {
+            std::cout << "Processing file " << filename << std::endl;
+        }
+        return match;
+    };
+    updater.onFailure_ = [](const std::string& filename)
+    {
+        std::cerr << "Error synchronizing " << filename;
+    };
+    updater.onDoneFile_ = [](const std::string&, bool different, size_t downloaded, size_t copied, float savings)
+    {
+        if (different)
+        {
+            std::cout << "  Copied " << copied << " bytes" << std::endl;
+            std::cout << "  Downloaded " << downloaded << " bytes" << std::endl;
+            std::cout << "  Download savings " << savings << "%" << std::endl;
+        }
+        else
+        {
+            std::cout << "  File is up to date" << std::endl;
+        }
+    };
+    updater.onProgress_ = [](size_t, size_t, size_t value, size_t max)
+    {
+        std::cout << '\r';
+        std::cout << "[" << value << "/" << max << "]";
+        if (value == max)
+            std::cout << " done" << std::endl;
+    };
 
-    std::cout << "Directory " << dir.string() << std::endl;
     sa::time::timer timer;
-
-    bool result = true;
-    if (recursive)
-        result = ProcessDirectory(fs::recursive_directory_iterator(dir));
-    else
-        result = ProcessDirectory(fs::directory_iterator(dir));
-
+    bool result = updater.Execute();
     std::cout << "Took " << timer.elapsed_seconds() << " seconds" << std::endl;
 
     return result ? EXIT_SUCCESS : EXIT_FAILURE;

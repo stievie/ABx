@@ -40,11 +40,12 @@ private:
     void CallProgress(size_t value, size_t max);
 public:
     Synchronizer(LocalBackend& local, RemoteBackend& remote);
-    bool Synchronize(const std::string& file);
+    bool Synchronize(const std::string& localFile, const std::string& remoteFile);
 
     size_t GetDownloaded() const { return downloaded_; }
     size_t GetCopied() const { return copied_; }
     size_t GetFilesize() const { return filesize_; }
+    int GetSavings() const { return 100 - (int)(100.0 / filesize_ * downloaded_); }
     bool IsDifferent() const { return different_; }
 
     std::function<void(size_t value, size_t max)> onProgress_;

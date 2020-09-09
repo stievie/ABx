@@ -1,5 +1,4 @@
 /**
- * Copyright (c) 2018 Rokas Kupstys
  * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +21,39 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
-#include <sa/Compiler.h>
-#if defined(SA_MSVC)
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
-#elif defined(SA_PLATFORM_LINUX)
-#include <sys/types.h>
-#endif
-#include "Parameters.h"
-#include <string_view>
+#include <stdint.h>
+#include <memory>
+#include "HttpRemoteBackend.h"
 
 namespace Sync {
 
-struct Boundary
+class FileLocalBackend;
+
+class Updater
 {
-    size_t start{ 0 };
-    uint32_t fingerprint{ 0 };
-    size_t hash{ 0 };
-    size_t length{ 0 };
+private:
+    struct RemoteFile
+    {
+        std::string name;
+        std::string hash;
+    };
+    std::string localDir_;
+    std::unique_ptr<FileLocalBackend> localBackend_;
+    std::unique_ptr<HttpRemoteBackend> remoteBackend_;
+    std::unique_ptr<httplib::Headers> remoteHeaders_;
+    std::vector<RemoteFile> remoteFiles_;
+    size_t currentFile_{ 0 };
+    bool GetRemoteFiles();
+    bool ProcessFile(const RemoteFile& file);
+public:
+    Updater(const std::string& remoteHost, uint16_t remotePort, const std::string remoteAuth,
+        const std::string& localDir);
+    bool Execute();
+    std::function<void(size_t fileValue, size_t fileMax, size_t value, size_t max)> onProgress_;
+    std::function<bool(const std::string& filename)> onProcessFile_;
+    std::function<void(const std::string& filename)> onFailure_;
+    std::function<void(const std::string& filename, bool different, size_t downloaded, size_t copied, int savings)> onDoneFile_;
 };
-
-using BoundaryList = std::vector<Boundary>;
-
-BoundaryList PartitionFile(const std::string& filename, const Parameters& params);
-void SaveBoundaryList(const std::string& filename, const BoundaryList& list);
-BoundaryList LoadBoundaryList(const std::string& filename);
-BoundaryList LoadBoundaryList(const std::vector<char>& buffer);
-BoundaryList LoadBoundaryList(std::string_view buffer);
 
 }

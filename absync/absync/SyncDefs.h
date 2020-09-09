@@ -1,5 +1,4 @@
 /**
- * Copyright (c) 2018 Rokas Kupstys
  * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,34 +21,9 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <sa/Compiler.h>
-#if defined(SA_MSVC)
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
-#elif defined(SA_PLATFORM_LINUX)
-#include <sys/types.h>
-#endif
-#include "Parameters.h"
-#include <string_view>
-
 namespace Sync {
 
-struct Boundary
-{
-    size_t start{ 0 };
-    uint32_t fingerprint{ 0 };
-    size_t hash{ 0 };
-    size_t length{ 0 };
-};
-
-using BoundaryList = std::vector<Boundary>;
-
-BoundaryList PartitionFile(const std::string& filename, const Parameters& params);
-void SaveBoundaryList(const std::string& filename, const BoundaryList& list);
-BoundaryList LoadBoundaryList(const std::string& filename);
-BoundaryList LoadBoundaryList(const std::vector<char>& buffer);
-BoundaryList LoadBoundaryList(std::string_view buffer);
+static constexpr const char* META_FILE_EXT = ".meta";
+static constexpr const char* HASH_FILE_EXT = ".sha1";
 
 }

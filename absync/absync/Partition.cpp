@@ -29,6 +29,7 @@ extern "C" {
 #include <algorithm>
 #include <sa/StringHash.h>
 #include <json.hpp>
+#include "SyncDefs.h"
 
 namespace Sync {
 

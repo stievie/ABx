@@ -36,6 +36,15 @@
     <ClInclude Include="HttpRemoteBackend.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SyncDefs.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Updater.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Partition.cpp">
@@ -54,6 +63,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="HttpRemoteBackend.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Hash.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Updater.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

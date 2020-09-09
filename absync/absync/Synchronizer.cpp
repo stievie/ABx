@@ -23,29 +23,22 @@
 #include "Partition.h"
 #include "Operation.h"
 #include <fstream>
+#include "SyncDefs.h"
 
 namespace Sync {
-
-static std::string ExtractFileName(const std::string& fn)
-{
-    size_t pos = fn.find_last_of("\\/");
-    if (pos != std::string::npos)
-        return fn.substr(pos + 1);
-    return fn;
-}
 
 Synchronizer::Synchronizer(LocalBackend& local, RemoteBackend& remote) :
     local_(local),
     remote_(remote)
 {}
 
-bool Synchronizer::Synchronize(const std::string& file)
+bool Synchronizer::Synchronize(const std::string& localFile, const std::string& remoteFile)
 {
     // Calculate hashes for local file
-    const auto localHashes = PartitionFile(file, {});
+    const auto localHashes = PartitionFile(localFile, {});
 
     // Download JSON from remote (<filename>.META_FILE_EXT)
-    const auto remoteJson = remote_.GetChunk("/" + ExtractFileName(file) + META_FILE_EXT);
+    const auto remoteJson = remote_.GetChunk("/" + remoteFile + META_FILE_EXT);
     if (remoteJson.size() == 0)
         // Does not exist on server
         return false;
@@ -61,22 +54,22 @@ bool Synchronizer::Synchronize(const std::string& file)
     {
         const std::vector<char> buffer = (op.local == nullptr) ?
             // Download
-            remote_.GetChunk("/" + ExtractFileName(file), op.remote->start, op.remote->length) :
+            remote_.GetChunk("/" + remoteFile, op.remote->start, op.remote->length) :
             // Copy
-            local_.GetChunk(file, op.local->start, op.local->length);
+            local_.GetChunk(localFile, op.local->start, op.local->length);
         if (buffer.size() == 0)
             return false;
         if (op.local == nullptr)
             downloaded_ += op.remote->length;
         else
             copied_ += op.remote->length;
-        local_.WriteChunk(file, buffer, op.remote->start, op.remote->length);
+        local_.WriteChunk(localFile, buffer, op.remote->start, op.remote->length);
         ++i;
         CallProgress(i, delta.size());
     }
 
     filesize_ = remoteHashes.back().start + remoteHashes.back().length;
-    local_.Truncate(file, filesize_);
+    local_.Truncate(localFile, filesize_);
 
     return true;
 }

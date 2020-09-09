@@ -7,7 +7,7 @@ add_library(
     ${SOURCES}
 )
 
-target_link_libraries(absync abcrypto)
+target_link_libraries(absync abcrypto PugiXml)
 if (WIN32)
     target_include_directories(absync PUBLIC ../Include/openssl-1.0)
     target_link_libraries(absync libeay32 ssleay32)

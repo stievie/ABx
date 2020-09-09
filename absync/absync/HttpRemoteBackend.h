@@ -28,7 +28,7 @@
 
 namespace Sync {
 
-class HttpRemoteBackend : public RemoteBackend
+class HttpRemoteBackend final : public RemoteBackend
 {
 private:
     std::string host_;

@@ -88,21 +88,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Hash.h" />
     <ClInclude Include="HttpRemoteBackend.h" />
     <ClInclude Include="LocalBackend.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="Parameters.h" />
     <ClInclude Include="Partition.h" />
     <ClInclude Include="RemoteBackend.h" />
+    <ClInclude Include="SyncDefs.h" />
     <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="Updater.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Hash.cpp" />
     <ClCompile Include="HttpRemoteBackend.cpp" />
     <ClCompile Include="LocalBackend.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="Partition.cpp" />
     <ClCompile Include="RemoteBackend.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
+    <ClCompile Include="Updater.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
