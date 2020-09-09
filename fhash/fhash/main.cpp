@@ -40,22 +40,25 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 
 static void CreateHash(const std::string& filename)
 {
-    std::ifstream ifs(filename, std::ifstream::in | std::ios::binary | std::ios::ate);
+    std::ifstream ifs(filename, std::ifstream::binary);
+    ifs.seekg(0, std::ios::end);
     size_t fileSize = static_cast<size_t>((long)ifs.tellg());
     if (fileSize == 0)
         return;
 
-    char sha_hash[20] = {};
+    unsigned char sha_hash[20] = {};
     sha1_ctx ctx;
     sha1_init(&ctx);
 
     ifs.seekg(0, std::ios::beg);
     std::vector<char> buffer(4096);
-    while (std::streamsize readLength = ifs.read(&buffer[0], 4096).gcount() != 0)
+    while (ifs)
     {
+        ifs.read(&buffer[0], 4096);
+        auto readLength = ifs.gcount();
         sha1_update(&ctx, (const unsigned char*)&buffer[0], (long)readLength);
     }
-    sha1_final(&ctx, (unsigned char*)sha_hash);
+    sha1_final(&ctx, sha_hash);
 
     std::ofstream out(filename + ".sha1", std::ios::out);
     out.flags(std::ios_base::hex);

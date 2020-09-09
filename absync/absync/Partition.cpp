@@ -128,6 +128,7 @@ static void CalculateBlockHashes(std::ifstream& ifs, BoundaryList& list)
 BoundaryList PartitionFile(const std::string& filename, const Parameters& params)
 {
     std::ifstream ifs(filename, std::ifstream::in | std::ios::binary | std::ios::ate);
+    ifs.seekg(0, std::ios::end);
     size_t fileSize = static_cast<size_t>((long)ifs.tellg());
     if (fileSize == 0)
         return {};
@@ -231,9 +232,11 @@ BoundaryList LoadBoundaryList(const std::string& filename)
     std::ifstream ifs(filename + ".json", std::ifstream::in);
     if (!ifs)
         return {};
+    ifs.seekg(0, std::ios::end);
     size_t fileSize = static_cast<size_t>((long)ifs.tellg());
     std::string json;
     json.resize(fileSize);
+    ifs.seekg(0, std::ios::beg);
     auto len = ifs.read(&json[0], static_cast<std::streamsize>(fileSize)).gcount();
     if (static_cast<size_t>(len) != fileSize)
         return {};
