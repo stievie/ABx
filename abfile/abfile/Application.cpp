@@ -705,8 +705,15 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
 }
 
 void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request>)
+    std::shared_ptr<HttpsServer::Request> request)
 {
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
     // Return an index of files with checksum
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
