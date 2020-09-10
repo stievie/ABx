@@ -140,6 +140,7 @@ private:
     void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(AB::ErrorCodes err) override;
+    void OnHttpError(int status) override;
     void OnPong(int) override { }
 
     void OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType accType) override;

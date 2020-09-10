@@ -23,13 +23,21 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace Sync {
 
 class RemoteBackend
 {
+protected:
+    virtual void Error(const char* message)
+    {
+        if (onError_)
+            onError_(message);
+    }
 public:
     virtual std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) = 0;
+    std::function<void(const char*)> onError_;
 };
 
 }

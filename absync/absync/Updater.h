@@ -54,6 +54,7 @@ public:
     std::function<bool(const std::string& filename)> onProcessFile_;
     std::function<void(const std::string& filename)> onFailure_;
     std::function<void(const std::string& filename, bool different, size_t downloaded, size_t copied, int savings)> onDoneFile_;
+    std::function<void(const char* message)> onError;
 };
 
 }

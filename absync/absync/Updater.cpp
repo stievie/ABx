@@ -39,7 +39,17 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
     if (!remoteAuth.empty())
         remoteHeaders_->emplace("Auth", remoteAuth);
     remoteBackend_ = std::make_unique<Sync::HttpRemoteBackend>(remoteHost, remotePort, *remoteHeaders_);
+    remoteBackend_->onError_ = [this](const char* message)
+    {
+        if (onError)
+            onError(message);
+    };
     localBackend_ = std::make_unique<Sync::FileLocalBackend>();
+    localBackend_->onError_ = [this](const char* message)
+    {
+        if (onError)
+            onError(message);
+    };
 }
 
 bool Updater::Execute()

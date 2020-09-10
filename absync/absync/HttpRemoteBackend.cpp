@@ -22,6 +22,7 @@
 #include "HttpRemoteBackend.h"
 #include <sa/http_range.h>
 #include <AB/CommonConfig.h>
+#include <sa/http_status.h>
 
 namespace Sync {
 
@@ -70,8 +71,40 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
         return true;
     });
 
-    if (res && (res->status == 200 || res->status == 206))
+    if (!res)
+    {
+        switch (res.error())
+        {
+        case httplib::Connection:
+            Error("Connection");
+            break;
+        case httplib::BindIPAddress:
+            Error("BindIPAddress");
+            break;
+        case httplib::Read:
+            Error("Read");
+            break;
+        case httplib::Write:
+            Error("Write");
+            break;
+        case httplib::ExceedRedirectCount:
+            Error("ExceedRedirectCount");
+            break;
+        case httplib::Canceled:
+            Error("Canceled");
+            break;
+        case httplib::SSLConnection:
+            Error("SSLConnection");
+            break;
+        case httplib::SSLServerVerification:
+            Error("SSLServerVerification");
+            break;
+        }
+        return {};
+    }
+    if (res->status == 200 || res->status == 206)
         return result;
+    Error(sa::http::status_message(res->status));
     return {};
 }
 

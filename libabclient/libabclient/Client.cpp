@@ -272,6 +272,12 @@ void Client::OnNetworkError(ConnectionError connectionError, const std::error_co
     receiver_.OnNetworkError(connectionError, err);
 }
 
+void Client::OnHttpError(int status)
+{
+    receiver_.OnHttpError(status);
+}
+
+
 void Client::OnProtocolError(AB::ErrorCodes err)
 {
     receiver_.OnProtocolError(err);
@@ -481,7 +487,16 @@ bool Client::HttpRequest(const std::string& path, std::function<bool(const char*
         { "Auth", ss.str() }
     };
     auto res = client->Get(path.c_str(), header, std::move(callback));
-    return res && res->status == 200;
+    if (!res)
+    {
+        OnHttpError((int)res.error());
+        return false;
+    }
+
+    bool result = res->status == 200;
+    if (!result)
+        OnHttpError(res->status);
+    return result;
 }
 
 bool Client::HttpRequest(const std::string& path, std::ostream& out)

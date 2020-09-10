@@ -56,6 +56,7 @@ public:
     virtual void OnLog(const std::string& message) = 0;
     virtual void OnNetworkError(ConnectionError connectionError, const std::error_code& err) = 0;
     virtual void OnProtocolError(AB::ErrorCodes err) = 0;
+    virtual void OnHttpError(int status) { (void)status; };
     virtual void OnPong(int lastPing) = 0;
 
     virtual void OnLoggedIn(const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType accType) = 0;

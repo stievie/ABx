@@ -24,15 +24,23 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <functional>
 
 namespace Sync {
 
 class LocalBackend
 {
+protected:
+    virtual void Error(const char* message)
+    {
+        if (onError_)
+            onError_(message);
+    }
 public:
     virtual std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) = 0;
     virtual bool WriteChunk(const std::string& filename, const std::vector<char>& data, size_t start, size_t length) = 0;
     virtual void Truncate(const std::string& filename, size_t size) = 0;
+    std::function<void(const char*)> onError_;
 };
 
 // Default local backend taking absolute filenames

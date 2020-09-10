@@ -31,7 +31,10 @@ bool FileLocalBackend::OpenFile(const std::string& filename)
         return true;
     stream_ = std::fstream(filename, std::fstream::binary | std::fstream::in | std::fstream::out | std::fstream::trunc);
     filename_ = filename;
-    return stream_.is_open();
+    bool result = stream_.is_open();
+    if (!result)
+        Error("Error opening file");
+    return result;
 }
 
 std::vector<char> FileLocalBackend::GetChunk(const std::string& filename, size_t start, size_t length)

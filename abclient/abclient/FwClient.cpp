@@ -35,6 +35,7 @@
 #include "SkillManager.h"
 #include "Shortcuts.h"
 #include "Conversions.h"
+#include <sa/http_status.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -1324,6 +1325,29 @@ void FwClient::OnNetworkError(Client::ConnectionError connectionError, const std
         using namespace Events::SetLevel;
         eData[P_NAME] = "LoginLevel";
         SendEvent(Events::E_SETLEVEL, eData);
+    }
+}
+
+void FwClient::OnHttpError(int status)
+{
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
+    if (cl)
+    {
+        if (status > 100)
+            cl->ShowError(sa::http::status_message(status), "HTTP Error");
+        else
+        {
+            switch (status)
+            {
+            case 10:
+                cl->ShowError("SSL verification error", "HTTP Error");
+                break;
+            default:
+                cl->ShowError("Some other weird error", "HTTP Error");
+                break;
+            }
+        }
     }
 }
 
