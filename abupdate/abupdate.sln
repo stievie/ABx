@@ -7,20 +7,36 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abupdate", "abupdate\abupda
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absync", "..\absync\absync\absync.vcxproj", "{15D36322-C60C-4667-AA1A-8661EDEE62CC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libabclient", "..\libabclient\libabclient\libabclient.vcxproj", "{093FA600-C39D-400D-8A12-9E71E636066A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.ActiveCfg = Debug|x64
 		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x64.Build.0 = Debug|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Debug|x86.ActiveCfg = Debug|x64
 		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.ActiveCfg = Release|x64
 		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x64.Build.0 = Release|x64
+		{F88FE566-66C7-4822-954E-61CDCEEFDF46}.Release|x86.ActiveCfg = Release|x64
 		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.ActiveCfg = Debug|x64
 		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.Build.0 = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x86.ActiveCfg = Debug|x64
 		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.ActiveCfg = Release|x64
 		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x86.ActiveCfg = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x64.ActiveCfg = Debug|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x64.Build.0 = Debug|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x86.ActiveCfg = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x86.Build.0 = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x64.ActiveCfg = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x64.Build.0 = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x86.ActiveCfg = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

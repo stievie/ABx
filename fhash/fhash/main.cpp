@@ -47,6 +47,9 @@ static void ProcessEntry(const fs::directory_entry& p)
     const std::string filename = p.path().string();
     std::cout << "Processing file " << filename << std::endl;
     const auto hashes = Sync::PartitionFile(filename, {});
+    if (hashes.size() == 0)
+        // File with 0 bytes
+        return;
     Sync::SaveBoundaryList(filename, hashes);
     Sync::HashFile(filename, filename + Sync::HASH_FILE_EXT);
 }

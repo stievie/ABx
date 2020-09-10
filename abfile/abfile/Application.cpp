@@ -732,7 +732,7 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
 
         const std::string fullpath = p.path().string();
         const std::string filename = p.path().filename().string();
-        if (Utils::IsHiddenFile(filename))
+        if (Utils::IsHiddenFile(fullpath))
             continue;
 
         // There must be a correcponding meta file
