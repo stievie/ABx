@@ -36,7 +36,7 @@ else()
 endif()
 
 if (WIN32)
-    target_link_libraries(fw libeay32 ssleay32)
+    target_link_libraries(fw libcrypto libssl)
 else()
     target_link_libraries(fw pthread GL)
 endif()

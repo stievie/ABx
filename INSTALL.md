@@ -9,12 +9,13 @@ The binary of the *Client* is located in `./abclient/bin` and has the name
 
 1. Build the server, see [BUILD.md](BUILD.md). After that all server executables are located in the `bin` directory.
 2. On Windows copy the *OpenSSL* and *PostgreSQL* client libraries to the `bin` directory.
-    * `libeay32.dll` (OpenSSL)
-    * `ssleay32.dll` (OpenSSL)
+    * `libcrypto-1_1-x64.dll` (OpenSSL)
+    * `libssl-1_1-x64.dll` (OpenSSL)
     * `libiconv-2.dll` (PostgreSQL)
     * `libintl-9.dll` (PostgreSQL)
     * `libpq.dll` (PostgreSQL)
     * `libwinpthread-1.dll` (PostgreSQL)
+    * Depending on your PostgreSQL version it may also require `libeay32.dll` and `ssleay32.dll`
 3. [Setup a PosgreSQL server](https://wiki.archlinux.org/index.php/PostgreSQL)
 4. Create a `db_private.lua` file in `bin/config` directory to enter the DB configuration, example:
 ~~~lua

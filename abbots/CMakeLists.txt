@@ -12,7 +12,7 @@ set_property(TARGET abbots PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries(abbots abscommon absmath libabclient)
 if (WIN32)
-    target_link_libraries(abbots libeay32 ssleay32)
+    target_link_libraries(abbots libcrypto libssl)
 else()
     target_link_libraries(abbots DeathHandler)
 endif()

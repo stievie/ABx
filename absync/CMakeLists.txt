@@ -10,7 +10,7 @@ add_library(
 target_link_libraries(absync abcrypto PugiXml)
 if (WIN32)
     target_include_directories(absync PUBLIC ../Include/openssl-1.0)
-    target_link_libraries(absync libeay32 ssleay32)
+    target_link_libraries(absync libcrypto libssl)
 else()
     target_link_libraries(absync ssl crypto rt dl)
 endif()

@@ -44,8 +44,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#_SrcPath}\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\bin\abupdate.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#_SrcPath}\bin\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#_SrcPath}\bin\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#_SrcPath}\bin\libcrypto-1_1-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#_SrcPath}\bin\libssl-1_1-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\Setup\config.xml"; DestDir: "{app}"; DestName: "config.xml"; Flags: ignoreversion
 Source: "{#_SrcPath}\Setup\*.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#_SrcPath}\bin\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
