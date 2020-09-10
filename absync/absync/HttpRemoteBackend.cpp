@@ -99,6 +99,8 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
         case httplib::SSLServerVerification:
             Error("SSLServerVerification");
             break;
+        default:
+            break;
         }
         return {};
     }
