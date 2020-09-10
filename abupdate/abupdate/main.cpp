@@ -9,8 +9,8 @@
 #include <absync/Hash.h>
 #include <sa/StringTempl.h>
 #include <absync/Updater.h>
-#include <libabclient/ProtocolLogin.h>
-#include <libabclient/Client.h>
+#include <ProtocolLogin.h>
+#include <Client.h>
 #include <AB/DHKeys.hpp>
 #include <asio.hpp>
 

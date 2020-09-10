@@ -12,7 +12,7 @@ target_precompile_headers(libabclient PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libabc
 target_link_libraries(libabclient lz4)
 if (WIN32)
     target_include_directories(libabclient PRIVATE ../Include/openssl-1.0)
-    target_link_libraries(libabclient libeay32 ssleay32)
+    target_link_libraries(libabclient libcrypto libssl)
 else()
     target_link_libraries(libabclient ssl crypto rt dl)
 endif()

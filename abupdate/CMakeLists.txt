@@ -10,7 +10,7 @@ add_executable(
     ${SOURCES}
 )
 
-target_link_libraries(abupdate absync libabclient)
+target_link_libraries(abupdate pthread absync libabclient)
 
 install(TARGETS abupdate
     RUNTIME DESTINATION abclient/bin
