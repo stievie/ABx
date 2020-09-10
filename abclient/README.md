@@ -15,6 +15,11 @@ from Microsoft and install it.
 1. Delete the extracted files.
 2. Delete the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7)
 
+## Update
+
+To update the client assets (*.pak files) from the file server, use the `abupdate`
+program.
+
 ## Run
 
 1. Start `fw.exe`

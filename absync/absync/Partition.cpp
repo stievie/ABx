@@ -130,7 +130,7 @@ BoundaryList PartitionFile(const std::string& filename, const Parameters& params
 {
     std::ifstream ifs(filename, std::ifstream::in | std::ios::binary | std::ios::ate);
     ifs.seekg(0, std::ios::end);
-    size_t fileSize = static_cast<size_t>((long)ifs.tellg());
+    size_t fileSize = ifs.is_open() ? static_cast<size_t>((long)ifs.tellg()) : 0;
     if (fileSize == 0)
         return {};
 

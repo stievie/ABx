@@ -10,6 +10,7 @@
 #include <sa/StringTempl.h>
 #include <absync/Updater.h>
 #include <libabclient/ProtocolLogin.h>
+#include <libabclient/Client.h>
 #include <AB/DHKeys.hpp>
 #include <asio.hpp>
 
@@ -50,11 +51,11 @@ static std::string GetAuthHeader()
     std::string accUuid;
     std::string atoken;
     std::shared_ptr<Client::ProtocolLogin> login = std::make_shared<Client::ProtocolLogin>(keys, ioService);
-    login->SetErrorCallback([](Client::ConnectionError, const std::error_code&) {
-        std::cerr << "Network error" << std::endl;
+    login->SetErrorCallback([](Client::ConnectionError error, const std::error_code&) {
+        std::cerr << "Network error: " << Client::Client::GetNetworkErrorMessage(error) << std::endl;
     });
-    login->SetProtocolErrorCallback([](AB::ErrorCodes) {
-        std::cerr << "Protocol error" << std::endl;
+    login->SetProtocolErrorCallback([](AB::ErrorCodes error) {
+        std::cerr << "Protocol error " << Client::Client::GetProtocolErrorMessage(error) << std::endl;
     });
     login->Login(host, port, username, password,
         [&](const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType)
@@ -64,6 +65,7 @@ static std::string GetAuthHeader()
     },
         [](const AB::Entities::CharList&)
     {
+        // Nothing to do here
     });
     ioService.run();
     if (accUuid.empty() || atoken.empty())
@@ -101,6 +103,7 @@ int main(int argc, char** argv)
     if (!cmdres)
         return EXIT_FAILURE;
 
+    // File or login server
     host = sa::arg_parser::get_value<std::string>(parsedArgs, "host", "");
     if (host.empty())
     {

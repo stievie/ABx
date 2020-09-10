@@ -23,8 +23,10 @@
 
 #include "RemoteBackend.h"
 #include <memory>
+#if !defined(CPPHTTPLIB_HTTPLIB_H)
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
+#endif
 
 namespace Sync {
 

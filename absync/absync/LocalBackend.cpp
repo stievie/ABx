@@ -29,7 +29,7 @@ bool FileLocalBackend::OpenFile(const std::string& filename)
 {
     if (filename == filename_ && stream_.is_open())
         return true;
-    stream_ = std::fstream(filename, std::ios::binary | std::ios::in | std::ios::out);
+    stream_ = std::fstream(filename, std::fstream::binary | std::fstream::in | std::fstream::out | std::fstream::trunc);
     filename_ = filename;
     return stream_.is_open();
 }

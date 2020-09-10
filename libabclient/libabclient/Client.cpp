@@ -29,8 +29,10 @@
 #include <fstream>
 #include "Random.h"
 #include <thread>
+#if !defined(CPPHTTPLIB_HTTPLIB_H)
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
+#endif
 #include <sa/ScopeGuard.h>
 #include <sa/Compiler.h>
 #include <sa/Assert.h>
