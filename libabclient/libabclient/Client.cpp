@@ -29,12 +29,13 @@
 #include <fstream>
 #include "Random.h"
 #include <thread>
-#if !defined(CPPHTTPLIB_HTTPLIB_H)
+#include <sa/Compiler.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4459 4706)
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
-#endif
+PRAGMA_WARNING_POP
 #include <sa/ScopeGuard.h>
-#include <sa/Compiler.h>
 #include <sa/Assert.h>
 #include <sa/time.h>
 

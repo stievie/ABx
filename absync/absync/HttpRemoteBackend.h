@@ -23,10 +23,12 @@
 
 #include "RemoteBackend.h"
 #include <memory>
-#if !defined(CPPHTTPLIB_HTTPLIB_H)
+#include <sa/Compiler.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4459 4706)
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
-#endif
+PRAGMA_WARNING_POP
 
 namespace Sync {
 
