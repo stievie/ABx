@@ -58,6 +58,9 @@
 
 inline constexpr auto RESTRICTED_NAME_CHARS = R"(1234567890<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
 
+// As long as we dont have a trusted cert for the server, do not verify SSL
+#define HTTP_CLIENT_VERIFY_SSL false
+
 namespace Auth {
 // Auth token expires in 1 hr of inactivity
 inline constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;

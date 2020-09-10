@@ -21,6 +21,7 @@
 
 #include "HttpRemoteBackend.h"
 #include <sa/http_range.h>
+#include <AB/CommonConfig.h>
 
 namespace Sync {
 
@@ -37,6 +38,8 @@ httplib::SSLClient* HttpRemoteBackend::GetHttpClient()
     {
         if (!host_.empty() && port_ != 0)
             client_ = std::make_unique<httplib::SSLClient>(host_, port_);
+        if (client_)
+            client_->enable_server_certificate_verification(HTTP_CLIENT_VERIFY_SSL);
     }
     if (client_)
         return client_.get();

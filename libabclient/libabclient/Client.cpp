@@ -38,6 +38,7 @@ PRAGMA_WARNING_POP
 #include <sa/ScopeGuard.h>
 #include <sa/Assert.h>
 #include <sa/time.h>
+#include <AB/CommonConfig.h>
 
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 
@@ -190,6 +191,8 @@ httplib::SSLClient* Client::GetHttpClient()
     {
         if (!fileHost_.empty() && filePort_ != 0)
             httpClient_ = std::make_unique<httplib::SSLClient>(fileHost_, filePort_);
+        if (httpClient_)
+            httpClient_->enable_server_certificate_verification(HTTP_CLIENT_VERIFY_SSL);
     }
     if (httpClient_)
         return httpClient_.get();
