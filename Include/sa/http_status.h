@@ -75,8 +75,9 @@ inline const char* status_message(int status)
 #define ENUM_HTTP_STATUS_CODE(s, m) case s: return m;
         ENUMERATE_HTTP_STATUS_CODES
 #undef ENUM_HTTP_STATUS_CODE
+    default:
+      return "Unknown Error";
     }
-    return "Unknown Error";
 }
 
 }

@@ -1271,18 +1271,24 @@ void FwClient::GetItemPrice(const std::vector<uint16_t>& items)
 
 void FwClient::OnLog(const std::string& message)
 {
-    String msg(message.c_str(), static_cast<unsigned>(message.length()));
-    URHO3D_LOGINFO(msg);
+    URHO3D_LOGINFO(ToUrhoString(message));
 }
 
 void FwClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::AccountType accType)
 {
     accountType_ = accType;
+    httpError_ = false;
     LoadData();
 }
 
 void FwClient::OnGetCharlist(const AB::Entities::CharList& chars)
 {
+    if (httpError_)
+    {
+        loggedIn_ = false;
+        client_.SetState(Client::State::Disconnected);
+        return;
+    }
     levelReady_ = false;
     characters_ = chars;
     VariantMap& eData = GetEventDataMap();
@@ -1330,23 +1336,23 @@ void FwClient::OnNetworkError(Client::ConnectionError connectionError, const std
 
 void FwClient::OnHttpError(int status)
 {
+    httpError_ = true;
     LevelManager* lm = GetSubsystem<LevelManager>();
-    BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
-    if (cl)
+    if (status >= 100)
+        lm->ShowError(sa::http::status_message(status), "HTTP Error");
+    else
     {
-        if (status > 100)
-            cl->ShowError(sa::http::status_message(status), "HTTP Error");
-        else
+        switch (status)
         {
-            switch (status)
-            {
-            case 10:
-                cl->ShowError("SSL verification error", "HTTP Error");
-                break;
-            default:
-                cl->ShowError("Some other weird error", "HTTP Error");
-                break;
-            }
+        case 8:
+            lm->ShowError("SSL connection error", "HTTP Error");
+            break;
+        case 10:
+            lm->ShowError("SSL verification error", "HTTP Error");
+            break;
+        default:
+            lm->ShowError("Some other weird error", "HTTP Error");
+            break;
         }
     }
 }

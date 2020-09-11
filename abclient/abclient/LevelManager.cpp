@@ -238,3 +238,14 @@ Camera* LevelManager::GetCamera() const
         return lvl->GetCamera();
     return nullptr;
 }
+
+void LevelManager::ShowError(const String& message, const String& title)
+{
+    BaseLevel* cl = GetCurrentLevel<BaseLevel>();
+    if (!cl)
+    {
+        URHO3D_LOGERROR(message);
+        return;
+    }
+    cl->ShowError(message, title);
+}

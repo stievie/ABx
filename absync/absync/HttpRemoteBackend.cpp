@@ -79,7 +79,7 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
             Error("Connection");
             break;
         case httplib::BindIPAddress:
-            Error("BindIPAddress");
+            Error("Bind IP Address");
             break;
         case httplib::Read:
             Error("Read");
@@ -88,16 +88,16 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
             Error("Write");
             break;
         case httplib::ExceedRedirectCount:
-            Error("ExceedRedirectCount");
+            Error("Exceed redirect count");
             break;
         case httplib::Canceled:
             Error("Canceled");
             break;
         case httplib::SSLConnection:
-            Error("SSLConnection");
+            Error("SSL Connection");
             break;
         case httplib::SSLServerVerification:
-            Error("SSLServerVerification");
+            Error("SSL Server verification");
             break;
         default:
             break;

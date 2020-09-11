@@ -73,8 +73,8 @@ bin
 ~~~
 3. On Windows copy the required libraries to the `abclient/bin` directory:
     * `d3dcompiler_47.dll`
-    * `libeay32.dll` (OpenSSL)
-    * `ssleay32.dll` (OpenSSL)
+    * `libcrypto-1_1-x64.dll` (OpenSSL)
+    * `libssl-1_1-x64.dll` (OpenSSL)
 4. Copy the configuration file for the Game client from `abclient/Setup/config.xml` to `abclient/bin/config.xml` and enter the Host and Port of the Login server:
 ~~~xml
 <!-- Example when your run the server and client on the same machine -->

@@ -58,7 +58,6 @@ struct ConcreteItem
     uint32_t flags;
 };
 
-
 bool VariantMapRead(ItemStats& vMap, sa::PropReadStream& stream);
 void VariantMapWrite(const ItemStats& vMap, sa::PropWriteStream& stream);
 void LoadStatsFromString(ItemStats& stats, const std::string& value);
@@ -88,6 +87,7 @@ private:
     String currentMapUuid_;
     AB::Entities::GameType currentGameType_{ AB::Entities::GameTypeUnknown };
     bool levelReady_{ false };
+    bool httpError_{ false };
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_{ 0 };
     Client::Client client_;

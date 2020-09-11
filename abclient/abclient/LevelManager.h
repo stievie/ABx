@@ -89,4 +89,5 @@ public:
     Actor* GetActorByName(const String& name) const;
     Player* GetPlayer() const;
     Camera* GetCamera() const;
+    void ShowError(const String& message, const String& title);
 };
