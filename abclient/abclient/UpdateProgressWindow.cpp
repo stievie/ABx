@@ -29,6 +29,7 @@ UpdateProgressWindow::UpdateProgressWindow(Context* context) :
     auto* graphics = GetSubsystem<Graphics>();
     SetSize(graphics->GetWidth(), graphics->GetHeight());
     SetLayout(LM_FREE);
+    SetOpacity(0.0f);
 
     // Center this window in it's parent element.
     SetAlignment(HA_CENTER, VA_CENTER);
@@ -47,6 +48,8 @@ UpdateProgressWindow::UpdateProgressWindow(Context* context) :
     pg->SetPosition({ 0, (GetHeight() / 2) - 50 });
     pg->BringToFront();
     pg->SetVisible(true);
+    pg->SetUseDerivedOpacity(false);
+    pg->SetOpacity(1.0f);
 
     auto* button = CreateChild<Button>("CancelButton");
     button->SetStyleAuto();
@@ -56,6 +59,8 @@ UpdateProgressWindow::UpdateProgressWindow(Context* context) :
     button->SetPosition({ -25, (GetHeight() / 2) - 50 });
     button->BringToFront();
     button->SetVisible(true);
+    button->SetUseDerivedOpacity(false);
+    button->SetOpacity(1.0f);
     auto* buttonText = button->CreateChild<Text>();
     buttonText->SetStyleAuto();
     buttonText->SetText("Cancel");
