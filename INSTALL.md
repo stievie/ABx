@@ -55,6 +55,18 @@ This assumes you have the default configuration. You can change the ports in the
 2. `bin/abserv.lua`: `base_port` or `game_port`
 3. `bin/abfile.lua`: `file_port`
 
+### Autoupdate
+
+To automatically update game asset files by the client, follow the following steps:
+
+1. Pack the asset files into Urho3D .pak files with running `Setup\createpak.bat`.
+2. Copy the resulting .pak files to the file servers root directory, usually `bin/file_root`.
+3. Run `fhash`in that directory, e.g. when your are in `bin`: `fhash file_root`.
+4. Compile the client with `AUTOUPDATE_ENABLED` defined, CMake option `ABX_CLIENT_AUTOUPDATE`.
+
+This will cause the client to check for updated files at every start, and binary
+patches changed files.
+
 ### Known issues
 
 The Server should run on Windows and Linux.
