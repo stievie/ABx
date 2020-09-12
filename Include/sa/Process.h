@@ -123,7 +123,7 @@ public:
     std::string GetArguments() const
     {
         std::stringstream ss;
-        for (int i = 0; i < arguments_.size(); ++i)
+        for (size_t i = 0; i < arguments_.size(); ++i)
         {
             const std::string& sv(arguments_[i]);
             const size_t spacepos = sv.find(' ');
