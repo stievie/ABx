@@ -507,8 +507,8 @@ void FwClient::UpdateAssets()
 
         VariantMap& eData = GetEventDataMap();
         using namespace Events::UpdateProgress;
-        eData[P_VALUE] = overallValue + value;
-        eData[P_MAX] = estimatedMax;
+        eData[P_VALUE] = (unsigned)(overallValue + value);
+        eData[P_MAX] = (unsigned)estimatedMax;
         eData[P_PERCENT] = static_cast<int>(((float)(overallValue + value) / (float)estimatedMax) * 100.0f);
         SendEvent(Events::E_UPDATEPROGRESS, eData);
         if (cancelUpdate_)
