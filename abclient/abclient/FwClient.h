@@ -115,9 +115,12 @@ private:
     Mutex mutex_;
     HashMap<String, uint32_t> versions_;
     bool loggedIn_{ false };
+    bool assetsUpdated_{ false };
+    bool cancelUpdate_{ false };
 
     AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
     void LoadData();
+    void UpdateAssets();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
     void LoadGames(uint32_t curVersion);
     void LoadSkills(uint32_t curVersion);
@@ -134,6 +137,7 @@ private:
     void QueueEvent(StringHash eventType, VariantMap& eventData);
     void UpdatePlayer(const AB::Packets::Server::PlayerInfo& player);
     void HandleWorkCompleted(StringHash eventType, VariantMap& eventData);
+    void HandleCancelUpdate(StringHash eventType, VariantMap& eventData);
 
     void OnLog(const std::string& message) override;
     /// asio network error

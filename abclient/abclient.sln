@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libabclient", "..\libabclie
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abshared", "..\abshared\abshared\abshared.vcxproj", "{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absync", "..\absync\absync\absync.vcxproj", "{15D36322-C60C-4667-AA1A-8661EDEE62CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,12 @@ Global
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.Release|x64.Build.0 = Release|x64
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{C9DA8A32-C94C-49CD-9734-5BBF037E0F23}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.ActiveCfg = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Debug|x64.Build.0 = Debug|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.Release|x64.Build.0 = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{15D36322-C60C-4667-AA1A-8661EDEE62CC}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

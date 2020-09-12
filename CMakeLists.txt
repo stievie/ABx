@@ -82,6 +82,7 @@ option (ABX_NO_PROFILIING "No Profiling" FALSE)
 option (ABX_WRITE_MINIBUMP "Write Minidump and Stacktrace in case of crash" TRUE)
 option (ABX_BUILD_TOOLS "Build Tools (may require assimp to be installed)" FALSE)
 option (ABX_BUILD_CLIENT "Build Game Client (requires Urho3D to be installed)" FALSE)
+option (ABX_CLIENT_AUTOUPDATE "Enable client autoupdating" FALSE)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_definitions(-DNOMINMAX)
@@ -96,6 +97,9 @@ endif(ABX_WINSERVICE)
 if (ABX_NO_PROFILIING)
     add_definitions(-DNPROFILING)
 endif(ABX_NO_PROFILIING)
+if (ABX_CLIENT_AUTOUPDATE)
+    add_definitions(-DAUTOUPDATE_ENABLED)
+endif(ABX_CLIENT_AUTOUPDATE)
 
 # Libraries
 add_subdirectory(ThirdParty)

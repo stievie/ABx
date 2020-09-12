@@ -42,24 +42,37 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
     remoteBackend_->onError_ = [this](const char* message)
     {
         if (onError)
-            onError(message);
+            onError(ErrorType::Remote, message);
     };
     localBackend_ = std::make_unique<Sync::FileLocalBackend>();
     localBackend_->onError_ = [this](const char* message)
     {
         if (onError)
-            onError(message);
+            onError(ErrorType::Local, message);
     };
 }
 
 bool Updater::Execute()
 {
-    if (!GetRemoteFiles())
-        return false;
+    if (remoteFiles_.size() == 0)
+    {
+        if (onUpdateStart_)
+            onUpdateStart_();
+        if (!DownloadRemoteFiles())
+            return false;
+    }
+    else
+    {
+        if (onUpdateStart_)
+            onUpdateStart_();
+    }
 
     bool result = true;
     for (const auto& file : remoteFiles_)
     {
+        if (cancelled_)
+            return false;
+
         ++currentFile_;
         if (onProcessFile_)
         {
@@ -69,6 +82,8 @@ bool Updater::Execute()
         if (!ProcessFile(file))
             result = false;
     }
+    if (onUpdateDone_)
+        onUpdateDone_(result);
     return result;
 }
 
@@ -84,10 +99,11 @@ bool Updater::ProcessFile(const RemoteFile& file)
         return true;
     }
     Sync::Synchronizer sync(*localBackend_, *remoteBackend_);
-    sync.onProgress_ = [this](size_t value, size_t max)
+    sync.onProgress_ = [this](size_t value, size_t max) -> bool
     {
         if (onProgress_)
             onProgress_(currentFile_, remoteFiles_.size(), value, max);
+        return !cancelled_;
     };
     if (!sync.Synchronize(localFile.string(), file.name))
     {
@@ -95,12 +111,14 @@ bool Updater::ProcessFile(const RemoteFile& file)
             onFailure_(file.name);
         return false;
     }
+    if (cancelled_)
+        return false;
     if (onDoneFile_)
         onDoneFile_(file.name, sync.IsDifferent(), sync.GetDownloaded(), sync.GetCopied(), sync.GetSavings());
     return true;
 }
 
-bool Updater::GetRemoteFiles()
+bool Updater::DownloadRemoteFiles()
 {
     const auto files = remoteBackend_->GetChunk("/_files_");
     pugi::xml_document doc;

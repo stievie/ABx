@@ -82,7 +82,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;$(SolutionDir)..\absync;$(SolutionDir)..\Include\openssl-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -131,8 +131,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libabclient.lib;abshared.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;abshared.lib;absync.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\absync\absync\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -150,7 +150,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;$(SolutionDir)..\absync;$(SolutionDir)..\Include\openssl-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -193,8 +193,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libabclient.lib;abshared.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;abshared.lib;absync.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\absync\absync\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -212,7 +212,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\abshared;$(SolutionDir)..\absync;$(SolutionDir)..\Include\openssl-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -254,8 +254,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libabclient.lib;abshared.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;abshared.lib;absync.lib;abcrypto.lib;lz4.lib;tinyexpr.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Setupapi.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\abshared\abshared\$(Platform)\$(Configuration)\;$(SolutionDir)..\absync\absync\$(Platform)\$(Configuration)\;$(SolutionDir)..\Lib\x64;$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>Debug/abclient.lib</ImportLibrary>
@@ -309,6 +309,7 @@
     <ClCompile Include="GuildWindow.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="TradeDialog.cpp" />
+    <ClCompile Include="UpdateProgressWindow.cpp" />
     <ClCompile Include="ValueBar.cpp" />
     <ClCompile Include="HotkeyEdit.cpp" />
     <ClCompile Include="InventoryWindow.cpp" />
@@ -390,6 +391,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="TradeDialog.h" />
+    <ClInclude Include="UpdateProgressWindow.h" />
     <ClInclude Include="ValueBar.h" />
     <ClInclude Include="HotkeyEdit.h" />
     <ClInclude Include="InventoryWindow.h" />
@@ -437,6 +439,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\abshared\abshared\abshared.vcxproj">
       <Project>{c9da8a32-c94c-49cd-9734-5bbf037e0f23}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\absync\absync\absync.vcxproj">
+      <Project>{15d36322-c60c-4667-aa1a-8661edee62cc}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\libabclient\libabclient\libabclient.vcxproj">
       <Project>{093fa600-c39d-400d-8a12-9e71e636066a}</Project>

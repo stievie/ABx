@@ -32,6 +32,7 @@ class GameObject;
 class Player;
 class Actor;
 class FadeWindow;
+class UpdateProgressWindow;
 
 class LevelManager : public Object
 {
@@ -53,6 +54,8 @@ private:
     void HandleSetLevelQueue(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
+    void HandleUpdateStart(StringHash eventType, VariantMap& eventData);
+    void HandleUpdateDone(StringHash eventType, VariantMap& eventData);
     void AddFadeLayer();
 
     List<VariantMap> levelQueue_;
@@ -65,6 +68,7 @@ private:
     String instanceUuid_;
     SharedPtr<Object> level_;
     SharedPtr<FadeWindow> fadeWindow_;
+    SharedPtr<UpdateProgressWindow> updateWindow_;
     float fadeTime_{ 0 };
     int fadeStatus_{ FadeStatusPrepare };
     bool drawDebugGeometry_{ false };

@@ -32,29 +32,40 @@ class FileLocalBackend;
 
 class Updater
 {
-private:
+public:
     struct RemoteFile
     {
         std::string name;
         std::string hash;
     };
+private:
     std::string localDir_;
     std::unique_ptr<FileLocalBackend> localBackend_;
     std::unique_ptr<HttpRemoteBackend> remoteBackend_;
     std::unique_ptr<httplib::Headers> remoteHeaders_;
     std::vector<RemoteFile> remoteFiles_;
     size_t currentFile_{ 0 };
-    bool GetRemoteFiles();
+    bool cancelled_{ false };
     bool ProcessFile(const RemoteFile& file);
 public:
+    enum class ErrorType
+    {
+        Remote,
+        Local
+    };
     Updater(const std::string& remoteHost, uint16_t remotePort, const std::string remoteAuth,
         const std::string& localDir);
     bool Execute();
-    std::function<void(size_t fileValue, size_t fileMax, size_t value, size_t max)> onProgress_;
+    void Cancel() { cancelled_ = true; }
+    bool DownloadRemoteFiles();
+    const std::vector<RemoteFile>& GetRemoteFiles() const { return remoteFiles_; }
+    std::function<void(size_t fileIndex, size_t maxFiles, size_t value, size_t max)> onProgress_;
     std::function<bool(const std::string& filename)> onProcessFile_;
     std::function<void(const std::string& filename)> onFailure_;
     std::function<void(const std::string& filename, bool different, size_t downloaded, size_t copied, int savings)> onDoneFile_;
-    std::function<void(const char* message)> onError;
+    std::function<void(ErrorType type, const char* message)> onError;
+    std::function<void()> onUpdateStart_;
+    std::function<void(bool success)> onUpdateDone_;
 };
 
 }

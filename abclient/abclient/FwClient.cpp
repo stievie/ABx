@@ -36,6 +36,10 @@
 #include "Shortcuts.h"
 #include "Conversions.h"
 #include <sa/http_status.h>
+#include <absync/Updater.h>
+#include <absync/LocalBackend.h>
+#include <absync/HttpRemoteBackend.h>
+#include <sa/Process.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -438,6 +442,84 @@ void FwClient::HandleLevelReady(StringHash, VariantMap& eventData)
     if (services_.size() == 0)
         UpdateServers();
 }
+
+void FwClient::HandleCancelUpdate(StringHash, VariantMap&)
+{
+    cancelUpdate_ = true;
+}
+
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4702)
+void FwClient::UpdateAssets()
+{
+#if !defined(AUTOUPDATE_ENABLED)
+    return;
+#endif
+    if (assetsUpdated_)
+        return;
+    SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
+
+    Sync::Updater updater(client_.fileHost_, client_.filePort_, client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
+    updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
+    {
+        httpError_ = true;
+        auto* lm = GetSubsystem<LevelManager>();
+        lm->ShowError(message, (type == Sync::Updater::ErrorType::Remote) ?
+            "HTTP Error" : "File Error");
+    };
+    updater.onUpdateStart_ = [this]()
+    {
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::UpdateStart;
+        SendEvent(Events::E_UPDATESTART, eData);
+    };
+    updater.onUpdateDone_ = [this](bool success)
+    {
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::UpdateDone;
+        eData[P_SUCCESS] = success;
+        SendEvent(Events::E_UPDATEDONE, eData);
+    };
+    updater.onFailure_ = [this](const std::string& filename)
+    {
+        httpError_ = true;
+        auto* lm = GetSubsystem<LevelManager>();
+        String message = "Error updating file " + String(filename.c_str());
+        lm->ShowError(message, "Update Error");
+    };
+
+    size_t estimatedMax = 0;
+    size_t overallValue = 0;
+    size_t oldFileIndex = 0;
+    updater.onProgress_ = [&](size_t fileIndex, size_t maxFiles, size_t value, size_t max)
+    {
+        if (estimatedMax == 0)
+        {
+            estimatedMax = maxFiles * max;
+        }
+        if (fileIndex != oldFileIndex)
+        {
+            overallValue += value;
+            oldFileIndex = fileIndex;
+        }
+        if (estimatedMax < overallValue)
+            estimatedMax += max;
+
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::UpdateProgress;
+        eData[P_VALUE] = overallValue + value;
+        eData[P_MAX] = estimatedMax;
+        eData[P_PERCENT] = static_cast<int>(((float)(overallValue + value) / (float)estimatedMax) * 100.0f);
+        SendEvent(Events::E_UPDATEPROGRESS, eData);
+        if (cancelUpdate_)
+            updater.Cancel();
+    };
+    if (!updater.Execute())
+        ErrorExit("Update process failed");
+    UnsubscribeFromEvent(Events::E_CANCELUPDATE);
+    assetsUpdated_ = true;
+}
+PRAGMA_WARNING_POP
 
 void FwClient::LoadData()
 {
@@ -1278,6 +1360,7 @@ void FwClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::
 {
     accountType_ = accType;
     httpError_ = false;
+    UpdateAssets();
     LoadData();
 }
 

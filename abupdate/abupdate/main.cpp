@@ -145,9 +145,13 @@ int main(int argc, char** argv)
     auto dirarg = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
     fs::path dir = dirarg.has_value() ? fs::path(dirarg.value()) : fs::current_path();
     Sync::Updater updater(host, port, authHeader, dir.string());
-    updater.onError = [](const char* message)
+    updater.onError = [](Sync::Updater::ErrorType type, const char* message)
     {
-        std::cerr << "HTTP Error: " << message << std::endl;
+        if (type == Sync::Updater::ErrorType::Remote)
+            std::cerr << "HTTP Error ";
+        else if (type == Sync::Updater::ErrorType::Local)
+            std::cerr << "File Error ";
+        std::cerr << message << std::endl;
     };
     updater.onProcessFile_ = [](const std::string filename) -> bool
     {

@@ -64,6 +64,7 @@
 #include "Spinner.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
+#include "UpdateProgressWindow.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
 #include <chrono>
@@ -74,6 +75,8 @@
 #include <linux/version.h>
 #endif
 #include <sa/Compiler.h>
+#include <sa/Process.h>
+#include "Conversions.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -109,29 +112,18 @@ bool gNoClientPrediction = false;
 ClientApp::ClientApp(Context* context) :
     Application(context)
 {
-    options_ = new Options(context);
+    options_ = MakeShared<Options>(context);
 
-#ifdef AB_WINDOWS
-    char buff[MAX_PATH];
-    GetModuleFileNameA(NULL, buff, MAX_PATH);
-    exeName_ = String(buff);
-    unsigned pos = exeName_.FindLast('\\', String::NPOS, false);
-    if  (pos != String::NPOS)
-        appPath_ = exeName_.Substring(0, pos);
-#else
-    char buff[PATH_MAX];
-    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeName_ = String(buff, (count > 0) ? static_cast<unsigned>(count) : 0);
-    unsigned pos = exeName_.FindLast('/', String::NPOS, false);
-    if  (pos != String::NPOS)
-        appPath_ = exeName_.Substring(0, pos);
-#endif
+    exeName_ = ToUrhoString(sa::Process::GetSelf());
+    appPath_ = ToUrhoString(sa::Process::GetSelfPath());
 
+    std::vector<std::string> procArgs;
     const Vector<String>& args = GetArguments();
     decltype(args.Size()) i = 0;
     while (i < args.Size())
     {
         auto& arg = args[i];
+        procArgs.push_back(ToStdString(arg));
         if (arg == "-perfpath")
         {
             ++i;
@@ -156,12 +148,14 @@ ClientApp::ClientApp(Context* context) :
         }
         ++i;
     }
+    process_ = std::make_unique<sa::Process>(procArgs);
 
     MultiLineEdit::RegisterObject(context);
     FormatText::RegisterObject(context);
 
     context->RegisterFactory<CameraTransform>();
     context->RegisterFactory<FadeWindow>();
+    context->RegisterFactory<UpdateProgressWindow>();
     // Register levels
     context->RegisterFactory<LoginLevel>();
     context->RegisterFactory<CreateAccountLevel>();
@@ -170,30 +164,30 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterFactory<OutpostLevel>();
     context->RegisterFactory<PvpCombatLevel>();
 
-    shortcuts_ = new Shortcuts(context);
+    shortcuts_ = MakeShared<Shortcuts>(context);
     context->RegisterSubsystem(shortcuts_);
 
     options_->Load();
     context->RegisterSubsystem(options_);
 
-    windowManager_ = new WindowManager(context);
+    windowManager_ = MakeShared<WindowManager>(context);
     context->RegisterSubsystem(windowManager_);
 
     auto* chatFilter = new ChatFilter(context);
     chatFilter->Load();
     context->RegisterSubsystem(chatFilter);
 
-    client_ = new FwClient(context);
+    client_ = MakeShared<FwClient>(context);
     context->RegisterSubsystem(client_);
-    itemsCache_ = new ItemsCache(context);
+    itemsCache_ = MakeShared<ItemsCache>(context);
     context->RegisterSubsystem(itemsCache_);
-    skillsManager_ = new SkillManager(context);
+    skillsManager_ = MakeShared<SkillManager>(context);
     context->RegisterSubsystem(skillsManager_);
-    levelManager_ = new LevelManager(context);
+    levelManager_ = MakeShared<LevelManager>(context);
     context->RegisterSubsystem(levelManager_);
-    audioManager_ = new AudioManager(context);
+    audioManager_ = MakeShared<AudioManager>(context);
     context->RegisterSubsystem(audioManager_);
-    mumble_ = new Mumble(context);
+    mumble_ = MakeShared<Mumble>(context);
     context->RegisterSubsystem(mumble_);
 
     // UI
@@ -242,6 +236,8 @@ ClientApp::ClientApp(Context* context) :
     SubscribeToEvent(Events::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(Events::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
     SubscribeToEvent(Events::E_SC_TOGGLEMUTEAUDIO, URHO3D_HANDLER(ClientApp, HandleToggleMuteAudio));
+    SubscribeToEvent(Events::E_START_PROGRAM, URHO3D_HANDLER(ClientApp, HandleStartProgram));
+    SubscribeToEvent(Events::E_RESTART, URHO3D_HANDLER(ClientApp, HandleRestart));
 }
 
 /**
@@ -288,11 +284,6 @@ void ClientApp::Setup()
 #else
     engineParameters_[EP_LOG_QUIET] = true;
 #endif
-    // "RenderPaths/Prepass.xml";
-    // "RenderPaths/Deferred.xml";
-//    const String& rp = options->GetRenderPath();
-//    if (!rp.Empty())
-//        engineParameters_[EP_RENDER_PATH] = options->GetRenderPath();
 
     GetSubsystem<UI>()->SetUseSystemClipboard(true);
 }
@@ -388,6 +379,8 @@ void ClientApp::Start()
 */
 void ClientApp::Stop()
 {
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(Events::E_CANCELUPDATE, eData);
     FwClient* cli = GetSubsystem<FwClient>();
     cli->Stop();
     Options* options = GetSubsystem<Options>();
@@ -498,4 +491,18 @@ void ClientApp::HandleToggleMuteAudio(StringHash, VariantMap&)
 {
     Options* opt = GetSubsystem<Options>();
     opt->MuteAudio();
+}
+
+void ClientApp::HandleStartProgram(StringHash, VariantMap& eventData)
+{
+    using namespace Events::StartProgram;
+    const String& cmd = eventData[P_COMMAND].GetString();
+    sa::Process::Run(ToStdString(cmd));
+}
+
+void ClientApp::HandleRestart(StringHash, VariantMap&)
+{
+    if (!process_)
+        return;
+    process_->Restart();
 }

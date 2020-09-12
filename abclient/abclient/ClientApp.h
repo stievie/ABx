@@ -32,6 +32,11 @@
 #include "AudioManager.h"
 #include "SkillManager.h"
 #include <Urho3DAll.h>
+#include <memory>
+
+namespace sa {
+class Process;
+}
 
 using namespace Urho3D;
 
@@ -62,6 +67,7 @@ private:
     SharedPtr<Mumble> mumble_;
     String exeName_;
     String appPath_;
+    std::unique_ptr<sa::Process> process_;
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);
@@ -73,4 +79,6 @@ private:
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
     void HandleExitProgram(StringHash eventType, VariantMap& eventData);
     void HandleToggleMuteAudio(StringHash eventType, VariantMap& eventData);
+    void HandleStartProgram(StringHash eventType, VariantMap& eventData);
+    void HandleRestart(StringHash eventType, VariantMap& eventData);
 };

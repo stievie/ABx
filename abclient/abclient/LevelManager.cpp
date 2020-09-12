@@ -27,6 +27,7 @@
 #include "Actor.h"
 #include "FwClient.h"
 #include "FadeWindow.h"
+#include "UpdateProgressWindow.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -36,11 +37,27 @@ LevelManager::LevelManager(Context* context) :
     // Listen to set level event
     SubscribeToEvent(Events::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
     SubscribeToEvent(Events::E_LEVELREADY, URHO3D_HANDLER(LevelManager, HandleLevelReady));
+    SubscribeToEvent(Events::E_UPDATESTART, URHO3D_HANDLER(LevelManager, HandleUpdateStart));
+    SubscribeToEvent(Events::E_UPDATEDONE, URHO3D_HANDLER(LevelManager, HandleUpdateDone));
 }
 
 LevelManager::~LevelManager()
 {
     level_.Reset();
+}
+void LevelManager::HandleUpdateStart(StringHash, VariantMap&)
+{
+    auto* root = GetSubsystem<UI>()->GetRoot();
+    root->RemoveAllChildren();
+    updateWindow_ = MakeShared<UpdateProgressWindow>(context_);
+    root->AddChild(updateWindow_);
+    GetSubsystem<Engine>()->RunFrame();
+}
+
+void LevelManager::HandleUpdateDone(StringHash, VariantMap&)
+{
+    updateWindow_->Remove();
+    updateWindow_.Reset();
 }
 
 void LevelManager::HandleLevelReady(StringHash, VariantMap&)

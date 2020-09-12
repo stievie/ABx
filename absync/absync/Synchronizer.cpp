@@ -65,7 +65,8 @@ bool Synchronizer::Synchronize(const std::string& localFile, const std::string& 
             copied_ += op.remote->length;
         local_.WriteChunk(localFile, buffer, op.remote->start, op.remote->length);
         ++i;
-        CallProgress(i, delta.size());
+        if (!CallProgress(i, delta.size()))
+            return false;
     }
 
     filesize_ = remoteHashes.back().start + remoteHashes.back().length;
@@ -74,11 +75,11 @@ bool Synchronizer::Synchronize(const std::string& localFile, const std::string& 
     return true;
 }
 
-void Synchronizer::CallProgress(size_t value, size_t max)
+bool Synchronizer::CallProgress(size_t value, size_t max)
 {
     if (!onProgress_)
-        return;
-    onProgress_(value, max);
+        return true;
+    return onProgress_(value, max);
 }
 
 }

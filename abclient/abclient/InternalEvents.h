@@ -27,6 +27,35 @@ using namespace Urho3D;
 namespace Events
 {
 
+URHO3D_EVENT(E_START_PROGRAM, StartProgram)
+{
+    URHO3D_PARAM(P_COMMAND, Command);        // String
+}
+
+URHO3D_EVENT(E_RESTART, Restart)
+{
+}
+
+URHO3D_EVENT(E_UPDATESTART, UpdateStart)
+{
+}
+
+URHO3D_EVENT(E_CANCELUPDATE, CancelUpdate)
+{
+}
+
+URHO3D_EVENT(E_UPDATEPROGRESS, UpdateProgress)
+{
+    URHO3D_PARAM(P_VALUE, Value);        // int
+    URHO3D_PARAM(P_MAX, Max);        // int
+    URHO3D_PARAM(P_PERCENT, Percent);        // int
+}
+
+URHO3D_EVENT(E_UPDATEDONE, UpdateDone)
+{
+    URHO3D_PARAM(P_SUCCESS, Success);        // bool
+}
+
 URHO3D_EVENT(E_SCREENSHOTTAKEN, ScreenshotTaken)
 {
     URHO3D_PARAM(P_FILENAME, Filename);        // String

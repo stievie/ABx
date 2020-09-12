@@ -28,7 +28,7 @@ target_link_directories(fw PRIVATE ${CMAKE_SOURCE_DIR}/Lib)
 set_property(TARGET fw PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 target_precompile_headers(fw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/abclient/stdafx.h)
 
-target_link_libraries(fw libabclient abshared abcrypto tinyexpr)
+target_link_libraries(fw libabclient abshared abcrypto absync tinyexpr)
 if (URHO3D_LIBRARIES)
     target_link_libraries(fw ${URHO3D_LIBRARIES})
 else()

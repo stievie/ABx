@@ -21,34 +21,15 @@
 
 #pragma once
 
-#include "LocalBackend.h"
-#include "RemoteBackend.h"
-#include <string>
-#include <functional>
-
-namespace Sync {
-
-class Synchronizer
+class UpdateProgressWindow : public Window
 {
-private:
-    LocalBackend& local_;
-    RemoteBackend& remote_;
-    size_t downloaded_{ 0 };
-    size_t copied_{ 0 };
-    size_t filesize_{ 0 };
-    bool different_{ false };
-    bool CallProgress(size_t value, size_t max);
+    URHO3D_OBJECT(UpdateProgressWindow, Window)
 public:
-    Synchronizer(LocalBackend& local, RemoteBackend& remote);
-    bool Synchronize(const std::string& localFile, const std::string& remoteFile);
-
-    size_t GetDownloaded() const { return downloaded_; }
-    size_t GetCopied() const { return copied_; }
-    size_t GetFilesize() const { return filesize_; }
-    int GetSavings() const { return 100 - (int)(100.0 / filesize_ * downloaded_); }
-    bool IsDifferent() const { return different_; }
-
-    std::function<bool(size_t value, size_t max)> onProgress_;
+    UpdateProgressWindow(Context* context);
+    ~UpdateProgressWindow() override;
+private:
+    void HandleUpdateProgress(StringHash eventType, VariantMap& eventData);
+    void HandleUpdateDone(StringHash eventType, VariantMap& eventData);
+    void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
 };
 
-}

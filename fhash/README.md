@@ -6,4 +6,5 @@ client updater.
 Place client data files (*.pak) in the file servers `root_dir`  (by default
 `bin/file_root`) and run this program in this directory to index the files.
 
-The client updater patches these files if they are differtent.
+The client updater patches these files if they are differtent and dowload new
+files not present on the client side.
