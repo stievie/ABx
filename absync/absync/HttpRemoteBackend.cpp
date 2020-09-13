@@ -23,6 +23,9 @@
 #include <sa/http_range.h>
 #include <AB/CommonConfig.h>
 #include <sa/http_status.h>
+#include <sa/time.h>
+#include <sa/CircularQueue.h>
+#include <numeric>
 
 namespace Sync {
 
@@ -64,10 +67,32 @@ std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_
     if (remoteName.front() != '/')
         remoteName = "/" + remoteName;
     std::vector<char> result;
+    sa::time::timer timer;
+    sa::CircularQueue<size_t, 5> speeds;
+    int64_t elapsed = 0;
     auto res = client->Get(remoteName.c_str(), header, [&](const char* data, uint64_t size) -> bool
     {
         result.reserve(result.size() + size);
         std::copy(data, data + size, std::back_inserter(result));
+
+        float bps = (float)size / (float)timer.elapsed_millis() * 1000.0f;
+        elapsed += timer.elapsed_millis();
+        speeds.Enqueue(static_cast<size_t>(bps));
+        size_t avgSpeed = 0;
+        for (auto s : speeds)
+            avgSpeed += s;
+        avgSpeed /= speeds.Size();
+
+        if (elapsed >= 20)
+        {
+            if (onDownloadProgress_)
+            {
+                if (!onDownloadProgress_(avgSpeed))
+                    return false;
+            }
+            elapsed = 0;
+        }
+        timer.restart();
         return true;
     });
 

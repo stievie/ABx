@@ -43,6 +43,7 @@ private:
 public:
     HttpRemoteBackend(const std::string& host, uint16_t port, httplib::Headers headers);
     std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) override;
+    std::function<bool(size_t)> onDownloadProgress_;
 };
 
 }

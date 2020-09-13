@@ -60,12 +60,13 @@ public:
     bool DownloadRemoteFiles();
     const std::vector<RemoteFile>& GetRemoteFiles() const { return remoteFiles_; }
     std::function<void(size_t fileIndex, size_t maxFiles, size_t value, size_t max)> onProgress_;
-    std::function<bool(const std::string& filename)> onProcessFile_;
+    std::function<bool(size_t fileIndex, size_t maxFiles, const std::string& filename)> onProcessFile_;
     std::function<void(const std::string& filename)> onFailure_;
     std::function<void(const std::string& filename, bool different, size_t downloaded, size_t copied, int savings)> onDoneFile_;
     std::function<void(ErrorType type, const char* message)> onError;
     std::function<void()> onUpdateStart_;
     std::function<void(bool success)> onUpdateDone_;
+    std::function<void(size_t bps)> onDownloadProgress_;
 };
 
 }

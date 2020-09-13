@@ -46,6 +46,7 @@ class ClientApp : public Application
 public:
     /// Construct.
     ClientApp(Context* context);
+    ~ClientApp() override;
 
     void Setup() override;
 

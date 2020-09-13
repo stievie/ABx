@@ -240,6 +240,12 @@ ClientApp::ClientApp(Context* context) :
     SubscribeToEvent(Events::E_RESTART, URHO3D_HANDLER(ClientApp, HandleRestart));
 }
 
+ClientApp::~ClientApp()
+{
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(Events::E_CANCELUPDATE, eData);
+}
+
 /**
 * This method is called before the engine has been initialized.
 * Thusly, we can setup the engine parameters before anything else
@@ -379,8 +385,6 @@ void ClientApp::Start()
 */
 void ClientApp::Stop()
 {
-    VariantMap& eData = GetEventDataMap();
-    SendEvent(Events::E_CANCELUPDATE, eData);
     FwClient* cli = GetSubsystem<FwClient>();
     cli->Stop();
     Options* options = GetSubsystem<Options>();

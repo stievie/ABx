@@ -26,16 +26,13 @@
 #undef URHO3D_LUA
 #undef URHO3D_NETWORK
 
-#define SERVER_LOGIN_HOST "pc.home.lan"
-#define SERVER_LOGIN_PORT 2748
-
 #define MAX_CHAT_MESSAGE 120
 
 // Turn Urho3D logging on/off
 #define AB_CLIENT_LOGGING
 #define DEBUG_HUD
-
-// Animate player head with mouse look
-//#define PLAYER_HEAD_ANIMATION
+// If defined the client will autoupdate asset files.
+// May turn it off for develpment, because it takes some seconds until it starts.
+#define AUTOUPDATE_ENABLED
 
 #include <AB/CommonConfig.h>

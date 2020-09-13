@@ -28,8 +28,17 @@ public:
     UpdateProgressWindow(Context* context);
     ~UpdateProgressWindow() override;
 private:
+    void HandleUpdateUpdateFile(StringHash eventType, VariantMap& eventData);
     void HandleUpdateProgress(StringHash eventType, VariantMap& eventData);
+    void HandleUpdateDownloadProgress(StringHash eventType, VariantMap& eventData);
     void HandleUpdateDone(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
+    void UpdateFileText();
+
+    unsigned currentFileIndex_{ 0 };
+    unsigned fileCount_{ 0 };
+    String currentFile_;
+    unsigned currentSpeed_{ 0 };
+    int64_t lastUpdate_{ 0 };
 };
 

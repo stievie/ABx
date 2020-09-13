@@ -32,6 +32,9 @@ If you build Urho3D with the default settings (it uses D3D9 then), you must add
 `d3d9.lib` as linker input when you encounter some unresolved symbol linker error,
 saying `error LNK2001: unresolved external symbol Direct3D(Something)`.
 
+To enable auto updating, compile the client with `AUTOUPDATE_ENABLED` defined,
+CMake option `ABX_CLIENT_AUTOUPDATE`, see [Autoupdate](/INSTALL.md#autoupdate).
+
 ## Linux
 
 ### Prerequisites

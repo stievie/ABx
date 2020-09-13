@@ -48,7 +48,21 @@ URHO3D_EVENT(E_UPDATEPROGRESS, UpdateProgress)
 {
     URHO3D_PARAM(P_VALUE, Value);        // int
     URHO3D_PARAM(P_MAX, Max);        // int
-    URHO3D_PARAM(P_PERCENT, Percent);        // int
+    URHO3D_PARAM(P_PERCENT, Percent);        // float
+}
+
+URHO3D_EVENT(E_UPDATEDOWNLOADPROGRESS, UpdateDownloadProgress)
+{
+    URHO3D_PARAM(P_BYTEPERSEC, BytePerSec);        // int
+    URHO3D_PARAM(P_MAX, Max);        // int
+    URHO3D_PARAM(P_PERCENT, Percent);        // float
+}
+
+URHO3D_EVENT(E_UPDATEFILE, UpdateFile)
+{
+    URHO3D_PARAM(P_INDEX, Index);        // unsigned
+    URHO3D_PARAM(P_COUNT, Count);        // unsigned
+    URHO3D_PARAM(P_FILENAME, FileName);        // String
 }
 
 URHO3D_EVENT(E_UPDATEDONE, UpdateDone)

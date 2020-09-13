@@ -448,24 +448,25 @@ void FwClient::HandleCancelUpdate(StringHash, VariantMap&)
     cancelUpdate_ = true;
 }
 
-PRAGMA_WARNING_PUSH
-PRAGMA_WARNING_DISABLE_MSVC(4702)
 void FwClient::UpdateAssets()
 {
-#if !defined(AUTOUPDATE_ENABLED)
-    return;
-#endif
     if (assetsUpdated_)
         return;
+#if defined(AUTOUPDATE_ENABLED)
+    cancelUpdate_ = false;
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
 
     Sync::Updater updater(client_.fileHost_, client_.filePort_, client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {
         httpError_ = true;
-        auto* lm = GetSubsystem<LevelManager>();
-        lm->ShowError(message, (type == Sync::Updater::ErrorType::Remote) ?
-            "HTTP Error" : "File Error");
+        if (!cancelUpdate_)
+        {
+            // No need to show the HTTP cancel error
+            auto* lm = GetSubsystem<LevelManager>();
+            lm->ShowError(message, (type == Sync::Updater::ErrorType::Remote) ?
+                "HTTP Error" : "File Error");
+        }
     };
     updater.onUpdateStart_ = [this]()
     {
@@ -480,46 +481,70 @@ void FwClient::UpdateAssets()
         eData[P_SUCCESS] = success;
         SendEvent(Events::E_UPDATEDONE, eData);
     };
-    updater.onFailure_ = [this](const std::string& filename)
+    std::vector<std::string> failedFiles;
+    updater.onFailure_ = [this, &failedFiles](const std::string& filename)
     {
         httpError_ = true;
+        failedFiles.push_back(filename);
         auto* lm = GetSubsystem<LevelManager>();
         String message = "Error updating file " + String(filename.c_str());
         lm->ShowError(message, "Update Error");
     };
-
-    size_t estimatedMax = 0;
-    size_t overallValue = 0;
-    size_t oldFileIndex = 0;
-    updater.onProgress_ = [&](size_t fileIndex, size_t maxFiles, size_t value, size_t max)
+    updater.onProcessFile_ = [this](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
     {
-        if (estimatedMax == 0)
-        {
-            estimatedMax = maxFiles * max;
-        }
-        if (fileIndex != oldFileIndex)
-        {
-            overallValue += value;
-            oldFileIndex = fileIndex;
-        }
-        if (estimatedMax < overallValue)
-            estimatedMax += max;
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::UpdateFile;
+        eData[P_FILENAME] = ToUrhoString(filename);
+        eData[P_INDEX] = (unsigned)fileIndex;
+        eData[P_COUNT] = (unsigned)maxFiles;
+        SendEvent(Events::E_UPDATEFILE, eData);
+        return true;
+    };
 
+    updater.onProgress_ = [&](size_t, size_t, size_t value, size_t max)
+    {
         VariantMap& eData = GetEventDataMap();
         using namespace Events::UpdateProgress;
-        eData[P_VALUE] = (unsigned)(overallValue + value);
-        eData[P_MAX] = (unsigned)estimatedMax;
-        eData[P_PERCENT] = static_cast<int>(((float)(overallValue + value) / (float)estimatedMax) * 100.0f);
+        eData[P_VALUE] = (unsigned)(value);
+        eData[P_MAX] = (unsigned)max;
+        eData[P_PERCENT] = ((float)(value) / (float)max);
         SendEvent(Events::E_UPDATEPROGRESS, eData);
-        if (cancelUpdate_)
+        if (GetSubsystem<Engine>()->IsExiting() || cancelUpdate_)
             updater.Cancel();
     };
-    if (!updater.Execute())
-        ErrorExit("Update process failed");
+    updater.onDownloadProgress_ = [&](size_t bps)
+    {
+        VariantMap& eData = GetEventDataMap();
+        using namespace Events::UpdateDownloadProgress;
+        eData[P_BYTEPERSEC] = (unsigned)(bps);
+        SendEvent(Events::E_UPDATEDOWNLOADPROGRESS, eData);
+        if (GetSubsystem<Engine>()->IsExiting() || cancelUpdate_)
+            updater.Cancel();
+    };
+    bool res = updater.Execute();
+    if (res)
+        GetSubsystem<ResourceCache>()->ReleaseAllResources(true);
+    else
+    {
+        // Failed files are currupted, we can't leave it there
+        for (const auto& failedFile : failedFiles)
+        {
+            const std::string path = sa::Process::GetSelfPath();
+            const std::string file = path + "/" + failedFile;
+            std::remove(file.c_str());
+        }
+        VariantMap& e = GetEventDataMap();
+        using namespace Events::SetLevel;
+        e[P_NAME] = "LoginLevel";
+        SendEvent(Events::E_SETLEVEL, e);
+    }
     UnsubscribeFromEvent(Events::E_CANCELUPDATE);
+    assetsUpdated_ = res;
+#else
     assetsUpdated_ = true;
+#endif
+
 }
-PRAGMA_WARNING_POP
 
 void FwClient::LoadData()
 {

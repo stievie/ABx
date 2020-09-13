@@ -58,9 +58,6 @@ inline constexpr auto RESTRICTED_NAME_CHARS = R"(1234567890<>^!"$%&/()[]{}=?\`´
 
 // As long as we dont have a trusted cert for the server, do not verify SSL
 #define HTTP_CLIENT_VERIFY_SSL false
-// If defined the client will autoupdate asset files.
-// May turn it off for develpment, because it takes some seconds until it starts.
-#define AUTOUPDATE_ENABLED
 
 namespace Auth {
 // Auth token expires in 1 hr of inactivity

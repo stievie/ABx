@@ -67,4 +67,10 @@ void FileLocalBackend::Truncate(const std::string& filename, size_t size)
     std::filesystem::resize_file(filename, size);
 }
 
+void FileLocalBackend::Close()
+{
+    if (stream_.is_open())
+        stream_.close();
+}
+
 }

@@ -153,7 +153,7 @@ int main(int argc, char** argv)
             std::cerr << "File Error ";
         std::cerr << message << std::endl;
     };
-    updater.onProcessFile_ = [](const std::string filename) -> bool
+    updater.onProcessFile_ = [](size_t, size_t, const std::string filename) -> bool
     {
         bool match = false;
         for (const auto& pattern : patterns)

@@ -134,7 +134,7 @@ public:
             index_(index)
         { }
     public:
-        bool operator != (const ConstIterator& other) { return index_ != other.index_; }
+        bool operator != (const ConstIterator& other) noexcept { return index_ != other.index_; }
         ConstIterator& operator++()
         {
             index_ = (index_ + 1) % Capacity;
@@ -158,7 +158,7 @@ public:
             index_(index)
         { }
     public:
-        bool operator != (Iterator& other) { return index_ != other.index_; }
+        bool operator != (Iterator& other) noexcept { return index_ != other.index_; }
         Iterator& operator++()
         {
             index_ = (index_ + 1) % Capacity;

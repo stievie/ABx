@@ -54,6 +54,7 @@ public:
     std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) override;
     bool WriteChunk(const std::string& filename, const std::vector<char>& data, size_t start, size_t length) override;
     void Truncate(const std::string& filename, size_t size) override;
+    void Close();
 };
 
 }

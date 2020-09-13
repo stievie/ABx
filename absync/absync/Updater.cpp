@@ -26,6 +26,7 @@
 #include "Synchronizer.h"
 #include <filesystem>
 #include "Hash.h"
+#include <sa/ScopeGuard.h>
 
 namespace fs = std::filesystem;
 
@@ -44,6 +45,12 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
         if (onError)
             onError(ErrorType::Remote, message);
     };
+    remoteBackend_->onDownloadProgress_ = [this](size_t bps)
+    {
+        if (onDownloadProgress_)
+            onDownloadProgress_(bps);
+        return !cancelled_;
+    };
     localBackend_ = std::make_unique<Sync::FileLocalBackend>();
     localBackend_->onError_ = [this](const char* message)
     {
@@ -54,6 +61,11 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
 
 bool Updater::Execute()
 {
+    sa::ScopeGuard closeFile([this]()
+    {
+        // Make sure to close the current file, otherwise it coulnd't be deleted in case of failure.
+        localBackend_->Close();
+    });
     if (remoteFiles_.size() == 0)
     {
         if (onUpdateStart_)
@@ -76,12 +88,14 @@ bool Updater::Execute()
         ++currentFile_;
         if (onProcessFile_)
         {
-            if (!onProcessFile_(file.name))
+            if (!onProcessFile_(currentFile_, remoteFiles_.size(), file.name))
                 continue;
         }
         if (!ProcessFile(file))
             result = false;
     }
+    if (cancelled_)
+        return false;
     if (onUpdateDone_)
         onUpdateDone_(result);
     return result;
