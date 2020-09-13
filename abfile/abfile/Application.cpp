@@ -556,41 +556,50 @@ void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
 
     struct FileServer
     {
-        static void ReadAndSend(uint64_t maxBitsPerSec, const std::shared_ptr<HttpsServer::Response>& response,
+        static void ReadAndSend(uint64_t maxBytePerMSec, const std::shared_ptr<HttpsServer::Response>& response,
             const std::shared_ptr<std::ifstream>& ifs, size_t remaining)
         {
             size_t chunkSize = std::min<size_t>(131072u, remaining);
             std::vector<char> buffer;
             buffer.resize(chunkSize);
             std::streamsize read_length;
+            sa::time::timer timer;
             if ((read_length = ifs->read(&buffer[0], static_cast<std::streamsize>(buffer.size())).gcount()) > 0)
             {
                 response->write(&buffer[0], read_length);
                 if (read_length == static_cast<std::streamsize>(buffer.size()))
                 {
-                    if (maxBitsPerSec > 0)
-                    {
-                        auto sleepMs = static_cast<unsigned long>(((float)(read_length * 8) / (float)maxBitsPerSec) * 1000.0f);
-                        // Throttle to meet max throughput
-                        std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
-                    }
-                    response->send([maxBitsPerSec, response, ifs, remaining, read_length](const SimpleWeb::error_code& ec)
+                    response->send([maxBytePerMSec, response, ifs, remaining, read_length](const SimpleWeb::error_code& ec)
                     {
                         if (!ec)
                         {
                             size_t newRemaining = remaining - read_length;
                             if (newRemaining > 0)
-                                ReadAndSend(maxBitsPerSec, response, ifs, newRemaining);
+                                ReadAndSend(maxBytePerMSec, response, ifs, newRemaining);
                         }
                         else
                             LOG_ERROR << "Connection interrupted " << ec.default_error_condition().value() << " " <<
                             ec.default_error_condition().message() << std::endl;
                     });
                 }
+                if (maxBytePerMSec > 0)
+                {
+                    int64_t time = timer.elapsed_millis();
+                    if (time == 0)
+                        time = 1;
+                    uint64_t bytePerMs = (uint64_t)read_length / (uint64_t)time;
+                    if (maxBytePerMSec < bytePerMs)
+                    {
+                        uint64_t diff = bytePerMs - maxBytePerMSec;
+                        auto sleepMs = static_cast<unsigned long>(((float)diff / (float)(1000 - time))) / 12;
+                        // Throttle to meet max throughput
+                        std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
+                    }
+                }
             }
         }
     };
-    FileServer::ReadAndSend(maxThroughput_, response, ifs, length);
+    FileServer::ReadAndSend(maxThroughput_ / 1000, response, ifs, length);
 }
 
 void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
