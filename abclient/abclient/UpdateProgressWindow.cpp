@@ -121,7 +121,7 @@ void UpdateProgressWindow::HandleCancelClicked(StringHash, VariantMap&)
 
 void UpdateProgressWindow::UpdateFileText()
 {
-    if (sa::time::time_elapsed(lastUpdate_) < 250)
+    if (sa::time::time_elapsed(lastUpdate_) < 1000)
         return;
     lastUpdate_ = sa::time::tick();
     auto* cf = GetChildStaticCast<Text>("CurrentFile", true);

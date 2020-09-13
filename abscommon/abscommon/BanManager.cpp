@@ -85,7 +85,6 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
     if (clientIP == 0)
         return false;
 
-    AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client)
         return false;
@@ -106,7 +105,6 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
 
 bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
 {
-    AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client)
         return false;
@@ -174,7 +172,6 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int64_t expires, const std
     if (ip == 0 || mask == 0)
         return false;
 
-    AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client)
         return false;
@@ -202,7 +199,6 @@ bool BanManager::AddAccountBan(const std::string& accountUuid, int64_t expires, 
     if (Utils::Uuid::IsEmpty(accountUuid))
         return false;
 
-    AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Ban ban;
     ban.uuid = Utils::Uuid::New();

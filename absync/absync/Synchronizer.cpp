@@ -57,13 +57,14 @@ bool Synchronizer::Synchronize(const std::string& localFile, const std::string& 
             remote_.GetChunk(remoteFile, op.remote->start, op.remote->length) :
             // Copy
             local_.GetChunk(localFile, op.local->start, op.local->length);
-        if (buffer.size() == 0)
+        if (buffer.size() != op.remote->length)
             return false;
         if (op.local == nullptr)
             downloaded_ += op.remote->length;
         else
             copied_ += op.remote->length;
-        local_.WriteChunk(localFile, buffer, op.remote->start, op.remote->length);
+        if (!local_.WriteChunk(localFile, buffer, op.remote->start, op.remote->length))
+            return false;
         ++i;
         if (!CallProgress(i, delta.size()))
             return false;

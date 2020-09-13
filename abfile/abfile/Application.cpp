@@ -453,7 +453,6 @@ void Application::Stop()
 
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
 {
-    AB_PROFILE;
     uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(ip))
@@ -533,9 +532,10 @@ void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
     bool multipart, const std::string& boundary)
 {
     auto ifs = std::make_shared<std::ifstream>();
-    ifs->open(path, std::ifstream::in | std::ios::binary | std::ios::ate);
+    ifs->open(path, std::ifstream::in | std::ios::binary);
     ASSERT(ifs);
 
+    ifs->seekg(0, std::ios::end);
     auto fileSize = (long)ifs->tellg();
     size_t start = range.start;
     size_t end = (range.end != 0) ? range.end : (size_t)fileSize;
@@ -582,6 +582,7 @@ void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
                             ec.default_error_condition().message() << std::endl;
                     });
                 }
+
                 if (maxBytePerMSec > 0)
                 {
                     int64_t time = timer.elapsed_millis();
@@ -591,7 +592,8 @@ void Application::SendFileRange(std::shared_ptr<HttpsServer::Response> response,
                     if (maxBytePerMSec < bytePerMs)
                     {
                         uint64_t diff = bytePerMs - maxBytePerMSec;
-                        auto sleepMs = static_cast<unsigned long>(((float)diff / (float)(1000 - time))) / 12;
+                        auto sleepMs = std::clamp<unsigned>(static_cast<unsigned>(((float)diff / (float)(1000 - time))) / 12,
+                            1u, 100u);
                         // Throttle to meet max throughput
                         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
                     }

@@ -40,6 +40,7 @@ private:
     std::unique_ptr<httplib::SSLClient> client_;
     httplib::Headers headers_;
     httplib::SSLClient* GetHttpClient();
+    std::mutex lock_;
 public:
     HttpRemoteBackend(const std::string& host, uint16_t port, httplib::Headers headers);
     std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) override;

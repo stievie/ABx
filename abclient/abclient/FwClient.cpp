@@ -454,6 +454,7 @@ void FwClient::UpdateAssets()
         return;
 #if defined(AUTOUPDATE_ENABLED)
     cancelUpdate_ = false;
+    auto* cache = GetSubsystem<ResourceCache>();
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
 
     Sync::Updater updater(client_.fileHost_, client_.filePort_, client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
@@ -523,7 +524,9 @@ void FwClient::UpdateAssets()
     };
     bool res = updater.Execute();
     if (res)
-        GetSubsystem<ResourceCache>()->ReleaseAllResources(true);
+    {
+        cache->ReleaseAllResources(true);
+    }
     else
     {
         // Failed files are currupted, we can't leave it there

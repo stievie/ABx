@@ -59,7 +59,7 @@ bool FileLocalBackend::WriteChunk(const std::string& filename, const std::vector
         return false;
     stream_.seekg(start, std::ios::beg);
     stream_.write(&data[0], length);
-    return true;
+    return stream_.good();
 }
 
 void FileLocalBackend::Truncate(const std::string& filename, size_t size)
