@@ -78,6 +78,10 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     table << "    genacckey" << sa::tab::endc << "Generate a new account key" << sa::tab::endr;
     table << "    updateskills" << sa::tab::endc << "Update skills stats in DB" << sa::tab::endr;
     std::cout << table;
+    std::cout << std::endl;
+    std::cout << "EXAMPLES" << std::endl;
+    std::cout << "    dbtool update" << std::endl;
+    std::cout << "    dbtool update -d \"dir/with/sql/files\"" << std::endl;
 }
 
 static void InitCli(sa::arg_parser::cli& cli)
@@ -96,8 +100,8 @@ static void InitCli(sa::arg_parser::cli& cli)
     dbDrivers << " odbc";
 #endif
 
-    cli.push_back({ "action", { "-a", "--action" }, "What to do, possible value(s) see bellow",
-        true, true, sa::arg_parser::option_type::string });
+    cli.push_back({ "action", { }, "What to do, possible value(s) see bellow",
+        false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "readonly", { "-r", "--read-only" }, "Do not write to Database",
         false, false, sa::arg_parser::option_type::none });
     cli.push_back({ "verbose", { "-v", "--verbose" }, "Write out stuff",
@@ -427,7 +431,8 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    auto actval = sa::arg_parser::get_value<std::string>(parsedArgs, "action");
+    // Action is first unnamed argument
+    auto actval = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
     if (!actval.has_value())
     {
         std::cerr << "No action provided" << std::endl;

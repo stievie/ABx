@@ -27,6 +27,7 @@
 #include <sa/StringHash.h>
 #include <AB/ProtocolCodes.h>
 #include <eastl.hpp>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 
@@ -110,7 +111,7 @@ public:
 class TradeChatChannel : public ChatChannel
 {
 public:
-    explicit TradeChatChannel() :
+    TradeChatChannel() :
         ChatChannel(0)
     { }
     bool Talk(Player& player, const std::string& text) override;
@@ -132,6 +133,7 @@ public:
 
 class Chat
 {
+    NON_COPYABLE(Chat)
 private:
     // Type | ID
     ea::map<ea::pair<ChatType, uint64_t>, ea::shared_ptr<ChatChannel>> channels_;
@@ -139,9 +141,6 @@ private:
 public:
     Chat();
     ~Chat() = default;
-    // non-copyable
-    Chat(const Chat&) = delete;
-    Chat& operator=(const Chat&) = delete;
 
     ea::shared_ptr<ChatChannel> Get(ChatType type, uint64_t id);
     ea::shared_ptr<ChatChannel> Get(ChatType type, const std::string& uuid);

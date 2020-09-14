@@ -1,18 +1,18 @@
 # dbtool
 
-Tool to update the Database.
+Database administration tool
 
 ## Usage
 
 ~~~plain
 SYNOPSIS
-    dbtool [-h] -a <action> [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>]
+    dbtool [-h] [<action>] [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>] 
 
 OPTIONS
-    [-h, -help, -?]
+    [-h, --help, -?]
         Show help
-    -a, --action <string>
-        What to do, possible value(s): update, versions
+    [action <string>]
+        What to do, possible value(s) see bellow
     [-r, --read-only]
         Do not write to Database
     [-v, --verbose]
@@ -30,9 +30,16 @@ OPTIONS
     [-dbpass, --database-password <string>]
         Password for database
     [-d, --schema-dir <string>]
-        Directory with .sql files to import
+        Directory with .sql files to import for updating
 
 ACTIONS
-    update: Update the database
-    versions: Show database and table versions
+    update       Update the database             
+    versions     Show database and table versions
+    acckeys      Show account keys               
+    genacckey    Generate a new account key      
+    updateskills Update skills stats in DB       
+
+EXAMPLES
+    dbtool update
+    dbtool update -d "dir/with/sql/files"
 ~~~

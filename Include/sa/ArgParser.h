@@ -376,12 +376,18 @@ inline help get_help(const std::string& prog, const cli& arg,
             std::stringstream sw;
             if (!o.mandatory)
                 sw << "[";
-            sw << o.switches.front();
+            if (o.switches.size() != 0)
+            {
+                sw << o.switches.front();
+                if (o.has_argument)
+                    sw << " ";
+            }
             if (o.has_argument)
-                sw << " <" << o.name << ">";
+                sw << "<" << o.name << ">";
             if (!o.mandatory)
                 sw << "]";
-            synopsis << sw.str() << " ";
+            sw << " ";
+            synopsis << sw.str();
         }
 
         switch (format)
@@ -426,11 +432,18 @@ inline help get_help(const std::string& prog, const cli& arg,
         std::string switches;
         if (!o.mandatory)
             switches += "[";
-        for (const auto& a : o.switches)
+        if (o.switches.size() != 0)
         {
-            if (switches.size() > 1)
-                switches += ", ";
-            switches += get_code(a);
+            for (const auto& a : o.switches)
+            {
+                if (switches.size() > 1)
+                    switches += ", ";
+                switches += get_code(a);
+            }
+        }
+        else
+        {
+            switches += o.name;
         }
         if (o.has_argument)
             switches += " <" + get_type_string(o) + ">";

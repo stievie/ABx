@@ -29,14 +29,14 @@ db_pass = "password"
 ~~~sh
 $ createdb forgottenwars
 ~~~
-6. Run `./bin/dbtool -a update` to create the database structure. Then run `./bin/dbtool -a updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
+6. Run `./bin/dbtool update` to create the database structure. Then run `./bin/dbtool updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run the `./bin/keygen` tool to create the DH server keys.
 9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `bin` directory to create self-signed keys and certificate for the HTTPS file server.
 10. Run `run.bat` or `./run` in the root directory, which runs all required services in the correct order.
 11. You may want to create an account key to be able to create an account. To do so, run the `dbtool`:
 ~~~sh
-$ ./bin/dbtool -a genacckey
+$ ./bin/dbtool genacckey
 ~~~
 
 To stop the servers in the correct order, you can use `./stop` in the root directory.
@@ -98,7 +98,7 @@ bin
 5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && ./fw`.
 6. Create an account using the UUID of your previously created account key. To find out what GUID was created, run the `dbtool`:
 ~~~sh
-$ ./Bin/dbtool -a acckeys
+$ ./Bin/dbtool acckeys
 ~~~
 This lists all account keys, pick one.
 

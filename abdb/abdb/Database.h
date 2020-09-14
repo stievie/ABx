@@ -24,6 +24,7 @@
 #include <mutex>
 #include <sstream>
 #include <memory>
+#include <sa/Compiler.h>
 
 namespace DB {
 
@@ -36,7 +37,7 @@ enum DBParam
     DBPARAM_MULTIINSERT = 1
 };
 
-class Database
+class SA_NOVTABLE Database
 {
 protected:
     Database() :
