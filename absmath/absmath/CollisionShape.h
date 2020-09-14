@@ -32,6 +32,7 @@
 #include <eastl.hpp>
 #include <limits>
 #include <sa/Assert.h>
+#include <sa/Compiler.h>
 
 namespace Math {
 
@@ -61,7 +62,7 @@ struct CollisionManifold
     bool stuck{ false };
 };
 
-class AbstractCollisionShape
+class SA_NOVTABLE AbstractCollisionShape
 {
 public:
     explicit AbstractCollisionShape(ShapeType type) :

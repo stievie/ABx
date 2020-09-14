@@ -25,10 +25,11 @@
 #include <string>
 #include <fstream>
 #include <functional>
+#include <sa/Compiler.h>
 
 namespace Sync {
 
-class LocalBackend
+class SA_NOVTABLE LocalBackend
 {
 protected:
     virtual void Error(const char* message)

@@ -94,6 +94,13 @@
 #   define SA_ALWAYS_INLINE __forceinline
 #endif
 
+// Don't generate vtable for classes that are never directly instantiated such as pure virtual classes.
+#if defined(SA_MSVC)
+#   define SA_NOVTABLE __declspec(novtable)
+#else
+#   define SA_NOVTABLE
+#endif
+
 #if defined(SA_GCC) || defined(SA_CLANG)
 // GCC's __FUNCTION__ does not resolve namespace
 #   define SA_FUNCTION __PRETTY_FUNCTION__

@@ -22,12 +22,13 @@
 #pragma once
 
 #include "Node.h"
+#include <sa/Compiler.h>
 
 namespace AI {
 
 // Do something useful, e.g. attacking mean foes. AKA Leaf.
 // There is no factory for this because it's meant to be subclassed.
-class Action : public Node, public std::enable_shared_from_this<Action>
+class SA_NOVTABLE Action : public Node, public std::enable_shared_from_this<Action>
 {
 protected:
     // If true, this Action is executed until it returns not running without

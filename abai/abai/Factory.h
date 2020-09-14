@@ -25,11 +25,12 @@
 #include <map>
 #include "AiDefines.h"
 #include <sa/Noncopyable.h>
+#include <sa/Compiler.h>
 
 namespace AI {
 
 template <typename T>
-class AbstractFactory
+class SA_NOVTABLE AbstractFactory
 {
 public:
     virtual ~AbstractFactory() = default;

@@ -24,10 +24,11 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <sa/Compiler.h>
 
 namespace Sync {
 
-class RemoteBackend
+class SA_NOVTABLE RemoteBackend
 {
 protected:
     virtual void Error(const char* message)

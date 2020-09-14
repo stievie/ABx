@@ -28,6 +28,7 @@
 #include <sa/Iteration.h>
 #include "Factory.h"
 #include <CleanupNs.h>
+#include <sa/Compiler.h>
 
 namespace AI {
 
@@ -61,7 +62,7 @@ private:                                                                        
     ConditionName& operator=(ConditionName&&) = delete;                                  \
     const char* GetClassName() const override { return ABAI_STRINGIFY(ConditionName); }
 
-class Condition
+class SA_NOVTABLE Condition
 {
 protected:
     std::string name_;

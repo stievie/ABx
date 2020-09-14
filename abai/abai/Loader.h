@@ -25,6 +25,7 @@
 #include <string>
 #include <CleanupNs.h>
 #include <sa/Noncopyable.h>
+#include <sa/Compiler.h>
 
 namespace AI {
 
@@ -32,7 +33,7 @@ class Root;
 class BevaviorCache;
 class Registry;
 
-class Loader
+class SA_NOVTABLE Loader
 {
     NON_COPYABLE(Loader)
 protected:

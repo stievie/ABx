@@ -24,6 +24,7 @@
 #include "Agent.h"
 #include "Factory.h"
 #include <CleanupNs.h>
+#include <sa/Compiler.h>
 
 namespace AI {
 
@@ -54,7 +55,7 @@ private:                                                                        
     FilterName& operator=(FilterName&&) = delete;                                     \
     const char* GetClassName() const override { return ABAI_STRINGIFY(FilterName); }
 
-class Filter
+class SA_NOVTABLE Filter
 {
 protected:
     std::string name_;

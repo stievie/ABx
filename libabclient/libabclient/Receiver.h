@@ -40,6 +40,7 @@
 #include <AB/Packets/ServerPackets.h>
 #include "Errors.h"
 #include <set>
+#include <sa/Compiler.h>
 
 namespace Client {
 
@@ -49,7 +50,7 @@ inline bool IsOffline(AB::Packets::Server::PlayerInfo::Status status)
         (status == AB::Packets::Server::PlayerInfo::OnlineStatusInvisible);
 }
 
-class Receiver
+class SA_NOVTABLE Receiver
 {
 public:
     virtual ~Receiver() = default;
