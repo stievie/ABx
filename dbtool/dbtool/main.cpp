@@ -101,7 +101,7 @@ static void InitCli(sa::arg_parser::cli& cli)
 #endif
 
     cli.push_back({ "action", { }, "What to do, possible value(s) see bellow",
-        false, true, sa::arg_parser::option_type::string });
+        true, true, sa::arg_parser::option_type::string });
     cli.push_back({ "readonly", { "-r", "--read-only" }, "Do not write to Database",
         false, false, sa::arg_parser::option_type::none });
     cli.push_back({ "verbose", { "-v", "--verbose" }, "Write out stuff",

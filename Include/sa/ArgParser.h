@@ -286,15 +286,29 @@ inline result parse(const std::vector<std::string>& args, const cli& _cli, value
     if (res.success)
     {
         // Check if all mandatory options are given
+        int i = 0;
         for (const auto& o : _cli)
         {
             if (!o.mandatory)
                 continue;
 
-            if (vals.find(o.name) == vals.end())
+            if (o.switches.size() != 0)
             {
-                res.items.push_back("Required argument '" + o.name + "' is missing");
-                res.success = false;
+                if (vals.find(o.name) == vals.end())
+                {
+                    res.items.push_back("Required argument '" + o.name + "' is missing");
+                    res.success = false;
+                }
+            }
+            else
+            {
+                // Mandatory unnamed argument
+                if (vals.find(std::to_string(i)) == vals.end())
+                {
+                    res.items.push_back("Required positional argument '" + o.name + "' is missing");
+                    res.success = false;
+                }
+                ++i;
             }
         }
     }
