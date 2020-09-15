@@ -19,8 +19,32 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "RemoteBackend.h"
+#pragma once
+
+#include "Source.h"
+#include <memory>
+#include <sa/Compiler.h>
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_MSVC(4459 4706)
+#define CPPHTTPLIB_OPENSSL_SUPPORT
+#include <httplib.h>
+PRAGMA_WARNING_POP
 
 namespace Sync {
+
+class HttpSource final : public Source
+{
+private:
+    std::string host_;
+    uint16_t port_;
+    std::unique_ptr<httplib::SSLClient> client_;
+    httplib::Headers headers_;
+    httplib::SSLClient* GetHttpClient();
+    std::mutex lock_;
+public:
+    HttpSource(const std::string& host, uint16_t port, httplib::Headers headers);
+    std::vector<char> GetChunk(const std::string& filename, size_t start = 0, size_t length = 0) override;
+    std::function<bool(size_t)> onDownloadProgress_;
+};
 
 }

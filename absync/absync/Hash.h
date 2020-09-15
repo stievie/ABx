@@ -22,10 +22,13 @@
 #pragma once
 
 #include <string>
+#include <sa/hash.h>
 
 namespace Sync {
 
+using Sha1Hash = sa::hash<unsigned char, 20>;
+
 void HashFile(const std::string& filename, const std::string& outfile);
-std::string HashFile(const std::string& filename);
+Sha1Hash GetFileHash(const std::string& filename);
 
 }

@@ -38,7 +38,7 @@ void HashFile(const std::string& filename, const std::string& outfile)
     if (fileSize == 0)
         return;
 
-    unsigned char sha_hash[20] = {};
+    sa::hash<unsigned char, 20> sha_hash;
     sha1_ctx ctx;
     sha1_init(&ctx);
 
@@ -50,25 +50,21 @@ void HashFile(const std::string& filename, const std::string& outfile)
         auto readLength = ifs.gcount();
         sha1_update(&ctx, (const unsigned char*)&buffer[0], (long)readLength);
     }
-    sha1_final(&ctx, sha_hash);
+    sha1_final(&ctx, sha_hash.data());
 
     std::ofstream out(outfile, std::ios::out);
-    out.flags(std::ios_base::hex);
-    for (size_t i = 0; i < 20; ++i)
-    {
-        out << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)sha_hash[i]);
-    }
+    out << sha_hash;
 }
 
-std::string HashFile(const std::string& filename)
+Sha1Hash GetFileHash(const std::string& filename)
 {
     std::ifstream ifs(filename, std::ios::binary);
     ifs.seekg(0, std::ios::end);
     size_t fileSize = static_cast<size_t>((long)ifs.tellg());
     if (fileSize == 0)
-        return "";
+        return {};
 
-    unsigned char sha_hash[20] = {};
+    sa::hash<unsigned char, 20> sha_hash;
     sha1_ctx ctx;
     sha1_init(&ctx);
 
@@ -80,15 +76,8 @@ std::string HashFile(const std::string& filename)
         auto readLength = ifs.gcount();
         sha1_update(&ctx, (const unsigned char*)&buffer[0], (long)readLength);
     }
-    sha1_final(&ctx, sha_hash);
-
-    std::stringstream out;
-    out.flags(std::ios_base::hex);
-    for (size_t i = 0; i < 20; ++i)
-    {
-        out << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)sha_hash[i]);
-    }
-    return out.str();
+    sha1_final(&ctx, sha_hash.data());
+    return sha_hash;
 }
 
 }

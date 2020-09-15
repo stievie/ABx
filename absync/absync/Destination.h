@@ -29,7 +29,7 @@
 
 namespace Sync {
 
-class SA_NOVTABLE LocalBackend
+class SA_NOVTABLE Destination
 {
 protected:
     virtual void Error(const char* message)
@@ -45,7 +45,7 @@ public:
 };
 
 // Default local backend taking absolute filenames
-class FileLocalBackend : public LocalBackend
+class FileDestination : public Destination
 {
 private:
     std::string filename_;

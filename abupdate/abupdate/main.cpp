@@ -3,8 +3,6 @@
 #include <filesystem>
 #include <sa/time.h>
 #include <memory>
-#include <absync/LocalBackend.h>
-#include <absync/HttpRemoteBackend.h>
 #include <absync/Synchronizer.h>
 #include <absync/Hash.h>
 #include <sa/StringTempl.h>
@@ -16,8 +14,6 @@
 
 namespace fs = std::filesystem;
 
-static std::unique_ptr<Sync::FileLocalBackend> localBackend;
-static std::unique_ptr<Sync::HttpRemoteBackend> remoteBackend;
 static std::vector<std::string> patterns = { "*.pak" };
 
 static std::string host;
@@ -172,7 +168,7 @@ int main(int argc, char** argv)
     };
     updater.onFailure_ = [](const std::string& filename)
     {
-        std::cerr << "Error synchronizing " << filename;
+        std::cerr << "Error synchronizing " << filename << std::endl;
     };
     updater.onDoneFile_ = [](const std::string&, bool different, size_t downloaded, size_t copied, int savings)
     {

@@ -27,7 +27,7 @@
 
 namespace Sync {
 
-Synchronizer::Synchronizer(LocalBackend& local, RemoteBackend& remote) :
+Synchronizer::Synchronizer(Destination& local, Source& remote) :
     local_(local),
     remote_(remote)
 {}

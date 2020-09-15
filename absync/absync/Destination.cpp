@@ -19,13 +19,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "LocalBackend.h"
+#include "Destination.h"
 #include <sa/Assert.h>
 #include <filesystem>
 
 namespace Sync {
 
-bool FileLocalBackend::OpenFile(const std::string& filename)
+bool FileDestination::OpenFile(const std::string& filename)
 {
     if (filename == filename_ && stream_.is_open())
         return true;
@@ -40,7 +40,7 @@ bool FileLocalBackend::OpenFile(const std::string& filename)
     return result;
 }
 
-std::vector<char> FileLocalBackend::GetChunk(const std::string& filename, size_t start, size_t length)
+std::vector<char> FileDestination::GetChunk(const std::string& filename, size_t start, size_t length)
 {
     if (!OpenFile(filename))
         return {};
@@ -53,7 +53,7 @@ std::vector<char> FileLocalBackend::GetChunk(const std::string& filename, size_t
     return result;
 }
 
-bool FileLocalBackend::WriteChunk(const std::string& filename, const std::vector<char>& data, size_t start, size_t length)
+bool FileDestination::WriteChunk(const std::string& filename, const std::vector<char>& data, size_t start, size_t length)
 {
     if (!OpenFile(filename))
         return false;
@@ -62,12 +62,12 @@ bool FileLocalBackend::WriteChunk(const std::string& filename, const std::vector
     return stream_.good();
 }
 
-void FileLocalBackend::Truncate(const std::string& filename, size_t size)
+void FileDestination::Truncate(const std::string& filename, size_t size)
 {
     std::filesystem::resize_file(filename, size);
 }
 
-void FileLocalBackend::Close()
+void FileDestination::Close()
 {
     if (stream_.is_open())
         stream_.close();

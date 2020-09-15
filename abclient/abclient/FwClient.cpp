@@ -19,27 +19,23 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "FwClient.h"
-#include "LevelManager.h"
-#include "BaseLevel.h"
-#include <AB/ProtocolCodes.h>
-#include "Options.h"
-#include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
-#include <Urho3D/Network/Network.h>
-#include <Urho3D/Network/HttpRequest.h>
-#include <iostream>
-#include <fstream>
-#include "ItemsCache.h"
 #include "AudioManager.h"
-#include "SkillManager.h"
-#include "Shortcuts.h"
+#include "BaseLevel.h"
 #include "Conversions.h"
-#include <sa/http_status.h>
+#include "ItemsCache.h"
+#include "LevelManager.h"
+#include "Options.h"
+#include "Shortcuts.h"
+#include "SkillManager.h"
+#include <AB/ProtocolCodes.h>
+#include <absync/Destination.h>
 #include <absync/Updater.h>
-#include <absync/LocalBackend.h>
-#include <absync/HttpRemoteBackend.h>
+#include <fstream>
+#include <iostream>
+#include <sa/http_status.h>
 #include <sa/Process.h>
+#include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -457,7 +453,8 @@ void FwClient::UpdateAssets()
     auto* cache = GetSubsystem<ResourceCache>();
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
 
-    Sync::Updater updater(client_.fileHost_, client_.filePort_, client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
+    Sync::Updater updater(client_.fileHost_, client_.filePort_,
+        client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {
         httpError_ = true;

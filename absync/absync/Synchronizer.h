@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "LocalBackend.h"
-#include "RemoteBackend.h"
+#include "Destination.h"
+#include "Source.h"
 #include <string>
 #include <functional>
 
@@ -31,15 +31,15 @@ namespace Sync {
 class Synchronizer
 {
 private:
-    LocalBackend& local_;
-    RemoteBackend& remote_;
+    Destination& local_;
+    Source& remote_;
     size_t downloaded_{ 0 };
     size_t copied_{ 0 };
     size_t filesize_{ 0 };
     bool different_{ false };
     bool CallProgress(size_t value, size_t max);
 public:
-    Synchronizer(LocalBackend& local, RemoteBackend& remote);
+    Synchronizer(Destination& local, Source& remote);
     bool Synchronize(const std::string& localFile, const std::string& remoteFile);
 
     size_t GetDownloaded() const { return downloaded_; }

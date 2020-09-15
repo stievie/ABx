@@ -19,7 +19,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "HttpRemoteBackend.h"
+#include "HttpSource.h"
 #include <sa/http_range.h>
 #include <AB/CommonConfig.h>
 #include <sa/http_status.h>
@@ -28,14 +28,14 @@
 
 namespace Sync {
 
-HttpRemoteBackend::HttpRemoteBackend(const std::string& host, uint16_t port, httplib::Headers headers) :
+HttpSource::HttpSource(const std::string& host, uint16_t port, httplib::Headers headers) :
     host_(host),
     port_(port),
     headers_(headers)
 {
 }
 
-httplib::SSLClient* HttpRemoteBackend::GetHttpClient()
+httplib::SSLClient* HttpSource::GetHttpClient()
 {
     if (!client_)
     {
@@ -49,7 +49,7 @@ httplib::SSLClient* HttpRemoteBackend::GetHttpClient()
     return nullptr;
 }
 
-std::vector<char> HttpRemoteBackend::GetChunk(const std::string& filename, size_t start, size_t length)
+std::vector<char> HttpSource::GetChunk(const std::string& filename, size_t start, size_t length)
 {
     auto* client = GetHttpClient();
     if (client == nullptr)

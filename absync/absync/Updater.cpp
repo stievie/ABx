@@ -20,13 +20,14 @@
  */
 
 #include "Updater.h"
-#include "LocalBackend.h"
+#include "Destination.h"
 #include <map>
 #include <pugixml.hpp>
 #include "Synchronizer.h"
 #include <filesystem>
 #include "Hash.h"
 #include <sa/ScopeGuard.h>
+#include "Destination.h"
 
 namespace fs = std::filesystem;
 
@@ -39,7 +40,7 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
     remoteHeaders_ = std::make_unique<httplib::Headers>();
     if (!remoteAuth.empty())
         remoteHeaders_->emplace("Auth", remoteAuth);
-    remoteBackend_ = std::make_unique<Sync::HttpRemoteBackend>(remoteHost, remotePort, *remoteHeaders_);
+    remoteBackend_ = std::make_unique<Sync::HttpSource>(remoteHost, remotePort, *remoteHeaders_);
     remoteBackend_->onError_ = [this](const char* message)
     {
         if (onError)
@@ -51,7 +52,7 @@ Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::
             onDownloadProgress_(bps);
         return !cancelled_;
     };
-    localBackend_ = std::make_unique<Sync::FileLocalBackend>();
+    localBackend_ = std::make_unique<Sync::FileDestination>();
     localBackend_->onError_ = [this](const char* message)
     {
         if (onError)
@@ -105,8 +106,8 @@ bool Updater::ProcessFile(const RemoteFile& file)
 {
     const auto rootPath = fs::canonical(localDir_);
     const auto localFile = rootPath / fs::path(file.name);
-    const std::string localHash = HashFile(localFile.string());
-    if (strcasecmp(localHash.c_str(), file.hash.c_str()) == 0)
+    const Sha1Hash localHash = GetFileHash(localFile.string());
+    if (localHash == file.hash)
     {
         if (onDoneFile_)
             onDoneFile_(file.name, false, 0, 0, 0);
@@ -148,7 +149,7 @@ bool Updater::DownloadRemoteFiles()
         {
             const pugi::xml_attribute& pathAttr = it->attribute("path");
             const pugi::xml_attribute& sha1Attr = it->attribute("sha1");
-            remoteFiles_.push_back({ pathAttr.as_string(), sha1Attr.as_string() });
+            remoteFiles_.push_back({ pathAttr.as_string(), Sha1Hash(sha1Attr.as_string()) });
         }
     }
     return true;

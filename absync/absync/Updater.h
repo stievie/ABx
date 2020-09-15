@@ -24,11 +24,12 @@
 #include <string>
 #include <stdint.h>
 #include <memory>
-#include "HttpRemoteBackend.h"
+#include "HttpSource.h"
+#include "Hash.h"
 
 namespace Sync {
 
-class FileLocalBackend;
+class FileDestination;
 
 class Updater
 {
@@ -36,12 +37,12 @@ public:
     struct RemoteFile
     {
         std::string name;
-        std::string hash;
+        Sha1Hash hash;
     };
 private:
     std::string localDir_;
-    std::unique_ptr<FileLocalBackend> localBackend_;
-    std::unique_ptr<HttpRemoteBackend> remoteBackend_;
+    std::unique_ptr<FileDestination> localBackend_;
+    std::unique_ptr<HttpSource> remoteBackend_;
     std::unique_ptr<httplib::Headers> remoteHeaders_;
     std::vector<RemoteFile> remoteFiles_;
     size_t currentFile_{ 0 };

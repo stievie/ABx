@@ -21,19 +21,10 @@
     <ClInclude Include="Parameters.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="RemoteBackend.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="LocalBackend.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Operation.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Synchronizer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpRemoteBackend.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Hash.h">
@@ -45,15 +36,18 @@
     <ClInclude Include="Updater.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="HttpSource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Destination.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Partition.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="RemoteBackend.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="LocalBackend.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Operation.cpp">
@@ -62,13 +56,19 @@
     <ClCompile Include="Synchronizer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="HttpRemoteBackend.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Hash.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Updater.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Destination.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

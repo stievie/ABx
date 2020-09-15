@@ -28,7 +28,7 @@
 
 namespace Sync {
 
-class SA_NOVTABLE RemoteBackend
+class SA_NOVTABLE Source
 {
 protected:
     virtual void Error(const char* message)
