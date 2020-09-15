@@ -36,7 +36,6 @@ class hash
 private:
     T data_[Count]{};
 public:
-    using Type = typename T;
     hash() {}
     // Construct from Hex string
     explicit hash(const std::string_view value)
