@@ -25,6 +25,7 @@
 #include <charconv>
 #include <iomanip>
 #include <stdint.h>
+#include <cstring>
 #include <sa/Assert.h>
 
 namespace sa {
@@ -65,10 +66,7 @@ public:
     }
     bool operator ==(const hash& rhs) const
     {
-        for (size_t i = 0; i < Count; ++i)
-            if (data_[i] != rhs.data_[i])
-                return false;
-        return true;
+        return memcmp(&data_[0], &rhs.data_[0], Count * sizeof(T)) == 0;
     }
     bool operator !=(const hash& rhs) const
     {
