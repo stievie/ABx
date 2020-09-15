@@ -77,8 +77,7 @@ public:
     friend std::ostream& operator << (std::ostream& os, const hash& value)
     {
         const uint8_t* buff = reinterpret_cast<const uint8_t*>(value.data());
-        // 2 characters per byte
-        constexpr size_t c = Count * sizeof(T) * 2;
+        constexpr size_t c = sizeof(value.data_);
         for (size_t i = 0; i < c; ++i)
         {
             os << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)buff[i]);
