@@ -134,7 +134,7 @@ inline std::string format_tick(int64_t tick)
     return put_time(&t1, "%d %b %Y %H:%M");
 }
 
-struct timer
+class timer
 {
 private:
     int64_t start_;
