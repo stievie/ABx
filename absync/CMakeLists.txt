@@ -7,8 +7,12 @@ add_library(
     ${SOURCES}
 )
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(absync PUBLIC -Wno-unused-but-set-variable)
+endif()
+
 target_compile_definitions(absync PUBLIC CPPHTTPLIB_OPENSSL_SUPPORT CPPHTTPLIB_ZLIB_SUPPORT)
-target_link_libraries(absync abcrypto PugiXml zlib)
+target_link_libraries(absync abcrypto PugiXml z)
 if (WIN32)
     target_include_directories(absync PUBLIC ${CMAKE_SOURCE_DIR}/Include/zlib)
     target_include_directories(absync PUBLIC ${CMAKE_SOURCE_DIR}/Include/openssl-1.0)
