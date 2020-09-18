@@ -37,6 +37,7 @@ if(NOT LUA_FOUND OR (NOT ${LUA_VERSION_SHORT} MATCHES "5.3"))
 endif()
 
 add_subdirectory(lz4)
+add_subdirectory(zlib)
 if (WIN32)
   add_subdirectory(PDCurses)
 endif(WIN32)

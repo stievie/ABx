@@ -9,9 +9,11 @@ add_library(
 
 target_precompile_headers(libabclient PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libabclient/stdafx.h)
 
-target_link_libraries(libabclient lz4)
+target_compile_definitions(libabclient PUBLIC CPPHTTPLIB_OPENSSL_SUPPORT CPPHTTPLIB_ZLIB_SUPPORT)
+target_link_libraries(libabclient lz4 zlib)
 if (WIN32)
-    target_include_directories(libabclient PRIVATE ../Include/openssl-1.0)
+    target_include_directories(libabclient PUBLIC ${CMAKE_SOURCE_DIR}/Include/zlib)
+    target_include_directories(libabclient PRIVATE ${CMAKE_SOURCE_DIR}/Include/openssl-1.0)
     target_link_libraries(libabclient libcrypto libssl)
 else()
     target_link_libraries(libabclient ssl crypto rt dl)

@@ -7,9 +7,11 @@ add_library(
     ${SOURCES}
 )
 
-target_link_libraries(absync abcrypto PugiXml)
+target_compile_definitions(absync PUBLIC CPPHTTPLIB_OPENSSL_SUPPORT CPPHTTPLIB_ZLIB_SUPPORT)
+target_link_libraries(absync abcrypto PugiXml zlib)
 if (WIN32)
-    target_include_directories(absync PUBLIC ../Include/openssl-1.0)
+    target_include_directories(absync PUBLIC ${CMAKE_SOURCE_DIR}/Include/zlib)
+    target_include_directories(absync PUBLIC ${CMAKE_SOURCE_DIR}/Include/openssl-1.0)
     target_link_libraries(absync libcrypto libssl)
 else()
     target_link_libraries(absync ssl crypto rt dl)

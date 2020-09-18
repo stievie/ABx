@@ -31,8 +31,7 @@
 #include <thread>
 #include <sa/Compiler.h>
 PRAGMA_WARNING_PUSH
-PRAGMA_WARNING_DISABLE_MSVC(4459 4706)
-#define CPPHTTPLIB_OPENSSL_SUPPORT
+PRAGMA_WARNING_DISABLE_MSVC(4459 4706 4267)
 #include <httplib.h>
 PRAGMA_WARNING_POP
 #include <sa/ScopeGuard.h>

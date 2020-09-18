@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PDCurses", "..\ThirdParty\P
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EASTL", "..\ThirdParty\EASTL\EASTL.vcxproj", "{AE6F6395-D14B-4441-9132-AF2B9A71B9CA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\ThirdParty\zlib\msvc\zlib.vcxproj", "{66AB7161-518D-4EDF-93CC-78DD9CC32445}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -125,6 +127,12 @@ Global
 		{AE6F6395-D14B-4441-9132-AF2B9A71B9CA}.Release|x64.ActiveCfg = Release|x64
 		{AE6F6395-D14B-4441-9132-AF2B9A71B9CA}.Release|x64.Build.0 = Release|x64
 		{AE6F6395-D14B-4441-9132-AF2B9A71B9CA}.Release|x86.ActiveCfg = Release|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Debug|x64.ActiveCfg = Debug|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Debug|x64.Build.0 = Debug|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Debug|x86.ActiveCfg = Debug|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Release|x64.ActiveCfg = Release|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Release|x64.Build.0 = Release|x64
+		{66AB7161-518D-4EDF-93CC-78DD9CC32445}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
