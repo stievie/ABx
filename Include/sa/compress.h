@@ -24,6 +24,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <sa/Noncopyable.h>
 #ifdef SA_ZLIB_SUPPORT
 #include <zlib.h>
@@ -40,8 +41,12 @@ namespace details {
 enum class zlib_op
 {
     compress,
+    compress_gzip,
     decompress
 };
+
+inline constexpr int ZLIB_WINDOW_BITS = 15;
+inline constexpr int ZLIB_GZIP_ENCODING = 16;
 
 template<zlib_op OP>
 struct zlib_opbase;
@@ -49,8 +54,10 @@ struct zlib_opbase;
 template<>
 struct zlib_opbase<zlib_op::compress>
 {
-    static bool init(z_stream* zs, int level)
+    static bool init(z_stream* zs, int level, bool gzip)
     {
+        if (gzip)
+            return deflateInit2(zs, level, Z_DEFLATED, ZLIB_WINDOW_BITS | ZLIB_GZIP_ENCODING, 8, Z_DEFAULT_STRATEGY) == Z_OK;
         return deflateInit(zs, level) == Z_OK;
     }
     static int done(z_stream* zs)
@@ -69,8 +76,10 @@ struct zlib_opbase<zlib_op::compress>
 
 template<>
 struct zlib_opbase<zlib_op::decompress> {
-    static bool init(z_stream* zs, int const)
+    static bool init(z_stream* zs, int, bool gzip)
     {
+        if (gzip)
+            return inflateInit2(zs, ZLIB_GZIP_ENCODING + MAX_WBITS) == Z_OK;
         return inflateInit(zs) == Z_OK;
     }
     static int done(z_stream* zs)
@@ -90,9 +99,9 @@ struct zlib_opbase<zlib_op::decompress> {
 template<zlib_op OP>
 struct zlib_ops
 {
-    static void init(z_stream* zs, int level)
+    static void init(z_stream* zs, int level, bool gzip)
     {
-        int result = zlib_opbase<OP>::init(zs, level);
+        int result = zlib_opbase<OP>::init(zs, level, gzip);
         if (!result)
         {
             std::bad_alloc exception;
@@ -145,9 +154,9 @@ public:
 private:
     z_stream buffer_{};
 public:
-    zlib_compress(int level = DEFAULT_COMPRESSION)
+    zlib_compress(bool gzip = true, int level = DEFAULT_COMPRESSION)
     {
-        details::zlib_ops<details::zlib_op::compress>::init(&buffer_, level);
+        details::zlib_ops<details::zlib_op::compress>::init(&buffer_, level, gzip);
     }
     ~zlib_compress()
     {
@@ -172,9 +181,9 @@ class zlib_decompress : public zlib_base
 private:
     z_stream buffer_{};
 public:
-    zlib_decompress()
+    zlib_decompress(bool gzip = true)
     {
-        details::zlib_ops<details::zlib_op::decompress>::init(&buffer_, 0);
+        details::zlib_ops<details::zlib_op::decompress>::init(&buffer_, 0, gzip);
     }
     ~zlib_decompress()
     {

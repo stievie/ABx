@@ -69,9 +69,8 @@ void FileResource::SendFileRange(std::shared_ptr<HttpsServer::Response> response
                     {
                         if (!ec)
                         {
-                            size_t newRemaining = remaining - read_length;
-                            if (newRemaining > 0)
-                                ReadAndSend(response, ifs, newRemaining);
+                            if ((long)remaining > read_length)
+                                ReadAndSend(response, ifs, remaining - read_length);
                         }
                         else
                             LOG_ERROR << "Connection interrupted " << ec.default_error_condition().value() << " " <<

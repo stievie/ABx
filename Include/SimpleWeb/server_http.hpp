@@ -68,15 +68,18 @@ namespace SimpleWeb {
       void write_header(const CaseInsensitiveMultimap &header, size_type size) {
         bool content_length_written = false;
         bool chunked_transfer_encoding = false;
+        bool transfer_encoding_compressed = false;
         for(auto &field : header) {
           if(!content_length_written && case_insensitive_equal(field.first, "content-length"))
             content_length_written = true;
           else if(!chunked_transfer_encoding && case_insensitive_equal(field.first, "transfer-encoding") && case_insensitive_equal(field.second, "chunked"))
             chunked_transfer_encoding = true;
+          if (!chunked_transfer_encoding && case_insensitive_equal(field.first, "transfer-encoding") && (case_insensitive_equal(field.second, "gzip") || case_insensitive_equal(field.second, "deflate")))
+              transfer_encoding_compressed = true;
 
           *this << field.first << ": " << field.second << "\r\n";
         }
-        if(!content_length_written && !chunked_transfer_encoding && !close_connection_after_response)
+        if(!content_length_written && !chunked_transfer_encoding && !close_connection_after_response && !transfer_encoding_compressed)
           *this << "Content-Length: " << size << "\r\n\r\n";
         else
           *this << "\r\n";

@@ -13,9 +13,9 @@ set_property(TARGET abfile PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 target_link_libraries(abfile abscommon abcrypto PugiXml)
 if (WIN32)
     include_directories(../Include/openssl-1.0)
-    target_link_libraries(abfile libcrypto libssl)
+    target_link_libraries(abfile libcrypto libssl, zlib)
 else()
-    target_link_libraries(abfile DeathHandler ssl crypto)
+    target_link_libraries(abfile DeathHandler ssl crypto z)
 endif()
 
 install(TARGETS abfile
