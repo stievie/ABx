@@ -64,7 +64,7 @@ Christmas 2117 +/- some years.
     - Players can buy items from the Merchant which the Merchant has in stock.
     - Dynamic item price taking availability and drop chance into account.
     - Players can craft new items for Materials and Money from special NPCs.
-* Autoupdate asset files.
+* Autoupdate asset files: It donwnloads only the differences and patches existing files. This greatly reduces time and bandwidth.
 
 ## Screenshot
 

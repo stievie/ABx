@@ -459,13 +459,9 @@ void FwClient::UpdateAssets()
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {
         httpError_ = true;
-        if (!cancelUpdate_)
-        {
-            // No need to show the HTTP cancel error
-            auto* lm = GetSubsystem<LevelManager>();
-            lm->ShowError(message, (type == Sync::Updater::ErrorType::Remote) ?
-                "HTTP Error" : "File Error");
-        }
+        URHO3D_LOGERRORF("%s: %s",
+            ((type == Sync::Updater::ErrorType::Remote) ? "Update remote error" : "Update local error"),
+            message);
     };
     updater.onUpdateStart_ = [this]()
     {
@@ -485,9 +481,14 @@ void FwClient::UpdateAssets()
     {
         httpError_ = true;
         failedFiles.push_back(filename);
-        auto* lm = GetSubsystem<LevelManager>();
-        String message = "Error updating file " + String(filename.c_str());
-        lm->ShowError(message, "Update Error");
+        const std::string path = sa::Process::GetSelfPath();
+        const std::string file = path + "/" + filename;
+        if (!sa::Process::IsSelf(file))
+        {
+            auto* lm = GetSubsystem<LevelManager>();
+            String message = "Error updating file " + String(filename.c_str());
+            lm->ShowError(message, "Update Error");
+        }
     };
     updater.onProcessFile_ = [this, &updatingSelf](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
     {

@@ -52,11 +52,11 @@ static bool sVerbose = false;
 
 static void ShowLogo()
 {
-    std::cout << "This is AB Database tool" << std::endl;
+    std::cout << "This is AB Database tool";
 #ifdef _DEBUG
     std::cout << " DEBUG";
 #endif
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
     std::cout << "(C) 2017-" << CURRENT_YEAR << std::endl;
 
     std::cout << std::endl;
@@ -514,7 +514,7 @@ int main(int argc, char** argv)
 
         if (schemasDir.empty())
         {
-            std::cerr << "Schema directory is empty" << std::endl;
+            std::cerr << "Invalid Schema directory" << std::endl;
             return EXIT_FAILURE;
         }
         if (!UpdateDatabase(*db, schemasDir))

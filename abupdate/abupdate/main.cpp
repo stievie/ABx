@@ -12,6 +12,7 @@
 #include <AB/DHKeys.hpp>
 #include <asio.hpp>
 #include <sa/Process.h>
+#include <AB/CommonConfig.h>
 
 namespace fs = std::filesystem;
 
@@ -77,6 +78,14 @@ static std::string GetAuthHeader()
 
 int main(int argc, char** argv)
 {
+    std::cout << "This is AB Client updater";
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl << std::endl;
+    std::cout << "(C) 2017-" << CURRENT_YEAR << std::endl;
+    std::cout << std::endl;
+
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "--help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
         { "host", { "-H", "--server-host" }, "Server host", true, true, sa::arg_parser::option_type::string },
@@ -100,7 +109,11 @@ int main(int argc, char** argv)
     }
 
     if (!cmdres)
+    {
+        std::cout << cmdres << std::endl;
+        ShowHelp(_cli);
         return EXIT_FAILURE;
+    }
 
     // File or login server
     host = sa::arg_parser::get_value<std::string>(parsedArgs, "host", "");
@@ -194,6 +207,7 @@ int main(int argc, char** argv)
             std::cout << " done" << std::endl;
     };
 
+    std::cout << "Updating " << dir.string() << "..." << std::endl;
     sa::time::timer timer;
     bool result = updater.Execute();
     std::cout << "Took " << timer.elapsed_seconds() << " seconds" << std::endl;

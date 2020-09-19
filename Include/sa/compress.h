@@ -41,7 +41,6 @@ namespace details {
 enum class zlib_op
 {
     compress,
-    compress_gzip,
     decompress
 };
 
