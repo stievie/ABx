@@ -455,6 +455,7 @@ void FwClient::UpdateAssets()
 
     Sync::Updater updater(client_.fileHost_, client_.filePort_,
         client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
+    bool updatingSelf = false;
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {
         httpError_ = true;
@@ -488,8 +489,12 @@ void FwClient::UpdateAssets()
         String message = "Error updating file " + String(filename.c_str());
         lm->ShowError(message, "Update Error");
     };
-    updater.onProcessFile_ = [this](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
+    updater.onProcessFile_ = [this, &updatingSelf](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
     {
+        const std::string path = sa::Process::GetSelfPath();
+        const std::string file = path + "/" + filename;
+        updatingSelf = sa::Process::IsSelf(file);
+
         VariantMap& eData = GetEventDataMap();
         using namespace Events::UpdateFile;
         eData[P_FILENAME] = ToUrhoString(filename);
@@ -527,18 +532,18 @@ void FwClient::UpdateAssets()
     else
     {
         // Failed files are currupted, we can't leave it there
-        bool isSelf = false;
+        bool selfFailed = false;
         for (const auto& failedFile : failedFiles)
         {
             const std::string path = sa::Process::GetSelfPath();
             const std::string file = path + "/" + failedFile;
-            isSelf = sa::Process::IsSelf(file);
+            selfFailed = sa::Process::IsSelf(file);
             if (sa::Process::IsSelf(file))
-                isSelf = true;
+                selfFailed = true;
             else
                 std::remove(file.c_str());
         }
-        if (isSelf)
+        if (selfFailed)
         {
             std::stringstream cmdline;
             cmdline << "\"" << sa::Process::GetSelfPath() << "/abupdate\" -H " <<
@@ -549,6 +554,17 @@ void FwClient::UpdateAssets()
             const std::string cmdstr = cmdline.str();
             sa::Process::Run(cmdstr);
             exit(1);
+        }
+        else if (updatingSelf)
+        {
+            // On Linux it maybe possible to patch a running executeable, but we still need to restart it.
+            // GetArguments() is witout executeable
+            const Vector<String>& args = GetArguments();
+            std::vector<std::string> stdargs;
+            for (const auto& a : args)
+                stdargs.push_back(a.CString());
+            sa::Process process(stdargs);
+            process.Restart();
         }
         VariantMap& e = GetEventDataMap();
         using namespace Events::SetLevel;

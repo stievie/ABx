@@ -158,7 +158,7 @@ public:
     }
     void Restart()
     {
-        const std::string cmd = GetSelf() + " " + GetArguments();
+        const std::string cmd = "\"" + GetSelf() + "\"" + " " + GetArguments();
         if (Run(cmd))
         {
             exit(0);
