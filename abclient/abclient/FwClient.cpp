@@ -527,11 +527,28 @@ void FwClient::UpdateAssets()
     else
     {
         // Failed files are currupted, we can't leave it there
+        bool isSelf = false;
         for (const auto& failedFile : failedFiles)
         {
             const std::string path = sa::Process::GetSelfPath();
             const std::string file = path + "/" + failedFile;
-            std::remove(file.c_str());
+            isSelf = sa::Process::IsSelf(file);
+            if (sa::Process::IsSelf(file))
+                isSelf = true;
+            else
+                std::remove(file.c_str());
+        }
+        if (isSelf)
+        {
+            std::stringstream cmdline;
+            cmdline << "\"" << sa::Process::GetSelfPath() << "/abupdate\" -H " <<
+                client_.fileHost_ << " -P " << client_.filePort_ <<
+                " -a " << client_.accountUuid_ << " -t " << client_.authToken_ << " -m \"*\" -r \"" <<
+                sa::Process::GetSelf() << "\" \"" <<
+                sa::Process::GetSelfPath() << "\"";
+            const std::string cmdstr = cmdline.str();
+            sa::Process::Run(cmdstr);
+            exit(1);
         }
         VariantMap& e = GetEventDataMap();
         using namespace Events::SetLevel;

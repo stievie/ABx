@@ -11,6 +11,7 @@
 #include <Client.h>
 #include <AB/DHKeys.hpp>
 #include <asio.hpp>
+#include <sa/Process.h>
 
 namespace fs = std::filesystem;
 
@@ -85,6 +86,8 @@ int main(int argc, char** argv)
         { "user", { "-u", "--username" }, "Username to login", false, true, sa::arg_parser::option_type::string },
         { "pass", { "-p", "--password" }, "Password to login", false, true, sa::arg_parser::option_type::string },
         { "pattern", { "-m", "--match-pattern" }, "Filename pattern (default *.pak)", false, true, sa::arg_parser::option_type::string },
+        { "run", { "-r", "--run" }, "Run program after update", false, true, sa::arg_parser::option_type::string },
+        { "directory", { }, "Directory to update (default current directory)", false, true, sa::arg_parser::option_type::string },
     } };
 
     sa::arg_parser::values parsedArgs;
@@ -194,6 +197,16 @@ int main(int argc, char** argv)
     sa::time::timer timer;
     bool result = updater.Execute();
     std::cout << "Took " << timer.elapsed_seconds() << " seconds" << std::endl;
+    if (result)
+    {
+        auto run = sa::arg_parser::get_value<std::string>(parsedArgs, "run");
+        if (run.has_value())
+        {
+            std::stringstream ss;
+            ss << "\"" << run.value() << "\"";
+            sa::Process::Run(ss.str());
+        }
+    }
 
     return result ? EXIT_SUCCESS : EXIT_FAILURE;
 }

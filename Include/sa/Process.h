@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sa/Compiler.h>
+#include <sa/StringTempl.h>
 #include <string>
 #if defined(SA_PLATFORM_WIN)
 #define WIN32_LEAN_AND_MEAN
@@ -55,7 +56,7 @@ public:
     static bool Run(const std::string& command)
     {
 #if defined(SA_PLATFORM_WIN)
-        STARTUPINFO info = { sizeof(info) };
+        STARTUPINFOA info = { sizeof(info) };
         PROCESS_INFORMATION processInfo = { 0 };
         char* cmd = (char*)command.c_str();
         if (CreateProcessA(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &info, &processInfo))
@@ -81,6 +82,23 @@ public:
         char buff[PATH_MAX];
         ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
         return std::string(buff, (count > 0) ? count : 0);
+#endif
+    }
+    static bool IsSelf(const std::string file)
+    {
+        std::string testFile(file);
+        ReplaceSubstring<char>(testFile, "\\", "/");
+        std::string self(GetSelf());
+        ReplaceSubstring<char>(self, "\\", "/");
+#ifdef SA_PLATFORM_WIN
+        return testFile.size() == self.size()
+            && std::equal(testFile.cbegin(), testFile.cend(), self.cbegin(),
+                [](std::string::value_type l1, std::string::value_type r1)
+        {
+            return toupper(l1) == toupper(r1);
+        });
+#else
+        return testFile.compare(self) == 0;
 #endif
     }
     static std::string GetSelfPath()
