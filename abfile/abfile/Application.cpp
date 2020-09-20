@@ -738,6 +738,12 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
         path += platform;
     auto web_root_path = fs::canonical(root_);
     auto root_path = fs::canonical(path);
+    if (!fs::is_directory(root_path))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_not_found,
+            "No Found");
+        return;
+    }
     for (const auto& p : fs::recursive_directory_iterator(root_path))
     {
         if (p.is_directory())
