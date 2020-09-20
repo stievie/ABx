@@ -79,9 +79,28 @@ enable compression when calling the package tool with the `-c` switch.
 #### Executables
 
 If you put also the client executables (`fw`, `abupdate`) in the `file_root` directory,
-also these will be updated. This works for Windows, but since you can't just take
-a Linux executable compiled for one distribution and run it on another distribution,
-this is not recommended for Linux.
+also these will be updated. To make this work for Windows and different Linux distributions,
+there must be a subdirectory for each platform in the `file_root` directory:
+
+~~~plain
+file_root/
+  - windows/
+    - AbData.pak{pak,meta,sha1}
+    - ...
+    - fw.exe
+    - abupdate.exe
+  - manjaro/
+    - AbData.{pak,meta,sha1}
+    - ...
+    - fw
+    - abupdate
+  - debian/
+    - AbData.{pak,meta,sha1}
+    - ...
+    - fw
+    - abupdate
+  - ...
+~~~
 
 ### Known issues
 

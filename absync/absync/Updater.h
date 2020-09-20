@@ -37,10 +37,12 @@ public:
     struct RemoteFile
     {
         std::string name;
+        std::string basePath;
         Sha1Hash hash;
     };
 private:
     std::string localDir_;
+    std::string indexFile_;
     std::unique_ptr<FileDestination> localBackend_;
     std::unique_ptr<HttpSource> remoteBackend_;
     std::unique_ptr<httplib::Headers> remoteHeaders_;
@@ -55,7 +57,7 @@ public:
         Local
     };
     Updater(const std::string& remoteHost, uint16_t remotePort, const std::string remoteAuth,
-        const std::string& localDir);
+        const std::string& localDir, const std::string& indexFile);
     bool Execute();
     void Cancel() { cancelled_ = true; }
     bool DownloadRemoteFiles();

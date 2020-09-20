@@ -13,6 +13,7 @@
 #include <asio.hpp>
 #include <sa/Process.h>
 #include <AB/CommonConfig.h>
+#include "Platform.h"
 
 namespace fs = std::filesystem;
 
@@ -82,7 +83,8 @@ int main(int argc, char** argv)
 #ifdef _DEBUG
     std::cout << " DEBUG";
 #endif
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl;
+    std::cout << "Running on " << System::GetPlatform() << std::endl << std::endl;
     std::cout << "(C) 2017-" << CURRENT_YEAR << std::endl;
     std::cout << std::endl;
 
@@ -156,7 +158,8 @@ int main(int argc, char** argv)
 
     auto dirarg = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
     fs::path dir = dirarg.has_value() ? fs::path(dirarg.value()) : fs::current_path();
-    Sync::Updater updater(host, port, authHeader, dir.string());
+    std::string indexFile = sa::StringToLower(System::GetPlatform()) + "/_files_";
+    Sync::Updater updater(host, port, authHeader, dir.string(), indexFile);
     updater.onError = [](Sync::Updater::ErrorType type, const char* message)
     {
         if (type == Sync::Updater::ErrorType::Remote)

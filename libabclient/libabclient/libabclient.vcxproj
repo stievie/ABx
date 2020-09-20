@@ -85,6 +85,7 @@
     <ClInclude Include="Errors.h" />
     <ClInclude Include="InputMessage.h" />
     <ClInclude Include="OutputMessage.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolLogin.h" />
@@ -100,6 +101,7 @@
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="InputMessage.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
     <ClCompile Include="ProtocolLogin.cpp" />

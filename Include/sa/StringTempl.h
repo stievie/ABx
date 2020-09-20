@@ -225,6 +225,25 @@ inline wchar_t ToUpper<wchar_t>(wchar_t c)
 }
 
 template <typename charType>
+inline std::basic_string<charType> StringToUpper(const std::basic_string<charType>& s)
+{
+    std::basic_string<charType> result;
+    result.resize(s.length());
+    for (size_t i = 0; i < s.length(); ++i)
+        result[i] = ToUpper<charType>(s[i]);
+    return result;
+}
+template <typename charType>
+inline std::basic_string<charType> StringToLower(const std::basic_string<charType>& s)
+{
+    std::basic_string<charType> result;
+    result.resize(s.length());
+    for (size_t i = 0; i < s.length(); ++i)
+        result[i] = ToLower<charType>(s[i]);
+    return result;
+}
+
+template <typename charType>
 bool PatternMatch(const std::basic_string<charType>& string,
     const std::basic_string<charType>& pattern)
 {

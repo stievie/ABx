@@ -36,6 +36,7 @@
 #include <sa/http_status.h>
 #include <sa/Process.h>
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
+#include "Platform.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -453,8 +454,9 @@ void FwClient::UpdateAssets()
     auto* cache = GetSubsystem<ResourceCache>();
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
 
+    std::string indexFile = sa::StringToLower(System::GetPlatform()) + "/_files_";
     Sync::Updater updater(client_.fileHost_, client_.filePort_,
-        client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath());
+        client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath(), indexFile);
     bool updatingSelf = false;
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {

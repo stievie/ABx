@@ -34,8 +34,9 @@ namespace fs = std::filesystem;
 namespace Sync {
 
 Updater::Updater(const std::string& remoteHost, uint16_t remotePort, const std::string remoteAuth,
-    const std::string& localDir) :
-    localDir_(localDir)
+    const std::string& localDir, const std::string& indexFile) :
+    localDir_(localDir),
+    indexFile_(indexFile)
 {
     remoteHeaders_ = std::make_unique<httplib::Headers>();
     if (!remoteAuth.empty())
@@ -105,7 +106,7 @@ bool Updater::Execute()
 bool Updater::ProcessFile(const RemoteFile& file)
 {
     const auto rootPath = fs::canonical(localDir_);
-    const auto localFile = rootPath / fs::path(file.name);
+    const auto localFile = rootPath / fs::path(file.basePath);
     const Sha1Hash localHash = GetFileHash(localFile.string());
     if (localHash == file.hash)
     {
@@ -135,7 +136,7 @@ bool Updater::ProcessFile(const RemoteFile& file)
 
 bool Updater::DownloadRemoteFiles()
 {
-    const auto files = remoteBackend_->GetChunk("/_files_");
+    const auto files = remoteBackend_->GetChunk(indexFile_);
     pugi::xml_document doc;
     const pugi::xml_parse_result result = doc.load_buffer(files.data(), files.size());
     if (result.status != pugi::status_ok)
@@ -148,8 +149,9 @@ bool Updater::DownloadRemoteFiles()
         if (strcmp((*it).name(), "file") == 0)
         {
             const pugi::xml_attribute& pathAttr = it->attribute("path");
+            const pugi::xml_attribute& basePathAttr = it->attribute("base_path");
             const pugi::xml_attribute& sha1Attr = it->attribute("sha1");
-            remoteFiles_.push_back({ pathAttr.as_string(), Sha1Hash(sha1Attr.as_string()) });
+            remoteFiles_.push_back({ pathAttr.as_string(), basePathAttr.as_string(), Sha1Hash(sha1Attr.as_string()) });
         }
     }
     return true;

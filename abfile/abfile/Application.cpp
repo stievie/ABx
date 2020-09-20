@@ -306,7 +306,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_files_$"]["GET"] = std::bind(&Application::GetHandlerFiles, shared_from_this(),
+    server_->resource["^/(.+)/_files_$"]["GET"] = std::bind(&Application::GetHandlerFiles, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -732,8 +732,13 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("files");
 
+    std::string platform = Utils::ExtractFileDir(request->path);
+    std::string path = root_;
+    if (!platform.empty())
+        path += platform;
     auto web_root_path = fs::canonical(root_);
-    for (const auto& p : fs::recursive_directory_iterator(web_root_path))
+    auto root_path = fs::canonical(path);
+    for (const auto& p : fs::recursive_directory_iterator(root_path))
     {
         if (p.is_directory())
             continue;
@@ -759,9 +764,11 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
 
         std::string realitvename = fullpath.substr(web_root_path.string().size() + 1);
         sa::ReplaceSubstring<char>(realitvename, "\\", "/");
+        std::string basepath = realitvename.substr(platform.length());
 
         auto gNd = root.append_child("file");
         gNd.append_attribute("path").set_value(realitvename.c_str());
+        gNd.append_attribute("base_path").set_value(basepath.c_str());
         gNd.append_attribute("sha1").set_value(shastream.str().c_str());
     }
 
