@@ -65,7 +65,23 @@ To automatically update game asset files by the client, follow the following ste
 4. Compile the client with `AUTOUPDATE_ENABLED` defined, CMake option `ABX_CLIENT_AUTOUPDATE`.
 
 This will cause the client to check for updated files every time it start, and binary
-patches changed files. This works best with large uncompressed files.
+patches changed files. This works best with large files.
+
+#### Compression
+
+Sadly the file server does not support compression by its own.
+
+Since the Urho3D PackageTool compresses file individually, single changed files
+do not change the entire package file, so the updater can just replace the changed
+block and doesn't have to replace the whole file. This means you can and should
+enable compression when calling the package tool with the `-c` switch.
+
+#### Executables
+
+If you put also the client executables (`fw`, `abupdate`) in the `file_root` directory,
+also these will be updated. This works for Windows, but since you can't just take
+a Linux executable compiled for one distribution and run it on another distribution,
+this is not recommended for Linux.
 
 ### Known issues
 

@@ -559,7 +559,7 @@ void FwClient::UpdateAssets()
         else if (updatingSelf)
         {
             // On Linux it maybe possible to patch a running executeable, but we still need to restart it.
-            // GetArguments() is witout executeable
+            // GetArguments() is without executeable
             const Vector<String>& args = GetArguments();
             std::vector<std::string> stdargs;
             for (const auto& a : args)
