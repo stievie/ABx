@@ -76,10 +76,9 @@ void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
         return;
     }
 
-    SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(".json"));
-    responseCookies_->Write(header);
+    header_.emplace("Content-Type", contT->Get(".json"));
+    responseCookies_->Write(header_);
 
     std::stringstream ss;
     ss << request_->content.rdbuf();
@@ -112,7 +111,7 @@ void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
         }
     }
 
-    response->write(obj.dump(), header);
+    response->write(obj.dump(), header_);
 }
 
 }

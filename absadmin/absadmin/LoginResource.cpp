@@ -66,10 +66,9 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
 
 void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(".json"));
-    responseCookies_->Write(header);
+    header_.emplace("Content-Type", contT->Get(".json"));
+    responseCookies_->Write(header_);
 
     std::stringstream ss;
     ss << request_->content.rdbuf();
@@ -92,7 +91,7 @@ void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
             obj["status"] = "Failed";
     }
 
-    response->write(obj.dump(), header);
+    response->write(obj.dump(), header_);
 }
 
 }

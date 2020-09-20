@@ -45,6 +45,13 @@ static void ProcessEntry(const fs::directory_entry& p)
         return;
 
     const std::string filename = p.path().string();
+    if (filename.empty())
+        return;
+    if ((filename != "..") &&
+        (filename != ".") &&
+        ((filename[0] == '.') || (filename.find("/.") != std::string::npos) || (filename.find("\\.") != std::string::npos)))
+        return;
+
     std::cout << "Processing file " << filename << std::endl;
     const auto hashes = Sync::PartitionFile(filename, {});
     if (hashes.size() == 0)

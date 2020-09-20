@@ -80,7 +80,8 @@ enable compression when calling the package tool with the `-c` switch.
 
 If you put also the client executables (`fw`, `abupdate`) in the `file_root` directory,
 also these will be updated. To make this work for Windows and different Linux distributions,
-there must be a subdirectory for each platform in the `file_root` directory:
+there must be a subdirectory for each platform you want to support in the `file_root`
+directory:
 
 ~~~plain
 file_root/
@@ -89,6 +90,11 @@ file_root/
     - ...
     - fw.exe
     - abupdate.exe
+  - arch/
+    - AbData.{pak,meta,sha1}
+    - ...
+    - fw
+    - abupdate
   - manjaro/
     - AbData.{pak,meta,sha1}
     - ...
@@ -107,6 +113,9 @@ To find out what's your distribution, you could run:
 ~~~sh
 $ awk -F= '$1=="ID" { print $2 ;}' /etc/os-release
 ~~~
+
+Every time you deploy an update, replace the `.pak` files and executables with the
+new versions, and re-run `../fhash -R` in this directory.
 
 ### Known issues
 

@@ -454,6 +454,7 @@ void FwClient::UpdateAssets()
     auto* cache = GetSubsystem<ResourceCache>();
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
 
+    // The index file is /<platform>/_files_
     std::string indexFile = sa::StringToLower(System::GetPlatform()) + "/_files_";
     Sync::Updater updater(client_.fileHost_, client_.filePort_,
         client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath(), indexFile);

@@ -149,35 +149,33 @@ void FileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
         const std::string boundary = "3d6b6a416f9b5";
 
-        SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
-
-        responseCookies_->Write(header);
+        responseCookies_->Write(header_);
         auto contT = GetSubsystem<ContentTypes>();
 
         if (isRange && !multipart)
         {
             // Single part of a file
-            header.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
-            header.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
-            header.emplace("Content-Length", std::to_string(ranges[0].length));
-            header.emplace("Content-Range", std::to_string(ranges[0].start) + "-" +
+            header_.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
+            header_.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
+            header_.emplace("Content-Length", std::to_string(ranges[0].length));
+            header_.emplace("Content-Range", std::to_string(ranges[0].start) + "-" +
                 std::to_string(ranges[0].end) + "/" + std::to_string(fileSize));
-            response->write(SimpleWeb::StatusCode::success_partial_content, header);
+            response->write(SimpleWeb::StatusCode::success_partial_content, header_);
         }
         else if (isRange && multipart)
         {
             // Multiple parts of a file in one response -> multipart message
-            header.emplace("Content-Type", "multipart/byteranges; boundary=" + boundary);
-            header.emplace("Content-Length", std::to_string(sa::http::content_length(ranges)));
-            response->write(SimpleWeb::StatusCode::success_partial_content, header);
+            header_.emplace("Content-Type", "multipart/byteranges; boundary=" + boundary);
+            header_.emplace("Content-Length", std::to_string(sa::http::content_length(ranges)));
+            response->write(SimpleWeb::StatusCode::success_partial_content, header_);
         }
         else
         {
             // Whole file
-            header.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
-            header.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
-            header.emplace("Content-Length", std::to_string(fileSize));
-            response->write(SimpleWeb::StatusCode::success_ok, header);
+            header_.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
+            header_.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
+            header_.emplace("Content-Length", std::to_string(fileSize));
+            response->write(SimpleWeb::StatusCode::success_ok, header_);
         }
 
         SendFileRange(response, path.string(), ranges[0], multipart, boundary);

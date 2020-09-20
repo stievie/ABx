@@ -108,7 +108,7 @@ bool Updater::ProcessFile(const RemoteFile& file)
     const auto rootPath = fs::canonical(localDir_);
     const auto localFile = rootPath / fs::path(file.basePath);
     const Sha1Hash localHash = GetFileHash(localFile.string());
-    if (localHash == file.hash)
+    if (localHash == file.remoteHash)
     {
         if (onDoneFile_)
             onDoneFile_(file.basePath, false, 0, 0, 0);
@@ -121,7 +121,7 @@ bool Updater::ProcessFile(const RemoteFile& file)
             onProgress_(currentFile_, remoteFiles_.size(), value, max);
         return !cancelled_;
     };
-    if (!sync.Synchronize(localFile.string(), file.name))
+    if (!sync.Synchronize(localFile.string(), file.remotePath))
     {
         if (onFailure_)
             onFailure_(file.basePath);

@@ -46,7 +46,7 @@ inline std::optional<T> to_number(std::string_view number)
 }
 
 template <typename charType>
-std::basic_string<charType> Trim(const std::basic_string<charType>& str,
+inline std::basic_string<charType> Trim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")
 {
     // Left
@@ -62,7 +62,7 @@ std::basic_string<charType> Trim(const std::basic_string<charType>& str,
 }
 
 template <typename charType>
-std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
+inline std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")
 {
     const auto strBegin = str.find_first_not_of(whitespace);
@@ -73,7 +73,7 @@ std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
 }
 
 template <typename charType>
-std::basic_string<charType> RightTrim(const std::basic_string<charType>& str,
+inline std::basic_string<charType> RightTrim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")
 {
     const auto strEnd = str.find_last_not_of(whitespace);
@@ -86,7 +86,7 @@ std::basic_string<charType> RightTrim(const std::basic_string<charType>& str,
 /// Replace all occurrences of search with replace in subject
 /// Returns true if it replaced something
 template <typename charType>
-bool ReplaceSubstring(std::basic_string<charType>& subject,
+inline bool ReplaceSubstring(std::basic_string<charType>& subject,
     const std::basic_string<charType>& search,
     const std::basic_string<charType>& replace)
 {
@@ -117,7 +117,7 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
 
 // Strip out all characters that are not valid for an identifier
 template <typename charType>
-void MakeIdent(std::basic_string<charType>& s)
+inline void MakeIdent(std::basic_string<charType>& s)
 {
     s = Trim<charType>(s, " \t\\/");
     using string_type = std::basic_string<charType>;
@@ -171,7 +171,7 @@ inline std::vector<std::string> Split(const std::string& str, const std::string&
 }
 
 template <typename charType>
-std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>>& strings,
+inline std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>>& strings,
     const std::basic_string<charType>& delim)
 {
     std::basic_string<charType> res;
@@ -183,7 +183,7 @@ std::basic_string<charType> CombineString(const std::vector<std::basic_string<ch
 }
 
 template <typename charType>
-std::basic_string<charType> CombinePath(const std::basic_string<charType>& path,
+inline std::basic_string<charType> CombinePath(const std::basic_string<charType>& path,
     const std::basic_string<charType>& file)
 {
     std::basic_string<charType> result = path;
@@ -244,7 +244,7 @@ inline std::basic_string<charType> StringToLower(const std::basic_string<charTyp
 }
 
 template <typename charType>
-bool PatternMatch(const std::basic_string<charType>& string,
+inline bool PatternMatch(const std::basic_string<charType>& string,
     const std::basic_string<charType>& pattern)
 {
     // http://xoomer.virgilio.it/acantato/dev/wildcard/wildmatch.html#evolution

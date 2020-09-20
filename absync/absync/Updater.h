@@ -33,14 +33,15 @@ class FileDestination;
 
 class Updater
 {
-public:
+private:
     struct RemoteFile
     {
-        std::string name;
+        // <platform>/file
+        std::string remotePath;
+        // The path of the file wihtout the platform dir. This should be the local path.
         std::string basePath;
-        Sha1Hash hash;
+        Sha1Hash remoteHash;
     };
-private:
     std::string localDir_;
     std::string indexFile_;
     std::unique_ptr<FileDestination> localBackend_;

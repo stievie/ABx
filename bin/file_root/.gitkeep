@@ -21,3 +21,6 @@ file_root/
     - abupdate
   - ...
 ~~~
+
+Use `../fhash -R` in this directory to index the files, so they can be used by
+updater. This will create the `.meta` and `.sha1` files.

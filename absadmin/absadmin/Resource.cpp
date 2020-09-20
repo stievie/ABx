@@ -51,7 +51,8 @@ bool Resource::IsAllowed(AB::Entities::AccountType minType)
 }
 
 Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
-    request_(request)
+    request_(request),
+    header_(Application::GetDefaultHeader())
 {
     responseCookies_ = std::make_unique<HTTP::Cookies>();
     requestCookies_ = std::make_unique<HTTP::Cookies>(*request);

@@ -109,11 +109,10 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
         obj["data"].append(account);
     }
 
-    SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(".json"));
-    responseCookies_->Write(header);
-    response->write(obj.dump(), header);
+    header_.emplace("Content-Type", contT->Get(".json"));
+    responseCookies_->Write(header_);
+    response->write(obj.dump(), header_);
 }
 
 }

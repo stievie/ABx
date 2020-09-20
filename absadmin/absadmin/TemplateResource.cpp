@@ -152,7 +152,6 @@ std::string TemplateResource::GetTemplateFile(const std::string& templ)
 void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
     AB_PROFILE;
-    SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
 
     int64_t start = sa::time::tick();
@@ -170,12 +169,12 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
 
     // Don't cache templates
-    header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
-    responseCookies_->Write(header);
+    header_.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
+    responseCookies_->Write(header_);
     auto ct = contT->Get(Utils::GetFileExt(template_));
-    header.emplace("Content-Type", ct);
+    header_.emplace("Content-Type", ct);
 
-    LuaContext context(*this, &header);
+    LuaContext context(*this, &header_);
 
     if (!GetContext(context))
     {
@@ -188,8 +187,8 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     if (context.Execute(buffer))
     {
         std::string realCt = ct;
-        const auto it = header.find("Content-Type");
-        if (it != header.end())
+        const auto it = header_.find("Content-Type");
+        if (it != header_.end())
             realCt = (*it).second;
 
         std::stringstream& ss = context.GetStream();
@@ -199,15 +198,14 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
-        header.emplace("Content-Length", std::to_string(ssize));
-        response->write(ss, header);
+        header_.emplace("Content-Length", std::to_string(ssize));
+        response->write(ss, header_);
     }
     else
     {
         LOG_ERROR << "Execution Error" << std::endl;
         response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
             "Internal Server Error " + request_->path);
-
     }
 }
 

@@ -25,13 +25,17 @@
 #include "Sessions.h"
 #include <AB/Entities/Account.h>
 #include "Servers.h"
+#include <sa/Noncopyable.h>
 
 namespace Resources {
 
 class Resource
 {
+    NON_COPYABLE(Resource)
+    NON_MOVEABLE(Resource)
 protected:
     std::shared_ptr<HttpsServer::Request> request_;
+    SimpleWeb::CaseInsensitiveMultimap header_;
     std::unique_ptr<HTTP::Cookies> requestCookies_;
     std::unique_ptr<HTTP::Cookies> responseCookies_;
     std::shared_ptr<HTTP::Session> session_;
@@ -39,9 +43,6 @@ protected:
     bool IsAllowed(AB::Entities::AccountType minType);
 public:
     explicit Resource(std::shared_ptr<HttpsServer::Request> request);
-    Resource() = default;
-    Resource(const Resource&) = delete;
-    Resource& operator=(const Resource&) = delete;
     virtual ~Resource() = default;
 
     virtual void Render(std::shared_ptr<HttpsServer::Response> response) = 0;
