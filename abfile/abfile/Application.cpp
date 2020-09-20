@@ -723,15 +723,6 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
             "Forbidden");
         return;
     }
-
-    // Return an index of files with checksum
-    pugi::xml_document doc;
-    auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version").set_value("1.0");
-    declarationNode.append_attribute("encoding").set_value("UTF-8");
-    declarationNode.append_attribute("standalone").set_value("yes");
-    auto root = doc.append_child("files");
-
     std::string platform = Utils::ExtractFileDir(request->path);
     std::string path = root_;
     if (!platform.empty())
@@ -744,6 +735,15 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
             "No Found");
         return;
     }
+
+    // Return an index of files with checksum
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
+    auto root = doc.append_child("files");
+
     for (const auto& p : fs::recursive_directory_iterator(root_path))
     {
         if (p.is_directory())
