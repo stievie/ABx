@@ -90,7 +90,7 @@ bool Updater::Execute()
         ++currentFile_;
         if (onProcessFile_)
         {
-            if (!onProcessFile_(currentFile_, remoteFiles_.size(), file.name))
+            if (!onProcessFile_(currentFile_, remoteFiles_.size(), file.basePath))
                 continue;
         }
         if (!ProcessFile(file))
@@ -111,7 +111,7 @@ bool Updater::ProcessFile(const RemoteFile& file)
     if (localHash == file.hash)
     {
         if (onDoneFile_)
-            onDoneFile_(file.name, false, 0, 0, 0);
+            onDoneFile_(file.basePath, false, 0, 0, 0);
         return true;
     }
     Sync::Synchronizer sync(*localBackend_, *remoteBackend_);
@@ -124,13 +124,13 @@ bool Updater::ProcessFile(const RemoteFile& file)
     if (!sync.Synchronize(localFile.string(), file.name))
     {
         if (onFailure_)
-            onFailure_(file.name);
+            onFailure_(file.basePath);
         return false;
     }
     if (cancelled_)
         return false;
     if (onDoneFile_)
-        onDoneFile_(file.name, sync.IsDifferent(), sync.GetDownloaded(), sync.GetCopied(), sync.GetSavings());
+        onDoneFile_(file.basePath, sync.IsDifferent(), sync.GetDownloaded(), sync.GetCopied(), sync.GetSavings());
     return true;
 }
 
