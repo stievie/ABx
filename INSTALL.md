@@ -103,7 +103,7 @@ file_root/
 ~~~
 
 On Linux the updater uses `/etc/os-release` to find out which distribution is it running on.
-To find you what's your distribution, you could run:
+To find out what's your distribution, you could run:
 ~~~sh
 $ awk -F= '$1=="ID" { print $2 ;}' /etc/os-release
 ~~~
