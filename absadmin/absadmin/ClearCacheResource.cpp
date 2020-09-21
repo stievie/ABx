@@ -69,7 +69,6 @@ void ClearCacheResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
-    responseCookies_->Write(header_);
 
     std::stringstream ss;
     ss << request_->content.rdbuf();
@@ -95,7 +94,7 @@ void ClearCacheResource::Render(std::shared_ptr<HttpsServer::Response> response)
         }
     }
 
-    response->write(obj.dump(), header_);
+    Send(obj.dump(), response);
 }
 
 }

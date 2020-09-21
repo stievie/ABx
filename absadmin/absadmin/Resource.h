@@ -41,6 +41,9 @@ protected:
     std::shared_ptr<HTTP::Session> session_;
     void Redirect(std::shared_ptr<HttpsServer::Response> response, const std::string& url);
     bool IsAllowed(AB::Entities::AccountType minType);
+    void Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response);
+    std::string GetRequestHeader(const std::string& key);
+    std::string GetETagValue(const std::string& content);
 public:
     explicit Resource(std::shared_ptr<HttpsServer::Request> request);
     virtual ~Resource() = default;

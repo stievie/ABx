@@ -154,7 +154,6 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     AB_PROFILE;
     auto contT = GetSubsystem<ContentTypes>();
 
-    int64_t start = sa::time::tick();
     std::string buffer;
     try
     {
@@ -169,9 +168,8 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
 
     // Don't cache templates
-    header_.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
-    responseCookies_->Write(header_);
-    auto ct = contT->Get(Utils::GetFileExt(template_));
+    header_.emplace("Cache-Control", "must-revalidate");
+    const auto ct = contT->Get(Utils::GetFileExt(template_));
     header_.emplace("Content-Type", ct);
 
     LuaContext context(*this, &header_);
@@ -186,20 +184,8 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     if (context.Execute(buffer))
     {
-        std::string realCt = ct;
-        const auto it = header_.find("Content-Type");
-        if (it != header_.end())
-            realCt = (*it).second;
-
         std::stringstream& ss = context.GetStream();
-        if (realCt == "text/html")
-            ss << "\n<!-- Generated in " << sa::time::time_elapsed(start) << "ms -->\n";
-
-        ss.seekg(0, std::ios::end);
-        size_t ssize = ss.tellg();
-        ss.seekg(0, std::ios::beg);
-        header_.emplace("Content-Length", std::to_string(ssize));
-        response->write(ss, header_);
+        Send(ss.str(), response);
     }
     else
     {

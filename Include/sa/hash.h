@@ -26,7 +26,6 @@
 #include <iomanip>
 #include <stdint.h>
 #include <cstring>
-#include <sa/Assert.h>
 
 namespace sa {
 
@@ -42,15 +41,17 @@ public:
     explicit hash(const std::string_view value)
     {
         constexpr size_t charsPerNum = sizeof(T) * 2;
-        ASSERT(value.size() == charsPerNum * Count);
-        for (size_t i = 0; i < Count; ++i)
+        if (value.size() == charsPerNum * Count)
         {
-            std::from_chars(
-                value.data() + (i * charsPerNum),
-                value.data() + (i * charsPerNum) + charsPerNum,
-                data_[i],
-                16
-            );
+            for (size_t i = 0; i < Count; ++i)
+            {
+                std::from_chars(
+                    value.data() + (i * charsPerNum),
+                    value.data() + (i * charsPerNum) + charsPerNum,
+                    data_[i],
+                    16
+                );
+            }
         }
     }
     hash(const hash& rhs)
@@ -81,6 +82,15 @@ public:
             os << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int)buff[i]);
         }
         return os;
+    }
+    bool empty() const
+    {
+        static T empty_data[Count]{};
+        return memcmp(&data_[0], &empty_data[0], Count * sizeof(T)) == 0;
+    }
+    operator bool() const
+    {
+        return !empty();
     }
 
     const T* data() const { return &data_[0]; }

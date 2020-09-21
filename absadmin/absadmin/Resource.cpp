@@ -24,6 +24,12 @@
 #include "Application.h"
 #include <abscommon/SimpleConfigManager.h>
 #include <sa/StringHash.h>
+#define SA_ZLIB_SUPPORT
+#include <sa/compress.h>
+extern "C" {
+#include <abcrypto/sha1.h>
+}
+#include <sa/hash.h>
 
 namespace Resources {
 
@@ -48,6 +54,14 @@ bool Resource::IsAllowed(AB::Entities::AccountType minType)
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
 
     return accType >= minType;
+}
+
+std::string Resource::GetRequestHeader(const std::string& key)
+{
+    const auto it = request_->header.find(key);
+    if (it == request_->header.end())
+        return "";
+    return (*it).second;
 }
 
 Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
@@ -82,6 +96,55 @@ Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
     respSessCookie->httpOnly_ = true;
     respSessCookie->sameSite_ = static_cast<HTTP::Cookie::SameSite>(config->GetGlobalInt("cookie_samesite", 0));
     respSessCookie->secure_ = config->GetGlobalBool("cookie_secure", false);
+}
+
+std::string Resource::GetETagValue(const std::string& content)
+{
+    sa::hash<char, 20> hash;
+
+    sha1(content.data(), (int)content.length(), hash.data());
+    std::stringstream ss;
+    ss << hash;
+    return ss.str();
+}
+
+void Resource::Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response)
+{
+    const std::string etag = GetETagValue(content);
+    header_.emplace("ETag", etag);
+    responseCookies_->Write(header_);
+    const std::string requestETag = GetRequestHeader("If-None-Match");
+
+    if (requestETag.length() == 40)
+    {
+        const sa::hash<char, 20> responseHash(etag);
+        const sa::hash<char, 20> requestHash(requestETag);
+        if (requestHash && responseHash == requestHash)
+        {
+            response->write(SimpleWeb::StatusCode::redirection_not_modified, "Not Modified", header_);
+            return;
+        }
+    }
+
+    const std::string accept = GetRequestHeader("Accept-Encoding");
+    if (accept.find("gzip") != std::string::npos)
+    {
+        sa::zlib_compress compress;
+        std::string compressed;
+        compressed.resize(content.length() + 1024);
+        size_t compressedSize = compressed.length();
+        if (compress(content.data(), content.length(), compressed.data(), compressedSize))
+        {
+            header_.emplace("Content-Encoding", "gzip");
+            compressed.resize(compressedSize);
+            header_.emplace("Content-Length", std::to_string(compressedSize));
+            response->write(compressed, header_);
+            return;
+        }
+        LOG_ERROR << "Compression Error" << std::endl;
+    }
+    header_.emplace("Content-Length", std::to_string(content.length()));
+    response->write(content, header_);
 }
 
 }

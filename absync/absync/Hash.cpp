@@ -38,7 +38,7 @@ void HashFile(const std::string& filename, const std::string& outfile)
     if (fileSize == 0)
         return;
 
-    sa::hash<unsigned char, 20> sha_hash;
+    Sha1Hash sha_hash;
     sha1_ctx ctx;
     sha1_init(&ctx);
 
@@ -64,7 +64,7 @@ Sha1Hash GetFileHash(const std::string& filename)
     if (fileSize == 0)
         return {};
 
-    sa::hash<unsigned char, 20> sha_hash;
+    Sha1Hash sha_hash;
     sha1_ctx ctx;
     sha1_init(&ctx);
 

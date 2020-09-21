@@ -75,8 +75,7 @@ void ServicesJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
 
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
-    responseCookies_->Write(header_);
-    response->write(obj.dump(), header_);
+    Send(obj.dump(), response);
 }
 
 }
