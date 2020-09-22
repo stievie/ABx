@@ -26,6 +26,8 @@
 #include <iomanip>
 #include <stdint.h>
 #include <cstring>
+#include <string>
+#include <sstream>
 
 namespace sa {
 
@@ -83,10 +85,21 @@ public:
         }
         return os;
     }
+    // To Hex string
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << *this;
+        return ss.str();
+    }
     bool empty() const
     {
-        static T empty_data[Count]{};
-        return memcmp(&data_[0], &empty_data[0], Count * sizeof(T)) == 0;
+        for (size_t i = 0; i < Count; ++i)
+        {
+            if (data_[i] != 0)
+                return false;
+        }
+        return true;
     }
     operator bool() const
     {

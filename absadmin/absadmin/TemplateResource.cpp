@@ -167,12 +167,11 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         return;
     }
 
-    // Don't cache templates
     header_.emplace("Cache-Control", "must-revalidate");
     const auto ct = contT->Get(Utils::GetFileExt(template_));
     header_.emplace("Content-Type", ct);
 
-    LuaContext context(*this, &header_);
+    LuaContext context(*this);
 
     if (!GetContext(context))
     {

@@ -30,8 +30,8 @@ static void LuaErrorHandler(int errCode, const char* message)
     LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
 }
 
-LuaContext::LuaContext(Resources::TemplateResource& resource, SimpleWeb::CaseInsensitiveMultimap* headers) :
-    headers_(headers)
+LuaContext::LuaContext(Resources::TemplateResource& resource) :
+    resource_(resource)
 {
     luaState_.setErrorHandler(LuaErrorHandler);
     HTTP::Cookie::RegisterLua(luaState_);
@@ -51,33 +51,29 @@ LuaContext::LuaContext(Resources::TemplateResource& resource, SimpleWeb::CaseIns
     });
     luaState_["getHeader"] = kaguya::function([this](const std::string& key) -> std::string
     {
-        if (!headers_)
-            return "";
-        const auto it = headers_->find(key);
-        if (it == headers_->end())
+        const auto& headers = resource_.GetHeaders();
+        const auto it = headers.find(key);
+        if (it == headers.end())
             return "";
         return (*it).second;
     });
     luaState_["setHeader"] = kaguya::function([this](const std::string& key, const std::string& value)
     {
-        if (!headers_)
-            return;
-        headers_->emplace(key, value);
+        auto& headers = resource_.GetHeaders();
+        headers.emplace(key, value);
     });
     luaState_["getContentType"] = kaguya::function([this]() -> std::string
     {
-        if (!headers_)
-            return "";
-        const auto it = headers_->find("Content-Type");
-        if (it == headers_->end())
+        const auto& headers = resource_.GetHeaders();
+        const auto it = headers.find("Content-Type");
+        if (it == headers.end())
             return "";
         return (*it).second;
     });
     luaState_["setContentType"] = kaguya::function([this](const std::string& value)
     {
-        if (!headers_)
-            return;
-        headers_->emplace("Content-Type", value);
+        auto& headers = resource_.GetHeaders();
+        headers.emplace("Content-Type", value);
     });
 }
 

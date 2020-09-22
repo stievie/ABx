@@ -44,14 +44,14 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-#if !defined (WRITE_FUNC)
-#define WRITE_FUNC "io.write"
+#if !defined (LPP_WRITE_FUNC)
+#define LPP_WRITE_FUNC "io.write"
 #endif
-#if !defined (STRING_PREFIX)
-#define STRING_PREFIX "[=["
+#if !defined (LPP_STRING_PREFIX)
+#define LPP_STRING_PREFIX "[=["
 #endif
-#if !defined (STRING_SUFFIX)
-#define STRING_SUFFIX "]=]"
+#if !defined (LPP_STRING_SUFFIX)
+#define LPP_STRING_SUFFIX "]=]"
 #endif
 
 namespace sa {
@@ -106,11 +106,11 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
 
 inline std::string WrapLiteral(const std::string& value)
 {
-    return (WRITE_FUNC "(" STRING_PREFIX) + value + (STRING_SUFFIX ")");
+    return (LPP_WRITE_FUNC "(" LPP_STRING_PREFIX) + value + (LPP_STRING_SUFFIX ")");
 }
 inline std::string WrapValue(const std::string& value)
 {
-    return (WRITE_FUNC "(") + value + ")";
+    return (LPP_WRITE_FUNC "(") + value + ")";
 }
 
 }

@@ -1,6 +1,7 @@
 # dbtool
 
-Database administration tool
+Database administration tool. Since this program writes directly to the database
+server, the data server must not run.
 
 ## Usage
 

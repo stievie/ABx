@@ -103,9 +103,7 @@ std::string Resource::GetETagValue(const std::string& content)
     sa::hash<char, 20> hash;
 
     sha1(content.data(), (int)content.length(), hash.data());
-    std::stringstream ss;
-    ss << hash;
-    return ss.str();
+    return hash.to_string();
 }
 
 void Resource::Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response)

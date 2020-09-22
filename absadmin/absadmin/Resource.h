@@ -49,6 +49,8 @@ public:
     virtual ~Resource() = default;
 
     virtual void Render(std::shared_ptr<HttpsServer::Response> response) = 0;
+    SimpleWeb::CaseInsensitiveMultimap& GetHeaders() { return header_; }
+    const SimpleWeb::CaseInsensitiveMultimap& GetHeaders() const { return header_; }
 };
 
 }

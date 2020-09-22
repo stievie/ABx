@@ -23,7 +23,7 @@
 
 #include <kaguya/kaguya.hpp>
 #include <sstream>
-#define WRITE_FUNC "echo"
+#define LPP_WRITE_FUNC "echo"
 #include <sa/lpp/lpp.h>
 
 namespace Resources {
@@ -36,8 +36,9 @@ private:
     kaguya::State luaState_;
     std::stringstream stream_;
     SimpleWeb::CaseInsensitiveMultimap* headers_;
+    Resources::TemplateResource& resource_;
 public:
-    LuaContext(Resources::TemplateResource& resource, SimpleWeb::CaseInsensitiveMultimap* headers);
+    LuaContext(Resources::TemplateResource& resource);
     kaguya::State& GetState() { return luaState_; };
     const kaguya::State& GetState() const { return luaState_; }
     const std::stringstream& GetStream() const { return stream_; }
