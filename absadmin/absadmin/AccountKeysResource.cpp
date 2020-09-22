@@ -33,7 +33,7 @@ bool AccountKeysResource::GetContext(LuaContext& objects)
     if (!TemplateResource::GetContext(objects))
         return false;
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::AccountKeyList akl;
     if (!dataClient->Read(akl))
         return false;
@@ -75,25 +75,8 @@ AccountKeysResource::AccountKeysResource(std::shared_ptr<HttpsServer::Request> r
 {
     template_ = "../templates/accountkeys.lpp";
 
-    styles_.insert(styles_.begin(), "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css");
-    styles_.insert(styles_.begin(), "vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css");
-    styles_.insert(styles_.begin(), "vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css");
-    styles_.insert(styles_.begin(), "vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css");
-    styles_.insert(styles_.begin(), "vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css");
-
-    // Datatables
-    footerScripts_.push_back("vendors/datatables.net/js/jquery.dataTables.min.js");
-    footerScripts_.push_back("vendors/datatables.net-bs/js/dataTables.bootstrap.min.js");
-    footerScripts_.push_back("vendors/datatables.net-buttons/js/dataTables.buttons.min.js");
-    footerScripts_.push_back("vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js");
-    footerScripts_.push_back("vendors/datatables.net-buttons/js/buttons.flash.min.js");
-    footerScripts_.push_back("vendors/datatables.net-buttons/js/buttons.html5.min.js");
-    footerScripts_.push_back("vendors/datatables.net-buttons/js/buttons.print.min.js");
-    footerScripts_.push_back("vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js");
-    footerScripts_.push_back("vendors/datatables.net-keytable/js/dataTables.keyTable.min.js");
-    footerScripts_.push_back("vendors/datatables.net-responsive/js/dataTables.responsive.min.js");
-    footerScripts_.push_back("vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js");
-    footerScripts_.push_back("vendors/datatables.net-scroller/js/dataTables.scroller.min.js");
+    styles_.insert(styles_.begin(), "vendors/css/footable.bootstrap.min.css");
+    footerScripts_.push_back("vendors/js/footable.min.js");
 }
 
 void AccountKeysResource::Render(std::shared_ptr<HttpsServer::Response> response)

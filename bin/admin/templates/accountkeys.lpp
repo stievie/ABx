@@ -23,23 +23,23 @@
               <div class="x_panel">
                 <div class="x_content">
 
-                    <table id="datatable-responsive" class="data-table table table-striped dt-responsive nowrap" width="100%" style="width:100%;">
+                    <table id="accountkeys-table" class="table table-striped" width="100%" style="width:100%;">
                       <thead>
                         <tr>
-                          <th>Key</th>
-                          <th>Type</th>
+                          <th data-breakpoints="xs sm">Key</th>
+                          <th data-breakpoints="xs sm">Type</th>
                           <th>Total</th>
                           <th>Used</th>
-                          <th>Status</th>
-                          <th>Email</th>
-                          <th>Description</th>
+                          <th data-breakpoints="xs sm">Status</th>
+                          <th data-breakpoints="xs sm md">Email</th>
+                          <th data-breakpoints="xs sm md">Description</th>
                         </tr>
                       </thead>
                       <tbody>
                       <% for i = 1, #accountkeys do local ak = accountkeys[i] %>
                         <tr>
                           <td>
-                            <input type="text" id="key-<%= ak.uuid %>" readonly value="<%= ak.uuid %>" style="width:95%;"> <a href="#" class="copy-key" data-key="<%= ak.uuid %>" title="Copy"><i class="fa fa-copy"></i></a>
+                            <input type="text" id="key-<%= ak.uuid %>" readonly value="<%= ak.uuid %>" style="width:70%;"> <a href="#" class="copy-key" data-key="<%= ak.uuid %>" title="Copy"><i class="fa fa-copy"></i></a>
                           </td>
                           <td>
                             <select name="table_key_type" class="" data-uuid="<%= ak.uuid %>" disabled>
@@ -142,90 +142,89 @@
           </div>
         </div>
         <!-- /page content -->
-        <script type="text/javascript">
-          $(".copy-key").on("click", function(e) {
-            e.preventDefault();
-            var key = $(this).data("key");
-            $("#key-" + key).select();
-            document.execCommand('copy');
-          });
+<script type="text/javascript">
+$(".copy-key").on("click", function(e) {
+  e.preventDefault();
+  var key = $(this).data("key");
+  $("#key-" + key).select();
+  document.execCommand('copy');
+});
 
-          $(window).load(function () {
-            // Initialize as last
-            if (typeof $.fn.dataTable !== 'undefined')
-            {
-              $('.data-table').each(function() {
-                var rows = 10;
-                if ($(this).data("rows"))
-                  rows = parseInt($(this).data("rows"));
-                $(this).dataTable({
-                  responsive: true,
-                  pageLength: rows,
-                });
-              })
-            };
-          });
+$(function($) {
+  $('.table').footable({
+    "paging": {
+      "enabled": true,
+      "size": 20
+    },
+    "filtering": {
+      "enabled": true
+    },
+    "sorting": {
+      "enabled": true
+    },
+  });
+});
 
-          $("#new_key_form").bind("submit", function(e) {
-            e.preventDefault();
-            NProgress.start();
-            $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
-            {
-              NProgress.done();
-              if (xhr.status == 200 && data.status === "OK")
-              {
-                window.location.reload(false);
-              }
-              else
-                alert(data.message);
-            });
-          });
+$("#new_key_form").bind("submit", function(e) {
+  e.preventDefault();
+  NProgress.start();
+  $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+  {
+    NProgress.done();
+    if (xhr.status == 200 && data.status === "OK")
+    {
+      window.location.reload(false);
+    }
+    else
+      alert(data.message);
+  });
+});
 
-          $(document.body).on("change", "select[name='table_key_type']", function() {
-            NProgress.start();
-            $.post("post/updateaccountkey", {field: "type", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
-            {
-              NProgress.done();
-              if (xhr.status == 200 && data.status === "OK")
-              {
-              }
-              else
-              {
-                alert(data.message);
-                window.location.reload(false);
-              }
-            });
-          });
-          $(document.body).on("input", "input[name='table_count']", function() {
-            NProgress.start();
-            $.post("post/updateaccountkey", {field: "count", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
-            {
-              NProgress.done();
-              if (xhr.status == 200 && data.status === "OK")
-              {
-              }
-              else
-              {
-                alert(data.message);
-                window.location.reload(false);
-              }
-            });
-          });
-          $(document.body).on("change", "select[name='table_key_status']", function() {
-            NProgress.start();
-            $.post("post/updateaccountkey", {field: "status", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
-            {
-              NProgress.done();
-              if (xhr.status == 200 && data.status === "OK")
-              {
-              }
-              else
-              {
-                alert(data.message);
-                window.location.reload(false);
-              }
-            });
-          });
-        </script>
+$(document.body).on("change", "select[name='table_key_type']", function() {
+  NProgress.start();
+  $.post("post/updateaccountkey", {field: "type", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
+  {
+    NProgress.done();
+    if (xhr.status == 200 && data.status === "OK")
+    {
+    }
+    else
+    {
+      alert(data.message);
+      window.location.reload(false);
+    }
+  });
+});
+$(document.body).on("input", "input[name='table_count']", function() {
+  NProgress.start();
+  $.post("post/updateaccountkey", {field: "count", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
+  {
+    NProgress.done();
+    if (xhr.status == 200 && data.status === "OK")
+    {
+    }
+    else
+    {
+      alert(data.message);
+      window.location.reload(false);
+    }
+  });
+});
+$(document.body).on("change", "select[name='table_key_status']", function() {
+  NProgress.start();
+  $.post("post/updateaccountkey", {field: "status", uuid: $(this).data("uuid"), value: $(this).val()}, function(data, textStatus, xhr)
+  {
+    NProgress.done();
+    if (xhr.status == 200 && data.status === "OK")
+    {
+    }
+    else
+    {
+      alert(data.message);
+      window.location.reload(false);
+    }
+  });
+});
+</script>
 
 <?# _footer.lpp ?>

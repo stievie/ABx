@@ -111,7 +111,43 @@
               </div>
             </div>
           </div>
-
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Ban</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form id="account_form" class="form-horizontal form-label-left" method="POST" action="post/ban_account">
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Expires</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <select name="account_status" class="form-control">
+                          <option <% if status_activated then echo("selected") end %> value="1">1 Week</option>
+                          <option <% if status_deleted then echo("selected") end %>value="2">1 Month</option>
+                          <option <% if status_deleted then echo("selected") end %>value="3">1 Year</option>
+                          <option <% if status_unknown then echo("selected") end %> value="9">Never (permanent)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Reason</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <textarea class="form-control" rows="5"></textarea>
+                      </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" class="btn btn-danger" value="Save">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- /page content -->
 

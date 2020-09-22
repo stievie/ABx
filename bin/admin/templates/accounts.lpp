@@ -22,20 +22,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_content">
-                  <table id="datatable-responsive" class="data-table table table-striped dt-responsive nowrap" width="100%" style="width:100%;" data-rows="25">
-                    <thead>
-                      <tr>
-                        <th>UUID</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Online</th>
-                        <th>Email</th>
-                        <th>Server</th>
-                        <th>Character</th>
-                        <th>Instance</th>
-                      </tr>
-                    </thead>
+                  <table id="accounts-table" class="table table-striped" width="100%" style="width:100%;" data-rows="25">
                   </table>
                 </div>
               </div>
@@ -44,97 +31,75 @@
 
         </div>
         <!-- /page content -->
-        <script type="text/javascript">
-          $(window).load(function () {
-            // Initialize as last
-            if (typeof $.fn.dataTable !== 'undefined')
-            {
-              $('.data-table').each(function() {
-                var rows = 10;
-                if ($(this).data("rows"))
-                  rows = parseInt($(this).data("rows"));
-                var table = $(this).dataTable({
-                  responsive: true,
-                  pageLength: rows,
-                  "ajax": "get/accounts",
-                  "order": [[ 4, 'desc' ], [ 1, 'asc' ]],
-                  "columns": [
-                      { "data": "uuid" },
-                      { "data": "name_link" },
-                      { "data": "type" },
-                      { "data": "status" },
-                      { "data": "online" },
-                      { "data": "email" },
-                      { "data": "current_server_link" },
-                      { "data": "current_character_link" },
-                      { "data": "current_instance_link" },
-                  ],
-                  "columnDefs": [
-                  {
-                    "targets": 2,
-                    "data": "type",
-                    "render": function ( data, type, row, meta ) {
-                      switch (data)
-                      {
-                        case 1:
-                          return "Normal";
-                        case 2:
-                          return "Tutor";
-                        case 3:
-                          return "Senior Tutor";
-                        case 4:
-                          return "Game Master";
-                        case 5:
-                          return "God";
-                        default:
-                          return "Unknown";
-                      }
-                    }
-                  },
-                  {
-                    "targets": 3,
-                    "data": "status",
-                    "render": function ( data, type, row, meta ) {
-                      switch (data)
-                      {
-                        case 1:
-                          return "Activated";
-                        case 2:
-                          return "Deleted";
-                        default:
-                          return "Unknown";
-                      }
-                    }
-                  },
-                  {
-                    "targets": 4,
-                    "data": "online",
-                    "render": function ( data, type, row, meta ) {
-                      switch (data)
-                      {
-                        case 0:
-                          return "<span class=\"badge bg-red\">Offline</span>";
-                        case 1:
-                          return "<span class=\"badge bg-orange\">Away</span>";
-                        case 2:
-                          return "<span class=\"badge bg-orange\">Do not disturb</span>";
-                        case 3:
-                          return "<span class=\"badge bg-green\">Online</span>";
-                        case 4:
-                          return "<span class=\"badge bg-purple\">Invisible</span>";
-                        default:
-                          return "Unknown";
-                      }
-                    }
-                  },
-                  ]
-                });
-                setInterval(function() {
-                  table.api().ajax.reload(null, false);
-                }, 10000);
-              })
-            };
-          });
-        </script>
+<script type="text/javascript">
+  $(function($) {
+    $('.table').footable({
+      "paging": {
+        "enabled": true,
+        "size": 20
+      },
+      "filtering": {
+        "enabled": true
+      },
+      "sorting": {
+        "enabled": true
+      },
+      "columns": [
+        {"name":"uuid","title":"UUID","breakpoints":"xs sm md"},
+        {"name":"name_link","title":"Name"},
+        {"name":"type","title":"Type","type":"number","breakpoints":"xs sm md","formatter": function(value, options, rowData) {
+          switch (value)
+          {
+            case 1:
+              return "Normal";
+            case 2:
+              return "Tutor";
+            case 3:
+              return "Senior Tutor";
+            case 4:
+              return "Game Master";
+            case 5:
+              return "God";
+            default:
+              return "Unknown";
+          }
+        }},
+        {"name":"status","title":"Status","type":"number","breakpoints":"xs sm md","formatter": function(value, options, rowData) {
+          switch (value)
+          {
+            case 1:
+              return "Activated";
+            case 2:
+              return "Deleted";
+            default:
+              return "Unknown";
+          }
+        }},
+        {"name":"online","title":"Online","type":"number","formatter": function(value, options, rowData) {
+          switch (value)
+          {
+            case 0:
+              return "<span class=\"badge bg-red\">Offline</span>";
+            case 1:
+              return "<span class=\"badge bg-orange\">Away</span>";
+            case 2:
+              return "<span class=\"badge bg-orange\">Do not disturb</span>";
+            case 3:
+              return "<span class=\"badge bg-green\">Online</span>";
+            case 4:
+              return "<span class=\"badge bg-purple\">Invisible</span>";
+            default:
+              return "Unknown";
+          }
+        }},
+        {"name":"email","title":"Email","breakpoints":"xs sm md"},
+        {"name":"current_server_link","title":"Server","breakpoints":"xs sm"},
+        {"name":"current_character_link","title":"Character"},
+        {"name":"current_instance_link","title":"Instance","breakpoints":"xs sm md"},
+      ],
+      "rows": $.get("get/accounts")
+    });
+  });
+</script>
 
 <?# _footer.lpp ?>

@@ -52,9 +52,9 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
     }
 
     json::JSON obj;
-    // https://datatables.net/examples/data_sources/ajax.html
+    // https://raw.githubusercontent.com/fooplugins/FooTable/V3/docs/content/rows.json
     // https://datatables.net/examples/ajax/objects.html
-    obj["data"] = json::Array();
+    obj = json::Array();
 
     for (const auto& uuid : al.uuids)
     {
@@ -106,7 +106,7 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
         account["current_instance_link"] = "<a href=\"game?id=" + ch.instanceUuid + "\">" + Utils::XML::Escape(instanceName) + "</a>";
         account["online"] = static_cast<int>(a.onlineStatus);
 
-        obj["data"].append(account);
+        obj.append(account);
     }
 
     auto contT = GetSubsystem<ContentTypes>();
