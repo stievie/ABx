@@ -81,8 +81,6 @@ ServiceResource::ServiceResource(std::shared_ptr<HttpsServer::Request> request) 
 {
     template_ = "../templates/service.lpp";
 
-    footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
-
     SimpleWeb::CaseInsensitiveMultimap form = request->parse_query_string();
     auto it = form.find("id");
     if (it != form.end())

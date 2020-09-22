@@ -74,7 +74,7 @@ ServicesResource::ServicesResource(std::shared_ptr<HttpsServer::Request> request
 {
     template_ = "../templates/services.lpp";
 
-    footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
+    footerScripts_.push_back("vendors/js/gauge.min.js");
 }
 
 void ServicesResource::Render(std::shared_ptr<HttpsServer::Response> response)

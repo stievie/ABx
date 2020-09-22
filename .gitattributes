@@ -1,2 +1,3 @@
 Include/* linguist-vendored
 ThirdParty/* linguist-vendored
+bin/admin/root/vendors/* linguist-vendored
