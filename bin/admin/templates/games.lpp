@@ -1,0 +1,88 @@
+<?# _header.lpp ?>
+
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col menu_fixed">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <?# _sidebar.lpp ?>
+          </div>
+        </div>
+
+        <?# _topnav.lpp ?>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_content">
+                  <table id="games-table" class="table table-striped" width="100%" style="width:100%;" data-rows="25">
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /page content -->
+<script type="text/javascript">
+  $(function($) {
+    var ft = FooTable.init(".table", {
+      "paging": {
+        "enabled": true,
+        "size": 20
+      },
+      "filtering": {
+        "enabled": true
+      },
+      "sorting": {
+        "enabled": true
+      },
+      "columns": [
+        {"name":"uuid","title":"Instance","breakpoints":"xs sm md"},
+        {"name":"current_instance_link","title":"Name"},
+        {"name":"number","title":"#","type":"number"},
+        {"name":"players","title":"Players","type":"number"},
+        {"name":"start","title":"Running since","type":"text","formatter": function(value, options, rowData) {
+          const opt = {
+            year: "2-digit",
+            month:"2-digit",
+            day:"2-digit",
+            hour12 : false,
+            hour:  "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }
+          return new Date(value).toLocaleDateString("en-us", opt);
+        }},
+        {"name":"time","title":"Time","type":"number","formatter": function(value, options, rowData) {
+          value = value / 1000;
+          if (value > 3600)
+            return Math.floor((value / 3600)) + " h";
+          if (value > 60)
+            return Math.floor((value / 60)) + " m";
+          return Math.floor(value) + " s";
+        }},
+        {"name":"current_server_link","title":"Server","breakpoints":"xs sm"},
+      ],
+      "rows": $.get("get/games")
+    });
+    
+    function refresh()
+    {
+      $.get("get/games").then(function(rows) {
+        ft.loadRows(rows);
+      });
+      setTimeout(refresh, 1000);
+    }
+    refresh();
+  });
+</script>
+
+<?# _footer.lpp ?>

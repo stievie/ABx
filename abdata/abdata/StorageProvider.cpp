@@ -120,6 +120,7 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBMerchantItem, AB::Entities::MerchantItem>();
     AddEntityClass<DB::DBItemPrice, AB::Entities::ItemPrice>();
     AddEntityClass<DB::DBCraftableItemList, AB::Entities::CraftableItemList>();
+    AddEntityClass<DB::DBGameInstanceList, AB::Entities::GameInstanceList>();
 }
 
 bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
@@ -461,6 +462,8 @@ void StorageProvider::Shutdown()
         FlushData(MY_CLIENT_ID, c.first);
 
     DB::DBAccount::LogoutAll();
+    DB::DBInstance::StopAll();
+    DB::DBService::StopAll();
 }
 
 void StorageProvider::UnlockAll(uint32_t clientId)

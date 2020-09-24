@@ -213,6 +213,7 @@
     <ClInclude Include="DBFriendedMe.h" />
     <ClInclude Include="DBFriendList.h" />
     <ClInclude Include="DBGame.h" />
+    <ClInclude Include="DBGameInstanceList.h" />
     <ClInclude Include="DBGameList.h" />
     <ClInclude Include="DBGuild.h" />
     <ClInclude Include="DBGuildMembers.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="DBFriendedMe.cpp" />
     <ClCompile Include="DBFriendList.cpp" />
     <ClCompile Include="DBGame.cpp" />
+    <ClCompile Include="DBGameInstanceList.cpp" />
     <ClCompile Include="DBGameList.cpp" />
     <ClCompile Include="DBGuild.cpp" />
     <ClCompile Include="DBGuildMembers.cpp" />

@@ -19,37 +19,40 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "DBGameInstanceList.h"
 
-#include <mutex>
-#include "Config.h"
+namespace DB {
 
-class Maintenance
+bool DBGameInstanceList::Create(AB::Entities::GameInstanceList&)
 {
-private:
-    enum class Status
+    return true;
+}
+
+bool DBGameInstanceList::Load(AB::Entities::GameInstanceList& game)
+{
+    Database* db = GetSubsystem<Database>();
+
+    static const std::string query = "SELECT uuid FROM instances WHERE is_running = 1 ORDER BY players DESC, start_time DESC";
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
     {
-        Runnig,
-        Terminated
-    };
-    Status status_;
-    void CleanCacheTask();
-    void CleanGamesTask();
-    void CleanPlayersTask();
-    void CleanChatsTask();
-    void UpdateServerLoadTask();
-    void FileWatchTask();
-    void CheckAutoTerminate();
-    void UpdateAiServer();
-    void UpdateGameInstances();
-public:
-    Maintenance() :
-        status_(Status::Terminated)
-    {}
-    ~Maintenance() = default;
+        game.uuids.push_back(result->GetString("uuid"));
+    }
+    return true;
+}
 
-    void Run();
-    void Stop();
-    uint32_t aiUpdateInterval_{ AI_SERVER_UPDATE_INTERVAL };
-};
+bool DBGameInstanceList::Save(const AB::Entities::GameInstanceList&)
+{
+    return true;
+}
 
+bool DBGameInstanceList::Delete(const AB::Entities::GameInstanceList&)
+{
+    return true;
+}
+
+bool DBGameInstanceList::Exists(const AB::Entities::GameInstanceList&)
+{
+    return true;
+}
+
+}

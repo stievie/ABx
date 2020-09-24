@@ -62,6 +62,7 @@ static constexpr int MAX_MAP_NAME = 50;
 static constexpr int MAX_GAMES = 500;
 // Game instance
 static constexpr int MAX_GAME_INSTANCE_NAME = 500;
+static constexpr int MAX_GAME_INSTANCES = 65536;
 
 // Guild
 static constexpr int MAX_GUILD_NAME = 32;

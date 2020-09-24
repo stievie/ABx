@@ -21,35 +21,41 @@
 
 #pragma once
 
-#include <mutex>
-#include "Config.h"
+#include <AB/Entities/Entity.h>
+//include inheritance extension
+//this header contains two extensions, that specifies inheritance type of base class
+//  BaseClass - normal inheritance
+//  VirtualBaseClass - when virtual inheritance is used
+//in order for virtual inheritance to work, InheritanceContext is required.
+//it can be created either internally (via configuration) or externally (pointer to context).
+#include <bitsery/ext/inheritance.h>
+#include <AB/Entities/Limits.h>
 
-class Maintenance
+using bitsery::ext::BaseClass;
+
+namespace AB {
+namespace Entities {
+
+static constexpr auto KEY_GAMEINSTANCELIST = "instance_list";
+
+struct GameInstanceList : Entity
 {
-private:
-    enum class Status
+    static constexpr const char* KEY()
     {
-        Runnig,
-        Terminated
-    };
-    Status status_;
-    void CleanCacheTask();
-    void CleanGamesTask();
-    void CleanPlayersTask();
-    void CleanChatsTask();
-    void UpdateServerLoadTask();
-    void FileWatchTask();
-    void CheckAutoTerminate();
-    void UpdateAiServer();
-    void UpdateGameInstances();
-public:
-    Maintenance() :
-        status_(Status::Terminated)
-    {}
-    ~Maintenance() = default;
+        return KEY_GAMEINSTANCELIST;
+    }
+    template<typename S>
+    void serialize(S& s)
+    {
+        s.ext(*this, BaseClass<Entity>{});
+        s.container(uuids, Limits::MAX_GAME_INSTANCES, [&s](std::string& c)
+        {
+            s.text1b(c, Limits::MAX_UUID);
+        });
+    }
 
-    void Run();
-    void Stop();
-    uint32_t aiUpdateInterval_{ AI_SERVER_UPDATE_INTERVAL };
+    std::vector<std::string> uuids;
 };
 
+}
+}

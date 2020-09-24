@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,35 +21,17 @@
 
 #pragma once
 
-#include <mutex>
-#include "Config.h"
+#include "Resource.h"
 
-class Maintenance
+namespace Resources {
+
+class GamesJsonResource : public Resource
 {
-private:
-    enum class Status
-    {
-        Runnig,
-        Terminated
-    };
-    Status status_;
-    void CleanCacheTask();
-    void CleanGamesTask();
-    void CleanPlayersTask();
-    void CleanChatsTask();
-    void UpdateServerLoadTask();
-    void FileWatchTask();
-    void CheckAutoTerminate();
-    void UpdateAiServer();
-    void UpdateGameInstances();
 public:
-    Maintenance() :
-        status_(Status::Terminated)
-    {}
-    ~Maintenance() = default;
-
-    void Run();
-    void Stop();
-    uint32_t aiUpdateInterval_{ AI_SERVER_UPDATE_INTERVAL };
+    explicit GamesJsonResource(std::shared_ptr<HttpsServer::Request> request) :
+        Resource(request)
+    { }
+    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
 };
 
+}

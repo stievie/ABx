@@ -21,35 +21,21 @@
 
 #pragma once
 
-#include <mutex>
-#include "Config.h"
+#include <AB/Entities/GameInstanceList.h>
 
-class Maintenance
+namespace DB {
+
+class DBGameInstanceList
 {
-private:
-    enum class Status
-    {
-        Runnig,
-        Terminated
-    };
-    Status status_;
-    void CleanCacheTask();
-    void CleanGamesTask();
-    void CleanPlayersTask();
-    void CleanChatsTask();
-    void UpdateServerLoadTask();
-    void FileWatchTask();
-    void CheckAutoTerminate();
-    void UpdateAiServer();
-    void UpdateGameInstances();
 public:
-    Maintenance() :
-        status_(Status::Terminated)
-    {}
-    ~Maintenance() = default;
+    DBGameInstanceList() = delete;
+    ~DBGameInstanceList() = delete;
 
-    void Run();
-    void Stop();
-    uint32_t aiUpdateInterval_{ AI_SERVER_UPDATE_INTERVAL };
+    static bool Create(AB::Entities::GameInstanceList&);
+    static bool Load(AB::Entities::GameInstanceList& game);
+    static bool Save(const AB::Entities::GameInstanceList&);
+    static bool Delete(const AB::Entities::GameInstanceList&);
+    static bool Exists(const AB::Entities::GameInstanceList&);
 };
 
+}

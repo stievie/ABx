@@ -32,6 +32,8 @@
 #include "DownloadResource.h"
 #include "FileResource.h"
 #include "FriendsResource.h"
+#include "GamesResource.h"
+#include "GamesJsonResource.h"
 #include "IndexResource.h"
 #include "LessFileResource.h"
 #include "LoginResource.h"
@@ -167,6 +169,8 @@ void Application::InitRoutes()
     Route<Resources::AccountResource>("GET", "^/account$");
     Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
     Route<Resources::DownloadResource>("GET", "^/download$");
+    Route<Resources::GamesResource>("GET", "^/games");
+    Route<Resources::GamesJsonResource>("GET", "^/get/games");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");

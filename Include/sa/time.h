@@ -133,6 +133,12 @@ inline std::string format_tick(int64_t tick)
     const std::tm t1 = localtime(tm);
     return put_time(&t1, "%d %b %Y %H:%M");
 }
+inline std::string format_tick(int64_t tick, const char* format)
+{
+    const time_t tm = tick / 1000;
+    const std::tm t1 = localtime(tm);
+    return put_time(&t1, format);
+}
 
 class timer
 {

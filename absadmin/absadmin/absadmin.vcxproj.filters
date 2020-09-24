@@ -123,6 +123,12 @@
     <ClInclude Include="ServerSentEvent.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GamesJsonResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GamesResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -225,6 +231,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ServerSentEvent.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GamesJsonResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GamesResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

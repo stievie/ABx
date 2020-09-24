@@ -36,6 +36,8 @@ public:
     static bool Save(const AB::Entities::Service& s);
     static bool Delete(const AB::Entities::Service& s);
     static bool Exists(const AB::Entities::Service& s);
+
+    static bool StopAll();
 };
 
 }

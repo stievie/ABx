@@ -117,7 +117,7 @@ void Maintenance::UpdateServerLoadTask()
     );
 }
 
-void Maintenance::UpdateInstances()
+void Maintenance::UpdateGameInstances()
 {
     if (status_ != Status::Runnig)
         return;
@@ -132,7 +132,7 @@ void Maintenance::UpdateInstances()
     });
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateInstances, this))
+        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateGameInstances, this))
     );
 }
 
@@ -196,7 +196,7 @@ void Maintenance::Run()
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );
     shed->Add(
-        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateInstances, this))
+        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateGameInstances, this))
     );
     shed->Add(
         Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&Maintenance::FileWatchTask, this))

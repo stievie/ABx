@@ -36,6 +36,8 @@ public:
     static bool Save(const AB::Entities::GameInstance& inst);
     static bool Delete(const AB::Entities::GameInstance& inst);
     static bool Exists(const AB::Entities::GameInstance& inst);
+
+    static bool StopAll();
 };
 
 }

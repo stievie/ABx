@@ -40,6 +40,7 @@
 #include "DBFriendList.h"
 #include "DBFriendedMe.h"
 #include "DBGame.h"
+#include "DBGameInstanceList.h"
 #include "DBGameList.h"
 #include "DBGuild.h"
 #include "DBGuildMembers.h"

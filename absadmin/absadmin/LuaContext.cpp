@@ -49,6 +49,10 @@ LuaContext::LuaContext(Resources::TemplateResource& resource) :
     {
         return Utils::XML::Escape(value);
     });
+    luaState_["tick"] = kaguya::function([]() -> int64_t
+    {
+        return sa::time::tick();
+    });
     luaState_["getHeader"] = kaguya::function([this](const std::string& key) -> std::string
     {
         const auto& headers = resource_.GetHeaders();

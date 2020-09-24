@@ -209,4 +209,37 @@ bool DBService::Exists(const AB::Entities::Service& s)
     return result->GetUInt("count") != 0;
 }
 
+bool DBService::StopAll()
+{
+    Database* db = GetSubsystem<Database>();
+    static constexpr const char* SQL = "UPDATE services SET status = ${status}, stop_time = ${stop_time} WHERE status = ${run_status}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "status")
+                return std::to_string(static_cast<int>(AB::Entities::ServiceStatusOffline));
+            if (token.value == "run_status")
+                return std::to_string(static_cast<int>(AB::Entities::ServiceStatusOnline));
+            if (token.value == "stop_time")
+                return std::to_string(sa::time::tick());
+            LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+
+            return "";
+        default:
+            return token.value;
+        }
+
+    });
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query))
+        return false;
+
+    return transaction.Commit();
+}
+
 }

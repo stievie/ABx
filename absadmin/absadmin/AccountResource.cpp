@@ -108,6 +108,29 @@ bool AccountResource::GetContext(LuaContext& objects)
     state["curr_inst"] = instanceUuid;
     state["curr_inst_name"] = instanceName;
 
+    // Character list
+    int64_t lastOnline = 0;
+    state["characters"] = kaguya::NewTable();
+    int i = 0;
+    for (const std::string& cuuid : acc.characterUuids)
+    {
+        AB::Entities::Character c;
+        c.uuid = cuuid;
+        if (!dataClient->Read(c))
+            continue;
+        if (lastOnline < c.lastLogin)
+            lastOnline = c.lastLogin;
+
+        state["characters"][++i] = kaguya::TableData{
+            { "uuid", c.uuid },
+            { "name", c.name },
+            { "last_online", sa::time::format_tick(c.lastLogin) }
+        };
+    }
+
+    state["last_online"] = lastOnline;
+    state["last_online_string"] = sa::time::format_tick(lastOnline);
+
     return true;
 }
 
@@ -116,6 +139,8 @@ AccountResource::AccountResource(std::shared_ptr<HttpsServer::Request> request) 
     id_("")
 {
     template_ = "../templates/account.lpp";
+    styles_.insert(styles_.begin(), "vendors/css/footable.bootstrap.min.css");
+    footerScripts_.push_back("vendors/js/footable.min.js");
 
     SimpleWeb::CaseInsensitiveMultimap form = request->parse_query_string();
     auto it = form.find("id");

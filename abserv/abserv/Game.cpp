@@ -49,6 +49,7 @@
 #include <abscommon/ThreadPool.h>
 #include <sa/Assert.h>
 #include <sa/EAIterator.h>
+#include <AB/Entities/GameInstanceList.h>
 
 #define DEBUG_GAME
 
@@ -213,6 +214,10 @@ Game::~Game()
     instanceData_.running = false;
     instanceData_.stopTime = sa::time::tick();
     UpdateEntity(instanceData_);
+    auto* client = GetSubsystem<IO::DataClient>();
+    client->Invalidate(instanceData_);
+    AB::Entities::GameInstanceList il;
+    client->Invalidate(il);
     players_.clear();
     objects_.clear();
     GetSubsystem<Chat>()->Remove(ChatType::Map, id_);
@@ -352,6 +357,12 @@ void Game::Start()
     }
     instanceData_.running = true;
     CreateEntity(instanceData_);
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    client->Invalidate(instanceData_);
+
+    AB::Entities::GameInstanceList il;
+    client->Invalidate(il);
 
     lastUpdate_ = 0;
     SetState(ExecutionState::Running);

@@ -198,6 +198,9 @@
     <ClInclude Include="DBCraftableItemList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBGameInstanceList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -375,6 +378,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBCraftableItemList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBGameInstanceList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -47,6 +47,8 @@ static std::string PlaceholderCallback(Database* db, const AB::Entities::GameIns
             return std::to_string(inst.number);
         if (token.value == "is_running")
             return std::to_string(inst.running ? 1 : 0);
+        if (token.value == "players")
+            return std::to_string(inst.players);
 
         LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
         return "";
@@ -66,9 +68,9 @@ bool DBInstance::Create(AB::Entities::GameInstance& inst)
     Database* db = GetSubsystem<Database>();
 
     static constexpr const char* SQL = "INSERT INTO instances ("
-            "uuid, game_uuid, server_uuid, name, recording, start_time, stop_time, number, is_running"
+            "uuid, game_uuid, server_uuid, name, recording, start_time, stop_time, number, is_running, players"
         ") VALUES ("
-            "${uuid}, ${game_uuid}, ${server_uuid}, ${name}, ${recording}, ${start_time}, ${stop_time}, ${number}, ${is_running}"
+            "${uuid}, ${game_uuid}, ${server_uuid}, ${name}, ${recording}, ${start_time}, ${stop_time}, ${number}, ${is_running}, ${players}"
         ")";
 
     const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
@@ -113,6 +115,7 @@ bool DBInstance::Load(AB::Entities::GameInstance& inst)
     inst.stopTime = result->GetLong("stop_time");
     inst.number = static_cast<uint16_t>(result->GetUInt("number"));
     inst.running = result->GetUInt("is_running") != 0;
+    inst.players = static_cast<uint16_t>(result->GetUInt("players"));
 
     return true;
 }
@@ -135,7 +138,8 @@ bool DBInstance::Save(const AB::Entities::GameInstance& inst)
         "start_time = ${start_time}, "
         "stop_time = ${stop_time}, "
         "number = ${number}, "
-        "is_running = ${is_running} "
+        "is_running = ${is_running}, "
+        "players = ${players} "
         "WHERE uuid = ${uuid}";
 
     const std::string query = sa::templ::Parser::Evaluate(SQL, std::bind(&PlaceholderCallback, db, inst, std::placeholders::_1));
@@ -193,6 +197,35 @@ bool DBInstance::Exists(const AB::Entities::GameInstance& inst)
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
+}
+
+bool DBInstance::StopAll()
+{
+    Database* db = GetSubsystem<Database>();
+    static constexpr const char* SQL = "UPDATE instances SET is_running = 0, stop_time = ${stop_time} WHERE is_running = 1";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "stop_time")
+                return std::to_string(sa::time::tick());
+            LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+
+            return "";
+        default:
+            return token.value;
+        }
+
+    });
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query))
+        return false;
+
+    return transaction.Commit();
 }
 
 }
