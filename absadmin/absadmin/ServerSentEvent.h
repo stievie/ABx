@@ -21,36 +21,18 @@
 
 #pragma once
 
-#include "Cookie.h"
-#include "Sessions.h"
-#include <AB/Entities/Account.h>
-#include "Servers.h"
-#include <sa/Noncopyable.h>
+#include "Resource.h"
 
 namespace Resources {
 
-class Resource
+class ServerSentEvent : public Resource
 {
-    NON_COPYABLE(Resource)
-    NON_MOVEABLE(Resource)
 protected:
-    std::shared_ptr<HttpsServer::Request> request_;
-    SimpleWeb::CaseInsensitiveMultimap header_;
-    std::unique_ptr<HTTP::Cookies> requestCookies_;
-    std::unique_ptr<HTTP::Cookies> responseCookies_;
-    std::shared_ptr<HTTP::Session> session_;
-    void Redirect(std::shared_ptr<HttpsServer::Response> response, const std::string& url);
-    bool IsAllowed(AB::Entities::AccountType minType);
-    virtual void Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response);
-    std::string GetRequestHeader(const std::string& key);
-    std::string GetETagValue(const std::string& content);
+    unsigned retry_{ 0 };
+    std::string event_;
+    void Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response) override;
 public:
-    explicit Resource(std::shared_ptr<HttpsServer::Request> request);
-    virtual ~Resource() = default;
-
-    virtual void Render(std::shared_ptr<HttpsServer::Response> response) = 0;
-    SimpleWeb::CaseInsensitiveMultimap& GetHeaders() { return header_; }
-    const SimpleWeb::CaseInsensitiveMultimap& GetHeaders() const { return header_; }
+    explicit ServerSentEvent(std::shared_ptr<HttpsServer::Request> request);
 };
 
 }

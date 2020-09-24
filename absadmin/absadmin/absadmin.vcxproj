@@ -208,6 +208,7 @@
     <ClInclude Include="ProfileResource.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Servers.h" />
+    <ClInclude Include="ServerSentEvent.h" />
     <ClInclude Include="ServiceResource.h" />
     <ClInclude Include="ServicesJsonResource.h" />
     <ClInclude Include="ServicesResource.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="ProfilePostResource.cpp" />
     <ClCompile Include="ProfileResource.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ServerSentEvent.cpp" />
     <ClCompile Include="ServiceResource.cpp" />
     <ClCompile Include="ServicesJsonResource.cpp" />
     <ClCompile Include="ServicesResource.cpp" />

@@ -24,99 +24,99 @@
         </div>
         <!-- /page content -->
 
-        <script>
-          $(document).ready(function() {
-            function getServices() {
-              $.get('get/services', function(data) {
-                $.each($("#services_container > .widget"), function(index, value) {
-                  if ($.inArray($(value).data("uuid"), data.uuids) === -1)
-                  {
-                    $(value).remove();
-                  }
-                });
-                $.each(data.services, function(index, value) {
-                  var elem = $("#services_container > #service_" + value.uuid);
-                  if (elem.length === 0)
-                  {
-                    var html =
-                      "<div id='' class='col-md-3 col-xs-12 widget widget_tally_box'>" +
-                      "  <div class='x_panel'>" +
-                      "    <div class='x_title'>" +
-                      "      <h2>" +
-                      "        <a href=''></a>" +
-                      "      </h2>" +
-                      "      <span id='' class='badge pull-right'></span>" +
-                      "      <div class='clearfix'></div>" +
-                      "    </div>" +
-                      "    <div class='x_content'>" +
-                      "      <div style='text-align: center; margin-bottom: 17px'>" +
-                      "        <canvas style='width: 200px; height: 100px;' data-value=''></canvas>" +
-                      "        <div class='load_text'></div>" +
-                      "      </div>" +
-                      "    </div>" +
-                      "  </div>" +
-                      "</div>";
+<script>
+  $(document).ready(function() {
+    function getServices() {
+      $.get('get/services', function(data) {
+        $.each($("#services_container > .widget"), function(index, value) {
+          if ($.inArray($(value).data("uuid"), data.uuids) === -1)
+          {
+            $(value).remove();
+          }
+        });
+        $.each(data.services, function(index, value) {
+          var elem = $("#services_container > #service_" + value.uuid);
+          if (elem.length === 0)
+          {
+            var html =
+              "<div id='' class='col-md-3 col-xs-12 widget widget_tally_box'>" +
+              "  <div class='x_panel'>" +
+              "    <div class='x_title'>" +
+              "      <h2>" +
+              "        <a href=''></a>" +
+              "      </h2>" +
+              "      <span id='' class='badge pull-right'></span>" +
+              "      <div class='clearfix'></div>" +
+              "    </div>" +
+              "    <div class='x_content'>" +
+              "      <div style='text-align: center; margin-bottom: 17px'>" +
+              "        <canvas style='width: 200px; height: 100px;' data-value=''></canvas>" +
+              "        <div class='load_text'></div>" +
+              "      </div>" +
+              "    </div>" +
+              "  </div>" +
+              "</div>";
 
-                      elem = $(html).appendTo("#services_container");
-                      elem.attr("id", "service_" + value.uuid);
-                      elem.attr("data-uuid", value.uuid);
-                      elem.find("h2 a").attr("href", "service?id=" + value.uuid);
-                      elem.find("h2 a").text(value.name);
-                  }
-                  if (value.online)
-                  {
-                    elem.find(".badge").removeClass("bg-red");
-                    elem.find(".badge").addClass("bg-green");
-                    elem.find(".badge").text("Online");
-                    elem.find("canvas").addClass("gauge-chart");
-                    elem.find("canvas").attr("data-value", value.load + 1);
-                    elem.find(".load_text").text(value.load + "% Load");
-                  }
-                  else
-                  {
-                    elem.find(".badge").removeClass("bg-green");
-                    elem.find(".badge").addClass("bg-red");
-                    elem.find(".badge").text("Offline");
-                    elem.find("canvas").removeClass("gauge-chart");
-                    elem.find(".load_text").text("Offline");
-                  }
+              elem = $(html).appendTo("#services_container");
+              elem.attr("id", "service_" + value.uuid);
+              elem.attr("data-uuid", value.uuid);
+              elem.find("h2 a").attr("href", "service?id=" + value.uuid);
+              elem.find("h2 a").text(value.name);
+          }
+          if (value.online)
+          {
+            elem.find(".badge").removeClass("bg-red");
+            elem.find(".badge").addClass("bg-green");
+            elem.find(".badge").text("Online");
+            elem.find("canvas").addClass("gauge-chart");
+            elem.find("canvas").attr("data-value", value.load + 1);
+            elem.find(".load_text").text(value.load + "% Load");
+          }
+          else
+          {
+            elem.find(".badge").removeClass("bg-green");
+            elem.find(".badge").addClass("bg-red");
+            elem.find(".badge").text("Offline");
+            elem.find("canvas").removeClass("gauge-chart");
+            elem.find(".load_text").text("Offline");
+          }
 
-                });
-                initGauge();
-                setTimeout(getServices, 1000);
-              });
-            }
+        });
+        initGauge();
+        setTimeout(getServices, 1000);
+      });
+    }
 
-            function initGauge()
-            {
-              var chart_gauge_settings = {
-                lines: 12,
-                angle: 0,
-                lineWidth: 0.4,
-                pointer: {
-                  length: 0.75,
-                  strokeWidth: 0.042,
-                  color: '#1D212A',
-                },
-                limitMax: 'false',
-                colorStart: '#1ABC9C',
-                colorStop: '#1ABC9C',
-                strokeColor: '#F0F3F3',
-                generateGradient: true,
-              };
+    function initGauge()
+    {
+      var chart_gauge_settings = {
+        lines: 12,
+        angle: 0,
+        lineWidth: 0.4,
+        pointer: {
+          length: 0.75,
+          strokeWidth: 0.042,
+          color: '#1D212A',
+        },
+        limitMax: 'false',
+        colorStart: '#1ABC9C',
+        colorStop: '#1ABC9C',
+        strokeColor: '#F0F3F3',
+        generateGradient: true,
+      };
 
-              $.each($('.gauge-chart'), function(index, value) {
-                var chart_gauge = new Gauge(value).setOptions(chart_gauge_settings);
-                chart_gauge.minValue = 0;
-                chart_gauge.maxValue = 100;
-                chart_gauge.animationSpeed = 1;
-                var val = $(this).data("value");
-                chart_gauge.set(val);
-              });
-            }
+      $.each($('.gauge-chart'), function(index, value) {
+        var chart_gauge = new Gauge(value).setOptions(chart_gauge_settings);
+        chart_gauge.minValue = 0;
+        chart_gauge.maxValue = 100;
+        chart_gauge.animationSpeed = 1;
+        var val = $(this).data("value");
+        chart_gauge.set(val);
+      });
+    }
 
-            getServices();
-          });
-        </script>
+    getServices();
+  });
+</script>
 
 <?# _footer.lpp ?>
