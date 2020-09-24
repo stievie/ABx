@@ -26,6 +26,7 @@
 #include <abscommon/Service.h>
 #include <sa/IdGenerator.h>
 #include <AB/Entities/Game.h>
+#include <sa/Iteration.h>
 
 namespace Game {
 
@@ -79,6 +80,15 @@ public:
     GameManager::State GetState() const { return state_; }
     size_t GetGameCount() const { return games_.size(); }
     const ea::map<uint32_t, ea::shared_ptr<Game>>& GetGames() const { return games_; }
+    template<typename Callback>
+    void VisitGames(Callback&& callback)
+    {
+        for (auto& gamePair : games_)
+        {
+            if (callback(*gamePair.second) != Iteration::Continue)
+                break;
+        }
+    }
 };
 
 }

@@ -55,6 +55,7 @@ struct GameInstance : Entity
         s.value8b(stopTime);
         s.value2b(number);
         s.value1b(running);
+        s.value2b(players);
     }
 
     std::string gameUuid = EMPTY_GUID;
@@ -68,6 +69,8 @@ struct GameInstance : Entity
     /// If there are more instances of the same game on the same server this is the number, e.g. District.
     uint16_t number = 0;
     bool running{ false };
+    // Number of players in this instance
+    uint16_t players{ 0 };
 };
 
 }

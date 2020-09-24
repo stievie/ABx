@@ -33,6 +33,7 @@
 #include <abscommon/FileWatcher.h>
 #include <abscommon/ThreadPool.h>
 #include <sa/time.h>
+#include "Game.h"
 
 void Maintenance::CleanCacheTask()
 {
@@ -116,6 +117,25 @@ void Maintenance::UpdateServerLoadTask()
     );
 }
 
+void Maintenance::UpdateInstances()
+{
+    if (status_ != Status::Runnig)
+        return;
+
+    auto* gameMan = GetSubsystem<Game::GameManager>();
+    auto* client = GetSubsystem<IO::DataClient>();
+    gameMan->VisitGames([&](Game::Game& game)
+    {
+        game.instanceData_.players = static_cast<uint16_t>(game.GetPlayerCount());
+        client->Update(game.instanceData_);
+        return Iteration::Continue;
+    });
+
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateInstances, this))
+    );
+}
+
 void Maintenance::FileWatchTask()
 {
     GetSubsystem<IO::DataProvider>()->Update();
@@ -174,6 +194,9 @@ void Maintenance::Run()
     );
     shed->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
+    );
+    shed->Add(
+        Asynch::CreateScheduledTask(UPDATE_INSTANCES_MS, std::bind(&Maintenance::UpdateInstances, this))
     );
     shed->Add(
         Asynch::CreateScheduledTask(FILEWATCHER_INTERVAL, std::bind(&Maintenance::FileWatchTask, this))

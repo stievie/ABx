@@ -41,6 +41,7 @@ private:
     void FileWatchTask();
     void CheckAutoTerminate();
     void UpdateAiServer();
+    void UpdateInstances();
 public:
     Maintenance() :
         status_(Status::Terminated)
