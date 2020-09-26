@@ -37,7 +37,9 @@ static constexpr int MAX_SERVICE_IP = 64;
 static constexpr int MAX_SERVICE_LOCATION = 10;
 static constexpr int MAX_SERVICES = 64;         // Max number of services in ServiceList
 
-static constexpr int MAX_MUSIC = 65536;
+static constexpr int MAX_LIST = 65536;
+
+static constexpr int MAX_MUSIC = MAX_LIST;
 static constexpr int MAX_MUSIC_MAPS = 5000;
 
 // Account
@@ -62,7 +64,7 @@ static constexpr int MAX_MAP_NAME = 50;
 static constexpr int MAX_GAMES = 500;
 // Game instance
 static constexpr int MAX_GAME_INSTANCE_NAME = 500;
-static constexpr int MAX_GAME_INSTANCES = 65536;
+static constexpr int MAX_GAME_INSTANCES = MAX_LIST;
 
 // Guild
 static constexpr int MAX_GUILD_NAME = 32;
@@ -116,7 +118,7 @@ static constexpr int MAX_EFFECT_NAME = 64;
 static constexpr int MAX_EFFECTS = 4096;                            // Max effects in game
 // Item
 static constexpr int MAX_ITEM_NAME = 64;
-static constexpr int MAX_ITEMS = 65536;
+static constexpr int MAX_ITEMS = MAX_LIST;
 static constexpr int MAX_ITEM_STATS = 1024;                         // Max size of stats BLOB
 
 }

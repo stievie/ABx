@@ -28,12 +28,12 @@
 
 namespace Resources {
 
-bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultimap& form, std::string& error)
+bool PasswordPostResource::ChangePassword(std::string& error)
 {
-    auto oldPwIt = form.find("old_password");
-    auto newPwIt = form.find("new_password");
-    auto new2PwIt = form.find("new_password2");
-    if (oldPwIt == form.end() || newPwIt == form.end() || new2PwIt == form.end())
+    auto oldPwIt = GetFormField("old_password");
+    auto newPwIt = GetFormField("new_password");
+    auto new2PwIt = GetFormField("new_password2");
+    if (!oldPwIt.has_value() || !newPwIt.has_value() || !new2PwIt.has_value())
         return false;
 
     std::string uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
@@ -46,7 +46,7 @@ bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultim
         return false;
     }
 
-    if (bcrypt_checkpass((*oldPwIt).second.c_str(), account.password.c_str()) != 0)
+    if (bcrypt_checkpass(oldPwIt.value().c_str(), account.password.c_str()) != 0)
     {
         error = "Password check failed";
         return false;
@@ -59,7 +59,7 @@ bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultim
 
     // Create the account
     char pwhash[61];
-    if (bcrypt_newhash((*newPwIt).second.c_str(), 10, pwhash, 61) != 0)
+    if (bcrypt_newhash(newPwIt.value().c_str(), 10, pwhash, 61) != 0)
     {
         LOG_ERROR << "bcrypt_newhash() failed" << std::endl;
         error = "Don't ask!";
@@ -88,13 +88,9 @@ void PasswordPostResource::Render(std::shared_ptr<HttpsServer::Response> respons
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
     std::string error;
-    if (ChangePassword(form, error))
+    if (ChangePassword(error))
         obj["status"] = "OK";
     else
     {

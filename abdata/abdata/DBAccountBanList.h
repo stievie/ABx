@@ -21,19 +21,21 @@
 
 #pragma once
 
-#include "Resource.h"
+#include <AB/Entities/AccountBanList.h>
 
-namespace Resources {
+namespace DB {
 
-class PasswordPostResource : public Resource
+class DBAccountBanList
 {
-private:
-    bool ChangePassword(std::string& error);
 public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
-        Resource(request)
-    { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
+    DBAccountBanList() = delete;
+    ~DBAccountBanList() = delete;
+
+    static bool Create(AB::Entities::AccountBanList& li);
+    static bool Load(AB::Entities::AccountBanList& il);
+    static bool Save(const AB::Entities::AccountBanList& il);
+    static bool Delete(const AB::Entities::AccountBanList& il);
+    static bool Exists(const AB::Entities::AccountBanList& il);
 };
 
 }

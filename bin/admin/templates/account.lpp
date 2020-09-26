@@ -97,6 +97,12 @@
                       </div>
                     </div>
                     <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Created</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <%= created %>
+                      </div>
+                    </div>
+                    <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Last online</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
                         <%= last_online_string %>
@@ -106,9 +112,9 @@
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                        <input type="submit" class="btn btn-success" value="Save">
+                        <input type="submit" class="btn btn-success pull-right" value="Save">
                         <% if is_online then %>
-                        <input type="button" id="logout_button" data-uuid="${uuid}" class="btn btn-danger" value="Log out">
+                        <input type="button" id="logout_button" data-uuid="${uuid}" class="btn btn-danger pull-right" value="Log out">
                         <% end %>
                       </div>
                     </div>
@@ -132,6 +138,7 @@
                         <th data-breakpoints="xs sm md">ID</th>
                         <th>Name</th>
                         <th data-breakpoints="xs sm">Last online</th>
+                        <th data-breakpoints="xs sm md">Created</th>
                       </tr>
                     </thead>
                       <tbody>
@@ -146,6 +153,9 @@
                           <td>
                             <%= ch.last_online %>
                           </td>
+                          <td>
+                            <%= ch.created %>
+                          </td>
                         </tr>
                       <% end %>
                       </tbody>
@@ -159,32 +169,85 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Ban</h2>
+                  <h2>Bans</h2>
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <form id="account_form" class="form-horizontal form-label-left" method="POST" action="post/ban_account">
+                  <table id="account-bans-table" class="table table-striped" data-rows="25">
+                    <thead>
+                      <tr>
+                        <th data-breakpoints="xs sm md">Added</th>
+                        <th>Expires</th>
+                        <th>Active</th>
+                        <th data-breakpoints="xs sm">Admin</th>
+                        <th data-breakpoints="xs sm md">Comment</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for i = 1, #bans do local ban = bans[i] %>
+                        <tr>
+                          <td>
+                            <%= ban.added %>
+                          </td>
+                          <td>
+                            <%= ban.expires %>
+                          </td>
+                          <td>
+                            <% if ban.active then echo("Active") else echo("Inactive") end %>
+                          </td>
+                          <td>
+                            <a href="account?id=<%= ban.admin_uuid %>"><%= ban.admin_name %></a>
+                          </td>
+                          <td>
+                            <%= ban.comment %>
+                          </td>
+                          <td>
+                          <% if ban.active then %>
+                          <a href="#" title="Disable Ban" class="disable-ban-link" data-uuid="<%= ban.uuid %>"><i class="fa fa-minus-circle"></i></a>
+                          <% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Add Ban</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form id="ban_form" class="form-horizontal form-label-left" method="POST" action="post/ban_account">
+                    <input type="hidden" name="uuid" value="<%= uuid %>">
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Expires</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
-                        <select name="account_status" class="form-control">
-                          <option <% if status_activated then echo("selected") end %> value="1">1 Week</option>
-                          <option <% if status_deleted then echo("selected") end %>value="2">1 Month</option>
-                          <option <% if status_deleted then echo("selected") end %>value="3">1 Year</option>
-                          <option <% if status_unknown then echo("selected") end %> value="9">Never (permanent)</option>
+                        <select name="expires" class="form-control">
+                          <option value="1">1 Week</option>
+                          <option value="2">1 Month</option>
+                          <option value="3">3 Month</option>
+                          <option value="4">1 Year</option>
+                          <option value="9">Never (permanent)</option>
                         </select>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Reason</label>
                       <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea class="form-control" rows="5" name="comment"></textarea>
                       </div>
                     </div>
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                        <input type="submit" class="btn btn-danger" value="Save">
+                        <input type="submit" class="btn btn-danger pull-right" value="Create">
                       </div>
                     </div>
                   </form>
@@ -203,11 +266,26 @@ $(function($) {
       "size": 20
     },
     "filtering": {
-      "enabled": true
+      "enabled": false
     },
     "sorting": {
       "enabled": true
     },
+  });
+
+  $(".disable-ban-link").on("click", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post("post/ban_disable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        window.location.reload(false);
+      }
+      else
+        alert(data.message);
+    });
   });
 });
 
@@ -234,6 +312,20 @@ $(function($) {
     {
       NProgress.done();
       if (xhr.status != 200 || data.status !== "OK")
+        alert(data.message);
+    });
+  });
+  $("#ban_form").bind("submit", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        window.location.reload(false);
+      }
+      else
         alert(data.message);
     });
   });

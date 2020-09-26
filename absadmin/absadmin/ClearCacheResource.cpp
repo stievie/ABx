@@ -70,20 +70,17 @@ void ClearCacheResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto uuidIt = form.find("uuid");
-    if (uuidIt == form.end())
+
+    auto uuidIt = GetFormField("uuid");
+    if (!uuidIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing UUID field";
     }
     else
     {
-        if (!ClearCache((*uuidIt).second))
+        if (!ClearCache(uuidIt.value()))
         {
             obj["status"] = "Failed";
             obj["message"] = "Failed";

@@ -68,6 +68,12 @@ Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
     request_(request),
     header_(Application::GetDefaultHeader())
 {
+    std::stringstream ss;
+    ss << request_->content.rdbuf();
+    formValues_ = SimpleWeb::QueryString::parse(ss.str());
+    request_->content.seekg(0, std::istream::beg);
+    queryValues_ = request_->parse_query_string();
+
     responseCookies_ = std::make_unique<HTTP::Cookies>();
     requestCookies_ = std::make_unique<HTTP::Cookies>(*request);
     HTTP::Cookie* sessCookie = requestCookies_->Get("SESSION_ID");
@@ -100,9 +106,12 @@ Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
 
 std::string Resource::GetETagValue(const std::string& content)
 {
-    sa::hash<char, 20> hash;
-
-    sha1(content.data(), (int)content.length(), hash.data());
+    sa::hash<unsigned char, 20> hash;
+    sha1_ctx ctx;
+    sha1_init(&ctx);
+    for (unsigned char c : content)
+        sha1_update(&ctx, (const unsigned char*)&c, 1);
+    sha1_final(&ctx, hash.data());
     return hash.to_string();
 }
 
@@ -143,6 +152,22 @@ void Resource::Send(const std::string& content, std::shared_ptr<HttpsServer::Res
     }
     header_.emplace("Content-Length", std::to_string(content.length()));
     response->write(content, header_);
+}
+
+std::optional<std::string> Resource::GetFormField(const std::string& key)
+{
+    const auto it = formValues_.find(key);
+    if (it == formValues_.end())
+        return {};
+    return it->second;
+}
+
+std::optional<std::string> Resource::GetQueryValue(const std::string& key)
+{
+    const auto it = queryValues_.find(key);
+    if (it == queryValues_.end())
+        return {};
+    return it->second;
 }
 
 }

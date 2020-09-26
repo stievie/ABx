@@ -38,20 +38,17 @@ void AccountPostResource::Render(std::shared_ptr<HttpsServer::Response> response
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto uuidIt = form.find("uuid");
-    if (uuidIt == form.end())
+
+    auto uuidIt = GetFormField("uuid");
+    if (!uuidIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing UUID field";
     }
     else
     {
-        std::string uuid = (*uuidIt).second;
+        std::string uuid = uuidIt.value();
         AB::Entities::Account account;
         account.uuid = uuid;
         auto dataClient = GetSubsystem<IO::DataClient>();
@@ -62,16 +59,16 @@ void AccountPostResource::Render(std::shared_ptr<HttpsServer::Response> response
         }
         else
         {
-            auto typeIt = form.find("account_type");
-            if (typeIt != form.end())
+            auto typeIt = GetFormField("account_type");
+            if (typeIt.has_value())
             {
-                int t = std::atoi((*typeIt).second.c_str());
+                int t = std::atoi(typeIt.value().c_str());
                 account.type = static_cast<AB::Entities::AccountType>(t);
             }
-            auto statusIt = form.find("account_status");
-            if (statusIt != form.end())
+            auto statusIt = GetFormField("account_status");
+            if (statusIt.has_value())
             {
-                int s = std::atoi((*statusIt).second.c_str());
+                int s = std::atoi(statusIt.value().c_str());
                 account.status = static_cast<AB::Entities::AccountStatus>(s);
             }
 

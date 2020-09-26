@@ -195,6 +195,7 @@
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBAccountBan.h" />
+    <ClInclude Include="DBAccountBanList.h" />
     <ClInclude Include="DBAccountItemList.h" />
     <ClInclude Include="DBAccountKey.h" />
     <ClInclude Include="DBAccountKeyAccounts.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="DBGuildMembers.h" />
     <ClInclude Include="DBInstance.h" />
     <ClInclude Include="DBIpBan.h" />
+    <ClInclude Include="DBIpBanList.h" />
     <ClInclude Include="DBItem.h" />
     <ClInclude Include="DBItemChanceList.h" />
     <ClInclude Include="DBItemList.h" />
@@ -259,6 +261,7 @@
     <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="DBAccountBan.cpp" />
+    <ClCompile Include="DBAccountBanList.cpp" />
     <ClCompile Include="DBAccountItemList.cpp" />
     <ClCompile Include="DBAccountKey.cpp" />
     <ClCompile Include="DBAccountKeyAccounts.cpp" />
@@ -282,6 +285,7 @@
     <ClCompile Include="DBGuildMembers.cpp" />
     <ClCompile Include="DBInstance.cpp" />
     <ClCompile Include="DBIpBan.cpp" />
+    <ClCompile Include="DBIpBanList.cpp" />
     <ClCompile Include="DBItem.cpp" />
     <ClCompile Include="DBItemChanceList.cpp" />
     <ClCompile Include="DBItemList.cpp" />

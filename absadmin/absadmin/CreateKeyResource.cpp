@@ -79,27 +79,23 @@ void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto uuidIt = form.find("uuid");
-    auto keyTypeIt = form.find("key_type");
-    auto countIt = form.find("count");
-    auto keyStatusIt = form.find("key_status");
-    auto emailIt = form.find("email");
-    auto descrIt = form.find("description");
-    if (uuidIt == form.end() || keyTypeIt == form.end() || countIt == form.end() ||
-        keyStatusIt == form.end() || emailIt == form.end() || descrIt == form.end())
+    auto uuidIt = GetFormField("uuid");
+    auto keyTypeIt = GetFormField("key_type");
+    auto countIt = GetFormField("count");
+    auto keyStatusIt = GetFormField("key_status");
+    auto emailIt = GetFormField("email");
+    auto descrIt = GetFormField("description");
+    if (!uuidIt.has_value() || !keyTypeIt.has_value() || !countIt.has_value() ||
+        !keyStatusIt.has_value() || !emailIt.has_value() || !descrIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing field(s)";
     }
     else
     {
-        if (!CreateKey((*uuidIt).second, (*keyTypeIt).second, (*countIt).second,
-            (*keyStatusIt).second, (*emailIt).second, (*descrIt).second))
+        if (!CreateKey(uuidIt.value(), keyTypeIt.value(), countIt.value(),
+            keyStatusIt.value(), emailIt.value(), descrIt.value()))
         {
             obj["status"] = "Failed";
             obj["message"] = "Failed";

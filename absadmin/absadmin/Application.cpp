@@ -26,6 +26,9 @@
 #include "AccountResource.h"
 #include "AccountsJsonResource.h"
 #include "AccountsResource.h"
+#include "BanAccountResource.h"
+#include "BanIpResource.h"
+#include "BanDisableResource.h"
 #include "ClearCacheResource.h"
 #include "ContentTypes.h"
 #include "CreateKeyResource.h"
@@ -35,6 +38,8 @@
 #include "GamesResource.h"
 #include "GamesJsonResource.h"
 #include "IndexResource.h"
+#include "IPBansResource.h"
+#include "IPBansJsonResource.h"
 #include "LessFileResource.h"
 #include "LoginResource.h"
 #include "LogoutResource.h"
@@ -169,8 +174,10 @@ void Application::InitRoutes()
     Route<Resources::AccountResource>("GET", "^/account$");
     Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
     Route<Resources::DownloadResource>("GET", "^/download$");
-    Route<Resources::GamesResource>("GET", "^/games");
-    Route<Resources::GamesJsonResource>("GET", "^/get/games");
+    Route<Resources::GamesResource>("GET", "^/games$");
+    Route<Resources::GamesJsonResource>("GET", "^/get/games$");
+    Route<Resources::IPBansResource>("GET", "^/ipbans$");
+    Route<Resources::IPBansJsonResource>("GET", "^/get/ipbans$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
@@ -183,6 +190,9 @@ void Application::InitRoutes()
     Route<Resources::CreateKeyResource>("POST", "^/post/createkey$");
     Route<Resources::AccountPostResource>("POST", "^/post/account$");
     Route<Resources::AccountLogoutResource>("POST", "^/post/account_logout$");
+    Route<Resources::BanDisableResource>("POST", "^/post/ban_disable$");
+    Route<Resources::BanAccountResource>("POST", "^/post/ban_account$");
+    Route<Resources::BanIpResource>("POST", "^/post/ban_ip$");
 }
 
 void Application::ShowVersion()

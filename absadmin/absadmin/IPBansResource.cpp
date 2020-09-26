@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,21 +19,40 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
 
-#include "Resource.h"
+#include "IPBansResource.h"
+#include "Application.h"
+#include "Version.h"
+#include <AB/Entities/GameInstance.h>
+#include <AB/Entities/Game.h>
 
 namespace Resources {
 
-class PasswordPostResource : public Resource
+bool IPBansResource::GetContext(LuaContext& objects)
 {
-private:
-    bool ChangePassword(std::string& error);
-public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
-        Resource(request)
-    { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
-};
+    if (!TemplateResource::GetContext(objects))
+        return false;
+
+    return true;
+}
+
+IPBansResource::IPBansResource(std::shared_ptr<HttpsServer::Request> request) :
+    TemplateResource(request)
+{
+    template_ = "../templates/ipbans.lpp";
+    styles_.insert(styles_.begin(), "vendors/css/footable.bootstrap.min.css");
+    footerScripts_.push_back("vendors/js/footable.min.js");
+}
+
+void IPBansResource::Render(std::shared_ptr<HttpsServer::Response> response)
+{
+    if (!IsAllowed(AB::Entities::AccountType::God))
+    {
+        Redirect(response, "/");
+        return;
+    }
+
+    TemplateResource::Render(response);
+}
 
 }

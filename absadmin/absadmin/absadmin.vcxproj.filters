@@ -129,6 +129,21 @@
     <ClInclude Include="GamesResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="BanDisableResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BanAccountResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IPBansResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IPBansJsonResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BanIpResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -237,6 +252,21 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GamesResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BanDisableResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BanAccountResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IPBansResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IPBansJsonResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BanIpResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

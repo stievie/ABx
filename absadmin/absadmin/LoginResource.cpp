@@ -69,22 +69,17 @@ void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-
     json::JSON obj;
 
-    auto userIt = form.find("username");
-    auto passIt = form.find("password");
-    if (userIt == form.end() || passIt == form.end())
+    auto userIt = GetFormField("username");
+    auto passIt = GetFormField("password");
+    if (!userIt.has_value() || !passIt.has_value())
     {
         obj["status"] = "Failed";
     }
     else
     {
-        if (Auth((*userIt).second, (*passIt).second))
+        if (Auth(userIt.value(), passIt.value()))
             obj["status"] = "OK";
         else
             obj["status"] = "Failed";

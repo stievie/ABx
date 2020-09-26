@@ -19,21 +19,41 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "DBIpBanList.h"
 
-#include "Resource.h"
+namespace DB {
 
-namespace Resources {
-
-class PasswordPostResource : public Resource
+bool DBIpBanList::Create(AB::Entities::IpBanList&)
 {
-private:
-    bool ChangePassword(std::string& error);
-public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
-        Resource(request)
-    { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
-};
+    return true;
+}
+
+bool DBIpBanList::Load(AB::Entities::IpBanList& il)
+{
+    Database* db = GetSubsystem<Database>();
+
+    static const std::string query = "SELECT uuid FROM ip_bans";
+
+    for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query); result; result = result->Next())
+    {
+        il.uuids.push_back(result->GetString("uuid"));
+    }
+    return true;
+}
+
+bool DBIpBanList::Save(const AB::Entities::IpBanList&)
+{
+    return true;
+}
+
+bool DBIpBanList::Delete(const AB::Entities::IpBanList&)
+{
+    return true;
+}
+
+bool DBIpBanList::Exists(const AB::Entities::IpBanList&)
+{
+    return true;
+}
 
 }

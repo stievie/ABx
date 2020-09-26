@@ -29,6 +29,14 @@
 namespace sa {
 namespace time {
 
+inline constexpr int64_t SECOND = 1000;
+inline constexpr int64_t MINUTE = 60 * SECOND;
+inline constexpr int64_t HOUR = 60 * MINUTE;
+inline constexpr int64_t DAY = 24 * HOUR;
+inline constexpr int64_t WEEK = 7 * DAY;
+inline constexpr int64_t MONTH = 30 * DAY;
+inline constexpr int64_t YEAR = 356 * DAY;
+
 inline std::tm localtime(const std::time_t& time)
 {
     std::tm tm_snapshot;
@@ -127,17 +135,17 @@ inline bool is_expired(int64_t expiresAt)
     return expiresAt < tick();
 }
 
-inline std::string format_tick(int64_t tick)
-{
-    const time_t tm = tick / 1000;
-    const std::tm t1 = localtime(tm);
-    return put_time(&t1, "%d %b %Y %H:%M");
-}
 inline std::string format_tick(int64_t tick, const char* format)
 {
     const time_t tm = tick / 1000;
     const std::tm t1 = localtime(tm);
+    if (t1.tm_hour < 0 || t1.tm_mday < 1 || t1.tm_min < 0 || t1.tm_mon < 0 || t1.tm_sec < 0)
+        return "";
     return put_time(&t1, format);
+}
+inline std::string format_tick(int64_t tick)
+{
+    return format_tick(tick, "%d %b %Y %H:%M");
 }
 
 class timer

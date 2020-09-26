@@ -39,13 +39,9 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto emailIt = form.find("email");
-    if (emailIt == form.end())
+    auto emailIt = GetFormField("email");
+    if (!emailIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing Email field";
@@ -63,7 +59,7 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
         }
         else
         {
-            account.email = (*emailIt).second;
+            account.email = emailIt.value();
             if (dataClient->Update(account))
                 obj["status"] = "OK";
             else

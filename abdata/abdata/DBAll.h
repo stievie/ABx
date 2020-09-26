@@ -23,6 +23,7 @@
 
 #include "DBAccount.h"
 #include "DBAccountBan.h"
+#include "DBAccountBanList.h"
 #include "DBAccountItemList.h"
 #include "DBAccountKey.h"
 #include "DBAccountKeyAccounts.h"
@@ -46,6 +47,7 @@
 #include "DBGuildMembers.h"
 #include "DBInstance.h"
 #include "DBIpBan.h"
+#include "DBIpBanList.h"
 #include "DBItem.h"
 #include "DBItemChanceList.h"
 #include "DBItemList.h"

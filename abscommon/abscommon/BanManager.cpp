@@ -23,6 +23,7 @@
 #include "Utils.h"
 #include <AB/Entities/IpBan.h>
 #include <AB/Entities/AccountBan.h>
+#include <AB/Entities/AccountBanList.h>
 #include "DataClient.h"
 #include "Profiler.h"
 #include "Subsystems.h"
@@ -109,17 +110,22 @@ bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
     if (!client)
         return false;
 
-    AB::Entities::AccountBan ban;
-    ban.accountUuid = accountUuid.to_string();
-    if (!client->Read(ban))
+    AB::Entities::AccountBanList banlist;
+    banlist.uuid = accountUuid.to_string();
+    if (!client->Read(banlist))
         return false;
-    AB::Entities::Ban _ban;
-    _ban.uuid = ban.banUuid;
-    if (!client->Read(_ban))
-        return false;
-    if (!_ban.active)
-        return false;
-    return (_ban.expires <= 0) || (_ban.expires >= sa::time::tick());
+    for (const auto& uuid : banlist.uuids)
+    {
+        AB::Entities::Ban _ban;
+        _ban.uuid = uuid;
+        if (!client->Read(_ban))
+            continue;
+        if (!_ban.active)
+            continue;
+        if ((_ban.expires <= 0) || (_ban.expires >= sa::time::tick()))
+            return true;
+    }
+    return false;
 }
 
 bool BanManager::IsIpDisabled(uint32_t clientIP) const
@@ -213,7 +219,14 @@ bool BanManager::AddAccountBan(const std::string& accountUuid, int64_t expires, 
     AB::Entities::AccountBan accBan;
     accBan.banUuid = ban.uuid;
     accBan.accountUuid = accountUuid;
-    return client->Create(accBan);
+    bool result = client->Create(accBan);
+    if (result)
+    {
+        AB::Entities::AccountBanList banlist;
+        banlist.uuid = accountUuid;
+        client->Invalidate(banlist);
+    }
+    return result;
 }
 
 }

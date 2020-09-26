@@ -39,9 +39,6 @@ void LogoutResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     session_->values_[sa::StringHashRt("logged_in")] = false;
 
     json::JSON obj;

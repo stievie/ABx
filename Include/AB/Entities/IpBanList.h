@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,35 @@
 
 #pragma once
 
-#include "Resource.h"
+#include <AB/Entities/Entity.h>
+#include <bitsery/ext/inheritance.h>
+#include <AB/Entities/Limits.h>
 
-namespace Resources {
+using bitsery::ext::BaseClass;
 
-class PasswordPostResource : public Resource
+namespace AB {
+namespace Entities {
+
+static constexpr auto KEY_IP_BANLIST = "ip_ban_list";
+
+struct IpBanList : Entity
 {
-private:
-    bool ChangePassword(std::string& error);
-public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
-        Resource(request)
-    { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
+    static constexpr const char* KEY()
+    {
+        return KEY_IP_BANLIST;
+    }
+    template<typename S>
+    void serialize(S& s)
+    {
+        s.ext(*this, BaseClass<Entity>{});
+        s.container(uuids, Limits::MAX_LIST, [&s](std::string& c)
+        {
+            s.text1b(c, Limits::MAX_UUID);
+        });
+    }
+
+    std::vector<std::string> uuids;
 };
 
+}
 }

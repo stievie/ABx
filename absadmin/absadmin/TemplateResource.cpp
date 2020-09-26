@@ -151,7 +151,6 @@ std::string TemplateResource::GetTemplateFile(const std::string& templ)
 
 void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    AB_PROFILE;
     auto contT = GetSubsystem<ContentTypes>();
 
     std::string buffer;

@@ -121,6 +121,8 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBItemPrice, AB::Entities::ItemPrice>();
     AddEntityClass<DB::DBCraftableItemList, AB::Entities::CraftableItemList>();
     AddEntityClass<DB::DBGameInstanceList, AB::Entities::GameInstanceList>();
+    AddEntityClass<DB::DBAccountBanList, AB::Entities::AccountBanList>();
+    AddEntityClass<DB::DBIpBanList, AB::Entities::IpBanList>();
 }
 
 bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)

@@ -25,12 +25,10 @@
 
 namespace Resources {
 
-class PasswordPostResource : public Resource
+class BanDisableResource : public Resource
 {
-private:
-    bool ChangePassword(std::string& error);
 public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
+    explicit BanDisableResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
     { }
     void Render(std::shared_ptr<HttpsServer::Response> response) override final;

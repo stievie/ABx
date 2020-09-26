@@ -76,22 +76,18 @@ void UpdateAccountKeyResource::Render(std::shared_ptr<HttpsServer::Response> res
     auto contT = GetSubsystem<ContentTypes>();
     header_.emplace("Content-Type", contT->Get(".json"));
 
-    std::stringstream ss;
-    ss << request_->content.rdbuf();
-
     json::JSON obj;
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto uuidIt = form.find("uuid");
-    auto fieldIt = form.find("field");
-    auto valueIt = form.find("value");
-    if (uuidIt == form.end() || fieldIt == form.end() || valueIt == form.end())
+    auto uuidIt = GetFormField("uuid");
+    auto fieldIt = GetFormField("field");
+    auto valueIt = GetFormField("value");
+    if (!uuidIt.has_value() || !fieldIt.has_value() || !valueIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing field(s)";
     }
     else
     {
-        if (!Update((*uuidIt).second, (*fieldIt).second, (*valueIt).second))
+        if (!Update(uuidIt.value(), fieldIt.value(), valueIt.value()))
         {
             obj["status"] = "Failed";
             obj["message"] = "Failed";

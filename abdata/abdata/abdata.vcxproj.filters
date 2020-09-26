@@ -201,6 +201,12 @@
     <ClInclude Include="DBGameInstanceList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBAccountBanList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBIpBanList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -381,6 +387,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBGameInstanceList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBAccountBanList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBIpBanList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

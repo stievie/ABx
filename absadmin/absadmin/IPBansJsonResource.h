@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,10 @@
 
 namespace Resources {
 
-class PasswordPostResource : public Resource
+class IPBansJsonResource : public Resource
 {
-private:
-    bool ChangePassword(std::string& error);
 public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
+    explicit IPBansJsonResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
     { }
     void Render(std::shared_ptr<HttpsServer::Response> response) override final;

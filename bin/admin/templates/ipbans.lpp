@@ -1,0 +1,136 @@
+<?# _header.lpp ?>
+
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col menu_fixed">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <?# _sidebar.lpp ?>
+          </div>
+        </div>
+
+        <?# _topnav.lpp ?>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Add Ban</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form id="ban_form" class="form-horizontal form-label-left" method="POST" action="post/ban_ip">
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">IP/Mask</label>
+                      <div class="col-md-3 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <input type="text" name="ip" class="form-control" required>
+                      </div>
+                      <div class="col-md-3 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <input type="text" name="mask" class="form-control" value="255.255.255.0" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Expires</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <select name="expires" class="form-control">
+                          <option value="1">1 Week</option>
+                          <option value="2">1 Month</option>
+                          <option value="3">3 Month</option>
+                          <option value="4">1 Year</option>
+                          <option value="9">Never (permanent)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Reason</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <textarea class="form-control" rows="5" name="comment"></textarea>
+                      </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" class="btn btn-danger pull-right" value="Create">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_content">
+                  <table id="ip-bans-table" class="table table-striped" data-rows="25">
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <!-- /page content -->
+<script type="text/javascript">
+$(function($) {
+  $('#ip-bans-table').footable({
+    "paging": {
+      "enabled": true,
+      "size": 30
+    },
+    "filtering": {
+      "enabled": true
+    },
+    "sorting": {
+      "enabled": true
+    },
+    "columns": [
+      {"name":"ip","title":"IP"},
+      {"name":"mask","title":"Mask"},
+      {"name":"added","title":"Added","breakpoints":"xs sm md"},
+      {"name":"expires","title":"Expires"},
+      {"name":"active","title":"Active"},
+      {"name":"admin","title":"Admin","breakpoints":"xs sm"},
+      {"name":"comment","title":"Comment","breakpoints":"xs sm md"}
+    ],
+    "rows": $.get("get/ipbans")
+  });
+  
+  $(".disable-ban-link").on("click", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post("post/ban_disable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        window.location.reload(false);
+      }
+      else
+        alert(data.message);
+    });
+  });
+});
+
+  $("#ban_form").bind("submit", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status != 200 || data.status !== "OK")
+        alert(data.message);
+    });
+  });
+
+</script>
+
+<?# _footer.lpp ?>

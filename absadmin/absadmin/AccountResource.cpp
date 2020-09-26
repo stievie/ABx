@@ -23,8 +23,10 @@
 #include "AccountResource.h"
 #include "Application.h"
 #include "Version.h"
+#include <AB/Entities/AccountBanList.h>
 #include <AB/Entities/AccountList.h>
 #include <AB/Entities/Account.h>
+#include <AB/Entities/Ban.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Service.h>
 #include <AB/Entities/GameInstance.h>
@@ -40,7 +42,7 @@ bool AccountResource::GetContext(LuaContext& objects)
     if (id_.empty() || uuids::uuid(id_).nil())
         return false;
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = id_;
     if (!dataClient->Read(acc))
@@ -70,6 +72,7 @@ bool AccountResource::GetContext(LuaContext& objects)
     state["online_online"] = acc.onlineStatus == AB::Entities::OnlineStatusOnline;
     state["online_invisible"] = acc.onlineStatus == AB::Entities::OnlineStatusInvisible;
     state["is_online"] = acc.onlineStatus != AB::Entities::OnlineStatusOffline;
+    state["created"] = sa::time::format_tick(acc.creation);
 
     AB::Entities::Character ch;
     ch.uuid = acc.currentCharacterUuid;
@@ -124,12 +127,43 @@ bool AccountResource::GetContext(LuaContext& objects)
         state["characters"][++i] = kaguya::TableData{
             { "uuid", c.uuid },
             { "name", c.name },
+            { "created", sa::time::format_tick(c.creation) },
             { "last_online", sa::time::format_tick(c.lastLogin) }
         };
     }
 
     state["last_online"] = lastOnline;
     state["last_online_string"] = sa::time::format_tick(lastOnline);
+
+    // Bans
+    state["bans"] = kaguya::NewTable();
+    AB::Entities::AccountBanList bans;
+    bans.uuid = id_;
+    i = 0;
+    if (dataClient->Read(bans))
+    {
+        for (const auto& ban_uuid : bans.uuids)
+        {
+            AB::Entities::Ban ban;
+            ban.uuid = ban_uuid;
+            if (!dataClient->Read(ban))
+                continue;
+
+            AB::Entities::Account adminAccount;
+            adminAccount.uuid = ban.adminUuid;
+            if (!Utils::Uuid::IsEmpty(ban.adminUuid))
+                dataClient->Read(adminAccount);
+            state["bans"][++i] = kaguya::TableData{
+                { "uuid", ban.uuid },
+                { "active", ban.active },
+                { "added", sa::time::format_tick(ban.added) },
+                { "expires", ban.expires == std::numeric_limits<int64_t>::max() ? "Never" : sa::time::format_tick(ban.expires) },
+                { "comment", ban.comment },
+                { "admin_uuid", ban.adminUuid },
+                { "admin_name", adminAccount.name.empty() ? "Unknown" : adminAccount.name }
+            };
+        }
+    }
 
     return true;
 }
@@ -146,7 +180,6 @@ AccountResource::AccountResource(std::shared_ptr<HttpsServer::Request> request) 
     auto it = form.find("id");
     if (it != form.end())
         id_ = (*it).second;
-
 }
 
 void AccountResource::Render(std::shared_ptr<HttpsServer::Response> response)

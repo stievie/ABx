@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,17 @@
 
 #pragma once
 
-#include "Resource.h"
+#include "TemplateResource.h"
 
 namespace Resources {
 
-class PasswordPostResource : public Resource
+class IPBansResource : public TemplateResource
 {
-private:
-    bool ChangePassword(std::string& error);
+protected:
+    bool GetContext(LuaContext& objects) override final;
 public:
-    explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
-        Resource(request)
-    { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
+    explicit IPBansResource(std::shared_ptr<HttpsServer::Request> request);
+    void Render(std::shared_ptr<HttpsServer::Response> response) override;
 };
 
 }

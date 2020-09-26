@@ -20,37 +20,15 @@
  */
 
 
-#include "TerminateResource.h"
+#include "BanDisableResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
-#include <AB/Entities/Service.h>
+#include <AB/Entities/Ban.h>
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
-bool TerminateResource::Terminate(const std::string& uuid)
-{
-    if (uuid.empty() || uuids::uuid(uuid).nil())
-        return false;
-
-    auto dataClient = GetSubsystem<IO::DataClient>();
-    AB::Entities::Service s;
-    s.uuid = uuid;
-    if (!dataClient->Read(s))
-        return false;
-    // Can only terminate temporary services
-    if (!s.temporary)
-        return false;
-
-    auto msgClient = GetSubsystem<Net::MessageClient>();
-    if (!msgClient)
-        return false;
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::Shutdown;
-    msg.SetBodyString(uuid);
-    return msgClient->Write(msg);
-}
-
-void TerminateResource::Render(std::shared_ptr<HttpsServer::Response> response)
+void BanDisableResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
     if (!IsAllowed(AB::Entities::AccountType::God))
     {
@@ -63,26 +41,39 @@ void TerminateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
+
     auto uuidIt = GetFormField("uuid");
     if (!uuidIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing UUID field";
-    }
-    else
-    {
-        if (!Terminate(uuidIt.value()))
-        {
-            obj["status"] = "Failed";
-            obj["message"] = "Failed";
-        }
-        else
-        {
-            obj["status"] = "OK";
-        }
+        return;
     }
 
-    Send(obj.dump(), response);
+    std::string uuid = uuidIt.value();
+    AB::Entities::Ban ban;
+    ban.uuid = uuid;
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    if (!dataClient->Read(ban))
+    {
+        obj["status"] = "Failed";
+        obj["message"] = "Invalid UUID";
+        return;
+    }
+
+    ban.active = false;
+    if (dataClient->Update(ban))
+        obj["status"] = "OK";
+    else
+    {
+        obj["status"] = "Failed";
+        obj["message"] = "Update failed";
+    }
 }
 
 }
