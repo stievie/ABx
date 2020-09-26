@@ -114,7 +114,7 @@ void BanIpResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     auto adminIt = session_->values_.find(sa::StringHashRt("account_uuid"));
     if (adminIt != session_->values_.end())
-        ban.adminUuid = adminIt->second;
+        ban.adminUuid = adminIt->second.GetString();
 
     auto commentField = GetFormField("comment");
     if (commentField.has_value())
