@@ -27,6 +27,7 @@
 #include <abcrypto.hpp>
 #include <abscommon/BanManager.h>
 #include <sa/StringHash.h>
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
@@ -70,22 +71,22 @@ void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
 
     auto userIt = GetFormField("username");
     auto passIt = GetFormField("password");
     if (!userIt.has_value() || !passIt.has_value())
     {
         obj["status"] = "Failed";
+        return;
     }
+    if (Auth(userIt.value(), passIt.value()))
+        obj["status"] = "OK";
     else
-    {
-        if (Auth(userIt.value(), passIt.value()))
-            obj["status"] = "OK";
-        else
-            obj["status"] = "Failed";
-    }
-
-    Send(obj.dump(), response);
+        obj["status"] = "Failed";
 }
 
 }

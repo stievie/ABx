@@ -25,6 +25,7 @@
 #include "ContentTypes.h"
 #include <AB/Entities/AccountKey.h>
 #include <AB/Entities/AccountKeyList.h>
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
@@ -80,6 +81,11 @@ void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
+
     auto uuidIt = GetFormField("uuid");
     auto keyTypeIt = GetFormField("key_type");
     auto countIt = GetFormField("count");
@@ -91,22 +97,16 @@ void CreateKeyResource::Render(std::shared_ptr<HttpsServer::Response> response)
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing field(s)";
+        return;
     }
-    else
+    if (!CreateKey(uuidIt.value(), keyTypeIt.value(), countIt.value(),
+        keyStatusIt.value(), emailIt.value(), descrIt.value()))
     {
-        if (!CreateKey(uuidIt.value(), keyTypeIt.value(), countIt.value(),
-            keyStatusIt.value(), emailIt.value(), descrIt.value()))
-        {
-            obj["status"] = "Failed";
-            obj["message"] = "Failed";
-        }
-        else
-        {
-            obj["status"] = "OK";
-        }
+        obj["status"] = "Failed";
+        obj["message"] = "Failed";
+        return;
     }
-
-    Send(obj.dump(), response);
+    obj["status"] = "OK";
 }
 
 }

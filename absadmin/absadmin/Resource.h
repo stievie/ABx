@@ -47,8 +47,6 @@ protected:
     bool IsAllowed(AB::Entities::AccountType minType);
     virtual void Send(const std::string& content, std::shared_ptr<HttpsServer::Response> response);
     std::string GetRequestHeader(const std::string& key);
-    std::optional<std::string> GetFormField(const std::string& key);
-    std::optional<std::string> GetQueryValue(const std::string& key);
 public:
     explicit Resource(std::shared_ptr<HttpsServer::Request> request);
     virtual ~Resource() = default;
@@ -56,6 +54,8 @@ public:
     virtual void Render(std::shared_ptr<HttpsServer::Response> response) = 0;
     SimpleWeb::CaseInsensitiveMultimap& GetHeaders() { return header_; }
     const SimpleWeb::CaseInsensitiveMultimap& GetHeaders() const { return header_; }
+    std::optional<std::string> GetFormField(const std::string& key);
+    std::optional<std::string> GetQueryValue(const std::string& key);
 };
 
 }

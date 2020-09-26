@@ -79,6 +79,16 @@ LuaContext::LuaContext(Resources::TemplateResource& resource) :
         auto& headers = resource_.GetHeaders();
         headers.emplace("Content-Type", value);
     });
+    luaState_["getFormField"] = kaguya::function([this](const std::string& key) -> std::string
+    {
+        const auto value = resource_.GetFormField(key);
+        return value.value_or("");
+    });
+    luaState_["getQueryValue"] = kaguya::function([this](const std::string& key) -> std::string
+    {
+        const auto value = resource_.GetQueryValue(key);
+        return value.value_or("");
+    });
 }
 
 bool LuaContext::Execute(const std::string& source)

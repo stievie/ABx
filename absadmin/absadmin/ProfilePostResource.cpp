@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "ContentTypes.h"
 #include <sa/StringHash.h>
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
@@ -40,37 +41,36 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
+
     auto emailIt = GetFormField("email");
     if (!emailIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing Email field";
+        return;
     }
-    else
+    std::string uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
+    AB::Entities::Account account;
+    account.uuid = uuid;
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    if (!dataClient->Read(account))
     {
-        std::string uuid = session_->values_[sa::StringHashRt("account_uuid")].GetString();
-        AB::Entities::Account account;
-        account.uuid = uuid;
-        auto dataClient = GetSubsystem<IO::DataClient>();
-        if (!dataClient->Read(account))
-        {
-            obj["status"] = "Failed";
-            obj["message"] = "Invalid Account";
-        }
-        else
-        {
-            account.email = emailIt.value();
-            if (dataClient->Update(account))
-                obj["status"] = "OK";
-            else
-            {
-                obj["status"] = "Failed";
-                obj["message"] = "Update failed";
-            }
-        }
+        obj["status"] = "Failed";
+        obj["message"] = "Invalid Account";
+        return;
     }
-
-    Send(obj.dump(), response);
+    account.email = emailIt.value();
+    if (dataClient->Update(account))
+    {
+        obj["status"] = "OK";
+        return;
+    }
+    obj["status"] = "Failed";
+    obj["message"] = "Update failed";
 }
 
 }

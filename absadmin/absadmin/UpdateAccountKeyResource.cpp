@@ -19,11 +19,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "UpdateAccountKeyResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
 #include <AB/Entities/AccountKey.h>
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
@@ -77,6 +77,11 @@ void UpdateAccountKeyResource::Render(std::shared_ptr<HttpsServer::Response> res
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
+
     auto uuidIt = GetFormField("uuid");
     auto fieldIt = GetFormField("field");
     auto valueIt = GetFormField("value");
@@ -84,21 +89,15 @@ void UpdateAccountKeyResource::Render(std::shared_ptr<HttpsServer::Response> res
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing field(s)";
+        return;
     }
-    else
+    if (!Update(uuidIt.value(), fieldIt.value(), valueIt.value()))
     {
-        if (!Update(uuidIt.value(), fieldIt.value(), valueIt.value()))
-        {
-            obj["status"] = "Failed";
-            obj["message"] = "Failed";
-        }
-        else
-        {
-            obj["status"] = "OK";
-        }
+        obj["status"] = "Failed";
+        obj["message"] = "Failed";
+        return;
     }
-
-    Send(obj.dump(), response);
+    obj["status"] = "OK";
 }
 
 }

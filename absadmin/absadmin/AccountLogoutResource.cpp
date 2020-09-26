@@ -23,6 +23,7 @@
 #include "AccountLogoutResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
+#include <sa/ScopeGuard.h>
 
 namespace Resources {
 
@@ -55,26 +56,26 @@ void AccountLogoutResource::Render(std::shared_ptr<HttpsServer::Response> respon
     header_.emplace("Content-Type", contT->Get(".json"));
 
     json::JSON obj;
+
+    sa::ScopeGuard send([&]()
+    {
+        Send(obj.dump(), response);
+    });
+
     auto uuidIt = GetFormField("uuid");
     if (!uuidIt.has_value())
     {
         obj["status"] = "Failed";
         obj["message"] = "Missing UUID field";
+        return;
     }
-    else
+    if (!Logout(uuidIt.value()))
     {
-        if (!Logout(uuidIt.value()))
-        {
-            obj["status"] = "Failed";
-            obj["message"] = "Failed";
-        }
-        else
-        {
-            obj["status"] = "OK";
-        }
+        obj["status"] = "Failed";
+        obj["message"] = "Failed";
+        return;
     }
-
-    Send(obj.dump(), response);
+    obj["status"] = "OK";
 }
 
 }
