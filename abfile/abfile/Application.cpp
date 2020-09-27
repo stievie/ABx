@@ -1389,18 +1389,30 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
     response->write(stream, header);
 }
 
-void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const SimpleWeb::error_code& ec)
+void Application::HandleError(std::shared_ptr<HttpsServer::Request> request, const SimpleWeb::error_code& ec)
 {
     // Handle errors here
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     if (ec.default_error_condition().value() == 995 || ec == SimpleWeb::errc::operation_canceled)
         return;
 
-    LOG_ERROR << "(" << ec.default_error_condition().value() << ") " << ec.default_error_condition().message() << std::endl;
+    LOG_ERROR << "(" << ec.default_error_condition().value() << ") " << ec.default_error_condition().message() <<
+        " from " << Utils::ConvertIPToString(request->remote_endpoint->address().to_v4().to_uint()) << std::endl;
 }
 
 bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
+    uint32_t ip = endpoint.address().to_v4().to_uint();
     auto* banMan = GetSubsystem<Auth::BanManager>();
-    return banMan->AcceptConnection(endpoint.address().to_v4().to_uint());
+    if (!banMan->AcceptConnection(ip))
+    {
+        LOG_WARNING << "Connection attempt from disabled IP " << Utils::ConvertIPToString(ip) << std::endl;
+        return false;
+    }
+    if (banMan->IsIpBanned(ip))
+    {
+        LOG_WARNING << "Connection attempt from banned IP " << Utils::ConvertIPToString(ip) << std::endl;
+        return false;
+    }
+    return true;
 }

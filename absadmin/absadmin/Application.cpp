@@ -435,6 +435,17 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>,
 
 bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
+    uint32_t ip = endpoint.address().to_v4().to_uint();
     auto* banMan = GetSubsystem<Auth::BanManager>();
-    return banMan->AcceptConnection(endpoint.address().to_v4().to_uint());
+    if (!banMan->AcceptConnection(ip))
+    {
+        LOG_WARNING << "Connection attempt from disabled IP " << Utils::ConvertIPToString(ip) << std::endl;
+        return false;
+    }
+    if (banMan->IsIpBanned(ip))
+    {
+        LOG_WARNING << "Connection attempt from banned IP " << Utils::ConvertIPToString(ip) << std::endl;
+        return false;
+    }
+    return true;
 }

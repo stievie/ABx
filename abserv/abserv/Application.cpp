@@ -468,7 +468,18 @@ bool Application::LoadMain()
     {
         if (!serviceManager_->Add<Net::ProtocolGame>(ip, serverPort_, [](uint32_t remoteIp) -> bool
         {
-            return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
+            auto* banMan = GetSubsystem<Auth::BanManager>();
+            if (!banMan->AcceptConnection(remoteIp))
+            {
+                LOG_WARNING << "Not accepting connection from " << Utils::ConvertIPToString(remoteIp) << std::endl;
+                return false;
+            }
+            if (banMan->IsIpBanned(remoteIp))
+            {
+                LOG_WARNING << "Connection attempt from banned IP " << Utils::ConvertIPToString(remoteIp) << std::endl;
+                return false;
+            }
+            return true;
         }))
             return false;
     }

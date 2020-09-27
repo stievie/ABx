@@ -623,14 +623,6 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    const uint32_t ip = GetIP();
-    if (GetSubsystem<Auth::BanManager>()->IsIpBanned(ip))
-    {
-        LOG_ERROR << "Connection attempt from banned IP " << Utils::ConvertIPToString(ip, true) << std::endl;
-        DisconnectClient(AB::ErrorCodes::IPBanned);
-        return;
-    }
-
     if (!IO::IOAccount::GameWorldAuth(packet.accountUuid, packet.authToken, packet.charUuid))
     {
         DisconnectClient(AB::ErrorCodes::NamePasswordMismatch);

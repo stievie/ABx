@@ -180,10 +180,18 @@ bool Application::LoadMain()
     {
         if (!serviceManager_->Add<Net::ProtocolLogin>(ip, serverPort_, [](uint32_t remoteIp) -> bool
         {
-            bool ret = GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
-            if (!ret)
+            auto* banMan = GetSubsystem<Auth::BanManager>();
+            if (!banMan->AcceptConnection(remoteIp))
+            {
                 LOG_WARNING << "Not accepting connection from " << Utils::ConvertIPToString(remoteIp) << std::endl;
-            return ret;
+                return false;
+            }
+            if (banMan->IsIpBanned(remoteIp))
+            {
+                LOG_WARNING << "Connection attempt from banned IP " << Utils::ConvertIPToString(remoteIp) << std::endl;
+                return false;
+            }
+            return true;
         }))
             return false;
     }
