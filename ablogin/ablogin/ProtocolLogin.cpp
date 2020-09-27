@@ -383,12 +383,20 @@ void ProtocolLogin::AuthenticateSendCharacterList(AB::Packets::Client::Login::Lo
     case IO::IOAccount::PasswordAuthResult::AlreadyLoggedIn:
         DisconnectClient(AB::ErrorCodes::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
-        break;
+        return;
     case IO::IOAccount::PasswordAuthResult::InternalError:
         DisconnectClient(AB::ErrorCodes::UnknownError);
-        break;
+        return;
     default:
         break;
+    }
+    if (banMan->IsAccountBanned(uuids::uuid(account.uuid)))
+    {
+        LOG_WARNING << "Login attempt from banned account " << account.name <<
+            ", UUID " << account.uuid << std::endl;
+        DisconnectClient(AB::ErrorCodes::AccountBanned);
+        banMan->AddLoginAttempt(GetIP(), false);
+        return;
     }
 
     AB::Entities::Service gameServer;
