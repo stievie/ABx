@@ -583,10 +583,19 @@ void Player::PostUpdate(float timeStep)
         newCamPos = aimPoint + rayDir * rayDistance;
     }
 
-    // If the camera is far away from the character, use a bigger snap factor.
-    const float snapFactor = ((node_->GetPosition() - newCamPos).LengthSquared() - 2.5f) / 250.0f;
+    auto* sc = GetSubsystem<Shortcuts>();
     auto* camTransform = cameraNode_->GetComponent<CameraTransform>();
-    camTransform->SetSnapFactor(snapFactor);
+    if (!sc->IsTriggered(Events::E_SC_MOUSELOOK))
+    {
+        // If the camera is far away from the character, use a bigger snap factor.
+        const float snapFactor = ((node_->GetPosition() - newCamPos).LengthSquared() - 2.5f) / 250.0f;
+        camTransform->SetSnapFactor(snapFactor);
+    }
+    else
+    {
+        // No smooth transform when we use the mouse to look around, because it feels bad.
+        camTransform->SetSnapFactor(0.0f);
+    }
     camTransform->SetTargetPosition(newCamPos);
     camTransform->SetTargetRotation(dir);
 }
