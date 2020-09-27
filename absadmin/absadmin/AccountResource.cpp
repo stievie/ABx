@@ -23,7 +23,6 @@
 #include "AccountResource.h"
 #include "Application.h"
 #include "Version.h"
-#include <AB/Entities/AccountBanList.h>
 #include <AB/Entities/AccountList.h>
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Ban.h>
@@ -134,36 +133,6 @@ bool AccountResource::GetContext(LuaContext& objects)
 
     state["last_online"] = lastOnline;
     state["last_online_string"] = sa::time::format_tick(lastOnline);
-
-    // Bans
-    state["bans"] = kaguya::NewTable();
-    AB::Entities::AccountBanList bans;
-    bans.uuid = id_;
-    i = 0;
-    if (dataClient->Read(bans))
-    {
-        for (const auto& ban_uuid : bans.uuids)
-        {
-            AB::Entities::Ban ban;
-            ban.uuid = ban_uuid;
-            if (!dataClient->Read(ban))
-                continue;
-
-            AB::Entities::Account adminAccount;
-            adminAccount.uuid = ban.adminUuid;
-            if (!Utils::Uuid::IsEmpty(ban.adminUuid))
-                dataClient->Read(adminAccount);
-            state["bans"][++i] = kaguya::TableData{
-                { "uuid", ban.uuid },
-                { "active", ban.active },
-                { "added", sa::time::format_tick(ban.added) },
-                { "expires", ban.expires == std::numeric_limits<int64_t>::max() ? "Never" : sa::time::format_tick(ban.expires) },
-                { "comment", ban.comment },
-                { "admin_uuid", ban.adminUuid },
-                { "admin_name", adminAccount.name.empty() ? "Unknown" : adminAccount.name }
-            };
-        }
-    }
 
     return true;
 }

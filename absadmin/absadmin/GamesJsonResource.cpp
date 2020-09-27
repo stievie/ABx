@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "GamesJsonResource.h"
 #include "ContentTypes.h"
 #include "Application.h"
@@ -77,7 +76,7 @@ void GamesJsonResource::Render(std::shared_ptr<HttpsServer::Response> response)
         auto instanceJson = json::Object();
         instanceJson["uuid"] = inst.uuid;
         instanceJson["type"] = static_cast<int>(game.type);
-        instanceJson["start"] = sa::time::format_tick(inst.startTime, "%Y-%m-%dT%H:%M:%SZ");
+        instanceJson["start"] = inst.startTime;
         if (inst.stopTime == 0)
             instanceJson["time"] = (sa::time::tick() - inst.startTime);
         else

@@ -19,14 +19,19 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
 
-#include "ContentTypes.h"
+#include "Resource.h"
 
-const std::string& ContentTypes::Get(const std::string& ext) const
+namespace Resources {
+
+class IpBanDeleteResource : public Resource
 {
-    static const std::string def = "application/octet-stream";
-    const auto it = map_.find(ext);
-    if (it == map_.end())
-        return def;
-    return (*it).second;
+public:
+    explicit IpBanDeleteResource(std::shared_ptr<HttpsServer::Request> request) :
+        Resource(request)
+    { }
+    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
+};
+
 }

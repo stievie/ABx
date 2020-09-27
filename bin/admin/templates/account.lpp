@@ -123,7 +123,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -164,7 +164,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -184,38 +184,12 @@
                         <th></th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <% for i = 1, #bans do local ban = bans[i] %>
-                        <tr>
-                          <td>
-                            <%= ban.added %>
-                          </td>
-                          <td>
-                            <%= ban.expires %>
-                          </td>
-                          <td>
-                            <% if ban.active then echo("Active") else echo("Inactive") end %>
-                          </td>
-                          <td>
-                            <a href="account?id=<%= ban.admin_uuid %>"><%= ban.admin_name %></a>
-                          </td>
-                          <td>
-                            <%= ban.comment %>
-                          </td>
-                          <td>
-                          <% if ban.active then %>
-                          <a href="#" title="Disable Ban" class="disable-ban-link" data-uuid="<%= ban.uuid %>"><i class="fa fa-minus-circle"></i></a>
-                          <% end %>
-                          </td>
-                        </tr>
-                      <% end %>
-                    </tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -260,7 +234,7 @@
 
 <script>
 $(function($) {
-  $('.table').footable({
+  var bansTable = FooTable.init('#account-bans-table', {
     "paging": {
       "enabled": true,
       "size": 20
@@ -271,9 +245,38 @@ $(function($) {
     "sorting": {
       "enabled": true
     },
+    "columns": [
+      {"name":"uuid","title":"ID","breakpoints":"xs sm md lg"},
+      {"name":"added","title":"Added","breakpoints":"xs sm md","type":"number","formatter": function(value, options, rowData){
+        return formatTick(value);
+      }},
+      {"name":"expires","title":"Expires","type":"number","formatter": function(value, options, rowData){
+        if (value === 0)
+          return "Never";
+        return formatTick(value);
+      }},
+      {"name":"active","title":"Active","type":"boolean"},
+      {"name":"admin_name","title":"Admin","breakpoints":"xs sm","formatter": function(value, options, rowData) {
+        return "<a href='account?id=" + rowData.admin_uuid + "'>" + value + "</a>";
+      }},
+      {"name":"admin_uuid","title":"Admin ID","breakpoints":"xs sm md lg"},
+      {"name":"comment","title":"Comment","breakpoints":"xs sm md"},
+      {"name":"disable","title":"","formatter": function(value, options, rowData){
+        if (rowData.active === "true")
+          return "<a href='#' title='Disable Ban' class='disable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-minus-circle'></i></a>";
+        return "<a href='#' title='Disable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
+      }},
+    ]
   });
 
-  $(".disable-ban-link").on("click", function(e) {
+  function refreshBans()
+  {
+    $.get("get/accountbans?id=<%= uuid %>").then(function(rows) {
+      bansTable.loadRows(rows);
+    });
+  }
+
+  $(document).on("click", ".disable-ban-link", function(e) {
     e.preventDefault();
     NProgress.start();
     $.post("post/ban_disable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
@@ -281,12 +284,43 @@ $(function($) {
       NProgress.done();
       if (xhr.status == 200 && data.status === "OK")
       {
-        window.location.reload(false);
+        refreshBans();
       }
       else
         alert(data.message);
     });
   });
+  $(document).on("click", ".enable-ban-link", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post("post/ban_enable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshBans();
+      }
+      else
+        alert(data.message);
+    });
+  });
+
+  $("#ban_form").bind("submit", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshBans();
+      }
+      else
+        alert(data.message);
+    });
+  });
+
+  refreshBans();
 });
 
   <% if is_online then %>
@@ -312,20 +346,6 @@ $(function($) {
     {
       NProgress.done();
       if (xhr.status != 200 || data.status !== "OK")
-        alert(data.message);
-    });
-  });
-  $("#ban_form").bind("submit", function(e) {
-    e.preventDefault();
-    NProgress.start();
-    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
-    {
-      NProgress.done();
-      if (xhr.status == 200 && data.status === "OK")
-      {
-        window.location.reload(false);
-      }
-      else
         alert(data.message);
     });
   });

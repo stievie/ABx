@@ -49,17 +49,8 @@
         {"name":"current_instance_link","title":"Name"},
         {"name":"number","title":"#","type":"number"},
         {"name":"players","title":"Players","type":"number"},
-        {"name":"start","title":"Running since","type":"text","formatter": function(value, options, rowData) {
-          const opt = {
-            year: "2-digit",
-            month:"2-digit",
-            day:"2-digit",
-            hour12 : false,
-            hour:  "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-          }
-          return new Date(value).toLocaleDateString("en-us", opt);
+        {"name":"start","title":"Running since","type":"number","formatter": function(value, options, rowData) {
+          return formatTick(value);
         }},
         {"name":"time","title":"Time","type":"number","formatter": function(value, options, rowData) {
           value = value / 1000;

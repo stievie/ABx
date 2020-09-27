@@ -25,10 +25,12 @@
 #include "AccountPostResource.h"
 #include "AccountResource.h"
 #include "AccountsJsonResource.h"
+#include "AccountBansJsonResource.h"
 #include "AccountsResource.h"
 #include "BanAccountResource.h"
 #include "BanIpResource.h"
 #include "BanDisableResource.h"
+#include "BanEnableResource.h"
 #include "ClearCacheResource.h"
 #include "ContentTypes.h"
 #include "CreateKeyResource.h"
@@ -38,6 +40,7 @@
 #include "GamesResource.h"
 #include "GamesJsonResource.h"
 #include "IndexResource.h"
+#include "IpBanDeleteResource.h"
 #include "IPBansResource.h"
 #include "IPBansJsonResource.h"
 #include "LessFileResource.h"
@@ -178,6 +181,7 @@ void Application::InitRoutes()
     Route<Resources::GamesJsonResource>("GET", "^/get/games$");
     Route<Resources::IPBansResource>("GET", "^/ipbans$");
     Route<Resources::IPBansJsonResource>("GET", "^/get/ipbans$");
+    Route<Resources::AccountBansJsonResource>("GET", "^/get/accountbans$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
@@ -191,8 +195,10 @@ void Application::InitRoutes()
     Route<Resources::AccountPostResource>("POST", "^/post/account$");
     Route<Resources::AccountLogoutResource>("POST", "^/post/account_logout$");
     Route<Resources::BanDisableResource>("POST", "^/post/ban_disable$");
+    Route<Resources::BanEnableResource>("POST", "^/post/ban_enable$");
     Route<Resources::BanAccountResource>("POST", "^/post/ban_account$");
     Route<Resources::BanIpResource>("POST", "^/post/ban_ip$");
+    Route<Resources::IpBanDeleteResource>("POST", "^/post/ipban_delete$");
 }
 
 void Application::ShowVersion()

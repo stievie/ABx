@@ -81,7 +81,7 @@
         <!-- /page content -->
 <script type="text/javascript">
 $(function($) {
-  $('#ip-bans-table').footable({
+  var bansTable = FooTable.init('#ip-bans-table', {
     "paging": {
       "enabled": true,
       "size": 30
@@ -93,18 +93,43 @@ $(function($) {
       "enabled": true
     },
     "columns": [
+      {"name":"uuid","title":"Ban ID","breakpoints":"xs sm md lg"},
+      {"name":"ipban_uuid","title":"IP Ban ID","breakpoints":"xs sm md lg"},
       {"name":"ip","title":"IP"},
       {"name":"mask","title":"Mask"},
-      {"name":"added","title":"Added","breakpoints":"xs sm md"},
-      {"name":"expires","title":"Expires"},
-      {"name":"active","title":"Active"},
-      {"name":"admin","title":"Admin","breakpoints":"xs sm"},
-      {"name":"comment","title":"Comment","breakpoints":"xs sm md"}
-    ],
-    "rows": $.get("get/ipbans")
+      {"name":"added","title":"Added","breakpoints":"xs sm md","type":"number","formatter": function(value, options, rowData) {
+        return formatTick(value);
+      }},
+      {"name":"expires","title":"Expires","type":"number","formatter": function(value, options, rowData) {
+        if (value === 0)
+          return "Never";
+        return formatTick(value);
+      }},
+      {"name":"active","title":"Active","type":"boolean"},
+      {"name":"admin_name","title":"Admin","breakpoints":"xs sm","formatter": function(value, options, rowData) {
+        return "<a href='account?id=" + rowData.admin_uuid + "'>" + value + "</a>";
+      }},
+      {"name":"admin_uuid","title":"Admin ID","breakpoints":"xs sm md lg"},
+      {"name":"comment","title":"Comment","breakpoints":"xs sm md"},
+      {"name":"disable","title":"","formatter": function(value, options, rowData) {
+        if (rowData.active === "true")
+          return "<a href='#' title='Disable Ban' class='disable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-minus-circle'></i></a>";
+        return "<a href='#' title='Disable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
+      }},
+      {"name":"delete","title":"","formatter": function(value, options, rowData) {
+        return "<a href='#' title='Delete Ban' class='delete-ban-link' data-uuid='" + rowData.ipban_uuid + "'><i class='fa fa-trash'></i></a>";
+      }},
+    ]
   });
+
+  function refreshBans()
+  {
+    $.get("get/ipbans").then(function(rows) {
+      bansTable.loadRows(rows);
+    });
+  }
   
-  $(".disable-ban-link").on("click", function(e) {
+  $(document).on("click", ".disable-ban-link", function(e) {
     e.preventDefault();
     NProgress.start();
     $.post("post/ban_disable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
@@ -112,25 +137,59 @@ $(function($) {
       NProgress.done();
       if (xhr.status == 200 && data.status === "OK")
       {
-        window.location.reload(false);
+        refreshBans();
       }
       else
         alert(data.message);
     });
   });
-});
-
+  $(document).on("click", ".enable-ban-link", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post("post/ban_enable", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshBans();
+      }
+      else
+        alert(data.message);
+    });
+  });
+  $(document).on("click", ".delete-ban-link", function(e) {
+    e.preventDefault();
+      if (!confirm("Delete IP Ban?"))
+        return;
+    NProgress.start();
+    $.post("post/ipban_delete", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshBans();
+      }
+      else
+        alert(data.message);
+    });
+  });
   $("#ban_form").bind("submit", function(e) {
     e.preventDefault();
     NProgress.start();
     $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
     {
       NProgress.done();
-      if (xhr.status != 200 || data.status !== "OK")
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshBans();
+      }
+      else
         alert(data.message);
     });
   });
-
+  
+  refreshBans();
+});
 </script>
 
 <?# _footer.lpp ?>

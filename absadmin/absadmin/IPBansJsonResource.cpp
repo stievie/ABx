@@ -63,6 +63,8 @@ void IPBansJsonResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
         AB::Entities::Ban ban;
         ban.uuid = ipban.banUuid;
+        if (!dataClient->Read(ban))
+            continue;
 
         AB::Entities::Account adminAccount;
         adminAccount.uuid = ban.adminUuid;
@@ -71,11 +73,12 @@ void IPBansJsonResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
         auto banJson = json::Object();
         banJson["uuid"] = ipban.banUuid;
+        banJson["ipban_uuid"] = ipban.uuid;
         banJson["ip"] = Utils::ConvertIPToString(ipban.ip);
         banJson["mask"] = Utils::ConvertIPToString(ipban.mask);
         banJson["active"] = ban.active;
-        banJson["added"] = sa::time::format_tick(ban.added);
-        banJson["expires"] = ban.expires == std::numeric_limits<int64_t>::max() ? "Never" : sa::time::format_tick(ban.expires);
+        banJson["added"] = ban.added;
+        banJson["expires"] = ban.expires == std::numeric_limits<int64_t>::max() ? 0 : ban.expires;
         banJson["comment"] = ban.comment;
         banJson["admin_uuid"] = ban.adminUuid;
         banJson["admin_name"] = adminAccount.name.empty() ? "Unknown" : adminAccount.name;

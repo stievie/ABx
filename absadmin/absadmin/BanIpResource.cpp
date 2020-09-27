@@ -138,11 +138,11 @@ void BanIpResource::Render(std::shared_ptr<HttpsServer::Response> response)
     if (!dataClient->Create(ipBan))
     {
         obj["status"] = "Failed";
-        obj["message"] = "Failed creating account ban";
+        obj["message"] = "Failed creating IP ban";
         return;
     }
 
-    AB::Entities::IpBan banList;
+    AB::Entities::IpBanList banList;
     dataClient->Invalidate(banList);
 
     obj["status"] = "OK";

@@ -184,6 +184,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AccountBansJsonResource.h" />
     <ClInclude Include="AccountKeysResource.h" />
     <ClInclude Include="AccountLogoutResource.h" />
     <ClInclude Include="AccountPostResource.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="BanAccountResource.h" />
     <ClInclude Include="BanDisableResource.h" />
+    <ClInclude Include="BanEnableResource.h" />
     <ClInclude Include="BanIpResource.h" />
     <ClInclude Include="ClearCacheResource.h" />
     <ClInclude Include="ContentTypes.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="GamesJsonResource.h" />
     <ClInclude Include="GamesResource.h" />
     <ClInclude Include="IndexResource.h" />
+    <ClInclude Include="IpBanDeleteResource.h" />
     <ClInclude Include="IPBansJsonResource.h" />
     <ClInclude Include="IPBansResource.h" />
     <ClInclude Include="LessFileResource.h" />
@@ -229,6 +232,7 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AccountBansJsonResource.cpp" />
     <ClCompile Include="AccountKeysResource.cpp" />
     <ClCompile Include="AccountLogoutResource.cpp" />
     <ClCompile Include="AccountPostResource.cpp" />
@@ -237,6 +241,7 @@
     <ClCompile Include="AccountsResource.cpp" />
     <ClCompile Include="BanAccountResource.cpp" />
     <ClCompile Include="BanDisableResource.cpp" />
+    <ClCompile Include="BanEnableResource.cpp" />
     <ClCompile Include="BanIpResource.cpp" />
     <ClCompile Include="ClearCacheResource.cpp" />
     <ClCompile Include="ContentTypes.cpp" />
@@ -248,6 +253,7 @@
     <ClCompile Include="GamesJsonResource.cpp" />
     <ClCompile Include="GamesResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />
+    <ClCompile Include="IpBanDeleteResource.cpp" />
     <ClCompile Include="IPBansJsonResource.cpp" />
     <ClCompile Include="IPBansResource.cpp" />
     <ClCompile Include="LessFileResource.cpp" />

@@ -71,7 +71,7 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
             "${uuid}, ${ban_uuid}, ${ip}, ${mask}"
         ")";
 
-    const std::string query = sa::templ::Parser::Evaluate(SQL_SELECT, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
+    const std::string query = sa::templ::Parser::Evaluate(SQL_INSERT, std::bind(&PlaceholderCallback, db, ban, std::placeholders::_1));
 
     DBTransaction transaction(db);
     if (!transaction.Begin())

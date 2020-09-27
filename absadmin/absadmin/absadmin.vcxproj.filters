@@ -144,6 +144,15 @@
     <ClInclude Include="BanIpResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AccountBansJsonResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BanEnableResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IpBanDeleteResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -267,6 +276,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BanIpResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountBansJsonResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BanEnableResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IpBanDeleteResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
