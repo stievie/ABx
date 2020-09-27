@@ -64,11 +64,8 @@ bool IndexResource::GetContext(LuaContext& objects)
             service.uuid = uuid;
             if (dataClient->Read(service))
             {
-                if (service.type == AB::Entities::ServiceTypeDataServer)
-                {
-                    uptime = service.runTime;
-                    break;
-                }
+                if (service.type == AB::Entities::ServiceTypeGameServer)
+                    uptime = std::max(uptime, service.runTime);
             }
         }
     }
