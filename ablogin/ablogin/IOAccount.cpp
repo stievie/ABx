@@ -33,6 +33,7 @@
 #include <abscommon/Profiler.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <abscommon/BanManager.h>
 #include <abshared/Mechanic.h>
 #include <sa/time.h>
 
@@ -185,11 +186,26 @@ IOAccount::PasswordAuthResult IOAccount::PasswordAuth(const std::string& pass,
         LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
         return PasswordAuthResult::InvalidAccount;
     }
+    // Since we may read the account by name (not UUID) we must lock it after reading it into cache.
+    IO::EntityLocker locker(*client, account);
+    if (!locker.Lock())
+    {
+        LOG_ERROR << "Unable to lock account" << std::endl;
+        return PasswordAuthResult::InternalError;
+    }
+    // Using password auth invalidates previous auth token
+    account.authTokenExpiry = 0;
+    client->Update(account);
+
     if (account.status != AB::Entities::AccountStatusActivated)
     {
         LOG_ERROR << "Account not activated UUID " << account.uuid << std::endl;
         return PasswordAuthResult::InvalidAccount;
     }
+
+    auto* banMan = GetSubsystem<Auth::BanManager>();
+    if (banMan->IsAccountBanned(uuids::uuid(account.uuid)))
+        return PasswordAuthResult::AccountBanned;
 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return PasswordAuthResult::PasswordMismatch;

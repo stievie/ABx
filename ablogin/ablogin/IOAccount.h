@@ -35,7 +35,8 @@ public:
         InvalidAccount,
         AlreadyLoggedIn,
         PasswordMismatch,
-        InternalError
+        InternalError,
+        AccountBanned
     };
     enum AccountKeyStatus : uint8_t
     {

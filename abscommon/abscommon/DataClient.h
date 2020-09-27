@@ -55,7 +55,7 @@ public:
     // If it is not in the cache it loads it, so you can call Lock() before Read() and be sure the data you have
     // will not be changed by another client.
     template<typename E>
-    bool Lock(const E& entity)
+    [[nodiscard]] bool Lock(const E& entity)
     {
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return LockData(aKey);
@@ -251,7 +251,7 @@ public:
         if (locked_)
             client_.Unlock(entity_);
     }
-    bool Lock()
+    [[nodiscard]] bool Lock()
     {
         if (locked_)
             return true;
