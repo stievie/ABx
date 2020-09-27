@@ -31,7 +31,7 @@
 
 namespace Resources {
 
-bool LoginResource::Auth(const std::string& user, const std::string& pass)
+LoginResource::AuthResult LoginResource::Auth(const std::string& user, const std::string& pass)
 {
     uint32_t ip = request_->remote_endpoint->address().to_v4().to_uint();
 
@@ -39,21 +39,21 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
     account.name = user;
     auto dataClient = GetSubsystem<IO::DataClient>();
     if (!dataClient->Read(account))
-        return false;
+        return AuthResult::WrongUsernamePassword;
     if (account.status != AB::Entities::AccountStatusActivated)
-        return false;
+        return AuthResult::NotActivated;
     if (account.type < AB::Entities::AccountType::Normal)
-        return false;
+        return AuthResult::InternalError;
     auto banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsAccountBanned(uuids::uuid(account.uuid)))
     {
         banMan->AddLoginAttempt(ip, false);
-        return false;
+        return AuthResult::Banned;
     }
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
     {
         banMan->AddLoginAttempt(ip, false);
-        return false;
+        return AuthResult::WrongUsernamePassword;
     }
     banMan->AddLoginAttempt(ip, true);
 
@@ -62,7 +62,7 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
     session_->values_[sa::StringHashRt("account_uuid")] = account.uuid;
     session_->values_[sa::StringHashRt("account_type")] = static_cast<int>(account.type);
 
-    return true;
+    return AuthResult::Success;
 }
 
 void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
@@ -81,12 +81,33 @@ void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
     if (!userIt.has_value() || !passIt.has_value())
     {
         obj["status"] = "Failed";
+        obj["message"] = "Username and/or password missing.";
         return;
     }
-    if (Auth(userIt.value(), passIt.value()))
+    auto result = Auth(userIt.value(), passIt.value());
+    switch (result)
+    {
+    case AuthResult::Success:
         obj["status"] = "OK";
-    else
+        obj["message"] = "OK";
+        break;
+    case AuthResult::Banned:
         obj["status"] = "Failed";
+        obj["message"] = "Your account is banned.";
+        break;
+    case AuthResult::InternalError:
+        obj["status"] = "Failed";
+        obj["message"] = "Internal error";
+        break;
+    case AuthResult::NotActivated:
+        obj["status"] = "Failed";
+        obj["message"] = "This account is not activated.";
+        break;
+    case AuthResult::WrongUsernamePassword:
+        obj["status"] = "Failed";
+        obj["message"] = "Wrong Username and/or password.";
+        break;
+    }
 }
 
 }

@@ -41,7 +41,7 @@
               window.location.reload(false);
             }
             else
-              alert("Wrong user name of password");
+              alert(data.message);
           });
         });
       });

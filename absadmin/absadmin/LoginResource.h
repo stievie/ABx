@@ -28,7 +28,15 @@ namespace Resources {
 class LoginResource : public Resource
 {
 private:
-    bool Auth(const std::string& user, const std::string& pass);
+    enum class AuthResult
+    {
+        Success = 0,
+        Banned,
+        WrongUsernamePassword,
+        NotActivated,
+        InternalError,
+    };
+    AuthResult Auth(const std::string& user, const std::string& pass);
 public:
     explicit LoginResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
