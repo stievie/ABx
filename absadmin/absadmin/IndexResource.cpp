@@ -27,6 +27,9 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/AccountList.h>
 #include <AB/Entities/CharacterList.h>
+#include <AB/Entities/Service.h>
+#include <AB/Entities/ServiceList.h>
+#include <AB/Entities/GameInstanceCount.h>
 
 namespace Resources {
 
@@ -50,6 +53,33 @@ bool IndexResource::GetContext(LuaContext& objects)
     if (!dataClient->Read(cl))
         return false;
     state["total_chars"] = cl.uuids.size();
+
+    int64_t uptime = 0;
+    AB::Entities::ServiceList services;
+    if (dataClient->Read(services))
+    {
+        for (const auto& uuid : services.uuids)
+        {
+            AB::Entities::Service service;
+            service.uuid = uuid;
+            if (dataClient->Read(service))
+            {
+                if (service.type == AB::Entities::ServiceTypeDataServer)
+                {
+                    uptime = service.runTime;
+                    break;
+                }
+            }
+        }
+    }
+    state["uptime"] = uptime;
+
+    AB::Entities::GameInstanceCount count;
+    if (dataClient->Read(count))
+        state["instance_count"] = count.count;
+    else
+        state["instance_count"] = 0;
+
 
     return true;
 }

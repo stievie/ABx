@@ -114,7 +114,7 @@ $(function($) {
       {"name":"disable","title":"","formatter": function(value, options, rowData) {
         if (rowData.active === "true")
           return "<a href='#' title='Disable Ban' class='disable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-minus-circle'></i></a>";
-        return "<a href='#' title='Disable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
+        return "<a href='#' title='Enable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
       }},
       {"name":"delete","title":"","formatter": function(value, options, rowData) {
         return "<a href='#' title='Delete Ban' class='delete-ban-link' data-uuid='" + rowData.ipban_uuid + "'><i class='fa fa-trash'></i></a>";

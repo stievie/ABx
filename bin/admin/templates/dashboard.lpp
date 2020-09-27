@@ -27,13 +27,21 @@
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
               <span class="count_top"><i class="fa fa-clock-o"></i> Total Uptime</span>
-              <div class="count">123.50</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>
+              <div class="count green"><% 
+              if (uptime > 3600 * 24) then
+                echo(math.floor(uptime / (3600 * 24)) .. " day(s)")
+              elseif (uptime > 3600) then
+                echo(math.floor(uptime / 3600) .. " hour(s)")
+              elseif (uptime > 60) then
+                echo(math.floor(uptime / 60) .. " minute(s)")
+              else
+                echo(math.floor(uptime) .. " second(s)")
+              end
+              %></div>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
               <span class="count_top"><i class="fa fa-trophy"></i> Total Games</span>
-              <div class="count green">2,500</div>
-              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
+              <div class="count"><%= instance_count %></div>
             </div>
           </div>
           <!-- /top tiles -->

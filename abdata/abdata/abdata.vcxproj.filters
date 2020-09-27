@@ -207,6 +207,9 @@
     <ClInclude Include="DBIpBanList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBGameInstanceCount.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -393,6 +396,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBIpBanList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBGameInstanceCount.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

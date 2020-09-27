@@ -41,6 +41,7 @@
 #include "DBFriendList.h"
 #include "DBFriendedMe.h"
 #include "DBGame.h"
+#include "DBGameInstanceCount.h"
 #include "DBGameInstanceList.h"
 #include "DBGameList.h"
 #include "DBGuild.h"

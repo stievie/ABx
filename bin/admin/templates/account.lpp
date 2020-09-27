@@ -264,7 +264,7 @@ $(function($) {
       {"name":"disable","title":"","formatter": function(value, options, rowData){
         if (rowData.active === "true")
           return "<a href='#' title='Disable Ban' class='disable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-minus-circle'></i></a>";
-        return "<a href='#' title='Disable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
+        return "<a href='#' title='Enable Ban' class='enable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-plus-circle'></i></a>";
       }},
     ]
   });
