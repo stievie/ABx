@@ -27,8 +27,8 @@ namespace DB {
 
 static AB::Entities::timestamp_t KeepUntil()
 {
-    static constexpr int64_t weekMs = (1000 * 60 * 60 * 24 * 7);
-    return sa::time::tick() + weekMs;
+    using namespace sa::time::literals;
+    return sa::time::tick() + 1_W;
 }
 
 static bool KeepIt(AB::Entities::timestamp_t sold)

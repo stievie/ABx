@@ -94,7 +94,8 @@ Item* ItemDrop::_LuaGetItem()
 void ItemDrop::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
-    if ((targetId_ != 0) && sa::time::time_elapsed(dropTick_) >= (300 * 1000))
+    using namespace sa::time::literals;
+    if ((targetId_ != 0) && sa::time::time_elapsed(dropTick_) >= 300_s)
     {
         // If it wasn't picked up in 5 minutes it becomes available for all
         targetId_ = 0;

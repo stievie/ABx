@@ -88,9 +88,10 @@ void StateComp::Update(uint32_t)
         }
         return;
     }
+    using namespace sa::time::literals;
     if ((currentState_ > AB::GameProtocol::CreatureState::__EmoteStart &&
         currentState_ < AB::GameProtocol::CreatureState::__EmoteEnd)
-        && lastStateChange_ + 4000 < sa::time::tick())
+        && lastStateChange_ + 4_s < sa::time::tick())
     {
         // Reset some emotes after 4 seconds
         SetState(AB::GameProtocol::CreatureState::Idle);

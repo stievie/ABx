@@ -87,19 +87,20 @@ void BanIpResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     AB::Entities::Ban ban;
     ban.uuid = Utils::Uuid::New();
+    using namespace sa::time::literals;
     switch (expires.value())
     {
     case 1:
-        ban.expires = sa::time::tick() + sa::time::WEEK;
+        ban.expires = sa::time::tick() + 1_W;
         break;
     case 2:
-        ban.expires = sa::time::tick() + sa::time::MONTH;
+        ban.expires = sa::time::tick() + 1_M;
         break;
     case 3:
-        ban.expires = sa::time::tick() + (3 * sa::time::MONTH);
+        ban.expires = sa::time::tick() + 3_M;
         break;
     case 4:
-        ban.expires = sa::time::tick() + sa::time::YEAR;
+        ban.expires = sa::time::tick() + 1_Y;
         break;
     case 9:
         ban.expires = std::numeric_limits<int64_t>::max();

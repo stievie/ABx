@@ -37,6 +37,37 @@ inline constexpr int64_t WEEK = 7 * DAY;
 inline constexpr int64_t MONTH = 30 * DAY;
 inline constexpr int64_t YEAR = 356 * DAY;
 
+namespace literals {
+constexpr int64_t operator"" _s(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * SECOND;
+}
+constexpr int64_t operator"" _m(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * MINUTE;
+}
+constexpr int64_t operator"" _h(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * HOUR;
+}
+constexpr int64_t operator"" _D(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * DAY;
+}
+constexpr int64_t operator"" _W(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * WEEK;
+}
+constexpr int64_t operator"" _M(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * MONTH;
+}
+constexpr int64_t operator"" _Y(unsigned long long int value)
+{
+    return static_cast<int64_t>(value) * YEAR;
+}
+}
+
 inline std::tm localtime(const std::time_t& time)
 {
     std::tm tm_snapshot;
@@ -124,7 +155,7 @@ inline int64_t tick()
 /// Return the time that's elapsed since in ms
 inline uint32_t time_elapsed(int64_t since)
 {
-    auto t = tick();
+    const auto t = tick();
     if (t > since)
         return static_cast<uint32_t>(t - since);
     return 0u;
