@@ -69,6 +69,10 @@ constexpr size_t StringHash(std::string_view str)
 }
 #endif
 
+namespace literals {
+constexpr size_t operator"" _Hash(const char* str, size_t) { return StringHash(str); }
+}
+
 /// Run-time hash
 inline size_t StringHashRt(const char* str)
 {

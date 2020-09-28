@@ -74,14 +74,14 @@ void BanIpResource::Render(std::shared_ptr<HttpsServer::Response> response)
     if (ip == 0)
     {
         obj["status"] = "Failed";
-        obj["message"] = "IP = 0";
+        obj["message"] = "IP can not be zero";
         return;
     }
     uint32_t mask = Utils::ConvertStringToIP(maskField.value());
     if (mask == 0)
     {
         obj["status"] = "Failed";
-        obj["message"] = "Mask = 0";
+        obj["message"] = "Mask can not be zero";
         return;
     }
 

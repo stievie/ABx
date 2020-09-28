@@ -29,12 +29,15 @@
 #include "Game.h"
 #include <eastl.hpp>
 #include <sa/StringTempl.h>
+#include <sa/StringHash.h>
 
 namespace IO {
 namespace IOMap {
 
 static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 {
+    using namespace sa::literals;
+
     auto* dataProvider = GetSubsystem<IO::DataProvider>();
     // Game load thread
     if (auto game = map.GetGame())
@@ -54,20 +57,20 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
             switch (nameHash)
             {
-            case AttrPosition:
+            case "Position"_Hash:
                 pos = Math::Vector3(valueAttr.as_string());
                 break;
-            case AttrRotation:
+            case "Rotation"_Hash:
                 rot = Math::Quaternion(valueAttr.as_string()).Normal();
                 break;
-            case AttrScale:
+            case "Scale"_Hash:
                 scale = Math::Vector3(valueAttr.as_string());
                 break;
-            case AttrName:
+            case "Name"_Hash:
                 isSpawnPoint = strcmp(valueAttr.as_string(), "SpawnPoint") == 0;
                 name = valueAttr.as_string();
                 break;
-            case AttrVariables:
+            case "Variables"_Hash:
             {
                 for (const auto& var : attr)
                 {
@@ -108,7 +111,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             // StaticModel must be first component
             switch (type_hash)
             {
-            case AttrStaticModel:
+            case "StaticModel"_Hash:
             {
                 object = ea::make_shared<Game::GameObject>();
                 object->SetName(name);
@@ -125,7 +128,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& valueAttr = attr.attribute("value");
                     switch (nameHash)
                     {
-                    case AttrModel:
+                    case "Model"_Hash:
                     {
                         std::string modelValue = valueAttr.as_string();
                         std::vector<std::string> modelFile = sa::Split(modelValue, ";");
@@ -141,19 +144,19 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                         }
                         break;
                     }
-                    case AttrIsOccluder:
+                    case "Is Occluder"_Hash:
                         object->occluder_ = valueAttr.as_bool();
                         break;
-                    case AttrIsOccludee:
+                    case "Can Be Occluded"_Hash:
                         object->occludee_ = valueAttr.as_bool();
                         break;
                     }
                 }
                 break;
             }
-            case AttrCollisionShape:
+            case "CollisionShape"_Hash:
             {
-                size_t collShape = AttrCollisionShapeTypeBox;
+                size_t collShape = "Box"_Hash;
                 if (object)
                 {
                     for (const auto& attr : comp.children())
@@ -164,16 +167,16 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                         const size_t valueHash = sa::StringHashRt(valueAttr.as_string());
                         switch (nameHash)
                         {
-                        case AttrSize:
+                        case "Size"_Hash:
                             size = Math::Vector3(valueAttr.as_string());
                             break;
-                        case AttrOffsetPos:
+                        case "Offset Position"_Hash:
                             offset = Math::Vector3(valueAttr.as_string());
                             break;
-                        case AttrOffsetRot:
+                        case "Offset Rotation"_Hash:
                             offsetRot = Math::Quaternion(valueAttr.as_string()).Normal();
                             break;
-                        case AttrShapeType:
+                        case "Shape Type"_Hash:
                         {
                             collShape = valueHash;
                         }
@@ -182,9 +185,9 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 
                     if (object && !object->GetCollisionShape())
                     {
-                        if (collShape == AttrCollisionShapeTypeTriangleMesh ||
-                            collShape == AttrCollisionShapeTypeConvexHull ||
-                            collShape == AttrCollisionShapeTypeCapsule)
+                        if (collShape == "TriangleMesh"_Hash ||
+                            collShape == "ConvexHull"_Hash ||
+                            collShape == "Capsule"_Hash)
                         {
                             if (model)
                             {
@@ -197,7 +200,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                 );
                             }
                         }
-                        else if (collShape == AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
+                        else if (collShape == "Box"_Hash && size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
                             const Math::Vector3 halfSize = (size * 0.5f);
@@ -216,7 +219,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                                     Math::ShapeType::BoundingBox, bb)
                             );
                         }
-                        else if ((collShape == AttrCollisionShapeTypeSphere || collShape == AttrCollisionShapeTypeCylinder) &&
+                        else if ((collShape == "Sphere"_Hash || collShape == "Cylinder"_Hash) &&
                             size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
@@ -252,7 +255,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 }
                 break;
             }
-            case AttrRigidBody:
+            case "RigidBody"_Hash:
             {
                 for (const auto& attr : comp.children())
                 {
@@ -261,7 +264,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& valueAttr = attr.attribute("value");
                     switch (nameHash)
                     {
-                    case AttrCollisionMask:
+                    case "Collision Mask"_Hash:
                         colisionMask = valueAttr.as_uint();
                         if (object)
                             object->collisionMask_ = colisionMask;
@@ -270,7 +273,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                 }
                 break;
             }
-            case AttrTerrain:
+            case "Terrain"_Hash:
             {
                 ASSERT(map.terrain_);
                 map.terrain_->transformation_ = Math::Transformation(pos, scale, rot);
@@ -282,7 +285,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
                     const pugi::xml_attribute& valueAttr = attr.attribute("value");
                     switch (nameHash)
                     {
-                    case AttrVertexSpacing:
+                    case "Vertex Spacing"_Hash:
                         map.terrain_->GetHeightMap()->spacing_ = Math::Vector3(valueAttr.as_string());
                         break;
                     }
@@ -363,6 +366,7 @@ bool Load(Game::Map& map)
     std::string navMeshFile;
     std::string terrainFile;
 
+    using namespace sa::literals;
     for (const auto& fileNode : indexNode.children("file"))
     {
         const pugi::xml_attribute& typeAttr = fileNode.attribute("type");
@@ -370,15 +374,15 @@ bool Load(Game::Map& map)
         const pugi::xml_attribute& srcAttr = fileNode.attribute("src");
         switch (typeHash)
         {
-        case FileTypeScene:
+        case "Scene"_Hash:
             sceneFile = srcAttr.as_string();
             break;
-        case FileTypeNavmesh:
+        case "NavMesh"_Hash:
         {
             navMeshFile = srcAttr.as_string();
             break;
         }
-        case FileTypeTerrain:
+        case "Terrain"_Hash:
             terrainFile = srcAttr.as_string();
             break;
         }
