@@ -54,6 +54,7 @@ public:
     // Lock this entity so it can only be modified by this client, i.e. make it read-only for all other clients.
     // If it is not in the cache it loads it, so you can call Lock() before Read() and be sure the data you have
     // will not be changed by another client.
+    // Note: Locking is done by Key, so the entity must have a valid UUID.
     template<typename E>
     [[nodiscard]] bool Lock(const E& entity)
     {

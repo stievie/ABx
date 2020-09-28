@@ -186,8 +186,8 @@ IOAccount::PasswordAuthResult IOAccount::PasswordAuth(const std::string& pass,
         LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
         return PasswordAuthResult::InvalidAccount;
     }
-    // Since we may read the account by name (not UUID) we must lock it after reading it into cache.
     IO::EntityLocker locker(*client, account);
+    // Since we may read the account by name (not UUID) we must lock it after reading it into cache.
     if (!locker.Lock())
     {
         LOG_ERROR << "Unable to lock account" << std::endl;

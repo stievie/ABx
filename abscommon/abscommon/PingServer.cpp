@@ -56,8 +56,14 @@ void PingServer::ThreadFunc()
     asio::ip::udp::endpoint senderEndpoint;
     while (running_)
     {
-        socket.receive_from(asio::buffer(data, 64), senderEndpoint);
-        socket.send_to(asio::buffer(data, 64), senderEndpoint);
+        asio::error_code ec;
+        socket.receive_from(asio::buffer(data, 64), senderEndpoint, 0, ec);
+        if (!ec)
+        {
+            asio::error_code ec2;
+            socket.send_to(asio::buffer(data, 64), senderEndpoint, 0, ec2);
+            (void)ec2;
+        }
     }
     socket.close();
 }

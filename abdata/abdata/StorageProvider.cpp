@@ -134,7 +134,7 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
         ea::shared_ptr<StorageData> data = ea::make_shared<StorageData>();
         if (!Read(clientId, key, data))
         {
-            LOG_WARNING << clientId << " is trying to lock an entity which does not exist" << std::endl;
+            LOG_WARNING << clientId << " is trying to lock an entity which does not exist " << key.format() << std::endl;
             return false;
         }
         _data = cache_.find(key);
@@ -143,6 +143,7 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
     }
     if (IsDeleted(_data->second.flags))
     {
+        LOG_WARNING << clientId << " Can not lock deleted entity " << key.format() << std::endl;
         return false;
     }
     if (_data->second.locker != 0)
@@ -150,6 +151,7 @@ bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)
         LOG_WARNING << clientId << " is trying to lock an locked entity by " << _data->second.locker << std::endl;
         return false;
     }
+//    LOG_DEBUG << "Locking entity " << key.format() << " for " << clientId << std::endl;
     _data->second.locker = clientId;
     return true;
 }
@@ -162,11 +164,17 @@ bool StorageProvider::Unlock(uint32_t clientId, const IO::DataKey& key)
         // This frequently happens when unlocking an item that was invalidated before
         return false;
     }
+    if (_data->second.locker == 0)
+    {
+//        LOG_DEBUG << clientId << " tries to unlock an unlocked entity, " << key.format() << std::endl;
+        return true;
+    }
     if (_data->second.locker != clientId)
     {
         LOG_WARNING << clientId << " is trying to unlock an locked entity, locker " << _data->second.locker << std::endl;
         return false;
     }
+//    LOG_DEBUG << clientId << " Unlocking entity " << key.format() << std::endl;
     _data->second.locker = 0;
     return true;
 }
@@ -251,7 +259,9 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
 
     const IO::DataKey key(table, id);
 
-    if (cache_.find(key) == cache_.end())
+    uint32_t locker = 0;
+    const auto itemIt = cache_.find(key);
+    if (itemIt == cache_.end())
     {
         index_.Add(key);
         currentSize_ += data->size();
@@ -259,10 +269,11 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     else
     {
         index_.Refresh(key);
-        currentSize_ = (currentSize_ - cache_[key].data->size()) + data->size();
+        currentSize_ = (currentSize_ - itemIt->second.data->size()) + data->size();
+        locker = itemIt->second.locker;
     }
 
-    cache_[key] = { flags, 0, data };
+    cache_[key] = { flags, locker, data };
 
     const size_t tableHash = sa::StringHashRt(table.c_str());
     // Special case for player names
