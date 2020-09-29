@@ -54,16 +54,17 @@ bool TemplateResource::GetContext(LuaContext& objects)
     ASSERT(Application::Instance);
     kaguya::State& state = objects.GetState();
 
+    using namespace sa::literals;
     state["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
     state["copy_year"] = SERVER_YEAR;
-    auto it = session_->values_.find(sa::StringHashRt("username"));
+    auto it = session_->values_.find("username"_Hash);
     if (it != session_->values_.end())
     {
         state["user"] = Utils::XML::Escape((*it).second.GetString());
     }
     else
         state["user"] = "";
-    auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
+    auto accIt = session_->values_.find("account_type"_Hash);
     AB::Entities::AccountType accType = AB::Entities::AccountType::Unknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
@@ -167,8 +168,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
 
     header_.emplace("Cache-Control", "must-revalidate");
-    const auto ct = contT->Get(Utils::GetFileExt(template_));
-    header_.emplace("Content-Type", ct);
+    header_.emplace("Content-Type", contT->Get(Utils::GetFileExt(template_)));
 
     LuaContext context(*this);
 
