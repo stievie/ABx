@@ -279,9 +279,9 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
                 // Notify players another game server joined/left. Wait some time until the
                 // service list is updated.
                 GetSubsystem<Asynch::Scheduler>()->Add(
-                    Asynch::CreateScheduledTask(500, [this, msg]()
+                    Asynch::CreateScheduledTask(500, [this, _msg = msg]()
                 {
-                    msgDispatcher_->Dispatch(msg);
+                    msgDispatcher_->Dispatch(_msg);
                 })
                 );
             }
@@ -294,9 +294,9 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     default:
         // All other message are delivered by the message dispatcher
         GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask([this, msg]()
+            Asynch::CreateTask([this, _msg = msg]()
         {
-            msgDispatcher_->Dispatch(msg);
+            msgDispatcher_->Dispatch(_msg);
         })
         );
         break;

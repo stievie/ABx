@@ -213,6 +213,8 @@
     <ClInclude Include="LoginResource.h" />
     <ClInclude Include="LogoutResource.h" />
     <ClInclude Include="LuaContext.h" />
+    <ClInclude Include="MessagePostResource.h" />
+    <ClInclude Include="MessageResource.h" />
     <ClInclude Include="PasswordPostResource.h" />
     <ClInclude Include="ProfilePostResource.h" />
     <ClInclude Include="ProfileResource.h" />
@@ -262,6 +264,8 @@
     <ClCompile Include="LuaContext.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="MessagePostResource.cpp" />
+    <ClCompile Include="MessageResource.cpp" />
     <ClCompile Include="PasswordPostResource.cpp" />
     <ClCompile Include="ProfilePostResource.cpp" />
     <ClCompile Include="ProfileResource.cpp" />

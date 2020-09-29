@@ -16,6 +16,9 @@
 #if defined(GetMessage)
 #undef GetMessage
 #endif
+#if defined(SendMessage)
+#undef SendMessage
+#endif
 
 #if defined(GetClassName)
 #undef GetClassName

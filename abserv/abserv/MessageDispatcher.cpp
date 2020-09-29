@@ -35,12 +35,7 @@
 
 void MessageDispatcher::DispatchAdminMessage(const Net::MessageMsg& msg)
 {
-    sa::PropReadStream stream;
-    if (!msg.GetPropStream(stream))
-        return;
-    std::string message;
-    if (!stream.ReadString(message))
-        return;
+    const std::string message = msg.GetBodyString();
 
     auto nmsg = Net::NetworkMessage::GetNew();
     auto* playerMngr = GetSubsystem<Game::PlayerManager>();

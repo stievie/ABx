@@ -46,6 +46,8 @@
 #include "LessFileResource.h"
 #include "LoginResource.h"
 #include "LogoutResource.h"
+#include "MessageResource.h"
+#include "MessagePostResource.h"
 #include "PasswordPostResource.h"
 #include "ProfilePostResource.h"
 #include "ProfileResource.h"
@@ -182,6 +184,7 @@ void Application::InitRoutes()
     Route<Resources::IPBansResource>("GET", "^/ipbans$");
     Route<Resources::IPBansJsonResource>("GET", "^/get/ipbans$");
     Route<Resources::AccountBansJsonResource>("GET", "^/get/accountbans$");
+    Route<Resources::MessageResource>("GET", "^/message$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
@@ -199,6 +202,7 @@ void Application::InitRoutes()
     Route<Resources::BanAccountResource>("POST", "^/post/ban_account$");
     Route<Resources::BanIpResource>("POST", "^/post/ban_ip$");
     Route<Resources::IpBanDeleteResource>("POST", "^/post/ipban_delete$");
+    Route<Resources::MessagePostResource>("POST", "^/post/message$");
 }
 
 void Application::ShowVersion()

@@ -9,7 +9,6 @@
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
-                <h3>General</h3>
                 <ul class="nav side-menu">
                   <li><a href="/"><i class="fa fa-home"></i>Home</a>
                   <li><a href="friends"><i class="fa fa-users"></i>Friends</a></li>
@@ -17,6 +16,14 @@
                   <li><a href="download"><i class="fa fa-download"></i>Download</a></li>
                 </ul>
               </div>
+              <% if is_gm then %>
+              <div class="menu_section">
+                <h3>Game Master</h3>
+                <ul class="nav side-menu">
+                  <li><a href="message"><i class="fa fa-commenting-o"></i>Message</a></li>
+                </ul>
+              </div>
+              <% end %>
               <% if is_god then %>
               <div class="menu_section">
                 <h3>Admin</h3>
