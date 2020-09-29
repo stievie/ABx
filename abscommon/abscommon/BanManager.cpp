@@ -101,7 +101,13 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
         return false;
     if (!_ban.active)
         return false;
-    return (_ban.expires <= 0) || (_ban.expires >= sa::time::tick());
+    bool result = (_ban.expires <= 0) || (_ban.expires >= sa::time::tick());
+    if (result)
+    {
+        ++_ban.hits;
+        client->Update(_ban);
+    }
+    return result;
 }
 
 bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
@@ -123,7 +129,11 @@ bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
         if (!_ban.active)
             continue;
         if ((_ban.expires <= 0) || (_ban.expires >= sa::time::tick()))
+        {
+            ++_ban.hits;
+            client->Update(_ban);
             return true;
+        }
     }
     return false;
 }

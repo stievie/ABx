@@ -63,6 +63,7 @@ struct Ban : Entity
     bool active = false;
     std::string adminUuid = EMPTY_GUID;
     std::string comment;
+    uint32_t hits = 0;
 };
 
 }

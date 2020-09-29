@@ -126,6 +126,7 @@ $(function($) {
       }},
       {"name":"admin_uuid","title":"Admin ID","breakpoints":"xs sm md lg"},
       {"name":"comment","title":"Comment","breakpoints":"xs sm md"},
+      {"name":"hits","type":"number","title":"Hits","breakpoints":"xs sm"},
       {"name":"disable","title":"","formatter": function(value, options, rowData) {
         if (rowData.active === "true")
           return "<a href='#' title='Disable Ban' class='disable-ban-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-minus-circle'></i></a>";

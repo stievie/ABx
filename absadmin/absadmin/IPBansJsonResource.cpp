@@ -80,6 +80,7 @@ void IPBansJsonResource::Render(std::shared_ptr<HttpsServer::Response> response)
         banJson["added"] = ban.added;
         banJson["expires"] = ban.expires == std::numeric_limits<int64_t>::max() ? 0 : ban.expires;
         banJson["comment"] = ban.comment;
+        banJson["hits"] = ban.hits;
         banJson["admin_uuid"] = ban.adminUuid;
         banJson["admin_name"] = adminAccount.name.empty() ? "Unknown" : adminAccount.name;
 

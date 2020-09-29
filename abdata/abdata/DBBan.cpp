@@ -43,6 +43,8 @@ static std::string PlaceholderCallback(Database* db, const AB::Entities::Ban& ba
             return db->EscapeString(ban.adminUuid);
         if (token.value == "comment")
             return db->EscapeString(ban.comment);
+        if (token.value == "hits")
+            return std::to_string(ban.hits);
 
         LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
         return "";
@@ -60,9 +62,9 @@ bool DBBan::Create(AB::Entities::Ban& ban)
     }
 
     static constexpr const char* SQL = "INSERT INTO bans ("
-            "uuid, expires, added, reason, active, admin_uuid, comment"
+            "uuid, expires, added, reason, active, admin_uuid, comment, hits"
         ") VALUES ("
-            "${uuid}, ${expires}, ${added}, ${reason}, ${active}, ${admin_uuid}, ${comment}"
+            "${uuid}, ${expires}, ${added}, ${reason}, ${active}, ${admin_uuid}, ${comment}, ${hits}"
         ")";
 
     Database* db = GetSubsystem<Database>();
@@ -103,6 +105,7 @@ bool DBBan::Load(AB::Entities::Ban& ban)
     ban.active = result->GetUInt("active") != 0;
     ban.adminUuid = result->GetString("admin_uuid");
     ban.comment = result->GetString("comment");
+    ban.hits = result->GetUInt("hits");
 
     return true;
 }
@@ -121,7 +124,8 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
         "reason = ${reason}, "
         "active = ${active}, "
         "admin_uuid = ${admin_uuid}, "
-        "comment = ${comment} "
+        "comment = ${comment}, "
+        "hits = %{hits} "
         "WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();
