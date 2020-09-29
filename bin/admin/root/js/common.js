@@ -6,7 +6,7 @@ function setCookie(name, value, days)
     date.setTime(date.getTime() + (days*24*60*60*1000));
     expires = "; expires=" + date.toUTCString();
   }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/;SameSite=Lax";
 }
 function getCookie(name)
 {
@@ -21,7 +21,7 @@ function getCookie(name)
 }
 function eraseCookie(name)
 {
-  document.cookie = name+'=; Max-Age=-99999999;';
+  document.cookie = name+'=; Max-Age=-99999999;;SameSite=Lax';
 }
 function formatTick(tick)
 {
@@ -105,7 +105,6 @@ function initSidebar()
 
   $SIDEBAR_MENU.find('a').on('click', function(ev)
   {
-    console.log('clicked - sidebar_menu');
     var $li = $(this).parent();
 
     if ($li.is('.active'))
@@ -142,8 +141,6 @@ function initSidebar()
   // toggle small or large menu
   $MENU_TOGGLE.on('click', function()
   {
-    console.log('clicked - menu toggle');
-
     if ($BODY.hasClass('nav-md')) {
       $SIDEBAR_MENU.find('li.active ul').hide();
       $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
