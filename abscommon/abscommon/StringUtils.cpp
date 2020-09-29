@@ -24,6 +24,7 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
+#include <sa/StringTempl.h>
 
 namespace Utils {
 
@@ -101,24 +102,17 @@ std::string ChangeFileExt(const std::string& fn, const std::string& ext)
 
 std::string GetFileExt(const std::string& fn)
 {
-    size_t pos = fn.find_last_of('.');
-    if (pos != std::string::npos)
-        return fn.substr(pos);
-    return "";
+    return sa::GetFileExt<char>(fn);
 }
 
 std::string ExtractFileDir(const std::string& fn)
 {
-    size_t pos = fn.find_last_of("\\/");
-    return fn.substr(0, pos);
+    return sa::ExtractFileDir<char>(fn);
 }
 
 std::string ExtractFileName(const std::string& fn)
 {
-    size_t pos = fn.find_last_of("\\/");
-    if (pos != std::string::npos)
-        return fn.substr(pos + 1);
-    return fn;
+    return sa::ExtractFileName<char>(fn);
 }
 
 std::string ConcatPath(const std::string& path, const std::string& name, const std::string& ext /* = "" */)

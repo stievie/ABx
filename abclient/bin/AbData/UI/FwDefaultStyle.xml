@@ -555,6 +555,12 @@
     <element type="ChatLogChatText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.95 0.95 0.95" />
     </element>
+    <element type="ChatLogServerGMInfoText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0 0.66 0.8" />
+    </element>
+    <element type="ChatLogServerAdminText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0.85 0.23 0.25" />
+    </element>
     <element type="ChatLogServerInfoText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.57 0.95 0.66" />
     </element>

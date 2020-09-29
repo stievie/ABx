@@ -459,6 +459,7 @@ void FwClient::UpdateAssets()
     Sync::Updater updater(client_.fileHost_, client_.filePort_,
         client_.accountUuid_ + client_.authToken_, sa::Process::GetSelfPath(), indexFile);
     bool updatingSelf = false;
+    std::vector<std::string> updatedFiles;
     updater.onError = [this](Sync::Updater::ErrorType type, const char* message)
     {
         httpError_ = true;
@@ -493,12 +494,8 @@ void FwClient::UpdateAssets()
             lm->ShowError(message, "Update Error");
         }
     };
-    updater.onProcessFile_ = [this, &updatingSelf](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
+    updater.onProcessFile_ = [this](size_t fileIndex, size_t maxFiles, const std::string filename) -> bool
     {
-        const std::string path = sa::Process::GetSelfPath();
-        const std::string file = path + "/" + filename;
-        updatingSelf = sa::Process::IsSelf(file);
-
         VariantMap& eData = GetEventDataMap();
         using namespace Events::UpdateFile;
         eData[P_FILENAME] = ToUrhoString(filename);
@@ -506,6 +503,13 @@ void FwClient::UpdateAssets()
         eData[P_COUNT] = (unsigned)maxFiles;
         SendEvent(Events::E_UPDATEFILE, eData);
         return true;
+    };
+    updater.onStartFile_ = [this, &updatingSelf, &updatedFiles](const std::string& filename)
+    {
+        const std::string path = sa::Process::GetSelfPath();
+        const std::string file = path + "/" + filename;
+        updatingSelf = sa::Process::IsSelf(file);
+        updatedFiles.push_back(file);
     };
 
     updater.onProgress_ = [&](size_t, size_t, size_t value, size_t max)
@@ -531,7 +535,26 @@ void FwClient::UpdateAssets()
     bool res = updater.Execute();
     if (res)
     {
-        cache->ReleaseAllResources(true);
+        const std::vector<std::string> resources = sa::Split(AB_CLIENT_RESOURSES, ";", false, false);
+        auto filePrio = [&resources](const std::string fn) -> unsigned
+        {
+            unsigned result = 0;
+            const std::string ext = sa::GetFileExt<char>(fn);
+            for (const auto& f : resources)
+            {
+                if (f + ext == fn)
+                    return result;
+                ++result;
+            }
+            return PRIORITY_LAST;
+        };
+        for (const auto& file : updatedFiles)
+        {
+            const std::string fn = sa::ExtractFileName<char>(file);
+
+            cache->RemovePackageFile(ToUrhoString(file), true, true);
+            cache->AddPackageFile(ToUrhoString(file), filePrio(file));
+        }
     }
     else
     {

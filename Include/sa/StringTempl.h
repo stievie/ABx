@@ -194,6 +194,31 @@ inline std::basic_string<charType> CombinePath(const std::basic_string<charType>
 }
 
 template <typename charType>
+inline std::basic_string<charType> ExtractFileDir(const std::basic_string<charType>& fn)
+{
+    size_t pos = fn.find_last_of("\\/");
+    return fn.substr(0, pos);
+}
+
+template <typename charType>
+inline std::basic_string<charType> ExtractFileName(const std::basic_string<charType>& fn)
+{
+    size_t pos = fn.find_last_of("\\/");
+    if (pos != std::string::npos)
+        return fn.substr(pos + 1);
+    return fn;
+}
+
+template <typename charType>
+inline std::basic_string<charType> GetFileExt(const std::basic_string<charType>& fn)
+{
+    size_t pos = fn.find_last_of('.');
+    if (pos != std::string::npos)
+        return fn.substr(pos);
+    return "";
+}
+
+template <typename charType>
 inline charType ToLower(charType c)
 {
     ASSERT_FALSE();

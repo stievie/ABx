@@ -64,9 +64,12 @@ public:
     bool DownloadRemoteFiles();
     const std::vector<RemoteFile>& GetRemoteFiles() const { return remoteFiles_; }
     std::function<void(size_t fileIndex, size_t maxFiles, size_t value, size_t max)> onProgress_;
+    // Check if file should be processed
     std::function<bool(size_t fileIndex, size_t maxFiles, const std::string& filename)> onProcessFile_;
     std::function<void(const std::string& filename)> onFailure_;
     std::function<void(const std::string& filename, bool different, size_t downloaded, size_t copied, int savings)> onDoneFile_;
+    // Files are different, starts updating this file now
+    std::function<void(const std::string& filename)> onStartFile_;
     std::function<void(ErrorType type, const char* message)> onError;
     std::function<void()> onUpdateStart_;
     std::function<void(bool success)> onUpdateDone_;

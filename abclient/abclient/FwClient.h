@@ -78,6 +78,9 @@ struct InventoryLimit
     uint32_t maxItems{ 0 };
 };
 
+// These are the resource files used by the client. First have higher priority.
+static constexpr const char* AB_CLIENT_RESOURSES = "AbData;SoundData;GameData;CoreData;Data";
+
 class FwClient final : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object)

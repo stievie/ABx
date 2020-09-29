@@ -967,7 +967,7 @@ void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
     using namespace Events::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();
     const String& message = eventData[P_DATA].GetString();
-    AddLine(sender, message, "ChatLogServerInfoText");
+    AddLine(sender, message, "ChatLogServerGMInfoText");
 }
 
 void ChatWindow::HandleServerMessageAdminMessage(VariantMap& eventData)
@@ -975,7 +975,7 @@ void ChatWindow::HandleServerMessageAdminMessage(VariantMap& eventData)
     using namespace Events::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();
     const String& message = eventData[P_DATA].GetString();
-    AddLine(sender, message, "ChatLogServerInfoText");
+    AddLine(sender, message, "ChatLogServerAdminText");
 }
 
 void ChatWindow::HandleServerMessagePlayerNotFound(VariantMap& eventData)

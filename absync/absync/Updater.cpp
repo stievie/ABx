@@ -114,6 +114,8 @@ bool Updater::ProcessFile(const RemoteFile& file)
             onDoneFile_(file.basePath, false, 0, 0, 0);
         return true;
     }
+    if (onStartFile_)
+        onStartFile_(file.basePath);
     Sync::Synchronizer sync(*localBackend_, *remoteBackend_);
     sync.onProgress_ = [this](size_t value, size_t max) -> bool
     {
