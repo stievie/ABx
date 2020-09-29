@@ -206,7 +206,7 @@
                         <select name="expires" class="form-control">
                           <option value="1">1 Week</option>
                           <option value="2">1 Month</option>
-                          <option value="3">3 Month</option>
+                          <option value="3">3 Months</option>
                           <option value="4">1 Year</option>
                           <option value="9">Never (permanent)</option>
                         </select>

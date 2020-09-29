@@ -21,6 +21,21 @@
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
+                <div class="x_content">
+                  <p>Servers facing the outside world (these are <b>ablogin</b>,
+                  <b>abserv</b>, <b>abfile</b> and <b>absadmin</b>) will not allow connections from
+                  blocked IP addresses.</p>
+                  <p>IP Addresses may also be temporarily blocked for other reasons,
+                    e.g. too many unsuccessful login attempts, too many connections
+                    in a too short time etc. <i>These blocks are not listed here</i>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
                 <div class="x_title">
                   <h2>Add Ban</h2>
                   <div class="clearfix"></div>
@@ -42,7 +57,7 @@
                         <select name="expires" class="form-control">
                           <option value="1">1 Week</option>
                           <option value="2">1 Month</option>
-                          <option value="3">3 Month</option>
+                          <option value="3">3 Months</option>
                           <option value="4">1 Year</option>
                           <option value="9">Never (permanent)</option>
                         </select>
@@ -65,7 +80,7 @@
               </div>
             </div>
           </div>
-        
+
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -76,7 +91,7 @@
               </div>
             </div>
           </div>
-          
+
         </div>
         <!-- /page content -->
 <script type="text/javascript">
@@ -128,7 +143,7 @@ $(function($) {
       bansTable.loadRows(rows);
     });
   }
-  
+
   $(document).on("click", ".disable-ban-link", function(e) {
     e.preventDefault();
     NProgress.start();
@@ -187,7 +202,7 @@ $(function($) {
         alert(data.message);
     });
   });
-  
+
   refreshBans();
 });
 </script>

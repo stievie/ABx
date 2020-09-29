@@ -34,6 +34,8 @@
 namespace IO {
 namespace IOMap {
 
+static constexpr size_t VarGroup = 3316982911;
+
 static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
 {
     using namespace sa::literals;

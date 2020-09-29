@@ -27,8 +27,6 @@ namespace IO {
 
 namespace IOMap {
 
-static constexpr size_t VarGroup = 3316982911;
-
 bool Load(Game::Map& map);
 
 }
