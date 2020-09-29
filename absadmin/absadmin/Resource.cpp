@@ -43,12 +43,13 @@ void Resource::Redirect(std::shared_ptr<HttpsServer::Response> response, const s
 
 bool Resource::IsAllowed(AB::Entities::AccountType minType)
 {
-    bool loggedIn = session_->values_[sa::StringHashRt("logged_in")].GetBool();
+    using namespace sa::literals;
+    bool loggedIn = session_->values_["logged_in"_Hash].GetBool();
     if (!loggedIn)
     {
         return minType == AB::Entities::AccountType::Unknown;
     }
-    auto accIt = session_->values_.find(sa::StringHashRt("account_type"));
+    auto accIt = session_->values_.find("account_type"_Hash);
     AB::Entities::AccountType accType = AB::Entities::AccountType::Unknown;
     if (accIt != session_->values_.end())
         accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());

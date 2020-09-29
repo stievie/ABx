@@ -103,7 +103,8 @@ void BanAccountResource::Render(std::shared_ptr<HttpsServer::Response> response)
     ban.reason = AB::Entities::BanReasonOther;
     ban.active = true;
 
-    auto adminIt = session_->values_.find(sa::StringHashRt("account_uuid"));
+    using namespace sa::literals;
+    auto adminIt = session_->values_.find("account_uuid"_Hash);
     if (adminIt != session_->values_.end())
         ban.adminUuid = adminIt->second.GetString();
 
