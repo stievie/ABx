@@ -35,6 +35,7 @@
 #include <iostream>
 #include <sa/http_status.h>
 #include <sa/Process.h>
+#include <sa/path.h>
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 #include "Platform.h"
 
@@ -485,9 +486,8 @@ void FwClient::UpdateAssets()
     {
         httpError_ = true;
         failedFiles.push_back(filename);
-        const std::string path = sa::Process::GetSelfPath();
-        const std::string file = path + "/" + filename;
-        if (!sa::Process::IsSelf(file))
+        const sa::path file = sa::path(sa::Process::GetSelfPath()) / sa::path(filename);
+        if (!sa::Process::IsSelf(file.string()))
         {
             auto* lm = GetSubsystem<LevelManager>();
             String message = "Error updating file " + String(filename.c_str());
@@ -506,10 +506,9 @@ void FwClient::UpdateAssets()
     };
     updater.onStartFile_ = [this, &updatingSelf, &updatedFiles](const std::string& filename)
     {
-        const std::string path = sa::Process::GetSelfPath();
-        const std::string file = path + "/" + filename;
-        updatingSelf = sa::Process::IsSelf(file);
-        updatedFiles.push_back(file);
+        const sa::path file = sa::path(sa::Process::GetSelfPath()) / sa::path(filename);
+        updatingSelf = sa::Process::IsSelf(file.string());
+        updatedFiles.push_back(file.string());
     };
 
     updater.onProgress_ = [&](size_t, size_t, size_t value, size_t max)
@@ -535,14 +534,15 @@ void FwClient::UpdateAssets()
     bool res = updater.Execute();
     if (res)
     {
-        const std::vector<std::string> resources = sa::Split(AB_CLIENT_RESOURSES, ";", false, false);
-        auto filePrio = [&resources](const std::string fn) -> unsigned
+        const std::vector<std::string> resources = sa::Split(AB_CLIENT_RESOURCES, ";", false, false);
+        auto filePrio = [&resources](const sa::path& fn) -> unsigned
         {
             unsigned result = 0;
-            const std::string ext = sa::GetFileExt<char>(fn);
-            for (const auto& f : resources)
+            const std::string ext = fn.ext();
+            for (const auto& res : resources)
             {
-                if (f + ext == fn)
+                sa::path respath(res);
+                if (respath + ext == fn)
                     return result;
                 ++result;
             }
@@ -550,10 +550,10 @@ void FwClient::UpdateAssets()
         };
         for (const auto& file : updatedFiles)
         {
-            const std::string fn = sa::ExtractFileName<char>(file);
+            const sa::path path = sa::path(file);
 
             cache->RemovePackageFile(ToUrhoString(file), true, true);
-            cache->AddPackageFile(ToUrhoString(file), filePrio(file));
+            cache->AddPackageFile(ToUrhoString(file), filePrio(path));
         }
     }
     else
@@ -562,13 +562,12 @@ void FwClient::UpdateAssets()
         bool selfFailed = false;
         for (const auto& failedFile : failedFiles)
         {
-            const std::string path = sa::Process::GetSelfPath();
-            const std::string file = path + "/" + failedFile;
-            selfFailed = sa::Process::IsSelf(file);
-            if (sa::Process::IsSelf(file))
+            const sa::path file = sa::path(sa::Process::GetSelfPath()) / sa::path(failedFile);
+            selfFailed = sa::Process::IsSelf(file.string());
+            if (sa::Process::IsSelf(file.string()))
                 selfFailed = true;
             else
-                std::remove(file.c_str());
+                std::remove(file.string().c_str());
         }
         if (selfFailed)
         {

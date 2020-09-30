@@ -283,7 +283,7 @@ void ClientApp::Setup()
     engineParameters_[EP_SHADOWS] = options->GetShadows();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
     engineParameters_[EP_RESOURCE_PREFIX_PATHS] = "./;" + options->GetPrefPath();
-    engineParameters_[EP_RESOURCE_PATHS] = AB_CLIENT_RESOURSES;
+    engineParameters_[EP_RESOURCE_PATHS] = AB_CLIENT_RESOURCES;
     engineParameters_[EP_LOG_NAME] = "fw.log";
 #if defined(AB_CLIENT_LOGGING)
     engineParameters_[EP_LOG_QUIET] = false;
