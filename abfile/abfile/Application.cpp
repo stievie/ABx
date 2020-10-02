@@ -37,6 +37,8 @@
 #include <AB/Entities/ItemList.h>
 #include <AB/Entities/Music.h>
 #include <AB/Entities/MusicList.h>
+#include <AB/Entities/News.h>
+#include <AB/Entities/NewsList.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/ProfessionList.h>
 #include <AB/Entities/Quest.h>
@@ -59,6 +61,7 @@
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>
 #include <abscommon/UuidUtils.h>
+#include <abscommon/Xml.h>
 #include <fstream>
 #include <sstream>
 
@@ -321,6 +324,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     server_->resource["^/_quests_$"]["GET"] = std::bind(&Application::GetHandlerQuests, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_news_$"]["GET"] = std::bind(&Application::GetHandlerNews, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
     auto* dataClient = GetSubsystem<IO::DataClient>();
@@ -1379,6 +1384,53 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
         gNd.append_attribute("uuid").set_value(v.uuid.c_str());
         gNd.append_attribute("name").set_value(v.name.c_str());
         gNd.append_attribute("value").set_value(v.value);
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerNews(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    auto* dataClient = GetSubsystem<IO::DataClient>();
+    AB::Entities::LatestNewsList vl;
+    if (!dataClient->Read(vl))
+    {
+        LOG_ERROR << "Error reading news list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
+    auto root = doc.append_child("news_list");
+
+    for (const std::string& uuid : vl.uuids)
+    {
+        AB::Entities::News n;
+        n.uuid = uuid;
+        if (!dataClient->Read(n))
+            continue;
+
+        auto gNd = root.append_child("news");
+        gNd.append_attribute("uuid").set_value(n.uuid.c_str());
+        gNd.append_attribute("created").set_value(n.created);
+        gNd.append_attribute("body").set_value(Utils::XML::Escape(n.body).c_str());
     }
 
     std::stringstream stream;

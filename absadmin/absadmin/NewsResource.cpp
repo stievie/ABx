@@ -19,35 +19,39 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "NewsResource.h"
+#include "Application.h"
+#include "Version.h"
+#include <AB/Entities/GameInstance.h>
+#include <AB/Entities/Game.h>
 
-#include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
+namespace Resources {
 
-using bitsery::ext::BaseClass;
-
-namespace AB {
-namespace Entities {
-
-struct AccountBanList : Entity
+bool NewsResource::GetContext(LuaContext& objects)
 {
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<AccountBanList>::Get();
-    }
-    template<typename S>
-    void serialize(S& s)
-    {
-        s.ext(*this, BaseClass<Entity>{});
-        s.container(uuids, Limits::MAX_LIST, [&s](std::string& c)
-        {
-            s.text1b(c, Limits::MAX_UUID);
-        });
-    }
+    if (!TemplateResource::GetContext(objects))
+        return false;
 
-    std::vector<std::string> uuids;
-};
-
+    return true;
 }
+
+NewsResource::NewsResource(std::shared_ptr<HttpsServer::Request> request) :
+    TemplateResource(request)
+{
+    template_ = "../templates/news.lpp";
+    styles_.insert(styles_.begin(), "vendors/css/footable.bootstrap.min.css");
+    footerScripts_.push_back("vendors/js/footable.min.js");
+}
+
+void NewsResource::Render(std::shared_ptr<HttpsServer::Response> response)
+{
+    if (!IsAllowed(AB::Entities::AccountType::Gamemaster))
+    {
+        Redirect(response, "/");
+        return;
+    }
+
+    TemplateResource::Render(response);
+}
+
 }

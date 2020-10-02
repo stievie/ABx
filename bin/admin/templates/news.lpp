@@ -1,0 +1,131 @@
+<?# _header.lpp ?>
+
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col menu_fixed">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="/" class="site_title"><i class="icon-trill"></i> <span><%= title %></span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <?# _sidebar.lpp ?>
+          </div>
+        </div>
+
+        <?# _topnav.lpp ?>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Add News</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <form id="news_form" class="form-horizontal form-label-left" method="POST" action="post/add_news">
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Content</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 8px;">
+                        <textarea class="form-control" rows="5" name="content"></textarea>
+                      </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" class="btn btn-success pull-right" value="Create">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_content">
+                  <table id="news-table" class="table table-striped" data-rows="25">
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /page content -->
+<script type="text/javascript">
+$(function($) {
+  var newsTable = FooTable.init('#news-table', {
+    "paging": {
+      "enabled": true,
+      "size": 30
+    },
+    "filtering": {
+      "enabled": true
+    },
+    "sorting": {
+      "enabled": false
+    },
+    "columns": [
+      {"name":"uuid","title":"News ID","breakpoints":"xs sm md lg"},
+      {"name":"created","title":"Date","type":"number","formatter": function(value, options, rowData) {
+        return formatTick(value);
+      }},
+      {"name":"body","title":"Content","breakpoints":"xs sm","type":"text","formatter": function(value, options, rowData) {
+        if (value.length < 30)
+          return value;
+        return value.substring(0, 27) + "...";
+      }},
+      {"name":"delete","title":"","formatter": function(value, options, rowData) {
+        return "<a href='#' title='Delete News' class='delete-news-link' data-uuid='" + rowData.uuid + "'><i class='fa fa-trash'></i></a>";
+      }},
+    ]
+  });
+
+  function refreshNews()
+  {
+    $.get("get/news?all=1").then(function(rows) {
+      newsTable.loadRows(rows);
+    });
+  }
+
+  $("#news_form").bind("submit", function(e) {
+    e.preventDefault();
+    NProgress.start();
+    $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshNews();
+      }
+      else
+        alert(data.message);
+    });
+  });
+  $(document).on("click", ".delete-news-link", function(e) {
+    e.preventDefault();
+      if (!confirm("Delete this News?"))
+        return;
+    NProgress.start();
+    $.post("post/news_delete", { uuid: $(this).data("uuid") }, function(data, textStatus, xhr)
+    {
+      NProgress.done();
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        refreshNews();
+      }
+      else
+        alert(data.message);
+    });
+  });
+  refreshNews();
+});
+</script>
+
+<?# _footer.lpp ?>

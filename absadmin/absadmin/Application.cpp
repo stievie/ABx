@@ -48,6 +48,10 @@
 #include "LogoutResource.h"
 #include "MessageResource.h"
 #include "MessagePostResource.h"
+#include "NewsCreateResource.h"
+#include "NewsDeleteResource.h"
+#include "NewsResource.h"
+#include "NewsJsonResource.h"
 #include "PasswordPostResource.h"
 #include "ProfilePostResource.h"
 #include "ProfileResource.h"
@@ -185,6 +189,8 @@ void Application::InitRoutes()
     Route<Resources::IPBansJsonResource>("GET", "^/get/ipbans$");
     Route<Resources::AccountBansJsonResource>("GET", "^/get/accountbans$");
     Route<Resources::MessageResource>("GET", "^/message$");
+    Route<Resources::NewsResource>("GET", "^/news$");
+    Route<Resources::NewsJsonResource>("GET", "^/get/news$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
@@ -203,6 +209,8 @@ void Application::InitRoutes()
     Route<Resources::BanIpResource>("POST", "^/post/ban_ip$");
     Route<Resources::IpBanDeleteResource>("POST", "^/post/ipban_delete$");
     Route<Resources::MessagePostResource>("POST", "^/post/message$");
+    Route<Resources::NewsCreateResource>("POST", "^/post/add_news$");
+    Route<Resources::NewsDeleteResource>("POST", "^/post/news_delete$");
 }
 
 void Application::ShowVersion()

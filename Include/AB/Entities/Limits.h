@@ -42,6 +42,9 @@ static constexpr int MAX_LIST = 65536;
 static constexpr int MAX_MUSIC = MAX_LIST;
 static constexpr int MAX_MUSIC_MAPS = 5000;
 
+static constexpr int MAX_NEWS_ITEMS = std::numeric_limits<int>::max();
+static constexpr int MAX_NEWS_BODY = 1024;
+
 // Account
 static constexpr int MAX_ACCOUNT_NAME = ACCOUNT_NAME_MAX;
 static constexpr int MAX_ACCOUNT_PASS = PASSWORD_LENGTH_MAX;

@@ -29,7 +29,6 @@
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ACCOUNTS = "accounts";
 static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 // Account chest size
 static constexpr size_t DEFAULT_CHEST_SIZE = 80;
@@ -69,9 +68,9 @@ inline bool IsOnline(OnlineStatus status)
 
 struct Account : Entity
 {
-    static constexpr const char* KEY()
+    static constexpr std::string_view KEY()
     {
-        return KEY_ACCOUNTS;
+        return sa::TypeName<Account>::Get();
     }
     template<typename S>
     void serialize(S& s)

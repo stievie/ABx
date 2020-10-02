@@ -114,6 +114,8 @@ private:
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerVersions(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerNews(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
     bool HandleOnAccept(const asio::ip::tcp::endpoint& endpoint);

@@ -31,6 +31,7 @@
 //it can be created either internally (via configuration) or externally (pointer to context).
 #include <bitsery/ext/inheritance.h>
 #include <AB/Entities/Limits.h>
+#include <sa/TypeName.h>
 
 using bitsery::ext::BaseClass;
 

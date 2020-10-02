@@ -45,6 +45,12 @@ struct TemplateStruct
 
 };
 
+template<size_t x>
+class IntgralTemplateArgument
+{
+
+};
+
 TEST_CASE("TypeName no NS")
 {
     constexpr auto res = sa::TypeName<Baz>::Get();
@@ -72,4 +78,13 @@ TEST_CASE("Template type")
     constexpr auto res = sa::TypeName<TemplateStruct<int>>::Get();
     INFO(res);
     REQUIRE(res.compare("TemplateStruct<int>") == 0);
+}
+
+TEST_CASE("Integral argument")
+{
+    constexpr auto res = sa::TypeName<IntgralTemplateArgument<1>>::Get();
+    constexpr auto res2 = sa::TypeName<IntgralTemplateArgument<2>>::Get();
+    INFO(res);
+    REQUIRE(res.compare("IntgralTemplateArgument<1>") == 0);
+    REQUIRE(res.compare(res2) != 0);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Stefan Ascher
+ * Copyright 2017-2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,17 +30,19 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-struct AccountBanList : Entity
+template<size_t _Limit>
+struct NewsList : Entity
 {
+    static constexpr size_t Limit = _Limit;
     static constexpr std::string_view KEY()
     {
-        return sa::TypeName<AccountBanList>::Get();
+        return sa::TypeName<NewsList<_Limit>>::Get();
     }
     template<typename S>
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(uuids, Limits::MAX_LIST, [&s](std::string& c)
+        s.container(uuids, Limits::MAX_NEWS_ITEMS, [&s](std::string& c)
         {
             s.text1b(c, Limits::MAX_UUID);
         });
@@ -48,6 +50,9 @@ struct AccountBanList : Entity
 
     std::vector<std::string> uuids;
 };
+
+using LatestNewsList = NewsList<5>;
+using AllNewsList = NewsList<0>;
 
 }
 }

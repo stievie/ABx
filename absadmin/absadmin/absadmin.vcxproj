@@ -215,6 +215,10 @@
     <ClInclude Include="LuaContext.h" />
     <ClInclude Include="MessagePostResource.h" />
     <ClInclude Include="MessageResource.h" />
+    <ClInclude Include="NewsCreateResource.h" />
+    <ClInclude Include="NewsDeleteResource.h" />
+    <ClInclude Include="NewsJsonResource.h" />
+    <ClInclude Include="NewsResource.h" />
     <ClInclude Include="PasswordPostResource.h" />
     <ClInclude Include="ProfilePostResource.h" />
     <ClInclude Include="ProfileResource.h" />
@@ -266,6 +270,10 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="MessagePostResource.cpp" />
     <ClCompile Include="MessageResource.cpp" />
+    <ClCompile Include="NewsCreateResource.cpp" />
+    <ClCompile Include="NewsDeleteResource.cpp" />
+    <ClCompile Include="NewsJsonResource.cpp" />
+    <ClCompile Include="NewsResource.cpp" />
     <ClCompile Include="PasswordPostResource.cpp" />
     <ClCompile Include="ProfilePostResource.cpp" />
     <ClCompile Include="ProfileResource.cpp" />

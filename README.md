@@ -64,7 +64,7 @@ Christmas 2117 +/- some years.
     - Players can buy items from the Merchant which the Merchant has in stock.
     - Dynamic item price taking availability and drop chance into account.
     - Players can craft new items for Materials and Money from special NPCs.
-* Autoupdate asset files: It donwnloads only the differences and patches existing files. This greatly reduces time and bandwidth.
+* Autoupdate asset files: It downloads only the differences and patches existing files. This greatly reduces time and bandwidth.
 
 ## Screenshot
 
@@ -125,6 +125,8 @@ servers connect, and get their data from.
 The file server is a simple HTTP server providing files and other information.
 The client may connect to it from time to time and download data.
 
+It is also used to update the game client and the client assets.
+
 There can be any number of file servers. Usually you may want to have file servers
 in different regions, and not on the same machine. A file server does not need
 much resources, just bandwidth. But if they run on the same machine, they must
@@ -164,9 +166,11 @@ It'll lookup running Login Servers and bridge client connections to one of them.
 
 ### Admin Server
 
-A Web interface.
+A Web interface to view and edit some data. For example Admins can view running
+services, games, account, can create account and IP bans, account keys etc.
 
-On Linux this server must be run as root, because it binds the ports 80 and 443.
+On Linux this server must be run as root, because it binds the ports 80 and 443,
+which are privileged ports on Linux.
 
 ### Client
 

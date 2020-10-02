@@ -40,12 +40,12 @@ public:
     DataKey(DataKey&& other) noexcept :
         data_(std::move(other.data_))
     { }
-    DataKey(const std::string& table, const uuids::uuid& id) noexcept
+    DataKey(std::string_view table, const uuids::uuid& id) noexcept
     {
         data_.assign(table.begin(), table.end());
         data_.insert(data_.end(), id.begin(), id.end());
     }
-    explicit DataKey(const std::string& key) noexcept :
+    explicit DataKey(std::string_view key) noexcept :
         data_(key.begin(), key.end())
     { }
     ~DataKey() noexcept = default;

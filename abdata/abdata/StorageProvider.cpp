@@ -124,6 +124,9 @@ void StorageProvider::InitEnitityClasses()
     AddEntityClass<DB::DBAccountBanList, AB::Entities::AccountBanList>();
     AddEntityClass<DB::DBIpBanList, AB::Entities::IpBanList>();
     AddEntityClass<DB::DBGameInstanceCount, AB::Entities::GameInstanceCount>();
+    AddEntityClass<DB::DBNews, AB::Entities::News>();
+    AddEntityClass<DB::DBNewsList, AB::Entities::LatestNewsList>();
+    AddEntityClass<DB::DBNewsList, AB::Entities::AllNewsList>();
 }
 
 bool StorageProvider::Lock(uint32_t clientId, const IO::DataKey& key)

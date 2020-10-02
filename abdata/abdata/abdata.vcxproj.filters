@@ -210,6 +210,12 @@
     <ClInclude Include="DBGameInstanceCount.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBNews.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBNewsList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -399,6 +405,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBGameInstanceCount.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBNews.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBNewsList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -21,33 +21,17 @@
 
 #pragma once
 
-#include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
+#include "Resource.h"
 
-using bitsery::ext::BaseClass;
+namespace Resources {
 
-namespace AB {
-namespace Entities {
-
-struct AccountBanList : Entity
+class NewsJsonResource : public Resource
 {
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<AccountBanList>::Get();
-    }
-    template<typename S>
-    void serialize(S& s)
-    {
-        s.ext(*this, BaseClass<Entity>{});
-        s.container(uuids, Limits::MAX_LIST, [&s](std::string& c)
-        {
-            s.text1b(c, Limits::MAX_UUID);
-        });
-    }
-
-    std::vector<std::string> uuids;
+public:
+    explicit NewsJsonResource(std::shared_ptr<HttpsServer::Request> request) :
+        Resource(request)
+    { }
+    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
 };
 
-}
 }

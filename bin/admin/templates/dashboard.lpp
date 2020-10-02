@@ -21,13 +21,15 @@
           <!-- top tiles -->
           <div class="row tile_count">
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+              <% if is_god then %>
               <span class="count_top"><i class="fa fa-user"></i> Total Accounts</span>
               <div class="count"><%= total_accounts %></div>
               <span class="count_bottom">with <%= total_chars %> Characters</span>
+              <% end %>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
               <span class="count_top"><i class="fa fa-clock-o"></i> Total Uptime</span>
-              <div class="count green"><% 
+              <div class="count green"><%
               if (uptime > 3600 * 24) then
                 echo(math.floor(uptime / (3600 * 24)) .. " day(s)")
               elseif (uptime > 3600) then
@@ -47,7 +49,10 @@
           <!-- /top tiles -->
 
           <div class="row">
-
+            <div class="col-md-6">
+              <h3>News</h3>
+              <div id="news"></div>
+            </div>
           </div>
 
           <div class="row">
@@ -60,4 +65,19 @@
         </div>
         <!-- /page content -->
 
+<script>
+$(document).ready(function() {
+    $.get("get/news").then(function(data) {
+      var newsContainer = $("#news");
+      //newsContainer.empty();
+      $.each(data, function(index, value) {
+        var li = $("<div/>");
+        li.addClass("news-item");
+        li.append($("<div/>").html("<b>" + formatTick(value.created) + "</b>"));
+        li.append($("<div/>").html(value.body));
+        newsContainer.append(li);
+      });
+    });
+});
+</script>
 <?# _footer.lpp ?>

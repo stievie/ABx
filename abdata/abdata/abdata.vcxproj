@@ -232,6 +232,8 @@
     <ClInclude Include="DBMerchantItemList.h" />
     <ClInclude Include="DBMusic.h" />
     <ClInclude Include="DBMusicList.h" />
+    <ClInclude Include="DBNews.h" />
+    <ClInclude Include="DBNewsList.h" />
     <ClInclude Include="DBPlayerItemList.h" />
     <ClInclude Include="DBPlayerQuest.h" />
     <ClInclude Include="DBPlayerQuestList.h" />
@@ -298,6 +300,8 @@
     <ClCompile Include="DBMerchantItemList.cpp" />
     <ClCompile Include="DBMusic.cpp" />
     <ClCompile Include="DBMusicList.cpp" />
+    <ClCompile Include="DBNews.cpp" />
+    <ClCompile Include="DBNewsList.cpp" />
     <ClCompile Include="DBPlayerItemList.cpp" />
     <ClCompile Include="DBPlayerQuest.cpp" />
     <ClCompile Include="DBPlayerQuestList.cpp" />

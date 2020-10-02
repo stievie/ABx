@@ -59,6 +59,8 @@
 #include "DBMerchantItemList.h"
 #include "DBMusic.h"
 #include "DBMusicList.h"
+#include "DBNews.h"
+#include "DBNewsList.h"
 #include "DBPlayerItemList.h"
 #include "DBPlayerQuest.h"
 #include "DBPlayerQuestList.h"
