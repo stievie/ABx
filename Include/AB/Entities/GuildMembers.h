@@ -22,22 +22,10 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-//include inheritance extension
-//this header contains two extensions, that specifies inheritance type of base class
-//  BaseClass - normal inheritance
-//  VirtualBaseClass - when virtual inheritance is used
-//in order for virtual inheritance to work, InheritanceContext is required.
-//it can be created either internally (via configuration) or externally (pointer to context).
-#include <bitsery/ext/inheritance.h>
 #include <bitsery/traits/vector.h>
-#include <AB/Entities/Limits.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_GUILDMEMBERS = "guild_mebmers";
 
 // 0 = Unknown, 1 = Guest, 2 = Invited, 3 = Member, 4 = Officer, 5 = Leader
 enum GuildRole : uint8_t
@@ -67,10 +55,7 @@ struct GuildMember
 /// to this list and save it.
 struct GuildMembers : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_GUILDMEMBERS;
-    }
+    MAKE_ENTITY(GuildMembers)
     template<typename S>
     void serialize(S& s)
     {

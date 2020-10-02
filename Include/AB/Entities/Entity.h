@@ -33,6 +33,12 @@
 #include <AB/Entities/Limits.h>
 #include <sa/TypeName.h>
 
+#define MAKE_ENTITY(e)                       \
+    static constexpr std::string_view KEY() \
+    {                                       \
+        return sa::TypeName<e>::Get();      \
+    }
+
 using bitsery::ext::BaseClass;
 
 namespace AB {

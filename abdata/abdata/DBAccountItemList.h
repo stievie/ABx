@@ -36,6 +36,12 @@ public:
     static bool Save(const AB::Entities::AccountItemList& il);
     static bool Delete(const AB::Entities::AccountItemList& il);
     static bool Exists(const AB::Entities::AccountItemList& il);
+
+    static bool Create(AB::Entities::ChestItems& li);
+    static bool Load(AB::Entities::ChestItems& il);
+    static bool Save(const AB::Entities::ChestItems& il);
+    static bool Delete(const AB::Entities::ChestItems& il);
+    static bool Exists(const AB::Entities::ChestItems& il);
 };
 
 }

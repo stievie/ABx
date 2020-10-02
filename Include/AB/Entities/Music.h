@@ -22,12 +22,9 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_MUSIC = "game_music";
 
 enum MusicStyle : uint32_t
 {
@@ -47,10 +44,7 @@ enum MusicStyle : uint32_t
 
 struct Music : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_MUSIC;
-    }
+    MAKE_ENTITY(Music)
     template<typename S>
     void serialize(S& s)
     {
@@ -61,7 +55,6 @@ struct Music : Entity
         s.value1b(sorting);
         s.value4b(style);
     }
-
 
     std::string mapUuid;
     std::string localFile;

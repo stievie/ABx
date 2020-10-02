@@ -22,10 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
@@ -33,11 +29,8 @@ namespace Entities {
 template<size_t _Limit>
 struct NewsList : Entity
 {
+    MAKE_ENTITY(NewsList<_Limit>)
     static constexpr size_t Limit = _Limit;
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<NewsList<_Limit>>::Get();
-    }
     template<typename S>
     void serialize(S& s)
     {

@@ -22,20 +22,14 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ITEM_PRICE = "merchant_item";
-
 // Item that belongs to the merchant. UUID is the Item UUID.
 struct MerchantItem : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ITEM_PRICE;
-    }
+    MAKE_ENTITY(MerchantItem)
     template<typename S>
     void serialize(S& s)
     {

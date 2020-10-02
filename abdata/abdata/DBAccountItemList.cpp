@@ -24,18 +24,8 @@
 
 namespace DB {
 
-bool DBAccountItemList::Create(AB::Entities::AccountItemList& li)
-{
-    if (Utils::Uuid::IsEmpty(li.uuid))
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
-bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
+template<AB::Entities::StoragePlace _Place>
+static bool LoadList(AB::Entities::_AccountItemList<_Place>& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
     {
@@ -72,6 +62,22 @@ bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
     return true;
 }
 
+bool DBAccountItemList::Create(AB::Entities::AccountItemList& li)
+{
+    if (Utils::Uuid::IsEmpty(li.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
+{
+    return LoadList<AB::Entities::AccountItemList::Place>(il);
+}
+
 bool DBAccountItemList::Save(const AB::Entities::AccountItemList& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
@@ -95,6 +101,55 @@ bool DBAccountItemList::Delete(const AB::Entities::AccountItemList& il)
 }
 
 bool DBAccountItemList::Exists(const AB::Entities::AccountItemList& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBAccountItemList::Create(AB::Entities::ChestItems& li)
+{
+    if (Utils::Uuid::IsEmpty(li.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBAccountItemList::Load(AB::Entities::ChestItems& il)
+{
+    return LoadList<AB::Entities::ChestItems::Place>(il);
+}
+
+bool DBAccountItemList::Save(const AB::Entities::ChestItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBAccountItemList::Delete(const AB::Entities::ChestItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBAccountItemList::Exists(const AB::Entities::ChestItems& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
     {

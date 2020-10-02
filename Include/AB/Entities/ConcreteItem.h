@@ -22,7 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
@@ -42,14 +41,9 @@ enum ConcreteItemFlag : uint32_t
     ConcreteItemFlagCustomized = 1,
 };
 
-static constexpr auto KEY_CONCRETE_ITEMS = "concrete_items";
-
 struct ConcreteItem : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_CONCRETE_ITEMS;
-    }
+    MAKE_ENTITY(ConcreteItem)
     template<typename S>
     void serialize(S& s)
     {

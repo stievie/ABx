@@ -22,13 +22,11 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ACCOUNTS_KEYS = "account_keys";
-static constexpr uint16_t CHEST_SLOT_INCREASE = 10;
+inline constexpr uint16_t CHEST_SLOT_INCREASE = 10;
 
 enum AccountKeyStatus : uint8_t
 {
@@ -48,10 +46,7 @@ enum AccountKeyType : uint8_t
 /// Account key entity. The UUID is the key.
 struct AccountKey : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ACCOUNTS_KEYS;
-    }
+    MAKE_ENTITY(AccountKey)
     template<typename S>
     void serialize(S& s)
     {

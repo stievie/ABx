@@ -22,20 +22,14 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_MERCHANT_ITEMS = "item_price";
-
 // Check price of item. Only cached for a very short time.
 struct ItemPrice : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_MERCHANT_ITEMS;
-    }
+    MAKE_ENTITY(ItemPrice)
     template<typename S>
     void serialize(S& s)
     {

@@ -22,23 +22,14 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
 #include <vector>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_QUEST = "game_quests";
-
 struct Quest : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_QUEST;
-    }
+    MAKE_ENTITY(Quest)
     template<typename S>
     void serialize(S& s)
     {

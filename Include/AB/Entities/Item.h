@@ -22,7 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
@@ -32,7 +31,6 @@ namespace Entities {
  *       0: No item, the first item
  * 9999999: Money, the last item
  */
-static constexpr auto KEY_ITEMS = "game_items";
 
 enum class ItemType : uint16_t
 {
@@ -140,10 +138,7 @@ inline constexpr uint32_t SALVAGE_KIT_ITEM_INDEX = 100112;
 
 struct Item : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ITEMS;
-    }
+    MAKE_ENTITY(Item)
     template<typename S>
     void serialize(S& s)
     {

@@ -22,7 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
@@ -30,10 +29,7 @@ namespace Entities {
 /// Account ban entity.
 struct AccountBan : Entity
 {
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<AccountBan>::Get();
-    }
+    MAKE_ENTITY(AccountBan)
     template<typename S>
     void serialize(S& s)
     {

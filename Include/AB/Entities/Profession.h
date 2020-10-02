@@ -22,7 +22,6 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 #include <vector>
 
 namespace AB {
@@ -55,15 +54,11 @@ struct AttriInfo
     bool primary{ false };
 };
 
-static constexpr auto KEY_PROFESSIONS = "game_professions";
 inline constexpr auto PROFESSION_NONE_UUID = "79b75ff4-92f0-11e8-a7ca-02100700d6f0";
 
 struct Profession : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_PROFESSIONS;
-    }
+    MAKE_ENTITY(Profession)
     template<typename S>
     void serialize(S& s)
     {

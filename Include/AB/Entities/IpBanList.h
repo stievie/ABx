@@ -22,22 +22,13 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_IP_BANLIST = "ip_ban_list";
-
 struct IpBanList : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_IP_BANLIST;
-    }
+    MAKE_ENTITY(IpBanList)
     template<typename S>
     void serialize(S& s)
     {

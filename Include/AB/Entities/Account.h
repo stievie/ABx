@@ -22,16 +22,15 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/array.h>
 
 namespace AB {
 namespace Entities {
 
-static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
+inline const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 // Account chest size
-static constexpr size_t DEFAULT_CHEST_SIZE = 80;
+inline constexpr size_t DEFAULT_CHEST_SIZE = 80;
 
 enum class AccountType : uint8_t
 {
@@ -68,10 +67,7 @@ inline bool IsOnline(OnlineStatus status)
 
 struct Account : Entity
 {
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<Account>::Get();
-    }
+    MAKE_ENTITY(Account)
     template<typename S>
     void serialize(S& s)
     {

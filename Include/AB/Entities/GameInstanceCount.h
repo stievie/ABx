@@ -22,22 +22,13 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_GAMEINSTANCECOUNT = "instance_count";
-
 struct GameInstanceCount : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_GAMEINSTANCECOUNT;
-    }
+    MAKE_ENTITY(GameInstanceCount)
     template<typename S>
     void serialize(S& s)
     {

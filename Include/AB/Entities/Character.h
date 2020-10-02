@@ -22,23 +22,13 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-//include inheritance extension
-//this header contains two extensions, that specifies inheritance type of base class
-//  BaseClass - normal inheritance
-//  VirtualBaseClass - when virtual inheritance is used
-//in order for virtual inheritance to work, InheritanceContext is required.
-//it can be created either internally (via configuration) or externally (pointer to context).
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
 #include <vector>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
 // Player inventory size
-static constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
+inline constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
 
 enum class CharacterSex : uint8_t
 {
@@ -54,14 +44,9 @@ enum DeathStatIndex : size_t
     __DeathStatIndexCount
 };
 
-static constexpr auto KEY_CHARACTERS = "characters";
-
 struct Character : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_CHARACTERS;
-    }
+    MAKE_ENTITY(Character)
     template<typename S>
     void serialize(S& s)
     {

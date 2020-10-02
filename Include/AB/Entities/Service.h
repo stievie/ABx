@@ -49,14 +49,11 @@ enum ServiceStatus : uint8_t
     ServiceStatusOnline
 };
 
-static constexpr unsigned HEARTBEAT_INTERVAL = 1000;
+inline constexpr unsigned HEARTBEAT_INTERVAL = 1000;
 
 struct Service : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return "services";
-    }
+    MAKE_ENTITY(Service)
     template<typename S>
     void serialize(S& s)
     {

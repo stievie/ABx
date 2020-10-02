@@ -22,20 +22,13 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
 struct AccountBanList : Entity
 {
-    static constexpr std::string_view KEY()
-    {
-        return sa::TypeName<AccountBanList>::Get();
-    }
+    MAKE_ENTITY(AccountBanList)
     template<typename S>
     void serialize(S& s)
     {

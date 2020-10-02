@@ -22,29 +22,16 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-//include inheritance extension
-//this header contains two extensions, that specifies inheritance type of base class
-//  BaseClass - normal inheritance
-//  VirtualBaseClass - when virtual inheritance is used
-//in order for virtual inheritance to work, InheritanceContext is required.
-//it can be created either internally (via configuration) or externally (pointer to context).
-#include <bitsery/ext/inheritance.h>
-#include <AB/Entities/Limits.h>
 #include <AB/Entities/ConcreteItem.h>
-
-using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ACCOUNTT_ITEMLIST = "account_item_list";
-
-struct AccountItemList : Entity
+template <StoragePlace _Place>
+struct _AccountItemList : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ACCOUNTT_ITEMLIST;
-    }
+    MAKE_ENTITY(_AccountItemList<_Place>)
+    static constexpr StoragePlace Place = _Place;
     template<typename S>
     void serialize(S& s)
     {
@@ -56,22 +43,12 @@ struct AccountItemList : Entity
         });
     }
 
-    StoragePlace storagePlace = StoragePlace::None;
+    StoragePlace storagePlace = _Place;
     std::vector<std::string> itemUuids;
 };
 
-struct ChestItems : AccountItemList
-{
-    static constexpr const char* KEY()
-    {
-        return "chest_item_list";
-    }
-    ChestItems() :
-        AccountItemList()
-    {
-        storagePlace = StoragePlace::Chest;
-    }
-};
+using AccountItemList = _AccountItemList<StoragePlace::None>;
+using ChestItems = _AccountItemList<StoragePlace::Chest>;
 
 }
 }

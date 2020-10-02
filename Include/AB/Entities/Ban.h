@@ -22,12 +22,9 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_BANS = "bans";
 
 enum BanReason : uint8_t
 {
@@ -41,10 +38,7 @@ enum BanReason : uint8_t
 
 struct Ban : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_BANS;
-    }
+    MAKE_ENTITY(Ban)
     template<typename S>
     void serialize(S& s)
     {

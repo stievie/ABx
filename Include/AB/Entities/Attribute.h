@@ -22,20 +22,15 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_ATTRIBUTES = "game_attributes";
-inline constexpr auto ATTRIBUTE_NONE_UUID = "4e8d25fe-50f7-11e8-a7ca-02100700d6f0";
+static constexpr auto ATTRIBUTE_NONE_UUID = "4e8d25fe-50f7-11e8-a7ca-02100700d6f0";
 
 struct Attribute : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_ATTRIBUTES;
-    }
+    MAKE_ENTITY(Attribute)
     template<typename S>
     void serialize(S& s)
     {

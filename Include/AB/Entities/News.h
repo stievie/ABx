@@ -22,19 +22,13 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_NEWS = "news";
-
 struct News : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_NEWS;
-    }
+    MAKE_ENTITY(News)
     template<typename S>
     void serialize(S& s)
     {

@@ -22,13 +22,10 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 #include <vector>
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_MAILLIST = "mail_list";
 
 struct MailHeader
 {
@@ -42,10 +39,7 @@ struct MailHeader
 /// List of mails. UUID is the receiver account UUID.
 struct MailList : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_MAILLIST;
-    }
+    MAKE_ENTITY(MailList)
     template<typename S>
     void serialize(S& s)
     {

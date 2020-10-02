@@ -22,12 +22,9 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_SKILLS = "game_skills";
 
 /// Skill type Tree
 /// https://wiki.guildwars.com/wiki/Skill_type
@@ -81,10 +78,7 @@ enum SkillAccess : uint32_t
 
 struct Skill : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_SKILLS;
-    }
+    MAKE_ENTITY(Skill)
     template<typename S>
     void serialize(S& s)
     {

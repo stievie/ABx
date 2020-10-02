@@ -22,12 +22,9 @@
 #pragma once
 
 #include <AB/Entities/Entity.h>
-#include <AB/Entities/Limits.h>
 
 namespace AB {
 namespace Entities {
-
-static constexpr auto KEY_EFFECTS = "game_effects";
 
 enum EffectCategory : uint8_t
 {
@@ -53,14 +50,11 @@ enum EffectCategory : uint8_t
     EffectEnvironment = 254
 };
 
-static constexpr uint32_t EFFECT_INDEX_MORALE = 1001;
+inline constexpr uint32_t EFFECT_INDEX_MORALE = 1001;
 
 struct Effect : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_EFFECTS;
-    }
+    MAKE_ENTITY(Effect)
     template<typename S>
     void serialize(S& s)
     {
