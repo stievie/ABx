@@ -127,6 +127,15 @@ TEST_CASE("TypeName Enum argument 3")
     constexpr auto res = t::Get();
     constexpr auto res2 = t2::Get();
     INFO(res);
+    // This is a bit unfortunate, but only the data server uses this kind of
+    // thing, and there it's just important that t and t2 are different.
+    // IPC server and client would have a problem with this, when they are
+    // compiled with different compilers.
+#if defined(_MSC_VER)
     REQUIRE(res.compare("EnumTemplateArgument<0>") == 0);
     REQUIRE(res2.compare("EnumTemplateArgument<1>") == 0);
+#else
+    REQUIRE(res.compare("EnumTemplateArgument<TestEnum::Zero>") == 0);
+    REQUIRE(res2.compare("EnumTemplateArgument<TestEnum::One>") == 0);
+#endif
 }

@@ -219,7 +219,7 @@ inline std::basic_string<charType> GetFileExt(const std::basic_string<charType>&
 }
 
 template <typename charType>
-inline charType ToLower(charType c)
+inline charType ToLower(charType)
 {
     ASSERT_FALSE();
 }
@@ -234,7 +234,7 @@ inline wchar_t ToLower<wchar_t>(wchar_t c)
     return std::towlower(c);
 }
 template <typename charType>
-inline charType ToUpper(charType c)
+inline charType ToUpper(charType)
 {
     ASSERT_FALSE();
 }
