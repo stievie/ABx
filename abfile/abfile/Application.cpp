@@ -736,6 +736,7 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     auto root_path = fs::canonical(path);
     if (!fs::is_directory(root_path))
     {
+        LOG_ERROR << "Directory not found " << root_path.string() << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "No Found");
         return;
@@ -749,7 +750,7 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("files");
 
-    for (const auto& p : fs::recursive_directory_iterator(root_path))
+    for (const auto& p : fs::directory_iterator(root_path))
     {
         if (p.is_directory())
             continue;
