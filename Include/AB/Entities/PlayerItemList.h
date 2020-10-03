@@ -29,12 +29,11 @@ namespace Entities {
 
 static constexpr auto KEY_PLAYER_ITEMLIST = "player_item_list";
 
-struct PlayerItemList : Entity
+template<StoragePlace _Place>
+struct _PlayerItemList : Entity
 {
-    static constexpr const char* KEY()
-    {
-        return KEY_PLAYER_ITEMLIST;
-    }
+    MAKE_ENTITY(_PlayerItemList<_Place>);
+    static constexpr StoragePlace Place = _Place;
     template<typename S>
     void serialize(S& s)
     {
@@ -46,35 +45,13 @@ struct PlayerItemList : Entity
         });
     }
 
-    StoragePlace storagePlace = StoragePlace::None;
+    StoragePlace storagePlace = _Place;
     std::vector<std::string> itemUuids;
 };
 
-struct EquippedItems : PlayerItemList
-{
-    static constexpr const char* KEY()
-    {
-        return "equipped_item_list";
-    }
-    EquippedItems() :
-        PlayerItemList()
-    {
-        storagePlace = StoragePlace::Equipped;
-    }
-};
-
-struct InventoryItems : PlayerItemList
-{
-    static constexpr const char* KEY()
-    {
-        return "inventory_item_list";
-    }
-    InventoryItems() :
-        PlayerItemList()
-    {
-        storagePlace = StoragePlace::Inventory;
-    }
-};
+using PlayerItemList = _PlayerItemList<StoragePlace::None>;
+using EquippedItems = _PlayerItemList<StoragePlace::Equipped>;
+using InventoryItems = _PlayerItemList<StoragePlace::Inventory>;
 
 }
 }

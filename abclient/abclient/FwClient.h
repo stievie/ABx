@@ -32,6 +32,7 @@
 #include <AB/Entities/Music.h>
 #include <AB/Entities/FriendList.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/News.h>
 #include <map>
 #include "Options.h"
 #include <AB/Packets/ServerPackets.h>
@@ -120,9 +121,11 @@ private:
     bool loggedIn_{ false };
     bool assetsUpdated_{ false };
     bool cancelUpdate_{ false };
+    std::vector<AB::Entities::News> news_;
 
     AB::Entities::AccountType accountType_{ AB::Entities::AccountType::Unknown };
     void LoadData();
+    void LoadNews();
     void UpdateAssets();
     static bool IsOldData(uint32_t curVersion, XMLFile* file);
     void LoadGames(uint32_t curVersion);
@@ -478,7 +481,7 @@ public:
         return guildMembers_;
     }
     const AB::Packets::Server::PlayerInfo* GetRelatedAccount(const String& accountUuid) const;
-
+    const std::vector<AB::Entities::News>& GetNews() const { return news_; }
     int GetAvgPing() const
     {
         return client_.GetAvgPing();

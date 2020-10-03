@@ -26,6 +26,8 @@
 #include "ShortcutEvents.h"
 #include "ConfirmDeleteCharacter.h"
 #include "ServerEvents.h"
+#include "Conversions.h"
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -66,22 +68,22 @@ void CharSelectLevel::CreateUI()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* deleteTexture = cache->GetResource<Texture2D>("Textures/Icons/delete_button.png");
 
-    window_ = uiRoot_->CreateChild<Window>();
-    window_->SetSize(400, 300);
-    window_->SetPosition(0, -40);
-    window_->SetLayoutMode(LM_VERTICAL);
-    window_->SetLayoutSpacing(10);
-    window_->SetLayoutBorder(IntRect(10, 10, 10, 10));
-    window_->SetAlignment(HA_CENTER, VA_CENTER);
-    window_->SetName("Select Character");
-    window_->SetStyleAuto();
+    characterWindow_ = uiRoot_->CreateChild<Window>();
+    characterWindow_->SetSize(320, 300);
+    characterWindow_->SetPosition(-150, -40);
+    characterWindow_->SetLayoutMode(LM_VERTICAL);
+    characterWindow_->SetLayoutSpacing(10);
+    characterWindow_->SetLayoutBorder(IntRect(10, 10, 10, 10));
+    characterWindow_->SetAlignment(HA_CENTER, VA_CENTER);
+    characterWindow_->SetName("Select Character");
+    characterWindow_->SetStyleAuto();
 
     FwClient* client = GetSubsystem<FwClient>();
     const AB::Entities::CharList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
     {
-        auto* container = window_->CreateChild<UIElement>(String(ch.uuid.c_str()));
+        auto* container = characterWindow_->CreateChild<UIElement>(String(ch.uuid.c_str()));
         container->SetLayoutMode(LM_HORIZONTAL);
         container->SetMinHeight(40);
         container->SetMaxHeight(40);
@@ -128,14 +130,14 @@ void CharSelectLevel::CreateUI()
     {
         if (i != 0)
         {
-            UIElement* sep = window_->CreateChild<UIElement>();
+            UIElement* sep = characterWindow_->CreateChild<UIElement>();
             sep->SetMinHeight(5);
             sep->SetMaxHeight(5);
             sep->SetStyleAuto();
             sep->SetLayoutMode(LM_FREE);
         }
 
-        Button* button = window_->CreateChild<Button>();
+        Button* button = characterWindow_->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetMaxHeight(40);
         button->SetStyleAuto();
@@ -152,7 +154,7 @@ void CharSelectLevel::CreateUI()
         }
     }
     {
-        Button* button = window_->CreateChild<Button>();
+        Button* button = characterWindow_->CreateChild<Button>();
         button->SetMinHeight(40);
         button->SetMaxHeight(40);
         button->SetStyleAuto();
@@ -201,6 +203,47 @@ void CharSelectLevel::CreateUI()
 
     buttonsContainer->SetHeight(30);
     buttonsContainer->SetWidth(300);
+
+    const auto& news = client->GetNews();
+    if (news.size() != 0)
+    {
+        auto* newsWindow = uiRoot_->CreateChild<Window>();
+        newsWindow->SetSize(300, 400);
+        newsWindow->SetMinSize(300, 400);
+        newsWindow->SetMaxSize(300, 500);
+        newsWindow->SetPosition(230, -40);
+        newsWindow->SetLayoutMode(LM_VERTICAL);
+        newsWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
+        newsWindow->SetAlignment(HA_CENTER, VA_CENTER);
+        newsWindow->SetName("News");
+        newsWindow->SetStyleAuto();
+
+        newsWindow->SetLayoutMode(LM_VERTICAL);
+        auto* newsList = newsWindow->CreateChild<ListView>();
+        newsList->SetStyleAuto();
+        newsList->SetLayoutBorder(IntRect(4, 4, 4, 4));
+        for (const auto& n : news)
+        {
+            auto* newsContainer = newsList->CreateChild<UIElement>();
+            newsContainer->SetStyleAuto();
+            newsContainer->SetLayoutMode(LM_VERTICAL);
+            newsContainer->SetLayoutBorder(IntRect(4, 4, 4, 4));
+            newsContainer->SetLayoutSpacing(4);
+            auto* newsDate = newsContainer->CreateChild<Text>();
+            newsDate->SetText(ToUrhoString(sa::time::format_tick(n.created)));
+            newsDate->SetStyleAuto();
+            newsDate->SetFontSize(8);
+            auto* newsText = newsContainer->CreateChild<Text>();
+            newsText->SetStyleAuto();
+            newsText->SetFontSize(9);
+            newsText->SetWordwrap(true);
+            newsText->SetText(ToUrhoString(n.body));
+            newsList->AddItem(newsContainer);
+            newsContainer->SetMaxHeight(newsText->GetHeight() + 20);
+            newsContainer->SetMinHeight(newsText->GetHeight() + 20);
+        }
+        newsWindow->UpdateLayout();
+    }
 }
 
 void CharSelectLevel::CreateScene()
@@ -293,17 +336,17 @@ void CharSelectLevel::HandleCharacterDeleted(StringHash, VariantMap& eventData)
     using namespace Events::CharacterDeleted;
     const String& uuid = eventData[P_UUID].GetString();
 
-    auto* container = window_->GetChild(uuid, true);
+    auto* container = characterWindow_->GetChild(uuid, true);
     if (!container)
         return;
 
     container->Remove();
-    window_->UpdateLayout();
+    characterWindow_->UpdateLayout();
 }
 
 void CharSelectLevel::EnableButtons(bool enable)
 {
-    const auto& children = window_->GetChildren();
+    const auto& children = characterWindow_->GetChildren();
 
     for (auto childIt = children.Begin(); childIt != children.End(); childIt++)
     {

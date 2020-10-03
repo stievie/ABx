@@ -605,6 +605,37 @@ void FwClient::UpdateAssets()
 
 }
 
+void FwClient::LoadNews()
+{
+    news_.clear();
+    PODVector<unsigned char> buffer;
+    if (!MakeHttpRequest("/_news_", buffer))
+        return;
+
+    pugi::xml_document doc;
+    if (!doc.load_buffer((const void*)buffer.Buffer(), static_cast<size_t>(buffer.Size())))
+    {
+        URHO3D_LOGERROR("Fileserver returned malformed data");
+        return;
+    }
+
+    const pugi::xml_node& ver_node = doc.child("news_list");
+    for (const auto& file_node : ver_node.children("news"))
+    {
+        const pugi::xml_attribute& created_attr = file_node.attribute("created");
+        const pugi::xml_attribute& body_attr = file_node.attribute("body");
+        auto created_value = sa::to_number<int64_t>(created_attr.as_string());
+        if (!created_value.has_value())
+            continue;
+
+        news_.push_back({
+            "",
+            created_value.value(),
+            body_attr.as_string()
+        });
+    }
+}
+
 void FwClient::LoadData()
 {
     PODVector<unsigned char> buffer;
@@ -1446,6 +1477,7 @@ void FwClient::OnLoggedIn(const std::string&, const std::string&, AB::Entities::
     httpError_ = false;
     UpdateAssets();
     LoadData();
+    LoadNews();
 }
 
 void FwClient::OnGetCharlist(const AB::Entities::CharList& chars)

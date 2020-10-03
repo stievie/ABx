@@ -38,7 +38,7 @@ class PartyWindow : public Window
     URHO3D_OBJECT(PartyWindow, Window)
 private:
     PartyWindowMode mode_{ PartyWindowMode::ModeOutpost };
-    SharedPtr<Window> window_;
+    SharedPtr<Window> characterWindow_;
     SharedPtr<LineEdit> addPlayerEdit_;
     uint8_t partySize_{ 0 };
     SharedPtr<UIElement> memberContainer_;

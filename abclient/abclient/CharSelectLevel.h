@@ -31,7 +31,7 @@ class CharSelectLevel final : public BaseLevel
 public:
     CharSelectLevel(Context* context);
     void CreateCamera();
-    SharedPtr<Window> window_;
+    SharedPtr<Window> characterWindow_;
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;

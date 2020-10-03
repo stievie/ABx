@@ -36,6 +36,18 @@ public:
     static bool Save(const AB::Entities::PlayerItemList& il);
     static bool Delete(const AB::Entities::PlayerItemList& il);
     static bool Exists(const AB::Entities::PlayerItemList& il);
+
+    static bool Create(AB::Entities::EquippedItems& il);
+    static bool Load(AB::Entities::EquippedItems& il);
+    static bool Save(const AB::Entities::EquippedItems& il);
+    static bool Delete(const AB::Entities::EquippedItems& il);
+    static bool Exists(const AB::Entities::EquippedItems& il);
+
+    static bool Create(AB::Entities::InventoryItems& il);
+    static bool Load(AB::Entities::InventoryItems& il);
+    static bool Save(const AB::Entities::InventoryItems& il);
+    static bool Delete(const AB::Entities::InventoryItems& il);
+    static bool Exists(const AB::Entities::InventoryItems& il);
 };
 
 }

@@ -1428,7 +1428,6 @@ void Application::GetHandlerNews(std::shared_ptr<HttpsServer::Response> response
             continue;
 
         auto gNd = root.append_child("news");
-        gNd.append_attribute("uuid").set_value(n.uuid.c_str());
         gNd.append_attribute("created").set_value(n.created);
         gNd.append_attribute("body").set_value(Utils::XML::Escape(n.body).c_str());
     }

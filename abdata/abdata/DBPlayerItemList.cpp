@@ -24,18 +24,8 @@
 
 namespace DB {
 
-bool DBPlayerItemList::Create(AB::Entities::PlayerItemList& il)
-{
-    if (Utils::Uuid::IsEmpty(il.uuid))
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
-bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
+template<AB::Entities::StoragePlace _Place>
+static bool LoadList(AB::Entities::_PlayerItemList<_Place>& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
     {
@@ -70,6 +60,22 @@ bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
     return true;
 }
 
+bool DBPlayerItemList::Create(AB::Entities::PlayerItemList& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
+{
+    return LoadList<il.Place>(il);
+}
+
 bool DBPlayerItemList::Save(const AB::Entities::PlayerItemList& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
@@ -93,6 +99,104 @@ bool DBPlayerItemList::Delete(const AB::Entities::PlayerItemList& il)
 }
 
 bool DBPlayerItemList::Exists(const AB::Entities::PlayerItemList& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Create(AB::Entities::EquippedItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Load(AB::Entities::EquippedItems& il)
+{
+    return LoadList<il.Place>(il);
+}
+
+bool DBPlayerItemList::Save(const AB::Entities::EquippedItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Delete(const AB::Entities::EquippedItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Exists(const AB::Entities::EquippedItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Create(AB::Entities::InventoryItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Load(AB::Entities::InventoryItems& il)
+{
+    return LoadList<il.Place>(il);
+}
+
+bool DBPlayerItemList::Save(const AB::Entities::InventoryItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Delete(const AB::Entities::InventoryItems& il)
+{
+    if (Utils::Uuid::IsEmpty(il.uuid))
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool DBPlayerItemList::Exists(const AB::Entities::InventoryItems& il)
 {
     if (Utils::Uuid::IsEmpty(il.uuid))
     {
