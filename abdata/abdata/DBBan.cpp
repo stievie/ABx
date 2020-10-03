@@ -125,7 +125,7 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
         "active = ${active}, "
         "admin_uuid = ${admin_uuid}, "
         "comment = ${comment}, "
-        "hits = %{hits} "
+        "hits = ${hits} "
         "WHERE uuid = ${uuid}";
 
     Database* db = GetSubsystem<Database>();

@@ -48,7 +48,27 @@ struct TemplateStruct
 template<size_t x>
 class IntgralTemplateArgument
 {
+public:
+    static constexpr std::string_view Get()
+    {
+        return sa::TypeName<IntgralTemplateArgument<x>>::Get();
+    }
+};
 
+enum class TestEnum : size_t
+{
+    Zero = 0,
+    One
+};
+
+template<TestEnum x>
+class EnumTemplateArgument
+{
+public:
+    static constexpr std::string_view Get()
+    {
+        return sa::TypeName<EnumTemplateArgument<x>>::Get();
+    }
 };
 
 TEST_CASE("TypeName no NS")
@@ -73,18 +93,40 @@ TEST_CASE("TypeName Hash")
     REQUIRE(hash == sa::StringHashRt(res.data(), res.size()));
 }
 
-TEST_CASE("Template type")
+TEST_CASE("TypeName Template type")
 {
     constexpr auto res = sa::TypeName<TemplateStruct<int>>::Get();
     INFO(res);
     REQUIRE(res.compare("TemplateStruct<int>") == 0);
 }
 
-TEST_CASE("Integral argument")
+TEST_CASE("TypeName Integral argument")
 {
     constexpr auto res = sa::TypeName<IntgralTemplateArgument<1>>::Get();
     constexpr auto res2 = sa::TypeName<IntgralTemplateArgument<2>>::Get();
     INFO(res);
     REQUIRE(res.compare("IntgralTemplateArgument<1>") == 0);
     REQUIRE(res.compare(res2) != 0);
+}
+
+TEST_CASE("TypeName Integral argument 2")
+{
+    using t = IntgralTemplateArgument<1>;
+    using t2 = IntgralTemplateArgument<2>;
+    constexpr auto res = t::Get();
+    constexpr auto res2 = t2::Get();
+    INFO(res);
+    REQUIRE(res.compare("IntgralTemplateArgument<1>") == 0);
+    REQUIRE(res2.compare("IntgralTemplateArgument<2>") == 0);
+}
+
+TEST_CASE("TypeName Enum argument 3")
+{
+    typedef EnumTemplateArgument<TestEnum::Zero> t;
+    typedef EnumTemplateArgument<TestEnum::One> t2;
+    constexpr auto res = t::Get();
+    constexpr auto res2 = t2::Get();
+    INFO(res);
+    REQUIRE(res.compare("EnumTemplateArgument<0>") == 0);
+    REQUIRE(res2.compare("EnumTemplateArgument<1>") == 0);
 }
