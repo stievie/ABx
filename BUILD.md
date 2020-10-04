@@ -136,3 +136,10 @@ $ make
 # Copy executables to ../bin and ../abclient/bin
 $ cmake --install . --component runtime
 ~~~
+
+## Updating the source
+
+If you pull to update your source tree, you may need to:
+
+1. Re-run CMake when source files were added or removed.
+2. Run `bin/dbtool update` when there is a DB update in the `[sql](/sql)` folder.
