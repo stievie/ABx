@@ -58,6 +58,7 @@ bool DBMerchantItemList::Load(AB::Entities::MerchantItemList& il)
             if (token.value == "stackable_flag")
                 return std::to_string(AB::Entities::ItemFlagStackable);
             LOG_WARNING << "Unhandled placeholder " << token.value << std::endl;
+            return "";
         default:
             return token.value;
         }
