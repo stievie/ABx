@@ -142,4 +142,4 @@ $ cmake --install . --component runtime
 If you pull to update your source tree, you may need to:
 
 1. Re-run CMake when source files were added or removed.
-2. Run `bin/dbtool update` when there is a DB update in the `[sql](/sql)` folder.
+2. Run `bin/dbtool update` when there is a DB update in the `sql` folder.

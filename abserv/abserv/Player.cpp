@@ -61,6 +61,8 @@
 #include <sa/StringTempl.h>
 #include <sa/Transaction.h>
 
+#define DEBUG_GAME
+
 namespace Game {
 
 void Player::RegisterLua(kaguya::State& state)
@@ -877,6 +879,8 @@ void Player::SendPlayerInfo(const AB::Entities::Character& ch, uint32_t fields)
     packet.fields = fields;
     packet.accountUuid = ch.accountUuid;
 
+    if (!friendList_)
+        LoadFriendList();
     AB::Entities::Friend f;
     bool isFriend = GetFriendList().GetFriendByAccount(ch.accountUuid, f);
     if (isFriend)
@@ -1060,7 +1064,8 @@ void Player::SetParty(ea::shared_ptr<Party> party)
         // Create new party
         data_.partyUuid.clear();
         party_ = GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid);
-        party_->SetPartySize(GetGame()->data_.partySize);
+        if (auto game = game_.lock())
+            party_->SetPartySize(game->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
         SetGroupId(party_->GetId());
     }
@@ -1275,7 +1280,7 @@ void Player::CRQPartyAccept(uint32_t playerId)
 
     // Leave current party
     PartyLeave();
-    if (leader->GetParty()->Add(GetPtr<Player>()))
+    if (leader->GetParty()->AddPlayer(GetPtr<Player>()))
     {
         auto nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyPlayerAdded);
@@ -1287,7 +1292,8 @@ void Player::CRQPartyAccept(uint32_t playerId)
         AB::Packets::Add(packet, *nmsg);
         party_->WriteToMembers(*nmsg);
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->GetId() << std::endl;
+        LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->GetId() <<
+            " Member count " << party_->GetMemberCount() << std::endl;
 #endif
     }
     // else party maybe full
@@ -1332,7 +1338,8 @@ void Player::CRQPartyGetMembers(uint32_t partyId)
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PartyMembersInfo);
-    size_t count = party->GetMemberCount();
+    // Valid + not connected members
+    size_t count = party->GetAllMemberCount();
     AB::Packets::Server::PartyMembersInfo packet;
     packet.partyId = partyId;
     packet.count = static_cast<uint8_t>(count);

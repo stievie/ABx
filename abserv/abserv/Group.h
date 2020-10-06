@@ -79,6 +79,7 @@ public:
     void DecreaseMorale();
     void Resurrect(int precentHealth, int percentEnergy);
     void KillAll();
+    size_t GetMemberCount() const { return members_.size(); }
 
     bool Add(ea::shared_ptr<Actor> actor);
     bool Remove(uint32_t id);

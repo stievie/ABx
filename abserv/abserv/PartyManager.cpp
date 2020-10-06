@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "PartyManager.h"
 #include <abscommon/StringUtils.h>
 #include <abscommon/UuidUtils.h>

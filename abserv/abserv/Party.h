@@ -85,9 +85,10 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
     void WriteToMembers(const Net::NetworkMessage& message);
 
+    // Valid + not yet connected member count
+    size_t GetAllMemberCount() const { return data_.members.size(); }
     void SetPartySize(size_t size);
     inline size_t GetValidPlayerCount() const;
-    inline size_t GetMemberCount() const { return members_.size(); }
     void VisitPlayers(const std::function<Iteration(Player& current)>& callback) const;
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
     bool IsMember(const Player& player) const;

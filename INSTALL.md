@@ -59,7 +59,14 @@ This assumes you have the default configuration. You can change the ports in the
 
 To automatically update game asset files by the client, follow the following steps:
 
-1. Pack the asset files into uncompressed Urho3D .pak files with Urho3Ds PackageTool with running `Setup\createpak.bat`.
+1. Pack the asset files into compressed Urho3D .pak files with Urho3Ds PackageTool with running `Setup\createpak.bat`, or use Urho3D's `PackageTool` directly, type in the `abclient/bin` directory:
+~~~plain
+PackageTool CoreData\ CoreData.pak -c
+PackageTool Data\ Data.pak -c
+PackageTool Autoload\ Autoload.pak -c
+PackageTool AbData\ AbData.pak -c
+PackageTool SoundData\ SoundData.pak -c
+~~~
 2. Copy the resulting .pak files to the file servers root directory, usually `bin/file_root`.
 3. Run `fhash` in that directory, e.g. when your are in `bin`: `fhash file_root`. This will create two files for each file found in this directory: (1) (filename).meta: File partitions, and (2) (filename).sha1: overall SHA1 hash of the file.
 4. Compile the client with `AUTOUPDATE_ENABLED` defined, CMake option `ABX_CLIENT_AUTOUPDATE`.
