@@ -1,22 +1,18 @@
 This directory if for updating the client.
 
-Each Platform needs its own subdirectory with all the files in it:
+Common files are in file_root. Each Platform needs its own subdirectory with all
+the execcutables in it:
 
 ~~~
 file_root/
+  - AbData.pak{pak,meta,sha1}
   - windows/
-    - AbData.pak{pak,meta,sha1}
-    - ...
     - fw.exe
     - abupdate.exe
   - manjaro/
-    - AbData.{pak,meta,sha1}
-    - ...
     - fw
     - abupdate
   - debian/
-    - AbData.{pak,meta,sha1}
-    - ...
     - fw
     - abupdate
   - ...

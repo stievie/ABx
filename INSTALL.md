@@ -92,24 +92,17 @@ directory:
 
 ~~~plain
 file_root/
+  - AbData.{pak,meta,sha1}
   - windows/
-    - AbData.pak{pak,meta,sha1}
-    - ...
     - fw.exe
     - abupdate.exe
   - arch/
-    - AbData.{pak,meta,sha1}
-    - ...
     - fw
     - abupdate
   - manjaro/
-    - AbData.{pak,meta,sha1}
-    - ...
     - fw
     - abupdate
   - debian/
-    - AbData.{pak,meta,sha1}
-    - ...
     - fw
     - abupdate
   - ...

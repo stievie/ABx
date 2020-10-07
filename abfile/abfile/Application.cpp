@@ -733,10 +733,9 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     if (!platform.empty())
         path += platform;
     auto web_root_path = fs::canonical(root_);
-    auto root_path = fs::canonical(path);
-    if (!fs::is_directory(root_path))
+    if (!fs::is_directory(web_root_path))
     {
-        LOG_ERROR << "Directory not found " << root_path.string() << std::endl;
+        LOG_ERROR << "Directory not found " << web_root_path.string() << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "No Found");
         return;
@@ -750,23 +749,23 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("files");
 
-    for (const auto& p : fs::directory_iterator(root_path))
+    auto addFile = [&](const fs::directory_entry& p, bool common)
     {
         if (p.is_directory())
-            continue;
+            return;
         if (p.path().extension() == ".meta" || p.path().extension() == ".sha1")
-            continue;
+            return;
 
         const std::string fullpath = p.path().string();
         const std::string filename = p.path().filename().string();
         if (Utils::IsHiddenFile(fullpath))
-            continue;
+            return;
 
         // There must be a correcponding meta file
         if (!Utils::FileExists(fullpath + ".meta"))
-            continue;
+            return;
         if (!Utils::FileExists(fullpath + ".sha1"))
-            continue;
+            return;
 
         std::ifstream shafile(fullpath + ".sha1", std::ios::in);
         shafile.seekg(0, std::ios::beg);
@@ -776,13 +775,32 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
 
         std::string realitvename = fullpath.substr(web_root_path.string().size() + 1);
         sa::ReplaceSubstring<char>(realitvename, "\\", "/");
-        std::string basepath = realitvename.substr(platform.length());
+        std::string basepath = !common ?
+            realitvename.substr(platform.length()) :
+            realitvename;
 
         auto gNd = root.append_child("file");
         gNd.append_attribute("path").set_value(realitvename.c_str());
         gNd.append_attribute("base_path").set_value(basepath.c_str());
         gNd.append_attribute("sha1").set_value(shastream.str().c_str());
+    };
+
+    // Common files are in file_root
+    for (const auto& p : fs::directory_iterator(web_root_path))
+    {
+        addFile(p, true);
     }
+    // Platform specific files in file_root/(platform)
+    auto root_path = fs::canonical(path);
+    if (!fs::is_directory(root_path))
+    {
+        for (const auto& p : fs::directory_iterator(root_path))
+        {
+            addFile(p, false);
+        }
+    }
+    else
+        LOG_WARNING << root_path.string() << " does not exist, but was requested" << std::endl;
 
     std::stringstream stream;
     doc.save(stream);
@@ -1301,8 +1319,6 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
 void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
-    AB_PROFILE;
-
     if (!IsAllowed(request))
     {
         response->write(SimpleWeb::StatusCode::client_error_forbidden,
@@ -1354,8 +1370,6 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
 void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
-    AB_PROFILE;
-
     if (!IsAllowed(request))
     {
         response->write(SimpleWeb::StatusCode::client_error_forbidden,
