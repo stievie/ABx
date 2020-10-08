@@ -54,7 +54,7 @@
 #   if defined(TARGET_OS_IPHONE)
 #       define SA_PLATFORM_IOS
 #   else
-#       define SAPLATFORM_OSX
+#       define SA_PLATFORM_OSX
 #   endif
 #elif defined(__linux__) || defined(__gnu_linux__) || defined(linux)
 #   define SA_PLATFORM_LINUX

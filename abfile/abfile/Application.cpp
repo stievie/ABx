@@ -792,7 +792,7 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
     }
     // Platform specific files in file_root/(platform)
     auto root_path = fs::canonical(path);
-    if (!fs::is_directory(root_path))
+    if (fs::is_directory(root_path))
     {
         for (const auto& p : fs::directory_iterator(root_path))
         {

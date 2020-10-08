@@ -55,7 +55,7 @@ Christmas 2117 +/- some years.
 * Server runs on Windows and Linux
 * Client runs on Windows and Linux
 * Game AI, Behavior Tree
-* [Mumble](https://www.mumble.info/) voice chat integration.
+* [Mumble](https://www.mumble.info/) voice chat integration with extended support (Context, identity, overlay), which provides spatial voice chat, see [Positional-Audio](https://wiki.mumble.info/wiki/Positional-Audio).
 * Item system:
     - Item drops, when foes are killed they may or may not drop a random item. Each Item has a certain drop chance on a certain map.
     - Player inventory and account chest (account wide storage).
