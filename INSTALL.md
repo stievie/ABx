@@ -69,10 +69,12 @@ PackageTool SoundData\ SoundData.pak -c
 ~~~
 2. Copy the resulting .pak files to the file servers root directory, usually `bin/file_root`.
 3. Run `fhash` in that directory, e.g. when your are in `bin`: `fhash file_root`. This will create two files for each file found in this directory: (1) (filename).meta: File partitions, and (2) (filename).sha1: overall SHA1 hash of the file.
-4. Compile the client with `AUTOUPDATE_ENABLED` defined, CMake option `ABX_CLIENT_AUTOUPDATE`.
 
 This will cause the client to check for updated files every time it start, and binary
 patches changed files. This works best with large files.
+
+To compile the client without autoupdating, define `NO_AUTOUPDATE` defined,
+CMake option `ABX_CLIENT_NO_AUTOUPDATE`.
 
 #### Compression
 

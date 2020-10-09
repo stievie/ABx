@@ -31,8 +31,5 @@
 // Turn Urho3D logging on/off
 #define AB_CLIENT_LOGGING
 #define DEBUG_HUD
-// If defined the client will autoupdate asset files.
-// May turn it off for develpment, because it takes some seconds until it starts.
-#define AUTOUPDATE_ENABLED
 
 #include <AB/CommonConfig.h>

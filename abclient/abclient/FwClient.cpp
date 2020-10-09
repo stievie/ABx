@@ -450,7 +450,7 @@ void FwClient::UpdateAssets()
 {
     if (assetsUpdated_)
         return;
-#if defined(AUTOUPDATE_ENABLED)
+#if !defined(NO_AUTOUPDATE)
     cancelUpdate_ = false;
     auto* cache = GetSubsystem<ResourceCache>();
     SubscribeToEvent(Events::E_CANCELUPDATE, URHO3D_HANDLER(FwClient, HandleCancelUpdate));
