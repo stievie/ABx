@@ -504,7 +504,7 @@ void FwClient::UpdateAssets()
         SendEvent(Events::E_UPDATEFILE, eData);
         return true;
     };
-    updater.onStartFile_ = [this, &updatingSelf, &updatedFiles](const std::string& filename)
+    updater.onStartFile_ = [&updatingSelf, &updatedFiles](const std::string& filename)
     {
         const sa::path file = sa::path(sa::Process::GetSelfPath()) / sa::path(filename);
         updatingSelf = sa::Process::IsSelf(file.string());
@@ -970,12 +970,12 @@ void FwClient::LoadMusic(uint32_t curVersion)
 bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
 {
     std::remove(outFile.CString());
-    return client_.HttpDownload(std::string(path.CString()), std::string(outFile.CString()));
+    return client_.HttpDownload(ToStdString(path), ToStdString(outFile));
 }
 
 bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buffer)
 {
-    return client_.HttpRequest(std::string(path.CString()), [&buffer](const char* data, uint64_t size)
+    return client_.HttpRequest(ToStdString(path), [&buffer](const char* data, uint64_t size)
     {
         buffer.Push(PODVector((unsigned char*)data, static_cast<unsigned>(size)));
         return true;
@@ -984,7 +984,7 @@ bool FwClient::MakeHttpRequest(const String& path, PODVector<unsigned char>& buf
 
 bool FwClient::MakeHttpRequest(const String& path, const std::function<void(unsigned size, const PODVector<unsigned char>&)>& onData)
 {
-    return client_.HttpRequest(std::string(path.CString()), [&onData](const char* data, uint64_t size)
+    return client_.HttpRequest(ToStdString(path), [&onData](const char* data, uint64_t size)
     {
         onData(static_cast<unsigned>(size), PODVector((unsigned char*)data, static_cast<unsigned>(size)));
         return true;
@@ -1022,7 +1022,7 @@ void FwClient::Login(const String& name, const String& pass)
         accountName_ = name;
         accountPass_ = pass;
         currentGameType_ = AB::Entities::GameTypeUnknown;
-        client_.Login(std::string(name.CString()), std::string(pass.CString()));
+        client_.Login(ToStdString(name), ToStdString(pass));
     }
 }
 
@@ -1030,14 +1030,14 @@ void FwClient::AddAccountKey(const String& newKey)
 {
     if (loggedIn_)
     {
-        client_.AddAccountKey(std::string(newKey.CString()));
+        client_.AddAccountKey(ToStdString(newKey));
     }
 }
 
 void FwClient::DeleteCharacter(const String& uuid)
 {
     if (loggedIn_)
-        client_.DeleteCharacter(std::string(uuid.CString()));;
+        client_.DeleteCharacter(ToStdString(uuid));
 }
 
 void FwClient::CreateAccount(const String& name, const String& pass, const String& email, const String& accKey)
@@ -1046,8 +1046,8 @@ void FwClient::CreateAccount(const String& name, const String& pass, const Strin
     {
         accountName_ = name;
         accountPass_ = pass;
-        client_.CreateAccount(std::string(name.CString()), std::string(pass.CString()),
-            std::string(email.CString()), std::string(accKey.CString()));
+        client_.CreateAccount(ToStdString(name), ToStdString(pass),
+            ToStdString(email), ToStdString(accKey));
     }
 }
 
@@ -1056,8 +1056,8 @@ void FwClient::CreatePlayer(const String& name, const String& profUuid, uint32_t
 {
     if (loggedIn_)
     {
-        client_.CreatePlayer(std::string(name.CString()),
-            std::string(profUuid.CString()), modelIndex, sex, isPvp);
+        client_.CreatePlayer(ToStdString(name),
+            ToStdString(profUuid), modelIndex, sex, isPvp);
     }
 }
 
@@ -1067,7 +1067,7 @@ void FwClient::EnterWorld(const String& charUuid, const String& mapUuid)
     {
         currentCharacterUuid_ = charUuid;
         currentGameType_ = AB::Entities::GameTypeUnknown;
-        client_.EnterWorld(std::string(charUuid.CString()), std::string(mapUuid.CString()));
+        client_.EnterWorld(ToStdString(charUuid), ToStdString(mapUuid));
     }
 }
 
@@ -1076,7 +1076,7 @@ void FwClient::ChangeWorld(const String& mapUuid)
     if (loggedIn_)
     {
         currentGameType_ = AB::Entities::GameTypeUnknown;
-        client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(mapUuid.CString()));
+        client_.EnterWorld(ToStdString(currentCharacterUuid_), ToStdString(mapUuid));
     }
 }
 
@@ -1085,7 +1085,7 @@ void FwClient::ChangeMap(const String& mapUuid)
     if (loggedIn_)
     {
         currentGameType_ = AB::Entities::GameTypeUnknown;
-        client_.ChangeMap(std::string(mapUuid.CString()));
+        client_.ChangeMap(ToStdString(mapUuid));
     }
 }
 
@@ -1093,11 +1093,11 @@ void FwClient::ChangeServer(const String& serverId)
 {
     if (loggedIn_)
     {
-        auto it = services_.find(std::string(serverId.CString()));
+        auto it = services_.find(ToStdString(serverId));
         if (it != services_.end())
         {
-            client_.EnterWorld(std::string(currentCharacterUuid_.CString()),
-                std::string(currentMapUuid_.CString()),
+            client_.EnterWorld(ToStdString(currentCharacterUuid_),
+                ToStdString(currentMapUuid_),
                 (*it).second.host, (*it).second.port);
         }
     }
@@ -1230,7 +1230,7 @@ void FwClient::RequestMerchantItems(uint32_t npcId, uint16_t itemType, const Str
     if (loggedIn_)
     {
         client_.GetMerchantItems(npcId, itemType,
-            std::string(searchName.CString(), static_cast<size_t>(searchName.Length())),
+            ToStdString(searchName),
             page);
     }
 }
@@ -1240,7 +1240,7 @@ void FwClient::RequestCrafsmanItems(uint32_t npcId, uint16_t itemType, const Str
     if (loggedIn_)
     {
         client_.GetCraftsmanItems(npcId, itemType,
-            std::string(searchName.CString(), static_cast<size_t>(searchName.Length())),
+            ToStdString(searchName),
             page);
     }
 }
