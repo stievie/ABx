@@ -90,8 +90,6 @@ public:
         *reinterpret_cast<T*>(buffer_ + info_.pos) = value;
         info_.pos = p;
     }
-
-    bool Compress();
 };
 
 template<>

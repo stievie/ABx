@@ -44,7 +44,6 @@ ProtocolGame::ProtocolGame(std::shared_ptr<Connection> connection) :
     Protocol(connection)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
-    compressionEnabled_ = ENABLE_GAME_COMPRESSION;
     encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
 }

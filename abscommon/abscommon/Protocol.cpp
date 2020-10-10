@@ -34,7 +34,6 @@ namespace Net {
 Protocol::Protocol(std::shared_ptr<Connection> connection) :
     connection_(connection),
     checksumEnabled_(false),
-    compressionEnabled_(false),
     encryptionEnabled_(false)
 { }
 
@@ -106,14 +105,12 @@ bool Protocol::XTEADecrypt(NetworkMessage& msg) const
 bool Protocol::OnSendMessage(OutputMessage& message) const
 {
 #ifdef DEBUG_NET
-//    LOG_DEBUG << "Sending message" << std::endl;
+//    LOG_DEBUG << "Sending message with size " << message.GetSize() << std::endl;
 #endif
     if (encryptionEnabled_)
     {
         XTEAEncrypt(message);
     }
-    if (compressionEnabled_)
-        message.Compress();
     if (encryptionEnabled_ || checksumEnabled_)
     {
         return message.AddCryptoHeader(checksumEnabled_);
@@ -126,9 +123,6 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
 #endif
-    if (compressionEnabled_)
-        message.Uncompress();
-
     if (encryptionEnabled_)
     {
         if (!XTEADecrypt(message))

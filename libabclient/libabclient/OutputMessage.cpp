@@ -124,26 +124,4 @@ void OutputMessage::WriteMessageSize()
     info_.size += 2;
 }
 
-bool OutputMessage::Compress()
-{
-    char buff[OUTPUTMESSAGE_BUFFER_SIZE];
-    const char* src = reinterpret_cast<const char*>(buffer_ + OUTPUTMESSAGE_HEADER_SIZE);
-    int size = LZ4_compress_default(src, buff, info_.size, OUTPUTMESSAGE_HEADER_SIZE);
-    if (size > 0)
-    {
-/*
-#ifdef _MSC_VER
-        memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buff, size);
-#else
-        memcpy(buffer_ + MaxHeaderSize, buff, size);
-#endif
-        size_ = static_cast<uint16_t>(size);
-        pos_ = MaxHeaderSize;
-        headerPos_ = MaxHeaderSize;
-        */
-        return true;
-    }
-    return false;
-}
-
 }

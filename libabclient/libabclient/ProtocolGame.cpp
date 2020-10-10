@@ -36,7 +36,6 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     loggingOut_(false)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
-    compressionEnabled_ = ENABLE_GAME_COMPRESSION;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
 

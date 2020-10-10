@@ -40,7 +40,6 @@ protected:
     std::weak_ptr<Connection> connection_;
     sa::SharedPtr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
-    bool compressionEnabled_;
     bool encryptionEnabled_;
     size_t writeWhileDisconnected_{ 0 };
     DH_KEY encKey_;

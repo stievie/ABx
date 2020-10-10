@@ -96,7 +96,6 @@ public:
         // Only strings
         return Get<T>();
     }
-    bool Uncompress();
 };
 
 template<>

@@ -188,9 +188,6 @@ public:
     int32_t GetReadPos() const { return static_cast<int32_t>(info_.position); }
     void SetReadPos(int32_t value) { info_.position = static_cast<MsgSize_t>(value); }
     int32_t GetSpace() const { return MaxBodyLength - info_.length; }
-
-    bool Compress();
-    bool Uncompress();
 };
 
 template <>

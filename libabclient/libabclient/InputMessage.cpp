@@ -115,26 +115,4 @@ void InputMessage::FillBuffer(uint8_t* buffer, uint16_t size)
     size_ += size;
 }
 
-bool InputMessage::Uncompress()
-{
-    char buff[MaxBufferSize];
-    const char* src = reinterpret_cast<const char*>(buffer_ + MaxHeaderSize);
-    int size = LZ4_decompress_safe(src, buff, size_, MaxBufferSize);
-    if (size > 0)
-    {
-        /*
-#ifdef _MSC_VER
-        memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buff, size);
-#else
-        memcpy(buffer_ + MaxHeaderSize, buff, size);
-#endif
-        size_ = static_cast<uint16_t>(size);
-        pos_ = MaxHeaderSize;
-        headerPos_ = MaxHeaderSize;
-        */
-        return true;
-    }
-    return true;
-}
-
 }

@@ -32,7 +32,6 @@ Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :
     ioService_(ioService),
     connection_(nullptr),
     checksumEnabled_(false),
-    compressionEnabled_(false),
     encryptEnabled_(false),
     keys_(keys),
     errorCallback_(nullptr),
@@ -71,8 +70,6 @@ void Protocol::Send(OutputMessage& message)
 {
     if (encryptEnabled_)
         XTEAEncrypt(message);
-    if (compressionEnabled_)
-        message.Compress();
     if (checksumEnabled_)
         message.WriteChecksum();
     message.WriteMessageSize();
@@ -122,11 +119,6 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 
     if (checksumEnabled_ && !inputMessage_->ReadChecksum())
         return;
-    if (compressionEnabled_)
-    {
-        if (!inputMessage_->Uncompress())
-            return;
-    }
     if (encryptEnabled_)
     {
         if (!XTEADecrypt(*inputMessage_))
