@@ -187,7 +187,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         ServerPacketType prevCode = opCode;
         opCode = static_cast<ServerPacketType>(message.Get<uint8_t>());
 
-#if 1
+#if 0
         if (opCode != ServerPacketType::GameUpdate && opCode != ServerPacketType::__Last)
         {
             std::stringstream ss3;
