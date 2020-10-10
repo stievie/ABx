@@ -491,13 +491,9 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
-#if 1
         auto msg = Net::NetworkMessage::GetNew();
         messageFilter->Execute(*this, *p.second, *gameStatus_, *msg);
         p.second->WriteToOutput(*msg);
-#else
-        p.second->WriteToOutput(*gameStatus_);
-#endif
     }
 
     if (writeStream_ && writeStream_->IsOpen())
@@ -820,8 +816,7 @@ void Game::SendInitStateToPlayer(Player& player)
         }
     }
 
-    if (msg->GetSize() != 0)
-        player.WriteToOutput(*msg);
+    player.WriteToOutput(*msg);
 }
 
 void Game::PlayerJoin(uint32_t playerId)
@@ -838,6 +833,7 @@ void Game::PlayerJoin(uint32_t playerId)
     player->data_.instanceUuid = instanceData_.uuid;
     UpdateEntity(player->data_);
 
+    LOG_DEBUG << "Player joined " << player->GetName() << std::endl;
     SendInitStateToPlayer(*player);
 
     if (GetState() == ExecutionState::Running)

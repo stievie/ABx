@@ -38,14 +38,13 @@ public:
     typedef std::function<void(AB::ErrorCodes)> ProtocolErrorCallback;
 private:
     std::shared_ptr<InputMessage> inputMessage_;
-    void InternalRecvHeader(uint8_t* buffer, uint16_t size);
-    void InternalRecvData(uint8_t* buffer, uint16_t size);
+    void InternalRecvHeader(uint8_t* buffer, size_t size);
+    void InternalRecvData(uint8_t* buffer, size_t size);
     bool XTEADecrypt(InputMessage& inputMessage);
     void XTEAEncrypt(OutputMessage& outputMessage);
 protected:
     asio::io_service& ioService_;
     std::shared_ptr<Connection> connection_;
-    bool checksumEnabled_;
     bool encryptEnabled_;
     // Our (client) key pair
     Crypto::DHKeys& keys_;

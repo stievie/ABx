@@ -43,7 +43,6 @@ std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;
 ProtocolGame::ProtocolGame(std::shared_ptr<Connection> connection) :
     Protocol(connection)
 {
-    checksumEnabled_ = ProtocolGame::UseChecksum;
     encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
 }
@@ -132,6 +131,7 @@ void ProtocolGame::Login(AB::Packets::Client::GameLogin packet)
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player " << (player ? player->account_.name : "(null)") << " connected" << std::endl;
 #endif
+    connected_ = true;
 }
 
 void ProtocolGame::Logout()
@@ -637,6 +637,12 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
+    if (acceptPackets_)
+    {
+        LOG_ERROR << "This shouldn't happen" << std::endl;
+        return;
+    }
+
     // Dispatcher thread
 #ifdef DEBUG_NET
     LOG_DEBUG << "Sending KeyExchange" << std::endl;
@@ -755,7 +761,7 @@ void ProtocolGame::EnterGame(ea::shared_ptr<Game::Player> player)
         instance->data_.partySize
     };
     AB::Packets::Add(packet, *output);
-    Send(std::move(output));
+    WriteToOutput(*output);
 
     // (2) Then we can send all the rest that happens when entering an game
     instance->PlayerJoin(player->id_);

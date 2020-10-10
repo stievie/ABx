@@ -35,7 +35,6 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     updateTick_(0),
     loggingOut_(false)
 {
-    checksumEnabled_ = ProtocolGame::UseChecksum;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
 
@@ -113,6 +112,8 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::DropTargetChanged, ServerPacketType::DropTargetChanged>();
 }
 
+ProtocolGame::~ProtocolGame() = default;
+
 void ProtocolGame::Login(const std::string& accountUuid,
     const std::string& authToken, const std::string& charUuid,
     const std::string& mapUuid,
@@ -150,15 +151,9 @@ void ProtocolGame::Login(const std::string& accountUuid,
 
 void ProtocolGame::OnReceive(InputMessage& message)
 {
-    try
-    {
-        ParseMessage(message);
-        Receive();
-    }
-    catch (const std::exception&)
-    {
-        ProtocolError(AB::ErrorCodes::ErrorException);
-    }
+    ParseMessage(message);
+    Receive();
+
     if (firstRevc_)
     {
         firstRevc_ = false;
@@ -192,7 +187,7 @@ void ProtocolGame::ParseMessage(InputMessage& message)
         ServerPacketType prevCode = opCode;
         opCode = static_cast<ServerPacketType>(message.Get<uint8_t>());
 
-#if 0
+#if 1
         if (opCode != ServerPacketType::GameUpdate && opCode != ServerPacketType::__Last)
         {
             std::stringstream ss3;
@@ -202,12 +197,6 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             LogMessage(ss3.str());
         }
 #endif
-
-        if (packetHandlers_.Exists(opCode))
-        {
-            packetHandlers_.Call(opCode, message);
-            continue;
-        }
 
         // There are some special codes we handle separately
         switch (opCode)
@@ -247,13 +236,22 @@ void ProtocolGame::ParseMessage(InputMessage& message)
             return;
         default:
         {
-            std::stringstream ss2;
-            ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) << " " << GetServerPacketTypeName(opCode) <<
-                " last code " << static_cast<int>(prevCode) << " " << GetServerPacketTypeName(prevCode) <<
-                " unread size " << message.GetUnreadSize();
-            LogMessage(ss2.str());
-            // Unknown packet, discard whole message
-            return;
+            if (packetHandlers_.Exists(opCode))
+            {
+                packetHandlers_.Call(opCode, message);
+                break;
+            }
+            else
+            {
+
+                std::stringstream ss2;
+                ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) << " " << GetServerPacketTypeName(opCode) <<
+                    " last code " << static_cast<int>(prevCode) << " " << GetServerPacketTypeName(prevCode) <<
+                    " unread size " << message.GetUnreadSize();
+                LogMessage(ss2.str());
+                // Unknown packet, discard whole message
+                return;
+            }
         }
         }
     }

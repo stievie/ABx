@@ -39,7 +39,7 @@ struct OutputMessageInfo
     uint16_t size = 0;
 };
 
-static constexpr size_t OUTPUTMESSAGE_BUFFER_SIZE = 1024 - sizeof(OutputMessageInfo);
+static constexpr size_t OUTPUTMESSAGE_BUFFER_SIZE = 4096 - sizeof(OutputMessageInfo);
 static constexpr size_t OUTPUTMESSAGE_MAX_STRING_LEN = OUTPUTMESSAGE_BUFFER_SIZE - OUTPUTMESSAGE_HEADER_SIZE - sizeof(uint16_t);
 
 /// Message to write to the network

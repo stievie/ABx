@@ -31,7 +31,6 @@ Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :
     inputMessage_(std::make_shared<InputMessage>()),
     ioService_(ioService),
     connection_(nullptr),
-    checksumEnabled_(false),
     encryptEnabled_(false),
     keys_(keys),
     errorCallback_(nullptr),
@@ -70,8 +69,7 @@ void Protocol::Send(OutputMessage& message)
 {
     if (encryptEnabled_)
         XTEAEncrypt(message);
-    if (checksumEnabled_)
-        message.WriteChecksum();
+    message.WriteChecksum();
     message.WriteMessageSize();
 
     if (connection_)
@@ -83,12 +81,11 @@ void Protocol::Receive()
     inputMessage_->Reset();
 
     // first update message header size
-    int headerSize = 2; // 2 bytes for message size
-    if (checksumEnabled_)
-        headerSize += 4; // 4 bytes for checksum
+    size_t headerSize = 2; // 2 bytes for message size
+    headerSize += 4; // 4 bytes for checksum
     if (encryptEnabled_)
         headerSize += 2;
-    inputMessage_->SetHeaderSize(static_cast<uint16_t>(headerSize));
+    inputMessage_->SetHeaderSize(headerSize);
 
     // read the first 2 bytes which contain the message size
     if (connection_)
@@ -96,13 +93,13 @@ void Protocol::Receive()
             std::placeholders::_1, std::placeholders::_2));
 }
 
-void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
+void Protocol::InternalRecvHeader(uint8_t* buffer, size_t size)
 {
     if (!IsConnected())
         return;
 
     inputMessage_->FillBuffer(buffer, size);
-    uint16_t remainingSize = inputMessage_->ReadSize();
+    size_t remainingSize = inputMessage_->ReadSize();
 
     // read remaining message data
     if (connection_)
@@ -110,14 +107,14 @@ void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
             shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
-void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
+void Protocol::InternalRecvData(uint8_t* buffer, size_t size)
 {
     if (!IsConnected())
         return;
 
     inputMessage_->FillBuffer(buffer, size);
 
-    if (checksumEnabled_ && !inputMessage_->ReadChecksum())
+    if (!inputMessage_->ReadChecksum())
         return;
     if (encryptEnabled_)
     {

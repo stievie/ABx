@@ -39,7 +39,6 @@ public:
     // static protocol information
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
-    enum { UseChecksum = true };
     typedef std::function<void(const std::string& accountUuid, const std::string& authToken, AB::Entities::AccountType accType)> LoggedInCallback;
     typedef std::function<void(const AB::Entities::CharList& chars)> CharlistCallback;
     typedef std::function<void(const std::vector<AB::Entities::Game>& outposts)> GamelistCallback;
@@ -70,7 +69,7 @@ protected:
     void OnReceive(InputMessage& message) override;
 public:
     ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService);
-    ~ProtocolLogin() override {}
+    ~ProtocolLogin() override;
 
     void Login(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,

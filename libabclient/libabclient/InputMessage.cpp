@@ -24,7 +24,7 @@
 #include "Utils.h"
 #include <abcrypto.hpp>
 #include <AB/ProtocolCodes.h>
-#include <lz4.h>
+#include <sa/Assert.h>
 
 namespace Client {
 
@@ -39,20 +39,6 @@ bool InputMessage::ReadChecksum()
     size_t size = GetUnreadSize();
     uint32_t checksum = AdlerChecksum(buffer_ + pos_, static_cast<int>(size));
     return receivedCheck == checksum;
-}
-
-void InputMessage::SetBuffer(const std::string& buffer)
-{
-    size_t len = buffer.size();
-    CheckWrite(len);
-#ifdef _MSC_VER
-    memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buffer.data(), len);
-#else
-    memcpy(buffer_ + MaxHeaderSize, buffer.data(), len);
-#endif // _MSC_VER
-    pos_ = MaxHeaderSize;
-    headerPos_ = MaxHeaderSize;
-    size_ = static_cast<uint16_t>(len);
 }
 
 std::string InputMessage::GetString()
@@ -104,9 +90,9 @@ bool InputMessage::CanRead(size_t size)
     return true;
 }
 
-void InputMessage::FillBuffer(uint8_t* buffer, uint16_t size)
+void InputMessage::FillBuffer(uint8_t* buffer, size_t size)
 {
-    CheckWrite(pos_ + size);
+    CheckWrite(static_cast<size_t>(pos_) + static_cast<size_t>(size));
 #ifdef _MSC_VER
     memcpy_s(buffer_ + pos_, MaxBufferSize - pos_, buffer, size);
 #else

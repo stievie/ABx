@@ -51,6 +51,7 @@ public:
 private:
     ea::weak_ptr<Game::Player> player_;
     DH_KEY clientKey_;
+    bool connected_{ false };
     ea::shared_ptr<Game::Player> GetPlayer()
     {
         return player_.lock();

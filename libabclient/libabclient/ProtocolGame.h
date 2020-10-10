@@ -38,7 +38,6 @@ public:
     // static protocol information
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
-    enum { UseChecksum = true };
 private:
     Receiver& receiver_;
     int64_t pingTick_;
@@ -70,7 +69,7 @@ protected:
     void ParseKeyExchange(InputMessage& message);
 public:
     ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_service& ioService);
-    ~ProtocolGame() override = default;
+    ~ProtocolGame() override;
 
     void Login(const std::string& accountUuid, const std::string& authToken,
         const std::string& charUuid, const std::string& mapUuid, const std::string& instanceUuid,

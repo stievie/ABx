@@ -33,7 +33,6 @@ namespace Net {
 
 Protocol::Protocol(std::shared_ptr<Connection> connection) :
     connection_(connection),
-    checksumEnabled_(false),
     encryptionEnabled_(false)
 { }
 
@@ -58,7 +57,8 @@ void Protocol::Send(sa::SharedPtr<OutputMessage>&& message)
     MessageAnalyzer ma;
     ma.onPacket_ = [](auto type, void*)
     {
-        LOG_DEBUG << "MessageType " << AB::GameProtocol::GetServerPacketTypeName(type) << std::endl;
+        if (type != AB::GameProtocol::ServerPacketType::GameUpdate)
+            LOG_DEBUG << "Code " << static_cast<int>(type) << " " << AB::GameProtocol::GetServerPacketTypeName(type) << std::endl;
     };
     ma.Analyze(*message);
 #endif
@@ -92,7 +92,7 @@ void Protocol::XTEAEncrypt(OutputMessage& msg) const
 
 bool Protocol::XTEADecrypt(NetworkMessage& msg) const
 {
-    int32_t length = msg.GetSize() - 6;
+    int32_t length = (int)msg.GetSize() - 6;
     if ((length & 7) != 0)
         return false;
 
@@ -111,11 +111,7 @@ bool Protocol::OnSendMessage(OutputMessage& message) const
     {
         XTEAEncrypt(message);
     }
-    if (encryptionEnabled_ || checksumEnabled_)
-    {
-        return message.AddCryptoHeader(checksumEnabled_);
-    }
-    return true;
+    return message.AddCryptoHeader(true);
 }
 
 void Protocol::OnRecvMessage(NetworkMessage& message)
@@ -136,14 +132,14 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
     ParsePacket(message);
 }
 
-sa::SharedPtr<OutputMessage> Protocol::GetOutputBuffer(int32_t size)
+sa::SharedPtr<OutputMessage> Protocol::GetOutputBuffer(size_t size)
 {
     // Dispatcher Thread
     if (!outputBuffer_)
     {
         outputBuffer_ = OutputMessagePool::GetOutputMessage();
     }
-    else if (outputBuffer_->GetSpace() < size)
+    else if (outputBuffer_->GetSpace() <= size)
     {
         Send(std::move(outputBuffer_));
         outputBuffer_ = OutputMessagePool::GetOutputMessage();

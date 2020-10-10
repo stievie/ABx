@@ -2864,7 +2864,9 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
 {
     resigned_ = false;
     if (client_)
-        return client_->ChangeInstance(mapUuid, instanceUuid);
+    {
+        client_->ChangeInstance(mapUuid, instanceUuid);
+    }
     LOG_ERROR << "client_ = null" << std::endl;
 }
 

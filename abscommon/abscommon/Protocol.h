@@ -39,7 +39,6 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 protected:
     std::weak_ptr<Connection> connection_;
     sa::SharedPtr<OutputMessage> outputBuffer_;
-    bool checksumEnabled_;
     bool encryptionEnabled_;
     size_t writeWhileDisconnected_{ 0 };
     DH_KEY encKey_;
@@ -70,7 +69,7 @@ public:
     bool IsConnectionExpired() const { return connection_.expired(); }
     std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }
 
-    sa::SharedPtr<OutputMessage> GetOutputBuffer(int32_t size);
+    sa::SharedPtr<OutputMessage> GetOutputBuffer(size_t size);
     void ResetOutputBuffer();
     uint32_t GetIP();
     sa::SharedPtr<OutputMessage> TakeCurrentBuffer();

@@ -34,7 +34,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 private:
     typedef std::function<void(ConnectionError, const asio::error_code&)> ErrorCallback;
-    typedef std::function<void(uint8_t*, uint16_t)> RecvCallback;
+    typedef std::function<void(uint8_t*, size_t)> RecvCallback;
     enum {
         ConnectTimeout = 10,
         ReadTimeout = 30,
@@ -80,9 +80,7 @@ public:
     void Close();
 
     void Write(uint8_t* buffer, size_t size);
-    void Read(uint16_t bytes, const RecvCallback& callback);
-    void ReadUntil(const std::string& what, const RecvCallback& callback);
-    void ReadSome(const RecvCallback& callback);
+    void Read(size_t bytes, const RecvCallback& callback);
 
     void SetErrorCallback(const ErrorCallback& errorCallback) { errorCallback_ = errorCallback; }
 

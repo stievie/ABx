@@ -40,7 +40,6 @@ public:
     explicit ProtocolLogin(std::shared_ptr<Connection> connection) :
         Protocol(connection)
     {
-        checksumEnabled_ = ProtocolLogin::UseChecksum;
         SetEncKey(AB::ENC_KEY);
     }
 

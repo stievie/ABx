@@ -144,10 +144,13 @@ void Connection::Close(bool force /* = false */)
 void Connection::Accept(std::shared_ptr<Protocol> protocol)
 {
     protocol_ = protocol;
-    GetSubsystem<Asynch::Dispatcher>()->Add(
-        Asynch::CreateTask(std::bind(&Protocol::OnConnect, protocol))
-    );
     Accept();
+    // Not sure about this, but this seems to fix a crash I was hunting for so long time...
+    // Protocol::OnConnect() was called again.
+    protocol->OnConnect();
+//    GetSubsystem<Asynch::Dispatcher>()->Add(
+//        Asynch::CreateTask(std::bind(&Protocol::OnConnect, protocol))
+//    );
 }
 
 void Connection::Accept()
@@ -268,7 +271,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
 
     uint32_t checksum;
-    int32_t len = msg_->GetSize() - msg_->GetReadPos() - NetworkMessage::ChecksumLength;
+    int32_t len = (int)msg_->GetSize() - (int)msg_->GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
         checksum = Utils::AdlerChecksum(
             reinterpret_cast<uint8_t*>(msg_->GetBuffer() + msg_->GetReadPos() +

@@ -260,7 +260,7 @@ void Connection::OnRecv(const asio::error_code& error, size_t recvSize)
             if (recvCallback_)
             {
                 const char* header = asio::buffer_cast<const char*>(inputStream_.data());
-                recvCallback_((uint8_t*)header, (uint16_t)recvSize);
+                recvCallback_((uint8_t*)header, recvSize);
             }
         }
         else
@@ -271,7 +271,7 @@ void Connection::OnRecv(const asio::error_code& error, size_t recvSize)
         inputStream_.consume(recvSize);
 }
 
-void Connection::Read(uint16_t bytes, const RecvCallback& callback)
+void Connection::Read(size_t bytes, const RecvCallback& callback)
 {
     if (!connected_)
         return;
@@ -287,39 +287,6 @@ void Connection::Read(uint16_t bytes, const RecvCallback& callback)
         std::bind(&Connection::OnRecv, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2));
 
-}
-
-void Connection::ReadUntil(const std::string& what, const RecvCallback& callback)
-{
-    if (!connected_)
-        return;
-
-    recvCallback_ = callback;
-
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnReadTimeout, shared_from_this(), std::placeholders::_1));
-
-    asio::async_read_until(socket_,
-        inputStream_,
-        what.c_str(),
-        std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-
-}
-
-void Connection::ReadSome(const RecvCallback& callback)
-{
-    if (!connected_)
-        return;
-
-    recvCallback_ = callback;
-
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnReadTimeout, shared_from_this(), std::placeholders::_1));
-
-    socket_.async_read_some(asio::buffer(inputStream_.prepare(RecvBufferSize)),
-        std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 }

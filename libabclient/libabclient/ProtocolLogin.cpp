@@ -33,10 +33,12 @@ ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService) 
     gamelistCallback_(nullptr),
     createAccCallback_(nullptr)
 {
-    checksumEnabled_ = ProtocolLogin::UseChecksum;
     encryptEnabled_ = false;
     SetEncKey(AB::ENC_KEY);
 }
+
+ProtocolLogin::~ProtocolLogin()
+{ }
 
 void ProtocolLogin::Login(std::string& host, uint16_t port,
     const std::string& account, const std::string& password,

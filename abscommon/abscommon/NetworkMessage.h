@@ -183,11 +183,11 @@ public:
     {
         return buffer_ + HeaderLength;
     }
-    int32_t GetSize() const { return static_cast<int32_t>(info_.length); }
-    void SetSize(int32_t size) { info_.length = static_cast<MsgSize_t>(size); }
-    int32_t GetReadPos() const { return static_cast<int32_t>(info_.position); }
-    void SetReadPos(int32_t value) { info_.position = static_cast<MsgSize_t>(value); }
-    int32_t GetSpace() const { return MaxBodyLength - info_.length; }
+    size_t GetSize() const { return static_cast<size_t>(info_.length); }
+    void SetSize(size_t size) { info_.length = static_cast<MsgSize_t>(size); }
+    size_t GetReadPos() const { return static_cast<size_t>(info_.position); }
+    void SetReadPos(size_t value) { info_.position = static_cast<MsgSize_t>(value); }
+    size_t GetSpace() const { return MaxBodyLength - info_.length; }
 };
 
 template <>

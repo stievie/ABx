@@ -50,7 +50,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CPPHTTPLIB_OPENSSL_SUPPORT;CPPHTTPLIB_ZLIB_SUPPORT;ABCLIENT_STATIC_LIB;ASIO_STANDALONE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CPPHTTPLIB_OPENSSL_SUPPORT;CPPHTTPLIB_ZLIB_SUPPORT;ABCLIENT_STATIC_LIB;ASIO_STANDALONE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;SA_ASSERT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\openssl-1.0;$(SolutionDir)..\Include\zlib</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -67,7 +67,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\openssl-1.0;$(SolutionDir)..\Include\zlib</AdditionalIncludeDirectories>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>CPPHTTPLIB_OPENSSL_SUPPORT;CPPHTTPLIB_ZLIB_SUPPORT;ABCLIENT_STATIC_LIB;ASIO_STANDALONE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CPPHTTPLIB_OPENSSL_SUPPORT;CPPHTTPLIB_ZLIB_SUPPORT;ABCLIENT_STATIC_LIB;ASIO_STANDALONE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;SA_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
