@@ -108,9 +108,7 @@ bool Protocol::OnSendMessage(OutputMessage& message) const
 //    LOG_DEBUG << "Sending message with size " << message.GetSize() << std::endl;
 #endif
     if (encryptionEnabled_)
-    {
         XTEAEncrypt(message);
-    }
     return message.AddCryptoHeader(true);
 }
 

@@ -57,7 +57,7 @@ protected:
     }
     void SetHeaderSize(size_t size)
     {
-        ASSERT((int)MaxHeaderSize - (int)size >= 0);
+        ASSERT(MaxHeaderSize >= size);
         headerPos_ = MaxHeaderSize - size;
         pos_ = headerPos_;
     }
