@@ -56,7 +56,7 @@ void Transformation::Move(float speed, const Vector3& amount)
     position_.y_ += XMath::XMVectorGetY(v);
     position_.z_ += XMath::XMVectorGetZ(v);
 #else
-    const Matrix4 m = Math::Matrix4::FromQuaternion(oriention_.Inverse());
+    const Matrix4 m = Math::Matrix4::FromAxisAngle(Math::Vector3::UnitY, -GetYRotation());
     const Vector3 a = amount * speed;
     const Vector3 v = m * a;
     position_ += v;

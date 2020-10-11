@@ -55,11 +55,11 @@ void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speed
         Move(speed, Vector3::FORWARD);
     if ((direction & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         // Move slower backward
-        Move(speed, Vector3::BACK / 2.0f);
+        Move(speed / 2.0f, Vector3::BACK);
     if ((direction & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
-        Move(speed, Vector3::LEFT / 2.0f);
+        Move(speed / 2.0f, Vector3::LEFT);
     if ((direction & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
-        Move(speed, Vector3::RIGHT / 2.0f);
+        Move(speed / 2.0f, Vector3::RIGHT);
 }
 
 bool ClientPrediction::CheckCollision(const Vector3& pos)
@@ -245,7 +245,7 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     const Vector3& currPos = player->GetMoveToPos();
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     const float distThreshold = ((float)client->GetLastPing() * 3.0f) / 10000.0f;
-//    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
+    URHO3D_LOGINFOF("Ping %d, Dist %f, Thres %f", client->GetLastPing(), dist, distThreshold);
     // FIXME: This sucks a bit, and needs some work.
     if (dist > distThreshold &&
         (int)sa::time::time_elapsed(lastStateChange_) > client->GetLastPing() + 50 &&

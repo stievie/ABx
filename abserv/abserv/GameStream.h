@@ -53,7 +53,7 @@ class GameWriteStream
 private:
     std::fstream stream_;
     bool open_;
-    uint32_t size_;
+    size_t size_;
     std::string filename_;
 public:
     GameWriteStream() :

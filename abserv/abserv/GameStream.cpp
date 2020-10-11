@@ -44,8 +44,8 @@ bool GameWriteStream::Open(const std::string& dir, Game::Game* game)
         stream_.write((char*)"REC\0", 4);
         stream_.write((char*)&REC_FILE_VERSION, sizeof(REC_FILE_VERSION));
         // Placeholder for size
-        static const uint32_t PLACEHOLDER = 0;
-        stream_.write((char*)&PLACEHOLDER, sizeof(uint32_t));
+        static const size_t PLACEHOLDER = 0;
+        stream_.write((char*)&PLACEHOLDER, sizeof(size_t));
 
         stream_.write((char*)game->data_.uuid.c_str(), 36);
         stream_.write((char*)&game->startTime_, sizeof(decltype(game->startTime_)));
@@ -63,7 +63,7 @@ void GameWriteStream::Close()
     {
         // Write size
         stream_.seekp(4 + sizeof(REC_FILE_VERSION), std::ios::beg);
-        stream_.write((char*)&size_, sizeof(uint32_t));
+        stream_.write((char*)&size_, sizeof(size_t));
 
         stream_.close();
         open_ = false;
@@ -74,7 +74,7 @@ void GameWriteStream::Write(const Net::NetworkMessage& msg)
 {
     if (open_)
     {
-        auto size = msg.GetSize();
+        uint32_t size = static_cast<uint32_t>(msg.GetSize());
         size_ += size;
         stream_.write((char*)&size, sizeof(size));
         stream_.write((char*)msg.GetBuffer(), size);
@@ -111,7 +111,7 @@ bool GameReadStream::Open(const std::string& dir, const std::string& instance)
             open_ = false;
             return false;
         }
-        stream_.read((char*)&size_, sizeof(uint32_t));
+        stream_.read((char*)&size_, sizeof(size_t));
 
         gameUuid_.resize(36);
         stream_.read((char*)gameUuid_.data(), 36);
@@ -137,8 +137,8 @@ bool GameReadStream::Read(Net::NetworkMessage& msg)
     if (stream_.eof())
         return false;
 
-    int32_t size;
-    stream_.read((char*)&size, sizeof(size));
+    uint32_t size;
+    stream_.read((char*)&size, sizeof(uint32_t));
     if (read_ + size > size_)
         return false;
 

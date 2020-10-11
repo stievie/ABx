@@ -40,7 +40,7 @@ inline constexpr int PLAYER_MAX_SKILLS = 8;
 inline constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 
 // For client prediction these values are also needed by the client.
-inline constexpr float BASE_MOVE_SPEED = 150.0f;
+inline constexpr float BASE_MOVE_SPEED = 180.0f;
 inline constexpr float BASE_TURN_SPEED = 2000.0f;
 
 // Max level a player can reach
