@@ -409,8 +409,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     spawnData.isExisting = eventData[P_EXISTING].GetBool();
     spawnData.isUndestroyable = eventData[P_UNDESTROYABLE].GetBool();
     spawnData.isSelectable = eventData[P_SELECTABLE].GetBool();
-    const String& d = eventData[P_DATA].GetString();
-    spawnData.data.Init(d.CString(), d.Length());
+    spawnData.data = eventData[P_DATA].GetString();
     SpawnObject(spawnData);
 }
 
@@ -419,35 +418,36 @@ void WorldLevel::SpawnObject(SpawnObjectStuct& spawnData)
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
     GameObject* object = nullptr;
+    sa::PropReadStream data(spawnData.data.CString(), spawnData.data.Length());
     switch (spawnData.type)
     {
     case AB::GameProtocol::GameObjectType::Player:
         if (playerId == spawnData.id)
         {
-            CreatePlayer(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+            CreatePlayer(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
             object = player_;
             object->objectType_ = ObjectType::Self;
         }
         else
         {
-            object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+            object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
             object->objectType_ = ObjectType::Player;
         }
         break;
     case AB::GameProtocol::GameObjectType::Npc:
-        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
         object->objectType_ = ObjectType::Npc;
         break;
     case AB::GameProtocol::GameObjectType::AreaOfEffect:
-        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
         object->objectType_ = ObjectType::AreaOfEffect;
         break;
     case AB::GameProtocol::GameObjectType::ItemDrop:
-        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
         object->objectType_ = ObjectType::ItemDrop;
         break;
     case AB::GameProtocol::GameObjectType::Projectile:
-        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, data);
         object->objectType_ = ObjectType::Projectile;
         break;
     case AB::GameProtocol::GameObjectType::Unknown:

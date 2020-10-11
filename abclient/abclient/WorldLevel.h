@@ -63,7 +63,7 @@ struct SpawnObjectStuct
     bool isExisting;
     bool isUndestroyable;
     bool isSelectable;
-    sa::PropReadStream data;
+    String data;
 };
 
 /// All World maps, Outposts, Combat, Exploreable...
