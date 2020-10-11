@@ -729,9 +729,6 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
     std::string platform = Utils::ExtractFileDir(request->path);
-    std::string path = root_;
-    if (!platform.empty())
-        path += platform;
     auto web_root_path = fs::canonical(root_);
     if (!fs::is_directory(web_root_path))
     {
@@ -787,20 +784,28 @@ void Application::GetHandlerFiles(std::shared_ptr<HttpsServer::Response> respons
 
     // Common files are in file_root
     for (const auto& p : fs::directory_iterator(web_root_path))
-    {
         addFile(p, true);
-    }
+
     // Platform specific files in file_root/(platform)
-    auto root_path = fs::canonical(path);
-    if (fs::is_directory(root_path))
+    if (!platform.empty())
     {
-        for (const auto& p : fs::directory_iterator(root_path))
+        try
         {
-            addFile(p, false);
+            fs::path platform_path = web_root_path;
+            platform_path += platform;
+            if (fs::is_directory(platform_path))
+            {
+                for (const auto& p : fs::directory_iterator(platform_path))
+                    addFile(p, false);
+            }
+            else
+                LOG_WARNING << platform_path.string() << " does not exist, but was requested" << std::endl;
+        }
+        catch (const std::exception& ex)
+        {
+            LOG_ERROR << ex.what() << std::endl;
         }
     }
-    else
-        LOG_WARNING << root_path.string() << " does not exist, but was requested" << std::endl;
 
     std::stringstream stream;
     doc.save(stream);
