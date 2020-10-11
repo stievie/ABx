@@ -38,6 +38,7 @@
 #include <sa/path.h>
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 #include "Platform.h"
+#include <sa/time.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -1011,7 +1012,7 @@ void FwClient::Update(float timeStep)
 void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
 {
     using namespace Update;
-    float timeStep = eventData[P_TIMESTEP].GetFloat();
+    const float timeStep = eventData[P_TIMESTEP].GetFloat();
     Update(timeStep);
 }
 
@@ -1523,14 +1524,11 @@ void FwClient::OnNetworkError(Client::ConnectionError connectionError, const std
     if (cl)
         cl->OnNetworkError(connectionError, err);
 
-    if (lm->GetLevelName() != "LoginLevel")
-    {
-        // Disconnect -> Relogin
-        VariantMap& eData = GetEventDataMap();
-        using namespace Events::SetLevel;
-        eData[P_NAME] = "LoginLevel";
-        SendEvent(Events::E_SETLEVEL, eData);
-    }
+    // Disconnect -> Relogin
+    VariantMap& eData = GetEventDataMap();
+    using namespace Events::SetLevel;
+    eData[P_NAME] = "LoginLevel";
+    SendEvent(Events::E_SETLEVEL, eData);
 }
 
 void FwClient::OnHttpError(int status)

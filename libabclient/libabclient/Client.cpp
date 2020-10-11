@@ -451,7 +451,7 @@ void Client::Update(uint32_t timeElapsed, bool noRun)
         if (enterWorldMessage_ != 0 && sa::time::tick() - enterWorldMessage_ > PLAYER_INACTIVE_TIME_KICK * 2)
         {
             // When we enter a Game it may take some time the client loaded everything.
-            if ((lastPongTick_ != 0) && (lastPongTick_ + PLAYER_INACTIVE_TIME_KICK < sa::time::tick()))
+            if ((lastPongTick_ != 0) && (lastPongTick_ + (PLAYER_INACTIVE_TIME_KICK * 2) < sa::time::tick()))
             {
                 protoGame_->Disconnect();
                 state_ = State::Disconnected;
@@ -465,7 +465,7 @@ void Client::Update(uint32_t timeElapsed, bool noRun)
     if (lastRun_ >= 16)
     {
         // Don't send more than ~60 updates to the server, it might DC.
-        // If running @144Hz every 2nd Update. If running @60Hz every update
+        // If running @144Hz every 2nd Ping. If running @60Hz every update
         lastRun_ = 0;
         if (!noRun)
             Run();
