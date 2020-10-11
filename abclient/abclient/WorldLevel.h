@@ -47,6 +47,25 @@ class SkillBarWindow;
 class TargetWindow;
 class TradeDialog;
 
+struct SpawnObjectStuct
+{
+    uint32_t id;
+    AB::GameProtocol::GameObjectType type;
+    int64_t tick;
+    Vector3 position;
+    Quaternion direction;
+    Vector3 scale;
+    AB::GameProtocol::CreatureState state;
+    float speed;
+    uint32_t groupId;
+    uint8_t groupPos;
+    uint32_t groupMask;
+    bool isExisting;
+    bool isUndestroyable;
+    bool isSelectable;
+    sa::PropReadStream data;
+};
+
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
 class WorldLevel : public BaseLevel
@@ -228,11 +247,6 @@ private:
     void HandleTradeDialogTrigger(StringHash eventType, VariantMap& eventData);
     void HandleTradeCancel(StringHash eventType, VariantMap& eventData);
 
-    void SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::GameObjectType objectType, bool existing,
-        const Vector3& position, const Vector3& scale, const Quaternion& rot,
-        bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
-        uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
-        sa::
-  PropReadStream& data);
+    void SpawnObject(SpawnObjectStuct& spawnData);
 };
 

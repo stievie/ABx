@@ -48,7 +48,7 @@ public:
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
     static Player* CreatePlayer(uint32_t id, Scene* scene);
-    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation, const Vector3& scale,
         AB::GameProtocol::CreatureState state) override;
     void CreateSoundListener();
 

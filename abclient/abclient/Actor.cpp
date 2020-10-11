@@ -83,7 +83,7 @@ void Actor::RegisterObject(Context* context)
 }
 
 Actor* Actor::CreateActor(uint32_t id, Scene* scene,
-    const Vector3& position, const Quaternion& rotation,
+    const Vector3& position, const Quaternion& rotation, const Vector3& scale,
     AB::GameProtocol::CreatureState state,
     sa::PropReadStream& data)
 {
@@ -93,17 +93,19 @@ Actor* Actor::CreateActor(uint32_t id, Scene* scene,
     result->gameId_ = id;
 
     result->Unserialize(data);
-    result->Init(scene, position, rotation, state);
+    result->Init(scene, position, rotation, scale, state);
     result->PlayStateAnimation(0.0f);
+    result->SetMoveToPos(position);
+    result->SetRotateTo(rotation);
 
     return result;
 }
 
-void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
+void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation, const Vector3& scale,
     AB::GameProtocol::CreatureState state)
 {
     if (itemIndex_ != 0)
-        LoadObject(itemIndex_, position, rotation);
+        LoadObject(itemIndex_, position, rotation, scale);
 
     // Must be after load model
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
@@ -143,7 +145,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     }
 }
 
-bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation)
+bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation, const Vector3 scale)
 {
     ItemsCache* items = GetSubsystem<ItemsCache>();
     SharedPtr<Item> item = items->Get(itemIndex);
@@ -169,7 +171,7 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
     if (adjNode->LoadXML(root, resolver, true, true))
     {
         resolver.Resolve();
-        node_->SetTransform(position, rotation);
+        node_->SetTransform(position, rotation, scale);
         adjNode->ApplyAttributes();
         if (adjNode->GetComponent<AnimatedModel>(true))
         {

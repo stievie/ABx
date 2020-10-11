@@ -390,70 +390,64 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
 {
     using namespace Events::ObjectSpawn;
-    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
-    if (objects_.Contains(objectId))
+    SpawnObjectStuct spawnData;
+    spawnData.id = eventData[P_OBJECTID].GetUInt();
+    if (objects_.Contains(spawnData.id))
         return;
-    AB::GameProtocol::GameObjectType type = static_cast<AB::GameProtocol::GameObjectType>(eventData[P_OBJECTTYPE].GetUInt());
-    int64_t tick = eventData[P_UPDATETICK].GetInt64();
-    const Vector3& pos = eventData[P_POSITION].GetVector3();
+    spawnData.type = static_cast<AB::GameProtocol::GameObjectType>(eventData[P_OBJECTTYPE].GetUInt());
+    spawnData.tick = eventData[P_UPDATETICK].GetInt64();
+    spawnData.position = eventData[P_POSITION].GetVector3();
     float rot = eventData[P_ROTATION].GetFloat();
-    Quaternion direction;
     float deg = -rot * (180.0f / static_cast<float>(M_PI));
-    direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
-    const Vector3& scale = eventData[P_SCALE].GetVector3();
-    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
-    float speed = eventData[P_SPEEDFACTOR].GetFloat();
-    uint32_t groupId = eventData[P_GROUPID].GetUInt();
-    uint8_t groupPos = static_cast<uint8_t>(eventData[P_GROUPPOS].GetUInt());
-    uint32_t groupMask = eventData[P_GROUPMASK].GetUInt();
+    spawnData.direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
+    spawnData.scale = eventData[P_SCALE].GetVector3();
+    spawnData.state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
+    spawnData.speed = eventData[P_SPEEDFACTOR].GetFloat();
+    spawnData.groupId = eventData[P_GROUPID].GetUInt();
+    spawnData.groupPos = static_cast<uint8_t>(eventData[P_GROUPPOS].GetUInt());
+    spawnData.groupMask = eventData[P_GROUPMASK].GetUInt();
+    spawnData.isExisting = eventData[P_EXISTING].GetBool();
+    spawnData.isUndestroyable = eventData[P_UNDESTROYABLE].GetBool();
+    spawnData.isSelectable = eventData[P_SELECTABLE].GetBool();
     const String& d = eventData[P_DATA].GetString();
-    bool existing = eventData[P_EXISTING].GetBool();
-    bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
-    bool selectable = eventData[P_SELECTABLE].GetBool();
-    sa::PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, type, existing, pos, scale, direction,
-        undestroyable, selectable,
-        state, speed, groupId, groupPos, groupMask, data);
+    spawnData.data.Init(d.CString(), d.Length());
+    SpawnObject(spawnData);
 }
 
-void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::GameObjectType objectType, bool existing,
-    const Vector3& position, const Vector3& scale, const Quaternion& rot,
-    bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
-    uint32_t groupId, uint8_t groupPos, uint32_t groupMask,
-    sa::PropReadStream& data)
+void WorldLevel::SpawnObject(SpawnObjectStuct& spawnData)
 {
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
     GameObject* object = nullptr;
-    switch (objectType)
+    switch (spawnData.type)
     {
     case AB::GameProtocol::GameObjectType::Player:
-        if (playerId == id)
+        if (playerId == spawnData.id)
         {
-            CreatePlayer(id, position, scale, rot, state, data);
+            CreatePlayer(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
             object = player_;
             object->objectType_ = ObjectType::Self;
         }
         else
         {
-            object = CreateActor(id, position, scale, rot, state, data);
+            object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
             object->objectType_ = ObjectType::Player;
         }
         break;
     case AB::GameProtocol::GameObjectType::Npc:
-        object = CreateActor(id, position, scale, rot, state, data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
         object->objectType_ = ObjectType::Npc;
         break;
     case AB::GameProtocol::GameObjectType::AreaOfEffect:
-        object = CreateActor(id, position, scale, rot, state, data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
         object->objectType_ = ObjectType::AreaOfEffect;
         break;
     case AB::GameProtocol::GameObjectType::ItemDrop:
-        object = CreateActor(id, position, scale, rot, state, data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
         object->objectType_ = ObjectType::ItemDrop;
         break;
     case AB::GameProtocol::GameObjectType::Projectile:
-        object = CreateActor(id, position, scale, rot, state, data);
+        object = CreateActor(spawnData.id, spawnData.position, spawnData.scale, spawnData.direction, spawnData.state, spawnData.data);
         object->objectType_ = ObjectType::Projectile;
         break;
     case AB::GameProtocol::GameObjectType::Unknown:
@@ -465,20 +459,20 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
     }
     if (object)
     {
-        object->spawnTickServer_ = updateTick;
-        object->groupId_ = groupId;
-        object->groupPos_ = groupPos;
-        if (groupMask != 0)
-            object->groupMask_ = groupMask;
+        object->spawnTickServer_ = spawnData.tick;
+        object->groupId_ = spawnData.groupId;
+        object->groupPos_ = spawnData.groupPos;
+        if (spawnData.groupMask != 0)
+            object->groupMask_ = spawnData.groupMask;
 
         // Here an object is always an Actor
         Actor* actor = To<Actor>(object);
         object->GetNode()->SetName(actor->name_);
-        object->undestroyable_ = undestroyable;
-        object->selectable_ = selectable;
-        object->SetSpeedFactor(updateTick, speed);
-        objects_[id] = object;
-        nodeIds_[object->GetNode()->GetID()] = id;
+        object->undestroyable_ = spawnData.isUndestroyable;
+        object->selectable_ = spawnData.isSelectable;
+        object->SetSpeedFactor(spawnData.tick, spawnData.speed);
+        objects_[spawnData.id] = object;
+        nodeIds_[object->GetNode()->GetID()] = spawnData.id;
         actor->AddActorUI();
 
 #ifdef LOG_OBJECTSPAWN
@@ -487,7 +481,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         switch (object->objectType_)
         {
         case ObjectType::Player:
-            if (!existing && !AB::Entities::IsOutpost(mapType_))
+            if (!spawnData.isExisting && !AB::Entities::IsOutpost(mapType_))
                 chatWindow_->AddLine(static_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         case ObjectType::Self:
@@ -501,7 +495,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, AB::GameProtocol::
         }
 
         // Update party window
-        partyWindow_->OnObjectSpawned(object, groupId, groupPos);
+        partyWindow_->OnObjectSpawned(object, spawnData.groupId, spawnData.groupPos);
     }
 }
 
@@ -1084,10 +1078,7 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     AB::GameProtocol::CreatureState state,
     sa::PropReadStream& data)
 {
-    Actor* result = Actor::CreateActor(id, scene_, position, direction, state, data);
-    result->SetMoveToPos(position);
-    result->SetRotateTo(direction);
-    result->GetNode()->SetScale(scale);
+    Actor* result = Actor::CreateActor(id, scene_, position, direction, scale, state, data);
     return result;
 }
 
@@ -1119,13 +1110,12 @@ void WorldLevel::CreatePlayer(uint32_t id,
 {
     player_ = Player::CreatePlayer(id, scene_);
     skillBar_->SetActor(player_);
-    player_->SetMoveToPos(position);
-    player_->SetRotateTo(direction);
-    player_->GetNode()->SetScale(scale);
     player_->UpdateYaw();
     player_->Unserialize(data);
-    player_->Init(scene_, position, direction, state);
+    player_->Init(scene_, position, direction, scale, state);
     player_->PlayAnimation(ANIM_IDLE, true, 0.0f);
+    player_->SetMoveToPos(position);
+    player_->SetRotateTo(direction);
 
     cameraNode_ = player_->cameraNode_;
     player_->CreateSoundListener();
@@ -1137,9 +1127,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
 void WorldLevel::ShowMap()
 {
     if (!mapWindow_)
-    {
-        mapWindow_ = new MapWindow(context_);
-    }
+        mapWindow_ = MakeShared<MapWindow>(context_);
     mapWindow_->SetVisible(true);
 }
 

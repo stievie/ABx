@@ -82,10 +82,10 @@ Player* Player::CreatePlayer(uint32_t id, Scene* scene)
     return result;
 }
 
-void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotation, const Vector3& scale,
     AB::GameProtocol::CreatureState state)
 {
-    Actor::Init(scene, position, rotation, state);
+    Actor::Init(scene, position, rotation, scale, state);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
     body->SetCollisionLayer(1);
     AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true);

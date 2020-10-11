@@ -56,7 +56,7 @@ public:
     GameObject(Context* context);
     ~GameObject() override;
 
-    virtual void Init(Scene*, const Vector3&, const Quaternion&,
+    virtual void Init(Scene*, const Vector3&, const Quaternion&, const Vector3&,
         AB::GameProtocol::CreatureState)
     {}
 

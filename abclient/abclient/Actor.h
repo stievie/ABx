@@ -86,7 +86,7 @@ public:
     static void RegisterObject(Context* context);
 
     static Actor* CreateActor(uint32_t id, Scene* scene,
-        const Vector3& position, const Quaternion& rotation,
+        const Vector3& position, const Quaternion& rotation, const Vector3& scale,
         AB::GameProtocol::CreatureState state,
         sa::PropReadStream& data);
     /// Handle physics world update. Called by LogicComponent base class.
@@ -103,9 +103,9 @@ public:
     Vector3 GetHeadPos() const;
 
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
-    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation, const Vector3& scale,
         AB::GameProtocol::CreatureState state) override;
-    bool LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation);
+    bool LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation, const Vector3 scale);
     /// Add a model like hair armor etc.
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
