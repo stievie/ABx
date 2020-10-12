@@ -89,6 +89,12 @@ it is moving fast, but does not break things.
 
 See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 
+## FAQ
+
+**Q** Some models appear (partly) transparent/invisible.
+**A** This is a known issue (https://github.com/stievie/ABx/issues/75),
+see here https://github.com/stievie/ABx/issues/55 for a solution.
+
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for more
