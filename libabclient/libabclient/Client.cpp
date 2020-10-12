@@ -448,7 +448,7 @@ void Client::Update(uint32_t timeElapsed, bool noRun)
             }
             lastPing_ = 0;
         }
-        if (enterWorldMessage_ != 0 && sa::time::tick() - enterWorldMessage_ > PLAYER_INACTIVE_TIME_KICK * 2)
+        if (enterWorldMessage_ != 0 && sa::time::time_elapsed(enterWorldMessage_) > PLAYER_INACTIVE_TIME_KICK * 2)
         {
             // When we enter a Game it may take some time the client loaded everything.
             if ((lastPongTick_ != 0) && (lastPongTick_ + (PLAYER_INACTIVE_TIME_KICK * 2) < sa::time::tick()))

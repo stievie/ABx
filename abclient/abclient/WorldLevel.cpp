@@ -413,7 +413,7 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     SpawnObject(spawnData);
 }
 
-void WorldLevel::SpawnObject(SpawnObjectStuct& spawnData)
+void WorldLevel::SpawnObject(const SpawnObjectStuct& spawnData)
 {
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();

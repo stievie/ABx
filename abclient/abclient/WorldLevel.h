@@ -247,6 +247,6 @@ private:
     void HandleTradeDialogTrigger(StringHash eventType, VariantMap& eventData);
     void HandleTradeCancel(StringHash eventType, VariantMap& eventData);
 
-    void SpawnObject(SpawnObjectStuct& spawnData);
+    void SpawnObject(const SpawnObjectStuct& spawnData);
 };
 

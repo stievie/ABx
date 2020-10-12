@@ -379,8 +379,8 @@ void FwClient::HandleWorkCompleted(StringHash, VariantMap& eventData)
     if (!request)
         return;
 
-    URHO3D_LOGINFOF("Ping %s %s:%u time %u, %s", request->name.CString(), request->host.CString(), request->port,
-        request->time, request->success ? "Success" : "Failed");
+//    URHO3D_LOGINFOF("Ping %s %s:%u time %u, %s", request->name.CString(), request->host.CString(), request->port,
+//        request->time, request->success ? "Success" : "Failed");
     VariantMap& eData = GetEventDataMap();
     using namespace Events::ServerPing;
     eData[P_NAME] = request->name;
@@ -430,13 +430,20 @@ void FwClient::HandleLevelReady(StringHash, VariantMap& eventData)
     if (eventData[P_TYPE].GetUInt() == 0)
         return;
 
-    levelReady_ = true;
     // Level loaded, send queued events
+    int64_t tick = sa::time::tick();
     for (auto& e : queuedEvents_)
     {
         SendEvent(e.eventId, e.eventData);
+        // Send a ping so we don't disconnect when this takes a long time
+        client_.Update(sa::time::time_elapsed(tick), false);
+        tick = sa::time::tick();
     }
     queuedEvents_.Clear();
+
+    // After sending queued events set this to true so events get dispatched via normal SendEvent()
+    // and no longer QueueEvent()
+    levelReady_ = true;
     // Initial update of services
     if (services_.size() == 0)
         UpdateServers();
@@ -1012,6 +1019,7 @@ void FwClient::Update(float timeStep)
 void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
 {
     using namespace Update;
+
     const float timeStep = eventData[P_TIMESTEP].GetFloat();
     Update(timeStep);
 }
