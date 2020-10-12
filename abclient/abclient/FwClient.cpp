@@ -432,14 +432,15 @@ void FwClient::HandleLevelReady(StringHash, VariantMap& eventData)
 
     // Level loaded, send queued events
     int64_t tick = sa::time::tick();
-    for (auto& e : queuedEvents_)
+    while (!queuedEvents_.Empty())
     {
+        auto& e = queuedEvents_.Front();
         SendEvent(e.eventId, e.eventData);
+        queuedEvents_.Erase(queuedEvents_.Begin());
         // Send a ping so we don't disconnect when this takes a long time
         client_.Update(sa::time::time_elapsed(tick), false);
         tick = sa::time::tick();
     }
-    queuedEvents_.Clear();
 
     // After sending queued events set this to true so events get dispatched via normal SendEvent()
     // and no longer QueueEvent()
