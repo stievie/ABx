@@ -2647,7 +2647,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::MerchantItems& packe
     merchantItemsPage_ = packet.page;
     merchantItemsPageCount_ = packet.pageCount;
     VariantMap& eData = GetEventDataMap();
-    SendEvent(Events::E_MERCHANT_ITEMS, eData);
+    QueueEvent(Events::E_MERCHANT_ITEMS, eData);
 }
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
@@ -2658,7 +2658,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::ItemPrice& packet)
         VariantMap& eData = GetEventDataMap();
         eData[P_ITEMPOS] = price.pos;
         eData[P_PRICE] = price.price;
-        SendEvent(Events::E_ITEM_PRICE, eData);
+        QueueEvent(Events::E_ITEM_PRICE, eData);
     }
 }
 
@@ -2686,7 +2686,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::CraftsmanItems& pack
     merchantItemsPage_ = packet.page;
     merchantItemsPageCount_ = packet.pageCount;
     VariantMap& eData = GetEventDataMap();
-    SendEvent(Events::E_CRAFTSMAN_ITEMS, eData);
+    QueueEvent(Events::E_CRAFTSMAN_ITEMS, eData);
 }
 
 void FwClient::OnPacket(int64_t, const AB::Packets::Server::DropTargetChanged& packet)
@@ -2695,7 +2695,7 @@ void FwClient::OnPacket(int64_t, const AB::Packets::Server::DropTargetChanged& p
     VariantMap& eData = GetEventDataMap();
     eData[P_OBJECTID] = packet.id;
     eData[P_TARGETID] = packet.newTargetId;
-    SendEvent(Events::E_DROPTARGET_CHANGED, eData);
+    QueueEvent(Events::E_DROPTARGET_CHANGED, eData);
 }
 
 std::vector<AB::Entities::Service> FwClient::GetServices() const
