@@ -65,13 +65,13 @@ EquipmentWindow::EquipmentWindow(Context* context) :
 
     SetStyleAuto();
 
+    modelViewer_ = GetChildStaticCast<View3D>("Model", true);
     modelScene_ = new Scene(context);
     auto* sceneFile = cache->GetResource<XMLFile>("Scenes/EquipmentScene.xml");
     if (sceneFile)
     {
         modelScene_->LoadXML(sceneFile->GetRoot());
         Camera* camera = modelScene_->GetComponent<Camera>(true);
-        modelViewer_ = GetChildStaticCast<View3D>("Model", true);
         modelViewer_->SetView(modelScene_, camera, false);
         characterNode_ = modelScene_->CreateChild(0, LOCAL);
     }
@@ -94,9 +94,44 @@ void EquipmentWindow::SubscribeEvents()
     SubscribeToEvent(loadButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleLoadClicked));
     Button* saveButton = GetChildStaticCast<Button>("SaveButton", true);
     SubscribeToEvent(saveButton, E_RELEASED, URHO3D_HANDLER(EquipmentWindow, HandleSaveClicked));
+    SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(EquipmentWindow, HandleSceneViewerMouseMove));
+    SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(EquipmentWindow, HandleSceneViewerMouseDown));
+    SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(EquipmentWindow, HandleSceneViewerMouseUp));
 
     Button* createButton = GetChildStaticCast<Button>("CreateButton", true);
     createButton->SetVisible(false);
+}
+
+void EquipmentWindow::HandleSceneViewerMouseMove(StringHash, VariantMap& eventData)
+{
+    using namespace MouseMove;
+    if (!mouseDown_)
+        return;
+    int deltaX = eventData[P_DX].GetInt();
+    Quaternion rot = characterNode_->GetRotation();
+    float r = rot.EulerAngles().y_ - (float)deltaX;
+    Quaternion newRot = Quaternion(r, Vector3::UP);
+    characterNode_->SetRotation(newRot);
+}
+
+void EquipmentWindow::HandleSceneViewerMouseDown(StringHash, VariantMap& eventData)
+{
+    using namespace MouseButtonDown;
+    if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT)
+    {
+        auto* input = GetSubsystem<Input>();
+        if (modelViewer_->IsInside(input->GetMousePosition(), true))
+            mouseDown_ = true;
+    }
+}
+
+void EquipmentWindow::HandleSceneViewerMouseUp(StringHash, VariantMap& eventData)
+{
+    using namespace MouseButtonUp;
+    if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT && mouseDown_)
+    {
+        mouseDown_ = false;
+    }
 }
 
 void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
