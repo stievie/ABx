@@ -100,6 +100,11 @@ void MailWindow::GetHeaders()
     net->GetMailHeaders();
 }
 
+void MailWindow::FocusMainElement()
+{
+    mailList_->SetFocus(true);
+}
+
 void MailWindow::SubscribeToEvents()
 {
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);

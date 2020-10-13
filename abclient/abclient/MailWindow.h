@@ -37,6 +37,7 @@ public:
         UnsubscribeFromAllEvents();
     }
     void GetHeaders();
+    void FocusMainElement();
 private:
     SharedPtr<ListView> mailList_;
     SharedPtr<MultiLineEdit> mailBody_;

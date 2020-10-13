@@ -64,4 +64,5 @@ public:
     ~SkillsWindow() override;
 
     void UpdateAll();
+    void FocusMainElement();
 };

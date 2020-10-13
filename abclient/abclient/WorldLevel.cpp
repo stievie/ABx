@@ -799,6 +799,7 @@ void WorldLevel::HandleToggleSkillsWindow(StringHash, VariantMap&)
     {
         wnd->BringToFront();
         wnd->UpdateAll();
+        wnd->FocusMainElement();
     }
 }
 
@@ -869,6 +870,7 @@ void WorldLevel::HandleToggleMail(StringHash, VariantMap&)
     {
         wnd->BringToFront();
         wnd->GetHeaders();
+        wnd->FocusMainElement();
     }
 }
 

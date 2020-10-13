@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "SkillsWindow.h"
 #include "FilePicker.h"
 #include "FwClient.h"
@@ -86,6 +85,12 @@ SkillsWindow::SkillsWindow(Context* context) :
 SkillsWindow::~SkillsWindow()
 {
     UnsubscribeFromAllEvents();
+}
+
+void SkillsWindow::FocusMainElement()
+{
+    auto* lv = GetChild("SkillsList", true);
+    lv->SetFocus(true);
 }
 
 Text* SkillsWindow::CreateDropdownItem(const String& text, unsigned value)
