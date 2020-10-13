@@ -31,7 +31,7 @@ bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
     if (!input.is_open())
         return false;
 
-    AB_PROFILE;
+//    AB_PROFILE;
 
     char sig[4];
     input.read(sig, 4);

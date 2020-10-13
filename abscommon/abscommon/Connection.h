@@ -29,8 +29,6 @@
 #include "NetworkMessage.h"
 #include <sa/Noncopyable.h>
 
-#define DEBUG_NET
-
 namespace Net {
 
 class ServicePort;
@@ -41,6 +39,7 @@ class Connection;
 class ConnectionManager
 {
     NON_COPYABLE(ConnectionManager)
+    NON_MOVEABLE(ConnectionManager)
 public:
     static uint32_t maxPacketsPerSec;
 
@@ -57,6 +56,7 @@ private:
 class Connection : public std::enable_shared_from_this<Connection>
 {
     NON_COPYABLE(Connection)
+    NON_MOVEABLE(Connection)
 public:
     enum { WriteTimeout = 30 };
     enum { ReadTimeout = 30 };

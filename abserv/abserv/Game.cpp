@@ -775,7 +775,6 @@ void Game::SendLeaveObject(uint32_t objectId)
 
 void Game::SendInitStateToPlayer(Player& player)
 {
-    LOG_DEBUG << "Sending initial game state to " << player.GetName() << std::endl;
     // Send all already existing objects to the player, excluding the player itself.
     // This is sent to all players when they enter a game.
     // Only called when the player enters a game. All spawns during the game are sent
@@ -833,7 +832,6 @@ void Game::PlayerJoin(uint32_t playerId)
     player->data_.instanceUuid = instanceData_.uuid;
     UpdateEntity(player->data_);
 
-    LOG_DEBUG << "Player joined " << player->GetName() << std::endl;
     SendInitStateToPlayer(*player);
 
     if (GetState() == ExecutionState::Running)
