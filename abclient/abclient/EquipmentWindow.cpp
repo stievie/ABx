@@ -107,10 +107,10 @@ void EquipmentWindow::HandleSceneViewerMouseMove(StringHash, VariantMap& eventDa
     using namespace MouseMove;
     if (!mouseDown_)
         return;
-    int deltaX = eventData[P_DX].GetInt();
-    Quaternion rot = characterNode_->GetRotation();
-    float r = rot.EulerAngles().y_ - (float)deltaX;
-    Quaternion newRot = Quaternion(r, Vector3::UP);
+    const int deltaX = eventData[P_DX].GetInt();
+    const Quaternion& rot = characterNode_->GetRotation();
+    const float r = rot.EulerAngles().y_ - (float)deltaX;
+    const Quaternion newRot = Quaternion(r, Vector3::UP);
     characterNode_->SetRotation(newRot);
 }
 
@@ -129,9 +129,7 @@ void EquipmentWindow::HandleSceneViewerMouseUp(StringHash, VariantMap& eventData
 {
     using namespace MouseButtonUp;
     if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT && mouseDown_)
-    {
         mouseDown_ = false;
-    }
 }
 
 void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)

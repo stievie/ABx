@@ -19,11 +19,18 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "MissionMapWindow.h"
 #include "Shortcuts.h"
 #include "LevelManager.h"
 #include "Player.h"
+#include "WorldLevel.h"
+
+const IntRect MissionMapWindow::DOT_NONE(0, 0, 32, 32);
+const IntRect MissionMapWindow::DOT_GREEN(32, 0, 64, 32);
+const IntRect MissionMapWindow::DOT_ORANGE(64, 0, 96, 32);
+const IntRect MissionMapWindow::DOT_RED(96, 0, 128, 32);
+inline constexpr int MAP_WIDTH = 512;
+inline constexpr int MAP_HEIGHT = 512;
 
 void MissionMapWindow::RegisterObject(Context* context)
 {
@@ -90,59 +97,37 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
     if (!scene)
         return;
 
-    cameraNode_ = scene->CreateChild("MissionMapCamera");
-    cameraNode_->Rotate(Quaternion(-90.0f, Vector3::LEFT));
-    auto* camera = cameraNode_->CreateComponent<Camera>();
-    camera->SetFarClip(2000.0f);
-    camera->SetOrthographic(true);
-    camera->SetViewMask(128);
-
-    // Because the rear viewport is rather small, disable occlusion culling from it. Use the camera's
-    // "view override flags" for this. We could also disable eg. shadows or force low material quality
-    // if we wanted
-    camera->SetViewOverrideFlags(VO_DISABLE_OCCLUSION | VO_DISABLE_SHADOWS | VO_LOW_MATERIAL_QUALITY);
-    cameraNode_->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
-
     BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
-    renderTexture_ = new Texture2D(context_);
-    renderTexture_->SetSize(4096, 4096, Graphics::GetRGBFormat(), TEXTURE_RENDERTARGET);
-    renderTexture_->SetFilterMode(FILTER_BILINEAR);
 
-    container->SetTexture(renderTexture_);
-    FitTexture();
+    mapTexture_ = MakeShared<Texture2D>(context_);
+    mapTexture_->SetSize(MAP_WIDTH, MAP_HEIGHT, Graphics::GetRGBAFormat(), TEXTURE_DYNAMIC);
+    mapImage_ = MakeShared<Image>(context_);
+    mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
+    mapTexture_->SetData(mapImage_);
 
-    // Get the texture's RenderSurface object (exists when the texture has been created in rendertarget mode)
-    // and define the viewport for rendering the second scene, similarly as how backbuffer viewports are defined
-    // to the Renderer subsystem. By default the texture viewport will be updated when the texture is visible
-    // in the main view
-    RenderSurface* surface = renderTexture_->GetRenderSurface();
-    SharedPtr<Viewport> rttViewport(new Viewport(context_, scene, cameraNode_->GetComponent<Camera>()));
+    auto* cache = GetSubsystem<ResourceCache>();
+    dots_ = cache->GetResource<Texture2D>("Textures/PingDot.png");
+    greenDot_ = dots_->GetImage()->GetSubimage(MissionMapWindow::DOT_GREEN);
 
-//    ResourceCache* cache = GetSubsystem<ResourceCache>();
-//    SharedPtr<RenderPath> effectRenderPath = rttViewport->GetRenderPath()->Clone();
-//    effectRenderPath->Append(cache->GetResource<XMLFile>("PostProcess/GammaCorrection.xml"));
-//    effectRenderPath->SetEnabled("GammaCorrection", true);
-//    rttViewport->SetRenderPath(effectRenderPath);
-
-//    rttViewport->SetRenderPath(cache->GetResource<XMLFile>("RenderPaths/MiniMap.xml"));
-    surface->SetViewport(0, rttViewport);
-    surface->SetUpdateMode(SURFACE_UPDATEALWAYS);
+    container->SetTexture(mapTexture_);
+    container->SetFullImageRect();
 }
 
 void MissionMapWindow::FitTexture()
 {
-    if (!renderTexture_)
+    if (!mapTexture_)
         return;
 
     BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
-/*
-    int x = ((renderTexture_->GetWidth() / 2) - (container->GetWidth() / 2));
-    int y = ((renderTexture_->GetHeight() / 2) - (container->GetHeight() / 2));
-    int width = container->GetWidth() * zoom_;
-    int height = container->GetHeight() * zoom_;
-    container->SetImageRect(IntRect(x, y, (x + width), (y + height)));
-    */
-    container->SetImageRect(IntRect(0, 0, renderTexture_->GetWidth(), renderTexture_->GetHeight()));
+    container->SetFullImageRect();
+}
+
+IntVector2 MissionMapWindow::WorldToMapPos(const Vector3& center, const Vector3& world) const
+{
+    Vector3 diff = center - world;
+    int x = (int)(diff.x_ / (float)MAP_WIDTH) + MAP_WIDTH / 2;
+    int y = (int)(diff.z_ / (float)MAP_HEIGHT) + MAP_HEIGHT / 2;
+    return { x, y };
 }
 
 void MissionMapWindow::SubscribeToEvents()
@@ -150,8 +135,9 @@ void MissionMapWindow::SubscribeToEvents()
     Button* closeButton = GetChildStaticCast<Button>("CloseButton", true);
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MissionMapWindow, HandleCloseClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MissionMapWindow, HandleUpdate));
+    SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(MissionMapWindow, HandleRenderUpdate));
+    SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(MissionMapWindow, HandlePostRenderUpdate));
     SubscribeToEvent(this, E_RESIZED, URHO3D_HANDLER(MissionMapWindow, HandleResized));
-    SubscribeToEvent(this, E_VISIBLECHANGED, URHO3D_HANDLER(MissionMapWindow, HandleVisibleChanged));
 }
 
 void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -159,33 +145,55 @@ void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
+void MissionMapWindow::DrawObject(const IntVector2& pos)
+{
+    if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
+        return;
+    IntRect dst(pos, pos + MissionMapWindow::DOT_GREEN.Size());
+    mapImage_->SetSubimage(greenDot_, dst);
+}
+
+Player* MissionMapWindow::GetPlayer() const
 {
     LevelManager* lm = GetSubsystem<LevelManager>();
-    auto* p = lm->GetPlayer();
-    if (p)
+    return lm->GetPlayer();
+}
+
+void MissionMapWindow::DrawObjects()
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    WorldLevel* lvl = lm->GetCurrentLevel<WorldLevel>();
+    if (!lvl)
+        return;
+
+    if (auto* p = GetPlayer())
     {
-        Vector3 pos = p->GetNode()->GetPosition();
-        pos.y_ = 100.0f;
-        cameraNode_->SetPosition(pos);
+        const Vector3& center = p->GetNode()->GetPosition();
+        lvl->VisitObjects([this, &center](GameObject& current)
+        {
+            IntVector2 mapPos = WorldToMapPos(center, current.GetNode()->GetPosition());
+            DrawObject(mapPos);
+            return Iteration::Continue;
+        });
     }
+}
+
+void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
+{
+    if (!IsVisible())
+        return;
+    DrawObjects();
+}
+
+void MissionMapWindow::HandlePostRenderUpdate(StringHash, VariantMap&)
+{
+}
+
+void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
+{
 }
 
 void MissionMapWindow::HandleResized(StringHash, VariantMap&)
 {
     FitTexture();
-}
-
-void MissionMapWindow::HandleVisibleChanged(StringHash, VariantMap& eventData)
-{
-    if (!renderTexture_)
-        return;
-
-    using namespace VisibleChanged;
-    bool visible = eventData[P_VISIBLE].GetBool();
-    RenderSurface* surface = renderTexture_->GetRenderSurface();
-    if (visible)
-        surface->SetUpdateMode(SURFACE_UPDATEALWAYS);
-    else
-        surface->SetUpdateMode(SURFACE_MANUALUPDATE);
 }

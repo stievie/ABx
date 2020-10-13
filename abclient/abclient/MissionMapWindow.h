@@ -23,10 +23,16 @@
 
 #include <Urho3DAll.h>
 
+class Player;
+
 class MissionMapWindow : public Window
 {
     URHO3D_OBJECT(MissionMapWindow, Window)
 public:
+    static const IntRect DOT_NONE;
+    static const IntRect DOT_GREEN;
+    static const IntRect DOT_ORANGE;
+    static const IntRect DOT_RED;
     static void RegisterObject(Context* context);
 
     MissionMapWindow(Context* context);
@@ -36,15 +42,21 @@ public:
         MouseButtonFlags buttons, QualifierFlags qualifierFlags, Cursor* cursor) override;
     void SetScene(SharedPtr<Scene> scene);
 private:
-    SharedPtr<Texture2D> renderTexture_;
-    SharedPtr<Node> cameraNode_;
-    SharedPtr<Sprite> mapSprite_;
+    SharedPtr<Texture2D> mapTexture_;
+    SharedPtr<Image> mapImage_;
+    SharedPtr<Texture2D> dots_;
+    SharedPtr<Image> greenDot_;
     int zoom_;
     void FitTexture();
+    Player* GetPlayer() const;
+    void DrawObjects();
     void SubscribeToEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleRenderUpdate(StringHash eventType, VariantMap& eventData);
+    void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
     void HandleResized(StringHash eventType, VariantMap& eventData);
-    void HandleVisibleChanged(StringHash eventType, VariantMap& eventData);
+    IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
+    void DrawObject(const IntVector2& pos);
 };
 

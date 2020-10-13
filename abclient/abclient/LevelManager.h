@@ -89,6 +89,7 @@ public:
     {
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
+
     GameObject* GetObject(uint32_t objectId);
     Actor* GetActorByName(const String& name) const;
     Player* GetPlayer() const;

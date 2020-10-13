@@ -28,6 +28,7 @@
 #include "Actor.h"
 #include "PingDot.h"
 #include <AB/Entities/Game.h>
+#include <sa/Iteration.h>
 
 class ActorEnergyBar;
 class ActorHealthBar;
@@ -91,6 +92,15 @@ public:
                 return To<T>(objects_[id].Get());
         }
         return nullptr;
+    }
+    template<typename Callback>
+    void VisitObjects(Callback&& callback)
+    {
+        for (auto& o : objects_)
+        {
+            if (callback(*o.second_) == Iteration::Break)
+                break;
+        }
     }
     Actor* GetActorByName(const String& name, ObjectType type = ObjectType::Player) const;
     /// Local Node IDs are not the same as Object IDs on the server.
