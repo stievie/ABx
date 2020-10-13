@@ -29,24 +29,29 @@ class MissionMapWindow : public Window
 {
     URHO3D_OBJECT(MissionMapWindow, Window)
 public:
-    static const IntRect DOT_NONE;
-    static const IntRect DOT_GREEN;
-    static const IntRect DOT_ORANGE;
-    static const IntRect DOT_RED;
     static void RegisterObject(Context* context);
 
     MissionMapWindow(Context* context);
     ~MissionMapWindow() override;
-    void OnDragBegin(const IntVector2& position,
-        const IntVector2& screenPosition,
-        MouseButtonFlags buttons, QualifierFlags qualifierFlags, Cursor* cursor) override;
     void SetScene(SharedPtr<Scene> scene);
 private:
+    enum class DotType
+    {
+        Self,
+        Ally,
+        Foe,
+        Other,
+    };
+    static const Color SELF_COLOR;
+    static const Color ALLY_COLOR;
+    static const Color FOE_COLOR;
+    static const Color OTHER_COLOR;
+
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
-    SharedPtr<Texture2D> dots_;
-    SharedPtr<Image> greenDot_;
-    int zoom_;
+    SharedPtr<Image> heightmap_;
+    Vector3 heightmapMin_;
+    Vector3 heightmapMax_;
     void FitTexture();
     Player* GetPlayer() const;
     void DrawObjects();
@@ -57,6 +62,6 @@ private:
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
     void HandleResized(StringHash eventType, VariantMap& eventData);
     IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
-    void DrawObject(const IntVector2& pos);
+    void DrawObject(const IntVector2& pos, DotType type);
 };
 

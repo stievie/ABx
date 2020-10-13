@@ -47,11 +47,6 @@ protected:
     {
         return selectable_ && (objectType_ == ObjectType::Npc || objectType_ == ObjectType::Player || objectType_ == ObjectType::Self);
     }
-    // A real player, not an NPC or such
-    bool IsPlayingCharacter() const
-    {
-        return objectType_ == ObjectType::Player || objectType_ == ObjectType::Self;
-    }
 public:
     GameObject(Context* context);
     ~GameObject() override;
@@ -77,6 +72,15 @@ public:
 
     virtual void Unserialize(sa::PropReadStream&) {}
 
+    // A real player, not an NPC or such
+    bool IsPlayingCharacter() const
+    {
+        return objectType_ == ObjectType::Player || objectType_ == ObjectType::Self;
+    }
+    bool IsPlayingCharacterOrNpc() const
+    {
+        return objectType_ == ObjectType::Npc || IsPlayingCharacter();
+    }
     double GetServerTime(int64_t tick) const
     {
         return static_cast<double>(tick - spawnTickServer_) / 1000.0;

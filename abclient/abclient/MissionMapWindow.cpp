@@ -25,12 +25,30 @@
 #include "Player.h"
 #include "WorldLevel.h"
 
-const IntRect MissionMapWindow::DOT_NONE(0, 0, 32, 32);
-const IntRect MissionMapWindow::DOT_GREEN(32, 0, 64, 32);
-const IntRect MissionMapWindow::DOT_ORANGE(64, 0, 96, 32);
-const IntRect MissionMapWindow::DOT_RED(96, 0, 128, 32);
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
+// Pixel per Meter
+inline constexpr float SCALE = 5.0f;
+
+const Color MissionMapWindow::SELF_COLOR(0.3f, 1.0f, 0.3f);
+const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
+const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
+const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
+
+// 12x12
+static const char* DOT_BITMAP = {
+    "    ####    "
+    "  ########  "
+    " ########## "
+    " ########## "
+    "############"
+    "############"
+    "############"
+    " ########## "
+    " ########## "
+    "  ########  "
+    "    ####    "
+};
 
 void MissionMapWindow::RegisterObject(Context* context)
 {
@@ -72,7 +90,6 @@ MissionMapWindow::MissionMapWindow(Context* context) :
     SetPosition(graphics->GetWidth() - GetWidth() - 5, graphics->GetHeight() / 2 - (GetHeight() / 2));
 
     SetStyleAuto();
-    zoom_ = 10;
 
     UpdateLayout();
 
@@ -85,17 +102,18 @@ MissionMapWindow::~MissionMapWindow()
     UnsubscribeFromAllEvents();
 }
 
-void MissionMapWindow::OnDragBegin(const IntVector2& position, const IntVector2& screenPosition,
-    MouseButtonFlags buttons, QualifierFlags qualifiers, Cursor* cursor)
-{
-    Window::OnDragBegin(position, screenPosition, buttons, qualifiers, cursor);
-    // TODO: Move map
-}
-
 void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
 {
     if (!scene)
         return;
+
+    auto* terrain = scene->GetComponent<Terrain>(true);
+    if (terrain)
+    {
+        heightmap_ = terrain->GetHeightMap();
+        heightmapMax_ = { ((float)heightmap_->GetWidth() * terrain->GetSpacing().x_), 0.0f,
+            ((float)heightmap_->GetHeight() * terrain->GetSpacing().z_) };
+    }
 
     BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
 
@@ -103,11 +121,7 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
     mapTexture_->SetSize(MAP_WIDTH, MAP_HEIGHT, Graphics::GetRGBAFormat(), TEXTURE_DYNAMIC);
     mapImage_ = MakeShared<Image>(context_);
     mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
-    mapTexture_->SetData(mapImage_);
-
-    auto* cache = GetSubsystem<ResourceCache>();
-    dots_ = cache->GetResource<Texture2D>("Textures/PingDot.png");
-    greenDot_ = dots_->GetImage()->GetSubimage(MissionMapWindow::DOT_GREEN);
+    mapTexture_->SetData(mapImage_, true);
 
     container->SetTexture(mapTexture_);
     container->SetFullImageRect();
@@ -120,14 +134,6 @@ void MissionMapWindow::FitTexture()
 
     BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
     container->SetFullImageRect();
-}
-
-IntVector2 MissionMapWindow::WorldToMapPos(const Vector3& center, const Vector3& world) const
-{
-    Vector3 diff = center - world;
-    int x = (int)(diff.x_ / (float)MAP_WIDTH) + MAP_WIDTH / 2;
-    int y = (int)(diff.z_ / (float)MAP_HEIGHT) + MAP_HEIGHT / 2;
-    return { x, y };
 }
 
 void MissionMapWindow::SubscribeToEvents()
@@ -145,12 +151,45 @@ void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void MissionMapWindow::DrawObject(const IntVector2& pos)
+IntVector2 MissionMapWindow::WorldToMapPos(const Vector3& center, const Vector3& world) const
+{
+    Vector3 diff = world - center;
+    float x = (diff.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f);
+    float y = (-diff.z_ * SCALE) + ((float)MAP_HEIGHT / 2.0f);
+    return { (int)x, (int)y };
+}
+
+void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
 {
     if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
         return;
-    IntRect dst(pos, pos + MissionMapWindow::DOT_GREEN.Size());
-    mapImage_->SetSubimage(greenDot_, dst);
+    const Color* color = nullptr;
+    switch (type)
+    {
+    case DotType::Self:
+        color = &SELF_COLOR;
+        break;
+    case DotType::Ally:
+        color = &ALLY_COLOR;
+        break;
+    case DotType::Other:
+        color = &OTHER_COLOR;
+        break;
+    case DotType::Foe:
+        color = &FOE_COLOR;
+        break;
+    }
+    if (!color)
+        return;
+
+    for (int x = 0; x <= 12; ++x)
+    {
+        for (int y = 0; y <= 12; ++y)
+        {
+            if (DOT_BITMAP[y * 12 + x] == '#')
+                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
+        }
+    }
 }
 
 Player* MissionMapWindow::GetPlayer() const
@@ -169,13 +208,38 @@ void MissionMapWindow::DrawObjects()
     if (auto* p = GetPlayer())
     {
         const Vector3& center = p->GetNode()->GetPosition();
-        lvl->VisitObjects([this, &center](GameObject& current)
+        // TOTO: Draw heightmap as terrain
+/*        if (heightmap_)
         {
-            IntVector2 mapPos = WorldToMapPos(center, current.GetNode()->GetPosition());
-            DrawObject(mapPos);
+            IntVector2 min = WorldToMapPos(center, heightmapMin_);
+            IntVector2 max = WorldToMapPos(center, heightmapMax_);
+            mapImage_->SetSubimage(heightmap_, { min, max });
+        }
+        else*/
+            mapImage_->Clear(Color::TRANSPARENT_BLACK);
+
+        lvl->VisitObjects([this, &center, p](GameObject& current)
+        {
+            if (!Is<Actor>(current) || !current.IsPlayingCharacterOrNpc())
+                return Iteration::Continue;
+            const IntVector2 mapPos = WorldToMapPos(center, current.GetNode()->GetPosition());
+            DotType type;
+            if (current.GetID() == p->GetID())
+                type = DotType::Self;
+            else if (p->IsAlly(&To<Actor>(current)))
+                type = DotType::Ally;
+            else if (p->IsEnemy(&To<Actor>(current)))
+                type = DotType::Foe;
+            else
+                type = DotType::Other;
+            // TODO: Team color
+            DrawObject(mapPos, type);
             return Iteration::Continue;
         });
     }
+    else
+        mapImage_->Clear(Color::WHITE);
+    mapTexture_->SetData(mapImage_, true);
 }
 
 void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
