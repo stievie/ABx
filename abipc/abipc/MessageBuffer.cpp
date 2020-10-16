@@ -28,7 +28,7 @@ bool MessageBuffer::DecodeHeader()
     bodyLength_ = static_cast<size_t>(data_[0] | data_[1] << 8);
     if (bodyLength_ > MaxBodyLength)
         return false;
-    type_ = *reinterpret_cast<size_t*>(data_ + 2);
+    type_ = *reinterpret_cast<uint64_t*>(data_ + 2);
     return true;
 }
 
@@ -38,7 +38,7 @@ void MessageBuffer::EncodeHeader()
     data_[1] = static_cast<uint8_t>(bodyLength_ >> 8);
 
 #ifdef _MSC_VER
-    memcpy_s(data_ + 2, sizeof(size_t), &type_, sizeof(size_t));
+    memcpy_s(data_ + 2, sizeof(uint64_t), &type_, sizeof(uint64_t));
 #else
     memcpy(data_ + 2, &type_, sizeof(size_t));
 #endif

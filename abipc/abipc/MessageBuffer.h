@@ -31,9 +31,9 @@ class MessageBuffer
 {
 public:
     // First 2 byte Body length, the rest is the message type
-    enum { HeaderLength = 2 + sizeof(size_t) };
-    // Make the size 4kb
-    enum { MaxBodyLength = 4096 - HeaderLength  - (sizeof(size_t) * 3) };
+    enum { HeaderLength = 2 + sizeof(uint64_t) };
+    // Make the size of the whole class 4kb: Bodylength = 4KB - header - size of member variables
+    enum { MaxBodyLength = 4096 - HeaderLength  - (sizeof(uint64_t) * 3) };
 private:
     static constexpr size_t BufferSize = HeaderLength + MaxBodyLength;
     size_t bodyLength_{ 0 };
@@ -124,7 +124,7 @@ public:
         pos_ = pos;
     }
 
-    size_t type_{ 0 };
+    uint64_t type_{ 0 };
 };
 
 template <>

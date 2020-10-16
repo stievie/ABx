@@ -34,12 +34,12 @@ namespace IPC {
 class ClientMessageHandlers
 {
 private:
-    sa::CallableTable<size_t, void, const MessageBuffer&> handlers_;
+    sa::CallableTable<uint64_t, void, const MessageBuffer&> handlers_;
 public:
     template<typename _Msg>
     void Add(std::function<void(const _Msg& msg)>&& func)
     {
-        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
+        static constexpr uint64_t message_type = static_cast<uint64_t>(sa::StringHash(sa::TypeName<_Msg>::Get()));
         handlers_.Add(message_type, [handler = std::move(func)](const MessageBuffer& buffer)
         {
             // See IpcServer.h why const_cast
@@ -47,8 +47,8 @@ public:
             handler(packet);
         });
     }
-    bool Exists(size_t type) const { return handlers_.Exists(type); }
-    void Call(size_t type, const MessageBuffer& buffer)
+    bool Exists(uint64_t type) const { return handlers_.Exists(type); }
+    void Call(uint64_t type, const MessageBuffer& buffer)
     {
         handlers_.Call(type, buffer);
     }
@@ -100,7 +100,7 @@ public:
     template <typename _Msg>
     void Send(_Msg& msg)
     {
-        static constexpr size_t message_type = sa::StringHash(sa::TypeName<_Msg>::Get());
+        static constexpr uint64_t message_type = static_cast<uint64_t>(sa::StringHash(sa::TypeName<_Msg>::Get()));
         MessageBuffer buff;
         buff.type_ = message_type;
         Add(msg, buff);
