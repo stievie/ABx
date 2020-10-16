@@ -735,10 +735,7 @@ namespace SimpleWeb {
             if (this->on_accept)
             {
                 if (!this->on_accept(connection->socket->lowest_layer().remote_endpoint()))
-                {
                     connection->close();
-                    return;
-                }
             }
             this->accept();
         }
