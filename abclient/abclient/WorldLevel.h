@@ -98,6 +98,8 @@ public:
     {
         for (auto& o : objects_)
         {
+            if (!o.second_)
+                continue;
             if (callback(*o.second_) == Iteration::Break)
                 break;
         }
