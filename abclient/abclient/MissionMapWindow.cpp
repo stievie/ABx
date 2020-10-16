@@ -28,7 +28,7 @@
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
 // Pixel per Meter
-inline constexpr float SCALE = 5.0f;
+inline constexpr int SCALE = 5;
 
 const Color MissionMapWindow::SELF_COLOR(0.3f, 1.0f, 0.3f);
 const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
@@ -107,33 +107,38 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
     if (!scene)
         return;
 
+    terrainLayer_ = GetChildStaticCast<BorderImage>("Container", true);
+    BorderImage* objectLayer = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);
     auto* terrain = scene->GetComponent<Terrain>(true);
-    if (terrain)
+    if (terrain && terrain->GetHeightMap())
     {
-        heightmap_ = terrain->GetHeightMap();
-        heightmapMax_ = { ((float)heightmap_->GetWidth() * terrain->GetSpacing().x_), 0.0f,
-            ((float)heightmap_->GetHeight() * terrain->GetSpacing().z_) };
+        terrainSpacing_ = terrain->GetSpacing();
+        auto* heightmap = terrain->GetHeightMap();
+        heightmapTexture_ = MakeShared<Texture2D>(context_);
+        heightmapTexture_->SetSize(heightmap->GetWidth(), heightmap->GetHeight(), Graphics::GetRGBAFormat(), TEXTURE_STATIC);
+        heightmapTexture_->SetData(heightmap, true);
+        terrainLayer_->SetTexture(heightmapTexture_);
+        terrainWorldSize_ = { (float)heightmap->GetWidth() * terrainSpacing_.x_,
+            terrainSpacing_.y_,
+            (float)heightmap->GetHeight() * terrainSpacing_.z_ };
+        terrainScaling_ = { terrainWorldSize_.x_ / (float)MAP_WIDTH, terrainWorldSize_.z_ / (float)MAP_HEIGHT };
     }
-
-    BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
+    else
+        terrainLayer_->SetTexture(nullptr);
 
     mapTexture_ = MakeShared<Texture2D>(context_);
     mapTexture_->SetSize(MAP_WIDTH, MAP_HEIGHT, Graphics::GetRGBAFormat(), TEXTURE_DYNAMIC);
     mapImage_ = MakeShared<Image>(context_);
     mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
     mapTexture_->SetData(mapImage_, true);
-
-    container->SetTexture(mapTexture_);
-    container->SetFullImageRect();
+    objectLayer->SetTexture(mapTexture_);
+    objectLayer->SetFullImageRect();
 }
 
 void MissionMapWindow::FitTexture()
 {
     if (!mapTexture_)
         return;
-
-    BorderImage* container = GetChildStaticCast<BorderImage>("Container", true);
-    container->SetFullImageRect();
 }
 
 void MissionMapWindow::SubscribeToEvents()
@@ -153,9 +158,13 @@ void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
 
 IntVector2 MissionMapWindow::WorldToMapPos(const Vector3& center, const Vector3& world) const
 {
-    Vector3 diff = world - center;
-    float x = (diff.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f);
-    float y = (-diff.z_ * SCALE) + ((float)MAP_HEIGHT / 2.0f);
+    return WorldToMap(world - center);
+}
+
+IntVector2 MissionMapWindow::WorldToMap(const Vector3& world) const
+{
+    float x = (world.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f);
+    float y = (-world.z_ * SCALE) + ((float)MAP_HEIGHT / 2.0f);
     return { (int)x, (int)y };
 }
 
@@ -182,9 +191,9 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     if (!color)
         return;
 
-    for (int x = 0; x <= 12; ++x)
+    for (int x = 0; x < 12; ++x)
     {
-        for (int y = 0; y <= 12; ++y)
+        for (int y = 0; y < 12; ++y)
         {
             if (DOT_BITMAP[y * 12 + x] == '#')
                 mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
@@ -205,18 +214,25 @@ void MissionMapWindow::DrawObjects()
     if (!lvl)
         return;
 
+    mapImage_->Clear(Color::TRANSPARENT_BLACK);
     if (auto* p = GetPlayer())
     {
         const Vector3& center = p->GetNode()->GetPosition();
-        // TOTO: Draw heightmap as terrain
-/*        if (heightmap_)
-        {
-            IntVector2 min = WorldToMapPos(center, heightmapMin_);
-            IntVector2 max = WorldToMapPos(center, heightmapMax_);
-            mapImage_->SetSubimage(heightmap_, { min, max });
-        }
-        else*/
-            mapImage_->Clear(Color::TRANSPARENT_BLACK);
+        const IntVector2 origin = WorldToMap(center);
+
+        // TODO: Fix this! Heck that's 3 coordinate systems. You shouldn't make a game when you can't to some math :/
+        // However, this is just trying to get some texture displayed as map.
+        IntVector2 sourceSize = {
+            // (world.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f)
+            int((float)MAP_WIDTH / (float)SCALE * terrainScaling_.x_),
+            int((float)MAP_HEIGHT / (float)SCALE * terrainScaling_.y_)
+        };
+        IntRect imageRect = { (origin.x_ - sourceSize.x_),
+                (origin.y_ - sourceSize.y_),
+                (origin.x_ + sourceSize.x_),
+                (origin.y_ + sourceSize.y_) };
+        terrainLayer_->SetImageRect(imageRect);
+//        terrainLayer_->SetFullImageRect();
 
         lvl->VisitObjects([this, &center, p](GameObject& current)
         {
@@ -237,9 +253,8 @@ void MissionMapWindow::DrawObjects()
             return Iteration::Continue;
         });
     }
-    else
-        mapImage_->Clear(Color::WHITE);
     mapTexture_->SetData(mapImage_, true);
+    //mapImage_->SavePNG("c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/abclient/bin/test.png");
 }
 
 void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)

@@ -4,8 +4,7 @@ If you want to contribute to this project, please fork the repository and
 submit pull requests.
 
 If you have questions, you can reach me via Email with the Email address shown in
-my profile. You can also join the `#abxgameserver` IRC channel on the Freenode
-network.
+my profile. If you have an issue with compling and/or running, make a new Issue.
 
 ## Pull requests
 

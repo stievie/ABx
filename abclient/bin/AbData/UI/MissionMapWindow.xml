@@ -60,7 +60,14 @@
 		<attribute name="Opacity" value="0.5" />
 		<attribute name="Bring To Front" value="true" />
 		<attribute name="Bring To Back" value="false" />
+		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Texture" value="Texture2D;" />
 		<attribute name="Image Rect" value="0 0 280 256" />
+		<element type="BorderImage">
+			<attribute name="Name" value="ObjectLayer" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Texture" value="Texture2D;" />
+			<attribute name="Image Rect" value="0 0 256 128" />
+		</element>
 	</element>
 </element>

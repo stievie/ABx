@@ -49,9 +49,11 @@ private:
 
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
-    SharedPtr<Image> heightmap_;
-    Vector3 heightmapMin_;
-    Vector3 heightmapMax_;
+    SharedPtr<Texture2D> heightmapTexture_;
+    SharedPtr<BorderImage> terrainLayer_;
+    Vector3 terrainSpacing_;
+    Vector3 terrainWorldSize_;
+    Vector2 terrainScaling_;
     void FitTexture();
     Player* GetPlayer() const;
     void DrawObjects();
@@ -62,6 +64,7 @@ private:
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
     void HandleResized(StringHash eventType, VariantMap& eventData);
     IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
+    IntVector2 WorldToMap(const Vector3& world) const;
     void DrawObject(const IntVector2& pos, DotType type);
 };
 
