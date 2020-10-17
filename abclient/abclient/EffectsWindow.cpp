@@ -71,6 +71,8 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
     if (!effectIcon)
         effectIcon = CreateChild<BorderImage>(name);
     Texture2D* icon = cache->GetResource<Texture2D>(String(effect->icon.c_str()));
+    icon->SetNumLevels(1);
+    icon->SetMipsToSkip(QUALITY_LOW, 0);
     effectIcon->SetVar("Index", effectIndex);
     effectIcon->SetVar("Ticks", ticks);
     effectIcon->SetSize(50, 50);
