@@ -121,7 +121,7 @@ void CharSelectLevel::CreateUI()
         deleteButton->SetVar("char_name", String(ch.name.c_str()));
         auto* deleteButtonIcon = deleteButton->CreateChild<BorderImage>();
         deleteButtonIcon->SetTexture(deleteTexture);
-        deleteButtonIcon->SetImageRect(IntRect(0, 0, 256, 256));
+        deleteButtonIcon->SetFullImageRect();
         deleteButtonIcon->SetBorder(IntRect(4, 4, 4, 4));
         SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleDeleteCharClicked));
 

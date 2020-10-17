@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ActorResourceBar.h"
 #include "Actor.h"
 
@@ -45,10 +44,8 @@ ActorResourceBar::ActorResourceBar(Context* context) :
     SetMinSize({ 200, 10 });
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
     SetTexture(tex);
-    SetImageRect(IntRect(48, 0, 64, 16));
+    SetImageRect({ 48, 0, 64, 16 });
     SetBorder(IntRect(4, 4, 4, 4));
-    SetImageBorder(IntRect(0, 0, 0, 0));
-    SetResizeBorder(IntRect(0, 0, 0, 0));
 
     bar_ = CreateChild<ValueBar>();
     bar_->selectable_ = false;

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "SkillCostElement.h"
 
 void SkillCostElement::RegisterObject(Context* context)
@@ -59,7 +58,7 @@ void SkillCostElement::CreateElements(const AB::Entities::Skill& skill)
         icon->SetMaxSize({ 16, 16 });
         icon->SetMinSize({ 16, 16 });
         icon->SetTexture(texture);
-        icon->SetImageRect({128, 48, 144, 64});
+        icon->SetImageRect({ 128, 48, 144, 64 });
         auto* text = container->CreateChild<Text>();
         text->SetStyleAuto();
         text->SetFontSize(8);

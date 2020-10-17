@@ -72,6 +72,7 @@
 				<attribute name="Layout Mode" value="Horizontal" />
 				<attribute name="Layout Spacing" value="4" />
 				<element type="BorderImage">
+					<attribute name="Name" value="MoneyIcon" />
 					<attribute name="Max Size" value="20 20" />
 					<attribute name="Min Anchor" value="0 0.5" />
 					<attribute name="Max Anchor" value="0 0.5" />

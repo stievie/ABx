@@ -106,6 +106,9 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/Skills/no_skill_disabled.png");
+    defTexture->SetNumLevels(1);
+    defTexture->SetMipsToSkip(QUALITY_LOW, 0);
+
     SkillManager* sm = GetSubsystem<SkillManager>();
 
     TemplateEvaluator templEval(*actor);
@@ -120,8 +123,10 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
         Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
         if (icon)
         {
+            icon->SetNumLevels(1);
+            icon->SetMipsToSkip(QUALITY_LOW, 0);
             btn->SetTexture(icon);
-            btn->SetImageRect(IntRect(0, 0, 256, 256));
+            btn->SetFullImageRect();
             btn->SetBorder(IntRect(4, 4, 4, 4));
             if (!IsChangeable())
             {
@@ -164,7 +169,7 @@ void SkillBarWindow::UpdateSkill(unsigned pos, uint32_t index)
     if (!iconSet)
     {
         btn->SetTexture(defTexture);
-        btn->SetImageRect(IntRect(0, 0, 256, 256));
+        btn->SetFullImageRect();
         btn->SetBorder(IntRect(4, 4, 4, 4));
         btn->SetHoverOffset(IntVector2(0, 0));
         btn->SetPressedOffset(IntVector2(0, 0));

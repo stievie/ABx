@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ValueBar.h"
 
 void ValueBar::RegisterObject(Context* context)
@@ -39,7 +38,7 @@ ValueBar::ValueBar(Context* context) :
 
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png");
     SetTexture(tex);
-    SetImageRect(IntRect(0, 16, 16, 32));
+    SetImageRect({ 0, 16, 16, 32 });
     SetBorder(IntRect(4, 4, 4, 4));
 
     SetShowPercentText(false);

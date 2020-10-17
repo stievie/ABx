@@ -69,6 +69,9 @@ InventoryWindow::InventoryWindow(Context* context) :
     Text* caption = GetChildStaticCast<Text>("CaptionText", true);
     caption->SetText(scs->GetCaption(Events::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", true));
 
+    BorderImage* moneyIcon = GetChildStaticCast<BorderImage>("MoneyIcon", true);
+    moneyIcon->SetFullImageRect();
+
     Text* moneyText = GetChildStaticCast<Text>("MoneyText", true);
     moneyText->SetText("0 Drachma");
     SetSize(260, 480);

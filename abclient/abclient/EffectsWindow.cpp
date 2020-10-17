@@ -77,7 +77,7 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
     effectIcon->SetMinSize(50, 50);
     effectIcon->SetOpacity(1.0f);
     effectIcon->SetTexture(icon);
-    effectIcon->SetImageRect(IntRect(0, 0, 256, 256));
+    effectIcon->SetFullImageRect();
     effectIcon->SetBorder(IntRect(4, 4, 4, 4));
     SetWidth(50 * effectCount_);
     SetVisible(effectCount_ != 0);

@@ -117,6 +117,8 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
         heightmapTexture_ = MakeShared<Texture2D>(context_);
         heightmapTexture_->SetSize(heightmap->GetWidth(), heightmap->GetHeight(), Graphics::GetRGBAFormat(), TEXTURE_STATIC);
         heightmapTexture_->SetData(heightmap, true);
+        heightmapTexture_->SetNumLevels(1);
+        heightmapTexture_->SetMipsToSkip(QUALITY_LOW, 0);
         terrainLayer_->SetTexture(heightmapTexture_);
         terrainWorldSize_ = { (float)heightmap->GetWidth() * terrainSpacing_.x_,
             terrainSpacing_.y_,
@@ -128,6 +130,8 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
 
     mapTexture_ = MakeShared<Texture2D>(context_);
     mapTexture_->SetSize(MAP_WIDTH, MAP_HEIGHT, Graphics::GetRGBAFormat(), TEXTURE_DYNAMIC);
+    mapTexture_->SetNumLevels(1);
+    mapTexture_->SetMipsToSkip(QUALITY_LOW, 0);
     mapImage_ = MakeShared<Image>(context_);
     mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
     mapTexture_->SetData(mapImage_, true);

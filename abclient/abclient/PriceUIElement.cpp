@@ -59,6 +59,8 @@ void PriceUIElement::Add(uint32_t index, uint32_t count)
 
     Texture2D* texture = (index != AB::Entities::MONEY_ITEM_INDEX) ? cache->GetResource<Texture2D>(item->iconFile_) :
         cache->GetResource<Texture2D>("Textures/Icons/DrachmaCoin.png");
+    texture->SetNumLevels(1);
+    texture->SetMipsToSkip(QUALITY_LOW, 0);
     icon->SetTexture(texture);
     icon->SetFullImageRect();
     auto* tooltip = icon->CreateChild<ToolTip>("Tooltip");
