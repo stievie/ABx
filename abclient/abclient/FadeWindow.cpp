@@ -36,6 +36,7 @@ FadeWindow::FadeWindow(Context* context) :
     // Make it top most
     SetBringToBack(false);
     BringToFront();
+    bgContainer_ = CreateChild<BorderImage>();
 
     auto* pg = CreateChild<ProgressBar>("ProgressBar");
     pg->SetStyleAuto();
@@ -51,6 +52,36 @@ FadeWindow::FadeWindow(Context* context) :
 FadeWindow::~FadeWindow()
 { }
 
+void FadeWindow::SetBackground(const String& uuid)
+{
+    auto* cache = GetSubsystem<ResourceCache>();
+    auto* background = cache->GetResource<Texture2D>("Textures/FadeBackgrounds/" + uuid + ".jpg");
+    if (background)
+    {
+        bgContainer_->SetTexture(background);
+        bgContainer_->SetFullImageRect();
+        FitBackground();
+    }
+}
+
+void FadeWindow::FitBackground()
+{
+    if (!bgContainer_->GetTexture())
+        return;
+
+    int windowWidth = GetWidth();
+    int windowHeight = GetHeight();
+    float scaleX = static_cast<float>(bgContainer_->GetTexture()->GetWidth()) / static_cast<float>(windowWidth);
+    float scaleY = static_cast<float>(bgContainer_->GetTexture()->GetHeight()) / static_cast<float>(windowHeight);
+    float scale = Max(scaleX, scaleY);
+    bgContainer_->SetSize(static_cast<int>(static_cast<float>(bgContainer_->GetTexture()->GetWidth()) / scale),
+        static_cast<int>(static_cast<float>(bgContainer_->GetTexture()->GetHeight()) / scale));
+
+    int x = windowWidth / 2 - bgContainer_->GetWidth() / 2;
+    int y = windowHeight / 2 - bgContainer_->GetHeight() / 2;
+    bgContainer_->SetPosition({ x, y });
+}
+
 void FadeWindow::SetScene(Scene* scene)
 {
     if (scene == scene_)
@@ -61,6 +92,7 @@ void FadeWindow::SetScene(Scene* scene)
     {
         SubscribeToEvent(scene, E_ASYNCLOADPROGRESS, URHO3D_HANDLER(FadeWindow, HandleAsyncLoadProgress));
         SubscribeToEvent(scene, E_ASYNCLOADFINISHED, URHO3D_HANDLER(FadeWindow, HandleAsyncLoadFinished));
+
         pg->SetVisible(true);
     }
     else

@@ -58,7 +58,6 @@ private:
     void HandleUpdateDone(StringHash eventType, VariantMap& eventData);
     void AddFadeLayer();
 
-    List<VariantMap> levelQueue_;
     String levelName_;
     String mapUuid_;
     AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
@@ -70,7 +69,7 @@ private:
     SharedPtr<FadeWindow> fadeWindow_;
     SharedPtr<UpdateProgressWindow> updateWindow_;
     float fadeTime_{ 0 };
-    int fadeStatus_{ FadeStatusPrepare };
+    int fadeStatus_{ FadeStatusFinish };
     bool drawDebugGeometry_{ false };
     bool readyToFadeIn_{ false };
 public:

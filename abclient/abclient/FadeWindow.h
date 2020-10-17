@@ -28,8 +28,11 @@ public:
     FadeWindow(Context* context);
     ~FadeWindow() override;
     void SetScene(Scene* scene);
+    void SetBackground(const String& uuid);
 private:
     Scene* scene_{ nullptr };
+    SharedPtr<BorderImage> bgContainer_;
+    void FitBackground();
     void HandleAsyncLoadProgress(StringHash eventType, VariantMap& eventData);
     void HandleAsyncLoadFinished(StringHash eventType, VariantMap& eventData);
 };

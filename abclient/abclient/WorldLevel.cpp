@@ -369,6 +369,7 @@ void WorldLevel::SetupViewport()
 void WorldLevel::CreateScene()
 {
     BaseLevel::CreateScene();
+    scene_->SetName(mapName_);
     LoadScene("Scenes/" + mapName_ + ".xml");
 
     using namespace Events::AudioPlayMapMusic;

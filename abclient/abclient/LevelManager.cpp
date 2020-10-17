@@ -69,12 +69,14 @@ void LevelManager::HandleLevelReady(StringHash, VariantMap&)
 void LevelManager::HandleSetLevelQueue(StringHash, VariantMap& eventData)
 {
     // Busy now
-    if (levelQueue_.Size())
+    if (fadeStatus_ != FadeStatusFinish)
         return;
-    // Push to queue
-    levelQueue_.Push(eventData);
     using namespace Events::SetLevel;
     instanceUuid_ = eventData[P_INSTANCEUUID].GetString();
+    mapUuid_ = eventData[P_MAPUUID].GetString();
+    levelName_ = eventData[P_NAME].GetString();
+    mapType_ = static_cast<AB::Entities::GameType>(eventData[P_TYPE].GetUInt());
+    partySize_ = static_cast<uint8_t>(eventData[P_PARTYSIZE].GetUInt());
 
     // Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LevelManager, HandleUpdate));
@@ -146,12 +148,6 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
         // Create new level
         readyToFadeIn_ = false;
         lastLevelName_ = levelName_;
-        VariantMap& levelData = levelQueue_.Front();
-        using namespace Events::SetLevel;
-        levelName_ = levelData[P_NAME].GetString();
-        mapUuid_ = levelData[P_MAPUUID].GetString();
-        mapType_ = static_cast<AB::Entities::GameType>(levelData[P_TYPE].GetUInt());
-        partySize_ = static_cast<uint8_t>(levelData[P_PARTYSIZE].GetUInt());
         level_ = context_->CreateObject(StringHash(levelName_));
         BaseLevel* baseLevel = GetCurrentLevel<BaseLevel>();
         if (baseLevel)
@@ -190,8 +186,6 @@ void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 
         // Unsubscribe update event
         UnsubscribeFromEvent(E_UPDATE);
-        // Remove the task
-        levelQueue_.PopFront();
         // Release all unused resources
         GetSubsystem<ResourceCache>()->ReleaseAllResources(false);
         break;
@@ -204,6 +198,10 @@ void LevelManager::AddFadeLayer()
     auto* root = GetSubsystem<UI>()->GetRoot();
     root->RemoveAllChildren();
     fadeWindow_ = MakeShared<FadeWindow>(context_);
+    if (!mapUuid_.Empty())
+        fadeWindow_->SetBackground(mapUuid_);
+    else
+        fadeWindow_->SetBackground("Default");
     root->AddChild(fadeWindow_);
 }
 
