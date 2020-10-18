@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "HeightMap.h"
 #include "MathUtils.h"
 #include "Sphere.h"
@@ -197,9 +196,9 @@ Shape HeightMap::GetShape() const
 {
     Shape s;
     s.vertexData_.resize(static_cast<size_t>(numVertices_.x_ + numVertices_.y_));
-    for (int x = 0; x < numVertices_.x_; ++x)
+    for (int z = 0; z < numVertices_.y_; ++z)
     {
-        for (int z = 0; z < numVertices_.y_; ++z)
+        for (int x = 0; x < numVertices_.x_; ++x)
         {
             float fy = GetRawHeight(x, z);
             float fx = static_cast<float>(x) - static_cast<float>(numVertices_.x_) / 2.0f;
@@ -213,9 +212,9 @@ Shape HeightMap::GetShape() const
     }
 
     // Create index data
-    for (int x = 0; x < numVertices_.x_ - 1; ++x)
+    for (int z = 0; z < numVertices_.y_ - 1; ++z)
     {
-        for (int z = 0; z < numVertices_.y_ - 1; ++z)
+        for (int x = 0; x < numVertices_.x_ - 1; ++x)
         {
             /*
             Normal edge:

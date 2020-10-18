@@ -46,7 +46,7 @@ private:
         OrientationsO1 = 1 << 1,
         OrientationsO2 = 1 << 2
     };
-    inline uint32_t GetOrientations(const BoundingBox& b2) const
+    uint32_t GetOrientations(const BoundingBox& b2) const
     {
         uint32_t o = OrientationsNone;
         if (IsOriented())
@@ -56,28 +56,28 @@ private:
         return o;
     }
 public:
-    BoundingBox() noexcept :
+    constexpr BoundingBox() noexcept :
         min_(Vector3(Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE)),
         max_(Vector3(-Math::M_INFINITE, -Math::M_INFINITE, -Math::M_INFINITE)),
         orientation_(Quaternion::Identity)
     { }
-    BoundingBox(const BoundingBox& other) noexcept :
+    constexpr BoundingBox(const BoundingBox& other) noexcept :
         min_(other.min_),
         max_(other.max_),
         orientation_(other.orientation_)
     { }
-    BoundingBox(const Vector3& min, const Vector3& max) noexcept :
+    constexpr BoundingBox(const Vector3& min, const Vector3& max) noexcept :
         min_(min),
         max_(max),
         orientation_(Quaternion::Identity)
     { }
-    BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
+    constexpr BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
         min_(minX, minY, minZ),
         max_(maxX, maxY, maxZ),
         orientation_(Quaternion::Identity)
     { }
     /// Construct from minimum and maximum floats (all dimensions same.)
-    BoundingBox(float min, float max) noexcept :
+    constexpr BoundingBox(float min, float max) noexcept :
         min_(min, min, min),
         max_(max, max, max),
         orientation_(Quaternion::Identity)

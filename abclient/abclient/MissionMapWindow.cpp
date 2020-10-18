@@ -195,9 +195,9 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     if (!color)
         return;
 
-    for (int x = 0; x < 12; ++x)
+    for (int y = 0; y < 12; ++y)
     {
-        for (int y = 0; y < 12; ++y)
+        for (int x = 0; x < 12; ++x)
         {
             if (DOT_BITMAP[y * 12 + x] == '#')
                 mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
