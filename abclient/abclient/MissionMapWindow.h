@@ -66,7 +66,6 @@ private:
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleRenderUpdate(StringHash eventType, VariantMap& eventData);
-    void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
     void HandleResized(StringHash eventType, VariantMap& eventData);
     IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
     IntVector2 WorldToMap(const Vector3& world) const;

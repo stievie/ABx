@@ -170,7 +170,6 @@ void MissionMapWindow::SubscribeToEvents()
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MissionMapWindow, HandleCloseClicked));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MissionMapWindow, HandleUpdate));
     SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(MissionMapWindow, HandleRenderUpdate));
-    SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(MissionMapWindow, HandlePostRenderUpdate));
     SubscribeToEvent(this, E_RESIZED, URHO3D_HANDLER(MissionMapWindow, HandleResized));
 }
 
@@ -297,10 +296,6 @@ void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
     if (!IsVisible())
         return;
     DrawObjects();
-}
-
-void MissionMapWindow::HandlePostRenderUpdate(StringHash, VariantMap&)
-{
 }
 
 void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
