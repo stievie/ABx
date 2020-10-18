@@ -66,6 +66,9 @@ Christmas 2117 +/- some years.
     - Players can craft new items for Materials and Money from special NPCs.
 * Autoupdate asset files: It downloads only the differences and patches existing files. This greatly reduces time and bandwidth.
 * Minimap, a small map of the scene the player is in, which also shows other actors.
+* Class system with primary and secondary class. The player has a fixed primary class and a changeable secondary class.
+* Skill system. Depending on the primary and secondary class of the player, different skills are available to the player.
+* Skills are implemented a simple Lua scripts and can be added/removed/changed quickly.
 
 ## Screenshot
 
