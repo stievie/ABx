@@ -22,6 +22,7 @@
 #pragma once
 
 #include <Urho3DAll.h>
+#include <AB/Entities/Game.h>
 
 class Player;
 
@@ -33,7 +34,7 @@ public:
 
     MissionMapWindow(Context* context);
     ~MissionMapWindow() override;
-    void SetScene(SharedPtr<Scene> scene);
+    void SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType);
 private:
     enum class DotType
     {
@@ -57,6 +58,7 @@ private:
     Vector3 terrainSpacing_;
     Vector3 terrainWorldSize_;
     Vector2 terrainScaling_;
+    AB::Entities::GameType gameType_{ AB::Entities::GameTypeUnknown };
     void FitTexture();
     Player* GetPlayer() const;
     void DrawObjects();

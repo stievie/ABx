@@ -43,6 +43,11 @@ inline bool IsOutpost(GameType type)
     return type >= GameTypeOutpost && type <= GameTypeGuildHall;
 }
 
+inline bool IsBattle(GameType type)
+{
+    return type >= GameTypePvPCombat;
+}
+
 enum GameModeFlags : uint32_t
 {
     GameModeFlagNone = 0,

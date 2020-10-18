@@ -119,9 +119,10 @@ MissionMapWindow::~MissionMapWindow()
     UnsubscribeFromAllEvents();
 }
 
-void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
+void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType)
 {
     waypoints_.Clear();
+    gameType_ = gameType;
     if (!scene)
         return;
 
@@ -289,7 +290,6 @@ void MissionMapWindow::DrawObjects()
         });
     }
     mapTexture_->SetData(mapImage_, true);
-    //mapImage_->SavePNG("c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/abclient/bin/test.png");
 }
 
 void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
@@ -305,6 +305,8 @@ void MissionMapWindow::HandlePostRenderUpdate(StringHash, VariantMap&)
 
 void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
 {
+    if (!AB::Entities::IsBattle(gameType_))
+        return;
     auto* p = GetPlayer();
     if (!p)
         return;
