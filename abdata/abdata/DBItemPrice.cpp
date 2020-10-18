@@ -23,6 +23,7 @@
 #include <AB/Entities/ConcreteItem.h>
 #include <AB/Entities/Item.h>
 #include <sa/TemplateParser.h>
+#include <sa/time.h>
 
 namespace DB {
 
@@ -83,15 +84,19 @@ uint32_t DBItemPrice::GetAvgValue(const std::string& itemUuid)
 
 uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
 {
-    // How many of that belongs to the merchant
+    // How many of that belongs to the merchant. Since sold non-stackable items are no longer available after some time,
+    // we must filter them out.
     static constexpr const char* SQL = "SELECT SUM(count) AS available FROM concrete_items "
-        "WHERE deleted = 0 AND storage_place = ${storage_place}"
-        " AND item_uuid = ${item_uuid}"
-        " GROUP BY item_uuid";
+        "LEFT JOIN game_items on game_items.uuid = concrete_items.item_uuid "
+        "WHERE deleted = 0 AND storage_place = ${storage_place} "
+        "AND ((sold + ${keep_time} > ${current_time}) OR (item_flags & ${stackable_flag} != 0)) "
+        "AND item_uuid = ${item_uuid} "
+        "GROUP BY item_uuid";
 
     Database* db = GetSubsystem<Database>();
     const std::string query = sa::templ::Parser::Evaluate(SQL, [db, &itemUuid](const sa::templ::Token& token) -> std::string
     {
+        using namespace sa::time::literals;
         switch (token.type)
         {
         case sa::templ::Token::Type::Variable:
@@ -99,6 +104,12 @@ uint32_t DBItemPrice::GetAvailable(const std::string& itemUuid)
                 return db->EscapeString(itemUuid);
             if (token.value == "storage_place")
                 return std::to_string(static_cast<int>(AB::Entities::StoragePlace::Merchant));
+            if (token.value == "keep_time")
+                return std::to_string(1_W);
+            if (token.value == "current_time")
+                return std::to_string(sa::time::tick());
+            if (token.value == "stackable_flag")
+                return std::to_string(AB::Entities::ItemFlagStackable);
             ASSERT_FALSE();
         default:
             return token.value;

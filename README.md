@@ -65,6 +65,7 @@ Christmas 2117 +/- some years.
     - Dynamic item price taking availability and drop chance into account.
     - Players can craft new items for Materials and Money from special NPCs.
 * Autoupdate asset files: It downloads only the differences and patches existing files. This greatly reduces time and bandwidth.
+* Minimap, a small map of the scene the player is in, which also shows other actors.
 
 ## Screenshot
 
