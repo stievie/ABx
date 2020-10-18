@@ -41,16 +41,19 @@ private:
         Ally,
         Foe,
         Other,
+        Waypoint
     };
     static const Color SELF_COLOR;
     static const Color ALLY_COLOR;
     static const Color FOE_COLOR;
     static const Color OTHER_COLOR;
+    static const Color WAYPOINT_COLOR;
 
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
     SharedPtr<Texture2D> heightmapTexture_;
     SharedPtr<BorderImage> terrainLayer_;
+    Vector<Vector3> waypoints_;
     Vector3 terrainSpacing_;
     Vector3 terrainWorldSize_;
     Vector2 terrainScaling_;

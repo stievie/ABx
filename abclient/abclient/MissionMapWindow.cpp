@@ -34,6 +34,7 @@ const Color MissionMapWindow::SELF_COLOR(0.3f, 1.0f, 0.3f);
 const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
 const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
 const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
+const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
 
 // 12x12
 static const char* DOT_BITMAP = {
@@ -44,10 +45,26 @@ static const char* DOT_BITMAP = {
     "############"
     "############"
     "############"
+    "############"
     " ########## "
     " ########## "
     "  ########  "
     "    ####    "
+};
+
+static const char* WAYPOINT_BITMAP = {
+    "            "
+    "            "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "  ########  "
+    "            "
+    "            "
 };
 
 void MissionMapWindow::RegisterObject(Context* context)
@@ -104,6 +121,7 @@ MissionMapWindow::~MissionMapWindow()
 
 void MissionMapWindow::SetScene(SharedPtr<Scene> scene)
 {
+    waypoints_.Clear();
     if (!scene)
         return;
 
@@ -177,6 +195,8 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
         return;
     const Color* color = nullptr;
+    const char* bitmap = DOT_BITMAP;
+
     switch (type)
     {
     case DotType::Self:
@@ -191,6 +211,10 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     case DotType::Foe:
         color = &FOE_COLOR;
         break;
+    case DotType::Waypoint:
+        color = &WAYPOINT_COLOR;
+        bitmap = WAYPOINT_BITMAP;
+        break;
     }
     if (!color)
         return;
@@ -199,7 +223,7 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     {
         for (int x = 0; x < 12; ++x)
         {
-            if (DOT_BITMAP[y * 12 + x] == '#')
+            if (bitmap[y * 12 + x] == '#')
                 mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
         }
     }
@@ -222,6 +246,13 @@ void MissionMapWindow::DrawObjects()
     if (auto* p = GetPlayer())
     {
         const Vector3& center = p->GetNode()->GetPosition();
+        // Draw waypoints at the bottom
+        for (const auto& wp : waypoints_)
+        {
+            const IntVector2 mapPos = WorldToMapPos(center, wp);
+            DrawObject(mapPos, DotType::Waypoint);
+        }
+
         const IntVector2 origin = WorldToMap(center);
 
         // TODO: Fix this! Heck that's 3 coordinate systems. You shouldn't make a game when you can't to some math :/
@@ -274,6 +305,14 @@ void MissionMapWindow::HandlePostRenderUpdate(StringHash, VariantMap&)
 
 void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
 {
+    auto* p = GetPlayer();
+    if (!p)
+        return;
+
+    const auto& pos = p->GetNode()->GetPosition();
+    if (waypoints_.Empty() ||
+        pos.DistanceToPoint(waypoints_.Back()) > 5.0f)
+        waypoints_.Push(pos);
 }
 
 void MissionMapWindow::HandleResized(StringHash, VariantMap&)
