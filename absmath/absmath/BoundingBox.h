@@ -56,7 +56,7 @@ private:
         return o;
     }
 public:
-    constexpr BoundingBox() noexcept :
+    BoundingBox() noexcept :
         min_(Vector3(Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE)),
         max_(Vector3(-Math::M_INFINITE, -Math::M_INFINITE, -Math::M_INFINITE)),
         orientation_(Quaternion::Identity)
@@ -66,18 +66,18 @@ public:
         max_(other.max_),
         orientation_(other.orientation_)
     { }
-    constexpr BoundingBox(const Vector3& min, const Vector3& max) noexcept :
+    BoundingBox(const Vector3& min, const Vector3& max) noexcept :
         min_(min),
         max_(max),
         orientation_(Quaternion::Identity)
     { }
-    constexpr BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
+    BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
         min_(minX, minY, minZ),
         max_(maxX, maxY, maxZ),
         orientation_(Quaternion::Identity)
     { }
     /// Construct from minimum and maximum floats (all dimensions same.)
-    constexpr BoundingBox(float min, float max) noexcept :
+    BoundingBox(float min, float max) noexcept :
         min_(min, min, min),
         max_(max, max, max),
         orientation_(Quaternion::Identity)
