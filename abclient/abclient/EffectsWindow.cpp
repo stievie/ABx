@@ -70,14 +70,17 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
     BorderImage* effectIcon = GetChildStaticCast<BorderImage>(name, true);
     if (!effectIcon)
         effectIcon = CreateChild<BorderImage>(name);
-    Texture2D* icon = cache->GetResource<Texture2D>(String(effect->icon.c_str()));
-    icon->SetNumLevels(1);
-    icon->SetMipsToSkip(QUALITY_LOW, 0);
     effectIcon->SetVar("Index", effectIndex);
     effectIcon->SetVar("Ticks", ticks);
     effectIcon->SetSize(50, 50);
     effectIcon->SetMinSize(50, 50);
     effectIcon->SetOpacity(1.0f);
+
+    Texture2D* icon = cache->GetResource<Texture2D>(String(effect->icon.c_str()));
+    if (!icon)
+        icon = cache->GetResource<Texture2D>("Textures/Skills/placeholder.png");
+    icon->SetNumLevels(1);
+    icon->SetMipsToSkip(QUALITY_LOW, 0);
     effectIcon->SetTexture(icon);
     effectIcon->SetFullImageRect();
     effectIcon->SetBorder(IntRect(4, 4, 4, 4));
