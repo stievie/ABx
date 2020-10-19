@@ -30,6 +30,7 @@ db_pass = "password"
 $ createdb forgottenwars
 ~~~
 6. Run `./bin/dbtool update` to create the database structure. Then run `./bin/dbtool updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
+(you may try to run `./dbtool update` under the folder `bin`, if you get error like this: `db.lua:18: module 'config/db_private' not found`, on ubuntu 20.04)
 7. Download server assets `data` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the `bin/data` directory. Don't overwrite files that are in the git repository.
 8. Run the `./bin/keygen` tool to create the DH server keys.
 9. Run `openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout server.key -out server.crt` in the `bin` directory to create self-signed keys and certificate for the HTTPS file server.
