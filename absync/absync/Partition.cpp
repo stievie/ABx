@@ -230,7 +230,7 @@ BoundaryList LoadBoundaryList(const std::string_view buffer)
 
 BoundaryList LoadBoundaryList(const std::string& filename)
 {
-    std::ifstream ifs(filename + ".json", std::ifstream::in);
+    std::ifstream ifs(filename + META_FILE_EXT, std::ifstream::in);
     if (!ifs)
         return {};
     ifs.seekg(0, std::ios::end);

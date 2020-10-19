@@ -159,5 +159,4 @@ bool Updater::DownloadRemoteFiles()
     return true;
 }
 
-
 }
