@@ -161,6 +161,9 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("sa", 15);
     CreateLogo("Textures/Trill.png", 0.05f);
 
+    CreateSingleLine("Contributors", 30, true);
+    CreateSingleLine("0xdream: https://github.com/0xdream", 15);
+
     CreateSingleLine("Common", 30, true);
     CreateSingleLine("asio: https://think-async.com/Asio/AsioStandalone", 15);
     CreateSingleLine("OpenSSL: https://www.openssl.org/", 15);
