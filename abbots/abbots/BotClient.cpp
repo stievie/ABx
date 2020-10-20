@@ -529,3 +529,7 @@ void BotClient::OnPacket(int64_t, const AB::Packets::Server::CraftsmanItems&)
 void BotClient::OnPacket(int64_t, const AB::Packets::Server::DropTargetChanged&)
 {
 }
+
+void BotClient::OnPacket(int64_t, const AB::Packets::Server::PositionPinged&)
+{
+}
