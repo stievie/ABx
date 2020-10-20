@@ -2872,7 +2872,6 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
 
 void Player::PingPosition(const Math::Vector3& worldPos)
 {
-    LOG_INFO << "pos " << worldPos << std::endl;
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerPacketType::PositionPinged);
     AB::Packets::Server::PositionPinged packet = {
