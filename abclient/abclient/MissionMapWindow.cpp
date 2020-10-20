@@ -27,6 +27,7 @@
 #include "ServerEvents.h"
 #include <sa/time.h>
 #include "FwClient.h"
+#include "AudioManager.h"
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
@@ -376,7 +377,8 @@ void MissionMapWindow::HandlePositionPinged(StringHash, VariantMap& eventData)
     pingTime_ = sa::time::tick();
     pingerId_ = eventData[P_OBJECTID].GetUInt();
     pingPos_ = eventData[P_POSITION].GetVector3();
-    // TODO: Play Ping sound effect
+    auto* audio = GetSubsystem<AudioManager>();
+    audio->PlaySound("Sounds/FX/Ping.wav", SOUND_EFFECT);
 }
 
 void MissionMapWindow::HandleMouseDown(StringHash, VariantMap& eventData)
@@ -413,5 +415,6 @@ void MissionMapWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     pingTime_ = sa::time::tick();
     // TODO: Position should move with the target
     pingPos_ = target->GetNode()->GetPosition();
-    // TODO: Play Ping sound effect
+    auto* audio = GetSubsystem<AudioManager>();
+    audio->PlaySound("Sounds/FX/Ping.wav", SOUND_EFFECT);
 }
