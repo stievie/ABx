@@ -74,6 +74,7 @@ EquipmentWindow::EquipmentWindow(Context* context) :
         Camera* camera = modelScene_->GetComponent<Camera>(true);
         modelViewer_->SetView(modelScene_, camera, false);
         characterNode_ = modelScene_->CreateChild(0, LOCAL);
+        characterNode_->SetRotation({ 0.0f, Vector3::UP });
     }
     else
         URHO3D_LOGERROR("Scene not found 'Scenes/EquipmentScene.xml'");
@@ -139,14 +140,17 @@ void EquipmentWindow::HandleCloseClicked(StringHash, VariantMap&)
 
 void EquipmentWindow::HandleLoadClicked(StringHash, VariantMap&)
 {
+    // TODO: Save equipment to file
 }
 
 void EquipmentWindow::HandleSaveClicked(StringHash, VariantMap&)
 {
+    // TODO: Load equipment from file
 }
 
 void EquipmentWindow::HandleCreateClicked(StringHash, VariantMap&)
 {
+    // TODO: Show dialog to create new equipment. PvP characters only.
 }
 
 bool EquipmentWindow::LoadObject(uint32_t itemIndex, Node* node)
