@@ -52,6 +52,8 @@ public:
     bool GetGlobalTable(const std::string& ident,
         const std::function<Iteration(const std::string& name, const Utils::Variant& value)>& callback);
     std::map<std::string, Utils::Variant> GetGlobalTable(const std::string& ident);
+    
+    void AddSearchPath(const std::string& path);
 
     bool Load(const std::string& file);
     void Close();
