@@ -146,6 +146,15 @@ void SimpleConfigManager::RegisterString(const std::string& name, const std::str
     lua_setglobal(L, name.c_str());
 }
 
+void SimpleConfigManager::AddSearchPath(const std::string& path)
+{
+    if (!L) return;
+
+    std::string addSearchPath = "package.path = package.path ..';" + path + "/?.lua'";
+
+    luaL_dostring(L, addSearchPath.c_str());
+}
+
 bool SimpleConfigManager::Load(const std::string& file)
 {
     if (L)
@@ -157,6 +166,9 @@ bool SimpleConfigManager::Load(const std::string& file)
 
     const std::string exeFile = Utils::GetExeName();
     const std::string exePath = Utils::ExtractFileDir(exeFile);
+    
+    AddSearchPath(exePath);
+    
     RegisterString("EXE_FILE", exeFile);
     RegisterString("EXE_PATH", exePath);
     RegisterString("SCRIPT_FILE", file);
