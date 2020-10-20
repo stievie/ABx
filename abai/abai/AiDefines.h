@@ -41,7 +41,7 @@ inline bool GetArgument(const ArgumentsType& arguments, size_t index, T& result)
 {
     if (index < arguments.size())
     {
-        result = static_cast<T>(atoi(arguments[0].c_str()));
+        result = static_cast<T>(atoi(arguments[index].c_str()));
         return true;
     }
     return false;
@@ -52,7 +52,7 @@ inline bool GetArgument(const ArgumentsType& arguments, size_t index, T& result)
 {
     if (index < arguments.size())
     {
-        result = static_cast<T>(atof(arguments[0].c_str()));
+        result = static_cast<T>(atof(arguments[index].c_str()));
         return true;
     }
     return false;
@@ -81,7 +81,7 @@ inline bool GetArgument<bool>(const ArgumentsType& arguments, size_t index, bool
     if (index < arguments.size())
     {
         result = (arguments.at(index).compare("true") == 0 ||
-            atoi(arguments[0].c_str()) != 0);
+            atoi(arguments[index].c_str()) != 0);
         return true;
     }
     return false;
