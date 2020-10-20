@@ -401,6 +401,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::Goto, std::move(data));
         break;
     }
+    case ClientPacketTypes::PingPos:
+    {
+        auto packet = AB::Packets::Get<AB::Packets::Client::PingPos>(message);
+        Utils::VariantMap data;
+        data[Game::InputDataVertexX] = packet.pos[0];
+        data[Game::InputDataVertexY] = packet.pos[1];
+        data[Game::InputDataVertexZ] = packet.pos[2];
+        AddPlayerInput(Game::InputType::PingPos, std::move(data));
+        break;
+    }
     case ClientPacketTypes::UseSkill:
     {
         auto packet = AB::Packets::Get<AB::Packets::Client::UseSkill>(message);

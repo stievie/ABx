@@ -233,6 +233,7 @@ private:
     void OnPacket(int64_t updateTick, const AB::Packets::Server::ItemPrice& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanItems& packet) override;
     void OnPacket(int64_t updateTick, const AB::Packets::Server::DropTargetChanged& packet) override;
+    void OnPacket(int64_t updateTick, const AB::Packets::Server::PositionPinged& packet) override;
 public:
     static const char* GetItemTypeName(AB::Entities::ItemType type);
     static String GetProtocolErrorMessage(AB::ErrorCodes err);
@@ -309,6 +310,7 @@ public:
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandType type, const String& data);
     void GotoPos(const Vector3& pos);
+    void PingPosition(const Vector3& pos);
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void UseSkill(uint32_t index);
     void Interact();

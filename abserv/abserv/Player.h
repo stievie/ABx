@@ -158,6 +158,7 @@ public:
     bool AddQuest(uint32_t index);
     bool GetQuestReward(uint32_t index);
     bool SatisfyQuestRequirements(uint32_t index) const;
+    void PingPosition(const Math::Vector3& worldPos);
 
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }

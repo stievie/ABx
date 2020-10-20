@@ -42,13 +42,18 @@ private:
         Ally,
         Foe,
         Other,
-        Waypoint
+        Waypoint,
+        PingPos,
     };
     static const Color SELF_COLOR;
     static const Color ALLY_COLOR;
     static const Color FOE_COLOR;
     static const Color OTHER_COLOR;
     static const Color WAYPOINT_COLOR;
+    static const Color PING_COLOR;
+    int64_t pingTime_{ 0 };
+    uint32_t pingerId_{ 0 };
+    Vector3 pingPos_;
 
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
@@ -67,8 +72,13 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleRenderUpdate(StringHash eventType, VariantMap& eventData);
     void HandleResized(StringHash eventType, VariantMap& eventData);
+    void HandlePositionPinged(StringHash eventType, VariantMap& eventData);
+    void HandleMouseDown(StringHash eventType, VariantMap& eventData);
+    void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
     IntVector2 WorldToMap(const Vector3& world) const;
+    Vector3 MapToWorldPos(const Vector3& center, const IntVector2& map) const;
+    Vector3 MapToWorld(const IntVector2& map) const;
     void DrawObject(const IntVector2& pos, DotType type);
 };
 

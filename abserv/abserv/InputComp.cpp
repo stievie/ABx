@@ -146,6 +146,19 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             }
             break;
         }
+        case InputType::PingPos:
+        {
+            if (Is<Player>(owner_))
+            {
+                const Math::Vector3 worldPos = {
+                    input.data[InputDataVertexX].GetFloat(),
+                    input.data[InputDataVertexY].GetFloat(),
+                    input.data[InputDataVertexZ].GetFloat()
+                };
+                To<Player>(owner_).PingPosition(worldPos);
+            }
+            break;
+        }
         case InputType::Follow:
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());

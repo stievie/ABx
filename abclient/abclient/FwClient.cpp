@@ -1309,6 +1309,12 @@ void FwClient::GotoPos(const Vector3& pos)
         client_.GotoPos({ pos.x_, pos.y_, pos.z_ });
 }
 
+void FwClient::PingPosition(const Vector3& pos)
+{
+    if (loggedIn_)
+        client_.PingPosition({ pos.x_, pos.y_, pos.z_ });
+}
+
 void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
     if (loggedIn_)
@@ -2710,4 +2716,14 @@ std::vector<AB::Entities::Service> FwClient::GetServices() const
         return a.name.compare(b.name) > 0;
     });
     return result;
+}
+
+void FwClient::OnPacket(int64_t, const AB::Packets::Server::PositionPinged& packet)
+{
+    using namespace Events::PositionPinged;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_OBJECTID] = packet.objectId;
+    eData[P_POSITION] = Vector3(packet.pos[0], packet.pos[1], packet.pos[2]);
+    QueueEvent(Events::E_POSITION_PINGED, eData);
+
 }

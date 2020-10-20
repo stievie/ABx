@@ -24,6 +24,9 @@
 #include "LevelManager.h"
 #include "Player.h"
 #include "WorldLevel.h"
+#include "ServerEvents.h"
+#include <sa/time.h>
+#include "FwClient.h"
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
@@ -35,6 +38,7 @@ const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
 const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
 const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
 const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
+const Color MissionMapWindow::PING_COLOR(1.0f, 0.0f, 0.7f);
 
 // 12x12
 static const char* DOT_BITMAP = {
@@ -65,6 +69,21 @@ static const char* WAYPOINT_BITMAP = {
     "  ########  "
     "            "
     "            "
+};
+
+static const char* PING_BITMAP = {
+    "##        ##"
+    "###      ###"
+    " ###    ### "
+    "  ###  ###  "
+    "   ######   "
+    "    ####    "
+    "    ####    "
+    "   ######   "
+    "  ###  ###  "
+    " ###    ### "
+    "###      ###"
+    "##        ##"
 };
 
 void MissionMapWindow::RegisterObject(Context* context)
@@ -171,6 +190,9 @@ void MissionMapWindow::SubscribeToEvents()
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MissionMapWindow, HandleUpdate));
     SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(MissionMapWindow, HandleRenderUpdate));
     SubscribeToEvent(this, E_RESIZED, URHO3D_HANDLER(MissionMapWindow, HandleResized));
+    SubscribeToEvent(Events::E_POSITION_PINGED, URHO3D_HANDLER(MissionMapWindow, HandlePositionPinged));
+    SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(MissionMapWindow, HandleMouseDown));
+    SubscribeToEvent(Events::E_OBJECTPINGTARGET, URHO3D_HANDLER(MissionMapWindow, HandleTargetPinged));
 }
 
 void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -188,6 +210,25 @@ IntVector2 MissionMapWindow::WorldToMap(const Vector3& world) const
     float x = (world.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f);
     float y = (-world.z_ * SCALE) + ((float)MAP_HEIGHT / 2.0f);
     return { (int)x, (int)y };
+}
+
+Vector3 MissionMapWindow::MapToWorld(const IntVector2& map) const
+{
+    static const Vector3 offset = {
+        (float)MAP_WIDTH * 0.5f, 0.0f, (float)MAP_HEIGHT * 0.5f
+    };
+    const Vector3 scaling = { (float)terrainLayer_->GetSize().x_ / (float)MAP_WIDTH,
+        1.0f,
+        (float)terrainLayer_->GetSize().y_ / (float)MAP_HEIGHT };
+
+    Vector3 pos = Vector3((float)map.x_ / scaling.x_, 0.0f, (float)map.y_ / scaling.z_) - offset;
+
+    return pos / SCALE;
+}
+
+Vector3 MissionMapWindow::MapToWorldPos(const Vector3& center, const IntVector2& map) const
+{
+    return center + MapToWorld(map);
 }
 
 void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
@@ -214,6 +255,10 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
     case DotType::Waypoint:
         color = &WAYPOINT_COLOR;
         bitmap = WAYPOINT_BITMAP;
+        break;
+    case DotType::PingPos:
+        color = &PING_COLOR;
+        bitmap = PING_BITMAP;
         break;
     }
     if (!color)
@@ -287,7 +332,15 @@ void MissionMapWindow::DrawObjects()
             DrawObject(mapPos, type);
             return Iteration::Continue;
         });
+
+        if (pingTime_ != 0)
+        {
+            if (sa::time::time_elapsed(pingTime_) < 2000)
+                // Show for some time
+                DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos);
+        }
     }
+
     mapTexture_->SetData(mapImage_, true);
 }
 
@@ -315,4 +368,50 @@ void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)
 void MissionMapWindow::HandleResized(StringHash, VariantMap&)
 {
     FitTexture();
+}
+
+void MissionMapWindow::HandlePositionPinged(StringHash, VariantMap& eventData)
+{
+    using namespace Events::PositionPinged;
+    pingTime_ = sa::time::tick();
+    pingerId_ = eventData[P_OBJECTID].GetUInt();
+    pingPos_ = eventData[P_POSITION].GetVector3();
+    // TODO: Play Ping sound effect
+}
+
+void MissionMapWindow::HandleMouseDown(StringHash, VariantMap& eventData)
+{
+    using namespace MouseButtonDown;
+    if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT)
+    {
+        auto* input = GetSubsystem<Input>();
+        if (terrainLayer_->IsInside(input->GetMousePosition(), true))
+        {
+            if (auto* p = GetPlayer())
+            {
+                IntVector2 relativePos = input->GetMousePosition() - terrainLayer_->GetScreenPosition();
+                relativePos.y_ = terrainLayer_->GetHeight() - relativePos.y_;
+                Vector3 worldPos = MapToWorldPos(p->GetNode()->GetPosition(), relativePos);
+                auto* client = GetSubsystem<FwClient>();
+                client->PingPosition(worldPos);
+            }
+        }
+    }
+}
+
+void MissionMapWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
+{
+    using namespace Events::ObjectPingTarget;
+
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    auto* lm = GetSubsystem<LevelManager>();
+    auto* target = lm->GetObject(targetId);
+    if (!target)
+        return;
+
+    pingerId_ = eventData[P_OBJECTID].GetUInt();
+    pingTime_ = sa::time::tick();
+    // TODO: Position should move with the target
+    pingPos_ = target->GetNode()->GetPosition();
+    // TODO: Play Ping sound effect
 }

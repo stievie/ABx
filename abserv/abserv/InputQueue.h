@@ -44,6 +44,7 @@ enum class InputType
     Follow,
     SetState,
     Interact,
+    PingPos,
 };
 
 enum InputDataType

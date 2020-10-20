@@ -2870,4 +2870,17 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
     LOG_ERROR << "client_ = null" << std::endl;
 }
 
+void Player::PingPosition(const Math::Vector3& worldPos)
+{
+    LOG_INFO << "pos " << worldPos << std::endl;
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerPacketType::PositionPinged);
+    AB::Packets::Server::PositionPinged packet = {
+        id_,
+        { worldPos.x_, worldPos.y_, worldPos.z_ }
+    };
+    AB::Packets::Add(packet, *nmsg);
+    GetParty()->WriteToMembers(*nmsg);
+}
+
 }

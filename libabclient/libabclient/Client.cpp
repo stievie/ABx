@@ -746,6 +746,12 @@ void Client::GotoPos(const Vec3& pos)
         protoGame_->GotoPos(pos);
 }
 
+void Client::PingPosition(const Vec3& pos)
+{
+    if (state_ == State::World)
+        protoGame_->PingPosition(pos);
+}
+
 void Client::PartyInvitePlayer(uint32_t targetId)
 {
     if (state_ == State::World)
@@ -1256,6 +1262,11 @@ void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::CraftsmanIt
 }
 
 void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::DropTargetChanged& packet)
+{
+    receiver_.OnPacket(updateTick, packet);
+}
+
+void Client::OnPacket(int64_t updateTick, const AB::Packets::Server::PositionPinged& packet)
 {
     receiver_.OnPacket(updateTick, packet);
 }

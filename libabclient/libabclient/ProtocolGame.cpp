@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ProtocolGame.h"
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
@@ -110,6 +109,7 @@ ProtocolGame::ProtocolGame(Receiver& receiver, Crypto::DHKeys& keys, asio::io_se
     AddHandler<AB::Packets::Server::ItemPrice, ServerPacketType::ItemPrice>();
     AddHandler<AB::Packets::Server::CraftsmanItems, ServerPacketType::CraftsmanItems>();
     AddHandler<AB::Packets::Server::DropTargetChanged, ServerPacketType::DropTargetChanged>();
+    AddHandler<AB::Packets::Server::PositionPinged, ServerPacketType::PositionPinged>();
 }
 
 ProtocolGame::~ProtocolGame() = default;
@@ -701,6 +701,14 @@ void ProtocolGame::GetItemPrice(const std::vector<uint16_t>& items)
     packet.count = static_cast<uint8_t>(items.size());
     packet.items = items;
     SendPacket(AB::GameProtocol::ClientPacketTypes::GetItemsPrice, packet);
+}
+
+void ProtocolGame::PingPosition(const Vec3& worldPos)
+{
+    AB::Packets::Client::PingPos packet;
+    packet.pos = { worldPos.x, worldPos.y, worldPos.z };
+    SendPacket(AB::GameProtocol::ClientPacketTypes::PingPos, packet);
+
 }
 
 }

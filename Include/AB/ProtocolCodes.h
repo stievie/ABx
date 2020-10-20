@@ -115,7 +115,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_CLIENT_PACKET_CODE(GetItemsPrice)          \
     ENUMERATE_CLIENT_PACKET_CODE(GetCraftsmanItems)      \
     ENUMERATE_CLIENT_PACKET_CODE(CraftItem)              \
-    ENUMERATE_CLIENT_PACKET_CODE(SalvageItem)
+    ENUMERATE_CLIENT_PACKET_CODE(SalvageItem)            \
+    ENUMERATE_CLIENT_PACKET_CODE(PingPos)
 
 
 // Packet types sent from the server to the client
@@ -195,7 +196,8 @@ const uint32_t ENC_KEY[4] = {
     ENUMERATE_SERVER_PACKET_CODE(MerchantItems)               \
     ENUMERATE_SERVER_PACKET_CODE(ItemPrice)                   \
     ENUMERATE_SERVER_PACKET_CODE(CraftsmanItems)              \
-    ENUMERATE_SERVER_PACKET_CODE(DropTargetChanged)
+    ENUMERATE_SERVER_PACKET_CODE(DropTargetChanged)           \
+    ENUMERATE_SERVER_PACKET_CODE(PositionPinged)
 
 #define ENUMERATE_CREATURE_STATES          \
     ENUMERATE_CREATURE_STATE(Unknown)      \
