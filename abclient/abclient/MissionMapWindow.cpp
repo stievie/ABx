@@ -353,6 +353,8 @@ void MissionMapWindow::DrawObjects()
                     }
                     break;
                 }
+                default:
+                    break;
                 }
             }
         }
