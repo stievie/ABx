@@ -141,21 +141,20 @@ void Player::CreateSoundListener()
     // Add sound listener to camera node, also Guild Wars does it so.
     auto* options = GetSubsystem<Options>();
     Node* parentNode = nullptr;
-    float angle = 0.0f;
     if (options->soundListenerToHead_)
     {
         parentNode = GetNode()->GetChild("Head", true);
         if (!parentNode)
             parentNode = GetNode();
-        angle = M_PI;
     }
     else
         parentNode = cameraNode_;
 
     soundListenerNode_ = parentNode->CreateChild("SoundListenerNode");
-    // Let's face the sound
 
-    soundListenerNode_->SetRotation(Quaternion(RadToDeg(angle), Vector3::UP));
+    if (options->soundListenerToHead_)
+        // Let's face the sound. We must rotate it only when the sound listener is attached to the head
+        soundListenerNode_->SetRotation(Quaternion(180.0f, Vector3::UP));
     SoundListener* soundListener = soundListenerNode_->CreateComponent<SoundListener>();
     auto* audio = GetSubsystem<Audio>();
     audio->SetListener(soundListener);
