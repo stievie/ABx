@@ -68,6 +68,7 @@ private:
     SharedPtr<Image> mapImage_;
     SharedPtr<Texture2D> heightmapTexture_;
     SharedPtr<BorderImage> terrainLayer_;
+    SharedPtr<BorderImage> objectLayer_;
     Vector<Vector3> waypoints_;
     Vector3 terrainSpacing_;
     Vector3 terrainWorldSize_;

@@ -147,7 +147,7 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
         return;
 
     terrainLayer_ = GetChildStaticCast<BorderImage>("Container", true);
-    BorderImage* objectLayer = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);
+    objectLayer_ = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);
     auto* terrain = scene->GetComponent<Terrain>(true);
     if (terrain && terrain->GetHeightMap())
     {
@@ -174,8 +174,8 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
     mapImage_ = MakeShared<Image>(context_);
     mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
     mapTexture_->SetData(mapImage_, true);
-    objectLayer->SetTexture(mapTexture_);
-    objectLayer->SetFullImageRect();
+    objectLayer_->SetTexture(mapTexture_);
+    objectLayer_->SetFullImageRect();
 }
 
 void MissionMapWindow::FitTexture()
@@ -222,7 +222,7 @@ Vector3 MissionMapWindow::MapToWorld(const IntVector2& map) const
         1.0f,
         (float)terrainLayer_->GetSize().y_ / (float)MAP_HEIGHT };
 
-    Vector3 pos = Vector3((float)map.x_ / scaling.x_, 0.0f, (float)map.y_ / scaling.z_) - offset;
+    const Vector3 pos = Vector3((float)map.x_ / scaling.x_, 0.0f, (float)map.y_ / scaling.z_) - offset;
 
     return pos / SCALE;
 }
@@ -336,9 +336,9 @@ void MissionMapWindow::DrawObjects()
 
         if (pingTime_ != 0)
         {
+            // Show pinged position/target for 2 seconds
             if (sa::time::time_elapsed(pingTime_) < 2000)
             {
-                // Show for some time
                 switch (pingType_)
                 {
                 case PingType::Position:
@@ -401,20 +401,25 @@ void MissionMapWindow::HandlePositionPinged(StringHash, VariantMap& eventData)
 void MissionMapWindow::HandleMouseDown(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
-    if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT)
+    if (eventData[P_BUTTON].GetUInt() != MOUSEB_LEFT)
+        return;
+
+    auto* input = GetSubsystem<Input>();
+    UI* ui = GetSubsystem<UI>();
+    auto* elem = ui->GetElementAt(input->GetMousePosition(), false);
+    if (elem == nullptr || elem != objectLayer_.Get())
+        return;
+
+    if (!terrainLayer_->IsInside(input->GetMousePosition(), true))
+        return;
+
+    if (auto* p = GetPlayer())
     {
-        auto* input = GetSubsystem<Input>();
-        if (terrainLayer_->IsInside(input->GetMousePosition(), true))
-        {
-            if (auto* p = GetPlayer())
-            {
-                IntVector2 relativePos = input->GetMousePosition() - terrainLayer_->GetScreenPosition();
-                relativePos.y_ = terrainLayer_->GetHeight() - relativePos.y_;
-                Vector3 worldPos = MapToWorldPos(p->GetNode()->GetPosition(), relativePos);
-                auto* client = GetSubsystem<FwClient>();
-                client->PingPosition(worldPos);
-            }
-        }
+        IntVector2 relativePos = input->GetMousePosition() - terrainLayer_->GetScreenPosition();
+        relativePos.y_ = terrainLayer_->GetHeight() - relativePos.y_;
+        Vector3 worldPos = MapToWorldPos(p->GetNode()->GetPosition(), relativePos);
+        auto* client = GetSubsystem<FwClient>();
+        client->PingPosition(worldPos);
     }
 }
 
