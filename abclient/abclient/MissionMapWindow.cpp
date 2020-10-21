@@ -337,8 +337,24 @@ void MissionMapWindow::DrawObjects()
         if (pingTime_ != 0)
         {
             if (sa::time::time_elapsed(pingTime_) < 2000)
+            {
                 // Show for some time
-                DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos);
+                switch (pingType_)
+                {
+                case PingType::Position:
+                    DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos);
+                    break;
+                case PingType::Target:
+                {
+                    if (auto t = target_.Lock())
+                    {
+                        const Vector3& targetPos = t->GetNode()->GetPosition();
+                        DrawObject(WorldToMapPos(center, targetPos), DotType::PingPos);
+                    }
+                    break;
+                }
+                }
+            }
         }
     }
 
@@ -374,6 +390,7 @@ void MissionMapWindow::HandleResized(StringHash, VariantMap&)
 void MissionMapWindow::HandlePositionPinged(StringHash, VariantMap& eventData)
 {
     using namespace Events::PositionPinged;
+    pingType_ = PingType::Position;
     pingTime_ = sa::time::tick();
     pingerId_ = eventData[P_OBJECTID].GetUInt();
     pingPos_ = eventData[P_POSITION].GetVector3();
@@ -407,14 +424,13 @@ void MissionMapWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     auto* lm = GetSubsystem<LevelManager>();
-    auto* target = lm->GetObject(targetId);
-    if (!target)
+    target_ = lm->GetObject(targetId);
+    if (!target_)
         return;
 
+    pingType_ = PingType::Target;
     pingerId_ = eventData[P_OBJECTID].GetUInt();
     pingTime_ = sa::time::tick();
-    // TODO: Position should move with the target
-    pingPos_ = target->GetNode()->GetPosition();
     auto* audio = GetSubsystem<AudioManager>();
     audio->PlaySound("Sounds/FX/Ping.wav", SOUND_EFFECT);
 }

@@ -25,6 +25,7 @@
 #include <AB/Entities/Game.h>
 
 class Player;
+class GameObject;
 
 class MissionMapWindow : public Window
 {
@@ -45,6 +46,12 @@ private:
         Waypoint,
         PingPos,
     };
+    enum class PingType
+    {
+        None,
+        Position,
+        Target
+    };
     static const Color SELF_COLOR;
     static const Color ALLY_COLOR;
     static const Color FOE_COLOR;
@@ -54,6 +61,8 @@ private:
     int64_t pingTime_{ 0 };
     uint32_t pingerId_{ 0 };
     Vector3 pingPos_;
+    PingType pingType_{ PingType::None };
+    WeakPtr<GameObject> target_;
 
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
