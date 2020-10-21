@@ -55,7 +55,7 @@ void MerchantWindow::CreateUI()
     countSpinner_ = countContainer->CreateChild<Spinner>();
     countSpinner_->SetStyleAuto();
     countSpinner_->SetEdit(countText_);
-    countSpinner_->SetFixedSize({ 22, 22 });
+    countSpinner_->SetFixedHeight(22);
     countText_->SetVisible(false);
     countSpinner_->SetVisible(false);
     countSpinner_->SetValue(10);

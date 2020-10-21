@@ -408,6 +408,7 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         cont->SetVar("AttributeIndex", attr.index);
         cont->SetName("Attribute" + String(attr.index));
         cont->SetLayoutMode(LM_HORIZONTAL);
+        cont->SetLayoutBorder({ 4, 0, 4, 0 });
         auto* label = cont->CreateChild<Text>();
         label->SetText(String(a->name.c_str()));
         label->SetStyleAuto();
@@ -429,7 +430,6 @@ void SkillsWindow::UpdateAttributes(const Actor& actor)
         spinner->SetTexture(tex);
         spinner->SetImageRect(IntRect(48, 0, 64, 16));
         spinner->SetEdit(SharedPtr<LineEdit>(edit));
-        spinner->SetFixedWidth(22);
         spinner->SetFixedHeight(22);
 
         spinner->SetMin(0);

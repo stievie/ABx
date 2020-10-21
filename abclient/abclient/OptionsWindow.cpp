@@ -266,7 +266,6 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     spinner->SetTexture(tex);
     spinner->SetImageRect(IntRect(48, 0, 64, 16));
     spinner->SetEdit(SharedPtr<LineEdit>(edit));
-    spinner->SetFixedWidth(22);
     spinner->SetFixedHeight(edit->GetHeight());
 
     spinner->SetMin(0);
