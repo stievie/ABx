@@ -170,8 +170,6 @@
         <attribute name="Layout Spacing" value="2" />
         <attribute name="Border" value="0 0 0 0" />
         <attribute name="Layout Border" value="1 1 1 1" />
-        <attribute name="Texture" value="Texture2D;Textures/UI.png" />
-        <attribute name="Image Rect" value="48 0 64 16" />
         <element type="Button" internal="true">
             <attribute name="Border" value="0 0 0 0" />
             <attribute name="Image Rect" value="132 103 144 111" />

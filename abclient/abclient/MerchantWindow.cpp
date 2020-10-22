@@ -53,12 +53,12 @@ void MerchantWindow::CreateUI()
     UIElement* countContainer = GetChild("CountContainer", true);
     countText_ = countContainer->GetChildStaticCast<LineEdit>("CountEdit", true);
     countSpinner_ = countContainer->CreateChild<Spinner>();
-    countSpinner_->SetStyleAuto();
     countSpinner_->SetEdit(countText_);
     countSpinner_->SetFixedHeight(22);
     countText_->SetVisible(false);
-    countSpinner_->SetVisible(false);
     countSpinner_->SetValue(10);
+    countSpinner_->SetStyleAuto();
+    countSpinner_->SetVisible(false);
 
     UIElement* container = GetChild("Container", true);
     tabgroup_ = container->CreateChild<TabGroup>();

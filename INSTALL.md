@@ -149,11 +149,10 @@ bin
 </config>
 ~~~
 5. Run `fw.exe` in `abclient/bin`. `$ cd abclient/bin && ./fw`.
-6. Create an account using the UUID of your previously created account key. To find out what GUID was created, run the `dbtool`:
+6. Create an account using the UUID of your previously created account key. To find out what GUID was created, run the `dbtool`. This lists all account keys, pick one:
 ~~~sh
 $ ./bin/dbtool acckeys
 ~~~
-This lists all account keys, pick one.
 7. After creating an account, you may want to give your account all privileges. You can do that with the `dbtool`:
 ~~~sh
 $ ./bin/dbtool makegod -user my_username

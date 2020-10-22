@@ -807,11 +807,10 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
 
 void ProtocolGame::Release()
 {
+    // If this is called while we still have a player (e.g. due to a sudden disconnect) 
+    // logout the player now.
     if (auto p = player_.lock())
-    {
-        LOG_WARNING << "Released Protocol while we have a player, logging out" << std::endl;
         p->Logout(true);
-    }
 }
 
 }

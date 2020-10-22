@@ -2866,6 +2866,7 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
     if (client_)
     {
         client_->ChangeInstance(mapUuid, instanceUuid);
+        return;
     }
     LOG_ERROR << "client_ = null" << std::endl;
 }
