@@ -138,7 +138,6 @@ void Player::CreateSoundListener()
     if (soundListenerNode_)
         soundListenerNode_->Remove();
 
-    // Add sound listener to camera node, also Guild Wars does it so.
     auto* options = GetSubsystem<Options>();
     Node* parentNode = nullptr;
     if (options->soundListenerToHead_)
@@ -148,6 +147,7 @@ void Player::CreateSoundListener()
             parentNode = GetNode();
     }
     else
+        // Add sound listener to camera node, also Guild Wars does it so.
         parentNode = cameraNode_;
 
     soundListenerNode_ = parentNode->CreateChild("SoundListenerNode");
