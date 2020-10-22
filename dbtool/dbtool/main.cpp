@@ -46,6 +46,7 @@ PRAGMA_WARNING_POP
 #include "LuaSkill.h"
 #include <sa/TemplateParser.h>
 #include <sa/Assert.h>
+#include <AB/Entities/Account.h>
 
 namespace fs = std::filesystem;
 
@@ -79,6 +80,7 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     table << "    acckeys" << sa::tab::endc << "Show account keys" << sa::tab::endr;
     table << "    genacckey" << sa::tab::endc << "Generate a new account key" << sa::tab::endr;
     table << "    updateskills" << sa::tab::endc << "Update skills stats in DB" << sa::tab::endr;
+    table << "    makegod" << sa::tab::endc << "Make an account god, expects a username with -user option" << sa::tab::endr;
     std::cout << table;
     std::cout << std::endl;
     std::cout << "EXAMPLES" << std::endl;
@@ -121,6 +123,8 @@ static void InitCli(sa::arg_parser::cli& cli)
     cli.push_back({ "dbpass", { "-dbpass", "--database-password" }, "Password for database",
         false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "schemadir", { "-d", "--schema-dir" }, "Directory with .sql files to import for updating",
+        false, true, sa::arg_parser::option_type::string });
+    cli.push_back({ "user", { "-user", "--user-name" }, "User name",
         false, true, sa::arg_parser::option_type::string });
 }
 
@@ -444,6 +448,38 @@ static bool UpdateSkills(DB::Database& db)
     return transaction.Commit();
 }
 
+static bool MakeGod(DB::Database& db, const std::string& username)
+{
+    static constexpr const char* SQL = "UPDATE accounts SET type = ${type} WHERE name = ${name}";
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [&](const sa::templ::Token& token)->std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "name")
+                return db.EscapeString(username);
+            if (token.value == "type")
+                return std::to_string(static_cast<int>(AB::Entities::AccountType::God));
+
+            std::cout << "Unhandled placeholder " << token.value << std::endl;
+            return "";
+        default:
+            return token.value;
+        }
+    });
+    DB::DBTransaction transaction(&db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!sReadOnly)
+    {
+        if (!db.ExecuteQuery(query))
+            return false;
+    }
+
+    return transaction.Commit();
+}
+
 /// What should we do.
 /// At the moment we can only update the DB
 enum class Action
@@ -453,6 +489,7 @@ enum class Action
     AccountKeys,
     GenAccKey,
     UpdateSkills,
+    MakeGod,
 };
 
 int main(int argc, char** argv)
@@ -498,8 +535,13 @@ int main(int argc, char** argv)
         action = Action::GenAccKey;
     else if (sActval.compare("updateskills") == 0)
         action = Action::UpdateSkills;
+    else if (sActval.compare("makegod") == 0)
+        action = Action::MakeGod;
     else
-        ASSERT_FALSE();
+    {
+        std::cerr << "Anknown action `" << sActval << "`" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     sReadOnly = sa::arg_parser::get_value<bool>(parsedArgs, "readonly", false);
     sVerbose = sa::arg_parser::get_value<bool>(parsedArgs, "verbose", false);
@@ -582,6 +624,20 @@ int main(int argc, char** argv)
     case Action::UpdateSkills:
         UpdateSkills(*db);
         break;
+    case Action::MakeGod:
+    {
+        std::string user = sa::arg_parser::get_value<std::string>(parsedArgs, "user", "");
+        if (user.empty())
+        {
+            std::cerr << "Missing -user option" << std::endl;
+            return EXIT_FAILURE;
+        }
+        if (MakeGod(*db, user))
+        {
+            std::cout << user << " is now God" << std::endl;
+        }
+        break;
+    }
     default:
         ASSERT_FALSE();
     }

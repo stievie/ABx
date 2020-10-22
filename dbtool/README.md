@@ -3,11 +3,15 @@
 Database administration tool. Since this program writes directly to the database
 server, the data server must not run.
 
+IMPORTANT: Whenever you use the `dbtool` the server must not be running. `dbtool`
+directly writes to the database, and when the data server runs it may overwrite
+what `dbtool` wrote.
+
 ## Usage
 
 ~~~plain
 SYNOPSIS
-    dbtool [-h] [<action>] [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>] 
+    dbtool [-h] [<action>] [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>]
 
 OPTIONS
     [-h, --help, -?]
@@ -34,11 +38,11 @@ OPTIONS
         Directory with .sql files to import for updating
 
 ACTIONS
-    update       Update the database             
+    update       Update the database
     versions     Show database and table versions
-    acckeys      Show account keys               
-    genacckey    Generate a new account key      
-    updateskills Update skills stats in DB       
+    acckeys      Show account keys
+    genacckey    Generate a new account key
+    updateskills Update skills stats in DB
 
 EXAMPLES
     dbtool update
