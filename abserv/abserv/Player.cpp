@@ -2514,6 +2514,10 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleRollCommand(const std::string& arguments, Net::NetworkMessage& message)
 {
+    const AB::Entities::GameType gameType = GetGame()->data_.type;
+    if (gameType != AB::Entities::GameTypeExploreable && gameType != AB::Entities::GameTypeMission)
+        return;
+
     if (!Utils::IsNumber(arguments))
         return;
     const int max = std::stoi(arguments);

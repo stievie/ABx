@@ -860,7 +860,27 @@ void ChatWindow::HandleKeyDown(StringHash, VariantMap& eventData)
 
     int key = eventData[P_KEY].GetInt();
     if (key == KEY_RETURN)
+    {
+        Input* input = GetSubsystem<Input>();
+        if (input->GetKeyDown(KEY_LCTRL))
+        {
+            // Unfortunately we cant use a Shortcut here, because Left Ctrl is different
+            LevelManager* lm = GetSubsystem<LevelManager>();
+            auto* player = lm->GetPlayer();
+            auto* selected = player->GetSelectedObject();
+            if (selected)
+            {
+
+                if (Is<Actor>(selected) && selected->objectType_ == ObjectType::Player)
+                {
+                    LineEdit* nameEdit = GetChildStaticCast<LineEdit>("WhisperChatNameEdit", true);
+                    nameEdit->SetText(To<Actor>(selected)->name_);
+                    tabgroup_->SetSelectedIndex(tabIndexWhisper_);
+                }
+            }
+        }
         FocusEdit();
+    }
 }
 
 void ChatWindow::HandleNameClicked(StringHash, VariantMap& eventData)
