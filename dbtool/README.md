@@ -11,7 +11,7 @@ what `dbtool` wrote.
 
 ~~~plain
 SYNOPSIS
-    dbtool [-h] [<action>] [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>]
+    dbtool [-h] <action> [-r] [-v] [-dbdriver <dbdriver>] [-dbhost <dbhost>] [-dbport <dbport>] [-dbname <dbname>] [-dbuser <dbuser>] [-dbpass <dbpass>] [-d <schemadir>] [-user <user>] 
 
 OPTIONS
     [-h, --help, -?]
@@ -36,6 +36,8 @@ OPTIONS
         Password for database
     [-d, --schema-dir <string>]
         Directory with .sql files to import for updating
+    [-user, --user-name <string>]
+        User name
 
 ACTIONS
     update       Update the database
@@ -43,6 +45,7 @@ ACTIONS
     acckeys      Show account keys
     genacckey    Generate a new account key
     updateskills Update skills stats in DB
+    makegod      Make an account god, expects a username with -user option
 
 EXAMPLES
     dbtool update

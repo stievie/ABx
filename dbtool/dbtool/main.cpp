@@ -450,8 +450,31 @@ static bool UpdateSkills(DB::Database& db)
 
 static bool MakeGod(DB::Database& db, const std::string& username)
 {
+    static constexpr const char* SQL_SELECT = "SELECT COUNT(*) AS count FROM accounts WHERE name = ${name}";
+    const std::string selectQuery = sa::templ::Parser::Evaluate(SQL_SELECT, [&](const sa::templ::Token& token) -> std::string
+    {
+        switch (token.type)
+        {
+        case sa::templ::Token::Type::Variable:
+            if (token.value == "name")
+                return db.EscapeString(username);
+
+            std::cout << "Unhandled placeholder " << token.value << std::endl;
+            return "";
+        default:
+            return token.value;
+        }
+    });
+
+    std::shared_ptr<DB::DBResult> selectResult = db.StoreQuery(selectQuery);
+    if (!selectResult || selectResult->GetUInt("count") == 0)
+    {
+        std::cerr << "No account with name " << username << std::endl;
+        return false;
+    }
+
     static constexpr const char* SQL = "UPDATE accounts SET type = ${type} WHERE name = ${name}";
-    const std::string query = sa::templ::Parser::Evaluate(SQL, [&](const sa::templ::Token& token)->std::string
+    const std::string query = sa::templ::Parser::Evaluate(SQL, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
         {
@@ -480,8 +503,6 @@ static bool MakeGod(DB::Database& db, const std::string& username)
     return transaction.Commit();
 }
 
-/// What should we do.
-/// At the moment we can only update the DB
 enum class Action
 {
     Update,
@@ -521,7 +542,11 @@ int main(int argc, char** argv)
 
     // Action is first unnamed argument
     auto actval = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
-    ASSERT(actval.has_value());
+    if (!actval.has_value())
+    {
+        std::cerr << "No action provided" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     const std::string& sActval = actval.value();
     Action action;
@@ -539,7 +564,7 @@ int main(int argc, char** argv)
         action = Action::MakeGod;
     else
     {
-        std::cerr << "Anknown action `" << sActval << "`" << std::endl;
+        std::cerr << "Unknown action `" << sActval << "`" << std::endl;
         return EXIT_FAILURE;
     }
 
