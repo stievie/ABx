@@ -40,9 +40,10 @@ const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
 const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
 const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
 const Color MissionMapWindow::PING_COLOR(1.0f, 0.0f, 0.7f);
+const Color MissionMapWindow::MARKER_COLOR(0.0f, 0.5f, 0.0f);
 
 // 12x12
-static const char* DOT_BITMAP = {
+static constexpr const char* DOT_BITMAP = {
     "    ####    "
     "  ########  "
     " ########## "
@@ -57,7 +58,7 @@ static const char* DOT_BITMAP = {
     "    ####    "
 };
 
-static const char* WAYPOINT_BITMAP = {
+static constexpr const char* WAYPOINT_BITMAP = {
     "            "
     "            "
     "  ########  "
@@ -72,7 +73,7 @@ static const char* WAYPOINT_BITMAP = {
     "            "
 };
 
-static const char* PING_BITMAP = {
+static constexpr const char* PING_BITMAP = {
     "##        ##"
     "###      ###"
     " ###    ### "
@@ -85,6 +86,20 @@ static const char* PING_BITMAP = {
     " ###    ### "
     "###      ###"
     "##        ##"
+};
+static constexpr const char* MARKER_BITMAP = {
+    "     ##     "
+    "     ##     "
+    "##   ##  ## "
+    "  ## ## ##  "
+    "    ####    "
+    "############"
+    "############"
+    "    ####    "
+    "  ## ## ##  "
+    "##   ##   ##"
+    "     ##     "
+    "     ##     "
 };
 
 void MissionMapWindow::RegisterObject(Context* context)
@@ -261,6 +276,10 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
         color = &PING_COLOR;
         bitmap = PING_BITMAP;
         break;
+    case DotType::Marker:
+        color = &MARKER_COLOR;
+        bitmap = MARKER_BITMAP;
+        break;
     }
     if (!color)
         return;
@@ -333,6 +352,11 @@ void MissionMapWindow::DrawObjects()
             DrawObject(mapPos, type);
             return Iteration::Continue;
         });
+
+        if (haveMarker_)
+        {
+            DrawObject(WorldToMapPos(center, marker_), DotType::Marker);
+        }
 
         if (pingTime_ != 0)
         {

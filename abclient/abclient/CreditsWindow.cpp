@@ -214,7 +214,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Fonts: ClearSans, Anonymous Pro (Urho3Ds default font)", 15);
 
     CreateSingleLine("Music", 25, true);
-    CreateSingleLine("Kevin MacLeod (incompetech.com):", 15);
+    CreateSingleLine("Kevin MacLeod (incompetech.com)", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("https://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("For complete list see CREDITS.md", 20);
@@ -229,4 +229,6 @@ void CreditsWindow::AddCredits()
     CreateLogo("Textures/Audacity_Logo.png", 0.5f);
     CreateSingleLine("Inkscape https://inkscape.org/", 15);
     CreateLogo("Textures/inkscape.png", 1.0f);
+    CreateSingleLine("Gimp https://www.gimp.org/", 15);
+    CreateLogo("Textures/gimp-logo.png", 1.0f);
 }

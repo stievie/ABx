@@ -45,6 +45,7 @@ private:
         Other,
         Waypoint,
         PingPos,
+        Marker,
     };
     enum class PingType
     {
@@ -58,6 +59,7 @@ private:
     static const Color OTHER_COLOR;
     static const Color WAYPOINT_COLOR;
     static const Color PING_COLOR;
+    static const Color MARKER_COLOR;
     int64_t pingTime_{ 0 };
     uint32_t pingerId_{ 0 };
     Vector3 pingPos_;
@@ -70,6 +72,8 @@ private:
     SharedPtr<BorderImage> terrainLayer_;
     SharedPtr<BorderImage> objectLayer_;
     Vector<Vector3> waypoints_;
+    Vector3 marker_;
+    bool haveMarker_{ false };
     Vector3 terrainSpacing_;
     Vector3 terrainWorldSize_;
     Vector2 terrainScaling_;
