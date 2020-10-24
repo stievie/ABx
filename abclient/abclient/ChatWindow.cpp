@@ -217,42 +217,50 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatChannel cha
     {
         UIElement* container = parent->CreateChild<UIElement>();
         container->SetSize(parent->GetSize());
-        LineEdit* nameEdit = container->CreateChild<LineEdit>();
+        LineEdit* nameEdit = container->CreateChild<LineEdit>("WhisperChatNameEdit");
         nameEdit->SetPosition(0, 0);
-        nameEdit->SetName("WhisperChatNameEdit");
-        nameEdit->SetAlignment(HA_LEFT, VA_CENTER);
         nameEdit->SetStyle("ChatLineEdit");
-        nameEdit->SetSize(150, 20);
+        nameEdit->SetSize(150, container->GetHeight());
         SubscribeToEvent(nameEdit, E_FOCUSED, [](StringHash, VariantMap& eventData) {
             using namespace Focused;
             UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
-            elem->SetOpacity(1.0f);
+            elem->SetUseDerivedOpacity(false);
         });
         SubscribeToEvent(nameEdit, E_DEFOCUSED, [](StringHash, VariantMap& eventData) {
             using namespace Defocused;
             UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
-            elem->SetOpacity(0.7f);
+            elem->SetUseDerivedOpacity(true);
         });
         parent = container;
     }
 
-    LineEdit* edit = parent->CreateChild<LineEdit>();
-    edit->SetName("ChatLineEdit");
+    LineEdit* edit = parent->CreateChild<LineEdit>("ChatLineEdit");
     edit->SetVar("Channel", static_cast<int>(channel));
     if (channel != AB::GameProtocol::ChatChannel::Whisper)
     {
         edit->SetPosition(0, 0);
         edit->SetSize(tabElement->tabBody_->GetSize());
-        edit->SetAlignment(HA_CENTER, VA_CENTER);
     }
     else
     {
         edit->SetPosition(150, 0);
         edit->SetSize(tabElement->tabBody_->GetSize().x_ - 100, tabElement->tabBody_->GetSize().y_);
-        edit->SetAlignment(HA_LEFT, VA_CENTER);
     }
+    SubscribeToEvent(edit, E_FOCUSED, [](StringHash, VariantMap& eventData)
+    {
+        using namespace Focused;
+        UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+        elem->SetUseDerivedOpacity(false);
+    });
+    SubscribeToEvent(edit, E_DEFOCUSED, [](StringHash, VariantMap& eventData)
+    {
+        using namespace Defocused;
+        UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+        elem->SetUseDerivedOpacity(true);
+    });
+
     edit->SetStyle("ChatLineEdit");
-    edit->SetHeight(20);
+    edit->SetHeight(parent->GetHeight());
     SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(ChatWindow, HandleTextFinished));
     SubscribeToEvent(edit, E_FOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditFocused));
     SubscribeToEvent(edit, E_DEFOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditDefocused));
@@ -1041,8 +1049,9 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
 {
     using namespace Events::PartyResigned;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
+    const String& partyName = eventData[P_PARTYNAME].GetString();
 
-    static constexpr const char* TEMPLATE = "Party ${id} has resigned";
+    static constexpr const char* TEMPLATE = "Party ${name} has resigned";
     const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
@@ -1050,6 +1059,8 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
         case sa::templ::Token::Type::Variable:
             if (token.value == "id")
                 return std::to_string(partyId);
+            if (token.value == "name")
+                return ToStdString(partyName);
             ASSERT_FALSE();
         default:
             return token.value;
@@ -1062,8 +1073,9 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
 {
     using namespace Events::PartyDefeated;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
+    const String& partyName = eventData[P_PARTYNAME].GetString();
 
-    static constexpr const char* TEMPLATE = "Party ${id} was defeated";
+    static constexpr const char* TEMPLATE = "Party ${name} was defeated";
     const std::string t = sa::templ::Parser::Evaluate(TEMPLATE, [&](const sa::templ::Token& token) -> std::string
     {
         switch (token.type)
@@ -1071,6 +1083,8 @@ void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
         case sa::templ::Token::Type::Variable:
             if (token.value == "id")
                 return std::to_string(partyId);
+            if (token.value == "name")
+                return ToStdString(partyName);
             ASSERT_FALSE();
         default:
             return token.value;

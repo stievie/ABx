@@ -2326,6 +2326,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyResi
     using namespace Events::PartyResigned;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_PARTYID] = packet.partyId;
+    eData[P_PARTYNAME] = ToUrhoString(packet.partyName);
     QueueEvent(Events::E_PARTYRESIGNED, eData);
 }
 
@@ -2335,6 +2336,7 @@ void FwClient::OnPacket(int64_t updateTick, const AB::Packets::Server::PartyDefe
     using namespace Events::PartyDefeated;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_PARTYID] = packet.partyId;
+    eData[P_PARTYNAME] = ToUrhoString(packet.partyName);
     QueueEvent(Events::E_PARTYDEFEATED, eData);
 }
 
