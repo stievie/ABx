@@ -99,6 +99,8 @@ public:
     bool IsDefeated() const { return defeated_; }
     /// Bring all players back to their last outpost
     void TeleportBack();
+    std::string GetName() const;
+    Player* GetLeader() const;
 
     /// Get position of actor in party, 1-based, 0 = not found
     size_t GetPosition(const Actor* actor) const;

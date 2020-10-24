@@ -1166,20 +1166,24 @@ struct PartyPlayerAdded
 struct PartyResigned
 {
     uint32_t partyId;
+    std::string partyName;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(partyId);
+        ar.value(partyName);
     }
 };
 
 struct PartyDefeated
 {
     uint32_t partyId;
+    std::string partyName;
     template<typename _Ar>
     void Serialize(_Ar& ar)
     {
         ar.value(partyId);
+        ar.value(partyName);
     }
 };
 

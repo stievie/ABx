@@ -649,7 +649,7 @@ void ProtocolGame::OnConnect()
 {
     if (acceptPackets_)
     {
-        LOG_ERROR << "This shouldn't happen" << std::endl;
+        LOG_ERROR << "Not accepting packets at this time. This really shouldn't happen!" << std::endl;
         return;
     }
 
@@ -807,7 +807,7 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
 
 void ProtocolGame::Release()
 {
-    // If this is called while we still have a player (e.g. due to a sudden disconnect) 
+    // If this is called while we still have a player (e.g. due to a sudden disconnect)
     // logout the player now.
     if (auto p = player_.lock())
         p->Logout(true);

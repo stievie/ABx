@@ -209,7 +209,10 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         {
             defeatedTick_ = sa::time::tick();
             message.AddByte(AB::GameProtocol::ServerPacketType::PartyResigned);
-            AB::Packets::Server::PartyResigned packet = { id_ };
+            AB::Packets::Server::PartyResigned packet = {
+                id_,
+                GetName()
+            };
             AB::Packets::Add(packet, message);
             KillAll();
         }
@@ -218,7 +221,10 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         {
             defeatedTick_ = sa::time::tick();
             message.AddByte(AB::GameProtocol::ServerPacketType::PartyDefeated);
-            AB::Packets::Server::PartyDefeated packet = { id_ };
+            AB::Packets::Server::PartyDefeated packet = {
+                id_,
+                GetName()
+            };
             AB::Packets::Add(packet, message);
             KillAll();
         }
@@ -295,6 +301,16 @@ bool Party::IsLeader(const Player& player) const
     if (auto p = members_[0].lock())
         return p->id_ == player.id_;
     return false;
+}
+
+Player* Party::GetLeader() const
+{
+    if (members_.size() == 0)
+        return nullptr;
+    if (auto p = members_[0].lock())
+        // Note: Returns nullptr when its not a Player
+        return To<Player>(p.get());
+    return nullptr;
 }
 
 void Party::Defeat()
@@ -468,6 +484,14 @@ void Party::VisitPlayers(const std::function<Iteration(Player& current)>& callba
                 break;
         }
     }
+}
+
+std::string Party::GetName() const
+{
+    auto* p = GetLeader();
+    if (p)
+        return p->GetName();
+    return std::to_string(id_);
 }
 
 }
