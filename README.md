@@ -212,7 +212,7 @@ uninstall it.
        - index.xml  (defines the files)[0]
        - NavMesh.bin (Recast navigation mesh)
        - Scene.xml (Urho3D's scene file)
-       - HeightField.terrain (Heightfield file)
+       - HeightField.hm (Heightfield file, .hm file generated with import or PNG)
    - models
    - scripts
      - actors

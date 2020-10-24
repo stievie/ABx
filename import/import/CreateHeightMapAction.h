@@ -41,7 +41,7 @@ private:
     std::vector<float> heightData_;
     float minHeight_;
     float maxHeight_;
-    std::vector<unsigned short> indices_;
+    std::vector<int> indices_;
     std::vector<Math::Vector3> normals_;
 
     int width_{ 0 };

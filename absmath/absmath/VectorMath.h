@@ -23,6 +23,7 @@
 
 #include "Vector3.h"
 #include "Quaternion.h"
+#include <sa/Iteration.h>
 
 namespace Math {
 
@@ -44,5 +45,44 @@ Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p
 /// Make CCW -> CW and vice versa
 void ReverseOrder(std::array<Vector3, 3>& triangle);
 Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance);
+
+template<typename Callback>
+inline void GetTriangleIndices(int width, int height, Callback&& callback)
+{
+    // Create index data in clockwise order
+    for (int y = 0; y < height - 1; ++y)
+    {
+        for (int x = 0; x < width - 1; ++x)
+        {
+            /*
+                x+1,y
+        x,y +----+----+
+            | 1 /|(3)/|
+            |  / |  / |
+            | /  | /  |
+            |/ 2 |/(4)|
+      x,y+1 +----+----+
+              x+1,y+1
+            */
+            {
+                // First triangle
+                int i1 = (y + 1) * width + x;
+                int i2 = y * width + x;
+                int i3 = (y * width) + x + 1;
+                if (callback(i3, i2, i1) == Iteration::Break)
+                    return;
+            }
+
+            {
+                // Second triangle
+                int i1 = y * width + x + 1;
+                int i2 = (y + 1) * width + (x + 1);
+                int i3 = (y + 1) * width + x;
+                if (callback(i3, i2, i1) == Iteration::Break)
+                    return;
+            }
+        }
+    }
+}
 
 }

@@ -24,6 +24,7 @@
 #include "ObjWriter.h"
 #include <fstream>
 #include <absmath/MathUtils.h>
+#include <absmath/VectorMath.h>
 #include <limits>
 #include <abscommon/StringUtils.h>
 
@@ -93,7 +94,7 @@ void CreateHeightMapAction::SaveHeightMap()
     output.write((char*)&indexCount, sizeof(indexCount));
     for (const auto& i : indices_)
     {
-        output.write((char*)&i, sizeof(unsigned));
+        output.write((char*)&i, sizeof(int));
     }
 
     output.close();
@@ -129,47 +130,13 @@ void CreateHeightMapAction::CreateGeometry()
         }
     }
 
-    // Create index data in clockwise order
-    for (int y = 0; y < height_ - 1; ++y)
+    Math::GetTriangleIndices(width_, height_, [&](int i1, int i2, int i3)
     {
-        for (int x = 0; x < width_ - 1; ++x)
-        {
-            /*
-            Normal edge:
-            +----+----+
-            |\ 1 |\   |
-            | \  | \  |
-            |  \ |  \ |
-            | 2 \|   \|
-            +----+----+
-            */
-            {
-                // First triangle
-                int i1 = (y + 1) * width_ + x;
-                int i2 = y * width_ + x;
-                int i3 = (y * width_) + x + 1;
-                // P1
-                indices_.push_back(static_cast<unsigned short>(i3));
-                // P2
-                indices_.push_back(static_cast<unsigned short>(i2));
-                // P3
-                indices_.push_back(static_cast<unsigned short>(i1));
-            }
-
-            {
-                // Second triangle
-                int i1 = y * width_ + x + 1;
-                int i2 = (y + 1) * width_ + (x + 1);
-                int i3 = (y + 1) * width_ + x;
-                // P3
-                indices_.push_back(static_cast<unsigned short>(i3));
-                // P2
-                indices_.push_back(static_cast<unsigned short>(i2));
-                // P1
-                indices_.push_back(static_cast<unsigned short>(i1));
-            }
-        }
-    }
+        indices_.push_back(i1);
+        indices_.push_back(i2);
+        indices_.push_back(i3);
+        return Iteration::Continue;
+    });
 }
 
 float CreateHeightMapAction::GetRawHeight(int x, int z) const
