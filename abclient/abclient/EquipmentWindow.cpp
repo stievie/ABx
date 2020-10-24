@@ -121,6 +121,11 @@ void EquipmentWindow::HandleSceneViewerMouseDown(StringHash, VariantMap& eventDa
     if (eventData[P_BUTTON].GetUInt() == MOUSEB_LEFT)
     {
         auto* input = GetSubsystem<Input>();
+        UI* ui = GetSubsystem<UI>();
+        auto* elem = ui->GetElementAt(input->GetMousePosition(), false);
+        if (elem == nullptr || elem != modelViewer_.Get())
+            return;
+
         if (modelViewer_->IsInside(input->GetMousePosition(), true))
             mouseDown_ = true;
     }
