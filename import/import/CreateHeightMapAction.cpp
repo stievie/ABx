@@ -107,9 +107,9 @@ void CreateHeightMapAction::CreateGeometry()
     vertices_.resize(width_ * height_);
     normals_.resize(width_ * height_);
     heightData_.resize(width_ * height_);
-    for (int x = 0; x < width_; x++)
+    for (int z = 0; z < height_; ++z)
     {
-        for (int z = 0; z < height_; z++)
+        for (int x = 0; x < width_; ++x)
         {
             float fy = GetRawHeight(x, z);
             heightData_[z * width_ + x] = fy;
@@ -129,10 +129,10 @@ void CreateHeightMapAction::CreateGeometry()
         }
     }
 
-    // Create index data
-    for (int x = 0; x < width_ - 1; x++)
+    // Create index data in clockwise order
+    for (int z = 0; z < height_ - 1; ++z)
     {
-        for (int z = 0; z < height_ - 1; z++)
+        for (int x = 0; x < width_ - 1; ++x)
         {
             /*
             Normal edge:
@@ -177,8 +177,6 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
     if (!data_)
         return 0.0f;
 
-    x = Math::Clamp(x, 0, width_ - 1);
-    z = Math::Clamp(z, 0, height_ - 1);
     // From bottom to top
     int offset = ((height_ - z) * width_ + x) * components_;
     if (components_ == 1)
