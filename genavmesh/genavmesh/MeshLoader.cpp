@@ -218,9 +218,9 @@ bool MeshLoader::load(const std::string& fileName)
             // We triangulate the faces so it must be always 3 vertices per face.
             if (ai_face->mNumIndices == 3)
             {
-                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[0]));
-                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[1]));
-                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[2]));
+                indices_.push_back(ai_face->mIndices[0]);
+                indices_.push_back(ai_face->mIndices[1]);
+                indices_.push_back(ai_face->mIndices[2]);
                 addTriangle(ai_face->mIndices[0], ai_face->mIndices[1], ai_face->mIndices[2], tcap);
             }
         }
@@ -244,60 +244,61 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
     int vcap = 0;
     int tcap = 0;
     vertices_.resize(width_ * height_);
-    for (int x = 0; x < width_; x++)
+    for (int y = 0; y < height_; ++y)
     {
-        for (int z = 0; z < height_; z++)
+        for (int x = 0; x < width_; ++x)
         {
-            float fy = GetHeight(x, z);
-            float fx = (float)x - (float)width_ / 2.0f;
-            float fz = (float)z - (float)height_ / 2.0f;
-            vertices_[z * width_ + x] = {
+            float fy = GetHeight(x, y);
+            float fx = (float)x - (float)width_ * 0.5f;
+            float fz = (float)y - (float)height_ * 0.5f;
+            vertices_[y * width_ + x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ
             };
-            normals_.push_back(GetRawNormal(x, z));
+            normals_.push_back(GetRawNormal(x, y));
             addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, vcap);
         }
     }
 
     // Create index data
-    for (int x = 0; x < width_ - 1; x++)
+    for (int y = 0; y < height_ - 1; ++y)
     {
-        for (int z = 0; z < height_ - 1; z++)
+        for (int x = 0; x < width_ - 1; ++x)
         {
             /*
-            Normal edge:
-            +----+----+
-            |\ 1 |\   |
-            | \  | \  |
-            |  \ |  \ |
-            | 2 \|   \|
-            +----+----+
+                x+1,y
+        x,y +----+----+
+            | 1 /|(3)/|
+            |  / |  / |
+            | /  | /  |
+            |/ 2 |/(4)|
+      x,y+1 +----+----+
+              x+1,y+1
             */
             {
                 // First triangle
-                int i1 = z * width_ + x;
-                int i2 = (z * width_) + x + 1;
-                int i3 = (z + 1) * width_ + (x + 1);
+                int i1 = (y + 1) * width_ + x;
+                int i2 = y * width_ + x;
+                int i3 = (y * width_) + x + 1;
                 // P1
-                indices_.push_back(static_cast<unsigned short>(i1));
+                indices_.push_back(i3);
                 // P2
-                indices_.push_back(static_cast<unsigned short>(i2));
+                indices_.push_back(i2);
                 // P3
-                indices_.push_back(static_cast<unsigned short>(i3));
-                addTriangle(i1, i2, i3, tcap);
+                indices_.push_back(i1);
+                addTriangle(i3, i2, i1, tcap);
             }
 
             {
                 // Second triangle
-                int i3 = (z + 1) * width_ + (x + 1);
-                int i2 = (z + 1) * width_ + x;
-                int i1 = z * width_ + x;
+                int i1 = y * width_ + x + 1;
+                int i2 = (y + 1) * width_ + (x + 1);
+                int i3 = (y + 1) * width_ + x;
                 // P3
-                indices_.push_back(static_cast<unsigned short>(i3));
+                indices_.push_back(i3);
                 // P2
-                indices_.push_back(static_cast<unsigned short>(i2));
+                indices_.push_back(i2);
                 // P1
-                indices_.push_back(static_cast<unsigned short>(i1));
+                indices_.push_back(i1);
                 addTriangle(i3, i2, i1, tcap);
             }
         }

@@ -50,7 +50,7 @@ public:
     const std::string& getFileName() const { return m_filename; }
 
     std::vector<aiVector3D> vertices_;
-    std::vector<unsigned short> indices_;
+    std::vector<int> indices_;
     std::vector<aiVector3D> normals_;
 };
 

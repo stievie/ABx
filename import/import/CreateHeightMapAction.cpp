@@ -107,30 +107,30 @@ void CreateHeightMapAction::CreateGeometry()
     vertices_.resize(width_ * height_);
     normals_.resize(width_ * height_);
     heightData_.resize(width_ * height_);
-    for (int z = 0; z < height_; ++z)
+    for (int y = 0; y < height_; ++y)
     {
         for (int x = 0; x < width_; ++x)
         {
-            float fy = GetRawHeight(x, z);
-            heightData_[z * width_ + x] = fy;
+            float fy = GetRawHeight(x, y);
+            heightData_[y * width_ + x] = fy;
             if (minHeight_ > fy)
                 minHeight_ = fy;
             if (maxHeight_ < fy)
                 maxHeight_ = fy;
-            float fx = (float)x - (float)width_ / 2.0f;
-            float fz = (float)z - (float)height_ / 2.0f;
-            vertices_[z * width_ + x] = {
+            float fx = (float)x - (float)width_ * 0.5f;
+            float fz = (float)y - (float)height_ * 0.5f;
+            vertices_[y * width_ + x] = {
                 fx,
                 fy,
                 fz
             };
 
-            normals_.push_back(GetRawNormal(x, z));
+            normals_.push_back(GetRawNormal(x, y));
         }
     }
 
     // Create index data in clockwise order
-    for (int z = 0; z < height_ - 1; ++z)
+    for (int y = 0; y < height_ - 1; ++y)
     {
         for (int x = 0; x < width_ - 1; ++x)
         {
@@ -145,22 +145,22 @@ void CreateHeightMapAction::CreateGeometry()
             */
             {
                 // First triangle
-                int i1 = z * width_ + x;
-                int i2 = (z * width_) + x + 1;
-                int i3 = (z + 1) * width_ + (x + 1);
+                int i1 = (y + 1) * width_ + x;
+                int i2 = y * width_ + x;
+                int i3 = (y * width_) + x + 1;
                 // P1
-                indices_.push_back(static_cast<unsigned short>(i1));
+                indices_.push_back(static_cast<unsigned short>(i3));
                 // P2
                 indices_.push_back(static_cast<unsigned short>(i2));
                 // P3
-                indices_.push_back(static_cast<unsigned short>(i3));
+                indices_.push_back(static_cast<unsigned short>(i1));
             }
 
             {
                 // Second triangle
-                int i3 = (z + 1) * width_ + (x + 1);
-                int i2 = (z + 1) * width_ + x;
-                int i1 = z * width_ + x;
+                int i1 = y * width_ + x + 1;
+                int i2 = (y + 1) * width_ + (x + 1);
+                int i3 = (y + 1) * width_ + x;
                 // P3
                 indices_.push_back(static_cast<unsigned short>(i3));
                 // P2

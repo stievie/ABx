@@ -26,7 +26,7 @@ static void ShowUsage()
     std::cout << "  dsmm: detail sample max error, default 1.0" << std::endl;
     std::cout << "  ts: tile size, default 32" << std::endl;
     std::cout << "  hmsx: heightmap scaling X, default 1.0" << std::endl;
-    std::cout << "  hmsy: heightmap scaling Y, default 1.0" << std::endl;
+    std::cout << "  hmsy: heightmap scaling Y, default 0.25" << std::endl;
     std::cout << "  hmsz: heightmap scaling Z, default 1.0" << std::endl;
     std::cout << "Example:" << std::endl;
     std::cout << "  genavmesh -cs:0.4 sourcemesh.obj" << std::endl;
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
     settings.tileSize = 32;
     // Heightmap
     settings.hmScaleX = 1.0f;
-    settings.hmScaleY = 1.0f;
+    settings.hmScaleY = 0.25f;    // Urho3D default
     settings.hmScaleZ = 1.0f;
 
     int filesStart = ParseOptions(argc, argv, settings);
@@ -196,7 +196,6 @@ int main(int argc, char** argv)
         std::cout << "Processing file " << fn << std::endl;
         if (!geom.load(&ctx, &settings, fn))
         {
-
             std::cout << "Error loading file " << fn << std::endl;
             continue;
         }
