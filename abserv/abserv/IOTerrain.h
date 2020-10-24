@@ -23,11 +23,24 @@
 
 #include "IOAsset.h"
 #include "Terrain.h"
+#include <stb/stb_image.h>
 
 namespace IO {
 
 class IOTerrain : public IOAssetImpl<Game::Terrain>
 {
+private:
+    int width_{ 0 };
+    int height_{ 0 };
+    int components_{ 0 };
+    stbi_uc* data_{ nullptr };
+    // Urho3D default spacing
+    Math::Vector3 spacing_{ 1.0f, 0.25f, 1.0f };
+    void CreateGeometry(Math::HeightMap& hm);
+    float GetRawHeight(int x, int z) const;
+    Math::Vector3 GetRawNormal(int x, int z) const;
+    bool LoadHeightMap(Game::Terrain& asset, const std::string& name);
+    bool LoadPNG(Game::Terrain& asset, const std::string& name);
 public:
     bool Import(Game::Terrain& asset, const std::string& name) override;
 };
