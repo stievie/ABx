@@ -144,7 +144,7 @@ bool IOTerrain::LoadPNG(Game::Terrain& asset, const std::string& name)
 bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
 {
     const std::string ext = sa::GetFileExt<char>(name);
-    if (ext == ".hm")
+    if (ext == ".hm" || ext == ".terrain")
         return LoadHeightMap(asset, name);
     if (ext == ".png")
         return LoadPNG(asset, name);
