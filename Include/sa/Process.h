@@ -30,6 +30,9 @@
 #elif defined(SA_PLATFORM_LINUX) || defined(SA_PLATFORM_UNIX)
 #include <spawn.h>
 #include <unistd.h>
+#if defined(SA_PLATFORM_LINUX)
+#include <linux/limits.h>
+#endif
 #else
 #error "Unsupported platform"
 #endif
