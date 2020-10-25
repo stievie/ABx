@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,12 @@
 
 #pragma once
 
-// Used by several projects
+namespace Navigation {
 
-#if defined(_DEBUG)
-//#   define DEBUG_DISPATCHER
-//#   define DEBUG_SCHEDULER
-//#   define DEBUG_NET
-//#   define DEBUG_SQL
-//#   define DEBUG_MATH
-#   define DEBUG_GAME
-#   define DEBUG_MATCH
-#   ifdef DEBUG_GAME
-//#       define DEBUG_NAVIGATION
-#       define DEBUG_PROTOCOL
-//#       define DEBUG_OCTREE
-//#       define DEBUG_COLLISION
-//#       define DEBUG_AI
-#   endif
-#else
-#endif
+enum PolyAreas
+{
+    POLYAREA_GROUND,
+    POLYAREA_OBSTACLE,
+};
 
-#if !defined(NPROFILING)
-#   define PROFILING
-#else
-#   undef PROFILING
-#endif
+}

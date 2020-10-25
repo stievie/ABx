@@ -29,6 +29,9 @@
 #include <codecvt>
 #include <sa/Process.h>
 #include <sa/StringHash.h>
+#include <absmath/BoundingBox.h>
+#include <absmath/Sphere.h>
+#include <absmath/Transformation.h>
 
 void CreateSceneAction::Execute()
 {
@@ -44,6 +47,11 @@ void CreateSceneAction::Execute()
     if (!CopySceneFile())
     {
         std::cerr << "Error copying Scene file " << file_ << " to " << outputDirectory_ << std::endl;
+    }
+    std::cout << "Saving obstacles" << std::endl;
+    if (!SaveObstacles())
+    {
+        std::cerr << "Error saving obstacles" << std::endl;
     }
     std::cout << "Creating heightmap" << std::endl;
     if (!CreateHightmap())
@@ -84,6 +92,37 @@ bool CreateSceneAction::CreateHightmap()
     return Utils::FileCopy(heightfieldFile_, fileName);
 }
 
+bool CreateSceneAction::SaveObstacles()
+{
+    std::string fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
+    std::fstream f(fileName, std::fstream::out | std::fstream::binary);
+    if (!f.is_open())
+        return false;
+
+    size_t count = obstackles_.size();
+    f.write((char*)&count, sizeof(uint64_t));
+    for (const auto& o : obstackles_)
+    {
+        size_t vertexCount = o->vertexCount_;
+        f.write((char*)&vertexCount, sizeof(uint64_t));
+        for (const auto& v : o->vertexData_)
+        {
+            f.write((char*)&v.x_, sizeof(float));
+            f.write((char*)&v.y_, sizeof(float));
+            f.write((char*)&v.z_, sizeof(float));
+        }
+
+        size_t indexCount = o->indexCount_;
+        f.write((char*)&indexCount, sizeof(uint64_t));
+        for (const auto& i : o->indexData_)
+        {
+            f.write((char*)&i, sizeof(int));
+        }
+    }
+
+    return true;
+}
+
 bool CreateSceneAction::CreateNavMesh()
 {
     navmeshFile_ = heightfieldFile_ + ".navmesh";
@@ -91,7 +130,7 @@ bool CreateSceneAction::CreateNavMesh()
     // Run genavmesh
     std::stringstream ss;
 
-    ss << Utils::ConcatPath(sa::Process::GetSelfPath(), "genavmesh ");
+    ss << Utils::ConcatPath(sa::Process::GetSelfPath(), "genavmesh");
     ss << " ";
     ss << "-hmsx:" << heightmapSpacing_.x_ << " ";
     ss << "-hmsy:" << heightmapSpacing_.y_ << " ";
@@ -166,12 +205,96 @@ std::string CreateSceneAction::FindFile(const std::string& name)
 bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
 {
     using namespace sa::literals;
+
+    Math::Transformation transform;
+
+    Math::Vector3 size = Math::Vector3::One;
+    Math::Vector3 offset = Math::Vector3::Zero;
+    Math::Quaternion offsetRot = Math::Quaternion::Identity;
+
+    for (const auto& attr : node.children("attribute"))
+    {
+        const pugi::xml_attribute nameAttr = attr.attribute("name");
+        const pugi::xml_attribute valueAttr = attr.attribute("value");
+        const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+        switch (nameHash)
+        {
+        case "Position"_Hash:
+            transform.position_ = Math::Vector3(valueAttr.as_string());
+            break;
+        case "Rotation"_Hash:
+            transform.oriention_ = Math::Quaternion(valueAttr.as_string()).Normal();
+            break;
+        case "Scale"_Hash:
+            transform.scale_ = Math::Vector3(valueAttr.as_string());
+            break;
+        }
+    }
+
+    // If we have a rigid body collide by default with everything. That's also Urho3Ds default.
+    uint32_t colisionMask = 0xFFFFFFFF;
+
     for (const auto& comp : node.children("component"))
     {
         const pugi::xml_attribute type_attr = comp.attribute("type");
         const size_t type_hash = sa::StringHashRt(type_attr.as_string());
         switch (type_hash)
         {
+        case "CollisionShape"_Hash:
+        {
+            size_t collShape = "Box"_Hash;
+            for (const auto& attr : comp.children())
+            {
+                const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                const size_t valueHash = sa::StringHashRt(valueAttr.as_string());
+                switch (nameHash)
+                {
+                case "Size"_Hash:
+                    size = Math::Vector3(valueAttr.as_string());
+                    break;
+                case "Offset Position"_Hash:
+                    offset = Math::Vector3(valueAttr.as_string());
+                    break;
+                case "Offset Rotation"_Hash:
+                    offsetRot = Math::Quaternion(valueAttr.as_string()).Normal();
+                    break;
+                case "Shape Type"_Hash:
+                {
+                    collShape = valueHash;
+                }
+                }
+            }
+
+            if (collShape == "Box"_Hash && size != Math::Vector3::Zero)
+            {
+                // The object has the scaling.
+                const Math::Vector3 halfSize = (size * 0.5f);
+                Math::BoundingBox bb(offset - halfSize, offset + halfSize);
+                // Add Node and Offset rotation -> absolute orientation
+                transform.oriention_ = transform.oriention_ * offsetRot;
+                Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                Math::Shape shape = bb.GetShape();
+                for (auto& v : shape.vertexData_)
+                    v = matrix * v;
+                obstackles_.push_back(std::make_unique<Math::Shape>(shape));
+            }
+            else if ((collShape == "Sphere"_Hash || collShape == "Cylinder"_Hash) &&
+                size != Math::Vector3::Zero)
+            {
+                // The object has the scaling.
+                float radius = size.x_ * 0.5f;
+                Math::Sphere sphere(offset, radius);
+                transform.oriention_ = transform.oriention_ * offsetRot;
+                Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                Math::Shape shape = sphere.GetShape();
+                for (auto& v : shape.vertexData_)
+                    v = matrix * v;
+                obstackles_.push_back(std::make_unique<Math::Shape>(shape));
+            }
+            break;
+        }
         case "Terrain"_Hash:
         {
             for (const auto& attr : comp.children())

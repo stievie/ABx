@@ -5,16 +5,42 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genavmesh", "genavmesh\genavmesh.vcxproj", "{455420ED-2A83-4A7F-9986-4BC04E53E505}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
+		RelNoProfiling|x64 = RelNoProfiling|x64
+		RelWithDebInfo|x64 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.Debug|x64.ActiveCfg = Debug|x64
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.Debug|x64.Build.0 = Debug|x64
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.Release|x64.ActiveCfg = Release|x64
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.Release|x64.Build.0 = Release|x64
+		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelNoProfiling|x64.Build.0 = Release|x64
+		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.ActiveCfg = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.Build.0 = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.ActiveCfg = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.Build.0 = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.RelNoProfiling|x64.ActiveCfg = RelNoProfiling|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.RelNoProfiling|x64.Build.0 = RelNoProfiling|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.ActiveCfg = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.Build.0 = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.ActiveCfg = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.Build.0 = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelNoProfiling|x64.ActiveCfg = RelNoProfiling|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelNoProfiling|x64.Build.0 = RelNoProfiling|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

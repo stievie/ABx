@@ -22,6 +22,7 @@
 #pragma once
 
 #include "Vector3.h"
+#include <algorithm>
 
 namespace Math {
 
@@ -150,7 +151,7 @@ public:
     Intersection IsInsideFast(const BoundingBox& box) const;
 
     /// Return distance of a point to the surface, or 0 if inside.
-    float Distance(const Vector3& point) const { return std::max((point - center_).Length() - radius_, 0.0f); }
+    float Distance(const Vector3& point) const { return std::max<float>((point - center_).Length() - radius_, 0.0f); }
     friend std::ostream& operator << (std::ostream& os, const Sphere& value)
     {
         return os << value.center_ << " +/- " << value.radius_;

@@ -3,6 +3,7 @@
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>           // Output data structure
 #include "MathUtils.h"
+#include <fstream>
 
 MeshLoader::MeshLoader() :
     m_scale(1.0f),
@@ -57,56 +58,24 @@ void MeshLoader::addTriangle(int a, int b, int c, int& cap)
     m_triCount++;
 }
 
-float MeshLoader::GetHeight(int x, int z) const
+float MeshLoader::GetHeight(int x, int z, bool rightHand) const
 {
     if (!data_)
         return 0.0f;
 
-    if (x >= width_)
-        x = width_ - 1;
-    if (z >= height_)
-        z = height_ - 1;
     // From bottom to top
-    int offset = ((height_ - z) * width_ + x) * components_;
+    int offset;
+    if (rightHand)
+        offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
+    else
+        offset = (((height_ - 1) - z) * width_ + x) * components_;
+
     if (components_ == 1)
-    {
         return (float)data_[offset];
-    }
+
     // If more than 1 component, use the green channel for more accuracy
     return (float)data_[offset] +
         (float)data_[offset + 1] / 256.0f;
-}
-
-aiVector3D MeshLoader::GetRawNormal(int x, int z) const
-{
-    float baseHeight = GetHeight(x, z);
-    float nSlope = GetHeight(x, z - 1) - baseHeight;
-    float neSlope = GetHeight(x + 1, z - 1) - baseHeight;
-    float eSlope = GetHeight(x + 1, z) - baseHeight;
-    float seSlope = GetHeight(x + 1, z + 1) - baseHeight;
-    float sSlope = GetHeight(x, z + 1) - baseHeight;
-    float swSlope = GetHeight(x - 1, z + 1) - baseHeight;
-    float wSlope = GetHeight(x - 1, z) - baseHeight;
-    float nwSlope = GetHeight(x - 1, z - 1) - baseHeight;
-    float up = 1.0f;
-
-    aiVector3D result = Vector3Add(aiVector3D(0.0f, up, nSlope), aiVector3D(-neSlope, up, neSlope));
-    result = Vector3Add(result, aiVector3D(-eSlope, up, 0.0f));
-    result = Vector3Add(result, aiVector3D(-seSlope, up, -seSlope));
-    result = Vector3Add(result, aiVector3D(0.0f, up, -sSlope));
-    result = Vector3Add(result, aiVector3D(swSlope, up, -swSlope));
-    result = Vector3Add(result, aiVector3D(wSlope, up, 0.0f));
-    result = Vector3Add(result, aiVector3D(nwSlope, up, nwSlope));
-    // Normalize
-    float length = sqrt(result.x * result.x + result.y * result.y + result.z * result.z);
-    if (length > 0.0f)
-    {
-        result.x /= length;
-        result.y /= length;
-        result.z /= length;
-    }
-    //    result.Normalize
-    return result;
 }
 
 void MeshLoader::CalculateNormals()
@@ -137,31 +106,12 @@ void MeshLoader::CalculateNormals()
             n[2] *= d;
         }
     }
-
-/*    normals_.clear();
-    for (size_t i = 0; i < indices_.size(); i += 3)
-    {
-        const aiVector3D v0 = vertices_[indices_[i]];
-        const aiVector3D v1 = vertices_[indices_[i + 1]];
-        const aiVector3D v2 = vertices_[indices_[i + 2]];
-        aiVector3D e0 = Vector3Sub(v0, v1);
-        aiVector3D e1 = Vector3Sub(v0, v2);
-        aiVector3D n = CrossProduct(e0, e1);
-        float d = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
-        if (d > 0)
-        {
-            d = 1.0f / d;
-            n.x *= d;
-            n.y *= d;
-            n.z *= d;
-        }
-        normals_.push_back(n);
-    }
-  */
 }
 
 bool MeshLoader::load(const std::string& fileName)
 {
+    m_vcap = 0;
+    m_tcap = 0;
     // Create an instance of the Importer class
     Assimp::Importer importer;
 
@@ -193,8 +143,6 @@ bool MeshLoader::load(const std::string& fileName)
     if (!scene)
         return false;
 
-    int vcap = 0;
-    int tcap = 0;
     // Add meshes
     unsigned int num_meshes = scene->mNumMeshes;
     vertices_.clear();
@@ -208,7 +156,7 @@ bool MeshLoader::load(const std::string& fileName)
         {
             const aiVector3D* pos = &ai_mesh->mVertices[i];
             vertices_.push_back(*pos);
-            addVertex(pos->x, pos->y, pos->z, vcap);
+            addVertex(pos->x, pos->y, pos->z, m_vcap);
         }
 
         // Add indices
@@ -221,7 +169,7 @@ bool MeshLoader::load(const std::string& fileName)
                 indices_.push_back(ai_face->mIndices[0]);
                 indices_.push_back(ai_face->mIndices[1]);
                 indices_.push_back(ai_face->mIndices[2]);
-                addTriangle(ai_face->mIndices[0], ai_face->mIndices[1], ai_face->mIndices[2], tcap);
+                addTriangle(ai_face->mIndices[0], ai_face->mIndices[1], ai_face->mIndices[2], m_tcap);
             }
         }
 
@@ -234,6 +182,8 @@ bool MeshLoader::load(const std::string& fileName)
 
 bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ)
 {
+    m_vcap = 0;
+    m_tcap = 0;
     data_ = stbi_load(fileName.c_str(), &width_, &height_, &components_, 0);
 
     if (!data_)
@@ -241,21 +191,18 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         return false;
     }
 
-    int vcap = 0;
-    int tcap = 0;
     vertices_.resize(width_ * height_);
     for (int y = 0; y < height_; ++y)
     {
         for (int x = 0; x < width_; ++x)
         {
             float fy = GetHeight(x, y);
-            float fx = (float)x - (float)width_ * 0.5f;
-            float fz = (float)y - (float)height_ * 0.5f;
+            float fx = (float)x - ((float)width_ * 0.5f);
+            float fz = (float)y -((float)height_ * 0.5f);
             vertices_[y * width_ + x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ
             };
-            normals_.push_back(GetRawNormal(x, y));
-            addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, vcap);
+            addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
         }
     }
 
@@ -285,7 +232,7 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 indices_.push_back(i2);
                 // P3
                 indices_.push_back(i1);
-                addTriangle(i3, i2, i1, tcap);
+                addTriangle(i3, i2, i1, m_tcap);
             }
 
             {
@@ -299,7 +246,7 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 indices_.push_back(i2);
                 // P1
                 indices_.push_back(i1);
-                addTriangle(i3, i2, i1, tcap);
+                addTriangle(i3, i2, i1, m_tcap);
             }
         }
     }

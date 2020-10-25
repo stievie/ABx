@@ -26,6 +26,7 @@
 #include <DetourNavMeshQuery.h>
 #include "Asset.h"
 #include <absmath/Vector3.h>
+#include <abscommon/NavigationDef.h>
 
 namespace Navigation {
 

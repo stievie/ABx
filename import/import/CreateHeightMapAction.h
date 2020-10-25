@@ -52,7 +52,7 @@ private:
     void SaveObj();
     void SaveHeightMap();
     void CreateGeometry();
-    float GetRawHeight(int x, int z) const;
+    float GetRawHeight(int x, int z, bool rightHand = false) const;
     Math::Vector3 GetRawNormal(int x, int z) const;
 public:
     CreateHeightMapAction(const std::string& file, const std::string& outDir) :

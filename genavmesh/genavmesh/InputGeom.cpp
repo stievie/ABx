@@ -298,6 +298,47 @@ bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath)
     return true;
 }
 
+bool InputGeom::loadObstacles(rcContext* ctx, const std::string& filepath)
+{
+    std::fstream input(filepath, std::ios::binary | std::fstream::in);
+    if (!input.is_open())
+        return true;
+
+    // TODO: This doesn't seem to change anything
+    size_t obstacleCount = 0;
+    input.read((char*)&obstacleCount, sizeof(uint64_t));
+    for (size_t obstacle = 0; obstacle < obstacleCount; ++obstacle)
+    {
+        Math::Shape shape;
+        size_t vertexCount = 0;
+        input.read((char*)&vertexCount, sizeof(uint64_t));
+        shape.vertexData_.reserve(vertexCount);
+        for (size_t vertex = 0; vertex < vertexCount; ++vertex)
+        {
+            float x = 0.0f, y = 0.0f, z = 0.0f;
+            input.read((char*)&x, sizeof(float));
+            input.read((char*)&y, sizeof(float));
+            input.read((char*)&z, sizeof(float));
+            shape.vertexData_.push_back({ x, y, z });
+        }
+
+        size_t indexCount = 0;
+        input.read((char*)&indexCount, sizeof(uint64_t));
+        for (size_t index = 0; index < indexCount; index += 3)
+        {
+            int i1 = 0, i2 = 0, i3 = 0;
+            input.read((char*)&i1, sizeof(int));
+            input.read((char*)&i2, sizeof(int));
+            input.read((char*)&i3, sizeof(int));
+            shape.AddTriangle(i1, i2, i3);
+        }
+
+        addConvexVolume(shape.VertexData(), (int)vertexCount, shape.GetMaxHeight(), shape.GetMinHeight(), Navigation::POLYAREA_OBSTACLE);
+        obstacles_.push_back(std::move(shape));
+    }
+    return true;
+}
+
 bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
 {
     if (m_mesh)
@@ -349,12 +390,18 @@ bool InputGeom::load(rcContext* ctx, const BuildSettings* settings, const std::s
     std::string extension = filepath.substr(extensionPos);
     std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
 
+    bool result = false;
     if (extension == ".gset")
-        return loadGeomSet(ctx, filepath);
-    if (extension == ".png" || extension == ".jpg")
-        return loadHeightMap(ctx, settings, filepath);
-
-    return loadMesh(ctx, filepath);
+        result = loadGeomSet(ctx, filepath);
+    else if (extension == ".png" || extension == ".jpg")
+        result = loadHeightMap(ctx, settings, filepath);
+    else
+        result = loadMesh(ctx, filepath);
+    if (result)
+    {
+        result = loadObstacles(ctx, filepath + ".obstacles");
+    }
+    return result;
 }
 
 bool InputGeom::saveGeomSet(const BuildSettings* settings)
@@ -436,35 +483,28 @@ bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
 
     std::fstream f(filename, std::fstream::out);
     f << std::fixed << std::setprecision(6);
-    f << "o " << "heightmap" << std::endl;
+    f << "o " << "terrain" << std::endl;
 
-    /*
-        const float* verts = m_mesh->getVerts();
-        const int* tris = m_mesh->getTris();
-        for (int i = 0; i < m_mesh->getTriCount() * 3; i += 3)
-        {
-            const float* v0 = &verts[tris[i] * 3];
-            const float* v1 = &verts[tris[i + 1] * 3];
-            const float* v2 = &verts[tris[i + 2] * 3];
-        }
-        */
-
-    f << "# vertices " << m_mesh->vertices_.size() << std::endl;
     for (const auto& vert : m_mesh->vertices_)
     {
         f << "v " << vert.x << " " << vert.y << " " << vert.z << std::endl;
 
     }
 
-    /*  f << "# normals " << m_mesh->normals_.size() << std::endl;
-        for (const auto& n : m_mesh->normals_)
+    std::vector<size_t> offsets;
+    offsets.push_back(0);
+    offsets.push_back(m_mesh->vertices_.size());
+
+    for (const auto& s : obstacles_)
+    {
+        for (const auto& vert : s.vertexData_)
         {
-            f << "vn " << n.x << " " << n.y << " " << n.z << std::endl;
-        }*/
+            f << "v " << vert.x_ << " " << vert.y_ << " " << vert.z_ << std::endl;
+        }
+        offsets.push_back(offsets.back() + s.vertexData_.size());
+    }
 
-
-    f << "# indices " << m_mesh->indices_.size() << std::endl;
-
+    f << "g " << "heightmap" << std::endl;
     for (size_t i = 0; i < m_mesh->indices_.size(); i += 3)
     {
         f << "f " << (int)(m_mesh->indices_[i] + 1) << " " <<
@@ -472,13 +512,19 @@ bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
             (int)(m_mesh->indices_[i + 2] + 1) << std::endl;
     }
 
-    /*    for (size_t i = 0; i < m_mesh->indices_.size(); i += 3)
-        {
-            f << "f " << (int)(m_mesh->indices_[i] + 1) << "//" << (int)(m_mesh->indices_[i] + 1) << " " <<
-                (int)(m_mesh->indices_[i + 1] + 1) << "//" << (int)(m_mesh->indices_[i] + 1) << " " <<
-                (int)(m_mesh->indices_[i + 2] + 1)<< "//" << (int)(m_mesh->indices_[i] + 1) << std::endl;
-        }*/
+    int obstacleCount = 0;
+    for (const auto& s : obstacles_)
+    {
+        ++obstacleCount;
+        f << "g " << "obstacle" << obstacleCount << std::endl;
 
+        for (size_t i = 0; i < s.indexData_.size(); i += 3)
+        {
+            f << "f " << (int)(s.indexData_[i] + offsets[obstacleCount] + 1) << " " <<
+                (int)(s.indexData_[i + 1] + offsets[obstacleCount] + 1) << " " <<
+                (int)(s.indexData_[i + 2] + offsets[obstacleCount] + 1) << std::endl;
+        }
+    }
     f << "# EOF" << std::endl;
     f.close();
     return true;
@@ -597,7 +643,7 @@ void InputGeom::deleteOffMeshConnection(int i)
 }
 
 void InputGeom::addConvexVolume(const float* verts, const int nverts,
-    const float minh, const float maxh, unsigned char area)
+    const float minh, const float maxh, Navigation::PolyAreas area)
 {
     if (m_volumeCount >= MAX_VOLUMES) return;
     ConvexVolume* vol = &m_volumes[m_volumeCount++];

@@ -25,6 +25,8 @@
 #include <pugixml.hpp>
 #include <absmath/Vector3.h>
 #include <vector>
+#include <memory>
+#include <absmath/Shape.h>
 
 class CreateSceneAction
 {
@@ -35,9 +37,11 @@ private:
     Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
     std::string navmeshFile_{ "navmesh.bin" };
     std::vector<std::string> searchpaths_;
+    std::vector<std::unique_ptr<Math::Shape>> obstackles_;
     bool LoadScene();
     bool LoadSceneNode(const pugi::xml_node& node);
     bool CopySceneFile();
+    bool SaveObstacles();
     bool CreateHightmap();
     bool CreateNavMesh();
     bool CreateIndexFile();

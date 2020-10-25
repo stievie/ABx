@@ -149,17 +149,21 @@ void CreateHeightMapAction::CreateGeometry()
     });
 }
 
-float CreateHeightMapAction::GetRawHeight(int x, int z) const
+float CreateHeightMapAction::GetRawHeight(int x, int z, bool rightHand) const
 {
     if (!data_)
         return 0.0f;
 
     // From bottom to top
-    int offset = ((height_ - z) * width_ + x) * components_;
+    int offset;
+    if (rightHand)
+        offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
+    else
+        offset = (((height_ - 1) - z) * width_ + x) * components_;
+
     if (components_ == 1)
-    {
         return (float)data_[offset];
-    }
+
     // If more than 1 component, use the green channel for more accuracy
     return (float)data_[offset] +
         (float)data_[offset + 1] / 256.0f;

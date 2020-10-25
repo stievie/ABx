@@ -69,38 +69,14 @@ float IOTerrain::GetRawHeight(int x, int z) const
         return 0.0f;
 
     // From bottom to top
-    int offset = ((height_ - z) * width_ + x) * components_;
+    int offset = (((height_ - 1) - z) * width_ + x) * components_;
+
     if (components_ == 1)
-    {
         return (float)data_[offset];
-    }
+
     // If more than 1 component, use the green channel for more accuracy
     return (float)data_[offset] +
         (float)data_[offset + 1] / 256.0f;
-}
-
-Math::Vector3 IOTerrain::GetRawNormal(int x, int z) const
-{
-    float baseHeight = GetRawHeight(x, z);
-    float nSlope = GetRawHeight(x, z - 1) - baseHeight;
-    float neSlope = GetRawHeight(x + 1, z - 1) - baseHeight;
-    float eSlope = GetRawHeight(x + 1, z) - baseHeight;
-    float seSlope = GetRawHeight(x + 1, z + 1) - baseHeight;
-    float sSlope = GetRawHeight(x, z + 1) - baseHeight;
-    float swSlope = GetRawHeight(x - 1, z + 1) - baseHeight;
-    float wSlope = GetRawHeight(x - 1, z) - baseHeight;
-    float nwSlope = GetRawHeight(x - 1, z - 1) - baseHeight;
-    float up = 0.5f * (spacing_.x_ + spacing_.z_);
-
-    using namespace Math;
-    return (Vector3(0.0f, up, nSlope) +
-        Vector3(-neSlope, up, neSlope) +
-        Vector3(-eSlope, up, 0.0f) +
-        Vector3(-seSlope, up, -seSlope) +
-        Vector3(0.0f, up, -sSlope) +
-        Vector3(swSlope, up, -swSlope) +
-        Vector3(wSlope, up, 0.0f) +
-        Vector3(nwSlope, up, nwSlope)).Normal();
 }
 
 void IOTerrain::CreateGeometry(Math::HeightMap& hm)

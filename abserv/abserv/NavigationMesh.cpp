@@ -28,6 +28,8 @@ namespace Navigation {
 
 static const int MAX_POLYS = 2048;
 
+//#define DEBUG_NAVIGATION
+
 /// Temporary data for finding a path.
 struct FindPathData
 {
@@ -47,6 +49,7 @@ NavigationMesh::NavigationMesh() :
     queryFilter_(ea::make_unique<dtQueryFilter>()),
     pathData_(ea::make_unique<FindPathData>())
 {
+//    queryFilter_->setExcludeFlags(POLYAREA_OBSTACLE);
 }
 
 NavigationMesh::~NavigationMesh()

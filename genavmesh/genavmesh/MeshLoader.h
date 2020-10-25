@@ -19,8 +19,7 @@ private:
 
     void addVertex(float x, float y, float z, int& cap);
     void addTriangle(int a, int b, int c, int& cap);
-    float GetHeight(int x, int z) const;
-    aiVector3D GetRawNormal(int x, int z) const;
+    float GetHeight(int x, int z, bool rightHand = false) const;
     void CalculateNormals();
 
     std::string m_filename;
@@ -30,6 +29,8 @@ private:
     float* m_normals;
     int m_vertCount;
     int m_triCount;
+    int m_vcap = 0;
+    int m_tcap = 0;
 
     int width_;
     int height_;
@@ -51,6 +52,5 @@ public:
 
     std::vector<aiVector3D> vertices_;
     std::vector<int> indices_;
-    std::vector<aiVector3D> normals_;
 };
 

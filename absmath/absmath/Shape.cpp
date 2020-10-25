@@ -84,4 +84,26 @@ Shape Shape::Transformed(const Matrix4& transformation) const
     return result;
 }
 
+float Shape::GetMinHeight() const
+{
+    float result = std::numeric_limits<float>::max();
+    for (const auto& v : vertexData_)
+    {
+        if (v.y_ < result)
+            result = v.y_;
+    }
+    return result;
+}
+
+float Shape::GetMaxHeight() const
+{
+    float result = std::numeric_limits<float>::min();
+    for (const auto& v : vertexData_)
+    {
+        if (v.y_ > result)
+            result = v.y_;
+    }
+    return result;
+}
+
 }

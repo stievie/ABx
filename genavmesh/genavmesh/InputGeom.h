@@ -24,6 +24,8 @@
 #include "ChunkyTriMesh.h"
 #include "MeshLoader.h"
 #include <string>
+#include <abscommon/NavigationDef.h>
+#include <absmath/Shape.h>
 
 static const int MAX_CONVEXVOL_PTS = 12;
 
@@ -94,6 +96,7 @@ private:
     BuildSettings m_buildSettings;
     bool m_hasBuildSettings;
     MeshType type_;
+    std::vector<Math::Shape> obstacles_;
 
     /// @name Off-Mesh connections.
     ///@{
@@ -117,6 +120,7 @@ private:
     bool loadMesh(class rcContext* ctx, const std::string& filepath);
     bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
     bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
+    bool loadObstacles(rcContext* ctx, const std::string& filepath);
 public:
     InputGeom();
     ~InputGeom();
@@ -155,7 +159,7 @@ public:
     int getConvexVolumeCount() const { return m_volumeCount; }
     const ConvexVolume* getConvexVolumes() const { return m_volumes; }
     void addConvexVolume(const float* verts, const int nverts,
-        const float minh, const float maxh, unsigned char area);
+        const float minh, const float maxh, Navigation::PolyAreas area);
     void deleteConvexVolume(int i);
     void drawConvexVolumes(struct duDebugDraw* dd, bool hilight = false);
     ///@}

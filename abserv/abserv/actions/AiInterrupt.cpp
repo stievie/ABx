@@ -25,8 +25,6 @@
 #include "../Npc.h"
 #include "../Game.h"
 
-#undef DEBUG_AI
-
 namespace AI {
 namespace Actions {
 

@@ -38,7 +38,6 @@ private:
     Math::Vector3 spacing_{ 1.0f, 0.25f, 1.0f };
     void CreateGeometry(Math::HeightMap& hm);
     float GetRawHeight(int x, int z) const;
-    Math::Vector3 GetRawNormal(int x, int z) const;
     bool LoadHeightMap(Game::Terrain& asset, const std::string& name);
     bool LoadPNG(Game::Terrain& asset, const std::string& name);
 public:

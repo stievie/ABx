@@ -142,6 +142,8 @@ public:
     /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& direction) const;
     Shape Transformed(const Matrix4& transformation) const;
+    float GetMinHeight() const;
+    float GetMaxHeight() const;
 
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;
