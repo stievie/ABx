@@ -22,16 +22,31 @@
 #pragma once
 
 #include <string>
+#include <pugixml.hpp>
+#include <absmath/Vector3.h>
+#include <vector>
 
 class CreateSceneAction
 {
 private:
     std::string file_;
+    std::string outputDirectory_;
+    std::string heightfieldFile_;
+    Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
+    std::string navmeshFile_{ "navmesh.bin" };
+    std::vector<std::string> searchpaths_;
+    bool LoadScene();
+    bool LoadSceneNode(const pugi::xml_node& node);
+    bool CopySceneFile();
+    bool CreateHightmap();
+    bool CreateNavMesh();
+    bool CreateIndexFile();
+    std::string FindFile(const std::string& name);
 public:
-    CreateSceneAction(const std::string& file) :
-        file_(file)
+    CreateSceneAction(const std::string& file, const std::string& outDir) :
+        file_(file),
+        outputDirectory_(outDir)
     { }
     ~CreateSceneAction() = default;
     void Execute();
 };
-

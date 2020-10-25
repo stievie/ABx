@@ -38,6 +38,7 @@ private:
     Action action_{ Action::Unknown };
     bool ParseCommandLine();
     std::vector<std::string> files_;
+    std::string outputDirectory_;
     void ShowHelp();
 public:
     Application() = default;

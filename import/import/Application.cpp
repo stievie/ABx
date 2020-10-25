@@ -47,6 +47,20 @@ bool Application::ParseCommandLine()
         {
             action_ = Action::CreateScene;
         }
+        else if (a.compare("-o") == 0)
+        {
+            ++i;
+            if (i < arguments_.size())
+            {
+                outputDirectory_ = arguments_[i];
+                std::cout << "Output directory: " << outputDirectory_ << std::endl;
+            }
+            else
+            {
+                std::cerr << "Missing argument for -o" << std::endl;
+                return false;
+            }
+        }
         else if (a.compare("-h") == 0 || a.compare("-?") == 0)
         {
             return false;
@@ -65,7 +79,9 @@ void Application::ShowHelp()
     std::cout << "  hull: Create hull shape from model" << std::endl;
     std::cout << "  hm: Create height (for terrain) map from image" << std::endl;
     std::cout << "  model: Create model" << std::endl;
-    std::cout << "  scene: Import scene" << std::endl;
+    std::cout << "  scene: Import Urho3D scene" << std::endl;
+    std::cout << "options:" << std::endl;
+    std::cout << "  o: Output directory" << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -90,28 +106,28 @@ void Application::Run()
     case Action::CreateHull:
         for (const auto& file : files_)
         {
-            CreateHullAction action(file);
+            CreateHullAction action(file, outputDirectory_);
             action.Execute();
         }
         break;
     case Action::CreateHeightMap:
         for (const auto& file : files_)
         {
-            CreateHeightMapAction action(file);
+            CreateHeightMapAction action(file, outputDirectory_);
             action.Execute();
         }
         break;
     case Action::CreateModel:
         for (const auto& file : files_)
         {
-            CreateModelAction action(file);
+            CreateModelAction action(file, outputDirectory_);
             action.Execute();
         }
         break;
     case Action::CreateScene:
         for (const auto& file : files_)
         {
-            CreateSceneAction action(file);
+            CreateSceneAction action(file, outputDirectory_);
             action.Execute();
         }
         break;

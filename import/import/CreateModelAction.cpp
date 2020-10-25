@@ -30,10 +30,15 @@ PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/scene.h>
 PRAGMA_WARNING_POP
 #include <abscommon/StringUtils.h>
+#include <sa/StringTempl.h>
 
 void CreateModelAction::Save()
 {
-    std::string fileName = Utils::ChangeFileExt(file_, ".mdl");
+    std::string fileName;
+    if (!outputDirectory_.empty())
+        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".mdl"));
+    else
+        fileName = Utils::ChangeFileExt(file_, ".mdl");
     std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"MODL", 4);
 

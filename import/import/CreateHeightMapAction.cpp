@@ -27,10 +27,15 @@
 #include <absmath/VectorMath.h>
 #include <limits>
 #include <abscommon/StringUtils.h>
+#include <sa/StringTempl.h>
 
 void CreateHeightMapAction::SaveObj()
 {
-    std::string fileName = Utils::ChangeFileExt(file_, ".obj");
+    std::string fileName;
+    if (!outputDirectory_.empty())
+        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".obj"));
+    else
+        fileName = Utils::ChangeFileExt(file_, ".obj");
     std::fstream f(fileName, std::fstream::out);
     ObjWriter writer(f, false);
     writer.Comment(file_);
@@ -68,7 +73,12 @@ void CreateHeightMapAction::SaveObj()
 
 void CreateHeightMapAction::SaveHeightMap()
 {
-    std::string fileName = Utils::ChangeFileExt(file_, ".hm");
+    std::string fileName;
+    if (!outputDirectory_.empty())
+        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".hm"));
+    else
+        fileName = Utils::ChangeFileExt(file_, ".hm");
+
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
     // Height Data

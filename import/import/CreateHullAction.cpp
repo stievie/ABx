@@ -31,6 +31,8 @@ PRAGMA_WARNING_DISABLE_GCC("-Waddress-of-packed-member")
 #include <assimp/scene.h>
 PRAGMA_WARNING_POP
 #include <abscommon/StringUtils.h>
+#include <abscommon/FileUtils.h>
+#include <sa/StringTempl.h>
 
 void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 {
@@ -76,7 +78,11 @@ void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 
 void CreateHullAction::Save()
 {
-    std::string fileName = Utils::ChangeFileExt(file_, ".hull");
+    std::string fileName;
+    if (!outputDirectory_.empty())
+        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".hull"));
+    else
+        fileName = Utils::ChangeFileExt(file_, ".hull");
     std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"HULL", 4);
     output.write((char*)&vertexCount_, sizeof(vertexCount_));

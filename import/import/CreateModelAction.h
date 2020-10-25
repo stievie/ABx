@@ -28,6 +28,7 @@ class CreateModelAction
 {
 private:
     std::string file_;
+    std::string outputDirectory_;
     uint32_t vertexCount_{ 0 };
     uint32_t indexCount_{ 0 };
     Math::BoundingBox boundingBox_;
@@ -35,8 +36,9 @@ private:
     std::vector<unsigned> indexData_;
     void Save();
 public:
-    CreateModelAction(const std::string& file) :
-        file_(file)
+    CreateModelAction(const std::string& file, const std::string& outDir) :
+        file_(file),
+        outputDirectory_(outDir)
     { }
     ~CreateModelAction() = default;
     void Execute();

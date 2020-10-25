@@ -40,7 +40,8 @@ void BuildContext::doLog(const rcLogCategory category, const char* msg, const in
     text[count - 1] = '\0';
     m_textPoolSize += 1 + count;
     m_messages[m_messageCount++] = dst;
-    std::cout << msg << std::endl;
+    if (verbose_)
+        std::cout << msg << std::endl;
 }
 
 void BuildContext::doResetTimers()

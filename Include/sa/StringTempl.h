@@ -28,6 +28,7 @@
 #include <regex>
 #include <optional>
 #include <sa/Assert.h>
+#include <sstream>
 
 // Some string templates.
 

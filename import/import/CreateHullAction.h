@@ -29,6 +29,7 @@ class CreateHullAction
 {
 private:
     std::string file_;
+    std::string outputDirectory_;
     unsigned vertexCount_{ 0 };
     unsigned indexCount_{ 0 };
     std::vector<aiVector3D> vertexData_;
@@ -36,8 +37,9 @@ private:
     void BuildHull(const std::vector<aiVector3D>& vertices);
     void Save();
 public:
-    CreateHullAction(const std::string& file) :
-        file_(file)
+    CreateHullAction(const std::string& file, const std::string& outDir) :
+        file_(file),
+        outputDirectory_(outDir)
     {}
     ~CreateHullAction() = default;
 

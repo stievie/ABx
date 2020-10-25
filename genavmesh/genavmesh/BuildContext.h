@@ -30,7 +30,7 @@ public:
     int getLogCount() const;
     /// Returns log message text.
     const char* getLogText(const int i) const;
-
+    bool verbose_{ false };;
 protected:
     /// Virtual functions for custom implementations.
     ///@{

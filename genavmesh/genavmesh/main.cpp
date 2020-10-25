@@ -4,6 +4,10 @@
 #include "TileBuilder.h"
 #include <string>
 #include <vector>
+#include "ConfigFile.h"
+
+static bool verbose = false;
+static bool noObj = true;;
 
 static void ShowUsage()
 {
@@ -28,6 +32,8 @@ static void ShowUsage()
     std::cout << "  hmsx: heightmap scaling X, default 1.0" << std::endl;
     std::cout << "  hmsy: heightmap scaling Y, default 0.25" << std::endl;
     std::cout << "  hmsz: heightmap scaling Z, default 1.0" << std::endl;
+    std::cout << "  verbose: Log to std out" << std::endl;
+    std::cout << "  createobj: Create .obj file heightfield" << std::endl;
     std::cout << "Example:" << std::endl;
     std::cout << "  genavmesh -cs:0.4 sourcemesh.obj" << std::endl;
 }
@@ -52,6 +58,17 @@ static std::vector<std::string> split(const std::string& s, char seperator)
 
 static void ParseArg(const std::string& arg, BuildSettings& settings)
 {
+    if (arg.compare("verbose") == 0)
+    {
+        verbose = true;
+        return;
+    }
+    else if (arg.compare("createobj") == 0)
+    {
+        noObj = false;
+        return;
+    }
+
     std::vector<std::string> parts = split(arg, ':');
     if (parts.size() != 2)
         return;
@@ -158,34 +175,41 @@ int main(int argc, char** argv)
         return 1;
     }
     BuildContext ctx;
+    ctx.verbose_ = verbose;
     BuildSettings settings;
+    ConfigFile cfg;
+    if (cfg.Load("genavmesh.cfg"))
+        std::cout << "Found config file genavmesh.cfg" << std::endl;
+    else
+        std::cout << "Config file genavmesh.cfg not found" << std::endl;
+
     // Rasterization
-    settings.cellSize = 0.3f;
-    settings.cellHeight = 0.2f;
+    settings.cellSize = cfg.Get("cell-size", 0.3f);
+    settings.cellHeight = cfg.Get("cell-height", 0.2f);
     // Agent
-    settings.agentHeight = 2.0f;
-    settings.agentRadius = 0.6f;
-    settings.agentMaxClimb = 0.9f;
-    settings.agentMaxSlope = 45.0f;
+    settings.agentHeight = cfg.Get("agent-height", 2.0f);
+    settings.agentRadius = cfg.Get("agent-radius", 0.6f);
+    settings.agentMaxClimb = cfg.Get("agent-max-climb", 0.9f);
+    settings.agentMaxSlope = cfg.Get("agent-max-slope", 45.0f);
     // Region
-    settings.regionMinSize = 8.0f;
-    settings.regionMergeSize = 20.0f;
+    settings.regionMinSize = cfg.Get("region-min-size", 8.0f);
+    settings.regionMergeSize = cfg.Get("region-merge-size", 20.0f);
     // Partitioning
-    settings.partitionType = 1;
+    settings.partitionType = cfg.Get<int>("partition-type", 1);
     // Filtering
     // Polygonization
-    settings.edgeMaxLen = 12.0f;
-    settings.edgeMaxError = 1.3f;
-    settings.vertsPerPoly = 6;
+    settings.edgeMaxLen = cfg.Get("edge-max-len", 12.0f);
+    settings.edgeMaxError = cfg.Get("edge-max-error", 1.3f);
+    settings.vertsPerPoly = (float)cfg.Get<int>("verts-per-poly", 6);
     // Detail Mesh
-    settings.detailSampleDist = 6.0f;
-    settings.detailSampleMaxError = 1.0f;
-    // Tailing
-    settings.tileSize = 32;
+    settings.detailSampleDist = (float)cfg.Get<int>("details-sample-dist", 6);
+    settings.detailSampleMaxError = (float)cfg.Get<int>("details-sample-max-error", 1);
+    // Tiling
+    settings.tileSize = (float)cfg.Get<int>("tile-size", 32);
     // Heightmap
-    settings.hmScaleX = 1.0f;
-    settings.hmScaleY = 0.25f;    // Urho3D default
-    settings.hmScaleZ = 1.0f;
+    settings.hmScaleX = cfg.Get("hm-scale-x", 1.0f);
+    settings.hmScaleY = cfg.Get("hm-scale-y", 0.25f);    // Urho3D default
+    settings.hmScaleZ = cfg.Get("hm-scale-z", 1.0f);
 
     int filesStart = ParseOptions(argc, argv, settings);
 
@@ -196,24 +220,24 @@ int main(int argc, char** argv)
         std::cout << "Processing file " << fn << std::endl;
         if (!geom.load(&ctx, &settings, fn))
         {
-            std::cout << "Error loading file " << fn << std::endl;
+            std::cerr << "Error loading file " << fn << std::endl;
             continue;
         }
         rcVcopy(settings.navMeshBMin, geom.getNavMeshBoundsMin());
         rcVcopy(settings.navMeshBMax, geom.getNavMeshBoundsMax());
         if (!geom.saveGeomSet(&settings))
         {
-            std::cout << "Error generating geometry set" << std::endl;
+            std::cerr << "Error generating geometry set" << std::endl;
             continue;
         }
 
-        if (geom.GetType() == InputGeom::MeshTypeHeightmap)
+        if (geom.GetType() == InputGeom::MeshTypeHeightmap && !noObj)
         {
             std::string objFile = fn + ".obj";
             if (geom.saveObj(&settings, objFile))
                 std::cout << "Saved height map mesh to " << objFile << std::endl;
             else
-                std::cout << "Error saving mesh" << std::endl;
+                std::cerr << "Error saving mesh" << std::endl;
         }
 
         TileBuilder builder(&ctx);

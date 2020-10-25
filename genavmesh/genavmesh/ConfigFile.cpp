@@ -19,37 +19,37 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "Process.hpp"
+#include "ConfigFile.h"
+#include <iostream>
+#include <fstream>
 
-namespace System {
+ConfigFile::ConfigFile()
+{ }
 
-Process::Process(const string_type &command, const string_type &path,
-    std::function<void(const char* bytes, size_t n)> read_stdout,
-    std::function<void(const char* bytes, size_t n)> read_stderr,
-    bool open_stdin, size_t buffer_size) noexcept:
-    closed(true),
-        read_stdout(std::move(read_stdout)),
-        read_stderr(std::move(read_stderr)),
-        open_stdin(open_stdin),
-        buffer_size(buffer_size)
+ConfigFile::~ConfigFile()
+{ }
+
+bool ConfigFile::Load(const std::string& filename)
 {
-    open(command, path);
-    async_read();
-}
+    entires_.clear();
 
-Process::~Process() noexcept
-{
-    close_fds();
-}
+    std::ifstream in(filename);
+    if (!in.is_open())
+        return false;
 
-Process::id_type Process::get_id() const noexcept
-{
-    return data.id;
-}
+    std::string line;
+    while (std::getline(in, line))
+    {
+        line = sa::Trim<char>(line, " \t");
+        if (line.empty() || line[0] == '#')
+            continue;
 
-bool Process::write(const std::string &_data)
-{
-    return write(_data.c_str(), _data.size());
-}
+        auto parts = sa::Split(line, "=", false, false);
+        if (parts.size() != 2)
+            continue;
 
-} // System
+        entires_.emplace(sa::Trim<char>(parts[0]), sa::Trim<char>(parts[1]));
+    }
+
+    return true;
+}

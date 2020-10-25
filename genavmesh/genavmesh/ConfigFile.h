@@ -19,37 +19,43 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "Process.hpp"
+#pragma once
 
-namespace System {
+#include <string>
+#include <map>
+#include <sa/StringTempl.h>
+#include <optional>
 
-Process::Process(const string_type &command, const string_type &path,
-    std::function<void(const char* bytes, size_t n)> read_stdout,
-    std::function<void(const char* bytes, size_t n)> read_stderr,
-    bool open_stdin, size_t buffer_size) noexcept:
-    closed(true),
-        read_stdout(std::move(read_stdout)),
-        read_stderr(std::move(read_stderr)),
-        open_stdin(open_stdin),
-        buffer_size(buffer_size)
+class ConfigFile
 {
-    open(command, path);
-    async_read();
+private:
+    std::map<std::string, std::string> entires_;
+public:
+    ConfigFile();
+    ~ConfigFile();
+    bool Load(const std::string& filename);
+    template<typename T>
+    inline T Get(const std::string& name, T def);
+
+};
+
+template<>
+inline std::string ConfigFile::Get<std::string>(const std::string& name, std::string def)
+{
+    const auto it = entires_.find(name);
+    if (it == entires_.end())
+        return def;
+    return (*it).second;
 }
 
-Process::~Process() noexcept
+template<typename T>
+inline T ConfigFile::Get(const std::string& name, T def)
 {
-    close_fds();
+    const auto it = entires_.find(name);
+    if (it == entires_.end())
+        return def;
+    const auto res = sa::to_number<T>((*it).second);
+    if (res.has_value())
+        return  res.value();
+    return def;
 }
-
-Process::id_type Process::get_id() const noexcept
-{
-    return data.id;
-}
-
-bool Process::write(const std::string &_data)
-{
-    return write(_data.c_str(), _data.size());
-}
-
-} // System

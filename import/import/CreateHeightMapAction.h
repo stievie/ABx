@@ -36,6 +36,7 @@ class CreateHeightMapAction
 private:
     std::vector<Math::Vector3> vertices_;
     std::string file_;
+    std::string outputDirectory_;
     /// Vertex and height spacing.
     Math::Vector3 spacing_;
     std::vector<float> heightData_;
@@ -54,8 +55,9 @@ private:
     float GetRawHeight(int x, int z) const;
     Math::Vector3 GetRawNormal(int x, int z) const;
 public:
-    CreateHeightMapAction(const std::string& file) :
+    CreateHeightMapAction(const std::string& file, const std::string& outDir) :
         file_(file),
+        outputDirectory_(outDir),
         spacing_(Math::Vector3(1.0f, 0.2f, 1.0f))
     {}
     ~CreateHeightMapAction()
