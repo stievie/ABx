@@ -1,6 +1,7 @@
 # genavmesh
 
-Generate Detour navmeshes from input geometry.
+Generate Detour navmeshes from input geometry. This can be either an `.obj` file
+or a `.png` heightmap.
 
 ## Dependencies
 
