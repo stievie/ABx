@@ -96,7 +96,6 @@ private:
     float m_meshBMin[3], m_meshBMax[3];
     BuildSettings m_buildSettings;
     bool m_hasBuildSettings;
-    MeshType type_;
     std::vector<Math::Shape> obstacles_;
 
     /// @name Off-Mesh connections.
@@ -118,6 +117,7 @@ private:
     int m_volumeCount;
     ///@}
 
+    MeshType type_;
     bool loadMesh(class rcContext* ctx, const std::string& filepath);
     bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
     bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);

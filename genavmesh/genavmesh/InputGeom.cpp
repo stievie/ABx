@@ -298,7 +298,7 @@ bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath)
     return true;
 }
 
-bool InputGeom::loadObstacles(rcContext* ctx, const std::string& filepath)
+bool InputGeom::loadObstacles(rcContext*, const std::string& filepath)
 {
     std::fstream input(filepath, std::ios::binary | std::fstream::in);
     if (!input.is_open())
