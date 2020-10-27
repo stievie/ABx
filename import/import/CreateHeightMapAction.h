@@ -34,31 +34,24 @@ PRAGMA_WARNING_POP
 class CreateHeightMapAction
 {
 private:
-    std::vector<Math::Vector3> vertices_;
     std::string file_;
     std::string outputDirectory_;
-    /// Vertex and height spacing.
-    Math::Vector3 spacing_;
     std::vector<float> heightData_;
     float minHeight_;
     float maxHeight_;
-    std::vector<int> indices_;
-    std::vector<Math::Vector3> normals_;
 
     int width_{ 0 };
     int height_{ 0 };
     int components_{ 0 };
     stbi_uc* data_{ nullptr };
-    void SaveObj();
     void SaveHeightMap();
     void CreateGeometry();
-    float GetRawHeight(int x, int z, bool rightHand = false) const;
-    Math::Vector3 GetRawNormal(int x, int z) const;
 public:
     CreateHeightMapAction(const std::string& file, const std::string& outDir) :
         file_(file),
         outputDirectory_(outDir),
-        spacing_(Math::Vector3(1.0f, 0.2f, 1.0f))
+        spacing_(Math::Vector3(1.0f, 0.2f, 1.0f)),
+        patchSize_(32)
     {}
     ~CreateHeightMapAction()
     {
@@ -66,5 +59,8 @@ public:
             free(data_);
     }
     void Execute();
-};
 
+    /// Vertex and height spacing.
+    Math::Vector3 spacing_;
+    int patchSize_{ 32 };
+};

@@ -32,5 +32,6 @@ std::string AddSlash(const std::string& dir);
 /// Files with a leading dot are hidden
 bool IsHiddenFile(const std::string& path);
 std::string GetExeName();
+bool EnsureDirectory(const std::string& dir);
 
 }

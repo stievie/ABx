@@ -28,56 +28,15 @@
 #include <limits>
 #include <abscommon/StringUtils.h>
 #include <sa/StringTempl.h>
-
-void CreateHeightMapAction::SaveObj()
-{
-    std::string fileName;
-    if (!outputDirectory_.empty())
-        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".obj"));
-    else
-        fileName = Utils::ChangeFileExt(file_, ".obj");
-    std::fstream f(fileName, std::fstream::out);
-    ObjWriter writer(f, false);
-    writer.Comment(file_);
-    writer.Object("heightmap");
-
-    if (vertices_.size() < 3)
-        return;
-
-    writer.Comment(std::to_string(vertices_.size()) + " vertices");
-    for (const auto& v : vertices_)
-    {
-        const Math::Vector3 vec = v * spacing_;
-        writer.Vertex(vec.x_, vec.y_, vec.z_);
-    }
-    writer.Comment(std::to_string(indices_.size()) + " normals");
-    for (const auto& n : normals_)
-    {
-        writer.Normal(n.x_, n.y_, n.z_);
-    }
-    writer.Comment(std::to_string(indices_.size()) + " indices");
-    for (size_t i = 0; i < indices_.size(); )
-    {
-        writer.BeginFace();
-        // Indices in OBJ are 1-based
-        writer << indices_[i] + 1 << indices_[i + 1] + 1 << indices_[i + 2] + 1;
-        writer.EndFace();
-
-        i += 3;
-    }
-
-    f.close();
-
-    std::cout << "Created " << fileName << std::endl;
-}
+#include <absmath/Point.h>
 
 void CreateHeightMapAction::SaveHeightMap()
 {
     std::string fileName;
     if (!outputDirectory_.empty())
-        fileName = Utils::ConcatPath(outputDirectory_, Utils::ChangeFileExt(sa::ExtractFileName<char>(file_), ".hm"));
+        fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(file_) + ".hm");
     else
-        fileName = Utils::ChangeFileExt(file_, ".hm");
+        fileName = file_ + ".hm";
 
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
@@ -91,106 +50,79 @@ void CreateHeightMapAction::SaveHeightMap()
     output.write((char*)&c, sizeof(c));
     output.write((char*)heightData_.data(), c * sizeof(float));
 
-    // Shape data
-    unsigned vertexCount = (unsigned)vertices_.size();
-    output.write((char*)&vertexCount, sizeof(vertexCount));
-    for (const auto& v : vertices_)
-    {
-        output.write((char*)&v.x_, sizeof(float));
-        output.write((char*)&v.y_, sizeof(float));
-        output.write((char*)&v.z_, sizeof(float));
-    }
-    unsigned indexCount = (unsigned)indices_.size();
-    output.write((char*)&indexCount, sizeof(indexCount));
-    for (const auto& i : indices_)
-    {
-        output.write((char*)&i, sizeof(int));
-    }
-
     output.close();
     std::cout << "Created " << fileName << std::endl;
 }
 
 void CreateHeightMapAction::CreateGeometry()
 {
+//    Math::Point<float> patchWorldSize = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
+    Math::Point<int> numPatches = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
+    Math::Point<int> numVertices = { numPatches.x_ * patchSize_ + 1, numPatches.y_ * patchSize_ + 1 };
+
+    unsigned imgRow = width_ * components_;
+
+    auto getHeight = [&](int x, int z, bool rightHand = false) -> float
+    {
+        if (!data_)
+            return 0.0f;
+
+        // From bottom to top
+        int offset;
+        if (rightHand)
+            offset = imgRow * (numVertices.y_ - 1 - z) + ((numVertices.x_ - 1) - x);
+        else
+            offset = imgRow * (numVertices.y_ - 1 - z) + x;
+
+        if (components_ == 1)
+            return (float)data_[offset];
+
+        // If more than 1 component, use the green channel for more accuracy
+        return (float)data_[offset] +
+            (float)data_[offset + 1] / 256.0f;
+    };
+
+    auto getNormal = [&](int x, int z) -> Math::Vector3
+    {
+        float baseHeight = getHeight(x, z);
+        float nSlope = getHeight(x, z - 1) - baseHeight;
+        float neSlope = getHeight(x + 1, z - 1) - baseHeight;
+        float eSlope = getHeight(x + 1, z) - baseHeight;
+        float seSlope = getHeight(x + 1, z + 1) - baseHeight;
+        float sSlope = getHeight(x, z + 1) - baseHeight;
+        float swSlope = getHeight(x - 1, z + 1) - baseHeight;
+        float wSlope = getHeight(x - 1, z) - baseHeight;
+        float nwSlope = getHeight(x - 1, z - 1) - baseHeight;
+        float up = 0.5f * (spacing_.x_ + spacing_.z_);
+
+        using namespace Math;
+        return (Vector3(0.0f, up, nSlope) +
+            Vector3(-neSlope, up, neSlope) +
+            Vector3(-eSlope, up, 0.0f) +
+            Vector3(-seSlope, up, -seSlope) +
+            Vector3(0.0f, up, -sSlope) +
+            Vector3(swSlope, up, -swSlope) +
+            Vector3(wSlope, up, 0.0f) +
+            Vector3(nwSlope, up, nwSlope)).Normal();
+    };
+
     minHeight_ = std::numeric_limits<float>::max();
     maxHeight_ = std::numeric_limits<float>::lowest();
-    vertices_.resize(width_ * height_);
-    normals_.resize(width_ * height_);
-    heightData_.resize(width_ * height_);
-    for (int y = 0; y < height_; ++y)
+
+    heightData_.resize((size_t)numVertices.x_ * (size_t)numVertices.y_);
+    for (int y = 0; y < numVertices.y_; ++y)
     {
-        for (int x = 0; x < width_; ++x)
+        for (int x = 0; x < numVertices.x_; ++x)
         {
-            float fy = GetRawHeight(x, y);
-            heightData_[y * width_ + x] = fy;
+            float fy = getHeight(x, y);
+            heightData_[y * numVertices.x_ + x] = fy;
             if (minHeight_ > fy)
                 minHeight_ = fy;
             if (maxHeight_ < fy)
                 maxHeight_ = fy;
-            float fx = (float)x - (float)width_ * 0.5f;
-            float fz = (float)y - (float)height_ * 0.5f;
-            vertices_[y * width_ + x] = {
-                fx,
-                fy,
-                fz
-            };
-
-            normals_.push_back(GetRawNormal(x, y));
         }
     }
 
-    Math::GetTriangleIndices(width_, height_, [&](int i1, int i2, int i3)
-    {
-        indices_.push_back(i1);
-        indices_.push_back(i2);
-        indices_.push_back(i3);
-        return Iteration::Continue;
-    });
-}
-
-float CreateHeightMapAction::GetRawHeight(int x, int z, bool rightHand) const
-{
-    if (!data_)
-        return 0.0f;
-
-    // From bottom to top
-    int offset;
-    if (rightHand)
-        offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
-    else
-        offset = (((height_ - 1) - z) * width_ + x) * components_;
-
-    if (components_ == 1)
-        return (float)data_[offset];
-
-    // If more than 1 component, use the green channel for more accuracy
-    return (float)data_[offset] +
-        (float)data_[offset + 1] / 256.0f;
-}
-
-Math::Vector3 CreateHeightMapAction::GetRawNormal(int x, int z) const
-{
-    float baseHeight = GetRawHeight(x, z);
-    float nSlope = GetRawHeight(x, z - 1) - baseHeight;
-    float neSlope = GetRawHeight(x + 1, z - 1) - baseHeight;
-    float eSlope = GetRawHeight(x + 1, z) - baseHeight;
-    float seSlope = GetRawHeight(x + 1, z + 1) - baseHeight;
-    float sSlope = GetRawHeight(x, z + 1) - baseHeight;
-    float swSlope = GetRawHeight(x - 1, z + 1) - baseHeight;
-    float wSlope = GetRawHeight(x - 1, z) - baseHeight;
-    float nwSlope = GetRawHeight(x - 1, z - 1) - baseHeight;
-    float up = 0.5f * (spacing_.x_ + spacing_.z_);
-
-    using namespace Math;
-    return (Vector3(0.0f, up, nSlope) +
-        Vector3(-neSlope, up, neSlope) +
-        Vector3(-eSlope, up, 0.0f) +
-        Vector3(-seSlope, up, -seSlope) +
-        Vector3(0.0f, up, -sSlope) +
-        Vector3(swSlope, up, -swSlope) +
-        Vector3(wSlope, up, 0.0f) +
-        Vector3(nwSlope, up, nwSlope)).Normal();
 }
 
 void CreateHeightMapAction::Execute()
@@ -206,6 +138,6 @@ void CreateHeightMapAction::Execute()
     CreateGeometry();
 
     SaveHeightMap();
-    SaveObj();
-
+    free(data_);
+    data_ = nullptr;
 }

@@ -7,7 +7,7 @@
 #include "ConfigFile.h"
 
 static bool verbose = false;
-static bool noObj = true;;
+static bool noObj = true;
 
 static void ShowUsage()
 {
@@ -150,6 +150,10 @@ static void ParseArg(const std::string& arg, BuildSettings& settings)
     {
         settings.hmScaleZ = (float)std::atof(value.c_str());
     }
+    else if (name.compare("hmps") == 0 || name.compare("heightmap-patch-size") == 0)
+    {
+        settings.hmPatchSize = std::atoi(value.c_str());
+    }
     else
         std::cout << "Warning: Unknown command line switch " << name << std::endl;
 }
@@ -210,6 +214,7 @@ int main(int argc, char** argv)
     settings.hmScaleX = cfg.Get("hm-scale-x", 1.0f);
     settings.hmScaleY = cfg.Get("hm-scale-y", 0.25f);    // Urho3D default
     settings.hmScaleZ = cfg.Get("hm-scale-z", 1.0f);
+    settings.hmPatchSize = cfg.Get("hm-patch-size", 32);
 
     int filesStart = ParseOptions(argc, argv, settings);
 

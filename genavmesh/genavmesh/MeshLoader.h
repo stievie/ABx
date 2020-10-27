@@ -19,7 +19,6 @@ private:
 
     void addVertex(float x, float y, float z, int& cap);
     void addTriangle(int a, int b, int c, int& cap);
-    float GetHeight(int x, int z, bool rightHand = false) const;
     void CalculateNormals();
 
     std::string m_filename;
@@ -35,13 +34,16 @@ private:
     int width_;
     int height_;
     int components_;
+    float hmMinHeight_;
+    float hmMaxHeight_;
+
     stbi_uc* data_;
 public:
     MeshLoader();
     ~MeshLoader();
 
     bool load(const std::string& fileName);
-    bool loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ);
+    bool loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ, int patchSize);
 
     const float* getVerts() const { return m_verts; }
     const float* getNormals() const { return m_normals; }

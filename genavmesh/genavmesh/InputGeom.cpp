@@ -333,7 +333,7 @@ bool InputGeom::loadObstacles(rcContext* ctx, const std::string& filepath)
             shape.AddTriangle(i1, i2, i3);
         }
 
-        addConvexVolume(shape.VertexData(), (int)vertexCount, shape.GetMaxHeight(), shape.GetMinHeight(), Navigation::POLYAREA_OBSTACLE);
+        addConvexVolume(shape.VertexData(), (int)vertexCount, shape.GetMinHeight(), shape.GetMaxHeight(), Navigation::POLYAREA_OBSTACLE);
         obstacles_.push_back(std::move(shape));
     }
     return true;
@@ -357,7 +357,7 @@ bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, con
         ctx->log(RC_LOG_ERROR, "loadMesh: Out of memory 'm_mesh'.");
         return false;
     }
-    if (!m_mesh->loadHeightmap(filepath, settings->hmScaleX, settings->hmScaleY, settings->hmScaleZ))
+    if (!m_mesh->loadHeightmap(filepath, settings->hmScaleX, settings->hmScaleY, settings->hmScaleZ, settings->hmPatchSize))
     {
         ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not load '%s'", filepath.c_str());
         return false;
@@ -488,7 +488,6 @@ bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
     for (const auto& vert : m_mesh->vertices_)
     {
         f << "v " << vert.x << " " << vert.y << " " << vert.z << std::endl;
-
     }
 
     std::vector<size_t> offsets;

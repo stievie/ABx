@@ -77,6 +77,7 @@ struct BuildSettings
     float hmScaleX;
     float hmScaleY;
     float hmScaleZ;
+    int hmPatchSize;
 };
 
 class InputGeom

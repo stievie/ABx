@@ -114,6 +114,8 @@ bool IOTerrain::LoadPNG(Game::Terrain& asset, const std::string& name)
     heightMap->numVertices_ = { width_, height_ };
     CreateGeometry(*heightMap);
     heightMap->ProcessData();
+    free(data_);
+    data_ = nullptr;
     return true;
 }
 

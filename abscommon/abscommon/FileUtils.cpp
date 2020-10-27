@@ -30,6 +30,15 @@
 #include <linux/limits.h>
 #include <unistd.h>
 #endif
+#if __cplusplus < 201703L
+#   if !defined(__clang__)
+#       include <filesystem>
+#   else
+#       include <experimental/filesystem>
+#   endif
+#else
+#   include <filesystem>
+#endif
 
 namespace Utils {
 
@@ -107,6 +116,21 @@ std::string GetExeName()
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
     return std::string(buff, (count > 0) ? count : 0);
 #endif
+}
+
+bool EnsureDirectory(const std::string& dir)
+{
+#if __cplusplus < 201703L
+    // C++14
+    namespace fs = std::experimental::filesystem;
+#else
+    // C++17
+    namespace fs = std::filesystem;
+#endif
+    fs::path p(dir);
+    if (fs::exists(p))
+        return true;
+    return fs::create_directories(p);
 }
 
 }

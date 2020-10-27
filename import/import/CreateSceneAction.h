@@ -35,6 +35,7 @@ private:
     std::string outputDirectory_;
     std::string heightfieldFile_;
     Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
+    int patchSize_{ 32 };
     std::string navmeshFile_{ "navmesh.bin" };
     std::vector<std::string> searchpaths_;
     std::vector<std::unique_ptr<Math::Shape>> obstackles_;

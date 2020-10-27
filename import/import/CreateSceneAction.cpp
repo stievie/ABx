@@ -32,38 +32,38 @@
 #include <absmath/BoundingBox.h>
 #include <absmath/Sphere.h>
 #include <absmath/Transformation.h>
+#include "CreateHeightMapAction.h"
 
 void CreateSceneAction::Execute()
 {
+    if (!Utils::EnsureDirectory(outputDirectory_))
+    {
+        std::cerr << "Error creating directory " << outputDirectory_ << std::endl;
+        return;
+    }
     searchpaths_.push_back(Utils::ExtractFileDir(file_) + "/");
     searchpaths_.push_back(Utils::ExtractFileDir(file_) + "/../");
-    std::cout << "Loading scene " << file_ << std::endl;
     if (!LoadScene())
     {
         std::cerr << "Error loading scene " << file_ << std::endl;
         return;
     }
-    std::cout << "Copy scene file " << file_ << " to " << outputDirectory_ << std::endl;
     if (!CopySceneFile())
     {
         std::cerr << "Error copying Scene file " << file_ << " to " << outputDirectory_ << std::endl;
     }
-    std::cout << "Saving obstacles" << std::endl;
     if (!SaveObstacles())
     {
         std::cerr << "Error saving obstacles" << std::endl;
     }
-    std::cout << "Creating heightmap" << std::endl;
     if (!CreateHightmap())
     {
         std::cerr << "Error creating height map" << std::endl;
     }
-    std::cout << "Creating navigation mesh" << std::endl;
     if (!CreateNavMesh())
     {
         std::cerr << "Error creating navigation mesh" << std::endl;
     }
-    std::cout << "Creating index.xml" << std::endl;
     if (!CreateIndexFile())
     {
         std::cerr << "Error creating index.xml" << std::endl;
@@ -77,6 +77,7 @@ bool CreateSceneAction::CopySceneFile()
         std::cerr << "Output directory is empty" << std::endl;
         return false;
     }
+    std::cout << "Copy scene file " << file_ << " to " << outputDirectory_ << std::endl;
     std::string fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(file_));
     return Utils::FileCopy(file_, fileName);
 }
@@ -89,7 +90,15 @@ bool CreateSceneAction::CreateHightmap()
         return false;
     }
     std::string fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_));
-    return Utils::FileCopy(heightfieldFile_, fileName);
+    std::cout << "Copying heightmap " << heightfieldFile_ << std::endl;
+    if (!Utils::FileCopy(heightfieldFile_, fileName))
+        return false;
+
+    CreateHeightMapAction action(heightfieldFile_, outputDirectory_);
+    action.patchSize_ = patchSize_;
+    action.spacing_ = heightmapSpacing_;
+    action.Execute();
+    return true;
 }
 
 bool CreateSceneAction::SaveObstacles()
@@ -100,6 +109,8 @@ bool CreateSceneAction::SaveObstacles()
         return false;
 
     size_t count = obstackles_.size();
+    std::cout << "Saving " << count << " obstacles to " << fileName << std::endl;
+
     f.write((char*)&count, sizeof(uint64_t));
     for (const auto& o : obstackles_)
     {
@@ -127,6 +138,8 @@ bool CreateSceneAction::CreateNavMesh()
 {
     navmeshFile_ = heightfieldFile_ + ".navmesh";
 
+    std::cout << "Creating navigation mesh " << navmeshFile_ << " from " << heightfieldFile_ << std::endl;
+
     // Run genavmesh
     std::stringstream ss;
 
@@ -135,6 +148,7 @@ bool CreateSceneAction::CreateNavMesh()
     ss << "-hmsx:" << heightmapSpacing_.x_ << " ";
     ss << "-hmsy:" << heightmapSpacing_.y_ << " ";
     ss << "-hmsz:" << heightmapSpacing_.z_ << " ";
+    ss << "-hmps:" << patchSize_ << " ";
     std::string fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_));
     ss << Utils::EscapeArguments(fileName);
 
@@ -180,6 +194,7 @@ bool CreateSceneAction::CreateIndexFile()
     }
 
     std::string fileName = Utils::ConcatPath(outputDirectory_, "index.xml");
+    std::cout << "Creating index.xml" << std::endl;
 
     std::fstream f(fileName, std::fstream::out);
     if (!f.is_open())
@@ -278,7 +293,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 Math::Shape shape = bb.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;
-                obstackles_.push_back(std::make_unique<Math::Shape>(shape));
+                obstackles_.push_back(std::make_unique<Math::Shape>(std::move(shape)));
             }
             else if ((collShape == "Sphere"_Hash || collShape == "Cylinder"_Hash) &&
                 size != Math::Vector3::Zero)
@@ -291,7 +306,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 Math::Shape shape = sphere.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;
-                obstackles_.push_back(std::make_unique<Math::Shape>(shape));
+                obstackles_.push_back(std::make_unique<Math::Shape>(std::move(shape)));
             }
             break;
         }
@@ -306,6 +321,9 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 {
                 case "Vertex Spacing"_Hash:
                     heightmapSpacing_ = Math::Vector3(valueAttr.as_string());
+                    break;
+                case "Patch Size"_Hash:
+                    patchSize_ = valueAttr.as_int();
                     break;
                 case "Height Map"_Hash:
                 {
@@ -334,6 +352,8 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
 
 bool CreateSceneAction::LoadScene()
 {
+    patchSize_ = 32;
+    std::cout << "Loading scene " << file_ << std::endl;
     pugi::xml_document doc;
     const pugi::xml_parse_result result = doc.load_file(file_.c_str());
     if (result.status != pugi::status_ok)

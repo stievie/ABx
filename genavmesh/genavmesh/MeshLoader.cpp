@@ -4,6 +4,7 @@
 #include <assimp/scene.h>           // Output data structure
 #include "MathUtils.h"
 #include <fstream>
+#include <absmath/Point.h>
 
 MeshLoader::MeshLoader() :
     m_scale(1.0f),
@@ -56,26 +57,6 @@ void MeshLoader::addTriangle(int a, int b, int c, int& cap)
     *dst++ = b;
     *dst++ = c;
     m_triCount++;
-}
-
-float MeshLoader::GetHeight(int x, int z, bool rightHand) const
-{
-    if (!data_)
-        return 0.0f;
-
-    // From bottom to top
-    int offset;
-    if (rightHand)
-        offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
-    else
-        offset = (((height_ - 1) - z) * width_ + x) * components_;
-
-    if (components_ == 1)
-        return (float)data_[offset];
-
-    // If more than 1 component, use the green channel for more accuracy
-    return (float)data_[offset] +
-        (float)data_[offset + 1] / 256.0f;
 }
 
 void MeshLoader::CalculateNormals()
@@ -180,7 +161,7 @@ bool MeshLoader::load(const std::string& fileName)
     return true;
 }
 
-bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ)
+bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ, int patchSize)
 {
     m_vcap = 0;
     m_tcap = 0;
@@ -191,15 +172,48 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         return false;
     }
 
-    vertices_.resize(width_ * height_);
-    for (int y = 0; y < height_; ++y)
+//    Math::Point<float> patchWorldSize = { scaleX * (float)patchSize, scaleZ * (float)patchSize };
+    Math::Point<int> numPatches = { (width_ - 1) / patchSize, (height_ - 1) / patchSize };
+    Math::Point<int> numVertices = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
+
+    unsigned imgRow = width_ * components_;
+
+    auto getHeight = [&](int x, int z, bool rightHand = false) -> float
     {
-        for (int x = 0; x < width_; ++x)
+        if (!data_)
+            return 0.0f;
+
+        // From bottom to top
+        int offset;
+        if (rightHand)
+            offset = imgRow * (numVertices.y_ - 1 - z) + ((numVertices.x_ - 1) - x);
+        else
+            offset = imgRow * (numVertices.y_ - 1 - z) + x;
+
+        if (components_ == 1)
+            return (float)data_[offset];
+
+        // If more than 1 component, use the green channel for more accuracy
+        return (float)data_[offset] +
+            (float)data_[offset + 1] / 256.0f;
+    };
+
+    hmMinHeight_ = std::numeric_limits<float>::max();
+    hmMaxHeight_ = std::numeric_limits<float>::lowest();
+    vertices_.resize(numVertices.x_ * numVertices.y_);
+    for (int y = 0; y < numVertices.y_; ++y)
+    {
+        for (int x = 0; x < numVertices.x_; ++x)
         {
-            float fy = GetHeight(x, y);
-            float fx = (float)x - ((float)width_ * 0.5f);
-            float fz = (float)y -((float)height_ * 0.5f);
-            vertices_[y * width_ + x] = {
+            float fy = getHeight(x, y);
+            float fx = ((float)x - ((float)numVertices.x_ * 0.5f));
+            float fz = (float)y -((float)numVertices.y_ * 0.5f);
+            if (hmMinHeight_ > fy)
+                hmMinHeight_ = fy;
+            if (hmMaxHeight_ < fy)
+                hmMaxHeight_ = fy;
+
+            vertices_[y * numVertices.x_ + x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ
             };
             addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
@@ -207,9 +221,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
     }
 
     // Create index data
-    for (int y = 0; y < height_ - 1; ++y)
+    for (int y = 0; y < numVertices.y_ - 1; ++y)
     {
-        for (int x = 0; x < width_ - 1; ++x)
+        for (int x = 0; x < numVertices.x_ - 1; ++x)
         {
             /*
                 x+1,y
@@ -223,9 +237,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             */
             {
                 // First triangle
-                int i1 = (y + 1) * width_ + x;
-                int i2 = y * width_ + x;
-                int i3 = (y * width_) + x + 1;
+                int i1 = (y + 1) * numVertices.x_ + x;
+                int i2 = y * numVertices.x_ + x;
+                int i3 = (y * numVertices.x_) + x + 1;
                 // P1
                 indices_.push_back(i3);
                 // P2
@@ -237,9 +251,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
 
             {
                 // Second triangle
-                int i1 = y * width_ + x + 1;
-                int i2 = (y + 1) * width_ + (x + 1);
-                int i3 = (y + 1) * width_ + x;
+                int i1 = y * numVertices.x_ + x + 1;
+                int i2 = (y + 1) * numVertices.x_ + (x + 1);
+                int i3 = (y + 1) * numVertices.x_ + x;
                 // P3
                 indices_.push_back(i3);
                 // P2

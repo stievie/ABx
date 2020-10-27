@@ -1,6 +1,7 @@
 #include "TileBuilder.h"
 #include "Recast.h"
 #include <cstring>
+#include <abscommon/NavigationDef.h>
 
 static const int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET';
 static const int NAVMESHSET_VERSION = 1;
@@ -394,21 +395,15 @@ unsigned char* TileBuilder::buildTileMesh(InputGeom* geom, const BuildSettings& 
         for (int i = 0; i < m_pmesh->npolys; ++i)
         {
             if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-                m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+                m_pmesh->areas[i] = Navigation::POLYAREA_GROUND;
 
-            if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-                m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-                m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
+            if (m_pmesh->areas[i] == Navigation::POLYAREA_GROUND)
             {
-                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
+                m_pmesh->flags[i] = Navigation::POLYFLAGS_WALK;
             }
-            else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
+            else if (m_pmesh->areas[i] == Navigation::POLYAREA_WATER)
             {
-                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
-            }
-            else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
-            {
-                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
+                m_pmesh->flags[i] = Navigation::POLYFLAGS_SWIM;
             }
         }
 
