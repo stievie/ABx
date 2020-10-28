@@ -30,15 +30,7 @@
 #include <linux/limits.h>
 #include <unistd.h>
 #endif
-#if __cplusplus < 201703L
-#   if !defined(__clang__)
-#       include <filesystem>
-#   else
-#       include <experimental/filesystem>
-#   endif
-#else
-#   include <filesystem>
-#endif
+#include <filesystem>
 
 namespace Utils {
 
@@ -120,13 +112,7 @@ std::string GetExeName()
 
 bool EnsureDirectory(const std::string& dir)
 {
-#if __cplusplus < 201703L
-    // C++14
-    namespace fs = std::experimental::filesystem;
-#else
-    // C++17
     namespace fs = std::filesystem;
-#endif
     fs::path p(dir);
     if (fs::exists(p))
         return true;

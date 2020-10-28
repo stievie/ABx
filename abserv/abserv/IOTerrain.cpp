@@ -41,10 +41,18 @@ bool IOTerrain::LoadHeightMap(Game::Terrain& asset, const std::string& name)
     ea::shared_ptr<Math::HeightMap> heightMap = ea::make_shared<Math::HeightMap>();
     asset.SetHeightMap(heightMap);
 
-    heightMap->spacing_ = spacing_;
+    input.read((char*)&heightMap->numVertices_.x_, sizeof(int32_t));
+    input.read((char*)&heightMap->numVertices_.y_, sizeof(int32_t));
 
-    input.read((char*)&heightMap->numVertices_.x_, sizeof(int));
-    input.read((char*)&heightMap->numVertices_.y_, sizeof(int));
+    input.read((char*)&heightMap->patchSize_, sizeof(int32_t));
+
+    input.read((char*)&heightMap->patchWorldSize_.x_, sizeof(float));
+    input.read((char*)&heightMap->patchWorldSize_.y_, sizeof(float));
+    input.read((char*)&heightMap->numPatches_.x_, sizeof(int32_t));
+    input.read((char*)&heightMap->numPatches_.y_, sizeof(int32_t));
+    input.read((char*)&heightMap->patchWorldOrigin_.x_, sizeof(float));
+    input.read((char*)&heightMap->patchWorldOrigin_.y_, sizeof(float));
+
     input.read((char*)&heightMap->minHeight_, sizeof(float));
     input.read((char*)&heightMap->maxHeight_, sizeof(float));
 
@@ -53,81 +61,18 @@ bool IOTerrain::LoadHeightMap(Game::Terrain& asset, const std::string& name)
     //        " minHeight=" << heightMap->minHeight_ <<
     //        " maxHeight=" << heightMap->maxHeight_ << std::endl;
 #endif
-    unsigned heightsCount;
-    input.read((char*)&heightsCount, sizeof(unsigned));
-    heightMap->heightData_.resize(heightsCount);
-    input.read((char*)heightMap->heightData_.data(), sizeof(float) * heightsCount);
+    uint32_t heightsCount;
+    input.read((char*)&heightsCount, sizeof(uint32_t));
+    heightMap->heightData_.resize((size_t)heightsCount);
+    input.read((char*)heightMap->heightData_.data(), sizeof(float) * (size_t)heightsCount);
+    input.close();
 
-    heightMap->ProcessData();
-
-    return true;
-}
-
-float IOTerrain::GetRawHeight(int x, int z) const
-{
-    if (!data_)
-        return 0.0f;
-
-    // From bottom to top
-    int offset = (((height_ - 1) - z) * width_ + x) * components_;
-
-    if (components_ == 1)
-        return (float)data_[offset];
-
-    // If more than 1 component, use the green channel for more accuracy
-    return (float)data_[offset] +
-        (float)data_[offset + 1] / 256.0f;
-}
-
-void IOTerrain::CreateGeometry(Math::HeightMap& hm)
-{
-    hm.minHeight_ = std::numeric_limits<float>::max();
-    hm.maxHeight_ = std::numeric_limits<float>::lowest();
-    hm.heightData_.resize(width_ * height_);
-    for (int z = 0; z < height_; ++z)
-    {
-        for (int x = 0; x < width_; ++x)
-        {
-            float fy = GetRawHeight(x, z);
-            hm.heightData_[z * width_ + x] = fy;
-            if (hm.minHeight_ > fy)
-                hm.minHeight_ = fy;
-            if (hm.maxHeight_ < fy)
-                hm.maxHeight_ = fy;
-        }
-    }
-}
-
-bool IOTerrain::LoadPNG(Game::Terrain& asset, const std::string& name)
-{
-    AB_PROFILE;
-    data_ = stbi_load(name.c_str(), &width_, &height_, &components_, 0);
-    if (!data_)
-    {
-        LOG_ERROR << "Unable to load file " << name << std::endl;
-        return false;
-    }
-    ea::shared_ptr<Math::HeightMap> heightMap = ea::make_shared<Math::HeightMap>();
-    asset.SetHeightMap(heightMap);
-
-    heightMap->spacing_ = spacing_;
-    heightMap->numVertices_ = { width_, height_ };
-    CreateGeometry(*heightMap);
-    heightMap->ProcessData();
-    free(data_);
-    data_ = nullptr;
     return true;
 }
 
 bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
 {
-    const std::string ext = sa::GetFileExt<char>(name);
-    if (ext == ".hm" || ext == ".terrain")
-        return LoadHeightMap(asset, name);
-    if (ext == ".png")
-        return LoadPNG(asset, name);
-    LOG_ERROR << "Unknown height map file " << name << std::endl;
-    return false;
+    return LoadHeightMap(asset, name);
 }
 
 }

@@ -93,8 +93,6 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="CreateHeightMapAction.h" />
-    <ClInclude Include="CreateHullAction.h" />
-    <ClInclude Include="CreateModelAction.h" />
     <ClInclude Include="CreateSceneAction.h" />
     <ClInclude Include="ObjWriter.h" />
     <ClInclude Include="stdafx.h" />
@@ -103,8 +101,6 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CreateHeightMapAction.cpp" />
-    <ClCompile Include="CreateHullAction.cpp" />
-    <ClCompile Include="CreateModelAction.cpp" />
     <ClCompile Include="CreateSceneAction.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjWriter.cpp" />

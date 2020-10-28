@@ -277,9 +277,6 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node)
             }
             case "Terrain"_Hash:
             {
-                ASSERT(map.terrain_);
-                map.terrain_->transformation_ = Math::Transformation(pos, scale, rot);
-                map.terrain_->GetHeightMap()->SetMatrix(map.terrain_->transformation_.GetMatrix());
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& nameAttr = attr.attribute("name");
@@ -425,7 +422,7 @@ bool Load(Game::Map& map)
         LOG_ERROR << "Error loading scene " << navMeshFile << std::endl;
         return false;
     }
-
+    map.terrain_->GetHeightMap()->ProcessData();
     map.CreatePatches();
     // After loading the Scene add terrain patches as game objects
     for (size_t i = 0; i < map.GetPatchesCount(); ++i)

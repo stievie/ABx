@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
-#include "CreateHullAction.h"
 #include "CreateHeightMapAction.h"
-#include "CreateModelAction.h"
 #include "CreateSceneAction.h"
 
 bool Application::ParseCommandLine()
@@ -31,17 +29,9 @@ bool Application::ParseCommandLine()
     for (size_t i = 1; i != arguments_.size(); i++)
     {
         const std::string& a = arguments_[i];
-        if (a.compare("-hull") == 0)
-        {
-            action_ = Action::CreateHull;
-        }
-        else if (a.compare("-hm") == 0)
+        if (a.compare("-hm") == 0)
         {
             action_ = Action::CreateHeightMap;
-        }
-        else if (a.compare("-model") == 0)
-        {
-            action_ = Action::CreateModel;
         }
         else if (a.compare("-scene") == 0)
         {
@@ -76,9 +66,7 @@ void Application::ShowHelp()
     std::cout << "import -<action> [<options>] <file1>[...<fileN>]" << std::endl;
     std::cout << "action:" << std::endl;
     std::cout << "  h, ?: Show help" << std::endl;
-    std::cout << "  hull: Create hull shape from model" << std::endl;
     std::cout << "  hm: Create height (for terrain) map from image" << std::endl;
-    std::cout << "  model: Create model" << std::endl;
     std::cout << "  scene: Import Urho3D scene" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  o: Output directory" << std::endl;
@@ -103,24 +91,10 @@ void Application::Run()
 
     switch (action_)
     {
-    case Action::CreateHull:
-        for (const auto& file : files_)
-        {
-            CreateHullAction action(file, outputDirectory_);
-            action.Execute();
-        }
-        break;
     case Action::CreateHeightMap:
         for (const auto& file : files_)
         {
             CreateHeightMapAction action(file, outputDirectory_);
-            action.Execute();
-        }
-        break;
-    case Action::CreateModel:
-        for (const auto& file : files_)
-        {
-            CreateModelAction action(file, outputDirectory_);
             action.Execute();
         }
         break;

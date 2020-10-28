@@ -11,7 +11,7 @@ static bool noObj = true;
 
 static void ShowUsage()
 {
-    std::cout << "Generate Detour navmesh from input geometry or height map" << std::endl << std::endl;
+    std::cout << "Generate Detour navmesh from height map" << std::endl << std::endl;
     std::cout << "Usage: genavmesh [-<options>] files" << std::endl;
     std::cout << "options (format is -<name>:<value>):" << std::endl;
     std::cout << "  cs, cell-size: cell size, default 0.3" << std::endl;
@@ -35,7 +35,7 @@ static void ShowUsage()
     std::cout << "  verbose: Log to std out" << std::endl;
     std::cout << "  createobj: Create .obj file heightfield" << std::endl;
     std::cout << "Example:" << std::endl;
-    std::cout << "  genavmesh -cs:0.4 sourcemesh.obj" << std::endl;
+    std::cout << "  genavmesh -cs:0.4 sourcemesh.png" << std::endl;
 }
 
 static std::vector<std::string> split(const std::string& s, char seperator)
@@ -230,13 +230,8 @@ int main(int argc, char** argv)
         }
         rcVcopy(settings.navMeshBMin, geom.getNavMeshBoundsMin());
         rcVcopy(settings.navMeshBMax, geom.getNavMeshBoundsMax());
-        if (!geom.saveGeomSet(&settings))
-        {
-            std::cerr << "Error generating geometry set" << std::endl;
-            continue;
-        }
 
-        if (geom.GetType() == InputGeom::MeshTypeHeightmap && !noObj)
+        if (!noObj)
         {
             std::string objFile = fn + ".obj";
             if (geom.saveObj(&settings, objFile))

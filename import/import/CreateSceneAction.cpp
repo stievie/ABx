@@ -95,8 +95,8 @@ bool CreateSceneAction::CreateHightmap()
         return false;
 
     CreateHeightMapAction action(heightfieldFile_, outputDirectory_);
-    action.patchSize_ = patchSize_;
     action.spacing_ = heightmapSpacing_;
+    action.patchSize_ = patchSize_;
     action.Execute();
     return true;
 }
@@ -144,7 +144,7 @@ bool CreateSceneAction::CreateNavMesh()
     std::stringstream ss;
 
     ss << Utils::ConcatPath(sa::Process::GetSelfPath(), "genavmesh");
-    ss << " ";
+    ss << " -createobj ";
     ss << "-hmsx:" << heightmapSpacing_.x_ << " ";
     ss << "-hmsy:" << heightmapSpacing_.y_ << " ";
     ss << "-hmsz:" << heightmapSpacing_.z_ << " ";
@@ -190,7 +190,7 @@ bool CreateSceneAction::CreateIndexFile()
     {
         auto nd = root.append_child("file");
         nd.append_attribute("type").set_value("Terrain");
-        nd.append_attribute("src").set_value(Utils::ExtractFileName(heightfieldFile_).c_str());
+        nd.append_attribute("src").set_value(Utils::ExtractFileName(heightfieldFile_ + ".hm").c_str());
     }
 
     std::string fileName = Utils::ConcatPath(outputDirectory_, "index.xml");

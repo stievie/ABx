@@ -34,15 +34,12 @@ private:
     int width_;
     int height_;
     int components_;
-    float hmMinHeight_;
-    float hmMaxHeight_;
 
     stbi_uc* data_;
 public:
     MeshLoader();
     ~MeshLoader();
 
-    bool load(const std::string& fileName);
     bool loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ, int patchSize);
 
     const float* getVerts() const { return m_verts; }

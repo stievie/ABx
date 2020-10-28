@@ -30,9 +30,7 @@ private:
     enum class Action
     {
         Unknown,
-        CreateHull,
         CreateHeightMap,
-        CreateModel,
         CreateScene
     };
     Action action_{ Action::Unknown };

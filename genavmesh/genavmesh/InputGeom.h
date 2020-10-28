@@ -82,14 +82,6 @@ struct BuildSettings
 
 class InputGeom
 {
-public:
-    enum MeshType
-    {
-        MeshTypeUnknown,
-        MeshTypeGeomSet,
-        MeshTypeMesh,
-        MeshTypeHeightmap
-    };
 private:
     rcChunkyTriMesh* m_chunkyMesh;
     MeshLoader* m_mesh;
@@ -117,9 +109,6 @@ private:
     int m_volumeCount;
     ///@}
 
-    MeshType type_;
-    bool loadMesh(class rcContext* ctx, const std::string& filepath);
-    bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
     bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
     bool loadObstacles(rcContext* ctx, const std::string& filepath);
 public:
@@ -127,7 +116,6 @@ public:
     ~InputGeom();
 
     bool load(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
-    bool saveGeomSet(const BuildSettings* settings);
     bool saveObj(const BuildSettings* settings, const std::string& filename);
 
     /// Method to return static mesh data.
@@ -138,7 +126,6 @@ public:
     const float* getNavMeshBoundsMax() const { return m_hasBuildSettings ? m_buildSettings.navMeshBMax : m_meshBMax; }
     const rcChunkyTriMesh* getChunkyMesh() const { return m_chunkyMesh; }
     const BuildSettings* getBuildSettings() const { return m_hasBuildSettings ? &m_buildSettings : 0; }
-    MeshType GetType() const { return type_; }
     bool raycastMesh(float* src, float* dst, float& tmin);
 
     /// @name Off-Mesh connections.
