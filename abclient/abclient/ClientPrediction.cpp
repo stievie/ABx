@@ -146,6 +146,7 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
         if (!Equals(serverPos_.y_, std::numeric_limits<float>::max()))
             pos.y_ = serverPos_.y_;
     }
+//    URHO3D_LOGINFOF("Move() pos %s", pos.ToString().CString());
 
     if (CheckCollision(pos))
         player->SetMoveToPos(pos);

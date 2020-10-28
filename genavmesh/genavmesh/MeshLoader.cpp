@@ -1,7 +1,4 @@
 #include "MeshLoader.h"
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/postprocess.h>     // Post processing flags
-#include <assimp/scene.h>           // Output data structure
 #include "MathUtils.h"
 #include <fstream>
 #include <absmath/Point.h>
@@ -89,78 +86,6 @@ void MeshLoader::CalculateNormals()
     }
 }
 
-bool MeshLoader::load(const std::string& fileName)
-{
-    m_vcap = 0;
-    m_tcap = 0;
-    // Create an instance of the Importer class
-    Assimp::Importer importer;
-
-    // And have it read the given file with some example postprocessing
-    // Usually - if speed is not the most important aspect for you - you'll
-    // probably to request more postprocessing than we do in this example.
-    const aiScene* scene = importer.ReadFile(fileName.c_str(),
-        aiProcess_OptimizeMeshes
-        | aiProcess_FindDegenerates
-        | aiProcess_FindInvalidData
-
-        | aiProcess_Triangulate
-
-        // aiProcessPreset_TargetRealtime_Fast
-//        aiProcess_CalcTangentSpace |
-//        | aiProcess_GenNormals
-//        aiProcess_JoinIdenticalVertices |
-//        aiProcess_GenUVCoords |
-//        aiProcess_SortByPType //|
-
-        // aiProcess_ConvertToLeftHanded
-//        aiProcess_MakeLeftHanded |
-//        aiProcess_FlipUVs |
-//        aiProcess_FlipWindingOrder //|
-
-//        aiProcess_TransformUVCoords |
-//        aiProcess_FixInfacingNormals
-    );
-    if (!scene)
-        return false;
-
-    // Add meshes
-    unsigned int num_meshes = scene->mNumMeshes;
-    vertices_.clear();
-    indices_.clear();
-    for (unsigned int nm = 0; nm < num_meshes; nm++)
-    {
-        const aiMesh* ai_mesh = scene->mMeshes[nm];
-
-        // Add vertices
-        for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-        {
-            const aiVector3D* pos = &ai_mesh->mVertices[i];
-            vertices_.push_back(*pos);
-            addVertex(pos->x, pos->y, pos->z, m_vcap);
-        }
-
-        // Add indices
-        for (unsigned int i = 0; i < ai_mesh->mNumFaces; i++)
-        {
-            const aiFace* ai_face = &ai_mesh->mFaces[i];
-            // We triangulate the faces so it must be always 3 vertices per face.
-            if (ai_face->mNumIndices == 3)
-            {
-                indices_.push_back(ai_face->mIndices[0]);
-                indices_.push_back(ai_face->mIndices[1]);
-                indices_.push_back(ai_face->mIndices[2]);
-                addTriangle(ai_face->mIndices[0], ai_face->mIndices[1], ai_face->mIndices[2], m_tcap);
-            }
-        }
-
-    }
-
-    CalculateNormals();
-    m_filename = fileName;
-    return true;
-}
-
 bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ, int patchSize)
 {
     m_vcap = 0;
@@ -172,11 +97,8 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         return false;
     }
 
-//    Math::Point<float> patchWorldSize = { scaleX * (float)patchSize, scaleZ * (float)patchSize };
     Math::Point<int> numPatches = { (width_ - 1) / patchSize, (height_ - 1) / patchSize };
     Math::Point<int> numVertices = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
-
-    unsigned imgRow = width_ * components_;
 
     auto getHeight = [&](int x, int z, bool rightHand = false) -> float
     {
@@ -186,9 +108,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         // From bottom to top
         int offset;
         if (rightHand)
-            offset = imgRow * (numVertices.y_ - 1 - z) + ((numVertices.x_ - 1) - x);
+            offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
         else
-            offset = imgRow * (numVertices.y_ - 1 - z) + x;
+            offset = (((height_ - 1) - z) * width_ + x) * components_;
 
         if (components_ == 1)
             return (float)data_[offset];
@@ -198,8 +120,6 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             (float)data_[offset + 1] / 256.0f;
     };
 
-    hmMinHeight_ = std::numeric_limits<float>::max();
-    hmMaxHeight_ = std::numeric_limits<float>::lowest();
     vertices_.resize(numVertices.x_ * numVertices.y_);
     for (int y = 0; y < numVertices.y_; ++y)
     {
@@ -208,10 +128,6 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             float fy = getHeight(x, y);
             float fx = ((float)x - ((float)numVertices.x_ * 0.5f));
             float fz = (float)y -((float)numVertices.y_ * 0.5f);
-            if (hmMinHeight_ > fy)
-                hmMinHeight_ = fy;
-            if (hmMaxHeight_ < fy)
-                hmMaxHeight_ = fy;
 
             vertices_[y * numVertices.x_ + x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ

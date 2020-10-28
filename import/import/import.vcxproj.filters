@@ -24,16 +24,10 @@
     <ClInclude Include="Application.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CreateHullAction.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="CreateHeightMapAction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ObjWriter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateModelAction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="CreateSceneAction.h">
@@ -50,16 +44,10 @@
     <ClCompile Include="Application.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CreateHullAction.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="CreateHeightMapAction.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ObjWriter.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CreateModelAction.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CreateSceneAction.cpp">

@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<index>
-  <file type="Scene" src="Athena.xml" />
-  <file type="NavMesh" src="all_tiles_navmesh.bin" />
-  <file type="Terrain" src="athena.hm" />
-</index>

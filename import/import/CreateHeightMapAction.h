@@ -44,13 +44,16 @@ private:
     int height_{ 0 };
     int components_{ 0 };
     stbi_uc* data_{ nullptr };
+    Math::Point<int> numPatches_;
+    Math::Point<int> numVertices_;
+    Math::Point<float> patchWorldSize_;
+    Math::Point<float> patchWorldOrigin_;
     void SaveHeightMap();
     void CreateGeometry();
 public:
     CreateHeightMapAction(const std::string& file, const std::string& outDir) :
         file_(file),
         outputDirectory_(outDir),
-        spacing_(Math::Vector3(1.0f, 0.2f, 1.0f)),
         patchSize_(32)
     {}
     ~CreateHeightMapAction()
@@ -60,7 +63,6 @@ public:
     }
     void Execute();
 
-    /// Vertex and height spacing.
     Math::Vector3 spacing_;
-    int patchSize_{ 32 };
+    int32_t patchSize_{ 32 };
 };

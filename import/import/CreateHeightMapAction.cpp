@@ -28,7 +28,6 @@
 #include <limits>
 #include <abscommon/StringUtils.h>
 #include <sa/StringTempl.h>
-#include <absmath/Point.h>
 
 void CreateHeightMapAction::SaveHeightMap()
 {
@@ -41,14 +40,24 @@ void CreateHeightMapAction::SaveHeightMap()
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
     // Height Data
-    output.write((char*)&width_, sizeof(width_));
-    output.write((char*)&height_, sizeof(height_));
+    output.write((char*)&numVertices_.x_, sizeof(int32_t));
+    output.write((char*)&numVertices_.y_, sizeof(int32_t));
 
-    output.write((char*)&minHeight_, sizeof(minHeight_));
-    output.write((char*)&maxHeight_, sizeof(maxHeight_));
-    unsigned c = (unsigned)heightData_.size();
-    output.write((char*)&c, sizeof(c));
-    output.write((char*)heightData_.data(), c * sizeof(float));
+    output.write((char*)&patchSize_, sizeof(int32_t));
+
+    output.write((char*)&patchWorldSize_.x_, sizeof(float));
+    output.write((char*)&patchWorldSize_.y_, sizeof(float));
+    output.write((char*)&numPatches_.x_, sizeof(int32_t));
+    output.write((char*)&numPatches_.y_, sizeof(int32_t));
+    output.write((char*)&patchWorldOrigin_.x_, sizeof(float));
+    output.write((char*)&patchWorldOrigin_.y_, sizeof(float));
+
+    output.write((char*)&minHeight_, sizeof(float));
+    output.write((char*)&maxHeight_, sizeof(float));
+
+    uint32_t c = (uint32_t)heightData_.size();
+    output.write((char*)&c, sizeof(uint32_t));
+    output.write((char*)heightData_.data(), (size_t)c * sizeof(float));
 
     output.close();
     std::cout << "Created " << fileName << std::endl;
@@ -56,23 +65,19 @@ void CreateHeightMapAction::SaveHeightMap()
 
 void CreateHeightMapAction::CreateGeometry()
 {
-//    Math::Point<float> patchWorldSize = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
-    Math::Point<int> numPatches = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
-    Math::Point<int> numVertices = { numPatches.x_ * patchSize_ + 1, numPatches.y_ * patchSize_ + 1 };
+    patchWorldSize_ = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
+    numPatches_ = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
+    numVertices_ = { numPatches_.x_ * patchSize_ + 1, numPatches_.y_ * patchSize_ + 1 };
+    patchWorldOrigin_ = { -0.5f * (float)numPatches_.x_ * patchWorldSize_.x_, -0.5f * (float)numPatches_.y_ * patchWorldSize_.y_ };
 
-    unsigned imgRow = width_ * components_;
-
-    auto getHeight = [&](int x, int z, bool rightHand = false) -> float
+    int imgRow = width_ * components_;
+    auto getHeight = [&](int x, int z) -> float
     {
         if (!data_)
             return 0.0f;
 
         // From bottom to top
-        int offset;
-        if (rightHand)
-            offset = imgRow * (numVertices.y_ - 1 - z) + ((numVertices.x_ - 1) - x);
-        else
-            offset = imgRow * (numVertices.y_ - 1 - z) + x;
+        int offset = imgRow * (numVertices_.y_ - 1 - z) + components_ * x;
 
         if (components_ == 1)
             return (float)data_[offset];
@@ -82,47 +87,22 @@ void CreateHeightMapAction::CreateGeometry()
             (float)data_[offset + 1] / 256.0f;
     };
 
-    auto getNormal = [&](int x, int z) -> Math::Vector3
-    {
-        float baseHeight = getHeight(x, z);
-        float nSlope = getHeight(x, z - 1) - baseHeight;
-        float neSlope = getHeight(x + 1, z - 1) - baseHeight;
-        float eSlope = getHeight(x + 1, z) - baseHeight;
-        float seSlope = getHeight(x + 1, z + 1) - baseHeight;
-        float sSlope = getHeight(x, z + 1) - baseHeight;
-        float swSlope = getHeight(x - 1, z + 1) - baseHeight;
-        float wSlope = getHeight(x - 1, z) - baseHeight;
-        float nwSlope = getHeight(x - 1, z - 1) - baseHeight;
-        float up = 0.5f * (spacing_.x_ + spacing_.z_);
-
-        using namespace Math;
-        return (Vector3(0.0f, up, nSlope) +
-            Vector3(-neSlope, up, neSlope) +
-            Vector3(-eSlope, up, 0.0f) +
-            Vector3(-seSlope, up, -seSlope) +
-            Vector3(0.0f, up, -sSlope) +
-            Vector3(swSlope, up, -swSlope) +
-            Vector3(wSlope, up, 0.0f) +
-            Vector3(nwSlope, up, nwSlope)).Normal();
-    };
-
     minHeight_ = std::numeric_limits<float>::max();
     maxHeight_ = std::numeric_limits<float>::lowest();
 
-    heightData_.resize((size_t)numVertices.x_ * (size_t)numVertices.y_);
-    for (int y = 0; y < numVertices.y_; ++y)
+    heightData_.resize(numVertices_.x_ * numVertices_.y_);
+    for (int y = 0; y < numVertices_.y_; ++y)
     {
-        for (int x = 0; x < numVertices.x_; ++x)
+        for (int x = 0; x < numVertices_.x_; ++x)
         {
-            float fy = getHeight(x, y);
-            heightData_[y * numVertices.x_ + x] = fy;
+            float fy = getHeight(x, y) * spacing_.y_;
+            heightData_[y * numVertices_.x_ + x] = fy;
             if (minHeight_ > fy)
                 minHeight_ = fy;
             if (maxHeight_ < fy)
                 maxHeight_ = fy;
         }
     }
-
 }
 
 void CreateHeightMapAction::Execute()

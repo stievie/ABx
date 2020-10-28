@@ -15,7 +15,7 @@ import -scene ../abclient/bin/AbData/Scenes/Dion.xml -o data/maps/dion
 import -scene ../abclient/bin/AbData/Scenes/Dodona.xml -o data/maps/dodona
 import -scene ../abclient/bin/AbData/Scenes/Magnesia.xml -o data/maps/magnesia
 import -scene ../abclient/bin/AbData/Scenes/Pergamon.xml -o data/maps/pergamon
-import -scene ../abclient/bin/AbData/Scenes/Rhodes.xml -o data/maps/rhods
+import -scene ../abclient/bin/AbData/Scenes/Rhodes.xml -o data/maps/rhodes
 import -scene "../abclient/bin/AbData/Scenes/Rhodes Arena.xml" -o data/maps/rhodes_arena
 import -scene ../abclient/bin/AbData/Scenes/Samos.xml -o data/maps/samos
 import -scene ../abclient/bin/AbData/Scenes/Spartha.xml -o data/maps/spartha

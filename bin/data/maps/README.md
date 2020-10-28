@@ -14,6 +14,8 @@ $  import -scene "../abclient/bin/AbData/Scenes/Rhodes.xml" -o data/maps/rhodes
 
 This generates all needed files and puts them into the `data/maps/rhodes`.
 
+To generate all assets, use `genassets.bat` (Windows) or `genassets.sh` (Linux).
+
 ## Spawn Points
 
 Spawn points (Position and Rotation) are Nodes with the name `SpawnPoint`.

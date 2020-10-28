@@ -36,27 +36,9 @@ HeightMap::HeightMap() :
     inverseMatrix_ = matrix_.Inverse();
 }
 
-HeightMap::HeightMap(const ea::vector<float>& data, const Point<int>& size) :
-    minHeight_(std::numeric_limits<float>::max()),
-    maxHeight_(std::numeric_limits<float>::lowest()),
-    numVertices_(size),
-    heightData_(data)
-{
-    inverseMatrix_ = matrix_.Inverse();
-    ProcessData();
-}
-
 void HeightMap::ProcessData()
 {
     const unsigned points = static_cast<unsigned>(numVertices_.x_ * numVertices_.y_);
-    const float* fData = heightData_.data();
-
-    minHeight_ = maxHeight_ = fData[0];
-    for (unsigned i = 1; i < points; ++i)
-    {
-        minHeight_ = std::min(minHeight_, fData[i]);
-        maxHeight_ = std::max(maxHeight_, fData[i]);
-    }
 
     const Vector3 localAabbMin(0.0f, minHeight_, 0.0f);
     const Vector3 localAabbMax((float)numVertices_.x_, maxHeight_, (float)numVertices_.y_);
@@ -70,10 +52,10 @@ float HeightMap::GetRawHeight(int x, int z) const
 {
     if (!heightData_.size())
         return 0.0f;
-    // TODO: +/- 16?
-    const int _x = Clamp(x - 16, 0, numVertices_.x_ - 1);
-    const int _z = Clamp(z + 16, 0, numVertices_.y_ - 1);
-    return heightData_[static_cast<size_t>(_z * numVertices_.x_ + _x)];
+    const int _x = Clamp(x, 0, numVertices_.x_ - 1);
+    const int _z = Clamp(z, 0, numVertices_.y_ - 1);
+    const size_t offset = static_cast<size_t>(_z * numVertices_.x_ + _x);
+    return heightData_[offset];
 }
 
 Vector3 HeightMap::GetRawNormal(int x, int z) const
@@ -103,8 +85,8 @@ float HeightMap::GetHeight(const Vector3& world) const
 {
     // Get local
     const Vector3 position = inverseMatrix_ * world;
-    const float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
-    const float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
+    const float xPos = (position.x_ - patchWorldOrigin_.x_) / spacing_.x_;
+    const float zPos = (position.z_ - patchWorldOrigin_.y_) / spacing_.z_;
     float xFrac = Fract(xPos);
     float zFrac = Fract(zPos);
     const unsigned uxPos = static_cast<unsigned>(xPos);
@@ -113,28 +95,22 @@ float HeightMap::GetHeight(const Vector3& world) const
 
     if (xFrac + zFrac >= 1.0f)
     {
-        h1 = GetRawHeight(uxPos + 1, uzPos + 1) * spacing_.y_;
-        h2 = GetRawHeight(uxPos, uzPos + 1) * spacing_.y_;
-        h3 = GetRawHeight(uxPos + 1, uzPos) * spacing_.y_;
+        h1 = GetRawHeight(uxPos + 1, uzPos + 1);
+        h2 = GetRawHeight(uxPos, uzPos + 1);
+        h3 = GetRawHeight(uxPos + 1, uzPos);
         xFrac = 1.0f - xFrac;
         zFrac = 1.0f - zFrac;
     }
     else
     {
-        h1 = GetRawHeight(uxPos, uzPos) * spacing_.y_;
-        h2 = GetRawHeight(uxPos + 1, uzPos) * spacing_.y_;
-        h3 = GetRawHeight(uxPos, uzPos + 1) * spacing_.y_;
+        h1 = GetRawHeight(uxPos, uzPos);
+        h2 = GetRawHeight(uxPos + 1, uzPos);
+        h3 = GetRawHeight(uxPos, uzPos + 1);
     }
 
     const float h = h1 * (1.0f - xFrac - zFrac) + h2 * xFrac + h3 * zFrac;
 
-    /// \todo This assumes that the terrain scene node is upright
-    float result = matrix_.Scaling().y_ * h + matrix_.Translation().y_;
-#ifdef _DEBUG
-//    LOG_DEBUG << "X=" << position.x_ << " Z=" << position.z_ << " H=" << result << std::endl;
-//    LOG_DEBUG << "X=" << (unsigned)xPos << " Y=" << (unsigned)zPos << " H=" << GetRawHeight((unsigned)xPos, (unsigned)zPos) << std::endl;
-#endif
-    return result;
+    return matrix_.Scaling().y_ * h + matrix_.Translation().y_;
 }
 
 Vector3 HeightMap::GetNormal(const Vector3& world) const

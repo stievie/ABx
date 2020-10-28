@@ -58,9 +58,20 @@ public:
         x_ += x;
         y_ += y;
     }
+    std::string ToString() const
+    {
+        std::stringstream ss;
+        ss << x_ << " " << y_;
+        return ss.str();
+    }
 
-    T x_;
-    T y_;
+    friend std::ostream& operator << (std::ostream& os, const Point<T>& value)
+    {
+        return os << value.ToString();
+    }
+
+    T x_{ };
+    T y_{ };
 };
 
 }

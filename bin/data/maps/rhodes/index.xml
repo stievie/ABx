@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<index>
-  <file type="Scene" src="Rhodes.xml" />
-  <file type="NavMesh" src="navmesh.bin" />
-  <file type="Terrain" src="Rhodes_Heightfield.png" />
-</index>

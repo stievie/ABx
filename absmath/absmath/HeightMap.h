@@ -46,6 +46,9 @@ public:
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(other.numVertices_),
+        numPatches_(other.numPatches_),
+        patchWorldSize_(other.patchWorldSize_),
+        patchWorldOrigin_(other.patchWorldOrigin_),
         heightData_(other.heightData_),
         boundingBox_(other.boundingBox_)
     {}
@@ -54,11 +57,13 @@ public:
         spacing_(std::move(other.spacing_)),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
-        numVertices_(other.numVertices_),
+        numVertices_(std::move(other.numVertices_)),
+        numPatches_(std::move(other.numPatches_)),
+        patchWorldSize_(std::move(other.patchWorldSize_)),
+        patchWorldOrigin_(std::move(other.patchWorldOrigin_)),
         heightData_(std::move(other.heightData_)),
         boundingBox_(std::move(other.boundingBox_))
     {}
-    HeightMap(const ea::vector<float>& data, const Point<int>& size);
     ~HeightMap() = default;
 
     HeightMap& operator= (const HeightMap& other)
@@ -69,6 +74,9 @@ public:
             minHeight_ = other.minHeight_;
             maxHeight_ = other.maxHeight_;
             numVertices_ = other.numVertices_;
+            numPatches_ = other.numPatches_;
+            patchWorldSize_ = other.patchWorldSize_;
+            patchWorldOrigin_ = other.patchWorldOrigin_;
             heightData_ = other.heightData_;
             boundingBox_ = other.boundingBox_;
             matrix_ = other.matrix_;
@@ -80,7 +88,10 @@ public:
         spacing_ = std::move(other.spacing_);
         minHeight_ = other.minHeight_;
         maxHeight_ = other.maxHeight_;
-        numVertices_ = other.numVertices_;
+        numVertices_ = std::move(other.numVertices_);
+        numPatches_ = std::move(other.numPatches_);
+        patchWorldSize_ = std::move(other.patchWorldSize_);
+        patchWorldOrigin_ = std::move(other.patchWorldOrigin_);
         heightData_ = std::move(other.heightData_);
         boundingBox_ = std::move(other.boundingBox_);
         matrix_ = std::move(other.matrix_);
@@ -124,9 +135,14 @@ public:
 
     /// Vertex and height spacing.
     Vector3 spacing_;
+    int32_t patchSize_;
     float minHeight_;
     float maxHeight_;
-    Point<int> numVertices_;
+    Point<int32_t> numVertices_;
+    Point<int32_t> numPatches_;
+    Point<float> patchWorldSize_;
+    Point<float> patchWorldOrigin_;
+
     ea::vector<float> heightData_;
     BoundingBox boundingBox_;
 };
