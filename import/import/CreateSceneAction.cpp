@@ -138,7 +138,7 @@ bool CreateSceneAction::CreateNavMesh()
 {
     navmeshFile_ = heightfieldFile_ + ".navmesh";
 
-    std::cout << "Creating navigation mesh " << navmeshFile_ << " from " << heightfieldFile_ << std::endl;
+    std::cout << "Creating navigation mesh from " << heightfieldFile_ << std::endl;
 
     // Run genavmesh
     std::stringstream ss;

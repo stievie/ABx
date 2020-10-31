@@ -90,13 +90,13 @@ void CreateHeightMapAction::CreateGeometry()
     minHeight_ = std::numeric_limits<float>::max();
     maxHeight_ = std::numeric_limits<float>::lowest();
 
-    heightData_.resize(numVertices_.x_ * numVertices_.y_);
+    heightData_.resize((size_t)numVertices_.x_ * (size_t)numVertices_.y_);
     for (int y = 0; y < numVertices_.y_; ++y)
     {
         for (int x = 0; x < numVertices_.x_; ++x)
         {
             float fy = getHeight(x, y) * spacing_.y_;
-            heightData_[y * numVertices_.x_ + x] = fy;
+            heightData_[(size_t)y * (size_t)numVertices_.x_ + (size_t)x] = fy;
             if (minHeight_ > fy)
                 minHeight_ = fy;
             if (maxHeight_ < fy)

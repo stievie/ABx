@@ -121,7 +121,7 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             (float)data_[offset + 1] / 256.0f;
     };
 
-    vertices_.resize(numVertices.x_ * numVertices.y_);
+    vertices_.resize((size_t)numVertices.x_ * (size_t)numVertices.y_);
     for (int y = 0; y < numVertices.y_; ++y)
     {
         for (int x = 0; x < numVertices.x_; ++x)
@@ -130,7 +130,7 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             float fx = ((float)x - ((float)numVertices.x_ * 0.5f));
             float fz = (float)y -((float)numVertices.y_ * 0.5f);
 
-            vertices_[y * numVertices.x_ + x] = {
+            vertices_[(size_t)y * (size_t)numVertices.x_ + (size_t)x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ
             };
             addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
