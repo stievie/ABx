@@ -261,6 +261,11 @@ bool Actor::Attack(Actor* target, bool ping)
 {
     if (!target)
         return false;
+    auto game = GetGame();
+    if (!game)
+        return false;
+    if (!AB::Entities::IsBattle(game->data_.type))
+        return false;
     if (!CanAttack() || IsImmobilized())
         return false;
 
@@ -296,6 +301,12 @@ bool Actor::IsAttackingActor(const Actor* target) const
 
 bool Actor::UseSkill(int index, bool ping)
 {
+    auto game = GetGame();
+    if (!game)
+        return false;
+    if (!AB::Entities::IsBattle(game->data_.type))
+        return false;
+
     if (!CanUseSkill() || IsDead())
         return false;
     if (index < 0 || index >= PLAYER_MAX_SKILLS)

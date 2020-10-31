@@ -226,89 +226,89 @@ void SkillBarWindow::HandleUpdate(StringHash, VariantMap&)
 
 void SkillBarWindow::HandleSkill1Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(1);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill2Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(2);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill3Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(3);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill4Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(4);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill5Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(5);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill6Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(6);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill7Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(7);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
 void SkillBarWindow::HandleSkill8Clicked(StringHash, VariantMap&)
 {
-    if (!IsChangeable())
+    if (IsUseable())
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->UseSkill(8);
     }
-    else
+    else if (IsChangeable())
         ShowSkillsWindow();
 }
 
@@ -384,6 +384,15 @@ bool SkillBarWindow::IsChangeable() const
         return false;
     return AB::Entities::IsOutpost(lm->GetMapType());
 }
+
+bool SkillBarWindow::IsUseable() const
+{
+    auto* lm = GetSubsystem<LevelManager>();
+    if (!lm)
+        return false;
+    return AB::Entities::IsBattle(lm->GetMapType());
+}
+
 
 void SkillBarWindow::ShowSkillsWindow()
 {

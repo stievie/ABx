@@ -223,6 +223,12 @@ void InteractionComp::Interact(bool suppress, bool ping)
 
 void InteractionComp::UseSkill(bool suppress, int skillIndex, bool ping)
 {
+    auto game = owner_.GetGame();
+    if (!game)
+        return;
+    if (!AB::Entities::IsBattle(game->data_.type))
+        return;
+
     if (skillIndex < 0 || skillIndex >= PLAYER_MAX_SKILLS)
         return;
     if (owner_.IsImmobilized() || owner_.IsDead())

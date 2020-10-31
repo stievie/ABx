@@ -963,6 +963,9 @@ void WorldLevel::HandleShowCredits(StringHash, VariantMap&)
 
 void WorldLevel::HandleUseSkill(StringHash eventType, VariantMap&)
 {
+    if (!AB::Entities::IsBattle(mapType_))
+        return;
+
     FwClient* client = GetSubsystem<FwClient>();
     uint32_t index = 0;
     if (eventType == Events::E_SC_USESKILL1)

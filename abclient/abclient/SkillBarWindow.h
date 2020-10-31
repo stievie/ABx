@@ -59,6 +59,7 @@ private:
     unsigned GetSkillPosFromClientPos(const IntVector2& clientPos);
     void UpdateSkill(unsigned pos, uint32_t index);
     bool IsChangeable() const;
+    bool IsUseable() const;
     void ShowSkillsWindow();
     void HandleSkillDragBegin(StringHash eventType, VariantMap& eventData);
     void HandleSkillDragMove(StringHash eventType, VariantMap& eventData);
