@@ -72,39 +72,6 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
     return true;
 }
 
-static char* parseRow(char* buf, char* bufEnd, char* row, int len)
-{
-    bool start = true;
-    bool done = false;
-    int n = 0;
-    while (!done && buf < bufEnd)
-    {
-        char c = *buf;
-        buf++;
-        // multirow
-        switch (c)
-        {
-        case '\n':
-            if (start) break;
-            done = true;
-            break;
-        case '\r':
-            break;
-        case '\t':
-        case ' ':
-            if (start) break;
-        default:
-            start = false;
-            row[n++] = c;
-            if (n >= len - 1)
-                done = true;
-            break;
-        }
-    }
-    row[n] = '\0';
-    return buf;
-}
-
 InputGeom::InputGeom() :
     m_chunkyMesh(0),
     m_mesh(0),
