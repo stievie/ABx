@@ -2,6 +2,7 @@
 #include "MathUtils.h"
 #include <fstream>
 #include <absmath/Point.h>
+#include <cstring>
 
 MeshLoader::MeshLoader() :
     m_scale(1.0f),

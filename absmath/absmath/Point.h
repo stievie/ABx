@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <sstream>
+
 namespace Math {
 
 template<typename T>
