@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "CreateHeightMapAction.h"
-#include "ObjWriter.h"
 #include <fstream>
 #include <absmath/MathUtils.h>
 #include <absmath/VectorMath.h>

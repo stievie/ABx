@@ -43,6 +43,7 @@ public:
     HeightMap(const HeightMap& other) :
         matrix_(other.matrix_),
         spacing_(other.spacing_),
+        patchSize_(other.patchSize_),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(other.numVertices_),
@@ -55,6 +56,7 @@ public:
     HeightMap(HeightMap&& other) noexcept :
         matrix_(std::move(other.matrix_)),
         spacing_(std::move(other.spacing_)),
+        patchSize_(other.patchSize_),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(std::move(other.numVertices_)),
@@ -71,6 +73,7 @@ public:
         if (this != &other)
         {
             spacing_ = other.spacing_;
+            patchSize_ = other.patchSize_;
             minHeight_ = other.minHeight_;
             maxHeight_ = other.maxHeight_;
             numVertices_ = other.numVertices_;
@@ -86,6 +89,7 @@ public:
     HeightMap& operator= (HeightMap&& other) noexcept
     {
         spacing_ = std::move(other.spacing_);
+        patchSize_ = other.patchSize_;
         minHeight_ = other.minHeight_;
         maxHeight_ = other.maxHeight_;
         numVertices_ = std::move(other.numVertices_);

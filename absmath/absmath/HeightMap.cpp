@@ -171,18 +171,20 @@ bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
 Shape HeightMap::GetShape() const
 {
     Shape s;
-    s.vertexData_.resize(static_cast<size_t>(numVertices_.x_ + numVertices_.y_));
+    s.vertexData_.resize((size_t)numVertices_.x_ + (size_t)numVertices_.y_);
+    const float offsetX = ((float)numVertices_.x_ * 0.5f);
+    const float offsetY = ((float)numVertices_.y_ * 0.5f);
     for (int z = 0; z < numVertices_.y_; ++z)
     {
         for (int x = 0; x < numVertices_.x_; ++x)
         {
             float fy = GetRawHeight(x, z);
-            float fx = static_cast<float>(x) - static_cast<float>(numVertices_.x_) / 2.0f;
-            float fz = static_cast<float>(z) - static_cast<float>(numVertices_.y_) / 2.0f;
-            s.vertexData_[static_cast<size_t>(z * numVertices_.y_ + x)] = {
-                fx,
-                fy,
-                fz
+            float fx = static_cast<float>(x) - offsetX;
+            float fz = static_cast<float>(z) - offsetY;
+            s.vertexData_[(size_t)z * (size_t)numVertices_.y_ + (size_t)x] = {
+                fx * spacing_.x_,
+                fy * spacing_.y_,
+                fz * spacing_.z_
             };
         }
     }

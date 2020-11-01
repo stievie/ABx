@@ -101,7 +101,6 @@
     <ClInclude Include="ChunkyTriMesh.h" />
     <ClInclude Include="ConfigFile.h" />
     <ClInclude Include="InputGeom.h" />
-    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="stdafx.h" />

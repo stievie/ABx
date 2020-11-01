@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="10" />
 	<attribute name="Next Replicated Component ID" value="30" />
-	<attribute name="Next Local Node ID" value="16785332" />
-	<attribute name="Next Local Component ID" value="16785879" />
+	<attribute name="Next Local Node ID" value="16785558" />
+	<attribute name="Next Local Component ID" value="16786127" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -22,15 +22,14 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 88.3109 -47.5778" />
+		<attribute name="Position" value="0 88.3109 0" />
 		<attribute name="Rotation" value="0.00783569 -0.216298 0.588564 -0.778939" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="16779339">
 			<attribute name="Light Type" value="Directional" />
-			<attribute name="Specular Intensity" value="2" />
-			<attribute name="Brightness Multiplier" value="2" />
-			<attribute name="Temperature" value="4000" />
+			<attribute name="Brightness Multiplier" value="1.5" />
+			<attribute name="Temperature" value="2000" />
 			<attribute name="Radius" value="100" />
 			<attribute name="Length" value="100" />
 			<attribute name="Range" value="100" />
@@ -68,10 +67,11 @@
 		<attribute name="Variables" />
 		<component type="Terrain" id="16780561">
 			<attribute name="Height Map" value="Image;Textures/Island_Chain.png" />
-			<attribute name="Material" value="Material;Materials/CreteTerrain.xml" />
-			<attribute name="Vertex Spacing" value="1 0.2 1" />
+			<attribute name="Material" value="Material;Materials/Terrain.xml" />
+			<attribute name="Vertex Spacing" value="5 0.5 5" />
 			<attribute name="Smooth Height Map" value="true" />
 			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="CollisionShape" id="16780672">
 			<attribute name="Shape Type" value="Terrain" />
@@ -84,9 +84,9 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sea" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 5.59782 0" />
+		<attribute name="Position" value="0 3.52865 0" />
 		<attribute name="Rotation" value="1 0 0 0" />
-		<attribute name="Scale" value="2000 1 2000" />
+		<attribute name="Scale" value="3000 1 3000" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="29">
 			<attribute name="Model" value="Model;Models/Plane.mdl" />

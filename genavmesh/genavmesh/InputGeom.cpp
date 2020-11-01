@@ -87,13 +87,12 @@ InputGeom::~InputGeom()
     delete m_mesh;
 }
 
-bool InputGeom::loadObstacles(rcContext*, const std::string& filepath)
+bool InputGeom::loadObstacles(rcContext*, const BuildSettings*, const std::string& filepath)
 {
     std::fstream input(filepath, std::ios::binary | std::fstream::in);
     if (!input.is_open())
         return true;
 
-    // TODO: This doesn't seem to change anything
     size_t obstacleCount = 0;
     input.read((char*)&obstacleCount, sizeof(uint64_t));
     for (size_t obstacle = 0; obstacle < obstacleCount; ++obstacle)
@@ -122,7 +121,13 @@ bool InputGeom::loadObstacles(rcContext*, const std::string& filepath)
             shape.AddTriangle(i1, i2, i3);
         }
 
-        addConvexVolume(shape.VertexData(), (int)vertexCount, shape.GetMinHeight(), shape.GetMaxHeight(), Navigation::POLYAREA_OBSTACLE);
+        std::vector<Math::Vector3> vertices;
+        vertices.push_back(shape.GetFarsetPointInDirection(Math::Vector3::UnitX));
+        vertices.push_back(shape.GetFarsetPointInDirection(-Math::Vector3::UnitX));
+        vertices.push_back(shape.GetFarsetPointInDirection(-Math::Vector3::UnitZ));
+        vertices.push_back(shape.GetFarsetPointInDirection(Math::Vector3::UnitZ));
+
+        addConvexVolume(shape.VertexData(), (int)shape.vertexCount_, shape.GetMinHeight(), shape.GetMaxHeight(), Navigation::POLYAREA_OBSTACLE);
         obstacles_.push_back(std::move(shape));
     }
     return true;
@@ -188,7 +193,7 @@ bool InputGeom::load(rcContext* ctx, const BuildSettings* settings, const std::s
 
     if (result)
     {
-        result = loadObstacles(ctx, filepath + ".obstacles");
+        result = loadObstacles(ctx, settings, filepath + ".obstacles");
     }
     return result;
 }
@@ -204,7 +209,7 @@ bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
 
     for (const auto& vert : m_mesh->vertices_)
     {
-        f << "v " << vert.x << " " << vert.y << " " << vert.z << std::endl;
+        f << "v " << vert.x_ << " " << vert.y_ << " " << vert.z_ << std::endl;
     }
 
     std::vector<size_t> offsets;

@@ -27,9 +27,6 @@
     <ClInclude Include="CreateHeightMapAction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ObjWriter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="CreateSceneAction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -45,9 +42,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CreateHeightMapAction.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjWriter.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CreateSceneAction.cpp">

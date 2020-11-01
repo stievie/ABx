@@ -1,7 +1,5 @@
 #include "MeshLoader.h"
-#include "MathUtils.h"
 #include <fstream>
-#include <absmath/Point.h>
 #include <cstring>
 
 MeshLoader::MeshLoader() :
@@ -98,20 +96,19 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         return false;
     }
 
+    Math::Point<float> patchWorldSize = { scaleX * (float)patchSize, scaleZ * (float)patchSize };
     Math::Point<int> numPatches = { (width_ - 1) / patchSize, (height_ - 1) / patchSize };
-    Math::Point<int> numVertices = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
+    numVertices_ = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
+    patchWorldOrigin_ = { -0.5f * (float)numPatches.x_ * patchWorldSize.x_, -0.5f * (float)numPatches.y_ * patchWorldSize.y_ };
 
-    auto getHeight = [&](int x, int z, bool rightHand = false) -> float
+    int imgRow = width_ * components_;
+    auto getHeight = [&](int x, int z) -> float
     {
         if (!data_)
             return 0.0f;
 
         // From bottom to top
-        int offset;
-        if (rightHand)
-            offset = (((height_ - 1) - z) * width_ + ((width_ - 1) - x)) * components_;
-        else
-            offset = (((height_ - 1) - z) * width_ + x) * components_;
+        int offset = imgRow * (numVertices_.y_ - 1 - z) + components_ * x;
 
         if (components_ == 1)
             return (float)data_[offset];
@@ -121,16 +118,18 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             (float)data_[offset + 1] / 256.0f;
     };
 
-    vertices_.resize((size_t)numVertices.x_ * (size_t)numVertices.y_);
-    for (int y = 0; y < numVertices.y_; ++y)
+    vertices_.resize((size_t)numVertices_.x_ * (size_t)numVertices_.y_);
+    const float offsetX = ((float)numVertices_.x_ * 0.5f);
+    const float offsetY = ((float)numVertices_.y_ * 0.5f);
+    for (int y = 0; y < numVertices_.y_; ++y)
     {
-        for (int x = 0; x < numVertices.x_; ++x)
+        for (int x = 0; x < numVertices_.x_; ++x)
         {
             float fy = getHeight(x, y);
-            float fx = ((float)x - ((float)numVertices.x_ * 0.5f));
-            float fz = (float)y -((float)numVertices.y_ * 0.5f);
+            float fx = (float)x - offsetX;
+            float fz = (float)y - offsetY;
 
-            vertices_[(size_t)y * (size_t)numVertices.x_ + (size_t)x] = {
+            vertices_[(size_t)y * (size_t)numVertices_.x_ + (size_t)x] = {
                 fx * scaleX, fy * scaleY, fz * scaleZ
             };
             addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
@@ -138,9 +137,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
     }
 
     // Create index data
-    for (int y = 0; y < numVertices.y_ - 1; ++y)
+    for (int y = 0; y < numVertices_.y_ - 1; ++y)
     {
-        for (int x = 0; x < numVertices.x_ - 1; ++x)
+        for (int x = 0; x < numVertices_.x_ - 1; ++x)
         {
             /*
                 x+1,y
@@ -154,9 +153,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             */
             {
                 // First triangle
-                int i1 = (y + 1) * numVertices.x_ + x;
-                int i2 = y * numVertices.x_ + x;
-                int i3 = (y * numVertices.x_) + x + 1;
+                int i1 = (y + 1) * numVertices_.x_ + x;
+                int i2 = y * numVertices_.x_ + x;
+                int i3 = (y * numVertices_.x_) + x + 1;
                 // P1
                 indices_.push_back(i3);
                 // P2
@@ -168,9 +167,9 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
 
             {
                 // Second triangle
-                int i1 = y * numVertices.x_ + x + 1;
-                int i2 = (y + 1) * numVertices.x_ + (x + 1);
-                int i3 = (y + 1) * numVertices.x_ + x;
+                int i1 = y * numVertices_.x_ + x + 1;
+                int i2 = (y + 1) * numVertices_.x_ + (x + 1);
+                int i3 = (y + 1) * numVertices_.x_ + x;
                 // P3
                 indices_.push_back(i3);
                 // P2

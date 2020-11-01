@@ -110,7 +110,7 @@ private:
     ///@}
 
     bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
-    bool loadObstacles(rcContext* ctx, const std::string& filepath);
+    bool loadObstacles(rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 public:
     InputGeom();
     ~InputGeom();

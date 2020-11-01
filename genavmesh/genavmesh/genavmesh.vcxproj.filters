@@ -39,9 +39,6 @@
     <ClInclude Include="TileBuilder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="MathUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigFile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

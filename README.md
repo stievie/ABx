@@ -49,11 +49,10 @@ Christmas 2117 +/- some years.
     - Whisper
 * Friend/ignore list
 * Persistent Mail
-* Static objects are directly loaded from Urho3D's scene files.
+* Automatic generation of server scenes (height fields, navigation meshes etc.) from Urho3D's scene files.
 * Lua API to script Games, NPCs, Skills, Effects, Items etc.
 * Navigation using Recast/Detour
-* Server runs on Windows and Linux
-* Client runs on Windows and Linux
+* Server and Client runs on Windows and Linux
 * Game AI, Behavior Tree
 * [Mumble](https://www.mumble.info/) voice chat integration with extended support (Context, identity, overlay), which provides spatial voice chat, see [Positional-Audio](https://wiki.mumble.info/wiki/Positional-Audio).
 * Item system:

@@ -289,7 +289,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 Math::BoundingBox bb(offset - halfSize, offset + halfSize);
                 // Add Node and Offset rotation -> absolute orientation
                 transform.oriention_ = transform.oriention_ * offsetRot;
-                Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
                 Math::Shape shape = bb.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;
@@ -299,10 +299,10 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 size != Math::Vector3::Zero)
             {
                 // The object has the scaling.
-                float radius = size.x_ * 0.5f;
+                float radius = (size.x_ * 0.5f);
                 Math::Sphere sphere(offset, radius);
                 transform.oriention_ = transform.oriention_ * offsetRot;
-                Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
                 Math::Shape shape = sphere.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;

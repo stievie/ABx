@@ -8,7 +8,8 @@ PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 #include <stb_image.h>
 PRAGMA_WARNING_POP
 #include <vector>
-#include <assimp/vector3.h>           // Output data structure
+#include <absmath/Vector3.h>           // Output data structure
+#include <absmath/Point.h>
 
 class MeshLoader
 {
@@ -49,7 +50,9 @@ public:
     int getTriCount() const { return m_triCount; }
     const std::string& getFileName() const { return m_filename; }
 
-    std::vector<aiVector3D> vertices_;
+    std::vector<Math::Vector3> vertices_;
     std::vector<int> indices_;
+    Math::Point<int> numVertices_;
+    Math::Point<float> patchWorldOrigin_;
 };
 
