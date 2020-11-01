@@ -22,6 +22,7 @@
 #pragma once
 
 #include <array>
+#include <limits>
 
 namespace Math {
 
