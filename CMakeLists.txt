@@ -68,7 +68,7 @@ if (WIN32)
     link_directories(Lib/x64)
 endif()
 
-option (ABX_ASSERT "Enable assert() in Release mode" TRUE)
+option (ABX_ASSERT "Enable ASSERT() in Release mode" TRUE)
 option (ABX_SCENE_VIEWER "Compile Game Server with Scene viewer" FALSE)
 option (ABX_PGSQL "Use PostgreSQL Database backend" TRUE)
 # The other DB backends probably won't work

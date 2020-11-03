@@ -144,7 +144,7 @@ bool CreateSceneAction::CreateNavMesh()
     std::stringstream ss;
 
     ss << Utils::ConcatPath(sa::Process::GetSelfPath(), "genavmesh");
-    ss << " -createobj ";
+    ss << " ";
     ss << "-hmsx:" << heightmapSpacing_.x_ << " ";
     ss << "-hmsy:" << heightmapSpacing_.y_ << " ";
     ss << "-hmsz:" << heightmapSpacing_.z_ << " ";

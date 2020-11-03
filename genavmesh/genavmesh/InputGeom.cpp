@@ -97,17 +97,16 @@ bool InputGeom::loadObstacles(rcContext*, const BuildSettings*, const std::strin
     input.read((char*)&obstacleCount, sizeof(uint64_t));
     for (size_t obstacle = 0; obstacle < obstacleCount; ++obstacle)
     {
-        Math::Shape shape;
+        int offset = m_mesh->getVertCount();
         size_t vertexCount = 0;
         input.read((char*)&vertexCount, sizeof(uint64_t));
-        shape.vertexData_.reserve(vertexCount);
         for (size_t vertex = 0; vertex < vertexCount; ++vertex)
         {
             float x = 0.0f, y = 0.0f, z = 0.0f;
             input.read((char*)&x, sizeof(float));
             input.read((char*)&y, sizeof(float));
             input.read((char*)&z, sizeof(float));
-            shape.vertexData_.push_back({ x, y, z });
+            m_mesh->addVertex(x, y, z);
         }
 
         size_t indexCount = 0;
@@ -118,23 +117,31 @@ bool InputGeom::loadObstacles(rcContext*, const BuildSettings*, const std::strin
             input.read((char*)&i1, sizeof(int));
             input.read((char*)&i2, sizeof(int));
             input.read((char*)&i3, sizeof(int));
-            shape.AddTriangle(i1, i2, i3);
+            m_mesh->addTriangle(offset + i1, offset + i2, offset + i3);
         }
-
-        std::vector<Math::Vector3> vertices;
-        vertices.push_back(shape.GetFarsetPointInDirection(Math::Vector3::UnitX));
-        vertices.push_back(shape.GetFarsetPointInDirection(-Math::Vector3::UnitX));
-        vertices.push_back(shape.GetFarsetPointInDirection(-Math::Vector3::UnitZ));
-        vertices.push_back(shape.GetFarsetPointInDirection(Math::Vector3::UnitZ));
-
-        addConvexVolume(shape.VertexData(), (int)shape.vertexCount_, shape.GetMinHeight(), shape.GetMaxHeight(), Navigation::POLYAREA_OBSTACLE);
-        obstacles_.push_back(std::move(shape));
     }
     return true;
 }
 
 bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
 {
+    if (!m_mesh->loadHeightmap(filepath, settings->hmScaleX, settings->hmScaleY, settings->hmScaleZ, settings->hmPatchSize))
+    {
+        ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not load '%s'", filepath.c_str());
+        return false;
+    }
+    return true;
+}
+
+bool InputGeom::load(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
+{
+    size_t extensionPos = filepath.find_last_of('.');
+    if (extensionPos == std::string::npos)
+        return false;
+
+    std::string extension = filepath.substr(extensionPos);
+    std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
+
     if (m_mesh)
     {
         delete m_chunkyMesh;
@@ -151,11 +158,22 @@ bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, con
         ctx->log(RC_LOG_ERROR, "loadMesh: Out of memory 'm_mesh'.");
         return false;
     }
-    if (!m_mesh->loadHeightmap(filepath, settings->hmScaleX, settings->hmScaleY, settings->hmScaleZ, settings->hmPatchSize))
+
+    bool result = false;
+    if (extension == ".png" || extension == ".jpg")
     {
-        ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not load '%s'", filepath.c_str());
+        result = loadHeightMap(ctx, settings, filepath);
+    }
+    else
+    {
         return false;
     }
+
+    if (result)
+    {
+        result = loadObstacles(ctx, settings, filepath + ".obstacles");
+    }
+    m_mesh->CalculateNormals();
 
     rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
 
@@ -174,78 +192,27 @@ bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, con
     return true;
 }
 
-bool InputGeom::load(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
-{
-    size_t extensionPos = filepath.find_last_of('.');
-    if (extensionPos == std::string::npos)
-        return false;
-
-    std::string extension = filepath.substr(extensionPos);
-    std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
-
-    bool result = false;
-    if (extension == ".png" || extension == ".jpg")
-        result = loadHeightMap(ctx, settings, filepath);
-    else
-    {
-        return false;
-    }
-
-    if (result)
-    {
-        result = loadObstacles(ctx, settings, filepath + ".obstacles");
-    }
-    return result;
-}
-
 bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
 {
-    if (!m_mesh || m_mesh->vertices_.size() < 3)
+    if (!m_mesh)
         return false;
 
     std::fstream f(filename, std::fstream::out);
     f << std::fixed << std::setprecision(6);
     f << "o " << "terrain" << std::endl;
-
-    for (const auto& vert : m_mesh->vertices_)
+    const float* verts = m_mesh->getVerts();
+    f << "# vertices " << m_mesh->getVertCount() << std::endl;
+    for (int i = 0; i < m_mesh->getVertCount() * 3; i += 3)
     {
-        f << "v " << vert.x_ << " " << vert.y_ << " " << vert.z_ << std::endl;
+        f << "v " << verts[i] << " " << verts[i + 1] << " " << verts[i + 2] << std::endl;
+    }
+    const int* tris = m_mesh->getTris();
+    f << "# triangles " << m_mesh->getTriCount() << std::endl;
+    for (int i = 0; i < m_mesh->getTriCount() * 3; i += 3)
+    {
+        f << "f " << tris[i] + 1 << " " << tris[i + 1] + 1 << " " << tris[i + 2] + 1 << std::endl;
     }
 
-    std::vector<size_t> offsets;
-    offsets.push_back(0);
-    offsets.push_back(m_mesh->vertices_.size());
-
-    for (const auto& s : obstacles_)
-    {
-        for (const auto& vert : s.vertexData_)
-        {
-            f << "v " << vert.x_ << " " << vert.y_ << " " << vert.z_ << std::endl;
-        }
-        offsets.push_back(offsets.back() + s.vertexData_.size());
-    }
-
-    f << "g " << "heightmap" << std::endl;
-    for (size_t i = 0; i < m_mesh->indices_.size(); i += 3)
-    {
-        f << "f " << (int)(m_mesh->indices_[i] + 1) << " " <<
-            (int)(m_mesh->indices_[i + 1] + 1) << " " <<
-            (int)(m_mesh->indices_[i + 2] + 1) << std::endl;
-    }
-
-    int obstacleCount = 0;
-    for (const auto& s : obstacles_)
-    {
-        ++obstacleCount;
-        f << "g " << "obstacle" << obstacleCount << std::endl;
-
-        for (size_t i = 0; i < s.indexData_.size(); i += 3)
-        {
-            f << "f " << (int)(s.indexData_[i] + offsets[obstacleCount] + 1) << " " <<
-                (int)(s.indexData_[i + 1] + offsets[obstacleCount] + 1) << " " <<
-                (int)(s.indexData_[i + 2] + offsets[obstacleCount] + 1) << std::endl;
-        }
-    }
     f << "# EOF" << std::endl;
     f.close();
     return true;
@@ -380,72 +347,4 @@ void InputGeom::deleteConvexVolume(int i)
 {
     m_volumeCount--;
     m_volumes[i] = m_volumes[m_volumeCount];
-}
-
-void InputGeom::drawConvexVolumes(struct duDebugDraw* dd, bool /*hilight*/)
-{
-    dd->depthMask(false);
-
-    dd->begin(DU_DRAW_TRIS);
-
-    for (int i = 0; i < m_volumeCount; ++i)
-    {
-        const ConvexVolume* vol = &m_volumes[i];
-        unsigned int col = duTransCol(dd->areaToCol(vol->area), 32);
-        for (int j = 0, k = vol->nverts - 1; j < vol->nverts; k = j++)
-        {
-            const float* va = &vol->verts[k * 3];
-            const float* vb = &vol->verts[j * 3];
-
-            dd->vertex(vol->verts[0], vol->hmax, vol->verts[2], col);
-            dd->vertex(vb[0], vol->hmax, vb[2], col);
-            dd->vertex(va[0], vol->hmax, va[2], col);
-
-            dd->vertex(va[0], vol->hmin, va[2], duDarkenCol(col));
-            dd->vertex(va[0], vol->hmax, va[2], col);
-            dd->vertex(vb[0], vol->hmax, vb[2], col);
-
-            dd->vertex(va[0], vol->hmin, va[2], duDarkenCol(col));
-            dd->vertex(vb[0], vol->hmax, vb[2], col);
-            dd->vertex(vb[0], vol->hmin, vb[2], duDarkenCol(col));
-        }
-    }
-
-    dd->end();
-
-    dd->begin(DU_DRAW_LINES, 2.0f);
-    for (int i = 0; i < m_volumeCount; ++i)
-    {
-        const ConvexVolume* vol = &m_volumes[i];
-        unsigned int col = duTransCol(dd->areaToCol(vol->area), 220);
-        for (int j = 0, k = vol->nverts - 1; j < vol->nverts; k = j++)
-        {
-            const float* va = &vol->verts[k * 3];
-            const float* vb = &vol->verts[j * 3];
-            dd->vertex(va[0], vol->hmin, va[2], duDarkenCol(col));
-            dd->vertex(vb[0], vol->hmin, vb[2], duDarkenCol(col));
-            dd->vertex(va[0], vol->hmax, va[2], col);
-            dd->vertex(vb[0], vol->hmax, vb[2], col);
-            dd->vertex(va[0], vol->hmin, va[2], duDarkenCol(col));
-            dd->vertex(va[0], vol->hmax, va[2], col);
-        }
-    }
-    dd->end();
-
-    dd->begin(DU_DRAW_POINTS, 3.0f);
-    for (int i = 0; i < m_volumeCount; ++i)
-    {
-        const ConvexVolume* vol = &m_volumes[i];
-        unsigned int col = duDarkenCol(duTransCol(dd->areaToCol(vol->area), 220));
-        for (int j = 0; j < vol->nverts; ++j)
-        {
-            dd->vertex(vol->verts[j * 3 + 0], vol->verts[j * 3 + 1] + 0.1f, vol->verts[j * 3 + 2], col);
-            dd->vertex(vol->verts[j * 3 + 0], vol->hmin, vol->verts[j * 3 + 2], col);
-            dd->vertex(vol->verts[j * 3 + 0], vol->hmax, vol->verts[j * 3 + 2], col);
-        }
-    }
-    dd->end();
-
-
-    dd->depthMask(true);
 }

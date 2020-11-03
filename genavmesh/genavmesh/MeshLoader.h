@@ -20,13 +20,12 @@ private:
 
     void addVertex(float x, float y, float z, int& cap);
     void addTriangle(int a, int b, int c, int& cap);
-    void CalculateNormals();
 
     std::string m_filename;
     float m_scale;
     float* m_verts;
     int* m_tris;
-    float* m_normals;
+    float* m_normals{ nullptr };
     int m_vertCount;
     int m_triCount;
     int m_vcap = 0;
@@ -49,9 +48,11 @@ public:
     int getVertCount() const { return m_vertCount; }
     int getTriCount() const { return m_triCount; }
     const std::string& getFileName() const { return m_filename; }
+    void addVertex(float x, float y, float z);
+    void addTriangle(int a, int b, int c);
+    void CalculateNormals();
+    int GetIndexCount() const { return m_triCount * 3; }
 
-    std::vector<Math::Vector3> vertices_;
-    std::vector<int> indices_;
     Math::Point<int> numVertices_;
     Math::Point<float> patchWorldOrigin_;
 };

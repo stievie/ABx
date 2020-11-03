@@ -126,6 +126,7 @@ public:
             return matrix_ * vertexData_[indexData_[index]];
         return matrix_ * vertexData_[index];
     }
+    // Vertext count
     size_t GetCount() const
     {
         if (indexCount_)

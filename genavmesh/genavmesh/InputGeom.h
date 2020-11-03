@@ -88,7 +88,6 @@ private:
     float m_meshBMin[3], m_meshBMax[3];
     BuildSettings m_buildSettings;
     bool m_hasBuildSettings;
-    std::vector<Math::Shape> obstacles_;
 
     /// @name Off-Mesh connections.
     ///@{
@@ -149,7 +148,6 @@ public:
     void addConvexVolume(const float* verts, const int nverts,
         const float minh, const float maxh, Navigation::PolyAreas area);
     void deleteConvexVolume(int i);
-    void drawConvexVolumes(struct duDebugDraw* dd, bool hilight = false);
     ///@}
 
 private:

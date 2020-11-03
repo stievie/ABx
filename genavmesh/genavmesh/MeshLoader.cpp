@@ -37,6 +37,11 @@ void MeshLoader::addVertex(float x, float y, float z, int& cap)
     m_vertCount++;
 }
 
+void MeshLoader::addVertex(float x, float y, float z)
+{
+    addVertex(x, y, z, m_vcap);
+}
+
 void MeshLoader::addTriangle(int a, int b, int c, int& cap)
 {
     if (m_triCount + 1 > cap)
@@ -53,6 +58,11 @@ void MeshLoader::addTriangle(int a, int b, int c, int& cap)
     *dst++ = b;
     *dst++ = c;
     m_triCount++;
+}
+
+void MeshLoader::addTriangle(int a, int b, int c)
+{
+    addTriangle(a, b, c, m_tcap);
 }
 
 void MeshLoader::CalculateNormals()
@@ -87,8 +97,6 @@ void MeshLoader::CalculateNormals()
 
 bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ, int patchSize)
 {
-    m_vcap = 0;
-    m_tcap = 0;
     data_ = stbi_load(fileName.c_str(), &width_, &height_, &components_, 0);
 
     if (!data_)
@@ -118,7 +126,6 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             (float)data_[offset + 1] / 256.0f;
     };
 
-    vertices_.resize((size_t)numVertices_.x_ * (size_t)numVertices_.y_);
     const float offsetX = ((float)numVertices_.x_ * 0.5f);
     const float offsetY = ((float)numVertices_.y_ * 0.5f);
     for (int y = 0; y < numVertices_.y_; ++y)
@@ -128,10 +135,6 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
             float fy = getHeight(x, y);
             float fx = (float)x - offsetX;
             float fz = (float)y - offsetY;
-
-            vertices_[(size_t)y * (size_t)numVertices_.x_ + (size_t)x] = {
-                fx * scaleX, fy * scaleY, fz * scaleZ
-            };
             addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
         }
     }
@@ -156,12 +159,6 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 int i1 = (y + 1) * numVertices_.x_ + x;
                 int i2 = y * numVertices_.x_ + x;
                 int i3 = (y * numVertices_.x_) + x + 1;
-                // P1
-                indices_.push_back(i3);
-                // P2
-                indices_.push_back(i2);
-                // P3
-                indices_.push_back(i1);
                 addTriangle(i3, i2, i1, m_tcap);
             }
 
@@ -170,18 +167,10 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 int i1 = y * numVertices_.x_ + x + 1;
                 int i2 = (y + 1) * numVertices_.x_ + (x + 1);
                 int i3 = (y + 1) * numVertices_.x_ + x;
-                // P3
-                indices_.push_back(i3);
-                // P2
-                indices_.push_back(i2);
-                // P1
-                indices_.push_back(i1);
                 addTriangle(i3, i2, i1, m_tcap);
             }
         }
     }
-
-    CalculateNormals();
 
     free(data_);
     return true;
