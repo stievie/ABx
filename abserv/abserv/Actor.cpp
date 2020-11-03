@@ -238,10 +238,10 @@ bool Actor::FollowObject(GameObject* object, bool ping, float maxDist /* = RANGE
     if (IsImmobilized())
         return false;
 
-    bool result = autorunComp_->Follow(object->GetPtr<GameObject>(), ping, maxDist);
+    CancelAll();
+    const bool result = autorunComp_->Follow(object->GetPtr<GameObject>(), ping, maxDist);
     if (result)
     {
-        CancelAll();
         stateComp_.SetState(AB::GameProtocol::CreatureState::Moving);
         autorunComp_->SetAutoRun(true);
 

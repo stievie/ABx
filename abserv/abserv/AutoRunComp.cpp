@@ -108,11 +108,14 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
 #endif
     if (succ && wp.size() != 0)
     {
-        wayPoints_ = wp;
+        wayPoints_ = std::move(wp);
         destination_ = dest;
         lastCalc_ = sa::time::tick();
         return true;
     }
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "Failed to find path" << std::endl;
+#endif
     lastCalc_ = 0;
     return false;
 }
@@ -176,7 +179,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     if (recursionLevel >= MAX_OBSTACLE_AVOID_RECURSION_LEVEL)
     {
 #ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "Stuck: new destination " << newDest << std::endl;
+    LOG_DEBUG << "Stuck: new destination " << destination << std::endl;
 #endif
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
         return destination;
@@ -262,6 +265,10 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         {
             // Find new path when following object moved and enough time passed
             FindPath(f->transformation_.position_);
+#ifdef DEBUG_NAVIGATION
+            LOG_DEBUG << owner_ << " recalculate route to " << f->transformation_.position_ <<
+                " waypoints " << wayPoints_.size() << std::endl;
+#endif
         }
     }
 
