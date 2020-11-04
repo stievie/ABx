@@ -143,3 +143,4 @@ If you pull to update your source tree, you may need to:
 
 1. Re-run CMake when source files were added or removed.
 2. Run `bin/dbtool update` when there is a DB update in the `sql` folder.
+3. Maybe run `genassets.bat` on Windows or `genassets.sh` on Linux in the `bin` directory for regenerating the server assets.
