@@ -47,20 +47,20 @@ bool IOModel::Import(Game::Model& asset, const std::string& name)
     Math::Shape* modelShape = asset.GetShape();
 
     uint32_t vertexCount = 0;
-    input.read((char)&vertexCount), sizeof(uint32_t));
-    modelShape->vertexCount_ = vertexData;
+    input.read((char*)&vertexCount, sizeof(uint32_t));
+    modelShape->vertexCount_ = vertexCount;
     modelShape->vertexData_.resize(modelShape->vertexCount_);
     for (uint32_t i = 0; i < vertexCount; ++i)
         input.read((char*)modelShape->vertexData_[i].Data(), sizeof(float) * 3);
 
     uint32_t indexCount = 0;
-    input.read((char*)&indexCount), sizeof(uint32_t));
+    input.read((char*)&indexCount, sizeof(uint32_t));
     modelShape->indexCount_ = indexCount;
     modelShape->indexData_.reserve(modelShape->indexCount_);
     for (uint32_t i = 0; i < indexCount; ++i)
     {
         uint32_t index = 0;
-        input.read((char*)&index), sizeof(uint32_t));
+        input.read((char*)&index, sizeof(uint32_t));
         modelShape->indexData_.push_back(index);
     }
 

@@ -276,20 +276,20 @@ struct VertexElement
 
 extern const VertexElement LEGACY_VERTEXELEMENTS[] =
 {
-    { TYPE_VECTOR3, SEM_POSITION, 0, false },     // Position
-    { TYPE_VECTOR3, SEM_NORMAL, 0, false },       // Normal
-    { TYPE_UBYTE4_NORM, SEM_COLOR, 0, false },    // Color
-    { TYPE_VECTOR2, SEM_TEXCOORD, 0, false },     // Texcoord1
-    { TYPE_VECTOR2, SEM_TEXCOORD, 1, false },     // Texcoord2
-    { TYPE_VECTOR3, SEM_TEXCOORD, 0, false },     // Cubetexcoord1
-    { TYPE_VECTOR3, SEM_TEXCOORD, 1, false },     // Cubetexcoord2
-    { TYPE_VECTOR4, SEM_TANGENT, 0, false },      // Tangent
-    { TYPE_VECTOR4, SEM_BLENDWEIGHTS, 0, false }, // Blendweights
-    { TYPE_UBYTE4, SEM_BLENDINDICES, 0, false },  // Blendindices
-    { TYPE_VECTOR4, SEM_TEXCOORD, 4, true },      // Instancematrix1
-    { TYPE_VECTOR4, SEM_TEXCOORD, 5, true },      // Instancematrix2
-    { TYPE_VECTOR4, SEM_TEXCOORD, 6, true },      // Instancematrix3
-    { TYPE_INT, SEM_OBJECTINDEX, 0, false }       // Objectindex
+    { TYPE_VECTOR3, SEM_POSITION, 0, false, 0 },     // Position
+    { TYPE_VECTOR3, SEM_NORMAL, 0, false, 0 },       // Normal
+    { TYPE_UBYTE4_NORM, SEM_COLOR, 0, false, 0 },    // Color
+    { TYPE_VECTOR2, SEM_TEXCOORD, 0, false, 0 },     // Texcoord1
+    { TYPE_VECTOR2, SEM_TEXCOORD, 1, false, 0 },     // Texcoord2
+    { TYPE_VECTOR3, SEM_TEXCOORD, 0, false, 0 },     // Cubetexcoord1
+    { TYPE_VECTOR3, SEM_TEXCOORD, 1, false, 0 },     // Cubetexcoord2
+    { TYPE_VECTOR4, SEM_TANGENT, 0, false, 0 },      // Tangent
+    { TYPE_VECTOR4, SEM_BLENDWEIGHTS, 0, false, 0 }, // Blendweights
+    { TYPE_UBYTE4, SEM_BLENDINDICES, 0, false, 0 },  // Blendindices
+    { TYPE_VECTOR4, SEM_TEXCOORD, 4, true, 0 },      // Instancematrix1
+    { TYPE_VECTOR4, SEM_TEXCOORD, 5, true, 0 },      // Instancematrix2
+    { TYPE_VECTOR4, SEM_TEXCOORD, 6, true, 0 },      // Instancematrix3
+    { TYPE_INT, SEM_OBJECTINDEX, 0, false, 0 }       // Objectindex
 };
 
 const unsigned ELEMENT_TYPESIZES[] =
@@ -371,7 +371,7 @@ static bool LoadUrhoModel(const std::string& filename, Math::Shape& result)
             auto type = (VertexElementType)(elementDesc & 0xffu);
             auto semantic = (VertexElementSemantic)((elementDesc >> 8u) & 0xffu);
             auto index = (unsigned char)((elementDesc >> 16u) & 0xffu);
-            elements.push_back({ type, semantic, index });
+            elements.push_back({ type, semantic, index, false, 0 });
         }
     }
 
@@ -386,7 +386,6 @@ static bool LoadUrhoModel(const std::string& filename, Math::Shape& result)
         auto* buff = new unsigned char[vertexCount * vertexSize];
 
         input.read((char*)buff, vertexCount * vertexSize);
-        float* vertices = (float*)buff;
         for (unsigned i = 0; i < vertexCount * vertexSize; i += vertexSize)
         {
             float* vertices = (float*)(buff + i);

@@ -119,7 +119,7 @@ bool Shape::SaveToOBJ(const std::string& filename)
         f << "v " << v.x_ << " " << v.y_ << " " << v.z_ << std::endl;
     }
     f << "# triangles " << indexCount_ / 3 << std::endl;
-    for (int i = 0; i < indexCount_; i += 3)
+    for (size_t i = 0; i < indexCount_; i += 3)
     {
         f << "f " << indexData_[i] + 1 << " " << indexData_[i + 1] + 1 << " " << indexData_[i + 2] + 1 << std::endl;
     }
