@@ -145,6 +145,7 @@ public:
     Shape Transformed(const Matrix4& transformation) const;
     float GetMinHeight() const;
     float GetMaxHeight() const;
+    bool SaveToOBJ(const std::string& filename);
 
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;

@@ -46,14 +46,23 @@ bool IOModel::Import(Game::Model& asset, const std::string& name)
     asset.SetShape(ea::make_unique<Math::Shape>());
     Math::Shape* modelShape = asset.GetShape();
 
-    input.read(reinterpret_cast<char*>(&modelShape->vertexCount_), sizeof(modelShape->vertexCount_));
+    uint32_t vertexCount = 0;
+    input.read((char)&vertexCount), sizeof(uint32_t));
+    modelShape->vertexCount_ = vertexData;
     modelShape->vertexData_.resize(modelShape->vertexCount_);
-    for (unsigned i = 0; i < modelShape->vertexCount_; ++i)
+    for (uint32_t i = 0; i < vertexCount; ++i)
         input.read((char*)modelShape->vertexData_[i].Data(), sizeof(float) * 3);
 
-    input.read(reinterpret_cast<char*>(&modelShape->indexCount_), sizeof(modelShape->indexCount_));
-    modelShape->indexData_.resize(modelShape->indexCount_);
-    input.read((char*)modelShape->indexData_.data(), sizeof(unsigned) * modelShape->indexCount_);
+    uint32_t indexCount = 0;
+    input.read((char*)&indexCount), sizeof(uint32_t));
+    modelShape->indexCount_ = indexCount;
+    modelShape->indexData_.reserve(modelShape->indexCount_);
+    for (uint32_t i = 0; i < indexCount; ++i)
+    {
+        uint32_t index = 0;
+        input.read((char*)&index), sizeof(uint32_t));
+        modelShape->indexData_.push_back(index);
+    }
 
     return true;
 }

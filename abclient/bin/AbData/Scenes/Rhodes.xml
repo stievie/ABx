@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="130.466" />
 	<attribute name="Next Replicated Node ID" value="10" />
 	<attribute name="Next Replicated Component ID" value="30" />
-	<attribute name="Next Local Node ID" value="16789353" />
-	<attribute name="Next Local Component ID" value="16789933" />
+	<attribute name="Next Local Node ID" value="16796527" />
+	<attribute name="Next Local Component ID" value="16797391" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -40,20 +40,11 @@
 			<attribute name="Shadow Fade Distance" value="250" />
 		</component>
 	</node>
-	<node id="5">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="SpawnPoint" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="91.0696 32.2921 -35.5445" />
-		<attribute name="Rotation" value="0.843392 8.00639e-09 -0.5373 -1.25675e-08" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-	</node>
 	<node id="16780119">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SpawnPoint" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="250.936 38.6581 -56.0129" />
+		<attribute name="Position" value="250.936 35.6202 -46.6446" />
 		<attribute name="Rotation" value="0.737278 0 0.67559 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -67,9 +58,9 @@
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Terrain" id="16780561">
-			<attribute name="Height Map" value="Image;Textures/Rhodes_Heightfield.png" />
-			<attribute name="Material" value="Material;Materials/RhodesTerrain.xml" />
-			<attribute name="Vertex Spacing" value="1 0.2 1" />
+			<attribute name="Height Map" value="Image;Textures/Heightmaps/RhodesHeightmap.png" />
+			<attribute name="Material" value="Material;Materials/Terrain.xml" />
+			<attribute name="Vertex Spacing" value="2 0.25 2" />
 			<attribute name="Smooth Height Map" value="true" />
 			<attribute name="Is Occluder" value="true" />
 		</component>
@@ -84,7 +75,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Ocean" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 25 0" />
+		<attribute name="Position" value="0 1.5 0" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="2000 1 2000" />
 		<attribute name="Variables" />
@@ -114,5 +105,2469 @@
 			</attribute>
 			<attribute name="Serialize Particles" value="false" />
 		</component>
+	</node>
+	<node id="16790315">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ColossOfRhodes" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="346.572 4.69138 271.644" />
+		<attribute name="Rotation" value="-0.705225 0 0.708971 0" />
+		<attribute name="Scale" value="50 50 50" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16790906">
+			<attribute name="Model" value="Model;Models/ColossOfRhodos.mdl" />
+			<attribute name="Material" value="Material;Materials/ColossOfRhodes_Lime.xml;Materials/ColossOfRhodes_Gold.xml" />
+		</component>
+		<component type="RigidBody" id="16790907">
+			<attribute name="Physics Rotation" value="0.705231 0 -0.708977 0" />
+			<attribute name="Physics Position" value="346.572 4.69138 271.644" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16790908">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/ColossOfRhodos.mdl" />
+		</component>
+	</node>
+	<node id="16794067">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Arena" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="322.292 45.3975 -28.636" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<node id="16794068">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.2521 -24.9473 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794706">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794707">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="295.04 20.4502 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794708">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794069">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-3.1861 -20.5494 -31.2271" />
+			<attribute name="Rotation" value="1 0 0 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794709">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794710">
+				<attribute name="Physics Position" value="319.106 24.8481 -59.8631" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794711">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794070">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-5.37871 -20.5132 -39.5287" />
+			<attribute name="Rotation" value="0.965926 0 0.258819 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794712">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794713">
+				<attribute name="Physics Rotation" value="0.965926 0 0.258819 0" />
+				<attribute name="Physics Position" value="316.914 24.8843 -68.1647" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794714">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794071">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-4.15327 -20.5232 -36.907" />
+			<attribute name="Rotation" value="0.984808 0 0.173648 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794715">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794716">
+				<attribute name="Physics Rotation" value="0.984808 0 0.173648 0" />
+				<attribute name="Physics Position" value="318.139 24.8743 -65.543" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794717">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794072">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-7.04122 -20.5357 -41.9008" />
+			<attribute name="Rotation" value="0.939693 0 0.34202 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794718">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794719">
+				<attribute name="Physics Rotation" value="0.939693 0 0.34202 0" />
+				<attribute name="Physics Position" value="315.251 24.8618 -70.5368" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794720">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794073">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-9.11433 -20.5198 -43.9698" />
+			<attribute name="Rotation" value="0.906308 0 0.422618 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794721">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794722">
+				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
+				<attribute name="Physics Position" value="313.178 24.8777 -72.6058" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794723">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794074">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-11.445 -20.5292 -45.5873" />
+			<attribute name="Rotation" value="0.866025 0 0.5 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794724">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794725">
+				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
+				<attribute name="Physics Position" value="310.847 24.8683 -74.2233" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794726">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794075">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-14.1057 -20.5117 -46.8214" />
+			<attribute name="Rotation" value="0.819152 0 0.573576 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794727">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794728">
+				<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
+				<attribute name="Physics Position" value="308.187 24.8858 -75.4574" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794729">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794076">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-16.8856 -20.5154 -47.5214" />
+			<attribute name="Rotation" value="0.766044 0 0.642788 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794730">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794731">
+				<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
+				<attribute name="Physics Position" value="305.407 24.8821 -76.1574" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794732">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794077">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-19.6941 -20.4951 -47.7353" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794733">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794734">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="302.598 24.9024 -76.3713" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794735">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794078">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-22.6087 -20.5049 -47.4516" />
+			<attribute name="Rotation" value="0.642788 0 0.766044 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794736">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794737">
+				<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
+				<attribute name="Physics Position" value="299.684 24.8926 -76.0876" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794738">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794079">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-25.4244 -20.5163 -46.688" />
+			<attribute name="Rotation" value="0.573577 0 0.819152 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794739">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794740">
+				<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
+				<attribute name="Physics Position" value="296.868 24.8812 -75.324" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794741">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794080">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.9918 -20.5163 -45.4627" />
+			<attribute name="Rotation" value="0.5 0 0.866025 0" />
+			<attribute name="Scale" value="0.999999 0.7 0.999999" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794742">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794743">
+				<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
+				<attribute name="Physics Position" value="294.301 24.8812 -74.0987" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794744">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794081">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-30.4053 -20.5083 -43.7971" />
+			<attribute name="Rotation" value="0.422618 0 0.906308 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794745">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794746">
+				<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
+				<attribute name="Physics Position" value="291.887 24.8892 -72.4331" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794747">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794082">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-32.475 -20.5156 -41.7168" />
+			<attribute name="Rotation" value="0.34202 0 0.939693 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794748">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794749">
+				<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
+				<attribute name="Physics Position" value="289.817 24.8819 -70.3528" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794750">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794083">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-34.1525 -20.5219 -39.3584" />
+			<attribute name="Rotation" value="0.258819 0 0.965926 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794751">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794752">
+				<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
+				<attribute name="Physics Position" value="288.14 24.8756 -67.9944" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794753">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794084">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.3835 -20.5095 -36.7119" />
+			<attribute name="Rotation" value="0.173648 0 0.984808 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794754">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794755">
+				<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
+				<attribute name="Physics Position" value="286.909 24.888 -65.3479" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794756">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794085">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.1809 -20.5132 -33.9265" />
+			<attribute name="Rotation" value="0.0871558 0 0.996195 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794757">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794758">
+				<attribute name="Physics Rotation" value="0.0871558 0 0.996195 0" />
+				<attribute name="Physics Position" value="286.111 24.8843 -62.5625" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794759">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794086">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.1396 -20.5073 -28.1075" />
+			<attribute name="Rotation" value="-0.0871558 0 0.996195 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794760">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794761">
+				<attribute name="Physics Rotation" value="-0.0871558 0 0.996195 0" />
+				<attribute name="Physics Position" value="286.153 24.8902 -56.7435" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794762">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794087">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-3.69132 -26.4645 -31.2271" />
+			<attribute name="Rotation" value="1 0 0 0" />
+			<attribute name="Scale" value="1 1 3" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794763">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794764">
+				<attribute name="Physics Position" value="318.601 18.933 -59.8631" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794765">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794088">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-3.41716 -20.551 -34.1182" />
+			<attribute name="Rotation" value="0.996195 0 0.0871557 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794766">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794767">
+				<attribute name="Physics Rotation" value="0.996195 0 0.0871557 0" />
+				<attribute name="Physics Position" value="318.875 24.8465 -62.7542" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794768">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794089">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-4.15327 -26.448 -36.907" />
+			<attribute name="Rotation" value="0.984808 0 0.173648 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794769">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794770">
+				<attribute name="Physics Rotation" value="0.984808 0 0.173648 0" />
+				<attribute name="Physics Position" value="318.139 18.9495 -65.543" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794771">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794090">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.4122 -20.5243 -31.024" />
+			<attribute name="Rotation" value="-8.74228e-08 0 1 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794772">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794773">
+				<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
+				<attribute name="Physics Position" value="285.88 24.8732 -59.66" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794774">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794091">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.362 -20.5411 -25.3337" />
+			<attribute name="Rotation" value="-0.173648 0 0.984808 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794775">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794776">
+				<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
+				<attribute name="Physics Position" value="286.93 24.8564 -53.9697" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794777">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794092">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-34.0952 -20.5373 -22.6823" />
+			<attribute name="Rotation" value="-0.258819 0 0.965926 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794778">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794779">
+				<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
+				<attribute name="Physics Position" value="288.197 24.8602 -51.3183" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794780">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794093">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-32.4175 -20.5678 -20.3217" />
+			<attribute name="Rotation" value="-0.34202 0 0.939693 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794781">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794782">
+				<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
+				<attribute name="Physics Position" value="289.875 24.8297 -48.9577" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794783">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794094">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-30.3319 -20.5712 -18.2817" />
+			<attribute name="Rotation" value="-0.422618 0 0.906308 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794784">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794785">
+				<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
+				<attribute name="Physics Position" value="291.96 24.8263 -46.9177" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794786">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794095">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.949 -20.5718 -16.6375" />
+			<attribute name="Rotation" value="0.5 0 -0.866025 0" />
+			<attribute name="Scale" value="0.999999 0.7 0.999999" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794787">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794788">
+				<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
+				<attribute name="Physics Position" value="294.343 24.8257 -45.2735" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794789">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794096">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-25.2913 -20.5494 -15.4123" />
+			<attribute name="Rotation" value="0.573577 0 -0.819152 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794790">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794791">
+				<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
+				<attribute name="Physics Position" value="297.001 24.8481 -44.0483" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794792">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794097">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-22.447 -20.5439 -14.6686" />
+			<attribute name="Rotation" value="0.642788 0 -0.766044 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794793">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794794">
+				<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
+				<attribute name="Physics Position" value="299.845 24.8536 -43.3046" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794795">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794098">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-19.5296 -20.5446 -14.3802" />
+			<attribute name="Rotation" value="0.707107 0 -0.707107 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794796">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794797">
+				<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
+				<attribute name="Physics Position" value="302.763 24.8529 -43.0162" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794798">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794099">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-16.6015 -20.5304 -14.665" />
+			<attribute name="Rotation" value="0.766044 0 -0.642788 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794799">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794800">
+				<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
+				<attribute name="Physics Position" value="305.691 24.8671 -43.301" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794801">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794100">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-13.7907 -20.5484 -15.445" />
+			<attribute name="Rotation" value="0.819152 0 -0.573576 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794802">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794803">
+				<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
+				<attribute name="Physics Position" value="308.502 24.8491 -44.081" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794804">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794101">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-11.1911 -20.5494 -16.7262" />
+			<attribute name="Rotation" value="0.866025 0 -0.5 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794805">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794806">
+				<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
+				<attribute name="Physics Position" value="311.101 24.8481 -45.3622" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794807">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794102">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-8.88377 -20.5633 -18.4375" />
+			<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794808">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794809">
+				<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+				<attribute name="Physics Position" value="313.409 24.8342 -47.0735" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794810">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794103">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-3.43662 -20.5566 -28.422" />
+			<attribute name="Rotation" value="0.996195 0 -0.0871557 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794811">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794812">
+				<attribute name="Physics Rotation" value="0.996195 0 -0.0871557 0" />
+				<attribute name="Physics Position" value="318.856 24.8409 -57.058" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794813">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794104">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-4.18327 -20.5457 -25.6219" />
+			<attribute name="Rotation" value="0.984808 0 -0.173648 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794814">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794815">
+				<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
+				<attribute name="Physics Position" value="318.109 24.8518 -54.2579" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794816">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794105">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-7.0095 -20.5645 -20.5159" />
+			<attribute name="Rotation" value="0.953717 0 -0.300706 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794817">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794818">
+				<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
+				<attribute name="Physics Position" value="315.283 24.833 -49.1519" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794819">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794106">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-5.37871 -26.448 -39.5287" />
+			<attribute name="Rotation" value="0.965926 0 0.258819 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794820">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794821">
+				<attribute name="Physics Rotation" value="0.965926 0 0.258819 0" />
+				<attribute name="Physics Position" value="316.914 18.9495 -68.1647" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794822">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794107">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-7.04122 -26.448 -41.9008" />
+			<attribute name="Rotation" value="0.939693 0 0.34202 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794823">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794824">
+				<attribute name="Physics Rotation" value="0.939693 0 0.34202 0" />
+				<attribute name="Physics Position" value="315.251 18.9495 -70.5368" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794825">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794108">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-9.11433 -26.448 -43.9698" />
+			<attribute name="Rotation" value="0.906308 0 0.422618 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794826">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794827">
+				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
+				<attribute name="Physics Position" value="313.178 18.9495 -72.6058" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794828">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794109">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-11.445 -26.448 -45.5873" />
+			<attribute name="Rotation" value="0.866025 0 0.5 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794829">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794830">
+				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
+				<attribute name="Physics Position" value="310.847 18.9495 -74.2233" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794831">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794110">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-14.1057 -26.448 -46.8214" />
+			<attribute name="Rotation" value="0.819152 0 0.573576 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794832">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794833">
+				<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
+				<attribute name="Physics Position" value="308.187 18.9495 -75.4574" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794834">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794111">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-16.8856 -26.448 -47.5214" />
+			<attribute name="Rotation" value="0.766044 0 0.642788 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794835">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794836">
+				<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
+				<attribute name="Physics Position" value="305.407 18.9495 -76.1574" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794837">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794112">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-19.6941 -26.448 -47.7353" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794838">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794839">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="302.598 18.9495 -76.3713" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794840">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794113">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-22.6087 -26.448 -47.4516" />
+			<attribute name="Rotation" value="0.642788 0 0.766044 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794841">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794842">
+				<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
+				<attribute name="Physics Position" value="299.684 18.9495 -76.0876" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794843">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794114">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-25.4244 -26.448 -46.688" />
+			<attribute name="Rotation" value="0.573577 0 0.819152 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794844">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794845">
+				<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
+				<attribute name="Physics Position" value="296.868 18.9495 -75.324" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794846">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794115">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.9918 -26.448 -45.4627" />
+			<attribute name="Rotation" value="0.5 0 0.866025 0" />
+			<attribute name="Scale" value="0.999999 1 0.999999" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794847">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794848">
+				<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
+				<attribute name="Physics Position" value="294.301 18.9495 -74.0987" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794849">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794116">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-30.4053 -26.448 -43.7971" />
+			<attribute name="Rotation" value="0.422618 0 0.906308 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794850">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794851">
+				<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
+				<attribute name="Physics Position" value="291.887 18.9495 -72.4331" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794852">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794117">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-32.475 -26.448 -41.7168" />
+			<attribute name="Rotation" value="0.34202 0 0.939693 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794853">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794854">
+				<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
+				<attribute name="Physics Position" value="289.817 18.9495 -70.3528" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794855">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794118">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-34.1525 -26.448 -39.3584" />
+			<attribute name="Rotation" value="0.258819 0 0.965926 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794856">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794857">
+				<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
+				<attribute name="Physics Position" value="288.14 18.9495 -67.9944" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794858">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794119">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.423 -26.448 -36.6871" />
+			<attribute name="Rotation" value="0.173648 0 0.984808 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794859">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794860">
+				<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
+				<attribute name="Physics Position" value="286.869 18.9495 -65.3231" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794861">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794120">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.1809 -26.448 -33.9265" />
+			<attribute name="Rotation" value="0.0871558 0 0.996195 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794862">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794863">
+				<attribute name="Physics Rotation" value="0.0871558 0 0.996195 0" />
+				<attribute name="Physics Position" value="286.111 18.9495 -62.5625" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794864">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794121">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.4122 -26.448 -31.024" />
+			<attribute name="Rotation" value="-8.74228e-08 0 1 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794865">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794866">
+				<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
+				<attribute name="Physics Position" value="285.88 18.9495 -59.66" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794867">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794122">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.1396 -26.448 -28.1075" />
+			<attribute name="Rotation" value="-0.0871558 0 0.996195 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794868">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794869">
+				<attribute name="Physics Rotation" value="-0.0871558 0 0.996195 0" />
+				<attribute name="Physics Position" value="286.153 18.9495 -56.7435" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794870">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794123">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.362 -26.448 -25.3337" />
+			<attribute name="Rotation" value="-0.173648 0 0.984808 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794871">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794872">
+				<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
+				<attribute name="Physics Position" value="286.93 18.9495 -53.9697" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794873">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794124">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-34.0952 -26.448 -22.6823" />
+			<attribute name="Rotation" value="-0.258819 0 0.965926 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794874">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794875">
+				<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
+				<attribute name="Physics Position" value="288.197 18.9495 -51.3183" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794876">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794125">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-32.4175 -26.448 -20.3217" />
+			<attribute name="Rotation" value="-0.34202 0 0.939693 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794877">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794878">
+				<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
+				<attribute name="Physics Position" value="289.875 18.9495 -48.9577" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794879">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794126">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-30.3319 -26.448 -18.2817" />
+			<attribute name="Rotation" value="-0.422618 0 0.906308 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794880">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794881">
+				<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
+				<attribute name="Physics Position" value="291.96 18.9495 -46.9177" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794882">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794127">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.949 -26.448 -16.6375" />
+			<attribute name="Rotation" value="0.5 0 -0.866025 0" />
+			<attribute name="Scale" value="0.999999 1 0.999999" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794883">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794884">
+				<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
+				<attribute name="Physics Position" value="294.343 18.9495 -45.2735" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794885">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794128">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-25.2913 -26.448 -15.4123" />
+			<attribute name="Rotation" value="0.573577 0 -0.819152 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794886">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794887">
+				<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
+				<attribute name="Physics Position" value="297.001 18.9495 -44.0483" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794888">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794129">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-22.447 -26.448 -14.6686" />
+			<attribute name="Rotation" value="0.642788 0 -0.766044 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794889">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794890">
+				<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
+				<attribute name="Physics Position" value="299.845 18.9495 -43.3046" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794891">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794130">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-19.5296 -26.448 -14.3802" />
+			<attribute name="Rotation" value="0.707107 0 -0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794892">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794893">
+				<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
+				<attribute name="Physics Position" value="302.763 18.9495 -43.0162" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794894">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794131">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-16.6015 -26.448 -14.665" />
+			<attribute name="Rotation" value="0.766044 0 -0.642788 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794895">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794896">
+				<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
+				<attribute name="Physics Position" value="305.691 18.9495 -43.301" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794897">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794132">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-13.7907 -26.448 -15.445" />
+			<attribute name="Rotation" value="0.819152 0 -0.573576 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794898">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794899">
+				<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
+				<attribute name="Physics Position" value="308.502 18.9495 -44.081" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794900">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794133">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-11.1911 -26.448 -16.7262" />
+			<attribute name="Rotation" value="0.866025 0 -0.5 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794901">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794902">
+				<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
+				<attribute name="Physics Position" value="311.101 18.9495 -45.3622" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794903">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794134">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-8.76623 -26.448 -18.4796" />
+			<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794904">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794905">
+				<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+				<attribute name="Physics Position" value="313.526 18.9495 -47.1156" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794906">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794135">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-4.18327 -26.4645 -25.6219" />
+			<attribute name="Rotation" value="0.984808 0 -0.173648 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794907">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794908">
+				<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
+				<attribute name="Physics Position" value="318.109 18.933 -54.2579" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794909">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794136">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-5.42984 -20.5548 -22.9446" />
+			<attribute name="Rotation" value="0.965926 0 -0.258819 0" />
+			<attribute name="Scale" value="1 0.7 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794910">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794911">
+				<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
+				<attribute name="Physics Position" value="316.863 24.8427 -51.5806" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794912">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794137">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-5.42984 -26.4645 -22.9446" />
+			<attribute name="Rotation" value="0.965926 0 -0.258819 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794913">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794914">
+				<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
+				<attribute name="Physics Position" value="316.863 18.933 -51.5806" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794915">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794138">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaWall1" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-7.01293 -26.4645 -20.5457" />
+			<attribute name="Rotation" value="0.953717 0 -0.300706 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794916">
+				<attribute name="Model" value="Model;Models/ArenaWall1.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaWall1.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794917">
+				<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
+				<attribute name="Physics Position" value="315.279 18.933 -49.1817" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794918">
+				<attribute name="Size" value="1.09657 5.93785 3.01161" />
+				<attribute name="Offset Position" value="-0.00811955 2.99788 0.0134365" />
+			</component>
+		</node>
+		<node id="16794139">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-19.6312 -26.2201 -16.8096" />
+			<attribute name="Rotation" value="0.710443 0 0.703755 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794919">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794920">
+				<attribute name="Physics Rotation" value="0.710443 0 0.703755 0" />
+				<attribute name="Physics Position" value="302.661 19.1774 -45.4456" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794921">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794140">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-22.266 -26.2229 -17.0432" />
+			<attribute name="Rotation" value="0.755585 0 0.655051 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794922">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794923">
+				<attribute name="Physics Rotation" value="0.755585 0 0.655051 0" />
+				<attribute name="Physics Position" value="300.026 19.1746 -45.6792" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794924">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794141">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-6.41627 -26.2201 -26.3981" />
+			<attribute name="Rotation" value="0.148077 0 0.988976 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794925">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794926">
+				<attribute name="Physics Rotation" value="0.148077 -3.44768e-11 0.988976 2.30264e-10" />
+				<attribute name="Physics Position" value="315.876 19.1774 -55.0341" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794927">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794142">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-17.118 -26.2201 -16.9756" />
+			<attribute name="Rotation" value="0.660832 3.07724e-10 0.750534 -3.49494e-10" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794928">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794929">
+				<attribute name="Physics Rotation" value="0.660832 3.07724e-10 0.750534 -3.49494e-10" />
+				<attribute name="Physics Position" value="305.174 19.1774 -45.6116" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794930">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794143">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-24.6251 -26.2279 -17.6448" />
+			<attribute name="Rotation" value="0.817051 0 0.576566 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794931">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794932">
+				<attribute name="Physics Rotation" value="0.817051 0 0.576566 0" />
+				<attribute name="Physics Position" value="297.667 19.1696 -46.2808" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794933">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794144">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-26.9327 -26.2279 -18.6836" />
+			<attribute name="Rotation" value="0.866025 0 0.5 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794934">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794935">
+				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
+				<attribute name="Physics Position" value="295.36 19.1696 -47.3196" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794936">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794145">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-28.9673 -26.2279 -20.1146" />
+			<attribute name="Rotation" value="0.906308 0 0.422618 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794937">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794938">
+				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
+				<attribute name="Physics Position" value="293.325 19.1696 -48.7506" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794939">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794146">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-14.6975 -26.2201 -17.5421" />
+			<attribute name="Rotation" value="0.569323 -1.32556e-10 0.822114 1.91413e-10" />
+			<attribute name="Scale" value="0.400001 0.4 0.400001" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794940">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794941">
+				<attribute name="Physics Rotation" value="0.569323 -1.32556e-10 0.822114 1.91413e-10" />
+				<attribute name="Physics Position" value="307.595 19.1774 -46.1781" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794942">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794147">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-10.5224 -26.2201 -20.2185" />
+			<attribute name="Rotation" value="0.439913 3.38003e-09 0.89804 -6.90001e-09" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794943">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794944">
+				<attribute name="Physics Rotation" value="0.439913 3.38003e-09 0.89804 -6.90001e-09" />
+				<attribute name="Physics Position" value="311.77 19.1774 -48.8545" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794945">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794148">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-8.7543 -26.2201 -21.8064" />
+			<attribute name="Rotation" value="0.309 2.51807e-09 0.951062 -7.75027e-09" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794946">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794947">
+				<attribute name="Physics Rotation" value="0.309 2.51807e-09 0.951062 -7.75027e-09" />
+				<attribute name="Physics Position" value="313.538 19.1774 -50.4424" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794948">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794149">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-7.44733 -26.2201 -23.8983" />
+			<attribute name="Rotation" value="0.245908 0 0.969293 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794949">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794950">
+				<attribute name="Physics Rotation" value="0.245908 0 0.969293 0" />
+				<attribute name="Physics Position" value="314.845 19.1774 -52.5343" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794951">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794150">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-12.5184 -26.2201 -18.674" />
+			<attribute name="Rotation" value="0.440874 0.00783259 0.897527 0.00384744" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794952">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794953">
+				<attribute name="Physics Rotation" value="0.440874 0.00783259 0.897527 0.00384744" />
+				<attribute name="Physics Position" value="309.774 19.1774 -47.31" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794954">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794151">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="ArenaSeats" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-28.9673 -26.2279 -20.1146" />
+			<attribute name="Rotation" value="0.906308 0 0.422618 0" />
+			<attribute name="Scale" value="0.4 0.4 0.4" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794955">
+				<attribute name="Model" value="Model;Models/ArenaSeats.mdl" />
+				<attribute name="Material" value="Material;Materials/ArenaSeats.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794956">
+				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
+				<attribute name="Physics Position" value="293.325 19.1696 -48.7506" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794957">
+				<attribute name="Size" value="5.9667 2.33068 8.18171" />
+				<attribute name="Offset Position" value="-1.98335 1.14278 0.0360985" />
+			</component>
+		</node>
+		<node id="16794152">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="SpawnPoint" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-24.7117 -26.2705 -39.945" />
+			<attribute name="Rotation" value="1 0 0 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables">
+				<variant hash="3316982911" type="String" value="Player" />
+			</attribute>
+		</node>
+		<node id="16794153">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-27.2521 -26.5086 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794958">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794959">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="295.04 18.8889 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794960">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794154">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.1446 -24.9497 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794961">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794962">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="287.148 20.4478 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794963">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794155">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-29.2315 -26.5086 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794964">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794965">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="293.061 18.8889 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794966">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794156">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-31.1642 -26.5086 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794967">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794968">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="291.128 18.8889 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794969">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794157">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-33.1602 -26.5086 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794970">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794971">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="289.132 18.8889 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794972">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794158">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-35.1446 -26.5086 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794973">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794974">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="287.148 18.8889 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794975">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794159">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.3313 -26.5086 -31.6285" />
+			<attribute name="Rotation" value="-5.96046e-07 0 1 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794976">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794977">
+				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
+				<attribute name="Physics Position" value="285.961 18.8889 -60.2645" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794978">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794160">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.3313 -26.5086 -30.2745" />
+			<attribute name="Rotation" value="-5.96046e-07 0 1 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794979">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794980">
+				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
+				<attribute name="Physics Position" value="285.961 18.8889 -58.9105" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794981">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794161">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-29.2316 -24.9573 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794982">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794983">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="293.061 20.4402 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794984">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794162">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-31.1642 -24.9513 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794985">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794986">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="291.128 20.4462 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794987">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794163">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-33.1602 -24.9503 -30.979" />
+			<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794988">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794989">
+				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
+				<attribute name="Physics Position" value="289.132 20.4472 -59.615" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794990">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794164">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.3313 -24.9558 -31.6285" />
+			<attribute name="Rotation" value="-5.96046e-07 0 1 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794991">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794992">
+				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
+				<attribute name="Physics Position" value="285.961 20.4417 -60.2645" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794993">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+		<node id="16794165">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="StoneWall" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-36.3313 -24.9558 -30.2745" />
+			<attribute name="Rotation" value="-5.96046e-07 0 1 0" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16794994">
+				<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+				<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+				<attribute name="Cast Shadows" value="true" />
+			</component>
+			<component type="RigidBody" id="16794995">
+				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
+				<attribute name="Physics Position" value="285.961 20.4417 -58.9105" />
+				<attribute name="Collision Layer" value="2" />
+				<attribute name="Use Gravity" value="false" />
+			</component>
+			<component type="CollisionShape" id="16794996">
+				<attribute name="Size" value="0.395696 1.54728 2" />
+				<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			</component>
+		</node>
+	</node>
+	<node id="16794951">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Ship1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="347.545 0.237976 282.648" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="AnimatedModel" id="16795793">
+			<attribute name="Model" value="Model;Models/Ship1.mdl" />
+			<attribute name="Material" value="Material;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_sail_marble.jpg.xml" />
+			<attribute name="Bone Animation Enabled">
+				<variant type="Bool" value="true" />
+				<variant type="Bool" value="true" />
+			</attribute>
+			<attribute name="Animation States">
+				<variant type="Int" value="0" />
+			</attribute>
+		</component>
+		<component type="RigidBody" id="16795794">
+			<attribute name="Physics Position" value="347.545 0.237976 282.648" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16795795">
+			<attribute name="Size" value="26.6608 42.9752 51.4746" />
+			<attribute name="Offset Position" value="0.0245228 16.5314 4.48161" />
+		</component>
+		<node id="16794952">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="0.5 0.5 -0.5 -0.5" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
+		<node id="16794953">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone.001" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="1.21016e-08 1.21016e-08 -0.707107 0.707107" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
+	</node>
+	<node id="16794954">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Ship1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="335.781 0.0156646 195.851" />
+		<attribute name="Rotation" value="0.991511 0 -0.130015 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="AnimatedModel" id="16795796">
+			<attribute name="Model" value="Model;Models/Ship1.mdl" />
+			<attribute name="Material" value="Material;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_sail_marble.jpg.xml" />
+			<attribute name="Bone Animation Enabled">
+				<variant type="Bool" value="true" />
+				<variant type="Bool" value="true" />
+			</attribute>
+			<attribute name="Animation States">
+				<variant type="Int" value="0" />
+			</attribute>
+		</component>
+		<component type="RigidBody" id="16795797">
+			<attribute name="Physics Rotation" value="0.991512 0 -0.130015 0" />
+			<attribute name="Physics Position" value="335.781 0.0156641 195.851" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16795798">
+			<attribute name="Size" value="26.6608 42.9752 51.4746" />
+			<attribute name="Offset Position" value="0.0245228 16.5314 4.48161" />
+		</component>
+		<node id="16794955">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="0.5 0.5 -0.5 -0.5" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
+		<node id="16794956">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="Bone.001" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0 0 -0" />
+			<attribute name="Rotation" value="1.21016e-08 1.21016e-08 -0.707107 0.707107" />
+			<attribute name="Scale" value="1 1 1" />
+			<attribute name="Variables" />
+		</node>
 	</node>
 </scene>

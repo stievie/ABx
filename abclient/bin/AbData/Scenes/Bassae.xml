@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="12.9417" />
-	<attribute name="Next Replicated Node ID" value="9" />
-	<attribute name="Next Replicated Component ID" value="31" />
-	<attribute name="Next Local Node ID" value="16782558" />
-	<attribute name="Next Local Component ID" value="16783256" />
+	<attribute name="Next Replicated Node ID" value="12" />
+	<attribute name="Next Replicated Component ID" value="34" />
+	<attribute name="Next Local Node ID" value="16782759" />
+	<attribute name="Next Local Component ID" value="16783509" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -192,6 +192,28 @@
 		<component type="RigidBody" id="30">
 			<attribute name="Physics Position" value="-3.5351 7.6 -23.6192" />
 			<attribute name="Collision Layer" value="3" />
+		</component>
+	</node>
+	<node id="11">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ResurrectionShrine1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-50.2525 7.83457 -63.5385" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16783506">
+			<attribute name="Model" value="Model;Models/ResurrectionShrine1.mdl" />
+			<attribute name="Material" value="Material;Materials/ResurrectionShrine1_Back.xml;Materials/ResurrectionShrine1_Pillar.xml;Materials/ResurrectionShrine1_Floor.xml" />
+		</component>
+		<component type="RigidBody" id="16783507">
+			<attribute name="Physics Position" value="-50.2525 7.83457 -63.5385" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16783508">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/ResurrectionShrine1.mdl" />
 		</component>
 	</node>
 </scene>

@@ -23,6 +23,9 @@
 #include "Application.h"
 #include "CreateHeightMapAction.h"
 #include "CreateSceneAction.h"
+#include <abscommon/FileUtils.h>
+#include <abscommon/StringUtils.h>
+#include <abscommon/SimpleConfigManager.h>
 
 bool Application::ParseCommandLine()
 {
@@ -89,6 +92,17 @@ void Application::Run()
         return;
     }
 
+    const std::string exeFile = Utils::GetExeName();
+    const std::string path = Utils::ExtractFileDir(exeFile);
+
+    std::string cfgFile = Utils::ConcatPath(path, "abserv.lua");
+    IO::SimpleConfigManager cfg;
+    if (!cfg.Load(cfgFile))
+    {
+        std::cerr << "Failed to load config file " << cfgFile << std::endl;
+        return;
+    }
+
     switch (action_)
     {
     case Action::CreateHeightMap:
@@ -102,6 +116,7 @@ void Application::Run()
         for (const auto& file : files_)
         {
             CreateSceneAction action(file, outputDirectory_);
+            action.dataDir_ = cfg.GetGlobalString("data_dir", "");
             action.Execute();
         }
         break;

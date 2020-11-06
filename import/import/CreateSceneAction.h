@@ -46,6 +46,7 @@ private:
     bool CreateHightmap();
     bool CreateNavMesh();
     bool CreateIndexFile();
+    bool SaveModel(const Math::Shape& shape, const std::string& filename);
     std::string FindFile(const std::string& name);
 public:
     CreateSceneAction(const std::string& file, const std::string& outDir) :
@@ -54,4 +55,6 @@ public:
     { }
     ~CreateSceneAction() = default;
     void Execute();
+
+    std::string dataDir_;
 };
