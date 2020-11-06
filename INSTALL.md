@@ -31,7 +31,7 @@ $ createdb forgottenwars
 ~~~
 6. Run `./bin/dbtool update` to create the database structure. Then run `./bin/dbtool updateskills` to update the Skills table. If the DB is empty, `dbtool` emits *one* error, you can ignore this.
 (you may try to run `./dbtool update` under the folder `bin`, if you get error like this: `db.lua:18: module 'config/db_private' not found`, on ubuntu 20.04)
-2. Download client assets `client_data.zip` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files). There should also be the Urho3D asset files, this directory should look like:
+2. Download client assets `client_data.7z` from [OneDrive](https://1drv.ms/f/s!Ajy_fJI3BLBobOAOXZ47wtBgdBg) and put them into the clients `abclient/bin` directory (don't replace existing files). There should also be the Urho3D asset files, this directory should look like:
 ~~~plain
 bin
   - AbData
