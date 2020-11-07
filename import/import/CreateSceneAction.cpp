@@ -254,7 +254,7 @@ bool CreateSceneAction::SaveModel(const Math::Shape& shape, const std::string& f
 }
 
 
-bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
+bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node, const Math::Matrix4& parentMatrix)
 {
     using namespace sa::literals;
 
@@ -326,7 +326,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 Math::BoundingBox bb(offset - halfSize, offset + halfSize);
                 // Add Node and Offset rotation -> absolute orientation
                 transform.oriention_ = transform.oriention_ * offsetRot;
-                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix()) * parentMatrix;
                 Math::Shape shape = bb.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;
@@ -339,7 +339,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                 float radius = (size.x_ * 0.5f);
                 Math::Sphere sphere(offset, radius);
                 transform.oriention_ = transform.oriention_ * offsetRot;
-                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix()) * parentMatrix;
                 Math::Shape shape = sphere.GetShape();
                 for (auto& v : shape.vertexData_)
                     v = matrix * v;
@@ -364,7 +364,7 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
                         if (IO::LoadUrhoModel(modelFile, modelShape))
                         {
                             SaveModel(modelShape, parts[1]);
-                            const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix());
+                            const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix()) * parentMatrix;
                             for (auto& v : modelShape.vertexData_)
                                 v = matrix * v;
                             obstackles_.push_back(std::make_unique<Math::Shape>(std::move(modelShape)));
@@ -417,6 +417,14 @@ bool CreateSceneAction::LoadSceneNode(const pugi::xml_node& node)
         }
         }
     }
+
+    const Math::Matrix4 matrix = static_cast<Math::Matrix4>(transform.GetMatrix()) * parentMatrix;
+    for (const auto& node : node.children("node"))
+    {
+        if (!LoadSceneNode(node, matrix))
+            return false;
+    }
+
     return true;
 }
 
@@ -441,7 +449,7 @@ bool CreateSceneAction::LoadScene()
     {
         if (strcmp((*it).name(), "node") == 0)
         {
-            if (!LoadSceneNode(*it))
+            if (!LoadSceneNode(*it, Math::Matrix4::Identity))
             {
                 std::cerr << "Error loading scene node" << std::endl;
                 // Can't continue

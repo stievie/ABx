@@ -40,7 +40,7 @@ private:
     std::vector<std::string> searchpaths_;
     std::vector<std::unique_ptr<Math::Shape>> obstackles_;
     bool LoadScene();
-    bool LoadSceneNode(const pugi::xml_node& node);
+    bool LoadSceneNode(const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
     bool CopySceneFile();
     bool SaveObstacles();
     bool CreateHightmap();
