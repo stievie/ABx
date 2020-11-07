@@ -37,6 +37,7 @@ private:
     bool ParseCommandLine();
     std::vector<std::string> files_;
     std::string outputDirectory_;
+    bool createObjs_{ false };
     void ShowHelp();
 public:
     Application() = default;

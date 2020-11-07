@@ -58,6 +58,10 @@ bool Application::ParseCommandLine()
         {
             return false;
         }
+        else if (a.compare("-createobj") == 0)
+        {
+            createObjs_ = true;
+        }
         else
             files_.push_back(a);
     }
@@ -73,6 +77,7 @@ void Application::ShowHelp()
     std::cout << "  scene: Import Urho3D scene" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  o: Output directory" << std::endl;
+    std::cout << "  createobj: Create OBJ model files" << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -117,6 +122,7 @@ void Application::Run()
         {
             CreateSceneAction action(file, outputDirectory_);
             action.dataDir_ = cfg.GetGlobalString("data_dir", "");
+            action.createObjs_ = createObjs_;
             action.Execute();
         }
         break;

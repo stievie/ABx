@@ -21,41 +21,14 @@
 
 #pragma once
 
-#include <string>
-#include <pugixml.hpp>
-#include <absmath/Vector3.h>
-#include <vector>
-#include <memory>
-#include <absmath/Shape.h>
+#include "Shape.h"
+#include "BoundingBox.h"
 
-class CreateSceneAction
-{
-private:
-    std::string file_;
-    std::string outputDirectory_;
-    std::string heightfieldFile_;
-    Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
-    int patchSize_{ 32 };
-    std::string navmeshFile_{ "navmesh.bin" };
-    std::vector<std::string> searchpaths_;
-    std::vector<std::unique_ptr<Math::Shape>> obstackles_;
-    bool LoadScene();
-    bool LoadSceneNode(const pugi::xml_node& node);
-    bool CopySceneFile();
-    bool SaveObstacles();
-    bool CreateHightmap();
-    bool CreateNavMesh();
-    bool CreateIndexFile();
-    bool SaveModel(const Math::Shape& shape, const std::string& filename);
-    std::string FindFile(const std::string& name);
-public:
-    CreateSceneAction(const std::string& file, const std::string& outDir) :
-        file_(file),
-        outputDirectory_(outDir)
-    { }
-    ~CreateSceneAction() = default;
-    void Execute();
+namespace IO {
 
-    std::string dataDir_;
-    bool createObjs_{ false };
-};
+bool LoadShape(const std::string& filename, Math::Shape& shape, Math::BoundingBox& bb);
+bool SaveShape(const std::string& filename, const Math::Shape& shape);
+bool SaveShapeToOBJ(const std::string& filename, const Math::Shape& shape);
+bool LoadUrhoModel(const std::string& filename, Math::Shape& shape);
+
+}

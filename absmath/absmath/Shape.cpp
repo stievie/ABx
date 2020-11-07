@@ -21,8 +21,6 @@
 
 #include "Shape.h"
 #include "VectorMath.h"
-#include <fstream>
-#include <iomanip>
 
 namespace Math {
 
@@ -106,28 +104,6 @@ float Shape::GetMaxHeight() const
             result = v.y_;
     }
     return result;
-}
-
-bool Shape::SaveToOBJ(const std::string& filename)
-{
-    std::fstream f(filename, std::fstream::out);
-    f << std::fixed << std::setprecision(6);
-    f << "o " << "terrain" << std::endl;
-    f << "# vertices " << vertexCount_ << std::endl;
-    for (const auto& v : vertexData_)
-    {
-        f << "v " << v.x_ << " " << v.y_ << " " << v.z_ << std::endl;
-    }
-    f << "# triangles " << indexCount_ / 3 << std::endl;
-    for (size_t i = 0; i < indexCount_; i += 3)
-    {
-        f << "f " << indexData_[i] + 1 << " " << indexData_[i + 1] + 1 << " " << indexData_[i + 2] + 1 << std::endl;
-    }
-
-    f << "# EOF" << std::endl;
-    f.close();
-    return true;
-
 }
 
 }

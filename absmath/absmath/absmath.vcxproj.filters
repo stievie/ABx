@@ -90,6 +90,9 @@
     <ClInclude Include="VectorMath.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IO.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +147,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CollisionShape.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IO.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
