@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="130.466" />
-	<attribute name="Next Replicated Node ID" value="11" />
+	<attribute name="Next Replicated Node ID" value="12" />
 	<attribute name="Next Replicated Component ID" value="32" />
-	<attribute name="Next Local Node ID" value="16801237" />
-	<attribute name="Next Local Component ID" value="16802167" />
+	<attribute name="Next Local Node ID" value="16803593" />
+	<attribute name="Next Local Component ID" value="16804558" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -56,9 +56,9 @@
 		<attribute name="Position" value="90.2978 15.0697 67.947" />
 		<attribute name="Rotation" value="0.737278 0 0.67559 0" />
 		<attribute name="Scale" value="1 1 1" />
-    <attribute name="Variables">
-      <variant hash="3316982911" type="String" value="Player" />
-    </attribute>
+		<attribute name="Variables">
+			<variant hash="3316982911" type="String" value="Player" />
+		</attribute>
 	</node>
 	<node id="16780321">
 		<attribute name="Is Enabled" value="true" />
@@ -129,6 +129,7 @@
 		<component type="StaticModel" id="16790906">
 			<attribute name="Model" value="Model;Models/ColossOfRhodos.mdl" />
 			<attribute name="Material" value="Material;Materials/ColossOfRhodes_Lime.xml;Materials/ColossOfRhodes_Gold.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16790907">
 			<attribute name="Physics Rotation" value="0.705231 0 -0.708977 0" />
@@ -145,8 +146,8 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Arena" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="174.151 48.3036 8.71001" />
-		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Position" value="188.635 48.3036 -36.1612" />
+		<attribute name="Rotation" value="0.775981 0 0.63075 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<node id="16794068">
@@ -163,8 +164,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794707">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="146.899 23.3563 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="152.742 23.3563 -15.8134" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -187,7 +188,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794710">
-				<attribute name="Physics Position" value="170.965 27.7542 -22.5171" />
+				<attribute name="Physics Rotation" value="0.775984 0 0.630753 0" />
+				<attribute name="Physics Position" value="157.416 27.7542 -39.4223" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -210,8 +212,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794713">
-				<attribute name="Physics Rotation" value="0.965926 0 0.258819 0" />
-				<attribute name="Physics Position" value="168.773 27.7904 -30.8187" />
+				<attribute name="Physics Rotation" value="0.586292 0 0.8101 0" />
+				<attribute name="Physics Position" value="148.841 27.7904 -38.972" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -234,8 +236,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794716">
-				<attribute name="Physics Rotation" value="0.984808 0 0.173648 0" />
-				<attribute name="Physics Position" value="169.998 27.7804 -28.197" />
+				<attribute name="Physics Rotation" value="0.654666 0 0.755918 0" />
+				<attribute name="Physics Position" value="151.658 27.7804 -39.636" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -258,8 +260,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794719">
-				<attribute name="Physics Rotation" value="0.939693 0 0.34202 0" />
-				<attribute name="Physics Position" value="167.11 27.7679 -33.1908" />
+				<attribute name="Physics Rotation" value="0.513456 0 0.858116 0" />
+				<attribute name="Physics Position" value="146.179 27.7679 -37.8292" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -282,8 +284,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794722">
-				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
-				<attribute name="Physics Position" value="165.037 27.7838 -35.2598" />
+				<attribute name="Physics Rotation" value="0.436713 0 0.899601 0" />
+				<attribute name="Physics Position" value="143.73 27.7838 -36.2226" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -306,8 +308,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794725">
-				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
-				<attribute name="Physics Position" value="162.706 27.7744 -36.8773" />
+				<attribute name="Physics Rotation" value="0.356645 0 0.93424 0" />
+				<attribute name="Physics Position" value="141.671 27.7744 -34.2716" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -330,8 +332,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794728">
-				<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
-				<attribute name="Physics Position" value="160.046 27.7919 -38.1114" />
+				<attribute name="Physics Rotation" value="0.273864 0 0.961768 0" />
+				<attribute name="Physics Position" value="139.919 27.7919 -31.9191" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -354,8 +356,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794731">
-				<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
-				<attribute name="Physics Position" value="157.266 27.7882 -38.8114" />
+				<attribute name="Physics Rotation" value="0.188997 0 0.981978 0" />
+				<attribute name="Physics Position" value="138.666 27.7882 -29.3409" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -378,8 +380,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794734">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="154.457 27.8085 -39.0253" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="137.883 27.8085 -26.6354" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -402,8 +404,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794737">
-				<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
-				<attribute name="Physics Position" value="151.543 27.7987 -38.7416" />
+				<attribute name="Physics Rotation" value="0.0156087 0 0.999878 0" />
+				<attribute name="Physics Position" value="137.565 27.7987 -23.7243" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -426,8 +428,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794740">
-				<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
-				<attribute name="Physics Position" value="148.727 27.7873 -37.978" />
+				<attribute name="Physics Rotation" value="-0.0715959 0 0.997434 0" />
+				<attribute name="Physics Position" value="137.737 27.7873 -20.812" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -450,8 +452,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794743">
-				<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
-				<attribute name="Physics Position" value="146.16 27.7873 -36.7527" />
+				<attribute name="Physics Rotation" value="-0.158256 0 0.987398 0" />
+				<attribute name="Physics Position" value="138.412 27.7873 -18.0484" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -474,8 +476,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794746">
-				<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
-				<attribute name="Physics Position" value="143.746 27.7953 -35.0871" />
+				<attribute name="Physics Rotation" value="-0.243711 0 0.969848 0" />
+				<attribute name="Physics Position" value="139.55 27.7953 -15.3456" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -498,8 +500,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794749">
-				<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
-				<attribute name="Physics Position" value="141.676 27.788 -33.0068" />
+				<attribute name="Physics Rotation" value="-0.327312 0 0.944916 0" />
+				<attribute name="Physics Position" value="141.163 27.788 -12.8945" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -522,8 +524,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794752">
-				<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
-				<attribute name="Physics Position" value="139.999 27.7817 -30.6484" />
+				<attribute name="Physics Rotation" value="-0.408421 0 0.912794 0" />
+				<attribute name="Physics Position" value="143.129 27.7817 -10.7706" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -546,8 +548,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794755">
-				<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
-				<attribute name="Physics Position" value="138.768 27.7941 -28.0019" />
+				<attribute name="Physics Rotation" value="-0.486422 0 0.873724 0" />
+				<attribute name="Physics Position" value="145.468 27.7941 -9.02485" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -570,8 +572,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794758">
-				<attribute name="Physics Rotation" value="0.0871558 0 0.996195 0" />
-				<attribute name="Physics Position" value="137.971 27.7904 -25.2165" />
+				<attribute name="Physics Rotation" value="0.560721 0 -0.828005 0" />
+				<attribute name="Physics Position" value="148.032 27.7904 -7.67519" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -594,8 +596,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794761">
-				<attribute name="Physics Rotation" value="-0.0871558 0 0.996195 0" />
-				<attribute name="Physics Position" value="138.012 27.7963 -19.3975" />
+				<attribute name="Physics Rotation" value="0.695984 0 -0.718057 0" />
+				<attribute name="Physics Position" value="153.737 27.7963 -6.52675" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -618,7 +620,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794764">
-				<attribute name="Physics Position" value="170.46 21.8391 -22.5171" />
+				<attribute name="Physics Rotation" value="0.775984 0 0.630753 0" />
+				<attribute name="Physics Position" value="157.312 21.8391 -38.9277" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -641,8 +644,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794767">
-				<attribute name="Physics Rotation" value="0.996195 0 0.0871557 0" />
-				<attribute name="Physics Position" value="170.734 27.7526 -25.4082" />
+				<attribute name="Physics Rotation" value="0.718057 0 0.695984 0" />
+				<attribute name="Physics Position" value="154.538 27.7526 -39.7868" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -665,8 +668,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794770">
-				<attribute name="Physics Rotation" value="0.984808 0 0.173648 0" />
-				<attribute name="Physics Position" value="169.998 21.8556 -28.197" />
+				<attribute name="Physics Rotation" value="0.654666 0 0.755918 0" />
+				<attribute name="Physics Position" value="151.658 21.8556 -39.636" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -689,8 +692,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794773">
-				<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
-				<attribute name="Physics Position" value="137.739 27.7793 -22.314" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="150.826 27.7793 -6.85577" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -713,8 +716,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794776">
-				<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
-				<attribute name="Physics Position" value="138.789 27.7625 -16.6237" />
+				<attribute name="Physics Rotation" value="0.755918 0 -0.654666 0" />
+				<attribute name="Physics Position" value="156.611 27.7625 -6.72123" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -737,8 +740,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794779">
-				<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
-				<attribute name="Physics Position" value="140.056 27.7663 -13.9723" />
+				<attribute name="Physics Rotation" value="0.8101 0 -0.586292 0" />
+				<attribute name="Physics Position" value="159.465 27.7663 -7.4196" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -761,8 +764,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794782">
-				<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
-				<attribute name="Physics Position" value="141.734 27.7358 -11.6117" />
+				<attribute name="Physics Rotation" value="0.858116 0 -0.513456 0" />
+				<attribute name="Physics Position" value="162.119 27.7358 -8.57961" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -785,8 +788,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794785">
-				<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
-				<attribute name="Physics Position" value="143.82 27.7324 -9.57169" />
+				<attribute name="Physics Rotation" value="0.899601 0 -0.436713 0" />
+				<attribute name="Physics Position" value="164.542 27.7324 -10.2044" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -809,8 +812,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794788">
-				<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
-				<attribute name="Physics Position" value="146.202 27.7318 -7.92749" />
+				<attribute name="Physics Rotation" value="0.93424 0 -0.356645 0" />
+				<attribute name="Physics Position" value="166.638 27.7318 -12.2011" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -833,8 +836,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794791">
-				<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
-				<attribute name="Physics Position" value="148.86 27.7542 -6.70229" />
+				<attribute name="Physics Rotation" value="0.961769 0 -0.273863 0" />
+				<attribute name="Physics Position" value="168.38 27.7542 -14.5524" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -857,8 +860,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794794">
-				<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
-				<attribute name="Physics Position" value="151.704 27.7597 -5.95859" />
+				<attribute name="Physics Rotation" value="0.981978 0 -0.188997 0" />
+				<attribute name="Physics Position" value="169.689 27.7597 -17.1848" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -881,8 +884,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794797">
-				<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
-				<attribute name="Physics Position" value="154.622 27.759 -5.67019" />
+				<attribute name="Physics Rotation" value="0.994713 0 -0.102694 0" />
+				<attribute name="Physics Position" value="170.568 27.759 -19.9817" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -905,8 +908,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794800">
-				<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
-				<attribute name="Physics Position" value="157.55 27.7732 -5.95499" />
+				<attribute name="Physics Rotation" value="0.999878 0 -0.0156087 0" />
+				<attribute name="Physics Position" value="170.887 27.7732 -22.9062" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -929,8 +932,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794803">
-				<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
-				<attribute name="Physics Position" value="160.361 27.7552 -6.73499" />
+				<attribute name="Physics Rotation" value="0.997434 0 0.0715967 0" />
+				<attribute name="Physics Position" value="170.698 27.7552 -25.817" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -953,8 +956,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794806">
-				<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
-				<attribute name="Physics Position" value="162.96 27.7542 -8.01619" />
+				<attribute name="Physics Rotation" value="0.987398 0 0.158256 0" />
+				<attribute name="Physics Position" value="169.975 27.7542 -28.6236" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -977,8 +980,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794809">
-				<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-				<attribute name="Physics Position" value="165.268 27.7403 -9.72749" />
+				<attribute name="Physics Rotation" value="0.958294 0 0.285784 0" />
+				<attribute name="Physics Position" value="168.771 27.7403 -31.2318" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1001,8 +1004,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794812">
-				<attribute name="Physics Rotation" value="0.996195 0 -0.0871557 0" />
-				<attribute name="Physics Position" value="170.715 27.747 -19.712" />
+				<attribute name="Physics Rotation" value="0.828005 0 0.560721 0" />
+				<attribute name="Physics Position" value="160.11 27.747 -38.604" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1025,8 +1028,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794815">
-				<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
-				<attribute name="Physics Position" value="169.968 27.7579 -16.9119" />
+				<attribute name="Physics Rotation" value="0.873724 0 0.486422 0" />
+				<attribute name="Physics Position" value="162.699 27.7579 -37.301" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1049,8 +1052,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794818">
-				<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
-				<attribute name="Physics Position" value="167.142 27.7391 -11.8059" />
+				<attribute name="Physics Rotation" value="0.92974 0 0.368217 0" />
+				<attribute name="Physics Position" value="167.12 27.7391 -33.4912" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1073,8 +1076,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794821">
-				<attribute name="Physics Rotation" value="0.965926 0 0.258819 0" />
-				<attribute name="Physics Position" value="168.773 21.8556 -30.8187" />
+				<attribute name="Physics Rotation" value="0.586292 0 0.8101 0" />
+				<attribute name="Physics Position" value="148.841 21.8556 -38.972" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1097,8 +1100,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794824">
-				<attribute name="Physics Rotation" value="0.939693 0 0.34202 0" />
-				<attribute name="Physics Position" value="167.11 21.8556 -33.1908" />
+				<attribute name="Physics Rotation" value="0.513456 0 0.858116 0" />
+				<attribute name="Physics Position" value="146.179 21.8556 -37.8292" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1121,8 +1124,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794827">
-				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
-				<attribute name="Physics Position" value="165.037 21.8556 -35.2598" />
+				<attribute name="Physics Rotation" value="0.436713 0 0.899601 0" />
+				<attribute name="Physics Position" value="143.73 21.8556 -36.2226" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1145,8 +1148,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794830">
-				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
-				<attribute name="Physics Position" value="162.706 21.8556 -36.8773" />
+				<attribute name="Physics Rotation" value="0.356645 0 0.93424 0" />
+				<attribute name="Physics Position" value="141.671 21.8556 -34.2716" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1169,8 +1172,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794833">
-				<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
-				<attribute name="Physics Position" value="160.046 21.8556 -38.1114" />
+				<attribute name="Physics Rotation" value="0.273864 0 0.961768 0" />
+				<attribute name="Physics Position" value="139.919 21.8556 -31.9191" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1193,8 +1196,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794836">
-				<attribute name="Physics Rotation" value="0.766044 0 0.642788 0" />
-				<attribute name="Physics Position" value="157.266 21.8556 -38.8114" />
+				<attribute name="Physics Rotation" value="0.188997 0 0.981978 0" />
+				<attribute name="Physics Position" value="138.666 21.8556 -29.3409" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1217,8 +1220,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794839">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="154.457 21.8556 -39.0253" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="137.883 21.8556 -26.6354" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1241,8 +1244,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794842">
-				<attribute name="Physics Rotation" value="0.642788 0 0.766044 0" />
-				<attribute name="Physics Position" value="151.543 21.8556 -38.7416" />
+				<attribute name="Physics Rotation" value="0.0156087 0 0.999878 0" />
+				<attribute name="Physics Position" value="137.565 21.8556 -23.7243" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1265,8 +1268,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794845">
-				<attribute name="Physics Rotation" value="0.573577 0 0.819152 0" />
-				<attribute name="Physics Position" value="148.727 21.8556 -37.978" />
+				<attribute name="Physics Rotation" value="-0.0715959 0 0.997434 0" />
+				<attribute name="Physics Position" value="137.737 21.8556 -20.812" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1289,8 +1292,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794848">
-				<attribute name="Physics Rotation" value="0.5 0 0.866026 0" />
-				<attribute name="Physics Position" value="146.16 21.8556 -36.7527" />
+				<attribute name="Physics Rotation" value="-0.158256 0 0.987398 0" />
+				<attribute name="Physics Position" value="138.412 21.8556 -18.0484" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1313,8 +1316,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794851">
-				<attribute name="Physics Rotation" value="0.422618 0 0.906308 0" />
-				<attribute name="Physics Position" value="143.746 21.8556 -35.0871" />
+				<attribute name="Physics Rotation" value="-0.243711 0 0.969848 0" />
+				<attribute name="Physics Position" value="139.55 21.8556 -15.3456" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1337,8 +1340,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794854">
-				<attribute name="Physics Rotation" value="0.34202 0 0.939693 0" />
-				<attribute name="Physics Position" value="141.676 21.8556 -33.0068" />
+				<attribute name="Physics Rotation" value="-0.327312 0 0.944916 0" />
+				<attribute name="Physics Position" value="141.163 21.8556 -12.8945" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1361,8 +1364,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794857">
-				<attribute name="Physics Rotation" value="0.258819 0 0.965926 0" />
-				<attribute name="Physics Position" value="139.999 21.8556 -30.6484" />
+				<attribute name="Physics Rotation" value="-0.408421 0 0.912794 0" />
+				<attribute name="Physics Position" value="143.129 21.8556 -10.7706" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1385,8 +1388,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794860">
-				<attribute name="Physics Rotation" value="0.173648 0 0.984808 0" />
-				<attribute name="Physics Position" value="138.728 21.8556 -27.9771" />
+				<attribute name="Physics Rotation" value="-0.486422 0 0.873724 0" />
+				<attribute name="Physics Position" value="145.484 21.8556 -8.98111" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1409,8 +1412,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794863">
-				<attribute name="Physics Rotation" value="0.0871558 0 0.996195 0" />
-				<attribute name="Physics Position" value="137.971 21.8556 -25.2165" />
+				<attribute name="Physics Rotation" value="0.560721 0 -0.828005 0" />
+				<attribute name="Physics Position" value="148.032 21.8556 -7.67519" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1433,8 +1436,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794866">
-				<attribute name="Physics Rotation" value="-8.74228e-08 0 1 0" />
-				<attribute name="Physics Position" value="137.739 21.8556 -22.314" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="150.826 21.8556 -6.85577" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1457,8 +1460,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794869">
-				<attribute name="Physics Rotation" value="-0.0871558 0 0.996195 0" />
-				<attribute name="Physics Position" value="138.012 21.8556 -19.3975" />
+				<attribute name="Physics Rotation" value="0.695984 0 -0.718057 0" />
+				<attribute name="Physics Position" value="153.737 21.8556 -6.52675" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1481,8 +1484,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794872">
-				<attribute name="Physics Rotation" value="-0.173648 0 0.984808 0" />
-				<attribute name="Physics Position" value="138.789 21.8556 -16.6237" />
+				<attribute name="Physics Rotation" value="0.755918 0 -0.654666 0" />
+				<attribute name="Physics Position" value="156.611 21.8556 -6.72123" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1505,8 +1508,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794875">
-				<attribute name="Physics Rotation" value="-0.258819 0 0.965926 0" />
-				<attribute name="Physics Position" value="140.056 21.8556 -13.9723" />
+				<attribute name="Physics Rotation" value="0.8101 0 -0.586292 0" />
+				<attribute name="Physics Position" value="159.465 21.8556 -7.4196" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1529,8 +1532,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794878">
-				<attribute name="Physics Rotation" value="-0.34202 0 0.939693 0" />
-				<attribute name="Physics Position" value="141.734 21.8556 -11.6117" />
+				<attribute name="Physics Rotation" value="0.858116 0 -0.513456 0" />
+				<attribute name="Physics Position" value="162.119 21.8556 -8.57961" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1553,8 +1556,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794881">
-				<attribute name="Physics Rotation" value="-0.422618 0 0.906308 0" />
-				<attribute name="Physics Position" value="143.82 21.8556 -9.57169" />
+				<attribute name="Physics Rotation" value="0.899601 0 -0.436713 0" />
+				<attribute name="Physics Position" value="164.542 21.8556 -10.2044" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1577,8 +1580,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794884">
-				<attribute name="Physics Rotation" value="-0.5 0 0.866026 0" />
-				<attribute name="Physics Position" value="146.202 21.8556 -7.92749" />
+				<attribute name="Physics Rotation" value="0.93424 0 -0.356645 0" />
+				<attribute name="Physics Position" value="166.638 21.8556 -12.2011" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1601,8 +1604,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794887">
-				<attribute name="Physics Rotation" value="0.573577 0 -0.819152 0" />
-				<attribute name="Physics Position" value="148.86 21.8556 -6.70229" />
+				<attribute name="Physics Rotation" value="0.961769 0 -0.273863 0" />
+				<attribute name="Physics Position" value="168.38 21.8556 -14.5524" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1625,8 +1628,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794890">
-				<attribute name="Physics Rotation" value="0.642788 0 -0.766044 0" />
-				<attribute name="Physics Position" value="151.704 21.8556 -5.95859" />
+				<attribute name="Physics Rotation" value="0.981978 0 -0.188997 0" />
+				<attribute name="Physics Position" value="169.689 21.8556 -17.1848" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1649,8 +1652,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794893">
-				<attribute name="Physics Rotation" value="0.707107 0 -0.707107 0" />
-				<attribute name="Physics Position" value="154.622 21.8556 -5.67019" />
+				<attribute name="Physics Rotation" value="0.994713 0 -0.102694 0" />
+				<attribute name="Physics Position" value="170.568 21.8556 -19.9817" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1673,8 +1676,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794896">
-				<attribute name="Physics Rotation" value="0.766044 0 -0.642788 0" />
-				<attribute name="Physics Position" value="157.55 21.8556 -5.95499" />
+				<attribute name="Physics Rotation" value="0.999878 0 -0.0156087 0" />
+				<attribute name="Physics Position" value="170.887 21.8556 -22.9062" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1697,8 +1700,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794899">
-				<attribute name="Physics Rotation" value="0.819152 0 -0.573576 0" />
-				<attribute name="Physics Position" value="160.361 21.8556 -6.73499" />
+				<attribute name="Physics Rotation" value="0.997434 0 0.0715967 0" />
+				<attribute name="Physics Position" value="170.698 21.8556 -25.817" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1721,8 +1724,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794902">
-				<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
-				<attribute name="Physics Position" value="162.96 21.8556 -8.01619" />
+				<attribute name="Physics Rotation" value="0.987398 0 0.158256 0" />
+				<attribute name="Physics Position" value="169.975 21.8556 -28.6236" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1745,8 +1748,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794905">
-				<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-				<attribute name="Physics Position" value="165.385 21.8556 -9.76959" />
+				<attribute name="Physics Rotation" value="0.958294 0 0.285784 0" />
+				<attribute name="Physics Position" value="168.754 21.8556 -31.3555" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1769,8 +1772,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794908">
-				<attribute name="Physics Rotation" value="0.984808 0 -0.173648 0" />
-				<attribute name="Physics Position" value="169.968 21.8391 -16.9119" />
+				<attribute name="Physics Rotation" value="0.873724 0 0.486422 0" />
+				<attribute name="Physics Position" value="162.699 21.8391 -37.301" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1793,8 +1796,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794911">
-				<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
-				<attribute name="Physics Position" value="168.722 27.7488 -14.2346" />
+				<attribute name="Physics Rotation" value="0.912794 0 0.408421 0" />
+				<attribute name="Physics Position" value="165.065 27.7488 -35.5337" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1817,8 +1820,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794914">
-				<attribute name="Physics Rotation" value="0.965926 0 -0.258819 0" />
-				<attribute name="Physics Position" value="168.722 21.8391 -14.2346" />
+				<attribute name="Physics Rotation" value="0.912794 0 0.408421 0" />
+				<attribute name="Physics Position" value="165.065 21.8391 -35.5337" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1841,8 +1844,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794917">
-				<attribute name="Physics Rotation" value="0.953717 0 -0.300706 0" />
-				<attribute name="Physics Position" value="167.139 21.8391 -11.8357" />
+				<attribute name="Physics Rotation" value="0.92974 0 0.368217 0" />
+				<attribute name="Physics Position" value="167.09 21.8391 -33.4939" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1865,8 +1868,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794920">
-				<attribute name="Physics Rotation" value="0.710443 0 0.703755 0" />
-				<attribute name="Physics Position" value="154.52 22.0835 -8.09959" />
+				<attribute name="Physics Rotation" value="0.107397 0 0.994216 0" />
+				<attribute name="Physics Position" value="168.169 22.0835 -20.3786" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1889,8 +1892,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794923">
-				<attribute name="Physics Rotation" value="0.755585 0 0.655051 0" />
-				<attribute name="Physics Position" value="151.885 22.0807 -8.33319" />
+				<attribute name="Physics Rotation" value="0.173147 0 0.984896 0" />
+				<attribute name="Physics Position" value="167.402 22.0807 -17.8471" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1913,8 +1916,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794926">
-				<attribute name="Physics Rotation" value="0.148077 -3.44768e-11 0.988976 2.30264e-10" />
-				<attribute name="Physics Position" value="167.735 22.0835 -17.6881" />
+				<attribute name="Physics Rotation" value="0.508894 0 -0.860829 0" />
+				<attribute name="Physics Position" value="161.483 22.0835 -35.2737" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1937,8 +1940,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794929">
-				<attribute name="Physics Rotation" value="0.660832 3.07724e-10 0.750534 -3.49494e-10" />
-				<attribute name="Physics Position" value="157.033 22.0835 -8.26559" />
+				<attribute name="Physics Rotation" value="0.0393935 1.83446e-11 0.999224 -4.65299e-10" />
+				<attribute name="Physics Position" value="168.52 22.0835 -22.8727" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1961,8 +1964,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794932">
-				<attribute name="Physics Rotation" value="0.817051 0 0.576566 0" />
-				<attribute name="Physics Position" value="149.526 22.0757 -8.93479" />
+				<attribute name="Physics Rotation" value="0.270348 0 0.962763 0" />
+				<attribute name="Physics Position" value="166.331 22.0757 -15.6607" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -1985,8 +1988,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794935">
-				<attribute name="Physics Rotation" value="0.866025 0 0.5 0" />
-				<attribute name="Physics Position" value="147.219 22.0757 -9.97359" />
+				<attribute name="Physics Rotation" value="0.356645 0 0.93424 0" />
+				<attribute name="Physics Position" value="164.843 22.0757 -13.614" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2009,8 +2012,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794938">
-				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
-				<attribute name="Physics Position" value="145.184 22.0757 -11.4046" />
+				<attribute name="Physics Rotation" value="0.436713 0 0.899601 0" />
+				<attribute name="Physics Position" value="163.026 22.0757 -11.9147" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2033,8 +2036,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794941">
-				<attribute name="Physics Rotation" value="0.569323 -1.32556e-10 0.822114 1.91413e-10" />
-				<attribute name="Physics Position" value="159.454 22.0835 -8.83209" />
+				<attribute name="Physics Rotation" value="-0.0767652 1.7873e-11 0.997049 2.32143e-10" />
+				<attribute name="Physics Position" value="168.46 22.0835 -25.3578" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2057,8 +2060,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794944">
-				<attribute name="Physics Rotation" value="0.439913 3.38003e-09 0.89804 -6.90001e-09" />
-				<attribute name="Physics Position" value="163.629 22.0835 -11.5085" />
+				<attribute name="Physics Rotation" value="-0.225076 -1.72935e-09 0.974341 -7.48626e-09" />
+				<attribute name="Physics Position" value="166.693 22.0835 -29.9916" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2081,8 +2084,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794947">
-				<attribute name="Physics Rotation" value="0.309 2.51807e-09 0.951062 -7.75027e-09" />
-				<attribute name="Physics Position" value="165.397 22.0835 -13.0964" />
+				<attribute name="Physics Rotation" value="-0.360106 -2.93452e-09 0.932911 -7.60236e-09" />
+				<attribute name="Physics Position" value="165.5 22.0835 -32.0469" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2105,8 +2108,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794950">
-				<attribute name="Physics Rotation" value="0.245908 0 0.969293 0" />
-				<attribute name="Physics Position" value="166.704 22.0835 -15.1883" />
+				<attribute name="Physics Rotation" value="-0.420564 0 0.907263 0" />
+				<attribute name="Physics Position" value="163.719 22.0835 -33.7536" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2129,8 +2132,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794953">
-				<attribute name="Physics Rotation" value="0.440874 0.00783259 0.897527 0.00384744" />
-				<attribute name="Physics Position" value="161.633 22.0835 -9.96399" />
+				<attribute name="Physics Rotation" value="-0.224006 0.00850474 0.974549 -0.00195488" />
+				<attribute name="Physics Position" value="167.797 22.0835 -27.7222" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2153,8 +2156,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794956">
-				<attribute name="Physics Rotation" value="0.906308 0 0.422618 0" />
-				<attribute name="Physics Position" value="145.184 22.0757 -11.4046" />
+				<attribute name="Physics Rotation" value="0.436713 0 0.899601 0" />
+				<attribute name="Physics Position" value="163.026 22.0757 -11.9147" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2177,8 +2180,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794959">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="146.899 21.795 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="152.742 21.795 -15.8134" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2201,8 +2204,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794962">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="139.007 23.3539 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.129 23.3539 -8.08743" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2225,8 +2228,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794965">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="144.92 21.795 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="152.337 21.795 -13.8758" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2249,8 +2252,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794968">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="142.987 21.795 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.942 21.795 -11.9838" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2273,8 +2276,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794971">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="140.991 21.795 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.534 21.795 -10.03" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2297,8 +2300,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794974">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="139.007 21.795 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.129 21.795 -8.08743" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2321,8 +2324,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794977">
-				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
-				<attribute name="Physics Position" value="137.82 21.795 -22.9185" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="150.251 21.795 -7.05847" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2345,8 +2348,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794980">
-				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
-				<attribute name="Physics Position" value="137.82 21.795 -21.5645" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="151.576 21.795 -6.78183" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2369,8 +2372,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794983">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="144.92 23.3463 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="152.337 23.3463 -13.8757" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2393,8 +2396,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794986">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="142.987 23.3523 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.942 23.3523 -11.9838" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2417,8 +2420,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794989">
-				<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-				<attribute name="Physics Position" value="140.991 23.3533 -22.269" />
+				<attribute name="Physics Rotation" value="0.102694 0 0.994713 0" />
+				<attribute name="Physics Position" value="151.534 23.3533 -10.03" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2441,8 +2444,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794992">
-				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
-				<attribute name="Physics Position" value="137.82 23.3478 -22.9185" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="150.251 23.3478 -7.05847" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2465,8 +2468,8 @@
 				<attribute name="Cast Shadows" value="true" />
 			</component>
 			<component type="RigidBody" id="16794995">
-				<attribute name="Physics Rotation" value="-5.96046e-07 0 1 0" />
-				<attribute name="Physics Position" value="137.82 23.3478 -21.5645" />
+				<attribute name="Physics Rotation" value="0.630753 0 -0.775984 0" />
+				<attribute name="Physics Position" value="151.576 23.3478 -6.78183" />
 				<attribute name="Collision Layer" value="2" />
 				<attribute name="Use Gravity" value="false" />
 			</component>
@@ -2480,13 +2483,14 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Ship1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="170.89 5.4077 242.812" />
-		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Position" value="225.982 5.4077 242.812" />
+		<attribute name="Rotation" value="0.972787 0 0.231688 0" />
 		<attribute name="Scale" value="0.7 0.7 0.7" />
 		<attribute name="Variables" />
 		<component type="AnimatedModel" id="16795793">
 			<attribute name="Model" value="Model;Models/Ship1.mdl" />
 			<attribute name="Material" value="Material;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_sail_marble.jpg.xml" />
+			<attribute name="Cast Shadows" value="true" />
 			<attribute name="Bone Animation Enabled">
 				<variant type="Bool" value="true" />
 				<variant type="Bool" value="true" />
@@ -2496,7 +2500,8 @@
 			</attribute>
 		</component>
 		<component type="RigidBody" id="16795794">
-			<attribute name="Physics Position" value="170.89 5.4077 242.812" />
+			<attribute name="Physics Rotation" value="0.97279 0 0.231688 0" />
+			<attribute name="Physics Position" value="225.981 5.4077 242.812" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -2523,52 +2528,37 @@
 			<attribute name="Variables" />
 		</node>
 	</node>
-	<node id="16794954">
+	<node id="16802022">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Ship1" />
+		<attribute name="Name" value="RhodesArenaPortal" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="214.294 5.4077 195.851" />
-		<attribute name="Rotation" value="0.991511 0 -0.130015 0" />
-		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Position" value="157.876 22.5063 -40.6663" />
+		<attribute name="Rotation" value="0.998002 0 -0.0631608 0" />
+		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
-		<component type="AnimatedModel" id="16795796">
-			<attribute name="Model" value="Model;Models/Ship1.mdl" />
-			<attribute name="Material" value="Material;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_sail_marble.jpg.xml" />
-			<attribute name="Bone Animation Enabled">
-				<variant type="Bool" value="true" />
-				<variant type="Bool" value="true" />
-			</attribute>
-			<attribute name="Animation States">
-				<variant type="Int" value="0" />
-			</attribute>
+	</node>
+	<node id="11">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Trireme1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="182.746 4.90774 149.319" />
+		<attribute name="Rotation" value="0.899443 0 -0.437031 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16803759">
+			<attribute name="Model" value="Model;Models/Trireme1.mdl" />
+			<attribute name="Material" value="Material;Materials/Trireme1_Hull.xml;Materials/Trireme1_Deck.xml;Materials/Trireme1_Mast.xml;Materials/Trireme1_Sail.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
-		<component type="RigidBody" id="16795797">
-			<attribute name="Physics Rotation" value="0.991512 0 -0.130015 0" />
-			<attribute name="Physics Position" value="214.294 5.4077 195.851" />
+		<component type="RigidBody" id="16803760">
+			<attribute name="Physics Rotation" value="0.899446 0 -0.437032 0" />
+			<attribute name="Physics Position" value="182.746 4.90774 149.319" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
-		<component type="CollisionShape" id="16795798">
-			<attribute name="Size" value="26.6608 42.9752 51.4746" />
-			<attribute name="Offset Position" value="0.0245228 16.5314 4.48161" />
+		<component type="CollisionShape" id="16803761">
+			<attribute name="Size" value="26.8098 9.93482 7.61913" />
+			<attribute name="Offset Position" value="0.769544 3.88534 -0.170549" />
 		</component>
-		<node id="16794955">
-			<attribute name="Is Enabled" value="true" />
-			<attribute name="Name" value="Bone" />
-			<attribute name="Tags" />
-			<attribute name="Position" value="0 0 -0" />
-			<attribute name="Rotation" value="0.5 0.5 -0.5 -0.5" />
-			<attribute name="Scale" value="1 1 1" />
-			<attribute name="Variables" />
-		</node>
-		<node id="16794956">
-			<attribute name="Is Enabled" value="true" />
-			<attribute name="Name" value="Bone.001" />
-			<attribute name="Tags" />
-			<attribute name="Position" value="0 0 -0" />
-			<attribute name="Rotation" value="1.21016e-08 1.21016e-08 -0.707107 0.707107" />
-			<attribute name="Scale" value="1 1 1" />
-			<attribute name="Variables" />
-		</node>
 	</node>
 </scene>

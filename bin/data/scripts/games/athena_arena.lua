@@ -1,87 +1,53 @@
 include("/scripts/includes/consts.lua")
 
-local point_blue = {
-  -20.0, 0.0, -27.0
-}
-
-local point_red = {
-  -19.0, 0.0, -44.0
-}
-
-local function createTeam(spawn, frnd, foe, rot, color, name_suffix)
-  -- To make them allies set the same group ID. Adding NPCs to a Crowd sets the group ID.
-  local crowd = self:AddCrowd()
-  crowd:SetColor(color)
-  local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
-  if (guildLord ~= nil) then
-    guildLord:SetName(guildLord:GetName() .. " " .. name_suffix)
-    crowd:Add(guildLord)
-    local x = spawn[1] + Random(-1, 1)
-    local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
-    guildLord:SetPosition({x, y, z})
-    guildLord:SetRotation(rot)
---    guildLord:SetHomePos({x, y, z})
-    guildLord:AddFriendFoe(frnd, foe)
-  end
-
-  local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
-  if (ped2 ~= nil) then
-    ped2:SetName(ped2:GetName() .. " " .. name_suffix)
-    crowd:Add(ped2)
-    local x = spawn[1] + Random(-1, 1)
-    local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
-    ped2:SetPosition({x, y, z})
-    ped2:SetRotation(rot)
---    ped2:SetHomePos({x, y, z})
-    ped2:AddFriendFoe(frnd, foe)
-  end
-  local ped3 = self:AddNpc("/scripts/actors/npcs/electra_staneli.lua")
-  if (ped3 ~= nil) then
-    ped3:SetName(ped3:GetName() .. " " .. name_suffix)
-    crowd:Add(ped3)
-    local x = spawn[1] + Random(-1, 1)
-    local z = spawn[3] + Random(-1, 1)
-    local y = self:GetTerrainHeight(x, z)
-    ped3:SetPosition({x, y, z})
-    ped3:SetRotation(rot)
---    ped2:SetHomePos({x, y, z})
-    ped3:AddFriendFoe(frnd, foe)
-  end
-
+function onStart()
   local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
+  -- To make them allies set the same group ID
+  local groupId = NewGroupId()
   if (priest ~= nil) then
-    priest:SetName(priest:GetName() .. " " .. name_suffix)
-    crowd:Add(priest)
-    local x = spawn[1] + Random(-1, 1)
-    local z = spawn[3] + Random(-1, 1)
+    local x = -6.71275
+    local z = 15.5906
     local y = self:GetTerrainHeight(x, z)
     priest:SetPosition({x, y, z})
-    priest:SetRotation(rot)
---    priest:SetHomePos({x, y, z})
-    priest:AddFriendFoe(frnd, foe)
+    priest:SetRotation(180)
+    priest:SetGroupId(groupId)
+    priest:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
   end
-end
-
-function onStart()
-  createTeam(point_blue, GROUPMASK_1, GROUPMASK_2 | GROUPMASK_3, -90, TEAMCOLOR_BLUE, "(Blue)")
-  createTeam(point_red, GROUPMASK_2, GROUPMASK_1 | GROUPMASK_3, -90, TEAMCOLOR_RED, "(Red)")
+  local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
+  if (guildLord ~= nil) then
+    local x = -6.71275
+    local z = 17.5906
+    local y = self:GetTerrainHeight(x, z)
+    guildLord:SetPosition({x, y, z})
+    guildLord:SetRotation(180)
+    guildLord:SetGroupId(groupId)
+    guildLord:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
+  end
+  local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
+  if (ped2 ~= nil) then
+    local x = -4.08
+    local z = 18.6
+    local y = self:GetTerrainHeight(x, z)
+    ped2:SetPosition({x, y, z})
+    ped2:SetRotation(180)
+    ped2:SetHomePos({x, y, z})
+    ped2:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
+  end
 end
 
 function onStop()
 end
 
 function onAddObject(object)
+--  print("Object added: " .. object:GetName())
 end
 
 function onRemoveObject(object)
+--  print("Object added: " .. object:GetName())
 end
 
 function onPlayerJoin(player)
-  player:AddEffect(empty, 1000, 0)
-
-  player:AddFriendFoe(GROUPMASK_3, GROUPMASK_1 | GROUPMASK_2)
+  player:AddFriendFoe(GROUPMASK_2, GROUPMASK_1)
 end
 
 function onPlayerLeave(player)
@@ -89,4 +55,5 @@ end
 
 -- Game Update
 function onUpdate(timeElapsed)
+--  print(timeElapsed)
 end
