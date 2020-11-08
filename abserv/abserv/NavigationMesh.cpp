@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "NavigationMesh.h"
 #include <abscommon/Random.h>
 #include <abscommon/Subsystems.h>
@@ -74,8 +73,6 @@ bool NavigationMesh::FindPath(ea::vector<Math::Vector3>& dest,
     const dtQueryFilter* filter /* = nullptr */)
 {
     dest.clear();
-
-//    AB_PROFILE;
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;
@@ -139,8 +136,54 @@ Math::Vector3 NavigationMesh::FindNearestPoint(const Math::Vector3& point,
     dtPolyRef pointRef;
     if (!nearestRef)
         nearestRef = &pointRef;
-    navQuery_->findNearestPoly(&point.x_, &extents.x_, filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
+    dtStatus status = navQuery_->findNearestPoly(&point.x_, &extents.x_, filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
+    if (dtStatusFailed(status))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "findNearestPoly() Failed with status " << status <<
+            GetStatusString(status) << std::endl;
+#endif
+        return point;
+    }
     return *nearestRef ? nearestPoint : point;
+}
+
+bool NavigationMesh::GetHeight(float& result, const Math::Vector3& point, const Math::Vector3& extents,
+    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+{
+    Math::Vector3 nearestPoint;
+    dtPolyRef pointRef;
+    if (!nearestRef)
+        nearestRef = &pointRef;
+    dtStatus status = navQuery_->findNearestPoly(&point.x_, &extents.x_, filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
+    if (dtStatusFailed(status))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "findNearestPoly() Failed with status " << status <<
+            GetStatusString(status) << std::endl;
+#endif
+        return false;
+    }
+
+    bool onPoly = false;
+    status = navQuery_->closestPointOnPoly(*nearestRef, &point.x_, &nearestPoint.x_, &onPoly);
+    if (dtStatusFailed(status))
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "closestPointOnPoly() Failed with status " << status <<
+            GetStatusString(status) << std::endl;
+#endif
+        return false;
+    }
+    if (!onPoly)
+    {
+#ifdef DEBUG_NAVIGATION
+        LOG_WARNING << "Point " << point << " not only poly" << std::endl;
+#endif
+        return false;
+    }
+    result = nearestPoint.y_;
+    return true;
 }
 
 bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef)
@@ -163,7 +206,7 @@ bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& 
         return false;
 
     return Math::Equals(point.x_, nearestPoint.x_, extents.x_) &&
-        Math::Equals(point.y_, nearestPoint.y_, extents.y_);
+        Math::Equals(point.z_, nearestPoint.z_, extents.z_);
 }
 
 bool NavigationMesh::FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents,

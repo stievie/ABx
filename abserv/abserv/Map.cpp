@@ -176,14 +176,20 @@ float Map::GetTerrainHeight(const Math::Vector3& world) const
 {
     if (terrain_)
         return terrain_->GetHeight(world);
+
+    if (navMesh_)
+    {
+        float result = 0.0f;
+        if (navMesh_->GetHeight(result, world))
+            return result;
+    }
+
     return 0.0f;
 }
 
 void Map::UpdatePointHeight(Math::Vector3& world) const
 {
-    if (!terrain_)
-        return;
-    world.y_ = terrain_->GetHeight(world);
+    world.y_ = GetTerrainHeight(world);
 }
 
 bool Map::FindPath(ea::vector<Math::Vector3>& dest,

@@ -2,7 +2,7 @@ include("/scripts/includes/consts.lua")
 include("/scripts/includes/create_npcs.lua")
 
 function onStart()
-  createPortal(self, 157.876, 22.5063, -40.6663, "Rhodes Arena", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
+  createPortal(self, 149.139, 22.5063, -31.5364, "Rhodes Arena", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
 end
 
 function onStop()

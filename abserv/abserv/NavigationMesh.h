@@ -62,6 +62,8 @@ public:
         const dtQueryFilter* filter = nullptr);
     bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+    bool GetHeight(float& result, const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 };
 
 }

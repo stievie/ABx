@@ -109,9 +109,18 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
     if (owner_.GetType() != AB::GameProtocol::GameObjectType::Projectile)
     {
-        // Keep on ground, except projectiles, they usually fly...
-        const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
-        owner_.transformation_.position_.y_ = y;
+        auto& map = *owner_.GetGame()->map_;
+        if (owner_.autorunComp_->IsAutoRun() || map.CanStepOn(owner_.transformation_.position_))
+        {
+            // Keep on ground, except projectiles, they usually fly...
+            const float y = map.GetTerrainHeight(owner_.transformation_.position_);
+            owner_.transformation_.position_.y_ = y;
+        }
+        else
+        {
+            owner_.transformation_.position_ = oldPosition_;
+            forcePosition_ = true;
+        }
     }
 
     const bool moved = !oldPosition_.Equals(owner_.transformation_.position_);
