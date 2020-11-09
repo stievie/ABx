@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="130.466" />
-	<attribute name="Next Replicated Node ID" value="12" />
+	<attribute name="Next Replicated Node ID" value="13" />
 	<attribute name="Next Replicated Component ID" value="32" />
-	<attribute name="Next Local Node ID" value="16805948" />
-	<attribute name="Next Local Component ID" value="16806946" />
+	<attribute name="Next Local Node ID" value="16809089" />
+	<attribute name="Next Local Component ID" value="16810133" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -124,7 +124,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ColossOfRhodes" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="173.389 5.49607 135.784" />
+		<attribute name="Position" value="172.698 6.58571 136.602" />
 		<attribute name="Rotation" value="-0.705225 0 0.708971 0" />
 		<attribute name="Scale" value="20 20 20" />
 		<attribute name="Variables" />
@@ -135,7 +135,7 @@
 		</component>
 		<component type="RigidBody" id="16790907">
 			<attribute name="Physics Rotation" value="0.705231 0 -0.708977 0" />
-			<attribute name="Physics Position" value="173.389 5.49607 135.784" />
+			<attribute name="Physics Position" value="172.698 6.58571 136.602" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -2561,6 +2561,29 @@
 		<component type="CollisionShape" id="16803761">
 			<attribute name="Size" value="26.8098 9.93482 7.61913" />
 			<attribute name="Offset Position" value="0.769544 3.88534 -0.170549" />
+		</component>
+	</node>
+	<node id="12">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneBridge1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="252.801 2.90661 41.3498" />
+		<attribute name="Rotation" value="0.702057 0 0.712115 0" />
+		<attribute name="Scale" value="3 1.5 2" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16808538">
+			<attribute name="Model" value="Model;Models/StoneBridge1.mdl" />
+			<attribute name="Material" value="Material;Materials/StoneBridge1.xml" />
+		</component>
+		<component type="RigidBody" id="16808539">
+			<attribute name="Physics Rotation" value="0.70206 0 0.712118 0" />
+			<attribute name="Physics Position" value="252.801 2.90661 41.3498" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16808540">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/StoneBridge1.mdl" />
 		</component>
 	</node>
 </scene>

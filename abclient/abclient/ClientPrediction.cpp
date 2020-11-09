@@ -141,11 +141,8 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
     Terrain* terrain = GetScene()->GetComponent<Terrain>(true);
     if (terrain)
         pos.y_ = terrain->GetHeight(pos);
-    else
-    {
-        if (!Equals(serverPos_.y_, std::numeric_limits<float>::max()))
-            pos.y_ = serverPos_.y_;
-    }
+    if (!Equals(serverPos_.y_, std::numeric_limits<float>::max()) && (serverPos_.y_ - pos.y_ > 0.5f))
+        pos.y_ = serverPos_.y_;
 //    URHO3D_LOGINFOF("Move() pos %s", pos.ToString().CString());
 
     if (CheckCollision(pos))
