@@ -30,6 +30,7 @@ TEST_CASE("Hull")
 {
     Math::Sphere sphere(Math::Vector3::Zero, 1.0f);
     Math::Shape sphereShape = sphere.GetShape();
+    // Sphere at 0,0,0 with 1 radius
     Math::ConvexHull hull(sphereShape.vertexData_);
 
     SECTION("Build")
@@ -49,8 +50,8 @@ TEST_CASE("Hull")
     SECTION("Inside")
     {
         // FIXME:
-//        REQUIRE(hull.IsInside({ 0.0f, 0.0f, 0.0f }) == Math::Intersection::Inside);
-//        REQUIRE(hull.IsInside({ 2.5f, 2.5f, 2.5f }) == Math::Intersection::Outside);
+        REQUIRE(hull.IsInside({ 0.0f, 0.0f, 0.0f }) == Math::Intersection::Inside);
+        REQUIRE(hull.IsInside({ 2.5f, 2.5f, 2.5f }) == Math::Intersection::Outside);
     }
 
     SECTION("Collides")
@@ -60,15 +61,14 @@ TEST_CASE("Hull")
         // Intel Xeon X3430 (Lynnfield)
         // However, the Hull collisions still need work...
 
-//        Math::Sphere sphere1({ 1.5f, 1.5f, 1.5f }, 0.5f);
-//        Math::Vector3 move;
-//        REQUIRE(hull.Collides(sphere1, Math::Vector3::Zero, move));
+        Math::Sphere sphere1({ 0.5f, 0.5f, 0.5f }, 0.5f);
+        Math::Vector3 move;
+        REQUIRE(hull.Collides(sphere1, Math::Vector3::Zero, move));
     }
     SECTION("Not Collides")
     {
-//        Math::Sphere sphere1({ 5.5f, 5.5f, 5.5f }, 0.5f);
-//        Math::Vector3 move;
-        // FIXME:
-//        REQUIRE(!hull.Collides(sphere1, Math::Vector3::Zero, move));
+        Math::Sphere sphere1({ 5.5f, 5.5f, 5.5f }, 0.5f);
+        Math::Vector3 move;
+        REQUIRE(!hull.Collides(sphere1, Math::Vector3::Zero, move));
     }
 }

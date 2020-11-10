@@ -193,8 +193,7 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
 
                 if (object && !object->GetCollisionShape())
                 {
-                    if (collShape == "TriangleMesh"_Hash ||
-                        collShape == "ConvexHull"_Hash ||
+                    if (collShape == "ConvexHull"_Hash ||
                         collShape == "Capsule"_Hash)
                     {
                         if (model)
@@ -202,14 +201,15 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting ConvexHull collision shape for " << *object << std::endl;
 #endif
-#if 0
-                            // TODO: Fix this
                             object->SetCollisionShape(
                                 ea::make_unique<Math::CollisionShape<Math::ConvexHull>>(
                                     Math::ShapeType::ConvexHull, model->GetShape()->vertexData_)
                             );
-#endif
                         }
+                    }
+                    else if (collShape == "TriangleMesh"_Hash)
+                    {
+                        // TODO: This!
                     }
                     else if (collShape == "Box"_Hash && size != Math::Vector3::Zero)
                     {

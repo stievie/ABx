@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "ConvexHull.h"
 #include "Hull.h"
 #include "Vector3.h"
@@ -100,7 +99,7 @@ void ConvexHull::BuildHull(const ea::vector<Vector3>& vertices)
         StanHull::HullDesc desc;
         desc.SetHullFlag(StanHull::QF_TRIANGLES);
         desc.mVcount = static_cast<unsigned>(vertices.size());
-        desc.mVertices = vertices[0].Data();
+        desc.mVertices = &vertices[0].x_;
         desc.mVertexStride = 3 * sizeof(float);
         desc.mSkinWidth = 0.0f;
 
@@ -111,12 +110,15 @@ void ConvexHull::BuildHull(const ea::vector<Vector3>& vertices)
         vertexCount_ = result.mNumOutputVertices;
         vertexData_.resize(vertexCount_);
 
-        indexCount_ = result.mNumIndices;
-        indexData_.resize(indexCount_);
-
         // Copy vertex data & index data
-        std::memcpy(vertexData_.data(), result.mOutputVertices, vertexCount_ * sizeof(Vector3));
-        std::memcpy(indexData_.data(), result.mIndices, indexCount_ * sizeof(unsigned));
+        std::memcpy(vertexData_.data(), result.mOutputVertices, vertexCount_ * (sizeof(float) * 3));
+
+        indexCount_ = result.mNumIndices;
+        indexData_.reserve(indexCount_);
+        for (size_t i = 0; i < indexCount_; ++i)
+        {
+            indexData_.push_back(result.mIndices[i]);
+        }
 
         lib.ReleaseResult(result);
 
