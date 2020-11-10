@@ -106,41 +106,39 @@ void GameObject::UpdateRanges()
     ranges_.clear();
     ea::vector<GameObject*> res;
 
+    SentToPlayerMatcher matcher;
     // Compass radius
-    if (QueryObjects(res, RANGE_INTEREST))
+    if (QueryObjects(res, RANGE_INTEREST, &matcher))
     {
         const Math::Vector3& myPos = GetPosition();
         for (const auto& o : res)
         {
-            if (o->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer)
-            {
-                const Math::Vector3& objectPos = o->GetPosition();
-                const float dist = myPos.Distance(objectPos) - AVERAGE_BB_EXTENDS;
-                if (dist <= RANGE_AGGRO)
-                    ranges_[Ranges::Aggro].emplace(o->id_);
-                if (dist <= RANGE_COMPASS)
-                    ranges_[Ranges::Compass].emplace(o->id_);
-                if (dist <= RANGE_SPIRIT)
-                    ranges_[Ranges::Spirit].emplace(o->id_);
-                if (dist <= RANGE_EARSHOT)
-                    ranges_[Ranges::Earshot].emplace(o->id_);
-                if (dist <= RANGE_CASTING)
-                    ranges_[Ranges::Casting].emplace(o->id_);
-                if (dist <= RANGE_PROJECTILE)
-                    ranges_[Ranges::Projectile].emplace(o->id_);
-                if (dist <= RANGE_HALF_COMPASS)
-                    ranges_[Ranges::HalfCompass].emplace(o->id_);
-                if (dist <= RANGE_TOUCH)
-                    ranges_[Ranges::Touch].emplace(o->id_);
-                if (dist <= RANGE_ADJECENT)
-                    ranges_[Ranges::Adjecent].emplace(o->id_);
-                if (dist <= RANGE_VISIBLE)
-                    ranges_[Ranges::Visible].emplace(o->id_);
-                if (dist <= RANGE_TWO_COMPASS)
-                    ranges_[Ranges::TwoCompass].emplace(o->id_);
-                if (dist <= RANGE_INTEREST)
-                    ranges_[Ranges::Interest].emplace(o->id_);
-            }
+            const Math::Vector3& objectPos = o->GetPosition();
+            const float dist = myPos.Distance(objectPos) - AVERAGE_BB_EXTENDS;
+            if (dist <= RANGE_AGGRO)
+                ranges_[Ranges::Aggro].emplace(o->id_);
+            if (dist <= RANGE_COMPASS)
+                ranges_[Ranges::Compass].emplace(o->id_);
+            if (dist <= RANGE_SPIRIT)
+                ranges_[Ranges::Spirit].emplace(o->id_);
+            if (dist <= RANGE_EARSHOT)
+                ranges_[Ranges::Earshot].emplace(o->id_);
+            if (dist <= RANGE_CASTING)
+                ranges_[Ranges::Casting].emplace(o->id_);
+            if (dist <= RANGE_PROJECTILE)
+                ranges_[Ranges::Projectile].emplace(o->id_);
+            if (dist <= RANGE_HALF_COMPASS)
+                ranges_[Ranges::HalfCompass].emplace(o->id_);
+            if (dist <= RANGE_TOUCH)
+                ranges_[Ranges::Touch].emplace(o->id_);
+            if (dist <= RANGE_ADJECENT)
+                ranges_[Ranges::Adjecent].emplace(o->id_);
+            if (dist <= RANGE_VISIBLE)
+                ranges_[Ranges::Visible].emplace(o->id_);
+            if (dist <= RANGE_TWO_COMPASS)
+                ranges_[Ranges::TwoCompass].emplace(o->id_);
+            if (dist <= RANGE_INTEREST)
+                ranges_[Ranges::Interest].emplace(o->id_);
         }
     }
 }
@@ -318,24 +316,24 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<M
     }
 }
 
-bool GameObject::QueryObjects(ea::vector<GameObject*>& result, float radius)
+bool GameObject::QueryObjects(ea::vector<GameObject*>& result, float radius, const Math::OctreeMatcher* matcher)
 {
     if (!octant_)
         return false;
 
     Math::Sphere sphere(transformation_.position_, radius);
-    Math::SphereOctreeQuery query(result, sphere, this);
+    Math::SphereOctreeQuery query(result, sphere, this, matcher);
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
 }
 
-bool GameObject::QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box)
+bool GameObject::QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher)
 {
     if (!octant_)
         return false;
 
-    Math::BoxOctreeQuery query(result, box, this);
+    Math::BoxOctreeQuery query(result, box, this, matcher);
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;

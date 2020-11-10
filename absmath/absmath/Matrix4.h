@@ -188,6 +188,8 @@ public:
         translation->z_ = XMath::XMVectorGetZ(t);
     }
 
+    bool IsIdentity() const;
+
     Matrix4 Transpose() const;
     float Determinant() const;
     Matrix4 Inverse() const;

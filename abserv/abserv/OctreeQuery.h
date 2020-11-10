@@ -33,13 +33,21 @@ class GameObject;
 
 namespace Math {
 
+class OctreeMatcher
+{
+public:
+    virtual bool Matches(const Game::GameObject* object) const = 0;
+};
+
 class OctreeQuery
 {
 protected:
     const Game::GameObject* ignore_;
+    const OctreeMatcher* matcher_;
 public:
-    explicit OctreeQuery(ea::vector<Game::GameObject*>& result, const Game::GameObject* ignore) :
+    explicit OctreeQuery(ea::vector<Game::GameObject*>& result, const Game::GameObject* ignore, const OctreeMatcher* matcher) :
         ignore_(ignore),
+        matcher_(matcher),
         result_(result)
     { }
     virtual ~OctreeQuery();
@@ -50,16 +58,17 @@ public:
     virtual Intersection TestOctant(const BoundingBox& box, bool inside) = 0;
     /// Intersection test for objects.
     virtual void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
+    bool Matches(const Game::GameObject* object) const;
 
     ea::vector<Game::GameObject*>& result_;
 };
 
-class PointOctreeQuery : public OctreeQuery
+class PointOctreeQuery final : public OctreeQuery
 {
 public:
     PointOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const Vector3 point, const Game::GameObject* ignore = nullptr) :
-        OctreeQuery(result, ignore),
+        const Vector3 point, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+        OctreeQuery(result, ignore, matcher),
         point_(point)
     { }
 
@@ -71,13 +80,13 @@ public:
     Vector3 point_;
 };
 
-class SphereOctreeQuery : public OctreeQuery
+class SphereOctreeQuery final : public OctreeQuery
 {
 public:
     /// Construct with sphere and query parameters.
     SphereOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const Sphere& sphere, const Game::GameObject* ignore = nullptr) :
-        OctreeQuery(result, ignore),
+        const Sphere& sphere, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+        OctreeQuery(result, ignore, matcher),
         sphere_(sphere)
     {}
 
@@ -90,13 +99,13 @@ public:
     Sphere sphere_;
 };
 
-class BoxOctreeQuery : public OctreeQuery
+class BoxOctreeQuery final : public OctreeQuery
 {
 public:
     /// Construct with bounding box and query parameters.
     BoxOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const BoundingBox& box, const Game::GameObject* ignore = nullptr) :
-        OctreeQuery(result, ignore),
+        const BoundingBox& box, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+        OctreeQuery(result, ignore, matcher),
         box_(box)
     {}
 

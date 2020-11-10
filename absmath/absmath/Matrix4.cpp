@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Matrix4.h"
 
 namespace Math {
@@ -249,6 +248,15 @@ Matrix4 Matrix4::Inverse() const
     res.m_[15] = (m_[8] * t3 - m_[9] * t1 + m_[10] * t0) / det;
 
     return res;
+#endif
+}
+
+bool Matrix4::IsIdentity() const
+{
+#if defined(HAVE_DIRECTX_MATH)
+    return XMath::XMMatrixIsIdentity(*this);
+#else
+    return Equals(Matrix4::Identity);
 #endif
 }
 

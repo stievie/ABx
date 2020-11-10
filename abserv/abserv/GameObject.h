@@ -331,8 +331,8 @@ public:
             return Math::BoundingBox();
         return collisionShape_->GetBoundingBox();
     }
-    bool QueryObjects(ea::vector<GameObject*>& result, float radius);
-    bool QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box);
+    bool QueryObjects(ea::vector<GameObject*>& result, float radius, const Math::OctreeMatcher* matcher = nullptr);
+    bool QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher = nullptr);
 
     uint32_t GetRetriggerTimout() const;
     void SetRetriggerTimout(uint32_t value);
@@ -408,5 +408,38 @@ inline ea::shared_ptr<T> GameObject::GetPtr()
         return ea::static_pointer_cast<T>(shared_from_this());
     return ea::shared_ptr<T>();
 }
+
+template<typename T>
+class ObjectTypeMatcher final : public Math::OctreeMatcher
+{
+public:
+    bool Matches(const GameObject* object) const override
+    {
+        return Is<T>(object);
+    }
+};
+template<typename Callback>
+class CallbackMatcher final : public Math::OctreeMatcher
+{
+private:
+    Callback callback_;
+public:
+    CallbackMatcher(Callback&& callback) :
+        callback_(std::move(callback))
+    { }
+    bool Matches(const GameObject* object) const override
+    {
+        return callback_(object);
+    }
+};
+
+class SentToPlayerMatcher final : public Math::OctreeMatcher
+{
+public:
+    bool Matches(const GameObject* object) const override
+    {
+        return object && object->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer;
+    }
+};
 
 }

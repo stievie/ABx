@@ -90,6 +90,8 @@ public:
     }
 #endif
 
+    bool IsIdentity() const;
+
     /// Test for equality
     bool operator ==(const Quaternion& rhs) const {
         return Equals(rhs);

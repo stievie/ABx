@@ -117,15 +117,6 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
     GameObject& other, const Math::Vector3& move,
     bool& updateTrans)
 {
-    if (!isCollidingWithPlayers_ && (other.GetType() == AB::GameProtocol::GameObjectType::Player))
-        return Iteration::Continue;
-    if (Is<Actor>(other))
-    {
-        // Not colliding with dead actors
-        if (To<Actor>(other).IsDead())
-            return Iteration::Continue;
-    }
-
     if (owner_.CollisionMaskMatches(other.GetCollisionMask()))
     {
         // Don't move the character when the object actually does not collide,
@@ -157,14 +148,30 @@ void CollisionComp::ResolveCollisions()
 {
     // Players don't collide with other players in outposts.
     // GetType() is virtual so call it just once.
-    isCollidingWithPlayers_ = (owner_.GetType() != AB::GameProtocol::GameObjectType::Player) ||
+    const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::GameObjectType::Player) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
+
+    CallbackMatcher matcher([isCollidingWithPlayers](const GameObject* object)
+    {
+        if (!object->GetCollisionShape())
+            return false;
+
+        if (!isCollidingWithPlayers && (object->GetType() == AB::GameProtocol::GameObjectType::Player))
+            return false;
+        if (auto* actor = To<Actor>(object))
+        {
+            // Not colliding with dead actors
+            if (actor->IsDead())
+                return false;
+        }
+        return true;
+    });
 
     // Actor always has a MoveComp
     MoveComp& mc = *owner_.moveComp_;
     ea::vector<GameObject*> c;
     const Math::BoundingBox box = owner_.GetWorldBoundingBox();
-    if (owner_.QueryObjects(c, box))
+    if (owner_.QueryObjects(c, box, &matcher))
     {
         if (c.size() == 0)
             return;

@@ -35,8 +35,8 @@ function onStart()
   end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
-    local x = 1.66
-    local z = 19
+    local x = 2.58
+    local z = 16.7
     local y = self:GetTerrainHeight(x, z)
     merchant:SetPosition({x, y, z})
     merchant:SetRotation(180)

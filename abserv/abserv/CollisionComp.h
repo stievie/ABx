@@ -44,7 +44,6 @@ class CollisionComp
     NON_MOVEABLE(CollisionComp)
 private:
     Actor& owner_;
-    bool isCollidingWithPlayers_{ true };
     Iteration CollisionCallback(const Math::BoundingBox& myBB, GameObject& other, const Math::Vector3& move, bool& updateTrans);
     bool Slide(const Math::BoundingBox& myBB, const GameObject& other);
     void GotoSafePosition();

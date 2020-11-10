@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Quaternion.h"
 #include "MathUtils.h"
 #include "Matrix4.h"
@@ -301,6 +300,16 @@ Matrix4 Quaternion::GetMatrix() const
 float Quaternion::LengthSqr() const
 {
     return (w_*w_ + x_*x_ + y_*y_ + z_*z_);
+}
+
+bool Quaternion::IsIdentity() const
+{
+#if defined(HAVE_DIRECTX_MATH)
+    return XMath::XMQuaternionIsIdentity(*this);
+#else
+    return Equals(Quaternion::Identity);
+#endif
+
 }
 
 }

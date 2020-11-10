@@ -141,7 +141,7 @@ public:
     }
 
     bool IsDefined() const { return !Math::IsInfinite(min_.x_); }
-    bool IsOriented() const { return !orientation_.Equals(Quaternion::Identity); }
+    bool IsOriented() const { return !orientation_.IsIdentity(); }
     std::string ToString() const
     {
         if (!IsDefined())
