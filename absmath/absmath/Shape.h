@@ -24,6 +24,7 @@
 #include "Vector3.h"
 #include "Matrix4.h"
 #include <eastl.hpp>
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -119,11 +120,20 @@ public:
     }
     /// Check if the triangle face points outside. This only depends on the order of the points.
     bool IsFacingOutside(const ea::array<Vector3, 3>& triangle) const;
+    Vector3 GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const;
+    Vector3 GetClosestPointOnTriangle(size_t i, const Vector3& pos) const;
+    float GetDistanceToTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const;
+    float GetDistanceToTriangle(size_t i, const Vector3& pos) const;
+    size_t GetClosestTriangleIndex(const Vector3& pos) const;
 
     Vector3 GetVertex(size_t index) const
     {
         if (indexCount_)
+        {
+            ASSERT(index < indexData_.size());
+            ASSERT(indexData_[index] < vertexData_.size());
             return matrix_ * vertexData_[indexData_[index]];
+        }
         return matrix_ * vertexData_[index];
     }
     // Vertext count

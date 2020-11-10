@@ -31,7 +31,9 @@ bool IOModel::Import(Game::Model& asset, const std::string& name)
     AB_PROFILE;
 
     asset.SetShape(ea::make_unique<Math::Shape>());
-    return IO::LoadShape(name, *asset.GetShape(), asset.boundingBox_);
+    const bool result = IO::LoadShape(name, *asset.GetShape(), asset.boundingBox_);
+//    LOG_DEBUG << "Loaded model " << name << ", tris " << asset.GetShape()->GetTriangleCount() << std::endl;
+    return result;
 }
 
 }

@@ -25,6 +25,7 @@
 #include "ConfigManager.h"
 #include "Game.h"
 #include "GameObject.h"
+#include "Model.h"
 #include "Npc.h"
 #include "Player.h"
 #include "TriggerComp.h"
@@ -155,6 +156,11 @@ void GameObject::Update(uint32_t timeElapsed, Net::NetworkMessage&)
         auto* disp = GetSubsystem<Asynch::Dispatcher>();
         disp->Add(Asynch::CreateTask(std::bind(&GameObject::Remove, shared_from_this())));
     }
+}
+
+void GameObject::SetModel(ea::shared_ptr<Model> model)
+{
+    model_ = model;
 }
 
 bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const

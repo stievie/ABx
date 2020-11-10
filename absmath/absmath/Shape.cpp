@@ -59,6 +59,143 @@ Vector3 Shape::Center() const
     return result;
 }
 
+Vector3 Shape::GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const
+{
+    const Vector3 edge0 = tri[1] - tri[0];
+    const Vector3 edge1 = tri[2] - tri[0];
+    const Vector3 v0 = tri[0] - pos;
+
+    const float a = edge0.DotProduct(edge0);
+    const float b = edge0.DotProduct(edge1);
+    const float c = edge1.DotProduct(edge1);
+    const float d = edge0.DotProduct(v0);
+    const float e = edge1.DotProduct(v0);
+
+    const float det = a * c - b * b;
+    float s = b * e - c * d;
+    float t = b * d - a * e;
+
+    if (s + t < det)
+    {
+        if (s < 0.0f)
+        {
+            if (t < 0.0f)
+            {
+                if (d < 0.0f)
+                {
+                    s = Clamp(-d / a, 0.0f, 1.0f);
+                    t = 0.f;
+                }
+                else
+                {
+                    s = 0.0f;
+                    t = Clamp(-e / c, 0.0f, 1.0f);
+                }
+            }
+            else
+            {
+                s = 0.0f;
+                t = Clamp(-e / c, 0.0f, 1.0f);
+            }
+        }
+        else if (t < 0.0f)
+        {
+            s = Clamp(-d / a, 0.0f, 1.0f);
+            t = 0.f;
+        }
+        else
+        {
+            const float invDet = 1.0f / det;
+            s *= invDet;
+            t *= invDet;
+        }
+    }
+    else
+    {
+        if (s < 0.0f)
+        {
+            const float tmp0 = b + d;
+            const float tmp1 = c + e;
+            if (tmp1 > tmp0)
+            {
+                const float numer = tmp1 - tmp0;
+                const float denom = a - 2 * b + c;
+                s = Clamp(numer / denom, 0.0f, 1.0f);
+                t = 1 - s;
+            }
+            else
+            {
+                t = Clamp(-e / c, 0.0f, 1.0f);
+                s = 0.f;
+            }
+        }
+        else if (t < 0.0f)
+        {
+            if (a + d > b + e)
+            {
+                const float numer = c + e - b - d;
+                const float denom = a - 2 * b + c;
+                s = Clamp(numer / denom, 0.0f, 1.0f);
+                t = 1 - s;
+            }
+            else
+            {
+                s = Clamp(-e / c, 0.0f, 1.0f);
+                t = 0.f;
+            }
+        }
+        else
+        {
+            const float numer = c + e - b - d;
+            const float denom = a - 2 * b + c;
+            s = Clamp(numer / denom, 0.0f, 1.0f);
+            t = 1.f - s;
+        }
+    }
+
+    return tri[0] + s * edge0 + t * edge1;
+}
+
+Vector3 Shape::GetClosestPointOnTriangle(size_t i, const Vector3& pos) const
+{
+    if (GetTriangleCount() == 0)
+        return {};
+    return GetClosestPointOnTriangle(GetTriangle(i), pos);
+}
+
+float Shape::GetDistanceToTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const
+{
+    const Vector3 normal = GetTriangleNormal(tri[0], tri[1], tri[2]);
+    const Vector3 v = pos - tri[0];
+    const float dot = v.DotProduct(normal);
+    const Vector3 s = v - (normal * dot);
+    return s.Length();
+}
+
+float Shape::GetDistanceToTriangle(size_t i, const Vector3& pos) const
+{
+    if (GetTriangleCount() == 0)
+        return std::numeric_limits<float>::max();
+    return GetDistanceToTriangle(GetTriangle(i), pos);
+}
+
+size_t Shape::GetClosestTriangleIndex(const Vector3& pos) const
+{
+    float minDist = std::numeric_limits<float>::max();
+    size_t best = 0;
+    const size_t count = GetTriangleCount();
+    for (size_t i = 0; i < count; ++i)
+    {
+        float dist = GetDistanceToTriangle(i, pos);
+        if (dist < minDist)
+        {
+            minDist = dist;
+            best = i;
+        }
+    }
+    return best;
+}
+
 Vector3 Shape::GetFarsetPointInDirection(const Vector3& direction) const
 {
     size_t best = 0;

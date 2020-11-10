@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Gjk.h"
 
 namespace Math {
@@ -324,14 +323,14 @@ bool Gjk::Update(const Vector3& a)
 
 bool Gjk::Intersects(const Shape& shape1, const Shape& shape2)
 {
-    v = Vector3::Zero;
+    v = Vector3::UnitX;
     n = 0;
 
     c = Support(shape1, shape2, v);
 
-    if (c.DotProduct(c) < 0.0f)
+    if (c.DotProduct(v) < 0.0f)
         return false;
-    c = -c;
+    v = -c;
 
     b = Support(shape1, shape2, v);
     if (b.DotProduct(v) < 0.0f)

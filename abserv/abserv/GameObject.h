@@ -64,6 +64,7 @@ enum ObjerctAttr : uint8_t
 
 class Game;
 class Actor;
+class Model;
 class Npc;
 class Player;
 class AreaOfEffect;
@@ -112,6 +113,7 @@ private:
     int64_t removeAt_{ 0 };
     bool hasGame_{ false };
     ea::unique_ptr<Math::AbstractCollisionShape> collisionShape_;
+    ea::shared_ptr<Model> model_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(const Math::StdVector3& direction);
     /// Raycast to destination point
@@ -180,6 +182,7 @@ public:
     {
         collisionShape_ = std::move(shape);
     }
+    void SetModel(ea::shared_ptr<Model> model);
     uint32_t GetId() const { return id_; }
     ea::shared_ptr<Game> GetGame() const
     {

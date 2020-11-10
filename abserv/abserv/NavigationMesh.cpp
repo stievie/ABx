@@ -165,24 +165,16 @@ bool NavigationMesh::GetHeight(float& result, const Math::Vector3& point, const 
         return false;
     }
 
-    bool onPoly = false;
-    status = navQuery_->closestPointOnPoly(*nearestRef, &point.x_, &nearestPoint.x_, &onPoly);
+    status = navQuery_->getPolyHeight(*nearestRef, &point.x_, &result);
     if (dtStatusFailed(status))
     {
 #ifdef DEBUG_NAVIGATION
-        LOG_WARNING << "closestPointOnPoly() Failed with status " << status <<
+        LOG_WARNING << "getPolyHeight() Failed with status " << status <<
             GetStatusString(status) << std::endl;
 #endif
-        return false;
+        result = nearestPoint.y_;
+        return true;
     }
-    if (!onPoly)
-    {
-#ifdef DEBUG_NAVIGATION
-        LOG_WARNING << "Point " << point << " not only poly" << std::endl;
-#endif
-        return false;
-    }
-    result = nearestPoint.y_;
     return true;
 }
 

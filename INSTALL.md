@@ -105,6 +105,10 @@ directory:
 ~~~plain
 file_root/
   - AbData.{pak,meta,sha1}
+  - Autoload.{pak,meta,sha1}
+  - CoreData.{pak,meta,sha1}
+  - Data.{pak,meta,sha1}
+  - SoundData.{pak,meta,sha1}
   - windows/
     - fw.exe
     - abupdate.exe

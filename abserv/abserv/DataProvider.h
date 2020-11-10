@@ -126,7 +126,7 @@ public:
         const auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
-        return FileExists(name);
+        return FileExists(normalName);
     }
     template<class T>
     bool IsCached(const std::string& name) const

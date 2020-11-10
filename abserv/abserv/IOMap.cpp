@@ -140,8 +140,11 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
                     if (modelFile.size() == 2)
                     {
                         if (dataProvider->Exists<Game::Model>(modelFile[1]))
+                        {
                             // Model is optional
                             model = dataProvider->GetAsset<Game::Model>(modelFile[1]);
+                            object->SetModel(model);
+                        }
 #ifdef DEBUG_COLLISION
                         if (model)
                             LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox() << std::endl;
@@ -199,10 +202,13 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting ConvexHull collision shape for " << *object << std::endl;
 #endif
+#if 0
+                            // TODO: Fix this
                             object->SetCollisionShape(
                                 ea::make_unique<Math::CollisionShape<Math::ConvexHull>>(
                                     Math::ShapeType::ConvexHull, model->GetShape()->vertexData_)
                             );
+#endif
                         }
                     }
                     else if (collShape == "Box"_Hash && size != Math::Vector3::Zero)
