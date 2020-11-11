@@ -26,7 +26,7 @@
 
 namespace IO {
 
-class IOModel : public IOAssetImpl<Game::Model>
+class IOModel final : public IOAssetImpl<Game::Model>
 {
 public:
     /// Import 3D Model file exported with the import program

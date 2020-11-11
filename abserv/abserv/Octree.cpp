@@ -351,7 +351,7 @@ void Octant::GetObjectsInternal(RayOctreeQuery& query) const
         while (start != end)
         {
             Game::GameObject* object = *start++;
-            if (object == query.ignore_)
+            if (object == query.ignore_ || !query.Matches(object))
                 continue;
             object->ProcessRayQuery(query, query.result_);
         }

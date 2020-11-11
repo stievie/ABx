@@ -151,7 +151,7 @@ void CollisionComp::ResolveCollisions()
     const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::GameObjectType::Player) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
-    CallbackMatcher matcher([isCollidingWithPlayers](const GameObject* object)
+    const Math::CallbackOctreeMatcher matcher([isCollidingWithPlayers](const GameObject* object) -> bool
     {
         if (!object->GetCollisionShape())
             return false;

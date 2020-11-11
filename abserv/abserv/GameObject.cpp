@@ -106,7 +106,7 @@ void GameObject::UpdateRanges()
     ranges_.clear();
     ea::vector<GameObject*> res;
 
-    SentToPlayerMatcher matcher;
+    const SentToPlayerMatcher matcher;
     // Compass radius
     if (QueryObjects(res, RANGE_INTEREST, &matcher))
     {
@@ -291,7 +291,7 @@ leave_loop:;
 
 const Utils::Variant& GameObject::GetVar(const std::string& name) const
 {
-    auto it = variables_.find(sa::StringHashRt(name.c_str()));
+    const auto it = variables_.find(sa::StringHashRt(name.c_str()));
     if (it != variables_.end())
         return (*it).second;
     return Utils::Variant::Empty;
@@ -484,6 +484,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::StdVector3& directi
     query.ignore_ = this;
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
+    result.reserve(query.result_.size());
     for (const auto& o : query.result_)
     {
         result.push_back(o.object_);

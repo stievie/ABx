@@ -23,18 +23,11 @@
 
 #include "IOAsset.h"
 #include "Terrain.h"
-#include <stb/stb_image.h>
 
 namespace IO {
 
-class IOTerrain : public IOAssetImpl<Game::Terrain>
+class IOTerrain final : public IOAssetImpl<Game::Terrain>
 {
-private:
-    int width_{ 0 };
-    int height_{ 0 };
-    int components_{ 0 };
-    stbi_uc* data_{ nullptr };
-    bool LoadHeightMap(Game::Terrain& asset, const std::string& name);
 public:
     bool Import(Game::Terrain& asset, const std::string& name) override;
 };

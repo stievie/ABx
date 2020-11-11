@@ -309,7 +309,6 @@ bool Quaternion::IsIdentity() const
 #else
     return Equals(Quaternion::Identity);
 #endif
-
 }
 
 }

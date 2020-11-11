@@ -25,7 +25,7 @@
 
 namespace IO {
 
-bool IOTerrain::LoadHeightMap(Game::Terrain& asset, const std::string& name)
+bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
 {
     std::fstream input(name, std::ios::binary | std::fstream::in);
     if (!input.is_open())
@@ -68,11 +68,6 @@ bool IOTerrain::LoadHeightMap(Game::Terrain& asset, const std::string& name)
     input.close();
 
     return true;
-}
-
-bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
-{
-    return LoadHeightMap(asset, name);
 }
 
 }

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="130.466" />
 	<attribute name="Next Replicated Node ID" value="13" />
 	<attribute name="Next Replicated Component ID" value="32" />
-	<attribute name="Next Local Node ID" value="16810659" />
-	<attribute name="Next Local Component ID" value="16811725" />
+	<attribute name="Next Local Node ID" value="16811444" />
+	<attribute name="Next Local Component ID" value="16812521" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -130,7 +130,7 @@
 		<attribute name="Variables" />
 		<component type="StaticModel" id="16790906">
 			<attribute name="Model" value="Model;Models/ColossOfRhodos.mdl" />
-			<attribute name="Material" value="Material;Materials/ColossOfRhodes_Lime.xml;Materials/ColossOfRhodes_Gold.xml" />
+			<attribute name="Material" value="Material;Materials/ColossOfRhodos_SandStone.xml;Materials/ColossOfRhodes_Gold.xml" />
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16790907">

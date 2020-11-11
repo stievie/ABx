@@ -346,7 +346,7 @@ static bool LoadScene(Game::Map& map, const std::string& name)
     // Update spawn points
     for (auto& p : map.spawnPoints_)
     {
-        p.position.y_ = map.terrain_->GetHeight(p.position);
+        map.UpdatePointHeight(p.position);
     }
 
 #ifdef DEBUG_GAME
@@ -418,14 +418,14 @@ bool Load(Game::Map& map)
     }
 
     // Before scene
-    map.terrain_ = dataProv->GetAsset<Game::Terrain>(Utils::AddSlash(map.directory_) + terrainFile);
+    map.terrain_ = dataProv->GetAsset<Game::Terrain>(Utils::ConcatPath(map.directory_, terrainFile));
     if (!map.terrain_)
     {
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
 
-    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(Utils::AddSlash(map.directory_) + navMeshFile);
+    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(Utils::ConcatPath(map.directory_, navMeshFile));
     if (!map.navMesh_)
     {
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;

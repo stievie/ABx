@@ -26,6 +26,7 @@
 #include <absmath/Sphere.h>
 #include <absmath/Ray.h>
 #include <eastl.hpp>
+#include <sa/Noncopyable.h>
 
 namespace Game {
 class GameObject;
@@ -33,26 +34,43 @@ class GameObject;
 
 namespace Math {
 
+// This can be used to filter out objects. Filtering objects can increase performance,
+// because it skips expensive collision/intersection checking for these objects.
 class OctreeMatcher
 {
 public:
     virtual bool Matches(const Game::GameObject* object) const = 0;
 };
 
+template<typename Callback>
+class CallbackOctreeMatcher final : public OctreeMatcher
+{
+private:
+    Callback callback_;
+public:
+    CallbackOctreeMatcher(Callback&& callback) :
+        callback_(std::move(callback))
+    { }
+    bool Matches(const Game::GameObject* object) const override
+    {
+        return callback_(object);
+    }
+};
+
 class OctreeQuery
 {
+    NON_COPYABLE(OctreeQuery)
+private:
+    const OctreeMatcher* matcher_;
 protected:
     const Game::GameObject* ignore_;
-    const OctreeMatcher* matcher_;
 public:
     explicit OctreeQuery(ea::vector<Game::GameObject*>& result, const Game::GameObject* ignore, const OctreeMatcher* matcher) :
-        ignore_(ignore),
         matcher_(matcher),
+        ignore_(ignore),
         result_(result)
     { }
     virtual ~OctreeQuery();
-    OctreeQuery(const OctreeQuery& rhs) = delete;
-    OctreeQuery& operator =(const OctreeQuery& rhs) = delete;
 
     /// Intersection test for an octant.
     virtual Intersection TestOctant(const BoundingBox& box, bool inside) = 0;
@@ -180,20 +198,26 @@ struct RayQueryResult
 
 class RayOctreeQuery
 {
+    NON_COPYABLE(RayOctreeQuery)
 public:
     /// Construct with ray and query parameters.
     RayOctreeQuery(ea::vector<RayQueryResult>& result, const Ray& ray,
         float maxDistance = Math::M_INFINITE,
-        const Game::GameObject* ignore = nullptr) :
+        const Game::GameObject* ignore = nullptr,
+        const OctreeMatcher* matcher = nullptr) :
         result_(result),
         ray_(ray),
         maxDistance_(maxDistance),
-        ignore_(ignore)
+        ignore_(ignore),
+        matcher_(matcher)
     { }
 
-    RayOctreeQuery(const RayOctreeQuery& rhs) = delete;
-    RayOctreeQuery& operator =(const RayOctreeQuery& rhs) = delete;
-
+    bool Matches(const Game::GameObject* object) const
+    {
+        if (!matcher_)
+            return true;
+        return matcher_->Matches(object);
+    }
     /// Result vector reference.
     ea::vector<RayQueryResult>& result_;
     /// Ray.
@@ -201,6 +225,7 @@ public:
     /// Maximum ray distance.
     float maxDistance_;
     const Game::GameObject* ignore_;
+    const OctreeMatcher* matcher_;
 };
 
 }

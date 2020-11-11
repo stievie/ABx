@@ -27,7 +27,7 @@
 namespace IO {
 
 /// Loads a Lua script and stores the compiled byte code.
-class IOScript : public IOAssetImpl<Game::Script>
+class IOScript final : public IOAssetImpl<Game::Script>
 {
 public:
     bool Import(Game::Script& asset, const std::string& name) override;

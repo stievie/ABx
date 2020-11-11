@@ -418,20 +418,6 @@ public:
         return Is<T>(object);
     }
 };
-template<typename Callback>
-class CallbackMatcher final : public Math::OctreeMatcher
-{
-private:
-    Callback callback_;
-public:
-    CallbackMatcher(Callback&& callback) :
-        callback_(std::move(callback))
-    { }
-    bool Matches(const GameObject* object) const override
-    {
-        return callback_(object);
-    }
-};
 
 class SentToPlayerMatcher final : public Math::OctreeMatcher
 {
