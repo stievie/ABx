@@ -29,22 +29,22 @@ void QuadTree::Split()
         return;
 
     {
-        children_[0] = std::make_unique<QuadTree>(QuadTreeBounds(bounds_.left_, bounds_.top_, bounds_.x_, bounds_.y_));
+        children_[0] = ea::make_unique<QuadTree>(QuadTreeBounds(bounds_.left_, bounds_.top_, bounds_.x_, bounds_.y_));
         children_[0]->level_ = level_ + 1;
         children_[0]->root_ = this;
     }
     {
-        children_[1] = std::make_unique<QuadTree>(QuadTreeBounds(bounds_.x_, bounds_.top_, bounds_.right_, bounds_.y_));
+        children_[1] = ea::make_unique<QuadTree>(QuadTreeBounds(bounds_.x_, bounds_.top_, bounds_.right_, bounds_.y_));
         children_[1]->level_ = level_ + 1;
         children_[1]->root_ = this;
     }
     {
-        children_[2] = std::make_unique<QuadTree>(QuadTreeBounds(bounds_.x_, bounds_.y_, bounds_.right_, bounds_.bottom_));
+        children_[2] = ea::make_unique<QuadTree>(QuadTreeBounds(bounds_.x_, bounds_.y_, bounds_.right_, bounds_.bottom_));
         children_[2]->level_ = level_ + 1;
         children_[2]->root_ = this;
     }
     {
-        children_[3] = std::make_unique<QuadTree>(QuadTreeBounds(bounds_.left_, bounds_.y_, bounds_.x_, bounds_.bottom_));
+        children_[3] = ea::make_unique<QuadTree>(QuadTreeBounds(bounds_.left_, bounds_.y_, bounds_.x_, bounds_.bottom_));
         children_[3]->level_ = level_ + 1;
         children_[3]->root_ = this;
     }

@@ -120,7 +120,7 @@ private:
     QuadTreeBounds bounds_;
     QuadTreeBounds maxBounds_;
 
-    std::unique_ptr<QuadTree> children_[NUM_CHILDREN]{};
+    ea::unique_ptr<QuadTree> children_[NUM_CHILDREN]{};
     ea::vector<QuadTreeObject*> objects_;
     QuadTree* root_{ nullptr };
     uint32_t level_{ 1 };
