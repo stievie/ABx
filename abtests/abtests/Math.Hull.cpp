@@ -49,18 +49,12 @@ TEST_CASE("Hull")
 
     SECTION("Inside")
     {
-        // FIXME:
         REQUIRE(hull.IsInside({ 0.0f, 0.0f, 0.0f }) == Math::Intersection::Inside);
         REQUIRE(hull.IsInside({ 2.5f, 2.5f, 2.5f }) == Math::Intersection::Outside);
     }
 
     SECTION("Collides")
     {
-        // FIXME: This fails on Azure DevOps, I wonder what CPU they have...
-        // Works fine with a Intel Core i5-3570K (Ivy Bridge) and
-        // Intel Xeon X3430 (Lynnfield)
-        // However, the Hull collisions still need work...
-
         Math::Sphere sphere1({ 0.5f, 0.5f, 0.5f }, 0.5f);
         Math::Vector3 move;
         REQUIRE(hull.Collides(sphere1, Math::Vector3::Zero, move));

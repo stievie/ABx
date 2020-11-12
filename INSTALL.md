@@ -83,8 +83,8 @@ PackageTool SoundData\ SoundData.pak -c
 This will cause the client to check for updated files every time it start, and binary
 patches changed files. This works best with large files.
 
-To compile the client without autoupdating, define `NO_AUTOUPDATE` defined,
-CMake option `ABX_CLIENT_NO_AUTOUPDATE`.
+To compile the client without autoupdating, define `NO_AUTOUPDATE`, CMake option
+`ABX_CLIENT_NO_AUTOUPDATE`.
 
 #### Compression
 

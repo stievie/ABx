@@ -184,6 +184,7 @@
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Rect.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Shape.cpp" />
