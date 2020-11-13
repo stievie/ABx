@@ -30,5 +30,6 @@ bool LoadShape(const std::string& filename, Math::Shape& shape, Math::BoundingBo
 bool SaveShape(const std::string& filename, const Math::Shape& shape);
 bool SaveShapeToOBJ(const std::string& filename, const Math::Shape& shape);
 bool LoadUrhoModel(const std::string& filename, Math::Shape& shape);
+bool LoadShapeFromOBJ(const std::string& filename, Math::Shape& shape);
 
 }

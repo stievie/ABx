@@ -23,6 +23,8 @@
 #include "IO.h"
 #include <fstream>
 #include <iomanip>
+#include <istream>
+#include <sstream>
 
 namespace IO {
 
@@ -102,6 +104,52 @@ bool SaveShapeToOBJ(const std::string& filename, const Math::Shape& shape)
 
     f << "# EOF" << std::endl;
     f.close();
+    return true;
+}
+
+bool LoadShapeFromOBJ(const std::string& filename, Math::Shape& shape)
+{
+    std::ifstream in(filename);
+    if (!in.is_open())
+        return false;
+
+    std::istringstream lineStream;
+    char line[1024];
+    std::string op;
+    while (in.good())
+    {
+        in.getline(line, 1023);
+        lineStream.clear();
+        lineStream.str(line);
+
+        if (!(lineStream >> op))
+            continue;
+
+        if (op == "v")
+        {
+            Math::Vector3 vertex;
+            lineStream >> vertex.x_ >> vertex.y_ >> vertex.z_;
+            shape.vertexData_.push_back(std::move(vertex));
+            ++shape.vertexCount_;
+        }
+        else if (op == "vt")
+        {
+        }
+        else if (op == "vn")
+        {
+        }
+        else if (op == "g")
+        {
+        }
+        else if (op == "f")
+        {
+            unsigned i1, i2, i3;
+            lineStream >> i1 >> i2 >> i3;
+            // Our indices are 0-based
+            shape.AddTriangle(i1 - 1, i2 - 1, i3 - 1);
+        }
+    }
+
     return true;
 }
 

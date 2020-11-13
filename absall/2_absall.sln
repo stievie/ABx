@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "import", "..\import\import\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genavmesh", "..\genavmesh\genavmesh\genavmesh.vcxproj", "{455420ED-2A83-4A7F-9986-4BC04E53E505}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obj2hm", "..\obj2hm\obj2hm\obj2hm.vcxproj", "{591C0AAD-F514-4CB7-92A7-D848194666CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -366,6 +368,20 @@ Global
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelWithDebInfo|x64.Build.0 = Release|x64
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelWithDebInfo|x86.ActiveCfg = Debug|x64
 		{455420ED-2A83-4A7F-9986-4BC04E53E505}.RelWithDebInfo|x86.Build.0 = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Debug|x64.ActiveCfg = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Debug|x64.Build.0 = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Debug|x86.ActiveCfg = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Release|x64.ActiveCfg = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Release|x64.Build.0 = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.Release|x86.ActiveCfg = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelNoProfiling|x64.Build.0 = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelNoProfiling|x86.ActiveCfg = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelNoProfiling|x86.Build.0 = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x86.ActiveCfg = Debug|x64
+		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x86.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

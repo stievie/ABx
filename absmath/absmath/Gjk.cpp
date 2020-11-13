@@ -69,15 +69,15 @@ bool Gjk::Update(const Vector3& a)
     if (n == 2)
     {
         // Handling triangle
-        Vector3 ao = -a;
-        Vector3 ab = b - a;
-        Vector3 ac = c - a;
+        const Vector3 ao = -a;
+        const Vector3 ab = b - a;
+        const Vector3 ac = c - a;
 
         // Normal of triangle ABC
-        Vector3 abc = ab.CrossProduct(ac);
+        const Vector3 abc = ab.CrossProduct(ac);
 
         // Plane test on edge ab
-        Vector3 abp = ab.CrossProduct(abc);       // direction vector pointing inside triangle abc from ab
+        const Vector3 abp = ab.CrossProduct(abc);       // direction vector pointing inside triangle abc from ab
         if (abp.DotProduct(ao) > 0.0f)
         {
             // origin lies outside the triangle abc, near the edge ab
@@ -92,7 +92,7 @@ bool Gjk::Update(const Vector3& a)
         // direction vector pointing inside triangle abc from ac
         // note that different than abp, the result of acp is abc cross ac, while abp is ab cross abc.
         // The order does matter. Based on the right-handed rule, we want the vector pointing inside the triangle.
-        Vector3 acp = abc.CrossProduct(ac);
+        const Vector3 acp = abc.CrossProduct(ac);
         if (acp.DotProduct(ao) > 0.0f)
         {
             // origin lies outside the triangle abc, near the edge ac
@@ -124,14 +124,14 @@ bool Gjk::Update(const Vector3& a)
 
     if (n == 3)
     {
-        Vector3 ao = -a;
+        const Vector3 ao = -a;
         Vector3 ab = b - a;
         Vector3 ac = c - a;
         Vector3 ad = d - a;
 
         Vector3 abc = ab.CrossProduct(ac);
         Vector3 acd = ac.CrossProduct(ad);
-        Vector3 adb = ad.CrossProduct(ab);
+        const Vector3 adb = ad.CrossProduct(ab);
 
         Vector3 tmp;
 
