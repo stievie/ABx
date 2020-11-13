@@ -1,5 +1,7 @@
 project (obj2hm CXX)
 
+include_directories(../Include/stb)
+
 file(GLOB SOURCES
     obj2hm/*.cpp
     obj2hm/*.h
