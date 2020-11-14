@@ -119,6 +119,13 @@ constexpr T ConvertLittleEndian(T value)
 #endif
 }
 
+template<>
+float ConvertLittleEndian<float>(float value)
+{
+    uint32_t v = ConvertLittleEndian<uint32_t>(*reinterpret_cast<uint32_t*>(&value));
+    return *reinterpret_cast<float*>(&v);
+}
+
 template<typename T>
 constexpr T ConvertBigEndian(T value)
 {
@@ -134,6 +141,13 @@ constexpr T ConvertBigEndian(T value)
 #elif defined(SA_BIG_ENDIAN)
     return value;
 #endif
+}
+
+template<>
+float ConvertBigEndian<float>(float value)
+{
+    uint32_t v = ConvertBigEndian<uint32_t>(*reinterpret_cast<uint32_t*>(&value));
+    return *reinterpret_cast<float*>(&v);
 }
 
 template<typename T>

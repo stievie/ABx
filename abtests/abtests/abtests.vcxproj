@@ -135,6 +135,7 @@
     <ClCompile Include="sa.ArgParser.cpp" />
     <ClCompile Include="sa.Bits.cpp" />
     <ClCompile Include="sa.compress.cpp" />
+    <ClCompile Include="sa.Endian.cpp" />
     <ClCompile Include="sa.Hash.cpp" />
     <ClCompile Include="sa.path.cpp" />
     <ClCompile Include="sa.PatternMatch.cpp" />
