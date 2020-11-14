@@ -14,6 +14,14 @@ This will create `inputfile.obj.png`.
 
 ## Example
 
+Source height map:
+
+![Source Map](source_map.png?raw=true)
+
+With `genavmesh` generated 3D source mesh with added obstacles:
+
 ![Source Mesh](source_mesh.jpg?raw=true)
+
+From source mesh generated height map, now includes the heights of the obstacles:
 
 ![Generated Map](generated_map.png?raw=true)

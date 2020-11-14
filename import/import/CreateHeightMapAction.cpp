@@ -64,6 +64,11 @@ void CreateHeightMapAction::SaveHeightMap()
 
 void CreateHeightMapAction::CreateGeometry()
 {
+    if ((width_ - 1) % patchSize_ != 0 || (height_ - 1) % patchSize_ != 0)
+    {
+        std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_ << ") should be a multiple of patch size (" << patchSize_ << ")" << std::endl;
+    }
+
     patchWorldSize_ = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
     numPatches_ = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
     numVertices_ = { numPatches_.x_ * patchSize_ + 1, numPatches_.y_ * patchSize_ + 1 };
