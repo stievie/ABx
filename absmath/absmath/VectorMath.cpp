@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "VectorMath.h"
 #include "MathDefs.h"
 #include "MathUtils.h"
@@ -30,7 +29,7 @@ namespace Math {
 
 bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc)
 {
-#if 1
+#if 0
     const Vector3 e10 = pb - pa;
     const Vector3 e20 = pc - pa;
 
@@ -141,6 +140,15 @@ Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& d
     Math::Matrix4 m = Math::Matrix4::FromQuaternion(direction.Inverse());
     Math::Vector3 v = m * (Math::Vector3::One * distance);
     return position + v;
+}
+
+bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& center)
+{
+    // We only support convex shapes so calculate the normal and check if
+    // it points outside.
+    const Vector3 normal = GetTriangleNormal(p1, p2, p3);
+    const float r = normal.DotProduct(center);
+    return r < 0.0f;
 }
 
 }

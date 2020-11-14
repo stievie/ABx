@@ -76,8 +76,8 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
 
     for (const auto& v : shape.vertexData_)
     {
-        int x = static_cast<int>(v.x_ - minX.x_);
-        int y = height - static_cast<int>(v.z_ - minZ.z_);
+        const int x = static_cast<int>(v.x_ - minX.x_);
+        const int y = height - static_cast<int>(v.z_ - minZ.z_);
 
         if (x >= width)
             continue;
@@ -87,6 +87,46 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
         const size_t index = (size_t)y * (size_t)width + (size_t)x;
         if (heights[index] < v.y_)
             heights[index] = v.y_;
+    }
+
+    // 2nd pass to fill triangles
+    const Math::Vector3 shapeCenter = shape.Center();
+    for (size_t t = 0; t < shape.GetTriangleCount(); ++t)
+    {
+        const auto triangle = shape.GetTriangle(t);
+        if (!Math::IsTriangleFacingOutside(triangle[0], triangle[1], triangle[2], shapeCenter))
+            continue;
+
+        const int minTriangleX = (int)floor(std::min(std::min(triangle[0].x_, triangle[1].x_), triangle[2].x_));
+        const int minTriangleZ = (int)floor(std::min(std::min(triangle[0].z_, triangle[1].z_), triangle[2].z_));
+        const int maxTriangleX = (int)ceil(std::max(std::max(triangle[0].x_, triangle[1].x_), triangle[2].x_));
+        const int maxTriangleZ = (int)ceil(std::max(std::max(triangle[0].z_, triangle[1].z_), triangle[2].z_));
+
+        for (int y = minTriangleZ; y <= maxTriangleZ; ++y)
+        {
+            for (int x = minTriangleX; x < maxTriangleX; ++x)
+            {
+                const Math::Vector3 point = { (float)x, triangle[0].y_, (float)y };
+                if (Math::IsPointInTriangle(point, triangle[0], triangle[1], triangle[2]))
+                {
+                    const int posX = static_cast<int>(x - minX.x_);
+                    const int posY = height - static_cast<int>(y - minZ.z_);
+
+                    if (posX >= width)
+                        continue;
+                    if (posY >= height)
+                        continue;
+
+                    const Math::Vector3 triPoint = shape.GetClosestPointOnTriangle(triangle,
+                        { (float)x, maxHeight.y_, (float)y });
+
+                    const size_t index = (size_t)posY * (size_t)width + (size_t)posX;
+
+                    if (heights[index] < triPoint.y_)
+                        heights[index] = triPoint.y_;
+                }
+            }
+        }
     }
 
     float lastValue = 0.0f;

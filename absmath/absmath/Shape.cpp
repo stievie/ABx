@@ -42,12 +42,7 @@ void Shape::AddTriangle(unsigned i1, unsigned i2, unsigned i3)
 
 bool Shape::IsFacingOutside(const ea::array<Vector3, 3>& triangle) const
 {
-    // We only support convex shapes so calculate the normal and check if
-    // it points outside.
-    const Vector3 normal = GetTriangleNormal(triangle[0], triangle[1], triangle[2]);
-    const Vector3 center = Center();
-    const float r = normal.DotProduct(center);
-    return r < 0.0f;
+    return IsTriangleFacingOutside(triangle[0], triangle[1], triangle[2], Center());
 }
 
 Vector3 Shape::Center() const
@@ -175,7 +170,7 @@ float Shape::GetDistanceToTriangle(const ea::array<Vector3, 3>& tri, const Vecto
 float Shape::GetDistanceToTriangle(size_t i, const Vector3& pos) const
 {
     if (GetTriangleCount() == 0)
-        return std::numeric_limits<float>::max();
+        return M_INFINITE;
     return GetDistanceToTriangle(GetTriangle(i), pos);
 }
 

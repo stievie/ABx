@@ -45,6 +45,7 @@ Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p
 /// Make CCW -> CW and vice versa
 void ReverseOrder(std::array<Vector3, 3>& triangle);
 Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance);
+bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& center);
 
 template<typename Callback>
 inline void GetTriangleIndices(int width, int height, Callback&& callback)
