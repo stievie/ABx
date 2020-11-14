@@ -70,13 +70,13 @@ namespace sa {
 #   define sa_bswap32(x)     _byteswap_ulong((x))
 #   define sa_bswap64(x)     _byteswap_uint64((x))
 #elif (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
-#   define sa_bswap16(x)     __builtin_sa_bswap16((x))
-#   define sa_bswap32(x)     __builtin_sa_bswap32((x))
-#   define sa_bswap64(x)     __builtin_sa_bswap64((x))
+#   define sa_bswap16(x)     __builtin_bswap16((x))
+#   define sa_bswap32(x)     __builtin_bswap32((x))
+#   define sa_bswap64(x)     __builtin_bswap64((x))
 #elif defined(__has_builtin) && __has_builtin(__builtin_sa_bswap64)
-#   define sa_bswap16(x)     __builtin_sa_bswap16((x))
-#   define sa_bswap32(x)     __builtin_sa_bswap32((x))
-#   define sa_bswap64(x)     __builtin_sa_bswap64((x))
+#   define sa_bswap16(x)     __builtin_bswap16((x))
+#   define sa_bswap32(x)     __builtin_bswap32((x))
+#   define sa_bswap64(x)     __builtin_bswap64((x))
 #else
 static constexpr uint16_t sa_bswap16(uint16_t x)
 {
@@ -119,12 +119,15 @@ constexpr T ConvertLittleEndian(T value)
 #endif
 }
 
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_GCC("-Wstrict-aliasing")
 template<>
 float ConvertLittleEndian<float>(float value)
 {
     uint32_t v = ConvertLittleEndian<uint32_t>(*reinterpret_cast<uint32_t*>(&value));
     return *reinterpret_cast<float*>(&v);
 }
+PRAGMA_WARNING_POP
 
 template<typename T>
 constexpr T ConvertBigEndian(T value)
@@ -143,15 +146,18 @@ constexpr T ConvertBigEndian(T value)
 #endif
 }
 
+PRAGMA_WARNING_PUSH
+PRAGMA_WARNING_DISABLE_GCC("-Wstrict-aliasing")
 template<>
 float ConvertBigEndian<float>(float value)
 {
     uint32_t v = ConvertBigEndian<uint32_t>(*reinterpret_cast<uint32_t*>(&value));
     return *reinterpret_cast<float*>(&v);
 }
+PRAGMA_WARNING_POP
 
 template<typename T>
-constexpr T ConvertNetworkEndian(T value)
+T ConvertNetworkEndian(T value)
 {
     return ConvertBigEndian(value);
 }
