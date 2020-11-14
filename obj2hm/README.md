@@ -14,6 +14,6 @@ This will create `inputfile.obj.png`.
 
 ## Example
 
-![Source Mesh](/obj2hm/source_mesh.jpg?raw=true)
+![Source Mesh](/source_mesh.jpg?raw=true)
 
-![Generated Map](/obj2hm/generated_map.png?raw=true)
+![Generated Map](/generated_map.png?raw=true)
