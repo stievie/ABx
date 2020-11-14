@@ -1,6 +1,7 @@
 #include "MeshLoader.h"
 #include <fstream>
 #include <cstring>
+#include <iostream>
 
 MeshLoader::MeshLoader() :
     m_scale(1.0f),
@@ -104,6 +105,12 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         return false;
     }
 
+    if ((width_ - 1) % patchSize != 0 || (height_ - 1) % patchSize != 0)
+    {
+        std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_<< ") should be a multiple of patch size (" << patchSize << ")" << std::endl;
+    }
+
+    // Image size - 1 sould be a multiple of patchSize, otherwise it cuts off some pixels.
     Math::Point<float> patchWorldSize = { scaleX * (float)patchSize, scaleZ * (float)patchSize };
     Math::Point<int> numPatches = { (width_ - 1) / patchSize, (height_ - 1) / patchSize };
     numVertices_ = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
