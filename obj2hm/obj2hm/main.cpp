@@ -90,12 +90,9 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
     }
 
     // 2nd pass to fill triangles
-    const Math::Vector3 shapeCenter = shape.Center();
     for (size_t t = 0; t < shape.GetTriangleCount(); ++t)
     {
         const auto triangle = shape.GetTriangle(t);
-        if (!Math::IsTriangleFacingOutside(triangle[0], triangle[1], triangle[2], shapeCenter))
-            continue;
 
         const int minTriangleX = (int)floor(std::min(std::min(triangle[0].x_, triangle[1].x_), triangle[2].x_));
         const int minTriangleZ = (int)floor(std::min(std::min(triangle[0].z_, triangle[1].z_), triangle[2].z_));
