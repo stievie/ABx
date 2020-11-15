@@ -1,0 +1,7 @@
+add_subdirectory(dbgclient)
+add_subdirectory(fhash)
+add_subdirectory(genavmesh)
+add_subdirectory(hmerge)
+add_subdirectory(import)
+add_subdirectory(keygen)
+add_subdirectory(obj2hm)
