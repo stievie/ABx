@@ -70,48 +70,6 @@ void CreateHeightMapAction::CreateGeometry()
         std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_ << ") should be a multiple of patch size (" << patchSize_ << ")" << std::endl;
     }
 
-    // FIXME: CreateHeightMapFromImage() should create exactly the same as this, but doesn't
-
-#if 0
-    patchWorldSize_ = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
-    numPatches_ = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
-    numVertices_ = { numPatches_.x_ * patchSize_ + 1, numPatches_.y_ * patchSize_ + 1 };
-    patchWorldOrigin_ = { -0.5f * (float)numPatches_.x_ * patchWorldSize_.x_, -0.5f * (float)numPatches_.y_ * patchWorldSize_.y_ };
-
-    int imgRow = width_ * components_;
-    auto getHeight = [&](int x, int z) -> float
-    {
-        if (!data_)
-            return 0.0f;
-
-        // From bottom to top
-        int offset = imgRow * (numVertices_.y_ - 1 - z) + components_ * x;
-
-        if (components_ == 1)
-            return (float)data_[offset];
-
-        // If more than 1 component, use the green channel for more accuracy
-        return (float)data_[offset] +
-            (float)data_[offset + 1] / 256.0f;
-    };
-
-    minHeight_ = std::numeric_limits<float>::max();
-    maxHeight_ = std::numeric_limits<float>::lowest();
-
-    heightData_.resize((size_t)numVertices_.x_ * (size_t)numVertices_.y_);
-    for (int y = 0; y < numVertices_.y_; ++y)
-    {
-        for (int x = 0; x < numVertices_.x_; ++x)
-        {
-            float fy = getHeight(x, y) * spacing_.y_;
-            heightData_[(size_t)y * (size_t)numVertices_.x_ + (size_t)x] = fy;
-            if (minHeight_ > fy)
-                minHeight_ = fy;
-            if (maxHeight_ < fy)
-                maxHeight_ = fy;
-        }
-    }
-#endif
     heightData_ = Math::CreateHeightMapFromImage((const unsigned char*)data_, width_, height_, components_,
         spacing_, patchSize_,
         patchWorldSize_, numPatches_, numVertices_, patchWorldOrigin_,
