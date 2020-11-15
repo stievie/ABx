@@ -29,6 +29,7 @@ PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
 PRAGMA_WARNING_POP
 #include <absmath/Vector3.h>
 #include <absmath/Point.h>
+#include <eastl.hpp>
 
 /// Creates Heightmap and Mesh from Image
 class CreateHeightMapAction
@@ -36,7 +37,7 @@ class CreateHeightMapAction
 private:
     std::string file_;
     std::string outputDirectory_;
-    std::vector<float> heightData_;
+    ea::vector<float> heightData_;
     float minHeight_;
     float maxHeight_;
 

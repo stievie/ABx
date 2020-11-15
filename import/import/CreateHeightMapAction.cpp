@@ -27,6 +27,7 @@
 #include <limits>
 #include <abscommon/StringUtils.h>
 #include <sa/StringTempl.h>
+#include <absmath/HeightMapTools.h>
 
 void CreateHeightMapAction::SaveHeightMap()
 {
@@ -68,6 +69,8 @@ void CreateHeightMapAction::CreateGeometry()
     {
         std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_ << ") should be a multiple of patch size (" << patchSize_ << ")" << std::endl;
     }
+
+    // FIXME: CreateHeightMapFromImage() should create exactly the same as this, but doesn't
 
     patchWorldSize_ = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
     numPatches_ = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
@@ -120,8 +123,8 @@ void CreateHeightMapAction::Execute()
     }
 
     CreateGeometry();
-
-    SaveHeightMap();
     free(data_);
     data_ = nullptr;
+
+    SaveHeightMap();
 }

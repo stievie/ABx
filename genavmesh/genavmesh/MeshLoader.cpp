@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <absmath/HeightMapTools.h>
 
 MeshLoader::MeshLoader() :
     m_scale(1.0f),
@@ -110,74 +111,20 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_<< ") should be a multiple of patch size (" << patchSize << ")" << std::endl;
     }
 
-    // Image size - 1 sould be a multiple of patchSize, otherwise it cuts off some pixels.
-    Math::Point<float> patchWorldSize = { scaleX * (float)patchSize, scaleZ * (float)patchSize };
-    Math::Point<int> numPatches = { (width_ - 1) / patchSize, (height_ - 1) / patchSize };
-    numVertices_ = { numPatches.x_ * patchSize + 1, numPatches.y_ * patchSize + 1 };
-    patchWorldOrigin_ = { -0.5f * (float)numPatches.x_ * patchWorldSize.x_, -0.5f * (float)numPatches.y_ * patchWorldSize.y_ };
-
-    int imgRow = width_ * components_;
-    auto getHeight = [&](int x, int z) -> float
-    {
-        if (!data_)
-            return 0.0f;
-
-        // From bottom to top
-        int offset = imgRow * (numVertices_.y_ - 1 - z) + components_ * x;
-
-        if (components_ == 1)
-            return (float)data_[offset];
-
-        // If more than 1 component, use the green channel for more accuracy
-        return (float)data_[offset] +
-            (float)data_[offset + 1] / 256.0f;
-    };
-
-    const float offsetX = ((float)numVertices_.x_ * 0.5f);
-    const float offsetY = ((float)numVertices_.y_ * 0.5f);
-    for (int y = 0; y < numVertices_.y_; ++y)
-    {
-        for (int x = 0; x < numVertices_.x_; ++x)
+    Math::Point<float> patchWorldSize;
+    Math::Point<int> numPatches;
+    Math::CreateShapeFromHeightmapImage((const unsigned char*)data_, width_, height_, components_, { scaleX , scaleY, scaleZ },
+        patchSize,
+        [this](const Math::Vector3& vertex)
         {
-            float fy = getHeight(x, y);
-            float fx = (float)x - offsetX;
-            float fz = (float)y - offsetY;
-            addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, m_vcap);
-        }
-    }
-
-    // Create index data
-    for (int y = 0; y < numVertices_.y_ - 1; ++y)
-    {
-        for (int x = 0; x < numVertices_.x_ - 1; ++x)
+            addVertex(vertex.x_, vertex.y_, vertex.z_, m_vcap);
+        },
+        [this](int i1, int i2, int i3)
         {
-            /*
-                x+1,y
-        x,y +----+----+
-            | 1 /|(3)/|
-            |  / |  / |
-            | /  | /  |
-            |/ 2 |/(4)|
-      x,y+1 +----+----+
-              x+1,y+1
-            */
-            {
-                // First triangle
-                int i1 = (y + 1) * numVertices_.x_ + x;
-                int i2 = y * numVertices_.x_ + x;
-                int i3 = (y * numVertices_.x_) + x + 1;
-                addTriangle(i3, i2, i1, m_tcap);
-            }
-
-            {
-                // Second triangle
-                int i1 = y * numVertices_.x_ + x + 1;
-                int i2 = (y + 1) * numVertices_.x_ + (x + 1);
-                int i3 = (y + 1) * numVertices_.x_ + x;
-                addTriangle(i3, i2, i1, m_tcap);
-            }
-        }
-    }
+            addTriangle(i1, i2, i3, m_tcap);
+        },
+        patchWorldSize, numPatches, numVertices_, patchWorldOrigin_
+    );
 
     free(data_);
     return true;

@@ -175,6 +175,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gjk.h" />
     <ClInclude Include="HeightMap.h" />
+    <ClInclude Include="HeightMapTools.h" />
     <ClInclude Include="Hull.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="Line.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gjk.cpp" />
     <ClCompile Include="HeightMap.cpp" />
+    <ClCompile Include="HeightMapTools.cpp" />
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="Matrix4.cpp" />

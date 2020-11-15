@@ -96,6 +96,9 @@
     <ClInclude Include="QuadTree.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="HeightMapTools.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -156,6 +159,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="QuadTree.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTools.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

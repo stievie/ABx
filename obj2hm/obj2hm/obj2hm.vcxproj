@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -78,6 +78,9 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\abscommon;$(SolutionDir)..\absmath;$(SolutionDir)..\Include;$(SolutionDir)..\Include\stb;$(SolutionDir)\..\ThirdParty\EASTL\include;$(SolutionDir)\..\ThirdParty\EASTL\test\packages\EABase\include\Common;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <absmath/VectorMath.h>
 #include <sa/ArgParser.h>
+#include <absmath/HeightMapTools.h>
 
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
@@ -55,94 +56,34 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
 
 static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps)
 {
-    const Math::Vector3 minX = shape.GetFarsetPointInDirection(-Math::Vector3::UnitX);
-    const Math::Vector3 maxX = shape.GetFarsetPointInDirection(Math::Vector3::UnitX);
-    const Math::Vector3 minZ = shape.GetFarsetPointInDirection(-Math::Vector3::UnitZ);
-    const Math::Vector3 maxZ = shape.GetFarsetPointInDirection(Math::Vector3::UnitZ);
+    int width = 0;
+    int height = 0;
+    float minHeight = 0.0f;
+    float maxHeight = 0.0f;
+    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, width, height, minHeight, maxHeight);
 
-    const Math::Vector3 minHeight = shape.GetFarsetPointInDirection(-Math::Vector3::UnitY);
-    const Math::Vector3 maxHeight = shape.GetFarsetPointInDirection(Math::Vector3::UnitY);
-    const float zD = maxHeight.y_ - minHeight.y_;
+    const float zD = maxHeight - minHeight;
 
-    const int width = (int)std::ceil(maxX.x_ - minX.x_);
-    const int height = (int)std::ceil(maxZ.z_ - minZ.z_);
-
-    char* data = (char*)malloc((size_t)width * (size_t)height * (size_t)comps);
+    unsigned char* data = (unsigned char*)malloc((size_t)width * (size_t)height * (size_t)comps);
     memset(data, 0, (size_t)width * (size_t)height * (size_t)comps);
-
-    std::vector<float> heights;
-    heights.resize((size_t)width * (size_t)height);
-    std::fill(heights.begin(), heights.end(), std::numeric_limits<float>::min());
-
-    for (const auto& v : shape.vertexData_)
-    {
-        const int x = static_cast<int>(v.x_ - minX.x_);
-        const int y = height - static_cast<int>(v.z_ - minZ.z_);
-
-        if (x >= width)
-            continue;
-        if (y >= height)
-            continue;
-
-        const size_t index = (size_t)y * (size_t)width + (size_t)x;
-        if (heights[index] < v.y_)
-            heights[index] = v.y_;
-    }
-
-    // 2nd pass to fill triangles
-    for (size_t t = 0; t < shape.GetTriangleCount(); ++t)
-    {
-        const auto triangle = shape.GetTriangle(t);
-
-        const int minTriangleX = (int)floor(std::min(std::min(triangle[0].x_, triangle[1].x_), triangle[2].x_));
-        const int minTriangleZ = (int)floor(std::min(std::min(triangle[0].z_, triangle[1].z_), triangle[2].z_));
-        const int maxTriangleX = (int)ceil(std::max(std::max(triangle[0].x_, triangle[1].x_), triangle[2].x_));
-        const int maxTriangleZ = (int)ceil(std::max(std::max(triangle[0].z_, triangle[1].z_), triangle[2].z_));
-
-        for (int y = minTriangleZ; y <= maxTriangleZ; ++y)
-        {
-            for (int x = minTriangleX; x < maxTriangleX; ++x)
-            {
-                const Math::Vector3 point = { (float)x, triangle[0].y_, (float)y };
-                if (Math::IsPointInTriangle(point, triangle[0], triangle[1], triangle[2]))
-                {
-                    const int posX = static_cast<int>(x - minX.x_);
-                    const int posY = height - static_cast<int>(y - minZ.z_);
-
-                    if (posX >= width)
-                        continue;
-                    if (posY >= height)
-                        continue;
-
-                    const Math::Vector3 triPoint = shape.GetClosestPointOnTriangle(triangle,
-                        { (float)x, maxHeight.y_, (float)y });
-
-                    const size_t index = (size_t)posY * (size_t)width + (size_t)posX;
-
-                    if (heights[index] < triPoint.y_)
-                        heights[index] = triPoint.y_;
-                }
-            }
-        }
-    }
 
     float lastValue = 0.0f;
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            const size_t index = ((size_t)y * (size_t)width + (size_t)x) * (size_t)comps;
+            const size_t index = (size_t)y * (size_t)width + (size_t)x;
             float value = heights[index];
             if (Math::Equals(value, std::numeric_limits<float>::min()))
                 value = lastValue;
 
-            char heightValue = static_cast<char>(((value - minHeight.y_) / zD) * 255.0f);
+            unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
 
-            data[index] = heightValue;
+            data[index * comps] = heightValue;
             if (comps > 1)
-                data[index + 1] = heightValue;
+                data[(index * comps) + 1] = heightValue;
             if (comps > 2)
-                data[index + 2] = heightValue;
+                data[(index * comps) + 2] = heightValue;
             lastValue = value;
         }
     }
