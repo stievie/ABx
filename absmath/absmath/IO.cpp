@@ -193,7 +193,7 @@ struct VertexElement
     unsigned offset_;
 };
 
-extern const VertexElement LEGACY_VERTEXELEMENTS[] =
+const VertexElement LEGACY_VERTEXELEMENTS[] =
 {
     { TYPE_VECTOR3, SEM_POSITION, 0, false, 0 },     // Position
     { TYPE_VECTOR3, SEM_NORMAL, 0, false, 0 },       // Normal
