@@ -53,7 +53,7 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
 // \param[out] maxHeight Max height value
 ea::vector<float> CreateHeightMapFromImage(const unsigned char* data, int width, int height, int components,
     const Vector3& spacing, int patchSize,
-    Point<float>& patchWorldSize, Point<int>& numPatches, Point<int>& numVertices, Point<float> patchWorldOrigin,
+    Point<float>& patchWorldSize, Point<int>& numPatches, Point<int>& numVertices, Point<float>& patchWorldOrigin,
     float& minHeight, float& maxHeight);
 
 // Create a 3D mesh from a height map image

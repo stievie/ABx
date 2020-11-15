@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genavmesh", "..\genavmesh\g
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obj2hm", "..\obj2hm\obj2hm\obj2hm.vcxproj", "{591C0AAD-F514-4CB7-92A7-D848194666CA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hmerge", "..\hmerge\hmerge\hmerge.vcxproj", "{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -382,6 +384,20 @@ Global
 		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x64.Build.0 = Release|x64
 		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x86.ActiveCfg = Debug|x64
 		{591C0AAD-F514-4CB7-92A7-D848194666CA}.RelWithDebInfo|x86.Build.0 = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Debug|x64.ActiveCfg = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Debug|x64.Build.0 = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Debug|x86.ActiveCfg = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Release|x64.ActiveCfg = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Release|x64.Build.0 = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.Release|x86.ActiveCfg = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelNoProfiling|x64.ActiveCfg = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelNoProfiling|x64.Build.0 = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelNoProfiling|x86.ActiveCfg = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelNoProfiling|x86.Build.0 = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelWithDebInfo|x86.ActiveCfg = Debug|x64
+		{9CE98C6C-AEE6-4F9D-A4E7-15FFDCE71065}.RelWithDebInfo|x86.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

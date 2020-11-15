@@ -72,6 +72,7 @@ void CreateHeightMapAction::CreateGeometry()
 
     // FIXME: CreateHeightMapFromImage() should create exactly the same as this, but doesn't
 
+#if 0
     patchWorldSize_ = { spacing_.x_ * (float)patchSize_, spacing_.z_ * (float)patchSize_ };
     numPatches_ = { (width_ - 1) / patchSize_, (height_ - 1) / patchSize_ };
     numVertices_ = { numPatches_.x_ * patchSize_ + 1, numPatches_.y_ * patchSize_ + 1 };
@@ -110,6 +111,11 @@ void CreateHeightMapAction::CreateGeometry()
                 maxHeight_ = fy;
         }
     }
+#endif
+    heightData_ = Math::CreateHeightMapFromImage((const unsigned char*)data_, width_, height_, components_,
+        spacing_, patchSize_,
+        patchWorldSize_, numPatches_, numVertices_, patchWorldOrigin_,
+        minHeight_, maxHeight_);
 }
 
 void CreateHeightMapAction::Execute()

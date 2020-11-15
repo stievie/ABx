@@ -102,7 +102,7 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
 
 ea::vector<float> CreateHeightMapFromImage(const unsigned char* data, int width, int height, int components,
     const Vector3& spacing, int patchSize,
-    Point<float>& patchWorldSize, Point<int>& numPatches, Point<int>& numVertices, Point<float> patchWorldOrigin,
+    Point<float>& patchWorldSize, Point<int>& numPatches, Point<int>& numVertices, Point<float>& patchWorldOrigin,
     float& minHeight, float& maxHeight)
 {
     patchWorldSize = { spacing.x_ * (float)patchSize, spacing.z_ * (float)patchSize };
