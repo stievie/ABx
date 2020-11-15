@@ -78,7 +78,7 @@ Thumbs.db
 build/*
 build-*
 Design/*
-Tools/*
+_tools/*
 Doc/*
 gtkdbgclient/*
 
