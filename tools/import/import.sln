@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "import", "import\import.vcxproj", "{78C3FD75-E5E1-42DC-84FE-8C44A529F68B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -71,7 +71,7 @@ Christmas 2117 +/- some years.
 
 ## Screenshot
 
-![Screenshot](/Doc/screenshot.jpg?raw=true)
+![Screenshot](Doc/screenshot.jpg?raw=true)
 
 ## Motivation
 

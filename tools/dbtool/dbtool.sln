@@ -9,9 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbtool", "dbtool\dbtool.vcx
 		{2482B1C7-086B-4968-AA1E-2EA0D4D71225} = {2482B1C7-086B-4968-AA1E-2EA0D4D71225}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abdb", "..\abdb\abdb\abdb.vcxproj", "{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abdb", "..\..\abdb\abdb\abdb.vcxproj", "{58CBCA6A-2750-40B2-A1F7-BF8A33B653B6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

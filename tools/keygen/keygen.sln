@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "keygen", "keygen\keygen.vcxproj", "{70B00A1C-15F7-4480-9531-FEE0B69BCB27}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
