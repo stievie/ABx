@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;SA_ASSERT;WRITE_MINIBUMP;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Include\pgsql;$(ProjectDir)..\..\abscommon;$(ProjectDir)..\..\abdb;$(ProjectDir)..\..\ThirdParty\EASTL\include;$(ProjectDir)..\..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -107,7 +107,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration);$(ProjectDir)..\..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -120,7 +120,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;SA_ASSERT;WRITE_MINIBUMP;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Include\pgsql;$(ProjectDir)..\..\abscommon;$(ProjectDir)..\..\abdb;$(ProjectDir)..\..\ThirdParty\EASTL\include;$(ProjectDir)..\..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -133,7 +133,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration);$(ProjectDir)..\..\Lib\$(Platform);</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;SA_ASSERT;WRITE_MINIBUMP;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Include\pgsql;$(ProjectDir)..\..\abscommon;$(ProjectDir)..\..\abdb;$(ProjectDir)..\..\ThirdParty\EASTL\include;$(ProjectDir)..\..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -159,7 +159,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration);$(ProjectDir)..\..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -172,7 +172,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;USE_PGSQL;SA_ASSERT;WRITE_MINIBUMP;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon;$(SolutionDir)..\abdb;$(SolutionDir)..\ThirdParty\EASTL\include;$(SolutionDir)..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Include\pgsql;$(ProjectDir)..\..\abscommon;$(ProjectDir)..\..\abdb;$(ProjectDir)..\..\ThirdParty\EASTL\include;$(ProjectDir)..\..\ThirdParty\EASTL\test\packages\EABase\include\Common</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus /utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -184,7 +184,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);$(SolutionDir)..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration);$(ProjectDir)..\..\Lib\$(Platform);$(SolutionDir)..\Lib\$(Platform)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>EASTL.lib;lua.lib;abcrypto.lib;sqlite3.lib;libpq.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

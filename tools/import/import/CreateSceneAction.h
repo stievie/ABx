@@ -43,6 +43,7 @@ private:
     bool LoadSceneNode(const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
     bool CopySceneFile();
     bool SaveObstacles();
+    bool SaveObstaclesObj();
     bool CreateHightmap();
     bool CreateNavMesh();
     bool CreateIndexFile();

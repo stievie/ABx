@@ -35,6 +35,8 @@
 #include <absmath/Transformation.h>
 #include "CreateHeightMapAction.h"
 #include <absmath/IO.h>
+#include <fstream>
+#include <iomanip>
 
 void CreateSceneAction::Execute()
 {
@@ -59,6 +61,13 @@ void CreateSceneAction::Execute()
     if (!SaveObstacles())
     {
         std::cerr << "Error saving obstacles" << std::endl;
+    }
+    if (createObjs_)
+    {
+        if (!SaveObstaclesObj())
+        {
+            std::cerr << "Error saving obstacles" << std::endl;
+        }
     }
     if (!CreateHightmap())
     {
@@ -136,6 +145,50 @@ bool CreateSceneAction::SaveObstacles()
     }
 
     return true;
+}
+
+bool CreateSceneAction::SaveObstaclesObj()
+{
+    std::string filename = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles.obj");
+    std::fstream f(filename, std::fstream::out);
+    if (!f.good())
+        return false;
+    std::cout << "Saving obstacle OBJ to " << filename << std::endl;
+
+    f << std::fixed << std::setprecision(6);
+    f << "o " << "obstacles" << std::endl;
+
+    ea::vector<size_t> offsets;
+    offsets.push_back(0);
+    size_t offset = 0;
+    for (const auto& o : obstackles_)
+    {
+        for (const auto& v : o->vertexData_)
+        {
+            f << "v " << v.x_ << " " << v.y_ << " " << v.z_ << std::endl;
+            ++offset;
+        }
+        offsets.push_back(offset);
+    }
+    for (size_t o = 0; o < obstackles_.size(); ++o)
+    {
+        f << "g obstalce_" << o + 1 << std::endl;
+        const auto& obstacle = obstackles_[o];
+        size_t offset = offsets[o];
+        for (size_t i = 0; i < obstacle->indexCount_; i += 3)
+        {
+            size_t index1 = obstacle->indexData_[i];
+            size_t index2 = obstacle->indexData_[i + 1];
+            size_t index3 = obstacle->indexData_[i + 2];
+            f << "f " << offset + index1 + 1 <<
+                " " << offset + index2 + 1 <<
+                " " << offset + index3 + 1 << std::endl;
+        }
+    }
+
+    f.close();
+    return true;
+
 }
 
 bool CreateSceneAction::CreateNavMesh()
