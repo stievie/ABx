@@ -26,14 +26,14 @@ Build `absall\abs3rd.sln` and `abclient\abclient.sln`.
 The client links D3D11 libraries, this means you should build also Urho3D for D3D11. In CMake check
 `URHO3D_D3D11`. This makes it using the D3D11 graphics API instead of D3D9.
 
-![Urho3D CMake](/Doc/urho3d_cmake.png?raw=true)
+![Urho3D CMake](Doc/urho3d_cmake.png?raw=true)
 
 If you build Urho3D with the default settings (it uses D3D9 then), you must add
 `d3d9.lib` as linker input when you encounter some unresolved symbol linker error,
 saying `error LNK2001: unresolved external symbol Direct3D(Something)`.
 
 To disable auto updating, compile the client with `NO_AUTOUPDATE` defined,
-CMake option `ABX_CLIENT_NO_AUTOUPDATE`, see [Autoupdate](/INSTALL.md#autoupdate).
+CMake option `ABX_CLIENT_NO_AUTOUPDATE`, see [Autoupdate](INSTALL.md#autoupdate).
 
 ## Linux
 
