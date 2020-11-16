@@ -25,6 +25,7 @@
 #include <iomanip>
 #include <istream>
 #include <sstream>
+#include <sa/StringTempl.h>
 
 namespace IO {
 
@@ -143,8 +144,71 @@ bool LoadShapeFromOBJ(const std::string& filename, Math::Shape& shape)
         }
         else if (op == "f")
         {
-            unsigned i1, i2, i3;
-            lineStream >> i1 >> i2 >> i3;
+            std::string face1;
+            std::string face2;
+            std::string face3;
+            lineStream >> face1 >> face2 >> face3;
+            unsigned i1 = 0, i2 = 0, i3 = 0;
+            if (sa::Contains(face1, "/"))
+            {
+                auto indexparts = sa::Split(face1, "/", true, true);
+                if (indexparts.size() > 0)
+                {
+                    auto n1 = sa::to_number<unsigned>(indexparts[0]);
+                    if (n1.has_value())
+                        i1 = n1.value();
+                    else
+                        continue;
+                }
+                else
+                    continue;
+            }
+            if (sa::Contains(face2, "/"))
+            {
+                auto indexparts = sa::Split(face2, "/", true, true);
+                if (indexparts.size() > 0)
+                {
+                    auto n2 = sa::to_number<unsigned>(indexparts[0]);
+                    if (n2.has_value())
+                        i2 = n2.value();
+                    else
+                        continue;
+                }
+                else
+                    continue;
+            }
+            if (sa::Contains(face3, "/"))
+            {
+                auto indexparts = sa::Split(face3, "/", true, true);
+                if (indexparts.size() > 0)
+                {
+                    auto n3 = sa::to_number<unsigned>(indexparts[0]);
+                    if (n3.has_value())
+                        i3 = n3.value();
+                    else
+                        continue;
+                }
+                else
+                    continue;
+            }
+            else
+            {
+                auto n1 = sa::to_number<unsigned>(face1);
+                if (n1.has_value())
+                    i1 = n1.value();
+                else
+                    continue;
+                auto n2 = sa::to_number<unsigned>(face2);
+                if (n2.has_value())
+                    i2 = n2.value();
+                else
+                    continue;
+                auto n3 = sa::to_number<unsigned>(face3);
+                if (n3.has_value())
+                    i3 = n3.value();
+                else
+                    continue;
+            }
             // Our indices are 0-based
             shape.AddTriangle(i1 - 1, i2 - 1, i3 - 1);
         }

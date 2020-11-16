@@ -46,6 +46,12 @@ inline std::optional<T> to_number(std::string_view number)
     return result;
 }
 
+inline bool Contains(std::string_view str, std::string_view needle)
+{
+    auto p = str.find(needle);
+    return p != std::string_view::npos;
+}
+
 template <typename charType>
 inline std::basic_string<charType> Trim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")
