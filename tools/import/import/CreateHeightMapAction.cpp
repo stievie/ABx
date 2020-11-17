@@ -33,9 +33,9 @@ void CreateHeightMapAction::SaveHeightMap()
 {
     std::string fileName;
     if (!outputDirectory_.empty())
-        fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(file_) + ".hm");
+        fileName = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(file_) + ext_);
     else
-        fileName = file_ + ".hm";
+        fileName = file_ + ext_;
 
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);

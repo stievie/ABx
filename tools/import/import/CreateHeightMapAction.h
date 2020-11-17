@@ -45,10 +45,6 @@ private:
     int height_{ 0 };
     int components_{ 0 };
     stbi_uc* data_{ nullptr };
-    Math::Point<int> numPatches_;
-    Math::Point<int> numVertices_;
-    Math::Point<float> patchWorldSize_;
-    Math::Point<float> patchWorldOrigin_;
     void SaveHeightMap();
     void CreateGeometry();
 public:
@@ -66,4 +62,11 @@ public:
 
     Math::Vector3 spacing_;
     int32_t patchSize_{ 32 };
+    std::string ext_{ ".hm" };
+    Math::Point<int> numPatches_;
+    Math::Point<int> numVertices_;
+    Math::Point<float> patchWorldSize_;
+    Math::Point<float> patchWorldOrigin_;
+    int GetWidth() const { return width_; }
+    int GetHeight() const { return height_; }
 };

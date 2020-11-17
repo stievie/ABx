@@ -54,6 +54,12 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << sa::arg_parser::get_help("hmerge", _cli, "Merge heightmaps");
 }
 
+static void ShowInfo()
+{
+    std::cout << "hmerge - Merge heightmaps" << std::endl;
+    std::cout << "(C) 2020, Stefan Ascher" << std::endl << std::endl;
+}
+
 static bool GetHeights(const std::string& filename, int targetWidth, int targetHeight,
     ea::vector<float>& heights, int& width, int& height, float& minHeight, float& maxHeight)
 {
@@ -192,6 +198,7 @@ static bool CreateImage(const std::string& filename,
 
 int main(int argc, char** argv)
 {
+    ShowInfo();
     sa::arg_parser::cli _cli;
     InitCli(_cli);
     sa::arg_parser::values parsedArgs;

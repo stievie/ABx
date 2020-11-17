@@ -31,16 +31,53 @@ Terrain::Terrain() :
 
 Terrain::~Terrain() = default;
 
+void Terrain::SetSpacing(const Math::Vector3& value)
+{
+    if (heightMap_)
+        heightMap_->spacing_ = value;
+    if (heightMap2_)
+        heightMap2_->spacing_ = value;
+}
+
+void Terrain::Initialize()
+{
+    if (heightMap_)
+        heightMap_->ProcessData();
+    if (heightMap2_)
+        heightMap2_->ProcessData();
+}
+
 float Terrain::GetHeight(const Math::Vector3& world) const
 {
     if (!heightMap_)
         return 0.0f;
     if (matrixDirty_)
     {
-        heightMap_->SetMatrix(transformation_.GetMatrix());
+        const Math::Matrix4 matrix = transformation_.GetMatrix();
+        heightMap_->SetMatrix(matrix);
+        if (heightMap2_)
+            heightMap2_->SetMatrix(matrix);
         matrixDirty_ = false;
     }
-    return heightMap_->GetHeight(world);
+
+    float result = heightMap_->GetHeight(world);
+    if (!heightMap2_)
+        return result;
+
+    float result2 = heightMap2_->GetHeight(world);
+    LOG_DEBUG << "height1 " << result << " height2 " << result2 << std::endl;
+    // Layer2 must be above layer1
+    if (Math::IsNegInfinite(result2) || result2 < result)
+        return result;
+
+    // If the difference is smaller than the height of the character it can't be the lower height
+    float diff12 = result2 - result;
+    if (diff12 < 1.7f)
+        return result2;
+
+//    if (fabs(world.y_ - result) < fabs(world.y_ - result2))
+//        return result;
+    return result2;
 }
 
 }

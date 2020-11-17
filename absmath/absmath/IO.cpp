@@ -29,6 +29,52 @@
 
 namespace IO {
 
+ea::vector<float> LoadHeightmap(const std::string& name,
+    int& patchSize,
+    Math::Point<float>& patchWorldSize, Math::Point<int>& numPatches,
+    Math::Point<int>& numVertices, Math::Point<float>& patchWorldOrigin,
+    float& minHeight, float& maxHeight)
+{
+    std::fstream input(name, std::ios::binary | std::fstream::in);
+    if (!input.is_open())
+        return {};
+
+    char sig[4];
+    input.read(sig, 4);
+    if (sig[0] != 'H' || sig[1] != 'M' || sig[2] != '\0' || sig[3] != '\0')
+        return {};
+
+    ea::vector<float> result;
+
+    input.read((char*)&numVertices.x_, sizeof(int32_t));
+    input.read((char*)&numVertices.y_, sizeof(int32_t));
+
+    input.read((char*)&patchSize, sizeof(int32_t));
+
+    input.read((char*)&patchWorldSize.x_, sizeof(float));
+    input.read((char*)&patchWorldSize.y_, sizeof(float));
+    input.read((char*)&numPatches.x_, sizeof(int32_t));
+    input.read((char*)&numPatches.y_, sizeof(int32_t));
+    input.read((char*)&patchWorldOrigin.x_, sizeof(float));
+    input.read((char*)&patchWorldOrigin.y_, sizeof(float));
+
+    input.read((char*)&minHeight, sizeof(float));
+    input.read((char*)&maxHeight, sizeof(float));
+
+#ifdef _DEBUG
+    //    LOG_DEBUG << "nX=" << asset.numVertices_.x_ << " nY=" << asset.numVertices_.y_ <<
+    //        " minHeight=" << asset.minHeight_ <<
+    //        " maxHeight=" << asset.maxHeight_ << std::endl;
+#endif
+    uint32_t heightsCount;
+    input.read((char*)&heightsCount, sizeof(uint32_t));
+    result.resize((size_t)heightsCount);
+    input.read((char*)result.data(), sizeof(float) * (size_t)heightsCount);
+    input.close();
+
+    return result;
+}
+
 bool LoadShape(const std::string& filename, Math::Shape& shape, Math::BoundingBox& bb)
 {
     std::fstream input(filename, std::ios::binary | std::fstream::in);

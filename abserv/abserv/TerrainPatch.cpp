@@ -51,6 +51,9 @@ TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
     const int rawX = static_cast<int>(_x + originX);
     const int rawY = static_cast<int>(_y + originY);
 
+    // Terrain patches are only for layer0, this is the real terrain.
+    // Layer2 contains buildings, static objects, which are added to the game
+    // as regular game objects.
     transformation_.position_.x_ = _x;
     transformation_.position_.z_ = _y;
     transformation_.position_.y_ = owner->GetHeightMap()->GetRawHeight(rawX, rawY);
@@ -164,7 +167,10 @@ float TerrainPatch::GetHeight(const Math::Vector3& position) const
             position.x_ + (static_cast<float>(offset_.x_) * static_cast<float>(o->patchSize_)),
             0.0f,
             position.z_ + (static_cast<float>(offset_.y_) * static_cast<float>(o->patchSize_)));
-        return o->GetHeight(pos);
+        // Terrain patches are only for layer0, this is the real terrain.
+        // Layer2 contains buildings, static objects, which are added to the game
+        // as regular game objects.
+        return o->GetHeightMap()->GetHeight(pos);
     }
     return 0.0f;
 }

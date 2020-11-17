@@ -23,8 +23,25 @@
 
 #include "Shape.h"
 #include "BoundingBox.h"
+#include "Point.h"
 
 namespace IO {
+
+// Load a heightmap (.hm) file
+// \param[in] name Filename
+// \param[out] patchSize Patch size
+// \param[out] patchWorldSize Size of patch in world uints
+// \param[out] numPatches Number of patches
+// \param[out] numVertices Number of vertices
+// \param[out] patchWorldOrigin Origin in world units
+// \param[out] minHeight Min height value
+// \param[out] maxHeight Max height value
+// \return The height values
+ea::vector<float> LoadHeightmap(const std::string& name,
+    int& patchSize,
+    Math::Point<float>& patchWorldSize, Math::Point<int>& numPatches,
+    Math::Point<int>& numVertices, Math::Point<float>& patchWorldOrigin,
+    float& minHeight, float& maxHeight);
 
 bool LoadShape(const std::string& filename, Math::Shape& shape, Math::BoundingBox& bb);
 bool SaveShape(const std::string& filename, const Math::Shape& shape);

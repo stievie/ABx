@@ -45,45 +45,66 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, false, sa::arg_parser::option_type::none });
     cli.push_back({ "comps", { "-c", "--components" }, "Number of color components, default 1",
         false, true, sa::arg_parser::option_type::integer });
-    cli.push_back({ "targetwidth", { "-W", "--size-x" }, "Target image width",
+    cli.push_back({ "targetwidth", { "-W", "--target-width" }, "Target image width",
         false, true, sa::arg_parser::option_type::integer });
-    cli.push_back({ "targetheight", { "-H", "--size-y" }, "Target image height",
+    cli.push_back({ "targetheight", { "-H", "--target-height" }, "Target image height",
         false, true, sa::arg_parser::option_type::integer });
-    cli.push_back({ "input", { }, "Input OBJ file",
+
+    cli.push_back({ "nvx", { "-nvx", "--number-vertices-x" }, "Number of vertices (.hm only)",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "nvy", { "-nvy", "--number-vertices-y" }, "Number of vertices (.hm only)",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "ps", { "-ps", "--patch-size" }, "Patch size (.hm only)",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "pwsx", { "-pwsx", "--patch-world-size-x" }, "Patch world size (.hm only)",
+        false, true, sa::arg_parser::option_type::number });
+    cli.push_back({ "pwsy", { "-pwsy", "--patch-world-size-y" }, "Patch world size (.hm only)",
+        false, true, sa::arg_parser::option_type::number });
+    cli.push_back({ "npx", { "-npx", "--number-patches-x" }, "Number of patches (.hm only)",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "npy", { "-npy", "--number-patches-y" }, "Number of patches (.hm only)",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "pwox", { "-pwox", "--patch-world-origin-x" }, "Patch world origin (.hm only)",
+        false, true, sa::arg_parser::option_type::number });
+    cli.push_back({ "pwoy", { "-pwoy", "--patch-world-origin-y" }, "Patch world origin (.hm only)",
+        false, true, sa::arg_parser::option_type::number });
+
+    cli.push_back({ "output", { "-o", "--output" }, "Output file, either .png or .hm",
         true, true, sa::arg_parser::option_type::string });
-    cli.push_back({ "output", { "-o", "--output" }, "Output PNG file",
-        false, true, sa::arg_parser::option_type::string });
+    cli.push_back({ "input", { }, "Input .obj, .obstacles or .hm file",
+        true, true, sa::arg_parser::option_type::string });
 }
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
-    std::cout << sa::arg_parser::get_help("obj2hm", _cli, "Construct height map image from 3D mesh");
+    std::cout << sa::arg_parser::get_help("obj2hm", _cli, "Construct height map from 3D mesh");
 }
 
-static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps, int sizeX, int sizeY)
+static void ShowInfo()
 {
-    int width = 0;
-    int height = 0;
-    float minHeight = 0.0f;
-    float maxHeight = 0.0f;
-    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+    std::cout << "obj2h - Construct height map image from 3D mesh" << std::endl;
+    std::cout << "(C) 2020, Stefan Ascher" << std::endl << std::endl;
+}
 
+static void CreateImage(const ea::vector<float>& heights, const std::string& filename, int comps, int sizeX, int sizeY,
+    float minHeight, float maxHeight)
+{
     const float zD = maxHeight - minHeight;
 
-    unsigned char* data = (unsigned char*)malloc((size_t)width * (size_t)height * (size_t)comps);
-    memset(data, 0, (size_t)width * (size_t)height * (size_t)comps);
+    unsigned char* data = (unsigned char*)malloc((size_t)sizeX * (size_t)sizeY * (size_t)comps);
+    memset(data, 0, (size_t)sizeX * (size_t)sizeY * (size_t)comps);
 
-    for (int y = 0; y < height; ++y)
+    for (int y = 0; y < sizeY; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (int x = 0; x < sizeX; ++x)
         {
-            const size_t index = (size_t)y * (size_t)width + (size_t)x;
+            const size_t index = (size_t)y * (size_t)sizeX + (size_t)x;
             float value = heights[index];
             if (!Math::Equals(value, -Math::M_INFINITE))
             {
                 unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
 
-                const size_t _index = ((size_t)height - (size_t)y - 1) * (size_t)width + (size_t)x;
+                const size_t _index = ((size_t)sizeY - (size_t)y - 1) * (size_t)sizeX + (size_t)x;
                 data[_index * comps] = heightValue;
                 if (comps > 1)
                     data[(_index * comps) + 1] = heightValue;
@@ -93,10 +114,63 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
         }
     }
 
-    stbi_write_png(filename.c_str(), width, height, comps, data, width * comps);
+    stbi_write_png(filename.c_str(), sizeX, sizeY, comps, data, sizeX * comps);
 
-    std::cout << "Created " << filename << " width " << width << " height " << height << std::endl;
+    std::cout << "Created PNG heightmap " << filename << " width " << sizeX << " height " << sizeY << std::endl;
     free(data);
+}
+
+static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps, int sizeX, int sizeY)
+{
+    int width = 0;
+    int height = 0;
+    float minHeight = 0.0f;
+    float maxHeight = 0.0f;
+    const ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+    CreateImage(heights, filename, comps, width, height, minHeight, maxHeight);
+}
+
+static void CreateHeightmap(const Math::Shape& shape, const std::string& filename, int sizeX, int sizeY,
+    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
+    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+{
+    int width = 0; int height = 0;
+    float maxHeight = 0.0f; float minHeight = 0.0f;
+    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+
+    std::fstream output(filename, std::ios::binary | std::fstream::out);
+    output.write((char*)"HM\0\0", 4);
+    output.write((char*)&numVertices.x_, sizeof(int32_t));
+    output.write((char*)&numVertices.y_, sizeof(int32_t));
+
+    output.write((char*)&patchSize, sizeof(int32_t));
+
+    output.write((char*)&patchWorldSize.x_, sizeof(float));
+    output.write((char*)&patchWorldSize.y_, sizeof(float));
+    output.write((char*)&numPatches.x_, sizeof(int32_t));
+    output.write((char*)&numPatches.y_, sizeof(int32_t));
+    output.write((char*)&patchWorldOrigin.x_, sizeof(float));
+    output.write((char*)&patchWorldOrigin.y_, sizeof(float));
+
+    output.write((char*)&minHeight, sizeof(float));
+    output.write((char*)&maxHeight, sizeof(float));
+
+    uint32_t c = (uint32_t)heights.size();
+    output.write((char*)&c, sizeof(uint32_t));
+    output.write((char*)heights.data(), (size_t)c * sizeof(float));
+
+    output.close();
+}
+
+static bool LoadHeightmap(const std::string& filename, ea::vector<float>& heights,
+    int& patchSize,
+    Math::Point<float>& patchWorldSize, Math::Point<int>& numPatches,
+    Math::Point<int>& numVertices, Math::Point<float>& patchWorldOrigin,
+    float& minHeight, float& maxHeight)
+{
+    heights = IO::LoadHeightmap(filename, patchSize, patchWorldSize, numPatches, numVertices,
+        patchWorldOrigin, minHeight, maxHeight);
+    return heights.size() != 0;
 }
 
 static bool LoadObstacles(const std::string& filename, Math::Shape& shape)
@@ -138,6 +212,7 @@ static bool LoadObstacles(const std::string& filename, Math::Shape& shape)
 
 int main(int argc, char** argv)
 {
+    ShowInfo();
     sa::arg_parser::cli _cli;
     InitCli(_cli);
     sa::arg_parser::values parsedArgs;
@@ -170,7 +245,15 @@ int main(int argc, char** argv)
 
     std::string inputFile = actval.value();
     Math::Shape shape;
+    ea::vector<float> heights;
     std::string ext = Utils::GetFileExt(inputFile);
+
+    Math::Point<int> numVertices;
+    int patchSize = 0;
+    Math::Point<float> patchWorldSize;
+    Math::Point<int> numPatches;
+    Math::Point<float> patchWorldOrigin;
+    float minHeight = 0.0f, maxHeight = 0.0f;
 
     if (Utils::StringEquals(ext, ".obj"))
     {
@@ -188,24 +271,96 @@ int main(int argc, char** argv)
             return 1;
         }
     }
+    else if (Utils::StringEquals(ext, ".hm"))
+    {
+        if (!LoadHeightmap(inputFile, heights, patchSize, patchWorldSize, numPatches, numVertices, patchWorldOrigin,
+            minHeight, maxHeight))
+        {
+            std::cerr << "Error loading " << inputFile << std::endl;
+            return 1;
+        }
+    }
     else
     {
         std::cerr << "Unknown file type " << inputFile << std::endl;
         return 1;
     }
 
-    std::cout << "Shape " << shape.vertexCount_ << " vertices " << shape.indexCount_ << " indices " <<
-        shape.GetTriangleCount() << " tris" << std::endl;
-    if (!shape.IsTriangles())
+    if (shape.vertexCount_ != 0)
     {
-        std::cerr << "Shape does not consist of triangles" << std::endl;
-        return 1;
+        std::cout << "Shape " << shape.vertexCount_ << " vertices " << shape.indexCount_ << " indices " <<
+            shape.GetTriangleCount() << " tris" << std::endl;
+        if (!shape.IsTriangles())
+        {
+            std::cerr << "Shape does not consist of triangles" << std::endl;
+            return 1;
+        }
     }
 
     std::string output = sa::arg_parser::get_value<std::string>(parsedArgs, "output", inputFile + ".png");
     int sizeX = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
     int sizeY = sa::arg_parser::get_value<int>(parsedArgs, "targetheight", 0);
+    std::string outext = Utils::GetFileExt(output);
+    if (Utils::StringEquals(outext, ".png"))
+    {
+        if (heights.size() != 0)
+        {
+            CreateImage(heights, output, comps, sizeX, sizeY, minHeight, maxHeight);
+            return 0;
+        }
+        else if (shape.vertexCount_ != 0)
+        {
+            CreateImage(shape, output, comps, sizeX, sizeY);
+            return 0;
+        }
+    }
 
-    CreateImage(shape, output, comps, sizeX, sizeY);
+    if (shape.vertexCount_ == 0)
+    {
+        std::cerr << "Shape does not have vertices. Note: Can not create .hm from .hm" << std::endl;
+        return 1;
+    }
+    numVertices.x_ = sa::arg_parser::get_value<int>(parsedArgs, "nvx", 0);
+    numVertices.y_ = sa::arg_parser::get_value<int>(parsedArgs, "nvy", 0);
+    if (numVertices.x_ == 0 || numVertices.y_ == 0)
+    {
+        std::cerr << "Missing argument number of vertices" << std::endl;
+        return 1;
+    }
+
+    patchSize = sa::arg_parser::get_value<int>(parsedArgs, "ps", 0);
+    if (patchSize == 0)
+    {
+        std::cerr << "Missing argument patch size" << std::endl;
+        return 1;
+    }
+
+    patchWorldSize.x_ = sa::arg_parser::get_value<float>(parsedArgs, "pwsx", 0.0f);
+    patchWorldSize.y_ = sa::arg_parser::get_value<float>(parsedArgs, "pwsy", 0.0f);
+    if (Math::Equals(patchWorldSize.x_, 0.0f) || Math::Equals(patchWorldSize.y_, 0.0f))
+    {
+        std::cerr << "Missing argument patch world size" << std::endl;
+        return 1;
+    }
+
+    numPatches.x_ = sa::arg_parser::get_value<int>(parsedArgs, "npx", 0);
+    numPatches.y_ = sa::arg_parser::get_value<int>(parsedArgs, "npy", 0);
+    if (numPatches.x_ == 0 || numPatches.y_ == 0)
+    {
+        std::cerr << "Missing argument number of patches" << std::endl;
+        return 1;
+    }
+
+    patchWorldOrigin.x_ = sa::arg_parser::get_value<float>(parsedArgs, "pwox", 0.0f);
+    patchWorldOrigin.y_ = sa::arg_parser::get_value<float>(parsedArgs, "pwoy", 0.0f);
+    if (Math::Equals(patchWorldOrigin.x_, 0.0f) || Math::Equals(patchWorldOrigin.y_, 0.0f))
+    {
+        std::cerr << "Missing argument patch world origin" << std::endl;
+        return 1;
+    }
+
+    CreateHeightmap(shape, output, sizeX, sizeY,
+        numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
+    std::cout << "Created HM heightmap " << output << std::endl;
     return 0;
 }

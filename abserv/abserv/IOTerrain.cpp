@@ -22,50 +22,54 @@
 #include "IOTerrain.h"
 #include <fstream>
 #include <sa/StringTempl.h>
+#include <pugixml.hpp>
+#include "DataProvider.h"
 
 namespace IO {
 
 bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
 {
-    std::fstream input(name, std::ios::binary | std::fstream::in);
-    if (!input.is_open())
+    pugi::xml_document doc;
+    const pugi::xml_parse_result result = doc.load_file(name.c_str());
+    if (result.status != pugi::status_ok)
+    {
+        LOG_ERROR << "Error loading file " << name << ": " << result.description() << std::endl;
         return false;
-
-    //    AB_PROFILE;
-
-    char sig[4];
-    input.read(sig, 4);
-    if (sig[0] != 'H' || sig[1] != 'M' || sig[2] != '\0' || sig[3] != '\0')
+    }
+    const pugi::xml_node indexNode = doc.child("terrain");
+    if (!indexNode)
+    {
+        LOG_ERROR << "File " << name << " does not have a terrain node" << std::endl;
         return false;
+    }
 
-    ea::shared_ptr<Math::HeightMap> heightMap = ea::make_shared<Math::HeightMap>();
-    asset.SetHeightMap(heightMap);
+    auto dataProv = GetSubsystem<IO::DataProvider>();
+    std::string heightmapFile;
+    std::string heightmapFile2;
 
-    input.read((char*)&heightMap->numVertices_.x_, sizeof(int32_t));
-    input.read((char*)&heightMap->numVertices_.y_, sizeof(int32_t));
-
-    input.read((char*)&heightMap->patchSize_, sizeof(int32_t));
-
-    input.read((char*)&heightMap->patchWorldSize_.x_, sizeof(float));
-    input.read((char*)&heightMap->patchWorldSize_.y_, sizeof(float));
-    input.read((char*)&heightMap->numPatches_.x_, sizeof(int32_t));
-    input.read((char*)&heightMap->numPatches_.y_, sizeof(int32_t));
-    input.read((char*)&heightMap->patchWorldOrigin_.x_, sizeof(float));
-    input.read((char*)&heightMap->patchWorldOrigin_.y_, sizeof(float));
-
-    input.read((char*)&heightMap->minHeight_, sizeof(float));
-    input.read((char*)&heightMap->maxHeight_, sizeof(float));
-
-#ifdef _DEBUG
-    //    LOG_DEBUG << "nX=" << heightMap->numVertices_.x_ << " nY=" << heightMap->numVertices_.y_ <<
-    //        " minHeight=" << heightMap->minHeight_ <<
-    //        " maxHeight=" << heightMap->maxHeight_ << std::endl;
-#endif
-    uint32_t heightsCount;
-    input.read((char*)&heightsCount, sizeof(uint32_t));
-    heightMap->heightData_.resize((size_t)heightsCount);
-    input.read((char*)heightMap->heightData_.data(), sizeof(float) * (size_t)heightsCount);
-    input.close();
+    using namespace sa::literals;
+    for (const auto& fileNode : indexNode.children("file"))
+    {
+        const pugi::xml_attribute& typeAttr = fileNode.attribute("type");
+        const size_t typeHash = sa::StringHashRt(typeAttr.as_string());
+        const pugi::xml_attribute& srcAttr = fileNode.attribute("src");
+        switch (typeHash)
+        {
+        case "Heightmap.0"_Hash:
+            heightmapFile = srcAttr.as_string();
+            break;
+        case "Heightmap.1"_Hash:
+            heightmapFile2 = srcAttr.as_string();
+            break;
+        }
+    }
+    std::string dir = Utils::ExtractFileDir(name);
+    asset.SetHeightMap(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, heightmapFile)));
+    if (!asset.GetHeightMap())
+        return false;
+    if (!heightmapFile2.empty())
+        asset.SetHeightMap2(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, heightmapFile2)));
+    asset.Initialize();
 
     return true;
 }

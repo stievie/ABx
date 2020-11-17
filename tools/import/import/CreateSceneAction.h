@@ -27,6 +27,7 @@
 #include <vector>
 #include <memory>
 #include <absmath/Shape.h>
+#include <absmath/Point.h>
 
 class CreateSceneAction
 {
@@ -34,19 +35,28 @@ private:
     std::string file_;
     std::string outputDirectory_;
     std::string heightfieldFile_;
+    std::string obstaclesHeightmap_;
     Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
     int patchSize_{ 32 };
+    Math::Point<int> numPatches_;
+    Math::Point<int> numVertices_;
+    Math::Point<float> patchWorldSize_;
+    Math::Point<float> patchWorldOrigin_;
     std::string navmeshFile_{ "navmesh.bin" };
     std::vector<std::string> searchpaths_;
     std::vector<std::unique_ptr<Math::Shape>> obstackles_;
+    int heightmapWidth_{ 0 };
+    int heightmapHeight_{ 0 };
     bool LoadScene();
     bool LoadSceneNode(const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
     bool CopySceneFile();
     bool SaveObstacles();
     bool SaveObstaclesObj();
+    bool SaveObstaclesHm();
     bool CreateHightmap();
     bool CreateNavMesh();
     bool CreateIndexFile();
+    bool CreateTerrainFile();
     bool SaveModel(const Math::Shape& shape, const std::string& filename);
     std::string FindFile(const std::string& name);
 public:

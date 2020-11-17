@@ -65,7 +65,7 @@ function onStart()
     ped2:SetPosition({x, y, z})
     ped2:SetHomePos({x, y, z})
     ped2:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
-    ped2:SetWander(true)
+--    ped2:SetWander(true)
     -- Add current position as first point
 --    ped2:AddWanderPoint({x, y, z})
     ped2:AddWanderPoints(dorothea_samara_waypoints)

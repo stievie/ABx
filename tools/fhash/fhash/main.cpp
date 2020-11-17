@@ -37,6 +37,12 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << "If no directory is given, it uses the current directory" << std::endl;
 }
 
+static void ShowInfo()
+{
+    std::cout << "fhash - Calculate file block hashes" << std::endl;
+    std::cout << "(C) 2020, Stefan Ascher" << std::endl << std::endl;
+}
+
 static void ProcessEntry(const fs::directory_entry& p)
 {
     if (p.is_directory())
@@ -70,6 +76,7 @@ static void ProcessDirectory(const T& iterator)
 
 int main(int argc, char** argv)
 {
+    ShowInfo();
     sa::arg_parser::cli _cli{ {
         { "help", { "-h", "--help", "-?" }, "Show help", false, false, sa::arg_parser::option_type::none },
         { "recursive", { "-R", "--recursive" }, "Processs also subdirectores", false, false, sa::arg_parser::option_type::none }

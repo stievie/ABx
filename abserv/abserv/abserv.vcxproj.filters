@@ -450,6 +450,9 @@
     <ClInclude Include="InteractionComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOHeightMap.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -855,6 +858,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="InteractionComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOHeightMap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

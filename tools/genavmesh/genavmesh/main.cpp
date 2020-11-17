@@ -38,6 +38,12 @@ static void ShowUsage()
     std::cout << "  genavmesh -cs:0.4 sourcemesh.png" << std::endl;
 }
 
+static void ShowInfo()
+{
+    std::cout << "genavmesh - Generate Detour navmesh from height map" << std::endl;
+    std::cout << "(C) 2017-2020, Stefan Ascher" << std::endl << std::endl;
+}
+
 static std::vector<std::string> split(const std::string& s, char seperator)
 {
     std::vector<std::string> output;
@@ -173,6 +179,7 @@ static int ParseOptions(int argc, char** argv, BuildSettings& settings)
 
 int main(int argc, char** argv)
 {
+    ShowInfo();
     if (argc < 2)
     {
         ShowUsage();

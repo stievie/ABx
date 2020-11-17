@@ -34,19 +34,29 @@ inline constexpr int DEFAULT_PATCH_SIZE = 32;
 inline constexpr int MIN_PATCH_SIZE = 4;
 inline constexpr int MAX_PATCH_SIZE = 128;
 
+class HeightMap final : public IO::Asset, public Math::HeightMap
+{
+
+};
+
 class Terrain final : public IO::Asset
 {
 private:
     // Must be shared_ptr CollisionShape may also own it
-    ea::shared_ptr<Math::HeightMap> heightMap_;
+    ea::shared_ptr<HeightMap> heightMap_;
+    ea::shared_ptr<HeightMap> heightMap2_;
     mutable bool matrixDirty_{ true };
 public:
     Terrain();
     ~Terrain() override;
 
-    void SetHeightMap(ea::shared_ptr<Math::HeightMap> val)
+    void SetHeightMap(ea::shared_ptr<HeightMap> val)
     {
         heightMap_ = val;
+    }
+    void SetHeightMap2(ea::shared_ptr<HeightMap> val)
+    {
+        heightMap2_ = val;
     }
     Math::HeightMap* GetHeightMap() const
     {
@@ -54,6 +64,14 @@ public:
             return heightMap_.get();
         return nullptr;
     }
+    Math::HeightMap* GetHeightMap2() const
+    {
+        if (heightMap2_)
+            return heightMap2_.get();
+        return nullptr;
+    }
+    void Initialize();
+    void SetSpacing(const Math::Vector3& value);
     float GetHeight(const Math::Vector3& world) const;
 
     Math::Transformation transformation_;

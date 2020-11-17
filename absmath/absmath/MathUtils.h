@@ -60,6 +60,14 @@ inline bool IsInfinite(T value)
     return Equals(value, std::numeric_limits<T>::infinity());
 }
 
+template <typename T>
+inline bool IsNegInfinite(T value)
+{
+    static_assert(std::numeric_limits<T>::has_infinity, "T has no infinity");
+    static_assert(std::numeric_limits<T>::is_iec559, "T is not iec559");
+    return Equals(value, -std::numeric_limits<T>::infinity());
+}
+
 template <typename T, typename U>
 inline T Lerp(T lhs, T rhs, U i)
 {

@@ -174,22 +174,9 @@ ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
 
 float Map::GetTerrainHeight(const Math::Vector3& world) const
 {
-    float height1 = world.y_;
     if (terrain_)
-        height1 = terrain_->GetHeight(world);
-    float height2 = std::numeric_limits<float>::min();
-    if (navMesh_)
-    {
-        if (!navMesh_->GetHeight(height2, world))
-            return height1;
-    }
-    else
-        return height1;
-
-//    LOG_DEBUG << "Height1 " << height1 << " Height2 " << height2 << " Diff " << (height2 - height1) << std::endl;
-    if ((height2 - height1) > 0.6f)
-        return height2;
-    return height1;
+        return terrain_->GetHeight(world);
+    return world.y_;
 }
 
 void Map::UpdatePointHeight(Math::Vector3& world) const

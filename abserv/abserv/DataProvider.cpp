@@ -25,6 +25,7 @@
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
 #include "IOTerrain.h"
+#include "IOHeightMap.h"
 #include "Terrain.h"
 #include "Model.h"
 #include "IOModel.h"
@@ -40,6 +41,7 @@ DataProvider::DataProvider()
     // Add Importer
     AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
     AddImporter<Game::Terrain, IO::IOTerrain>();
+    AddImporter<Game::HeightMap, IO::IOHeightMap>();
     AddImporter<Game::Model, IO::IOModel>();
     AddImporter<Game::Script, IO::IOScript>();
 }

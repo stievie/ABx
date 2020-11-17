@@ -77,6 +77,10 @@ void CreateSceneAction::Execute()
     {
         std::cerr << "Error creating navigation mesh" << std::endl;
     }
+    if (!SaveObstaclesHm())
+    {
+        std::cerr << "Error creating obstacles layer" << std::endl;
+    }
     if (!CreateIndexFile())
     {
         std::cerr << "Error creating index.xml" << std::endl;
@@ -111,6 +115,12 @@ bool CreateSceneAction::CreateHightmap()
     action.spacing_ = heightmapSpacing_;
     action.patchSize_ = patchSize_;
     action.Execute();
+    heightmapWidth_ = action.GetWidth();
+    heightmapHeight_ = action.GetHeight();
+    numVertices_ = action.numVertices_;
+    patchWorldSize_ = action.patchWorldSize_;
+    numPatches_ = action.numPatches_;
+    patchWorldOrigin_ = action.patchWorldOrigin_;
     return true;
 }
 
@@ -144,6 +154,54 @@ bool CreateSceneAction::SaveObstacles()
         }
     }
 
+    return true;
+}
+
+bool CreateSceneAction::SaveObstaclesHm()
+{
+    if (heightmapWidth_ == 0 || heightmapHeight_ == 0)
+        return false;
+    if (obstackles_.size() == 0)
+        return true;
+
+    std::string inputFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
+    std::string outputFile = inputFile + ".hm";
+    std::cout << "Creating Heightmap layer 2 " << outputFile << std::endl;
+
+    // Run genavmesh
+    std::stringstream ss;
+
+    ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "obj2hm"));
+    ss << " -c 1";
+    ss << " -W " << heightmapWidth_;
+    ss << " -H " << heightmapHeight_;
+    ss << " -nvx " << numVertices_.x_ << " -nvy " << numVertices_.y_;
+    ss << " -ps " << patchSize_;
+    ss << " -pwsx " << patchWorldSize_.x_ << " -pwsy " << patchWorldSize_.y_;
+    ss << " -npx " << numPatches_.x_ << " -npy " << numPatches_.y_;
+    ss << " -pwox " << patchWorldOrigin_.x_ << " -pwoy " << patchWorldOrigin_.y_;
+
+    ss << " -o " << Utils::EscapeArguments(outputFile) << " ";
+    ss << Utils::EscapeArguments(inputFile) << " ";
+
+    const std::string cmdLine = ss.str();
+    std::cout << "Running commandline: " << cmdLine << std::endl;
+#ifdef AB_WINDOWS
+#if defined(UNICODE)
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring wcmdLine = converter.from_bytes(cmdLine);
+    System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
+#else
+    System::Process process(cmdLine);
+#endif
+    int exitCode = process.get_exit_status();
+    if (exitCode != 0)
+        return false;
+
+    obstaclesHeightmap_ = outputFile;
     return true;
 }
 
@@ -228,8 +286,39 @@ bool CreateSceneAction::CreateNavMesh()
     return exitCode == 0;
 }
 
+bool CreateSceneAction::CreateTerrainFile()
+{
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
+    auto root = doc.append_child("terrain");
+    {
+        auto nd = root.append_child("file");
+        nd.append_attribute("type").set_value("Heightmap.0");
+        nd.append_attribute("src").set_value(Utils::ExtractFileName(heightfieldFile_ + ".hm").c_str());
+    }
+    if (!obstaclesHeightmap_.empty())
+    {
+        auto nd = root.append_child("file");
+        nd.append_attribute("type").set_value("Heightmap.1");
+        nd.append_attribute("src").set_value(Utils::ExtractFileName(obstaclesHeightmap_).c_str());
+    }
+
+    std::string fileName = Utils::ConcatPath(outputDirectory_, "terrain.xml");
+    std::cout << "Creating terrain.xml" << std::endl;
+
+    std::fstream f(fileName, std::fstream::out);
+    if (!f.is_open())
+        return false;
+    doc.save(f);
+    return true;
+}
+
 bool CreateSceneAction::CreateIndexFile()
 {
+    CreateTerrainFile();
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
     declarationNode.append_attribute("version").set_value("1.0");
@@ -249,7 +338,7 @@ bool CreateSceneAction::CreateIndexFile()
     {
         auto nd = root.append_child("file");
         nd.append_attribute("type").set_value("Terrain");
-        nd.append_attribute("src").set_value(Utils::ExtractFileName(heightfieldFile_ + ".hm").c_str());
+        nd.append_attribute("src").set_value("terrain.xml");
     }
 
     std::string fileName = Utils::ConcatPath(outputDirectory_, "index.xml");

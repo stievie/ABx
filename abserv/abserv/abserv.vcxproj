@@ -282,6 +282,7 @@
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
     <ClInclude Include="IOGame.h" />
+    <ClInclude Include="IOHeightMap.h" />
     <ClInclude Include="IOScript.h" />
     <ClInclude Include="IOMail.h" />
     <ClInclude Include="IOMap.h" />
@@ -426,6 +427,7 @@
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOGame.cpp" />
+    <ClCompile Include="IOHeightMap.cpp" />
     <ClCompile Include="IOScript.cpp" />
     <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IOMap.cpp" />

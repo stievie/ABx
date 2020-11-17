@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2415.64" />
-	<attribute name="Next Replicated Node ID" value="51" />
+	<attribute name="Next Replicated Node ID" value="53" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787481" />
-	<attribute name="Next Local Component ID" value="16789067" />
+	<attribute name="Next Local Node ID" value="16787731" />
+	<attribute name="Next Local Component ID" value="16789378" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -1312,6 +1312,51 @@
 		<component type="CollisionShape" id="16788761">
 			<attribute name="Size" value="0.0261905 0.367214 0.804754" />
 			<attribute name="Offset Position" value="2.00234e-08 7.45058e-09 0.324081" />
+		</component>
+	</node>
+	<node id="51">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneBridge1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-63.4252 27.962 -5.53784" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="3 0.5 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16789128">
+			<attribute name="Model" value="Model;Models/StoneBridge1.mdl" />
+			<attribute name="Material" value="Material;Materials/StoneBridge1.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16789129">
+			<attribute name="Physics Position" value="-63.4252 27.962 -5.53784" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16789130">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/StoneBridge1.mdl" />
+		</component>
+	</node>
+	<node id="52">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="ResurrectionShrine1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-35.4281 31.8354 -48.5266" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16789375">
+			<attribute name="Model" value="Model;Models/ResurrectionShrine1.mdl" />
+			<attribute name="Material" value="Material;Materials/ResurrectionShrine1_Back.xml;Materials/ResurrectionShrine1_Pillar.xml;Materials/ResurrectionShrine1_Floor.xml" />
+		</component>
+		<component type="RigidBody" id="16789376">
+			<attribute name="Physics Position" value="-35.4281 31.8354 -48.5266" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16789377">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/ResurrectionShrine1.mdl" />
 		</component>
 	</node>
 </scene>

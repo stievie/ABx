@@ -21,6 +21,7 @@
 
 #include "HeightMapTools.h"
 #include "VectorMath.h"
+#include <fstream>
 
 namespace Math {
 
