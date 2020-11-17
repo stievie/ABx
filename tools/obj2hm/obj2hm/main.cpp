@@ -45,6 +45,10 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, false, sa::arg_parser::option_type::none });
     cli.push_back({ "comps", { "-c", "--components" }, "Number of color components, default 1",
         false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "targetwidth", { "-W", "--size-x" }, "Target image width",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "targetheight", { "-H", "--size-y" }, "Target image height",
+        false, true, sa::arg_parser::option_type::integer });
     cli.push_back({ "input", { }, "Input OBJ file",
         true, true, sa::arg_parser::option_type::string });
     cli.push_back({ "output", { "-o", "--output" }, "Output PNG file",
@@ -56,13 +60,13 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << sa::arg_parser::get_help("obj2hm", _cli, "Construct height map image from 3D mesh");
 }
 
-static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps)
+static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps, int sizeX, int sizeY)
 {
     int width = 0;
     int height = 0;
     float minHeight = 0.0f;
     float maxHeight = 0.0f;
-    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, width, height, minHeight, maxHeight);
+    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
 
     const float zD = maxHeight - minHeight;
 
@@ -79,11 +83,12 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
             {
                 unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
 
-                data[index * comps] = heightValue;
+                const size_t _index = ((size_t)height - (size_t)y - 1) * (size_t)width + (size_t)x;
+                data[_index * comps] = heightValue;
                 if (comps > 1)
-                    data[(index * comps) + 1] = heightValue;
+                    data[(_index * comps) + 1] = heightValue;
                 if (comps > 2)
-                    data[(index * comps) + 2] = heightValue;
+                    data[(_index * comps) + 2] = heightValue;
             }
         }
     }
@@ -198,7 +203,9 @@ int main(int argc, char** argv)
     }
 
     std::string output = sa::arg_parser::get_value<std::string>(parsedArgs, "output", inputFile + ".png");
+    int sizeX = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
+    int sizeY = sa::arg_parser::get_value<int>(parsedArgs, "targetheight", 0);
 
-    CreateImage(shape, output, comps);
+    CreateImage(shape, output, comps, sizeX, sizeY);
     return 0;
 }

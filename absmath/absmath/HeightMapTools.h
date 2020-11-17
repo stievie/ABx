@@ -30,11 +30,14 @@ namespace Math {
 
 // Create height values from a 3D mesh
 // \param[in] shape Source shape
+// \param[in] targetWdth Desired width of height map. If 0 heightmaps width is the extends of the shape.
+// \param[in] targetHeight Desired height of height map. If 0 heightmaps height is the extends of the shape.
 // \param[out] width Width of height map
 // \param[out] height Height of height map
 // \param[out] minHeight Min height value
 // \param[out] maxHeight Max height value
 ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
+    int targetWdth, int targetHeight,
     int& width, int& height,
     float& minHeight, float& maxHeight);
 

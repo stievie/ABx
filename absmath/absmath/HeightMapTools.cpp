@@ -25,6 +25,7 @@
 namespace Math {
 
 ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
+    int targetWdth, int targetHeight,
     int& width, int& height,
     float& minHeight, float& maxHeight)
 {
@@ -38,8 +39,14 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
     minHeight = minHeightVertex.y_;
     maxHeight = maxHeightVertex.y_;
 
-    width = (int)std::ceil(maxX.x_ - minX.x_);
-    height = (int)std::ceil(maxZ.z_ - minZ.z_);
+    if (targetWdth != 0)
+        width = targetWdth;
+    else
+        width = (int)std::ceil(maxX.x_ - minX.x_);
+    if (targetHeight != 0)
+        height = targetHeight;
+    else
+        height = (int)std::ceil(maxZ.z_ - minZ.z_);
 
     ea::vector<float> heights;
     heights.resize((size_t)width * (size_t)height);
@@ -47,12 +54,12 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
 
     for (const auto& v : shape.vertexData_)
     {
-        const int x = static_cast<int>(v.x_ - minX.x_);
-        const int y = height - static_cast<int>(v.z_ - minZ.z_);
+        const int x = (targetWdth == 0) ? static_cast<int>(v.x_ - minX.x_) : (static_cast<int>(v.x_) + targetWdth / 2);
+        const int y = (targetHeight == 0) ? (height - static_cast<int>(v.z_ - minZ.z_)) : (static_cast<int>(v.z_) + targetHeight / 2);
 
-        if (x >= width)
+        if (x < 0 || x >= width)
             continue;
-        if (y >= height)
+        if (y < 0 || y >= height)
             continue;
 
         const size_t index = (size_t)y * (size_t)width + (size_t)x;
@@ -77,12 +84,12 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
                 const Math::Vector3 point = { (float)x, triangle[0].y_, (float)y };
                 if (Math::IsPointInTriangle(point, triangle[0], triangle[1], triangle[2]))
                 {
-                    const int posX = static_cast<int>(x - minX.x_);
-                    const int posY = height - static_cast<int>(y - minZ.z_);
+                    const int posX = (targetWdth == 0) ? static_cast<int>(x - minX.x_) : (static_cast<int>(x) + targetWdth / 2);
+                    const int posY = (targetHeight == 0) ? (height - static_cast<int>(y - minZ.z_)) : (static_cast<int>(y) + targetHeight / 2);
 
-                    if (posX >= width)
+                    if (posX < 0 || posX >= width)
                         continue;
-                    if (posY >= height)
+                    if (posY < 0 || posY >= height)
                         continue;
 
                     const Math::Vector3 triPoint = shape.GetClosestPointOnTriangle(triangle,

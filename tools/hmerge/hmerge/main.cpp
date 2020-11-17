@@ -41,6 +41,10 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, true, sa::arg_parser::option_type::number });
     cli.push_back({ "patchsize", { "-P", "--patch-size" }, "Patch size (default 32)",
         false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "targetwidth", { "-W", "--target-width" }, "Target image width",
+        false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "targetheight", { "-H", "--target-height" }, "Target image height",
+        false, true, sa::arg_parser::option_type::integer });
     cli.push_back({ "output", { "-o", "--output" }, "Output PNG file",
         true, true, sa::arg_parser::option_type::string });
 }
@@ -50,7 +54,8 @@ static void ShowHelp(const sa::arg_parser::cli& _cli)
     std::cout << sa::arg_parser::get_help("hmerge", _cli, "Merge heightmaps");
 }
 
-static bool GetHeights(const std::string& filename, ea::vector<float>& heights, int& width, int& height, float& minHeight, float& maxHeight)
+static bool GetHeights(const std::string& filename, int targetWidth, int targetHeight,
+    ea::vector<float>& heights, int& width, int& height, float& minHeight, float& maxHeight)
 {
     std::string ext = Utils::GetFileExt(filename);
 
@@ -77,7 +82,7 @@ static bool GetHeights(const std::string& filename, ea::vector<float>& heights, 
         if (!IO::LoadShapeFromOBJ(filename, mesh))
             return false;
 
-        heights = Math::CreateHeightMapFromMesh(mesh, width, height, minHeight, maxHeight);
+        heights = Math::CreateHeightMapFromMesh(mesh, targetWidth, targetHeight, width, height, minHeight, maxHeight);
         return true;
     }
 
@@ -116,7 +121,7 @@ static bool GetHeights(const std::string& filename, ea::vector<float>& heights, 
                 mesh.AddTriangle(offset + i1, offset + i2, offset + i3);
             }
         }
-        heights = Math::CreateHeightMapFromMesh(mesh, width, height, minHeight, maxHeight);
+        heights = Math::CreateHeightMapFromMesh(mesh, targetWidth, targetHeight, width, height, minHeight, maxHeight);
         return true;
     }
 
@@ -148,8 +153,9 @@ static bool CreateImage(const std::string& filename,
 
     memset(data, 0, (size_t)width * (size_t)height * (size_t)comps);
 
-    auto setValue = [&](const ea::vector<float>& heights, size_t index, size_t offset)
+    auto setValue = [&](const ea::vector<float>& heights, size_t x, size_t y, size_t offset)
     {
+        const size_t index = ((size_t)y * ((size_t)width) + (size_t)x);
         if (heights.size() == 0 || index >= heights.size())
             return;
 
@@ -158,21 +164,21 @@ static bool CreateImage(const std::string& filename,
             return;
 
         const unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-        data[(index * comps) + offset] = heightValue;
+        const size_t _index = ((size_t)height - y - 1) * (size_t)width + (size_t)x;
+        data[(_index * comps) + offset] = heightValue;
     };
 
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            const size_t index = ((size_t)y * ((size_t)width) + (size_t)x);
-            setValue(red, index, 0);
+            setValue(red, x, y, 0);
             if (comps > 1)
-                setValue(green, index, 1);
+                setValue(green, x, y, 1);
             if (comps > 2)
-                setValue(blue, index, 2);
+                setValue(blue, x, y, 2);
             if (comps > 3)
-                setValue(alpha, index, 3);
+                setValue(alpha, x, y, 3);
         }
     }
 
@@ -207,6 +213,8 @@ int main(int argc, char** argv)
     scaling.y_ = sa::arg_parser::get_value<float>(parsedArgs, "scaley", scaling.y_);
     scaling.z_ = sa::arg_parser::get_value<float>(parsedArgs, "scalez", scaling.z_);
     patchSize = sa::arg_parser::get_value<int>(parsedArgs, "patchsize", patchSize);
+    int targetWidth = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
+    int targetHeight = sa::arg_parser::get_value<int>(parsedArgs, "targetheigt", 0);
 
     std::string redFile = sa::arg_parser::get_value<std::string>(parsedArgs, "red", "");
     if (redFile.empty())
@@ -232,7 +240,7 @@ int main(int argc, char** argv)
     int w, h;
     float minH, maxH;
 
-    if (!GetHeights(redFile, red, w, h, minH, maxH))
+    if (!GetHeights(redFile, targetWidth, targetHeight, red, w, h, minH, maxH))
     {
         std::cerr << "Unable to load file " << redFile << std::endl;
         return 1;
@@ -245,7 +253,7 @@ int main(int argc, char** argv)
     if (!greenFile.empty())
     {
         std::cout << "Green layer " << greenFile << std::endl;
-        if (!GetHeights(greenFile, green, w, h, minH, maxH))
+        if (!GetHeights(greenFile, targetWidth, targetHeight, green, w, h, minH, maxH))
         {
             std::cerr << "Unable to load file " << greenFile << std::endl;
             return 1;
@@ -262,7 +270,7 @@ int main(int argc, char** argv)
     if (!blueFile.empty())
     {
         std::cout << "Blue layer " << blueFile << std::endl;
-        if (!GetHeights(blueFile, blue, w, h, minH, maxH))
+        if (!GetHeights(blueFile, targetWidth, targetHeight, blue, w, h, minH, maxH))
         {
             std::cerr << "Unable to load file " << blueFile << std::endl;
             return 1;
@@ -279,7 +287,7 @@ int main(int argc, char** argv)
     if (!alphaFile.empty())
     {
         std::cout << "Alpha layer " << alphaFile << std::endl;
-        if (!GetHeights(alphaFile, alpha, w, h, minH, maxH))
+        if (!GetHeights(alphaFile, targetWidth, targetHeight, alpha, w, h, minH, maxH))
         {
             std::cerr << "Unable to load file " << alphaFile << std::endl;
             return 1;
