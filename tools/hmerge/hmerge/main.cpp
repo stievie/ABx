@@ -5,6 +5,7 @@
 #include <abscommon/StringUtils.h>
 #include <absmath/IO.h>
 #include <fstream>
+#include <absmath/MathDefs.h>
 
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
@@ -147,98 +148,31 @@ static bool CreateImage(const std::string& filename,
 
     memset(data, 0, (size_t)width * (size_t)height * (size_t)comps);
 
-    float lastRed = 0.0f;
-    float lastGreen = 0.0f;
-    float lastBlue = 0.0f;
-    float lastAlpha = 0.0f;
+    auto setValue = [&](const ea::vector<float>& heights, size_t index, size_t offset)
+    {
+        if (heights.size() == 0 || index >= heights.size())
+            return;
+
+        const float value = heights[index];
+        if (Math::Equals(value, -Math::M_INFINITE))
+            return;
+
+        const unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
+        data[(index * comps) + offset] = heightValue;
+    };
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
             const size_t index = ((size_t)y * ((size_t)width) + (size_t)x);
-
-            {
-                if (index < red.size())
-                {
-                    float value = red[index];
-                    if (Math::Equals(value, std::numeric_limits<float>::min()))
-                        value = lastRed;
-
-                    unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-
-                    data[index * comps] = heightValue;
-                    lastRed = value;
-                }
-                else
-                {
-                    data[index * comps] = 0;
-                }
-            }
+            setValue(red, index, 0);
             if (comps > 1)
-            {
-                if (green.size() != 0)
-                {
-                    if (index < green.size())
-                    {
-                        float value = green[index];
-                        if (Math::Equals(value, std::numeric_limits<float>::min()))
-                            value = lastGreen;
-
-                        unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-
-                        data[(index * comps) + 1] = heightValue;
-                        lastGreen = value;
-                    }
-                }
-                else
-                {
-                    data[(index * comps) + 1] = 0;
-                }
-            }
-
+                setValue(green, index, 1);
             if (comps > 2)
-            {
-                if (blue.size() != 0)
-                {
-                    if (index < blue.size())
-                    {
-                        float value = blue[index];
-                        if (Math::Equals(value, std::numeric_limits<float>::min()))
-                            value = lastBlue;
-
-                        unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-
-                        data[(index * comps) + 2] = heightValue;
-                        lastBlue = value;
-                    }
-                }
-                else
-                {
-                    data[(index * comps) + 2] = 0;
-                }
-            }
-
+                setValue(blue, index, 2);
             if (comps > 3)
-            {
-                if (alpha.size() != 0)
-                {
-                    if (index < alpha.size())
-                    {
-                        float value = alpha[index];
-                        if (Math::Equals(value, std::numeric_limits<float>::min()))
-                            value = lastAlpha;
-
-                        unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-
-                        data[(index * comps) + 3] = heightValue;
-                        lastAlpha = value;
-                    }
-                }
-                else
-                {
-                    data[(index * comps) + 3] = 255;
-                }
-            }
+                setValue(alpha, index, 3);
         }
     }
 

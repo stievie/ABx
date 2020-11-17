@@ -43,7 +43,7 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
 
     ea::vector<float> heights;
     heights.resize((size_t)width * (size_t)height);
-    ea::fill(heights.begin(), heights.end(), std::numeric_limits<float>::min());
+    ea::fill(heights.begin(), heights.end(), -M_INFINITE);
 
     for (const auto& v : shape.vertexData_)
     {
