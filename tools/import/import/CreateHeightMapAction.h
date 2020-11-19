@@ -38,8 +38,6 @@ private:
     std::string file_;
     std::string outputDirectory_;
     ea::vector<float> heightData_;
-    float minHeight_;
-    float maxHeight_;
 
     int width_{ 0 };
     int height_{ 0 };
@@ -67,6 +65,8 @@ public:
     Math::Point<int> numVertices_;
     Math::Point<float> patchWorldSize_;
     Math::Point<float> patchWorldOrigin_;
+    float minHeight_;
+    float maxHeight_;
     int GetWidth() const { return width_; }
     int GetHeight() const { return height_; }
 };

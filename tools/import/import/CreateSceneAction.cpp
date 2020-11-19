@@ -121,6 +121,8 @@ bool CreateSceneAction::CreateHightmap()
     patchWorldSize_ = action.patchWorldSize_;
     numPatches_ = action.numPatches_;
     patchWorldOrigin_ = action.patchWorldOrigin_;
+    minHeight_ = action.minHeight_;
+    maxHeight_ = action.maxHeight_;
     return true;
 }
 
@@ -168,7 +170,6 @@ bool CreateSceneAction::SaveObstaclesHm()
     std::string outputFile = inputFile + ".hm";
     std::cout << "Creating Heightmap layer 2 " << outputFile << std::endl;
 
-    // Run genavmesh
     std::stringstream ss;
 
     ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "obj2hm"));
@@ -180,6 +181,10 @@ bool CreateSceneAction::SaveObstaclesHm()
     ss << " -pwsx " << patchWorldSize_.x_ << " -pwsy " << patchWorldSize_.y_;
     ss << " -npx " << numPatches_.x_ << " -npy " << numPatches_.y_;
     ss << " -pwox " << patchWorldOrigin_.x_ << " -pwoy " << patchWorldOrigin_.y_;
+    if (!Math::IsNegInfinite(minHeight_) && !Math::IsInfinite(maxHeight_))
+    {
+        ss << " -minh " << minHeight_ << " -maxh " << maxHeight_;
+    }
 
     ss << " -o " << Utils::EscapeArguments(outputFile) << " ";
     ss << Utils::EscapeArguments(inputFile) << " ";

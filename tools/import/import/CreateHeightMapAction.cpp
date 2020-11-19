@@ -37,6 +37,11 @@ void CreateHeightMapAction::SaveHeightMap()
     else
         fileName = file_ + ext_;
 
+    std::cout << "Num vertices: " << numVertices_ << ", patch size: " << patchSize_ <<
+        ", patch world size: " << patchWorldSize_ << ", num patches: " << numPatches_ <<
+        ", patch world origin: " << patchWorldOrigin_ << ", min/max height: " << minHeight_ << "/" << maxHeight_ <<
+        ", n height values: " << heightData_.size() << std::endl;
+
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
     // Height Data

@@ -49,6 +49,10 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, true, sa::arg_parser::option_type::integer });
     cli.push_back({ "targetheight", { "-H", "--target-height" }, "Target image height",
         false, true, sa::arg_parser::option_type::integer });
+    cli.push_back({ "minheight", { "-minh", "--min-height" }, "Min height value for PNG images (default min height of source)",
+        false, true, sa::arg_parser::option_type::number });
+    cli.push_back({ "maxheight", { "-maxh", "--max-height" }, "Max height value for PNG images (default max height of source)",
+        false, true, sa::arg_parser::option_type::number });
 
     cli.push_back({ "nvx", { "-nvx", "--number-vertices-x" }, "Number of vertices (.hm only)",
         false, true, sa::arg_parser::option_type::integer });
@@ -120,13 +124,16 @@ static void CreateImage(const ea::vector<float>& heights, const std::string& fil
     free(data);
 }
 
-static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps, int sizeX, int sizeY)
+static void CreateImage(const Math::Shape& shape, const std::string& filename, int comps, int sizeX, int sizeY,
+    float minHeight, float maxHeight)
 {
     int width = 0;
     int height = 0;
-    float minHeight = 0.0f;
-    float maxHeight = 0.0f;
-    const ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+    float minh = std::numeric_limits<float>::max();
+    float maxh = std::numeric_limits<float>::lowest();
+    const ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minh, maxh);
+    minHeight = std::min(minh, minHeight);
+    maxHeight = std::max(maxh, maxHeight);
     CreateImage(heights, filename, comps, width, height, minHeight, maxHeight);
 }
 
@@ -137,6 +144,11 @@ static void CreateHeightmap(const Math::Shape& shape, const std::string& filenam
     int width = 0; int height = 0;
     float maxHeight = 0.0f; float minHeight = 0.0f;
     ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+
+    std::cout << "Num vertices: " << numVertices << ", patch size: " << patchSize <<
+        ", patch world size: " << patchWorldSize << ", num patches: " << numPatches <<
+        ", patch world origin: " << patchWorldOrigin << ", min/max height: " << minHeight << "/" << maxHeight <<
+        ", n height values: " << heights.size() << std::endl;
 
     std::fstream output(filename, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
@@ -303,6 +315,10 @@ int main(int argc, char** argv)
     std::string outext = Utils::GetFileExt(output);
     if (Utils::StringEquals(outext, ".png"))
     {
+        float minH = sa::arg_parser::get_value<float>(parsedArgs, "minheight", std::numeric_limits<float>::max());
+        float maxH = sa::arg_parser::get_value<float>(parsedArgs, "maxheight", std::numeric_limits<float>::lowest());
+        minHeight = std::min(minH, minHeight);
+        maxHeight = std::max(maxH, maxHeight);
         if (heights.size() != 0)
         {
             CreateImage(heights, output, comps, sizeX, sizeY, minHeight, maxHeight);
@@ -310,7 +326,7 @@ int main(int argc, char** argv)
         }
         else if (shape.vertexCount_ != 0)
         {
-            CreateImage(shape, output, comps, sizeX, sizeY);
+            CreateImage(shape, output, comps, sizeX, sizeY, minHeight, maxHeight);
             return 0;
         }
     }
@@ -351,9 +367,9 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    patchWorldOrigin.x_ = sa::arg_parser::get_value<float>(parsedArgs, "pwox", 0.0f);
-    patchWorldOrigin.y_ = sa::arg_parser::get_value<float>(parsedArgs, "pwoy", 0.0f);
-    if (Math::Equals(patchWorldOrigin.x_, 0.0f) || Math::Equals(patchWorldOrigin.y_, 0.0f))
+    patchWorldOrigin.x_ = sa::arg_parser::get_value<float>(parsedArgs, "pwox", Math::M_INFINITE);
+    patchWorldOrigin.y_ = sa::arg_parser::get_value<float>(parsedArgs, "pwoy", Math::M_INFINITE);
+    if (Math::IsInfinite(patchWorldOrigin.x_) || Math::IsInfinite(patchWorldOrigin.y_))
     {
         std::cerr << "Missing argument patch world origin" << std::endl;
         return 1;

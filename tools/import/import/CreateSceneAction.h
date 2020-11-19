@@ -42,6 +42,8 @@ private:
     Math::Point<int> numVertices_;
     Math::Point<float> patchWorldSize_;
     Math::Point<float> patchWorldOrigin_;
+    float minHeight_{ -Math::M_INFINITE };
+    float maxHeight_{ Math::M_INFINITE };
     std::string navmeshFile_{ "navmesh.bin" };
     std::vector<std::string> searchpaths_;
     std::vector<std::unique_ptr<Math::Shape>> obstackles_;
