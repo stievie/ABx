@@ -43,11 +43,11 @@ bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
         return false;
     }
 
-    auto dataProv = GetSubsystem<IO::DataProvider>();
-    std::string heightmapFile;
-    std::string heightmapFile2;
+    auto* dataProv = GetSubsystem<IO::DataProvider>();
 
     using namespace sa::literals;
+    // Let's just assume heightmap files are relative to terrain files
+    std::string dir = Utils::ExtractFileDir(name);
     for (const auto& fileNode : indexNode.children("file"))
     {
         const pugi::xml_attribute& typeAttr = fileNode.attribute("type");
@@ -56,19 +56,28 @@ bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
         switch (typeHash)
         {
         case "Heightmap.0"_Hash:
-            heightmapFile = srcAttr.as_string();
+            if (!asset.GetHeightMap())
+                asset.SetHeightMap(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, srcAttr.as_string())));
             break;
         case "Heightmap.1"_Hash:
-            heightmapFile2 = srcAttr.as_string();
+            if (!asset.GetHeightMap2())
+                asset.SetHeightMap2(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, srcAttr.as_string())));
             break;
         }
     }
-    std::string dir = Utils::ExtractFileDir(name);
-    asset.SetHeightMap(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, heightmapFile)));
-    if (!asset.GetHeightMap())
+    // We need at least one heightmap
+    auto* hm1 = asset.GetHeightMap();
+    if (!hm1)
         return false;
-    if (!heightmapFile2.empty())
-        asset.SetHeightMap2(dataProv->GetAsset<Game::HeightMap>(Utils::ConcatPath(dir, heightmapFile2)));
+    auto* hm2 = asset.GetHeightMap2();
+    if (hm1 && hm2)
+    {
+        if (hm1->heightData_.size() != hm2->heightData_.size())
+        {
+            LOG_WARNING << "Height map layers have different sizes, " << hm1->heightData_.size() <<
+                " != " << hm2->heightData_.size() << std::endl;
+        }
+    }
     asset.Initialize();
 
     return true;

@@ -24,6 +24,11 @@
 
 namespace Game {
 
+void HeightMap::OnChanged()
+{
+    ProcessData();
+}
+
 Terrain::Terrain() :
     IO::Asset()
 {
@@ -65,7 +70,7 @@ float Terrain::GetHeight(const Math::Vector3& world) const
         return result;
 
     float result2 = heightMap2_->GetHeight(world);
-    LOG_DEBUG << "height1 " << result << " height2 " << result2 << std::endl;
+//    LOG_DEBUG << "height1 " << result << " height2 " << result2 << std::endl;
     // Layer2 must be above layer1
     if (Math::IsNegInfinite(result2) || result2 < result)
         return result;
@@ -75,8 +80,9 @@ float Terrain::GetHeight(const Math::Vector3& world) const
     if (diff12 < 1.7f)
         return result2;
 
-//    if (fabs(world.y_ - result) < fabs(world.y_ - result2))
-//        return result;
+    // Otherwise use the closer value to the current height
+    if (fabs(world.y_ - result) < fabs(world.y_ - result2))
+        return result;
     return result2;
 }
 

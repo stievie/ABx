@@ -20,13 +20,13 @@ local marianna_gani_waypoints = {
 
 -- Game start up
 function onStart()
-  createPortal(self, -20.059, 25.0, -0.00870347, "Athena Arena", "3c081fd5-3966-433a-bc61-50a33084eac2")
+  createPortal(self, -32.6, 25.0, 16.0, "Athena Arena", "3c081fd5-3966-433a-bc61-50a33084eac2")
 --  createPortal(self, -20.059, 26.7, -0.00870347, "Rhodes Arena", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
 
   local smith = self:AddNpc("/scripts/actors/npcs/smith.lua")
   if (smith ~= nil) then
-    local x = -6.71275
-    local z = 15.5906
+    local x = -18.4
+    local z = 14.0
     local y = self:GetTerrainHeight(x, z)
     smith:SetPosition({x, y, z})
     smith:SetRotation(180)
@@ -35,8 +35,8 @@ function onStart()
   end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
-    local x = 2.58
-    local z = 16.7
+    local x = -9.4
+    local z = 16.0
     local y = self:GetTerrainHeight(x, z)
     merchant:SetPosition({x, y, z})
     merchant:SetRotation(180)
@@ -45,8 +45,8 @@ function onStart()
   end
   local ped = self:AddNpc("/scripts/actors/npcs/marianna_gani.lua")
   if (ped ~= nil) then
-    local x = 64.6874
-    local z = 22.0684
+    local x = 50.1
+    local z = 20.0
     local y = self:GetTerrainHeight(x, z)
     ped:SetPosition({x, y, z})
     ped:SetRotation(90)
@@ -57,8 +57,8 @@ function onStart()
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then
-    local x = 4.08
-    local z = 16.6
+    local x = -8.0
+    local z = 3.9
 --    local x = 4.1
 --    local z = 8.1
     local y = self:GetTerrainHeight(x, z)
@@ -71,7 +71,7 @@ function onStart()
     ped2:AddWanderPoints(dorothea_samara_waypoints)
   end
 
-  local chest = createChest(self, 0.8, 15.0)
+  local chest = createChest(self, -12.3, 11.4)
   if (chest ~= nil) then
     chest:SetRotation(180)
   end
@@ -79,12 +79,12 @@ function onStart()
   -- Add some poison
   self:AddAreaOfEffect(
     "/scripts/actors/aoe/general/magic_mushroom.lua",
-    nil, 10001, {-14.8, 0.0, 22.98})
+    nil, 10001, {-50.1, 0.0, 33.0})
 
   local pdl = self:AddNpc("/scripts/actors/npcs/poison_dart_launcher.lua")
   if (pdl ~= nil) then
-    local x = -46
-    local z = 9
+    local x = -47.0
+    local z = 50.7
     local y = self:GetTerrainHeight(x, z)
     pdl:SetPosition({x, y, z})
     -- NPCs group mask 1 -> don't shoot at NPCs

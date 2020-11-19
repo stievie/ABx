@@ -22,10 +22,11 @@
 #pragma once
 
 #include <string>
+#include <sa/Compiler.h>
 
 namespace IO {
 
-class IOAsset
+class SA_NOVTABLE IOAsset
 {
 public:
     IOAsset() = default;
@@ -33,7 +34,7 @@ public:
 };
 
 template<class T>
-class IOAssetImpl : public IOAsset
+class SA_NOVTABLE IOAssetImpl : public IOAsset
 {
 public:
     virtual bool Import(T& asset, const std::string& name) = 0;

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="53" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16787731" />
-	<attribute name="Next Local Component ID" value="16789378" />
+	<attribute name="Next Local Node ID" value="16788121" />
+	<attribute name="Next Local Component ID" value="16789834" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -72,7 +72,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SpawnPoint" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-13 25.775 -8" />
+		<attribute name="Position" value="-21.7383 26.31 -7.4234" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables">
@@ -106,7 +106,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Temple" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="72.1225 30.1575 4.85019" />
+		<attribute name="Position" value="72.1225 30.1575 20.6749" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -117,7 +117,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16781726">
-			<attribute name="Physics Position" value="72.1225 30.1575 4.85019" />
+			<attribute name="Physics Position" value="72.1225 30.1575 20.6749" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -131,7 +131,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="FirePlace" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-4.01834 25.3975 15.3441" />
+		<attribute name="Position" value="-16.0115 25.1694 15.3441" />
 		<attribute name="Rotation" value="0.678221 0 -0.734858 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -142,7 +142,7 @@
 		</component>
 		<component type="RigidBody" id="16781790">
 			<attribute name="Physics Rotation" value="0.678221 0 -0.734858 0" />
-			<attribute name="Physics Position" value="-4.01834 25.3975 15.3441" />
+			<attribute name="Physics Position" value="-16.0115 25.1694 15.3441" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781791">
@@ -169,7 +169,7 @@
 			<attribute name="Is Enabled" value="true" />
 			<attribute name="Name" value="Fire" />
 			<attribute name="Tags" />
-			<attribute name="Position" value="0 0 0" />
+			<attribute name="Position" value="0.00930405 0 0.115596" />
 			<attribute name="Rotation" value="1 0 0 0" />
 			<attribute name="Scale" value="2 2 2" />
 			<attribute name="Variables" />
@@ -191,7 +191,7 @@
 				<attribute name="Is Enabled" value="true" />
 				<attribute name="Name" value="Smoke" />
 				<attribute name="Tags" />
-				<attribute name="Position" value="0 1.125 0" />
+				<attribute name="Position" value="-0.00509357 1.125 -0.0634522" />
 				<attribute name="Rotation" value="1 0 0 0" />
 				<attribute name="Scale" value="0.5 0.5 0.5" />
 				<attribute name="Variables" />
@@ -215,7 +215,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SmithTend" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-6.78231 25.0758 23.6858" />
+		<attribute name="Position" value="-18.7755 24.7737 23.6858" />
 		<attribute name="Rotation" value="-4.37114e-08 0 1 -0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -227,7 +227,7 @@
 		</component>
 		<component type="RigidBody" id="16781855">
 			<attribute name="Physics Rotation" value="-4.37114e-08 0 1 0" />
-			<attribute name="Physics Position" value="-6.78231 25.0758 23.6858" />
+			<attribute name="Physics Position" value="-18.7755 24.7737 23.6858" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -241,7 +241,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="EternalShield" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.69556 25.7938 20.9703" />
+		<attribute name="Position" value="-15.5968 25.4332 21.0764" />
 		<attribute name="Rotation" value="-0.148517 -0.14524 0.977938 -0.0220573" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -254,7 +254,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="EternalBlade" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.871 25.9602 18.6202" />
+		<attribute name="Position" value="-15.8642 25.4899 18.7313" />
 		<attribute name="Rotation" value="0.699162 0.697117 0.0927609 0.128822" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -267,7 +267,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Amboss" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-8.12362 25.1573 15.8177" />
+		<attribute name="Position" value="-20.1168 24.9149 15.8177" />
 		<attribute name="Rotation" value="-0.696091 0 -0.717953 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -278,7 +278,7 @@
 		</component>
 		<component type="RigidBody" id="16782432">
 			<attribute name="Physics Rotation" value="0.696091 -0 0.717953 -0" />
-			<attribute name="Physics Position" value="-8.12362 25.1573 15.8177" />
+			<attribute name="Physics Position" value="-20.1168 24.9149 15.8177" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16782433">
@@ -290,7 +290,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SmithHammer1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-7.89385 25.7985 15.8194" />
+		<attribute name="Position" value="-19.887 25.5212 15.8194" />
 		<attribute name="Rotation" value="0.0491966 0 0 -0.99879" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -304,7 +304,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Xiphos" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.90283 25.8484 18.585" />
+		<attribute name="Position" value="-15.8867 25.3309 18.4584" />
 		<attribute name="Rotation" value="0.5078 0.759154 -0.313009 0.260478" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -318,7 +318,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="8.49773 25.2481 18.8261" />
+		<attribute name="Position" value="-3.49542 25.2481 18.8261" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -329,7 +329,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16783307">
-			<attribute name="Physics Position" value="8.49773 25.2481 18.8261" />
+			<attribute name="Physics Position" value="-3.49542 25.2481 18.8261" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -343,7 +343,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="8.49773 25.2481 20.823" />
+		<attribute name="Position" value="-3.49542 25.2481 20.823" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -354,7 +354,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16783310">
-			<attribute name="Physics Position" value="8.49773 25.2481 20.823" />
+			<attribute name="Physics Position" value="-3.49542 25.2481 20.823" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -368,7 +368,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="8.49773 25.2481 22.8165" />
+		<attribute name="Position" value="-3.49542 25.2481 22.8165" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -379,7 +379,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16783313">
-			<attribute name="Physics Position" value="8.49773 25.2481 22.8165" />
+			<attribute name="Physics Position" value="-3.49542 25.2481 22.8165" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -393,7 +393,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="8.49773 25.2481 24.8167" />
+		<attribute name="Position" value="-3.49542 25.2481 24.8167" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -404,7 +404,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16783560">
-			<attribute name="Physics Position" value="8.49773 25.2481 24.8167" />
+			<attribute name="Physics Position" value="-3.49542 25.2481 24.8167" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -418,7 +418,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="8.49773 25.2481 26.8144" />
+		<attribute name="Position" value="-3.49542 25.2481 26.8144" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -429,7 +429,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16783563">
-			<attribute name="Physics Position" value="8.49773 25.2481 26.8144" />
+			<attribute name="Physics Position" value="-3.49542 25.2481 26.8144" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -443,7 +443,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="7.31627 25.2481 27.6049" />
+		<attribute name="Position" value="-4.67688 25.2481 27.6049" />
 		<attribute name="Rotation" value="0.705512 0 -0.708697 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -455,7 +455,7 @@
 		</component>
 		<component type="RigidBody" id="16783566">
 			<attribute name="Physics Rotation" value="0.705513 0 -0.708697 0" />
-			<attribute name="Physics Position" value="7.31627 25.2481 27.6049" />
+			<attribute name="Physics Position" value="-4.67688 25.2481 27.6049" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -469,7 +469,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="5.31347 25.2481 27.6049" />
+		<attribute name="Position" value="-6.67968 25.2481 27.6049" />
 		<attribute name="Rotation" value="0.705512 0 -0.708697 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -481,7 +481,7 @@
 		</component>
 		<component type="RigidBody" id="16783569">
 			<attribute name="Physics Rotation" value="0.705513 0 -0.708697 0" />
-			<attribute name="Physics Position" value="5.31347 25.2481 27.6049" />
+			<attribute name="Physics Position" value="-6.67968 25.2481 27.6049" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -495,7 +495,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="massive_swamptree" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-41.4223 33.4814 -61.8397" />
+		<attribute name="Position" value="-53.9973 33.4814 -61.8397" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -506,7 +506,7 @@
 			<attribute name="Occlusion LOD Level" value="1" />
 		</component>
 		<component type="RigidBody" id="16784804">
-			<attribute name="Physics Position" value="-41.4223 33.4814 -61.8397" />
+			<attribute name="Physics Position" value="-53.9973 33.4814 -61.8397" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -518,7 +518,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SwesterTrillianStatue" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="38.7787 32.947 5.56485" />
+		<attribute name="Position" value="38.7787 30.0708 24.6948" />
 		<attribute name="Rotation" value="-4.37114e-08 -0 -1 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -529,7 +529,7 @@
 		</component>
 		<component type="RigidBody" id="16785600">
 			<attribute name="Physics Rotation" value="4.37114e-08 0 1 0" />
-			<attribute name="Physics Position" value="38.7787 32.947 5.56485" />
+			<attribute name="Physics Position" value="38.7787 30.0708 24.6948" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
 		<component type="CollisionShape" id="16785601">
@@ -542,7 +542,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ClothesLine" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-12.4794 25.568 33.7408" />
+		<attribute name="Position" value="-19.2221 25.4561 33.7408" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -552,7 +552,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16785908">
-			<attribute name="Physics Position" value="-12.4794 25.568 33.7408" />
+			<attribute name="Physics Position" value="-19.2221 25.4561 33.7408" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -561,7 +561,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SpawnPoint" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-46.6756 31.4525 -60.4956" />
+		<attribute name="Position" value="-53.5017 31.8686 -48.5127" />
 		<attribute name="Rotation" value="-4.37114e-08 0 1 -0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables">
@@ -574,7 +574,7 @@
 		<attribute name="Tags">
 			<string value="HasAnimation" />
 		</attribute>
-		<attribute name="Position" value="-102.104 25.0588 -5.29618" />
+		<attribute name="Position" value="-111.074 25.0588 6.8681" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables">
@@ -593,7 +593,7 @@
 			</attribute>
 		</component>
 		<component type="RigidBody" id="16786524">
-			<attribute name="Physics Position" value="-102.104 25.0588 -5.29618" />
+			<attribute name="Physics Position" value="-111.074 25.0588 6.8681" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -629,7 +629,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="9.14594 25.2481 17.2245" />
+		<attribute name="Position" value="-5.63693 25.2481 10.0764" />
 		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -641,7 +641,7 @@
 		</component>
 		<component type="RigidBody" id="16786956">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-			<attribute name="Physics Position" value="9.14594 25.2481 17.2245" />
+			<attribute name="Physics Position" value="-5.63693 25.2481 10.0764" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -655,7 +655,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="15.0987 25.2481 10.0666" />
+		<attribute name="Position" value="0.315832 25.2481 2.91849" />
 		<attribute name="Rotation" value="0.92388 0 0.382683 0" />
 		<attribute name="Scale" value="1 1 4" />
 		<attribute name="Variables" />
@@ -667,7 +667,7 @@
 		</component>
 		<component type="RigidBody" id="16787264">
 			<attribute name="Physics Rotation" value="0.92388 0 0.382683 0" />
-			<attribute name="Physics Position" value="15.0987 25.2481 10.0666" />
+			<attribute name="Physics Position" value="0.315832 25.2481 2.91849" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -681,7 +681,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="10.539 25.2481 15.8309" />
+		<attribute name="Position" value="-4.24387 25.2481 8.68279" />
 		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -693,7 +693,7 @@
 		</component>
 		<component type="RigidBody" id="16787267">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-			<attribute name="Physics Position" value="10.539 25.2481 15.8309" />
+			<attribute name="Physics Position" value="-4.24387 25.2481 8.68279" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -707,7 +707,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="11.9612 25.2481 14.4343" />
+		<attribute name="Position" value="-2.82167 25.2481 7.28619" />
 		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -719,7 +719,7 @@
 		</component>
 		<component type="RigidBody" id="16787270">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-			<attribute name="Physics Position" value="11.9612 25.2481 14.4343" />
+			<attribute name="Physics Position" value="-2.82167 25.2481 7.28619" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -747,7 +747,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="5.85031 27.4596 25.0824" />
+		<attribute name="Position" value="-8.42383 27.1882 25.0824" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -757,7 +757,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16787581">
-			<attribute name="Physics Position" value="5.85031 27.4596 25.0824" />
+			<attribute name="Physics Position" value="-8.42383 27.1882 25.0824" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -770,7 +770,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="5.01478 26.2677 25.7146" />
+		<attribute name="Position" value="-9.25936 25.9963 25.7146" />
 		<attribute name="Rotation" value="0.96709 0 0.254433 0" />
 		<attribute name="Scale" value="0.7 0.7 0.7" />
 		<attribute name="Variables" />
@@ -781,7 +781,7 @@
 		</component>
 		<component type="RigidBody" id="16787584">
 			<attribute name="Physics Rotation" value="0.96709 0 0.254433 0" />
-			<attribute name="Physics Position" value="5.01478 26.2677 25.7146" />
+			<attribute name="Physics Position" value="-9.25936 25.9963 25.7146" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -794,7 +794,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="6.50885 26.2677 24.7419" />
+		<attribute name="Position" value="-7.76529 25.9963 24.7419" />
 		<attribute name="Rotation" value="0.986827 0 0.161776 0" />
 		<attribute name="Scale" value="0.7 0.7 0.7" />
 		<attribute name="Variables" />
@@ -805,7 +805,7 @@
 		</component>
 		<component type="RigidBody" id="16787587">
 			<attribute name="Physics Rotation" value="0.986827 0 0.161776 0" />
-			<attribute name="Physics Position" value="6.50885 26.2677 24.7419" />
+			<attribute name="Physics Position" value="-7.76529 25.9963 24.7419" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -818,7 +818,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.60435 25.9329 22.8304" />
+		<attribute name="Position" value="-9.66979 25.6615 22.8304" />
 		<attribute name="Rotation" value="0.996876 0 0.0789811 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -829,7 +829,7 @@
 		</component>
 		<component type="RigidBody" id="16787651">
 			<attribute name="Physics Rotation" value="0.996876 0 0.0789811 0" />
-			<attribute name="Physics Position" value="4.60435 25.9329 22.8304" />
+			<attribute name="Physics Position" value="-9.66979 25.6615 22.8304" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -842,7 +842,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="GoldBag" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="2.74458 25.3528 22.5989" />
+		<attribute name="Position" value="-8.48884 25.18 22.8114" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="4 4 4" />
 		<attribute name="Variables" />
@@ -852,7 +852,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16787715">
-			<attribute name="Physics Position" value="2.74458 25.3528 22.5989" />
+			<attribute name="Physics Position" value="-8.48884 25.18 22.8114" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -865,7 +865,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Grass" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-32.3428 32.5969 -20.53" />
+		<attribute name="Position" value="-46.7599 32.5969 -12.0513" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -930,7 +930,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="MarketTend1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="2.59084 25.3585 21.0209" />
+		<attribute name="Position" value="-8.99577 25.1305 21.0209" />
 		<attribute name="Rotation" value="-8.74228e-08 -0 -1 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -941,7 +941,7 @@
 		</component>
 		<component type="RigidBody" id="16788090">
 			<attribute name="Physics Rotation" value="8.74228e-08 0 1 0" />
-			<attribute name="Physics Position" value="2.59084 25.3585 21.0209" />
+			<attribute name="Physics Position" value="-8.99577 25.1305 21.0209" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -954,7 +954,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Barrel1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="6.15908 25.407 22.5374" />
+		<attribute name="Position" value="-7.44963 25.1642 22.5374" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -964,7 +964,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16788154">
-			<attribute name="Physics Position" value="6.15908 25.407 22.5374" />
+			<attribute name="Physics Position" value="-7.44963 25.1642 22.5374" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -977,7 +977,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Barrel1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="6.82585 25.407 23.0139" />
+		<attribute name="Position" value="-6.78286 25.0979 23.0139" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -987,7 +987,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16788157">
-			<attribute name="Physics Position" value="6.82585 25.407 23.0139" />
+			<attribute name="Physics Position" value="-6.78286 25.0979 23.0139" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1000,7 +1000,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Amphora1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="7.32234 25.2328 22.0482" />
+		<attribute name="Position" value="-6.64197 25.1088 22.0482" />
 		<attribute name="Rotation" value="0.819152 0 0.573576 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1011,7 +1011,7 @@
 		</component>
 		<component type="RigidBody" id="16788221">
 			<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
-			<attribute name="Physics Position" value="7.32234 25.2328 22.0482" />
+			<attribute name="Physics Position" value="-6.64197 25.1088 22.0482" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1024,7 +1024,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Barrow1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="2.06466 25.5558 26.6769" />
+		<attribute name="Position" value="-12.2095 25.2556 26.6769" />
 		<attribute name="Rotation" value="0.692975 0.116387 -0.697461 0.140657" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1035,7 +1035,7 @@
 		</component>
 		<component type="RigidBody" id="16788285">
 			<attribute name="Physics Rotation" value="0.692976 0.116387 -0.697463 0.140657" />
-			<attribute name="Physics Position" value="2.06466 25.5558 26.6769" />
+			<attribute name="Physics Position" value="-12.2095 25.2556 26.6769" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1048,7 +1048,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="GoldBag" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="2.74458 26.4716 18.4092" />
+		<attribute name="Position" value="-11.5296 26.256 18.4092" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -1058,7 +1058,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16788288">
-			<attribute name="Physics Position" value="2.74458 26.4716 18.4092" />
+			<attribute name="Physics Position" value="-11.5296 26.256 18.4092" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1071,7 +1071,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Amphora1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="3.24268 26.4647 18.3279" />
+		<attribute name="Position" value="-11.176 26.2483 18.3279" />
 		<attribute name="Rotation" value="0.819153 0 -0.573576 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -1082,7 +1082,7 @@
 		</component>
 		<component type="RigidBody" id="16788291">
 			<attribute name="Physics Rotation" value="0.819153 0 -0.573576 0" />
-			<attribute name="Physics Position" value="3.24268 26.4647 18.3279" />
+			<attribute name="Physics Position" value="-11.176 26.2483 18.3279" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1095,7 +1095,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.67915 26.5676 22.8689" />
+		<attribute name="Position" value="-9.73953 26.2765 22.8689" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1104,7 +1104,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788547">
-			<attribute name="Physics Position" value="4.67915 26.5676 22.8689" />
+			<attribute name="Physics Position" value="-9.73953 26.2765 22.8689" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1117,7 +1117,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.64659 26.4374 23.0113" />
+		<attribute name="Position" value="-9.77209 26.1463 23.0113" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1126,7 +1126,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788550">
-			<attribute name="Physics Position" value="4.64659 26.4374 23.0113" />
+			<attribute name="Physics Position" value="-9.77209 26.1463 23.0113" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1139,7 +1139,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.79962 26.4374 23.0113" />
+		<attribute name="Position" value="-9.61906 26.1463 23.0113" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1148,7 +1148,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788556">
-			<attribute name="Physics Position" value="4.79962 26.4374 23.0113" />
+			<attribute name="Physics Position" value="-9.61906 26.1463 23.0113" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1161,7 +1161,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.75141 26.4374 22.8652" />
+		<attribute name="Position" value="-9.66727 26.1463 22.8652" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1170,7 +1170,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788559">
-			<attribute name="Physics Position" value="4.75141 26.4374 22.8652" />
+			<attribute name="Physics Position" value="-9.66727 26.1463 22.8652" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1183,7 +1183,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.57223 26.4374 22.8652" />
+		<attribute name="Position" value="-9.84645 26.1463 22.8652" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1192,7 +1192,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788562">
-			<attribute name="Physics Position" value="4.57223 26.4374 22.8652" />
+			<attribute name="Physics Position" value="-9.84645 26.1463 22.8652" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1205,7 +1205,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.49261 26.4374 23.0113" />
+		<attribute name="Position" value="-9.92607 26.1463 23.0113" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1214,7 +1214,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788565">
-			<attribute name="Physics Position" value="4.49261 26.4374 23.0113" />
+			<attribute name="Physics Position" value="-9.92607 26.1463 23.0113" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1227,7 +1227,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.75188 26.5682 23.0113" />
+		<attribute name="Position" value="-9.6668 26.2771 23.0113" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1236,7 +1236,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788568">
-			<attribute name="Physics Position" value="4.75188 26.5682 23.0113" />
+			<attribute name="Physics Position" value="-9.6668 26.2771 23.0113" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1249,7 +1249,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ToiletPaper" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.58377 26.5682 23.0113" />
+		<attribute name="Position" value="-9.83491 26.2771 23.0113" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1258,7 +1258,7 @@
 			<attribute name="Material" value="Material;Materials/ToiletPaper.xml" />
 		</component>
 		<component type="RigidBody" id="16788571">
-			<attribute name="Physics Position" value="4.58377 26.5682 23.0113" />
+			<attribute name="Physics Position" value="-9.83491 26.2771 23.0113" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1271,7 +1271,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Pier1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-23.8135 24.5639 -1.25349" />
+		<attribute name="Position" value="-37.7414 24.5639 14.5166" />
 		<attribute name="Rotation" value="0.993268 0 -0.115819 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1282,7 +1282,7 @@
 		</component>
 		<component type="RigidBody" id="16788696">
 			<attribute name="Physics Rotation" value="0.99327 0 -0.115819 0" />
-			<attribute name="Physics Position" value="-23.8135 24.5639 -1.25349" />
+			<attribute name="Physics Position" value="-37.7414 24.5639 14.5166" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1295,7 +1295,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="DoubleHeadedAxe" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.81511 26.1161 22.387" />
+		<attribute name="Position" value="-15.7283 25.7722 22.387" />
 		<attribute name="Rotation" value="0.695686 0.713213 0.0613332 0.0598259" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1305,7 +1305,7 @@
 		</component>
 		<component type="RigidBody" id="16788760">
 			<attribute name="Physics Rotation" value="0.695688 0.713216 0.0613334 0.0598261" />
-			<attribute name="Physics Position" value="-3.81511 26.1161 22.387" />
+			<attribute name="Physics Position" value="-15.7283 25.7722 22.387" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1318,7 +1318,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneBridge1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-63.4252 27.962 -5.53784" />
+		<attribute name="Position" value="-73.5362 28.5717 13.044" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="3 0.5 1" />
 		<attribute name="Variables" />
@@ -1328,7 +1328,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16789129">
-			<attribute name="Physics Position" value="-63.4252 27.962 -5.53784" />
+			<attribute name="Physics Position" value="-73.5362 28.5717 13.044" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -1341,7 +1341,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="ResurrectionShrine1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-35.4281 31.8354 -48.5266" />
+		<attribute name="Position" value="-53.4583 31.5949 -48.5266" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -1350,7 +1350,7 @@
 			<attribute name="Material" value="Material;Materials/ResurrectionShrine1_Back.xml;Materials/ResurrectionShrine1_Pillar.xml;Materials/ResurrectionShrine1_Floor.xml" />
 		</component>
 		<component type="RigidBody" id="16789376">
-			<attribute name="Physics Position" value="-35.4281 31.8354 -48.5266" />
+			<attribute name="Physics Position" value="-53.4583 31.5949 -48.5266" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>

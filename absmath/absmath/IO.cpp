@@ -61,11 +61,6 @@ ea::vector<float> LoadHeightmap(const std::string& name,
     input.read((char*)&minHeight, sizeof(float));
     input.read((char*)&maxHeight, sizeof(float));
 
-#ifdef _DEBUG
-    //    LOG_DEBUG << "nX=" << asset.numVertices_.x_ << " nY=" << asset.numVertices_.y_ <<
-    //        " minHeight=" << asset.minHeight_ <<
-    //        " maxHeight=" << asset.maxHeight_ << std::endl;
-#endif
     uint32_t heightsCount;
     input.read((char*)&heightsCount, sizeof(uint32_t));
     result.resize((size_t)heightsCount);

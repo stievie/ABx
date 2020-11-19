@@ -36,7 +36,8 @@ inline constexpr int MAX_PATCH_SIZE = 128;
 
 class HeightMap final : public IO::Asset, public Math::HeightMap
 {
-
+public:
+    void OnChanged() override;
 };
 
 class Terrain final : public IO::Asset

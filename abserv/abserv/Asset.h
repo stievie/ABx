@@ -22,10 +22,11 @@
 #pragma once
 
 #include <string>
+#include <sa/Compiler.h>
 
 namespace IO {
 
-class Asset
+class SA_NOVTABLE Asset
 {
 protected:
     std::string fileName_;
@@ -35,6 +36,7 @@ public:
 
     void SetFileName(const std::string& value);
     const std::string& GetFileName() const { return fileName_; }
+    virtual void OnChanged() {}
 };
 
 }

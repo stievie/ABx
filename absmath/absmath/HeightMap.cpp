@@ -108,15 +108,9 @@ float HeightMap::GetHeight(const Vector3& world) const
         h3 = GetRawHeight(uxPos, uzPos + 1);
     }
 
-    if (IsNegInfinite(h1) && IsNegInfinite(h2) && IsNegInfinite(h3))
-        // If there is not a single point -> fail
+    // 2nd Layer may have -inf for undefined heights
+    if (IsNegInfinite(h1) || IsNegInfinite(h2) || IsNegInfinite(h3))
         return -M_INFINITE;
-    if (IsNegInfinite(h1))
-        h1 = IsNegInfinite(h2) ? h3 : h2;
-    if (IsNegInfinite(h2))
-        h2 = IsNegInfinite(h1) ? h3 : h1;
-    if (IsNegInfinite(h3))
-        h3 = IsNegInfinite(h1) ? h2 : h1;
 
     const float h = h1 * (1.0f - xFrac - zFrac) + h2 * xFrac + h3 * zFrac;
 

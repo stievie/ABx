@@ -91,7 +91,24 @@ static bool GetHeights(const std::string& filename, int targetWidth, int targetH
         heights = Math::CreateHeightMapFromMesh(mesh, targetWidth, targetHeight, width, height, minHeight, maxHeight);
         return true;
     }
-
+    if (Utils::StringEquals(ext, ".hm"))
+    {
+        Math::Point<float> patchWorldSize;
+        Math::Point<int> numPatches;
+        Math::Point<int> numVertices;
+        Math::Point<float> patchWorldOrigin;
+        width = targetWidth;
+        height = targetHeight;
+        heights = IO::LoadHeightmap(filename, patchSize, patchWorldSize, numPatches, numVertices,
+            patchWorldOrigin, minHeight, maxHeight);
+#ifdef _DEBUG
+        std::cout << "Num vertices: " << numVertices << ", patch size: " << patchSize <<
+            ", patch world size: " << patchWorldSize << ", num patches: " << numPatches <<
+            ", patch world origin: " << patchWorldOrigin << ", min/max height: " << minHeight << "/" << maxHeight <<
+            ", n height values: " << heights.size() << std::endl;
+#endif
+        return true;
+    }
     if (Utils::StringEquals(ext, ".obstacles"))
     {
         std::fstream input(filename, std::ios::binary | std::fstream::in);
@@ -190,7 +207,8 @@ static bool CreateImage(const std::string& filename,
 
     stbi_write_png(filename.c_str(), width, height, comps, data, width * comps);
 
-    std::cout << "Created " << filename << " width " << width << " height " << height << std::endl;
+    std::cout << "Created " << filename << " width " << width << ", height " << height <<
+        ", min/max height " << minHeight << "/" << maxHeight << std::endl;
 
     free(data);
     return true;
@@ -221,7 +239,7 @@ int main(int argc, char** argv)
     scaling.z_ = sa::arg_parser::get_value<float>(parsedArgs, "scalez", scaling.z_);
     patchSize = sa::arg_parser::get_value<int>(parsedArgs, "patchsize", patchSize);
     int targetWidth = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
-    int targetHeight = sa::arg_parser::get_value<int>(parsedArgs, "targetheigt", 0);
+    int targetHeight = sa::arg_parser::get_value<int>(parsedArgs, "targetheight", 0);
 
     std::string redFile = sa::arg_parser::get_value<std::string>(parsedArgs, "red", "");
     if (redFile.empty())

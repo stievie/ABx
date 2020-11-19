@@ -83,6 +83,7 @@ private:
                 Asset* pAsset = reinterpret_cast<Asset*>(asset);
                 LOG_INFO << "Reloading Asset file " << fileName << " because it changed" << std::endl;
                 ASSERT(Import<T>(static_cast<T&>(*pAsset), fileName));
+                pAsset->OnChanged();
                 constexpr size_t hash = sa::StringHash(sa::TypeName<T>::Get());
                 const CacheKey key = ea::make_pair(hash, fileName);
                 events_.CallAll<void(const Asset&)>(KeyHasher()(key), *pAsset);
