@@ -27,6 +27,8 @@
 #include <absmath/HeightMapTools.h>
 #include <abscommon/StringUtils.h>
 #include <fstream>
+#include <iomanip>
+#include <json.hpp>
 
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
@@ -73,7 +75,7 @@ static void InitCli(sa::arg_parser::cli& cli)
     cli.push_back({ "pwoy", { "-pwoy", "--patch-world-origin-y" }, "Patch world origin (.hm only)",
         false, true, sa::arg_parser::option_type::number });
 
-    cli.push_back({ "output", { "-o", "--output" }, "Output file, either .png or .hm",
+    cli.push_back({ "output", { "-o", "--output" }, "Output file, either .png, .hm, .json or .txt",
         true, true, sa::arg_parser::option_type::string });
     cli.push_back({ "input", { }, "Input .obj, .obstacles or .hm file",
         true, true, sa::arg_parser::option_type::string });
@@ -137,19 +139,62 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
     CreateImage(heights, filename, comps, width, height, minHeight, maxHeight);
 }
 
-static void CreateHeightmap(const Math::Shape& shape, const std::string& filename, int sizeX, int sizeY,
+static void CreateJSONHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
+    float minHeight, float maxHeight,
     const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
     const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
 {
-    int width = 0; int height = 0;
-    float maxHeight = 0.0f; float minHeight = 0.0f;
-    ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+    json::JSON obj;
+    obj["sizeX"] = sizeX;
+    obj["sizeY"] = sizeX;
+    obj["minHeight"] = minHeight;
+    obj["maxHeight"] = maxHeight;
+    obj["numVerticesX"] = numVertices.x_;
+    obj["numVerticesY"] = numVertices.y_;
+    obj["patchSize"] = patchSize;
+    obj["patchWorldSizeX"] = patchWorldSize.x_;
+    obj["patchWorldSizeY"] = patchWorldSize.y_;
+    obj["numPatchesX"] = numPatches.x_;
+    obj["numPatchesY"] = numPatches.y_;
+    obj["patchWorldOriginX"] = patchWorldOrigin.x_;
+    obj["patchWorldOriginY"] = patchWorldOrigin.y_;
 
-    std::cout << "Num vertices: " << numVertices << ", patch size: " << patchSize <<
-        ", patch world size: " << patchWorldSize << ", num patches: " << numPatches <<
-        ", patch world origin: " << patchWorldOrigin << ", min/max height: " << minHeight << "/" << maxHeight <<
-        ", n height values: " << heights.size() << std::endl;
+    obj["data"] = json::Array();
 
+    for (auto v : heights)
+    {
+        obj["data"].append(v);
+    }
+
+    std::ofstream out(filename);
+    out << obj << std::endl;
+}
+
+static void CreateTextHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
+    float minHeight, float maxHeight,
+    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
+    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+{
+    std::fstream output(filename, std::fstream::out);
+    output << std::fixed << std::setprecision(6);
+    output << "size: " << sizeX << " " << sizeY << std::endl;
+    output << "min_height: " << minHeight << std::endl;
+    output << "max_height: " << maxHeight << std::endl;
+    output << "num_vertices: " << numVertices << std::endl;
+    output << "patch_size: " << patchSize << std::endl;
+    output << "patch_world_size: " << patchWorldSize << std::endl;
+    output << "num_patches: " << numPatches << std::endl;
+    output << "patch_world_origin: " << patchWorldOrigin << std::endl;
+
+    for (auto v : heights)
+        output << v << std::endl;
+}
+
+static void CreateHMHeightmap(const ea::vector<float>& heights, const std::string& filename, int /* sizeX */, int /* sizeY */,
+    float minHeight, float maxHeight,
+    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
+    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+{
     std::fstream output(filename, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
     output.write((char*)&numVertices.x_, sizeof(int32_t));
@@ -172,6 +217,43 @@ static void CreateHeightmap(const Math::Shape& shape, const std::string& filenam
     output.write((char*)heights.data(), (size_t)c * sizeof(float));
 
     output.close();
+}
+
+static void CreateHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
+    float minHeight, float maxHeight,
+    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
+    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+{
+    std::cout << "Num vertices: " << numVertices << ", patch size: " << patchSize <<
+        ", patch world size: " << patchWorldSize << ", num patches: " << numPatches <<
+        ", patch world origin: " << patchWorldOrigin << ", min/max height: " << minHeight << "/" << maxHeight <<
+        ", n height values: " << heights.size() << std::endl;
+    const std::string ext = Utils::GetFileExt(filename);
+    if (Utils::SameFilename(ext, ".txt"))
+    {
+        CreateTextHeightmap(heights, filename, sizeX, sizeY, minHeight, maxHeight, numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
+        std::cout << "Created TXT heightmap " << filename << std::endl;
+        return;
+    }
+    if (Utils::SameFilename(ext, ".json"))
+    {
+        CreateJSONHeightmap(heights, filename, sizeX, sizeY, minHeight, maxHeight, numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
+        std::cout << "Created JSON heightmap " << filename << std::endl;
+        return;
+    }
+
+    CreateHMHeightmap(heights, filename, sizeX, sizeY, minHeight, maxHeight, numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
+    std::cout << "Created HM heightmap " << filename << std::endl;
+}
+
+static void CreateHeightmap(const Math::Shape& shape, const std::string& filename, int sizeX, int sizeY,
+    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
+    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+{
+    int width = 0; int height = 0;
+    float maxHeight = 0.0f; float minHeight = 0.0f;
+    const ea::vector<float> heights = Math::CreateHeightMapFromMesh(shape, sizeX, sizeY, width, height, minHeight, maxHeight);
+    CreateHeightmap(heights, filename, sizeX, sizeY, minHeight, maxHeight, numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
 }
 
 static bool LoadHeightmap(const std::string& filename, ea::vector<float>& heights,
@@ -258,7 +340,7 @@ int main(int argc, char** argv)
     std::string inputFile = actval.value();
     Math::Shape shape;
     ea::vector<float> heights;
-    std::string ext = Utils::GetFileExt(inputFile);
+    const std::string ext = Utils::GetFileExt(inputFile);
 
     Math::Point<int> numVertices;
     int patchSize = 0;
@@ -309,10 +391,10 @@ int main(int argc, char** argv)
         }
     }
 
-    std::string output = sa::arg_parser::get_value<std::string>(parsedArgs, "output", inputFile + ".png");
+    const std::string output = sa::arg_parser::get_value<std::string>(parsedArgs, "output", inputFile + ".png");
     int sizeX = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
     int sizeY = sa::arg_parser::get_value<int>(parsedArgs, "targetheight", 0);
-    std::string outext = Utils::GetFileExt(output);
+    const std::string outext = Utils::GetFileExt(output);
     if (Utils::StringEquals(outext, ".png"))
     {
         float minH = sa::arg_parser::get_value<float>(parsedArgs, "minheight", std::numeric_limits<float>::max());
@@ -331,11 +413,6 @@ int main(int argc, char** argv)
         }
     }
 
-    if (shape.vertexCount_ == 0)
-    {
-        std::cerr << "Shape does not have vertices. Note: Can not create .hm from .hm" << std::endl;
-        return 1;
-    }
     numVertices.x_ = sa::arg_parser::get_value<int>(parsedArgs, "nvx", 0);
     numVertices.y_ = sa::arg_parser::get_value<int>(parsedArgs, "nvy", 0);
     if (numVertices.x_ == 0 || numVertices.y_ == 0)
@@ -375,8 +452,20 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    CreateHeightmap(shape, output, sizeX, sizeY,
+    if (shape.vertexCount_ != 0)
+    {
+        CreateHeightmap(shape, output, sizeX, sizeY,
+            numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
+        return 0;
+    }
+    if (heights.size() == 0)
+    {
+        std::cerr << "Missing input" << std::endl;
+        return 1;
+    }
+
+    CreateHeightmap(heights, output, sizeX, sizeY, minHeight, maxHeight,
         numVertices, patchSize, patchWorldSize, numPatches, patchWorldOrigin);
-    std::cout << "Created HM heightmap " << output << std::endl;
+
     return 0;
 }
