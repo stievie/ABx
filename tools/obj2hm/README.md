@@ -4,9 +4,9 @@ Program to construct a height map image from a 3D mesh in OBJ file format. This
 works best with meshes created with the `import` program. It may not be able to
 load OBJ files created with other programs.
 
-It can output the height map a PNG picture and ABx' own `.hm` format. Additionally
-the data can be saved in plain text and some JSON format to make it readable by
-other programs.
+It can output the height map as a PNG picture and in ABx' own `.hm` format.
+Additionally the data can be saved in plain text and some JSON format to make it
+readable by other programs.
 
 ## Usage
 
