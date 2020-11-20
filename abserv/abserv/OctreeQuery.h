@@ -27,6 +27,7 @@
 #include <absmath/Ray.h>
 #include <eastl.hpp>
 #include <sa/Noncopyable.h>
+#include <sa/Compiler.h>
 
 namespace Game {
 class GameObject;
@@ -36,7 +37,7 @@ namespace Math {
 
 // This can be used to filter out objects. Filtering objects can increase performance,
 // because it skips expensive collision/intersection checking for these objects.
-class OctreeMatcher
+class SA_NOVTABLE OctreeMatcher
 {
 public:
     virtual bool Matches(const Game::GameObject* object) const = 0;
