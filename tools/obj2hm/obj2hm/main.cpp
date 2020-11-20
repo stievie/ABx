@@ -146,7 +146,7 @@ static void CreateJSONHeightmap(const ea::vector<float>& heights, const std::str
 {
     json::JSON obj;
     obj["sizeX"] = sizeX;
-    obj["sizeY"] = sizeX;
+    obj["sizeY"] = sizeY;
     obj["minHeight"] = minHeight;
     obj["maxHeight"] = maxHeight;
     obj["numVerticesX"] = numVertices.x_;
