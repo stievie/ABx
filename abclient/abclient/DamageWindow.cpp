@@ -58,6 +58,8 @@ bool DamageWindowItem::Initialize()
     Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));
     if (icon)
     {
+        icon->SetNumLevels(1);
+        icon->SetMipsToSkip(QUALITY_LOW, 0);
         BorderImage* skillIcon = CreateChild<BorderImage>("SkillIcon");
         skillIcon->SetInternal(true);
         skillIcon->SetTexture(icon);
