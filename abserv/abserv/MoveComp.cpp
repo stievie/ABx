@@ -110,7 +110,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
     if (owner_.GetType() != AB::GameProtocol::GameObjectType::Projectile)
     {
         auto& map = *owner_.GetGame()->map_;
-        if (owner_.autorunComp_->IsAutoRun() || map.CanStepOn(owner_.transformation_.position_))
+        if (owner_.autorunComp_->IsAutoRun() || (!checkStepOn_ || map.CanStepOn(owner_.transformation_.position_)))
         {
             // Keep on ground, except projectiles, they usually fly...
             const float y = map.GetTerrainHeight(owner_.transformation_.position_);

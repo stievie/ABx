@@ -69,6 +69,7 @@ const HashMap<String, AB::GameProtocol::CommandType> ChatWindow::CHAT_COMMANDS =
     { "god", AB::GameProtocol::CommandType::GodMode },
     { "gotoplayer", AB::GameProtocol::CommandType::GotoPlayer },
     { "gminfo", AB::GameProtocol::CommandType::GMInfo },
+    { "stepon", AB::GameProtocol::CommandType::CheckStepOn },
 
     // Internal, handled by the client
     { "help", AB::GameProtocol::CommandType::Help },

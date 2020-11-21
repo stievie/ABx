@@ -103,6 +103,8 @@ GameObject::~GameObject()
 
 void GameObject::UpdateRanges()
 {
+    // Most objects are static objects or terrain patches, which do not have any logic,
+    // so we can skip this, which is very expensive. It was always on top of profiles.
     if (GetType() <= AB::GameProtocol::GameObjectType::__SentToPlayer)
         return;
 

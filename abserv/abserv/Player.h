@@ -95,6 +95,7 @@ private:
     void HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&);
     void HandleGodModeCommand(const std::string&, Net::NetworkMessage&);
     void HandleGMInfoCommand(const std::string&, Net::NetworkMessage&);
+    void HandleCheckStepOnCommand(const std::string&, Net::NetworkMessage&);
     void HandleEnterMapCommand(const std::string&, Net::NetworkMessage&);
     void HandleEnterInstanceCommand(const std::string&, Net::NetworkMessage&);
     void HandleGotoPlayerCommand(const std::string&, Net::NetworkMessage&);

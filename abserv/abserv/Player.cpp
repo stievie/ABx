@@ -2292,6 +2292,9 @@ void Player::OnHandleCommand(AB::GameProtocol::CommandType type,
     case AB::GameProtocol::CommandType::GMInfo:
         HandleGMInfoCommand(arguments, message);
         break;
+    case AB::GameProtocol::CommandType::CheckStepOn:
+        HandleCheckStepOnCommand(arguments, message);
+        break;
     case AB::GameProtocol::CommandType::EnterMap:
         HandleEnterMapCommand(arguments, message);
         break;
@@ -2690,6 +2693,17 @@ void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage
         current.WriteToOutput(*nmsg);
         return Iteration::Continue;
     });
+}
+
+void Player::HandleCheckStepOnCommand(const std::string&, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountType::Gamemaster)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+    // This is mostly for debugging
+    moveComp_->checkStepOn_ = !moveComp_->checkStepOn_;
 }
 
 void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessage&)

@@ -120,6 +120,8 @@ public:
     bool autoMove_{ false };
     /// Velocity in Units/s.
     Math::Vector3 velocity_;
+    // If turned off, it doesn't check whether or not you can step on a poly of the nav mesh.
+    bool checkStepOn_{ true };
 };
 
 }

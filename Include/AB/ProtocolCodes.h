@@ -566,9 +566,10 @@ enum class CommandType : uint8_t
     EnterInstance,    // /enterinstance <uuid>
     Instances,        // /instances
     Die,              // /die (only GM)
-    GodMode,          // /gm  Toggle god mode
+    GodMode,          // /god  Toggle god mode
     GotoPlayer,       // /gotoplayer <name>
     GMInfo,           // /gminfo <message>  GM info massage
+    CheckStepOn,      // /stepon
 
     // Internal
     Internal = 100,
