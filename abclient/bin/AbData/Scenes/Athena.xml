@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="53" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16788121" />
-	<attribute name="Next Local Component ID" value="16789834" />
+	<attribute name="Next Local Node ID" value="16788186" />
+	<attribute name="Next Local Component ID" value="16789910" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -106,7 +106,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Temple" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="72.1225 30.1575 20.6749" />
+		<attribute name="Position" value="64.8313 30.1575 36.6099" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -117,7 +117,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16781726">
-			<attribute name="Physics Position" value="72.1225 30.1575 20.6749" />
+			<attribute name="Physics Position" value="64.8313 30.1575 36.6099" />
 			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -518,7 +518,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SwesterTrillianStatue" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="38.7787 30.0708 24.6948" />
+		<attribute name="Position" value="53.0866 30.0599 15.2834" />
 		<attribute name="Rotation" value="-4.37114e-08 -0 -1 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -529,7 +529,7 @@
 		</component>
 		<component type="RigidBody" id="16785600">
 			<attribute name="Physics Rotation" value="4.37114e-08 0 1 0" />
-			<attribute name="Physics Position" value="38.7787 30.0708 24.6948" />
+			<attribute name="Physics Position" value="53.0866 30.0599 15.2834" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
 		<component type="CollisionShape" id="16785601">
