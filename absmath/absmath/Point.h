@@ -76,4 +76,7 @@ public:
     T y_{ };
 };
 
+using Vector2 = Point<float>;
+using IntVector2 = Point<int>;
+
 }

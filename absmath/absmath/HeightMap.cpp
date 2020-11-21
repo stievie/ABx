@@ -228,7 +228,7 @@ Shape HeightMap::GetShape() const
     return s;
 }
 
-Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
+IntVector2 HeightMap::WorldToHeightmap(const Vector3& world)
 {
     const Vector3 pos = inverseMatrix_ * world;
     int xPos = static_cast<int>(pos.x_ / spacing_.x_ + 0.5f);
@@ -238,7 +238,7 @@ Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
     return Point<int>(xPos, zPos);
 }
 
-Vector3 HeightMap::HeightmapToWorld(const Point<int>& pixel)
+Vector3 HeightMap::HeightmapToWorld(const IntVector2& pixel)
 {
     const Point<int> pos(pixel.x_, numVertices_.y_ - 1 - pixel.y_);
     const float xPos = static_cast<float>(pos.x_ * spacing_.x_);

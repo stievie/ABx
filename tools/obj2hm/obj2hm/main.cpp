@@ -141,8 +141,8 @@ static void CreateImage(const Math::Shape& shape, const std::string& filename, i
 
 static void CreateJSONHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
     float minHeight, float maxHeight,
-    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
-    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+    const Math::IntVector2& numVertices, int patchSize, const Math::Vector2& patchWorldSize,
+    const Math::IntVector2& numPatches, const Math::Vector2& patchWorldOrigin)
 {
     json::JSON obj;
     obj["sizeX"] = sizeX;
@@ -172,8 +172,8 @@ static void CreateJSONHeightmap(const ea::vector<float>& heights, const std::str
 
 static void CreateTextHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
     float minHeight, float maxHeight,
-    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
-    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+    const Math::IntVector2& numVertices, int patchSize, const Math::Vector2& patchWorldSize,
+    const Math::IntVector2& numPatches, const Math::Vector2& patchWorldOrigin)
 {
     std::fstream output(filename, std::fstream::out);
     output << std::fixed << std::setprecision(6);
@@ -192,8 +192,8 @@ static void CreateTextHeightmap(const ea::vector<float>& heights, const std::str
 
 static void CreateHMHeightmap(const ea::vector<float>& heights, const std::string& filename, int /* sizeX */, int /* sizeY */,
     float minHeight, float maxHeight,
-    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
-    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+    const Math::IntVector2& numVertices, int patchSize, const Math::Vector2& patchWorldSize,
+    const Math::IntVector2& numPatches, const Math::Vector2& patchWorldOrigin)
 {
     std::fstream output(filename, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
@@ -221,8 +221,8 @@ static void CreateHMHeightmap(const ea::vector<float>& heights, const std::strin
 
 static void CreateHeightmap(const ea::vector<float>& heights, const std::string& filename, int sizeX, int sizeY,
     float minHeight, float maxHeight,
-    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
-    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+    const Math::IntVector2& numVertices, int patchSize, const Math::Vector2& patchWorldSize,
+    const Math::IntVector2& numPatches, const Math::Vector2& patchWorldOrigin)
 {
     std::cout << "Num vertices: " << numVertices << ", patch size: " << patchSize <<
         ", patch world size: " << patchWorldSize << ", num patches: " << numPatches <<
@@ -247,8 +247,8 @@ static void CreateHeightmap(const ea::vector<float>& heights, const std::string&
 }
 
 static void CreateHeightmap(const Math::Shape& shape, const std::string& filename, int sizeX, int sizeY,
-    const Math::Point<int>& numVertices, int patchSize, const Math::Point<float>& patchWorldSize,
-    const Math::Point<int>& numPatches, const Math::Point<float>& patchWorldOrigin)
+    const Math::IntVector2& numVertices, int patchSize, const Math::Vector2& patchWorldSize,
+    const Math::IntVector2& numPatches, const Math::Vector2& patchWorldOrigin)
 {
     int width = 0; int height = 0;
     float maxHeight = 0.0f; float minHeight = 0.0f;
@@ -258,8 +258,8 @@ static void CreateHeightmap(const Math::Shape& shape, const std::string& filenam
 
 static bool LoadHeightmap(const std::string& filename, ea::vector<float>& heights,
     int& patchSize,
-    Math::Point<float>& patchWorldSize, Math::Point<int>& numPatches,
-    Math::Point<int>& numVertices, Math::Point<float>& patchWorldOrigin,
+    Math::Vector2& patchWorldSize, Math::IntVector2& numPatches,
+    Math::IntVector2& numVertices, Math::Vector2& patchWorldOrigin,
     float& minHeight, float& maxHeight)
 {
     heights = IO::LoadHeightmap(filename, patchSize, patchWorldSize, numPatches, numVertices,
@@ -342,11 +342,11 @@ int main(int argc, char** argv)
     ea::vector<float> heights;
     const std::string ext = Utils::GetFileExt(inputFile);
 
-    Math::Point<int> numVertices;
+    Math::IntVector2 numVertices;
     int patchSize = 0;
-    Math::Point<float> patchWorldSize;
-    Math::Point<int> numPatches;
-    Math::Point<float> patchWorldOrigin;
+    Math::Vector2 patchWorldSize;
+    Math::IntVector2 numPatches;
+    Math::Vector2 patchWorldOrigin;
     float minHeight = 0.0f, maxHeight = 0.0f;
 
     if (Utils::StringEquals(ext, ".obj"))

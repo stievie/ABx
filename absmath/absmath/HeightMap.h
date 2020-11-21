@@ -126,8 +126,8 @@ public:
 
     Shape GetShape() const;
 
-    Point<int> WorldToHeightmap(const Vector3& world);
-    Vector3 HeightmapToWorld(const Point<int>& pixel);
+    IntVector2 WorldToHeightmap(const Vector3& world);
+    Vector3 HeightmapToWorld(const IntVector2& pixel);
     int GetWidth() const
     {
         return numVertices_.x_;
@@ -142,10 +142,10 @@ public:
     int32_t patchSize_;
     float minHeight_;
     float maxHeight_;
-    Point<int32_t> numVertices_;
-    Point<int32_t> numPatches_;
-    Point<float> patchWorldSize_;
-    Point<float> patchWorldOrigin_;
+    IntVector2 numVertices_;
+    IntVector2 numPatches_;
+    Vector2 patchWorldSize_;
+    Vector2 patchWorldOrigin_;
 
     ea::vector<float> heightData_;
     BoundingBox boundingBox_;

@@ -38,10 +38,10 @@ private:
     std::string obstaclesHeightmap_;
     Math::Vector3 heightmapSpacing_{ 1.0f, 0.25f, 1.0f };
     int patchSize_{ 32 };
-    Math::Point<int> numPatches_;
-    Math::Point<int> numVertices_;
-    Math::Point<float> patchWorldSize_;
-    Math::Point<float> patchWorldOrigin_;
+    Math::IntVector2 numPatches_;
+    Math::IntVector2 numVertices_;
+    Math::Vector2 patchWorldSize_;
+    Math::Vector2 patchWorldOrigin_;
     float minHeight_{ -Math::M_INFINITE };
     float maxHeight_{ Math::M_INFINITE };
     std::string navmeshFile_{ "navmesh.bin" };

@@ -72,10 +72,10 @@ static bool GetHeights(const std::string& filename, int targetWidth, int targetH
         if (!data)
             return false;
 
-        Math::Point<float> patchWorldSize;
-        Math::Point<int> numPatches;
-        Math::Point<int> numVertices;
-        Math::Point<float> patchWorldOrigin;
+        Math::Vector2 patchWorldSize;
+        Math::IntVector2 numPatches;
+        Math::IntVector2 numVertices;
+        Math::Vector2 patchWorldOrigin;
         heights = Math::CreateHeightMapFromImage((const unsigned char*)data, width, height, comps, scaling, patchSize,
             patchWorldSize, numPatches, numVertices, patchWorldOrigin, minHeight, maxHeight);
         free(data);
@@ -93,10 +93,10 @@ static bool GetHeights(const std::string& filename, int targetWidth, int targetH
     }
     if (Utils::StringEquals(ext, ".hm"))
     {
-        Math::Point<float> patchWorldSize;
-        Math::Point<int> numPatches;
-        Math::Point<int> numVertices;
-        Math::Point<float> patchWorldOrigin;
+        Math::Vector2 patchWorldSize;
+        Math::IntVector2 numPatches;
+        Math::IntVector2 numVertices;
+        Math::Vector2 patchWorldOrigin;
         width = targetWidth;
         height = targetHeight;
         heights = IO::LoadHeightmap(filename, patchSize, patchWorldSize, numPatches, numVertices,

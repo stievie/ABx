@@ -61,10 +61,10 @@ public:
     Math::Vector3 spacing_;
     int32_t patchSize_{ 32 };
     std::string ext_{ ".hm" };
-    Math::Point<int> numPatches_;
-    Math::Point<int> numVertices_;
-    Math::Point<float> patchWorldSize_;
-    Math::Point<float> patchWorldOrigin_;
+    Math::IntVector2 numPatches_;
+    Math::IntVector2 numVertices_;
+    Math::Vector2 patchWorldSize_;
+    Math::Vector2 patchWorldOrigin_;
     float minHeight_;
     float maxHeight_;
     int GetWidth() const { return width_; }

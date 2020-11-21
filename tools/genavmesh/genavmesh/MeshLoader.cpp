@@ -111,8 +111,8 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
         std::cout << "WARNING: Image size - 1 (" << width_ << "x" << height_<< ") should be a multiple of patch size (" << patchSize << ")" << std::endl;
     }
 
-    Math::Point<float> patchWorldSize;
-    Math::Point<int> numPatches;
+    Math::Vector2 patchWorldSize;
+    Math::IntVector2 numPatches;
     Math::CreateShapeFromHeightmapImage((const unsigned char*)data_, width_, height_, components_, { scaleX , scaleY, scaleZ },
         patchSize,
         [this](const Math::Vector3& vertex)

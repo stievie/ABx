@@ -53,7 +53,7 @@ public:
     void CalculateNormals();
     int GetIndexCount() const { return m_triCount * 3; }
 
-    Math::Point<int> numVertices_;
-    Math::Point<float> patchWorldOrigin_;
+    Math::IntVector2 numVertices_;
+    Math::Vector2 patchWorldOrigin_;
 };
 
