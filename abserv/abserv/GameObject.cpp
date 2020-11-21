@@ -103,6 +103,9 @@ GameObject::~GameObject()
 
 void GameObject::UpdateRanges()
 {
+    if (GetType() <= AB::GameProtocol::GameObjectType::__SentToPlayer)
+        return;
+
     ranges_.clear();
     ea::vector<GameObject*> res;
 
