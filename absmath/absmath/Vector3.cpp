@@ -165,10 +165,10 @@ void Vector3::SetLength(float length)
 
 Vector3 Vector3::Orthogonal() const
 {
-    float x = fabs(x_);
-    float y = fabs(y_);
-    float z = fabs(z_);
-    Vector3 other = (x < y) ?
+    const float x = fabs(x_);
+    const float y = fabs(y_);
+    const float z = fabs(z_);
+    const Vector3 other = (x < y) ?
         ((x < z) ? Vector3::UnitX : Vector3::UnitZ) :
         ((y < z) ? Vector3::UnitY : Vector3::UnitZ);
     return CrossProduct(other);
@@ -189,9 +189,16 @@ float Vector3::Distance(const Vector3& v) const
     return (*this - v).Length();
 }
 
+float Vector3::DistanceXZ(const Vector3& v) const
+{
+    const float x = x_ - v.x_;
+    const float z = z_ - v.z_;
+    return sqrt(x*x + z*z);
+}
+
 const Vector3 Vector3::Normal() const
 {
-    float l = Length();
+    const float l = Length();
     if (!Math::Equals(l, 0.0f))
         return *this / l;
     return *this;

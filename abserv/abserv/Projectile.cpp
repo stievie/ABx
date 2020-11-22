@@ -200,13 +200,17 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             // If the target does not change direction we follow him.
             // Target can only dodge when changing the direction after we launched.
-            targetPos_ = target->GetPosition() + BodyOffset;
-            currentDistance_ = GetPosition().Distance(targetPos_);
+            const float newDist = GetPosition().Distance(targetPos_);
+            if (newDist > 2.0f)
+            {
+                targetPos_ = target->GetPosition() + BodyOffset;
+                currentDistance_ = newDist;
+            }
         }
     }
 
     moveComp_->StoreOldPosition();
-    if (currentDistance_ > 1.0f)
+    if (currentDistance_ > 2.0f)
     {
         moveComp_->HeadTo(targetPos_);
         moveComp_->directionSet_ = true;
@@ -218,7 +222,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     const Math::Vector3 curPosOrigY = { transformation_.position_.x_, startPos_.y_, transformation_.position_.z_ };
     const float f = 1.0f - (curPosOrigY.Distance(targetPos_) / distance_);
     transformation_.position_.y_ = Math::Lerp(startPos_.y_, targetPos_.y_, f) +
-        (sinf(f * Math::M_PIHALF) * ((distance_ / 10.0f) / speed));
+        (sinf(f * Math::M_PIF) * ((distance_ / 10.0f) / speed));
 
     const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);

@@ -158,6 +158,8 @@ public:
     float LengthSqr() const;
     float Length() const;
     float Distance(const Vector3& v) const;
+    // Distance without Y component, i.e. assuming the same height
+    float DistanceXZ(const Vector3& v) const;
     const Vector3 Normal() const;
     void Normalize();
     /// Absolute

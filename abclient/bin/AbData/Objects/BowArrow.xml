@@ -5,7 +5,7 @@
 		<attribute name="Material" value="Material;Materials/BowArrow_Shaft.xml;Materials/BowArrow_Head.xml;Materials/BowArrow_Tail.xml"/>
 	</component>
 	<component id="16777217" type="RigidBody">
-		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Collision Layer" value="1"/>
 		<attribute name="Use Gravity" value="false"/>
 	</component>
 	<component id="16777218" type="CollisionShape">
