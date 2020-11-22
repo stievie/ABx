@@ -128,14 +128,6 @@ public:
 
     IntVector2 WorldToHeightmap(const Vector3& world);
     Vector3 HeightmapToWorld(const IntVector2& pixel);
-    int GetWidth() const
-    {
-        return numVertices_.x_;
-    }
-    int GetHeight() const
-    {
-        return numVertices_.y_;
-    }
 
     /// Vertex and height spacing.
     Vector3 spacing_;

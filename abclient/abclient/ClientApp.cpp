@@ -19,8 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-
 #include "ClientApp.h"
 #include "ActorResourceBar.h"
 #include "CameraTransform.h"
@@ -40,6 +38,7 @@
 #include "GameMenu.h"
 #include "GameMessagesWindow.h"
 #include "HealthBar.h"
+#include "HeightMap.h"
 #include "HotkeyEdit.h"
 #include "InventoryWindow.h"
 #include "ItemStatsUIElement.h"
@@ -207,6 +206,7 @@ ClientApp::ClientApp(Context* context) :
     Actor::RegisterObject(context);
     Player::RegisterObject(context);
     ClientPrediction::RegisterObject(context);
+    HeightMap::RegisterObject(context);
     ChatWindow::RegisterObject(context);
     CraftsmanWindow::RegisterObject(context);
     GameMenu::RegisterObject(context);

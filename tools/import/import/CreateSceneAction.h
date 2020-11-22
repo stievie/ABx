@@ -59,6 +59,7 @@ private:
     bool CreateNavMesh();
     bool CreateIndexFile();
     bool CreateTerrainFile();
+    bool CreateClientHeightmap();
     bool SaveModel(const Math::Shape& shape, const std::string& filename);
     std::string FindFile(const std::string& name);
 public:

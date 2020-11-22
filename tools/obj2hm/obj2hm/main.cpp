@@ -158,12 +158,15 @@ static void CreateJSONHeightmap(const ea::vector<float>& heights, const std::str
     obj["numPatchesY"] = numPatches.y_;
     obj["patchWorldOriginX"] = patchWorldOrigin.x_;
     obj["patchWorldOriginY"] = patchWorldOrigin.y_;
-
+    obj["nDataValues"] = heights.size();
     obj["data"] = json::Array();
 
     for (auto v : heights)
     {
-        obj["data"].append(v);
+        if (!Math::IsNegInfinite(v))
+            obj["data"].append(v);
+        else
+            obj["data"].append("-Infinity");
     }
 
     std::ofstream out(filename);
@@ -178,13 +181,14 @@ static void CreateTextHeightmap(const ea::vector<float>& heights, const std::str
     std::fstream output(filename, std::fstream::out);
     output << std::fixed << std::setprecision(6);
     output << "size: " << sizeX << " " << sizeY << std::endl;
-    output << "min_height: " << minHeight << std::endl;
-    output << "max_height: " << maxHeight << std::endl;
-    output << "num_vertices: " << numVertices << std::endl;
-    output << "patch_size: " << patchSize << std::endl;
-    output << "patch_world_size: " << patchWorldSize << std::endl;
-    output << "num_patches: " << numPatches << std::endl;
-    output << "patch_world_origin: " << patchWorldOrigin << std::endl;
+    output << "minHeight: " << minHeight << std::endl;
+    output << "maxHeight: " << maxHeight << std::endl;
+    output << "numVertices: " << numVertices << std::endl;
+    output << "patchSize: " << patchSize << std::endl;
+    output << "patchWorldSize: " << patchWorldSize << std::endl;
+    output << "numPatches: " << numPatches << std::endl;
+    output << "patchWorldOrigin: " << patchWorldOrigin << std::endl;
+    output << "nDataValues: " << heights.size() << std::endl;
 
     for (auto v : heights)
         output << v << std::endl;

@@ -24,6 +24,8 @@
 #include <Urho3DAll.h>
 #include <AB/ProtocolCodes.h>
 
+class HeightMap;
+
 class ClientPrediction : public LogicComponent
 {
     URHO3D_OBJECT(ClientPrediction, LogicComponent)
@@ -33,6 +35,8 @@ private:
     Vector3 serverPos_;
     uint8_t lastMoveDir_ = 0;
     uint8_t lastTurnDir_ = 0;
+    mutable SharedPtr<Terrain> terrain_;
+    mutable SharedPtr<HeightMap> heightMap_;
     AB::GameProtocol::CreatureState lastState_{ AB::GameProtocol::CreatureState::Idle };
     void UpdateMove(float timeStep, uint8_t direction, float speedFactor);
     void Move(float speed, const Vector3& amount);
@@ -44,6 +48,9 @@ private:
         return ((timeElapsed * 1000.0f) / baseSpeed) * speedFactor;
     }
     bool CheckCollision(const Vector3& pos);
+    float GetHeight(const Vector3& world) const;
+    Terrain* GetTerrain() const;
+    HeightMap* GetHeightMap() const;
 public:
     static void RegisterObject(Context* context);
 

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "WorldLevel.h"
 #include "ActorResourceBar.h"
 #include "AudioManager.h"
@@ -33,6 +32,7 @@
 #include "GameMenu.h"
 #include "GameMessagesWindow.h"
 #include "GuildWindow.h"
+#include "HeightMap.h"
 #include "InternalEvents.h"
 #include "InventoryWindow.h"
 #include "LevelManager.h"
@@ -380,6 +380,16 @@ void WorldLevel::CreateScene()
 
 void WorldLevel::SceneLoadingFinished()
 {
+    auto* cache = GetSubsystem<ResourceCache>();
+    auto* heightmapFile = cache->GetResource<JSONFile>("Scenes/" + mapName_ + ".xml.json");
+    if (heightmapFile)
+    {
+        auto* heightmap = scene_->CreateComponent<HeightMap>();
+        heightmap->LoadHeightmap(heightmapFile);
+        Terrain* terrain = scene_->GetComponent<Terrain>(true);
+        if (terrain)
+            heightmap->spacing_ = terrain->GetSpacing();
+    }
     InitModelAnimations();
 }
 

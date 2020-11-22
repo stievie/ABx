@@ -85,6 +85,58 @@ void CreateSceneAction::Execute()
     {
         std::cerr << "Error creating index.xml" << std::endl;
     }
+    if (!CreateClientHeightmap())
+    {
+        std::cerr << "Error creating client heightmap" << std::endl;
+    }
+}
+
+bool CreateSceneAction::CreateClientHeightmap()
+{
+    if (obstackles_.size() == 0)
+        return true;
+
+    std::string inputFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
+    std::string outFile = file_ + ".json";
+
+    std::cout << "Creating client heightmap " << outFile << std::endl;
+    std::stringstream ss;
+
+    ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "obj2hm"));
+    ss << " -c 1";
+    ss << " -W " << heightmapWidth_;
+    ss << " -H " << heightmapHeight_;
+    ss << " -nvx " << numVertices_.x_ << " -nvy " << numVertices_.y_;
+    ss << " -ps " << patchSize_;
+    ss << " -pwsx " << patchWorldSize_.x_ << " -pwsy " << patchWorldSize_.y_;
+    ss << " -npx " << numPatches_.x_ << " -npy " << numPatches_.y_;
+    ss << " -pwox " << patchWorldOrigin_.x_ << " -pwoy " << patchWorldOrigin_.y_;
+    if (!Math::IsNegInfinite(minHeight_) && !Math::IsInfinite(maxHeight_))
+    {
+        ss << " -minh " << minHeight_ << " -maxh " << maxHeight_;
+    }
+
+    ss << " -o " << Utils::EscapeArguments(outFile) << " ";
+    ss << Utils::EscapeArguments(inputFile) << " ";
+
+    const std::string cmdLine = ss.str();
+    std::cout << "Running commandline: " << cmdLine << std::endl;
+#ifdef AB_WINDOWS
+#if defined(UNICODE)
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring wcmdLine = converter.from_bytes(cmdLine);
+    System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
+#else
+    System::Process process(cmdLine);
+#endif
+    int exitCode = process.get_exit_status();
+    if (exitCode != 0)
+        return false;
+
+    return true;
 }
 
 bool CreateSceneAction::CopySceneFile()

@@ -22,6 +22,8 @@
 #pragma once
 
 #include <sstream>
+#include "MathUtils.h"
+#include <type_traits>
 
 namespace Math {
 
@@ -45,16 +47,28 @@ public:
         y_ = point.y_;
         return *this;
     }
+    // Negation
+    Point<T> operator -() const
+    {
+        return Point<T>(-x_, -y_);
+    }
 
     bool operator ==(const Point<T>& point) const
     {
-        return x_ == point.x_ && y_ == point.y_;
+        return Equals(point);
     }
     bool operator !=(const Point<T>& point) const
     {
-        return x_ != point.x_ || y_ != point.y_;
+        return !Equals(point);
     }
 
+    bool Equals(const Point<T>& point)
+    {
+        if constexpr (std::is_floating_point<T>::value)
+            return Equals<T>(x_, point.x_) && Equals<T>(y_, point.y_);
+        else
+            return x_ == point.x_ && y_ == point.y_;
+    }
     void Offset(T x, T y)
     {
         x_ += x;

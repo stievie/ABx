@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,38 +20,87 @@
  */
 
 #include "HeightMap.h"
-#include "MathUtils.h"
-#include "Sphere.h"
-#include "BoundingBox.h"
-#include "ConvexHull.h"
-#include "Shape.h"
-#include <sa/Assert.h>
 
-namespace Math {
+void HeightMap::RegisterObject(Context* context)
+{
+    context->RegisterFactory<HeightMap>();
+}
 
-HeightMap::HeightMap() :
-    patchSize_(0),
-    minHeight_(std::numeric_limits<float>::max()),
-    maxHeight_(std::numeric_limits<float>::lowest())
+HeightMap::HeightMap(Context* context) :
+    Component(context)
 {
     inverseMatrix_ = matrix_.Inverse();
 }
 
-void HeightMap::ProcessData()
+HeightMap::~HeightMap() = default;
+
+void HeightMap::LoadHeightmap(JSONFile* file)
 {
-    const unsigned points = static_cast<unsigned>(numVertices_.x_ * numVertices_.y_);
-
-    const Vector3 localAabbMin(0.0f, minHeight_, 0.0f);
-    const Vector3 localAabbMax((float)numVertices_.x_, maxHeight_, (float)numVertices_.y_);
-    const Vector3 halfExtends = (localAabbMax - localAabbMin) * 0.5f;
-
-    boundingBox_.min_ = -halfExtends;
-    boundingBox_.max_ = halfExtends;
+    const auto& root = file->GetRoot();
+    {
+        const auto& val = root.Get("maxHeight");
+        if (val.IsNumber())
+            maxHeight_ = val.GetFloat();
+    }
+    {
+        const auto& val = root.Get("minHeight");
+        if (val.IsNumber())
+            minHeight_ = val.GetFloat();
+    }
+    {
+        const auto& valx = root.Get("numPatchesX");
+        const auto& valy = root.Get("numPatchesY");
+        if (valx.IsNumber() && valy.IsNumber())
+            numPatches_ = { valx.GetInt(), valy.GetInt() };
+    }
+    {
+        const auto& valx = root.Get("numVerticesX");
+        const auto& valy = root.Get("numVerticesY");
+        if (valx.IsNumber() && valy.IsNumber())
+            numVertices_ = { valx.GetInt(), valy.GetInt() };
+    }
+    {
+        const auto& val = root.Get("patchSize");
+        if (val.IsNumber())
+            patchSize_ = val.GetInt();
+    }
+    {
+        const auto& valx = root.Get("patchWorldOriginX");
+        const auto& valy = root.Get("patchWorldOriginY");
+        if (valx.IsNumber() && valy.IsNumber())
+            patchWorldOrigin_ = { valx.GetFloat(), valy.GetFloat() };
+    }
+    {
+        const auto& valx = root.Get("patchWorldSizeX");
+        const auto& valy = root.Get("patchWorldSizeY");
+        if (valx.IsNumber() && valy.IsNumber())
+            patchWorldSize_ = { valx.GetFloat(), valy.GetFloat() };
+    }
+    {
+        const auto& val = root.Get("nDataValues");
+        if (val.IsNumber())
+        {
+            heightData_ = new float[val.GetInt()];
+            const auto& valData = root.Get("data");
+            if (valData.IsArray())
+            {
+                const auto& dataArr = valData.GetArray();
+                for (unsigned i = 0; i < dataArr.Size(); ++i)
+                {
+                    const auto& dataVal = dataArr[i];
+                    if (dataVal.IsNumber())
+                        heightData_[i] = dataVal.GetFloat();
+                    else
+                        heightData_[i] = -M_INFINITY;
+                }
+            }
+        }
+    }
 }
 
 float HeightMap::GetRawHeight(int x, int z) const
 {
-    if (!heightData_.size())
+    if (!heightData_)
         return 0.0f;
     const int _x = Clamp(x, 0, numVertices_.x_ - 1);
     const int _z = Clamp(z, 0, numVertices_.y_ - 1);
@@ -79,7 +128,7 @@ Vector3 HeightMap::GetRawNormal(int x, int z) const
         Vector3(0.0f, up, -sSlope) +
         Vector3(swSlope, up, -swSlope) +
         Vector3(wSlope, up, 0.0f) +
-        Vector3(nwSlope, up, nwSlope)).Normal();
+        Vector3(nwSlope, up, nwSlope)).Normalized();
 }
 
 float HeightMap::GetHeight(const Vector3& world) const
@@ -110,12 +159,12 @@ float HeightMap::GetHeight(const Vector3& world) const
     }
 
     // 2nd Layer may have -inf for undefined heights
-    if (IsNegInfinite(h1) || IsNegInfinite(h2) || IsNegInfinite(h3))
-        return -M_INFINITE;
+    if (IsInf(h1) || IsInf(h2) || IsInf(h3))
+        return -M_INFINITY;
 
     const float h = h1 * (1.0f - xFrac - zFrac) + h2 * xFrac + h3 * zFrac;
 
-    return matrix_.Scaling().y_ * h + matrix_.Translation().y_;
+    return matrix_.Scale().y_ * h + matrix_.Translation().y_;
 }
 
 Vector3 HeightMap::GetNormal(const Vector3& world) const
@@ -142,91 +191,8 @@ Vector3 HeightMap::GetNormal(const Vector3& world) const
         n3 = GetRawNormal((unsigned)xPos, (unsigned)zPos + 1);
     }
 
-    const Vector3 n = (n1 * (1.0f - xFrac - zFrac) + n2 * xFrac + n3 * zFrac).Normal();
+    const Vector3 n = (n1 * (1.0f - xFrac - zFrac) + n2 * xFrac + n3 * zFrac).Normalized();
     return matrix_.Rotation() * n;
-}
-
-void HeightMap::SetMatrix(const Matrix4& matrix)
-{
-    matrix_ = matrix;
-    inverseMatrix_ = matrix_.Inverse();
-}
-
-bool HeightMap::Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const
-{
-    return b2.Collides(*this, velocity, move);
-}
-
-bool HeightMap::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
-{
-    return b2.Collides(*this, velocity, move);
-}
-
-bool HeightMap::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const
-{
-    return b2.Collides(*this, velocity, move);
-}
-
-bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
-{
-    // Can not collide Heightmap with Heightmap
-    ASSERT_FALSE();
-}
-
-Shape HeightMap::GetShape() const
-{
-    Shape s;
-    s.vertexData_.resize((size_t)numVertices_.x_ + (size_t)numVertices_.y_);
-    const float offsetX = ((float)numVertices_.x_ * 0.5f);
-    const float offsetY = ((float)numVertices_.y_ * 0.5f);
-    for (int z = 0; z < numVertices_.y_; ++z)
-    {
-        for (int x = 0; x < numVertices_.x_; ++x)
-        {
-            float fy = GetRawHeight(x, z);
-            float fx = static_cast<float>(x) - offsetX;
-            float fz = static_cast<float>(z) - offsetY;
-            s.vertexData_[(size_t)z * (size_t)numVertices_.y_ + (size_t)x] = {
-                fx * spacing_.x_,
-                fy * spacing_.y_,
-                fz * spacing_.z_
-            };
-        }
-    }
-
-    // Create index data
-    for (int z = 0; z < numVertices_.y_ - 1; ++z)
-    {
-        for (int x = 0; x < numVertices_.x_ - 1; ++x)
-        {
-            /*
-            Normal edge:
-            +----+----+
-            |\ 1 |\   |
-            | \  | \  |
-            |  \ |  \ |
-            | 2 \|   \|
-            +----+----+
-            */
-            {
-                // First triangle
-                int i1 = z * numVertices_.x_ + x;
-                int i2 = (z * numVertices_.x_) + x + 1;
-                int i3 = (z + 1) * numVertices_.x_ + (x + 1);
-                s.AddTriangle(i1, i2, i3);
-            }
-
-            {
-                // Second triangle
-                int i3 = (z + 1) * numVertices_.x_ + (x + 1);
-                int i2 = (z + 1) * numVertices_.x_ + x;
-                int i1 = z * numVertices_.x_ + x;
-                s.AddTriangle(i3, i2, i1);
-            }
-        }
-    }
-
-    return s;
 }
 
 IntVector2 HeightMap::WorldToHeightmap(const Vector3& world)
@@ -249,6 +215,4 @@ Vector3 HeightMap::HeightmapToWorld(const IntVector2& pixel)
     wPos.y_ = GetHeight(wPos);
 
     return wPos;
-}
-
 }

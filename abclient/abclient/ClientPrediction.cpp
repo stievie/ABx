@@ -22,6 +22,7 @@
 #include "ClientPrediction.h"
 #include "Player.h"
 #include "MathUtils.h"
+#include "HeightMap.h"
 #include <Urho3D/Physics/PhysicsWorld.h>
 #include <Urho3D/Physics/CollisionShape.h>
 #include <Urho3D/Physics/RigidBody.h>
@@ -129,6 +130,49 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     return true;
 }
 
+Terrain* ClientPrediction::GetTerrain() const
+{
+    if (!terrain_)
+        terrain_ = GetScene()->GetComponent<Terrain>(true);
+    return terrain_.Get();
+}
+
+HeightMap* ClientPrediction::GetHeightMap() const
+{
+    if (!heightMap_)
+        heightMap_ = GetScene()->GetComponent<HeightMap>();
+    return heightMap_.Get();
+
+}
+
+float ClientPrediction::GetHeight(const Vector3& world) const
+{
+    Terrain* terrain = GetTerrain();
+    if (!terrain)
+        return 0.0f;
+
+    float result = terrain->GetHeight(world);
+    HeightMap* hm = GetHeightMap();
+    if (!hm)
+        return result;
+    float result2 = hm->GetHeight(world);
+
+    if (IsInf(result2) || result2 < result)
+        return result;
+
+//    URHO3D_LOGINFOF("GetHeight() height1 %f, height2 %f", result, result2);
+
+    // If the difference is smaller than the height of the character it can't be the lower height
+    float diff12 = result2 - result;
+    if (diff12 < 1.7f)
+        return result2;
+
+    // Otherwise use the closer value to the current height
+    if (fabs(world.y_ - result) < fabs(world.y_ - result2))
+        return result;
+    return result2;
+}
+
 void ClientPrediction::Move(float speed, const Vector3& amount)
 {
     Player* player = node_->GetComponent<Player>();
@@ -138,11 +182,10 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
     const Vector3 a = amount * speed;
     const Vector3 v = m * a;
     pos += v;
-    Terrain* terrain = GetScene()->GetComponent<Terrain>(true);
-    if (terrain)
-        pos.y_ = terrain->GetHeight(pos);
-    if (!Equals(serverPos_.y_, std::numeric_limits<float>::max()) && (serverPos_.y_ > pos.y_))
-        pos.y_ = serverPos_.y_;
+
+    float height = GetHeight(pos);
+    if (!Equals(height, 0.0f))
+        pos.y_ = height;
 //    URHO3D_LOGINFOF("Move() pos %s", pos.ToString().CString());
 
     if (CheckCollision(pos))

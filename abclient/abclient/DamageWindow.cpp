@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "DamageWindow.h"
 #include "ServerEvents.h"
 #include "LevelManager.h"

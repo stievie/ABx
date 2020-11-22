@@ -292,6 +292,7 @@
     <ClCompile Include="EquipmentWindow.cpp" />
     <ClCompile Include="FadeWindow.cpp" />
     <ClCompile Include="FilePicker.cpp" />
+    <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="InputBox.cpp" />
     <ClCompile Include="ItemStatsUIElement.cpp" />
     <ClCompile Include="ItemUIElement.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="EquipmentWindow.h" />
     <ClInclude Include="FadeWindow.h" />
     <ClInclude Include="FilePicker.h" />
+    <ClInclude Include="HeightMap.h" />
     <ClInclude Include="InputBox.h" />
     <ClInclude Include="ItemStatsUIElement.h" />
     <ClInclude Include="ItemUIElement.h" />
