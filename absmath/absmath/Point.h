@@ -65,7 +65,7 @@ public:
     bool Equals(const Point<T>& point)
     {
         if constexpr (std::is_floating_point<T>::value)
-            return Equals<T>(x_, point.x_) && Equals<T>(y_, point.y_);
+            return Equals(x_, point.x_) && Equals(y_, point.y_);
         else
             return x_ == point.x_ && y_ == point.y_;
     }
