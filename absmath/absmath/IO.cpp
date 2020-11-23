@@ -366,6 +366,8 @@ bool LoadUrhoModel(const std::string& filename, Math::Shape& shape)
     unsigned numVertexBuffers = 0;
     input.read((char*)&numVertexBuffers, sizeof(unsigned));
 
+    // We support only 1 vertex buffer. In the Blender exporter uncheck
+    // "One vertex buffer per object"
     if (numVertexBuffers != 1)
     {
         return false;

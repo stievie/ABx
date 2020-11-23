@@ -27,7 +27,7 @@
 
 namespace Math {
 
-bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc)
+bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc, float epsilon)
 {
     const Vector3 v1 = (point - pa).Normal();
     const Vector3 v2 = (point - pb).Normal();
@@ -41,7 +41,7 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
         acos(v2.DotProduct(v3)) +
         acos(v3.DotProduct(v1));
 
-    if (fabs(totalAngles - M_TWOPI) <= 0.005f)
+    if (fabs(totalAngles - M_TWOPI) <= epsilon)
         return true;
     return false;
 }
