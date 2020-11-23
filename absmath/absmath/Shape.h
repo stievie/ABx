@@ -120,7 +120,6 @@ public:
     }
     /// Check if the triangle face points outside. This only depends on the order of the points.
     bool IsFacingOutside(const ea::array<Vector3, 3>& triangle) const;
-    Vector3 GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const;
     Vector3 GetClosestPointOnTriangle(size_t i, const Vector3& pos) const;
     float GetDistanceToTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const;
     float GetDistanceToTriangle(size_t i, const Vector3& pos) const;

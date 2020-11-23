@@ -83,7 +83,7 @@ ea::vector<float> CreateHeightMapFromMesh(const Math::Shape& shape,
             for (int x = minTriangleX; x < maxTriangleX; ++x)
             {
                 // Get interpolated Y
-                const Math::Vector3 pointY = shape.GetClosestPointOnTriangle({ triangle[0], triangle[1], triangle[2] }, { (float)x, triangle[0].y_, (float)y });
+                const Math::Vector3 pointY = Math::GetClosestPointOnTriangle({ triangle[0], triangle[1], triangle[2] }, { (float)x, triangle[0].y_, (float)y });
                 const Math::Vector3 point = { (float)x, pointY.y_, (float)y };
                 if (Math::IsPointInTriangle(point, triangle[0], triangle[1], triangle[2]))
                 {

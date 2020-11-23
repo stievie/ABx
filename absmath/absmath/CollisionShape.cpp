@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "CollisionShape.h"
 #include "VectorMath.h"
 #include <algorithm>
@@ -51,7 +50,7 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
     const Sphere sphere(source, 1.0f);
     const BoundingBox bb(source - 1.0f, source + 1.0f);
 
-    for (unsigned i = 0; i < shape.GetCount(); i += 3)
+    for (size_t i = 0; i < shape.GetCount(); i += 3)
     {
         // One face world coordinates
         const Vector3 A = shape.GetVertex(i);
@@ -94,7 +93,7 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
         if (!IsPointInTriangle(intersectionPoint, p1, p2, p3))
         {
-            const Vector3 polyPoint = GetClosestPointOnTriangle(p1, p2, p3, intersectionPoint);
+            const Vector3 polyPoint = GetClosestMatchingPointOnTriangle(p1, p2, p3, intersectionPoint);
             // PolyPoint -> colliding object
             const Ray ray(polyPoint, -manifold.normalizedVelocity);
             float dist = ray.HitDistance(sphere);

@@ -24,6 +24,7 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include <sa/Iteration.h>
+#include <eastl.hpp>
 
 namespace Math {
 
@@ -38,12 +39,17 @@ enum class PointClass
 bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& pb, const Vector3& pc, float epsilon = 0.005f);
 // Get closest point on line segment
 Vector3 GetClosestPointOnLine(const Vector3& a, const Vector3& b, const Vector3& p);
-Vector3 GetClosestPointOnTriangle(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& p);
+// Get the triangle point that is closest to p
+// \return Either a, b or c
+Vector3 GetClosestMatchingPointOnTriangle(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& p);
+// Find a point inside the triangle that is closest to pos
+// \return A new point that is close to pos and is inside the triangle
+Vector3 GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos);
 PointClass GetPointClass(const Vector3& point, const Vector3& origin, const Vector3& normal);
 /// Get face normal vector.
 Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p3);
 /// Make CCW -> CW and vice versa
-void ReverseOrder(std::array<Vector3, 3>& triangle);
+void ReverseOrder(ea::array<Vector3, 3>& triangle);
 Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance);
 bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& center);
 
