@@ -25,6 +25,8 @@
 #include "Game.h"
 #include "Script.h"
 
+//#define DEBUG_COLLISION
+
 namespace Game {
 
 void Projectile::RegisterLua(kaguya::State& state)
@@ -121,39 +123,28 @@ void Projectile::SetTarget(ea::shared_ptr<Actor> target)
     moveComp_->HeadTo(targetPos_);
     moveComp_->directionSet_ = true;
 
-    distance_ = currentDistance_ = GetPosition().Distance(targetPos_);
+    startDistance_ = minDistance_ = GetPosition().DistanceXZ(targetPos_);
+    float dist = GetPosition().Distance(targetPos_);
 
-    bool obstructed = false;
     ea::vector<GameObject*> objects;
     const auto& origin = GetPosition();
     const auto direction = targetPos_ - origin;
-    if (Raycast(objects, origin, direction, distance_))
+    if (Raycast(objects, origin, direction, dist))
     {
-#ifdef DEBUG_COLLISION
-        GameObject* obstructedBy = nullptr;
-#endif
         // The target is also in this list
         for (const auto* o : objects)
         {
             if (o->id_ != target->id_)
             {
-                obstructed = true;
 #ifdef DEBUG_COLLISION
-                obstructedBy = const_cast<GameObject*>(o);
+                LOG_DEBUG << "Obstructed by " << *o << std::endl;
 #endif
+                SetError(AB::GameProtocol::AttackError::TargetObstructed);
                 break;
             }
         }
-#ifdef DEBUG_COLLISION
-        if (obstructed)
-            LOG_DEBUG << "Obstructed by " << *obstructedBy << std::endl;
-#endif
     }
 
-    if (obstructed)
-    {
-        SetError(AB::GameProtocol::AttackError::TargetObstructed);
-    }
     started_ = DoStart();
     if (started_)
     {
@@ -194,23 +185,35 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         Remove();
         return;
     }
-    if (auto target = target_.lock())
+    auto target = target_.lock();
+    if (!target)
+    {
+        Remove();
+        return;
+
+    }
+
+    if (target->moveComp_->IsMoving())
     {
         if (targetMoveDir_ == target->moveComp_->moveDir_)
         {
             // If the target does not change direction we follow him.
             // Target can only dodge when changing the direction after we launched.
-            const float newDist = GetPosition().Distance(targetPos_);
+            const float newDist = GetPosition().DistanceXZ(targetPos_);
             if (newDist > 2.0f)
             {
                 targetPos_ = target->GetPosition() + BodyOffset;
-                currentDistance_ = newDist;
+                minDistance_ = newDist;
             }
+        }
+        else
+        {
+            SetError(AB::GameProtocol::AttackError::TargetDodge);
         }
     }
 
     moveComp_->StoreOldPosition();
-    if (currentDistance_ > 2.0f)
+    if (minDistance_ > 2.0f)
     {
         moveComp_->HeadTo(targetPos_);
         moveComp_->directionSet_ = true;
@@ -219,10 +222,9 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     moveComp_->Move(speed, Math::Vector3::UnitZ);
     // Adjust Y, also try to make a somewhat realistic trajectory
-    const Math::Vector3 curPosOrigY = { transformation_.position_.x_, startPos_.y_, transformation_.position_.z_ };
-    const float f = 1.0f - (curPosOrigY.Distance(targetPos_) / distance_);
+    const float f = 1.0f - (minDistance_ / startDistance_);
     transformation_.position_.y_ = Math::Lerp(startPos_.y_, targetPos_.y_, f) +
-        (sinf(f * Math::M_PIF) * ((distance_ / 10.0f) / speed));
+        (sinf(f * Math::M_PIF) * ((startDistance_ / 10.0f) / speed));
 
     const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);
@@ -230,33 +232,24 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     if (item_)
         item_->Update(timeElapsed);
 
-    auto source = source_.lock();
-    if (auto target = target_.lock())
+    const float dist = GetPosition().DistanceXZ(targetPos_);
+    if (error_ == AB::GameProtocol::AttackError::TargetDodge)
     {
-        const float dist = GetPosition().Distance(targetPos_);
-        if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 10.0f)
-        {
-            // We may not really collide because of the low game update rate, so let's
-            // approximate if we would collide
-            if (error_ == AB::GameProtocol::AttackError::None)
-                CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
-        }
-        else if (dist < currentDistance_)
-            currentDistance_ = dist;
-        else if (dist > currentDistance_)
-        {
-            SetError(AB::GameProtocol::AttackError::TargetDodge);
-        }
-        else if (dist > distance_ * 2.0f)
-        {
-            if (error_ == AB::GameProtocol::AttackError::None)
-                SetError(AB::GameProtocol::AttackError::TargetMissed);
-            Remove();
-        }
+        Remove();
     }
-    else
+    else if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 5.0f)
     {
-        // Target gone
+        // We may not really collide because of the low game update rate, so let's
+        // approximate if we would collide
+        if (error_ == AB::GameProtocol::AttackError::None)
+            CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
+    }
+    else if (dist < minDistance_)
+        minDistance_ = dist;
+    else if (dist > startDistance_)
+    {
+        if (error_ == AB::GameProtocol::AttackError::None)
+            SetError(AB::GameProtocol::AttackError::TargetMissed);
         Remove();
     }
 }

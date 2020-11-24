@@ -36,7 +36,7 @@ class Item;
 class Projectile final : public Actor
 {
 private:
-    static const uint32_t DEFAULT_LIFETIME = 1000;
+    static const uint32_t DEFAULT_LIFETIME = 5000;
     ea::unique_ptr<Item> item_;
     enum Function : uint32_t
     {
@@ -51,8 +51,8 @@ private:
     Math::Vector3 startPos_;
     Math::Vector3 targetPos_;
     uint32_t targetMoveDir_{ AB::GameProtocol::MoveDirectionNone };
-    float distance_{ std::numeric_limits<float>::max() };
-    float currentDistance_{ std::numeric_limits<float>::max() };
+    float startDistance_{ std::numeric_limits<float>::max() };
+    float minDistance_{ std::numeric_limits<float>::max() };
     ea::weak_ptr<Actor> source_;
     ea::weak_ptr<Actor> target_;
     bool started_{ false };
