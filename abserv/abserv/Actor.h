@@ -99,6 +99,7 @@ private:
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
+    void _LuaSetAttackError(int error);
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     std::vector<Actor*> _LuaGetAlliesInRange(Ranges range);
     std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);
