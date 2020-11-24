@@ -121,17 +121,7 @@ bool CreateSceneAction::CreateClientHeightmap()
 
     const std::string cmdLine = ss.str();
     std::cout << "Running commandline: " << cmdLine << std::endl;
-#ifdef AB_WINDOWS
-#if defined(UNICODE)
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring wcmdLine = converter.from_bytes(cmdLine);
-    System::Process process(wcmdLine);
-#else
     System::Process process(cmdLine);
-#endif
-#else
-    System::Process process(cmdLine);
-#endif
     int exitCode = process.get_exit_status();
     if (exitCode != 0)
         return false;
@@ -243,17 +233,7 @@ bool CreateSceneAction::SaveObstaclesHm()
 
     const std::string cmdLine = ss.str();
     std::cout << "Running commandline: " << cmdLine << std::endl;
-#ifdef AB_WINDOWS
-#if defined(UNICODE)
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring wcmdLine = converter.from_bytes(cmdLine);
-    System::Process process(wcmdLine);
-#else
     System::Process process(cmdLine);
-#endif
-#else
-    System::Process process(cmdLine);
-#endif
     int exitCode = process.get_exit_status();
     if (exitCode != 0)
         return false;
@@ -328,17 +308,7 @@ bool CreateSceneAction::CreateNavMesh()
 
     const std::string cmdLine = ss.str();
     std::cout << "Running commandline: " << cmdLine << std::endl;
-#ifdef AB_WINDOWS
-#if defined(UNICODE)
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring wcmdLine = converter.from_bytes(cmdLine);
-    System::Process process(wcmdLine);
-#else
     System::Process process(cmdLine);
-#endif
-#else
-    System::Process process(cmdLine);
-#endif
     int exitCode = process.get_exit_status();
     return exitCode == 0;
 }

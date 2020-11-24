@@ -319,15 +319,5 @@ void ServerApp::Spawn(const std::string& additionalArguments)
         ss << " " << additionalArguments;
 
     const std::string cmdLine = ss.str();
-#ifdef AB_WINDOWS
-#if defined(UNICODE)
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring wcmdLine = converter.from_bytes(cmdLine);
-    System::Process process(wcmdLine);
-#else
     System::Process process(cmdLine);
-#endif
-#else
-    System::Process process(cmdLine);
-#endif
 }

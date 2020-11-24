@@ -104,7 +104,7 @@ Process::id_type Process::open(const string_type& command, const string_type& pa
     }
 
     PROCESS_INFORMATION process_info;
-    STARTUPINFO startup_info;
+    STARTUPINFOA startup_info;
 
     ZeroMemory(&process_info, sizeof(PROCESS_INFORMATION));
 
@@ -134,7 +134,7 @@ Process::id_type Process::open(const string_type& command, const string_type& pa
     process_command += "\"";
 #endif
 
-    BOOL bSuccess = CreateProcess(nullptr,
+    BOOL bSuccess = CreateProcessA(nullptr,
         process_command.empty() ? nullptr : &process_command[0],
         nullptr, nullptr, TRUE, 0, nullptr,
         path.empty() ? nullptr : path.c_str(),

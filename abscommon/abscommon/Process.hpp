@@ -21,16 +21,11 @@ public:
 #if defined(AB_WINDOWS)
     typedef unsigned long id_type; //Process id type
     typedef void *fd_type;         //File descriptor type
-#   ifdef UNICODE
-    typedef std::wstring string_type;
-#   else
-    typedef std::string string_type;
-#   endif
 #elif defined(AB_UNIX)
     typedef pid_t id_type;
     typedef int fd_type;
-    typedef std::string string_type;
 #endif
+    typedef std::string string_type;
 private:
     class Data
     {
