@@ -139,7 +139,8 @@ void Projectile::SetTarget(ea::shared_ptr<Actor> target)
 #ifdef DEBUG_COLLISION
                 LOG_DEBUG << "Obstructed by " << *o << std::endl;
 #endif
-                SetError(AB::GameProtocol::AttackError::TargetObstructed);
+                // FIXME: TerrainPatch ray cast doesn't work great
+//                SetError(AB::GameProtocol::AttackError::TargetObstructed);
                 break;
             }
         }
@@ -243,6 +244,8 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         // approximate if we would collide
         if (error_ == AB::GameProtocol::AttackError::None)
             CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
+        else
+            Remove();
     }
     else if (dist < minDistance_)
         minDistance_ = dist;
@@ -272,8 +275,11 @@ void Projectile::OnCollide(GameObject* other)
         {
             if (other->id_ == spt->id_)
             {
-                if (HaveFunction(FunctionOnHitTarget))
-                    Lua::CallFunction(luaState_, "onHitTarget", other);
+                if (error_ == AB::GameProtocol::AttackError::None)
+                {
+                    if (HaveFunction(FunctionOnHitTarget))
+                        Lua::CallFunction(luaState_, "onHitTarget", other);
+                }
             }
         }
     }

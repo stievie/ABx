@@ -36,11 +36,11 @@ private:
     ea::weak_ptr<Terrain> owner_;
     Math::BoundingBox boundingBox_;
     Math::BoundingBox worldBoundingBox_;
-    float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const;
+    float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist, Math::Vector3& position) const;
 public:
     TerrainPatch(ea::shared_ptr<Terrain> owner,
-        const Math::Point<int>& offset,
-        const Math::Point<int>& size);
+        const Math::IntVector2& offset,
+        const Math::IntVector2& size);
     ~TerrainPatch() override = default;
 
     /// Process octree raycast.

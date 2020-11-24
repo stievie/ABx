@@ -22,11 +22,13 @@
 #include "TerrainPatch.h"
 #include "Terrain.h"
 
+//#define DEBUG_COLLISION
+
 namespace Game {
 
 TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
-    const Math::Point<int>& offset,
-    const Math::Point<int>& size) :
+    const Math::IntVector2& offset,
+    const Math::IntVector2& size) :
     GameObject(),
     owner_(owner),
     offset_(offset),
@@ -74,13 +76,13 @@ TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
         }
     }
     const Math::Vector3 bbMin(
-        transformation_.position_.x_ - (static_cast<float>(size.x_) / 2.0f),
+        transformation_.position_.x_ - (static_cast<float>(size.x_) * 0.5f),
         minY,
-        transformation_.position_.z_ - (static_cast<float>(size.y_) / 2.0f));
+        transformation_.position_.z_ - (static_cast<float>(size.y_) * 0.5f));
     const Math::Vector3 bbMax(
-        transformation_.position_.x_ + (static_cast<float>(size.x_) / 2.0f),
+        transformation_.position_.x_ + (static_cast<float>(size.x_) * 0.5f),
         maxY,
-        transformation_.position_.z_ + (static_cast<float>(size.y_) / 2.0f));
+        transformation_.position_.z_ + (static_cast<float>(size.y_) * 0.5f));
     boundingBox_ = Math::BoundingBox(bbMin, bbMax);
     // We can cache it because it does not change, i.e. a Terrain does not move.
     worldBoundingBox_ = boundingBox_.Transformed(owner->transformation_.GetMatrix());
@@ -98,7 +100,7 @@ TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
 #endif
 }
 
-float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const
+float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist, Math::Vector3& position) const
 {
     const float dt = 0.1f;
     const float mint = 0.001f;
@@ -110,8 +112,14 @@ float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& di
         const Math::Vector3 p = origin + direction * t;
         const float h = GetHeight(p);
         if (p.y_ < h)
+        {
+#ifdef DEBUG_COLLISION
+//            LOG_DEBUG << *this << ": h " << h << " @ " << p << std::endl;
+#endif
+            position = { p.x_, h, p.z_ };
             // Get the intersection distance
             return (t - dt + dt * (lh - ly) / (p.y_ - ly - h + lh));
+        }
         lh = h;
         ly = p.y_;
         t += dt;
@@ -131,28 +139,28 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
             0.0f,
             static_cast<float>(o->patchSize_));
 
-        const float distance = CastRay(localRay.origin_, localRay.direction_, max);
-        const Math::Vector3 normal = -query.ray_.direction_;
+        Math::Vector3 position;
+        const float distance = CastRay(localRay.origin_, localRay.direction_, max, position);
+        position = matrix * position;
 
         if (!Math::IsInfinite(distance) && (distance < query.maxDistance_))
         {
-#ifdef DEBUG_COLLISION
-            LOG_DEBUG << "Raycast hit " << *this << std::endl;
-#endif
             Math::RayQueryResult result;
-            result.position_ = query.ray_.origin_ + distance * query.ray_.direction_;
-            result.normal_ = normal;
+            result.position_ = position;
+            result.normal_ = -query.ray_.direction_;
             result.distance_ = distance;
             result.object_ = this;
             results.push_back(std::move(result));
+#ifdef DEBUG_COLLISION
+            LOG_DEBUG << "Raycast{" << localRay.origin_ << "->" << localRay.direction_ <<
+                "} Hit " << *this << " @ " << result.position_ << " distance " << distance << std::endl;
+#endif
         }
 #ifdef DEBUG_COLLISION
         else
         {
-            LOG_DEBUG << "Raycast no hit with " << *this << " distance = " << distance <<
-                " BB " << GetWorldBoundingBox() << std::endl;
-            if (!octant_)
-                LOG_WARNING << "Octand = null" << std::endl;
+//            LOG_DEBUG << "Raycast no hit with " << *this << " distance = " << distance <<
+//                " BB " << GetWorldBoundingBox() << std::endl;
         }
 #endif
     }
@@ -172,7 +180,7 @@ float TerrainPatch::GetHeight(const Math::Vector3& position) const
         // as regular game objects.
         return o->GetHeightMap()->GetHeight(pos);
     }
-    return 0.0f;
+    return -Math::M_INFINITE;
 }
 
 }
