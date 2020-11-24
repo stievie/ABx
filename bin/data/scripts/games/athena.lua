@@ -83,9 +83,10 @@ function onStart()
 
   local pdl = self:AddNpc("/scripts/actors/npcs/poison_dart_launcher.lua")
   if (pdl ~= nil) then
-    local x = -47.0
-    local z = 50.7
-    local y = self:GetTerrainHeight(x, z)
+    local x = -50.4
+    local z = 22.96
+    local y = 28.8
+--    local y = self:GetTerrainHeight(x, z)
     pdl:SetPosition({x, y, z})
     -- NPCs group mask 1 -> don't shoot at NPCs
     -- Foe with 2 -> shoot at players

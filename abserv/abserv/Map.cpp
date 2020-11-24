@@ -49,8 +49,8 @@ void Map::CreatePatches()
         for (int x = 0; x < terrain_->numPatches_.x_; ++x)
         {
             patches_.push_back(
-                ea::make_shared<TerrainPatch>(terrain_, Math::Point<int>(x, y),
-                    Math::Point<int>(terrain_->patchSize_, terrain_->patchSize_))
+                ea::make_shared<TerrainPatch>(terrain_, Math::IntVector2(x, y),
+                    Math::IntVector2(terrain_->patchSize_, terrain_->patchSize_))
             );
         }
     }
