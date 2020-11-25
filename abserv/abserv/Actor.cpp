@@ -86,6 +86,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("DecreaseMorale", &Actor::DecreaseMorale)
         .addFunction("GetDeaths", &Actor::GetDeaths)
         .addFunction("SetAttackError", &Actor::_LuaSetAttackError)
+        .addFunction("GetAttackError", &Actor::_LuaGetAttackError)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -456,7 +457,13 @@ void Actor::_LuaSetSelectedObject(GameObject* object)
 
 void Actor::_LuaSetAttackError(int error)
 {
-    attackComp_->SetAttackError(static_cast<AB::GameProtocol::AttackError>(error));
+    if (attackComp_->GetAttackError() == AB::GameProtocol::AttackError::None)
+        attackComp_->SetAttackError(static_cast<AB::GameProtocol::AttackError>(error));
+}
+
+int Actor::_LuaGetAttackError()
+{
+    return static_cast<int>(attackComp_->GetAttackError());
 }
 
 std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)

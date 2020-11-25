@@ -84,6 +84,7 @@ public:
         return nullptr;
     }
     void SetAttackError(AB::GameProtocol::AttackError error) { lastError_ = error; }
+    AB::GameProtocol::AttackError GetAttackError() const { return lastError_; }
 };
 
 }

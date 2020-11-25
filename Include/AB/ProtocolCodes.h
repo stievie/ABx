@@ -446,6 +446,7 @@ enum class AttackError : uint8_t
     TargetObstructed,
     TargetDodge,
     TargetMissed,
+    Blocked,
 };
 
 enum class PlayerErrorValue : uint8_t

@@ -100,6 +100,7 @@ private:
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
     void _LuaSetAttackError(int error);
+    int _LuaGetAttackError();
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     std::vector<Actor*> _LuaGetAlliesInRange(Ranges range);
     std::vector<Actor*> _LuaGetEnemiesInRange(Ranges range);

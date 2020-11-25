@@ -105,9 +105,10 @@ void AttackComp::Hit(Actor& target)
     }
     else
     {
+        // This may be set by an Effects script
         if (lastError_ == AB::GameProtocol::AttackError::None)
         {
-            // This may be set by an Effects script
+            // If can not get attacked and there is no attack error make it interrupted
             lastError_ = AB::GameProtocol::AttackError::Interrupted;
             owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
         }

@@ -26,6 +26,7 @@
 		<attribute name="Tail Column" value="1" />
 		<attribute name="Start Scale" value="0.2" />
 		<attribute name="End Scale" value="0.02" />
-		<attribute name="Start Color" value="0.1 1 0.1 1" />
+		<attribute name="Start Color" value="0.1 1 0.1 0.8" />
+		<attribute name="End Color" value="0.1 0.7 0.1 0" />
 	</component>
 </node>

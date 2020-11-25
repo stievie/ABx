@@ -275,6 +275,8 @@ String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
         return "Target dodged";
     case AB::GameProtocol::AttackError::TargetMissed:
         return "Target missed";
+    case AB::GameProtocol::AttackError::Blocked:
+        return "Blocked";
     case AB::GameProtocol::AttackError::Interrupted:
         // Happens when the attack is interrupted, due to some hex or something.
         // No need to show an error message

@@ -76,7 +76,6 @@ bool IONavMesh::Import(Navigation::NavigationMesh& asset, const std::string& fil
     dtNavMesh* mesh = dtAllocNavMesh();
     if (!mesh)
         return false;
-    asset.SetNavMesh(mesh);
 
     dtStatus status = mesh->init(&header.params);
     if (dtStatusFailed(status))
@@ -102,6 +101,7 @@ bool IONavMesh::Import(Navigation::NavigationMesh& asset, const std::string& fil
 
         mesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef, 0);
     }
+    asset.SetNavMesh(mesh);
 
     return true;
 }
