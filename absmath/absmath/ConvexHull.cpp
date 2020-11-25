@@ -30,6 +30,15 @@
 
 namespace Math {
 
+ConvexHull::ConvexHull(ConvexHull&& other) noexcept
+{
+    vertexData_ = std::move(other.vertexData_);
+    vertexCount_ = other.vertexCount_;
+    indexData_ = std::move(other.indexData_);
+    indexCount_ = other.indexCount_;
+    boundingBox_ = std::move(other.boundingBox_);
+}
+
 ConvexHull::ConvexHull(const ea::vector<Vector3>& vertices) :
     Shape()
 {

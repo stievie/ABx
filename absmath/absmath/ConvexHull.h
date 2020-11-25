@@ -40,10 +40,7 @@ public:
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
-    ConvexHull(ConvexHull&& other) noexcept :
-        Shape(other),
-        boundingBox_(std::move(other.boundingBox_))
-    {}
+    ConvexHull(ConvexHull&& other) noexcept;
     explicit ConvexHull(const ea::vector<Vector3>& vertices);
     ~ConvexHull() = default;
 

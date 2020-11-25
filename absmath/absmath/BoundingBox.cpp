@@ -432,7 +432,7 @@ bool BoundingBox::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
     return IsInside(b2) != Intersection::Outside;
 }
 
-bool BoundingBox::Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const
+bool BoundingBox::Collides(const TriangleMesh& b2, const Vector3&, Vector3&) const
 {
     return IsInside(b2) != Intersection::Outside;
 }

@@ -29,6 +29,15 @@
 
 namespace Math {
 
+TriangleMesh::TriangleMesh(TriangleMesh&& other) noexcept
+{
+    vertexData_ = std::move(other.vertexData_);
+    vertexCount_ = other.vertexCount_;
+    indexData_ = std::move(other.indexData_);
+    indexCount_ = other.indexCount_;
+    boundingBox_ = std::move(other.boundingBox_);
+}
+
 TriangleMesh::TriangleMesh(const Shape& other) :
     Shape(other)
 {

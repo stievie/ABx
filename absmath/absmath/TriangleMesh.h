@@ -36,10 +36,7 @@ public:
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
-    TriangleMesh(TriangleMesh&& other) noexcept :
-        Shape(other),
-        boundingBox_(std::move(other.boundingBox_))
-    {}
+    TriangleMesh(TriangleMesh&& other) noexcept;
     ~TriangleMesh() = default;
 
     TriangleMesh& operator= (const TriangleMesh& other)

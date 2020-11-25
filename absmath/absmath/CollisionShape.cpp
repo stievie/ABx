@@ -26,11 +26,78 @@
 #include "Ray.h"
 #include "Sphere.h"
 #include <iostream>
-#include "BoundingBox.h"
 
 namespace Math {
 
 AbstractCollisionShape::~AbstractCollisionShape() = default;
+
+ea::unique_ptr<Math::AbstractCollisionShape> AbstractCollisionShape::GetTranformedShapePtr(const Matrix4& matrix) const
+{
+    switch (shapeType_)
+    {
+    case Math::ShapeType::BoundingBox:
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
+        return ea::make_unique<BBoxShape>(static_cast<const BBoxShape&>(*this), matrix);
+    case Math::ShapeType::Sphere:
+        using SphereShape = Math::CollisionShape<Math::Sphere>;
+        return ea::make_unique<SphereShape>(static_cast<const SphereShape&>(*this), matrix);
+    case Math::ShapeType::ConvexHull:
+        using HullShape = Math::CollisionShape<Math::ConvexHull>;
+        return ea::make_unique<HullShape>(static_cast<const HullShape&>(*this), matrix);
+    case Math::ShapeType::TriangleMesh:
+        using MeshShape = Math::CollisionShape<Math::TriangleMesh>;
+        return ea::make_unique<HullShape>(static_cast<const HullShape&>(*this), matrix);
+    case Math::ShapeType::HeightMap:
+        using HeightShape = Math::CollisionShape<Math::HeightMap>;
+        return ea::make_unique<HeightShape>(static_cast<const HeightShape&>(*this), matrix);
+    default:
+        ASSERT_FALSE();
+    }
+}
+
+bool AbstractCollisionShape::Collides(const AbstractCollisionShape& other, const Matrix4& transformation, const Vector3& velocity, Vector3& move) const
+{
+    switch (other.shapeType_)
+    {
+    case Math::ShapeType::BoundingBox:
+    {
+        using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
+        const BBoxShape& shape = static_cast<const BBoxShape&>(other);
+        const Math::BoundingBox bbox = shape.Object().Transformed(transformation);
+        return Collides(bbox, velocity, move);
+    }
+    case Math::ShapeType::Sphere:
+    {
+        using SphereShape = Math::CollisionShape<Math::Sphere>;
+        const SphereShape& shape = static_cast<const SphereShape&>(other);
+        const Math::Sphere sphere = shape.Object().Transformed(transformation);
+        return Collides(sphere, velocity, move);
+    }
+    case Math::ShapeType::ConvexHull:
+    {
+        using HullShape = Math::CollisionShape<Math::ConvexHull>;
+        const HullShape& shape = static_cast<const HullShape&>(other);
+        const Math::ConvexHull hull = shape.Object().Transformed(transformation);
+        return Collides(hull, velocity, move);
+    }
+    case Math::ShapeType::TriangleMesh:
+    {
+        using MeshShape = Math::CollisionShape<Math::TriangleMesh>;
+        const MeshShape& shape = static_cast<const MeshShape&>(other);
+        const Math::TriangleMesh mesh = shape.Object().Transformed(transformation);
+        return Collides(mesh, velocity, move);
+        break;
+    }
+    case Math::ShapeType::HeightMap:
+    {
+        using HeightShape = Math::CollisionShape<Math::HeightMap>;
+        const HeightShape& shape = static_cast<const HeightShape&>(other);
+        return Collides(shape.Object(), velocity, move);
+    }
+    default:
+        ASSERT_FALSE();
+    }
+}
 
 bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matrix4& transformation) const
 {

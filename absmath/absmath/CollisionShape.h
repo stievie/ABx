@@ -24,16 +24,15 @@
 #include "Vector3.h"
 #include "Matrix4.h"
 #include "MathDefs.h"
-#include "BoundingBox.h"
-#include "Sphere.h"
-#include "HeightMap.h"
-#include "ConvexHull.h"
 #include "Shape.h"
-#include "TriangleMesh.h"
 #include <eastl.hpp>
 #include <limits>
 #include <sa/Assert.h>
 #include <sa/Compiler.h>
+#include "BoundingBox.h"
+#include "HeightMap.h"
+#include "ConvexHull.h"
+#include "TriangleMesh.h"
 
 namespace Math {
 
@@ -71,11 +70,19 @@ public:
         shapeType_(type)
     {}
     virtual ~AbstractCollisionShape();
+    /// Create a transformed version. Requires that the wrapped class has a copy constructor.
+    ea::unique_ptr<Math::AbstractCollisionShape> GetTranformedShapePtr(const Matrix4& matrix) const;
 
     /// AABB
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
     virtual BoundingBox GetBoundingBox() const = 0;
 
+    // Check for collision
+    // \param[in] other The other object
+    // \param[in] transformation The transformation of the other object
+    // \param[in] velocity Our velocity
+    // \param[out] move May return some position to avoid collision
+    bool Collides(const AbstractCollisionShape& other, const Matrix4& transformation, const Vector3& velocity, Vector3& move) const;
     virtual bool Collides(const Matrix4& transformation, const BoundingBox& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;

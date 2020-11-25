@@ -210,7 +210,6 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
                     }
                     else if (collShape == "TriangleMesh"_Hash)
                     {
-                        // TODO: Check this
                         if (model)
                         {
 #ifdef DEBUG_COLLISION
