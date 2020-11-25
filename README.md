@@ -4,9 +4,13 @@
 
 Ancient Greece Multiplayer Online RPG.
 
-https://devtube.dev-wiki.de/video-channels/trill_channel/videos
+Videos: https://devtube.dev-wiki.de/video-channels/trill_channel/videos
 
-https://www.gamedev.net/projects/1587-abx
+Project page: https://www.gamedev.net/projects/1587-abx
+
+Blog: https://www.gamedev.net/blogs/blog/3042-trill41/
+
+Alternative repository: https://codeberg.org/trill/ABx
 
 ## License
 
