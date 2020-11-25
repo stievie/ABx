@@ -27,6 +27,7 @@
 #include "TerrainPatch.h"
 #include "Model.h"
 #include "Game.h"
+#include <absmath/TriangleMesh.h>
 #include <eastl.hpp>
 #include <sa/StringTempl.h>
 #include <sa/StringHash.h>
@@ -209,7 +210,17 @@ static bool LoadSceneNode(Game::Map& map, const pugi::xml_node& node, const Math
                     }
                     else if (collShape == "TriangleMesh"_Hash)
                     {
-                        // TODO: This!
+                        // TODO: Check this
+                        if (model)
+                        {
+#ifdef DEBUG_COLLISION
+                            LOG_DEBUG << "Setting TriangleMesh collision shape for " << *object << std::endl;
+#endif
+                            object->SetCollisionShape(
+                                ea::make_unique<Math::CollisionShape<Math::TriangleMesh>>(
+                                    Math::ShapeType::TriangleMesh, *model->GetShape())
+                            );
+                        }
                     }
                     else if (collShape == "Box"_Hash && size != Math::Vector3::Zero)
                     {

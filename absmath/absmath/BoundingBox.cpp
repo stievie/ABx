@@ -22,6 +22,7 @@
 #include "BoundingBox.h"
 #include "HeightMap.h"
 #include "ConvexHull.h"
+#include "TriangleMesh.h"
 #include "Sphere.h"
 #include "Shape.h"
 #include "Gjk.h"
@@ -431,6 +432,11 @@ bool BoundingBox::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
     return IsInside(b2) != Intersection::Outside;
 }
 
+bool BoundingBox::Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const
+{
+    return IsInside(b2) != Intersection::Outside;
+}
+
 bool BoundingBox::Collides(const HeightMap& b2, const Vector3&, Vector3& move) const
 {
     Vector3 centerBottom = Center();
@@ -457,6 +463,15 @@ Intersection BoundingBox::IsInside(const HeightMap& shape) const
 }
 
 Intersection BoundingBox::IsInside(const ConvexHull& shape) const
+{
+    const Shape s = GetShape();
+
+    if (Gjk::StaticIntersects(s, shape))
+        return Intersection::Inside;
+    return Intersection::Outside;
+}
+
+Intersection BoundingBox::IsInside(const TriangleMesh& shape) const
 {
     const Shape s = GetShape();
 

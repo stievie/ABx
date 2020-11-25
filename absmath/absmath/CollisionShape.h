@@ -29,6 +29,7 @@
 #include "HeightMap.h"
 #include "ConvexHull.h"
 #include "Shape.h"
+#include "TriangleMesh.h"
 #include <eastl.hpp>
 #include <limits>
 #include <sa/Assert.h>
@@ -41,6 +42,7 @@ enum class ShapeType
     BoundingBox,
     Sphere,
     ConvexHull,
+    TriangleMesh,
     HeightMap,
 
     None = 99
@@ -78,11 +80,13 @@ public:
     virtual bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const TriangleMesh& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual bool Collides(const BoundingBox& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;
     virtual bool Collides(const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const TriangleMesh& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual Shape GetShape() const = 0;
     bool GetManifold(CollisionManifold&, const Matrix4& transformation) const;
@@ -150,6 +154,11 @@ public:
         ASSERT(object_);
         return object_->Transformed(transformation).Collides(other, velocity, move);
     }
+    bool Collides(const Matrix4& transformation, const TriangleMesh& other, const Vector3& velocity, Vector3& move) const override
+    {
+        ASSERT(object_);
+        return object_->Transformed(transformation).Collides(other, velocity, move);
+    }
 
     // Object must be transformed to world coordinates
     bool Collides(const BoundingBox& other, const Vector3& velocity, Vector3& move) const override
@@ -168,6 +177,11 @@ public:
         return object_->Collides(other, velocity, move);
     }
     bool Collides(const ConvexHull& other, const Vector3& velocity, Vector3& move) const override
+    {
+        ASSERT(object_);
+        return object_->Collides(other, velocity, move);
+    }
+    bool Collides(const TriangleMesh& other, const Vector3& velocity, Vector3& move) const override
     {
         ASSERT(object_);
         return object_->Collides(other, velocity, move);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,27 +27,22 @@
 
 namespace Math {
 
-class HeightMap;
-class TriangleMesh;
-
-class ConvexHull : public Shape
+class TriangleMesh : public Shape
 {
-private:
-    void BuildHull(const ea::vector<Vector3>& vertices);
 public:
-    ConvexHull() = default;
-    ConvexHull(const ConvexHull& other) :
+    TriangleMesh() = default;
+    TriangleMesh(const Shape& other);
+    TriangleMesh(const TriangleMesh& other) :
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
-    ConvexHull(ConvexHull&& other) noexcept :
+    TriangleMesh(TriangleMesh&& other) noexcept :
         Shape(other),
         boundingBox_(std::move(other.boundingBox_))
     {}
-    explicit ConvexHull(const ea::vector<Vector3>& vertices);
-    ~ConvexHull() = default;
+    ~TriangleMesh() = default;
 
-    ConvexHull& operator= (const ConvexHull& other)
+    TriangleMesh& operator= (const TriangleMesh& other)
     {
         if (this != &other)
         {
@@ -58,7 +53,7 @@ public:
         }
         return *this;
     }
-    ConvexHull& operator= (ConvexHull&& other) noexcept
+    TriangleMesh& operator= (TriangleMesh&& other) noexcept
     {
         vertexData_ = std::move(other.vertexData_);
         vertexCount_ = other.vertexCount_;
@@ -73,7 +68,7 @@ public:
         return boundingBox_;
     }
     Intersection IsInside(const Vector3& point) const;
-    ConvexHull Transformed(const Matrix4& transform) const;
+    TriangleMesh Transformed(const Matrix4& transform) const;
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;

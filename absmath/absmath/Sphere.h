@@ -31,6 +31,7 @@ class ConvexHull;
 class Shape;
 class BoundingBox;
 class Matrix4;
+class TriangleMesh;
 
 class Sphere
 {
@@ -110,6 +111,7 @@ public:
     }
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3&) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
     /// Test if a point is inside.

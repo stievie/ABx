@@ -26,6 +26,7 @@
 #include "Gjk.h"
 #include "HeightMap.h"
 #include "BoundingBox.h"
+#include "TriangleMesh.h"
 #include "Matrix4.h"
 
 namespace Math {
@@ -176,6 +177,11 @@ bool Sphere::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 }
 
 bool Sphere::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const
+{
+    return b2.Collides(*this, velocity, move);
+}
+
+bool Sphere::Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const
 {
     return b2.Collides(*this, velocity, move);
 }

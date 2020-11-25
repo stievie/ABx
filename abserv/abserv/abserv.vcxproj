@@ -192,6 +192,7 @@
     <ClInclude Include="IOAsset.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOHeightMap.h" />
+    <ClInclude Include="IOScene.h" />
     <ClInclude Include="IOScript.h" />
     <ClInclude Include="IOMail.h" />
     <ClInclude Include="IOMap.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestComp.h" />
     <ClInclude Include="ResourceComp.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneViewer.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="MailBox.h" />
@@ -335,6 +337,7 @@
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOHeightMap.cpp" />
+    <ClCompile Include="IOScene.cpp" />
     <ClCompile Include="IOScript.cpp" />
     <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IOMap.cpp" />
@@ -358,6 +361,7 @@
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestComp.cpp" />
     <ClCompile Include="ResourceComp.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneViewer.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="MailBox.cpp" />

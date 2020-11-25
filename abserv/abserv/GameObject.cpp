@@ -197,6 +197,9 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
         case Math::ShapeType::ConvexHull:
             using HullShape = Math::CollisionShape<Math::ConvexHull>;
             return ea::make_unique<HullShape>(static_cast<HullShape&>(*collisionShape_), transformation_.GetMatrix());
+        case Math::ShapeType::TriangleMesh:
+            using MeshShape = Math::CollisionShape<Math::TriangleMesh>;
+            return ea::make_unique<HullShape>(static_cast<HullShape&>(*collisionShape_), transformation_.GetMatrix());
         case Math::ShapeType::HeightMap:
             using HeightShape = Math::CollisionShape<Math::HeightMap>;
             return ea::make_unique<HeightShape>(static_cast<HeightShape&>(*collisionShape_), transformation_.GetMatrix());
@@ -266,6 +269,21 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
             {
 #if defined(DEBUG_COLLISION)
                 LOG_DEBUG << "ShapeTypeConvexHull: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
+#endif
+                if (callback(*other, move, transformationUpdated) != Iteration::Continue)
+                    goto leave_loop;
+            }
+            break;
+        }
+        case Math::ShapeType::TriangleMesh:
+        {
+            using MeshShape = Math::CollisionShape<Math::TriangleMesh>;
+            MeshShape* shape = static_cast<MeshShape*>(other->GetCollisionShape());
+            const Math::TriangleMesh mesh = shape->Object().Transformed(other->transformation_.GetMatrix());
+            if (myTransformedShape->Collides(mesh, velocity, move))
+            {
+#if defined(DEBUG_COLLISION)
+                LOG_DEBUG << "ShapeTypeTriangleMesh: this(" << *this << ") collides with that(" << *other << ")" << std::endl;
 #endif
                 if (callback(*other, move, transformationUpdated) != Iteration::Continue)
                     goto leave_loop;

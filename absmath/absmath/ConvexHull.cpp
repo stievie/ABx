@@ -25,6 +25,7 @@
 #include "Gjk.h"
 #include "Sphere.h"
 #include "HeightMap.h"
+#include "TriangleMesh.h"
 #include <cstring>
 
 namespace Math {
@@ -73,6 +74,13 @@ bool ConvexHull::Collides(const BoundingBox& b2, const Vector3&, Vector3&) const
 }
 
 bool ConvexHull::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
+{
+    if (Gjk::StaticIntersects(*this, b2))
+        return true;
+    return false;
+}
+
+bool ConvexHull::Collides(const TriangleMesh& b2, const Vector3&, Vector3&) const
 {
     if (Gjk::StaticIntersects(*this, b2))
         return true;

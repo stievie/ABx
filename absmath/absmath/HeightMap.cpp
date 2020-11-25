@@ -26,6 +26,7 @@
 #include "ConvexHull.h"
 #include "Shape.h"
 #include <sa/Assert.h>
+#include "TriangleMesh.h"
 
 namespace Math {
 
@@ -163,6 +164,11 @@ bool HeightMap::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3
 }
 
 bool HeightMap::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const
+{
+    return b2.Collides(*this, velocity, move);
+}
+
+bool HeightMap::Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const
 {
     return b2.Collides(*this, velocity, move);
 }

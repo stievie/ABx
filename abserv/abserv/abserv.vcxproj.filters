@@ -453,6 +453,12 @@
     <ClInclude Include="IOHeightMap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOScene.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -861,6 +867,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOHeightMap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOScene.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

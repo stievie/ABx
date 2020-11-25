@@ -36,6 +36,7 @@ class Shape;
 class Matrix4;
 class Plane;
 class Line;
+class TriangleMesh;
 
 class BoundingBox
 {
@@ -168,6 +169,7 @@ public:
     bool Collides(const Sphere& b2) const;
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
     /// Test if a point is inside.
@@ -206,6 +208,7 @@ public:
     }
     Intersection IsInside(const HeightMap& shape) const;
     Intersection IsInside(const ConvexHull& shape) const;
+    Intersection IsInside(const TriangleMesh& shape) const;
     Intersection IsInside(const Sphere& shape) const;
 
     /// Test if another bounding box is (partially) inside or outside.
