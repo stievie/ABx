@@ -28,30 +28,11 @@
 #include <pugixml.hpp>
 #include "TerrainPatch.h"
 #include <eastl.hpp>
+#include "Scene.h"
 
 namespace Game {
 
 class Game;
-
-struct SpawnPoint
-{
-    Math::Vector3 position;
-    Math::Quaternion rotation;
-    std::string group;
-    // equality comparison. doesn't modify object. therefore const.
-    bool operator==(const SpawnPoint& rhs) const
-    {
-        return (position == rhs.position && rotation == rhs.rotation);
-    }
-    inline bool Empty() const;
-};
-
-static const SpawnPoint EmtpySpawnPoint{ Math::Vector3::Zero, Math::Quaternion::Identity, "" };
-inline bool SpawnPoint::Empty() const
-{
-    return *this == EmtpySpawnPoint;
-}
-
 
 /// Holds all the map data, static objects, NavMesh.
 class Map
@@ -60,6 +41,7 @@ private:
     ea::weak_ptr<Game> game_;
     // TerrainPatches are also owned by the game
     ea::vector<ea::shared_ptr<TerrainPatch>> patches_;
+    SpawnPoint CorrectedSpanwPoint(const SpawnPoint& world) const;
 public:
     Map(ea::shared_ptr<Game> game);
     Map() = delete;
@@ -67,7 +49,7 @@ public:
 
     void CreatePatches();
     /// Return patch by index.
-    TerrainPatch* GetPatch(unsigned index) const;
+    TerrainPatch* GetPatch(size_t index) const;
     /// Return patch by patch coordinates.
     TerrainPatch* GetPatch(int x, int z) const;
     size_t GetPatchesCount() const
@@ -100,10 +82,10 @@ public:
 
     std::string name_;
     std::string directory_;
-    ea::vector<SpawnPoint> spawnPoints_;
     ea::shared_ptr<Navigation::NavigationMesh> navMesh_;
     ea::shared_ptr<Terrain> terrain_;
     ea::unique_ptr<Math::Octree> octree_;
+    ea::shared_ptr<Scene> scene_;
 };
 
 }

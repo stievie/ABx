@@ -56,7 +56,7 @@ void Map::CreatePatches()
     }
 }
 
-TerrainPatch* Map::GetPatch(unsigned index) const
+TerrainPatch* Map::GetPatch(size_t index) const
 {
     return index < patches_.size() ? patches_[index].get() : nullptr;
 }
@@ -66,7 +66,7 @@ TerrainPatch* Map::GetPatch(int x, int z) const
     if (x < 0 || x >= terrain_->numPatches_.x_ || z < 0 || z >= terrain_->numPatches_.y_)
         return nullptr;
     else
-        return GetPatch((unsigned)(z * terrain_->numPatches_.x_ + x));
+        return GetPatch((size_t)(z * terrain_->numPatches_.x_ + x));
 }
 
 void Map::AddGameObject(ea::shared_ptr<GameObject> object)
@@ -82,7 +82,9 @@ void Map::UpdateOctree(uint32_t)
 
 SpawnPoint Map::GetFreeSpawnPoint()
 {
-    return GetFreeSpawnPoint(spawnPoints_);
+    if (!scene_)
+        return EmtpySpawnPoint;
+    return GetFreeSpawnPoint(scene_->spawnPoints_);
 }
 
 SpawnPoint Map::GetFreeSpawnPoint(const std::string& group)
@@ -145,18 +147,20 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points)
             octree_->GetObjects(query);
             cleanObjects(result);
         }
-        return{ query.sphere_.center_, minPos.rotation, minPos.group };
+        return CorrectedSpanwPoint({ query.sphere_.center_, minPos.rotation, minPos.group });
     }
 }
 
 const SpawnPoint& Map::GetSpawnPoint(const std::string& group) const
 {
-    if (spawnPoints_.size() == 0)
+    if (!scene_)
         return EmtpySpawnPoint;
-    for (const auto& sp : spawnPoints_)
+    if (scene_->spawnPoints_.size() == 0)
+        return EmtpySpawnPoint;
+    for (const auto& sp : scene_->spawnPoints_)
     {
         if (sp.group.compare(group) == 0)
-            return sp;
+            return CorrectedSpanwPoint(sp);
     }
     return EmtpySpawnPoint;
 }
@@ -164,10 +168,10 @@ const SpawnPoint& Map::GetSpawnPoint(const std::string& group) const
 ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
 {
     ea::vector<SpawnPoint> result;
-    for (const auto& sp : spawnPoints_)
+    for (const auto& sp : scene_->spawnPoints_)
     {
         if (sp.group.compare(group) == 0)
-            result.push_back(sp);
+            result.push_back(CorrectedSpanwPoint(sp));
     }
     return result;
 }
@@ -182,6 +186,13 @@ float Map::GetTerrainHeight(const Math::Vector3& world) const
 void Map::UpdatePointHeight(Math::Vector3& world) const
 {
     world.y_ = GetTerrainHeight(world);
+}
+
+SpawnPoint Map::CorrectedSpanwPoint(const SpawnPoint& world) const
+{
+    SpawnPoint result = world;
+    result.position.y_ = GetTerrainHeight(result.position);
+    return result;
 }
 
 bool Map::FindPath(ea::vector<Math::Vector3>& dest,

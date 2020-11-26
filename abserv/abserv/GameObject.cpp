@@ -211,11 +211,9 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
                 std::endl;
 #endif
             if (callback(*other, move, transformationUpdated) != Iteration::Continue)
-                goto leave_loop;
+                break;
         }
     }
-
-leave_loop:;
 }
 
 const Utils::Variant& GameObject::GetVar(const std::string& name) const

@@ -29,6 +29,7 @@
 #include "Model.h"
 #include "IOModel.h"
 #include "IOScript.h"
+#include "IOScene.h"
 #include <abscommon/Utils.h>
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>
@@ -38,6 +39,7 @@ namespace IO {
 DataProvider::DataProvider()
 {
     // Add Importer
+    AddImporter<Game::Scene, IO::IOScene>();
     AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
     AddImporter<Game::Terrain, IO::IOTerrain>();
     AddImporter<Game::HeightMap, IO::IOHeightMap>();
