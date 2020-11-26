@@ -68,7 +68,7 @@ public:
     SpawnPoint GetFreeSpawnPoint();
     SpawnPoint GetFreeSpawnPoint(const std::string& group);
     SpawnPoint GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points);
-    const SpawnPoint& GetSpawnPoint(const std::string& group) const;
+    SpawnPoint GetSpawnPoint(const std::string& group) const;
     ea::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
 
     /// Find a path between world space points. Return non-empty list of points if successful.

@@ -36,20 +36,30 @@ ea::unique_ptr<Math::AbstractCollisionShape> AbstractCollisionShape::GetTranform
     switch (shapeType_)
     {
     case Math::ShapeType::BoundingBox:
+    {
         using BBoxShape = Math::CollisionShape<Math::BoundingBox>;
         return ea::make_unique<BBoxShape>(static_cast<const BBoxShape&>(*this), matrix);
+    }
     case Math::ShapeType::Sphere:
+    {
         using SphereShape = Math::CollisionShape<Math::Sphere>;
         return ea::make_unique<SphereShape>(static_cast<const SphereShape&>(*this), matrix);
+    }
     case Math::ShapeType::ConvexHull:
+    {
         using HullShape = Math::CollisionShape<Math::ConvexHull>;
         return ea::make_unique<HullShape>(static_cast<const HullShape&>(*this), matrix);
+    }
     case Math::ShapeType::TriangleMesh:
+    {
         using MeshShape = Math::CollisionShape<Math::TriangleMesh>;
-        return ea::make_unique<HullShape>(static_cast<const HullShape&>(*this), matrix);
+        return ea::make_unique<MeshShape>(static_cast<const MeshShape&>(*this), matrix);
+    }
     case Math::ShapeType::HeightMap:
+    {
         using HeightShape = Math::CollisionShape<Math::HeightMap>;
         return ea::make_unique<HeightShape>(static_cast<const HeightShape&>(*this), matrix);
+    }
     default:
         ASSERT_FALSE();
     }

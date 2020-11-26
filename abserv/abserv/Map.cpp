@@ -151,7 +151,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points)
     }
 }
 
-const SpawnPoint& Map::GetSpawnPoint(const std::string& group) const
+SpawnPoint Map::GetSpawnPoint(const std::string& group) const
 {
     if (!scene_)
         return EmtpySpawnPoint;
