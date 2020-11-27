@@ -66,7 +66,7 @@ bool TriangleMesh::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 
 bool TriangleMesh::Collides(const BoundingBox& b2, const Vector3&, Vector3&) const
 {
-    return Gjk::StaticIntersects(*this, b2.GetShape());
+    return b2.IsInside(*this) != Intersection::Outside;
 }
 
 bool TriangleMesh::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const

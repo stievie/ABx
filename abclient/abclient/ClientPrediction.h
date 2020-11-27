@@ -43,7 +43,7 @@ private:
     void UpdateTurn(float timeStep, uint8_t direction, float speedFactor);
     void Turn(float yAngle);
     void TurnAbsolute(float yAngle);
-    inline float GetSpeed(float timeElapsed, float baseSpeed, float speedFactor)
+    float GetSpeed(float timeElapsed, float baseSpeed, float speedFactor)
     {
         return ((timeElapsed * 1000.0f) / baseSpeed) * speedFactor;
     }

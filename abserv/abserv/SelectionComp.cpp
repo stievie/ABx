@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "SelectionComp.h"
 #include <AB/ProtocolCodes.h>
 #include "Actor.h"

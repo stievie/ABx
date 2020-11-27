@@ -60,7 +60,7 @@ public:
     { }
     ~MoveComp() = default;
 
-    inline float GetSpeed(uint32_t timeElapsed, float baseSpeed)
+    float GetSpeed(uint32_t timeElapsed, float baseSpeed)
     {
         return (static_cast<float>(timeElapsed) / baseSpeed) * speedFactor_;
     }

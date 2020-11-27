@@ -40,8 +40,8 @@ inline constexpr int PLAYER_MAX_SKILLS = 8;
 inline constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 
 // For client prediction these values are also needed by the client.
-inline constexpr float BASE_MOVE_SPEED = 200.0f;
-inline constexpr float BASE_TURN_SPEED = 2000.0f;
+inline constexpr float BASE_MOVE_SPEED = 170.0f;
+inline constexpr float BASE_TURN_SPEED = 1500.0f;
 
 // Max level a player can reach
 inline constexpr uint32_t LEVEL_CAP = 20;
@@ -104,7 +104,7 @@ inline constexpr float RANGE_SPEAR        = RANGE_AGGRO * 1.05f;
 inline constexpr float RANGE_TOUCH        = 1.5f;
 inline constexpr float RANGE_ADJECENT     = GetPercent(RANGE_BASE, 3.0f);
 inline constexpr float RANGE_VISIBLE      = RANGE_AGGRO;
-inline constexpr float RANGE_SELECT       = RANGE_COMPASS + 2.0f;
+inline constexpr float RANGE_SELECT       = RANGE_COMPASS * 2.0f;
 
 enum class Ranges : uint8_t
 {

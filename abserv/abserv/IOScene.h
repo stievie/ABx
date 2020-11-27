@@ -31,7 +31,7 @@ namespace IO {
 class IOScene final : public IOAssetImpl<Game::Scene>
 {
 private:
-    bool LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
+    static bool LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
 public:
     bool Import(Game::Scene& asset, const std::string& name) override;
 };

@@ -117,6 +117,9 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
     GameObject& other, const Math::Vector3& move,
     bool& updateTrans)
 {
+#ifdef DEBUG_COLLISION
+    LOG_DEBUG << owner_ << " colliding with " << other << std::endl;
+#endif
     if (owner_.CollisionMaskMatches(other.GetCollisionMask()))
     {
         // Don't move the character when the object actually does not collide,
@@ -158,7 +161,7 @@ void CollisionComp::ResolveCollisions()
 
         if (!isCollidingWithPlayers && (object->GetType() == AB::GameProtocol::GameObjectType::Player))
             return false;
-        if (auto* actor = To<Actor>(object))
+        if (const auto* actor = To<Actor>(object))
         {
             // Not colliding with dead actors
             if (actor->IsDead())

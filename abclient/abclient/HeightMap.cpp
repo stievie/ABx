@@ -104,7 +104,7 @@ float HeightMap::GetRawHeight(int x, int z) const
         return 0.0f;
     const int _x = Clamp(x, 0, numVertices_.x_ - 1);
     const int _z = Clamp(z, 0, numVertices_.y_ - 1);
-    const size_t offset = static_cast<size_t>(_z * numVertices_.x_ + _x);
+    const size_t offset = static_cast<size_t>((size_t)_z * (size_t)numVertices_.x_ + (size_t)_x);
     return heightData_[offset];
 }
 
