@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "IOMap.h"
 #include "DataProvider.h"
 #include <pugixml.hpp>
@@ -32,6 +31,8 @@
 #include <sa/StringTempl.h>
 #include <sa/StringHash.h>
 #include "Scene.h"
+
+//#define DEBUG_LOAD
 
 namespace IO {
 namespace IOMap {
@@ -49,6 +50,10 @@ static void CreateObjects(Game::Map& map)
         object->SetName(so->name);
         object->collisionMask_ = so->collisionMask;
         object->transformation_ = so->transformation;
+#ifdef DEBUG_LOAD
+        LOG_DEBUG << *object << ": Mask " << object->collisionMask_ <<
+            " Shape " << (int)so->collsionShapeType << " Transformation" << object->transformation_ << std::endl;
+#endif
         if (so->occludee != Game::SceneObject::Occlude::Unset)
             object->occludee_ = so->occludee == Game::SceneObject::Occlude::Yes;
         if (so->occluder != Game::SceneObject::Occlude::Unset)
@@ -68,6 +73,9 @@ static void CreateObjects(Game::Map& map)
                 ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(
                     Math::ShapeType::BoundingBox, bb)
             );
+#ifdef DEBUG_LOAD
+            LOG_DEBUG << *object << ": BB " << bb << std::endl;
+#endif
             break;
         }
         case Math::ShapeType::ConvexHull:
@@ -75,6 +83,9 @@ static void CreateObjects(Game::Map& map)
                 ea::make_unique<Math::CollisionShape<Math::ConvexHull>>(
                     Math::ShapeType::ConvexHull, so->model->GetShape()->vertexData_)
             );
+#ifdef DEBUG_LOAD
+            LOG_DEBUG << *object << ": ConvexHull " << std::endl;
+#endif
             break;
         case Math::ShapeType::HeightMap:
             break;
@@ -86,6 +97,9 @@ static void CreateObjects(Game::Map& map)
                 ea::make_unique<Math::CollisionShape<Math::Sphere>>(
                     Math::ShapeType::Sphere, sphere)
             );
+#ifdef DEBUG_LOAD
+            LOG_DEBUG << *object << ": Sphere " << sphere << std::endl;
+#endif
             break;
         }
         case Math::ShapeType::TriangleMesh:
@@ -93,6 +107,9 @@ static void CreateObjects(Game::Map& map)
                 ea::make_unique<Math::CollisionShape<Math::TriangleMesh>>(
                     Math::ShapeType::TriangleMesh, *so->model->GetShape())
             );
+#ifdef DEBUG_LOAD
+            LOG_DEBUG << *object << ": TriangleMesh " << std::endl;
+#endif
             break;
         default:
             break;

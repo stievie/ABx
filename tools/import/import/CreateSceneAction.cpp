@@ -608,11 +608,16 @@ bool CreateSceneAction::LoadScene()
         std::cerr << "Error loading file " << file_ << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node sceneNode = doc.child("scene");
+    pugi::xml_node sceneNode = doc.child("scene");
     if (!sceneNode)
     {
-        std::cerr << "File " << file_ << " does not have a scene node" << std::endl;
-        return false;
+        std::cerr << "WARNING: There is no scene node in file " << file_ << std::endl;
+        sceneNode = doc.child("node");
+        if (!sceneNode)
+        {
+            std::cerr << "File " << file_ << " does not have a scene node" << std::endl;
+            return false;
+        }
     }
     for (pugi::xml_node_iterator it = sceneNode.begin(); it != sceneNode.end(); ++it)
     {

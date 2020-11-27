@@ -24,6 +24,9 @@
 #include <sa/StringTempl.h>
 #include <sa/StringHash.h>
 #include <absmath/Sphere.h>
+#include <abscommon/Profiler.h>
+
+//#define DEBUG_LOAD
 
 namespace IO {
 
@@ -94,6 +97,7 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
     Math::Vector3 size = Math::Vector3::One;
     Math::Vector3 offset = Math::Vector3::Zero;
     Math::Quaternion offsetRot = Math::Quaternion::Identity;
+    Math::ShapeType collShapeType = Math::ShapeType::None;
     // If we have a rigid body collide by default with everything. That's also Urho3Ds default.
     uint32_t colisionMask = 0xFFFFFFFF;
     for (const auto& comp : node.children("component"))
@@ -109,6 +113,13 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
             object->name = name;
             object->collisionMask = colisionMask;
             object->transformation = transform;
+            object->size = size;
+            object->offset = offset;
+            object->offsetRot = offsetRot;
+            object->collsionShapeType = collShapeType;
+#ifdef DEBUG_LOAD
+            LOG_DEBUG << name << ": Shape " << (int)object->collsionShapeType << ", Mask " << object->collisionMask << std::endl;
+#endif
             {
                 objectPtr = object.get();
                 asset.objects_.push_back(std::move(object));
@@ -152,59 +163,60 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
         case "CollisionShape"_Hash:
         {
             size_t collShape = "Box"_Hash;
-            if (object)
+            for (const auto& attr : comp.children())
             {
-                for (const auto& attr : comp.children())
+                const pugi::xml_attribute& nameAttr = attr.attribute("name");
+                const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
+                const pugi::xml_attribute& valueAttr = attr.attribute("value");
+                const size_t valueHash = sa::StringHashRt(valueAttr.as_string());
+                switch (nameHash)
                 {
-                    const pugi::xml_attribute& nameAttr = attr.attribute("name");
-                    const size_t nameHash = sa::StringHashRt(nameAttr.as_string());
-                    const pugi::xml_attribute& valueAttr = attr.attribute("value");
-                    const size_t valueHash = sa::StringHashRt(valueAttr.as_string());
-                    switch (nameHash)
-                    {
-                    case "Size"_Hash:
-                        size = Math::Vector3(valueAttr.as_string());
-                        break;
-                    case "Offset Position"_Hash:
-                        offset = Math::Vector3(valueAttr.as_string());
-                        break;
-                    case "Offset Rotation"_Hash:
-                        offsetRot = Math::Quaternion(valueAttr.as_string()).Normal();
-                        break;
-                    case "Shape Type"_Hash:
-                    {
-                        collShape = valueHash;
-                    }
-                    }
+                case "Size"_Hash:
+                    size = Math::Vector3(valueAttr.as_string());
+                    break;
+                case "Offset Position"_Hash:
+                    offset = Math::Vector3(valueAttr.as_string());
+                    break;
+                case "Offset Rotation"_Hash:
+                    offsetRot = Math::Quaternion(valueAttr.as_string()).Normal();
+                    break;
+                case "Shape Type"_Hash:
+                {
+                    collShape = valueHash;
                 }
+                }
+            }
 
-                if (objectPtr)
-                {
-                    objectPtr->size = size;
-                    objectPtr->offset = offset;
-                    objectPtr->offsetRot = offsetRot;
-                    switch (collShape)
-                    {
-                    case "ConvexHull"_Hash:
-                    case "Capsule"_Hash:
-                        objectPtr->collsionShapeType = Math::ShapeType::ConvexHull;
-                        break;
-                    case "TriangleMesh"_Hash:
-                        objectPtr->collsionShapeType = Math::ShapeType::TriangleMesh;
-                        break;
-                    case "Box"_Hash:
-                        objectPtr->collsionShapeType = Math::ShapeType::BoundingBox;
-                        break;
-                    case "Sphere"_Hash:
-                    case "Cylinder"_Hash:
-                        objectPtr->collsionShapeType = Math::ShapeType::Sphere;
-                        break;
-                    default:
-                        if (model)
-                            objectPtr->collsionShapeType = Math::ShapeType::BoundingBox;
-                        break;
-                    }
-                }
+            switch (collShape)
+            {
+            case "ConvexHull"_Hash:
+            case "Capsule"_Hash:
+                collShapeType = Math::ShapeType::ConvexHull;
+                break;
+            case "TriangleMesh"_Hash:
+                collShapeType = Math::ShapeType::TriangleMesh;
+                break;
+            case "Box"_Hash:
+                collShapeType = Math::ShapeType::BoundingBox;
+                break;
+            case "Sphere"_Hash:
+            case "Cylinder"_Hash:
+                collShapeType = Math::ShapeType::Sphere;
+                break;
+            default:
+                collShapeType = Math::ShapeType::BoundingBox;
+                break;
+            }
+
+            if (objectPtr)
+            {
+                objectPtr->size = size;
+                objectPtr->offset = offset;
+                objectPtr->offsetRot = offsetRot;
+                objectPtr->collsionShapeType = collShapeType;
+#ifdef DEBUG_LOAD
+                LOG_DEBUG << name << ": Shape " << (int)objectPtr->collsionShapeType << std::endl;
+#endif
             }
             break;
         }
@@ -219,7 +231,7 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
                 {
                 case "Collision Mask"_Hash:
                     colisionMask = valueAttr.as_uint();
-                    if (object)
+                    if (objectPtr)
                         objectPtr->collisionMask = colisionMask;
                     break;
                 }
@@ -256,6 +268,7 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
 
 bool IOScene::Import(Game::Scene& asset, const std::string& name)
 {
+    AB_PROFILE;
     pugi::xml_document doc;
     const pugi::xml_parse_result result = doc.load_file(name.c_str());
     if (result.status != pugi::status_ok)
@@ -263,23 +276,25 @@ bool IOScene::Import(Game::Scene& asset, const std::string& name)
         LOG_ERROR << "Error loading file " << name << ": " << result.description() << std::endl;
         return false;
     }
-    const pugi::xml_node sceneNode = doc.child("scene");
+    pugi::xml_node sceneNode = doc.child("scene");
     if (!sceneNode)
     {
-        LOG_ERROR << "File " << name << " does not have a scene node" << std::endl;
-        return false;
+        LOG_WARNING << "There is no scene node in file " << name << std::endl;
+        sceneNode = doc.child("node");
+        if (!sceneNode)
+        {
+            LOG_ERROR << "File " << name << " does not have a scene node" << std::endl;
+            return false;
+        }
     }
 
-    for (pugi::xml_node_iterator it = sceneNode.begin(); it != sceneNode.end(); ++it)
+    for (const auto& child : sceneNode.children("node"))
     {
-        if (strcmp((*it).name(), "node") == 0)
+        if (!LoadSceneNode(asset, child, Math::Matrix4::Identity))
         {
-            if (!LoadSceneNode(asset, *it, Math::Matrix4::Identity))
-            {
-                LOG_ERROR << "Error loading scene node" << std::endl;
-                // Can't continue
-                return false;
-            }
+            LOG_ERROR << "Error loading scene node" << std::endl;
+            // Can't continue
+            return false;
         }
     }
     return true;
