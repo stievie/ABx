@@ -55,12 +55,12 @@ struct CollisionManifold
     Vector3 radius;
 
     // Output
-    Vector3 normalizedVelocity;
-    Vector3 nearestSphereIntersectionPoint;
-    Vector3 intersectionPoint;
+    Vector3 nearestIntersectionPoint;
+    Vector3 nearestPolygonIntersectionPoint;
     Vector3 normal;
-    float distance{ M_INFINITE };
+    float nearestDistance{ M_INFINITE };
     bool stuck{ false };
+    bool foundCollision{ false };
 };
 
 class SA_NOVTABLE AbstractCollisionShape

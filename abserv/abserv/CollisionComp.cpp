@@ -19,15 +19,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "CollisionComp.h"
 #include "Actor.h"
 #include "Game.h"
 #include "MoveComp.h"
 #include <absmath/Plane.h>
 #include <sa/Assert.h>
+#include <absmath/VectorMath.h>
 
-//#define DEBUG_COLLISION
+#define DEBUG_COLLISION
 
 namespace Game {
 namespace Components {
@@ -40,22 +40,31 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 //    AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
     const Math::Vector3& safePos = mc.GetSafePosition();
+    Math::Vector3 destinationPoint = owner_.GetPosition();
 
     // That's us
     Math::CollisionManifold manifold;
-    manifold.velocity = mc.velocity_;
-    // Center of body
-    manifold.position = GetBodyCenter(safePos);
     manifold.radius = myBB.Extends();
+    manifold.velocity = mc.velocity_ / manifold.radius;
+    // Center of body
+    manifold.position = safePos / manifold.radius;
     // Since we collide with `other` let's get some more information from `other`
     bool foundSolution = other.GetCollisionShape()->GetManifold(manifold, other.transformation_.GetMatrix());
+    if (!manifold.foundCollision)
+    {
+#ifdef DEBUG_COLLISION
+        LOG_DEBUG << "No collisions found" << std::endl;
+#endif
+        return true;
+    }
+
     if (!foundSolution || manifold.stuck)
     {
 #ifdef DEBUG_COLLISION
         if (!foundSolution)
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
-            LOG_DEBUG << "Stuck! Distance: " << manifold.distance << " ";
+            LOG_DEBUG << "Stuck! Distance: " << manifold.nearestDistance << " ";
         LOG_DEBUG << "Going back to " << safePos << std::endl;
 #endif
         GotoSafePosition();
@@ -63,41 +72,35 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
         return false;
     }
 
-    const Math::Vector3 destinationPoint = owner_.transformation_.position_;
-    if (manifold.distance >= CloseDistance)
+    Math::Vector3 newSourcePoint;
+    if (manifold.nearestDistance >= CloseDistance)
     {
         Math::Vector3 V = mc.velocity_;
-        V.SetLength(manifold.distance - CloseDistance);
+        V.SetLength(manifold.nearestDistance - CloseDistance);
         V.Normalize();
-        manifold.intersectionPoint -= CloseDistance * V;
+        newSourcePoint -= manifold.position + V;
     }
+    else
+        newSourcePoint = manifold.position;
 
-    const Math::Vector3 slidingPlaneOrigin = manifold.intersectionPoint;
-    const Math::Vector3 slidingPlaneNormal = (safePos - manifold.intersectionPoint).Normal();
-    const Math::Plane slidingPlane(slidingPlaneNormal, slidingPlaneOrigin);
+    const Math::Vector3 slidingPlaneOrigin = manifold.nearestPolygonIntersectionPoint;
+    const Math::Vector3 slidingPlaneNormal = newSourcePoint - manifold.nearestPolygonIntersectionPoint;
+    float l = Math::IntersectsRayPlane(destinationPoint, slidingPlaneNormal, slidingPlaneOrigin, slidingPlaneNormal);
 
-    const Math::Vector3 newDestinationPoint = destinationPoint - slidingPlane.Distance(destinationPoint) * slidingPlaneNormal;
-    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.intersectionPoint;
-
-    const Math::Vector3 newPos = safePos + newVelocityVector;
+    const Math::Vector3 newDestinationPoint = destinationPoint + l * slidingPlaneNormal;
+    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.nearestPolygonIntersectionPoint;
 
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Sliding from " << safePos << " to "
-        << newPos <<
-        " intersection at " << manifold.intersectionPoint << std::endl;
+        << newDestinationPoint * manifold.radius <<
+        " intersection at " << manifold.nearestIntersectionPoint << std::endl;
 #endif
 
-    // TODO:
-#if 1
-    owner_.transformation_.position_ = newPos;
+    owner_.transformation_.position_ = newDestinationPoint * manifold.radius;
     mc.StickToGround();
     mc.moved_ = true;
     mc.forcePosition_ = true;
     return true;
-#else
-    (void)newPos;
-    return false;
-#endif
 }
 
 void CollisionComp::GotoSafePosition()

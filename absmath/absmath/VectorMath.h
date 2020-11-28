@@ -52,6 +52,9 @@ Vector3 GetTriangleNormal(const Vector3& p1, const Vector3& p2, const Vector3& p
 void ReverseOrder(ea::array<Vector3, 3>& triangle);
 Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& direction, float distance);
 bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& center);
+float IntersectsRayPlane(const Vector3& rOrigin, const Vector3& rVector, const Vector3& pOrogin, const Vector3& pNormal);
+float IntersectsRaySphere(const Vector3& rayOrigin, const Vector3& rayVector, const Vector3& sphereOrigin, float sphereRadius);
+bool IsPointInSphere(const Vector3& point, const Vector3& sphereOrigin, float sphereRadius);
 
 template<typename Callback>
 inline void GetTriangleIndices(int width, int height, Callback&& callback)

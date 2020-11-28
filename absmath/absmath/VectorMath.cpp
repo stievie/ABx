@@ -41,7 +41,7 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
         acos(v2.DotProduct(v3)) +
         acos(v3.DotProduct(v1));
 
-    if (fabs(totalAngles - M_TWOPI) <= epsilon)
+    if (fabs(totalAngles - 2.0f * M_TWOPI) <= epsilon)
         return true;
     return false;
 }
@@ -221,6 +221,33 @@ bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3
     const Vector3 normal = GetTriangleNormal(p1, p2, p3);
     const float r = normal.DotProduct(center);
     return r < 0.0f;
+}
+
+float IntersectsRayPlane(const Vector3& rOrigin, const Vector3& rVector, const Vector3& pOrogin, const Vector3& pNormal)
+{
+    float d = -pNormal.DotProduct(pOrogin);
+    float numer = pNormal.DotProduct(rOrigin) + d;
+    float denom = pNormal.DotProduct(rVector);
+    if (Equals(denom, 0.0f))
+        return -1.0f;
+    return -(numer / denom);
+}
+
+float IntersectsRaySphere(const Vector3& rayOrigin, const Vector3& rayVector, const Vector3& sphereOrigin, float sphereRadius)
+{
+    Vector3 Q = sphereOrigin - rayOrigin;
+    float c = Q.Length();
+    float v = Q.DotProduct(rayVector);
+    float d = sphereRadius * sphereRadius + (c * c - v * v);
+    if (d < 0.0f)
+        return -1.0f;
+    return (v - sqrt(d));
+}
+
+bool IsPointInSphere(const Vector3& point, const Vector3& sphereOrigin, float sphereRadius)
+{
+    float d = (point - sphereOrigin).Length();
+    return (d <= sphereRadius);
 }
 
 }
