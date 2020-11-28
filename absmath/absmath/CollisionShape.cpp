@@ -124,7 +124,6 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
     // Radius is 1 because the points are in our ellipsoid space
     const Sphere sphere(source, 1.0f);
-    const BoundingBox bb(source - 1.0f, source + 1.0f);
 
     Vector3 sphereIntersectionPoint;
     Vector3 planeIntersectionPoint;

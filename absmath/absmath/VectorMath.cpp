@@ -41,7 +41,7 @@ bool IsPointInTriangle(const Vector3& point, const Vector3& pa, const Vector3& p
         acos(v2.DotProduct(v3)) +
         acos(v3.DotProduct(v1));
 
-    if (fabs(totalAngles - 2.0f * M_TWOPI) <= epsilon)
+    if (fabs(totalAngles - M_TWOPI) <= epsilon)
         return true;
     return false;
 }
