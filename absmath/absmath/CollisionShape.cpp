@@ -96,7 +96,6 @@ bool AbstractCollisionShape::Collides(const AbstractCollisionShape& other, const
         const MeshShape& shape = static_cast<const MeshShape&>(other);
         const Math::TriangleMesh mesh = shape.Object().Transformed(transformation);
         return Collides(mesh, velocity, move);
-        break;
     }
     case Math::ShapeType::HeightMap:
     {
@@ -131,8 +130,8 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
     Vector3 planeIntersectionPoint;
     Vector3 polyIntersectionPoint;
 
-    float distToPlaneIntersection;
-    float distToEllipsoidIntersection;
+    float distToPlaneIntersection = 0.0f;
+    float distToEllipsoidIntersection = 0.0f;
 
     for (size_t i = 0; i < shape.GetCount(); i += 3)
     {

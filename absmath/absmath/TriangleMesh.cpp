@@ -35,6 +35,7 @@ TriangleMesh::TriangleMesh(TriangleMesh&& other) noexcept
     vertexCount_ = other.vertexCount_;
     indexData_ = std::move(other.indexData_);
     indexCount_ = other.indexCount_;
+    matrix_ = std::move(other.matrix_);
     boundingBox_ = std::move(other.boundingBox_);
 }
 
@@ -54,9 +55,7 @@ Intersection TriangleMesh::IsInside(const Vector3& point) const
 
 TriangleMesh TriangleMesh::Transformed(const Matrix4& transform) const
 {
-    TriangleMesh result(*this);
-    result.matrix_ = transform;
-    return result;
+    return TriangleMesh(*this, transform);
 }
 
 bool TriangleMesh::Collides(const Sphere& b2, const Vector3&, Vector3&) const

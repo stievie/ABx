@@ -34,36 +34,49 @@ class Shape
 public:
     Shape() :
         vertexCount_(0),
-        indexCount_(0)
+        indexCount_(0),
+        matrix_(Matrix4::Identity)
     {}
     Shape(const Shape& other) :
         vertexData_(other.vertexData_),
         indexData_(other.indexData_),
         vertexCount_(other.vertexCount_),
-        indexCount_(other.indexCount_)
+        indexCount_(other.indexCount_),
+        matrix_(other.matrix_)
+    { }
+    Shape(const Shape& other, const Matrix4& matrix) :
+        vertexData_(other.vertexData_),
+        indexData_(other.indexData_),
+        vertexCount_(other.vertexCount_),
+        indexCount_(other.indexCount_),
+        matrix_(matrix)
     { }
     Shape(Shape&& other) noexcept :
         vertexData_(std::move(other.vertexData_)),
         indexData_(std::move(other.indexData_)),
         vertexCount_(other.vertexCount_),
-        indexCount_(other.indexCount_)
+        indexCount_(other.indexCount_),
+        matrix_(std::move(other.matrix_))
     { }
     explicit Shape(const Vector3& vector) :
         vertexCount_(1),
-        indexCount_(0)
+        indexCount_(0),
+        matrix_(Matrix4::Identity)
     {
         vertexData_.push_back(vector);
     }
     explicit Shape(const ea::vector<Vector3>& vertices) :
         vertexData_(vertices),
         vertexCount_(vertexData_.size()),
-        indexCount_(0)
+        indexCount_(0),
+        matrix_(Matrix4::Identity)
     { }
     Shape(const ea::vector<Vector3>& vertices, const ea::vector<size_t>& indices) :
         vertexData_(vertices),
         indexData_(indices),
         vertexCount_(vertexData_.size()),
-        indexCount_(indexData_.size())
+        indexCount_(indexData_.size()),
+        matrix_(Matrix4::Identity)
     {}
     ~Shape() = default;
 
@@ -75,6 +88,7 @@ public:
             vertexCount_ = other.vertexCount_;
             indexData_ = other.indexData_;
             indexCount_ = other.indexCount_;
+            matrix_ = other.matrix_;
         }
         return *this;
     }
@@ -86,6 +100,7 @@ public:
             vertexCount_ = other.vertexCount_;
             indexData_ = std::move(other.indexData_);
             indexCount_ = other.indexCount_;
+            matrix_ = std::move(other.matrix_);
         }
         return *this;
     }
@@ -151,12 +166,12 @@ public:
     size_t VertexDataSize() const { return vertexCount_ * sizeof(float) * 3; }
     /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& direction) const;
-    Shape Transformed(const Matrix4& transformation) const;
+//    Shape Transformed(const Matrix4& transformation) const;
     float GetMinHeight() const;
     float GetMaxHeight() const;
 
     /// Transformation matrix
-    Matrix4 matrix_ = Matrix4::Identity;
+    Matrix4 matrix_;
     ea::vector<Vector3> vertexData_;
     ea::vector<size_t> indexData_;
     size_t vertexCount_;

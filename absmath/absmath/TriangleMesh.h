@@ -31,9 +31,13 @@ class TriangleMesh : public Shape
 {
 public:
     TriangleMesh() = default;
-    TriangleMesh(const Shape& other);
+    explicit TriangleMesh(const Shape& other);
     TriangleMesh(const TriangleMesh& other) :
         Shape(other),
+        boundingBox_(other.boundingBox_)
+    {}
+    TriangleMesh(const TriangleMesh& other, const Matrix4& matrix) :
+        Shape(other, matrix),
         boundingBox_(other.boundingBox_)
     {}
     TriangleMesh(TriangleMesh&& other) noexcept;
@@ -47,6 +51,8 @@ public:
             vertexCount_ = other.vertexCount_;
             indexData_ = other.indexData_;
             indexCount_ = other.indexCount_;
+            matrix_ = other.matrix_;
+            boundingBox_ = other.boundingBox_;
         }
         return *this;
     }
@@ -56,6 +62,7 @@ public:
         vertexCount_ = other.vertexCount_;
         indexData_ = std::move(other.indexData_);
         indexCount_ = other.indexCount_;
+        matrix_ = std::move(other.matrix_);
         boundingBox_ = std::move(other.boundingBox_);
         return *this;
     }
@@ -72,7 +79,7 @@ public:
     bool Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
-    Shape GetShape() const { return *this; }
+    Shape GetShape() const { return TriangleMesh(*this); }
 
     BoundingBox boundingBox_;
 };

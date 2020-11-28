@@ -40,6 +40,10 @@ public:
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
+    ConvexHull(const ConvexHull& other, const Matrix4& matrix) :
+        Shape(other, matrix),
+        boundingBox_(other.boundingBox_)
+    {}
     ConvexHull(ConvexHull&& other) noexcept;
     explicit ConvexHull(const ea::vector<Vector3>& vertices);
     ~ConvexHull() = default;
@@ -52,6 +56,8 @@ public:
             vertexCount_ = other.vertexCount_;
             indexData_ = other.indexData_;
             indexCount_ = other.indexCount_;
+            matrix_ = other.matrix_;
+            boundingBox_ = other.boundingBox_;
         }
         return *this;
     }
@@ -61,6 +67,7 @@ public:
         vertexCount_ = other.vertexCount_;
         indexData_ = std::move(other.indexData_);
         indexCount_ = other.indexCount_;
+        matrix_ = std::move(other.matrix_);
         boundingBox_ = std::move(other.boundingBox_);
         return *this;
     }
@@ -70,14 +77,14 @@ public:
         return boundingBox_;
     }
     Intersection IsInside(const Vector3& point) const;
-    ConvexHull Transformed(const Matrix4& transform) const;
+    ConvexHull Transformed(const Matrix4& transformation) const;
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const TriangleMesh& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
-    Shape GetShape() const { return *this; }
+    Shape GetShape() const { return ConvexHull(*this); }
 
     BoundingBox boundingBox_;
 };

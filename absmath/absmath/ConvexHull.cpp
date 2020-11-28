@@ -36,6 +36,7 @@ ConvexHull::ConvexHull(ConvexHull&& other) noexcept
     vertexCount_ = other.vertexCount_;
     indexData_ = std::move(other.indexData_);
     indexCount_ = other.indexCount_;
+    matrix_ = std::move(other.matrix_);
     boundingBox_ = std::move(other.boundingBox_);
 }
 
@@ -55,9 +56,7 @@ Intersection ConvexHull::IsInside(const Vector3& point) const
 
 ConvexHull ConvexHull::Transformed(const Matrix4& transform) const
 {
-    ConvexHull result(*this);
-    result.matrix_ = transform;
-    return result;
+    return ConvexHull(*this, transform);
 }
 
 bool ConvexHull::Collides(const Sphere& b2, const Vector3&, Vector3&) const

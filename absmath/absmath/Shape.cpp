@@ -112,12 +112,14 @@ Vector3 Shape::GetFarsetPointInDirection(const Vector3& direction) const
     return GetVertex(best);
 }
 
+#if 0
 Shape Shape::Transformed(const Matrix4& transformation) const
 {
     Shape result(*this);
     result.matrix_ = transformation;
     return result;
 }
+#endif
 
 float Shape::GetMinHeight() const
 {
