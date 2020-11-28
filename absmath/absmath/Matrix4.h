@@ -59,10 +59,6 @@ public:
             0, 0, 0, 1
         }
     { }
-    Matrix4(const Matrix4& other) noexcept
-    {
-        memcpy(m_, other.m_, 16 * sizeof(float));
-    }
     constexpr Matrix4(
         float v00, float v01, float v02, float v03,                             // Row 1
         float v10, float v11, float v12, float v13,                             // Row 2
@@ -80,12 +76,6 @@ public:
 #if defined(HAVE_DIRECTX_MATH)
     Matrix4(const XMath::XMMATRIX& matrix) noexcept;
 #endif
-
-    Matrix4& operator =(const Matrix4& other)
-    {
-        memcpy(m_, other.m_, 16 * sizeof(float));
-        return *this;
-    }
 
 #if defined(HAVE_DIRECTX_MATH)
     operator XMath::XMMATRIX() const

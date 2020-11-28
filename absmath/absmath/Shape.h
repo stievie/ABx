@@ -171,11 +171,11 @@ public:
     float GetMaxHeight() const;
 
     /// Transformation matrix
-    Matrix4 matrix_;
     ea::vector<Vector3> vertexData_;
     ea::vector<size_t> indexData_;
     size_t vertexCount_;
     size_t indexCount_;
+    Matrix4 matrix_;
 };
 
 }

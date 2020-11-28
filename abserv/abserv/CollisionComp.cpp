@@ -88,7 +88,7 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
     float l = Math::IntersectsRayPlane(destinationPoint, slidingPlaneNormal, slidingPlaneOrigin, slidingPlaneNormal);
 
     const Math::Vector3 newDestinationPoint = destinationPoint + l * slidingPlaneNormal;
-    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.nearestPolygonIntersectionPoint;
+//    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.nearestPolygonIntersectionPoint;
 
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Sliding from " << safePos << " to "
