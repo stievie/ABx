@@ -38,3 +38,77 @@ TEST_CASE("IsPointInTriangle")
     bool res2 = Math::IsPointInTriangle(pt2, p1, p2, p3);
     REQUIRE(!res2);
 }
+
+TEST_CASE("GetClosestPointOnTriangle")
+{
+    /*
+    *      0.5,1    pt2(1,1)
+    *     /      \ /
+    *    /      x \
+    *   /          \
+    * 0,0 -------- 1,0           pt1(2,0)
+    */
+
+    Math::Vector3 p1{ 0.0f, 0.0f, 0.0f };
+    Math::Vector3 p2{ 0.5f, 0.0f, 1.0f };
+    Math::Vector3 p3{ 1.0f, 0.0f, 0.0f };
+
+    Math::Vector3 pt1{ 2.0f, 0.0f, 0.0f };
+//    Math::Vector3 pt2{ 1.0f, 0.0f, 1.0f };
+    Math::Vector3 res = Math::GetClosestPointOnTriangle(p1, p2, p3, pt1);
+    REQUIRE(res.Equals(p3));
+}
+
+TEST_CASE("GetPointClass")
+{
+    Math::Vector3 p1{ 0.0f, 0.0f, 0.0f };
+    Math::Vector3 normal1{ 0.0f, 1.0f, 0.0f };
+    Math::Vector3 pt1{ 2.0f, 1.0f, -1.0f };
+    Math::Vector3 normal2{ 0.0f, -1.0f, 0.0f };
+
+    Math::PointClass res = Math::GetPointClass(p1, pt1, normal1);
+    REQUIRE(res == Math::PointClass::PlaneBack);
+    Math::PointClass res2 = Math::GetPointClass(p1, pt1, normal2);
+    REQUIRE(res2 == Math::PointClass::PlaneFront);
+    Math::PointClass res3 = Math::GetPointClass(p1, p1, normal1);
+    REQUIRE(res3 == Math::PointClass::OnPlane);
+}
+
+TEST_CASE("GetTriangleNormal")
+{
+    // Clockwise
+    /*
+    *      0.5,1
+    *     /      \
+    *    /        \
+    *   /          \
+    * 0,0 -------- 1,0
+    */
+
+    Math::Vector3 p1{ 0.0f, 0.0f, 0.0f };
+    Math::Vector3 p2{ 0.5f, 0.0f, 1.0f };
+    Math::Vector3 p3{ 1.0f, 0.0f, 0.0f };
+
+    Math::Vector3 normal = Math::GetTriangleNormal(p1, p2, p3);
+    REQUIRE(normal.Equals(Math::Vector3::UnitY));
+    // Counter clockwise
+    Math::Vector3 normal2 = Math::GetTriangleNormal(p3, p2, p1);
+    REQUIRE(normal2.Equals(-Math::Vector3::UnitY));
+}
+
+TEST_CASE("IsPointInSphere")
+{
+    Math::Vector3 origin{ 0.0f, 0.0f, 0.0f };
+    Math::Vector3 pt{ 0.0f, 0.0f, 0.0f };
+
+    bool res = Math::IsPointInSphere(pt, origin, 1.0f);
+    REQUIRE(res);
+
+    Math::Vector3 pt2{ 0.9f, 0.0f, 0.0f };
+    bool res2 = Math::IsPointInSphere(pt2, origin, 1.0f);
+    REQUIRE(res2);
+
+    Math::Vector3 pt3{ 0.9f, 0.9f, 0.9f };
+    bool res3 = Math::IsPointInSphere(pt3, origin, 1.0f);
+    REQUIRE(!res3);
+}

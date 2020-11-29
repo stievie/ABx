@@ -219,4 +219,25 @@ inline bool Vector3::Equals(const Vector3& rhs, float epsilon) const
         Math::Equals(z_, rhs.z_, epsilon);
 }
 
+#if defined(HAVE_DIRECTX_MATH)
+inline void XMStoreVector3(Vector3* pDestination, const XMath::FXMVECTOR& V)
+{
+#if defined(_XM_NO_INTRINSICS_)
+    pDestination->x_ = V.vector4_f32[0];
+    pDestination->y_ = V.vector4_f32[1];
+    pDestination->z_ = V.vector4_f32[2];
+#elif defined(_XM_ARM_NEON_INTRINSICS_)
+    float32x2_t VL = vget_low_f32(V);
+    vst1_f32(reinterpret_cast<float*>(pDestination), VL);
+    vst1q_lane_f32(reinterpret_cast<float*>(pDestination) + 2, V, 2);
+#elif defined(_XM_SSE_INTRINSICS_)
+    XMath::XMVECTOR T1 = XM_PERMUTE_PS(V, _MM_SHUFFLE(1, 1, 1, 1));
+    XMath::XMVECTOR T2 = XM_PERMUTE_PS(V, _MM_SHUFFLE(2, 2, 2, 2));
+    _mm_store_ss(&pDestination->x_, V);
+    _mm_store_ss(&pDestination->y_, T1);
+    _mm_store_ss(&pDestination->z_, T2);
+#endif
+}
+#endif
+
 }

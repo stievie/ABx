@@ -134,15 +134,10 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
     for (size_t i = 0; i < shape.GetCount(); i += 3)
     {
-        // One face world coordinates
-        const Vector3 A = transformation * shape.GetVertex(i);
-        const Vector3 B = transformation * shape.GetVertex(i + 1);
-        const Vector3 C = transformation * shape.GetVertex(i + 2);
-
         // Scale the triangle to ellipsoid space
-        const Vector3 p1 = A / manifold.radius;
-        const Vector3 p2 = B / manifold.radius;
-        const Vector3 p3 = C / manifold.radius;
+        const Vector3 p1 = (transformation * shape.GetVertex(i)) / manifold.radius;
+        const Vector3 p2 = (transformation * shape.GetVertex(i + 1)) / manifold.radius;
+        const Vector3 p3 = (transformation * shape.GetVertex(i + 2)) / manifold.radius;
 
         Vector3 planeOrigin = p1;
         Vector3 v1 = p2 - p1;
@@ -172,7 +167,7 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
 
         if (!IsPointInTriangle(planeIntersectionPoint, p1, p2, p3))
         {
-            polyIntersectionPoint = GetClosestMatchingPointOnTriangle(p1, p2, p3, planeIntersectionPoint);
+            polyIntersectionPoint = GetClosestPointOnTriangle(p1, p2, p3, planeIntersectionPoint);
             // PolyPoint -> colliding object
             distToEllipsoidIntersection = IntersectsRaySphere(polyIntersectionPoint, -normalizedVelocity, source, 1.0f);
             if (distToEllipsoidIntersection > 0.0f)
@@ -181,7 +176,7 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
             }
         }
 
-        if (IsPointInSphere(polyIntersectionPoint, source, 1.0f))
+        if (IsPointInSphere(polyIntersectionPoint, source, 0.3f))
             manifold.stuck = true;
 
         // Update collision data if we hit something
@@ -192,7 +187,6 @@ bool AbstractCollisionShape::GetManifold(CollisionManifold& manifold, const Matr
                 manifold.nearestDistance = distToEllipsoidIntersection;
                 manifold.nearestIntersectionPoint = sphereIntersectionPoint;
                 manifold.nearestPolygonIntersectionPoint = polyIntersectionPoint;
-                manifold.normal = planeNormal;
                 manifold.foundCollision = true;
                 result = true;
             }

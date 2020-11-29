@@ -236,7 +236,7 @@ void MoveComp::StoreSafePosition()
 
 Math::Vector3& MoveComp::CalculateVelocity(uint32_t timeElapsed)
 {
-    velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000.0f)).Abs();
+    velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000.0f));
     return velocity_;
 }
 

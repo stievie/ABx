@@ -27,7 +27,7 @@
 #include <sa/Assert.h>
 #include <absmath/VectorMath.h>
 
-#define DEBUG_COLLISION
+//#define DEBUG_COLLISION
 
 namespace Game {
 namespace Components {
@@ -39,15 +39,15 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 {
 //    AB_PROFILE;
     MoveComp& mc = *owner_.moveComp_;
-    const Math::Vector3& safePos = mc.GetSafePosition();
-    Math::Vector3 destinationPoint = owner_.GetPosition();
+    // We try to go from last safe position to Actors current position, because we do this after moving
+    const Math::Vector3& oldPos = mc.GetOldPosition();
+    const Math::Vector3 destinationPoint = owner_.GetPosition();
+    const Math::Vector3 velocity = oldPos - destinationPoint;
 
-    // That's us
     Math::CollisionManifold manifold;
     manifold.radius = myBB.Extends();
-    manifold.velocity = mc.velocity_ / manifold.radius;
-    // Center of body
-    manifold.position = safePos / manifold.radius;
+    manifold.velocity = velocity / manifold.radius;
+    manifold.position = oldPos / manifold.radius;
     // Since we collide with `other` let's get some more information from `other`
     bool foundSolution = other.GetCollisionShape()->GetManifold(manifold, other.transformation_.GetMatrix());
     if (!manifold.foundCollision)
@@ -58,42 +58,55 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
         return true;
     }
 
+#ifdef DEBUG_COLLISION
+    LOG_DEBUG << "Manifold:" << std::endl;
+    LOG_DEBUG << "  position: " << manifold.position << std::endl;
+    LOG_DEBUG << "  velocity: " << manifold.velocity << std::endl;
+    LOG_DEBUG << "  radius: " << manifold.radius << std::endl;
+
+    LOG_DEBUG << "  nearestIntersectionPoint: " << manifold.nearestIntersectionPoint << std::endl;
+    LOG_DEBUG << "  nearestPolygonIntersectionPoint: " << manifold.nearestPolygonIntersectionPoint << std::endl;
+    LOG_DEBUG << "  nearestDistance: " << manifold.nearestDistance << std::endl;
+    LOG_DEBUG << "  stuck: " << manifold.stuck << std::endl;
+    LOG_DEBUG << "  foundCollision: " << manifold.foundCollision << std::endl;
+#endif
+
     if (!foundSolution || manifold.stuck)
     {
 #ifdef DEBUG_COLLISION
         if (!foundSolution)
             LOG_DEBUG << "No solution found ";
         if (manifold.stuck)
-            LOG_DEBUG << "Stuck! Distance: " << manifold.nearestDistance << " ";
-        LOG_DEBUG << "Going back to " << safePos << std::endl;
+            LOG_DEBUG << "Stuck! ";
+        LOG_DEBUG << "Going back to " << mc.GetSafePosition() << std::endl;
 #endif
         GotoSafePosition();
         owner_.CallEvent<void(void)>(EVENT_ON_STUCK);
         return false;
     }
 
+    const Math::Vector3 eDest = destinationPoint / manifold.radius;
+
     Math::Vector3 newSourcePoint;
     if (manifold.nearestDistance >= CloseDistance)
     {
-        Math::Vector3 V = mc.velocity_;
+        Math::Vector3 V = velocity;
         V.SetLength(manifold.nearestDistance - CloseDistance);
         V.Normalize();
-        newSourcePoint -= manifold.position + V;
+        newSourcePoint = manifold.position + V;
     }
     else
         newSourcePoint = manifold.position;
 
     const Math::Vector3 slidingPlaneOrigin = manifold.nearestPolygonIntersectionPoint;
-    const Math::Vector3 slidingPlaneNormal = newSourcePoint - manifold.nearestPolygonIntersectionPoint;
-    float l = Math::IntersectsRayPlane(destinationPoint, slidingPlaneNormal, slidingPlaneOrigin, slidingPlaneNormal);
-
-    const Math::Vector3 newDestinationPoint = destinationPoint + l * slidingPlaneNormal;
-//    const Math::Vector3 newVelocityVector = newDestinationPoint - manifold.nearestPolygonIntersectionPoint;
+    const Math::Vector3 slidingPlaneNormal = (newSourcePoint - manifold.nearestPolygonIntersectionPoint).Normal();
+    const float l = Math::IntersectsRayPlane(eDest, slidingPlaneNormal, slidingPlaneOrigin, slidingPlaneNormal);
+    const Math::Vector3 newDestinationPoint = eDest - l * slidingPlaneNormal;
 
 #ifdef DEBUG_COLLISION
-    LOG_DEBUG << "Sliding from " << safePos << " to "
+    LOG_DEBUG << "Sliding from " << oldPos << " to "
         << newDestinationPoint * manifold.radius <<
-        " intersection at " << manifold.nearestIntersectionPoint << std::endl;
+        " intersection at " << manifold.nearestPolygonIntersectionPoint * manifold.radius << std::endl;
 #endif
 
     owner_.transformation_.position_ = newDestinationPoint * manifold.radius;
@@ -128,9 +141,9 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
         // Don't move the character when the object actually does not collide,
         // but we may still need the trigger stuff.
 
-        // There was no simple sliding solution, let's try the complicated one
         if (move.Equals(Math::Vector3::Zero))
         {
+            // There was no simple sliding solution, let's try the complicated one
             updateTrans = Slide(myBB, other);
         }
         else

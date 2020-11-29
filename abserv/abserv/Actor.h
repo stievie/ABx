@@ -181,7 +181,7 @@ public:
 
     void HeadTo(const Math::Vector3& pos);
     void FaceObject(GameObject* object);
-    /// Move speed: 1 = normal speed
+    /// Move speed: 1 = planeNormal speed
     float GetSpeed() const { return moveComp_->GetSpeedFactor(); }
     void SetSpeed(float value) { moveComp_->SetSpeedFactor(value); }
     void AddSpeed(float value) { moveComp_->AddSpeed(value); }
@@ -197,7 +197,7 @@ public:
     float GetArmorEffect(DamageType damageType, DamagePos pos, float penetration);
     /// Attack speed in ms. One attack cycle (start hit -> hit -> apply damage) takes this ms to complete.
     uint32_t GetAttackSpeed();
-    /// Get increased attack speed relative to normal weapon attack speed. > 1 = faster, < 1 slower
+    /// Get increased attack speed relative to planeNormal weapon attack speed. > 1 = faster, < 1 slower
     float GetAttackSpeedIncrease(uint32_t speed);
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage(bool critical);

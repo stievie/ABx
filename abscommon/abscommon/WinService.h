@@ -72,7 +72,7 @@ protected:
     virtual void OnPause() { }
     // When implemented in a derived class, OnContinue runs when a Continue
     // command is sent to the service by the SCM. Specifies actions to take
-    // when a service resumes normal functioning after being paused.
+    // when a service resumes planeNormal functioning after being paused.
     virtual void OnContinue() { }
     // When implemented in a derived class, executes when the system is
     // shutting down. Specifies what should occur immediately prior to the

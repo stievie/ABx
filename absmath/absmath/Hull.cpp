@@ -1108,7 +1108,7 @@ float LineProjectTime(const float3 &p0, const float3 &p1, const float3 &a)
 
 float3 TriNormal(const float3 &v0, const float3 &v1, const float3 &v2)
 {
-    // return the normal of the triangle
+    // return the planeNormal of the triangle
     // inscribed by v0, v1, and v2
     float3 cp=cross(v1-v0,v2-v1);
     float m=magnitude(cp);

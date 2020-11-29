@@ -20,6 +20,7 @@
  */
 
 #include "Matrix4.h"
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -95,6 +96,39 @@ const Vector4 Matrix4::operator*(const Vector4& rhs) const
         )
     );
     return Vector4(v);
+}
+
+void Matrix4::Decompose(Vector3* scale, Quaternion* rotation, Vector3* translation) const
+{
+#if defined(HAVE_DIRECTX_MATH)
+    XMath::XMVECTOR s, r, t;
+    ASSERT(XMath::XMMatrixDecompose(&s, &r, &t, *this));
+    if (scale)
+        XMStoreVector3(scale, s);
+    if (rotation)
+    {
+        rotation->x_ = XMath::XMVectorGetX(r);
+        rotation->y_ = XMath::XMVectorGetY(r);
+        rotation->z_ = XMath::XMVectorGetZ(r);
+        rotation->w_ = XMath::XMVectorGetW(r);
+    }
+    if (translation)
+        XMStoreVector3(translation, t);
+#else
+    translation->x_ = m_[Index30];
+    translation->y_ = m_[Index31];
+    translation->z_ = m_[Index32];
+
+    scale->x_ = sqrtf(m_[Index00] * m_[Index00] + m_[Index01] * m_[Index01] + m_[Index02] * m_[Index02]);
+    scale->y_ = sqrtf(m_[Index10] * m_[Index10] + m_[Index11] * m_[Index11] + m_[Index12] * m_[Index12]);
+    scale->z_ = sqrtf(m_[Index20] * m_[Index20] + m_[Index21] * m_[Index21] + m_[Index22] * m_[Index22]);
+
+    Quaternion q = Rotation();
+    rotation->x_ = q.x_;
+    rotation->y_ = q.y_;
+    rotation->z_ = q.z_;
+    rotation->w_ = q.w_;
+#endif
 }
 
 Matrix4& Matrix4::Translate(const Vector3& v)
@@ -200,12 +234,16 @@ Matrix4 Matrix4::Transpose() const
 
 float Matrix4::Determinant() const
 {
+#if defined(HAVE_DIRECTX_MATH)
+    return XMath::XMVectorGetX(XMath::XMMatrixDeterminant(*this));
+#else
     return m_[12] * m_[9] * m_[6] * m_[3] - m_[8] * m_[13] * m_[6] * m_[3] - m_[12] * m_[5] * m_[10] * m_[3] + m_[4] * m_[13] * m_[10] * m_[3] +
         m_[8] * m_[5] * m_[14] * m_[3] - m_[4] * m_[9] * m_[14] * m_[3] - m_[12] * m_[9] * m_[2] * m_[7] + m_[8] * m_[13] * m_[2] * m_[7] +
         m_[12] * m_[1] * m_[10] * m_[7] - m_[0] * m_[13] * m_[10] * m_[7] - m_[8] * m_[1] * m_[14] * m_[7] + m_[0] * m_[9] * m_[14] * m_[7] +
         m_[12] * m_[5] * m_[2] * m_[11] - m_[4] * m_[13] * m_[2] * m_[11] - m_[12] * m_[1] * m_[6] * m_[11] + m_[0] * m_[13] * m_[6] * m_[11] +
         m_[4] * m_[1] * m_[14] * m_[11] - m_[0] * m_[5] * m_[14] * m_[11] - m_[8] * m_[5] * m_[2] * m_[15] + m_[4] * m_[9] * m_[2] * m_[15] +
         m_[8] * m_[1] * m_[6] * m_[15] - m_[0] * m_[9] * m_[6] * m_[15] - m_[4] * m_[1] * m_[10] * m_[15] + m_[0] * m_[5] * m_[10] * m_[15];
+#endif
 }
 
 Matrix4 Matrix4::Inverse() const

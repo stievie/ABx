@@ -172,22 +172,7 @@ public:
     Vector3 Translation() const;
     /// Get scaling part
     Vector3 Scaling() const;
-    void Decompose(Vector3* scale, Quaternion* rotation, Vector3* translation) const
-    {
-        XMath::XMVECTOR s, r, t;
-        XMath::XMMatrixDecompose(&s, &r, &t, *this);
-        scale->x_ = XMath::XMVectorGetX(s);
-        scale->y_ = XMath::XMVectorGetY(s);
-        scale->z_ = XMath::XMVectorGetZ(s);
-        rotation->x_ = XMath::XMVectorGetX(r);
-        rotation->y_ = XMath::XMVectorGetY(r);
-        rotation->z_ = XMath::XMVectorGetZ(r);
-        rotation->w_ = XMath::XMVectorGetW(r);
-        translation->x_ = XMath::XMVectorGetX(t);
-        translation->y_ = XMath::XMVectorGetY(t);
-        translation->z_ = XMath::XMVectorGetZ(t);
-    }
-
+    void Decompose(Vector3* scale, Quaternion* rotation, Vector3* translation) const;
     bool IsIdentity() const;
 
     Matrix4 Transpose() const;

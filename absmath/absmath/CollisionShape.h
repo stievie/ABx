@@ -57,7 +57,6 @@ struct CollisionManifold
     // Output
     Vector3 nearestIntersectionPoint;
     Vector3 nearestPolygonIntersectionPoint;
-    Vector3 normal;
     float nearestDistance{ M_INFINITE };
     bool stuck{ false };
     bool foundCollision{ false };

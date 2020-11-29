@@ -189,7 +189,7 @@ struct RayQueryResult
 
     /// Hit position in world space.
     Vector3 position_;
-    /// Hit normal in world space. Negation of ray direction if per-triangle data not available.
+    /// Hit planeNormal in world space. Negation of ray direction if per-triangle data not available.
     Vector3 normal_;
     /// Distance from ray origin.
     float distance_{ 0.0f };

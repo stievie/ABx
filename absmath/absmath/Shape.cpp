@@ -58,7 +58,8 @@ Vector3 Shape::GetClosestPointOnTriangle(size_t i, const Vector3& pos) const
 {
     if (GetTriangleCount() == 0)
         return {};
-    return Math::GetClosestPointOnTriangle(GetTriangle(i), pos);
+    const auto tri = GetTriangle(i);
+    return Math::GetClosestPointOnTriangle(tri[0], tri[1], tri[2], pos);
 }
 
 float Shape::GetDistanceToTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos) const

@@ -35,6 +35,7 @@ Creator: sa 2017-2019
 * DirectXMath https://github.com/Microsoft/DirectXMath
 * PDCurses https://pdcurses.org/
 * DeathHandler https://github.com/vmarkovtsev/DeathHandler
+* Collision sliding http://www.peroxide.dk/papers/collision/collision.pdf
 
 ## Client
 

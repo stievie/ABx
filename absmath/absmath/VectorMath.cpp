@@ -64,7 +64,7 @@ Vector3 GetClosestPointOnLine(const Vector3& a, const Vector3& b, const Vector3&
     return a + V;
 }
 
-Vector3 GetClosestMatchingPointOnTriangle(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& p)
+Vector3 GetClosestPointOnTriangle(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& p)
 {
     const Vector3 Rab = GetClosestPointOnLine(a, b, p);
     const Vector3 Rbc = GetClosestPointOnLine(b, c, p);
@@ -88,6 +88,7 @@ Vector3 GetClosestMatchingPointOnTriangle(const Vector3& a, const Vector3& b, co
     return result;
 }
 
+#if 0
 Vector3 GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector3& pos)
 {
     const Vector3 edge0 = tri[1] - tri[0];
@@ -184,6 +185,7 @@ Vector3 GetClosestPointOnTriangle(const ea::array<Vector3, 3>& tri, const Vector
 
     return tri[0] + s * edge0 + t * edge1;
 }
+#endif
 
 PointClass GetPointClass(const Vector3& point, const Vector3& origin, const Vector3& normal)
 {
@@ -216,7 +218,7 @@ Vector3 GetPosFromDirectionDistance(const Vector3& position, const Quaternion& d
 
 bool IsTriangleFacingOutside(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& center)
 {
-    // We only support convex shapes so calculate the normal and check if
+    // We only support convex shapes so calculate the planeNormal and check if
     // it points outside.
     const Vector3 normal = GetTriangleNormal(p1, p2, p3);
     const float r = normal.DotProduct(center);
@@ -246,8 +248,8 @@ float IntersectsRaySphere(const Vector3& rayOrigin, const Vector3& rayVector, co
 
 bool IsPointInSphere(const Vector3& point, const Vector3& sphereOrigin, float sphereRadius)
 {
-    float d = (point - sphereOrigin).Length();
-    return (d <= sphereRadius);
+    const float distSquared = (point - sphereOrigin).LengthSqr();
+    return distSquared < sphereRadius*sphereRadius;
 }
 
 }
