@@ -225,12 +225,12 @@ Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
 }
 
 bool Map::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+    const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint)
 {
     if (!navMesh_)
         return false;
 
-    return navMesh_->CanStepOn(point, extents, filter, nearestRef);
+    return navMesh_->CanStepOn(point, extents, filter, nearestRef, nearestPoint);
 }
 
 }

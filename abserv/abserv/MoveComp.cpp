@@ -93,6 +93,14 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
     SetDirection(worldAngle);
 }
 
+bool MoveComp::CanStepOn(Math::Vector3& nearestPoint) const
+{
+    if (!checkStepOn_)
+        return true;
+    auto& map = *owner_.GetGame()->map_;
+    return map.CanStepOn(owner_.transformation_.position_, Math::Vector3::One, nullptr, nullptr, &nearestPoint);
+}
+
 void MoveComp::Move(float speed, const Math::Vector3& amount)
 {
 /*
@@ -109,17 +117,21 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
     if (owner_.GetType() != AB::GameProtocol::GameObjectType::Projectile)
     {
+        Math::Vector3 nearestPoint = oldPosition_;
         auto& map = *owner_.GetGame()->map_;
-        if (owner_.autorunComp_->IsAutoRun() || (!checkStepOn_ || map.CanStepOn(owner_.transformation_.position_)))
+        if (owner_.autorunComp_->IsAutoRun() || CanStepOn(nearestPoint))
         {
             // Keep on ground, except projectiles, they usually fly...
-            const float y = map.GetTerrainHeight(owner_.transformation_.position_);
-            owner_.transformation_.position_.y_ = y;
+            map.UpdatePointHeight(owner_.transformation_.position_);
         }
         else
         {
-            owner_.transformation_.position_ = oldPosition_;
-            forcePosition_ = true;
+            map.UpdatePointHeight(nearestPoint);
+            if (!owner_.transformation_.position_.Equals(nearestPoint))
+            {
+                owner_.transformation_.position_ = nearestPoint;
+                forcePosition_ = true;
+            }
         }
     }
 

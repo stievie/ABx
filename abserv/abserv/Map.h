@@ -78,7 +78,7 @@ public:
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
         const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
     bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr, Math::Vector3* nearestPoint = nullptr);
 
     std::string name_;
     std::string directory_;

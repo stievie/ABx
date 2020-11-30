@@ -48,6 +48,7 @@ private:
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
+    bool CanStepOn(Math::Vector3& nearestPoint) const;
 public:
     enum UpdateFlags : uint32_t
     {

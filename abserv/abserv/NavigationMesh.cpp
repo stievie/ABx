@@ -178,13 +178,13 @@ bool NavigationMesh::GetHeight(float& result, const Math::Vector3& point, const 
     return true;
 }
 
-bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef)
+bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint)
 {
     dtPolyRef pointRef;
     if (!nearestRef)
         nearestRef = &pointRef;
-    Math::Vector3 nearestPoint;
-    dtStatus status = navQuery_->findNearestPoly(&point.x_, extents.Data(), filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
+    Math::Vector3 _nearestPoint;
+    dtStatus status = navQuery_->findNearestPoly(&point.x_, extents.Data(), filter ? filter : queryFilter_.get(), nearestRef, &_nearestPoint.x_);
     if (dtStatusFailed(status))
     {
 #ifdef DEBUG_NAVIGATION
@@ -197,8 +197,10 @@ bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& 
         // No poly found
         return false;
 
-    return Math::Equals(point.x_, nearestPoint.x_, extents.x_) &&
-        Math::Equals(point.z_, nearestPoint.z_, extents.z_);
+    if (nearestPoint)
+        *nearestPoint = _nearestPoint;
+    return Math::Equals(point.x_, _nearestPoint.x_, extents.x_) &&
+        Math::Equals(point.z_, _nearestPoint.z_, extents.z_);
 }
 
 bool NavigationMesh::FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents,
