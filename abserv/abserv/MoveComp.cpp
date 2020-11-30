@@ -97,7 +97,7 @@ bool MoveComp::CanStepOn(Math::Vector3& nearestPoint) const
 {
     if (!checkStepOn_)
         return true;
-    auto& map = *owner_.GetGame()->map_;
+    const auto& map = *owner_.GetGame()->map_;
     return map.CanStepOn(owner_.transformation_.position_, Math::Vector3::One, nullptr, nullptr, &nearestPoint);
 }
 

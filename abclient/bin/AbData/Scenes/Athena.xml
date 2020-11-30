@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="53" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16788641" />
-	<attribute name="Next Local Component ID" value="16790442" />
+	<attribute name="Next Local Node ID" value="16788706" />
+	<attribute name="Next Local Component ID" value="16790518" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -118,7 +118,7 @@
 		</component>
 		<component type="RigidBody" id="16781726">
 			<attribute name="Physics Position" value="64.8313 30.1575 36.6099" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781727">
@@ -642,7 +642,7 @@
 		<component type="RigidBody" id="16786956">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
 			<attribute name="Physics Position" value="-5.63693 25.2481 10.0764" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16786957">
@@ -668,7 +668,7 @@
 		<component type="RigidBody" id="16787264">
 			<attribute name="Physics Rotation" value="0.92388 0 0.382683 0" />
 			<attribute name="Physics Position" value="0.315832 25.2481 2.91849" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16787265">
@@ -694,7 +694,7 @@
 		<component type="RigidBody" id="16787267">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
 			<attribute name="Physics Position" value="-4.24387 25.2481 8.68279" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16787268">
@@ -720,7 +720,7 @@
 		<component type="RigidBody" id="16787270">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
 			<attribute name="Physics Position" value="-2.82167 25.2481 7.28619" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16787271">
@@ -1283,7 +1283,7 @@
 		<component type="RigidBody" id="16788696">
 			<attribute name="Physics Rotation" value="0.99327 0 -0.115819 0" />
 			<attribute name="Physics Position" value="-37.7414 24.5639 14.5166" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16788697">
@@ -1329,7 +1329,7 @@
 		</component>
 		<component type="RigidBody" id="16789129">
 			<attribute name="Physics Position" value="-73.5362 28.5717 13.044" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16789130">
@@ -1351,7 +1351,7 @@
 		</component>
 		<component type="RigidBody" id="16789376">
 			<attribute name="Physics Position" value="-53.4583 31.5949 -48.5266" />
-			<attribute name="Collision Layer" value="3" />
+			<attribute name="Collision Layer" value="-1" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16789377">

@@ -70,7 +70,7 @@ void NavigationMesh::SetNavMesh(dtNavMesh* value)
 bool NavigationMesh::FindPath(ea::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,
-    const dtQueryFilter* filter /* = nullptr */)
+    const dtQueryFilter* filter /* = nullptr */) const
 {
     dest.clear();
 
@@ -129,7 +129,7 @@ bool NavigationMesh::FindPath(ea::vector<Math::Vector3>& dest,
 
 Math::Vector3 NavigationMesh::FindNearestPoint(const Math::Vector3& point,
     const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+    const dtQueryFilter* filter, dtPolyRef* nearestRef) const
 {
     Math::Vector3 nearestPoint;
 
@@ -149,7 +149,7 @@ Math::Vector3 NavigationMesh::FindNearestPoint(const Math::Vector3& point,
 }
 
 bool NavigationMesh::GetHeight(float& result, const Math::Vector3& point, const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+    const dtQueryFilter* filter, dtPolyRef* nearestRef) const
 {
     Math::Vector3 nearestPoint;
     dtPolyRef pointRef;
@@ -178,7 +178,7 @@ bool NavigationMesh::GetHeight(float& result, const Math::Vector3& point, const 
     return true;
 }
 
-bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint)
+bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents, const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint) const
 {
     dtPolyRef pointRef;
     if (!nearestRef)
@@ -204,7 +204,7 @@ bool NavigationMesh::CanStepOn(const Math::Vector3& point, const Math::Vector3& 
 }
 
 bool NavigationMesh::FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents,
-    const dtQueryFilter* filter)
+    const dtQueryFilter* filter) const
 {
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;

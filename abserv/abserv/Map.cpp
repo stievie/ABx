@@ -80,14 +80,14 @@ void Map::UpdateOctree(uint32_t)
     octree_->Update();
 }
 
-SpawnPoint Map::GetFreeSpawnPoint()
+SpawnPoint Map::GetFreeSpawnPoint() const
 {
     if (!scene_)
         return EmtpySpawnPoint;
     return GetFreeSpawnPoint(scene_->spawnPoints_);
 }
 
-SpawnPoint Map::GetFreeSpawnPoint(const std::string& group)
+SpawnPoint Map::GetFreeSpawnPoint(const std::string& group) const
 {
     auto sps = GetSpawnPoints(group);
     if (sps.size() == 0)
@@ -97,7 +97,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::string& group)
     return GetFreeSpawnPoint(sps);
 }
 
-SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points)
+SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
 {
     if (points.size() == 0)
         return EmtpySpawnPoint;
@@ -165,7 +165,7 @@ SpawnPoint Map::GetSpawnPoint(const std::string& group) const
     return EmtpySpawnPoint;
 }
 
-ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
+ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group) const
 {
     ea::vector<SpawnPoint> result;
     for (const auto& sp : scene_->spawnPoints_)
@@ -198,7 +198,7 @@ SpawnPoint Map::CorrectedSpanwPoint(const SpawnPoint& world) const
 bool Map::FindPath(ea::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,
-    const dtQueryFilter* filter /* = nullptr */)
+    const dtQueryFilter* filter /* = nullptr */) const
 {
     if (!navMesh_)
         return false;
@@ -214,7 +214,7 @@ bool Map::FindPath(ea::vector<Math::Vector3>& dest,
 
 Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
     const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+    const dtQueryFilter* filter, dtPolyRef* nearestRef) const
 {
     if (!navMesh_)
         return point;
@@ -225,7 +225,7 @@ Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
 }
 
 bool Map::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents,
-    const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint)
+    const dtQueryFilter* filter, dtPolyRef* nearestRef, Math::Vector3* nearestPoint) const
 {
     if (!navMesh_)
         return false;

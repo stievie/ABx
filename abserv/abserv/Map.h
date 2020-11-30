@@ -65,20 +65,20 @@ public:
 
     void AddGameObject(ea::shared_ptr<GameObject> object);
     void UpdateOctree(uint32_t delta);
-    SpawnPoint GetFreeSpawnPoint();
-    SpawnPoint GetFreeSpawnPoint(const std::string& group);
-    SpawnPoint GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points);
+    SpawnPoint GetFreeSpawnPoint() const;
+    SpawnPoint GetFreeSpawnPoint(const std::string& group) const;
+    SpawnPoint GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const;
     SpawnPoint GetSpawnPoint(const std::string& group) const;
-    ea::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
+    ea::vector<SpawnPoint> GetSpawnPoints(const std::string& group) const;
 
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.
     bool FindPath(ea::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
-        const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
+        const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr) const;
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr) const;
     bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr, Math::Vector3* nearestPoint = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr, Math::Vector3* nearestPoint = nullptr) const;
 
     std::string name_;
     std::string directory_;

@@ -54,17 +54,17 @@ public:
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.
     bool FindPath(ea::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
-        const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
+        const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr) const;
     /// Find the nearest point on the navigation mesh to a given point. Extents specifies how far out from the specified point to check along each axis.
     Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr) const;
     bool FindRandomPoint(Math::Vector3& result, const Math::Vector3& point, float radius, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr);
+        const dtQueryFilter* filter = nullptr) const;
     // Check if an actor can step on a point on the navigation mesh.
     bool CanStepOn(const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr, Math::Vector3* nearestPoint = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr, Math::Vector3* nearestPoint = nullptr) const;
     bool GetHeight(float& result, const Math::Vector3& point, const Math::Vector3& extents = Math::Vector3::One,
-        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr) const;
 };
 
 }
