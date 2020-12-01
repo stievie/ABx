@@ -102,15 +102,15 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
     if (points.size() == 0)
         return EmtpySpawnPoint;
 
-    auto cleanObjects = [](ea::vector<GameObject*>& objects)
+    auto cleanObjects = [](ea::vector<Math::OctreeObject*>& objects)
     {
         if (objects.size() == 0)
             return;
         // Remove all objects that are not interesting
-        objects.erase(ea::remove_if(objects.begin(), objects.end(), [](GameObject* current)
+        objects.erase(ea::remove_if(objects.begin(), objects.end(), [](Math::OctreeObject* current)
         {
             return (current->GetCollisionMask() == 0) ||
-                Is<TerrainPatch>(current);
+                Is<TerrainPatch>(static_cast<GameObject*>(current));
         }), objects.end());
     };
 
@@ -118,7 +118,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
     SpawnPoint minPos;
     for (const auto& p : points)
     {
-        ea::vector<GameObject*> result;
+        ea::vector<Math::OctreeObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(p.position, 5.0f));
         octree_->GetObjects(query);
         cleanObjects(result);
@@ -132,7 +132,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
     }
 
     {
-        ea::vector<GameObject*> result;
+        ea::vector<Math::OctreeObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f));
         octree_->GetObjects(query);
         cleanObjects(result);

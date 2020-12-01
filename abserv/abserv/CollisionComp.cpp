@@ -136,7 +136,7 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << owner_ << " colliding with " << other << std::endl;
 #endif
-    if (owner_.CollisionMaskMatches(other.GetCollisionMask()))
+    if (owner_.CollisionMaskMatches(other.GetCollsionLayer()))
     {
         // Don't move the character when the object actually does not collide,
         // but we may still need the trigger stuff.
@@ -170,14 +170,15 @@ void CollisionComp::ResolveCollisions()
     const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::GameObjectType::Player) ||
         !AB::Entities::IsOutpost(owner_.GetGame()->data_.type);
 
-    const Math::CallbackOctreeMatcher matcher([isCollidingWithPlayers](const GameObject* object) -> bool
+    const Math::CallbackOctreeMatcher matcher([isCollidingWithPlayers](const Math::OctreeObject* object) -> bool
     {
-        if (!object->GetCollisionShape())
+        const GameObject* gameObject = static_cast<const GameObject*>(object);
+        if (!gameObject->GetCollisionShape())
             return false;
 
-        if (!isCollidingWithPlayers && (object->GetType() == AB::GameProtocol::GameObjectType::Player))
+        if (!isCollidingWithPlayers && (gameObject->GetType() == AB::GameProtocol::GameObjectType::Player))
             return false;
-        if (const auto* actor = To<Actor>(object))
+        if (const auto* actor = To<Actor>(gameObject))
         {
             // Not colliding with dead actors
             if (actor->IsDead())
@@ -188,7 +189,7 @@ void CollisionComp::ResolveCollisions()
 
     // Actor always has a MoveComp
     MoveComp& mc = *owner_.moveComp_;
-    ea::vector<GameObject*> c;
+    ea::vector<Math::OctreeObject*> c;
     const Math::BoundingBox box = owner_.GetWorldBoundingBox();
     if (owner_.QueryObjects(c, box, &matcher))
     {

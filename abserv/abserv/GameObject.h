@@ -22,7 +22,7 @@
 #pragma once
 
 #include <abshared/Damage.h>
-#include "Octree.h"
+#include <absmath/Octree.h>
 #include "StateComp.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
@@ -35,6 +35,7 @@
 #include <absmath/CollisionShape.h>
 #include <absmath/Matrix4.h>
 #include <absmath/Transformation.h>
+#include <absmath/OctreeObject.h>
 #include <kaguya/kaguya.hpp>
 #include <mutex>
 #include <sa/Events.h>
@@ -102,7 +103,7 @@ using GameObjectEvents = sa::Events<
 
 inline const float AVERAGE_BB_EXTENDS = 0.3f;
 
-class GameObject : public ea::enable_shared_from_this<GameObject>
+class GameObject : public Math::OctreeObject, public ea::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
@@ -150,9 +151,6 @@ protected:
     Utils::VariantMap variables_;
     ea::weak_ptr<Game> game_;
     GameObjectEvents events_;
-    /// Octree octant.
-    Math::Octant* octant_{ nullptr };
-    float sortValue_{ 0.0f };
     ea::map<Ranges, ea::set<uint32_t>> ranges_;
     void UpdateRanges();
     uint32_t GetNewId()
@@ -201,20 +199,19 @@ public:
     bool HasGame() const { return hasGame_; }
     bool IsSelectable() const { return selectable_; }
     void SetSelectable(bool value) { selectable_ = value; }
-    void SetCollisionMask(uint32_t mask)
-    {
-        collisionMask_ = mask;
-    }
-    uint32_t GetCollisionMask() const { return collisionMask_; }
-    bool CollisionMaskMatches(uint32_t otherMask) const { return (collisionMask_ != 0) && (otherMask != 0) && (collisionMask_ & otherMask) != 0; }
+    void SetCollisionLayer(uint32_t value) { collisionLayer_ = value; }
+    uint32_t GetCollsionLayer() const override final { return collisionLayer_; }
+    void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
+    uint32_t GetCollisionMask() const override final { return collisionMask_; }
+    bool CollisionMaskMatches(uint32_t layer) const { return (layer & collisionMask_); }
     Math::AbstractCollisionShape* GetCollisionShape() const
     {
         if (!collisionShape_)
             return nullptr;
         return collisionShape_.get();
     }
-    bool Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
-    void Collides(GameObject** others, size_t count, const Math::Vector3& velocity,
+    bool Collides(const Math::OctreeObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
+    void Collides(Math::OctreeObject** others, size_t count, const Math::Vector3& velocity,
         const std::function<Iteration(GameObject& other, const Math::Vector3& move, bool& updateTrans)>& callback) const;
     /// Get the distance to another object
     float GetDistance(const GameObject* other) const
@@ -254,20 +251,7 @@ public:
     const Utils::Variant& GetVar(const std::string& name) const;
     void SetVar(const std::string& name, const Utils::Variant& val);
     /// Process octree raycast.
-    virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results);
-    void SetSortValue(float value) { sortValue_ = value; }
-    float GetSortValue() const { return sortValue_; }
-
-    /// Return octree octant.
-    Math::Octant* GetOctant() const
-    {
-        return octant_;
-    }
-    /// Move into another octree octant.
-    void SetOctant(Math::Octant* octant)
-    {
-        octant_ = octant;
-    }
+    void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results) override;
 
     bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
@@ -314,12 +298,9 @@ public:
     bool selectable_{ false };
     Components::StateComp stateComp_;
     ea::unique_ptr<Components::TriggerComp> triggerComp_;
-    /// Occluder flag. An object that can hide another object from view.
-    bool occluder_{ false };
-    /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
-    bool occludee_{ true };
+    uint32_t collisionLayer_{ 1 };
     uint32_t collisionMask_{ 0xFFFFFFFF };     // Collides with all by default
-    virtual Math::BoundingBox GetWorldBoundingBox() const
+    Math::BoundingBox GetWorldBoundingBox() const override
     {
         if (!collisionShape_)
             return Math::BoundingBox();
@@ -331,8 +312,8 @@ public:
             return Math::BoundingBox();
         return collisionShape_->GetBoundingBox();
     }
-    bool QueryObjects(ea::vector<GameObject*>& result, float radius, const Math::OctreeMatcher* matcher = nullptr);
-    bool QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher = nullptr);
+    bool QueryObjects(ea::vector<Math::OctreeObject*>& result, float radius, const Math::OctreeMatcher* matcher = nullptr);
+    bool QueryObjects(ea::vector<Math::OctreeObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher = nullptr);
 
     uint32_t GetRetriggerTimout() const;
     void SetRetriggerTimout(uint32_t value);
@@ -346,11 +327,6 @@ public:
         return os << "GameObject{" << static_cast<int>(value.GetType()) << "} id " << value.id_ << ": " << value.GetName();
     }
 };
-
-inline bool CompareObjects(GameObject* lhs, GameObject* rhs)
-{
-    return lhs->GetSortValue() < rhs->GetSortValue();
-}
 
 template <typename T>
 inline bool Is(const GameObject&)
@@ -422,9 +398,9 @@ public:
 class SentToPlayerMatcher final : public Math::OctreeMatcher
 {
 public:
-    bool Matches(const GameObject* object) const override
+    bool Matches(const Math::OctreeObject* object) const override
     {
-        return object && object->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer;
+        return object && static_cast<const GameObject*>(object)->GetType() > AB::GameProtocol::GameObjectType::__SentToPlayer;
     }
 };
 

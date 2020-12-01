@@ -99,6 +99,7 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
     Math::Quaternion offsetRot = Math::Quaternion::Identity;
     Math::ShapeType collShapeType = Math::ShapeType::None;
     // If we have a rigid body collide by default with everything. That's also Urho3Ds default.
+    uint32_t collsionLayer = 1;
     uint32_t colisionMask = 0xFFFFFFFF;
     for (const auto& comp : node.children("component"))
     {
@@ -229,6 +230,11 @@ bool IOScene::LoadSceneNode(Game::Scene& asset, const pugi::xml_node& node, cons
                 const pugi::xml_attribute& valueAttr = attr.attribute("value");
                 switch (nameHash)
                 {
+                case "Collision Layer"_Hash:
+                    collsionLayer = valueAttr.as_uint();
+                    if (objectPtr)
+                        objectPtr->collisionLayer = collsionLayer;
+                    break;
                 case "Collision Mask"_Hash:
                     colisionMask = valueAttr.as_uint();
                     if (objectPtr)

@@ -46,6 +46,7 @@ struct SceneObject
     Math::Vector3 size = Math::Vector3::One;
     Math::Vector3 offset = Math::Vector3::Zero;
     Math::Quaternion offsetRot = Math::Quaternion::Identity;
+    uint32_t collisionLayer = 1;
     uint32_t collisionMask = 0xFFFFFFFF;
     Math::ShapeType collsionShapeType = Math::ShapeType::None;
     ea::shared_ptr<Model> model;

@@ -20,13 +20,17 @@
  */
 
 #include "OctreeQuery.h"
-#include "GameObject.h"
 
 namespace Math {
 
+bool CollisionMaskOctreeMatcher::Matches(const OctreeObject* object) const
+{
+    return object->GetCollsionLayer() & mask_;
+}
+
 OctreeQuery::~OctreeQuery() = default;
 
-bool OctreeQuery::Matches(const Game::GameObject* object) const
+bool OctreeQuery::Matches(const OctreeObject* object) const
 {
     if (!matcher_)
         return true;
@@ -41,11 +45,11 @@ Intersection PointOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return box.IsInside(point_);
 }
 
-void PointOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
+void PointOctreeQuery::TestObjects(OctreeObject** start, OctreeObject** end, bool inside)
 {
     while (start != end)
     {
-        Game::GameObject* object = *start++;
+        OctreeObject* object = *start++;
 
         if (object == ignore_ || !Matches(object))
             continue;
@@ -62,11 +66,11 @@ Intersection SphereOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return sphere_.IsInside(box);
 }
 
-void SphereOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
+void SphereOctreeQuery::TestObjects(OctreeObject** start, OctreeObject** end, bool inside)
 {
     while (start != end)
     {
-        Game::GameObject* object = *start++;
+        OctreeObject* object = *start++;
 
         if (object == ignore_ || !Matches(object))
             continue;
@@ -83,11 +87,11 @@ Intersection BoxOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return box_.IsInside(box);
 }
 
-void BoxOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
+void BoxOctreeQuery::TestObjects(OctreeObject** start, OctreeObject** end, bool inside)
 {
     while (start != end)
     {
-        Game::GameObject* object = *start++;
+        OctreeObject* object = *start++;
         if (object == ignore_ || !Matches(object))
             continue;
         if (inside || box_.IsInsideFast(object->GetWorldBoundingBox()) != Intersection::Outside)

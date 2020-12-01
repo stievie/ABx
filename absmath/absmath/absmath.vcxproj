@@ -104,6 +104,9 @@
     <ClInclude Include="MathDefs.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix4.h" />
+    <ClInclude Include="Octree.h" />
+    <ClInclude Include="OctreeObject.h" />
+    <ClInclude Include="OctreeQuery.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QuadTree.h" />
@@ -131,6 +134,9 @@
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="Matrix4.cpp" />
+    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="OctreeObject.cpp" />
+    <ClCompile Include="OctreeQuery.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Quaternion.cpp" />

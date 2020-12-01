@@ -120,12 +120,6 @@
     <ClInclude Include="InputQueue.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Octree.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="OctreeQuery.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="MailBox.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -540,12 +534,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="InputQueue.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Octree.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="OctreeQuery.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MailBox.cpp">

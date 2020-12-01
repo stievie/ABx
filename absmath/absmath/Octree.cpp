@@ -19,9 +19,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Octree.h"
-#include "GameObject.h"
+#include <sa/Assert.h>
 
 namespace Math {
 
@@ -55,14 +54,14 @@ void Octree::SetSize(const BoundingBox& box, unsigned numLevels)
     numLevels_ = std::max(numLevels, 1U);
 }
 
-void Octree::AddObjectUpdate(Game::GameObject* object)
+void Octree::AddObjectUpdate(OctreeObject* object)
 {
     auto it = ea::find(objectUpdate_.begin(), objectUpdate_.end(), object);
     if (it == objectUpdate_.end())
         objectUpdate_.push_back(object);
 }
 
-void Octree::RemoveObjectUpdate(Game::GameObject* object)
+void Octree::RemoveObjectUpdate(OctreeObject* object)
 {
     auto it = ea::find(objectUpdate_.begin(), objectUpdate_.end(), object);
     if (it != objectUpdate_.end())
@@ -95,7 +94,7 @@ void Octree::RaycastSingle(RayOctreeQuery& query) const
     {
         object->SetSortValue(query.ray_.HitDistance(object->GetWorldBoundingBox()));
     }
-    ea::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), Game::CompareObjects);
+    ea::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), CompareObjects);
 
     // Then do the actual test according to the query, and early-out as possible
     float closestHit = Math::M_INFINITE;
@@ -127,7 +126,7 @@ void Octree::Update()
     if (objectUpdate_.empty())
         return;
 
-    for (Game::GameObject* o : objectUpdate_)
+    for (OctreeObject* o : objectUpdate_)
     {
         Octant* octant = o->GetOctant();
         // Skip if no octant or does not belong to this octree anymore
@@ -135,7 +134,7 @@ void Octree::Update()
             continue;
         const BoundingBox box = o->GetWorldBoundingBox();
         // Skip if still fits the current octant
-        if (o->occludee_ && octant->GetCullingBox().IsInside(box) == Intersection::Inside && octant->CheckObjectFit(box))
+        if (o->IsOccludee() && octant->GetCullingBox().IsInside(box) == Intersection::Inside && octant->CheckObjectFit(box))
             continue;
 
         InsertObject(o);
@@ -200,7 +199,7 @@ Octant* Octant::GetOrCreateChild(unsigned index)
     return children_[index];
 }
 
-void Octant::InsertObject(Game::GameObject* object)
+void Octant::InsertObject(OctreeObject* object)
 {
     const BoundingBox box = object->GetWorldBoundingBox();
 
@@ -208,13 +207,13 @@ void Octant::InsertObject(Game::GameObject* object)
     // Also if object is outside the root octant bounds, insert to root
     bool insertHere;
     if (this == root_)
-        insertHere = !object->occludee_ || cullingBox_.IsInside(box) != Intersection::Inside || CheckObjectFit(box);
+        insertHere = !object->IsOccludee() || cullingBox_.IsInside(box) != Intersection::Inside || CheckObjectFit(box);
     else
         insertHere = CheckObjectFit(box);
 
     if (insertHere)
     {
-        Octant* oldOctant = object->octant_;
+        Octant* oldOctant = object->GetOctant();
         if (oldOctant != this)
         {
             // Add first, then remove, because object count going to zero deletes the octree branch in question
@@ -281,14 +280,14 @@ bool Octant::CheckObjectFit(const BoundingBox& box) const
     return false;
 }
 
-void Octant::AddObject(Game::GameObject* object)
+void Octant::AddObject(OctreeObject* object)
 {
     object->SetOctant(this);
     objects_.push_back(object);
     IncObjectCount();
 }
 
-void Octant::RemoveObject(Game::GameObject* object, bool resetOctant /* = true */)
+void Octant::RemoveObject(OctreeObject* object, bool resetOctant /* = true */)
 {
     root_->RemoveObjectUpdate(object);
     auto it = ea::find(objects_.begin(), objects_.end(), object);
@@ -325,8 +324,8 @@ void Octant::GetObjectsInternal(OctreeQuery& query, bool inside) const
 
     if (objects_.size())
     {
-        Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
-        Game::GameObject** end = start + objects_.size();
+        OctreeObject** start = const_cast<OctreeObject**>(&objects_[0]);
+        OctreeObject** end = start + objects_.size();
         query.TestObjects(start, end, inside);
     }
 
@@ -345,12 +344,12 @@ void Octant::GetObjectsInternal(RayOctreeQuery& query) const
 
     if (objects_.size())
     {
-        Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
-        Game::GameObject** end = start + objects_.size();
+        OctreeObject** start = const_cast<OctreeObject**>(&objects_[0]);
+        OctreeObject** end = start + objects_.size();
 
         while (start != end)
         {
-            Game::GameObject* object = *start++;
+            OctreeObject* object = *start++;
             if (object == query.ignore_ || !query.Matches(object))
                 continue;
             object->ProcessRayQuery(query, query.result_);
@@ -364,7 +363,7 @@ void Octant::GetObjectsInternal(RayOctreeQuery& query) const
     }
 }
 
-void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<Game::GameObject*>& objects) const
+void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<OctreeObject*>& objects) const
 {
     float octantDist = query.ray_.HitDistance(cullingBox_);
     if (octantDist >= query.maxDistance_)
@@ -372,12 +371,12 @@ void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<Game::Game
 
     if (objects_.size())
     {
-        Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
-        Game::GameObject** end = start + objects_.size();
+        OctreeObject** start = const_cast<OctreeObject**>(&objects_[0]);
+        OctreeObject** end = start + objects_.size();
 
         while (start != end)
         {
-            Game::GameObject* object = *start++;
+            OctreeObject* object = *start++;
             objects.push_back(object);
         }
     }

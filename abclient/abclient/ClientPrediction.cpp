@@ -83,7 +83,7 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     const Vector3 half = bb.HalfSize();
     const BoundingBox newBB(pos - half, pos + half);
     PODVector<RigidBody*> result;
-    physWorld->GetRigidBodies(result, newBB);
+    physWorld->GetRigidBodies(result, newBB, rigidbody->GetCollisionMask());
     if (result.Size() < 2)
         return true;
 
@@ -106,8 +106,6 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
             auto* otherRb = (*i)->GetNode()->GetComponent<RigidBody>(true);
             if (!otherRb)
                 return true;
-            if (rigidbody->GetCollisionLayer() & otherRb->GetCollisionLayer())
-                return false;
             return true;
         }
 

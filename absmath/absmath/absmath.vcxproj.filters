@@ -102,6 +102,15 @@
     <ClInclude Include="TriangleMesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeQuery.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -168,6 +177,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TriangleMesh.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="OctreeQuery.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

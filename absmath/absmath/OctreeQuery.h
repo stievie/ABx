@@ -21,17 +21,14 @@
 
 #pragma once
 
-#include <absmath/BoundingBox.h>
-#include <absmath/Vector3.h>
-#include <absmath/Sphere.h>
-#include <absmath/Ray.h>
+#include "BoundingBox.h"
+#include "Vector3.h"
+#include "Sphere.h"
+#include "Ray.h"
 #include <eastl.hpp>
 #include <sa/Noncopyable.h>
 #include <sa/Compiler.h>
-
-namespace Game {
-class GameObject;
-}
+#include "OctreeObject.h"
 
 namespace Math {
 
@@ -40,7 +37,7 @@ namespace Math {
 class SA_NOVTABLE OctreeMatcher
 {
 public:
-    virtual bool Matches(const Game::GameObject* object) const = 0;
+    virtual bool Matches(const OctreeObject* object) const = 0;
 };
 
 template<typename Callback>
@@ -49,13 +46,25 @@ class CallbackOctreeMatcher final : public OctreeMatcher
 private:
     Callback callback_;
 public:
-    CallbackOctreeMatcher(Callback&& callback) :
+    explicit CallbackOctreeMatcher(Callback&& callback) :
         callback_(std::move(callback))
     { }
-    bool Matches(const Game::GameObject* object) const override
+    bool Matches(const OctreeObject* object) const override
     {
         return callback_(object);
     }
+};
+
+// Match collsion mask and collision layer. At least one layer must be in out mask.
+class CollisionMaskOctreeMatcher final : public OctreeMatcher
+{
+private:
+    uint32_t mask_;
+public:
+    explicit CollisionMaskOctreeMatcher(uint32_t mask) :
+        mask_(mask)
+    { }
+    bool Matches(const OctreeObject* object) const override;
 };
 
 class OctreeQuery
@@ -64,9 +73,9 @@ class OctreeQuery
 private:
     const OctreeMatcher* matcher_;
 protected:
-    const Game::GameObject* ignore_;
+    const OctreeObject* ignore_;
 public:
-    explicit OctreeQuery(ea::vector<Game::GameObject*>& result, const Game::GameObject* ignore, const OctreeMatcher* matcher) :
+    explicit OctreeQuery(ea::vector<OctreeObject*>& result, const OctreeObject* ignore, const OctreeMatcher* matcher) :
         matcher_(matcher),
         ignore_(ignore),
         result_(result)
@@ -76,17 +85,17 @@ public:
     /// Intersection test for an octant.
     virtual Intersection TestOctant(const BoundingBox& box, bool inside) = 0;
     /// Intersection test for objects.
-    virtual void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
-    bool Matches(const Game::GameObject* object) const;
+    virtual void TestObjects(OctreeObject** start, OctreeObject** end, bool inside) = 0;
+    bool Matches(const OctreeObject* object) const;
 
-    ea::vector<Game::GameObject*>& result_;
+    ea::vector<OctreeObject*>& result_;
 };
 
 class PointOctreeQuery final : public OctreeQuery
 {
 public:
-    PointOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const Vector3 point, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+    PointOctreeQuery(ea::vector<OctreeObject*>& result,
+        const Vector3 point, const OctreeObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
         OctreeQuery(result, ignore, matcher),
         point_(point)
     { }
@@ -94,7 +103,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(OctreeObject** start, OctreeObject** end, bool inside) override;
 
     Vector3 point_;
 };
@@ -103,8 +112,8 @@ class SphereOctreeQuery final : public OctreeQuery
 {
 public:
     /// Construct with sphere and query parameters.
-    SphereOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const Sphere& sphere, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+    SphereOctreeQuery(ea::vector<OctreeObject*>& result,
+        const Sphere& sphere, const OctreeObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
         OctreeQuery(result, ignore, matcher),
         sphere_(sphere)
     {}
@@ -112,7 +121,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(OctreeObject** start, OctreeObject** end, bool inside) override;
 
     /// Sphere.
     Sphere sphere_;
@@ -122,8 +131,8 @@ class BoxOctreeQuery final : public OctreeQuery
 {
 public:
     /// Construct with bounding box and query parameters.
-    BoxOctreeQuery(ea::vector<Game::GameObject*>& result,
-        const BoundingBox& box, const Game::GameObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
+    BoxOctreeQuery(ea::vector<OctreeObject*>& result,
+        const BoundingBox& box, const OctreeObject* ignore = nullptr, const OctreeMatcher* matcher = nullptr) :
         OctreeQuery(result, ignore, matcher),
         box_(box)
     {}
@@ -131,7 +140,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(OctreeObject** start, OctreeObject** end, bool inside) override;
 
     /// Bounding box.
     BoundingBox box_;
@@ -193,8 +202,7 @@ struct RayQueryResult
     Vector3 normal_;
     /// Distance from ray origin.
     float distance_{ 0.0f };
-    /// Drawable.
-    Game::GameObject* object_{ nullptr };
+    OctreeObject* object_{ nullptr };
 };
 
 class RayOctreeQuery
@@ -204,7 +212,7 @@ public:
     /// Construct with ray and query parameters.
     RayOctreeQuery(ea::vector<RayQueryResult>& result, const Ray& ray,
         float maxDistance = Math::M_INFINITE,
-        const Game::GameObject* ignore = nullptr,
+        const OctreeObject* ignore = nullptr,
         const OctreeMatcher* matcher = nullptr) :
         result_(result),
         ray_(ray),
@@ -213,7 +221,7 @@ public:
         matcher_(matcher)
     { }
 
-    bool Matches(const Game::GameObject* object) const
+    bool Matches(const OctreeObject* object) const
     {
         if (!matcher_)
             return true;
@@ -225,7 +233,7 @@ public:
     Ray ray_;
     /// Maximum ray distance.
     float maxDistance_;
-    const Game::GameObject* ignore_;
+    const OctreeObject* ignore_;
     const OctreeMatcher* matcher_;
 };
 

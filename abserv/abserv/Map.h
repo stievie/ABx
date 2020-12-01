@@ -22,7 +22,7 @@
 #pragma once
 
 #include "NavigationMesh.h"
-#include "Octree.h"
+#include <absmath/Octree.h>
 #include "Terrain.h"
 #include <absmath/Vector3.h>
 #include <pugixml.hpp>

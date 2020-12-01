@@ -109,15 +109,16 @@ void GameObject::UpdateRanges()
         return;
 
     ranges_.clear();
-    ea::vector<GameObject*> res;
+    ea::vector<Math::OctreeObject*> res;
 
     const SentToPlayerMatcher matcher;
     // Compass radius
     if (QueryObjects(res, RANGE_INTEREST, &matcher))
     {
         const Math::Vector3& myPos = GetPosition();
-        for (const auto& o : res)
+        for (const auto* oo : res)
         {
+            const auto* o = static_cast<const GameObject*>(oo);
             const Math::Vector3& objectPos = o->GetPosition();
             const float dist = myPos.Distance(objectPos) - AVERAGE_BB_EXTENDS;
             if (dist <= RANGE_AGGRO)
@@ -166,13 +167,13 @@ void GameObject::SetModel(ea::shared_ptr<Model> model)
     model_ = model;
 }
 
-bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
+bool GameObject::Collides(const Math::OctreeObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
 {
-    if (!collisionShape_ || !other || !other->GetCollisionShape())
+    if (!collisionShape_ || !other || !static_cast<const GameObject*>(other)->GetCollisionShape())
         return false;
 
     bool result = false;
-    GameObject* o = const_cast<GameObject*>(other);
+    Math::OctreeObject* o = const_cast<Math::OctreeObject*>(other);
     Collides(&o, 1, velocity, [&](GameObject&, const Math::Vector3& _move, bool&) -> Iteration {
         result = true;
         move = _move;
@@ -181,7 +182,7 @@ bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity
     return result;
 }
 
-void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3& velocity,
+void GameObject::Collides(Math::OctreeObject** others, size_t count, const Math::Vector3& velocity,
     const std::function<Iteration(GameObject& other, const Math::Vector3& move, bool& updateTrans)>& callback) const
 {
     ea::unique_ptr<Math::AbstractCollisionShape> myTransformedShape = collisionShape_->GetTranformedShapePtr(transformation_.GetMatrix());
@@ -190,7 +191,8 @@ void GameObject::Collides(GameObject** others, size_t count, const Math::Vector3
 
     for (size_t i = 0; i < count; ++i)
     {
-        GameObject* other = *others++;
+        GameObject* other = static_cast<GameObject*>(*others);
+        others++;
 
         if (other == this || !other->collisionShape_)
             continue;
@@ -243,7 +245,7 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<M
     }
 }
 
-bool GameObject::QueryObjects(ea::vector<GameObject*>& result, float radius, const Math::OctreeMatcher* matcher)
+bool GameObject::QueryObjects(ea::vector<Math::OctreeObject*>& result, float radius, const Math::OctreeMatcher* matcher)
 {
     if (!octant_)
         return false;
@@ -255,7 +257,7 @@ bool GameObject::QueryObjects(ea::vector<GameObject*>& result, float radius, con
     return true;
 }
 
-bool GameObject::QueryObjects(ea::vector<GameObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher)
+bool GameObject::QueryObjects(ea::vector<Math::OctreeObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher)
 {
     if (!octant_)
         return false;
@@ -285,7 +287,7 @@ bool GameObject::Raycast(ea::vector<GameObject*>& result,
         return false;
 
     for (const auto& o : res)
-        result.push_back(o.object_);
+        result.push_back(static_cast<GameObject*>(o.object_));
     return true;
 }
 
@@ -350,11 +352,12 @@ void GameObject::SetState(AB::GameProtocol::CreatureState state)
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 {
-    ea::vector<GameObject*> res;
+    ea::vector<Math::OctreeObject*> res;
     std::vector<GameObject*> luares;
     if (QueryObjects(res, radius))
     {
-        std::copy(res.begin(), res.end(), std::back_inserter(luares));
+        for (auto* oo : res)
+            luares.push_back(static_cast<GameObject*>(oo));
         return luares;
     }
     return std::vector<GameObject*>();
@@ -414,7 +417,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::StdVector3& directi
     result.reserve(query.result_.size());
     for (const auto& o : query.result_)
     {
-        result.push_back(o.object_);
+        result.push_back(static_cast<GameObject*>(o.object_));
     }
     return result;
 }

@@ -33,7 +33,7 @@
 #include "Item.h"
 #include "ItemFactory.h"
 #include "ItemsCache.h"
-#include "OctreeQuery.h"
+#include <absmath/OctreeQuery.h>
 #include "PartyManager.h"
 #include "Player.h"
 #include "ProgressComp.h"

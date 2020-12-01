@@ -202,7 +202,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         Math::RayQueryResult* hit = nullptr;
         for (auto& r : result)
         {
-            if (!Is<TerrainPatch>(r.object_) && owner_.CollisionMaskMatches(r.object_->GetCollisionMask()))
+            if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)) && owner_.CollisionMaskMatches(r.object_->GetCollsionLayer()))
             {
                 hit = &r;
                 break;
@@ -210,9 +210,10 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         }
         if (hit)
         {
+            GameObject* gameObject = static_cast<GameObject*>(hit->object_);
             // May be the object we are moving to.
             // A bit more than the approx. extends of an average creature BB.
-            if (hit->object_->transformation_.position_.Distance(dest) < AVERAGE_BB_EXTENDS * 2.0f)
+            if (gameObject->transformation_.position_.Distance(dest) < AVERAGE_BB_EXTENDS * 2.0f)
                 return {};
             // We need a copy of the hit, because when result runs out of scope the hit becomes invalid,
             // so we can't return just a pointer to the hit.

@@ -48,6 +48,7 @@ static void CreateObjects(Game::Map& map)
     {
         ea::shared_ptr<Game::GameObject> object = ea::make_shared<Game::GameObject>();
         object->SetName(so->name);
+        object->collisionLayer_ = so->collisionLayer;
         object->collisionMask_ = so->collisionMask;
         object->transformation_ = so->transformation;
 #ifdef DEBUG_LOAD
@@ -55,9 +56,9 @@ static void CreateObjects(Game::Map& map)
             " Shape " << (int)so->collsionShapeType << " Transformation" << object->transformation_ << std::endl;
 #endif
         if (so->occludee != Game::SceneObject::Occlude::Unset)
-            object->occludee_ = so->occludee == Game::SceneObject::Occlude::Yes;
+            object->SetOccludee(so->occludee == Game::SceneObject::Occlude::Yes);
         if (so->occluder != Game::SceneObject::Occlude::Unset)
-            object->occluder_ = so->occludee == Game::SceneObject::Occlude::Yes;
+            object->SetOccluder(so->occludee == Game::SceneObject::Occlude::Yes);
         switch (so->collsionShapeType)
         {
         case Math::ShapeType::BoundingBox:

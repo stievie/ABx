@@ -22,14 +22,11 @@
 #pragma once
 
 #include "OctreeQuery.h"
-#include <absmath/BoundingBox.h>
-#include <absmath/Vector3.h>
+#include "BoundingBox.h"
+#include "Vector3.h"
+#include "OctreeObject.h"
 #include <limits>
 #include <eastl.hpp>
-
-namespace Game {
-class GameObject;
-}
 
 namespace Math {
 
@@ -46,7 +43,7 @@ public:
     /// Return or create a child octant.
     Octant* GetOrCreateChild(unsigned index);
     /// Insert a drawable object by checking for fit recursively.
-    void InsertObject(Game::GameObject* object);
+    void InsertObject(OctreeObject* object);
     /// Reset root pointer recursively. Called when the whole octree is being destroyed.
     void ResetRoot();
     /// Delete child octant.
@@ -54,9 +51,9 @@ public:
     /// Check if a drawable object fits.
     bool CheckObjectFit(const BoundingBox& box) const;
     /// Add a drawable object to this octant.
-    void AddObject(Game::GameObject* object);
+    void AddObject(OctreeObject* object);
     /// Remove a drawable object from this octant.
-    void RemoveObject(Game::GameObject* object, bool resetOctant = true);
+    void RemoveObject(OctreeObject* object, bool resetOctant = true);
     Octree* GetRoot() const { return root_; }
     const BoundingBox& GetCullingBox() const { return cullingBox_; }
 protected:
@@ -66,7 +63,7 @@ protected:
     /// Return drawable objects by a ray query, called internally.
     void GetObjectsInternal(RayOctreeQuery& query) const;
     /// Return drawable objects only for a threaded ray query, called internally.
-    void GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<Game::GameObject*>& objects) const;
+    void GetObjectsOnlyInternal(RayOctreeQuery& query, ea::vector<OctreeObject*>& objects) const;
     BoundingBox worldBoundingBox_;
     /// Bounding box used for drawable object fitting.
     BoundingBox cullingBox_;
@@ -79,7 +76,7 @@ protected:
     Octree* root_;
     /// Octant index relative to its siblings or ROOT_INDEX for root octant
     unsigned index_;
-    ea::vector<Game::GameObject*> objects_;
+    ea::vector<OctreeObject*> objects_;
     /// Number of objects in this octant and child octants.
     unsigned numObjects_;
     /// Increase drawable object count recursively.
@@ -113,8 +110,8 @@ public:
     virtual ~Octree() override;
     void SetSize(const BoundingBox& box, unsigned numLevels);
     void Update();
-    void AddObjectUpdate(Game::GameObject* object);
-    void RemoveObjectUpdate(Game::GameObject* object);
+    void AddObjectUpdate(OctreeObject* object);
+    void RemoveObjectUpdate(OctreeObject* object);
     /// Return drawable objects by a query.
     void GetObjects(OctreeQuery& query) const;
     /// Return drawable objects by a ray query.
@@ -124,10 +121,10 @@ public:
 
     /// Subdivision level.
     unsigned numLevels_;
-    ea::vector<Game::GameObject*> objectUpdate_;
+    ea::vector<OctreeObject*> objectUpdate_;
 private:
     /// Ray query temporary list of objects.
-    mutable ea::vector<Game::GameObject*> rayQueryObjects_;
+    mutable ea::vector<OctreeObject*> rayQueryObjects_;
 };
 
 }
