@@ -41,6 +41,8 @@ protected:
     bool occluder_{ false };
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
     bool occludee_{ true };
+    uint32_t collisionLayer_{ 1 };
+    uint32_t collisionMask_{ 0xFFFFFFFF };     // Collides with all by default
 public:
     virtual ~OctreeObject();
     void SetSortValue(float value) { sortValue_ = value; }
@@ -51,9 +53,12 @@ public:
     void SetOccludee(bool value) { occludee_ = value; }
     bool IsOccluder() const { return occluder_; }
     void SetOccluder(bool value) { occluder_ = value; }
+    void SetCollisionLayer(uint32_t value) { collisionLayer_ = value; }
+    uint32_t GetCollsionLayer() const { return collisionLayer_; }
+    void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
+    uint32_t GetCollisionMask() const { return collisionMask_; }
+    bool CollisionMaskMatches(uint32_t layer) const { return (layer & collisionMask_); }
 
-    virtual uint32_t GetCollsionLayer() const = 0;
-    virtual uint32_t GetCollisionMask() const = 0;
     virtual BoundingBox GetWorldBoundingBox() const = 0;
     virtual void ProcessRayQuery(const RayOctreeQuery& query, ea::vector<RayQueryResult>& results) = 0;
 };

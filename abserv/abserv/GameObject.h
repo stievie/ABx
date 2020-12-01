@@ -199,11 +199,6 @@ public:
     bool HasGame() const { return hasGame_; }
     bool IsSelectable() const { return selectable_; }
     void SetSelectable(bool value) { selectable_ = value; }
-    void SetCollisionLayer(uint32_t value) { collisionLayer_ = value; }
-    uint32_t GetCollsionLayer() const override final { return collisionLayer_; }
-    void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
-    uint32_t GetCollisionMask() const override final { return collisionMask_; }
-    bool CollisionMaskMatches(uint32_t layer) const { return (layer & collisionMask_); }
     Math::AbstractCollisionShape* GetCollisionShape() const
     {
         if (!collisionShape_)
@@ -298,8 +293,6 @@ public:
     bool selectable_{ false };
     Components::StateComp stateComp_;
     ea::unique_ptr<Components::TriggerComp> triggerComp_;
-    uint32_t collisionLayer_{ 1 };
-    uint32_t collisionMask_{ 0xFFFFFFFF };     // Collides with all by default
     Math::BoundingBox GetWorldBoundingBox() const override
     {
         if (!collisionShape_)

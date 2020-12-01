@@ -48,8 +48,8 @@ static void CreateObjects(Game::Map& map)
     {
         ea::shared_ptr<Game::GameObject> object = ea::make_shared<Game::GameObject>();
         object->SetName(so->name);
-        object->collisionLayer_ = so->collisionLayer;
-        object->collisionMask_ = so->collisionMask;
+        object->SetCollisionLayer(so->collisionLayer);
+        object->SetCollisionMask(so->collisionMask);
         object->transformation_ = so->transformation;
 #ifdef DEBUG_LOAD
         LOG_DEBUG << *object << ": Mask " << object->collisionMask_ <<
