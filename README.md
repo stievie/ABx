@@ -10,7 +10,7 @@ Project page: https://www.gamedev.net/projects/1587-abx
 
 Blog: https://www.gamedev.net/blogs/blog/3042-trill41/
 
-Alternative repository: https://codeberg.org/trill/ABx
+Alternative repository: https://codeberg.org/trill/ABx (sometimes more up to date)
 
 ## License
 

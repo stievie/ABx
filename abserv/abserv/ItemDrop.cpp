@@ -50,7 +50,7 @@ ItemDrop::ItemDrop(uint32_t itemId) :
 {
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&ItemDrop::OnClicked, this, std::placeholders::_1));
     // Drops can not hide other objects
-    occluder_ = false;
+    SetOccluder(false);
     selectable_ = true;
     auto* cache = GetSubsystem<ItemsCache>();
     auto* item = cache->Get(itemId);

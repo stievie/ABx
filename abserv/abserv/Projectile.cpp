@@ -50,7 +50,7 @@ Projectile::Projectile(const std::string& itemUuid) :
             Math::Vector3::Zero, PROJECTILE_SIZE)
     );
     // Projectile can not hide other objects
-    occluder_ = false;
+    SetOccluder(false);
     undestroyable_ = true;
     selectable_ = false;
     itemUuid_ = itemUuid;

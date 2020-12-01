@@ -69,10 +69,10 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
 
     const bool moved = oldPosition_ != owner_.transformation_.position_;
 
-    if (moved && owner_.octant_)
+    if (moved && owner_.GetOctant())
     {
         // We need to do it here because this is not called from Update()
-        Math::Octree* octree = owner_.octant_->GetRoot();
+        Math::Octree* octree = owner_.GetOctant()->GetRoot();
         octree->AddObjectUpdate(&owner_);
     }
 

@@ -249,23 +249,23 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<M
 
 bool GameObject::QueryObjects(ea::vector<Math::OctreeObject*>& result, float radius, const Math::OctreeMatcher* matcher)
 {
-    if (!octant_)
+    if (!GetOctant())
         return false;
 
     Math::Sphere sphere(transformation_.position_, radius);
     Math::SphereOctreeQuery query(result, sphere, this, matcher);
-    Math::Octree* octree = octant_->GetRoot();
+    Math::Octree* octree = GetOctant()->GetRoot();
     octree->GetObjects(query);
     return true;
 }
 
 bool GameObject::QueryObjects(ea::vector<Math::OctreeObject*>& result, const Math::BoundingBox& box, const Math::OctreeMatcher* matcher)
 {
-    if (!octant_)
+    if (!GetOctant())
         return false;
 
     Math::BoxOctreeQuery query(result, box, this, matcher);
-    Math::Octree* octree = octant_->GetRoot();
+    Math::Octree* octree = GetOctant()->GetRoot();
     octree->GetObjects(query);
     return true;
 }
@@ -281,7 +281,7 @@ bool GameObject::Raycast(ea::vector<GameObject*>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
-    if (!octant_)
+    if (!GetOctant())
         return false;
 
     ea::vector<Math::RayQueryResult> res;
@@ -297,12 +297,12 @@ bool GameObject::RaycastWithResult(ea::vector<Math::RayQueryResult>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
     float maxDist /* = Math::M_INFINITE */) const
 {
-    if (!octant_)
+    if (!GetOctant())
         return false;
 
     const Math::Ray ray(position, direction);
     Math::RayOctreeQuery query(result, ray, maxDist, this);
-    Math::Octree* octree = octant_->GetRoot();
+    Math::Octree* octree = GetOctant()->GetRoot();
     octree->Raycast(query);
     return true;
 }
@@ -317,7 +317,7 @@ bool GameObject::IsObjectInSight(const GameObject& object) const
 
     for (const auto* o : result)
     {
-        if (!o->occluder_)
+        if (!o->IsOccluder())
             continue;
 
         // result is sorted by distance
@@ -405,7 +405,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::StdVector3& directi
 {
     std::vector<GameObject*> result;
 
-    if (!octant_)
+    if (!GetOctant())
         return result;
 
     const Math::Vector3& src = transformation_.position_;
@@ -414,7 +414,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::StdVector3& directi
     const Math::Ray ray(src, dest);
     Math::RayOctreeQuery query(res, ray, src.Distance(dest));
     query.ignore_ = this;
-    Math::Octree* octree = octant_->GetRoot();
+    Math::Octree* octree = GetOctant()->GetRoot();
     octree->Raycast(query);
     result.reserve(query.result_.size());
     for (const auto& o : query.result_)
@@ -655,9 +655,9 @@ void GameObject::AddToOctree()
 #endif
         g->map_->octree_->InsertObject(this);
         // Initial update.
-        if (octant_)
+        if (GetOctant())
         {
-            Math::Octree* octree = octant_->GetRoot();
+            Math::Octree* octree = GetOctant()->GetRoot();
             octree->AddObjectUpdate(this);
         }
 #ifdef DEBUG_OCTREE
@@ -671,12 +671,12 @@ void GameObject::AddToOctree()
 
 void GameObject::RemoveFromOctree()
 {
-    if (octant_)
+    if (GetOctant())
     {
 #ifdef DEBUG_OCTREE
         LOG_DEBUG << "Removing " << *this << " from Octree" << std::endl;
 #endif
-        octant_->RemoveObject(this);
+        GetOctant()->RemoveObject(this);
     }
 }
 

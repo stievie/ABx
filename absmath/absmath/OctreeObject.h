@@ -34,7 +34,7 @@ class Octant;
 
 class SA_NOVTABLE OctreeObject
 {
-protected:
+private:
     float sortValue_{ 0.0f };
     Octant* octant_{ nullptr };
     /// Occluder flag. An object that can hide another object from view.

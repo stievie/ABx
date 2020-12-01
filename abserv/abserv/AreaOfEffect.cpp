@@ -63,9 +63,9 @@ AreaOfEffect::AreaOfEffect() :
             Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
     );
     // AOE can not hide other objects
-    occluder_ = false;
+    SetOccluder(false);
     // AOE usually not colliding
-    collisionMask_ = 0;
+    SetCollisionLayer(0);
     selectable_ = false;
 
     InitializeLua();

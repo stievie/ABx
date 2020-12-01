@@ -170,7 +170,7 @@ Actor::Actor() :
         ea::make_unique<Math::CollisionShape<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
-    occluder_ = true;
+    SetOccluder(true);
     // By default Actors can be selected
     selectable_ = true;
 }
@@ -985,9 +985,9 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     collisionComp_->Update(timeElapsed);
     progressComp_->Update(timeElapsed);
 
-    if (moveComp_->moved_ && octant_)
+    if (moveComp_->moved_ && GetOctant())
     {
-        Math::Octree* octree = octant_->GetRoot();
+        Math::Octree* octree = GetOctant()->GetRoot();
         octree->AddObjectUpdate(this);
     }
 

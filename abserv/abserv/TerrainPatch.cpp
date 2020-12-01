@@ -34,10 +34,10 @@ TerrainPatch::TerrainPatch(ea::shared_ptr<Terrain> owner,
     offset_(offset),
     size_(size)
 {
-    occluder_ = true;
-    occludee_ = true;
+    SetOccluder(true);
+    SetOccludee(true);
     // Does not collide
-    collisionMask_ = 0;
+    SetCollisionLayer(0);
 
     const float originX = static_cast<float>(owner->numPatches_.x_ * size.x_) * 0.5f;
     const float originY = static_cast<float>(owner->numPatches_.y_ * size.y_) * 0.5f;
