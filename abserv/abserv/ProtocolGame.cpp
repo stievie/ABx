@@ -36,6 +36,8 @@
 #include <abscommon/StringUtils.h>
 #include <sa/time.h>
 
+//#define DEBUG_NET
+
 namespace Net {
 
 std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;

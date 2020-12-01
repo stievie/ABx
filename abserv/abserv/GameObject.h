@@ -22,7 +22,8 @@
 #pragma once
 
 #include <abshared/Damage.h>
-#include <absmath/Octree.h>
+#include <absmath/OctreeObject.h>
+#include <absmath/OctreeQuery.h>
 #include "StateComp.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Skill.h>
@@ -35,7 +36,6 @@
 #include <absmath/CollisionShape.h>
 #include <absmath/Matrix4.h>
 #include <absmath/Transformation.h>
-#include <absmath/OctreeObject.h>
 #include <kaguya/kaguya.hpp>
 #include <mutex>
 #include <sa/Events.h>
@@ -105,8 +105,6 @@ inline const float AVERAGE_BB_EXTENDS = 0.3f;
 
 class GameObject : public Math::OctreeObject, public ea::enable_shared_from_this<GameObject>
 {
-    friend class Math::Octant;
-    friend class Math::Octree;
     NON_COPYABLE(GameObject)
 public:
     static sa::IdGenerator<uint32_t> objectIds_;

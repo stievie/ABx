@@ -298,19 +298,21 @@ bool Party::IsLeader(const Player& player) const
 {
     if (members_.size() == 0)
         return false;
-    if (auto p = members_[0].lock())
-        return p->id_ == player.id_;
-    return false;
+    auto p = members_.front().lock();
+    if (!p)
+        return false;
+    return p->id_ == player.id_;
 }
 
 Player* Party::GetLeader() const
 {
     if (members_.size() == 0)
         return nullptr;
-    if (auto p = members_[0].lock())
-        // Note: Returns nullptr when its not a Player
-        return To<Player>(p.get());
-    return nullptr;
+    auto p = members_.front().lock();
+    if (!p)
+        return nullptr;
+    // Note: Returns nullptr when its not a Player
+    return To<Player>(p.get());
 }
 
 void Party::Defeat()

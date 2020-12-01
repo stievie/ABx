@@ -267,6 +267,9 @@ ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
 
 void Game::BroadcastPlayerLoggedIn(ea::shared_ptr<Player> player)
 {
+    if (!player)
+        return;
+
     if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
         return;
@@ -277,6 +280,9 @@ void Game::BroadcastPlayerLoggedIn(ea::shared_ptr<Player> player)
 
 void Game::BroadcastPlayerLoggedOut(ea::shared_ptr<Player> player)
 {
+    if (!player)
+        return;
+
     if (player->account_.onlineStatus == AB::Entities::OnlineStatusInvisible ||
         player->account_.onlineStatus == AB::Entities::OnlineStatusOffline)
         return;

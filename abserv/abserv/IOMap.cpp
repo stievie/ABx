@@ -52,7 +52,7 @@ static void CreateObjects(Game::Map& map)
         object->SetCollisionMask(so->collisionMask);
         object->transformation_ = so->transformation;
 #ifdef DEBUG_LOAD
-        LOG_DEBUG << *object << ": Mask " << object->collisionMask_ <<
+        LOG_DEBUG << *object << ": Layer " << object->GetCollisionLayer() << " Mask " << object->GetCollisionMask() <<
             " Shape " << (int)so->collsionShapeType << " Transformation" << object->transformation_ << std::endl;
 #endif
         if (so->occludee != Game::SceneObject::Occlude::Unset)
