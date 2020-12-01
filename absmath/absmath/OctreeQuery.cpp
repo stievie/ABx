@@ -25,7 +25,7 @@ namespace Math {
 
 bool CollisionMaskOctreeMatcher::Matches(const OctreeObject* object) const
 {
-    return object->GetCollsionLayer() & mask_;
+    return object->GetCollisionLayer() & mask_;
 }
 
 OctreeQuery::~OctreeQuery() = default;

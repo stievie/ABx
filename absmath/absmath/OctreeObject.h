@@ -54,7 +54,7 @@ public:
     bool IsOccluder() const { return occluder_; }
     void SetOccluder(bool value) { occluder_ = value; }
     void SetCollisionLayer(uint32_t value) { collisionLayer_ = value; }
-    uint32_t GetCollsionLayer() const { return collisionLayer_; }
+    uint32_t GetCollisionLayer() const { return collisionLayer_; }
     void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
     uint32_t GetCollisionMask() const { return collisionMask_; }
     bool CollisionMaskMatches(uint32_t layer) const { return (layer & collisionMask_); }

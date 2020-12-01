@@ -146,6 +146,10 @@ private:
     std::vector<GameObject*> _LuaGetObjectsInside();
     bool _LuaIsObjectInSight(const GameObject* object) const;
     std::vector<Actor*> _LuaGetActorsInRange(Ranges range) const;
+    uint32_t _LuaGetCollisionMask() const { return GetCollisionMask(); }
+    void _LuaSetCollisionMask(uint32_t value) { return SetCollisionMask(value); }
+    uint32_t _LuaGetCollisionLayer() const { return GetCollisionLayer(); }
+    void _LuaSetCollisionLayer(uint32_t value) { return SetCollisionLayer(value); }
 protected:
     std::string name_;
     Utils::VariantMap variables_;

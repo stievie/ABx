@@ -202,7 +202,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         Math::RayQueryResult* hit = nullptr;
         for (auto& r : result)
         {
-            if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)) && owner_.CollisionMaskMatches(r.object_->GetCollsionLayer()))
+            if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)) && owner_.CollisionMaskMatches(r.object_->GetCollisionLayer()))
             {
                 hit = &r;
                 break;

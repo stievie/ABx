@@ -136,7 +136,7 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << owner_ << " colliding with " << other << std::endl;
 #endif
-    if (owner_.CollisionMaskMatches(other.GetCollsionLayer()))
+    if (owner_.CollisionMaskMatches(other.GetCollisionLayer()))
     {
         // Don't move the character when the object actually does not collide,
         // but we may still need the trigger stuff.
