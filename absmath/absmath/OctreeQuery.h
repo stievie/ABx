@@ -55,7 +55,7 @@ public:
     }
 };
 
-// Match collsion mask and collision layer. At least one layer must be in out mask.
+// Match collsion mask and collision layer. At least one layer must be in our mask.
 class CollisionMaskOctreeMatcher final : public OctreeMatcher
 {
 private:

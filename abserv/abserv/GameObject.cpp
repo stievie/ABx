@@ -655,9 +655,9 @@ void GameObject::AddToOctree()
 #endif
         g->map_->octree_->InsertObject(this);
         // Initial update.
-        if (GetOctant())
+        if (auto* o = GetOctant())
         {
-            Math::Octree* octree = GetOctant()->GetRoot();
+            Math::Octree* octree = o->GetRoot();
             octree->AddObjectUpdate(this);
         }
 #ifdef DEBUG_OCTREE
@@ -671,12 +671,12 @@ void GameObject::AddToOctree()
 
 void GameObject::RemoveFromOctree()
 {
-    if (GetOctant())
+    if (auto* o = GetOctant())
     {
 #ifdef DEBUG_OCTREE
         LOG_DEBUG << "Removing " << *this << " from Octree" << std::endl;
 #endif
-        GetOctant()->RemoveObject(this);
+        o->RemoveObject(this);
     }
 }
 

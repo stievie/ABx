@@ -384,9 +384,9 @@ template<typename T>
 class ObjectTypeMatcher final : public Math::OctreeMatcher
 {
 public:
-    bool Matches(const GameObject* object) const override
+    bool Matches(const Math::OctreeObject* object) const override
     {
-        return Is<T>(object);
+        return object && Is<T>(static_cast<const GameObject*>(object));
     }
 };
 
