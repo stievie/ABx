@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
-<node id="12">
+<node id="16777751">
 	<attribute name="Is Enabled" value="true" />
 	<attribute name="Name" value="PoisonDart" />
 	<attribute name="Tags" />
-	<attribute name="Position" value="0.993654 0.228339 0.0982928" />
-	<attribute name="Rotation" value="1 0 0 0" />
+	<attribute name="Position" value="0 0 0" />
+	<attribute name="Rotation" value="0.707107 0 0.707107 0" />
 	<attribute name="Scale" value="1 1 1" />
 	<attribute name="Variables" />
-	<component type="StaticModel" id="16777503">
+	<component type="StaticModel" id="16777542">
 		<attribute name="Model" value="Model;Models/PoisonDart.mdl" />
 		<attribute name="Material" value="Material;Materials/PoisonDart.xml" />
 	</component>
-	<component type="RigidBody" id="16777504">
-		<attribute name="Physics Position" value="0.993654 0.228339 0.0982928" />
+	<component type="RigidBody" id="16777543">
+		<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
 		<attribute name="Use Gravity" value="false" />
 	</component>
-	<component type="CollisionShape" id="16777505">
+	<component type="CollisionShape" id="16777544">
 		<attribute name="Size" value="0.322905 0.061879 0.0230853" />
 		<attribute name="Offset Position" value="0.00586729 0.0014052 0.000474012" />
 	</component>
-	<component type="RibbonTrail" id="5">
+	<component type="RibbonTrail" id="16777545">
 		<attribute name="Max Lights" value="1" />
 		<attribute name="Material" value="Material;Materials/RibbonTrail.xml" />
 		<attribute name="Tail Lifetime" value="0.1" />

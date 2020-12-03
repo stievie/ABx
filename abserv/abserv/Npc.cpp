@@ -439,8 +439,7 @@ void Npc::Whisper(Player* player, const std::string& message)
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 {
     ASSERT(HasGame());
-    auto game = GetGame();
-    game->AddProjectile(itemUuid, GetPtr<Actor>(), target->GetPtr<Actor>());
+    GetGame()->AddProjectile(itemUuid, GetPtr<Actor>(), target->GetPtr<Actor>());
 }
 
 void Npc::OnSelected(Actor* selector)

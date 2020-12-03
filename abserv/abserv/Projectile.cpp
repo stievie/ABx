@@ -227,7 +227,6 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     transformation_.position_.y_ = Math::Lerp(startPos_.y_, targetPos_.y_, f) +
         (sinf(f * Math::M_PIF) * ((startDistance_ / 10.0f) / speed));
 
-    const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);
 
     if (item_)
@@ -238,7 +237,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     {
         Remove();
     }
-    else if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 5.0f)
+    else if (dist < (speed * static_cast<float>(timeElapsed)) / 110.0f)
     {
         // We may not really collide because of the low game update rate, so let's
         // approximate if we would collide
