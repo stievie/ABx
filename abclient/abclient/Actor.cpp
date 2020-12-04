@@ -39,6 +39,7 @@
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
 #include <abshared/Defines.h>
+#include <Urho3D/Physics/RigidBody.h>
 
 //#include <Urho3D/DebugNew.h>
 
