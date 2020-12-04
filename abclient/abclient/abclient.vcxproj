@@ -382,7 +382,6 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="CreditsWindow.h" />
-    <ClInclude Include="Defines.h" />
     <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="EffectsWindow.h" />
     <ClInclude Include="FormatText.h" />

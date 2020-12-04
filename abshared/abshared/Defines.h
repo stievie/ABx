@@ -21,4 +21,9 @@
 
 #pragma once
 
-static constexpr unsigned COLLISION_LAYER_CAMERA = 2;
+namespace Game {
+
+inline constexpr unsigned COLLISION_LAYER_CAMERA = 2;
+inline constexpr unsigned COLLISION_LAYER_ALL = 0xFFFFFFFF;
+
+}

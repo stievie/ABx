@@ -133,14 +133,14 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
     GameObject& other, const Math::Vector3& move,
     bool& updateTrans)
 {
-#ifdef DEBUG_COLLISION
-    LOG_DEBUG << owner_ << " colliding with " << other << std::endl;
-#endif
     if (owner_.CollisionMaskMatches(other.GetCollisionLayer()))
     {
+#ifdef DEBUG_COLLISION
+        LOG_DEBUG << owner_ << "(" << owner_.GetCollisionMask() << ")" << " colliding with " <<
+            other << "(" << other.GetCollisionLayer() << ")" << std::endl;
+#endif
         // Don't move the character when the object actually does not collide,
         // but we may still need the trigger stuff.
-
         if (move.Equals(Math::Vector3::Zero))
         {
             // There was no simple sliding solution, let's try the complicated one
@@ -155,9 +155,9 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
     }
 
     // Need to notify both, because we test collisions only for moving objects
-    // Notify ci for colliding with us
+    // Notify other for colliding with us
     other.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &owner_);
-    // Notify us for colliding with ci
+    // Notify us for colliding with other
     owner_.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &other);
 
     return Iteration::Continue;

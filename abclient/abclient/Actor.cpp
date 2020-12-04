@@ -21,7 +21,6 @@
 
 // Most of it taken from the Character Demo
 
-
 #include "Actor.h"
 #include "BaseLevel.h"
 #include "ChatFilter.h"
@@ -39,6 +38,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
+#include <abshared/Defines.h>
 
 //#include <Urho3D/DebugNew.h>
 
@@ -173,9 +173,8 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
         resolver.Resolve();
         node_->SetTransform(position, rotation, scale);
         adjNode->ApplyAttributes();
-        if (adjNode->GetComponent<AnimatedModel>(true))
+        if (AnimatedModel* animModel = adjNode->GetComponent<AnimatedModel>(true))
         {
-            AnimatedModel* animModel = adjNode->GetComponent<AnimatedModel>(true);
             type_ = Actor::Animated;
             animController_ = adjNode->CreateComponent<AnimationController>();
             model_ = animModel;
@@ -184,6 +183,11 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
         {
             type_ = Actor::Static;
             model_ = adjNode->GetComponent<StaticModel>(true);
+        }
+        if (RigidBody* rigidBody = adjNode->GetComponent<RigidBody>(true))
+        {
+            // Collide on all layers but camera layer
+            rigidBody->SetCollisionMask(Game::COLLISION_LAYER_ALL & ~Game::COLLISION_LAYER_CAMERA);
         }
         Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
         soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();

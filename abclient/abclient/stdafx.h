@@ -57,7 +57,6 @@
 #include <string>
 #include <sstream>
 
-#include "Defines.h"
 #include "Config.h"
 
 #define USE_STANDALONE_ASIO

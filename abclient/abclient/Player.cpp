@@ -38,6 +38,7 @@
 #include <Urho3D/Physics/RigidBody.h>
 #include <abshared/Attributes.h>
 #include <abshared/Mechanic.h>
+#include <abshared/Defines.h>
 #include <algorithm>
 #include <sa/time.h>
 
@@ -579,7 +580,7 @@ void Player::PostUpdate(float timeStep)
         const Vector3 rayDir = dir * Vector3::BACK;
         PhysicsRaycastResult result;
         node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
-            Ray(aimPoint, rayDir), rayDistance + 0.5f, COLLISION_LAYER_CAMERA);
+            Ray(aimPoint, rayDir), rayDistance + 0.5f, Game::COLLISION_LAYER_CAMERA);
         rayDistance = Clamp(Min(result.distance_ - 1.5f, rayDistance), CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 
         newCamPos = aimPoint + rayDir * rayDistance;
