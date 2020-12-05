@@ -41,6 +41,8 @@ PRAGMA_WARNING_DISABLE_GCC("-Wimplicit-fallthrough=0")
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 PRAGMA_WARNING_POP
 
+static bool flip = false;
+
 static void InitCli(sa::arg_parser::cli& cli)
 {
     cli.push_back({ "help", { "-h", "--help", "-?" }, "Show help",
@@ -74,6 +76,8 @@ static void InitCli(sa::arg_parser::cli& cli)
         false, true, sa::arg_parser::option_type::number });
     cli.push_back({ "pwoy", { "-pwoy", "--patch-world-origin-y" }, "Patch world origin (.hm only)",
         false, true, sa::arg_parser::option_type::number });
+    cli.push_back({ "flip", { "-f", "--flip" }, "Vertically flip image (.png output only)",
+        false, false, sa::arg_parser::option_type::none });
 
     cli.push_back({ "output", { "-o", "--output" }, "Output file, either .png, .hm, .json or .txt",
         true, true, sa::arg_parser::option_type::string });
@@ -110,7 +114,9 @@ static void CreateImage(const ea::vector<float>& heights, const std::string& fil
             {
                 unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
 
-                const size_t _index = ((size_t)sizeY - (size_t)y - 1) * (size_t)sizeX + (size_t)x;
+                const size_t _index = flip ?
+                    (size_t)y * (size_t)sizeX + (size_t)x :
+                    ((size_t)sizeY - (size_t)y - 1) * (size_t)sizeX + (size_t)x;
                 data[_index * comps] = heightValue;
                 if (comps > 1)
                     data[(_index * comps) + 1] = heightValue;
@@ -327,6 +333,8 @@ int main(int argc, char** argv)
         ShowHelp(_cli);
         return 1;
     }
+
+    flip = sa::arg_parser::get_value<bool>(parsedArgs, "flip", false);
 
     auto actval = sa::arg_parser::get_value<std::string>(parsedArgs, "0");
     if (!actval.has_value())
