@@ -5,12 +5,12 @@
 		<attribute name="Material" value="Material;Materials/Pedestrianfemale2_Eyebrow010_Eyebrow010.xml;Materials/Pedestrianfemale2_Eyelashes02_Bodymaterial.xml;Materials/Pedestrianfemale2_F_dress_09_F_dress_09.xml;Materials/Pedestrianfemale2_Female_generic_Lightskinfemale_natural_makeup.xml;Materials/Pedestrianfemale2_Heelsandal_Heelsandals_young_caucasian_female.xml;Materials/Pedestrianfemale2_Long_alpha7_Long_alpha7.xml;Materials/Pedestrianfemale2_Low-poly_Eye_brown.xml"/>
 	</component>
 	<component id="16777217" type="RigidBody">
-		<attribute name="Collision Layer" value="1"/>
+		<attribute name="Collision Layer" value="3"/>
 		<attribute name="Use Gravity" value="false"/>
 	</component>
 	<component id="16777218" type="CollisionShape">
 		<attribute name="Shape Type" value="Box"/>
-    <attribute name="Size" value="0.3 1.7 0.5"/>
+    <attribute name="Size" value="0.2 1.7 0.2"/>
     <attribute name="Offset Position" value="0 0.85 0"/>
 	</component>
 </node>

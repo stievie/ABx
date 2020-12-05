@@ -60,12 +60,12 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 
 #ifdef DEBUG_COLLISION
     LOG_DEBUG << "Manifold:" << std::endl;
-    LOG_DEBUG << "  position: " << manifold.position << std::endl;
-    LOG_DEBUG << "  velocity: " << manifold.velocity << std::endl;
+    LOG_DEBUG << "  position: " << manifold.position * manifold.radius << std::endl;
+    LOG_DEBUG << "  velocity: " << manifold.velocity * manifold.radius << std::endl;
     LOG_DEBUG << "  radius: " << manifold.radius << std::endl;
 
-    LOG_DEBUG << "  nearestIntersectionPoint: " << manifold.nearestIntersectionPoint << std::endl;
-    LOG_DEBUG << "  nearestPolygonIntersectionPoint: " << manifold.nearestPolygonIntersectionPoint << std::endl;
+    LOG_DEBUG << "  nearestIntersectionPoint: " << manifold.nearestIntersectionPoint * manifold.radius << std::endl;
+    LOG_DEBUG << "  nearestPolygonIntersectionPoint: " << manifold.nearestPolygonIntersectionPoint * manifold.radius << std::endl;
     LOG_DEBUG << "  nearestDistance: " << manifold.nearestDistance << std::endl;
     LOG_DEBUG << "  stuck: " << manifold.stuck << std::endl;
     LOG_DEBUG << "  foundCollision: " << manifold.foundCollision << std::endl;
@@ -139,18 +139,24 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
         LOG_DEBUG << owner_ << "(" << owner_.GetCollisionMask() << ")" << " colliding with " <<
             other << "(" << other.GetCollisionLayer() << ")" << std::endl;
 #endif
-        // Don't move the character when the object actually does not collide,
-        // but we may still need the trigger stuff.
-        if (move.Equals(Math::Vector3::Zero))
+        // If it's a triangle mesh then ist most likely a building and we may be able to step on it
+        // FIXME: I think this isn't a great way doing this
+        if (other.GetCollisionShape()->shapeType_ != Math::ShapeType::TriangleMesh ||
+            !owner_.moveComp_->CanStepOn(nullptr))
         {
-            // There was no simple sliding solution, let's try the complicated one
-            updateTrans = Slide(myBB, other);
-        }
-        else
-        {
-            // There was a simple solution, e.g. an AABB can do that
-            owner_.transformation_.position_ += move;
-            updateTrans = true;
+            // Don't move the character when the object actually does not collide,
+            // but we may still need the trigger stuff.
+            if (move.Equals(Math::Vector3::Zero))
+            {
+                // There was no simple sliding solution, let's try the complicated one
+                updateTrans = Slide(myBB, other);
+            }
+            else
+            {
+                // There was a simple solution, e.g. an AABB can do that
+                owner_.transformation_.position_ += move;
+                updateTrans = true;
+            }
         }
     }
 
@@ -208,8 +214,6 @@ void CollisionComp::Update(uint32_t)
     if (owner_.moveComp_->moved_)
     {
         ResolveCollisions();
-        // Store last safe position
-        owner_.moveComp_->StoreSafePosition();
     }
 }
 

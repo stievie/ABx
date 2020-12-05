@@ -38,7 +38,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Mechanic.h>
-#include <abshared/Defines.h>
+#include <abshared/CollisionLayers.h>
 #include <Urho3D/Physics/RigidBody.h>
 
 //#include <Urho3D/DebugNew.h>
@@ -188,7 +188,8 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
         if (RigidBody* rigidBody = adjNode->GetComponent<RigidBody>(true))
         {
             // Collide on all layers but camera layer
-            rigidBody->SetCollisionMask(Game::COLLISION_LAYER_ALL & ~Game::COLLISION_LAYER_CAMERA);
+            rigidBody->SetCollisionMask(Game::ACTOR_COLLISION_LAYER);
+            rigidBody->SetCollisionMask(Game::ACTOR_COLLISION_MASK);
         }
         Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
         soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();

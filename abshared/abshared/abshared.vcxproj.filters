@@ -39,7 +39,7 @@
     <ClInclude Include="Items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Defines.h">
+    <ClInclude Include="CollisionLayers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

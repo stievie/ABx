@@ -99,7 +99,7 @@
     <ClInclude Include="AttribAlgos.h" />
     <ClInclude Include="Attributes.h" />
     <ClInclude Include="Damage.h" />
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="CollisionLayers.h" />
     <ClInclude Include="Items.h" />
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="SkillsHelper.h" />

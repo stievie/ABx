@@ -38,7 +38,7 @@
 #include <Urho3D/Physics/RigidBody.h>
 #include <abshared/Attributes.h>
 #include <abshared/Mechanic.h>
-#include <abshared/Defines.h>
+#include <abshared/CollisionLayers.h>
 #include <algorithm>
 #include <sa/time.h>
 
@@ -89,15 +89,12 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     Actor::Init(scene, position, rotation, scale, state);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
     body->SetCollisionLayer(1);
-    AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true);
-    if (animModel)
+    if (AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true))
     {
-        Bone* headBone = animModel->GetSkeleton().GetBone("Head");
-        if (headBone)
+        if (Bone* headBone = animModel->GetSkeleton().GetBone("Head"))
         {
             headBone->animated_ = false;
-            Node* headNode = node_->GetChild("Head", true);
-            if (headNode)
+            if (Node* headNode = node_->GetChild("Head", true))
             {
                 auto* faceLightNode = headNode->CreateChild("FaceLightNode", LOCAL);
                 faceLightNode->SetPosition({ 0.0f, 0.0f, -0.5f });
@@ -122,8 +119,7 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     camera->SetFov(options->GetCameraFov());
 
     // Update Mumble
-    Mumble* mumble = GetSubsystem<Mumble>();
-    if (mumble)
+    if (Mumble* mumble = GetSubsystem<Mumble>())
     {
         mumble->SetAvatar(SharedPtr<Node>(GetNode()));
         mumble->SetCamera(cameraNode_);
@@ -186,7 +182,7 @@ void Player::GetFoeSelectionCandidates()
     PODVector<Drawable*> result;
     SphereOctreeQuery query(result, { node_->GetPosition(), Game::RANGE_COMPASS });
     world->GetDrawables(query);
-    const Vector3 pos = GetNode()->GetPosition();
+    const Vector3& pos = GetNode()->GetPosition();
     for (auto* drawable : result)
     {
         auto* object = level->GetObjectFromNode(drawable->GetNode());
@@ -225,7 +221,7 @@ void Player::GetFriendSelectionCandidates()
     PODVector<Drawable*> result;
     SphereOctreeQuery query(result, { node_->GetPosition(), Game::RANGE_COMPASS });
     world->GetDrawables(query);
-    const Vector3 pos = GetNode()->GetPosition();
+    const Vector3& pos = GetNode()->GetPosition();
     for (auto* drawable : result)
     {
         auto* object = level->GetObjectFromNode(drawable->GetNode());

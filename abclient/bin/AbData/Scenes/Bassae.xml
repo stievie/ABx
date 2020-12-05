@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="12" />
 	<attribute name="Next Replicated Component ID" value="34" />
-	<attribute name="Next Local Node ID" value="16782824" />
-	<attribute name="Next Local Component ID" value="16783585" />
+	<attribute name="Next Local Node ID" value="16782889" />
+	<attribute name="Next Local Component ID" value="16783661" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -54,7 +54,7 @@
 		<component type="RigidBody" id="18">
 			<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
 			<attribute name="Physics Position" value="-31.542 7.5 -20.7317" />
-			<attribute name="Collision Layer" value="-1" />
+			<attribute name="Collision Layer" value="3" />
 		</component>
 		<component type="CollisionShape" id="24">
 			<attribute name="Size" value="0.45 1.8 0.6" />
@@ -161,6 +161,7 @@
 		<component type="RigidBody" id="16782518">
 			<attribute name="Physics Rotation" value="0.98015 0 0.198256 0" />
 			<attribute name="Physics Position" value="-50.4884 7.55527 39.3986" />
+			<attribute name="Collision Layer" value="3" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16782519">

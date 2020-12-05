@@ -93,12 +93,12 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
     SetDirection(worldAngle);
 }
 
-bool MoveComp::CanStepOn(Math::Vector3& nearestPoint) const
+bool MoveComp::CanStepOn(Math::Vector3* nearestPoint) const
 {
     if (!checkStepOn_)
         return true;
     const auto& map = *owner_.GetGame()->map_;
-    return map.CanStepOn(owner_.transformation_.position_, Math::Vector3::One, nullptr, nullptr, &nearestPoint);
+    return map.CanStepOn(owner_.transformation_.position_, Math::Vector3::One, nullptr, nullptr, nearestPoint);
 }
 
 void MoveComp::Move(float speed, const Math::Vector3& amount)
@@ -119,7 +119,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
     {
         Math::Vector3 nearestPoint = oldPosition_;
         auto& map = *owner_.GetGame()->map_;
-        if (owner_.autorunComp_->IsAutoRun() || CanStepOn(nearestPoint))
+        if (owner_.autorunComp_->IsAutoRun() || CanStepOn(&nearestPoint))
         {
             // Keep on ground, except projectiles, they usually fly...
             map.UpdatePointHeight(owner_.transformation_.position_);
@@ -144,6 +144,8 @@ void MoveComp::UpdateMove(uint32_t timeElapsed)
 {
     if (moveDir_ == 0)
         return;
+
+    StoreSafePosition();
 
     const float speed = GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
@@ -238,7 +240,6 @@ void MoveComp::Write(Net::NetworkMessage& message)
 void MoveComp::StoreOldPosition()
 {
     oldPosition_ = owner_.transformation_.position_;
-    safePosition_ = owner_.transformation_.position_;
 }
 
 void MoveComp::StoreSafePosition()

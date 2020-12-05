@@ -42,7 +42,7 @@
 #include <AB/ProtocolCodes.h>
 #include <abshared/AttribAlgos.h>
 #include <abshared/Attributes.h>
-#include <abshared/Defines.h>
+#include <abshared/CollisionLayers.h>
 #include <sa/Bits.h>
 
 namespace Game {
@@ -161,8 +161,7 @@ Actor::Actor() :
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Actor::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Actor::OnStartUseSkill, this, std::placeholders::_1));
 
-    // Collide on all layers but camera layer
-    SetCollisionMask(COLLISION_LAYER_ALL & ~COLLISION_LAYER_CAMERA);
+    SetCollisionMask(ACTOR_COLLISION_MASK);
     /*
      * Default BB for humans
      * <attribute name="Size" value="0.3 1.7 0.5"/>

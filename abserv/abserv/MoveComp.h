@@ -48,7 +48,7 @@ private:
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
-    bool CanStepOn(Math::Vector3& nearestPoint) const;
+    void StoreSafePosition();
 public:
     enum UpdateFlags : uint32_t
     {
@@ -68,6 +68,7 @@ public:
     void Update(uint32_t timeElapsed, uint32_t flags);
     bool SetPosition(const Math::Vector3& pos);
     void StickToGround();
+    bool CanStepOn(Math::Vector3* nearestPoint) const;
     void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation
     void Move(float speed, const Math::Vector3& amount);
@@ -105,7 +106,6 @@ public:
     bool IsMoving() const { return !velocity_.Equals(Math::Vector3::Zero); }
     void Write(Net::NetworkMessage& message);
     void StoreOldPosition();
-    void StoreSafePosition();
     Math::Vector3& CalculateVelocity(uint32_t timeElapsed);
 
     uint32_t moveDir_{ AB::GameProtocol::MoveDirectionNone };

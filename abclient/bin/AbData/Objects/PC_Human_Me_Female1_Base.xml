@@ -5,12 +5,12 @@
 		<attribute name="Material" value="Material;Materials/PC_Human_Me_Female1_Bob_inverted_bangs_Bob_inverted_bangs.xml;Materials/PC_Human_Me_Female1_Eyebrow008_Eyebrow008.001.xml;Materials/PC_Human_Me_Female1_Eyelashes02_Bodymaterial.001.xml;Materials/PC_Human_Me_Female1_Female_generic_Middleage_caucasian_fema.000.xml;Materials/PC_Human_Me_Female1_Frenchbra_Frenchbra.001.xml;Materials/PC_Human_Me_Female1_Low-poly_Eye_brown.001.xml;Materials/PC_Human_Me_Female1_String3_String3.001.xml"/>
 	</component>
 	<component id="16777217" type="RigidBody">
-		<attribute name="Collision Layer" value="2"/>
+		<attribute name="Collision Layer" value="3"/>
 		<attribute name="Use Gravity" value="false"/>
 	</component>
 	<component id="16777218" type="CollisionShape">
 		<attribute name="Shape Type" value="Box"/>
-    <attribute name="Size" value="0.3 1.7 0.5"/>
+    <attribute name="Size" value="0.2 1.7 0.2"/>
     <attribute name="Offset Position" value="0 0.85 0"/>
 	</component>
 </node>

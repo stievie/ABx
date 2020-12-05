@@ -5,12 +5,12 @@
 		<attribute name="Material" value="Material;Materials/PC_Human_Mo_Female1_Base_Young_asian_female.xml;Materials/PC_Human_Mo_Female1_Eyebrow007_Eyebrow007.xml;Materials/PC_Human_Mo_Female1_Eyelashes01_Bodymaterial.xml;Materials/PC_Human_Mo_Femalemonksandals_Femalemonksandalsmaterialmaterial.xml;Materials/PC_Human_Me_Female1_Low-poly_Eye_brown.001.xml;Materials/PC_Human_Mo_Female1_Pigtails_Pigtails.001.xml;Materials/PC_Human_Mo_Female1_Sport_bra01_Sport_bra01.xml;Materials/PC_Human_Mo_Female1_Sport_briefs01_Sport_briefs01.xml"/>
 	</component>
 	<component id="16777217" type="RigidBody">
-		<attribute name="Collision Layer" value="1"/>
+		<attribute name="Collision Layer" value="3"/>
 		<attribute name="Use Gravity" value="false"/>
 	</component>
 	<component id="16777218" type="CollisionShape">
 		<attribute name="Shape Type" value="Box"/>
-    <attribute name="Size" value="0.3 1.7 0.5"/>
+    <attribute name="Size" value="0.2 1.7 0.2"/>
     <attribute name="Offset Position" value="0 0.85 0"/>
 	</component>
 </node>
