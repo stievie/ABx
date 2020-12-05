@@ -107,6 +107,10 @@ bool InputGeom::loadObstacles(rcContext*, const BuildSettings*, const std::strin
             input.read((char*)&y, sizeof(float));
             input.read((char*)&z, sizeof(float));
             m_mesh->addVertex(x, y, z);
+            if (minHeight_ > y)
+                minHeight_ = y;
+            if (maxHeight_ < y)
+                maxHeight_ = y;
         }
 
         size_t indexCount = 0;
@@ -130,6 +134,8 @@ bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, con
         ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not load '%s'", filepath.c_str());
         return false;
     }
+    minHeight_ = m_mesh->minHeight_;
+    maxHeight_ = m_mesh->maxHeight_;
     return true;
 }
 

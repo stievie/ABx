@@ -238,6 +238,7 @@ int main(int argc, char** argv)
         rcVcopy(settings.navMeshBMin, geom.getNavMeshBoundsMin());
         rcVcopy(settings.navMeshBMax, geom.getNavMeshBoundsMax());
 
+        std::cout << "Geometry min/max height " << geom.minHeight_ << "/" << geom.maxHeight_ << std::endl;
         if (!noObj)
         {
             std::string objFile = fn + ".obj";

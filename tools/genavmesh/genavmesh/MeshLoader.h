@@ -55,5 +55,7 @@ public:
 
     Math::IntVector2 numVertices_;
     Math::Vector2 patchWorldOrigin_;
+    float minHeight_;
+    float maxHeight_;
 };
 

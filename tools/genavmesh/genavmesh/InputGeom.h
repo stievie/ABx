@@ -149,6 +149,8 @@ public:
         const float minh, const float maxh, Navigation::PolyAreas area);
     void deleteConvexVolume(int i);
     ///@}
+    float minHeight_{ std::numeric_limits<float>::max() };
+    float maxHeight_{ std::numeric_limits<float>::lowest() };
 
 private:
     // Explicitly disabled copy constructor and copy assignment operator.

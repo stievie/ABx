@@ -113,12 +113,19 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
 
     Math::Vector2 patchWorldSize;
     Math::IntVector2 numPatches;
+    minHeight_ = std::numeric_limits<float>::max();
+    maxHeight_ = std::numeric_limits<float>::lowest();
+
     Math::CreateShapeFromHeightmapImage((const unsigned char*)data_, width_, height_, components_, { scaleX , scaleY, scaleZ },
         patchSize,
         [this](const Math::Vector3& vertex)
         {
             addVertex(vertex.x_, vertex.y_, vertex.z_, m_vcap);
-        },
+            if (minHeight_ > vertex.y_)
+                minHeight_ = vertex.y_;
+            if (maxHeight_ < vertex.y_)
+                maxHeight_ = vertex.y_;
+    },
         [this](int i1, int i2, int i3)
         {
             addTriangle(i1, i2, i3, m_tcap);

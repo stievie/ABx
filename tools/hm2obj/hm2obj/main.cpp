@@ -110,12 +110,19 @@ int main(int argc, char** argv)
     Math::IntVector2 numPatches;
     Math::IntVector2 numVertices;
     Math::Vector2 patchWorldOrigin;
+    float minHeight = std::numeric_limits<float>::max();
+    float maxHeight = std::numeric_limits<float>::lowest();
+
     Math::Shape shape;
     Math::CreateShapeFromHeightmapImage(data, width, height, components, spacing, patchSize,
-        [&shape](const Math::Vector3& vertex)
+        [&shape, &minHeight, &maxHeight](const Math::Vector3& vertex)
     {
         shape.vertexData_.push_back(vertex);
         ++shape.vertexCount_;
+        if (minHeight > vertex.y_)
+            minHeight = vertex.y_;
+        if (maxHeight < vertex.y_)
+            maxHeight = vertex.y_;
     },
         [&shape](int i1, int i2, int i3)
     {
@@ -127,6 +134,7 @@ int main(int argc, char** argv)
     std::cout << "numPatches: " << numPatches << std::endl;
     std::cout << "numVertices: " << numVertices << std::endl;
     std::cout << "patchWorldOrigin: " << patchWorldOrigin << std::endl;
+    std::cout << "min/max height: " << minHeight << "/" << maxHeight << std::endl;
 
     if (!IO::SaveShapeToOBJ(outputFile, shape))
     {
