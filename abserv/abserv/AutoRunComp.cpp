@@ -29,7 +29,7 @@
 #include <optional>
 #include <sa/time.h>
 
-//#define DEBUG_NAVIGATION
+#define DEBUG_NAVIGATION
 
 namespace Game {
 namespace Components {
@@ -204,8 +204,14 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         {
             if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)) && owner_.CollisionMaskMatches(r.object_->GetCollisionLayer()))
             {
-                hit = &r;
-                break;
+                // If it's a triangle mesh then it's most likely a building and we may be able to step on it
+                // FIXME: I think this isn't a great way doing this
+                if (static_cast<GameObject*>(r.object_)->GetCollisionShape()->shapeType_ != Math::ShapeType::TriangleMesh ||
+                    !owner_.moveComp_->CanStepOn(nullptr))
+                {
+                    hit = &r;
+                    break;
+                }
             }
         }
         if (hit)
@@ -228,7 +234,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         return destination;
 
 #ifdef DEBUG_NAVIGATION
-//    LOG_DEBUG << "Obstacle " << *hit->object_ << " on the way to " << destination << std::endl;
+    LOG_DEBUG << "Obstacle " << *static_cast<GameObject*>(hit->object_) << " on the way to " << destination << std::endl;
 #endif
 
     Math::BoundingBox bb = hit->object_->GetWorldBoundingBox();
