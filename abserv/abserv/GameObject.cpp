@@ -272,20 +272,20 @@ bool GameObject::QueryObjects(ea::vector<Math::OctreeObject*>& result, const Mat
 
 bool GameObject::Raycast(ea::vector<GameObject*>& result,
     const Math::Vector3& direction,
-    float maxDist /* = Math::M_INFINITE */) const
+    float maxDist /* = Math::M_INFINITE */, const Math::OctreeMatcher* matcher /* = nullptr */) const
 {
-    return Raycast(result, transformation_.position_ + HeadOffset, direction, maxDist);
+    return Raycast(result, transformation_.position_ + HeadOffset, direction, maxDist, matcher);
 }
 
 bool GameObject::Raycast(ea::vector<GameObject*>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
-    float maxDist /* = Math::M_INFINITE */) const
+    float maxDist /* = Math::M_INFINITE */, const Math::OctreeMatcher* matcher /* = nullptr */) const
 {
     if (!GetOctant())
         return false;
 
     ea::vector<Math::RayQueryResult> res;
-    if (!RaycastWithResult(res, position, direction, maxDist))
+    if (!RaycastWithResult(res, position, direction, maxDist, matcher))
         return false;
 
     for (const auto& o : res)
@@ -295,13 +295,13 @@ bool GameObject::Raycast(ea::vector<GameObject*>& result,
 
 bool GameObject::RaycastWithResult(ea::vector<Math::RayQueryResult>& result,
     const Math::Vector3& position, const Math::Vector3& direction,
-    float maxDist /* = Math::M_INFINITE */) const
+    float maxDist /* = Math::M_INFINITE */, const Math::OctreeMatcher* matcher /* = nullptr */) const
 {
     if (!GetOctant())
         return false;
 
     const Math::Ray ray(position, direction);
-    Math::RayOctreeQuery query(result, ray, maxDist, this);
+    Math::RayOctreeQuery query(result, ray, maxDist, this, matcher);
     Math::Octree* octree = GetOctant()->GetRoot();
     octree->Raycast(query);
     return true;
@@ -309,8 +309,9 @@ bool GameObject::RaycastWithResult(ea::vector<Math::RayQueryResult>& result,
 
 bool GameObject::IsObjectInSight(const GameObject& object) const
 {
+    const Math::CollisionMaskOctreeMatcher matcher(GetCollisionMask());
     ea::vector<GameObject*> result;
-    const bool res = Raycast(result, object.transformation_.position_ + BodyOffset);
+    const bool res = Raycast(result, object.transformation_.position_ + BodyOffset, Math::M_INFINITE, &matcher);
     if (!res)
         // Shouldn't happen
         return false;

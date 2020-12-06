@@ -250,9 +250,9 @@ public:
     /// Process octree raycast.
     void ProcessRayQuery(const Math::RayOctreeQuery& query, ea::vector<Math::RayQueryResult>& results) override;
 
-    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
-    bool RaycastWithResult(ea::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE, const Math::OctreeMatcher* matcher = nullptr) const;
+    bool Raycast(ea::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE, const Math::OctreeMatcher* matcher = nullptr) const;
+    bool RaycastWithResult(ea::vector<Math::RayQueryResult>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE, const Math::OctreeMatcher* matcher = nullptr) const;
     bool IsObjectInSight(const GameObject& object) const;
     /// Remove this object from scene
     void Remove();

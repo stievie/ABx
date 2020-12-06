@@ -29,7 +29,7 @@
 #include <optional>
 #include <sa/time.h>
 
-#define DEBUG_NAVIGATION
+//#define DEBUG_NAVIGATION
 
 namespace Game {
 namespace Components {
@@ -185,13 +185,13 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
     }
 
     const Math::Vector3& pos = owner_.transformation_.position_;
-
+    const Math::CollisionMaskOctreeMatcher matcher(owner_.GetCollisionMask());
     // Raycast to the point and see if there is a hit.
-    const auto raycast = [&pos, this](const Math::Vector3& dest) -> std::optional<Math::RayQueryResult>
+    const auto raycast = [&pos, this, &matcher](const Math::Vector3& dest) -> std::optional<Math::RayQueryResult>
     {
         ea::vector<Math::RayQueryResult> result;
         float dist = pos.Distance(dest);
-        if (!owner_.RaycastWithResult(result, pos, dest - pos, dist))
+        if (!owner_.RaycastWithResult(result, pos, dest - pos, dist, &matcher))
             // No Octree (shouldn't happen)
             return {};
         if (result.size() == 0)
@@ -202,7 +202,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
         Math::RayQueryResult* hit = nullptr;
         for (auto& r : result)
         {
-            if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)) && owner_.CollisionMaskMatches(r.object_->GetCollisionLayer()))
+            if (!Is<TerrainPatch>(static_cast<GameObject*>(r.object_)))
             {
                 // If it's a triangle mesh then it's most likely a building and we may be able to step on it
                 // FIXME: I think this isn't a great way doing this
