@@ -180,14 +180,14 @@ float Map::GetTerrainHeight1(const Math::Vector3& world) const
 {
     if (terrain_)
         return terrain_->GetHeight1(world);
-    return -std::numeric_limits<float>::infinity();
+    return std::numeric_limits<float>::lowest();
 }
 
 float Map::GetTerrainHeight2(const Math::Vector3& world) const
 {
     if (terrain_)
         return terrain_->GetHeight2(world);
-    return -std::numeric_limits<float>::infinity();
+    return std::numeric_limits<float>::lowest();
 }
 
 float Map::GetTerrainHeight(const Math::Vector3& world) const
