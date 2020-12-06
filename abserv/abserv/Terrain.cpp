@@ -52,6 +52,36 @@ void Terrain::Initialize()
         heightMap2_->ProcessData();
 }
 
+float Terrain::GetHeight1(const Math::Vector3& world) const
+{
+    if (!heightMap_)
+        return 0.0f;
+    if (matrixDirty_)
+    {
+        const Math::Matrix4 matrix = transformation_.GetMatrix();
+        heightMap_->SetMatrix(matrix);
+        if (heightMap2_)
+            heightMap2_->SetMatrix(matrix);
+        matrixDirty_ = false;
+    }
+    return heightMap_->GetHeight(world);
+}
+
+float Terrain::GetHeight2(const Math::Vector3& world) const
+{
+    if (!heightMap2_)
+        return -std::numeric_limits<float>::infinity();
+    if (matrixDirty_)
+    {
+        const Math::Matrix4 matrix = transformation_.GetMatrix();
+        heightMap_->SetMatrix(matrix);
+        if (heightMap2_)
+            heightMap2_->SetMatrix(matrix);
+        matrixDirty_ = false;
+    }
+    return heightMap2_->GetHeight(world);
+}
+
 float Terrain::GetHeight(const Math::Vector3& world) const
 {
     if (!heightMap_)

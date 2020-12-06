@@ -57,6 +57,8 @@ public:
         return patches_.size();
     }
     float GetTerrainHeight(const Math::Vector3& world) const;
+    float GetTerrainHeight1(const Math::Vector3& world) const;
+    float GetTerrainHeight2(const Math::Vector3& world) const;
     void UpdatePointHeight(Math::Vector3& world) const;
     ea::shared_ptr<Game> GetGame()
     {

@@ -32,6 +32,8 @@
 #include <sa/Assert.h>
 #include <sa/time.h>
 
+//#define DEBUG_COLLISION
+
 namespace Game {
 
 sa::IdGenerator<uint32_t> GameObject::objectIds_;

@@ -119,6 +119,9 @@ bool CollisionComp::Slide(const Math::BoundingBox& myBB, const GameObject& other
 void CollisionComp::GotoSafePosition()
 {
     MoveComp& mc = *owner_.moveComp_;
+#ifdef DEBUG_COLLISION
+    LOG_DEBUG << "Going back to safe position " << mc.GetSafePosition() << std::endl;
+#endif
     owner_.transformation_.position_ = mc.GetSafePosition();
     mc.moved_ = false;
     mc.forcePosition_ = true;
@@ -141,9 +144,11 @@ Iteration CollisionComp::CollisionCallback(const Math::BoundingBox& myBB,
 #endif
         // If it's a triangle mesh then it's most likely a building and we may be able to step on it
         // FIXME: I think this isn't a great way doing this
-        if (other.GetCollisionShape()->shapeType_ != Math::ShapeType::TriangleMesh ||
-            !owner_.moveComp_->CanStepOn(nullptr))
+        if (owner_.CollisionNeedsAdjustment(other))
         {
+#ifdef DEBUG_COLLISION
+            LOG_DEBUG << "Adjusting position" << std::endl;
+#endif
             // Don't move the character when the object actually does not collide,
             // but we may still need the trigger stuff.
             if (move.Equals(Math::Vector3::Zero))

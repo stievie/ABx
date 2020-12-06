@@ -1201,4 +1201,13 @@ uint32_t Actor::GetSelectedObjectId() const
     return selectionComp_->GetSelectedObjectId();
 }
 
+bool Actor::CollisionNeedsAdjustment(const GameObject& other) const
+{
+    // If it's a triangle mesh then it's most likely a building and we may be able to step on it
+    // FIXME: I think this isn't a great way doing this
+    if (other.GetCollisionShape()->shapeType_ != Math::ShapeType::TriangleMesh)
+        return true;
+    return !moveComp_->CanStepOn(nullptr);
+}
+
 }

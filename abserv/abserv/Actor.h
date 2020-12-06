@@ -318,6 +318,8 @@ public:
     virtual bool AddToInventory(uint32_t itemId);
     void DropRandomItem();
 
+    bool CollisionNeedsAdjustment(const GameObject& other) const;
+
     ea::unique_ptr<SkillBar> skills_;
 
     ea::unique_ptr<Components::ResourceComp> resourceComp_;

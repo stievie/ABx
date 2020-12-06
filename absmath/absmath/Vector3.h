@@ -198,6 +198,7 @@ public:
     float z_;
 
     static const Vector3 Zero;
+    static const Vector3 Infinite;
     static const Vector3 One;
     static const Vector3 UnitX;
     static const Vector3 UnitY;

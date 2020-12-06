@@ -74,6 +74,8 @@ public:
     void Initialize();
     void SetSpacing(const Math::Vector3& value);
     float GetHeight(const Math::Vector3& world) const;
+    float GetHeight1(const Math::Vector3& world) const;
+    float GetHeight2(const Math::Vector3& world) const;
 
     Math::Transformation transformation_;
     int patchSize_{ DEFAULT_PATCH_SIZE };

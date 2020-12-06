@@ -29,6 +29,7 @@
 namespace Math {
 
 const Vector3 Vector3::Zero;
+const Vector3 Vector3::Infinite(M_INFINITE, M_INFINITE, M_INFINITE);
 const Vector3 Vector3::One(1.0f, 1.0f, 1.0f);
 const Vector3 Vector3::UnitX(1.0f, 0.0f, 0.0f);           // Right
 const Vector3 Vector3::UnitY(0.0f, 1.0f, 0.0f);           // Up

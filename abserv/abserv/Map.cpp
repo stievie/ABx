@@ -176,6 +176,20 @@ ea::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group) const
     return result;
 }
 
+float Map::GetTerrainHeight1(const Math::Vector3& world) const
+{
+    if (terrain_)
+        return terrain_->GetHeight1(world);
+    return -std::numeric_limits<float>::infinity();
+}
+
+float Map::GetTerrainHeight2(const Math::Vector3& world) const
+{
+    if (terrain_)
+        return terrain_->GetHeight2(world);
+    return -std::numeric_limits<float>::infinity();
+}
+
 float Map::GetTerrainHeight(const Math::Vector3& world) const
 {
     if (terrain_)
@@ -230,7 +244,25 @@ bool Map::CanStepOn(const Math::Vector3& point, const Math::Vector3& extents,
     if (!navMesh_)
         return false;
 
-    return navMesh_->CanStepOn(point, extents, filter, nearestRef, nearestPoint);
+    Math::Vector3 np = Math::Vector3::Infinite;
+    bool result = navMesh_->CanStepOn(point, extents, filter, nearestRef, &np);
+    if (!result && np.Equals(Math::Vector3::Infinite))
+    {
+//        LOG_DEBUG << "No poly found" << std::endl;
+        return false;
+    }
+
+    const float y1 = GetTerrainHeight1(point);
+    const float y2 = GetTerrainHeight2(point);
+    const float diff1 = fabs(np.y_ - y1);
+    const float diff2 = fabs(np.y_ - y2);
+    const float minDiff = std::min(diff1, diff2);
+//    LOG_DEBUG << "minDiff " << minDiff << std::endl;
+    // Agent agent-max-climb
+    result = minDiff < 0.9f;
+    if (nearestPoint)
+        *nearestPoint = np;
+    return result;
 }
 
 }

@@ -206,8 +206,7 @@ Math::Vector3 AutoRunComp::AvoidObstaclesInternal(const Math::Vector3& destinati
             {
                 // If it's a triangle mesh then it's most likely a building and we may be able to step on it
                 // FIXME: I think this isn't a great way doing this
-                if (static_cast<GameObject*>(r.object_)->GetCollisionShape()->shapeType_ != Math::ShapeType::TriangleMesh ||
-                    !owner_.moveComp_->CanStepOn(nullptr))
+                if (owner_.CollisionNeedsAdjustment(*static_cast<GameObject*>(r.object_)))
                 {
                     hit = &r;
                     break;
