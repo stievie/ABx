@@ -136,9 +136,24 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(Events::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
 }
 
-bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
+bool WorldLevel::RaycastAny(const IntVector2& pos, Vector3& hitPos) const
 {
-    Ray camRay = GetActiveViewportScreenRay(pos);
+    const Ray camRay = GetActiveViewportScreenRay(pos);
+    PODVector<RayQueryResult> result;
+    Octree* world = scene_->GetComponent<Octree>();
+    RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
+    world->RaycastSingle(query);
+    if (!result.Empty())
+    {
+        hitPos = result.Front().position_;
+        return true;
+    }
+    return false;
+}
+
+bool WorldLevel::RaycastTerrain(const IntVector2& pos, Vector3& hitPos) const
+{
+    const Ray camRay = GetActiveViewportScreenRay(pos);
     PODVector<RayQueryResult> result;
     Octree* world = scene_->GetComponent<Octree>();
     RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
@@ -223,7 +238,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap& eventData)
         if (!o->disableMouseWalking_)
         {
             Vector3 p;
-            if (TerrainRaycast(input->GetMousePosition(), p))
+            if (RaycastAny(input->GetMousePosition(), p))
             {
                 player_->GotoPosition(p);
             }

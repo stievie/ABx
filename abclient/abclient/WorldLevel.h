@@ -207,7 +207,8 @@ private:
 
         return To<T>(actor);
     }
-    bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
+    bool RaycastTerrain(const IntVector2& pos, Vector3& hitPos) const;
+    bool RaycastAny(const IntVector2& pos, Vector3& hitPos) const;
     void RemoveUIWindows();
     void DefaultAction();
 
