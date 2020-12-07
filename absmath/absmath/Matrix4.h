@@ -76,7 +76,11 @@ public:
 #if defined(HAVE_DIRECTX_MATH)
     Matrix4(const XMath::XMMATRIX& matrix) noexcept;
 #endif
-
+    Matrix4(const Vector3& translation, const Quaternion& rotation, const Vector3& scale) noexcept
+    {
+        SetRotation(rotation.GetMatrix().Scale(scale));
+        SetTranslation(translation);
+    }
 #if defined(HAVE_DIRECTX_MATH)
     operator XMath::XMMATRIX() const
     {
@@ -156,6 +160,11 @@ public:
             m_[Index33] - rhs.m_[Index33]
         );
     }
+
+    void SetTranslation(const Vector3& v);
+    void SetScale(const Vector3& v);
+    void SetRotation(const Quaternion& v);
+    void SetRotation(const Matrix4& v);
 
     Matrix4& Translate(const Vector3& v);
     Matrix4& Scale(const Vector3& v);

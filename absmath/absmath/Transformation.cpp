@@ -19,25 +19,27 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Transformation.h"
-#include "Matrix4.h"
 
 namespace Math {
 
-XMath::XMMATRIX Transformation::GetMatrix() const
+Matrix4 Transformation::GetMatrix() const
 {
     return GetMatrix(oriention_);
 }
 
-XMath::XMMATRIX Transformation::GetMatrix(const Quaternion& rot) const
+Matrix4 Transformation::GetMatrix(const Quaternion& rot) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     static const XMath::XMVECTOR vZero = { 0 };
     static const XMath::XMVECTOR qId = { 0.0f, 0.0f, 0.0f, 1.0f };
     const XMath::XMVECTOR scale = XMath::XMVectorSet(scale_.x_, scale_.y_, scale_.z_, 0.0f);
     const XMath::XMVECTOR rotation = XMath::XMVectorSet(rot.x_, rot.y_, rot.z_, rot.w_);
     const XMath::XMVECTOR position = XMath::XMVectorSet(position_.x_, position_.y_, position_.z_, 0.0f);
     return XMath::XMMatrixTransformation(vZero, qId, scale, vZero, rotation, position);
+#else
+    return Matrix4(position_, rot.Conjugate(), scale_);
+#endif
 }
 
 void Transformation::Move(float speed, const Vector3& amount)

@@ -53,6 +53,7 @@ Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 
 const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     XMath::XMMATRIX result = XMath::XMMatrixMultiply(
         XMath::XMMatrixSet(
             m_[0], m_[4], m_[8], m_[12],
@@ -68,10 +69,14 @@ const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
         )
     );
     return Matrix4(result);
+#else
+#error Not implemented
+#endif
 }
 
 const Vector3 Matrix4::operator*(const Vector3& rhs) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     XMath::XMVECTOR v = XMath::XMVector3Transform(
         XMath::XMVectorSet(rhs.x_, rhs.y_, rhs.z_, 0.0f),
         XMath::XMMatrixSet(
@@ -82,10 +87,14 @@ const Vector3 Matrix4::operator*(const Vector3& rhs) const
         )
     );
     return Vector3(v);
+#else
+#error Not implemented
+#endif
 }
 
 const Vector4 Matrix4::operator*(const Vector4& rhs) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     XMath::XMVECTOR v = XMath::XMVector3Transform(
         XMath::XMVectorSet(rhs.x_, rhs.y_, rhs.z_, rhs.w_),
         XMath::XMMatrixSet(
@@ -96,6 +105,9 @@ const Vector4 Matrix4::operator*(const Vector4& rhs) const
         )
     );
     return Vector4(v);
+#else
+#error Not implemented
+#endif
 }
 
 void Matrix4::Decompose(Vector3* scale, Quaternion* rotation, Vector3* translation) const
@@ -115,20 +127,28 @@ void Matrix4::Decompose(Vector3* scale, Quaternion* rotation, Vector3* translati
     if (translation)
         XMStoreVector3(translation, t);
 #else
-    translation->x_ = m_[Index30];
-    translation->y_ = m_[Index31];
-    translation->z_ = m_[Index32];
-
-    scale->x_ = sqrtf(m_[Index00] * m_[Index00] + m_[Index01] * m_[Index01] + m_[Index02] * m_[Index02]);
-    scale->y_ = sqrtf(m_[Index10] * m_[Index10] + m_[Index11] * m_[Index11] + m_[Index12] * m_[Index12]);
-    scale->z_ = sqrtf(m_[Index20] * m_[Index20] + m_[Index21] * m_[Index21] + m_[Index22] * m_[Index22]);
-
-    Quaternion q = Rotation();
-    rotation->x_ = q.x_;
-    rotation->y_ = q.y_;
-    rotation->z_ = q.z_;
-    rotation->w_ = q.w_;
+    if (translation)
+    {
+        translation->x_ = m_[Index30];
+        translation->y_ = m_[Index31];
+        translation->z_ = m_[Index32];
+    }
+    if (scale)
+    {
+        scale->x_ = sqrtf(m_[Index00] * m_[Index00] + m_[Index01] * m_[Index01] + m_[Index02] * m_[Index02]);
+        scale->y_ = sqrtf(m_[Index10] * m_[Index10] + m_[Index11] * m_[Index11] + m_[Index12] * m_[Index12]);
+        scale->z_ = sqrtf(m_[Index20] * m_[Index20] + m_[Index21] * m_[Index21] + m_[Index22] * m_[Index22]);
+    }
+    if (rotation)
+        *rotation = Rotation();
 #endif
+}
+
+void Matrix4::SetTranslation(const Vector3& v)
+{
+    m_[Index30] = v.x_;
+    m_[Index31] = v.y_;
+    m_[Index32] = v.z_;
 }
 
 Matrix4& Matrix4::Translate(const Vector3& v)
@@ -141,6 +161,13 @@ Matrix4& Matrix4::Translate(const Vector3& v)
     );
 }
 
+void Matrix4::SetScale(const Vector3& v)
+{
+    m_[Index00] = v.x_;
+    m_[Index11] = v.y_;
+    m_[Index22] = v.z_;
+}
+
 Matrix4& Matrix4::Scale(const Vector3& v)
 {
     return *this = *this * Matrix4(
@@ -149,6 +176,16 @@ Matrix4& Matrix4::Scale(const Vector3& v)
         0, 0, v.z_, 0,
         0, 0, 0, 1
     );
+}
+
+void Matrix4::SetRotation(const Quaternion& v)
+{
+    *this = v.GetMatrix();
+}
+
+void Matrix4::SetRotation(const Matrix4& v)
+{
+    *this = v;
 }
 
 Matrix4& Matrix4::RotateX(float ang)

@@ -24,6 +24,7 @@
 #include "MathConfig.h"
 #include "Vector3.h"
 #include "Quaternion.h"
+#include "Matrix4.h"
 
 namespace Math {
 
@@ -57,9 +58,9 @@ public:
     void LookAt(const Vector3& lookAt, const Vector3& up = Math::Vector3::UnitY);
 
     /// Get transformation matrix
-    XMath::XMMATRIX GetMatrix() const;
+    Matrix4 GetMatrix() const;
     /// Use rot instead of oriention_
-    XMath::XMMATRIX GetMatrix(const Quaternion& rot) const;
+    Matrix4 GetMatrix(const Quaternion& rot) const;
     void Move(float speed, const Vector3& amount);
     void Turn(float yAngle);
     friend std::ostream& operator << (std::ostream& os, const Transformation& value)

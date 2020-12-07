@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "Map.h"
 #include "DataProvider.h"
 #include "Game.h"
@@ -102,26 +101,23 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
     if (points.size() == 0)
         return EmtpySpawnPoint;
 
-    auto cleanObjects = [](ea::vector<Math::OctreeObject*>& objects)
+    const Math::CallbackOctreeMatcher matcher([](const Math::OctreeObject* current) -> bool
     {
-        if (objects.size() == 0)
-            return;
-        // Remove all objects that are not interesting
-        objects.erase(ea::remove_if(objects.begin(), objects.end(), [](Math::OctreeObject* current)
-        {
-            return (current->GetCollisionMask() == 0) ||
-                Is<TerrainPatch>(static_cast<GameObject*>(current));
-        }), objects.end());
-    };
+        const GameObject* object = static_cast<const GameObject*>(current);
+        if (object->GetCollisionMask() == 0 || object->GetCollisionLayer() == 0)
+            return false;
+        if (Is<TerrainPatch>(object))
+            return false;
+        return true;
+    });
 
     size_t minObjects = std::numeric_limits<size_t>::max();
     SpawnPoint minPos;
     for (const auto& p : points)
     {
         ea::vector<Math::OctreeObject*> result;
-        Math::SphereOctreeQuery query(result, Math::Sphere(p.position, 5.0f));
+        Math::SphereOctreeQuery query(result, Math::Sphere(p.position, 5.0f), nullptr, &matcher);
         octree_->GetObjects(query);
-        cleanObjects(result);
         if (result.size() < minObjects)
         {
             minPos = p;
@@ -133,9 +129,8 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
 
     {
         ea::vector<Math::OctreeObject*> result;
-        Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f));
+        Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f), nullptr, &matcher);
         octree_->GetObjects(query);
-        cleanObjects(result);
         while (result.size() != 0)
         {
 #ifdef DEBUG_GAME
@@ -145,7 +140,6 @@ SpawnPoint Map::GetFreeSpawnPoint(const ea::vector<SpawnPoint>& points) const
             query.sphere_.center_.z_ += 0.2f;
             query.sphere_.center_.y_ = terrain_->GetHeight(query.sphere_.center_);
             octree_->GetObjects(query);
-            cleanObjects(result);
         }
         return CorrectedSpanwPoint({ query.sphere_.center_, minPos.rotation, minPos.group });
     }

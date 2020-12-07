@@ -411,20 +411,28 @@ bool BoundingBox::Collides(const BoundingBox& b2, const Vector3&, Vector3& move)
 
 bool BoundingBox::Collides(const Sphere& b2) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     if (IsOriented())
     {
         return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
     }
     return IsInside(b2) != Intersection::Outside;
+#else
+#error Not implemented
+#endif
 }
 
 bool BoundingBox::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 {
+#if defined(HAVE_DIRECTX_MATH)
     if (IsOriented())
     {
         return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
     }
     return IsInside(b2) != Intersection::Outside;
+#else
+#error Not implemented
+#endif
 }
 
 bool BoundingBox::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const

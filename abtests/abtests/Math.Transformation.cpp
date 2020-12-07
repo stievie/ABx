@@ -93,3 +93,15 @@ TEST_CASE("Transformation Move")
         REQUIRE(trans.position_.z_ == Approx(1.0f));
     }
 }
+
+TEST_CASE("Transformation Matrix")
+{
+    Math::Transformation trans(Math::Vector3::One, Math::Vector3(0.5f, 0.5f, 0.5f), Math::M_PIHALF);
+    Math::Matrix4 matrix1 = trans.GetMatrix();
+    Math::Matrix4 matrix2(trans.position_, trans.oriention_.Conjugate(), trans.scale_);
+    for (size_t i = 0; i < 16; ++i)
+    {
+        INFO(i)
+        REQUIRE(matrix1.m_[i] == Approx(matrix2.m_[i]));
+    }
+}
