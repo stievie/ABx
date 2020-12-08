@@ -26,13 +26,23 @@
 
 TEST_CASE("Matrix4 Construct")
 {
-    SECTION("Basic")
+    Math::Matrix4 mat;
+    XMath::XMMATRIX xmat = (XMath::XMMATRIX)mat;
+    Math::Matrix4 mat2(xmat);
+    REQUIRE(mat.Translation() == mat2.Translation());
+    REQUIRE(mat.Scaling() == mat2.Scaling());
+    REQUIRE(mat.Rotation() == mat2.Rotation());
+}
+
+TEST_CASE("Matrix4 FromQuaternion")
+{
+    Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::M_PIF);
+    Math::Matrix4 m1 = Math::Matrix4::FromQuaternion(q);
+    Math::Matrix4 m2;
+    m2.SetRotation(q.Conjugate());
+    for (size_t i = 0; i < 16; ++i)
     {
-        Math::Matrix4 mat;
-        XMath::XMMATRIX xmat = (XMath::XMMATRIX)mat;
-        Math::Matrix4 mat2(xmat);
-        REQUIRE(mat.Translation() == mat2.Translation());
-        REQUIRE(mat.Scaling() == mat2.Scaling());
-        REQUIRE(mat.Rotation() == mat2.Rotation());
+        INFO(i)
+        REQUIRE(m1.m_[i] == Approx(m2.m_[i]));
     }
 }

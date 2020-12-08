@@ -38,7 +38,7 @@ Matrix4 Transformation::GetMatrix(const Quaternion& rot) const
     const XMath::XMVECTOR position = XMath::XMVectorSet(position_.x_, position_.y_, position_.z_, 0.0f);
     return XMath::XMMatrixTransformation(vZero, qId, scale, vZero, rotation, position);
 #else
-    return Matrix4(position_, rot.Conjugate(), scale_);
+    return Matrix4(position_, rot, scale_);
 #endif
 }
 
@@ -67,21 +67,18 @@ void Transformation::Move(float speed, const Vector3& amount)
 
 void Transformation::Turn(float yAngle)
 {
-    float ang = GetYRotation();
-    ang += yAngle;
-    SetYRotation(ang);
+    SetYRotation(GetYRotation() + yAngle);
 }
 
 float Transformation::GetYRotation() const
 {
-    return Math::NormalizedAngle(oriention_.EulerAngles().y_);
+    const Math::Vector4 aa = oriention_.AxisAngle();
+    return Math::NormalizedAngle(aa.y_ * aa.w_);
 }
 
 void Transformation::SetYRotation(float rad)
 {
-    NormalizeAngle(rad);
-    const Math::Vector3 euler = oriention_.EulerAngles();
-    oriention_ = Quaternion(euler.x_, rad, euler.y_);
+    oriention_ = Quaternion::FromAxisAngle(Math::Vector3::UnitY, NormalizedAngle(rad));
 }
 
 void Transformation::LookAt(const Vector3& lookAt, const Vector3& up /* = Math::Vector3::UnitY */)

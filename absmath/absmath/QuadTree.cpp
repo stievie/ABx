@@ -145,7 +145,7 @@ bool QuadTree::Remove(QuadTreeObject* object)
     if (!bounds_.Intersects(object->bounds_))
         return false;
 
-    auto it = std::find_if(objects_.begin(), objects_.end(), [object](auto* current)
+    auto it = ea::find_if(objects_.begin(), objects_.end(), [object](auto* current)
     {
         return current == object;
     });
@@ -179,8 +179,8 @@ void QuadTree::Query(const QuadTreeBounds& bounds, ea::vector<QuadTreeObject*>& 
         if (object->bounds_.Intersects(bounds))
             result.push_back(object);
     }
-    std::sort(result.begin(), result.end());
-    result.erase(std::unique(result.begin(), result.end()), result.end());
+    ea::sort(result.begin(), result.end());
+    result.erase(ea::unique(result.begin(), result.end()), result.end());
 }
 
 }

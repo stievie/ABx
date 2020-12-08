@@ -78,7 +78,7 @@ public:
 #endif
     Matrix4(const Vector3& translation, const Quaternion& rotation, const Vector3& scale) noexcept
     {
-        SetRotation(rotation.GetMatrix().Scale(scale));
+        SetRotation(rotation.Conjugate().GetMatrix().Scale(scale));
         SetTranslation(translation);
     }
 #if defined(HAVE_DIRECTX_MATH)

@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include <catch.hpp>
 
 #include <absmath/Quaternion.h>
@@ -192,5 +191,14 @@ TEST_CASE("Quaternion Methods")
         REQUIRE(q.y_ == Approx(0.5f));
         REQUIRE(q.z_ == Approx(0.0f));
     }
+}
 
+TEST_CASE("Quaternion AxisAngle() == EulerAngles()")
+{
+    // 45 Deg
+    Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
+    Math::Vector4 aa = quat.AxisAngle();
+
+    Math::Quaternion euler(0.0f, Math::DegToRad(45.0f), 0.0f);
+    REQUIRE(aa.y_ * aa.w_ == Approx(euler.EulerAngles().y_));
 }

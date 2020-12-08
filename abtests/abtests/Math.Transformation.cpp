@@ -94,11 +94,18 @@ TEST_CASE("Transformation Move")
     }
 }
 
+TEST_CASE("Transformation Turn")
+{
+    Math::Transformation trans(Math::Vector3::One, Math::Vector3(0.5f, 0.5f, 0.5f), Math::M_PIHALF);
+    trans.Turn(Math::M_PIHALF);
+    REQUIRE(trans.GetYRotation() == Approx(Math::M_PIF));
+}
+
 TEST_CASE("Transformation Matrix")
 {
     Math::Transformation trans(Math::Vector3::One, Math::Vector3(0.5f, 0.5f, 0.5f), Math::M_PIHALF);
     Math::Matrix4 matrix1 = trans.GetMatrix();
-    Math::Matrix4 matrix2(trans.position_, trans.oriention_.Conjugate(), trans.scale_);
+    Math::Matrix4 matrix2(trans.position_, trans.oriention_, trans.scale_);
     for (size_t i = 0; i < 16; ++i)
     {
         INFO(i)
