@@ -1008,40 +1008,38 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Actor::Die(Actor* killer)
 {
-    if (!IsDead())
-    {
-        attackComp_->Cancel();
-        stateComp_.SetState(AB::GameProtocol::CreatureState::Dead);
-        resourceComp_->SetHealth(Components::SetValueType::Absolute, 0);
-        resourceComp_->SetEnergy(Components::SetValueType::Absolute, 0);
-        resourceComp_->SetAdrenaline(Components::SetValueType::Absolute, 0);
-        damageComp_->Touch();
-        autorunComp_->SetAutoRun(false);
-        DecreaseMorale();
-        if (killer)
-            killedBy_ = killer->GetPtr<Actor>();
-        else
-            killedBy_ = damageComp_->GetLastDamager();
-        CallEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, this, killer ? killer : damageComp_->GetLastDamager().get());
-        return true;
-    }
-    return false;
+    if (IsDead())
+        return false;
+
+    attackComp_->Cancel();
+    stateComp_.SetState(AB::GameProtocol::CreatureState::Dead);
+    resourceComp_->SetHealth(Components::SetValueType::Absolute, 0);
+    resourceComp_->SetEnergy(Components::SetValueType::Absolute, 0);
+    resourceComp_->SetAdrenaline(Components::SetValueType::Absolute, 0);
+    damageComp_->Touch();
+    autorunComp_->SetAutoRun(false);
+    DecreaseMorale();
+    if (killer)
+        killedBy_ = killer->GetPtr<Actor>();
+    else
+        killedBy_ = damageComp_->GetLastDamager();
+    CallEvent<void(Actor*, Actor*)>(EVENT_ON_DIED, this, killer ? killer : damageComp_->GetLastDamager().get());
+    return true;
 }
 
 bool Actor::Resurrect(int precentHealth, int percentEnergy)
 {
-    if (IsDead())
-    {
-        const int health = (resourceComp_->GetMaxHealth() / 100) * precentHealth;
-        resourceComp_->SetHealth(Components::SetValueType::Absolute, health);
-        const int energy = (resourceComp_->GetMaxEnergy() / 100) * percentEnergy;
-        resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
-        damageComp_->Touch();
-        stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
-        CallEvent<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
-        return true;
-    }
-    return false;
+    if (!IsDead())
+        return false;
+
+    const int health = (resourceComp_->GetMaxHealth() / 100) * precentHealth;
+    resourceComp_->SetHealth(Components::SetValueType::Absolute, health);
+    const int energy = (resourceComp_->GetMaxEnergy() / 100) * percentEnergy;
+    resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
+    damageComp_->Touch();
+    stateComp_.SetState(AB::GameProtocol::CreatureState::Idle);
+    CallEvent<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
+    return true;
 }
 
 bool Actor::KnockDown(Actor* source, uint32_t time)
