@@ -152,11 +152,11 @@ void MoveComp::UpdateMove(uint32_t timeElapsed)
         Move(speed, Math::Vector3::UnitZ);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         // Move slower backward
-        Move(speed / 2.0f, Math::Vector3::Back);
+        Move(speed * MOVE_BACK_FACTOR, Math::Vector3::Back);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
-        Move(speed / 2.0f, Math::Vector3::Left);
+        Move(speed * MOVE_BACK_FACTOR, Math::Vector3::Left);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
-        Move(speed / 2.0f, Math::Vector3::UnitX);
+        Move(speed * MOVE_BACK_FACTOR, Math::Vector3::UnitX);
 }
 
 void MoveComp::Turn(float angle)

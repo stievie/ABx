@@ -41,6 +41,8 @@ inline constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 
 // For client prediction these values are also needed by the client.
 inline constexpr float BASE_MOVE_SPEED = 170.0f;
+// Multiplier for speed when moving side-, backwards
+inline constexpr float MOVE_BACK_FACTOR = 0.7f;
 inline constexpr float BASE_TURN_SPEED = 1500.0f;
 
 // Max level a player can reach

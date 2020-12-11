@@ -28,6 +28,7 @@ inline constexpr unsigned COLLISION_LAYER_CAMERA = 1 << 1;
 inline constexpr unsigned COLLISION_LAYER_ALL = 0xFFFFFFFF;
 // Collide on all layers but camera layer
 inline constexpr unsigned ACTOR_COLLISION_MASK = COLLISION_LAYER_ALL & ~COLLISION_LAYER_CAMERA;
+// The world and the camrea collides with all actors
 inline constexpr unsigned ACTOR_COLLISION_LAYER = COLLISION_LAYER_WORLD | COLLISION_LAYER_CAMERA;
 
 }

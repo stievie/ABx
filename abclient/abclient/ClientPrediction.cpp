@@ -56,11 +56,11 @@ void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speed
         Move(speed, Vector3::FORWARD);
     if ((direction & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         // Move slower backward
-        Move(speed / 2.0f, Vector3::BACK);
+        Move(speed * Game::MOVE_BACK_FACTOR, Vector3::BACK);
     if ((direction & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
-        Move(speed / 2.0f, Vector3::LEFT);
+        Move(speed * Game::MOVE_BACK_FACTOR, Vector3::LEFT);
     if ((direction & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
-        Move(speed / 2.0f, Vector3::RIGHT);
+        Move(speed * Game::MOVE_BACK_FACTOR, Vector3::RIGHT);
 }
 
 bool ClientPrediction::CheckCollision(const Vector3& pos)
