@@ -42,6 +42,7 @@ void Group::RegisterLua(kaguya::State& state)
         .addFunction("SetName", &Group::SetName)
         .addFunction("IsAlly", &Group::IsAlly)
         .addFunction("IsEnemy", &Group::IsEnemy)
+        .addFunction("IsAttacked", &Group::IsAttacked)
         .addFunction("GetMorale", &Group::GetMorale)
         .addFunction("IncreaseMorale", &Group::IncreaseMorale)
         .addFunction("DecreaseMorale", &Group::DecreaseMorale)
@@ -99,6 +100,22 @@ bool Group::IsAlly(const Group* other) const
     if (!l2)
         return false;
     return l1->IsAlly(l2);
+}
+
+bool Group::IsAttacked() const
+{
+    bool result = false;
+    VisitMembers([&result](const Actor& current) -> Iteration
+    {
+        if (current.IsAttacked())
+        {
+            result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+
+    return result;
 }
 
 bool Group::Remove(uint32_t id)

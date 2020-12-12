@@ -22,6 +22,7 @@
 
 #include "AiSelectAttackers.h"
 #include "../Npc.h"
+#include "../Group.h"
 
 namespace AI {
 namespace Filters {
@@ -38,15 +39,32 @@ void SelectAttackers::Execute(Agent& agent)
 
     std::map<uint32_t, float> sorting;
     Game::Npc& chr = GetNpc(agent);
-    chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor& o)
+
+    auto getAttackersOfActor = [&sorting, &entities](const Game::Actor& actor)
     {
-        if (o.attackComp_->IsTarget(&chr))
+        actor.VisitEnemiesInRange(Game::Ranges::Compass, [&](const Game::Actor& o)
         {
-            entities.push_back(o.id_);
-            sorting[o.id_] = o.GetDistance(&chr);
-        }
-        return Iteration::Continue;
-    });
+            if (o.attackComp_->IsTarget(&actor))
+            {
+                entities.push_back(o.id_);
+                sorting[o.id_] = o.GetDistance(&actor);
+            }
+            return Iteration::Continue;
+        });
+    };
+
+    if (auto group = chr.GetGroup())
+    {
+        group->VisitMembers([&](const Game::Actor& current) -> Iteration
+        {
+            getAttackersOfActor(current);
+            return Iteration::Continue;
+        });
+    }
+    else
+    {
+        getAttackersOfActor(chr);
+    }
     std::sort(entities.begin(), entities.end(), [&sorting](uint32_t i, uint32_t j)
     {
         const float& p1 = sorting[i];

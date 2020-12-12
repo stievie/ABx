@@ -74,6 +74,7 @@ public:
     uint32_t GetId() const { return id_; }
     bool IsEnemy(const Group* other) const;
     bool IsAlly(const Group* other) const;
+    bool IsAttacked() const;
     int GetMorale() const;
     void IncreaseMorale();
     void DecreaseMorale();

@@ -100,6 +100,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
         .addFunction("IsHitting", &Actor::IsHitting)
         .addFunction("IsImmobilized", &Actor::IsImmobilized)
+        .addFunction("IsAttacked", &Actor::IsAttacked)
+        .addFunction("IsGroupAttacked", &Actor::IsGroupAttacked)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
@@ -300,6 +302,29 @@ bool Actor::IsAttackingActor(const Actor* target) const
     if (attackComp_->IsAttackingTarget(target))
         return true;
     return false;
+}
+
+bool Actor::IsAttacked() const
+{
+    if (sa::time::time_elapsed(damageComp_->lastDamage_) < 1000)
+    {
+        if (auto attacker = damageComp_->GetLastDamager())
+        {
+            if (attacker->IsDead())
+                return false;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Actor::IsGroupAttacked() const
+{
+    if (auto g = GetGroup())
+    {
+        return g->IsAttacked();
+    }
+    return IsAttacked();
 }
 
 bool Actor::UseSkill(int index, bool ping)

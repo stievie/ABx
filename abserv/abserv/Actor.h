@@ -311,6 +311,8 @@ public:
     bool Attack(Actor* target, bool ping);
     bool AttackById(uint32_t targetId, bool ping);
     bool IsAttackingActor(const Actor* target) const;
+    bool IsAttacked() const;
+    bool IsGroupAttacked() const;
     /// Cancel attack, use skill, follow
     void CancelAction();
     void CancelAll();
