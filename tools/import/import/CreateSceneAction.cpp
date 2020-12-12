@@ -89,6 +89,40 @@ void CreateSceneAction::Execute()
     {
         std::cerr << "Error creating client heightmap" << std::endl;
     }
+    if (!CreateClientMinimap())
+    {
+        std::cerr << "Error creating client minimap" << std::endl;
+    }
+}
+
+bool CreateSceneAction::CreateClientMinimap()
+{
+    // TODOO: Improve colors of minimap
+    std::string outFile = file_ + ".minimap.png";
+    std::cout << "Creating client minimap " << outFile << std::endl;
+
+    std::string obstaclesFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
+
+    std::stringstream ss;
+    ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "hmerge"));
+    ss << " -W " << heightmapWidth_;
+    ss << " -H " << heightmapHeight_;
+    ss << " -X " << heightmapSpacing_.x_;
+    ss << " -Y " << heightmapSpacing_.y_;
+    ss << " -Z " << heightmapSpacing_.z_;
+    ss << " -P " << patchSize_;
+    ss << " -R " << Utils::EscapeArguments(heightfieldFile_);
+    ss << " -G " << Utils::EscapeArguments(obstaclesFile);
+    ss << " -o " << Utils::EscapeArguments(outFile);
+
+    const std::string cmdLine = ss.str();
+    std::cout << "Running commandline: " << cmdLine << std::endl;
+    System::Process process(cmdLine);
+    int exitCode = process.get_exit_status();
+    if (exitCode != 0)
+        return false;
+
+    return true;
 }
 
 bool CreateSceneAction::CreateClientHeightmap()

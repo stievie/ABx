@@ -59,7 +59,10 @@ private:
     bool CreateNavMesh();
     bool CreateIndexFile();
     bool CreateTerrainFile();
+    // Create level 2 heightmap for the client
     bool CreateClientHeightmap();
+    // Create clients minimap. Basically a PNG with the terrain and obstacles.
+    bool CreateClientMinimap();
     bool SaveModel(const Math::Shape& shape, const std::string& filename);
     std::string FindFile(const std::string& name);
 public:

@@ -210,6 +210,7 @@ void BaseLevel::HandleAsyncLoadFinished(StringHash, VariantMap&)
 
 void BaseLevel::LoadScene(const String& file)
 {
+    sceneFile_ = file;
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     if (!scene_->LoadAsyncXML(cache->GetFile(file)))
     {

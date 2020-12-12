@@ -1218,7 +1218,7 @@ void WorldLevel::CreateUI()
 
     missionMap_.DynamicCast(wm->GetWindow(WINDOW_MISSIONMAP));
     uiRoot_->AddChild(missionMap_);
-    missionMap_->SetScene(scene_, mapType_);
+    missionMap_->SetScene(scene_, mapType_, sceneFile_);
 
     inventoryWindow_.DynamicCast(wm->GetWindow(WINDOW_INVENTORY));
     uiRoot_->AddChild(inventoryWindow_);

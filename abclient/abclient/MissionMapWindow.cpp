@@ -154,12 +154,18 @@ MissionMapWindow::~MissionMapWindow()
     UnsubscribeFromAllEvents();
 }
 
-void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType)
+void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType, const String& sceneFile)
 {
     waypoints_.Clear();
     gameType_ = gameType;
     if (!scene)
         return;
+
+    String minimapFile = sceneFile + ".minimap.png";
+    auto* cache = GetSubsystem<ResourceCache>();
+    auto* minimapImage = cache->GetResource<Image>(minimapFile);
+    if (!minimapImage)
+        URHO3D_LOGWARNING("Minimap file not found");
 
     terrainLayer_ = GetChildStaticCast<BorderImage>("Container", true);
     objectLayer_ = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);
@@ -170,7 +176,10 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
         auto* heightmap = terrain->GetHeightMap();
         heightmapTexture_ = MakeShared<Texture2D>(context_);
         heightmapTexture_->SetSize(heightmap->GetWidth(), heightmap->GetHeight(), Graphics::GetRGBAFormat(), TEXTURE_STATIC);
-        heightmapTexture_->SetData(heightmap, true);
+        if (minimapImage)
+            heightmapTexture_->SetData(minimapImage);
+        else
+            heightmapTexture_->SetData(heightmap, true);
         heightmapTexture_->SetNumLevels(1);
         heightmapTexture_->SetMipsToSkip(QUALITY_LOW, 0);
         terrainLayer_->SetTexture(heightmapTexture_);

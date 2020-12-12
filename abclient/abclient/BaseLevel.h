@@ -90,6 +90,7 @@ protected:
     /// Camera pitch angle.
     float pitch_;
     SharedPtr<Sprite> logoSprite_;
+    String sceneFile_;
 public:
     bool debugGeometry_;
     /// If this level has a player call this to create it

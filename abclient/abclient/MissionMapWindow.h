@@ -35,7 +35,7 @@ public:
 
     MissionMapWindow(Context* context);
     ~MissionMapWindow() override;
-    void SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType);
+    void SetScene(SharedPtr<Scene> scene, AB::Entities::GameType gameType, const String& sceneFile);
 private:
     enum class DotType
     {
