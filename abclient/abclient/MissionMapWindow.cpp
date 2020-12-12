@@ -42,8 +42,8 @@ const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
 const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
 const Color MissionMapWindow::PING_COLOR(1.0f, 0.0f, 0.7f);
 const Color MissionMapWindow::MARKER_COLOR(0.0f, 0.5f, 0.0f);
-const Color MissionMapWindow::AGGRO_RANGE_COLOR(0.9f, 0.2f, 0.2f);
-const Color MissionMapWindow::CASTING_RANGE_COLOR(0.2f, 0.9f, 0.2f);
+const Color MissionMapWindow::AGGRO_RANGE_COLOR(0.9f, 0.2f, 0.2f, 0.8f);
+const Color MissionMapWindow::CASTING_RANGE_COLOR(0.2f, 0.9f, 0.2f, 0.8f);
 
 // 12x12
 static constexpr const char* DOT_BITMAP = {
@@ -180,7 +180,7 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
         heightmapTexture_ = MakeShared<Texture2D>(context_);
         heightmapTexture_->SetSize(heightmap->GetWidth(), heightmap->GetHeight(), Graphics::GetRGBAFormat(), TEXTURE_STATIC);
         if (minimapImage)
-            heightmapTexture_->SetData(minimapImage);
+            heightmapTexture_->SetData(minimapImage, true);
         else
             heightmapTexture_->SetData(heightmap, true);
         heightmapTexture_->SetNumLevels(1);
@@ -272,7 +272,12 @@ void MissionMapWindow::DrawPoint(const IntVector2& center, int size, const Color
 
 void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const Color& color)
 {
-    const float r = radius * SCALE;
+    DrawCircle(center, radius, color, SCALE);
+}
+
+void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const Color& color, float scale)
+{
+    const float r = radius * scale;
     for (float i = 0; i < 360.0f; i += 0.1f)
     {
         int x = (int)(r * cosf(i * (float)M_PI / 180.0f));
@@ -282,7 +287,7 @@ void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const 
     }
 }
 
-void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
+void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSelected)
 {
     if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
         return;
@@ -327,6 +332,11 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
                 mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
         }
     }
+    if (isSelected)
+    {
+        const Color selectedColor = (*color) + Color(0.5f, 0.5f, 0.5f);
+        DrawCircle(pos, 12, selectedColor, 1.0f);
+    }
 }
 
 Player* MissionMapWindow::GetPlayer() const
@@ -355,7 +365,7 @@ void MissionMapWindow::DrawObjects()
         for (const auto& wp : waypoints_)
         {
             const IntVector2 mapPos = WorldToMapPos(center, wp);
-            DrawObject(mapPos, DotType::Waypoint);
+            DrawObject(mapPos, DotType::Waypoint, false);
         }
 
         const IntVector2 origin = WorldToMap(center);
@@ -388,14 +398,15 @@ void MissionMapWindow::DrawObjects()
                 type = DotType::Foe;
             else
                 type = DotType::Other;
+            const bool selected = p->GetSelectedObjectId() == current.gameId_;
             // TODO: Team color
-            DrawObject(mapPos, type);
+            DrawObject(mapPos, type, selected);
             return Iteration::Continue;
         });
 
         if (haveMarker_)
         {
-            DrawObject(WorldToMapPos(center, marker_), DotType::Marker);
+            DrawObject(WorldToMapPos(center, marker_), DotType::Marker, false);
         }
 
         if (pingTime_ != 0)
@@ -406,14 +417,14 @@ void MissionMapWindow::DrawObjects()
                 switch (pingType_)
                 {
                 case PingType::Position:
-                    DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos);
+                    DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos, false);
                     break;
                 case PingType::Target:
                 {
                     if (auto t = target_.Lock())
                     {
                         const Vector3& targetPos = t->GetNode()->GetPosition();
-                        DrawObject(WorldToMapPos(center, targetPos), DotType::PingPos);
+                        DrawObject(WorldToMapPos(center, targetPos), DotType::PingPos, false);
                     }
                     break;
                 }

@@ -96,8 +96,9 @@ private:
     IntVector2 WorldToMap(const Vector3& world) const;
     Vector3 MapToWorldPos(const Vector3& center, const IntVector2& map) const;
     Vector3 MapToWorld(const IntVector2& map) const;
-    void DrawObject(const IntVector2& pos, DotType type);
+    void DrawObject(const IntVector2& pos, DotType type, bool isSelected);
     void DrawCircle(const IntVector2& center, float radius, const Color& color);
+    void DrawCircle(const IntVector2& center, float radius, const Color& color, float scale);
     void DrawPoint(const IntVector2& center, int size, const Color& color);
 };
 
