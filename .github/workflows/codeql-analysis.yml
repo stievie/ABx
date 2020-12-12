@@ -53,7 +53,7 @@ jobs:
        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
        sudo -E apt-get -yq --no-install-suggests --no-install-recommends install uuid-dev libpq-dev postgresql-server-dev-all libssl-dev libldap2-dev libgsasl7-dev libkrb5-dev lua5.3 lua5.3-dev libncurses-dev
-       mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make && ctest
+       mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make && ctest --verbose
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

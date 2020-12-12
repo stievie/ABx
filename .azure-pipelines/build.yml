@@ -3,4 +3,4 @@ parameters:
   configuration: 'Release'
 
 steps:
-  - script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=${{ parameters.configuration }} .. && make && ctest
+  - script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=${{ parameters.configuration }} .. && make && ctest --verbose
