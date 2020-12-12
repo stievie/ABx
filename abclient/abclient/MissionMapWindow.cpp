@@ -28,6 +28,7 @@
 #include <sa/time.h>
 #include "FwClient.h"
 #include "AudioManager.h"
+#include <abshared/Mechanic.h>
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
@@ -41,6 +42,8 @@ const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
 const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
 const Color MissionMapWindow::PING_COLOR(1.0f, 0.0f, 0.7f);
 const Color MissionMapWindow::MARKER_COLOR(0.0f, 0.5f, 0.0f);
+const Color MissionMapWindow::AGGRO_RANGE_COLOR(0.9f, 0.2f, 0.2f);
+const Color MissionMapWindow::CASTING_RANGE_COLOR(0.2f, 0.9f, 0.2f);
 
 // 12x12
 static constexpr const char* DOT_BITMAP = {
@@ -232,8 +235,8 @@ IntVector2 MissionMapWindow::WorldToMapPos(const Vector3& center, const Vector3&
 
 IntVector2 MissionMapWindow::WorldToMap(const Vector3& world) const
 {
-    float x = (world.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f);
-    float y = (-world.z_ * SCALE) + ((float)MAP_HEIGHT / 2.0f);
+    float x = (world.x_ * SCALE) + ((float)MAP_WIDTH * 0.5f);
+    float y = (-world.z_ * SCALE) + ((float)MAP_HEIGHT * 0.5f);
     return { (int)x, (int)y };
 }
 
@@ -254,6 +257,29 @@ Vector3 MissionMapWindow::MapToWorld(const IntVector2& map) const
 Vector3 MissionMapWindow::MapToWorldPos(const Vector3& center, const IntVector2& map) const
 {
     return center + MapToWorld(map);
+}
+
+void MissionMapWindow::DrawPoint(const IntVector2& center, int size, const Color& color)
+{
+    for (int y = -(size / 2); y < size / 2; ++y)
+    {
+        for (int x = -(size / 2); x < size / 2; ++x)
+        {
+            mapImage_->SetPixel(center.x_ + x, center.y_ + y, color);
+        }
+    }
+}
+
+void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const Color& color)
+{
+    const float r = radius * SCALE;
+    for (float i = 0; i < 360.0f; i += 0.1f)
+    {
+        int x = (int)(r * cosf(i * (float)M_PI / 180.0f));
+        int y = (int)(r * sinf(i * (float)M_PI / 180.0f));
+
+        DrawPoint({ center.x_ + x, center.y_ + y }, 2, color);
+    }
 }
 
 void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type)
@@ -309,6 +335,15 @@ Player* MissionMapWindow::GetPlayer() const
     return lm->GetPlayer();
 }
 
+void MissionMapWindow::DrawRanges()
+{
+    if (auto* p = GetPlayer())
+    {
+        DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_AGGRO, AGGRO_RANGE_COLOR);
+        DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_CASTING, CASTING_RANGE_COLOR);
+    }
+}
+
 void MissionMapWindow::DrawObjects()
 {
     auto* lm = GetSubsystem<LevelManager>();
@@ -316,7 +351,6 @@ void MissionMapWindow::DrawObjects()
     if (!lvl)
         return;
 
-    mapImage_->Clear(Color::TRANSPARENT_BLACK);
     if (auto* p = GetPlayer())
     {
         const Vector3& center = p->GetNode()->GetPosition();
@@ -392,15 +426,16 @@ void MissionMapWindow::DrawObjects()
             }
         }
     }
-
-    mapTexture_->SetData(mapImage_, true);
 }
 
 void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
 {
     if (!IsVisible())
         return;
+    mapImage_->Clear(Color::TRANSPARENT_BLACK);
     DrawObjects();
+    DrawRanges();
+    mapTexture_->SetData(mapImage_, true);
 }
 
 void MissionMapWindow::HandleUpdate(StringHash, VariantMap&)

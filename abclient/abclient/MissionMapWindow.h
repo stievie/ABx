@@ -60,6 +60,8 @@ private:
     static const Color WAYPOINT_COLOR;
     static const Color PING_COLOR;
     static const Color MARKER_COLOR;
+    static const Color AGGRO_RANGE_COLOR;
+    static const Color CASTING_RANGE_COLOR;
     int64_t pingTime_{ 0 };
     uint32_t pingerId_{ 0 };
     Vector3 pingPos_;
@@ -81,6 +83,7 @@ private:
     void FitTexture();
     Player* GetPlayer() const;
     void DrawObjects();
+    void DrawRanges();
     void SubscribeToEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -94,5 +97,7 @@ private:
     Vector3 MapToWorldPos(const Vector3& center, const IntVector2& map) const;
     Vector3 MapToWorld(const IntVector2& map) const;
     void DrawObject(const IntVector2& pos, DotType type);
+    void DrawCircle(const IntVector2& center, float radius, const Color& color);
+    void DrawPoint(const IntVector2& center, int size, const Color& color);
 };
 

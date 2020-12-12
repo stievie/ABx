@@ -19,7 +19,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #include "BaseLevel.h"
 #include "LevelManager.h"
 #include <Urho3D/UI/MessageBox.h>
