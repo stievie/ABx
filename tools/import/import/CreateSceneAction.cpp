@@ -97,11 +97,13 @@ void CreateSceneAction::Execute()
 
 bool CreateSceneAction::CreateClientMinimap()
 {
-    // TODOO: Improve colors of minimap
+    // TODO: Improve colors of minimap
     std::string outFile = file_ + ".minimap.png";
     std::cout << "Creating client minimap " << outFile << std::endl;
 
-    std::string obstaclesFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
+    std::string obstaclesFile;
+    if (obstackles_.size() != 0)
+        obstaclesFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
 
     std::stringstream ss;
     ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "hmerge"));
@@ -112,7 +114,8 @@ bool CreateSceneAction::CreateClientMinimap()
     ss << " -Z " << heightmapSpacing_.z_;
     ss << " -P " << patchSize_;
     ss << " -R " << Utils::EscapeArguments(heightfieldFile_);
-    ss << " -G " << Utils::EscapeArguments(obstaclesFile);
+    if (!obstaclesFile.empty())
+        ss << " -G " << Utils::EscapeArguments(obstaclesFile);
     ss << " -o " << Utils::EscapeArguments(outFile);
 
     const std::string cmdLine = ss.str();
