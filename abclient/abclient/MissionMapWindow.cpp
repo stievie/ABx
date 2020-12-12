@@ -337,11 +337,8 @@ Player* MissionMapWindow::GetPlayer() const
 
 void MissionMapWindow::DrawRanges()
 {
-    if (auto* p = GetPlayer())
-    {
-        DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_AGGRO, AGGRO_RANGE_COLOR);
-        DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_CASTING, CASTING_RANGE_COLOR);
-    }
+    DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_AGGRO, AGGRO_RANGE_COLOR);
+    DrawCircle({ MAP_WIDTH / 2, MAP_HEIGHT / 2 }, Game::RANGE_CASTING, CASTING_RANGE_COLOR);
 }
 
 void MissionMapWindow::DrawObjects()
