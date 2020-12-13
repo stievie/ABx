@@ -553,7 +553,7 @@ std::pair<bool, uint32_t> Client::PingServer(const std::string& host, uint16_t p
     asio::ip::udp::socket socket(ioService, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0));
     asio::ip::udp::resolver resolver(ioService);
     asio::ip::udp::endpoint endpoint = *resolver.resolve(asio::ip::udp::resolver::query(asio::ip::udp::v4(), host, std::to_string(port)));
-    const char senddata[DATA_SIZE] = "ablogin";
+    static const char senddata[DATA_SIZE] = "ablogin";
 
     bool result = false;
 

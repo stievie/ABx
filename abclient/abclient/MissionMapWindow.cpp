@@ -40,69 +40,69 @@ const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
 const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
 const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
 const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
-const Color MissionMapWindow::PING_COLOR(1.0f, 0.0f, 0.7f);
+const Color MissionMapWindow::PING_COLOR(0.9f, 0.2f, 0.8f);
 const Color MissionMapWindow::MARKER_COLOR(0.0f, 0.5f, 0.0f);
 const Color MissionMapWindow::AGGRO_RANGE_COLOR(0.9f, 0.2f, 0.2f, 0.8f);
 const Color MissionMapWindow::CASTING_RANGE_COLOR(0.2f, 0.9f, 0.2f, 0.8f);
 
 // 12x12
 static constexpr const char* DOT_BITMAP = {
-    "    ####    "
-    "  ########  "
-    " ########## "
-    " ########## "
-    "############"
-    "############"
-    "############"
-    "############"
-    " ########## "
-    " ########## "
-    "  ########  "
-    "    ####    "
+    "    +++#    "
+    "  +******#  "
+    " +********# "
+    " +********# "
+    "+**********#"
+    "+**********#"
+    "+**********#"
+    "+**********#"
+    " +********# "
+    " +********# "
+    "  +******#  "
+    "    +###    "
 };
 
 static constexpr const char* WAYPOINT_BITMAP = {
     "            "
     "            "
-    "  ########  "
-    "  ########  "
-    "  ########  "
-    "  ########  "
-    "  ########  "
-    "  ########  "
-    "  ########  "
-    "  ########  "
+    "  ++++++++  "
+    "  +******#  "
+    "  +******#  "
+    "  +******#  "
+    "  +******#  "
+    "  +******#  "
+    "  +******#  "
+    "  +#######  "
     "            "
     "            "
 };
 
 static constexpr const char* PING_BITMAP = {
-    "##        ##"
-    "###      ###"
-    " ###    ### "
-    "  ###  ###  "
-    "   ######   "
-    "    ####    "
-    "    ####    "
-    "   ######   "
-    "  ###  ###  "
-    " ###    ### "
-    "###      ###"
-    "##        ##"
+    "**#      +**"
+    "+**#    +**#"
+    " +**#  +**# "
+    "  +*****#  "
+    "   +****#   "
+    "    +**#    "
+    "    +**#    "
+    "   +****#   "
+    "  +**#####  "
+    " +**#  +**# "
+    "+**#    +**#"
+    "**#      +*#"
 };
 static constexpr const char* MARKER_BITMAP = {
-    "     ##     "
-    "     ##     "
-    "##   ##  ## "
-    "  ## ## ##  "
-    "    ####    "
-    "############"
-    "############"
-    "    ####    "
-    "  ## ## ##  "
-    "##   ##   ##"
-    "     ##     "
-    "     ##     "
+    "     **     "
+    "     **     "
+    "**   **  ** "
+    "  ** ** **  "
+    "    ****    "
+    "************"
+    "************"
+    "    ****    "
+    "  ** ** **  "
+    "**   **   **"
+    "     **     "
+    "     **     "
 };
 
 void MissionMapWindow::RegisterObject(Context* context)
@@ -287,7 +287,7 @@ void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const 
     }
 }
 
-void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSelected)
+void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSelected, bool isDead)
 {
     if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
         return;
@@ -324,18 +324,40 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
     if (!color)
         return;
 
+    Vector3 hsl = color->ToHSL();
+    if (isDead)
+        hsl.y_ *= 0.2f;
+    Color baseColor;
+    baseColor.FromHSL(hsl.x_, hsl.y_, hsl.z_);
+    Color colorDark;
+    colorDark.FromHSL(hsl.x_, hsl.y_, hsl.z_ * 0.5f);
+    Color colorBright;
+    colorBright.FromHSL(hsl.x_, hsl.y_ * 1.2f, hsl.z_ * 1.6f);
     for (int y = 0; y < 12; ++y)
     {
         for (int x = 0; x < 12; ++x)
         {
-            if (bitmap[y * 12 + x] == '#')
-                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, *color);
+            switch (bitmap[y * 12 + x])
+            {
+            case '*':
+                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, baseColor);
+                break;
+            case '#':
+                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, colorDark);
+                break;
+            case '+':
+                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, colorBright);
+                break;
+            default:
+                break;
+            }
         }
     }
     if (isSelected)
     {
-        const Color selectedColor = (*color) + Color(0.5f, 0.5f, 0.5f);
-        DrawCircle(pos, 12, selectedColor, 1.0f);
+        Color selectedColor;
+        selectedColor.FromHSL(hsl.x_, hsl.y_ * 1.3f, hsl.z_ * 1.8f);
+        DrawCircle(pos, 8, selectedColor, 1.0f);
     }
 }
 
@@ -365,7 +387,7 @@ void MissionMapWindow::DrawObjects()
         for (const auto& wp : waypoints_)
         {
             const IntVector2 mapPos = WorldToMapPos(center, wp);
-            DrawObject(mapPos, DotType::Waypoint, false);
+            DrawObject(mapPos, DotType::Waypoint, false, false);
         }
 
         const IntVector2 origin = WorldToMap(center);
@@ -384,7 +406,8 @@ void MissionMapWindow::DrawObjects()
         terrainLayer_->SetImageRect(imageRect);
 //        terrainLayer_->SetFullImageRect();
 
-        lvl->VisitObjects([this, &center, p](GameObject& current)
+        uint32_t selectedId = p->GetSelectedObjectId();
+        lvl->VisitObjects([this, &center, p, selectedId](GameObject& current)
         {
             if (!Is<Actor>(current) || !current.IsPlayingCharacterOrNpc())
                 return Iteration::Continue;
@@ -398,15 +421,15 @@ void MissionMapWindow::DrawObjects()
                 type = DotType::Foe;
             else
                 type = DotType::Other;
-            const bool selected = p->GetSelectedObjectId() == current.gameId_;
+            const bool selected = selectedId == current.gameId_;
             // TODO: Team color
-            DrawObject(mapPos, type, selected);
+            DrawObject(mapPos, type, selected, To<Actor>(current).IsDead());
             return Iteration::Continue;
         });
 
         if (haveMarker_)
         {
-            DrawObject(WorldToMapPos(center, marker_), DotType::Marker, false);
+            DrawObject(WorldToMapPos(center, marker_), DotType::Marker, false, false);
         }
 
         if (pingTime_ != 0)
@@ -417,14 +440,14 @@ void MissionMapWindow::DrawObjects()
                 switch (pingType_)
                 {
                 case PingType::Position:
-                    DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos, false);
+                    DrawObject(WorldToMapPos(center, pingPos_), DotType::PingPos, false, false);
                     break;
                 case PingType::Target:
                 {
                     if (auto t = target_.Lock())
                     {
                         const Vector3& targetPos = t->GetNode()->GetPosition();
-                        DrawObject(WorldToMapPos(center, targetPos), DotType::PingPos, false);
+                        DrawObject(WorldToMapPos(center, targetPos), DotType::PingPos, false, false);
                     }
                     break;
                 }
@@ -441,8 +464,8 @@ void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
     if (!IsVisible())
         return;
     mapImage_->Clear(Color::TRANSPARENT_BLACK);
-    DrawObjects();
     DrawRanges();
+    DrawObjects();
     mapTexture_->SetData(mapImage_, true);
 }
 

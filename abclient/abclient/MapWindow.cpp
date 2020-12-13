@@ -96,6 +96,7 @@ MapWindow::MapWindow(Context* context) :
     FitMap();
 
     SubscribeToEvent(E_SCREENMODE, URHO3D_HANDLER(MapWindow, HandleScreenMode));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(MapWindow, HandleKeyDown));
 }
 
 MapWindow::~MapWindow()
@@ -115,6 +116,14 @@ void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)
         FwClient* net = GetSubsystem<FwClient>();
         net->ChangeMap(uuid);
     }
+}
+
+void MapWindow::HandleKeyDown(StringHash, VariantMap& eventData)
+{
+    using namespace KeyDown;
+    Key key = static_cast<Key>(eventData[P_KEY].GetInt());
+    if (key == KEY_ESCAPE)
+        SetVisible(false);
 }
 
 void MapWindow::HandleClicked(StringHash, VariantMap&)
