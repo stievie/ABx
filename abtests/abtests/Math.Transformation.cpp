@@ -109,6 +109,13 @@ TEST_CASE("Transformation Matrix")
     for (size_t i = 0; i < 16; ++i)
     {
         INFO(i)
-        REQUIRE(matrix1.m_[i] == Approx(matrix2.m_[i]));
+        // Approx may still fail on CI:
+        // /home/vsts/work/1/s/abtests/abtests/Math.Transformation.cpp:112: FAILED:
+        //     REQUIRE(matrix1.m_[i] == Approx(matrix2.m_[i]))
+        // with expansion :
+        //     0.0f == Approx(0.0000000171)
+        // with message :
+        //     0
+        REQUIRE(fabs(matrix1.m_[i] - matrix2.m_[i]) < 0.0000001f);
     }
 }
