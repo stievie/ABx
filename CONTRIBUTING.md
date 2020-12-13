@@ -5,7 +5,7 @@ submit pull requests.
 
 If you have questions, you can reach me via Email with the Email address shown in
 my profile. If you have an issue with compiling and/or running, make a new Issue
-or use the [Discussions](discussions) board.
+or use the [Discussions](https://github.com/stievie/ABx/discussions) board.
 
 ## Pull requests
 

@@ -103,7 +103,7 @@ See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 **A** This is a known issue (https://github.com/stievie/ABx/issues/75),
 see here https://github.com/stievie/ABx/issues/55 for a solution.
 
-If your question is not answered here, use the [Discussions](discussions) thing.
+If your question is not answered here, use the [Discussions](https://github.com/stievie/ABx/discussions) thing.
 
 ## Contributing
 
