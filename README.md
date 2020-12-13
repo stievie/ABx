@@ -103,6 +103,8 @@ See [BUILD.md](BUILD.md) and [INSTALL.md](INSTALL.md).
 **A** This is a known issue (https://github.com/stievie/ABx/issues/75),
 see here https://github.com/stievie/ABx/issues/55 for a solution.
 
+If your question is not answered here, use the [Discussions](discussions) thing.
+
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for more
@@ -114,7 +116,7 @@ See [CREDITS.md](CREDITS.md).
 
 ## Architecture
 
-![Architecture](/Doc/abschema.png?raw=true)
+![Architecture](Doc/abschema.png?raw=true)
 
 ### Data Server
 

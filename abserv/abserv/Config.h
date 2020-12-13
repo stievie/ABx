@@ -74,7 +74,7 @@
 // Game is inactive and will be stopped when it didn't have a player for this time.
 #define GAME_INACTIVE_TIME (1000 * 60)
 // Time after a party is teleported back to the outpost after it was defeated/resigned in ms
-#define PARTY_TELEPORT_BACK_TIME (2000u)
+#define PARTY_TELEPORT_BACK_TIME (3000u)
 #define AI_SERVER_UPDATE_INTERVAL (1000)
 #define FILEWATCHER_INTERVAL (1000)
 // Merchant returns a maximum of 20 items. The user should narrow the search.

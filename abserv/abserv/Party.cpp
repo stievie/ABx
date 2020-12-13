@@ -53,7 +53,7 @@ void Party::RegisterLua(kaguya::State& state)
 Party::Party() :
     Group(Group::GetNewId())
 {
-    chatChannel_ = ea::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
+    chatChannel_ = ea::static_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
     members_.reserve(AB::Entities::Limits::MAX_PARTY_MEMBERS);
     // The Entity is created by the PartyManager
@@ -234,7 +234,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
     {
         if (sa::time::time_elapsed(defeatedTick_) > PARTY_TELEPORT_BACK_TIME)
         {
-            // Bring to the last outpost after 2 secs
+            // Bring to the last outpost after some time
             TeleportBack();
             defeatedTick_ = 0;
             defeated_ = false;
