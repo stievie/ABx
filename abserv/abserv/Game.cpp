@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "AreaOfEffect.h"
 #include "ConfigManager.h"
-#include "Crowd.h"
+#include "Group.h"
 #include "DataProvider.h"
 #include "Effect.h"
 #include "EffectManager.h"
@@ -316,7 +316,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetPlayer", &Game::GetPlayerById)
         .addFunction("GetParties", &Game::_LuaGetParties)
         .addFunction("GetGroup", &Game::GetGroup)
-        .addFunction("AddCrowd", &Game::AddCrowd)
+        .addFunction("AddGroup", &Game::AddGroup)
 
         .addFunction("GetTerrainHeight", &Game::_LuaGetTerrainHeight)
         .addFunction("GetStartTime", &Game::_LuaGetStartTime)
@@ -907,20 +907,20 @@ void Game::PlayerLeave(uint32_t playerId)
     InternalRemoveObject(player);
 }
 
-Crowd* Game::AddCrowd()
+Group* Game::AddGroup()
 {
-    ea::unique_ptr<Crowd> crowd = ea::make_unique<Crowd>();
-    Crowd* result = crowd.get();
-    crowds_.emplace(crowd->GetId(), ea::move(crowd));
+    ea::unique_ptr<Group> group = ea::make_unique<Group>(Group::GetNewId());
+    Group* result = group.get();
+    groups_.emplace(group->GetId(), ea::move(group));
     return result;
 }
 
 Group* Game::GetGroup(uint32_t id)
 {
-    const auto it = crowds_.find(id);
-    if (it != crowds_.end())
+    const auto it = groups_.find(id);
+    if (it != groups_.end())
         return (*it).second.get();
-    auto pMngr = GetSubsystem<PartyManager>();
+    auto* pMngr = GetSubsystem<PartyManager>();
     auto party = pMngr->Get(id);
     if (party)
         return party.get();

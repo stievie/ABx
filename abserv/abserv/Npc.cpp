@@ -20,7 +20,6 @@
  */
 
 #include "Npc.h"
-#include "Crowd.h"
 #include "DamageComp.h"
 #include "DataProvider.h"
 #include "GameManager.h"

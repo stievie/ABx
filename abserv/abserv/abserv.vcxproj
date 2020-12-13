@@ -153,7 +153,6 @@
     <ClInclude Include="conditions\AiIsSelfHealthLow.h" />
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="conditions\AiRandomCondition.h" />
-    <ClInclude Include="Crowd.h" />
     <ClInclude Include="DamageComp.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
@@ -295,7 +294,6 @@
     <ClCompile Include="conditions\AiIsSelfHealthCritical.cpp" />
     <ClCompile Include="conditions\AiIsSelfHealthLow.cpp" />
     <ClCompile Include="conditions\AiRandomCondition.cpp" />
-    <ClCompile Include="Crowd.cpp" />
     <ClCompile Include="DamageComp.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />

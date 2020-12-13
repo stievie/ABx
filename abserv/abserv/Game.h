@@ -56,7 +56,7 @@ class Crowd;
 /// have it in the order of creation (allocation) when Update() is called.
 using ObjectList = ea::map<uint32_t, ea::shared_ptr<GameObject>>;
 using PlayersList = ea::unordered_map<uint32_t, Player*>;
-using CrowdList = ea::unordered_map<uint32_t, ea::unique_ptr<Crowd>>;
+using GroupList = ea::unordered_map<uint32_t, ea::unique_ptr<Group>>;
 
 class Game : public ea::enable_shared_from_this<Game>
 {
@@ -80,7 +80,7 @@ private:
     /// The primary owner of the game objects
     ObjectList objects_;
     PlayersList players_;
-    CrowdList crowds_;
+    GroupList groups_;
     kaguya::State luaState_;
     /// First player(s) triggering the creation of this game
     ea::vector<ea::shared_ptr<GameObject>> queuedObjects_;
@@ -196,7 +196,7 @@ public:
     void AddObject(ea::shared_ptr<GameObject> object);
     void AddObjectInternal(ea::shared_ptr<GameObject> object);
     Group* GetGroup(uint32_t id);
-    Crowd* AddCrowd();
+    Group* AddGroup();
 
     ea::shared_ptr<Npc> AddNpc(const std::string& script);
     ea::shared_ptr<AreaOfEffect> AddAreaOfEffect(const std::string& script,

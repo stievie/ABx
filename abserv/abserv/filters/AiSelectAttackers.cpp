@@ -23,6 +23,10 @@
 #include "AiSelectAttackers.h"
 #include "../Npc.h"
 #include "../Group.h"
+#include "../DamageComp.h"
+#include <abscommon/Logger.h>
+
+//#define DEBUG_AI
 
 namespace AI {
 namespace Filters {
@@ -44,7 +48,7 @@ void SelectAttackers::Execute(Agent& agent)
     {
         actor.VisitEnemiesInRange(Game::Ranges::Compass, [&](const Game::Actor& o)
         {
-            if (o.attackComp_->IsTarget(&actor))
+            if (o.attackComp_->IsTarget(&actor) || actor.damageComp_->IsLastDamager(o))
             {
                 entities.push_back(o.id_);
                 sorting[o.id_] = o.GetDistance(&actor);
@@ -55,6 +59,9 @@ void SelectAttackers::Execute(Agent& agent)
 
     if (auto group = chr.GetGroup())
     {
+#ifdef DEBUG_AI
+        LOG_DEBUG << "Selecting group attackers, group members " << group->GetMemberCount() << std::endl;
+#endif
         group->VisitMembers([&](const Game::Actor& current) -> Iteration
         {
             getAttackersOfActor(current);
@@ -65,6 +72,10 @@ void SelectAttackers::Execute(Agent& agent)
     {
         getAttackersOfActor(chr);
     }
+
+#ifdef DEBUG_AI
+    LOG_DEBUG << "Selected " << entities.size() << std::endl;
+#endif
     std::sort(entities.begin(), entities.end(), [&sorting](uint32_t i, uint32_t j)
     {
         const float& p1 = sorting[i];

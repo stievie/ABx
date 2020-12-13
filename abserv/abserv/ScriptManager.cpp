@@ -23,7 +23,6 @@
 #include "ScriptManager.h"
 #include "Application.h"
 #include "AreaOfEffect.h"
-#include "Crowd.h"
 #include "DataProvider.h"
 #include "Group.h"
 #include "Item.h"
@@ -65,10 +64,6 @@ void RegisterLuaAll(kaguya::State& state)
     {
         return Application::Instance->GetServerId();
     });
-    state["NewGroupId"] = kaguya::function([]
-    {
-        return Group::GetNewId();
-    });
     state["include"] = kaguya::function([&state](const std::string& file)
     {
         auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(file);
@@ -96,7 +91,6 @@ void RegisterLuaAll(kaguya::State& state)
     SkillBar::RegisterLua(state);
     Group::RegisterLua(state);
     Party::RegisterLua(state);
-    Crowd::RegisterLua(state);
     Quest::RegisterLua(state);
 
     AreaOfEffect::RegisterLua(state);

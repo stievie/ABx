@@ -23,7 +23,7 @@
 #include "AiWander.h"
 #include "../Npc.h"
 #include "../AiAgent.h"
-#include "../Crowd.h"
+#include "../Group.h"
 
 //#define DEBUG_AI
 
@@ -43,9 +43,9 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
     if (npc.IsImmobilized())
         return Status::Failed;
 
-    Game::Group* crowd = npc.GetGroup();
+    Game::Group* group = npc.GetGroup();
 
-    if (crowd && crowd->GetLeader() && crowd->GetLeader() != &npc)
+    if (group && group->GetLeader() && group->GetLeader() != &npc)
     {
         float distance;
         auto& aia = GetAgent(agent);
@@ -59,7 +59,7 @@ Node::Status Wander::DoAction(Agent& agent, uint32_t)
         }
 
         // If we are in a crowd and we are not the leader, follow the leader
-        Game::Actor* leader = crowd->GetLeader();
+        Game::Actor* leader = group->GetLeader();
         if (npc.GetPosition().Equals(leader->GetPosition(), distance))
             return Status::Finished;
         if (npc.autorunComp_->IsFollowing(*leader))

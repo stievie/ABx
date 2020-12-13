@@ -399,9 +399,6 @@
     <ClInclude Include="conditions\AiIsInWeaponRange.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
-    <ClInclude Include="Crowd.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="conditions\AiHaveWeapon.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
@@ -808,9 +805,6 @@
     </ClCompile>
     <ClCompile Include="conditions\AiIsInWeaponRange.cpp">
       <Filter>Quelldateien\Conditions</Filter>
-    </ClCompile>
-    <ClCompile Include="Crowd.cpp">
-      <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="conditions\AiHaveWeapon.cpp">
       <Filter>Quelldateien\Conditions</Filter>

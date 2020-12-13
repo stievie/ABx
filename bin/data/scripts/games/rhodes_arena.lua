@@ -10,7 +10,7 @@ local point_red = {
 
 local function createTeam(spawn, frnd, foe, rot, color, name_suffix)
   -- To make them allies set the same group ID. Adding NPCs to a Crowd sets the group ID.
-  local crowd = self:AddCrowd()
+  local crowd = self:AddGroup()
   crowd:SetColor(color)
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
