@@ -48,6 +48,8 @@ void SelectAttackers::Execute(Agent& agent)
     {
         actor.VisitEnemiesInRange(Game::Ranges::Compass, [&](const Game::Actor& o)
         {
+            if (o.IsDead())
+                return Iteration::Continue;
             if (o.attackComp_->IsTarget(&actor) || actor.damageComp_->IsLastDamager(o))
             {
                 entities.push_back(o.id_);
