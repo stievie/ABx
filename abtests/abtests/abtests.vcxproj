@@ -134,6 +134,7 @@
     <ClCompile Include="Net.MessageMsg.cpp" />
     <ClCompile Include="sa.ArgParser.cpp" />
     <ClCompile Include="sa.Bits.cpp" />
+    <ClCompile Include="sa.Color.cpp" />
     <ClCompile Include="sa.compress.cpp" />
     <ClCompile Include="sa.Endian.cpp" />
     <ClCompile Include="sa.Hash.cpp" />
