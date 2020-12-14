@@ -194,8 +194,6 @@ static bool CreateImage(const std::string& filename,
 {
     const int comps = 4;
 
-    const float zD = maxHeight - minHeight;
-
     unsigned char* data = (unsigned char*)malloc((size_t)width * (size_t)height * (size_t)comps);
     if (!data)
         return false;
