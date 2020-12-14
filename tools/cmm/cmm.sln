@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmm", "cmm\cmm.vcxproj", "{0A081A20-74B9-4ED5-8493-FB443F122AEA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abscommon", "..\..\abscommon\abscommon\abscommon.vcxproj", "{2482B1C7-086B-4968-AA1E-2EA0D4D71225}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Debug|x64.ActiveCfg = Debug|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Debug|x64.Build.0 = Debug|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Release|x64.ActiveCfg = Release|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Release|x64.Build.0 = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.ActiveCfg = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Debug|x64.Build.0 = Debug|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.ActiveCfg = Release|x64
+		{2482B1C7-086B-4968-AA1E-2EA0D4D71225}.Release|x64.Build.0 = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.ActiveCfg = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.Build.0 = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.ActiveCfg = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E6D1F87A-EF8D-477F-95CA-496D9C9716C6}
+	EndGlobalSection
+EndGlobal

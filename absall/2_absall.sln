@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obj2hm", "..\tools\obj2hm\o
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hm2obj", "..\tools\hm2obj\hm2obj\hm2obj.vcxproj", "{FBD1F16B-4155-498A-9597-D3C034EA3617}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cmm", "..\tools\cmm\cmm\cmm.vcxproj", "{0A081A20-74B9-4ED5-8493-FB443F122AEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -169,6 +171,10 @@ Global
 		{FBD1F16B-4155-498A-9597-D3C034EA3617}.Debug|x64.Build.0 = Debug|x64
 		{FBD1F16B-4155-498A-9597-D3C034EA3617}.Release|x64.ActiveCfg = Release|x64
 		{FBD1F16B-4155-498A-9597-D3C034EA3617}.Release|x64.Build.0 = Release|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Debug|x64.ActiveCfg = Debug|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Debug|x64.Build.0 = Debug|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Release|x64.ActiveCfg = Release|x64
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,6 +197,7 @@ Global
 		{70B00A1C-15F7-4480-9531-FEE0B69BCB27} = {B5747C55-125B-403C-BF94-6AD21CFD5F5B}
 		{591C0AAD-F514-4CB7-92A7-D848194666CA} = {B5747C55-125B-403C-BF94-6AD21CFD5F5B}
 		{FBD1F16B-4155-498A-9597-D3C034EA3617} = {B5747C55-125B-403C-BF94-6AD21CFD5F5B}
+		{0A081A20-74B9-4ED5-8493-FB443F122AEA} = {B5747C55-125B-403C-BF94-6AD21CFD5F5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FFC3D5D-076F-419E-A022-E4E8F028346A}

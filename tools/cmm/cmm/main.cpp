@@ -27,6 +27,8 @@
 #include <absmath/IO.h>
 #include <fstream>
 #include <absmath/MathDefs.h>
+#include <sa/StringTempl.h>
+#include <sa/color.h>
 
 PRAGMA_WARNING_PUSH
 PRAGMA_WARNING_DISABLE_MSVC(4244 4456)
@@ -46,13 +48,13 @@ static void InitCli(sa::arg_parser::cli& cli)
 {
     cli.push_back({ "help", { "-h", "--help", "-?" }, "Show help",
         false, false, sa::arg_parser::option_type::none });
-    cli.push_back({ "red", { "-R", "--red" }, "Red channel",
+    cli.push_back({ "layer1", { "-L1", "--layer-1" }, "Layer 1, format <color>:<file> e.g. -L1 FF0000:myfile.png",
         true, true, sa::arg_parser::option_type::string });
-    cli.push_back({ "green", { "-G", "--green" }, "Creen channel",
+    cli.push_back({ "layer2", { "-L2", "--layer-2" }, "Layer 2",
         false, true, sa::arg_parser::option_type::string });
-    cli.push_back({ "blue", { "-B", "--blue" }, "Blue channel",
+    cli.push_back({ "layer3", { "-L3", "--layer-3" }, "Layer 3",
         false, true, sa::arg_parser::option_type::string });
-    cli.push_back({ "alpha", { "-A", "--alpha" }, "Alpha channel",
+    cli.push_back({ "layer4", { "-L4", "--layer-4" }, "Layer 4",
         false, true, sa::arg_parser::option_type::string });
     cli.push_back({ "scalex", { "-X", "--scale-x" }, "X scaling (default 1.0)",
         false, true, sa::arg_parser::option_type::number });
@@ -72,12 +74,12 @@ static void InitCli(sa::arg_parser::cli& cli)
 
 static void ShowHelp(const sa::arg_parser::cli& _cli)
 {
-    std::cout << sa::arg_parser::get_help("hmerge", _cli, "Merge heightmaps");
+    std::cout << sa::arg_parser::get_help("cmm", _cli, "Create client mini map");
 }
 
 static void ShowInfo()
 {
-    std::cout << "hmerge - Merge heightmaps" << std::endl;
+    std::cout << "cmm - Create client mini map" << std::endl;
     std::cout << "(C) 2020, Stefan Ascher" << std::endl << std::endl;
 }
 
@@ -174,20 +176,23 @@ static bool GetHeights(const std::string& filename, int targetWidth, int targetH
 }
 
 static bool CreateImage(const std::string& filename,
-    const ea::vector<float>& red,
-    const ea::vector<float>& green,
-    const ea::vector<float>& blue,
-    const ea::vector<float>& alpha,
+    const sa::color color1,
+    const ea::vector<float>& layer1,
+    bool invert1,
+    const sa::color color2,
+    const ea::vector<float>& layer2,
+    bool invert2,
+    const sa::color color3,
+    const ea::vector<float>& layer3,
+    bool invert3,
+    const sa::color color4,
+    const ea::vector<float>& layer4,
+    bool invert4,
     int width, int height,
     float minHeight, float maxHeight
 )
 {
-    // We either have 1, 3 or 4 components
-    int comps = 1;
-    if (alpha.size() != 0)
-        comps = 4;
-    else if (blue.size() != 0 || green.size() != 0)
-        comps = 3;
+    const int comps = 4;
 
     const float zD = maxHeight - minHeight;
 
@@ -197,32 +202,47 @@ static bool CreateImage(const std::string& filename,
 
     memset(data, 0, (size_t)width * (size_t)height * (size_t)comps);
 
-    auto setValue = [&](const ea::vector<float>& heights, size_t x, size_t y, size_t offset)
-    {
-        const size_t index = ((size_t)y * ((size_t)width) + (size_t)x);
-        if (heights.size() == 0 || index >= heights.size())
-            return;
-
-        const float value = heights[index];
-        if (Math::Equals(value, -Math::M_INFINITE))
-            return;
-
-        const unsigned char heightValue = static_cast<unsigned char>(((value - minHeight) / zD) * 255.0f);
-        const size_t _index = ((size_t)height - y - 1) * (size_t)width + (size_t)x;
-        data[(_index * comps) + offset] = heightValue;
-    };
-
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            setValue(red, x, y, 0);
-            if (comps > 1)
-                setValue(green, x, y, 1);
-            if (comps > 2)
-                setValue(blue, x, y, 2);
-            if (comps > 3)
-                setValue(alpha, x, y, 3);
+            const size_t index = ((size_t)y * ((size_t)width) + (size_t)x);
+            if (index >= layer1.size())
+                continue;
+
+            const float value1 = layer1[index];
+            sa::color c1 = color1.colorized(value1, minHeight, maxHeight, invert1);
+            sa::color finalColor = c1;
+
+            if (index < layer2.size())
+            {
+                const float value2 = layer2[index];
+                if (!Math::IsNegInfinite(value2))
+                {
+                    finalColor = color2.colorized(value2, minHeight, maxHeight, invert2);
+                }
+            }
+
+            if (index < layer3.size())
+            {
+                const float value3 = layer3[index];
+                if (!Math::IsNegInfinite(value3))
+                {
+                    finalColor = color3.colorized(value3, minHeight, maxHeight, invert3);
+                }
+            }
+
+            if (index < layer4.size())
+            {
+                const float value4 = layer4[index];
+                if (!Math::IsNegInfinite(value4))
+                {
+                    finalColor = color4.colorized(value4, minHeight, maxHeight, invert4);
+                }
+            }
+
+            const size_t dataIndex = ((size_t)height - y - 1) * (size_t)width + (size_t)x;
+            *reinterpret_cast<uint32_t*>(&data[(dataIndex * comps)]) = finalColor.to_32();
         }
     }
 
@@ -262,33 +282,37 @@ int main(int argc, char** argv)
     int targetWidth = sa::arg_parser::get_value<int>(parsedArgs, "targetwidth", 0);
     int targetHeight = sa::arg_parser::get_value<int>(parsedArgs, "targetheight", 0);
 
-    std::string redFile = sa::arg_parser::get_value<std::string>(parsedArgs, "red", "");
-    if (redFile.empty())
+    std::string layer1Option = sa::arg_parser::get_value<std::string>(parsedArgs, "layer1", "");
+    if (layer1Option.empty())
     {
         return 1;
     }
-    std::cout << "Red layer " << redFile << std::endl;
-
-    std::string greenFile = sa::arg_parser::get_value<std::string>(parsedArgs, "green", "");
-    std::string blueFile = sa::arg_parser::get_value<std::string>(parsedArgs, "blue", "");
-    std::string alphaFile = sa::arg_parser::get_value<std::string>(parsedArgs, "alpha", "");
+    std::string layer2Option = sa::arg_parser::get_value<std::string>(parsedArgs, "layer2", "");
+    std::string layer3Option = sa::arg_parser::get_value<std::string>(parsedArgs, "layer3", "");
+    std::string layer4Option = sa::arg_parser::get_value<std::string>(parsedArgs, "layer4", "");
 
     int width = 0;
     int height = 0;
     float minHeight = std::numeric_limits<float>::max();
     float maxHeight = std::numeric_limits<float>::min();
 
-    ea::vector<float> red;
-    ea::vector<float> green;
-    ea::vector<float> blue;
-    ea::vector<float> alpha;
+    ea::vector<float> layer1;
+    ea::vector<float> layer2;
+    ea::vector<float> layer3;
+    ea::vector<float> layer4;
 
     int w, h;
     float minH, maxH;
-
-    if (!GetHeights(redFile, targetWidth, targetHeight, red, w, h, minH, maxH))
+    sa::color color1, color2, color3, color4;
+    std::vector<std::string> layer1Parts = sa::Split(layer1Option, ":", false, false);
+    if (layer1Parts.size() != 2)
     {
-        std::cerr << "Unable to load file " << redFile << std::endl;
+        return 1;
+    }
+    color1 = sa::color::from_string(layer1Parts[0]);
+    if (!GetHeights(layer1Parts[1], targetWidth, targetHeight, layer1, w, h, minH, maxH))
+    {
+        std::cerr << "Unable to load file " << layer1Parts[1] << std::endl;
         return 1;
     }
     width = std::max(width, w);
@@ -296,63 +320,85 @@ int main(int argc, char** argv)
     minHeight = std::min(minHeight, minH);
     maxHeight = std::max(maxHeight, maxH);
 
-    if (!greenFile.empty())
+    if (!layer2Option.empty())
     {
-        std::cout << "Green layer " << greenFile << std::endl;
-        if (!GetHeights(greenFile, targetWidth, targetHeight, green, w, h, minH, maxH))
+        std::vector<std::string> layer2Parts = sa::Split(layer2Option, ":", false, false);
+        if (layer2Parts.size() != 2)
         {
-            std::cerr << "Unable to load file " << greenFile << std::endl;
+            return 1;
+        }
+        color2 = sa::color::from_string(layer2Parts[0]);
+        if (!GetHeights(layer2Parts[1], targetWidth, targetHeight, layer2, w, h, minH, maxH))
+        {
+            std::cerr << "Unable to load file " << layer2Parts[1] << std::endl;
             return 1;
         }
         width = std::max(width, w);
         height = std::max(height, h);
         minHeight = std::min(minHeight, minH);
         maxHeight = std::max(maxHeight, maxH);
-        if (red.size() != green.size())
+        if (layer1.size() != layer2.size())
         {
             std::cout << "WARNING: Layers have diffrent sizes" << std::endl;
         }
     }
-    if (!blueFile.empty())
+    if (!layer3Option.empty())
     {
-        std::cout << "Blue layer " << blueFile << std::endl;
-        if (!GetHeights(blueFile, targetWidth, targetHeight, blue, w, h, minH, maxH))
+        std::vector<std::string> layer3Parts = sa::Split(layer3Option, ":", false, false);
+        if (layer3Parts.size() != 2)
         {
-            std::cerr << "Unable to load file " << blueFile << std::endl;
+            return 1;
+        }
+        color3 = sa::color::from_string(layer3Parts[0]);
+        if (!GetHeights(layer3Parts[1], targetWidth, targetHeight, layer3, w, h, minH, maxH))
+        {
+            std::cerr << "Unable to load file " << layer3Parts[1] << std::endl;
             return 1;
         }
         width = std::max(width, w);
         height = std::max(height, h);
         minHeight = std::min(minHeight, minH);
         maxHeight = std::max(maxHeight, maxH);
-        if (red.size() != blue.size())
+        if (layer1.size() != layer3.size())
         {
             std::cout << "WARNING: Layers have diffrent sizes" << std::endl;
         }
     }
-    if (!alphaFile.empty())
+    if (!layer4Option.empty())
     {
-        std::cout << "Alpha layer " << alphaFile << std::endl;
-        if (!GetHeights(alphaFile, targetWidth, targetHeight, alpha, w, h, minH, maxH))
+        std::vector<std::string> layer4Parts = sa::Split(layer4Option, ":", false, false);
+        if (layer4Parts.size() != 2)
         {
-            std::cerr << "Unable to load file " << alphaFile << std::endl;
+            return 1;
+        }
+        color4 = sa::color::from_string(layer4Parts[0]);
+        if (!GetHeights(layer4Parts[1], targetWidth, targetHeight, layer4, w, h, minH, maxH))
+        {
+            std::cerr << "Unable to load file " << layer4Parts[1] << std::endl;
             return 1;
         }
         width = std::max(width, w);
         height = std::max(height, h);
         minHeight = std::min(minHeight, minH);
         maxHeight = std::max(maxHeight, maxH);
-        if (red.size() != alpha.size())
+        if (layer1.size() != layer4.size())
         {
             std::cout << "WARNING: Layers have diffrent sizes" << std::endl;
         }
     }
 
     std::string outfile = sa::arg_parser::get_value<std::string>(parsedArgs, "output", "");
-    if (!CreateImage(outfile, red, green, blue, alpha, width, height, minHeight, maxHeight))
+
+    if (!CreateImage(outfile,
+        color1, layer1, false,
+        color2, layer2, true,
+        color3, layer3, false,
+        color4, layer4, false,
+        width, height, minHeight, maxHeight))
     {
         std::cerr << "Error creating image" << std::endl;
         return 1;
     }
+
     return 0;
 }

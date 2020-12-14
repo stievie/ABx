@@ -180,10 +180,23 @@ public:
         const int b = (b_ + rhs.b_);
         const int a = (a_ + rhs.a_);
 
-        return { (uint8_t)(r < 256 ? r : 255),
+        return { (uint8_t)(r < 256 ? (uint8_t)r : 255),
             (uint8_t)(g < 256 ? (uint8_t)g : 255),
             (uint8_t)(b < 256 ? (uint8_t)b : 255),
             (uint8_t)(a < 256 ? (uint8_t)a : 255) };
+    }
+    color& operator+=(const color& rhs)
+    {
+        const int r = (r_ + rhs.r_);
+        const int g = (g_ + rhs.g_);
+        const int b = (b_ + rhs.b_);
+        const int a = (a_ + rhs.a_);
+        r_ = (uint8_t)(r < 256 ? (uint8_t)r : 255);
+        g_ = (uint8_t)(g < 256 ? (uint8_t)g : 255);
+        b_ = (uint8_t)(b < 256 ? (uint8_t)b : 255);
+        a_ = (uint8_t)(a < 256 ? (uint8_t)a : 255);
+
+        return *this;
     }
     color operator-(const color& rhs) const
     {
@@ -192,10 +205,23 @@ public:
         const int b = (b_ - rhs.b_);
         const int a = (a_ - rhs.a_);
 
-        return { (uint8_t)(r >= 0 ? r : 0),
+        return { (uint8_t)(r >= 0 ? (uint8_t)r : 0),
             (uint8_t)(g >= 0 ? (uint8_t)g : 0),
             (uint8_t)(b >= 0 ? (uint8_t)b : 0),
             (uint8_t)(a >= 0 ? (uint8_t)a : 0) };
+    }
+    color& operator-=(const color& rhs)
+    {
+        const int r = (r_ - rhs.r_);
+        const int g = (g_ - rhs.g_);
+        const int b = (b_ - rhs.b_);
+        const int a = (a_ - rhs.a_);
+        r_ = (uint8_t)(r >= 0 ? (uint8_t)r : 0);
+        g_ = (uint8_t)(g >= 0 ? (uint8_t)g : 0);
+        b_ = (uint8_t)(b >= 0 ? (uint8_t)b : 0);
+        a_ = (uint8_t)(a >= 0 ? (uint8_t)a : 0);
+
+        return *this;
     }
     color operator*(const color& rhs) const
     {
@@ -208,6 +234,20 @@ public:
             (uint8_t)g,
             (uint8_t)b,
             (uint8_t)a };
+    }
+    color& operator*=(const color& rhs)
+    {
+        const int r = std::clamp((int)(r_ * rhs.r_), 0, 255);
+        const int g = std::clamp((int)(g_ * rhs.g_), 0, 255);
+        const int b = std::clamp((int)(b_ * rhs.b_), 0, 255);
+        const int a = std::clamp((int)(a_ * rhs.a_), 0, 255);
+
+        r_ = (uint8_t)(r < 256 ? (uint8_t)r : 255);
+        g_ = (uint8_t)(g < 256 ? (uint8_t)g : 255);
+        b_ = (uint8_t)(b < 256 ? (uint8_t)b : 255);
+        a_ = (uint8_t)(a < 256 ? (uint8_t)a : 255);
+
+        return *this;
     }
     color operator*(float rhs) const
     {
@@ -372,6 +412,23 @@ public:
         g_ = (uint8_t)std::clamp(g, 0, 255);
         b_ = (uint8_t)std::clamp(b, 0, 255);
     }
+    void tint(float factor, float min, float max)
+    {
+        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.001f;
+        tint(val);
+    }
+    color tinted(float factor) const
+    {
+        color result = *this;
+        result.tint(factor);
+        return result;
+    }
+    color tinted(float factor, float min, float max) const
+    {
+        color result = *this;
+        result.tint(factor, min, max);
+        return result;
+    }
     void shade(float factor)
     {
         const int r = static_cast<int>((float)r_ * (1.0f - factor));
@@ -380,6 +437,23 @@ public:
         r_ = (uint8_t)std::clamp(r, 0, 255);
         g_ = (uint8_t)std::clamp(g, 0, 255);
         b_ = (uint8_t)std::clamp(b, 0, 255);
+    }
+    void shade(float factor, float min, float max)
+    {
+        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.001f;
+        shade(val);
+    }
+    color shaded(float factor) const
+    {
+        color result = *this;
+        result.shade(factor);
+        return result;
+    }
+    color shaded(float factor, float min, float max) const
+    {
+        color result = *this;
+        result.shade(factor, min, max);
+        return result;
     }
     void invert(bool invert_alpha = false)
     {
@@ -398,6 +472,43 @@ public:
             (uint8_t)((float)b_* invt + (float)rhs.b_ * t),
             (uint8_t)((float)a_* invt + (float)rhs.a_ * t)
         };
+    }
+    // value in range -1.0..1.0
+    void colorize(float value)
+    {
+        if (value < 0.0f)
+            shade(-value);
+        else if (value > 0.0f)
+            tint(value);
+    }
+    void colorize(float value, float min, float max, bool inverted = false)
+    {
+        const float half = (max - min) / 2.0f;
+        const float val = (((value - min) * 100.0f) / (max - min)) - half;
+        if (!inverted)
+        {
+            if (val < 0.0f)
+                shade(-val, min, max);
+            else if (val > 0.0f)
+                tint(val, min, max);
+        }
+        else
+            if (val < 0.0f)
+                tint(-val, min, max);
+            else if (val > 0.0f)
+                shade(val, min, max);
+    }
+    color colorized(float value) const
+    {
+        color result = *this;
+        result.colorize(value);
+        return result;
+    }
+    color colorized(float value, float min, float max, bool inverted = false) const
+    {
+        color result = *this;
+        result.colorize(value, min, max, inverted);
+        return result;
     }
     // To Hex string
     std::string to_string() const

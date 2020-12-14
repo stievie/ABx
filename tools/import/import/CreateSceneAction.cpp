@@ -106,16 +106,16 @@ bool CreateSceneAction::CreateClientMinimap()
         obstaclesFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
 
     std::stringstream ss;
-    ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "hmerge"));
+    ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "cmm"));
     ss << " -W " << heightmapWidth_;
     ss << " -H " << heightmapHeight_;
     ss << " -X " << heightmapSpacing_.x_;
     ss << " -Y " << heightmapSpacing_.y_;
     ss << " -Z " << heightmapSpacing_.z_;
     ss << " -P " << patchSize_;
-    ss << " -R " << Utils::EscapeArguments(heightfieldFile_);
+    ss << " -L1 705e55:" << Utils::EscapeArguments(heightfieldFile_);
     if (!obstaclesFile.empty())
-        ss << " -G " << Utils::EscapeArguments(obstaclesFile);
+        ss << " -L2 404040:" << Utils::EscapeArguments(obstaclesFile);
     ss << " -o " << Utils::EscapeArguments(outFile);
 
     const std::string cmdLine = ss.str();

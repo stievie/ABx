@@ -1,3 +1,4 @@
+add_subdirectory(cmm)
 add_subdirectory(dbgclient)
 add_subdirectory(fhash)
 add_subdirectory(genavmesh)
