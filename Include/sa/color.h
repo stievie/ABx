@@ -29,6 +29,7 @@
 #include <sstream>
 #include <charconv>
 #include <iomanip>
+#include <algorithm>
 
 // HSL, HSV <-> RGB
 // https://github.com/ratkins/RGBConverter/blob/master/RGBConverter.cpp
@@ -465,7 +466,7 @@ public:
     }
     color lerp(const color& rhs, float t)
     {
-        float invt = 1.0f - t;
+        const float invt = 1.0f - t;
         return {
             (uint8_t)((float)r_* invt + (float)rhs.r_ * t),
             (uint8_t)((float)g_* invt + (float)rhs.g_ * t),
@@ -509,6 +510,22 @@ public:
         color result = *this;
         result.scale(value, min, max, inverted);
         return result;
+    }
+    // Blends rhs over this with rhs' alpha value
+    void alpha_blend(const color& rhs)
+    {
+        const float alpha = (float)rhs.a_ / 255.0f;
+        r_ = (uint8_t)(((float)rhs.r_ * alpha) + ((1.0f - alpha) * (float)r_));
+        g_ = (uint8_t)(((float)rhs.g_ * alpha) + ((1.0f - alpha) * (float)g_));
+        b_ = (uint8_t)(((float)rhs.b_ * alpha) + ((1.0f - alpha) * (float)b_));
+    }
+    color alpha_blended(const color& rhs) const
+    {
+        const float alpha = (float)rhs.a_ / 255.0f;
+        const uint8_t r = (uint8_t)(((float)rhs.r_ * alpha) + ((1.0f - alpha) * (float)r_));
+        const uint8_t g = (uint8_t)(((float)rhs.g_ * alpha) + ((1.0f - alpha) * (float)g_));
+        const uint8_t b = (uint8_t)(((float)rhs.b_ * alpha) + ((1.0f - alpha) * (float)b_));
+        return { r, g, b, a_ };
     }
     // To Hex string
     std::string to_string() const

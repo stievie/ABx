@@ -217,7 +217,7 @@ static bool CreateImage(const std::string& filename,
                 const float value2 = layer2[index];
                 if (!Math::IsNegInfinite(value2))
                 {
-                    finalColor = color2.scaled(value2, minHeight, maxHeight, invert2);
+                    finalColor.alpha_blend(color2.scaled(value2, minHeight, maxHeight, invert2));
                 }
             }
 
@@ -226,7 +226,7 @@ static bool CreateImage(const std::string& filename,
                 const float value3 = layer3[index];
                 if (!Math::IsNegInfinite(value3))
                 {
-                    finalColor = color3.scaled(value3, minHeight, maxHeight, invert3);
+                    finalColor.alpha_blend(color3.scaled(value3, minHeight, maxHeight, invert3));
                 }
             }
 
@@ -235,7 +235,7 @@ static bool CreateImage(const std::string& filename,
                 const float value4 = layer4[index];
                 if (!Math::IsNegInfinite(value4))
                 {
-                    finalColor = color4.scaled(value4, minHeight, maxHeight, invert4);
+                    finalColor.alpha_blend(color4.scaled(value4, minHeight, maxHeight, invert4));
                 }
             }
 
