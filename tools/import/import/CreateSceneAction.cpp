@@ -113,9 +113,9 @@ bool CreateSceneAction::CreateClientMinimap()
     ss << " -Y " << heightmapSpacing_.y_;
     ss << " -Z " << heightmapSpacing_.z_;
     ss << " -P " << patchSize_;
-    ss << " -L1 705e55:" << Utils::EscapeArguments(heightfieldFile_);
+    ss << " -L1 7f7f51:" << Utils::EscapeArguments(heightfieldFile_);
     if (!obstaclesFile.empty())
-        ss << " -L2 404040:" << Utils::EscapeArguments(obstaclesFile);
+        ss << " -L2 7f7f7f:" << Utils::EscapeArguments(obstaclesFile);
     ss << " -o " << Utils::EscapeArguments(outFile);
 
     const std::string cmdLine = ss.str();

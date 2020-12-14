@@ -414,7 +414,7 @@ public:
     }
     void tint(float factor, float min, float max)
     {
-        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.001f;
+        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.01f;
         tint(val);
     }
     color tinted(float factor) const
@@ -440,7 +440,7 @@ public:
     }
     void shade(float factor, float min, float max)
     {
-        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.001f;
+        const float val = (((factor - min) * 100.0f) / (max - min)) * 0.01f;
         shade(val);
     }
     color shaded(float factor) const
@@ -474,14 +474,14 @@ public:
         };
     }
     // value in range -1.0..1.0
-    void colorize(float value)
+    void scale(float value)
     {
         if (value < 0.0f)
             shade(-value);
         else if (value > 0.0f)
             tint(value);
     }
-    void colorize(float value, float min, float max, bool inverted = false)
+    void scale(float value, float min, float max, bool inverted = false)
     {
         const float half = (max - min) / 2.0f;
         const float val = (((value - min) * 100.0f) / (max - min)) - half;
@@ -498,16 +498,16 @@ public:
             else if (val > 0.0f)
                 shade(val, min, max);
     }
-    color colorized(float value) const
+    color scaled(float value) const
     {
         color result = *this;
-        result.colorize(value);
+        result.scale(value);
         return result;
     }
-    color colorized(float value, float min, float max, bool inverted = false) const
+    color scaled(float value, float min, float max, bool inverted = false) const
     {
         color result = *this;
-        result.colorize(value, min, max, inverted);
+        result.scale(value, min, max, inverted);
         return result;
     }
     // To Hex string

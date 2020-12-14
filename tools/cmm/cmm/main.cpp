@@ -209,7 +209,7 @@ static bool CreateImage(const std::string& filename,
                 continue;
 
             const float value1 = layer1[index];
-            sa::color c1 = color1.colorized(value1, minHeight, maxHeight, invert1);
+            sa::color c1 = color1.scaled(value1, minHeight, maxHeight, invert1);
             sa::color finalColor = c1;
 
             if (index < layer2.size())
@@ -217,7 +217,7 @@ static bool CreateImage(const std::string& filename,
                 const float value2 = layer2[index];
                 if (!Math::IsNegInfinite(value2))
                 {
-                    finalColor = color2.colorized(value2, minHeight, maxHeight, invert2);
+                    finalColor = color2.scaled(value2, minHeight, maxHeight, invert2);
                 }
             }
 
@@ -226,7 +226,7 @@ static bool CreateImage(const std::string& filename,
                 const float value3 = layer3[index];
                 if (!Math::IsNegInfinite(value3))
                 {
-                    finalColor = color3.colorized(value3, minHeight, maxHeight, invert3);
+                    finalColor = color3.scaled(value3, minHeight, maxHeight, invert3);
                 }
             }
 
@@ -235,7 +235,7 @@ static bool CreateImage(const std::string& filename,
                 const float value4 = layer4[index];
                 if (!Math::IsNegInfinite(value4))
                 {
-                    finalColor = color4.colorized(value4, minHeight, maxHeight, invert4);
+                    finalColor = color4.scaled(value4, minHeight, maxHeight, invert4);
                 }
             }
 
