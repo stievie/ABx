@@ -97,12 +97,18 @@ void Application::Run()
         return;
     }
 
+    IO::ConfigFile cfg;
+    if (cfg.Load("import.cfg"))
+        std::cout << "Found config file import.cfg" << std::endl;
+    else
+        std::cout << "Config file import.cfg not found" << std::endl;
+
     const std::string exeFile = Utils::GetExeName();
     const std::string path = Utils::ExtractFileDir(exeFile);
 
     std::string cfgFile = Utils::ConcatPath(path, "abserv.lua");
-    IO::SimpleConfigManager cfg;
-    if (!cfg.Load(cfgFile))
+    IO::SimpleConfigManager lcfg;
+    if (!lcfg.Load(cfgFile))
     {
         std::cerr << "Failed to load config file " << cfgFile << std::endl;
         return;
@@ -120,8 +126,8 @@ void Application::Run()
     case Action::CreateScene:
         for (const auto& file : files_)
         {
-            CreateSceneAction action(file, outputDirectory_);
-            action.dataDir_ = cfg.GetGlobalString("data_dir", "");
+            CreateSceneAction action(file, outputDirectory_, cfg);
+            action.dataDir_ = lcfg.GetGlobalString("data_dir", "");
             action.createObjs_ = createObjs_;
             action.Execute();
         }

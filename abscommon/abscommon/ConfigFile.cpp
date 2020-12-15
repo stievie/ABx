@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Stefan Ascher
+ * Copyright 2020 Stefan Ascher
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,43 +19,41 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "ConfigFile.h"
+#include <iostream>
+#include <fstream>
 
-#include <string>
-#include <map>
-#include <sa/StringTempl.h>
-#include <optional>
+namespace IO {
 
-class ConfigFile
+ConfigFile::ConfigFile()
+{ }
+
+ConfigFile::~ConfigFile()
+{ }
+
+bool ConfigFile::Load(const std::string& filename)
 {
-private:
-    std::map<std::string, std::string> entires_;
-public:
-    ConfigFile();
-    ~ConfigFile();
-    bool Load(const std::string& filename);
-    template<typename T>
-    inline T Get(const std::string& name, T def);
+    entires_.clear();
 
-};
+    std::ifstream in(filename);
+    if (!in.is_open())
+        return false;
 
-template<>
-inline std::string ConfigFile::Get<std::string>(const std::string& name, std::string def)
-{
-    const auto it = entires_.find(name);
-    if (it == entires_.end())
-        return def;
-    return (*it).second;
+    std::string line;
+    while (std::getline(in, line))
+    {
+        line = sa::Trim<char>(line, " \t");
+        if (line.empty() || line[0] == '#')
+            continue;
+
+        auto parts = sa::Split(line, "=", false, false);
+        if (parts.size() != 2)
+            continue;
+
+        entires_.emplace(sa::Trim<char>(parts[0]), sa::Trim<char>(parts[1]));
+    }
+
+    return true;
 }
 
-template<typename T>
-inline T ConfigFile::Get(const std::string& name, T def)
-{
-    const auto it = entires_.find(name);
-    if (it == entires_.end())
-        return def;
-    const auto res = sa::to_number<T>((*it).second);
-    if (res.has_value())
-        return  res.value();
-    return def;
 }

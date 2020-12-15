@@ -98,13 +98,23 @@ void CreateSceneAction::Execute()
 bool CreateSceneAction::CreateClientMinimap()
 {
     // TODO: Improve colors of minimap
-    std::string outFile = file_ + ".minimap.png";
+    std::string outDir = Utils::ExtractFileDir(file_) + "/../Textures/Minimaps";
+    if (!Utils::EnsureDirectory(outDir))
+    {
+        std::cerr << "Unable to create directory " << outDir << std::endl;
+        return false;
+    }
+    std::string filename = Utils::ExtractFileName(file_) + ".png";
+
+    std::string outFile = Utils::ConcatPath(outDir, filename);
     std::cout << "Creating client minimap " << outFile << std::endl;
 
     std::string obstaclesFile;
     if (obstackles_.size() != 0)
         obstaclesFile = Utils::ConcatPath(outputDirectory_, sa::ExtractFileName<char>(heightfieldFile_) + ".obstacles");
 
+    const std::string layer1Color = cfg_.Get<std::string>("l1-color", "7f7f51");
+    bool layer1Invert = cfg_.Get<bool>("l1-invert", false);
     std::stringstream ss;
     ss << Utils::EscapeArguments(Utils::ConcatPath(sa::Process::GetSelfPath(), "cmm"));
     ss << " -W " << heightmapWidth_;
@@ -113,9 +123,17 @@ bool CreateSceneAction::CreateClientMinimap()
     ss << " -Y " << heightmapSpacing_.y_;
     ss << " -Z " << heightmapSpacing_.z_;
     ss << " -P " << patchSize_;
-    ss << " -L1 7f7f51:" << Utils::EscapeArguments(heightfieldFile_);
+    if (layer1Invert)
+        ss << " -I1";
+    ss << " -L1 " << layer1Color << ":" << Utils::EscapeArguments(heightfieldFile_);
     if (!obstaclesFile.empty())
-        ss << " -I2 -L2 7f7f7f:" << Utils::EscapeArguments(obstaclesFile);
+    {
+        const std::string layer2Color = cfg_.Get<std::string>("l2-color", "7f7f7f");
+        bool layer2Invert = cfg_.Get<bool>("l2-invert", false);
+        if (layer2Invert)
+            ss << " -I2";
+        ss << " -L2 " << layer2Color << ":" << Utils::EscapeArguments(obstaclesFile);
+    }
     ss << " -o " << Utils::EscapeArguments(outFile);
 
     const std::string cmdLine = ss.str();

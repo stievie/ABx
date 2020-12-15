@@ -4,7 +4,7 @@
 #include "TileBuilder.h"
 #include <string>
 #include <vector>
-#include "ConfigFile.h"
+#include <abscommon/ConfigFile.h>
 
 static bool verbose = false;
 static bool noObj = true;
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
     BuildContext ctx;
     ctx.verbose_ = verbose;
     BuildSettings settings;
-    ConfigFile cfg;
+    IO::ConfigFile cfg;
     if (cfg.Load("genavmesh.cfg"))
         std::cout << "Found config file genavmesh.cfg" << std::endl;
     else

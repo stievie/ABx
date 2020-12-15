@@ -28,6 +28,7 @@
 #include <memory>
 #include <absmath/Shape.h>
 #include <absmath/Point.h>
+#include <abscommon/ConfigFile.h>
 
 class CreateSceneAction
 {
@@ -49,6 +50,7 @@ private:
     std::vector<std::unique_ptr<Math::Shape>> obstackles_;
     int heightmapWidth_{ 0 };
     int heightmapHeight_{ 0 };
+    const IO::ConfigFile& cfg_;
     bool LoadScene();
     bool LoadSceneNode(const pugi::xml_node& node, const Math::Matrix4& parentMatrix);
     bool CopySceneFile();
@@ -66,9 +68,10 @@ private:
     bool SaveModel(const Math::Shape& shape, const std::string& filename);
     std::string FindFile(const std::string& name);
 public:
-    CreateSceneAction(const std::string& file, const std::string& outDir) :
+    CreateSceneAction(const std::string& file, const std::string& outDir, const IO::ConfigFile& cfg) :
         file_(file),
-        outputDirectory_(outDir)
+        outputDirectory_(outDir),
+        cfg_(cfg)
     { }
     ~CreateSceneAction() = default;
     void Execute();

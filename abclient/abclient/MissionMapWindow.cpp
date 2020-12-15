@@ -29,6 +29,8 @@
 #include "FwClient.h"
 #include "AudioManager.h"
 #include <abshared/Mechanic.h>
+#include <sa/StringTempl.h>
+#include "Conversions.h"
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
@@ -110,6 +112,14 @@ void MissionMapWindow::RegisterObject(Context* context)
     context->RegisterFactory<MissionMapWindow>();
 }
 
+String MissionMapWindow::GetMinimapFile(const String& scene)
+{
+    const std::string dir = sa::ExtractFileDir<char>(scene.CString()) + "/../Textures/";
+    const std::string name = dir + sa::ExtractFileName<char>(scene.CString()) + ".png";
+
+    return ToUrhoString(name);
+}
+
 MissionMapWindow::MissionMapWindow(Context* context) :
     Window(context)
 {
@@ -164,11 +174,11 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
     if (!scene)
         return;
 
-    String minimapFile = sceneFile + ".minimap.png";
+    const String minimapFile = GetMinimapFile(sceneFile);
     auto* cache = GetSubsystem<ResourceCache>();
     auto* minimapImage = cache->GetResource<Image>(minimapFile);
     if (!minimapImage)
-        URHO3D_LOGWARNING("Minimap file not found");
+        URHO3D_LOGWARNINGF("Minimap file (%s) not found", minimapFile.CString());
 
     terrainLayer_ = GetChildStaticCast<BorderImage>("Container", true);
     objectLayer_ = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);

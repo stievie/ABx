@@ -99,7 +99,6 @@
     <ClInclude Include="BuildContext.h" />
     <ClInclude Include="Builder.h" />
     <ClInclude Include="ChunkyTriMesh.h" />
-    <ClInclude Include="ConfigFile.h" />
     <ClInclude Include="InputGeom.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="PerfTimer.h" />
@@ -110,7 +109,6 @@
     <ClCompile Include="BuildContext.cpp" />
     <ClCompile Include="Builder.cpp" />
     <ClCompile Include="ChunkyTriMesh.cpp" />
-    <ClCompile Include="ConfigFile.cpp" />
     <ClCompile Include="InputGeom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshLoader.cpp" />

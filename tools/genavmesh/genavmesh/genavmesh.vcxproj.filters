@@ -39,9 +39,6 @@
     <ClInclude Include="TileBuilder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigFile.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,9 +66,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TileBuilder.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigFile.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

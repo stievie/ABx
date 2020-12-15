@@ -62,6 +62,7 @@ private:
     static const Color MARKER_COLOR;
     static const Color AGGRO_RANGE_COLOR;
     static const Color CASTING_RANGE_COLOR;
+    static String GetMinimapFile(const String& scene);
     int64_t pingTime_{ 0 };
     uint32_t pingerId_{ 0 };
     Vector3 pingPos_;
