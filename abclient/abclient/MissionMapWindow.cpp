@@ -114,9 +114,7 @@ void MissionMapWindow::RegisterObject(Context* context)
 
 String MissionMapWindow::GetMinimapFile(const String& scene)
 {
-    const std::string dir = sa::ExtractFileDir<char>(scene.CString()) + "/../Textures/";
-    const std::string name = dir + sa::ExtractFileName<char>(scene.CString()) + ".png";
-
+    const std::string name = "Textures/Minimaps/" + sa::ExtractFileName<char>(scene.CString()) + ".png";
     return ToUrhoString(name);
 }
 
@@ -134,7 +132,7 @@ MissionMapWindow::MissionMapWindow(Context* context) :
     SetLayoutMode(LM_VERTICAL);
     SetLayoutBorder(IntRect(4, 4, 4, 4));
     SetPivot(0, 0);
-    SetOpacity(0.9f);
+    SetOpacity(0.95f);
     SetResizable(true);
     SetMovable(true);
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
@@ -176,9 +174,8 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
 
     const String minimapFile = GetMinimapFile(sceneFile);
     auto* cache = GetSubsystem<ResourceCache>();
+    // If this does not exist it falls back to the heightmap
     auto* minimapImage = cache->GetResource<Image>(minimapFile);
-    if (!minimapImage)
-        URHO3D_LOGWARNINGF("Minimap file (%s) not found", minimapFile.CString());
 
     terrainLayer_ = GetChildStaticCast<BorderImage>("Container", true);
     objectLayer_ = terrainLayer_->GetChildStaticCast<BorderImage>("ObjectLayer", true);
@@ -404,15 +401,28 @@ void MissionMapWindow::DrawObjects()
 
         // TODO: Fix this! Heck that's 3 coordinate systems. You shouldn't make a game when you can't to some math :/
         // However, this is just trying to get some texture displayed as map.
-        IntVector2 sourceSize = {
-            // (world.x_ * SCALE) + ((float)MAP_WIDTH / 2.0f)
-            int((float)MAP_WIDTH / (float)SCALE * terrainScaling_.x_),
-            int((float)MAP_HEIGHT / (float)SCALE * terrainScaling_.y_)
+        IntVector2 fullSize = {
+            int(terrainScaling_.x_ * heightmapTexture_->GetWidth() * (float)SCALE),
+            int(terrainScaling_.y_ * heightmapTexture_->GetHeight() * (float)SCALE)
         };
-        IntRect imageRect = { (origin.x_ - sourceSize.x_),
-                (origin.y_ - sourceSize.y_),
-                (origin.x_ + sourceSize.x_),
-                (origin.y_ + sourceSize.y_) };
+        IntVector2 sourceExtends = {
+            int(((float)MAP_WIDTH / (float)SCALE) / 2.0f),
+            int(((float)MAP_HEIGHT / (float)SCALE) / 2.0f)
+        };
+        IntVector2 imageCenter = { (fullSize.x_ / 2 ),
+                (fullSize.y_ / 2 ) };
+
+        IntRect imageRect = {
+            (origin.x_ - sourceExtends.x_),
+            (origin.y_ - sourceExtends.y_),
+            (origin.x_ + sourceExtends.x_),
+            (origin.y_ + sourceExtends.y_)
+        };
+
+//        URHO3D_LOGINFOF("fullSize: %s, sourceExtends: %s, imageRect: %s, origin: %s",
+//            fullSize.ToString().CString(), sourceExtends.ToString().CString(),
+//            imageRect.ToString().CString(), origin.ToString().CString());
+
         terrainLayer_->SetImageRect(imageRect);
 //        terrainLayer_->SetFullImageRect();
 
