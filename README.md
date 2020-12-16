@@ -4,6 +4,8 @@
 
 Ancient Greece Multiplayer Online RPG.
 
+Discussions: https://github.com/stievie/ABx/discussions
+
 Videos: https://devtube.dev-wiki.de/video-channels/trill_channel/videos
 
 Project page: https://www.gamedev.net/projects/1587-abx

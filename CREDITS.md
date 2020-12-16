@@ -4,7 +4,7 @@ Creator: sa 2017-2019
 
 ## Contributors
 
-* [0xdream](https://github.com/0xdream)
+* 0xdream
 
 ## Common
 
