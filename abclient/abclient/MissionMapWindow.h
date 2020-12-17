@@ -92,6 +92,7 @@ private:
     void HandleResized(StringHash eventType, VariantMap& eventData);
     void HandlePositionPinged(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
+    void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     IntVector2 WorldToMapPos(const Vector3& center, const Vector3& world) const;
     IntVector2 WorldToMap(const Vector3& world) const;

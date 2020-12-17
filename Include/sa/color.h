@@ -290,10 +290,12 @@ public:
     {
         return (a_ << 24u) | (b_ << 16u) | (g_ << 8u) | r_;
     }
+    // RGBA
     uint32_t to_32() const
     {
         return (a_ << 24u) | (b_ << 16u) | (g_ << 8u) | r_;
     }
+    // RGB without A
     uint32_t to_24() const
     {
         return (b_ << 16u) | (g_ << 8u) | r_;
@@ -404,6 +406,7 @@ public:
         *this = from_hsv(h, s, v);
     }
 
+    // Brighten by factor
     void tint(float factor)
     {
         const int r = r_ + static_cast<int>((float)(255 - r_) * factor);
@@ -430,6 +433,7 @@ public:
         result.tint(factor, min, max);
         return result;
     }
+    // Darken by factor
     void shade(float factor)
     {
         const int r = static_cast<int>((float)r_ * (1.0f - factor));
@@ -509,6 +513,22 @@ public:
     {
         color result = *this;
         result.scale(value, min, max, inverted);
+        return result;
+    }
+    void gray_scale()
+    {
+        const float fr = (float)r_;
+        const float fg = (float)g_;
+        const float fb = (float)b_;
+        const float v = sqrt((fr * fr + fg * fg + fb * fb) / 3.0f);
+        r_ = (uint8_t)v;
+        g_ = (uint8_t)v;
+        b_ = (uint8_t)v;
+    }
+    color gray_scaled() const
+    {
+        color result = *this;
+        result.gray_scale();
         return result;
     }
     // Blends rhs over this with rhs' alpha value

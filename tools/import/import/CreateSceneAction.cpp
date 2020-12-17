@@ -49,46 +49,56 @@ void CreateSceneAction::Execute()
     // AbData
     searchpaths_.push_back(Utils::ExtractFileDir(file_) + "/../");
     searchpaths_.push_back(Utils::ExtractFileDir(file_) + "/../../Data/");
+    std::cout << "==============================================================================" << std::endl;
     if (!LoadScene())
     {
         std::cerr << "Error loading scene " << file_ << std::endl;
         return;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CopySceneFile())
     {
         std::cerr << "Error copying Scene file " << file_ << " to " << outputDirectory_ << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!SaveObstacles())
     {
         std::cerr << "Error saving obstacles" << std::endl;
     }
     if (createObjs_)
     {
+        std::cout << "==============================================================================" << std::endl;
         if (!SaveObstaclesObj())
         {
             std::cerr << "Error saving obstacles" << std::endl;
         }
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CreateHightmap())
     {
         std::cerr << "Error creating height map" << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CreateNavMesh())
     {
         std::cerr << "Error creating navigation mesh" << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!SaveObstaclesHm())
     {
         std::cerr << "Error creating obstacles layer" << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CreateIndexFile())
     {
         std::cerr << "Error creating index.xml" << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CreateClientHeightmap())
     {
         std::cerr << "Error creating client heightmap" << std::endl;
     }
+    std::cout << "==============================================================================" << std::endl;
     if (!CreateClientMinimap())
     {
         std::cerr << "Error creating client minimap" << std::endl;

@@ -141,3 +141,12 @@ TEST_CASE("Color blend")
     REQUIRE(green50_blue30.g_ == 179);
     REQUIRE(green50_blue30.b_ == 76);
 }
+
+TEST_CASE("Color gray_scale")
+{
+    sa::color red = sa::color::from_rgb(1.0f, 0.0f, 0.0f);
+    red.gray_scale();
+    REQUIRE(red.r_ == 147);
+    REQUIRE(red.g_ == 147);
+    REQUIRE(red.b_ == 147);
+}

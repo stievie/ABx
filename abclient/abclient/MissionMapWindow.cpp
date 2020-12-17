@@ -227,6 +227,7 @@ void MissionMapWindow::SubscribeToEvents()
     SubscribeToEvent(this, E_RESIZED, URHO3D_HANDLER(MissionMapWindow, HandleResized));
     SubscribeToEvent(Events::E_POSITION_PINGED, URHO3D_HANDLER(MissionMapWindow, HandlePositionPinged));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(MissionMapWindow, HandleMouseDown));
+    SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(MissionMapWindow, HandleMouseUp));
     SubscribeToEvent(Events::E_OBJECTPINGTARGET, URHO3D_HANDLER(MissionMapWindow, HandleTargetPinged));
 }
 
@@ -522,6 +523,12 @@ void MissionMapWindow::HandlePositionPinged(StringHash, VariantMap& eventData)
 void MissionMapWindow::HandleMouseDown(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
+    (void)eventData;
+}
+
+void MissionMapWindow::HandleMouseUp(StringHash, VariantMap& eventData)
+{
+    using namespace MouseButtonUp;
     if (eventData[P_BUTTON].GetUInt() != MOUSEB_LEFT)
         return;
 

@@ -199,6 +199,7 @@ static bool CreateImage(const std::string& filename,
     float minHeight, float maxHeight
 )
 {
+    // These images always have 4 components: RGBA
     const int comps = 4;
 
     unsigned char* data = (unsigned char*)malloc((size_t)width * (size_t)height * (size_t)comps);
@@ -216,34 +217,29 @@ static bool CreateImage(const std::string& filename,
                 continue;
 
             const float value1 = layer1.heights[index];
-            sa::color c1 = layer1.color.scaled(value1, minHeight, maxHeight, layer1.invert);
-            sa::color finalColor = c1;
+            if (Math::IsNegInfinite(value1))
+                continue;
+            sa::color finalColor = layer1.color.scaled(value1, minHeight, maxHeight, layer1.invert);
 
             if (index < layer2.heights.size())
             {
                 const float value2 = layer2.heights[index];
                 if (!Math::IsNegInfinite(value2))
-                {
                     finalColor.alpha_blend(layer2.color.scaled(value2, minHeight, maxHeight, layer2.invert));
-                }
             }
 
             if (index < layer3.heights.size())
             {
                 const float value3 = layer3.heights[index];
                 if (!Math::IsNegInfinite(value3))
-                {
                     finalColor.alpha_blend(layer3.color.scaled(value3, minHeight, maxHeight, layer3.invert));
-                }
             }
 
             if (index < layer4.heights.size())
             {
                 const float value4 = layer4.heights[index];
                 if (!Math::IsNegInfinite(value4))
-                {
                     finalColor.alpha_blend(layer4.color.scaled(value4, minHeight, maxHeight, layer4.invert));
-                }
             }
 
             const size_t dataIndex = ((size_t)height - y - 1) * (size_t)width + (size_t)x;
