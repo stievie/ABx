@@ -25,6 +25,7 @@
 #include <AB/Entities/ServiceList.h>
 #include <abscommon/BanManager.h>
 #include <abscommon/Logo.h>
+#include <abscommon/PingServer.h>
 #include <abscommon/SimpleConfigManager.h>
 #include <abscommon/StringUtils.h>
 #include <abscommon/Subsystems.h>
@@ -42,6 +43,7 @@ Application::Application() :
     serverType_ = AB::Entities::ServiceTypeLoadBalancer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
+    Subsystems::Instance.CreateSubsystem<Net::PingServer>();
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
 
@@ -146,6 +148,8 @@ bool Application::LoadMain()
         // Get service list from config file
         acceptor_ = std::make_unique<Acceptor>(ioService_, serverHost_, serverPort_,
             std::bind(&Application::GetServiceCallbackList, this, std::placeholders::_1));
+
+    GetSubsystem<Net::PingServer>()->port_ = serverPort_;
 
     PrintServerInfo();
     return true;
@@ -319,6 +323,7 @@ void Application::Run()
     acceptor_->AcceptConnections();
 
     running_ = true;
+    GetSubsystem<Net::PingServer>()->Start();
     ioService_.run();
 }
 
@@ -345,5 +350,6 @@ void Application::Stop()
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
+    GetSubsystem<Net::PingServer>()->Stop();
     ioService_.stop();
 }
