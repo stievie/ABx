@@ -174,6 +174,8 @@ bool Application::LoadMain()
     else if (serverPort_ == 0)
         serverPort_ = Net::ServiceManager::GetFreePort();
 
+    enablePingServer_ = config->GetGlobalBool("enable_ping_server", enablePingServer_);
+
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(serverIp_));
     if (serverPort_ != 0)
@@ -348,7 +350,8 @@ void Application::Run()
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     serviceManager_->Run();
-    GetSubsystem<Net::PingServer>()->Start();
+    if (enablePingServer_)
+        GetSubsystem<Net::PingServer>()->Start();
     ioService_->run();
 }
 
@@ -380,7 +383,8 @@ void Application::Stop()
     else
         LOG_ERROR << "Unable to read service" << std::endl;
 
-    GetSubsystem<Net::PingServer>()->Stop();
+    if (enablePingServer_)
+        GetSubsystem<Net::PingServer>()->Stop();
     ioService_->stop();
 }
 

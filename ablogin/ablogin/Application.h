@@ -30,6 +30,7 @@ class Application final : public ServerApp
 private:
     std::shared_ptr<asio::io_service> ioService_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
+    bool enablePingServer_{ true };
     bool LoadMain();
     void PrintServerInfo();
     void HeartBeatTask();
