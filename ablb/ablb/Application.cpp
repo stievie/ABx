@@ -323,7 +323,8 @@ void Application::Run()
     acceptor_->AcceptConnections();
 
     running_ = true;
-    GetSubsystem<Net::PingServer>()->Start();
+    if (lbType_ == AB::Entities::ServiceTypeLoginServer)
+        GetSubsystem<Net::PingServer>()->Start();
     ioService_.run();
 }
 
@@ -350,6 +351,7 @@ void Application::Stop()
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
-    GetSubsystem<Net::PingServer>()->Stop();
+    if (lbType_ == AB::Entities::ServiceTypeLoginServer)
+        GetSubsystem<Net::PingServer>()->Stop();
     ioService_.stop();
 }
