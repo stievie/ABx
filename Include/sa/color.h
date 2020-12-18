@@ -30,6 +30,7 @@
 #include <charconv>
 #include <iomanip>
 #include <algorithm>
+#include <sa/math.h>
 
 // HSL, HSV <-> RGB
 // https://github.com/ratkins/RGBConverter/blob/master/RGBConverter.cpp
@@ -49,13 +50,6 @@ inline float hue2rgb(float p, float q, float t)
     if (t < 2.0f / 3.0f)
         return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
     return p;
-}
-
-template <typename T>
-inline bool equals(T lhs, T rhs)
-{
-    return lhs + std::numeric_limits<T>::epsilon() >= rhs &&
-        lhs - std::numeric_limits<T>::epsilon() <= rhs;
 }
 
 }
@@ -91,7 +85,7 @@ public:
     static color from_hsl(float h, float s, float l)
     {
         float r, g, b;
-        if (details::equals(s, 0.0f))
+        if (math::equals(s, 0.0f))
             r = g = b = 1;
         else
         {
@@ -316,17 +310,17 @@ public:
         const float min = std::min(r, std::min(g, b));
         const float max = std::max(r, std::max(g, b));
         float h = 0.0f, s = 0.0f, l = (max + min) * 0.5f;
-        if (details::equals(max, min))
+        if (math::equals(max, min))
             h = s = 0;
         else
         {
             const float d = max - min;
             s = l > 0.5f ? d / (2.0f - max - min) : d / (max - min);
-            if (details::equals(max, r))
+            if (math::equals(max, r))
                 h = (g - b) / d + (g < b ? 6.0f : 0.0f);
-            else if (details::equals(max, g))
+            else if (math::equals(max, g))
                 h = (b - r) / d + 2.0f;
-            else if (details::equals(max, b))
+            else if (math::equals(max, b))
                 h = (r - g) / d + 4.0f;
 
             h /= 6;
@@ -344,16 +338,16 @@ public:
         const float max = std::max(r, std::max(g, b));
         float h = 0.0f, s = 0.0f, v = max;
         const float d = max - min;
-        s = details::equals(max, 0.0f) ? 0.0f : d / max;
-        if (details::equals(max, min))
+        s = math::equals(max, 0.0f) ? 0.0f : d / max;
+        if (math::equals(max, min))
             h = 0;
         else
         {
-            if (details::equals(max, r))
+            if (math::equals(max, r))
                 h = (g - b) / d + (g < b ? 6.0f : 0.0f);
-            else if (details::equals(max, g))
+            else if (math::equals(max, g))
                 h = (b - r) / d + 2.0f;
-            else if (details::equals(max, b))
+            else if (math::equals(max, b))
                 h = (r - g) / d + 4.0f;
 
             h /= 6;
