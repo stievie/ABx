@@ -138,6 +138,7 @@ public:
     int components() const { return components_; }
     const unsigned char* data() const { return data_; }
     unsigned char* data() { return data_; }
+    bool empty() const { return !data_; }
     void set_bitmap(int width, int height, int components, unsigned char* data)
     {
         ASSERT(width > 0);
@@ -149,6 +150,32 @@ public:
         components_ = components;
         data_ = data;
     }
+#ifdef STBIR_INCLUDE_STB_IMAGE_RESIZE_H
+    // Resize this into result. Result must be data_ allocated to hold with * height * components
+    // Must include stb_image_resize.h before this
+    bool resize(bitmap& result)
+    {
+        return stbir_resize_uint8(data_, width_, height_, width_ * components_,
+            result.data_, result.width_, result.height_, result.width_ * result.components_);
+    }
+#endif
+#ifdef STBI_INCLUDE_STB_IMAGE_H
+    // After using this you must free() the returned pointer because stbi_load()
+    // allocates it but this class does not own the data.
+    // Must include stb_image.h before this
+    unsigned char* load(const std::string& filename)
+    {
+        data_ = stbi_load(filename.c_str(), &width_, &height_, &components_, 0);
+        return data_;
+    }
+#endif
+#ifdef INCLUDE_STB_IMAGE_WRITE_H
+    // Must include stb_image_write.h before this
+    bool save(const std::string& filename)
+    {
+        return stbi_write_png(filename.c_str(), width_, height_, components_, data_, width_ * components_);
+    }
+#endif
 private:
     int width_{ 0 };
     int height_{ 0 };

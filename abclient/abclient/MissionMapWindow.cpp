@@ -31,6 +31,7 @@
 #include <abshared/Mechanic.h>
 #include <sa/StringTempl.h>
 #include "Conversions.h"
+#include <sa/color.h>
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
@@ -332,15 +333,12 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
     if (!color)
         return;
 
-    Vector3 hsl = color->ToHSL();
+    sa::color col = sa::color::from_rgb(color->r_, color->g_, color->b_, color->a_);
     if (isDead)
-        hsl.y_ *= 0.2f;
-    Color baseColor;
-    baseColor.FromHSL(hsl.x_, hsl.y_, hsl.z_);
-    Color colorDark;
-    colorDark.FromHSL(hsl.x_, hsl.y_, hsl.z_ * 0.5f);
-    Color colorBright;
-    colorBright.FromHSL(hsl.x_, hsl.y_ * 1.2f, hsl.z_ * 1.6f);
+        col.set_saturation(col.saturation() * 0.2f);
+    const Color baseColor = Color(col.to_32());
+    const Color colorDark = Color(col.shaded(0.3f).to_32());
+    const Color colorBright = Color(col.tinted(0.3f).to_32());
     for (int y = 0; y < 12; ++y)
     {
         for (int x = 0; x < 12; ++x)
@@ -363,8 +361,7 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
     }
     if (isSelected)
     {
-        Color selectedColor;
-        selectedColor.FromHSL(hsl.x_, hsl.y_ * 1.3f, hsl.z_ * 1.8f);
+        const Color selectedColor = Color(col.tinted(0.78f).to_32());
         DrawCircle(pos, 8, selectedColor, 1.0f);
     }
 }

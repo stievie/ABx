@@ -362,9 +362,11 @@ public:
     }
     void set_hue(float value)
     {
+        const uint8_t a = a_;
         auto [h, s, l] = to_hsl();
         h = value;
         *this = from_hsl(h, s, l);
+        this->a_ = a;
     }
     float saturation() const
     {
@@ -373,9 +375,11 @@ public:
     }
     void set_saturation(float value)
     {
+        const uint8_t a = a_;
         auto [h, s, l] = to_hsl();
         s = value;
         *this = from_hsl(h, s, l);
+        this->a_ = a;
     }
     float lightness() const
     {
@@ -384,9 +388,11 @@ public:
     }
     void set_lightness(float value)
     {
+        const uint8_t a = a_;
         auto [h, s, l] = to_hsl();
         l = value;
         *this = from_hsl(h, s, l);
+        this->a_ = a;
     }
     float value() const
     {
@@ -395,9 +401,11 @@ public:
     }
     void set_value(float value)
     {
+        const uint8_t a = a_;
         auto [h, s, v] = to_hsv();
         v = value;
         *this = from_hsv(h, s, v);
+        this->a_ = a;
     }
 
     // Brighten by factor
