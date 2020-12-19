@@ -23,6 +23,7 @@
 
 #include <Urho3DAll.h>
 #include <AB/Entities/Game.h>
+#include <sa/bitmap.h>
 
 class Player;
 class GameObject;
@@ -53,15 +54,6 @@ private:
         Position,
         Target
     };
-    static const Color SELF_COLOR;
-    static const Color ALLY_COLOR;
-    static const Color FOE_COLOR;
-    static const Color OTHER_COLOR;
-    static const Color WAYPOINT_COLOR;
-    static const Color PING_COLOR;
-    static const Color MARKER_COLOR;
-    static const Color AGGRO_RANGE_COLOR;
-    static const Color CASTING_RANGE_COLOR;
     static String GetMinimapFile(const String& scene);
     int64_t pingTime_{ 0 };
     uint32_t pingerId_{ 0 };
@@ -71,6 +63,7 @@ private:
 
     SharedPtr<Texture2D> mapTexture_;
     SharedPtr<Image> mapImage_;
+    sa::bitmap mapBitmap_;
     SharedPtr<Texture2D> heightmapTexture_;
     SharedPtr<BorderImage> terrainLayer_;
     SharedPtr<BorderImage> objectLayer_;
@@ -99,8 +92,8 @@ private:
     Vector3 MapToWorldPos(const Vector3& center, const IntVector2& map) const;
     Vector3 MapToWorld(const IntVector2& map) const;
     void DrawObject(const IntVector2& pos, DotType type, bool isSelected, bool isDead);
-    void DrawCircle(const IntVector2& center, float radius, const Color& color);
-    void DrawCircle(const IntVector2& center, float radius, const Color& color, float scale);
-    void DrawPoint(const IntVector2& center, int size, const Color& color);
+    void DrawCircle(const IntVector2& center, float radius, const sa::color& color, int thickness = 2);
+    void DrawCircle(const IntVector2& center, float radius, const sa::color& color, float scale, int thickness = 2);
+    void DrawPoint(const IntVector2& center, int size, const sa::color& color);
 };
 

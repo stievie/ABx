@@ -30,6 +30,8 @@
 
 namespace sa {
 
+// Wrapper around pixel data.
+// Note: This class does not manage ownership of the data.
 class bitmap
 {
     NON_COPYABLE(bitmap)
@@ -117,10 +119,25 @@ public:
     }
     void clear(const color& c)
     {
-        for (int y = 0; y < height_; ++y)
+        if (components_ == 4)
         {
-            for (int x = 0; x < width_; ++x)
-                set_pixel(x, y, c);
+            const uint32_t uc = c.to_32();
+            for (int y = 0; y < height_; ++y)
+            {
+                for (int x = 0; x < width_; ++x)
+                {
+                    const size_t index = (size_t)y * (size_t)width_ + (size_t)x;
+                    *reinterpret_cast<uint32_t*>(&data_[(index * components_)]) = uc;
+                }
+            }
+        }
+        else
+        {
+            for (int y = 0; y < height_; ++y)
+            {
+                for (int x = 0; x < width_; ++x)
+                    set_pixel(x, y, c);
+            }
         }
     }
     void clear()

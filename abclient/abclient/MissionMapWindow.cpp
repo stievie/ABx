@@ -31,22 +31,21 @@
 #include <abshared/Mechanic.h>
 #include <sa/StringTempl.h>
 #include "Conversions.h"
-#include <sa/color.h>
 
 inline constexpr int MAP_WIDTH = 512;
 inline constexpr int MAP_HEIGHT = 512;
 // Pixel per Meter
 inline constexpr int SCALE = 5;
 
-const Color MissionMapWindow::SELF_COLOR(0.3f, 1.0f, 0.3f);
-const Color MissionMapWindow::ALLY_COLOR(0.0f, 0.7f, 0.0f);
-const Color MissionMapWindow::FOE_COLOR(1.0f, 0.0f, 0.0f);
-const Color MissionMapWindow::OTHER_COLOR(0.0f, 0.0f, 1.0f);
-const Color MissionMapWindow::WAYPOINT_COLOR(0.46f, 0.07f, 0.04f);
-const Color MissionMapWindow::PING_COLOR(0.9f, 0.2f, 0.8f);
-const Color MissionMapWindow::MARKER_COLOR(0.0f, 0.5f, 0.0f);
-const Color MissionMapWindow::AGGRO_RANGE_COLOR(0.9f, 0.2f, 0.2f, 0.8f);
-const Color MissionMapWindow::CASTING_RANGE_COLOR(0.2f, 0.9f, 0.2f, 0.8f);
+static constexpr sa::color SELF_COLOR{ 77, 255, 77 };
+static constexpr sa::color ALLY_COLOR{ 0, 179, 0 };
+static constexpr sa::color FOE_COLOR{ 255, 0, 0 };
+static constexpr sa::color OTHER_COLOR{ 0, 0, 255 };
+static constexpr sa::color WAYPOINT_COLOR{ 117, 18, 10 };
+static constexpr sa::color PING_COLOR{ 230, 51, 204 };
+static constexpr sa::color MARKER_COLOR{ 0, 128, 0 };
+static constexpr sa::color AGGRO_RANGE_COLOR{ 230, 51, 51, 140 };
+static constexpr sa::color CASTING_RANGE_COLOR{ 51, 230, 51, 140 };
 
 // 12x12
 static constexpr const char* DOT_BITMAP = {
@@ -208,7 +207,7 @@ void MissionMapWindow::SetScene(SharedPtr<Scene> scene, AB::Entities::GameType g
     mapTexture_->SetMipsToSkip(QUALITY_LOW, 0);
     mapImage_ = MakeShared<Image>(context_);
     mapImage_->SetSize(MAP_WIDTH, MAP_HEIGHT, 4);
-    mapTexture_->SetData(mapImage_, true);
+    mapBitmap_.set_bitmap(MAP_WIDTH, MAP_HEIGHT, 4, mapImage_->GetData());
     objectLayer_->SetTexture(mapTexture_);
     objectLayer_->SetFullImageRect();
 }
@@ -268,23 +267,21 @@ Vector3 MissionMapWindow::MapToWorldPos(const Vector3& center, const IntVector2&
     return center + MapToWorld(map);
 }
 
-void MissionMapWindow::DrawPoint(const IntVector2& center, int size, const Color& color)
+void MissionMapWindow::DrawPoint(const IntVector2& center, int size, const sa::color& color)
 {
     for (int y = -(size / 2); y < size / 2; ++y)
     {
         for (int x = -(size / 2); x < size / 2; ++x)
-        {
-            mapImage_->SetPixel(center.x_ + x, center.y_ + y, color);
-        }
+            mapBitmap_.set_pixel(center.x_ + x, center.y_ + y, color);
     }
 }
 
-void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const Color& color)
+void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const sa::color& color, int thickness)
 {
-    DrawCircle(center, radius, color, SCALE);
+    DrawCircle(center, radius, color, SCALE, thickness);
 }
 
-void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const Color& color, float scale)
+void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const sa::color& color, float scale, int thickness)
 {
     const float r = radius * scale;
     for (float i = 0; i < 360.0f; i += 0.1f)
@@ -292,7 +289,7 @@ void MissionMapWindow::DrawCircle(const IntVector2& center, float radius, const 
         int x = (int)(r * cosf(i * (float)M_PI / 180.0f));
         int y = (int)(r * sinf(i * (float)M_PI / 180.0f));
 
-        DrawPoint({ center.x_ + x, center.y_ + y }, 2, color);
+        DrawPoint({ center.x_ + x, center.y_ + y }, thickness, color);
     }
 }
 
@@ -300,7 +297,7 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
 {
     if (pos.x_ < 0 || pos.x_ > MAP_WIDTH || pos.y_ < 0 || pos.y_ > MAP_HEIGHT)
         return;
-    const Color* color = nullptr;
+    const sa::color* color = nullptr;
     const char* bitmap = DOT_BITMAP;
 
     switch (type)
@@ -333,12 +330,11 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
     if (!color)
         return;
 
-    sa::color col = sa::color::from_rgb(color->r_, color->g_, color->b_, color->a_);
+    sa::color baseColor = *color;
     if (isDead)
-        col.set_saturation(col.saturation() * 0.2f);
-    const Color baseColor = Color(col.to_32());
-    const Color colorDark = Color(col.shaded(0.3f).to_32());
-    const Color colorBright = Color(col.tinted(0.3f).to_32());
+        baseColor.set_saturation(baseColor.saturation() * 0.2f);
+    const sa::color colorDark = baseColor.shaded(0.3f);
+    const sa::color colorBright = baseColor.tinted(0.3f);
     for (int y = 0; y < 12; ++y)
     {
         for (int x = 0; x < 12; ++x)
@@ -346,13 +342,13 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
             switch (bitmap[y * 12 + x])
             {
             case '*':
-                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, baseColor);
+                mapBitmap_.set_pixel(pos.x_ + x - 6, pos.y_ + y - 6, baseColor);
                 break;
             case '#':
-                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, colorDark);
+                mapBitmap_.set_pixel(pos.x_ + x - 6, pos.y_ + y - 6, colorDark);
                 break;
             case '+':
-                mapImage_->SetPixel(pos.x_ + x - 6, pos.y_ + y - 6, colorBright);
+                mapBitmap_.set_pixel(pos.x_ + x - 6, pos.y_ + y - 6, colorBright);
                 break;
             default:
                 break;
@@ -360,10 +356,7 @@ void MissionMapWindow::DrawObject(const IntVector2& pos, DotType type, bool isSe
         }
     }
     if (isSelected)
-    {
-        const Color selectedColor = Color(col.tinted(0.78f).to_32());
-        DrawCircle(pos, 8, selectedColor, 1.0f);
-    }
+        DrawCircle(pos, 8, baseColor.tinted(0.8f), 1.0f);
 }
 
 Player* MissionMapWindow::GetPlayer() const
@@ -446,9 +439,7 @@ void MissionMapWindow::DrawObjects()
         });
 
         if (haveMarker_)
-        {
             DrawObject(WorldToMapPos(center, marker_), DotType::Marker, false, false);
-        }
 
         if (pingTime_ != 0)
         {
@@ -481,7 +472,7 @@ void MissionMapWindow::HandleRenderUpdate(StringHash, VariantMap&)
 {
     if (!IsVisible())
         return;
-    mapImage_->Clear(Color::TRANSPARENT_BLACK);
+    mapBitmap_.clear();
     DrawRanges();
     DrawObjects();
     mapTexture_->SetData(mapImage_, true);
