@@ -43,28 +43,28 @@ public:
     { }
     color get_pixel(int x, int y) const
     {
-        ASSERT(data);
+        ASSERT(data_);
         if (x < 0 || y < 0 || x >= width_ || y >= height_)
             return {};
         const size_t index = (size_t)y * (size_t)width_ + (size_t)x;
         uint8_t r = 0, g = 0, b = 0, a = 255;
         if (components_ == 1)
             // B/W
-            r = g = b = data[(index * components_)];
+            r = g = b = data_[(index * components_)];
         else if (components_ == 3)
         {
             // RGB
-            r = data[(index * components_)];
-            g = data[(index * components_ + 1)];
-            b = data[(index * components_ + 2)];
+            r = data_[(index * components_)];
+            g = data_[(index * components_ + 1)];
+            b = data_[(index * components_ + 2)];
         }
         else if (components_ == 4)
         {
             // RGBA
-            r = data[(index * components_)];
-            g = data[(index * components_ + 1)];
-            b = data[(index * components_ + 2)];
-            a = data[(index * components_ + 3)];
+            r = data_[(index * components_)];
+            g = data_[(index * components_ + 1)];
+            b = data_[(index * components_ + 2)];
+            a = data_[(index * components_ + 3)];
         }
         else
             ASSERT_FALSE();
@@ -72,23 +72,23 @@ public:
     }
     void set_pixel(int x, int y, const color& color)
     {
-        ASSERT(data);
-        if (x < 0 || y > 0 || x >= width_ || y >= height_)
+        ASSERT(data_);
+        if (x < 0 || y < 0 || x >= width_ || y >= height_)
             return;
         const size_t index = (size_t)y * (size_t)width_ + (size_t)x;
         if (components_ == 1)
             // B/W
-            data[(index * components_)] = color.gray_scaled().r_;
+            data_[(index * components_)] = color.gray_scaled().r_;
         else if (components_ == 3)
         {
             // RGB
-            data[(index * components_)] = color.r_;
-            data[(index * components_ + 1)] = color.g_;
-            data[(index * components_ + 2)] = color.b_;
+            data_[(index * components_)] = color.r_;
+            data_[(index * components_ + 1)] = color.g_;
+            data_[(index * components_ + 2)] = color.b_;
         }
-        else if (components_ == 0)
+        else if (components_ == 4)
             // RGBA
-            *reinterpret_cast<uint32_t*>(&data[(index * components_)]) = color.to_32();
+            *reinterpret_cast<uint32_t*>(&data_[(index * components_)]) = color.to_32();
         else
             ASSERT_FALSE();
     }
@@ -98,7 +98,7 @@ public:
             return;
 
         color pixel = get_pixel(x, y);
-        pixel.alpha_blend(blend_pixel);
+        pixel.alpha_blend(c);
         set_pixel(x, y, pixel);
     }
     void alpha_blend(int x, int y, const bitmap& b)
@@ -125,13 +125,14 @@ public:
     }
     void clear()
     {
-        static color black;
+        // Black transparent
+        static constexpr color black{ 0, 0, 0, 0 };
         clear(black);
     }
     unsigned char* scan_line(int line)
     {
         const size_t index = (size_t)line * (size_t)width_;
-        return &data[(index * components_)];
+        return &data_[(index * components_)];
     }
     int width() const { return width_; }
     int height() const { return height_; }
